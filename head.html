@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="copyright" content="Copyright (c) 2009, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com ">
+<link href="css/CMRstyles.css" rel="stylesheet" type="text/css">
+<!--[if IE 6]>
+  <link rel="stylesheet" href="css/ie.css" type="text/css" media="all" />
+<![endif]-->
+<link href="css/LVstyles.css" rel="stylesheet" type="text/css">
+<link href="css/lightbox-hc.css" rel="stylesheet" type="text/css" >
+<link href="css/jquery.autocomplete.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.watermark.js"></script>
+
+<script type="text/javascript">
+    var wm_to_desc = 'Enter email address here';
+    var wm_for1_desc = 'Enter description here';
+
+	$(function () {
+		$('#username').watermark('Email address', {useNative: false});
+		$('#password').watermark('Password', {useNative: false});
+		$('#oldpassword').watermark('Current Password', {useNative: false});
+		$('#newpassword').watermark('New Password', {useNative: false});
+		$('#confirmpassword').watermark('Confirm Password', {useNative: false});
+		$('#nickname').watermark('Nickname', {useNative: false});
+	});
+
+</script>

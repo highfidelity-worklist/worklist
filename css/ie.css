@@ -1,0 +1,19 @@
+/*  
+	Copyright (c) 2009, LoveMachine Inc.
+    All Rights Reserved. 
+    http://www.lovemachineinc.com
+*/
+/*background-image: none;
+filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=images/content-box.png, sizingMethod='crop');*/
+#left {
+	background-image: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=images/left.png, sizingMethod='crop');
+}
+#right {
+	background-image: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=images/right.png, sizingMethod='crop');
+}
+#logo {
+	background-image: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=images/logo.png, sizingMethod='crop');
+}
