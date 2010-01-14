@@ -7,10 +7,6 @@
 
 include("config.php");
 include("class.session_handler.php");
-include("check_session.php");
-include("functions.php");
-
-if (!checkReferer()) die;
 
 $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
 if (empty($item))

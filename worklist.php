@@ -8,13 +8,11 @@ ob_start();
 
 include("config.php");
 include("class.session_handler.php");
-include("check_session.php");
 include_once("functions.php");
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 
-//error_log(var_export($_POST,1));
-if (isset($_POST['save'])) {
+if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     $args = array('id', 'summary', 'value', 'contract', 'expense', 'status', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -38,7 +36,7 @@ if (isset($_POST['save'])) {
     }
 
     $rt = mysql_query($query);
-} else if (isset($_POST['delete']) && !empty($_POST['id'])) {
+} else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['id'])) {
     mysql_query("delete from ".WORKLIST." where id='".intval($_POST['id'])."'");
 }
 
@@ -121,15 +119,20 @@ include("head.html"); ?>
            obj.style.borderColor="#d0d0d0";
     }
 
-    function GetWorklist(page, update) {
+    function ClearSelection () {
+        if (document.selection)
+            document.selection.empty();
+        else if (window.getSelection)
+            window.getSelection().removeAllRanges();
+    }
+
+    function GetWorklist(npage, update) {
     $.ajax({
         type: "POST",
         url: 'getworklist.php',
-        data: 'page='+page+'&filter='+$("#search-filter").val(),
+        data: 'page='+npage+'&filter='+$("#search-filter").val(),
         dataType: 'json',
         success: function(json) {
-            if (json == 'expired') { window.location = "./index.php?expired=1"; return; }
-
             page = json[0][1]|0;
             var cPages = json[0][2]|0;
 
@@ -181,6 +184,18 @@ include("head.html"); ?>
                     $("#edit,#delete").attr('disabled', 'disabled');
                 }
                 return false;
+            });
+
+            $('tr.row-worklist-live').dblclick(function(){
+                $('#popup-edit form input[name="id"]').val(workitem);
+                ClearSelection();
+                <?php if (isset($_SESSION['userid'])) { ?>
+                $('.popup-title').text('Edit Worklist Item');
+                <?php } else { ?>
+                $('.popup-title').text('View Worklist Item');
+                <?php } ?>
+                ShowPopup($('#popup-edit'), true);
+                PopulatePopup(workitem);
             });
 
             if (workitem > 0) {
@@ -310,6 +325,9 @@ include("head.html"); ?>
         });
         $('.popup-body form input[type="submit"]').click(function(){
             var name = $(this).attr('name');
+
+//alert("page: "+page);
+            $(".popup-page-value").val(page);
     
             if (name == "reset") {
                 ResetPopup();
@@ -338,6 +356,7 @@ include("head.html"); ?>
         <div class="popup-body">
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="id" value="0" />
+                <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
 
                 <p><label>Summary<br />
                 <input type="text" name="summary" class="text-field" size="48" />
@@ -372,9 +391,13 @@ include("head.html"); ?>
                 <textarea name="notes" size="48" /></textarea>
                 </label></p>
     
+                <?php if (isset($_SESSION['userid'])) { ?>
                 <input type="submit" name="save" value="Save">
                 <input type="submit" name="reset" value="Reset">
                 <input type="submit" name="cancel" value="Cancel">
+                <?php } else { ?>
+                <input type="submit" name="cancel" value="Close">
+                <?php } ?>
             </form>
         </div>
     </div>
@@ -387,6 +410,7 @@ include("head.html"); ?>
         <div class="popup-body">
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="id" value="" />
+                <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
 
                 <p class="popup-delete-summary"></p>
                 <p>Are you sure you want to delete to this work item?</p>
@@ -401,6 +425,7 @@ include("head.html"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
+    <?php if (isset($_SESSION['userid'])) { ?>
     <div id="buttons">
         <p>
             <input type="submit" id="add" name="add" value="Add">
@@ -408,6 +433,7 @@ include("head.html"); ?>
             <input type="submit" id="delete" name="delete" value="Delete" disabled>
         </p>
     </div>
+    <?php } ?>
             
     <div id="search-filter-wrap">
         <p>
@@ -419,6 +445,8 @@ include("head.html"); ?>
             </select>
         </p>
     </div>
+
+    <div style="clear:both"></div>
 
     <table width="100%" class="table-worklist">
         <thead>

@@ -22,7 +22,7 @@ if (!defined("SECURE_SERVER_URL")) define("SECURE_SERVER_URL",SERVER_URL); //Sec
 if (!defined("DB_SERVER"))      define("DB_SERVER", "localhost");
 if (!defined("DB_USER"))        define("DB_USER", "project_tofor");
 if (!defined("DB_PASSWORD"))    define("DB_PASSWORD", "test30");
-if (!defined("DB_NAME"))        define("DB_NAME", "sendlove_dev");
+if (!defined("DB_NAME"))        define("DB_NAME", "worklist_dev");
 
 if (!defined("WORKLIST"))       define("WORKLIST", "worklist");
 if (!defined("USERS"))          define("USERS", "users");

@@ -19,7 +19,7 @@ mysql_select_db(DB_NAME);
 if(isset($_REQUEST['str'])) {
 	$res=mysql_query("select * from ".USERS." where username ='".mysql_real_escape_string(base64_decode($_REQUEST['str']))."' and confirm_string='".mysql_real_escape_string($_REQUEST['cs'])."'");
 	if(mysql_num_rows($res) == 0) {
-		header("Location:index.php");
+		header("Location:login.php");
 		exit;
 	} else {
 		$row=mysql_fetch_array($res);
@@ -35,7 +35,7 @@ if(isset($_REQUEST['str'])) {
 	 }
 	
 } else {
-	header("Location:index.php");
+	header("Location:login.php");
 	exit;
 }
 

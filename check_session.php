@@ -7,7 +7,7 @@ if (empty($_SESSION['username']) || empty($_SESSION['userid']) || empty($_SESSIO
 	unset($_SESSION['userid']);
 	unset($_SESSION['confirm_string']);
 	session_destroy();
-	header("location:index.php?expired=1&redir=".urlencode($_SERVER['REQUEST_URI']));
+	header("location:login.php?expired=1&redir=".urlencode($_SERVER['REQUEST_URI']));
 	exit;
 }
 ?>

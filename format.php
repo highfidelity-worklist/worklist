@@ -8,16 +8,16 @@
 
 <!-- Welcome, login/out -->
        
-        	<div id="welcome">
+            <div id="welcome">
             <?php if ( isset($_SESSION['username'])) {
 
-					if (empty($_SESSION['nickname'])){ ?>
+                    if (empty($_SESSION['nickname'])){ ?>
                         Welcome, <? $_SESSION['username']?> | <a href="logout.php">Logout</a>
-					<?php }else{ ?>
+                    <?php }else{ ?>
                         Welcome, <?php echo $_SESSION['nickname']; ?> | <a href="logout.php">Logout</a>
-					<?php }
-				}else{?>
-						<a href="index.php">Login</a> | <a href="signup.php">Sign Up</a>
+                    <?php }
+                }else{?>
+                        <a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>
                 <?php } ?>
 
                 <div id="tagline">Lend a hand.</div>
@@ -26,19 +26,19 @@
     
     <div id="container">
     
-    	<div id="left"></div>
+        <div id="left"></div>
         
 <!-- MAIN BODY -->
         
         <div id="center">
         
 <!-- LOGO -->
-		
+        
 <!-- Navigation placeholder -->
-            <div id="nav">    				
-			<?php if (isset($_SESSION['username'])) { ?>
+            <div id="nav">                    
+            <?php if (isset($_SESSION['username'])) { ?>
            
-            	<a href="worklist.php">Worklist</a>
+                <a href="worklist.php">Worklist</a>
                 
             <?php } ?>
             </div>

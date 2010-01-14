@@ -10,7 +10,7 @@ function RelativeTime(x){
 
     if (x >= year) { x = (x / year)|0; dformat="yr"; }
     else if (x >= month) { x = (x / month)|0; dformat="mnth"; }
-    else if (x >= day) { x = (x / day)|0; dformat="dy"; }
+    else if (x >= day) { x = (x / day)|0; dformat="day"; }
     else if (x >= hour) { x = (x / hour)|0; dformat="hr"; }
     else if (x >= mins) { x = (x / mins)|0; dformat="min"; }
     else { x |= 0; dformat="sec"; }
