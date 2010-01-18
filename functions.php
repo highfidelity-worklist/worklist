@@ -61,4 +61,33 @@
             return true;
         }
     }
+  //creates new activated user from email(username) and nickname
+  function simpleCreateUser($username, $nickname){
+    $confirm_string = rand();
+    $password = generatePassword();
+    $res = mysql_query("INSERT INTO `".USERS."` ( `username`, `password`, `added`, `nickname`, `confirm`, `confirm_string` ) ".
+	"VALUES ('".mysql_real_escape_string($username)."', '".sha1(mysql_real_escape_string($password))."', NOW(), '".
+	mysql_real_escape_string($nickname)."',
+	1, '$confirm_string' )");
+    return array("user_id" => mysql_insert_id(), "password" => $password);
+  }
+
+  function generatePassword ($length = 8)
+  {
+    $password = "";
+    $possible = "0123456789bcdfghjkmnpqrstvwxyz"; 
+    $i = 0; 
+    // add random characters to $password until $length is reached
+    while ($i < $length) { 
+      // pick a random character from the possible ones
+      $char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+      // we don't want this character if it's already in the password
+      if (!strstr($password, $char)) { 
+	$password .= $char;
+	$i++;
+      }
+
+    }
+    return $password;
+  }
 ?>

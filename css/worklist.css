@@ -27,7 +27,7 @@
 	width: 400px;
 	padding: 0;
 	margin:0;
-	border: 1px solid black;
+	border: 2px solid #ccc;
 	background-color: white;
 	z-index:101;
 	overflow: none;
@@ -35,7 +35,7 @@
 
 .popup-wrap .popup-titlebar
 {
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid #ccc;
     font-size: 1em;
     padding: 2px;
     text-align: left;
@@ -50,7 +50,7 @@
 
 .popup-wrap .popup-titlebar .popup-close
 {
-    border-left: 1px solid black;
+    border-left: 2px solid #ccc;
     font-size: 1.5em;
     font-weight: bold;
     padding: 0px 4px 0 7px;
@@ -88,4 +88,10 @@
 
 .workitem-selected {
     background: #FFD;
+}
+.info-label{
+font-weight: bold;
+}
+.info-label span{
+font-weight:normal;
 }
