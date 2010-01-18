@@ -7,8 +7,6 @@
 
 // These are the items most likely in need of being changed.
 
-define("SERVER_NAME","www.worklist.tbc");
-
 // Where is the SendLove Database?
 define("DB_SERVER", "localhost");
 define("DB_USER", "dbuser");
