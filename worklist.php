@@ -42,12 +42,12 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
 }
 //placing a bid
 if (isset($_POST['bid'])){
-    $args = array('id', 'bidder_id', 'email', 'nickname', 'bid_amount', 'notes');
+    $args = array('id', 'bidder_id', 'email', 'bid_amount','done_by', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
-    mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `nickname`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) VALUES (NULL, '$bidder_id', '$email', '$nickname', '$id', '$bid_amount', NOW(), NULL, '$notes')");
-
+    mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
+			    VALUES (NULL, '$bidder_id', '$email', '$id', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
     //sending email to the owner of worklist item
     $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$id);
     $row = mysql_fetch_assoc($rt);
@@ -55,7 +55,7 @@ if (isset($_POST['bid'])){
     $body =  "<p>New bid was placed for worklist item \"".$row['summary']."\"<br/>";
     $body .= "Details of the bid:<br/>";
     $body .= "Bidder Email: ".$email."<br/>";
-    $body .= "Done By: ".$nickname."<br/>";
+    $body .= "Done By: ".$done_by."<br/>";
     $body .= "Bid Amount: ".$bid_amount."<br/>";
     $body .= "Notes: ".$notes."</p>";
     $body .= "<p>Love,<br/>Worklist</p>";
@@ -77,7 +77,8 @@ if (isset($_POST['accept_bid'])){
       $bidder_id = $user_info['id'];
       }else{
 	//user does not exist so we have to create him with random password
-	$usernew = simpleCreateUser($bid_info['email'], $bid_info['nickname']);
+	$nickname = explode("@", $bid_info['email']);
+	$usernew = simpleCreateUser($bid_info['email'], $nickname[0]);
 	$password = $usernew['password'];
 	$bidder_id = $usernew['user_id'];
 	$new_user = true;
@@ -107,7 +108,10 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
+<link href="css/datepicker.css" rel="stylesheet" type="text/css" >
+<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript">
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
@@ -390,7 +394,7 @@ include("head.html"); ?>
             biditems = json;
             if (!json[1]){
 	      var row = '<tr bgcolor="#FFFFFF" class="row-bidlist-live bidlist-pagination-row" >\
-			  <td colspan="3" style="text-align:center;">No bids yet.</td></tr>';
+			  <td colspan="4" style="text-align:center;">No bids yet.</td></tr>';
 	      $('.table-bidlist tbody').append(row);
 	      return;
 	    } 
@@ -445,9 +449,10 @@ include("head.html"); ?>
         row = '<tr class="row-bidlist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += ' biditem-' + json[0] + '">';
-        row += '<td width="50%">' + pre + json[2] + post + '</td>';
-        row += '<td width="25%">' + pre + json[5] + post + '</td>';
-        row += '<td width="25%">' + pre + RelativeTime(json[9]) + post + '</td></tr>';
+        row += '<td width="30%">' + pre + json[2] + post + '</td>';
+        row += '<td width="20%">' + pre + json[4] + post + '</td>';
+        row += '<td width="20%">' + pre + json[9] + post + '</td>';
+        row += '<td width="20%">' + pre + RelativeTime(json[8]) + post + '</td></tr>';
        $('.table-bidlist tbody').append(row);
     }
 
@@ -460,9 +465,10 @@ include("head.html"); ?>
             success: function(json) {
                 $('.popup-body form input[name="id"]').val(item);
                 $('.popup-body #info-email').text(json[2]);
-                $('.popup-body #info-bid-amount').text(json[5]);
-                $('.popup-body #info-notes').text(json[8]);
-		if(json[9] == user_id){
+                $('.popup-body #info-bid-amount').text(json[4]);
+                $('.popup-body #info-bid-done-by').text(json[9]);
+                $('.popup-body #info-notes').text(json[7]);
+		if(json[8] == user_id){
 		  //adding "Accept" button
 		  $('#popup-bid-info .popup-body form').append('<input type="submit" name="accept_bid" value="Accept">');
 		}
@@ -552,9 +558,11 @@ include("head.html"); ?>
 
     <div id="popup-overlay"></div>
     <div id="popup-edit" class="popup-wrap">
-        <div class="popup-titlebar">
-            <span class="popup-title">Add Worklist Item</span>
-            <span class="popup-close"><a href="#">X</a></span>
+        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+            <span class="popup-title ui-dialog-title">Add worklist item</span>
+            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
+	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+	    </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
@@ -571,15 +579,15 @@ include("head.html"); ?>
                 </label></p>
     
                 <p><label>Value<br />
-                <input type="text" name="value" class="text-field" size="48" />
+                <input type="text" name="value" class="text-field money" />
                 </label></p>
     
                 <p><label>Contract<br />
-                <input type="text" name="contract" class="text-field" size="48" />
+                <input type="text" name="contract" class="text-field money" />
                 </label></p>
     
                 <p><label>Expense<br />
-                <input type="text" name="expense" class="text-field" size="48" />
+                <input type="text" name="expense" class="text-field money" />
                 </label></p>
     
                 <p><label>Status<br />
@@ -606,9 +614,11 @@ include("head.html"); ?>
         </div>
     </div>
     <div id="popup-delete" class="popup-wrap">
-        <div class="popup-titlebar">
-            <span class="popup-title">Delete Worklist Item</span>
-            <span class="popup-close"><a href="#">X</a></span>
+        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+            <span class="popup-title ui-dialog-title">Delete item</span>
+            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
+	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+	    </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
@@ -626,9 +636,11 @@ include("head.html"); ?>
     </div>
     <!-- Popup for placing a bid -->
     <div id="popup-bid" class="popup-wrap">
-        <div class="popup-titlebar">
-            <span class="popup-title">Place your bid</span>
-            <span class="popup-close"><a href="#">X</a></span>
+        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+            <span class="popup-title ui-dialog-title">Place your bid</span>
+            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
+	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+	    </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
@@ -637,6 +649,7 @@ include("head.html"); ?>
 		<tr class="table-hdng">
 		    <td>Email</td>
 		    <td>Bid Amount</td>
+		    <td>Done By</td>
 		    <td>Age</td>
 		</tr>
 		</thead>
@@ -652,11 +665,13 @@ include("head.html"); ?>
                 </label></p>
     
                 <p><label>Bid Amount<br />
-                <input type="text" name="bid_amount" class="text-field" size="48" />
+                <input type="text" name="bid_amount" class="text-field money" size="48" />
                 </label></p>
     
                 <p><label>Done By<br />
-                <input type="text" name="nickname" class="text-field" size="48" />
+                  <input type="text" class="text-field date" name="done_by" value="" size="20" />
+                  <img src="images/Calendar.gif" class="dpButtonCal" onClick="displayDatePicker('done_by', false, 'mdy', '/');" />
+                  <img src="images/transparent.gif" width="30px" height="1" />
                 </label></p>
 
                 <p><label>Notes<br />
@@ -670,9 +685,11 @@ include("head.html"); ?>
 
     <!-- Popup for bid info-->
     <div id="popup-bid-info" class="popup-wrap">
-        <div class="popup-titlebar">
-            <span class="popup-title">Bid details</span>
-            <span class="popup-close"><a href="#">X</a></span>
+        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+            <span class="popup-title ui-dialog-title">Bid details</span>
+            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
+	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+	    </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
@@ -683,6 +700,10 @@ include("head.html"); ?>
 
 	    <p class = "info-label">Bid Amount<br />
 	    <span id="info-bid-amount"></span>
+	    </p>
+
+	    <p class = "info-label">Done By<br />
+	    <span id="info-bid-done-by"></span>
 	    </p>
 
 	    <p class = "info-label">Notes<br />

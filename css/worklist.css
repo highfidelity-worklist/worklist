@@ -43,15 +43,15 @@
 
 .popup-wrap .popup-titlebar .popup-title
 {
-    font-size: 1.5em;
-    font-weight: bold;
+    font-size: 1.3em;
+    font-weight: bold; 
     padding: 2px 2px 2px 8px;
 }
 
 .popup-wrap .popup-titlebar .popup-close
 {
     border-left: 2px solid #ccc;
-    font-size: 1.5em;
+    font-size: 1.3em;
     font-weight: bold;
     padding: 0px 4px 0 7px;
     float: right;
@@ -75,6 +75,17 @@
     font-size: 14px;
     font-family: "Trebuchet MS","Trebuchet",Arial,Helvetica,sans-serif;
     width: 370px;
+}
+
+#popup-edit .popup-body textarea{
+    height: 110px;
+}
+
+.popup-wrap .popup-body input.date {
+    width: 80px;
+}
+.popup-wrap .popup-body input.money {
+    width: 50px;
 }
 
 .popup-wrap .popup-body p

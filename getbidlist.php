@@ -24,7 +24,7 @@ $items = intval($row[0]);
 
 $cPages = ceil($items/$limit); 
 
-$query = "SELECT *, TIMESTAMPDIFF(SECOND, `bid_created`, NOW()) as `delta` FROM `".BIDS. 
+$query = "SELECT *, TIMESTAMPDIFF(SECOND, `bid_created`, NOW()) as `delta`, DATE_FORMAT(`bid_done`, '%m/%d/%Y') FROM `".BIDS. 
          "` WHERE worklist_id=".$worklist_id.
          " ORDER BY `id` DESC LIMIT " . ($page-1)*$limit . ",$limit";
 $rt = mysql_query($query);
