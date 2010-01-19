@@ -47,7 +47,7 @@ if (isset($_POST['bid'])){
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
-			    VALUES (NULL, '$bidder_id', '$email', '$id', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
+                            VALUES (NULL, '$bidder_id', '$email', '$id', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
     //sending email to the owner of worklist item
     $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$id);
     $row = mysql_fetch_assoc($rt);
@@ -76,12 +76,12 @@ if (isset($_POST['accept_bid'])){
       if($user_info = mysql_fetch_assoc($res)){
       $bidder_id = $user_info['id'];
       }else{
-	//user does not exist so we have to create him with random password
-	$nickname = explode("@", $bid_info['email']);
-	$usernew = simpleCreateUser($bid_info['email'], $nickname[0]);
-	$password = $usernew['password'];
-	$bidder_id = $usernew['user_id'];
-	$new_user = true;
+        //user does not exist so we have to create him with random password
+        $nickname = explode("@", $bid_info['email']);
+        $usernew = simpleCreateUser($bid_info['email'], $nickname[0]);
+        $password = $usernew['password'];
+        $bidder_id = $usernew['user_id'];
+        $new_user = true;
       }
     }
 
@@ -101,6 +101,15 @@ if (isset($_POST['accept_bid'])){
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
 }
+
+$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='".$_SESSION['userid']."' and `confirm`='1'");
+$users = array();
+while ($row = mysql_fetch_assoc($rt)) {
+    if (!empty($row['nickname'])) {
+        $users[$row['id']] = $row['nickname'];
+    }
+}
+
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -155,14 +164,14 @@ include("head.html"); ?>
         row += ' workitem-' + json[0] + '">';
         if (prepend) { pre = '<div class="slideDown" style="display:none">'; post = '</div>'; }
         row += '<td width="50%">' + pre + json[1] + post + '</td>';
-	//if the status is BIDDING - add link to show bidding popup
-	if (json[2] == 'BIDDING'){
-	    pre = '<a href="#" class = "bidding-link workitem-' + json[0] + '" >';
-	    post = '</a>';
-	}
+        //if the status is BIDDING - add link to show bidding popup
+        if (json[2] == 'BIDDING'){
+            pre = '<a href="#" class = "bidding-link workitem-' + json[0] + '" >';
+            post = '</a>';
+        }
         row += '<td width="15%">' + pre + json[2] + post + '</td>';
-	pre = '';
-	post = '';
+        pre = '';
+        post = '';
         if (json[3] != '') {
             row += '<td width="20%" class="toolparent">' + pre + json[3] + post + '<span class="tooltip">' + json[4] + '</span>' + '</td>';
         } else {
@@ -203,7 +212,7 @@ include("head.html"); ?>
     $.ajax({
         type: "POST",
         url: 'getworklist.php',
-        data: 'page='+npage+'&filter='+$("#search-filter").val(),
+        data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val(),
         dataType: 'json',
         success: function(json) {
             page = json[0][1]|0;
@@ -234,17 +243,18 @@ include("head.html"); ?>
             lastId = json[1][0];
 
             ToolTip();
-	    $('.bidding-link').click(function(e){
-		var match = $(this).attr('class').match(/workitem-\d+/);
-		var worklist_id = match[0].substr(9);
-		ResetPopup();
-		GetBidlist(worklist_id, 1);
-		$('#popup-bid form input[name="id"]').val(worklist_id);
-		$('#popup-bid form input[name="email"]').val('<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>');
-		$('#popup-bid form input[name="nickname"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
-		ShowPopup($('#popup-bid'));
-		
-	    });
+
+            $('.bidding-link').click(function(e){
+                var match = $(this).attr('class').match(/workitem-\d+/);
+                var worklist_id = match[0].substr(9);
+                ResetPopup();
+                GetBidlist(worklist_id, 1);
+                $('#popup-bid form input[name="id"]').val(worklist_id);
+                $('#popup-bid form input[name="email"]').val('<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>');
+                $('#popup-bid form input[name="nickname"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
+                ShowPopup($('#popup-bid'));
+            });
+
             $('.worklist-pagination-row a').click(function(e){
                 page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                 if (timeoutId) clearTimeout(timeoutId);
@@ -283,7 +293,7 @@ include("head.html"); ?>
             });
 
             if (workitem > 0) {
-		var el = $('.workitem-'+workitem);
+                var el = $('.workitem-'+workitem);
                 if (el.length > 0) {
                     el.addClass('workitem-selected');
                 } else {
@@ -363,7 +373,7 @@ include("head.html"); ?>
     }
 
     function ShowPopup(popup) {
-	    $('#popup-overlay').height($(document).height());
+            $('#popup-overlay').height($(document).height());
             $('#popup-overlay').show();
             popup.css('left', ($('#popup-overlay').width()-popup.width())/2 + 'px');
             popup.css('top', $(document).scrollTop() + ($(window).height()-popup.height())/2 + 'px');
@@ -373,7 +383,7 @@ include("head.html"); ?>
     function HidePopup(popup){
       $('#popup-overlay').hide();
       if(popup){
-	popup.hide();
+        popup.hide();
       }else{
         $('.popup-wrap').hide();
       }
@@ -393,11 +403,11 @@ include("head.html"); ?>
             $('.row-bidlist-live').remove();
             biditems = json;
             if (!json[1]){
-	      var row = '<tr bgcolor="#FFFFFF" class="row-bidlist-live bidlist-pagination-row" >\
-			  <td colspan="4" style="text-align:center;">No bids yet.</td></tr>';
-	      $('.table-bidlist tbody').append(row);
-	      return;
-	    } 
+              var row = '<tr bgcolor="#FFFFFF" class="row-bidlist-live bidlist-pagination-row" >\
+                          <td colspan="4" style="text-align:center;">No bids yet.</td></tr>';
+              $('.table-bidlist tbody').append(row);
+              return;
+            } 
 
             /* Output the bidlist rows. */
             var odd = topIsOdd;
@@ -405,9 +415,9 @@ include("head.html"); ?>
                 AppendBidRow(json[i], odd);
                 odd = !odd;
             }
-	    
             
-	    AppendPagination(page, cPages, 'bidlist');
+            
+            AppendPagination(page, cPages, 'bidlist');
 
             $('.bidlist-pagination-row a').click(function(e){
                 page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
@@ -416,14 +426,14 @@ include("head.html"); ?>
                 return false;
             }); 
 
-	    //show additional popup with bid info 
+            //show additional popup with bid info 
             $('tr.row-bidlist-live').click(function(){
-	      var match = $(this).attr('class').match(/biditem-\d+/);
-	      var bid_id = match[0].substr(8);
-	      ResetBidInfoPopup();
-	      PopulateBidInfoPopup(bid_id);
-	      $('#popup-bid-info form input[name="bid_id"]').val(bid_id);
-	      ShowPopup($('#popup-bid-info'), true);
+              var match = $(this).attr('class').match(/biditem-\d+/);
+              var bid_id = match[0].substr(8);
+              ResetBidInfoPopup();
+              PopulateBidInfoPopup(bid_id);
+              $('#popup-bid-info form input[name="bid_id"]').val(bid_id);
+              ShowPopup($('#popup-bid-info'), true);
             });
 
         },
@@ -468,10 +478,10 @@ include("head.html"); ?>
                 $('.popup-body #info-bid-amount').text(json[4]);
                 $('.popup-body #info-bid-done-by').text(json[9]);
                 $('.popup-body #info-notes').text(json[7]);
-		if(json[8] == user_id){
-		  //adding "Accept" button
-		  $('#popup-bid-info .popup-body form').append('<input type="submit" name="accept_bid" value="Accept">');
-		}
+                if(json[8] == user_id){
+                  //adding "Accept" button
+                  $('#popup-bid-info .popup-body form').append('<input type="submit" name="accept_bid" value="Accept">');
+                }
             },
             error: function(xhdr, status, err) {
             }
@@ -487,7 +497,9 @@ include("head.html"); ?>
         GetWorklist(<?php echo $page?>, false);    
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
-        $("#search-filter").change(function(){
+        $("#search-filter, #user-filter").change(function(){
+            page = 1;
+            if (timeoutId) clearTimeout(timeoutId);
             GetWorklist(page, false);
         });
 
@@ -515,24 +527,24 @@ include("head.html"); ?>
             ShowPopup($('#popup-delete'), true);
         });
 
-	//each "close" button now has it's own callback
-	$('#popup-edit .popup-titlebar .popup-close a').click(function(){
-	  HidePopup($('#popup-edit'));
-	  return false;
-	});
-	$('#popup-delete .popup-titlebar .popup-close a').click(function(){
-	  HidePopup($('#popup-delete'));
-	  return false;
-	});
-	$('#popup-bid .popup-titlebar .popup-close a').click(function(){
-	  HidePopup($('#popup-bid'));
-	  return false;
-	});
-	$('#popup-bid-info .popup-titlebar .popup-close a').click(function(){
-	  //Not hiding overlay
-	  $('#popup-bid-info').hide();
-	  return false;
-	});
+        //each "close" button now has it's own callback
+        $('#popup-edit .popup-titlebar .popup-close a').click(function(){
+          HidePopup($('#popup-edit'));
+          return false;
+        });
+        $('#popup-delete .popup-titlebar .popup-close a').click(function(){
+          HidePopup($('#popup-delete'));
+          return false;
+        });
+        $('#popup-bid .popup-titlebar .popup-close a').click(function(){
+          HidePopup($('#popup-bid'));
+          return false;
+        });
+        $('#popup-bid-info .popup-titlebar .popup-close a').click(function(){
+          //Not hiding overlay
+          $('#popup-bid-info').hide();
+          return false;
+        });
 
         $('.popup-body form input[type="submit"]').click(function(){
             var name = $(this).attr('name');
@@ -561,8 +573,8 @@ include("head.html"); ?>
         <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
             <span class="popup-title ui-dialog-title">Add worklist item</span>
             <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-	    </a></span>
+              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+            </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
@@ -617,8 +629,8 @@ include("head.html"); ?>
         <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
             <span class="popup-title ui-dialog-title">Delete item</span>
             <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-	    </a></span>
+              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+            </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
@@ -639,23 +651,23 @@ include("head.html"); ?>
         <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
             <span class="popup-title ui-dialog-title">Place your bid</span>
             <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-	    </a></span>
+              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+            </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
-	    <table width="100%" class="table-bidlist">
-		<thead>
-		<tr class="table-hdng">
-		    <td>Email</td>
-		    <td>Bid Amount</td>
-		    <td>Done By</td>
-		    <td>Age</td>
-		</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	    </table><br />
+            <table width="100%" class="table-bidlist">
+                <thead>
+                <tr class="table-hdng">
+                    <td>Email</td>
+                    <td>Bid Amount</td>
+                    <td>Done By</td>
+                    <td>Age</td>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table><br />
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="id" value="" />
                 <input type="hidden" name="bidder_id" value="<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : 0; ?>" />
@@ -688,27 +700,27 @@ include("head.html"); ?>
         <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
             <span class="popup-title ui-dialog-title">Bid details</span>
             <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-	      <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-	    </a></span>
+              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
+            </a></span>
             <div class="clear"></div>
         </div>
         <div class="popup-body">
 
-	    <p class = "info-label">Email<br />
-	    <span id="info-email"></span>
-	    </p>
+            <p class = "info-label">Email<br />
+            <span id="info-email"></span>
+            </p>
 
-	    <p class = "info-label">Bid Amount<br />
-	    <span id="info-bid-amount"></span>
-	    </p>
+            <p class = "info-label">Bid Amount<br />
+            <span id="info-bid-amount"></span>
+            </p>
 
-	    <p class = "info-label">Done By<br />
-	    <span id="info-bid-done-by"></span>
-	    </p>
+            <p class = "info-label">Done By<br />
+            <span id="info-bid-done-by"></span>
+            </p>
 
-	    <p class = "info-label">Notes<br />
-	    <span id="info-notes"></span>
-	    </p>
+            <p class = "info-label">Notes<br />
+            <span id="info-notes"></span>
+            </p>
 
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="bid_id" value="" />
@@ -732,7 +744,14 @@ include("head.html"); ?>
             
     <div id="search-filter-wrap">
         <p>
-            <select name="filter" id="search-filter">
+             <select name="ufilter" id="user-filter">
+                <option value="ALL">ALL USERS</option>
+                <option value="<?php echo $_SESSION['userid'] ?>"><?php echo $_SESSION['nickname'] ?></option>
+                <?php foreach ($users as $user_id=>$nickname) { ?>
+                <option value="<?php echo $user_id ?>"><?php echo $nickname ?></option>
+                <?php } ?>
+            </select>
+            <select name="sfilter" id="search-filter">
                 <option value="WORKING/BIDDING">WORKING/BIDDING</option>
                 <option value="ALL">ALL</option>
                 <option value="SKIP">SKIP</option>
