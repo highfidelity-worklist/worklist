@@ -207,10 +207,10 @@ include("head.html"); ?>
 
             $('.row-worklist-live').remove();
             workitems = json;
-            if (!json[1]) return;
+            if (!json[0][0]) return;
 
             /* When updating, find the last first element */
-            for (var lastFirst = 1; update && page == 1 && lastId && lastId != json[lastFirst][0] && lastFirst < json.length; lastFirst++);
+            for (var lastFirst = 1; update && page == 1 && lastId && lastFirst < json.length && lastId != json[lastFirst][0]; lastFirst++);
             lastFirst = Math.max(1, lastFirst - addedRows);
             addedRows = 0;
 
@@ -279,14 +279,13 @@ include("head.html"); ?>
             });
 
             if (workitem > 0) {
-                if (workitem <= json[1][0] && workitem >= json[json[0][0]][0]) {
-                    $('.workitem-'+workitem).addClass('workitem-selected');
+		var el = $('.workitem-'+workitem);
+                if (el.length > 0) {
+                    el.addClass('workitem-selected');
                 } else {
                     workitem = 0;
                 }
             }
-
-
         },
         error: function(xhdr, status, err) {
             $('.row-worklist-live').remove();
