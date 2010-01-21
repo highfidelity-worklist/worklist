@@ -14,7 +14,6 @@ if (empty($item))
 
 $query = "select summary,nickname,value,contract,expense,contract,status,notes from ".WORKLIST. 
          " left join ".USERS." on ".WORKLIST.".owner_id=".USERS.".id where ".WORKLIST.".id='$item'";
-error_log($query);
 $rt = mysql_query($query);
 $row = mysql_fetch_assoc($rt);
 

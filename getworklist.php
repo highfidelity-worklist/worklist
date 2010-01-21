@@ -45,7 +45,7 @@ $cPages = ceil($items/$limit);
 
 $query = "select DISTINCT(".WORKLIST.".id),summary,status,nickname,username,TIMESTAMPDIFF(SECOND,created,NOW()) as delta from ".WORKLIST. 
          " left join ".USERS." on ".WORKLIST.".owner_id=".USERS.".id".
-         " $where order by ".WORKLIST.".created desc limit " . ($page-1)*$limit . ",$limit";
+         " $where order by ".WORKLIST.".priority asc limit " . ($page-1)*$limit . ",$limit";
 $rt = mysql_query($query);
 
 // Construct json for history

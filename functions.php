@@ -61,33 +61,51 @@
             return true;
         }
     }
-  //creates new activated user from email(username) and nickname
-  function simpleCreateUser($username, $nickname){
-    $confirm_string = rand();
-    $password = generatePassword();
-    $res = mysql_query("INSERT INTO `".USERS."` ( `username`, `password`, `added`, `nickname`, `confirm`, `confirm_string` ) ".
-	"VALUES ('".mysql_real_escape_string($username)."', '".sha1(mysql_real_escape_string($password))."', NOW(), '".
-	mysql_real_escape_string($nickname)."',
-	1, '$confirm_string' )");
-    return array("user_id" => mysql_insert_id(), "password" => $password);
-  }
 
-  function generatePassword ($length = 8)
-  {
-    $password = "";
-    $possible = "0123456789bcdfghjkmnpqrstvwxyz"; 
-    $i = 0; 
-    // add random characters to $password until $length is reached
-    while ($i < $length) { 
-      // pick a random character from the possible ones
-      $char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
-      // we don't want this character if it's already in the password
-      if (!strstr($password, $char)) { 
-	$password .= $char;
-	$i++;
-      }
-
+    //creates new activated user from email(username) and nickname
+    function simpleCreateUser($username, $nickname){
+        $confirm_string = rand();
+        $password = generatePassword();
+        $res = mysql_query("INSERT INTO `".USERS."` ( `username`, `password`, `added`, `nickname`, `confirm`, `confirm_string` ) ".
+	    "VALUES ('".mysql_real_escape_string($username)."', '".sha1(mysql_real_escape_string($password))."', NOW(), '".
+	    mysql_real_escape_string($nickname)."',
+	    1, '$confirm_string' )");
+        return array("user_id" => mysql_insert_id(), "password" => $password);
     }
-    return $password;
-  }
+
+    function generatePassword ($length = 8)
+    {
+        $password = "";
+        $possible = "0123456789bcdfghjkmnpqrstvwxyz"; 
+        $i = 0; 
+        // add random characters to $password until $length is reached
+        while ($i < $length) { 
+            // pick a random character from the possible ones
+            $char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+            // we don't want this character if it's already in the password
+            if (!strstr($password, $char)) { 
+	        $password .= $char;
+	        $i++;
+            }
+        }
+        return $password;
+    }
+
+    function postRequest($url, $post_data) {
+        if (!function_exists('curl_init')) {
+            error_log('Curl is not enabled.');
+            return 'error: curl is not enabled.';
+        }
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
+    }
 ?>

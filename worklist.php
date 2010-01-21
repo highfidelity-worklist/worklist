@@ -1,4 +1,5 @@
 <?php 
+//  vim:ts=4:et
 
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved. 
@@ -120,6 +121,7 @@ include("head.html"); ?>
 <link href="css/datepicker.css" rel="stylesheet" type="text/css" >
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript">
@@ -159,9 +161,9 @@ include("head.html"); ?>
         var pre = '', post = '';
         var row;
 
-        row = '<tr class="row-worklist-live ';
+        row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
-        row += ' workitem-' + json[0] + '">';
+        row += '">';
         if (prepend) { pre = '<div class="slideDown" style="display:none">'; post = '</div>'; }
         row += '<td width="50%">' + pre + json[1] + post + '</td>';
         //if the status is BIDDING - add link to show bidding popup
@@ -208,6 +210,22 @@ include("head.html"); ?>
             window.getSelection().removeAllRanges();
     }
 
+    function SelectWorkItem(item) {
+        if (workitem > 0) $('#workitem-'+workitem).removeClass('workitem-selected');
+        var match = item.attr('id').match(/workitem-\d+/);
+        if (match) {
+            workitem = match[0].substr(9);
+            $('#workitem-'+workitem).addClass('workitem-selected');
+        } else {
+            workitem = 0;
+        }
+        if (workitem != 0) {
+            $("#edit,#delete").attr('disabled', '');
+        } else {
+            $("#edit,#delete").attr('disabled', 'disabled');
+        }
+    }
+
     function GetWorklist(npage, update) {
     $.ajax({
         type: "POST",
@@ -245,8 +263,7 @@ include("head.html"); ?>
             ToolTip();
 
             $('.bidding-link').click(function(e){
-                var match = $(this).attr('class').match(/workitem-\d+/);
-                var worklist_id = match[0].substr(9);
+                var worklist_id = $(this).attr('id').substr(9);
                 ResetPopup();
                 GetBidlist(worklist_id, 1);
                 $('#popup-bid form input[name="id"]').val(worklist_id);
@@ -264,19 +281,7 @@ include("head.html"); ?>
             });
 
             $('tr.row-worklist-live').click(function(){
-                if (workitem > 0) $('.workitem-'+workitem).removeClass('workitem-selected');
-                var match = $(this).attr('class').match(/workitem-\d+/);
-                if (match) {
-                    workitem = match[0].substr(9);
-                    $('.workitem-'+workitem).addClass('workitem-selected');
-                } else {
-                    workitem = 0;
-                }
-                if (workitem != 0) {
-                    $("#edit,#delete").attr('disabled', '');
-                } else {
-                    $("#edit,#delete").attr('disabled', 'disabled');
-                }
+                SelectWorkItem($(this));
                 return false;
             });
 
@@ -292,8 +297,35 @@ include("head.html"); ?>
                 PopulatePopup(workitem);
             });
 
+            var startIdx;
+            $('.table-worklist').tableDnD({
+                onDragStart: function(table, row) {
+                    row = $(row);
+                    startIdx = row.parent().children().index(row);
+                    SelectWorkItem(row);
+                },
+                <?php if (isset($_SESSION['userid'])) {?>
+                onDrop: function(table, row) {
+                    row = $(row);
+                    var worklist_id = row.attr('id').substr(9);
+                    var prev_id = 0;
+                    if (row.prev().attr('id')) prev_id = row.prev().attr('id').substr(9);
+                    var bump = (startIdx - row.parent().children().index(row));
+                    if (bump != 0) {
+                        $.ajax({
+                            type: "POST",
+                            url: 'updatepriority.php',
+                            data: 'id='+worklist_id+'&previd='+prev_id+'&bump='+bump,
+                            success: function(json) {
+                           }
+                        });
+                    }
+                }
+                <?php } ?>
+            });
+
             if (workitem > 0) {
-                var el = $('.workitem-'+workitem);
+                var el = $('#workitem-'+workitem);
                 if (el.length > 0) {
                     el.addClass('workitem-selected');
                 } else {
