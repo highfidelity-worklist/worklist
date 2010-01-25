@@ -260,7 +260,7 @@ include("head.html"); ?>
             }
             lastId = json[1][0];
 
-            ToolTip();
+            /* Disabled: ToolTip(); */
 
             $('.bidding-link').click(function(e){
                 var worklist_id = $(this).attr('id').substr(9);

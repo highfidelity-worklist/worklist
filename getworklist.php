@@ -54,7 +54,7 @@ for ($i = 1; $row=mysql_fetch_assoc($rt); $i++)
 {
     if (!empty($row['username'])) {
         $nickname = $row['nickname'];
-        $username = $row['username'];
+        $username = ''; //tcrowe: security: disabled for now. $row['username'];
     } else {
         $nickname = $username = '';
     }
