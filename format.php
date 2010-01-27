@@ -38,8 +38,8 @@
             <div id="nav">                    
             <?php if (isset($_SESSION['username'])) { ?>
            
-                <a href="worklist.php">Worklist</a>
-                
+                <a href="worklist.php">Worklist</a> | 
+                <a href="settings.php">Settings</a>                
             <?php } ?>
             </div>
 <!-- END Navigation placeholder -->
