@@ -27,14 +27,11 @@ if (!defined("DB_NAME"))        define("DB_NAME", "worklist_dev");
 if (!defined("WORKLIST"))       define("WORKLIST", "worklist");
 if (!defined("USERS"))          define("USERS", "users");
 if (!defined("BIDS"))          define("BIDS", "bids");
+if (!defined("FEES"))          define("FEES", "fees");
 
 if (!defined("SALT"))           define("SALT", "WORKLIST");
 if (!defined("SESSION_EXPIRE")) define("SESSION_EXPIRE", 1440);
 if (!defined("REQUIRELOGINAFTERCONFIRM")) define("REQUIRELOGINAFTERCONFIRM", 1);
-
-if (!defined("JOURNAL_API_URL"))     define("JOURNAL_API_URL", "https://dev.sendlove.us/journal/add.php");
-if (!defined("JOURNAL_API_USER"))    define("JOURNAL_API_USER", "api_work@dev.sendlove.us");
-if (!defined("JOURNAL_API_PWD"))     define("JOURNAL_API_PWD", "journalpwd");
 
 // Refresh interval for ajax updates of the history table (in seconds)
 if (!defined("AJAX_REFRESH"))   define("AJAX_REFRESH", 30);

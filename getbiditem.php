@@ -1,9 +1,8 @@
 <?php
-//  Copyright (c) 2009, LoveMachine Inc.  
+//  Copyright (c) 2010, LoveMachine Inc.  
 //  All Rights Reserved.  
 //  http://www.lovemachineinc.com
 
-// AJAX request from ourselves to retrieve history
 
 include("config.php");
 include("class.session_handler.php");

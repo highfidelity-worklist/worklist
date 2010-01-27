@@ -255,6 +255,7 @@ table {
 	border-color: #aaa;
 	border-collapse: collapse;
 	background-color: white;
+	font-family: "Trebuchet MS","Trebuchet",Arial,Helvetica,sans-serif;
 }
 table th {
 	border-width: 1px;

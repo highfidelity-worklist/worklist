@@ -15,7 +15,7 @@ include_once("send_email.php");
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 
 if (isset($_SESSION['userid']) && isset($_POST['save'])) {
-    $args = array('id', 'summary', 'value', 'contract', 'expense', 'status', 'notes');
+    $args = array('id', 'summary', 'status', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
@@ -30,11 +30,11 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     }
 
     if (!empty($_POST['id'])) {
-        $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id', value='$value',".
-            " contract='$contract', expense='$expense', status='$status', notes='$notes' where id='$id'";
+        $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id',
+	status='$status', notes='$notes' where id='$id'";
     } else {
-        $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, value, contract, expense, status, notes, created ) ".
-            "values ( '$summary', '$creator_id', '$owner_id', '$value', '$contract', '$expense', '$status', '$notes', now() )";
+        $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, notes, created ) ".
+            "values ( '$summary', '$creator_id', '$owner_id', '$status', '$notes', now() )";
     }
 
     $rt = mysql_query($query);
@@ -49,6 +49,7 @@ if (isset($_POST['bid'])){
     }
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
                             VALUES (NULL, '$bidder_id', '$email', '$id', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
+
     //sending email to the owner of worklist item
     $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$id);
     $row = mysql_fetch_assoc($rt);
@@ -62,6 +63,7 @@ if (isset($_POST['bid'])){
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($row['username'], $subject, $body);
 }
+
 //accepting a bid
 if (isset($_POST['accept_bid'])){
     $new_user = false;
@@ -86,7 +88,11 @@ if (isset($_POST['accept_bid'])){
       }
     }
 
-    mysql_unbuffered_query("UPDATE `worklist_dev`.`worklist` SET `owner_id` =  '$bidder_id', `contract` = ".$bid_info['bid_amount'].", `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
+//changing owner of the job
+    mysql_unbuffered_query("UPDATE `worklist` SET `owner_id` =  '$bidder_id', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
+
+//adding bid amount to list of fees
+    mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '$bidder_id', 'Accepted Bid', NOW(), '0')");
 
     //sending email to the bidder 
     $rt = mysql_query("SELECT `nickname`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$bid_info['worklist_id']);
@@ -103,7 +109,17 @@ if (isset($_POST['accept_bid'])){
     sl_send_email($bid_info['email'], $subject, $body);
 }
 
-$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='".$_SESSION['userid']."' and `confirm`='1'");
+//adding fee to fees table
+if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){
+    $args = array('id', 'fee_amount', 'fee_desc');
+    foreach ($args as $arg) {
+        $$arg = mysql_real_escape_string($_POST[$arg]);
+    }
+  mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$id', '$fee_amount', ".$_SESSION['userid'].", '$fee_desc', NOW(), '0')");
+}
+
+$userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
+$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='$userid' and `confirm`='1'");
 $users = array();
 while ($row = mysql_fetch_assoc($rt)) {
     if (!empty($row['nickname'])) {
@@ -124,6 +140,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript">
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
     var lastId;
@@ -137,7 +154,7 @@ include("head.html"); ?>
 
     function AppendPagination(page, cPages, table)
     {
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="4" style="text-align:center;">Pages : &nbsp;';
+        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="5" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) { 
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;'; 
         } 
@@ -168,18 +185,31 @@ include("head.html"); ?>
         row += '<td width="50%">' + pre + json[1] + post + '</td>';
         //if the status is BIDDING - add link to show bidding popup
         if (json[2] == 'BIDDING'){
-            pre = '<a href="#" class = "bidding-link workitem-' + json[0] + '" >';
+            pre = '<a href="#" class = "bidding-link" id = "workitem-' + json[0] + '" >';
             post = '</a>';
         }
-        row += '<td width="15%">' + pre + json[2] + post + '</td>';
+        row += '<td width="10%">' + pre + json[2] + post + '</td>';
         pre = '';
         post = '';
         if (json[3] != '') {
-            row += '<td width="20%" class="toolparent">' + pre + json[3] + post + '<span class="tooltip">' + json[4] + '</span>' + '</td>';
+            row += '<td width="15%" class="toolparent">' + pre + json[3] + post + '<span class="tooltip">' + json[4] + '</span>' + '</td>';
         } else {
-            row += '<td width="20%">' + pre + json[3] + post + '</td>';
+            row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
-        row += '<td width="15%">' + pre + RelativeTime(json[5]) + post + '</td></tr>';
+        row += '<td width="15%">' + pre + RelativeTime(json[5]) + post + '</td>';
+	var feebids = 0;
+	if(json[6]){
+	  feebids = json[6];
+	}
+	var bid = 0;
+	if(json[7]){
+	  bid = json[7];
+	}
+	if(json[2] == 'BIDDING'){
+	  feebids = parseFloat(feebids) + parseFloat(bid);  
+	}
+
+	row += '<td width="10%">' + pre + '$' + feebids + post + '</td></tr>';
 
         if (prepend) {
             $(row).prependTo('.table-worklist tbody').find('td div.slideDown').fadeIn(500);
@@ -269,7 +299,7 @@ include("head.html"); ?>
                 $('#popup-bid form input[name="id"]').val(worklist_id);
                 $('#popup-bid form input[name="email"]').val('<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>');
                 $('#popup-bid form input[name="nickname"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
-                ShowPopup($('#popup-bid'));
+		$('#popup-bid').dialog('open');
             });
 
             $('.worklist-pagination-row a').click(function(e){
@@ -293,8 +323,9 @@ include("head.html"); ?>
                 <?php } else { ?>
                 $('.popup-title').text('View Worklist Item');
                 <?php } ?>
-                ShowPopup($('#popup-edit'), true);
                 PopulatePopup(workitem);
+		$('#popup-edit').data('title.dialog', 'Edit Worklist Item');
+		$('#popup-edit').dialog('open');
             });
 
             var startIdx;
@@ -335,7 +366,7 @@ include("head.html"); ?>
         },
         error: function(xhdr, status, err) {
             $('.row-worklist-live').remove();
-            $('.table-worklist').append('<tr class="row-worklist-live rowodd"><td colspan="4" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
+            $('.table-worklist').append('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
             $('#again').click(function(){
                 if (timeoutId) clearTimeout(timeoutId);
                 GetWorklist(page, false);
@@ -384,14 +415,11 @@ include("head.html"); ?>
             success: function(json) {
                 $('.popup-body form input[name="id"]').val(item);
                 $('.popup-body form input[name="summary"]').val(json[0]);
-                $('.popup-body form input[name="summary"]').val(json[0]);
                 $('.popup-body form input[name="owner"]').val(json[1]);
-                $('.popup-body form input[name="value"]').val(json[2]);
-                $('.popup-body form input[name="contract"]').val(json[3]);
-                $('.popup-body form input[name="expense"]').val(json[4]);
-                $('.popup-body form input[name="contract"]').val(json[5]);
-                $('.popup-body form select[name="status"] option[value="'+json[6]+'"]').attr('selected','selected');
-                $('.popup-body form textarea[name="notes"]').val(json[7]);
+                $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
+                $('.popup-body form textarea[name="notes"]').val(json[3]);
+		$('#fees_block').show();
+		GetFeelist(item);
             },
             error: function(xhdr, status, err) {
             }
@@ -400,26 +428,11 @@ include("head.html"); ?>
 
     function ResetPopup() {
         $('.popup-body form input[type="text"]').val('');
-        $('.popup-body form select option').attr('selected', '');
+	$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
+        $('.popup-body form select option[index=0]').attr('selected', 'selected');
         $('.popup-body form textarea').val('');
     }
-
-    function ShowPopup(popup) {
-            $('#popup-overlay').height($(document).height());
-            $('#popup-overlay').show();
-            popup.css('left', ($('#popup-overlay').width()-popup.width())/2 + 'px');
-            popup.css('top', $(document).scrollTop() + ($(window).height()-popup.height())/2 + 'px');
-            popup.show();
-    }
     
-    function HidePopup(popup){
-      $('#popup-overlay').hide();
-      if(popup){
-        popup.hide();
-      }else{
-        $('.popup-wrap').hide();
-      }
-    }
 
 //Most of the js code for implementing bidding capability starts here
     function GetBidlist(worklist_id, npage) {
@@ -465,13 +478,13 @@ include("head.html"); ?>
               ResetBidInfoPopup();
               PopulateBidInfoPopup(bid_id);
               $('#popup-bid-info form input[name="bid_id"]').val(bid_id);
-              ShowPopup($('#popup-bid-info'), true);
+	      $('#popup-bid-info').dialog('open');
             });
 
         },
         error: function(xhdr, status, err) {
             $('.row-bidlist-live').remove();
-            $('.table-bidlist').append('<tr class="row-bidlist-live rowodd"><td colspan="3" align="center">Oops! We couldn\'t find any bid items.  <a id="againbid" href="#">Please try again.</a></td></tr>');
+            $('.table-bidlist').append('<tr class="row-bidlist-live rowodd"><td colspan="4" align="center">Oops! We couldn\'t find any bid items.  <a id="againbid" href="#">Please try again.</a></td></tr>');
             $('#againbid').click(function(e){
                 if (timeoutId) clearTimeout(timeoutId);
                 GetBidlist(worklist_id, page);
@@ -505,14 +518,15 @@ include("head.html"); ?>
             data: 'item='+item,
             dataType: 'json',
             success: function(json) {
-                $('.popup-body form input[name="id"]').val(item);
-                $('.popup-body #info-email').text(json[2]);
-                $('.popup-body #info-bid-amount').text(json[4]);
-                $('.popup-body #info-bid-done-by').text(json[9]);
-                $('.popup-body #info-notes').text(json[7]);
+                $('#popup-bid-info form input[name="id"]').val(item);
+                $('#popup-bid-info #info-email').text(json[2]);
+                $('#popup-bid-info #info-bid-amount').text(json[4]);
+                $('#popup-bid-info #info-bid-done-by').text(json[9]);
+                $('#popup-bid-info #info-notes').text(json[7]);
+		
                 if(json[8] == user_id){
                   //adding "Accept" button
-                  $('#popup-bid-info .popup-body form').append('<input type="submit" name="accept_bid" value="Accept">');
+                  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
                 }
             },
             error: function(xhdr, status, err) {
@@ -521,11 +535,82 @@ include("head.html"); ?>
     }
     
     function ResetBidInfoPopup(){
-      $('#popup-bid-info .popup-body form input[type="submit"]').remove();
+      $('#popup-bid-info form input[type="submit"]').remove();
     }
 //end of code for bidding table
 
+//code for fees table
+    function GetFeelist(worklist_id) {
+    $.ajax({
+        type: "POST",
+        url: 'getfeelist.php',
+        data: 'worklist_id=' + worklist_id,
+        dataType: 'json',
+        success: function(json) {
+
+            $('.row-feelist-live').remove();
+            feeitems = json;
+            if (!json[1]){
+              var row = '<tr bgcolor="#FFFFFF" class="row-feelist-live feelist-total-row" >\
+                          <td colspan="5" style="text-align:center;">No fees yet.</td></tr>';
+              $('.table-feelist tbody').append(row);
+              return;
+            } 
+
+            /* Output the bidlist rows. */
+            var odd = topIsOdd;
+            for (var i = 1; i < json.length; i++) {
+                AppendFeeRow(json[i], odd);
+                odd = !odd;
+            }
+            
+//will row with total here            
+              var row = '<tr bgcolor="#FFFFFF" class="row-feelist-live feelist-total-row" >\
+                          <td colspan="5" style="text-align:center;">Total Fees $' + json[0][0] + '</td></tr>';
+              $('.table-feelist tbody').append(row);
+
+
+        },
+        error: function(xhdr, status, err) {
+            $('.row-feelist-live').remove();
+            $('.table-feelist').append('<tr class="row-feelist-live rowodd"><td colspan="5" align="center">Oops! We couldn\'t find any fees.  <a id="againfee" href="#">Please try again.</a></td></tr>');
+            $('#againfee').click(function(e){
+                GetFeelist(worklist_id);
+                e.stopPropagation();
+                return false;
+            });
+        }
+    });
+    }
+
+    function AppendFeeRow(json, odd)
+    {
+        var pre = '', post = '';
+        var row;
+        row = '<tr class="row-feelist-live ';
+        if (odd) { row += 'rowodd' } else { row += 'roweven' }
+        row += ' feeitem-' + json[0] + '">';
+        row += '<td>' + pre + json[2] + post + '</td>';
+        row += '<td>' + pre + json[1] + post + '</td>';
+        row += '<td>' + pre + json[3] + post + '</td>';
+        row += '<td>' + pre + json[4] + post + '</td>';
+	if(json[5] == 0){
+	  var paid = 'No'
+	}else{
+	  var paid = 'Yes';
+	}
+        row += '<td>' + pre + paid + post + '</td></tr>';
+       $('.table-feelist tbody').append(row);
+    }
+
+//end of code for fees table
+
     $(document).ready(function(){
+	$('#popup-edit').dialog({ autoOpen: false, maxWidth: 600, width: 400 });
+	$('#popup-delete').dialog({ autoOpen: false});
+	$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
+	$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
+	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
         GetWorklist(<?php echo $page?>, false);    
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
@@ -536,15 +621,16 @@ include("head.html"); ?>
         });
 
         $('#add').click(function(){
-            $('.popup-title').text('Add Worklist Item');
+	    $('#popup-edit').data('title.dialog', 'Add Worklist Item');
             ResetPopup();
-            ShowPopup($('#popup-edit'), true);
+	    $('#fees_block').hide();
+	    $('#popup-edit').dialog('open');
         });
         $('#edit').click(function(){
             $('#popup-edit form input[name="id"]').val(workitem);
-            $('.popup-title').text('Edit Worklist Item');
-            ShowPopup($('#popup-edit'), true);
             PopulatePopup(workitem);
+	    $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
+	    $('#popup-edit').dialog('open');
         });
         $('#delete').click(function(){
             var summary = '(No summary)';
@@ -556,40 +642,30 @@ include("head.html"); ?>
             }
             $('#popup-delete form input[name="id"]').val(workitem);
             $('.popup-delete-summary').text('"'+summary+'"');
-            ShowPopup($('#popup-delete'), true);
-        });
-
-        //each "close" button now has it's own callback
-        $('#popup-edit .popup-titlebar .popup-close a').click(function(){
-          HidePopup($('#popup-edit'));
-          return false;
-        });
-        $('#popup-delete .popup-titlebar .popup-close a').click(function(){
-          HidePopup($('#popup-delete'));
-          return false;
-        });
-        $('#popup-bid .popup-titlebar .popup-close a').click(function(){
-          HidePopup($('#popup-bid'));
-          return false;
-        });
-        $('#popup-bid-info .popup-titlebar .popup-close a').click(function(){
-          //Not hiding overlay
-          $('#popup-bid-info').hide();
-          return false;
+	    $('#popup-delete').dialog('open');
         });
 
         $('.popup-body form input[type="submit"]').click(function(){
             var name = $(this).attr('name');
 
             $(".popup-page-value").val(page);
-    
-            if (name == "reset") {
+	    
+	    switch(name){
+	      case "add_fee_dialog": 
+		$('#popup-addfee').dialog('open');
+		return false;
+		break;
+	      case "reset":
                 ResetPopup();
                 return false;
-            } else if (name == "cancel") {
-                HidePopup(null);
+		break;
+	      case "cancel":
+		$('#popup-delete').dialog('close');
+		$('#popup-edit').dialog('close');
                 return false;
-            }
+		break;
+	    
+	    }
         });
     });
 </script> 
@@ -599,17 +675,7 @@ include("head.html"); ?>
 </head>
 
 <body>
-
-    <div id="popup-overlay"></div>
-    <div id="popup-edit" class="popup-wrap">
-        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span class="popup-title ui-dialog-title">Add worklist item</span>
-            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-            </a></span>
-            <div class="clear"></div>
-        </div>
-        <div class="popup-body">
+    <div id="popup-edit" title = "Add Worklist Item" class = "popup-body">
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="id" value="0" />
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
@@ -618,26 +684,14 @@ include("head.html"); ?>
                 <input type="text" name="summary" class="text-field" size="48" />
                 </label></p>
 
-                <p><label>Owner<br />
+                <p><label>Runner<br />
                 <input type="text" id="owner" name="owner" class="text-field" size="48" />
                 </label></p>
-    
-                <p><label>Value<br />
-                <input type="text" name="value" class="text-field money" />
-                </label></p>
-    
-                <p><label>Contract<br />
-                <input type="text" name="contract" class="text-field money" />
-                </label></p>
-    
-                <p><label>Expense<br />
-                <input type="text" name="expense" class="text-field money" />
-                </label></p>
-    
+      
                 <p><label>Status<br />
                 <select name="status">
+                    <option value="BIDDING" selected = "selected" >BIDDING</option>
                     <option value="WORKING">WORKING</option>
-                    <option value="BIDDING">BIDDING</option>
                     <option value="SKIP">SKIP</option>
                     <option value="DONE">DONE</option>
                 </select>
@@ -646,26 +700,37 @@ include("head.html"); ?>
                 <p><label>Notes<br />
                 <textarea name="notes" size="48" /></textarea>
                 </label></p>
-    
+		<div id = "fees_block">
+		  Fees
+		  <table width="100%" class="table-feelist">
+		      <thead>
+		      <tr class="table-hdng" >
+			  <td>Who</td>
+			  <td>Amount</td>
+			  <td>Description</td>
+			  <td>Date</td>
+			  <td>Paid</td>
+		      </tr>
+		      </thead>
+		      <tbody>
+		      </tbody>
+		  </table><br />    
                 <?php if (isset($_SESSION['userid'])) { ?>
+		  <p>
+		    <input type="submit" name="add_fee_dialog" value="Add Fee">
+		  </p>
+		</div><!-- end of fees_block -->
                 <input type="submit" name="save" value="Save">
                 <input type="submit" name="reset" value="Reset">
                 <input type="submit" name="cancel" value="Cancel">
                 <?php } else { ?>
+		</div><!-- end of fees_block -->
                 <input type="submit" name="cancel" value="Close">
                 <?php } ?>
             </form>
         </div>
-    </div>
-    <div id="popup-delete" class="popup-wrap">
-        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span class="popup-title ui-dialog-title">Delete item</span>
-            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-            </a></span>
-            <div class="clear"></div>
-        </div>
-        <div class="popup-body">
+
+    <div id="popup-delete" class="popup-body" title = "Delete Worklist Item">
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="id" value="" />
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
@@ -676,21 +741,12 @@ include("head.html"); ?>
                 <input type="submit" name="delete" value="Yes">
                 <input type="submit" name="cancel" value="No">
             </form>
-        </div>
     </div>
     <!-- Popup for placing a bid -->
-    <div id="popup-bid" class="popup-wrap">
-        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span class="popup-title ui-dialog-title">Place your bid</span>
-            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-            </a></span>
-            <div class="clear"></div>
-        </div>
-        <div class="popup-body">
+    <div id="popup-bid" class="popup-body" title = "Place Bid">
             <table width="100%" class="table-bidlist">
                 <thead>
-                <tr class="table-hdng">
+                <tr class="table-hdng" >
                     <td>Email</td>
                     <td>Bid Amount</td>
                     <td>Done By</td>
@@ -724,20 +780,10 @@ include("head.html"); ?>
     
                 <input type="submit" name="bid" value="Place Bid">
             </form>
-        </div>
     </div><!-- end of popup-bid -->
 
     <!-- Popup for bid info-->
-    <div id="popup-bid-info" class="popup-wrap">
-        <div class="popup-titlebar ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span class="popup-title ui-dialog-title">Bid details</span>
-            <span class="popup-close"><a href="#" class = "ui-dialog-titlebar-close ui-corner-all"  role="button" unselectable="on" style="-moz-user-select: none;">
-              <span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">x</span>
-            </a></span>
-            <div class="clear"></div>
-        </div>
-        <div class="popup-body">
-
+    <div id="popup-bid-info" class="popup-body" title = "Bid Info">
             <p class = "info-label">Email<br />
             <span id="info-email"></span>
             </p>
@@ -754,11 +800,27 @@ include("head.html"); ?>
             <span id="info-notes"></span>
             </p>
 
-            <form name="popup-form" action="" method="post">
+            <form name = "popup-form" id = "popup-form" action="" method="post">
                 <input type="hidden" name="bid_id" value="" />
             </form>
-        </div>
     </div><!-- end of popup-bid-info -->
+
+    <!-- Popup for adding fee-->
+    <div id="popup-addfee" class="popup-body" title = "Add Fee">
+            <form name="popup-form" action="" method="post">
+                <input type="hidden" name="id" value="" />
+
+                <p><label>Amount<br />
+		  <input type="text" name="fee_amount" class="text-field money" size="48" />
+                </label></p>
+
+                <p><label>Description<br />
+		  <input type="text" name="fee_desc" class="text-field" size="48" />
+                </label></p>
+
+		<input type="submit" name="add_fee" value="Add Fee">
+            </form>
+    </div><!-- end of popup-addfee -->
 
 <?php include("format.php"); ?>
 
@@ -778,7 +840,14 @@ include("head.html"); ?>
         <p>
              <select name="ufilter" id="user-filter">
                 <option value="ALL">ALL USERS</option>
-                <option value="<?php echo $_SESSION['userid'] ?>"><?php echo $_SESSION['nickname'] ?></option>
+<?php 
+    if(isset($_SESSION['userid'])){
+	echo '
+  <option value="'.$_SESSION['userid'].'">'.$_SESSION['nickname'].'</option>
+
+';
+    } 
+?>
                 <?php foreach ($users as $user_id=>$nickname) { ?>
                 <option value="<?php echo $user_id ?>"><?php echo $nickname ?></option>
                 <?php } ?>
@@ -801,6 +870,7 @@ include("head.html"); ?>
             <td>Status</td>
             <td>Who</td>
             <td>Age</td>
+            <td>Fees/Bids</td>
         </tr>
         </thead>
         <tbody>

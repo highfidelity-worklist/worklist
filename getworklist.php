@@ -43,9 +43,15 @@ $items = intval($row[0]);
 
 $cPages = ceil($items/$limit); 
 
-$query = "select DISTINCT(".WORKLIST.".id),summary,status,nickname,username,TIMESTAMPDIFF(SECOND,created,NOW()) as delta from ".WORKLIST. 
-         " left join ".USERS." on ".WORKLIST.".owner_id=".USERS.".id".
-         " $where order by ".WORKLIST.".priority asc limit " . ($page-1)*$limit . ",$limit";
+//mega-query with total fees and latest bid for the worklist item
+$query = "SELECT `".WORKLIST."`.`id`, `summary`, `status`, `nickname`, `username`, TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `total_fees`, `bid_amount`
+          FROM `".WORKLIST."` LEFT JOIN `".USERS."` ON `".WORKLIST."`.`owner_id` = `".USERS."`.`id`  LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `total_fees` 
+          FROM `".FEES."` GROUP BY `worklist_id`) AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id` 
+          LEFT JOIN (SELECT `".BIDS."`.`worklist_id`, `".BIDS."`.`bid_amount` FROM `".BIDS."`, (SELECT MAX(`bid_created`) AS `latest`, `worklist_id` 
+          FROM `".BIDS."` GROUP BY `worklist_id`) AS `latest_bids` WHERE `".BIDS."`.`worklist_id` = `latest_bids`.`worklist_id` 
+          AND `".BIDS."`.`bid_created` = `latest_bids`.`latest`) AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id` $where
+          ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
+
 $rt = mysql_query($query);
 
 // Construct json for history
@@ -58,7 +64,7 @@ for ($i = 1; $row=mysql_fetch_assoc($rt); $i++)
     } else {
         $nickname = $username = '';
     }
-    $worklist[] = array($row['id'], $row['summary'], $row['status'], $nickname, $username, $row['delta']);
+    $worklist[] = array($row['id'], $row['summary'], $row['status'], $nickname, $username, $row['delta'], $row['total_fees'], $row['bid_amount']);
 }
                       
 $json = json_encode($worklist);

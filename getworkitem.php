@@ -12,11 +12,10 @@ $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
 if (empty($item))
     return;
 
-$query = "select summary,nickname,value,contract,expense,contract,status,notes from ".WORKLIST. 
-         " left join ".USERS." on ".WORKLIST.".owner_id=".USERS.".id where ".WORKLIST.".id='$item'";
+$query = "SELECT `summary`, `nickname`, `status`, `notes` FROM ".WORKLIST. 
+         " LEFT JOIN ".USERS." ON ".WORKLIST.".`owner_id` = ".USERS.".`id` WHERE ".WORKLIST.".id = '$item'";
 $rt = mysql_query($query);
 $row = mysql_fetch_assoc($rt);
 
-$json = json_encode(array($row['summary'], $row['nickname'], $row['value'], $row['contract'],
-                         $row['expense'], $row['contract'], $row['status'], $row['notes']));
+$json = json_encode(array($row['summary'], $row['nickname'], $row['status'], $row['notes']));
 echo $json;     
