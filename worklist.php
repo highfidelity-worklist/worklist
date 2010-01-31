@@ -15,7 +15,7 @@ include_once("send_email.php");
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 
 if (isset($_SESSION['userid']) && isset($_POST['save'])) {
-    $args = array('id', 'summary', 'status', 'notes');
+    $args = array('itemid', 'summary', 'status', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
@@ -29,29 +29,29 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
         $owner_id = $row['id'];
     }
 
-    if (!empty($_POST['id'])) {
+    if (!empty($_POST['itemid'])) {
         $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id',
-	status='$status', notes='$notes' where id='$id'";
+	status='$status', notes='$notes' where id='$itemid'";
     } else {
         $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, notes, created ) ".
             "values ( '$summary', '$creator_id', '$owner_id', '$status', '$notes', now() )";
     }
 
     $rt = mysql_query($query);
-} else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['id'])) {
-    mysql_query("delete from ".WORKLIST." where id='".intval($_POST['id'])."'");
+} else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid'])) {
+    mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
 }
 //placing a bid
 if (isset($_POST['bid'])){
-    $args = array('id', 'bidder_id', 'email', 'bid_amount','done_by', 'notes');
+    $args = array('itemid', 'bidder_id', 'email', 'bid_amount','done_by', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
-                            VALUES (NULL, '$bidder_id', '$email', '$id', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
+                            VALUES (NULL, '$bidder_id', '$email', '$itemid', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
 
     //sending email to the owner of worklist item
-    $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$id);
+    $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
     $row = mysql_fetch_assoc($rt);
     $subject = "new bid: ".$row['summary'];
     $body =  "<p>New bid was placed for worklist item \"".$row['summary']."\"<br/>";
@@ -111,11 +111,11 @@ if (isset($_POST['accept_bid'])){
 
 //adding fee to fees table
 if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){
-    $args = array('id', 'fee_amount', 'fee_desc');
+    $args = array('itemid', 'fee_amount', 'fee_desc');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
-  mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$id', '$fee_amount', ".$_SESSION['userid'].", '$fee_desc', NOW(), '0')");
+  mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', ".$_SESSION['userid'].", '$fee_desc', NOW(), '0')");
 }
 
 $userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
@@ -136,6 +136,7 @@ include("head.html"); ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <link href="css/datepicker.css" rel="stylesheet" type="text/css" >
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
@@ -296,7 +297,7 @@ include("head.html"); ?>
                 var worklist_id = $(this).attr('id').substr(9);
                 ResetPopup();
                 GetBidlist(worklist_id, 1);
-                $('#popup-bid form input[name="id"]').val(worklist_id);
+                $('#popup-bid form input[name="itemid"]').val(worklist_id);
                 $('#popup-bid form input[name="email"]').val('<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>');
                 $('#popup-bid form input[name="nickname"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
 		$('#popup-bid').dialog('open');
@@ -316,7 +317,7 @@ include("head.html"); ?>
             });
 
             $('tr.row-worklist-live').dblclick(function(){
-                $('#popup-edit form input[name="id"]').val(workitem);
+                $('#popup-edit form input[name="itemid"]').val(workitem);
                 ClearSelection();
                 <?php if (isset($_SESSION['userid'])) { ?>
                 $('.popup-title').text('Edit Worklist Item');
@@ -413,7 +414,7 @@ include("head.html"); ?>
             data: 'item='+item,
             dataType: 'json',
             success: function(json) {
-                $('.popup-body form input[name="id"]').val(item);
+                $('.popup-body form input[name="itemid"]').val(item);
                 $('.popup-body form input[name="summary"]').val(json[0]);
                 $('.popup-body form input[name="owner"]').val(json[1]);
                 $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
@@ -436,6 +437,7 @@ include("head.html"); ?>
 
 //Most of the js code for implementing bidding capability starts here
     function GetBidlist(worklist_id, npage) {
+
     $.ajax({
         type: "POST",
         url: 'getbidlist.php',
@@ -454,9 +456,20 @@ include("head.html"); ?>
               return;
             } 
 
+            var confirmed = false;
+
             /* Output the bidlist rows. */
             var odd = topIsOdd;
             for (var i = 1; i < json.length; i++) {
+                if (npage == 1 && json[i][2] == "<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>")
+                    if (!confirmed && !confirm("You have already placed a bid, do you want to place a new one?"))
+                    {
+                        $('#popup-bid').dialog('close');
+                        break;
+                    }
+                    else
+                        confirmed = true;
+
                 AppendBidRow(json[i], odd);
                 odd = !odd;
             }
@@ -518,7 +531,7 @@ include("head.html"); ?>
             data: 'item='+item,
             dataType: 'json',
             success: function(json) {
-                $('#popup-bid-info form input[name="id"]').val(item);
+                $('#popup-bid-info form input[name="itemid"]').val(item);
                 $('#popup-bid-info #info-email').text(json[2]);
                 $('#popup-bid-info #info-bid-amount').text(json[4]);
                 $('#popup-bid-info #info-bid-done-by').text(json[9]);
@@ -627,7 +640,7 @@ include("head.html"); ?>
 	    $('#popup-edit').dialog('open');
         });
         $('#edit').click(function(){
-            $('#popup-edit form input[name="id"]').val(workitem);
+            $('#popup-edit form input[name="itemid"]').val(workitem);
             PopulatePopup(workitem);
 	    $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
 	    $('#popup-edit').dialog('open');
@@ -640,7 +653,7 @@ include("head.html"); ?>
                     break;
                 }
             }
-            $('#popup-delete form input[name="id"]').val(workitem);
+            $('#popup-delete form input[name="itemid"]').val(workitem);
             $('.popup-delete-summary').text('"'+summary+'"');
 	    $('#popup-delete').dialog('open');
         });
@@ -676,13 +689,19 @@ include("head.html"); ?>
 
 <body>
     <div id="popup-edit" title = "Add Worklist Item" class = "popup-body">
-            <form name="popup-form" action="" method="post">
-                <input type="hidden" name="id" value="0" />
+            <form name="popup-form" id="popup-form-edit" action="" method="post">
+                <input type="hidden" name="itemid" value="0" />
+
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
 
                 <p><label>Summary<br />
-                <input type="text" name="summary" class="text-field" size="48" />
+                <input type="text" name="summary" id="summary" class="text-field" size="48" />
                 </label></p>
+
+                <script type="text/javascript">
+                    var summary = new LiveValidation('summary',{ onlyOnSubmit: true });
+                        summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                </script>
 
                 <p><label>Runner<br />
                 <input type="text" id="owner" name="owner" class="text-field" size="48" />
@@ -732,7 +751,7 @@ include("head.html"); ?>
 
     <div id="popup-delete" class="popup-body" title = "Delete Worklist Item">
             <form name="popup-form" action="" method="post">
-                <input type="hidden" name="id" value="" />
+                <input type="hidden" name="itemid" value="" />
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
 
                 <p class="popup-delete-summary"></p>
@@ -757,22 +776,39 @@ include("head.html"); ?>
                 </tbody>
             </table><br />
             <form name="popup-form" action="" method="post">
-                <input type="hidden" name="id" value="" />
+                <input type="hidden" name="itemid" value="" />
                 <input type="hidden" name="bidder_id" value="<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : 0; ?>" />
 
                 <p><label>Your Email<br />
-                <input type="text" name="email" class="text-field" size="48" />
+                <input type="text" name="email" id="bid_email" class="text-field" size="48" />
                 </label></p>
     
                 <p><label>Bid Amount<br />
-                <input type="text" name="bid_amount" class="text-field money" size="48" />
+                <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
                 </label></p>
     
                 <p><label>Done By<br />
-                  <input type="text" class="text-field date" name="done_by" value="" size="20" />
+                  <input type="text" class="text-field date" name="done_by" id="done_by" value="" size="20" />
                   <img src="images/Calendar.gif" class="dpButtonCal" onClick="displayDatePicker('done_by', false, 'mdy', '/');" />
-                  <img src="images/transparent.gif" width="30px" height="1" />
+                  <img src="images/transparent.gif" width="30px" height="1" id="done_by_button"/>
                 </label></p>
+
+                <script type="text/javascript">
+                    // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                    var regex_bid = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+
+                    var bid_email = new LiveValidation('bid_email',{ onlyOnSubmit: true });
+                        bid_email.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+
+                    var bid_amount = new LiveValidation('bid_amount',{ onlyOnSubmit: true });
+                        bid_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                        bid_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
+
+                    var done_by = new LiveValidation('done_by',{ insertAfterWhatNode: 'done_by_button', onlyOnSubmit: true });
+                        done_by.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                        done_by.add( Validate.Format, { pattern: regex_date, failureMessage: "Invalid Input!" });
+                </script>
 
                 <p><label>Notes<br />
                 <textarea name="notes" size="48" /></textarea>
@@ -807,16 +843,28 @@ include("head.html"); ?>
 
     <!-- Popup for adding fee-->
     <div id="popup-addfee" class="popup-body" title = "Add Fee">
-            <form name="popup-form" action="" method="post">
-                <input type="hidden" name="id" value="" />
+            <form name="popup-form" id="popup-form-addfee" action="" method="post">
+                <input type="hidden" name="itemid" value="" />
 
                 <p><label>Amount<br />
-		  <input type="text" name="fee_amount" class="text-field money" size="48" />
+		  <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />
                 </label></p>
 
                 <p><label>Description<br />
-		  <input type="text" name="fee_desc" class="text-field" size="48" />
+		  <input type="text" name="fee_desc" id="fee_desc" class="text-field" size="48" />
                 </label></p>
+
+                <script type="text/javascript">
+                    // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                    var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+
+                    var fee_amount = new LiveValidation('fee_amount',{ onlyOnSubmit: true });
+                        fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                        fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
+
+                    var fee_desc = new LiveValidation('fee_desc',{ onlyOnSubmit: true });
+                        fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                </script>
 
 		<input type="submit" name="add_fee" value="Add Fee">
             </form>
