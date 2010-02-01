@@ -39,7 +39,8 @@
             <?php if (isset($_SESSION['username'])) { ?>
            
                 <a href="worklist.php">Worklist</a> | 
-                <a href="settings.php">Settings</a>                
+                <a href="settings.php">Settings</a> | 
+                <a href="team.php">Team</a>              
             <?php } ?>
             </div>
 <!-- END Navigation placeholder -->

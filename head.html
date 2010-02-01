@@ -10,21 +10,27 @@
 <link href="css/LVstyles.css" rel="stylesheet" type="text/css">
 <link href="css/lightbox-hc.css" rel="stylesheet" type="text/css" >
 <link href="css/jquery.autocomplete.css" rel="stylesheet" type="text/css">
+<link href="css/worklist.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery.watermark.js"></script>
-
+<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
+<script type="text/javascript" src="js/lightbox-hc.js"></script>
 <script type="text/javascript">
-    var wm_to_desc = 'Enter email address here';
-    var wm_for1_desc = 'Enter description here';
 
 	$(function () {
+
 		$('#username').watermark('Email address', {useNative: false});
 		$('#password').watermark('Password', {useNative: false});
 		$('#oldpassword').watermark('Current Password', {useNative: false});
 		$('#newpassword').watermark('New Password', {useNative: false});
 		$('#confirmpassword').watermark('Confirm Password', {useNative: false});
 		$('#nickname').watermark('Nickname', {useNative: false});
+		$('#about').watermark('Tell us about yourself', {useNative: false});
+		$('#contactway').watermark('Skype, email, phone, etc.', {useNative: false});
+		$('#payway').watermark('Contract services, Paypal, etc.', {useNative: false});
+		$('#skills').watermark('Your skills', {useNative: false});
 	});
 
 </script>

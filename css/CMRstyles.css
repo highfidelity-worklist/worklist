@@ -269,7 +269,15 @@ table td {
 	border-style: solid;
 	border-color: #aaa;
 }
-
+table tr:hover{
+	background: #FFD;
+}
+table thead tr:hover{
+	background: url(../images/tbg.jpg) repeat-x bottom left;
+}
+.worklist-pagination-row:hover, .feelist-total-row:hover, .bidlist-pagination-row:hover{
+	background-color: white;
+}
 .table-hdng {
 	height:30px;
 	background: url(../images/tbg.jpg) repeat-x bottom left;
@@ -287,6 +295,7 @@ table td {
 .roweven {
 	background: url(../images/evenrow2.jpg) #fff repeat-x top left;
 }
+
 
 
 #pagination {text-align:center; margin:5px;}
@@ -313,6 +322,7 @@ input#to, input#for1 {
 }
 
 input[type=text]:active, input[type=text]:hover, input[type=text]:focus,
+textarea:active, textarea:hover, textarea:focus,
 input[type=password]:active, input[type=password]:hover, input[type=password]:focus {
 	border: 2px solid #876f6d;
 }
@@ -321,6 +331,7 @@ form input image{border:none;}
 
 .LVspace {height:65px; position:relative;}
 .LVspacelg {height:80px; position:relative;}
+.LVspacehg {height:130px; position:relative;}
 
 .watermark { color: #aaa; font-size:12px; font-style:italic; font-weight:normal; }
 

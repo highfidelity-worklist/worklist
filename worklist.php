@@ -13,6 +13,7 @@ include_once("functions.php");
 include_once("send_email.php");
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
+$is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 
 if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     $args = array('itemid', 'summary', 'status', 'notes');
@@ -42,13 +43,14 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
 }
 //placing a bid
-if (isset($_POST['bid'])){
-    $args = array('itemid', 'bidder_id', 'email', 'bid_amount','done_by', 'notes');
+
+if (isset($_SESSION['userid']) && isset($_POST['bid'])){ //for security make sure user is logged in to post bid
+    $args = array('itemid', 'bid_amount','done_by', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
-                            VALUES (NULL, '$bidder_id', '$email', '$itemid', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
+                            VALUES (NULL, '".$_SESSION['userid']."', '".$_SESSION['username']."', '$itemid', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
 
     //sending email to the owner of worklist item
     $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
@@ -56,7 +58,7 @@ if (isset($_POST['bid'])){
     $subject = "new bid: ".$row['summary'];
     $body =  "<p>New bid was placed for worklist item \"".$row['summary']."\"<br/>";
     $body .= "Details of the bid:<br/>";
-    $body .= "Bidder Email: ".$email."<br/>";
+    $body .= "Bidder Email: ".$_SESSION['username']."<br/>";
     $body .= "Done By: ".$done_by."<br/>";
     $body .= "Bid Amount: ".$bid_amount."<br/>";
     $body .= "Notes: ".$notes."</p>";
@@ -65,52 +67,28 @@ if (isset($_POST['bid'])){
 }
 
 //accepting a bid
-if (isset($_POST['accept_bid'])){
-    $new_user = false;
+if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept bids
     $bid_id = intval($_POST['bid_id']);
     $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
     $bid_info = mysql_fetch_assoc($res);
-    //it's not a guest  
-    if($bid_info['bidder_id'] != 0){
-      $bidder_id = $bid_info['bidder_id']; 
-    }else{
-      //first check if the user exists under different id (maybe he just bidded as a guest but already has an account) or created account after bidding
-      $res = mysql_query("SELECT `id` FROM `".USERS."` WHERE `username`='".$bid_info['email']."'");
-      if($user_info = mysql_fetch_assoc($res)){
-      $bidder_id = $user_info['id'];
-      }else{
-        //user does not exist so we have to create him with random password
-        $nickname = explode("@", $bid_info['email']);
-        $usernew = simpleCreateUser($bid_info['email'], $nickname[0]);
-        $password = $usernew['password'];
-        $bidder_id = $usernew['user_id'];
-        $new_user = true;
-      }
-    }
 
 //changing owner of the job
-    mysql_unbuffered_query("UPDATE `worklist` SET `owner_id` =  '$bidder_id', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
+    mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
 
 //adding bid amount to list of fees
-    mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '$bidder_id', 'Accepted Bid', NOW(), '0')");
+    mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '0')");
 
     //sending email to the bidder 
     $rt = mysql_query("SELECT `nickname`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$bid_info['worklist_id']);
     $row = mysql_fetch_assoc($rt);
     $subject = "bid accepted: ".$row['summary'];
-    $body = "Promised by: ".$row['nickname']."</p>";
-
-    if($new_user){
-    $body .= "<p>New account was created for you. You can login using details below:</p>";
-    $body .= "<p>Username: ".$bid_info['email']."<br/>Password: ".$password."</p>";    
-    }
-
+    $body = "Promised by: ".$_SESSION['nickname']."</p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
 }
 
 //adding fee to fees table
-if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){
+if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can add fees
     $args = array('itemid', 'fee_amount', 'fee_desc');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -118,6 +96,7 @@ if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){
   mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', ".$_SESSION['userid'].", '$fee_desc', NOW(), '0')");
 }
 
+//list of users for filtering
 $userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
 $rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='$userid' and `confirm`='1'");
 $users = array();
@@ -150,8 +129,10 @@ include("head.html"); ?>
     var timeoutId;
     var addedRows = 0;
     var workitem = 0;
+    var cur_user = false;
     var workitems;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
+    var is_runner = <?php echo isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : '"nada"' ?>;
 
     function AppendPagination(page, cPages, table)
     {
@@ -181,11 +162,15 @@ include("head.html"); ?>
 
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
+
+	if(user_id == json[8]){ //is the same person who created the work item
+	  row += ' rowown';
+	}
         row += '">';
         if (prepend) { pre = '<div class="slideDown" style="display:none">'; post = '</div>'; }
         row += '<td width="50%">' + pre + json[1] + post + '</td>';
         //if the status is BIDDING - add link to show bidding popup
-        if (json[2] == 'BIDDING'){
+        if (json[2] == 'BIDDING' && user_id != "nada"){
             pre = '<a href="#" class = "bidding-link" id = "workitem-' + json[0] + '" >';
             post = '</a>';
         }
@@ -242,6 +227,7 @@ include("head.html"); ?>
     }
 
     function SelectWorkItem(item) {
+
         if (workitem > 0) $('#workitem-'+workitem).removeClass('workitem-selected');
         var match = item.attr('id').match(/workitem-\d+/);
         if (match) {
@@ -251,9 +237,9 @@ include("head.html"); ?>
             workitem = 0;
         }
         if (workitem != 0) {
-            $("#edit,#delete").attr('disabled', '');
+            $("#edit, #delete, #view").attr('disabled', '');
         } else {
-            $("#edit,#delete").attr('disabled', 'disabled');
+            $("#edit, #delete, #view").attr('disabled', 'disabled');
         }
     }
 
@@ -301,6 +287,7 @@ include("head.html"); ?>
                 $('#popup-bid form input[name="email"]').val('<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>');
                 $('#popup-bid form input[name="nickname"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
 		$('#popup-bid').dialog('open');
+		return false;
             });
 
             $('.worklist-pagination-row a').click(function(e){
@@ -311,7 +298,22 @@ include("head.html"); ?>
                 return false;
             });
 
+
+
+<?php if (isset($_SESSION['userid'])) {?>
+
             $('tr.row-worklist-live').click(function(){
+		if($(this).hasClass('rowown') || is_runner == 1){
+		  cur_user = true;
+		  $('#edit').show();
+		  $('#delete').show();
+		  $('#view').hide();
+		}else{
+		  cur_user = false;
+		  $('#edit').hide();
+		  $('#delete').hide();
+		  $('#view').show();
+		}
                 SelectWorkItem($(this));
                 return false;
             });
@@ -319,42 +321,49 @@ include("head.html"); ?>
             $('tr.row-worklist-live').dblclick(function(){
                 $('#popup-edit form input[name="itemid"]').val(workitem);
                 ClearSelection();
-                <?php if (isset($_SESSION['userid'])) { ?>
-                $('.popup-title').text('Edit Worklist Item');
-                <?php } else { ?>
-                $('.popup-title').text('View Worklist Item');
-                <?php } ?>
-                PopulatePopup(workitem);
-		$('#popup-edit').data('title.dialog', 'Edit Worklist Item');
+		var edit = false;
+		if(cur_user || is_runner ==1){
+		  edit = true;
+		}
+                PopulatePopup(workitem, edit);
 		$('#popup-edit').dialog('open');
             });
 
-            var startIdx;
-            $('.table-worklist').tableDnD({
-                onDragStart: function(table, row) {
-                    row = $(row);
-                    startIdx = row.parent().children().index(row);
-                    SelectWorkItem(row);
-                },
-                <?php if (isset($_SESSION['userid'])) {?>
-                onDrop: function(table, row) {
-                    row = $(row);
-                    var worklist_id = row.attr('id').substr(9);
-                    var prev_id = 0;
-                    if (row.prev().attr('id')) prev_id = row.prev().attr('id').substr(9);
-                    var bump = (startIdx - row.parent().children().index(row));
-                    if (bump != 0) {
-                        $.ajax({
-                            type: "POST",
-                            url: 'updatepriority.php',
-                            data: 'id='+worklist_id+'&previd='+prev_id+'&bump='+bump,
-                            success: function(json) {
-                           }
-                        });
-                    }
-                }
-                <?php } ?>
+	     if(is_runner == 1){ //only runners can change priorities. I guess :)
+	      var startIdx;
+	      $('.table-worklist').tableDnD({
+		  onDragStart: function(table, row) {
+		      row = $(row);
+		      startIdx = row.parent().children().index(row);
+		      SelectWorkItem(row);
+		  },
+		  onDrop: function(table, row) {
+		      row = $(row);
+		      var worklist_id = row.attr('id').substr(9);
+		      var prev_id = 0;
+		      if (row.prev().attr('id')) prev_id = row.prev().attr('id').substr(9);
+		      var bump = (startIdx - row.parent().children().index(row));
+		      if (bump != 0) {
+			  $.ajax({
+			      type: "POST",
+			      url: 'updatepriority.php',
+			      data: 'id='+worklist_id+'&previd='+prev_id+'&bump='+bump,
+			      success: function(json) {
+			    }
+			  });
+		      }
+		  }
+	      });
+	    }
+<?php }else{ //for guests - bring pop-up on a single click ?>
+            $('tr.row-worklist-live').click(function(e){
+		e.stopPropagation();
+                SelectWorkItem($(this));
+                PopulatePopup(workitem, false);
+		$('#popup-edit').dialog('open');
+                return false;
             });
+<?php } ?>
 
             if (workitem > 0) {
                 var el = $('#workitem-'+workitem);
@@ -407,18 +416,31 @@ include("head.html"); ?>
         });         
     }
 
-    function PopulatePopup(item) {
+    function PopulatePopup(item, edit) {
         $.ajax({
             type: "POST",
             url: 'getworkitem.php',
             data: 'item='+item,
             dataType: 'json',
             success: function(json) {
-                $('.popup-body form input[name="itemid"]').val(item);
-                $('.popup-body form input[name="summary"]').val(json[0]);
-                $('.popup-body form input[name="owner"]').val(json[1]);
-                $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
-                $('.popup-body form textarea[name="notes"]').val(json[3]);
+		if(edit){
+		  $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
+		  $('#for_edit').show();
+		  $('#for_view').hide();
+		  $('.popup-body form input[name="itemid"]').val(item);
+		  $('.popup-body form input[name="summary"]').val(json[0]);
+		  $('.popup-body form input[name="owner"]').val(json[1]);
+		  $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
+		  $('.popup-body form textarea[name="notes"]').val(json[3]);
+		}else{
+		  $('#popup-edit').data('title.dialog', 'View Worklist Item');
+		  $('#for_view').show();
+		  $('#for_edit').hide();
+		  $('.popup-body form #info-summary').text(json[0]);
+		  $('.popup-body form #info-runner').text(json[1]);
+		  $('.popup-body form #info-status').text(json[2]);
+		  $('.popup-body form #info-notes').text(json[3]);
+		}
 		$('#fees_block').show();
 		GetFeelist(item);
             },
@@ -428,6 +450,8 @@ include("head.html"); ?>
     }
 
     function ResetPopup() {
+	$('#for_edit').show();
+	$('#for_view').hide();
         $('.popup-body form input[type="text"]').val('');
 	$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
         $('.popup-body form select option[index=0]').attr('selected', 'selected');
@@ -436,8 +460,10 @@ include("head.html"); ?>
     
 
 //Most of the js code for implementing bidding capability starts here
-    function GetBidlist(worklist_id, npage) {
 
+
+    function GetBidlist(worklist_id, npage) {
+    $("#bid").unbind( "click" );
     $.ajax({
         type: "POST",
         url: 'getbidlist.php',
@@ -456,11 +482,16 @@ include("head.html"); ?>
               return;
             } 
 
-            var confirmed = false;
+            var already_bid = false;
 
             /* Output the bidlist rows. */
             var odd = topIsOdd;
             for (var i = 1; i < json.length; i++) {
+
+            if (json[i][2] == "<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>"){
+	      already_bid = true;
+	    }		
+/*
                 if (npage == 1 && json[i][2] == "<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>")
                     if (!confirmed && !confirm("You have already placed a bid, do you want to place a new one?"))
                     {
@@ -469,7 +500,7 @@ include("head.html"); ?>
                     }
                     else
                         confirmed = true;
-
+*/
                 AppendBidRow(json[i], odd);
                 odd = !odd;
             }
@@ -493,6 +524,16 @@ include("head.html"); ?>
               $('#popup-bid-info form input[name="bid_id"]').val(bid_id);
 	      $('#popup-bid-info').dialog('open');
             });
+	
+	    if(already_bid){  
+	      $('#bid').click(function(){
+		  if (!confirm("You have already placed a bid, do you want to place a new one?"))
+		{
+		    $('#popup-bid').dialog('close');
+		    return false;
+		}
+	      });
+	    }
 
         },
         error: function(xhdr, status, err) {
@@ -537,7 +578,7 @@ include("head.html"); ?>
                 $('#popup-bid-info #info-bid-done-by').text(json[9]);
                 $('#popup-bid-info #info-notes').text(json[7]);
 		
-                if(json[8] == user_id){
+                if(is_runner == 1){
                   //adding "Accept" button
                   $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
                 }
@@ -641,7 +682,7 @@ include("head.html"); ?>
         });
         $('#edit').click(function(){
             $('#popup-edit form input[name="itemid"]').val(workitem);
-            PopulatePopup(workitem);
+            PopulatePopup(workitem, true);
 	    $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
 	    $('#popup-edit').dialog('open');
         });
@@ -656,6 +697,11 @@ include("head.html"); ?>
             $('#popup-delete form input[name="itemid"]').val(workitem);
             $('.popup-delete-summary').text('"'+summary+'"');
 	    $('#popup-delete').dialog('open');
+        });
+        $('#view').click(function(){
+            $('#popup-edit form input[name="id"]').val(workitem);
+            PopulatePopup(workitem, false);
+	    $('#popup-edit').dialog('open');
         });
 
         $('.popup-body form input[type="submit"]').click(function(){
@@ -694,31 +740,50 @@ include("head.html"); ?>
 
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
 
-                <p><label>Summary<br />
-                <input type="text" name="summary" id="summary" class="text-field" size="48" />
-                </label></p>
+		<div id = "for_edit" <?php if(!isset($_SESSION['userid'])){ echo 'style = "display:none;"';}?>>
+		  <p><label>Summary<br />
+		  <input type="text" name="summary" id="summary" class="text-field" size="48" />
+		  </label></p>
 
-                <script type="text/javascript">
+		  <input type="hidden" id="owner" name="owner" /><!-- for now -->
+                  <script type="text/javascript">
                     var summary = new LiveValidation('summary',{ onlyOnSubmit: true });
                         summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                </script>
+                  </script>
 
-                <p><label>Runner<br />
-                <input type="text" id="owner" name="owner" class="text-field" size="48" />
-                </label></p>
-      
-                <p><label>Status<br />
-                <select name="status">
-                    <option value="BIDDING" selected = "selected" >BIDDING</option>
-                    <option value="WORKING">WORKING</option>
-                    <option value="SKIP">SKIP</option>
-                    <option value="DONE">DONE</option>
-                </select>
-                </label></p>
-    
-                <p><label>Notes<br />
-                <textarea name="notes" size="48" /></textarea>
-                </label></p>
+
+  <?php
+  $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+  if ($is_runner) {//if user is a runner - allow to change status ?>      
+		  <p><label>Status<br />
+		  <select name="status">
+		      <option value="BIDDING" selected = "selected" >BIDDING</option>
+		      <option value="WORKING">WORKING</option>
+		      <option value="SKIP">SKIP</option>
+		      <option value="DONE">DONE</option>
+		  </select>
+		  </label></p>
+  <?php }else {?>
+		  <input type="hidden" id="status" name="status" value = "BIDDING" />    
+  <?php }?>
+		  <p><label>Notes<br />
+		  <textarea name="notes" size="48" /></textarea>
+		  </label></p>
+		</div><!-- end div #for-edit-->
+		<div id = "for_view">
+		  <p class = "info-label">Summary<br />
+		  <span id="info-summary"></span>
+		  </p>
+
+		  <p class = "info-label">Satus<br />
+		  <span id="info-status"></span>
+		  </p>
+
+		  <p class = "info-label">Notes<br />
+		  <span id="info-notes"></span>
+		  </p>
+		</div><!-- end div #for_view -->
+                <?php if (isset($_SESSION['userid'])) { ?>
 		<div id = "fees_block">
 		  Fees
 		  <table width="100%" class="table-feelist">
@@ -734,7 +799,7 @@ include("head.html"); ?>
 		      <tbody>
 		      </tbody>
 		  </table><br />    
-                <?php if (isset($_SESSION['userid'])) { ?>
+
 		  <p>
 		    <input type="submit" name="add_fee_dialog" value="Add Fee">
 		  </p>
@@ -743,8 +808,10 @@ include("head.html"); ?>
                 <input type="submit" name="reset" value="Reset">
                 <input type="submit" name="cancel" value="Cancel">
                 <?php } else { ?>
-		</div><!-- end of fees_block -->
-                <input type="submit" name="cancel" value="Close">
+		<div id = "bid-signup">
+		<h3>Want to bid?</h3>
+		<a href="signup.php">Sign up now!</a>
+		</div>
                 <?php } ?>
             </form>
         </div>
@@ -777,11 +844,6 @@ include("head.html"); ?>
             </table><br />
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="itemid" value="" />
-                <input type="hidden" name="bidder_id" value="<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : 0; ?>" />
-
-                <p><label>Your Email<br />
-                <input type="text" name="email" id="bid_email" class="text-field" size="48" />
-                </label></p>
     
                 <p><label>Bid Amount<br />
                 <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
@@ -814,7 +876,7 @@ include("head.html"); ?>
                 <textarea name="notes" size="48" /></textarea>
                 </label></p>
     
-                <input type="submit" name="bid" value="Place Bid">
+                <input type="submit" id="bid" name="bid" value="Place Bid">
             </form>
     </div><!-- end of popup-bid -->
 
@@ -877,10 +939,16 @@ include("head.html"); ?>
     <?php if (isset($_SESSION['userid'])) { ?>
     <div id="buttons">
         <p>
-            <input type="submit" id="add" name="add" value="Add">
-            <input type="submit" id="edit" name="edit" value="Edit" disabled>
-            <input type="submit" id="delete" name="delete" value="Delete" disabled>
-        </p>
+            <input type="submit" id="add" name="add" value="Add" />
+            <input type="submit" id="edit" name="edit" value="Edit" <?php if($_SESSION['is_runner'] == 0){
+echo 'style = "display:none;"';
+}?>/>
+            <input type="submit" id="delete" name="delete" value="Delete" <?php if($_SESSION['is_runner'] == 0){
+echo 'style = "display:none;"';
+}?>/>
+    <?php if ($_SESSION['is_runner'] == 0) { ?>
+	    <input type="submit" id="view" name="view" value="View" disabled = "disabled" />
+    <?php } ?>
     </div>
     <?php } ?>
             

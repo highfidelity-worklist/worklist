@@ -3,6 +3,7 @@
     All Rights Reserved. 
     http://www.lovemachineinc.com
 */
+* :focus { outline: 0; }
 .popup-body{
 	display: none;
 }
@@ -41,12 +42,37 @@
     padding: 4px;
 }
 
+.table-userlist tr:hover{
+    cursor: pointer;
+}
+.table-userlist thead tr:hover{
+    cursor: default;
+}
+
+.rowown {
+    background: #FFCC99;
+}
 .workitem-selected {
     background: #FFD;
 }
+
 .info-label{
 font-weight: bold;
 }
 .info-label span{
 font-weight:normal;
+}
+#bid-signup{
+text-align: center;
+}
+#bid-signup a{
+color:#98AAB2;
+}
+.left-col{
+float: left;
+margin-left: 60px;
+}
+.right-col{
+float: right;
+margin-right: 60px;
 }

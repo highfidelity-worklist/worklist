@@ -24,9 +24,7 @@ if(isset($_REQUEST['str'])) {
 	} else {
 		$row=mysql_fetch_array($res);
 		mysql_query("UPDATE ".USERS." SET confirm = 1 WHERE id = ".$row['id'].";");
-        if (!empty($row['phone']) && !empty($row['country']) && !empty($row['provider']) && !empty($row['confirm_phone'])) {
-            sl_send_phone_confirm_sms($row['id'], $row['phone'], $row['country'], $row['provider'], $row['confirm_phone']);
-        }
+
 		if (REQUIRELOGINAFTERCONFIRM) {
 		    session::init(); // User must log in AFTER confirming (they're not allowed to before)
 		} else {

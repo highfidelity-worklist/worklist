@@ -7,7 +7,7 @@
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  *
- * Revision: $Id: jquery.autocomplete.js 15 2009-08-22 10:30:27Z joern.zaefferer $
+ * Revision: $Id: jquery.autocomplete.js 14 2009-08-22 10:29:29Z joern.zaefferer $
  */
 
 ;(function($) {
@@ -344,14 +344,12 @@ $.Autocompleter = function(input, options) {
 	function request(term, success, failure) {
 		if (!options.matchCase)
 			term = term.toLowerCase();
-		//caching is broken, disabled
-		//var data = cache.load(term);
+		var data = cache.load(term);
 		// recieve the cached data
-		//if (data && data.length) {
-			//success(term, data);
+		if (data && data.length) {
+			success(term, data);
 		// if an AJAX url has been supplied, try loading the data now
-		//} else 
-                if( (typeof options.url == "string") && (options.url.length > 0) ){
+		} else if( (typeof options.url == "string") && (options.url.length > 0) ){
 			
 			var extraParams = {
 				timestamp: +new Date()
