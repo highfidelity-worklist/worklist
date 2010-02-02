@@ -12,6 +12,12 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 
+if(!isset($_SESSION['sfilter']))
+  $_SESSION['sfilter'] = 'ALL';
+
+if(!isset($_SESSION['ufilter']))
+  $_SESSION['ufilter'] = 'ALL';
+
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 
@@ -98,14 +104,6 @@ if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can ad
 
 //list of users for filtering
 $userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
-$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='$userid' and `confirm`='1'");
-$users = array();
-while ($row = mysql_fetch_assoc($rt)) {
-    if (!empty($row['nickname'])) {
-        $users[$row['id']] = $row['nickname'];
-    }
-}
-
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -669,6 +667,12 @@ include("head.html"); ?>
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#search-filter, #user-filter").change(function(){
+
+	    $.ajax({
+	      type: "POST",
+	      url: 'update_session.php',
+	      data: 'sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()});
+
             page = 1;
             if (timeoutId) clearTimeout(timeoutId);
             GetWorklist(page, false);
@@ -954,26 +958,8 @@ echo 'style = "display:none;"';
             
     <div id="search-filter-wrap">
         <p>
-             <select name="ufilter" id="user-filter">
-                <option value="ALL">ALL USERS</option>
-<?php 
-    if(isset($_SESSION['userid'])){
-	echo '
-  <option value="'.$_SESSION['userid'].'">'.$_SESSION['nickname'].'</option>
-
-';
-    } 
-?>
-                <?php foreach ($users as $user_id=>$nickname) { ?>
-                <option value="<?php echo $user_id ?>"><?php echo $nickname ?></option>
-                <?php } ?>
-            </select>
-            <select name="sfilter" id="search-filter">
-                <option value="WORKING/BIDDING">WORKING/BIDDING</option>
-                <option value="ALL">ALL</option>
-                <option value="SKIP">SKIP</option>
-                <option value="DONE">DONE</option>
-            </select>
+      <?php DisplayFilter('ufilter'); ?>
+      <?php DisplayFilter('sfilter'); ?>
         </p>
     </div>
 

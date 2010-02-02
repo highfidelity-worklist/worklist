@@ -62,4 +62,75 @@
         }
     }
 
+
+
+    /* DisplayFilter
+     *
+     *      Purpose:  This function outputs the desired filter with the currently
+     *                active filter (session variable) selected.
+     *   Parameters:  $filter_name [sfilter,ufilter]
+     */
+    function DisplayFilter($filter_name)
+    {
+      $status_array = array('ALL', 'WORKING/BIDDING', 'SKIP', 'DONE');
+
+      if($filter_name == 'sfilter')
+      {
+	echo "<select name='{$filter_name}' id='search-filter'>\n";
+	foreach($status_array as $key => $status)
+	{
+	  echo "  <option value='{$status}'";
+	  if($_SESSION[$filter_name] == $status)
+	  {
+	    echo " selected='selected'>";
+	  }
+	  else
+	  {
+	    echo ">";
+	  }
+	  echo "{$status}</option>\n";
+	}
+	echo "</select>";
+      }
+      
+      if($filter_name == 'ufilter')
+      {
+	echo "<select name='{$filter_name}' id='user-filter'>\n";
+	if($_SESSION[$filter_name] == 'ALL')
+	{
+	  echo "  <option value='ALL' selected='selected'>ALL USERS</option>\n";
+	}
+	else
+	{
+	  echo "  <option value='ALL'>ALL USERS</option>\n";
+	}
+	
+	if(isset($_SESSION['userid']))
+	{
+	  if($_SESSION[$filter_name] == $_SESSION['userid'])
+	  {
+	    echo "<option value='{$_SESSION['userid']}' selected='selected'>{$_SESSION['nickname']}</option>";
+	  }
+	  else
+	  {
+	    echo "<option value='{$_SESSION['userid']}' selected='selected'>{$_SESSION['nickname']}</option>";
+	  }
+	}
+
+	$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='$userid' and `confirm`='1'");
+	while ($row = mysql_fetch_assoc($rt))
+	{
+	  if (!empty($row['nickname']))
+	  {
+	    echo "  <option value='{$row['id']}'";
+	    if($_SESSION[$filter_name] == $row['id'] )
+	    {
+	      echo " selected='selected'";
+	    }
+	    echo ">{$row['nickname']}</option>\n";
+	  }
+	}
+      }
+    }
+
 ?>
