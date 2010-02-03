@@ -965,7 +965,7 @@ echo 'style = "display:none;"';
 	
 		<div style="float:left">
 	
-		<form method="get" action="journal.php" id="searchForm" />
+		<form method="get" action="" id="searchForm" />
 		
 			<div style="padding-top:5px;float:left;padding-right:15px;">
 			

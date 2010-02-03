@@ -41,11 +41,7 @@ $(document).ready(function(){
         $("#loader_img").css("display","block");
         
         GetWorklist(1,false);
-        
-       $("#search_filters").hide();      
-       
-        
-        
+                    
         return false;
     });
      
