@@ -245,9 +245,10 @@ include("head.html"); ?>
     $.ajax({
         type: "POST",
         url: 'getworklist.php',
-        data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val(),
+        data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
         dataType: 'json',
         success: function(json) {
+        	$("#loader_img").css("display","none");
             page = json[0][1]|0;
             var cPages = json[0][2]|0;
 
@@ -376,6 +377,7 @@ include("head.html"); ?>
             $('.row-worklist-live').remove();
             $('.table-worklist').append('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
             $('#again').click(function(){
+            	$("#loader_img").css("display","none");
                 if (timeoutId) clearTimeout(timeoutId);
                 GetWorklist(page, false);
                 e.stopPropagation();
@@ -738,6 +740,7 @@ include("head.html"); ?>
 </head>
 
 <body>
+ <div style="display:none;position:fixed;top:0px;left:0px;width:100%;height:100%;text-align:center;line-height:100%;background:white;opacity:0.7; filter: alpha(opacity = 70);z-index:9998" id="loader_img" ><img src="images/final_loading_big.gif" style="z-index:9999" ></div>
     <div id="popup-edit" title = "Add Worklist Item" class = "popup-body">
             <form name="popup-form" id="popup-form-edit" action="" method="post">
                 <input type="hidden" name="itemid" value="0" />
@@ -956,12 +959,41 @@ echo 'style = "display:none;"';
     </div>
     <?php } ?>
             
-    <div id="search-filter-wrap">
-        <p>
-      <?php DisplayFilter('ufilter'); ?>
-      <?php DisplayFilter('sfilter'); ?>
-        </p>
-    </div>
+<div id="search-filter-wrap">
+    
+ 	<div style="float:right" >
+	
+		<div style="float:left">
+	
+		<form method="get" action="journal.php" id="searchForm" />
+		
+			<div style="padding-top:5px;float:left;padding-right:15px;">
+			
+			<?php DisplayFilter('ufilter'); ?>
+			
+			<?php DisplayFilter('sfilter'); ?>		
+			
+			</div>	
+		
+			<div class="input_box" style="float:right" >
+			
+				<input type="submit" id="submit" style="display:none" />
+				
+				<div style="float:left" ><a  href="#" id="search" ><img src="images/spacer.gif" alt="zoom" height="23" width="24" border="0" title="Search"/></a></div>
+				
+				<input type="text"  size="30" alt="Search" name="query" id="query"/>
+				
+				<div style="float:right" ><a  href="#" id="search_reset" ><img src="images/spacer.gif" alt="zoom" height="23" width="32" border="0" title="Reset" /></a></div>
+
+		</div>
+		
+		</form>
+		
+	</div>
+	
+  </div>  
+  
+</div>    
 
     <div style="clear:both"></div>
 

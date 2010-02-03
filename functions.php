@@ -130,6 +130,7 @@
 	    echo ">{$row['nickname']}</option>\n";
 	  }
 	}
+	echo "</select>";
       }
     }
 
