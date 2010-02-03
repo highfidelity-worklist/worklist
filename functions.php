@@ -113,7 +113,7 @@
 	  }
 	  else
 	  {
-	    echo "<option value='{$_SESSION['userid']}' selected='selected'>{$_SESSION['nickname']}</option>";
+	    echo "<option value='{$_SESSION['userid']}'>{$_SESSION['nickname']}</option>";
 	  }
 	}
 
