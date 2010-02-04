@@ -827,6 +827,12 @@ include("head.html"); ?>
 	    
 	    switch(name){
 	      case "add_fee_dialog": 
+
+		SimplePopup('#popup-addfee',
+			    'Add Fee',
+			    workitem,
+			    [['input', 'itemid', 'keyId', 'eval']]);
+
 		$('#popup-addfee').dialog('open');
 		return false;
 		break;
