@@ -20,6 +20,7 @@ if(!isset($_SESSION['ufilter']))
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+$journal_message = '';
 
 if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_runner == 1)
 {
@@ -56,28 +57,48 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     }
 
     if (!empty($_POST['itemid'])) {
-        $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id',
-	status='$status', notes='$notes' where id='$itemid'";
+        $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id', ".
+            "status='$status', notes='$notes' where id='$itemid'";
+        $journal_message = $_SESSION['nickname'] . " updated $summary";
     } else {
         $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, notes, created ) ".
             "values ( '$summary', '$creator_id', '$owner_id', '$status', '$notes', now() )";
+        $journal_message = $_SESSION['nickname'] . " added $summary";
     }
 
     $rt = mysql_query($query);
 } else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid'])) {
-    mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
-}
-//placing a bid
+    // Get work item summary
+    $query = "select summary from ".WORKLIST." where id='".$_POST['itemid']."'";
+    $rt = mysql_query($query);
+    if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $summary = $row['summary'];    
+    }
 
-echo "BIDDING:\n";
-print_r($_POST);
+    mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
+    $journal_message = $_SESSION['nickname'] . " deleted $summary";
+}
+
+//placing a bid
 if (isset($_SESSION['userid']) && isset($_POST['bid'])){ //for security make sure user is logged in to post bid
     $args = array('itemid', 'bid_amount','done_by', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
+
+    $query = "select summary from ".WORKLIST." where id='$itemid'";
+    $rt = mysql_query($query);
+    if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $summary = $row['summary'];    
+    }
+
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
                             VALUES (NULL, '".$_SESSION['userid']."', '".$_SESSION['username']."', '$itemid', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
+ 
+    // Journal notification
+    $journal_message = $_SESSION['nickname'] . " bid $bid_amount on $summary";
 
     //sending email to the owner of worklist item
     $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
@@ -98,12 +119,30 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     $bid_id = intval($_POST['bid_id']);
     $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
     $bid_info = mysql_fetch_assoc($res);
+error_log(var_export($bid_info,1));
 
-//changing owner of the job
+    // Get work item summary
+    $query = "select summary from ".WORKLIST." where id='{$bid_info['worklist_id']}'";
+    $rt = mysql_query($query);
+    if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $summary = $row['summary'];    
+    }
+
+    // Get bidder nickname
+    $res = mysql_query("select nickname from ".USERS." where id='{$bid_info['bidder_id']}'");
+    if ($res && ($row = mysql_fetch_assoc($res))) {
+        $bidder_nickname = $row['nickname'];
+    }
+
+    //changing owner of the job
     mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
 
-//adding bid amount to list of fees
+    //adding bid amount to list of fees
     mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '0')");
+
+    // Journal notification
+    $journal_message = $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on $summary";
 
     //sending email to the bidder 
     $rt = mysql_query("SELECT `nickname`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$bid_info['worklist_id']);
@@ -120,7 +159,28 @@ if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can ad
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
+
+    // Get work item summary
+    $query = "select summary from ".WORKLIST." where id='$itemid'";
+    $rt = mysql_query($query);
+    if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $summary = $row['summary'];    
+    }
+
   mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', ".$_SESSION['userid'].", '$fee_desc', NOW(), '0')");
+
+    // Journal notification
+    $journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to $summary";
+}
+
+if (!empty($journal_message)) {
+    //sending journal notification
+    $data = array();
+    $data['user'] = JOURNAL_API_USER;
+    $data['pwd'] = sha1(JOURNAL_API_PWD);
+    $data['message'] = $journal_message;
+    $prc = postRequest(JOURNAL_API_URL, $data);
 }
 
 //list of users for filtering
@@ -550,7 +610,7 @@ include("head.html"); ?>
 			'Pay Fee',
 			'getbiditem.php',
 			bid_id,
-			[ ['input', 'itemid', 'keyId', 'eval'],
+			[ ['input', 'bid_id', 'keyId', 'eval'],
 			  ['input', 'info-email2', 'json[2]', 'eval'],
 			  ['span', '#info-email', 'json[2]', 'eval'],
 			  ['span', '#info-bid-amount', 'json[4]', 'eval'],
@@ -725,16 +785,17 @@ include("head.html"); ?>
         });
 
         $('#add').click(function(){
-	    $('#popup-edit').data('title.dialog', 'Add Worklist Item');
+	        $('#popup-edit').data('title.dialog', 'Add Worklist Item');
+            $('#popup-edit form input[name="itemid"]').val('');
             ResetPopup();
-	    $('#fees_block').hide();
-	    $('#popup-edit').dialog('open');
+	        $('#fees_block').hide();
+	        $('#popup-edit').dialog('open');
         });
         $('#edit').click(function(){
             $('#popup-edit form input[name="itemid"]').val(workitem);
             PopulatePopup(workitem, true);
-	    $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
-	    $('#popup-edit').dialog('open');
+	        $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
+	        $('#popup-edit').dialog('open');
         });
         $('#delete').click(function(){
             var summary = '(No summary)';

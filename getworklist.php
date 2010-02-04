@@ -35,10 +35,10 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     $where .= "(creator_id='$ufilter' or owner_id='$ufilter')";
 }
 
-	if($_REQUEST[query]!='' & $_REQUEST[query]!='Search...')
+	if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...')
 	{
 
-	$array=explode(" ",rawurldecode($_REQUEST[query]));
+	$array=explode(" ",rawurldecode($_REQUEST['query']));
 
 		foreach ($array as $item) {
 		

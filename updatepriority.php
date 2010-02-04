@@ -61,7 +61,7 @@ if ($rt) {
 }
 
 if ($rt) {
-    //$bump = intval(($origpri - $newpri) / 2);
+    if ($bump > 0) $bump = "+$bump";
 
     $data = array();
     $data['user'] = JOURNAL_API_USER;

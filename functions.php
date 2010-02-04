@@ -117,7 +117,7 @@
 	  }
 	}
 
-	$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='$userid' and `confirm`='1'");
+	$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$_SESSION['userid']}' and `confirm`='1'");
 	while ($row = mysql_fetch_assoc($rt))
 	{
 	  if (!empty($row['nickname']))
@@ -133,6 +133,29 @@
 
 	echo "</select>";
       }
+    }
+
+    /* postRequest
+     *
+     * Function for performing a CURL request given an url and post data.
+     * Returns the results.
+     */
+    function postRequest($url, $post_data) {
+        if (!function_exists('curl_init')) {
+            error_log('Curl is not enabled.');
+            return 'error: curl is not enabled.';
+        }
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
     }
 
 ?>
