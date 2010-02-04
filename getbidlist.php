@@ -23,7 +23,10 @@ $items = intval($row[0]);
 
 $cPages = ceil($items/$limit); 
 
-$query = "SELECT *, TIMESTAMPDIFF(SECOND, `bid_created`, NOW()) as `delta`, DATE_FORMAT(`bid_done`, '%m/%d/%Y') FROM `".BIDS. 
+$query = "SELECT `id`, `bidder_id`, `email`, `bid_amount`, 
+          TIMESTAMPDIFF(SECOND, `bid_created`, NOW()) AS `delta`, 
+          TIMESTAMPDIFF(SECOND, NOW(), `bid_done`) AS `future_delta`, 
+	  DATE_FORMAT(`bid_done`, '%m/%d/%Y') AS `bid_done` FROM `".BIDS. 
          "` WHERE worklist_id=".$worklist_id.
          " ORDER BY `id` DESC LIMIT " . ($page-1)*$limit . ",$limit";
 $rt = mysql_query($query);
@@ -32,11 +35,7 @@ $rt = mysql_query($query);
 $bidlist = array(array($items, $page, $cPages));
 
 while($row = mysql_fetch_assoc($rt)){
-  $json_row = array(); 
-  foreach($row as $item){
-    $json_row[] = $item;
-  }
-  $bidlist[] = $json_row;
+  $bidlist[] = $row;
 }
                       
 $json = json_encode($bidlist);

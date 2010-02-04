@@ -4,7 +4,7 @@
                 <tr class="table-hdng" >
                     <td>Email</td>
                     <td>Bid Amount</td>
-                    <td>Done By</td>
+                    <td>Done In</td>
                     <td>Age</td>
                 </tr>
                 </thead>

@@ -10,12 +10,13 @@ function RelativeTime(x){
 
     if (x >= year) { x = (x / year)|0; dformat="yr"; }
     else if (x >= month) { x = (x / month)|0; dformat="mnth"; }
-    else if (x >= day) { x = (x / day)|0; dformat="day"; }
+    else if (x >= day*4) { x = (x / day)|0; dformat="day"; }
     else if (x >= hour) { x = (x / hour)|0; dformat="hr"; }
     else if (x >= mins) { x = (x / mins)|0; dformat="min"; }
     else { x |= 0; dformat="sec"; }
     if (x > 1) plural = 's';
-    return x + ' ' + dformat + plural + ' ago';
+    if (x < 0) x = 0;
+    return x + ' ' + dformat + plural;
 }
 
 /*

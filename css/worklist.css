@@ -4,7 +4,7 @@
     http://www.lovemachineinc.com
 */
 * :focus { outline: 0; }
-.popup-body{
+.popup-body, #confirmation{
 	display: none;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .popup-body input.date {
-    width: 80px;
+    width: 130px;
 }
 .popup-body input.money {
     width: 50px;
@@ -76,3 +76,11 @@ margin-left: 60px;
 float: right;
 margin-right: 60px;
 }
+#popup-bid{
+z-index: 1;
+}
+#ui-datepicker-div, #ui-timepicker-div
+{
+    z-index: 1100; 
+}
+

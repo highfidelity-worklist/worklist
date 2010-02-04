@@ -6,19 +6,19 @@
 
 include("config.php");
 include("class.session_handler.php");
+include("functions.php");
 
 $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
 if (empty($item))
     return;
 
-$query = "SELECT `".BIDS."`.* , `".WORKLIST."`.`creator_id`, DATE_FORMAT(`bid_done`, '%m/%d/%Y') FROM `".BIDS."`, ".WORKLIST.
-	  " WHERE `worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`id` = '$item'";
+$query = "SELECT `id`, `bidder_id`, `email`, `bid_amount`, `notes`, UNIX_TIMESTAMP(`bid_done`) AS `done_by`,
+          TIMESTAMPDIFF(SECOND, NOW(), `bid_done`) AS `future_delta`
+          FROM `".BIDS.
+	  "` WHERE `id` = '$item'";
+
 $rt = mysql_query($query);
 $row = mysql_fetch_assoc($rt);
-$json_row = array(); 
-foreach($row as $item){
-  $json_row[] = $item;
-}
-
-$json = json_encode($json_row);
+$row["done_by"] = getUserTime($row['done_by']);
+$json = json_encode($row);
 echo $json;     

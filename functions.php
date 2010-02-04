@@ -43,6 +43,7 @@
         $_SESSION['userid']             = $user_row['id'];
         $_SESSION['confirm_string']     = $user_row['confirm_string'];
         $_SESSION['nickname']           = $user_row['nickname'];
+        $_SESSION['timezone']           = $user_row['timezone'];
         $_SESSION['is_runner']          = intval($user_row['is_runner']);
     }
 
@@ -156,6 +157,22 @@
         curl_close($ch);
 
         return $result;
+    }
+
+   //converts unix timestamp to user's time according to his timezone settings
+  function getUserTime($timestamp){
+    $tz_correction = $_SESSION['timezone'];  
+    if(strpos($_SESSION['timezone'], "+") === 0){
+      $tz_correction = "-".substr($_SESSION['timezone'],1);
+    }elseif(strpos($_SESSION['timezone'], "-") === 0){
+      $tz_correction = "+".substr($_SESSION['timezone'],1);
+    }
+
+    $server_tz = date_default_timezone_get();
+    date_default_timezone_set  ("Europe/London");
+    $userTime = date("m/d/Y h:i a", strtotime(date("Y-m-d H:i", $timestamp)." ".$tz_correction));
+    date_default_timezone_set  ($server_tz);
+    return $userTime;
     }
 
 ?>

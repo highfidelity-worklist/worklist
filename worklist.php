@@ -12,6 +12,7 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 
+
 if(!isset($_SESSION['sfilter']))
   $_SESSION['sfilter'] = 'ALL';
 
@@ -95,7 +96,7 @@ if (isset($_SESSION['userid']) && isset($_POST['bid'])){ //for security make sur
     }
 
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
-                            VALUES (NULL, '".$_SESSION['userid']."', '".$_SESSION['username']."', '$itemid', '$bid_amount', NOW(), '".date("Y-m-d", strtotime($done_by))."', '$notes')");
+                            VALUES (NULL, '".$_SESSION['userid']."', '".$_SESSION['username']."', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$_SESSION['timezone'])."'), '$notes')");
  
     // Journal notification
     $journal_message = $_SESSION['nickname'] . " bid $bid_amount on $summary";
@@ -137,9 +138,10 @@ error_log(var_export($bid_info,1));
 
     //changing owner of the job
     mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
-
+//marking bid as "accepted"
+    mysql_unbuffered_query("UPDATE `bids` SET `accepted` =  1 WHERE `id` = ".$bid_id);
     //adding bid amount to list of fees
-    mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '0')");
+    mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
 
     // Journal notification
     $journal_message = $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on $summary";
@@ -192,14 +194,13 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
-<link href="css/datepicker.css" rel="stylesheet" type="text/css" >
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
-<script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript">
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
     var lastId;
@@ -262,7 +263,7 @@ include("head.html"); ?>
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
-        row += '<td width="15%">' + pre + RelativeTime(json[5]) + post + '</td>';
+        row += '<td width="15%">' + pre + RelativeTime(json[5]) + ' ago' + post + '</td>';
 	var feebids = 0;
 	if(json[6]){
 	  feebids = json[6];
@@ -573,19 +574,9 @@ include("head.html"); ?>
             var odd = topIsOdd;
             for (var i = 1; i < json.length; i++) {
 
-            if (json[i][2] == "<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>"){
+            if (json[i].bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"){
 	      already_bid = true;
 	    }		
-/*
-                if (npage == 1 && json[i][2] == "<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>")
-                    if (!confirmed && !confirm("You have already placed a bid, do you want to place a new one?"))
-                    {
-                        $('#popup-bid').dialog('close');
-                        break;
-                    }
-                    else
-                        confirmed = true;
-*/
                 AppendBidRow(json[i], odd);
                 odd = !odd;
             }
@@ -607,15 +598,15 @@ include("head.html"); ?>
               ResetBidInfoPopup();
 
               AjaxPopup('#popup-bid-info',
-			'Pay Fee',
+			'Bid Info',
 			'getbiditem.php',
 			bid_id,
 			[ ['input', 'bid_id', 'keyId', 'eval'],
-			  ['input', 'info-email2', 'json[2]', 'eval'],
-			  ['span', '#info-email', 'json[2]', 'eval'],
-			  ['span', '#info-bid-amount', 'json[4]', 'eval'],
-			  ['span', '#info-bid-done-by', 'json[9]', 'eval'],
-			  ['span', '#info-notes', 'json[7]', 'eval'] ],
+			  ['input', 'info-email2', 'json.email', 'eval'],
+			  ['span', '#info-email', 'json.email', 'eval'],
+			  ['span', '#info-bid-amount', 'json.bid_amount', 'eval'],
+			  ['span', '#info-bid-done-by', 'json.done_by', 'eval'],
+			  ['span', '#info-notes', 'json.notes', 'eval'] ],
 			function(json) {
 			  if( is_runner==1) 
 			    $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">'); 
@@ -624,13 +615,14 @@ include("head.html"); ?>
 	      $('#popup-bid-info').dialog('open');
             });
 	
-	    if(already_bid){  
-	      $('#bid').click(function(){
+	    if(already_bid){
+	      $('#bid').click(function(e){  
 		  if (!confirm("You have already placed a bid, do you want to place a new one?"))
 		{
 		    $('#popup-bid').dialog('close');
 		    return false;
-		}
+		} 
+
 	      });
 	    }
 
@@ -656,11 +648,11 @@ include("head.html"); ?>
         var row;
         row = '<tr class="row-bidlist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
-        row += ' biditem-' + json[0] + '">';
-        row += '<td width="30%">' + pre + json[2] + post + '</td>';
-        row += '<td width="20%">' + pre + json[4] + post + '</td>';
-        row += '<td width="20%">' + pre + json[9] + post + '</td>';
-        row += '<td width="20%">' + pre + RelativeTime(json[8]) + post + '</td></tr>';
+        row += ' biditem-' + json.id + '">'; //id
+        row += '<td width="30%">' + pre + json.email + post + '</td>';//email
+        row += '<td width="20%">' + pre + json.bid_amount + post + '</td>';
+        row += '<td width="20%">' + pre + RelativeTime(json.future_delta) + post + '</td>';
+        row += '<td width="20%">' + pre + RelativeTime(json.delta) + ' ago' + post + '</td></tr>';
        $('.table-bidlist tbody').append(row);
     }
     
@@ -763,12 +755,29 @@ include("head.html"); ?>
 //end of code for fees table
 
     $(document).ready(function(){
+
 	$('#popup-edit').dialog({ autoOpen: false, maxWidth: 600, width: 400 });
 	$('#popup-delete').dialog({ autoOpen: false});
 	$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 	$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
+
+	$('#done_by').datepicker({  
+	  duration: '',  
+	  showTime: true,  
+	  constrainInput: false,  
+	  stepMinutes: 1,  
+	  stepHours: 1,  
+	  altTimeField: '',  
+	  time24h: false  
+	});
+
+	$('#popup-bid').bind('dialogclose', function(){
+	  $('#ui-datepicker-div').hide();
+	  $('#ui-timepicker-div').hide();
+	});
+
         GetWorklist(<?php echo $page?>, false);    
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
@@ -827,12 +836,6 @@ include("head.html"); ?>
 	    
 	    switch(name){
 	      case "add_fee_dialog": 
-
-		SimplePopup('#popup-addfee',
-			    'Add Fee',
-			    workitem,
-			    [['input', 'itemid', 'keyId', 'eval']]);
-
 		$('#popup-addfee').dialog('open');
 		return false;
 		break;

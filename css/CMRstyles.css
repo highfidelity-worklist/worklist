@@ -265,7 +265,7 @@ table th {
 	border-style: solid;
 	border-color: #aaa;
 }
-table td {
+table td, table th {
 	border-width: 1px;
 	padding: 5px;
 	border-style: solid;
@@ -285,7 +285,7 @@ table thead tr:hover{
 	background: url(../images/tbg.jpg) repeat-x bottom left;
 }
 
-.table-hdng td{
+.table-hdng td, .table-hdng th{
 	color: #6f6f6f;
 	font-size: 13px;
 	font-weight: bold;

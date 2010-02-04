@@ -1,8 +1,8 @@
 .ln-letters, .ln-pages {
     margin-left: auto;
     margin-right: auto;
-display:table;
-overflow:hidden;
+    display:table;
+    overflow:hidden;
 }
 .ln-letters a, .ln-pages a { font-size:1.3em; display:block; float:left; padding:2px 6px; border:1px solid silver; border-right:none; text-decoration:none; }
 .ln-letters a.ln-last, .ln-pages a.ln-last { border-right:1px solid silver; }
@@ -12,5 +12,32 @@ overflow:hidden;
 
 #userlist{
 list-style: none;
+}
+.table-userlist{
+    margin-left: auto;
+    margin-right: auto;
+}
+.table-userlist tbody td{
+  text-align: center;
+}
+.table-userlist .name-col{
+  text-align: left;
+}
+.table-userlist .arrow{
+  float:right;
+  height: 15px;
+  width: 15px;
+  margin-left: 2px;
+}
+.table-userlist .arrow-down{
+  background-image: url(../images/arrow-down.png);
+}
+.table-userlist .arrow-up{
+  background-image: url(../images/arrow-up.png)
+}
+#message{
+    text-align: center;
+    display:none;
+    font-size: 1.3em;
 }
 

@@ -31,18 +31,22 @@ include("head.html"); ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.metadata.js"></script>
 
 <script type="text/javascript">
   var current_letter = '<?php echo $cur_letter; ?>';
   var logged_id = <?php echo $_SESSION['userid']; ?>;
   var runner =  <?php echo $_SESSION['is_runner']; ?>;
-  $(document).ready(function(){
+  var current_page = <?php echo $cur_page; ?>;
+  var current_sortkey = 'nickname';
+  var current_order = false;
+  $(document).ready(function(){ 
 
-  $("#outside").click(function() { //closing userbox on clicking outside of it
+  $('#outside').click(function() { //closing userbox on clicking outside of it
     $('#popup-user-info').dialog('close');
   } );
 
-    fillUserlist(<?php echo $cur_page; ?>);
+    fillUserlist(current_page);
 
   $('.ln-letters a').click(function(){
     var classes = $(this).attr('class').split(' ');
@@ -53,13 +57,54 @@ include("head.html"); ?>
 
   $('#popup-user-info').dialog({ autoOpen: false});
 
+  //table sorting thing
+  $('.table-userlist thead tr th').hover(function(e){
+    if(!$('div', this).hasClass('show-arrow')){
+      if($(this).data('direction')){
+	$('div', this).addClass('arrow-up');
+      }else{
+	$('div', this).addClass('arrow-down');
+      }
+    }
+  }, function(e){
+    if(!$('div', this).hasClass('show-arrow')){
+      $('div', this).removeClass('arrow-up');
+      $('div', this).removeClass('arrow-down');
+    }  
+  });
+
+  $('.table-userlist thead tr th').data('direction', false); //false == desc order
+  $('.table-userlist thead tr th').click(function(e){
+    $('.table-userlist thead tr th div').removeClass('show-arrow');
+    $('.table-userlist thead tr th div').removeClass('arrow-up');
+    $('.table-userlist thead tr th div').removeClass('arrow-down');
+    $('div', this).addClass('show-arrow');
+    var direction = $(this).data('direction');
+
+    if(direction){
+      $('div', this).addClass('arrow-up');
+    }else{
+      $('div', this).addClass('arrow-down');
+    }
+
+    var data = $(this).metadata();
+    current_sortkey = data.sortkey;
+    current_order = $(this).data('direction');
+    fillUserlist(current_page);
+
+    $('.table-userlist thead tr th').data('direction', false); //reseting to default other rows
+    $(this).data('direction',!direction); //switching on current
+  }); //end of table sorting
+
   });
 
   function fillUserlist(npage){
+    current_page = npage;
+    var order = current_order ? 'ASC' : 'DESC';
     $.ajax({
 	type: "POST",
 	url: 'getuserlist.php',
-	data: 'letter=' + current_letter + '&page=' + npage,
+	data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order,  
 	dataType: 'json',
 	success: function(json) {
 
@@ -76,8 +121,10 @@ include("head.html"); ?>
 
 	    if(json.length > 1){
 	      $('.table-hdng').show();
+	      $('#message').hide();
 	    }else{
 	      $('.table-hdng').hide();
+	      $('#message').show();
 	    }
 
 	    var odd = true;
@@ -85,6 +132,7 @@ include("head.html"); ?>
 		AppendUserRow(json[i], odd);
 		odd = !odd;
             }
+
 
             $('tr.row-userlist-live').click(function(){
               var match = $(this).attr('class').match(/useritem-\d+/);
@@ -181,15 +229,23 @@ include("head.html"); ?>
         var row;
         row = '<tr class="row-userlist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
-        row += ' useritem-' + json[0] + '">';
-        row += '<td>' + json[1] + '</td>';
+        row += ' useritem-' + json.id + '">';
+        row += '<td class = "name-col">' + json.nickname + '</td>';
 	var is_runner = '';
-	if(json[2] == "1"){
+	if(json.is_runner == "1"){
 	    is_runner = 'Yes';
 	}else{
 	    is_runner = 'No';
 	}
         row += '<td >' + is_runner + '</td>';
+	row += '<td >' + json.created_count + '</td>';
+	row += '<td >' + json.mechanic_count + '</td>';
+	row += '<td >' + json.bids_placed + '</td>';
+	row += '<td >' + json.bids_accepted + '</td>';
+	row += '<td >$' + json.fees_received + '</td>';
+	row += '<td >$' + json.contracts_received + '</td>';
+	row += '<td >$' + json.rewards_received + '</td>';
+	row += '<td >$' + json.sum_all + '</td>';
        $('.table-userlist tbody').append(row);
     }
 
@@ -266,11 +322,20 @@ include("head.html"); ?>
 <div class="ln-letters"><a href="#" class="all ln-selected">ALL</a><a href="#" class="_">0-9</a><a href="#" class="a">A</a><a href="#" class="b">B</a><a href="#" class="c">C</a><a href="#" class="d">D</a><a href="#" class="e">E</a><a href="#" class="f">F</a><a href="#" class="g">G</a><a href="#" class="h">H</a><a href="#" class="i">I</a><a href="#" class="j">J</a><a href="#" class="k">K</a><a href="#" class="l">L</a><a href="#" class="m">M</a><a href="#" class="n">N</a><a href="#" class="o">O</a><a href="#" class="p">P</a><a href="#" class="q">Q</a><a href="#" class="r">R</a><a href="#" class="s">S</a><a href="#" class="t">T</a><a href="#" class="u">U</a><a href="#" class="v">V</a><a href="#" class="w">W</a><a href="#" class="x">X</a><a href="#" class="y">Y</a><a href="#" class="z ln-last">Z</a></div>
 <br />
 <div class="ln-pages"></div><br />
+  <div id="message">No results</div>
     <table class="table-userlist">
         <thead>
         <tr class="table-hdng">
-            <td>Nickname</td>
-            <td>Runner?</td>
+            <th class = "sort {sortkey: 'nickname'}">Nickname<div class = "arrow"><div/></th>
+            <th class = "sort {sortkey: 'is_runner'}">Runner?<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'mechanic_count'}">Mechanic<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'bids_placed'}">Bids Placed<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'bids_accepted'}">Bids accepted<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'fees_received'}">Fees<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'contracts_received'}">Contracts<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'rewards_received'}">Rewards<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'sum_all'}">All<div class = "arrow"><div/></th>
         </tr>
         </thead>
         <tbody>
