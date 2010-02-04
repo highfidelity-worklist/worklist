@@ -69,6 +69,8 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
 }
 //placing a bid
 
+echo "BIDDING:\n";
+print_r($_POST);
 if (isset($_SESSION['userid']) && isset($_POST['bid'])){ //for security make sure user is logged in to post bid
     $args = array('itemid', 'bid_amount','done_by', 'notes');
     foreach ($args as $arg) {
@@ -306,7 +308,7 @@ include("head.html"); ?>
 		SimplePopup('#popup-bid',
 			    'Place Bid',
 			    worklist_id,
-			    [['input', 'itemid', 'keyId']]);
+			    [['input', 'itemid', 'keyId', 'eval']]);
 
 		$('#popup-bid').dialog('open');
 		return false;
@@ -548,8 +550,8 @@ include("head.html"); ?>
 			'Pay Fee',
 			'getbiditem.php',
 			bid_id,
-			[ ['input', 'itemid', 'keyId'],
-			  ['input', 'info-email2', 'json[2]'],
+			[ ['input', 'itemid', 'keyId', 'eval'],
+			  ['input', 'info-email2', 'json[2]', 'eval'],
 			  ['span', '#info-email', 'json[2]', 'eval'],
 			  ['span', '#info-bid-amount', 'json[4]', 'eval'],
 			  ['span', '#info-bid-done-by', 'json[9]', 'eval'],
@@ -646,9 +648,9 @@ include("head.html"); ?>
 			  'Pay Fee',
 			  'getfeeitem.php',
 			  fee_id,
-			  [ ['input', 'itemid', 'keyId'],
-			    ['textarea', 'paid_notes', 'json[2]'],
-			    ['checkbox', 'paid_check', 'json[1]'] ]);
+			  [ ['input', 'itemid', 'keyId', 'eval'],
+			    ['textarea', 'paid_notes', 'json[2]', 'eval'],
+			    ['checkbox', 'paid_check', 'json[1]', 'eval'] ]);
 		
 		$('#popup-paid').dialog('open');
 
@@ -746,7 +748,7 @@ include("head.html"); ?>
 	    SimplePopup('#popup-delete',
 			'Delete Workitem',
 			workitem,
-			[['input', 'itemid', 'keyId'], 
+			[['input', 'itemid', 'keyId', 'eval'], 
 			 ['span', '#popup-delete-summary', summary] ]);
 			
 	    $('#popup-delete').dialog('open');
