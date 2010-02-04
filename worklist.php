@@ -21,6 +21,25 @@ if(!isset($_SESSION['ufilter']))
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 
+if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_runner == 1)
+{
+  $paid_check = mysql_real_escape_string($_POST['paid_check']);
+  if($paid_check == 'on')
+  {
+    $paid_check = 1;
+  }
+  else
+  {
+    $paid_check = 0;
+  }
+
+  $paid_notes = mysql_real_escape_string($_POST['paid_notes']);
+  $fee_id = mysql_real_escape_string($_POST['itemid']);
+  
+  $query = "update ".FEES." set user_paid={$_SESSION['userid']}, notes='{$paid_notes}', paid={$paid_check} WHERE ".FEES.".id={$fee_id}";
+  $rt = mysql_query($query);
+}
+
 if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     $args = array('itemid', 'summary', 'status', 'notes');
     foreach ($args as $arg) {
@@ -131,6 +150,7 @@ include("head.html"); ?>
     var workitems;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
     var is_runner = <?php echo isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : '"nada"' ?>;
+
 
     function AppendPagination(page, cPages, table)
     {
@@ -282,9 +302,12 @@ include("head.html"); ?>
                 var worklist_id = $(this).attr('id').substr(9);
                 ResetPopup();
                 GetBidlist(worklist_id, 1);
-                $('#popup-bid form input[name="itemid"]').val(worklist_id);
-                $('#popup-bid form input[name="email"]').val('<?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : ''; ?>');
-                $('#popup-bid form input[name="nickname"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
+
+		SimplePopup('#popup-bid',
+			    'Place Bid',
+			    worklist_id,
+			    [['input', 'itemid', 'keyId']]);
+
 		$('#popup-bid').dialog('open');
 		return false;
             });
@@ -520,8 +543,22 @@ include("head.html"); ?>
               var match = $(this).attr('class').match(/biditem-\d+/);
               var bid_id = match[0].substr(8);
               ResetBidInfoPopup();
-              PopulateBidInfoPopup(bid_id);
-              $('#popup-bid-info form input[name="bid_id"]').val(bid_id);
+
+              AjaxPopup('#popup-bid-info',
+			'Pay Fee',
+			'getbiditem.php',
+			bid_id,
+			[ ['input', 'itemid', 'keyId'],
+			  ['input', 'info-email2', 'json[2]'],
+			  ['span', '#info-email', 'json[2]', 'eval'],
+			  ['span', '#info-bid-amount', 'json[4]', 'eval'],
+			  ['span', '#info-bid-done-by', 'json[9]', 'eval'],
+			  ['span', '#info-notes', 'json[7]', 'eval'] ],
+			function(json) {
+			  if( is_runner==1) 
+			    $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">'); 
+			});
+
 	      $('#popup-bid-info').dialog('open');
             });
 	
@@ -564,34 +601,12 @@ include("head.html"); ?>
         row += '<td width="20%">' + pre + RelativeTime(json[8]) + post + '</td></tr>';
        $('.table-bidlist tbody').append(row);
     }
-
-    function PopulateBidInfoPopup(item) {
-        $.ajax({
-            type: "POST",
-            url: 'getbiditem.php',
-            data: 'item='+item,
-            dataType: 'json',
-            success: function(json) {
-                $('#popup-bid-info form input[name="itemid"]').val(item);
-                $('#popup-bid-info #info-email').text(json[2]);
-                $('#popup-bid-info #info-bid-amount').text(json[4]);
-                $('#popup-bid-info #info-bid-done-by').text(json[9]);
-                $('#popup-bid-info #info-notes').text(json[7]);
-		
-                if(is_runner == 1){
-                  //adding "Accept" button
-                  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
-                }
-            },
-            error: function(xhdr, status, err) {
-            }
-        });
-    }
     
     function ResetBidInfoPopup(){
       $('#popup-bid-info form input[type="submit"]').remove();
     }
 //end of code for bidding table
+
 
 //code for fees table
     function GetFeelist(worklist_id) {
@@ -623,6 +638,23 @@ include("head.html"); ?>
                           <td colspan="5" style="text-align:center;">Total Fees $' + json[0][0] + '</td></tr>';
               $('.table-feelist tbody').append(row);
 
+            $('.paid-link').click(function(e){
+
+                var fee_id = $(this).attr('id').substr(8);
+
+		AjaxPopup('#popup-paid',
+			  'Pay Fee',
+			  'getfeeitem.php',
+			  fee_id,
+			  [ ['input', 'itemid', 'keyId'],
+			    ['textarea', 'paid_notes', 'json[2]'],
+			    ['checkbox', 'paid_check', 'json[1]'] ]);
+		
+		$('#popup-paid').dialog('open');
+
+		return false;
+            });
+
 
         },
         error: function(xhdr, status, err) {
@@ -648,11 +680,20 @@ include("head.html"); ?>
         row += '<td>' + pre + json[1] + post + '</td>';
         row += '<td>' + pre + json[3] + post + '</td>';
         row += '<td>' + pre + json[4] + post + '</td>';
+
+	
 	if(json[5] == 0){
-	  var paid = 'No'
-	}else{
+	  var paid = 'No';
+
+	  if(is_runner)	{
+	    pre = '<a href="#" class = "paid-link" id = "feeitem-' + json[0] + '" >';
+	    post = '</a>';
+	  }
+	  
+	} else {
 	  var paid = 'Yes';
 	}
+       
         row += '<td>' + pre + paid + post + '</td></tr>';
        $('.table-feelist tbody').append(row);
     }
@@ -665,6 +706,7 @@ include("head.html"); ?>
 	$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 	$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
+	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
         GetWorklist(<?php echo $page?>, false);    
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
@@ -700,8 +742,13 @@ include("head.html"); ?>
                     break;
                 }
             }
-            $('#popup-delete form input[name="itemid"]').val(workitem);
-            $('.popup-delete-summary').text('"'+summary+'"');
+
+	    SimplePopup('#popup-delete',
+			'Delete Workitem',
+			workitem,
+			[['input', 'itemid', 'keyId'], 
+			 ['span', '#popup-delete-summary', summary] ]);
+			
 	    $('#popup-delete').dialog('open');
         });
         $('#view').click(function(){
@@ -727,6 +774,7 @@ include("head.html"); ?>
 	      case "cancel":
 		$('#popup-delete').dialog('close');
 		$('#popup-edit').dialog('close');
+		$('#popup-paid').dialog('close');
                 return false;
 		break;
 	    
@@ -741,203 +789,24 @@ include("head.html"); ?>
 
 <body>
  <div style="display:none;position:fixed;top:0px;left:0px;width:100%;height:100%;text-align:center;line-height:100%;background:white;opacity:0.7; filter: alpha(opacity = 70);z-index:9998" id="loader_img" ><img src="images/final_loading_big.gif" style="z-index:9999" ></div>
-    <div id="popup-edit" title = "Add Worklist Item" class = "popup-body">
-            <form name="popup-form" id="popup-form-edit" action="" method="post">
-                <input type="hidden" name="itemid" value="0" />
 
-                <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
+    <!-- Popup for editing/adding  a work item -->
+    <?php require_once('popup-edit.inc') ?>
 
-		<div id = "for_edit" <?php if(!isset($_SESSION['userid'])){ echo 'style = "display:none;"';}?>>
-		  <p><label>Summary<br />
-		  <input type="text" name="summary" id="summary" class="text-field" size="48" />
-		  </label></p>
+    <!-- Popup for deleting a work item -->
+    <?php require_once('popup-delete.inc') ?>
 
-		  <input type="hidden" id="owner" name="owner" /><!-- for now -->
-                  <script type="text/javascript">
-                    var summary = new LiveValidation('summary',{ onlyOnSubmit: true });
-                        summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                  </script>
+    <!-- Popup HTML for paying a fee -->
+    <?php require_once('popup-paid-html.inc') ?>
 
-
-  <?php
-  $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-  if ($is_runner) {//if user is a runner - allow to change status ?>      
-		  <p><label>Status<br />
-		  <select name="status">
-		      <option value="BIDDING" selected = "selected" >BIDDING</option>
-		      <option value="WORKING">WORKING</option>
-		      <option value="SKIP">SKIP</option>
-		      <option value="DONE">DONE</option>
-		  </select>
-		  </label></p>
-  <?php }else {?>
-		  <input type="hidden" id="status" name="status" value = "BIDDING" />    
-  <?php }?>
-		  <p><label>Notes<br />
-		  <textarea name="notes" size="48" /></textarea>
-		  </label></p>
-		</div><!-- end div #for-edit-->
-		<div id = "for_view">
-		  <p class = "info-label">Summary<br />
-		  <span id="info-summary"></span>
-		  </p>
-
-		  <p class = "info-label">Satus<br />
-		  <span id="info-status"></span>
-		  </p>
-
-		  <p class = "info-label">Notes<br />
-		  <span id="info-notes"></span>
-		  </p>
-		</div><!-- end div #for_view -->
-                <?php if (isset($_SESSION['userid'])) { ?>
-		<div id = "fees_block">
-		  Fees
-		  <table width="100%" class="table-feelist">
-		      <thead>
-		      <tr class="table-hdng" >
-			  <td>Who</td>
-			  <td>Amount</td>
-			  <td>Description</td>
-			  <td>Date</td>
-			  <td>Paid</td>
-		      </tr>
-		      </thead>
-		      <tbody>
-		      </tbody>
-		  </table><br />    
-
-		  <p>
-		    <input type="submit" name="add_fee_dialog" value="Add Fee">
-		  </p>
-		</div><!-- end of fees_block -->
-                <input type="submit" name="save" value="Save">
-                <input type="submit" name="reset" value="Reset">
-                <input type="submit" name="cancel" value="Cancel">
-                <?php } else { ?>
-		<div id = "bid-signup">
-		<h3>Want to bid?</h3>
-		<a href="signup.php">Sign up now!</a>
-		</div>
-                <?php } ?>
-            </form>
-        </div>
-
-    <div id="popup-delete" class="popup-body" title = "Delete Worklist Item">
-            <form name="popup-form" action="" method="post">
-                <input type="hidden" name="itemid" value="" />
-                <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
-
-                <p class="popup-delete-summary"></p>
-                <p>Are you sure you want to delete this work item?</p>
-    
-                <input type="submit" name="delete" value="Yes">
-                <input type="submit" name="cancel" value="No">
-            </form>
-    </div>
     <!-- Popup for placing a bid -->
-    <div id="popup-bid" class="popup-body" title = "Place Bid">
-            <table width="100%" class="table-bidlist">
-                <thead>
-                <tr class="table-hdng" >
-                    <td>Email</td>
-                    <td>Bid Amount</td>
-                    <td>Done By</td>
-                    <td>Age</td>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table><br />
-            <form name="popup-form" action="" method="post">
-                <input type="hidden" name="itemid" value="" />
-    
-                <p><label>Bid Amount<br />
-                <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
-                </label></p>
-    
-                <p><label>Done By<br />
-                  <input type="text" class="text-field date" name="done_by" id="done_by" value="" size="20" />
-                  <img src="images/Calendar.gif" class="dpButtonCal" onClick="displayDatePicker('done_by', false, 'mdy', '/');" />
-                  <img src="images/transparent.gif" width="30px" height="1" id="done_by_button"/>
-                </label></p>
-
-                <script type="text/javascript">
-                    // see http://regexlib.com/REDetails.aspx?regexp_id=318
-                    var regex_bid = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-                    var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-
-                    var bid_email = new LiveValidation('bid_email',{ onlyOnSubmit: true });
-                        bid_email.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-
-                    var bid_amount = new LiveValidation('bid_amount',{ onlyOnSubmit: true });
-                        bid_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                        bid_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
-
-                    var done_by = new LiveValidation('done_by',{ insertAfterWhatNode: 'done_by_button', onlyOnSubmit: true });
-                        done_by.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                        done_by.add( Validate.Format, { pattern: regex_date, failureMessage: "Invalid Input!" });
-                </script>
-
-                <p><label>Notes<br />
-                <textarea name="notes" size="48" /></textarea>
-                </label></p>
-    
-                <input type="submit" id="bid" name="bid" value="Place Bid">
-            </form>
-    </div><!-- end of popup-bid -->
+    <?php require_once('popup-bid.inc') ?>
 
     <!-- Popup for bid info-->
-    <div id="popup-bid-info" class="popup-body" title = "Bid Info">
-            <p class = "info-label">Email<br />
-            <span id="info-email"></span>
-            </p>
-
-            <p class = "info-label">Bid Amount<br />
-            <span id="info-bid-amount"></span>
-            </p>
-
-            <p class = "info-label">Done By<br />
-            <span id="info-bid-done-by"></span>
-            </p>
-
-            <p class = "info-label">Notes<br />
-            <span id="info-notes"></span>
-            </p>
-
-            <form name = "popup-form" id = "popup-form" action="" method="post">
-                <input type="hidden" name="bid_id" value="" />
-            </form>
-    </div><!-- end of popup-bid-info -->
+    <?php require_once('popup-bid-info.inc') ?>
 
     <!-- Popup for adding fee-->
-    <div id="popup-addfee" class="popup-body" title = "Add Fee">
-            <form name="popup-form" id="popup-form-addfee" action="" method="post">
-                <input type="hidden" name="itemid" value="" />
-
-                <p><label>Amount<br />
-		  <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />
-                </label></p>
-
-                <p><label>Description<br />
-		  <input type="text" name="fee_desc" id="fee_desc" class="text-field" size="48" />
-                </label></p>
-
-                <script type="text/javascript">
-                    // see http://regexlib.com/REDetails.aspx?regexp_id=318
-                    var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-
-                    var fee_amount = new LiveValidation('fee_amount',{ onlyOnSubmit: true });
-                        fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                        fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
-
-                    var fee_desc = new LiveValidation('fee_desc',{ onlyOnSubmit: true });
-                        fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                </script>
-
-		<input type="submit" name="add_fee" value="Add Fee">
-            </form>
-    </div><!-- end of popup-addfee -->
+    <?php require_once('popup-addfee.inc') ?>
 
 <?php include("format.php"); ?>
 
