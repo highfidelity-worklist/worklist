@@ -40,7 +40,7 @@
 		  <span id="info-summary"></span>
 		  </p>
 
-		  <p class = "info-label">Satus<br />
+		  <p class = "info-label">Status<br />
 		  <span id="info-status"></span>
 		  </p>
 

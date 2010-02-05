@@ -234,7 +234,9 @@ include("head.html"); ?>
         pagination += '</td></tr>';
         $('.table-' + table).append(pagination);
     }
-
+    function return2br(dataStr) {
+        return dataStr.replace(/(\r\n|\r|\n)/g, "<br />");
+    }
     // json row fields: id, summary, status, owner nickname, owner username, delta
     function AppendRow(json, odd, prepend, moreJson, idx)
     {
@@ -249,7 +251,7 @@ include("head.html"); ?>
 	}
         row += '">';
         if (prepend) { pre = '<div class="slideDown" style="display:none">'; post = '</div>'; }
-        row += '<td width="50%">' + pre + json[1] + post + '</td>';
+        row += '<td width="50%"><span title="' +json[0]+'">' + pre + json[1] + post + '</span></td>';
         //if the status is BIDDING - add link to show bidding popup
         if (json[2] == 'BIDDING' && user_id != "nada"){
             pre = '<a href="#" class = "bidding-link" id = "workitem-' + json[0] + '" >';
@@ -263,7 +265,7 @@ include("head.html"); ?>
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
-        row += '<td width="15%">' + pre + RelativeTime(json[5]) + ' ago' + post + '</td>';
+        row += '<td width="8%">' + pre + RelativeTime(json[5]) + ' ago' + post + '</td>';
 	var feebids = 0;
 	if(json[6]){
 	  feebids = json[6];
@@ -510,7 +512,7 @@ include("head.html"); ?>
             dataType: 'json',
             success: function(json) {
 		if(edit){
-		  $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
+		  $('#popup-edit').data('title.dialog', 'Edit Worklist Item - '+item);
 		  $('#for_edit').show();
 		  $('#for_view').hide();
 		  $('.popup-body form input[name="itemid"]').val(item);
@@ -519,13 +521,13 @@ include("head.html"); ?>
 		  $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
 		  $('.popup-body form textarea[name="notes"]').val(json[3]);
 		}else{
-		  $('#popup-edit').data('title.dialog', 'View Worklist Item');
+		  $('#popup-edit').data('title.dialog', 'View Worklist Item - '+item);
 		  $('#for_view').show();
 		  $('#for_edit').hide();
 		  $('.popup-body form #info-summary').text(json[0]);
 		  $('.popup-body form #info-runner').text(json[1]);
 		  $('.popup-body form #info-status').text(json[2]);
-		  $('.popup-body form #info-notes').text(json[3]);
+		  $('.popup-body form #info-notes').html(return2br(json[3]));
 		}
 		$('#fees_block').show();
 		GetFeelist(item);

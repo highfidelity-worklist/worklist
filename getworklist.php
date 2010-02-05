@@ -37,17 +37,28 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
 
 	if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...')
 	{
-
-	$array=explode(" ",rawurldecode($_REQUEST['query']));
+	$query = $_REQUEST['query'];
+	$searchById = false;
+ 	if(is_numeric(trim($query))) {
+		$rt = mysql_query("select count(*) from ".WORKLIST." $where AND id = " .$query );
+		$row = mysql_fetch_row($rt);
+		$rowCount = intval($row[0]);
+		if($rowCount >0)
+		{
+			$searchById = true;
+			$where .= " AND `". WORKLIST ."`.`id` = " . $query;
+		}
+	}
+	if(!$searchById) {	
+		$array=explode(" ",rawurldecode($_REQUEST['query']));
 
 		foreach ($array as $item) {
 		
 			$where.=" AND ( summary LIKE '%".mysql_escape_string($item)."%'  OR  notes  LIKE '%".mysql_escape_string($item)."%') ";
 		
 		}
-	
+	}	
 	}
-	
 $rt = mysql_query("select count(*) from ".WORKLIST." $where");
 $query = "select count(*) from ".WORKLIST." left join ".USERS." on ".WORKLIST.".owner_id=".USERS.".id $where";
 $rt = mysql_query($query);
