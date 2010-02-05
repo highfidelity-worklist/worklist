@@ -265,7 +265,7 @@ include("head.html"); ?>
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
-        row += '<td width="8%">' + pre + RelativeTime(json[5]) + ' ago' + post + '</td>';
+        row += '<td width="15%">' + pre + RelativeTime(json[5]) + ' ago' + post + '</td>';
 	var feebids = 0;
 	if(json[6]){
 	  feebids = json[6];
