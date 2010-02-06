@@ -118,7 +118,7 @@
 	  }
 	}
 
-	$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$_SESSION['userid']}' and `confirm`='1'");
+	$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$_SESSION['userid']}' and `confirm`='1' ORDER BY `nickname`");
 	while ($row = mysql_fetch_assoc($rt))
 	{
 	  if (!empty($row['nickname']))
