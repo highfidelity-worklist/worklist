@@ -69,6 +69,7 @@
      *
      *      Purpose:  This function outputs the desired filter with the currently
      *                active filter (session variable) selected.
+     *
      *   Parameters:  $filter_name [sfilter,ufilter]
      */
     function DisplayFilter($filter_name)
