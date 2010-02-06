@@ -284,7 +284,7 @@ include("head.html"); ?>
 	}
         row += '">';
         if (prepend) { pre = '<div class="slideDown" style="display:none">'; post = '</div>'; }
-        row += '<td width="50%"><span title="' +json[0]+'">' + pre + json[1] + post + '</span></td>';
+        row += '<td width="50%" title="' +json[0]+'">' + pre + json[1] + post + '</td>';
         //if the status is BIDDING - add link to show bidding popup
         if (json[2] == 'BIDDING' && user_id != "nada"){
             pre = '<a href="#" class = "bidding-link" id = "workitem-' + json[0] + '" >';
@@ -294,7 +294,14 @@ include("head.html"); ?>
         pre = '';
         post = '';
         if (json[3] != '') {
-            row += '<td width="15%" class="toolparent">' + pre + json[3] + post + '<span class="tooltip">' + json[4] + '</span>' + '</td>';
+	    var who = json[3];
+	    var tooltip = "Owner: "+json[4];
+	    if(json[9] != null && json[3] != json[9]) {
+		who +=  ', ' + json[9];
+		tooltip += '<br />Mechanic: '+json[10];
+	    }
+	      
+            row += '<td width="15%" class="toolparent">' + pre + who + post + '<span class="tooltip">' + tooltip  + '</span>' + '</td>';
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }

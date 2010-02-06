@@ -29,9 +29,6 @@
                     var regex_bid = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
                     var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
 
-                    var bid_email = new LiveValidation('bid_email',{ onlyOnSubmit: true });
-                        bid_email.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-
                     var bid_amount = new LiveValidation('bid_amount',{ onlyOnSubmit: true });
                         bid_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                         bid_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
