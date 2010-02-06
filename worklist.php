@@ -79,8 +79,9 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
       $bid_fee_itemid = $itemid;
     }
     
-    $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, $bid_fee_desc, $bid_fee_mechanic_id);
-
+    if ($bid_fee_amount > 0) {
+        $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, $bid_fee_desc, $bid_fee_mechanic_id);
+    }
 
 } else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid'])) {
     // Get work item summary
@@ -895,7 +896,7 @@ include("head.html"); ?>
         $('#view').click(function(){
             $('#popup-edit form input[name="id"]').val(workitem);
             PopulatePopup(workitem, false);
-	    $('#popup-edit').dialog('open');
+            $('#popup-edit').dialog('open');
         });
 
         $('.popup-body form input[type="submit"]').click(function(){
@@ -903,28 +904,23 @@ include("head.html"); ?>
 
             $(".popup-page-value").val(page);
 	    
-	    switch(name){
-	      case "add_fee_dialog": 
-		SimplePopup('#popup-addfee',
-			    'Add Fee',
-			    workitem,
-			    [['input', 'itemid', 'keyId', 'eval'] ]);
-
-		$('#popup-addfee').dialog('open');
-		return false;
-		break;
-	      case "reset":
+	        switch(name){
+	        case "add_fee_dialog": 
+                SimplePopup('#popup-addfee',
+			        'Add Fee',
+			        workitem,
+			        [['input', 'itemid', 'keyId', 'eval']]);
+                $('#popup-addfee').dialog('open');
+                return false;
+	        case "reset":
                 ResetPopup();
                 return false;
-		break;
-	      case "cancel":
-		$('#popup-delete').dialog('close');
-		$('#popup-edit').dialog('close');
-		$('#popup-paid').dialog('close');
+	        case "cancel":
+                $('#popup-delete').dialog('close');
+                $('#popup-edit').dialog('close');
+                $('#popup-paid').dialog('close');
                 return false;
-		break;
-	    
-	    }
+	        }
         });
     });
 </script> 

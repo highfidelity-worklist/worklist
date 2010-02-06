@@ -48,12 +48,12 @@
 ?>
 	 <p><label>Mechanic
        	 <select name='mechanic_id' id='mechanic_id'>
-<?php>
+<?php
 	 $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
 
 	 foreach($user_array as $user_record)
 	 {
-	   if($_SESSION[$filter_name] == $user_record['userid'])
+	   if(!empty($filter_name) && $_SESSION[$filter_name] == $user_record['userid'])
 	   {
 	     echo "<option value='{$user_record['userid']}' selected='selected'>{$user_record['nickname']}</option>\n";
 	   }
