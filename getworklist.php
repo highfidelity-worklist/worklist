@@ -32,7 +32,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     } else {
         $where .= " and ";
     }
-    $where .= "(creator_id='$ufilter' or owner_id='$ufilter')";
+    $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter')";
 }
 
 	if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...')
