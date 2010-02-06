@@ -22,6 +22,38 @@
                         fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 </script>
 
-		<input type="submit" name="add_fee" value="Add Fee">
+
+<?php
+       if($is_runner)
+       {
+?>
+	 <p><label>Mechanic
+       	 <select name='mechanic_id' id='mechanic_id'>
+<?php>
+	 $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
+
+	 foreach($user_array as $user_record)
+	 {
+	   if($_SESSION[$filter_name] == $user_record['userid'])
+	   {
+	     echo "<option value='{$user_record['userid']}' selected='selected'>{$user_record['nickname']}</option>\n";
+	   }
+	   else
+	   {
+	     echo "<option value='{$user_record['userid']}'>{$user_record['nickname']}</option>\n";
+	   }
+	 }
+?>
+	 </select></label></p>
+
+<?php   } else  {  ?>
+
+	 <p class="info-label">Mechanic<br />
+	   <span id="mechanic_id"><?php echo $_SESSION['nickname']; ?></span>
+	 </p>
+         <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
+
+<?php   }  ?>
+		<input type="submit" name="add_fee" value="Add Fee" style="position:relative; left:240px;" />
             </form>
     </div><!-- end of popup-addfee -->

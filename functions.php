@@ -64,6 +64,34 @@
     }
 
 
+    /*    Function: GetUserList
+     *
+     *     Purpose: This function return a list of confirmed users.
+     *
+     *  Parameters: userid - The userid of the user signed in.
+     *              nickname - The nickname of the user signed in.
+     *
+     */
+    function GetUserList($userid, $nickname)
+    {
+      $rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$userid}' and `confirm`='1' ORDER BY `nickname`");
+
+      $user_array = array();
+      if($userid != '')
+      {
+	$user_array[] = array('userid' => $userid,
+			      'nickname' => $nickname);
+      }
+
+      while ($row = mysql_fetch_assoc($rt))
+      {
+	$user_array[] = array('userid' => $row['id'],
+			      'nickname' => $row['nickname']);
+      }
+
+      return $user_array;
+    }
+
 
     /* DisplayFilter
      *
@@ -107,29 +135,17 @@
 	  echo "  <option value='ALL'>ALL USERS</option>\n";
 	}
 	
-	if(isset($_SESSION['userid']))
+	$user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
+
+	foreach($user_array as $user_record)
 	{
-	  if($_SESSION[$filter_name] == $_SESSION['userid'])
+	  if($_SESSION[$filter_name] == $user_record['userid'])
 	  {
-	    echo "<option value='{$_SESSION['userid']}' selected='selected'>{$_SESSION['nickname']}</option>";
+	    echo "<option value='{$user_record['userid']}' selected='selected'>{$user_record['nickname']}</option>";
 	  }
 	  else
 	  {
-	    echo "<option value='{$_SESSION['userid']}'>{$_SESSION['nickname']}</option>";
-	  }
-	}
-
-	$rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$_SESSION['userid']}' and `confirm`='1' ORDER BY `nickname`");
-	while ($row = mysql_fetch_assoc($rt))
-	{
-	  if (!empty($row['nickname']))
-	  {
-	    echo "  <option value='{$row['id']}'";
-	    if($_SESSION[$filter_name] == $row['id'] )
-	    {
-	      echo " selected='selected'";
-	    }
-	    echo ">{$row['nickname']}</option>\n";
+	    echo "<option value='{$user_record['userid']}'>{$user_record['nickname']}</option>";
 	  }
 	}
 

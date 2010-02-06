@@ -12,12 +12,12 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 
-
 if(!isset($_SESSION['sfilter']))
   $_SESSION['sfilter'] = 'ALL';
 
 if(!isset($_SESSION['ufilter']))
   $_SESSION['ufilter'] = 'ALL';
+
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
@@ -82,8 +82,8 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
 }
 
 //placing a bid
-if (isset($_SESSION['userid']) && isset($_POST['bid'])){ //for security make sure user is logged in to post bid
-    $args = array('itemid', 'bid_amount','done_by', 'notes');
+if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security make sure user is logged in to post bid
+    $args = array('itemid', 'bid_amount','done_by', 'notes', 'mechanic_id');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
@@ -95,11 +95,40 @@ if (isset($_SESSION['userid']) && isset($_POST['bid'])){ //for security make sur
         $summary = $row['summary'];    
     }
 
+    if($mechanic_id != $_SESSION['userid'])
+    {
+      // Get the mechanic's user information 
+      $rt = mysql_query("select nickname, username from ".USERS." where id='{$mechanic_id}'");
+      if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $nickname = $row['nickname'];
+	$username = $row['username'];
+      }
+      else
+      {
+	$username = "unknown-{$username}";
+	$nickname = "unknown-{$mechanic_id}";
+      }
+    }
+    else
+    {
+      $mechanic_id = $_SESSION['userid'];
+      $username = $_SESSION['username'];
+      $nickname = $_SESSION['nickname'];
+    }
+
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
-                            VALUES (NULL, '".$_SESSION['userid']."', '".$_SESSION['username']."', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$_SESSION['timezone'])."'), '$notes')");
+                            VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$_SESSION['timezone'])."'), '$notes')");
  
     // Journal notification
-    $journal_message = $_SESSION['nickname'] . " bid $bid_amount on $summary";
+    if($mechanic_id == $_SESSION['userid'])
+    {
+      $journal_message = $_SESSION['nickname'] . " bid \${$bid_amount} on {$summary}";
+    }
+    else
+    {
+      $journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on {$summary}";
+    }
 
     //sending email to the owner of worklist item
     $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
@@ -157,7 +186,8 @@ error_log(var_export($bid_info,1));
 
 //adding fee to fees table
 if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can add fees
-    $args = array('itemid', 'fee_amount', 'fee_desc');
+
+    $args = array('itemid', 'fee_amount', 'fee_desc', 'mechanic_id');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
@@ -170,10 +200,28 @@ if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can ad
         $summary = $row['summary'];    
     }
 
-  mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', ".$_SESSION['userid'].", '$fee_desc', NOW(), '0')");
+    $result = mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', '$mechanic_id', '$fee_desc', NOW(), '0')");
 
     // Journal notification
-    $journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to $summary";
+    if($mechanic_id == $_SESSION['userid'])
+    {
+      $journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to $summary";
+    }
+    else
+    {
+      // Get the mechanic's nickname
+      $rt = mysql_query("select nickname from ".USERS." where id='{$mechanic_id}'");
+      if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $nickname = $row['nickname'];    
+      }
+      else
+      {
+	$nickname = "unknown-{$mechanic_id}";
+      }
+
+      $journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of $fee_amount to $summary";
+    }
 }
 
 if (!empty($journal_message)) {
@@ -838,6 +886,11 @@ include("head.html"); ?>
 	    
 	    switch(name){
 	      case "add_fee_dialog": 
+		SimplePopup('#popup-addfee',
+			    'Add Fee',
+			    workitem,
+			    [['input', 'itemid', 'keyId', 'eval'] ]);
+
 		$('#popup-addfee').dialog('open');
 		return false;
 		break;
