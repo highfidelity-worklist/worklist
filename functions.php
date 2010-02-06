@@ -192,4 +192,50 @@
     return $userTime;
     }
 
+    /*    Function: AddFee
+     *
+     *     Purpose: This function inserts 
+     *
+     *  Parameters:     itemid - id of the worklist entry
+     *              fee_amount - amount of the fee
+     *                fee_desc - description of the fee entry
+     *             mechanic_id - userid of the mechanic
+     *
+     */
+    function AddFee($itemid, $fee_amount, $fee_desc, $mechanic_id)
+    {
+      // Get work item summary
+      $query = "select summary from ".WORKLIST." where id='$itemid'";
+      $rt = mysql_query($query);
+      if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $summary = $row['summary'];    
+      }
+ 
+      $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', '$mechanic_id', '$fee_desc', NOW(), '0')";
+      $result = mysql_unbuffered_query($query);
+      
+      // Journal notification
+      if($mechanic_id == $_SESSION['userid'])
+      {
+	$journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to $summary. ";
+      }
+      else
+      {
+	// Get the mechanic's nickname
+	$rt = mysql_query("select nickname from ".USERS." where id='{$mechanic_id}'");
+	if ($rt) {
+	  $row = mysql_fetch_assoc($rt);
+	  $nickname = $row['nickname'];    
+	}
+	else
+	{
+	  $nickname = "unknown-{$mechanic_id}";
+	}
+	
+	$journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of $fee_amount to $summary. ";
+      }
+
+      return $journal_message;
+    }
 ?>

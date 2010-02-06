@@ -68,8 +68,54 @@
 		  <p>
 		    <input type="submit" name="add_fee_dialog" value="Add Fee">
 		  </p>
+
 		</div><!-- end of fees_block -->
-                <input type="submit" name="save" value="Save">
+
+		<div id='fees_single_block'>
+		Fees
+                <p><label>Amount<br />
+		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money" size="48" />
+                </label></p>
+
+                <p><label>Description<br />
+		  <input type="text" name="bid_fee_desc" id="bid_fee_desc" class="text-field" size="48" />
+                </label></p>
+
+<?php
+
+       if($is_runner)
+       {
+?>
+	 <p><label>Mechanic
+       	 <select name='bid_fee_mechanic_id' id='bid_fee_mechanic_id'>
+<?php>
+	 $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
+
+	 foreach($user_array as $user_record)
+	 {
+	   if($_SESSION[$filter_name] == $user_record['userid'])
+	   {
+	     echo "<option value='{$user_record['userid']}' selected='selected'>{$user_record['nickname']}</option>\n";
+	   }
+	   else
+	   {
+	     echo "<option value='{$user_record['userid']}'>{$user_record['nickname']}</option>\n";
+	   }
+	 }
+?>
+	 </select></label></p>
+
+<?php   } else  {  ?>
+
+	 <p class="info-label">Mechanic<br />
+	   <span id="bid_fee_mechanic_id"><?php echo $_SESSION['nickname']; ?></span>
+	 </p>
+         <input type='hidden' name='bid_fee_mechanic_id' id='bid_fee_mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
+
+<?php   }  ?>
+		</div><!-- end of fees_single_block -->
+
+                <input type="submit" id="save_item" name="save_item" value="Save">
                 <input type="submit" name="reset" value="Reset">
                 <input type="submit" name="cancel" value="Cancel">
                 <?php } else { ?>

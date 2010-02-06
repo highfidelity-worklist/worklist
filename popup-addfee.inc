@@ -22,7 +22,6 @@
                         fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 </script>
 
-
 <?php
        if($is_runner)
        {

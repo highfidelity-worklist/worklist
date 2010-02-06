@@ -42,11 +42,12 @@ if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_runner == 1)
   $rt = mysql_query($query);
 }
 
-if (isset($_SESSION['userid']) && isset($_POST['save'])) {
-    $args = array('itemid', 'summary', 'status', 'notes');
-    foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
-    }
+if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
+
+  $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id');
+  foreach ($args as $arg) {
+    $$arg = mysql_real_escape_string($_POST[$arg]);
+  }
 
     $creator_id = $_SESSION['userid'];
 
@@ -60,14 +61,27 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     if (!empty($_POST['itemid'])) {
         $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id', ".
             "status='$status', notes='$notes' where id='$itemid'";
-        $journal_message = $_SESSION['nickname'] . " updated $summary";
+        $journal_message .= $_SESSION['nickname'] . " updated $summary. ";
     } else {
         $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, notes, created ) ".
             "values ( '$summary', '$creator_id', '$owner_id', '$status', '$notes', now() )";
-        $journal_message = $_SESSION['nickname'] . " added $summary";
+        $journal_message .= $_SESSION['nickname'] . " added $summary. ";
     }
-
+    
     $rt = mysql_query($query);
+
+    if(empty($_POST['itemid']))
+    {
+      $bid_fee_itemid = mysql_insert_id();
+    }
+    else
+    {
+      $bid_fee_itemid = $itemid;
+    }
+    
+    $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, $bid_fee_desc, $bid_fee_mechanic_id);
+
+
 } else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid'])) {
     // Get work item summary
     $query = "select summary from ".WORKLIST." where id='".$_POST['itemid']."'";
@@ -78,7 +92,7 @@ if (isset($_SESSION['userid']) && isset($_POST['save'])) {
     }
 
     mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
-    $journal_message = $_SESSION['nickname'] . " deleted $summary";
+    $journal_message .= $_SESSION['nickname'] . " deleted $summary ";
 }
 
 //placing a bid
@@ -123,11 +137,11 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     // Journal notification
     if($mechanic_id == $_SESSION['userid'])
     {
-      $journal_message = $_SESSION['nickname'] . " bid \${$bid_amount} on {$summary}";
+      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on {$summary}. ";
     }
     else
     {
-      $journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on {$summary}";
+      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on {$summary}. ";
     }
 
     //sending email to the owner of worklist item
@@ -173,7 +187,7 @@ error_log(var_export($bid_info,1));
     mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
 
     // Journal notification
-    $journal_message = $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on $summary";
+    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on $summary. ";
 
     //sending email to the bidder 
     $rt = mysql_query("SELECT `nickname`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$bid_info['worklist_id']);
@@ -192,36 +206,7 @@ if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can ad
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
 
-    // Get work item summary
-    $query = "select summary from ".WORKLIST." where id='$itemid'";
-    $rt = mysql_query($query);
-    if ($rt) {
-        $row = mysql_fetch_assoc($rt);
-        $summary = $row['summary'];    
-    }
-
-    $result = mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', '$mechanic_id', '$fee_desc', NOW(), '0')");
-
-    // Journal notification
-    if($mechanic_id == $_SESSION['userid'])
-    {
-      $journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to $summary";
-    }
-    else
-    {
-      // Get the mechanic's nickname
-      $rt = mysql_query("select nickname from ".USERS." where id='{$mechanic_id}'");
-      if ($rt) {
-        $row = mysql_fetch_assoc($rt);
-        $nickname = $row['nickname'];    
-      }
-      else
-      {
-	$nickname = "unknown-{$mechanic_id}";
-      }
-
-      $journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of $fee_amount to $summary";
-    }
+    $journal_message .= AddFee($itemid, $fee_amount, $fee_desc, $mechanic_id);
 }
 
 if (!empty($journal_message)) {
@@ -578,6 +563,7 @@ include("head.html"); ?>
 		  $('.popup-body form #info-notes').html(return2br(json[3]));
 		}
 		$('#fees_block').show();
+		$('#fees_single_block').hide();
 		GetFeelist(item);
             },
             error: function(xhdr, status, err) {
@@ -844,11 +830,37 @@ include("head.html"); ?>
         });
 
         $('#add').click(function(){
-	        $('#popup-edit').data('title.dialog', 'Add Worklist Item');
+	    $('#popup-edit').data('title.dialog', 'Add Worklist Item');
             $('#popup-edit form input[name="itemid"]').val('');
             ResetPopup();
-	        $('#fees_block').hide();
-	        $('#popup-edit').dialog('open');
+
+	    // Kyle
+	    //alert("123abc");
+	    $('#save_item').click(function(){
+
+		//alert("test");
+		if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val())
+		{
+		  // see http://regexlib.com/REDetails.aspx?regexp_id=318
+		  var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+		  var bid_fee_amount = new LiveValidation('bid_fee_amount',{ onlyOnSubmit: true });
+		  var bid_fee_desc = new LiveValidation('bid_fee_desc',{ onlyOnSubmit: true });
+
+		  bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+		  bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
+		  bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+		}
+		else
+		{
+		  bid_fee_amount.destroy();
+		  bid_fee_desc.destroy();
+		}
+		return true;
+	      });
+	    $('#fees_block').hide();
+	    $('#fees_single_block').show();
+	    $('#popup-edit').dialog('open');
+	    
         });
         $('#edit').click(function(){
             $('#popup-edit form input[name="itemid"]').val(workitem);
