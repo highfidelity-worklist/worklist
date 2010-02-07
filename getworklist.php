@@ -81,7 +81,7 @@ $qbody = "FROM `".WORKLIST."`
           $where";
 $qorder = "ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 
-$rtCount = mysql_query($qcnt . $qbody);
+$rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {
     $row = mysql_fetch_row($rtCount);
     $items = intval($row[0]);
@@ -92,7 +92,7 @@ $cPages = ceil($items/$limit);
 $worklist = array(array($items, $page, $cPages));
 
 // Construct json for history
-$rtQuery = mysql_query($qsel . $qbody . $qorder);
+$rtQuery = mysql_query("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
 {
     if (!empty($row['username'])) {
