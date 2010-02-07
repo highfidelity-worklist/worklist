@@ -102,7 +102,7 @@
      */
     function DisplayFilter($filter_name)
     {
-      $status_array = array('ALL', 'WORKING','BIDDING', 'SKIP', 'DONE');
+      $status_array = array('ALL', 'WORKING','BIDDING', 'SKIP', 'UNPAID', 'DONE');
 
       if($filter_name == 'sfilter')
       {

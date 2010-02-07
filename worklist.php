@@ -827,6 +827,12 @@ include("head.html"); ?>
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#search-filter, #user-filter").change(function(){
 
+        if ($("#search-filter").val() == 'UNPAID') {
+            $(".worklist-fees").text('Unpaid');
+        } else {
+            $(".worklist-fees").text('Fees/Bids');
+        }
+
 	    $.ajax({
 	      type: "POST",
 	      url: 'update_session.php',
@@ -1015,7 +1021,7 @@ echo 'style = "display:none;"';
             <td>Status</td>
             <td>Who</td>
             <td>Age</td>
-            <td>Fees/Bids</td>
+            <td class="worklist-fees">Fees/Bids</td>
         </tr>
         </thead>
         <tbody>
