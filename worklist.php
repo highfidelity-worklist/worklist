@@ -44,10 +44,10 @@ if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_runner == 1)
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
-  $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id');
-  foreach ($args as $arg) {
-    $$arg = mysql_real_escape_string($_POST[$arg]);
-  }
+    $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id');
+    foreach ($args as $arg) {
+      $$arg = mysql_real_escape_string($_POST[$arg]);
+    }
 
     $creator_id = $_SESSION['userid'];
 
@@ -215,7 +215,7 @@ if (!empty($journal_message)) {
     $data = array();
     $data['user'] = JOURNAL_API_USER;
     $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = $journal_message;
+    $data['message'] = stripslashes($journal_message);
     $prc = postRequest(JOURNAL_API_URL, $data);
 }
 
