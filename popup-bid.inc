@@ -27,7 +27,7 @@
                 <script type="text/javascript">
                     // see http://regexlib.com/REDetails.aspx?regexp_id=318
                     var regex_bid = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-                    var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+                    var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$|^\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (am|pm)$/;
 
                     var bid_amount = new LiveValidation('bid_amount',{ onlyOnSubmit: true });
                         bid_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
