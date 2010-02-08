@@ -290,6 +290,9 @@ include("head.html"); ?>
         if (json[2] == 'BIDDING' && user_id != "nada"){
             pre = '<a href="#" class = "bidding-link" id = "workitem-' + json[0] + '" >';
             post = '</a>';
+            if (json[11] > 0) {
+                post = '</a> (' + json[11] + ')';
+            }
         }
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
         pre = '';
