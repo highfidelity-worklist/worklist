@@ -20,10 +20,11 @@ if(!isset($_SESSION['ufilter']))
 
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
-$is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+$is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
+$is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $journal_message = '';
 
-if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_runner == 1)
+if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_payer == 1)
 {
   $paid_check = mysql_real_escape_string($_POST['paid_check']);
   if($paid_check == 'on')
@@ -760,7 +761,7 @@ include("head.html"); ?>
 	if(json[5] == 0){
 	  var paid = 'No';
 
-	  if(is_runner)	{
+	  if(is_payer)	{
 	    pre = '<a href="#" class = "paid-link" id = "feeitem-' + json[0] + '" >';
 	    post = '</a>';
 	  }
