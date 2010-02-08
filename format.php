@@ -37,10 +37,12 @@
 <!-- Navigation placeholder -->
             <div id="nav">                    
             <?php if (isset($_SESSION['username'])) { ?>
-           
                 <a href="worklist.php">Worklist</a> | 
-                <a href="settings.php">Settings</a> | 
-                <a href="team.php">Team</a>              
+		<?php if (!empty($_SESSION['is_runner'])) {?>
+                <a href="reports.php">Reports</a> |
+            	<?php } ?>
+                <a href="team.php">Team</a> |
+                <a href="settings.php">Settings</a>
             <?php } ?>
             </div>
 <!-- END Navigation placeholder -->

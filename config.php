@@ -30,7 +30,7 @@ if (!defined("BIDS"))          define("BIDS", "bids");
 if (!defined("FEES"))          define("FEES", "fees");
 
 if (!defined("SALT"))           define("SALT", "WORKLIST");
-if (!defined("SESSION_EXPIRE")) define("SESSION_EXPIRE", 1440);
+if (!defined("SESSION_EXPIRE")) define("SESSION_EXPIRE", 365*24*60*60);
 if (!defined("REQUIRELOGINAFTERCONFIRM")) define("REQUIRELOGINAFTERCONFIRM", 1);
 
 if (!defined("JOURNAL_API_URL"))     define("JOURNAL_API_URL", "https://dev.sendlove.us/journal/add.php");

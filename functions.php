@@ -1,4 +1,6 @@
 <?php
+//  vim:ts=4:et
+
 //  Copyright (c) 2009, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
@@ -25,6 +27,16 @@
         return $map[$username];
     }
 
+    function getWorkItemSummary($itemid) {
+        $query = "select summary from ".WORKLIST." where id='$itemid'";
+        $rt = mysql_query($query);
+        if ($rt) {
+            $row = mysql_fetch_assoc($rt);
+            $summary = $row['summary'];    
+        }
+        return $summary;
+    }
+
     /* initSessionData
      *
      * Initializes the session data for a user.  Takes as input either a username or a an array containing
@@ -45,6 +57,7 @@
         $_SESSION['nickname']           = $user_row['nickname'];
         $_SESSION['timezone']           = $user_row['timezone'];
         $_SESSION['is_runner']          = intval($user_row['is_runner']);
+        $_SESSION['is_payer']           = intval($user_row['is_payer']);
     }
 
     function isEnabled($features) {

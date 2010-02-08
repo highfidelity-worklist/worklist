@@ -1,4 +1,5 @@
 <?php ob_start(); 
+//  vim:ts=4:et
 //
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
@@ -16,10 +17,10 @@ mysql_select_db(DB_NAME,$con);
 $cur_letter = isset($_POST['letter']) ? $_POST['letter'] : "all";
 $cur_page = isset($_POST['page']) ? intval($_POST['page']) : 1;
 
-if(isset($_POST['save_roles']) && $_SESSION['is_runner'] == 1){ //only runners can change other user's roles info
-$is_runner = isset($_POST['isrunner']) ? 1 : 0;
-$user_id = intval($_POST['userid']);
-mysql_unbuffered_query("UPDATE `users` SET `is_runner` =  '$is_runner' WHERE `id` =".$user_id);
+if(isset($_POST['save_roles']) && !empty($_SESSION['is_runner'])){ //only runners can change other user's roles info
+    $is_runner = isset($_POST['isrunner']) ? 1 : 0;
+    $user_id = intval($_POST['userid']);
+    mysql_unbuffered_query("UPDATE `users` SET `is_runner` =  '$is_runner' WHERE `id` =".$user_id);
 }
 
 /*********************************** HTML layout begins here  *************************************/
@@ -36,7 +37,7 @@ include("head.html"); ?>
 <script type="text/javascript">
   var current_letter = '<?php echo $cur_letter; ?>';
   var logged_id = <?php echo $_SESSION['userid']; ?>;
-  var runner =  <?php echo $_SESSION['is_runner']; ?>;
+  var runner =  <?php echo !empty($_SESSION['is_runner']) ? 1 : 0; ?>;
   var current_page = <?php echo $cur_page; ?>;
   var current_sortkey = 'nickname';
   var current_order = false;
@@ -292,21 +293,17 @@ include("head.html"); ?>
             <span id="info-joined"></span>
             </p>
     
-	    <form id = "roles" method="post" >
+            <form id = "roles" method="post" >
             <p class = "info-label">Roles<br />
             <input type="checkbox" name="isrunner" value="isrunner" id = "info-isrunner" /><span>Runner</span>
             </p>
-	    <input type="hidden" name="userid" id="userid" value="">
-	    <input type="hidden" name="letter" id="hid_letter" value="">
-	    <input type="hidden" name="page" id="hid_page" value="">
-<?php 
-  if($_SESSION['is_runner'] == 1) { //drawing "Save button"
-    echo '
-  <input type="submit" name="save_roles" value="Save Roles">
-  ';
-  }
-?>
-	    </form>
+            <input type="hidden" name="userid" id="userid" value="">
+            <input type="hidden" name="letter" id="hid_letter" value="">
+            <input type="hidden" name="page" id="hid_page" value="">
+	        <?php if (!empty($_SESSION['is_runner'])) { ?>
+            <input type="submit" name="save_roles" value="Save Roles">
+            <?php } ?>
+	        </form>
 
             <form id = "popup-form" action="settings.php" method="post">
 

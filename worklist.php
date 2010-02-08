@@ -83,17 +83,9 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
         $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, $bid_fee_desc, $bid_fee_mechanic_id);
     }
 
-} else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid'])) {
-    // Get work item summary
-    $query = "select summary from ".WORKLIST." where id='".$_POST['itemid']."'";
-    $rt = mysql_query($query);
-    if ($rt) {
-        $row = mysql_fetch_assoc($rt);
-        $summary = $row['summary'];    
-    }
-
+} else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid']) && $is_runner) {
     mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
-    $journal_message .= $_SESSION['nickname'] . " deleted $summary ";
+    $journal_message .= $_SESSION['nickname'] . " deleted " . getWorkItemSummary($_POST['itemid']);
 }
 
 //placing a bid
@@ -101,13 +93,6 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $args = array('itemid', 'bid_amount','done_by', 'notes', 'mechanic_id');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
-    }
-
-    $query = "select summary from ".WORKLIST." where id='$itemid'";
-    $rt = mysql_query($query);
-    if ($rt) {
-        $row = mysql_fetch_assoc($rt);
-        $summary = $row['summary'];    
     }
 
     if($mechanic_id != $_SESSION['userid'])
@@ -135,21 +120,12 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
                             VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$_SESSION['timezone'])."'), '$notes')");
  
-    // Journal notification
-    if($mechanic_id == $_SESSION['userid'])
-    {
-      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on {$summary}. ";
-    }
-    else
-    {
-      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on {$summary}. ";
-    }
-
     //sending email to the owner of worklist item
     $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
     $row = mysql_fetch_assoc($rt);
-    $subject = "new bid: ".$row['summary'];
-    $body =  "<p>New bid was placed for worklist item \"".$row['summary']."\"<br/>";
+    $summary = $row['summary'];
+    $subject = "new bid: $summary";
+    $body =  "<p>New bid was placed for worklist item \"$summary\"<br/>";
     $body .= "Details of the bid:<br/>";
     $body .= "Bidder Email: ".$_SESSION['username']."<br/>";
     $body .= "Done By: ".$done_by."<br/>";
@@ -157,6 +133,14 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $body .= "Notes: ".$notes."</p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($row['username'], $subject, $body);
+
+    // Journal notification
+    if($mechanic_id == $_SESSION['userid']) {
+      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on {$summary}. ";
+    } else {
+      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on {$summary}. ";
+    }
+
 }
 
 //accepting a bid
@@ -164,15 +148,6 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     $bid_id = intval($_POST['bid_id']);
     $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
     $bid_info = mysql_fetch_assoc($res);
-error_log(var_export($bid_info,1));
-
-    // Get work item summary
-    $query = "select summary from ".WORKLIST." where id='{$bid_info['worklist_id']}'";
-    $rt = mysql_query($query);
-    if ($rt) {
-        $row = mysql_fetch_assoc($rt);
-        $summary = $row['summary'];    
-    }
 
     // Get bidder nickname
     $res = mysql_query("select nickname from ".USERS." where id='{$bid_info['bidder_id']}'");
@@ -188,12 +163,11 @@ error_log(var_export($bid_info,1));
     mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
 
     // Journal notification
+    $summary = getWorkItemSummary($bid_info['worklist_id']);
     $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on $summary. ";
 
     //sending email to the bidder 
-    $rt = mysql_query("SELECT `nickname`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$bid_info['worklist_id']);
-    $row = mysql_fetch_assoc($rt);
-    $subject = "bid accepted: ".$row['summary'];
+    $subject = "bid accepted: $summary";
     $body = "Promised by: ".$_SESSION['nickname']."</p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
@@ -377,7 +351,7 @@ include("head.html"); ?>
         data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
         dataType: 'json',
         success: function(json) {
-        	$("#loader_img").css("display","none");
+            $("#loader_img").css("display","none");
             page = json[0][1]|0;
             var cPages = json[0][2]|0;
 
@@ -967,15 +941,11 @@ include("head.html"); ?>
     <div id="buttons">
         <p>
             <input type="submit" id="add" name="add" value="Add" />
-            <input type="submit" id="edit" name="edit" value="Edit" <?php if($_SESSION['is_runner'] == 0){
-echo 'style = "display:none;"';
-}?>/>
-            <input type="submit" id="delete" name="delete" value="Delete" <?php if($_SESSION['is_runner'] == 0){
-echo 'style = "display:none;"';
-}?>/>
-    <?php if ($_SESSION['is_runner'] == 0) { ?>
-	    <input type="submit" id="view" name="view" value="View" disabled = "disabled" />
-    <?php } ?>
+            <input type="submit" id="edit" name="edit" value="Edit" <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
+            <input type="submit" id="delete" name="delete" value="Delete" <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
+            <?php if (empty($_SESSION['is_runner'])) { ?>
+	        <input type="submit" id="view" name="view" value="View" disabled = "disabled" />
+            <?php } ?>
     </div>
     <?php } ?>
             
