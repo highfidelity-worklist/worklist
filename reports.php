@@ -197,7 +197,7 @@ include("head.html"); ?>
 
     <div style="clear:both"></div>
 
-    <form id="reportFrom" method="post" action="" />
+    <form id="reportForm" method="post" action="" />
         <table width="100%" class="table-worklist">
             <thead>
             <tr class="table-hdng">

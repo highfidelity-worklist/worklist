@@ -23,6 +23,8 @@ if(isset($_POST['save_roles']) && !empty($_SESSION['is_runner'])){ //only runner
     mysql_unbuffered_query("UPDATE `users` SET `is_runner` =  '$is_runner' WHERE `id` =".$user_id);
 }
 
+$sfilter = !empty($_POST['sfilter']) ? $_POST['sfilter'] : 'PAID';
+
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>
@@ -41,62 +43,68 @@ include("head.html"); ?>
   var current_page = <?php echo $cur_page; ?>;
   var current_sortkey = 'nickname';
   var current_order = false;
-  $(document).ready(function(){ 
+  var sfilter = 'PAID';
+  $(document).ready(function(){
 
-  $('#outside').click(function() { //closing userbox on clicking outside of it
-    $('#popup-user-info').dialog('close');
-  } );
+    $('#outside').click(function() { //closing userbox on clicking outside of it
+      $('#popup-user-info').dialog('close');
+    });
 
     fillUserlist(current_page);
 
-  $('.ln-letters a').click(function(){
-    var classes = $(this).attr('class').split(' ');
-    current_letter = classes[0];
-    fillUserlist(1);
-    return false;
-  });
+    $('.ln-letters a').click(function(){
+      var classes = $(this).attr('class').split(' ');
+      current_letter = classes[0];
+      fillUserlist(1);
+      return false;
+    });
 
-  $('#popup-user-info').dialog({ autoOpen: false});
+    $('#popup-user-info').dialog({ autoOpen: false});
 
-  //table sorting thing
-  $('.table-userlist thead tr th').hover(function(e){
-    if(!$('div', this).hasClass('show-arrow')){
-      if($(this).data('direction')){
-	$('div', this).addClass('arrow-up');
-      }else{
-	$('div', this).addClass('arrow-down');
+    //table sorting thing
+    $('.table-userlist thead tr th').hover(function(e){
+      if(!$('div', this).hasClass('show-arrow')){
+        if($(this).data('direction')){
+	  $('div', this).addClass('arrow-up');
+        }else{
+	  $('div', this).addClass('arrow-down');
+        }
       }
-    }
-  }, function(e){
-    if(!$('div', this).hasClass('show-arrow')){
-      $('div', this).removeClass('arrow-up');
-      $('div', this).removeClass('arrow-down');
-    }  
-  });
+    }, function(e){
+      if(!$('div', this).hasClass('show-arrow')){
+        $('div', this).removeClass('arrow-up');
+        $('div', this).removeClass('arrow-down');
+      }  
+    });
 
-  $('.table-userlist thead tr th').data('direction', false); //false == desc order
-  $('.table-userlist thead tr th').click(function(e){
-    $('.table-userlist thead tr th div').removeClass('show-arrow');
-    $('.table-userlist thead tr th div').removeClass('arrow-up');
-    $('.table-userlist thead tr th div').removeClass('arrow-down');
-    $('div', this).addClass('show-arrow');
-    var direction = $(this).data('direction');
+    $('.table-userlist thead tr th').data('direction', false); //false == desc order
+    $('.table-userlist thead tr th').click(function(e){
+      $('.table-userlist thead tr th div').removeClass('show-arrow');
+      $('.table-userlist thead tr th div').removeClass('arrow-up');
+      $('.table-userlist thead tr th div').removeClass('arrow-down');
+      $('div', this).addClass('show-arrow');
+      var direction = $(this).data('direction');
 
-    if(direction){
-      $('div', this).addClass('arrow-up');
-    }else{
-      $('div', this).addClass('arrow-down');
-    }
+      if(direction){
+        $('div', this).addClass('arrow-up');
+      }else{
+        $('div', this).addClass('arrow-down');
+      }
 
-    var data = $(this).metadata();
-    current_sortkey = data.sortkey;
-    current_order = $(this).data('direction');
-    fillUserlist(current_page);
+      var data = $(this).metadata();
+      current_sortkey = data.sortkey;
+      current_order = $(this).data('direction');
+      fillUserlist(current_page);
 
-    $('.table-userlist thead tr th').data('direction', false); //reseting to default other rows
-    $(this).data('direction',!direction); //switching on current
-  }); //end of table sorting
+      $('.table-userlist thead tr th').data('direction', false); //reseting to default other rows
+      $(this).data('direction',!direction); //switching on current
+    }); //end of table sorting
 
+    $('#sfilter').change(function(){
+        sfilter = $('#sfilter').val();
+        fillUserlist(current_page);
+        return false;
+    });
   });
 
   function fillUserlist(npage){
@@ -105,7 +113,7 @@ include("head.html"); ?>
     $.ajax({
 	type: "POST",
 	url: 'getuserlist.php',
-	data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order,  
+	data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order + '&sfilter=' + sfilter,
 	dataType: 'json',
 	success: function(json) {
 
@@ -146,7 +154,7 @@ include("head.html"); ?>
 
 
 	    if(cPages > 1){ //showing pagination only if we have more than one page
-	      $('.ln-pages').html(outputPagination(page,cPages));
+	      $('.ln-pages').html('<span>'+outputPagination(page,cPages)+'</span>');
 
 	      $('.ln-pages a').click(function(){
 		page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
@@ -217,7 +225,6 @@ include("head.html"); ?>
 	  if(json[0] == logged_id){
 	    //adding "Edit" button
 	    $('#popup-user-info #popup-form').append('<input type="submit" name="edit" value="Edit">');
-	    $('#roles').hide();
 	  }
       },
       error: function(xhdr, status, err) {
@@ -315,7 +322,18 @@ include("head.html"); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 
-            <h1>Team Members</h1>
+            <div>
+                <h1 style="float:left;margin-left:24px">Team Members</h1>
+                <div style="float:right;line-height:29px;margin-right:24px">
+                    <select id="sfilter" name="sfilter">
+                        <option value="TOTAL">TOTAL</option>
+                        <option value="PAID" selected>PAID</option>
+                        <option value="UNPAID">UNPAID</option>
+                    </select>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+
 <div class="ln-letters"><a href="#" class="all ln-selected">ALL</a><a href="#" class="_">0-9</a><a href="#" class="a">A</a><a href="#" class="b">B</a><a href="#" class="c">C</a><a href="#" class="d">D</a><a href="#" class="e">E</a><a href="#" class="f">F</a><a href="#" class="g">G</a><a href="#" class="h">H</a><a href="#" class="i">I</a><a href="#" class="j">J</a><a href="#" class="k">K</a><a href="#" class="l">L</a><a href="#" class="m">M</a><a href="#" class="n">N</a><a href="#" class="o">O</a><a href="#" class="p">P</a><a href="#" class="q">Q</a><a href="#" class="r">R</a><a href="#" class="s">S</a><a href="#" class="t">T</a><a href="#" class="u">U</a><a href="#" class="v">V</a><a href="#" class="w">W</a><a href="#" class="x">X</a><a href="#" class="y">Y</a><a href="#" class="z ln-last">Z</a></div>
 <br />
 <div class="ln-pages"></div><br />

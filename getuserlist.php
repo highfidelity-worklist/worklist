@@ -12,6 +12,20 @@ $page = isset($_REQUEST["page"])?intval($_REQUEST["page"]) : 1;
 $letter = isset($_REQUEST["letter"]) ? mysql_real_escape_string(trim($_REQUEST["letter"])) : "";
 $order = !empty($_REQUEST["order"]) ? mysql_real_escape_string(trim($_REQUEST["order"])) : "nickname";
 $order_dir =  isset($_REQUEST["order_dir"]) ? mysql_real_escape_string(trim($_REQUEST["order_dir"])) : "DESC";
+
+$sfilter = !empty($_REQUEST['sfilter']) ? $_REQUEST['sfilter'] : 'UNPAID';
+switch ($sfilter) {
+case 'TOTAL':
+  $sfilter = '1';
+  break;
+case 'UNPAID':
+  $sfilter = '`paid`!=1';
+  break;
+default:
+  $sfilter = '`paid`=1';
+  break;
+}
+
 if($letter == "all"){
   $letter = ".*";
 }
@@ -40,10 +54,11 @@ LEFT JOIN (SELECT `mechanic_id`, COUNT(`mechanic_id`) AS `count` FROM `".WORKLIS
 LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `".WORKLIST."` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id` 
 LEFT JOIN (SELECT `bidder_id`, COUNT(`bidder_id`) AS `count` FROM `".BIDS."` GROUP BY `bidder_id`) AS `bids_placed` ON `".USERS."`.`id` = `bids_placed`.`bidder_id` 
 LEFT JOIN (SELECT `bidder_id`, COUNT(`bidder_id`) AS `count` FROM `".BIDS."` WHERE `accepted` = 1 GROUP BY `bidder_id`) AS `bids_accepted` ON `".USERS."`.`id` = `bids_accepted`.`bidder_id`  
-LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `paid` = 1  GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
-LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `paid` = 1 AND `bid_id` != 0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
+LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
+LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
 WHERE `nickname` REGEXP '^$letter' ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 
+error_log($query);
 $rt = mysql_query($query);
 
 // Construct json for pagination
