@@ -284,7 +284,12 @@ include("head.html"); ?>
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
-        row += '<td width="15%">' + pre + RelativeTime(json[5]) + ' ago' + post + '</td>';
+        if (json[2] == 'WORKING' && json[12] != null) {
+            row += '<td width="15%">' + pre + (RelativeTime(json[12]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
+        } else {
+            row += '<td width="15%">' + pre + RelativeTime(json[5]) + ' ago' + post +'</td>';
+        }
+        
 	var feebids = 0;
 	if(json[6]){
 	  feebids = json[6];
@@ -994,7 +999,7 @@ include("head.html"); ?>
             <td>Summary</td>
             <td>Status</td>
             <td>Who</td>
-            <td>Age</td>
+            <td>When</td>
             <td class="worklist-fees">Fees/Bids</td>
         </tr>
         </thead>
