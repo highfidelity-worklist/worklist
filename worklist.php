@@ -45,6 +45,11 @@ if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_payer == 1)
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
+  if(isset($_POST['funded']) && $is_runner){
+    $funded = mysql_real_escape_string($_POST['funded']) == 'on'? 1 :0;
+  }else{
+    $funded = 0;
+  }
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id');
     foreach ($args as $arg) {
       $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -61,11 +66,15 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
     if (!empty($_POST['itemid'])) {
         $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id', ".
-            "status='$status', notes='$notes' where id='$itemid'";
+            "status='$status',  notes='$notes'";
+        if($is_runner) {
+            $query .= " , funded='$funded' ";
+        }
+        $query .= " where id='$itemid'";
         $journal_message .= $_SESSION['nickname'] . " updated $summary. ";
     } else {
-        $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, notes, created ) ".
-            "values ( '$summary', '$creator_id', '$owner_id', '$status', '$notes', now() )";
+        $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, funded, notes, created ) ".
+            "values ( '$summary', '$creator_id', '$owner_id', '$status', '$funded', '$notes', now() )";
         $journal_message .= $_SESSION['nickname'] . " added $summary. ";
     }
     
@@ -342,6 +351,16 @@ include("head.html"); ?>
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
         pre = '';
         post = '';
+
+	var funded = "";
+	if(json[13] == 0){
+	  funded = "No";  
+	}
+        else{
+  	  funded = "Yes";  
+	}
+	row += '<td width="5%">' + pre + funded + post + '</td>';
+
         if (json[3] != '') {
 	    var who = json[3];
 	    var tooltip = "Owner: "+json[4];
@@ -614,6 +633,9 @@ include("head.html"); ?>
 		  $('.popup-body form input[name="owner"]').val(json[1]);
 		  $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
 		  $('.popup-body form textarea[name="notes"]').val(json[3]);
+            if(json[5]==1){
+		  $('#funded').attr('checked',"true" ); 
+   }
 		}else{
 		  $('#popup-edit').data('title.dialog', 'View Worklist Item - '+item);
 		  $('#for_view').show();
@@ -622,6 +644,7 @@ include("head.html"); ?>
 		  $('.popup-body form #info-runner').text(json[1]);
 		  $('.popup-body form #info-status').text(json[2]);
 		  $('.popup-body form #info-notes').html(return2br(json[3]));
+		 $('.popup-body form #info-funded').text(json[5]==1?'Yes' : 'No');
 		}
 		$('#fees_block').show();
 		$('#fees_single_block').hide();
@@ -1078,6 +1101,7 @@ include("head.html"); ?>
         <tr class="table-hdng">
             <td>Summary</td>
             <td>Status</td>
+	    <td>Funded</td>
             <td>Who</td>
             <td>When</td>
             <td class="worklist-fees">Fees/Bids</td>

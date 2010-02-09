@@ -18,6 +18,7 @@
 
   <?php
   $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+  $flag = !$is_runner ? "disabled" : "";     //if user is a runner - allow to set funded
   if ($is_runner) {//if user is a runner - allow to change status
   ?>
 		  <p><label>Status<br />
@@ -31,9 +32,13 @@
   <?php }else {?>
 		  <input type="hidden" id="status" name="status" value = "BIDDING" />    
   <?php }?>
+<p>Funded<br />
+		  <input type="checkbox" name="funded" id="funded" <?php echo $flag; ?>/>
+</p>
 		  <p><label>Notes<br />
 		  <textarea name="notes" size="48" /></textarea>
 		  </label></p>
+
 		</div><!-- end div #for-edit-->
 		<div id = "for_view">
 		  <p class = "info-label">Summary<br />
@@ -44,6 +49,9 @@
 		  <span id="info-status"></span>
 		  </p>
 
+		  <p class="info-label">Funded<br />
+		  <span id="info-funded"></span>
+		  </p>
 		  <p class = "info-label">Notes<br />
 		  <span id="info-notes"></span>
 		  </p>
@@ -76,13 +84,10 @@
                 <p><label>Amount<br />
 		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money" size="48" />
                 </label></p>
-
-                <p><label>Description<br />
+                 <p><label>Description<br />
 		  <input type="text" name="bid_fee_desc" id="bid_fee_desc" class="text-field" size="48" />
                 </label></p>
-
 <?php
-
        if($is_runner)
        {
 ?>
@@ -104,7 +109,6 @@
 	 }
 ?>
 	 </select></label></p>
-
 <?php   } else  {  ?>
 
 	 <p class="info-label">Mechanic<br />

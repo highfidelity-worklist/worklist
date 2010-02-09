@@ -68,7 +68,7 @@ if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
 $qcnt  = "SELECT count(*)";
 
 //mega-query with total fees and latest bid for the worklist item
-$qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,
+$qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`, `funded`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,
 	         `mu`.`username` as mechanic_username,TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `$fees`, `bid_amount`,`creator_id`, (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count";
 $qbody = "FROM `".WORKLIST."` 
           LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
@@ -101,7 +101,7 @@ for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
     } else {
         $nickname = $username = '';
     }
-    $worklist[$i] = array($row['id'], $row['summary'], $row['status'], $nickname, $username, $row['delta'], $row[$fees], $row['bid_amount'], $row['creator_id'], $row['mechanic_nickname'], $row['mechanic_username'], $row['bid_count'], $row['bid_done']);
+    $worklist[$i] = array($row['id'], $row['summary'], $row['status'], $nickname, $username, $row['delta'], $row[$fees], $row['bid_amount'], $row['creator_id'], $row['mechanic_nickname'], $row['mechanic_username'], $row['bid_count'], $row['bid_done'], $row['funded']);
 }
                       
 $json = json_encode($worklist);
