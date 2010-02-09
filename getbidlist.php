@@ -17,7 +17,7 @@ if(isset($_REQUEST["worklist_id"])){
 }
 
 
-$rt = mysql_query("SELECT COUNT(*) FROM ".BIDS." WHERE `worklist_id` = ".$worklist_id);
+$rt = mysql_query("SELECT COUNT(*) FROM ".BIDS." WHERE `worklist_id` = " . $worklist_id . " AND withdrawn = 0");
 $row = mysql_fetch_row($rt);
 $items = intval($row[0]);
 
@@ -28,6 +28,7 @@ $query = "SELECT `id`, `bidder_id`, `email`, `bid_amount`,
           TIMESTAMPDIFF(SECOND, NOW(), `bid_done`) AS `future_delta`, 
 	  DATE_FORMAT(`bid_done`, '%m/%d/%Y') AS `bid_done` FROM `".BIDS. 
          "` WHERE worklist_id=".$worklist_id.
+         " AND withdrawn = 0" .
          " ORDER BY `id` DESC LIMIT " . ($page-1)*$limit . ",$limit";
 $rt = mysql_query($query);
 

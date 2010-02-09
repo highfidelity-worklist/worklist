@@ -69,9 +69,7 @@ $qcnt  = "SELECT count(*)";
 
 //mega-query with total fees and latest bid for the worklist item
 $qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,
-	         `mu`.`username` as mechanic_username,TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `$fees`, `bid_amount`,`creator_id`,
-	         (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`) as bid_count,
-	         TIMESTAMPDIFF(SECOND,NOW(),(SELECT `".BIDS."`.`bid_done` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` and `".BIDS."`.`accepted` = 1)) as bid_done";
+	         `mu`.`username` as mechanic_username,TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `$fees`, `bid_amount`,`creator_id`, (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count";
 $qbody = "FROM `".WORKLIST."` 
           LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
           LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
@@ -79,7 +77,7 @@ $qbody = "FROM `".WORKLIST."`
           $unpaid_join
           LEFT JOIN (SELECT `".BIDS."`.`worklist_id`, `".BIDS."`.`bid_amount` FROM `".BIDS."`, (SELECT MAX(`bid_created`) AS `latest`, `worklist_id` 
           FROM `".BIDS."` GROUP BY `worklist_id`) AS `latest_bids` WHERE `".BIDS."`.`worklist_id` = `latest_bids`.`worklist_id` 
-          AND `".BIDS."`.`bid_created` = `latest_bids`.`latest`) AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id` 
+          AND `".BIDS."`.`bid_created` = `latest_bids`.`latest` AND (`".BIDS."`.`withdrawn` = 0)) AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id` 
           $where";
 $qorder = "ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 

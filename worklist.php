@@ -174,6 +174,75 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     sl_send_email($bid_info['email'], $subject, $body);
 }
 
+//withdrawing bids
+if (isset($_REQUEST['withdraw_bid'])) {
+    if (isset($_REQUEST['bid_id'])) {
+        $bid_id = intval($_REQUEST['bid_id']);
+    } else {
+        $fee_id = intval($_REQUEST['fee_id']);
+        $res = mysql_query('SELECT bid_id FROM `' . FEES . '` WHERE `id`=' . $fee_id);
+        $fee = mysql_fetch_object($res);
+        $bid_id = $fee->bid_id;
+    }
+    $res = mysql_query('SELECT * FROM `' . BIDS . '` WHERE `id`='.$bid_id);
+    $bid = mysql_fetch_object($res);
+    
+    // checking if is bidder or runner
+    if (($is_runner === 1) || ($bid->bidder_id == $_SESSION['userid'])) {
+        // getting the job
+        $res = mysql_query('SELECT * FROM `' . WORKLIST . '` WHERE `id` = ' . $bid->worklist_id);
+        $job = mysql_fetch_object($res);
+        
+        // additional changes if status is WORKING
+        if ($job->status == 'WORKING') {
+            // change status of worklist item
+            
+            mysql_unbuffered_query("UPDATE `" . WORKLIST . "` 
+            						SET `mechanic_id` = '0',
+									`status` = 'BIDDING' 
+									WHERE `id` = $bid->worklist_id 
+									LIMIT 1 ;");
+            // set bids.accepted to 0
+            mysql_unbuffered_query('UPDATE `' . BIDS . '` 
+            						SET `accepted` =  0 
+            						WHERE `id` = ' . $bid->id);
+            // delete the fee entry for this bid
+            mysql_unbuffered_query('DELETE FROM `' . FEES . '`
+            						WHERE `worklist_id` = ' . $bid->worklist_id . '
+            						AND `user_id` = ' . $bid->bidder_id . '
+            						AND `bid_id` = ' . $bid->id);
+        }
+        
+        // change bid to withdrawn
+        mysql_unbuffered_query('UPDATE `' . BIDS . '`
+        						SET `withdrawn` = 1
+        						WHERE `id` = ' . $bid->id);
+        
+        // Get work item summary
+        $query = "select summary from ".WORKLIST." where id='$bid->worklist_id'";
+        $rt = mysql_query($query);
+        if ($rt) {
+            $row = mysql_fetch_assoc($rt);
+            $summary = $row['summary'];    
+        }
+    
+        // Get bidder nickname
+        $res = mysql_query("select nickname from ".USERS." where id='$bid->bidder_id'");
+        if ($res && ($row = mysql_fetch_assoc($res))) {
+            $bidder_nickname = $row['nickname'];
+        }
+        
+        // Journal notification 
+        $journal_message .= $_SESSION['nickname'] . " withdrawing the bid from $bidder_nickname on $summary. ";
+        
+        //sending email to the bidder 
+        $subject = "bid withdrawn: " . $summary;
+        $body = "Your bid has been withdrawn by: ".$_SESSION['nickname']."</p>";
+        $body .= "<p>Love,<br/>Worklist</p>";
+        sl_send_email($bid_info->email, $subject, $body);
+    }
+}
+
 //adding fee to fees table
 if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can add fees
 
@@ -637,7 +706,9 @@ include("head.html"); ?>
 			  ['span', '#info-notes', 'json.notes', 'eval'] ],
 			function(json) {
 			  if( is_runner==1) 
-			    $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">'); 
+			    $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
+			  if( is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
+				$('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');				
 			});
 
 	      $('#popup-bid-info').dialog('open');
@@ -737,7 +808,13 @@ include("head.html"); ?>
 		return false;
             });
 
-
+            $('.wd-link').click(function(e) {
+            	$(this).parent().submit();
+//            	var fee_id = $(this).attr('id').substr(8);
+//                window.location.replace('worklist.php?withdraw_bid=withdraw&fee_id=' + fee_id);
+            });
+            
+            
         },
         error: function(xhdr, status, err) {
             $('.row-feelist-live').remove();
@@ -768,8 +845,17 @@ include("head.html"); ?>
 	        pre = '<a href="#" class = "paid-link" id = "feeitem-' + json[0] + '" >';
 	        post = '</a>';
 	    }
+	
+	var wd = '';
+	if (is_runner) {
+		var wd = ' - <form action="" method="post">' +
+						'<input type="hidden" name="withdraw_bid" value="withdraw" />' +
+						'<input type="hidden" name="fee_id" value="' + json[0] + '" />' +
+						'<a href="#" class = "wd-link">WD</a>' +
+					 '</form>';
+	}
        
-        row += '<td>' + pre + paid + post + '</td></tr>';
+        row += '<td>' + pre + paid + post + wd + '</td></tr>';
        $('.table-feelist tbody').append(row);
     }
 
