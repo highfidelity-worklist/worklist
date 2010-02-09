@@ -221,7 +221,8 @@ include("head.html"); ?>
     var cur_user = false;
     var workitems;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
-    var is_runner = <?php echo isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : '"nada"' ?>;
+    var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
+    var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
 
 
     function AppendPagination(page, cPages, table)
@@ -761,19 +762,12 @@ include("head.html"); ?>
         row += '<td>' + pre + json[1] + post + '</td>';
         row += '<td>' + pre + json[3] + post + '</td>';
         row += '<td>' + pre + json[4] + post + '</td>';
-
 	
-	if(json[5] == 0){
-	  var paid = 'No';
-
-	  if(is_payer)	{
-	    pre = '<a href="#" class = "paid-link" id = "feeitem-' + json[0] + '" >';
-	    post = '</a>';
-	  }
-	  
-	} else {
-	  var paid = 'Yes';
-	}
+	    var paid = (json[5] == 0) ? 'No' : 'Yes';
+	    if(is_payer) {
+	        pre = '<a href="#" class = "paid-link" id = "feeitem-' + json[0] + '" >';
+	        post = '</a>';
+	    }
        
         row += '<td>' + pre + paid + post + '</td></tr>';
        $('.table-feelist tbody').append(row);
