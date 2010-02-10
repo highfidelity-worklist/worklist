@@ -5,6 +5,15 @@
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 
+    /* Fee Categories
+     *
+     * The cannonical list of recognized fees.
+     * For popup-addfee.inc (and other places)
+     */
+    $feeCategories = array(
+       'Bid', 'Code Review', 'Design Spec', 'Misc Expense', 'Management Fee');
+
+
     function checkReferer() {
         $len = strlen(SERVER_NAME);
         if (   empty($_SERVER['HTTP_REFERER'])
@@ -211,11 +220,12 @@
      *
      *  Parameters:     itemid - id of the worklist entry
      *              fee_amount - amount of the fee
+     *            fee_category - accounting category for the fee (Refer to $feeCategory for canonical list)
      *                fee_desc - description of the fee entry
      *             mechanic_id - userid of the mechanic
      *
      */
-    function AddFee($itemid, $fee_amount, $fee_desc, $mechanic_id)
+    function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id)
     {
       // Get work item summary
       $query = "select summary from ".WORKLIST." where id='$itemid'";
@@ -225,7 +235,7 @@
         $summary = $row['summary'];    
       }
  
-      $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', '$mechanic_id', '$fee_desc', NOW(), '0')";
+      $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', '$fee_category', '$mechanic_id', '$fee_desc', NOW(), '0')";
       $result = mysql_unbuffered_query($query);
       
       // Journal notification

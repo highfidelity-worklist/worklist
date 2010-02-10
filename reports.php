@@ -90,12 +90,13 @@ include("head.html"); ?>
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += '">';
         row += '<td><input type="checkbox" name="itemid[]" value="' + json[0] + '" data="' + json[5] + '" class="workitem-paid" /></td>';
-        row += '<td>' + pre + json[0] + post + '</td>';
-        row += '<td>' + pre + json[1] + post + '</td>';
-        row += '<td>' + pre + json[2] + post + '</td>';
-        row += '<td>' + pre + json[3] + post + '</td>';
-        row += '<td>' + pre + json[4] + post + '</td>';
-        row += '<td>' + pre + '$' + json[5] + post + '</td>';
+        row += '<td>' + pre + json[0] + post + '</td>'; // Id
+        row += '<td>' + pre + json[1] + post + '</td>'; // Summary
+        row += '<td>' + pre + json[2] + post + '</td>'; // Description
+        row += '<td>' + pre + json[6] + post + '</td>'; // Category
+        row += '<td>' + pre + json[3] + post + '</td>'; // Status
+        row += '<td>' + pre + json[4] + post + '</td>'; // Payee
+        row += '<td>' + pre + '$' + json[5] + post + '</td>'; // Amount
         row += '</tr>';
 
         $('.table-worklist tbody').append(row);
@@ -201,13 +202,14 @@ include("head.html"); ?>
         <table width="100%" class="table-worklist">
             <thead>
             <tr class="table-hdng">
-                <td width="5%">&nbsp;</td>
-                <td width="5%">ID</td>
+                <td width="3%">&nbsp;</td>
+                <td width="4%">ID</td>
                 <td width="38%">Summary</td>
-                <td width="30%">Description</td>
+                <td width="25%">Description</td>
+                <td width="10%">Category</td>
                 <td width="7%">Status</td>
                 <td width="8%">Payee</td>
-                <td width="7%">Fee</td>
+                <td width="5%">Fee</td>
             </tr>
             </thead>
             <tbody>
