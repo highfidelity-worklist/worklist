@@ -36,7 +36,7 @@
        if($is_runner)
        {
 ?>
-     <p><label>Mechanic
+     <p><label>Pay To:
             <select name='mechanic_id' id='mechanic_id'>
 <?php
      $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);

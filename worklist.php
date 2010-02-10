@@ -18,7 +18,6 @@ if(!isset($_SESSION['sfilter']))
 if(!isset($_SESSION['ufilter']))
   $_SESSION['ufilter'] = 'ALL';
 
-
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -270,6 +269,13 @@ if (!empty($journal_message)) {
     $data['pwd'] = sha1(JOURNAL_API_PWD);
     $data['message'] = stripslashes($journal_message);
     $prc = postRequest(JOURNAL_API_URL, $data);
+}
+
+/* Prevent reposts on refresh */
+if (!empty($_POST)) {
+    unset($_POST);
+    header("Location:worklist.php");
+    exit();
 }
 
 //list of users for filtering
