@@ -639,7 +639,7 @@ include("head.html"); ?>
 		  $('.popup-body form input[name="owner"]').val(json[1]);
 		  $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
 		  $('.popup-body form textarea[name="notes"]').val(json[3]);
-            if(json[5]==1){
+            if(json[5]=="1"){
 		  $('#funded').attr('checked',"true" ); 
    }
 		}else{
@@ -650,7 +650,7 @@ include("head.html"); ?>
 		  $('.popup-body form #info-runner').text(json[1]);
 		  $('.popup-body form #info-status').text(json[2]);
 		  $('.popup-body form #info-notes').html(return2br(json[3]));
-		 $('.popup-body form #info-funded').text(json[5]==1?'Yes' : 'No');
+		 $('.popup-body form #info-funded').text(json[5]=="1"?'Yes' : 'No');
 		}
 		$('#fees_block').show();
 		$('#fees_single_block').hide();
