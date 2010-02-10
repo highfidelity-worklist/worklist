@@ -11,9 +11,11 @@ if (file_exists('server.local.php')) {
 
 if (!defined("APP_NAME"))       define("APP_NAME","Worklist");
 if (!defined("APP_LOCATION"))   define("APP_LOCATION",substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], "/")));
+if (!defined("APP_BASE"))       define("APP_BASE",substr(APP_LOCATION, 0, strrpos(APP_LOCATION, "/", -2)));
 //http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
 if (!defined("SERVER_NAME"))    define("SERVER_NAME","dev.sendlove.us");
 if (!defined("SERVER_URL"))     define("SERVER_URL",'http://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
+if (!defined("SERVER_BASE"))    define("SERVER_BASE",'http://'.SERVER_NAME.'/'.APP_BASE);
 //SSL Not enabled on development
 //define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 //So clone the standard URL
