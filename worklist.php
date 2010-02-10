@@ -23,25 +23,6 @@ $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $journal_message = '';
 
-if(isset($_SESSION['userid']) && isset($_POST['paid']) && $is_payer == 1)
-{
-  $paid_check = mysql_real_escape_string($_POST['paid_check']);
-  if($paid_check == 'on')
-  {
-    $paid_check = 1;
-  }
-  else
-  {
-    $paid_check = 0;
-  }
-
-  $paid_notes = mysql_real_escape_string($_POST['paid_notes']);
-  $fee_id = mysql_real_escape_string($_POST['itemid']);
-  
-  $query = "update ".FEES." set user_paid={$_SESSION['userid']}, notes='{$paid_notes}', paid={$paid_check} WHERE ".FEES.".id={$fee_id}";
-  $rt = mysql_query($query);
-}
-
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
   if(isset($_POST['funded']) && $is_runner){
@@ -185,69 +166,16 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
 //withdrawing bids
 if (isset($_REQUEST['withdraw_bid'])) {
     if (isset($_REQUEST['bid_id'])) {
-        $bid_id = intval($_REQUEST['bid_id']);
+        withdrawBid(intval($_REQUEST['bid_id']));
     } else {
         $fee_id = intval($_REQUEST['fee_id']);
         $res = mysql_query('SELECT bid_id FROM `' . FEES . '` WHERE `id`=' . $fee_id);
-        $fee = mysql_fetch_object($res);
-        $bid_id = $fee->bid_id;
-    }
-    $res = mysql_query('SELECT * FROM `' . BIDS . '` WHERE `id`='.$bid_id);
-    $bid = mysql_fetch_object($res);
-    
-    // checking if is bidder or runner
-    if (($is_runner === 1) || ($bid->bidder_id == $_SESSION['userid'])) {
-        // getting the job
-        $res = mysql_query('SELECT * FROM `' . WORKLIST . '` WHERE `id` = ' . $bid->worklist_id);
-        $job = mysql_fetch_object($res);
-        
-        // additional changes if status is WORKING
-        if ($job->status == 'WORKING') {
-            // change status of worklist item
-            
-            mysql_unbuffered_query("UPDATE `" . WORKLIST . "` 
-            						SET `mechanic_id` = '0',
-									`status` = 'BIDDING' 
-									WHERE `id` = $bid->worklist_id 
-									LIMIT 1 ;");
-            // set bids.accepted to 0
-            mysql_unbuffered_query('UPDATE `' . BIDS . '` 
-            						SET `accepted` =  0 
-            						WHERE `id` = ' . $bid->id);
-            // delete the fee entry for this bid
-            mysql_unbuffered_query('DELETE FROM `' . FEES . '`
-            						WHERE `worklist_id` = ' . $bid->worklist_id . '
-            						AND `user_id` = ' . $bid->bidder_id . '
-            						AND `bid_id` = ' . $bid->id);
+	    $fee = mysql_fetch_object($res);
+	    if ((int)$fee->bid_id !== 0) {
+	        withdrawBid($fee->bid_id);
+        } else {
+        	deleteFee($fee_id);
         }
-        
-        // change bid to withdrawn
-        mysql_unbuffered_query('UPDATE `' . BIDS . '`
-        						SET `withdrawn` = 1
-        						WHERE `id` = ' . $bid->id);
-        
-        // Get work item summary
-        $query = "select summary from ".WORKLIST." where id='$bid->worklist_id'";
-        $rt = mysql_query($query);
-        if ($rt) {
-            $row = mysql_fetch_assoc($rt);
-            $summary = $row['summary'];    
-        }
-    
-        // Get bidder nickname
-        $res = mysql_query("select nickname from ".USERS." where id='$bid->bidder_id'");
-        if ($res && ($row = mysql_fetch_assoc($res))) {
-            $bidder_nickname = $row['nickname'];
-        }
-        
-        // Journal notification 
-        $journal_message .= $_SESSION['nickname'] . " withdrawing the bid from $bidder_nickname on $summary. ";
-        
-        //sending email to the bidder 
-        $subject = "bid withdrawn: " . $summary;
-        $body = "Your bid has been withdrawn by: ".$_SESSION['nickname']."</p>";
-        $body .= "<p>Love,<br/>Worklist</p>";
-        sl_send_email($bid_info->email, $subject, $body);
     }
 }
 
@@ -832,15 +760,58 @@ include("head.html"); ?>
 			    ['textarea', 'paid_notes', 'json[2]', 'eval'],
 			    ['checkbox', 'paid_check', 'json[1]', 'eval'] ]);
 		
-		$('#popup-paid').dialog('open');
+			$('.paidnotice').empty();
+			$('#popup-paid').dialog('open');
+			
+			// onSubmit event handler for the form
+			$('#popup-paid > form').submit(function() {
+				// now we save the payment via ajax		
+				$.ajax({
+					url: 'paycheck.php',
+					dataType: 'json',
+					data: {
+						itemid: $('#' + this.id + ' input[name=itemid]').val(),
+						paid_check: $('#' + this.id + ' input[name=paid_check]').val(),
+						paid_notes: $('#' + this.id + ' textarea[name=paid_notes]').val()
+					},
+					success: function(data) {
+						// We need to empty the notice field before we refill it
+						if (!data.success) {
+							// Failure message
+							var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-error ui-corner-all">' +
+											'<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
+											'<strong>Alert:</strong> ' + data.message + '</p>' +
+										'</div>';
+							$('.paidnotice').append(html);
+							// Fire the failure event
+							$('#popup-paid > form').trigger('failure');
+						} else {
+							// Success message
+							var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">' +
+											'<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
+											'<strong>Info:</strong> ' + data.message + '</p>' +
+										'</div>';
+							$('.paidnotice').append(html);
+							// Fire the success event
+							$('#popup-paid > form').trigger('success');
+						}
+					}
+				});
+				
+				return false;
+			});
 
+			// Here we need to capture the event and fire a new one to the upper container
+			$('#popup-paid > form').bind('success', function(e, d) {
+				$('.table-feelist tbody').empty();
+				GetFeelist(worklist_id);
+			});
+		
 		return false;
             });
 
             $('.wd-link').click(function(e) {
             	$(this).parent().submit();
-//            	var fee_id = $(this).attr('id').substr(8);
-//                window.location.replace('worklist.php?withdraw_bid=withdraw&fee_id=' + fee_id);
             });
             
             

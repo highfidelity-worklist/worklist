@@ -5,9 +5,11 @@
 
 // AJAX request from ourselves to retrieve history
 
+
 include("config.php");
 include("class.session_handler.php");
 
+error_reporting(-1);
 $limit = 30;
 $page = isset($_REQUEST["page"])?$_REQUEST["page"]:1;
 $sfilter = isset($_REQUEST["sfilter"])?explode("/",$_REQUEST["sfilter"]):array();
@@ -25,7 +27,7 @@ if (!empty($sfilter)) {
         } else if ($val == 'UNPAID') {
             $where .= "`unpaid_fees`>0 or ";
             $fees = "unpaid_fees";
-            $unpaid_join = "LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `unpaid_fees` FROM `".FEES."` WHERE `paid`=0 GROUP BY `worklist_id`) AS `unpaid` ON `".WORKLIST."`.`id` = `unpaid`.`worklist_id` ";
+            $unpaid_join = "LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `unpaid_fees` FROM `".FEES."` WHERE `paid`=0 AND `withdrawn` = 0 GROUP BY `worklist_id`) AS `unpaid` ON `".WORKLIST."`.`id` = `unpaid`.`worklist_id` ";
         } else {
             $where .= "status='$val' or ";
         }
@@ -69,11 +71,11 @@ $qcnt  = "SELECT count(*)";
 
 //mega-query with total fees and latest bid for the worklist item
 $qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`, `funded`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,
-	         `mu`.`username` as mechanic_username,TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `$fees`, `bid_amount`,`creator_id`, (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count";
+	         `mu`.`username` as mechanic_username,TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `$fees`, `bid_amount`,`creator_id`, (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count, TIMESTAMPDIFF(SECOND,NOW(),(SELECT `".BIDS."`.`bid_done` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` and `".BIDS."`.`accepted` = 1)) as bid_done";
 $qbody = "FROM `".WORKLIST."` 
           LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
           LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
-          LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `total_fees` FROM `".FEES."` GROUP BY `worklist_id`) AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id` 
+          LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `total_fees` FROM `".FEES."` WHERE `withdrawn` = 0 GROUP BY `worklist_id`) AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id` 
           $unpaid_join
           LEFT JOIN (SELECT `".BIDS."`.`worklist_id`, `".BIDS."`.`bid_amount` FROM `".BIDS."`, (SELECT MAX(`bid_created`) AS `latest`, `worklist_id` 
           FROM `".BIDS."` GROUP BY `worklist_id`) AS `latest_bids` WHERE `".BIDS."`.`worklist_id` = `latest_bids`.`worklist_id` 

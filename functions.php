@@ -261,4 +261,125 @@
 
       return $journal_message;
     }
+    
+    function is_runner() {
+    	return !empty($_SESSION['is_runner']) ? true : false;
+    }
+    
+    function sendJournalNotification($message) {
+    	$data = array(
+    		'user' 		=> JOURNAL_API_USER,
+    		'pwd'  		=> sha1(JOURNAL_API_PWD),
+    		'message'	=> stripslashes($message)
+    	);
+    	
+    	return postRequest(JOURNAL_API_URL, $data);
+    }
+    
+    function withdrawBid($bid_id) {
+	    $res = mysql_query('SELECT * FROM `' . BIDS . '` WHERE `id`='.$bid_id);
+	    $bid = mysql_fetch_object($res);
+	    
+	    // checking if is bidder or runner
+	    if (is_runner() || ($bid->bidder_id == $_SESSION['userid'])) {
+	        // getting the job
+	        $res = mysql_query('SELECT * FROM `' . WORKLIST . '` WHERE `id` = ' . $bid->worklist_id);
+	        $job = mysql_fetch_object($res);
+	        
+	        // additional changes if status is WORKING
+	        if ($job->status == 'WORKING') {
+	            // change status of worklist item
+	            
+	            mysql_unbuffered_query("UPDATE `" . WORKLIST . "` 
+	            						SET `mechanic_id` = '0',
+										`status` = 'BIDDING' 
+										WHERE `id` = $bid->worklist_id 
+										LIMIT 1 ;");
+	            // set bids.accepted to 0
+	            mysql_unbuffered_query('UPDATE `' . BIDS . '` 
+	            						SET `accepted` =  0 
+	            						WHERE `id` = ' . $bid->id);
+	            // delete the fee entry for this bid
+	            mysql_unbuffered_query('UPDATE `' . FEES . '`
+	            						SET `withdrawn` = 1
+	            						WHERE `worklist_id` = ' . $bid->worklist_id . '
+	            						AND `user_id` = ' . $bid->bidder_id . '
+	            						AND `bid_id` = ' . $bid->id);
+	        }
+	        
+	        // change bid to withdrawn
+	        mysql_unbuffered_query('UPDATE `' . BIDS . '`
+	        						SET `withdrawn` = 1
+	        						WHERE `id` = ' . $bid->id);
+	        	    
+	        // Get worklist item
+			$worklistItem = getWorklistById($bid->worklist_id);
+			
+			// Get user
+			$user = getUserById($bid->bidder_id);
+	        
+			// Journal message	        
+			$message  = $_SESSION['nickname'] . ' withdrawing the bid from ';
+			$message .= $user->nickname . ' on ';
+			$message .= $worklistItem->summary . '. ';
+			
+	        // Journal notification 
+	        sendJournalNotification($message);
+	        
+	        //sending email to the bidder 
+	        $subject = "bid withdrawn: " . $summary;
+	        $body = "Your bid has been withdrawn by: ".$_SESSION['nickname']."</p>";
+	        $body .= "<p>Love,<br/>Worklist</p>";
+	        sl_send_email($user->username, $subject, $body);
+	    }
+    }
+    
+    function deleteFee($fee_id) {
+    	$res = mysql_query('SELECT * FROM `' . FEES . '` WHERE `id`='.$fee_id);
+	    $fee = mysql_fetch_object($res);
+	    
+	    // checking if is bidder or runner
+	    if (is_runner() || ($fee->user_id == $_SESSION['userid'])) {
+	    	mysql_unbuffered_query('UPDATE `' . FEES . '`
+	    							SET `withdrawn` = 1
+			            			WHERE `id` = ' . $fee_id);
+	    
+	        // Get worklist item
+			$worklistItem = getWorklistById($fee->worklist_id);
+			
+			// Get user
+			$user = getUserById($fee->user_id);
+			
+			// Journal message	        
+			$message  = $_SESSION['nickname'] . ' withdrawing the fee from ';
+			$message .= $user->nickname . ' on ';
+			$message .= $worklistItem->summary . '. ';
+			
+	        // Journal notification 
+	        sendJournalNotification($message);
+	        
+	        //sending email to the bidder 
+	        $subject = "fee withdrawn: " . $summary;
+	        $body = "Your fee has been withdrawn by: ".$_SESSION['nickname']."</p>";
+	        $body .= "<p>Love,<br/>Worklist</p>";
+	        sl_send_email($user->username, $subject, $body);
+	    }
+    }
+    
+    function getUserById($id) {
+        $res = mysql_query("select * from ".USERS." where id='$id'");
+        if ($res) {
+            return mysql_fetch_object($res);
+        }
+        return false;
+    }
+    
+    function getWorklistById($id) {
+        $query = "select * from ".WORKLIST." where id='$id'";
+        $rt = mysql_query($query);
+        if ($rt) {
+            return mysql_fetch_object($rt);
+        }
+        return false;
+    }
 ?>

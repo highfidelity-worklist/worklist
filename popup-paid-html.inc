@@ -11,6 +11,8 @@
                 <textarea name="paid_notes" id="paid_notes" size="48" /></textarea>
                 </label></p>
 
+				<div class="paidnotice"></div>
+
                   <script type="text/javascript">
                     var summary = new LiveValidation('paid_notes',{ onlyOnSubmit: true });
                         summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });

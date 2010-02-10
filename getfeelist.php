@@ -13,12 +13,12 @@ if(isset($_REQUEST["worklist_id"])){
   exit;
 }
 
-$rt = mysql_query("SELECT SUM(`amount`) FROM `".FEES."` WHERE worklist_id = ".$worklist_id);
+$rt = mysql_query("SELECT SUM(`amount`) FROM `".FEES."` WHERE worklist_id = ".$worklist_id." AND `withdrawn` = 0");
 $row = mysql_fetch_row($rt);
 $total = $row[0];
 
 $query = "SELECT `".FEES."`.`id`, `amount`, `nickname`, `desc`, DATE_FORMAT(`date`, '%m/%d/%Y'), `paid` FROM `".FEES. 
-         "`, `".USERS."` WHERE worklist_id = ".$worklist_id." AND `".USERS."`.`id` = `user_id`";
+         "`, `".USERS."` WHERE worklist_id = ".$worklist_id." AND `withdrawn` = 0 AND `".USERS."`.`id` = `user_id`";
 $rt = mysql_query($query);
 
 // Construct json for list
