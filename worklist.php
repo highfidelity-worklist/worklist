@@ -768,6 +768,7 @@ include("head.html"); ?>
 			$('#popup-paid > form').submit(function() {
 				// now we save the payment via ajax		
 				$.ajax({
+                    type: 'POST',
 					url: 'paycheck.php',
 					dataType: 'json',
 					data: {
@@ -777,6 +778,7 @@ include("head.html"); ?>
 					},
 					success: function(data) {
 						// We need to empty the notice field before we refill it
+			            $('.paidnotice').empty();
 						if (!data.success) {
 							// Failure message
 							var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-error ui-corner-all">' +
@@ -1041,38 +1043,29 @@ include("head.html"); ?>
     <?php } ?>
             
 <div id="search-filter-wrap">
-    
  	<div style="float:right" >
-	
 		<div style="float:left">
-	
-		<form method="get" action="" id="searchForm" />
-		
-			<div style="padding-top:5px;float:left;padding-right:15px;">
-			
-			<?php DisplayFilter('ufilter'); ?>
-			
-			<?php DisplayFilter('sfilter'); ?>		
-			
-			</div>	
-		
-			<div class="input_box" style="float:right" >
-			
-				<input type="submit" id="submit" style="display:none" />
-				
-				<div style="float:left" ><a  href="#" id="search" ><img src="images/spacer.gif" alt="zoom" height="23" width="24" border="0" title="Search"/></a></div>
-				
-				<input type="text"  size="30" alt="Search" name="query" id="query"/>
-				
-				<div style="float:right" ><a  href="#" id="search_reset" ><img src="images/spacer.gif" alt="zoom" height="23" width="32" border="0" title="Reset" /></a></div>
-
+			<form method="get" action="" id="searchForm" />
+				<div style="padding-top:5px;float:left;padding-right:15px;">
+					<?php DisplayFilter('ufilter'); ?>
+					<?php DisplayFilter('sfilter'); ?>		
+				</div>	
+				<div class="input_box">
+	            	<input type="text" id="query" name="query" alt="Search" size="20" value="Search..." onfocus="if(this.value=='Search...') this.value='';">
+	            	<div class="onlyfloat_right">
+	            		<a id="search" href="">
+	            			<img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif">
+	            		</a>
+	            	</div>
+				</div>
+			</form>	
 		</div>
-		
-		</form>
-		
-	</div>
-	
-  </div>  
+		<div style="float: right; margin-top: 3px;">
+			<a style="display: block; float: right;" id="search_reset" href="">
+				<img src="images/cross.png">
+			</a>
+		</div>
+	</div>  
   
 </div>    
 

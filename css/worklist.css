@@ -84,3 +84,29 @@ z-index: 1;
     z-index: 1100; 
 }
 
+.input_box {
+	background:transparent url(../images/input_bg.gif) no-repeat scroll 0 0;
+	border:0 none;
+	float:right;
+	margin:0;
+	padding:2px;
+	width:163px;
+	margin:3px 0 0;
+}
+.input_box input {
+	border:0 none;
+	color:#2C3549;
+	float:left;
+	font-size:13px;
+	margin:0;
+	padding:2px;
+	width:130px;
+}
+.input_box form {
+	display:inline;
+	margin:0;
+	padding:0;
+}
+.input_box input[type="text"]:active, .input_box input[type="text"]:hover, .input_box input[type="text"]:focus {
+	border:medium none;
+}
