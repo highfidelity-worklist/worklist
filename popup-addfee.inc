@@ -2,21 +2,13 @@
         <form name="popup-form" id="popup-form-addfee" action="" method="post">
             <input type="hidden" name="itemid" value="" />
 
-            <div style="float: left; width: 50%">
+            <div>
                 <p><label>Amount<br />
                 <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />
                 </label></p>
             </div>
 
-            <div style="float: right; width: 50%">
-                <p><label>Category<br />
-                <select name="fee_category" id="fee_category" style="width: 100%">
-                <?php foreach ($feeCategories as $cat) { if ($cat == 'Bid') continue; echo "<option value=\"$cat\">$cat</option>"; } ?>
-                </select>
-                </label></p>
-            </div>
-
-                <p style="clear: left"><label>Description<br />
+                <p><label>Description<br />
                 <input type="text" name="fee_desc" id="fee_desc" class="text-field" size="48" />
                 </label></p>
 
