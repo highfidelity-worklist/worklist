@@ -3,6 +3,93 @@
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 
+define('PS_DELIMITER', '|');
+define('PS_UNDEF_MARKER', '!');
+
+function session_real_decode($str)
+{
+  $str = (string)$str;
+
+  $endptr = strlen($str);
+  $p = 0;
+
+  $serialized = '';
+  $items = 0;
+  $level = 0;
+
+  while ($p < $endptr) {
+    $q = $p;
+    while ($str[$q] != PS_DELIMITER)
+      if (++$q >= $endptr) break 2;
+
+    if ($str[$p] == PS_UNDEF_MARKER) {
+      $p++;
+      $has_value = false;
+    } else {
+      $has_value = true;
+    }
+       
+    $name = substr($str, $p, $q - $p);
+    $q++;
+
+    $serialized .= 's:' . strlen($name) . ':"' . $name . '";';
+       
+    if ($has_value) {
+      for (;;) {
+	$p = $q;
+	switch ($str[$q]) {
+	case 'N': /* null */
+	case 'b': /* boolean */
+	case 'i': /* integer */
+	case 'd': /* decimal */
+	  do $q++;
+	  while ( ($q < $endptr) && ($str[$q] != ';') );
+	  $q++;
+	  $serialized .= substr($str, $p, $q - $p);
+	  if ($level == 0) break 2;
+	  break;
+	case 'R': /* reference  */
+	  $q+= 2;
+	  for ($id = ''; ($q < $endptr) && ($str[$q] != ';'); $q++) $id .= $str[$q];
+	  $q++;
+	  $serialized .= 'R:' . ($id + 1) . ';'; /* increment pointer because of outer array */
+	  if ($level == 0) break 2;
+	  break;
+	case 's': /* string */
+	  $q+=2;
+	  for ($length=''; ($q < $endptr) && ($str[$q] != ':'); $q++) $length .= $str[$q];
+	  $q+=2;
+	  $q+= (int)$length + 2;
+	  $serialized .= substr($str, $p, $q - $p);
+	  if ($level == 0) break 2;
+	  break;
+	case 'a': /* array */
+	case 'O': /* object */
+	  do $q++;
+	  while ( ($q < $endptr) && ($str[$q] != '{') );
+	  $q++;
+	  $level++;
+	  $serialized .= substr($str, $p, $q - $p);
+	  break;
+	case '}': /* end of array|object */
+	  $q++;
+	  $serialized .= substr($str, $p, $q - $p);
+	  if (--$level == 0) break 2;
+	  break;
+	default:
+	  return false;
+	}
+      }
+    } else {
+      $serialized .= 'N;';
+      $q+= 2;
+    }
+    $items++;
+    $p = $q;
+  }
+  return @unserialize( 'a:' . $items . ':{' . $serialized . '}' );
+}
+
 class session {
     // session-lifetime
     var $lifeTime;
@@ -58,6 +145,7 @@ class session {
         return "";
     }
     function write($sessID,$sessData) {
+
         // new session-expire-time
         $newExp = time() + $this->lifeTime;
         // is a session with this id in the database?
@@ -66,6 +154,32 @@ class session {
         // if yes,
         if($res && mysql_num_rows($res)) {
             // ...update session-data
+
+	  $row = mysql_fetch_assoc($res);
+	  $new_session_data = session_real_decode($sessData);
+	  $old_session_data = session_real_decode($row['session_data']);
+
+	  //
+	  // Stateful Filters - The only filters that will be accepted need to
+	  //                    have the update_filter session set.  Otherwise
+	  //                    we grab the original values from the already
+	  //                    stored session data.
+	  // 
+	  if(isset($new_session_data['update_filter']))
+	  {
+	    // Push change into the DB
+	    unset($new_session_data['update_filter']);
+	  }
+	  else
+	  {
+	    // Pull the old change
+	    $new_session_data['sfilter'] = $old_session_data['sfilter'];
+	    $new_session_data['ufilter'] = $old_session_data['ufilter'];
+	  }
+
+	  $_SESSION = $new_session_data;
+	  $sessData = session_encode();
+
             mysql_query("UPDATE ws_sessions
                          SET session_expires = '$newExp',
                          session_data = '$sessData'

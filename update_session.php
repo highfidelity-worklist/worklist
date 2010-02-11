@@ -16,6 +16,7 @@ if(isset($_REQUEST['ufilter'])) {
   $_SESSION['ufilter'] = $_REQUEST['ufilter'];
 }
 
-echo('Session changed!');
+$_SESSION['update_filter'] = 1;
+
 exit;
 ?>
