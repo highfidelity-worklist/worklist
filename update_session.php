@@ -8,16 +8,14 @@
 include("config.php");
 include("class.session_handler.php");
 
-if(isset($_POST['sfilter']))
-{
-  $_SESSION['sfilter'] = $_POST['sfilter'];
+if(isset($_REQUEST['sfilter'])) {
+  $_SESSION['sfilter'] = $_REQUEST['sfilter'];
 }
 
-if(isset($_POST['ufilter']))
-{
-  $_SESSION['ufilter'] = $_POST['ufilter'];
+if(isset($_REQUEST['ufilter'])) {
+  $_SESSION['ufilter'] = $_REQUEST['ufilter'];
 }
 
+echo('Session changed!');
 exit;
-
 ?>

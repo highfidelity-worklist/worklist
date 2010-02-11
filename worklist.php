@@ -17,7 +17,7 @@ if(!isset($_SESSION['sfilter']))
 
 if(!isset($_SESSION['ufilter']))
   $_SESSION['ufilter'] = 'ALL';
-
+  
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -889,7 +889,7 @@ include("head.html"); ?>
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#search-filter, #user-filter").change(function(){
-
+       	
         if ($("#search-filter").val() == 'UNPAID') {
             $(".worklist-fees").text('Unpaid');
         } else {
@@ -899,7 +899,11 @@ include("head.html"); ?>
 	    $.ajax({
 	      type: "POST",
 	      url: 'update_session.php',
-	      data: 'sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()});
+	      data: {
+		      sfilter: $("#search-filter").val(),
+		      ufilter: $("#user-filter").val()
+	      }
+	    });
 
             page = 1;
             if (timeoutId) clearTimeout(timeoutId);
