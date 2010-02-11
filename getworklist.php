@@ -25,7 +25,7 @@ if (!empty($sfilter)) {
         if ($val == 'ALL') {
             $where .= "1 or ";
         } else if ($val == 'UNPAID') {
-            $where .= "`unpaid_fees`>0 or ";
+            $where .= "(`unpaid_fees`>0 and status='DONE') or ";
             $fees = "unpaid_fees";
             $unpaid_join = "LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `unpaid_fees` FROM `".FEES."` WHERE `paid`=0 AND `withdrawn` = 0 GROUP BY `worklist_id`) AS `unpaid` ON `".WORKLIST."`.`id` = `unpaid`.`worklist_id` ";
         } else {
