@@ -5,14 +5,14 @@
 */
 /* the div that holds the date picker calendar */
 .dpDiv {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: helvetica, arial, sans-serif;
 	font-size: .8em;
 	}
 
 
 /* the table (within the div) that holds the date picker calendar */
 .dpTable {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: helvetica, arial, sans-serif;
 	font-size: 12px;
 	text-align: center;
 	color: #505050;
@@ -128,7 +128,7 @@
 
 /* the forward/backward buttons at the top */
 .dpButton {
-/*	font-family: Arial, Helvetica, sans-serif;
+/*	font-family: helvetica, arial, sans-serif;
 	font-size: 10px;
 	color: gray;
 	
@@ -145,7 +145,7 @@
 
 /* the "This Month" and "Close" buttons at the bottom */
 .dpTodayButton {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: helvetica, arial, sans-serif;
 	font-size: 10px;
 	color: #fff;
 	background: #816faa;

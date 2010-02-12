@@ -62,7 +62,7 @@ include("head.html"); ?>
 <div id="filter" onClick="closebox()"></div>
 <div id="box" >
 <p align="center">Email Confirmation</p>
-<p><font  style="color:#624100; font-size:12px; font-family:Verdana;">Registration complete! Welcome to the Worklist. You can now start work.</font></p>
+<p><font  style="color:#624100; font-size:12px; font-family:helvetica, arial, sans-serif;">Registration complete! Welcome to the Worklist. You can now start work.</font></p>
 <p>&nbsp;</p>
 <p align="center"><strong><a href="#" onClick="closebox()">Close</a></strong></p>
 </div>
