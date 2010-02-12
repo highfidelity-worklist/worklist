@@ -240,7 +240,7 @@ include("head.html"); ?>
 
     function AppendPagination(page, cPages, table)
     {
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="5" style="text-align:center;">Pages : &nbsp;';
+        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="6" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) { 
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;'; 
         } 

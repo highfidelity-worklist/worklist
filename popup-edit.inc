@@ -5,9 +5,9 @@
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
 
 		<div id = "for_edit" <?php if(!isset($_SESSION['userid'])){ echo 'style = "display:none;"';}?>>
-		  <p><label>Summary<br />
+		  <p class="info-label">Summary<br />
 		  <input type="text" name="summary" id="summary" class="text-field" size="48" />
-		  </label></p>
+		  </p>
 
 		  <input type="hidden" id="owner" name="owner" /><!-- for now -->
                   <script type="text/javascript">
@@ -21,23 +21,23 @@
   $flag = !$is_runner ? "disabled" : "";     //if user is a runner - allow to set funded
   if ($is_runner) {//if user is a runner - allow to change status
   ?>
-		  <p><label>Status<br />
+		  <p class="info-label">Status<br />
 		  <select name="status">
 		      <option value="BIDDING" selected = "selected" >BIDDING</option>
 		      <option value="WORKING">WORKING</option>
 		      <option value="SKIP">SKIP</option>
 		      <option value="DONE">DONE</option>
 		  </select>
-		  </label></p>
+		  </p>
   <?php }else {?>
 		  <input type="hidden" id="status" name="status" value = "BIDDING" />    
   <?php }?>
 <p>Funded<br />
 		  <input type="checkbox" name="funded" id="funded" <?php echo $flag; ?>/>
 </p>
-		  <p><label>Notes<br />
+		  <p class="info-label">Notes<br />
 		  <textarea name="notes" size="48" /></textarea>
-		  </label></p>
+		  </p>
 
 		</div><!-- end div #for-edit-->
 		<div id = "for_view">
@@ -58,7 +58,7 @@
 		</div><!-- end div #for_view -->
                 <?php if (isset($_SESSION['userid'])) { ?>
 		<div id = "fees_block">
-		  Fees
+		  <span  class="info-label">Fees</span>
 		  <table width="100%" class="table-feelist">
 		      <thead>
 		      <tr class="table-hdng" >
@@ -80,18 +80,18 @@
 		</div><!-- end of fees_block -->
 
 		<div id='fees_single_block'>
-		Fees
-                <p><label>Amount<br />
+		<span  class="info-label">Fees</span>
+                <p class="info-label">Amount<br />
 		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money" size="48" />
-                </label></p>
-                 <p><label>Description<br />
+                </p>
+                 <p class="info-label">Description<br />
 		  <input type="text" name="bid_fee_desc" id="bid_fee_desc" class="text-field" size="48" />
-                </label></p>
+                </p>
 <?php
        if($is_runner)
        {
 ?>
-	 <p><label>Mechanic
+	 <p class="info-label">Pay To
        	 <select name='bid_fee_mechanic_id' id='bid_fee_mechanic_id'>
 <?php
 	 $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
@@ -108,10 +108,10 @@
 	   }
 	 }
 ?>
-	 </select></label></p>
+	 </select></p>
 <?php   } else  {  ?>
 
-	 <p class="info-label">Mechanic<br />
+	 <p class="info-label">Pay To<br />
 	   <span id="bid_fee_mechanic_id"><?php echo $_SESSION['nickname']; ?></span>
 	 </p>
          <input type='hidden' name='bid_fee_mechanic_id' id='bid_fee_mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />

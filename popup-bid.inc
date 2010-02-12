@@ -14,15 +14,15 @@
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="itemid" value="" />
     
-                <p><label>Bid Amount<br />
+                <p class="info-label">Bid Amount<br />
                 <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
-                </label></p>
+                </p>
     
-                <p><label>Done By<br />
+                <p class="info-label">Done By<br />
                   <input type="text" class="text-field date" name="done_by" id="done_by" value="" size="20" />
                   <img src="images/Calendar.gif" class="dpButtonCal" onClick="displayDatePicker('done_by', false, 'mdy', '/');" /> 
                   <img src="images/transparent.gif" width="30px" height="1" id="done_by_button"/>
-                </label></p>
+                </p>
 
                 <script type="text/javascript">
                     // see http://regexlib.com/REDetails.aspx?regexp_id=318
@@ -38,15 +38,15 @@
                         done_by.add( Validate.Format, { pattern: regex_date, failureMessage: "Invalid Input!" });
                 </script>
 
-                <p><label>Notes<br />
+                <p class="info-label">Notes<br />
                 <textarea name="notes" size="48" /></textarea>
-                </label></p>
+                </p>
 
 <?php
        if($is_runner)
        {
 ?>
-	 <p><label>Mechanic
+	 <p class="info-label">Pay To<br/>
        	 <select name='mechanic_id' id='mechanic_id'>
 <?php
 	 $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
@@ -63,17 +63,17 @@
 	   }
 	 }
 ?>
-	 </select></label></p>
+	 </select></p>
 
 <?php   } else  {  ?>
 
-	 <p class="info-label">Mechanic<br />
-	   <span id="mechanic_id"><?php echo $_SESSION['nickname']; ?></span>
+	 <p class="info-label">Pay To<br />
+	   <span id="mechanic_id"><?php echo !empty($_SESSION['nickname']) ? $_SESSION['nickname'] : ''; ?></span>
 	 </p>
-         <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
+         <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />
 
 <?php   }  ?>
     
-                <input type="submit" id="bid" name="place_bid" value="Place Bid" style="position:relative; left:240px;" />
+                <br/><input type="submit" id="bid" name="place_bid" value="Place Bid" />
             </form>
     </div><!-- end of popup-bid -->

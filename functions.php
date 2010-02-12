@@ -96,22 +96,19 @@
      */
     function GetUserList($userid, $nickname)
     {
-      $rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$userid}' and `confirm`='1' ORDER BY `nickname`");
+        $rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$userid}' and `confirm`='1' ORDER BY `nickname`");
 
-      $user_array = array();
-      if($userid != '')
-      {
-	$user_array[] = array('userid' => $userid,
-			      'nickname' => $nickname);
-      }
+        $user_array = array();
+        if ($userid != '') {
+            $user_array[] = array('userid' => $userid, 'nickname' => $nickname);
+        }
 
-      while ($row = mysql_fetch_assoc($rt))
-      {
-	$user_array[] = array('userid' => $row['id'],
-			      'nickname' => $row['nickname']);
-      }
+        while ($row = mysql_fetch_assoc($rt))
+        {
+            $user_array[] = array('userid' => $row['id'], 'nickname' => $row['nickname']);
+        }
 
-      return $user_array;
+        return $user_array;
     }
 
 
@@ -157,7 +154,11 @@
 	  echo "  <option value='ALL'>ALL USERS</option>\n";
 	}
 	
-	$user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
+    if (!empty($_SESSION['userid'])) {
+	    $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
+    } else {
+	    $user_array = GetUserList('', '');
+    }
 
 	foreach($user_array as $user_record)
 	{

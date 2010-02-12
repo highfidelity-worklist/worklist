@@ -3,14 +3,14 @@
             <input type="hidden" name="itemid" value="" />
 
             <div>
-                <p><label>Amount<br />
+                <p class="info-label">Amount<br />
                 <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />
-                </label></p>
+                </p>
             </div>
 
-                <p><label>Description<br />
+                <p class="info-label">Description<br />
                 <input type="text" name="fee_desc" id="fee_desc" class="text-field" size="48" />
-                </label></p>
+                </p>
 
                 <script type="text/javascript">
                     // see http://regexlib.com/REDetails.aspx?regexp_id=318
@@ -28,7 +28,7 @@
        if($is_runner)
        {
 ?>
-     <p><label>Pay To:
+     <p class="info-label">Pay To
             <select name='mechanic_id' id='mechanic_id'>
 <?php
      $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
@@ -42,14 +42,14 @@
        }
      }
 ?>
-     </select></label></p>
+     </select></p>
 
 <?php   } else  {  ?>
 
-     <p class="info-label">Mechanic<br />
-       <span id="mechanic_id"><?php echo $_SESSION['nickname']; ?></span>
+     <p class="info-label">Pay To<br />
+       <span id="mechanic_id"><?php echo !empty($_SESSION['nickname']) ? $_SESSION['nickname'] : ''; ?></span>
      </p>
-         <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
+         <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />
 
 <?php   }  ?>
         <input type="submit" name="add_fee" value="Add Fee" style="position:relative; left:240px;" />

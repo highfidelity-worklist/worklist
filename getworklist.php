@@ -1,4 +1,6 @@
 <?php
+//  vim:ts=4:et
+
 //  Copyright (c) 2009, LoveMachine Inc.  
 //  All Rights Reserved.  
 //  http://www.lovemachineinc.com
@@ -40,14 +42,14 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     } else {
         $where .= " and ";
     }
-    $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter')";
+    $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
 }
 
 if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
     $query = $_REQUEST['query'];
     $searchById = false;
      if(is_numeric(trim($query))) {
-        $rt = mysql_query("select count(*) from ".WORKLIST." $where AND id = " .$query );
+        $rt = mysql_query("select count(*) from ".WORKLIST." LEFT JOIN `".FEES."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id` $where AND `".WORKLIST."`.`id` = " .$query);
         $row = mysql_fetch_row($rt);
         $rowCount = intval($row[0]);
         if($rowCount >0)
@@ -60,9 +62,8 @@ if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
         $array=explode(" ",rawurldecode($_REQUEST['query']));
 
         foreach ($array as $item) {
-        
-            $where.=" AND ( summary LIKE '%".mysql_escape_string($item)."%'  OR  notes  LIKE '%".mysql_escape_string($item)."%') ";
-        
+            $item = mysql_escape_string($item);
+            $where.=" AND ( summary LIKE '%$item%' OR `".WORKLIST."`.`notes` LIKE '%$item%' OR `".FEES."`.notes LIKE '%$item%') ";
         }
     }    
 }
@@ -70,10 +71,11 @@ if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
 $qcnt  = "SELECT count(*)";
 
 //mega-query with total fees and latest bid for the worklist item
-$qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`, `funded`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,
+$qsel  = "SELECT DISTINCT `".WORKLIST."`.`id`, `summary`, `status`, `funded`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,
 	         `mu`.`username` as mechanic_username,TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `$fees`, `bid_amount`,`creator_id`, (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count, TIMESTAMPDIFF(SECOND,NOW(),(SELECT `".BIDS."`.`bid_done` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` and `".BIDS."`.`accepted` = 1)) as bid_done";
 $qbody = "FROM `".WORKLIST."` 
           LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
+          LEFT JOIN `".FEES."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
           LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
           LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `total_fees` FROM `".FEES."` WHERE `withdrawn` = 0 GROUP BY `worklist_id`) AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id` 
           $unpaid_join
