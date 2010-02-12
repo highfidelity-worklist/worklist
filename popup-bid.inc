@@ -46,7 +46,7 @@
        if($is_runner)
        {
 ?>
-	 <p class="info-label">Pay To<br/>
+	 <p class="info-label">Mechanic<br/>
        	 <select name='mechanic_id' id='mechanic_id'>
 <?php
 	 $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
@@ -67,7 +67,7 @@
 
 <?php   } else  {  ?>
 
-	 <p class="info-label">Pay To<br />
+	 <p class="info-label">Mechanic<br />
 	   <span id="mechanic_id"><?php echo !empty($_SESSION['nickname']) ? $_SESSION['nickname'] : ''; ?></span>
 	 </p>
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />

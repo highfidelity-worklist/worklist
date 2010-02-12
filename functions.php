@@ -262,6 +262,47 @@
 
       return $journal_message;
     }
+
+    function relativeTime($time) {
+	$plural = ''; 
+	$mins = 60; 
+	$hour = $mins * 60; 
+	$day = $hour * 24;
+	$week = $day * 7;
+	$month = $day * 30;
+	$year = $day * 365;
+
+	$segments = array();
+	$segments['yr']   = intval($time / $year);  $time %= $year;
+	$segments['mnth'] = intval($time / $month); $time %= $month;
+	if (!$segments['yr']) {
+	    $segments['day']  = intval($time / $day);   $time %= $day;
+	    if (!$segments['mnth']) {
+		$segments['hr']   = intval($time / $hour);  $time %= $hour;
+		if (!$segments['day']) {
+		    $segments['min']  = intval($time / $mins);  $time %= $mins;
+		    if (!$segments['hr'] && !$segments['min']) {
+			$segments['sec']  = $time;
+		    }
+		}
+	    }
+	}
+
+	$relTime = '';
+	foreach ($segments as $unit=>$cnt) {
+	    if ($segments[$unit]) {
+		$relTime .= "$cnt $unit";
+		if ($cnt > 1) $relTime .= 's';
+		$relTime .= ', ';
+	    }
+	}
+	$relTime = substr($relTime, 0, -2);
+	if (!empty($relTime)) {
+	    return "$relTime ago";
+	} else {
+	    return "just now";
+	}
+    }     
     
     function is_runner() {
     	return !empty($_SESSION['is_runner']) ? true : false;

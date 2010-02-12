@@ -18,11 +18,13 @@ if(!isset($_SESSION['sfilter']))
 
 if(!isset($_SESSION['ufilter']))
   $_SESSION['ufilter'] = 'ALL';
-  
+
+
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $journal_message = '';
+
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
@@ -111,8 +113,10 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
                             VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$_SESSION['timezone'])."'), '$notes')");
  
+    $bid_id = mysql_insert_id();
+
     //sending email to the owner of worklist item
-    $rt = mysql_query("SELECT `username`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
+    $rt = mysql_query("SELECT `username`,`is_runner`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
     $row = mysql_fetch_assoc($rt);
     $summary = $row['summary'];
     $subject = "new bid: $summary";
@@ -122,6 +126,11 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $body .= "Done By: ".$done_by."<br/>";
     $body .= "Bid Amount: ".$bid_amount."<br/>";
     $body .= "Notes: ".$notes."</p>";
+    if ($row['is_runner']==1) {
+      $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
+      $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
+      $body .= $urlacceptbid;
+    }
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($row['username'], $subject, $body);
 
@@ -177,6 +186,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
         } else {
         	deleteFee($fee_id);
         }
+
     }
 }
 
@@ -461,7 +471,7 @@ include("head.html"); ?>
 		  edit = true;
 		}
                 PopulatePopup(workitem, edit);
-		$('#popup-edit').dialog('open');
+// 		$('#popup-edit').dialog('open');
             });
 
 	     if(is_runner == 1){ //only runners can change priorities. I guess :)
@@ -495,7 +505,7 @@ include("head.html"); ?>
 		e.stopPropagation();
                 SelectWorkItem($(this));
                 PopulatePopup(workitem, false);
-		$('#popup-edit').dialog('open');
+// 		$('#popup-edit').dialog('open');
                 return false;
             });
 <?php } ?>
@@ -553,41 +563,12 @@ include("head.html"); ?>
     }
 
     function PopulatePopup(item, edit) {
-        $.ajax({
-            type: "POST",
-            url: 'getworkitem.php',
-            data: 'item='+item,
-            dataType: 'json',
-            success: function(json) {
-		if(edit){
-		  $('#popup-edit').data('title.dialog', 'Edit Worklist Item - '+item);
-		  $('#for_edit').show();
-		  $('#for_view').hide();
-		  $('.popup-body form input[name="itemid"]').val(item);
-		  $('.popup-body form input[name="summary"]').val(json[0]);
-		  $('.popup-body form input[name="owner"]').val(json[1]);
-		  $('.popup-body form select[name="status"] option[value="'+json[2]+'"]').attr('selected','selected');
-		  $('.popup-body form textarea[name="notes"]').val(json[3]);
-            if(json[5]=="1"){
-		  $('#funded').attr('checked',"true" ); 
-   }
-		}else{
-		  $('#popup-edit').data('title.dialog', 'View Worklist Item - '+item);
-		  $('#for_view').show();
-		  $('#for_edit').hide();
-		  $('.popup-body form #info-summary').text(json[0]);
-		  $('.popup-body form #info-runner').text(json[1]);
-		  $('.popup-body form #info-status').text(json[2]);
-		  $('.popup-body form #info-notes').html(return2br(json[3]));
-		 $('.popup-body form #info-funded').text(json[5]=="1"?'Yes' : 'No');
-		}
-		$('#fees_block').show();
-		$('#fees_single_block').hide();
-		GetFeelist(item);
-            },
-            error: function(xhdr, status, err) {
-            }
-        });
+	var action = "view";
+	if(edit) {
+	  action = "edit";
+	}
+
+	window.location.href = "<? echo SERVER_URL ; ?>workitem.php?job_id="+workitem+"&action="+action;
     }
 
     function ResetPopup() {
@@ -892,7 +873,7 @@ include("head.html"); ?>
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#search-filter, #user-filter").change(function(){
-       	
+
         if ($("#search-filter").val() == 'UNPAID') {
             $(".worklist-fees").text('Unpaid');
         } else {
@@ -950,7 +931,7 @@ include("head.html"); ?>
             $('#popup-edit form input[name="itemid"]').val(workitem);
             PopulatePopup(workitem, true);
 	        $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
-	        $('#popup-edit').dialog('open');
+// 	        $('#popup-edit').dialog('open');
         });
         $('#delete').click(function(){
             var summary = '(No summary)';
@@ -972,7 +953,7 @@ include("head.html"); ?>
         $('#view').click(function(){
             $('#popup-edit form input[name="id"]').val(workitem);
             PopulatePopup(workitem, false);
-            $('#popup-edit').dialog('open');
+//             $('#popup-edit').dialog('open');
         });
 
         $('.popup-body form input[type="submit"]').click(function(){
@@ -998,8 +979,35 @@ include("head.html"); ?>
                 return false;
 	        }
         });
+
+  $("#search").click(function(e){
+    e.preventDefault();
+	$("#searchForm").submit();
+        return false;
     });
-</script>
+    $("#search_reset").click(function(e){
+    	
+    	e.preventDefault();
+    	
+        $("#query").val('');    
+   		 
+        GetWorklist(1,false);
+        
+        return false;
+    });
+
+
+    $("#searchForm").submit(function(){   
+    	
+        $("#loader_img").css("display","block");
+        
+        GetWorklist(1,false);
+                    
+        return false;
+    });
+
+    });
+</script> 
 
 <title>Worklist | Lend a Hand</title>
 
@@ -1013,8 +1021,8 @@ include("head.html"); ?>
 
     <!-- Popup for deleting a work item -->
     <?php require_once('popup-delete.inc') ?>
- 
-   <!-- Popup HTML for paying a fee -->
+
+    <!-- Popup HTML for paying a fee -->
     <?php require_once('popup-paid-html.inc') ?>
 
     <!-- Popup for placing a bid -->

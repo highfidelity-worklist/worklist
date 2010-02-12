@@ -1,0 +1,133 @@
+#page-content{
+border:1px solid #AAAAAA;
+width:873px;
+}
+#page-content table {
+  font-size:1.1em;
+}
+#page-content, #left-panel {
+  padding:3px;
+}
+.info-label {
+font-weight:bold;
+}
+#left-panel {
+float:left;
+width:48%;
+/*width:576px;*/
+}
+#left-panel li {
+border-bottom:1px solid lightgrey;
+}
+
+#right-panel{
+float:right;
+width:50%;
+height:100%;
+background-color: #FFFFDD;
+border-left:1px solid grey;
+padding-left:3px;
+padding-bottom:5px;
+min-height:510px;
+}
+.info-label{
+font-weight: bold;
+}
+.bid-form p {
+  line-height:1.2em;
+  margin:0px;
+}
+.bid-form input[type="text"] {
+  width:13em;
+}
+.bid-form label {
+  float: left;    
+  width: 6em;    
+  margin-right: 1em;  
+}
+.bid-form ul , #for_view ul{  
+padding: 0 0 0 0.5em;  
+list-style: none;  
+}  
+.bid-form textarea {
+  width:18em;
+}
+#for_view .info-label {
+  display:block;
+}
+.table-caption {
+color: black;
+background: none repeat scroll 0% 0% lightgrey;
+padding: 5px 0pt;
+}
+.table-bids{
+margin-top:5px;
+margin-bottom:5px;
+}
+#edit_workitem_form ul li{
+float:left;
+list-style: none; 
+}
+#edit_workitem_form textarea{
+width:200px;
+}
+#open_bid_dialog ul li{
+float:left;
+list-style: none; 
+}
+#popup-buttons {
+padding:5px;
+}
+#popup-buttons input {
+float:right;
+};
+.workitem-back {
+height:26px;
+line-height:26px;
+}
+#edit-notes {
+height:300px;
+width:98%;
+}
+#summary {
+width:98%;
+}
+
+* :focus { outline: 0; }
+.popup-body, #confirmation{
+	display: none;
+}
+
+.popup-body
+{
+    padding: 8px;
+    text-align: left;
+}
+
+.popup-body input[type="text"], .popup-body textarea,
+.popup-body select
+{
+    font-size: 14px;
+    font-family: "Trebuchet MS","Trebuchet",Arial,Helvetica,sans-serif;
+    width: 370px;
+}
+
+#popup-edit textarea{
+    height: 110px;
+}
+
+.popup-body input.date {
+    width: 130px;
+}
+.popup-body input.money {
+    width: 50px;
+}
+
+.popup-body p
+{
+    margin: 0 0 2px;
+}
+
+.popup-body .popup-delete-summary {
+    padding: 4px;
+}
