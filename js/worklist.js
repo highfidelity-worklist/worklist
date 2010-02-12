@@ -166,31 +166,3 @@ function SimplePopup(popupId,
   }
 }
 
-$(document).ready(function(){
-	  $("#search").click(function(e){
-    e.preventDefault();
-	$("#searchForm").submit();
-        return false;
-    });
-    $("#search_reset").click(function(e){
-    	
-    	e.preventDefault();
-    	
-        $("#query").val('');    
-   		 
-        GetWorklist(1,false);
-        
-        return false;
-    });
-
-
-    $("#searchForm").submit(function(){   
-    	
-        $("#loader_img").css("display","block");
-        
-        GetWorklist(1,false);
-                    
-        return false;
-    });
-     
-});
