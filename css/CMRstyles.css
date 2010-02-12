@@ -425,4 +425,6 @@ border:0px;
 display:inline;
 padding:0px;
 margin:0px
-} 
+}
+
+span.feesum span.calculating { font-weight: normal; font-style: italic; }

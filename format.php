@@ -7,16 +7,18 @@
 <div id="outside">
 
 <!-- Welcome, login/out -->
-       
+
             <div id="welcome">
             <?php if ( isset($_SESSION['username'])) {
-
+                    $return_from_getfeesums = true;
+		    include 'getfeesums.php';
+                    $feeinfo = ' | Your fees: <span class=feesum id=fees-week>$'.$sum['week'].'</span> this week, <span class=feesum id=fees-month>$'.$sum['month'].'</span> this month';
                     if (empty($_SESSION['nickname'])){ ?>
-                        Welcome, <? $_SESSION['username']?> | <a href="logout.php">Logout</a>
+		        Welcome, <? $_SESSION['username']?><?=$feeinfo?> | <a href="logout.php">Logout</a>
                     <?php }else{ ?>
-                        Welcome, <?php echo $_SESSION['nickname']; ?> | <a href="logout.php">Logout</a>
-                    <?php }
-                }else{?>
+                        Welcome, <?php echo $_SESSION['nickname']; ?><?=$feeinfo?> | <a href="logout.php">Logout</a>
+                    <?php } ?>
+                <?php }else{?>
                         <a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>
                 <?php } ?>
 

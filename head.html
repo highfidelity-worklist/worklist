@@ -31,6 +31,17 @@
 		$('#contactway').watermark('Skype, email, phone, etc.', {useNative: false});
 		$('#payway').watermark('Contract services, Paypal, etc.', {useNative: false});
 		$('#skills').watermark('Your skills', {useNative: false});
+
 	});
+
+        var updateFeeSumsTimes = setInterval (function () {
+		$.get ('getfeesums.php', function (data) {
+			var sum = eval ('('+data+')');
+			if (typeof sum != 'object') return false;
+			//alert (new Date().toTimeString()+': updating fee sums: '+sum.week+', '+sum.month);                 
+			$('#fees-week').html ('$'+sum.week);
+			$('#fees-month').html ('$'+sum.month);
+		    });
+	    }, <?=AJAX_REFRESH*1000?>);
 
 </script>

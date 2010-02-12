@@ -999,7 +999,7 @@ include("head.html"); ?>
 	        }
         });
     });
-</script> 
+</script>
 
 <title>Worklist | Lend a Hand</title>
 
@@ -1013,8 +1013,8 @@ include("head.html"); ?>
 
     <!-- Popup for deleting a work item -->
     <?php require_once('popup-delete.inc') ?>
-
-    <!-- Popup HTML for paying a fee -->
+ 
+   <!-- Popup HTML for paying a fee -->
     <?php require_once('popup-paid-html.inc') ?>
 
     <!-- Popup for placing a bid -->
