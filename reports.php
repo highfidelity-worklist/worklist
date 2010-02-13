@@ -139,6 +139,7 @@ include("head.html"); ?>
                 });
 
                 /* Reflect the paid list values as pages are reloaded. */
+                $("#report-check-all").attr('checked', '');
                 $('.table-worklist .workitem-paid').each(function(){
                     if (paid_list[$(this).val()]) $(this).attr('checked','checked');
                 });
@@ -177,14 +178,14 @@ include("head.html"); ?>
             GetReport(page);
         });
         $("#report-check-all").live('change', function(){
-            var isChecked = $("#report-check-all").val();
+            var isChecked = $("#report-check-all").attr('checked');
 
             $('.table-worklist .workitem-paid').each(function(){
                 if (isChecked && !$(this).attr('checked')) {
                     $(this).attr('checked', 'checked');
                     ttlPaid = parseFloat(ttlPaid) + parseFloat($(this).attr('data'));
                     paid_list[$(this).val()] = 1;
-                } else if (!isChecked && $(this).attr('checked')) {
+                } else if (isChecked == '' && $(this).attr('checked')) {
                     $(this).attr('checked', '');
                     ttlPaid = parseFloat(ttlPaid) - parseFloat($(this).attr('data'));
                     paid_list[$(this).val()] = 0;
@@ -237,7 +238,7 @@ include("head.html"); ?>
         <table width="100%" class="table-worklist">
             <thead>
             <tr class="table-hdng">
-                <td width="3%"><input type="checkbox" id="report-check-all" /></td>
+                <td width="3%"><input type="checkbox" id="report-check-all" value="1" /></td>
                 <td width="4%">ID</td>
                 <td width="38%">Summary</td>
                 <td width="25%">Description</td>
