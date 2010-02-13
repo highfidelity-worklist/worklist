@@ -14,7 +14,7 @@ include_once("functions.php");
 include_once("send_email.php");
 
 if(!isset($_SESSION['sfilter']))
-  $_SESSION['sfilter'] = 'ALL';
+  $_SESSION['sfilter'] = 'BIDDING';
 
 if(!isset($_SESSION['ufilter']))
   $_SESSION['ufilter'] = 'ALL';
