@@ -22,10 +22,10 @@ if(!isset($_SESSION['ufilter'])) {
   $_SESSION['ufilter'] = 'ALL';
 }
 
-$page = isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
+$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 
-if(isset($_POST['paid']) && !empty($_POST['itemid']) && !empty($_SESSION['is_payer'])) {
-    foreach ($_POST['itemid'] as $itemid) {
+if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
+    foreach (explode(',', trim($_POST['paidList'], ',')) as $itemid) {
         $itemid = intval($itemid);
         $query = "update `".FEES."` set `user_paid`={$_SESSION['userid']}, `paid`=1 WHERE `worklist_id`={$itemid}";
         $rt = mysql_query($query);
@@ -54,6 +54,7 @@ include("head.html"); ?>
     var page = <?php echo $page ?>;
     var timeoutId;
     var ttlPaid = 0;
+    var paid_list = [];
     var workitem = 0;
     var workitems;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
@@ -64,17 +65,17 @@ include("head.html"); ?>
     {
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="7" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) { 
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;'; 
+            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;'; 
         } 
         for (var i = 1; i <= cPages; i++) { 
             if (i == page) { 
                 pagination += i + " &nbsp;"; 
             } else { 
-                pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" >' + i + '</a> &nbsp;'; 
+                pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" title="'+i+'">' + i + '</a> &nbsp;'; 
             } 
         }
         if (page < cPages) { 
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page+1) + '">Next</a> &nbsp;'; 
+            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page+1) + '" title="'+(page+1)+'">Next</a> &nbsp;'; 
         } 
         pagination += '</td></tr>';
         $('.table-' + table).append(pagination);
@@ -125,22 +126,21 @@ include("head.html"); ?>
                 }
                 AppendPagination(page, cPages, 'worklist');
 
-                $('.worklist-pagination-row a').click(function(e){
-                    page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
-                    if (timeoutId) clearTimeout(timeoutId);
-                    GetReport(page);
-                    e.stopPropagation();
-                    return false;
-                });
-
                 $('.table-worklist .workitem-paid').click(function(e){
                     $('#amtpaid').show();
                     if ($(this).attr('checked')) {
                         ttlPaid = parseFloat(ttlPaid) + parseFloat($(this).attr('data'));
+                        paid_list[$(this).val()] = 1;
                     } else {
                         ttlPaid = parseFloat(ttlPaid) - parseFloat($(this).attr('data'));
+                        paid_list[$(this).val()] = 0;
                     }
                     $('#amtpaid').text('($'+ttlPaid+' paid)');
+                });
+
+                /* Reflect the paid list values as pages are reloaded. */
+                $('.table-worklist .workitem-paid').each(function(){
+                    if (paid_list[$(this).val()]) $(this).attr('checked','checked');
                 });
             },
             error: function(xhdr, status, err) {
@@ -167,14 +167,48 @@ include("head.html"); ?>
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#user-filter").change(function(){
-
-        $.ajax({
-          type: "POST",
-          url: 'update_session.php',
-          data: '&ufilter='+$("#user-filter").val()});
+            $.ajax({
+                type: "POST",
+                url: 'update_session.php',
+                data: '&ufilter='+$("#user-filter").val()
+            });
             page = 1;
             if (timeoutId) clearTimeout(timeoutId);
             GetReport(page);
+        });
+        $("#report-check-all").live('change', function(){
+            var isChecked = $("#report-check-all").val();
+
+            $('.table-worklist .workitem-paid').each(function(){
+                if (isChecked && !$(this).attr('checked')) {
+                    $(this).attr('checked', 'checked');
+                    ttlPaid = parseFloat(ttlPaid) + parseFloat($(this).attr('data'));
+                    paid_list[$(this).val()] = 1;
+                } else if (!isChecked && $(this).attr('checked')) {
+                    $(this).attr('checked', '');
+                    ttlPaid = parseFloat(ttlPaid) - parseFloat($(this).attr('data'));
+                    paid_list[$(this).val()] = 0;
+                }
+                $('#amtpaid').text('($'+ttlPaid+' paid)');
+            });
+
+            $('#amtpaid').show();
+        });
+        $('.worklist-pagination-row a').live('click', function(e){
+            page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
+            if (timeoutId) clearTimeout(timeoutId);
+            GetReport(page);
+            e.stopPropagation();
+            return false;
+
+        });
+        $('#pay').click(function(){
+            var paidLst = '';
+            for (var i in paid_list) {
+                if (paid_list[i]) paidLst += i + ',';
+            }
+            $('#paid-list').val(paidLst);
+            return true;
         });
 
     });
@@ -199,10 +233,11 @@ include("head.html"); ?>
     <div style="clear:both"></div>
 
     <form id="reportForm" method="post" action="" />
+        <input type="hidden" id="paid-list" name="paidList" value="" />
         <table width="100%" class="table-worklist">
             <thead>
             <tr class="table-hdng">
-                <td width="3%">&nbsp;</td>
+                <td width="3%"><input type="checkbox" id="report-check-all" /></td>
                 <td width="4%">ID</td>
                 <td width="38%">Summary</td>
                 <td width="25%">Description</td>
@@ -216,7 +251,7 @@ include("head.html"); ?>
             </tbody>
         </table>
         <?php if (!empty($_SESSION['is_payer'])) { ?>
-        <input type="submit" name="paid" value="Mark Paid" /> <span id="amtpaid" style="display:none"></span>
+        <input type="submit" id="pay" name="paid" value="Mark Paid" /> <span id="amtpaid" style="display:none">($0 paid)</span>
         <?php } ?>
     </form>
       

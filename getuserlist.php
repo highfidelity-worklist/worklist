@@ -58,7 +58,6 @@ LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter
 LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
 WHERE `nickname` REGEXP '^$letter' ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 
-error_log($query);
 $rt = mysql_query($query);
 
 // Construct json for pagination
