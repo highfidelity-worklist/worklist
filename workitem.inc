@@ -243,6 +243,10 @@ include("head.html"); ?>
 	  <input type="hidden" name="action" value="save_workitem" />
 	  <ul>
 	    <li>
+	      <span class="info-label">ID</span>
+	      <span><?php echo $worklist['id'];?></span>
+	    </li>
+	    <li>
 	      <span class="info-label">Summary</span>
 	      <?php if($is_runner || $worklist['owner_id'] == $user_id): ?>
 		<span>
@@ -290,6 +294,10 @@ include("head.html"); ?>
 	<?php else: ?>
 	  <ul>
 	    <li>
+	      <span class="info-label">ID</span>
+	      <span><?php echo $worklist['id'];?></span>
+	    </li>
+	    <li>
 	      <span class="info-label">Summary</span>
 	      <span><?php echo $worklist['summary'];?></span>
 	    </li>
@@ -309,7 +317,7 @@ include("head.html"); ?>
 		</li>
 	    <li>
 	    <span class="info-label">Notes</span>
-	      <span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
+		<span><textarea size="33" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
 	    </li>
 	  </ul>
       <?php endif;?>
