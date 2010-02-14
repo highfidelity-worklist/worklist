@@ -22,7 +22,7 @@ if ($ufilter) {
 }
 
 $qcnt  = "SELECT count(*)";
-$qsel = "SELECT `worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `category`";
+$qsel = "SELECT `".FEES."`.id as fee_id, `worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `category`";
 $qbody = "FROM `".FEES."`
           INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
           LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
@@ -43,7 +43,7 @@ $report = array(array($items, $page, $cPages));
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
 {
-    $report[$i] = array($row['worklist_id'], $row['summary'], $row['desc'], $row['status'], $row['payee'], $row['amount'], $row['category']);
+    $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['status'], $row['payee'], $row['amount'], $row['category']);
 }
 
 $json = json_encode($report);

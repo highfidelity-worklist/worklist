@@ -25,9 +25,9 @@ if(!isset($_SESSION['ufilter'])) {
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
-    foreach (explode(',', trim($_POST['paidList'], ',')) as $itemid) {
-        $itemid = intval($itemid);
-        $query = "update `".FEES."` set `user_paid`={$_SESSION['userid']}, `paid`=1 WHERE `worklist_id`={$itemid}";
+    foreach (explode(',', trim($_POST['paidList'], ',')) as $fee_id) {
+        $fee_id = intval($fee_id);
+        $query = "update `".FEES."` set `user_paid`={$_SESSION['userid']}, `paid`=1 WHERE `id`={$fee_id}";
         $rt = mysql_query($query);
     }
 }
@@ -90,14 +90,14 @@ include("head.html"); ?>
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += '">';
-        row += '<td><input type="checkbox" name="itemid[]" value="' + json[0] + '" data="' + json[5] + '" class="workitem-paid" /></td>';
+        row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[6] + '" class="workitem-paid" /></td>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
-        row += '<td>' + pre + json[1] + post + '</td>'; // Summary
-        row += '<td>' + pre + json[2] + post + '</td>'; // Description
-        row += '<td>' + pre + json[6] + post + '</td>'; // Category
-        row += '<td>' + pre + json[3] + post + '</td>'; // Status
-        row += '<td>' + pre + json[4] + post + '</td>'; // Payee
-        row += '<td>' + pre + '$' + json[5] + post + '</td>'; // Amount
+        row += '<td>' + pre + json[2] + post + '</td>'; // Summary
+        row += '<td>' + pre + json[3] + post + '</td>'; // Description
+        row += '<td>' + pre + json[7] + post + '</td>'; // Category
+        row += '<td>' + pre + json[4] + post + '</td>'; // Status
+        row += '<td>' + pre + json[5] + post + '</td>'; // Payee
+        row += '<td>' + pre + '$' + json[6] + post + '</td>'; // Amount
         row += '</tr>';
 
         $('.table-worklist tbody').append(row);
