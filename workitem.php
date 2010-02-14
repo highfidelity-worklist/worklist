@@ -33,6 +33,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
   $action = "place_bid";
 }else if(isset($_POST['add_fee'])) {
   $action = "add_fee";
+}else if(isset($_POST['accept_bid'])) {
+  $action = "accept_bid";
 }
 
 //initialize the workitem class

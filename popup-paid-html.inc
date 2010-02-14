@@ -1,7 +1,9 @@
     <div id="popup-paid" class="popup-body" title = "Pay Fee">
             <form name="popup-form" action="" method="post">
                 <input type="hidden" name="itemid" value="" />
-                <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
+		<?php if (isset($page)) { ?>
+		    <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
+		<?php } ?>
 
                 <p class="popup-paid-summary"></p>
                 <p><label>Are you sure you want to pay this fee? <input type="checkbox" name="paid_check" id="paid_check" size="48">Yes</input>
