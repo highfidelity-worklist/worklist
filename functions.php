@@ -337,24 +337,20 @@
 										`status` = 'BIDDING' 
 										WHERE `id` = $bid->worklist_id 
 										LIMIT 1 ;");
-	            // set bids.accepted to 0
-	            mysql_unbuffered_query('UPDATE `' . BIDS . '` 
-	            						SET `accepted` =  0 
-	            						WHERE `id` = ' . $bid->id);
-	            // delete the fee entry for this bid
-	            mysql_unbuffered_query('UPDATE `' . FEES . '`
-	            						SET `withdrawn` = 1
-	            						WHERE `worklist_id` = ' . $bid->worklist_id . '
-	            						AND `user_id` = ' . $bid->bidder_id . '
-	            						AND `bid_id` = ' . $bid->id);
 	        }
 	        
-	        // change bid to withdrawn
+	        // change bid to withdrawn and set bids.accepted to 0
 	        mysql_unbuffered_query('UPDATE `' . BIDS . '`
-	        						SET `withdrawn` = 1
+	        						SET `withdrawn` = 1 , `accepted` = 0
 	        						WHERE `id` = ' . $bid->id);
 	        	    
-	        // Get worklist item
+            // delete the fee entry for this bid
+            mysql_unbuffered_query('UPDATE `' . FEES . '`
+                                    SET `withdrawn` = 1
+                                    WHERE `worklist_id` = ' . $bid->worklist_id . '
+                                    AND `user_id` = ' . $bid->bidder_id . '
+                                    AND `bid_id` = ' . $bid->id);
+            // Get worklist item
 			$worklistItem = getWorklistById($bid->worklist_id);
 			
 			// Get user

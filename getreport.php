@@ -26,7 +26,7 @@ $qsel = "SELECT `".FEES."`.id as fee_id, `worklist_id`,`summary`,`desc`,`status`
 $qbody = "FROM `".FEES."`
           INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
           LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
-          WHERE `amount` != 0 AND `".FEES."`.`paid` != 1 $where";
+          WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 AND `".FEES."`.`paid` != 1 $where";
 $qorder = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 
 $rtCount = mysql_query("$qcnt $qbody");
