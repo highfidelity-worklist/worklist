@@ -66,7 +66,7 @@ if ($rt) {
     $data = array();
     $data['user'] = JOURNAL_API_USER;
     $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = $_SESSION['nickname'] . " $bump $summary";
+    $data['message'] = $_SESSION['nickname'] . " moved \"$summary\" from position $origpri > position $newpri";
     $prc = postRequest(JOURNAL_API_URL, $data);
 } else {
     echo 'error: database';
