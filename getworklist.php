@@ -68,7 +68,7 @@ if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
     }    
 }
 
-$qcnt  = "SELECT count(*)";
+$qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
 $qsel  = "SELECT DISTINCT `".WORKLIST."`.`id`, `summary`, `status`, `funded`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,

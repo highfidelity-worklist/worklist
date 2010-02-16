@@ -1,12 +1,14 @@
 <?php
-//  Copyright (c) 2010, LoveMachine Inc.  
-//  All Rights Reserved.  
+//  Copyright (c) 2010, LoveMachine Inc.
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 
 include("config.php");
 include("class.session_handler.php");
 include("functions.php");
+
+require 'workitem.class.php';
 
 $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
 if (empty($item))
@@ -20,5 +22,8 @@ $query = "SELECT `id`, `bidder_id`, `email`, `bid_amount`, `notes`, UNIX_TIMESTA
 $rt = mysql_query($query);
 $row = mysql_fetch_assoc($rt);
 $row["done_by"] = getUserTime($row['done_by']);
+
+$workItem = new WorkItem();
+$row['any_accepted'] = $workItem->hasAcceptedBids($workItem->getWorkItemByBid($item));
 $json = json_encode($row);
-echo $json;     
+echo $json;

@@ -1,13 +1,13 @@
 <?php
-//  Copyright (c) 2009, LoveMachine Inc.  
-//  All Rights Reserved.  
+//  Copyright (c) 2009, LoveMachine Inc.
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 // AJAX request from ourselves to retrieve history
 include "config.php";
 include "class.session_handler.php";
 include_once "send_email.php";
-include "workitem.class.php"; 
+include "workitem.class.php";
 include_once("functions.php");
 
 
@@ -61,19 +61,19 @@ if($action =='save_workitem') {
 }
 
 
-if (isset($_SESSION['userid']) && $action =="place_bid"){ 
+if (isset($_SESSION['userid']) && $action =="place_bid"){
     $args = array('bid_amount','done_by', 'notes', 'mechanic_id');
     foreach ($args as $arg) {
       $$arg = mysql_real_escape_string($_POST[$arg]);
     }
 
-    $summary = getWorkItemSummary($worklist_id);    
-    
+    $summary = getWorkItemSummary($worklist_id);
+
 
     if($mechanic_id != $_SESSION['userid'])
     {
       $row = $workitem->getUserDetails($mechanic_id);
-      if(!empty($row)){	
+      if(!empty($row)){
 	    $nickname = $row['nickname'];
 	    $username = $row['username'];
       }
@@ -92,7 +92,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
     $bid_id = $workitem->placeBid($mechanic_id,$username,$worklist_id,$bid_amount,$done_by,$_SESSION['timezone'],$notes);
 
-	
+
     // Journal notification
     if($mechanic_id == $_SESSION['userid'])
     {
@@ -113,7 +113,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
 	sendMailToOwner($worklist_id, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $ownerIsRunner);
 	sl_notify_sms_by_id($_SESSION['userid'], 'Bid placed', $journal_message);
-	
+
 	$redirectToDefaultView = true;
 }
 
@@ -126,23 +126,25 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
     }
     $journal_message .= AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id);
     $redirectToDefaultView = true;
-} 
+}
 
 // Accept a bid
 if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
     $bid_id = intval($_REQUEST['bid_id']);
-    $bid_info = $workitem->acceptBid($bid_id);
-    
-    // Journal notification
-    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #$itemid: " . $bid_info['summary'] . ".";
+    if (!$workitem->hasAcceptedBids($workitem->getWorkItemByBid($bid_id))) {
+        $bid_info = $workitem->acceptBid($bid_id);
 
-    //sending email to the bidder 
-    $subject = "bid accepted: " . $bid_info['summary'];
-    $body = "Promised by: ".$_SESSION['nickname']."</p>";
-    $body .= "<p>Love,<br/>Worklist</p>";
-    sl_send_email($bid_info['email'], $subject, $body);
-    sl_notify_sms_by_id($bid_info['bidder__id'], $subject, $body);
-    $redirectToDefaultView = true;
+        // Journal notification
+        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #$itemid: " . $bid_info['summary'] . ".";
+
+        //sending email to the bidder
+        $subject = "bid accepted: " . $bid_info['summary'];
+        $body = "Promised by: ".$_SESSION['nickname']."</p>";
+        $body .= "<p>Love,<br/>Worklist</p>";
+        sl_send_email($bid_info['email'], $subject, $body);
+        sl_notify_sms_by_id($bid_info['bidder__id'], $subject, $body);
+        $redirectToDefaultView = true;
+    }
 }
 
 //Withdraw a bid
@@ -204,7 +206,7 @@ $fees = $workitem->getFees($worklist_id);
 $total_fee = $workitem->getSumOfFee($worklist_id);
 include "workitem.inc";
 
- 
+
 function sendMailToOwner($itemid, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $is_runner) {
 	  $subject = "new bid: ".$summary;
 	  $body =  "<p>New bid was placed for worklist item \"".$summary."\"<br/>";

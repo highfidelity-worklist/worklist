@@ -20,14 +20,14 @@ include("head.html"); ?>
 
 <script>
   $(document).ready(function(){
-	$('#done_by').datepicker({  
-	  duration: '',  
-	  showTime: true,  
-	  constrainInput: false,  
-	  stepMinutes: 1,  
-	  stepHours: 1,  
-	  altTimeField: '',  
-	  time24h: false  
+	$('#done_by').datepicker({
+	  duration: '',
+	  showTime: true,
+	  constrainInput: false,
+	  stepMinutes: 1,
+	  stepHours: 1,
+	  altTimeField: '',
+	  time24h: false
 	});
 
 	$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
@@ -51,7 +51,7 @@ include("head.html"); ?>
 	  var name = $(this).attr('name');
 //	  $(".popup-page-value").val(page);
 	  switch(name){
-	      case "add_fee_dialog": 
+	      case "add_fee_dialog":
 	      SimplePopup('#popup-addfee',
 			      'Add Fee',
 			      workitem_id,
@@ -81,13 +81,13 @@ include("head.html"); ?>
 		      [ ['input', 'itemid', 'keyId', 'eval'],
 			['textarea', 'paid_notes', 'json[2]', 'eval'],
 			['checkbox', 'paid_check', 'json[1]', 'eval'] ]);
-	    
+
 		    $('.paidnotice').empty();
 		    $('#popup-paid').dialog('open');
-		    
+
 		    // onSubmit event handler for the form
 		    $('#popup-paid > form').submit(function() {
-			    // now we save the payment via ajax		
+			    // now we save the payment via ajax
 			    $.ajax({
 				    url: 'paycheck.php',
 				    dataType: 'json',
@@ -119,7 +119,7 @@ include("head.html"); ?>
 					    }
 				    }
 			    });
-			    
+
 			    return false;
 		    });
 
@@ -129,7 +129,7 @@ include("head.html"); ?>
 			    //TODO Make this use a refresh when this page supports AJAX data refresh in future
 			    location.reload();
 		    });
-	    
+
 	    return false;
 	});
 
@@ -155,23 +155,23 @@ include("head.html"); ?>
 			['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 			['span', '#info-notes', 'json.notes', 'eval'] ],
 		      function(json) {
-			if( is_runner==1) 
+			if( is_runner==1 && json.any_accepted != 1)
 			  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
 			if( is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
-			      $('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');				
+			      $('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 		      });
 
 	    $('#popup-bid-info').dialog('open');
 	  });
 <?php } ?>
-      
+
 	  if(already_bid){
-	    $('#bid').click(function(e){  
+	    $('#bid').click(function(e){
 		if (!confirm("You have already placed a bid, do you want to place a new one?"))
 	      {
 		  $('#popup-bid').dialog('close');
 		  return false;
-	      } 
+	      }
 
 	    });
 	  }
@@ -217,20 +217,20 @@ include("head.html"); ?>
 <?php include("format.php"); ?>
 
     <div id="popup-buttons">
-	<form method="get" action=""> 
+	<form method="get" action="">
 	 <a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
 <?php if($user_id): ?>
-      <?php if ($worklist['status'] == 'BIDDING'): ?>  
+      <?php if ($worklist['status'] == 'BIDDING'): ?>
 	<input type="submit" value="Add Bid" onclick="return showPlaceBidForm();"/>
       <?php endif; ?>
       <input type="submit" value="Add Fee" onclick="return showFeeForm();"/>
-      <?php if(($allowEdit && $action!="edit")): ?>  
+      <?php if(($allowEdit && $action!="edit")): ?>
 	  <input type="hidden" name="job_id" value="<?php echo $worklist_id;?>" />
 	  <input type="hidden" name="action" value="edit" />
 	  <input type="submit" value="Edit" id="edit_workitem"/>
       <?php endif;?>
 <?php endif;?>
-	</form> 
+	</form>
     <div style="clear:both; float:none;"> </div>
     </div>
 <div id="page-content">
@@ -238,7 +238,7 @@ include("head.html"); ?>
     <div id="for_view">
 
       <?php if ($action =="edit"):  ?>
-	<form id="workitem-form" method="post" action=""> 
+	<form id="workitem-form" method="post" action="">
 	  <input type="hidden" name="save_workitem" value="save_workitem" />
 	  <input type="hidden" name="action" value="save_workitem" />
 	  <ul>
@@ -264,8 +264,8 @@ include("head.html"); ?>
 		<?php endforeach;?>
 		</select>
 		<?php else: ?>
-		    <?php echo $worklist['status'];?>  
-		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />    
+		    <?php echo $worklist['status'];?>
+		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
 		<?php endif;?>
 	      </li>
 		<li>
@@ -286,11 +286,11 @@ include("head.html"); ?>
 	      <?php endif;?>
 	    </li>
 	  </ul>
-      <?php if($allowEdit && $action=="edit"): ?>  
+      <?php if($allowEdit && $action=="edit"): ?>
 	  <input type="submit" value="Save" name="save_workitem" id="save_workitem" onclick="return saveWorkitem();"/>
       <?php endif;?>
 
-	</form> 
+	</form>
 	<?php else: ?>
 	  <ul>
 	    <li>
@@ -303,8 +303,8 @@ include("head.html"); ?>
 	    </li>
 	    <li>
 		  <span class="info-label">Status</span>
-		  <?php echo $worklist['status'];?>  
-		  <input type="hidden" id="status" name="status" value = "BIDDING" />    
+		  <?php echo $worklist['status'];?>
+		  <input type="hidden" id="status" name="status" value = "BIDDING" />
 	   </li>
 		<li>
 		<span class="info-label">Funded</span>
@@ -331,14 +331,14 @@ include("head.html"); ?>
 		  <td>Bid Amount</td>
 		  <td>Done In</td>
 		</tr>
-	  </thead>  
-	  <tbody>  
+	  </thead>
+	  <tbody>
 	    <?php if(empty($bids)): ?>
 	    <tr>
 		<td style="text-align: center;" colspan="4">No bids yet.</td>
 	    </tr>
 	    <?php else:  ?>
-		<?php 
+		<?php
 		$row = 1;
 		foreach($bids as $bid): ?>
 		<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?> <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?>">
@@ -361,7 +361,7 @@ include("head.html"); ?>
             <td>Paid</td>
         </tr>
 	</thead>
-	<tbody>  
+	<tbody>
 	    <?php if(empty($fees)): ?>
 	    <tr>
 		<td style="text-align: center;" colspan="5">No fees yet.</td>
