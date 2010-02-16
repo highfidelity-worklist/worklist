@@ -118,7 +118,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $bid_id = mysql_insert_id();
 
     //sending email to the owner of worklist item
-    $rt = mysql_query("SELECT `username`,`is_runner`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$itemid);
+    $rt = mysql_query("SELECT `username`,`is_runner`, `summary` FROM `".USERS."` u, `worklist` WHERE `worklist`.`creator_id` = `u`.`id` AND `worklist`.`id` = ".$itemid);
     $row = mysql_fetch_assoc($rt);
     $summary = $row['summary'];
     $subject = "new bid: $summary";
@@ -135,6 +135,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     }
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($row['username'], $subject, $body);
+    sl_notify_sms_by_id($row['id'], $subject, "${bid_amount}\n${urlacceptbid}");
 
     // Journal notification
     if($mechanic_id == $_SESSION['userid']) {
@@ -173,6 +174,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     $body = "Promised by: ".$_SESSION['nickname']."</p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
+    sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);
 }
 
 //withdrawing bids

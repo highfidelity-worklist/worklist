@@ -9,19 +9,46 @@ include("config.php");
 include("class.session_handler.php");
 include_once("send_email.php");
 include("timezones.php");
+include("countrylist.php");
+include("smslist.php");
+
+$phone = $country = $provider = "";
 $msg="";
 $to=1;
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME);
 
-$username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
+$fields_to_htmlescape = array(
+				'about' => '', 
+				'contactway' => '', 
+				'payway' => '', 
+				'skills' => '', 
+				'timezone' => '', 
+				'phone' => '', 
+				'country' => '', 
+				'smsaddr' => '',
+			);
 
-if(isset($_POST['sign_up'])){
-  if(empty($username)||empty($_POST['password'])||empty($_POST['confirmpassword']))
+$fields_to_not_escape = array(
+				'nickname' => '', 
+				'username' => '', 
+				'password' => '', 
+				'confirmpassword' => '', 
+				'sign_up' => '', 
+				'phone_edit' => '',
+				'confirm' => '',
+			);
+
+$minimal_POST = array_intersect_key($_POST, $fields_to_not_escape + $fields_to_htmlescape);
+
+$minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
+
+if(isset($minimal_POST['sign_up'])){
+  if(empty($username)||empty($minimal_POST['password'])||empty($minimal_POST['confirmpassword']))
   {
     $msg = "Please fill all required fields.<br />";
   }
-  $about = isset($_POST['about']) ? $_POST['about'] : "";
+  $about = isset($minimal_POST['about']) ? $minimal_POST['about'] : "";
   if(strlen($about) > 150){
     $msg .= "Text in field can't be more than 150 characters!";
   }
@@ -34,28 +61,36 @@ if(isset($_POST['sign_up'])){
 
       //echo mysql_num_rows($res); exit;
       if(!$res || !mysql_num_rows($res)){
-	  $confirm = (!empty($_POST['confirm']) && $_POST['confirm'] == base64_encode(sha1(SALT.$to))) ? 1 : 0;
-	  $confirm_string = rand();
   //Array ( [nickname] => Proverko [username] => testo@testo.com [password] => proverko [confirmpassword] => proverko [about] => I'm a good guy :) [contactway] => PayPal [payway] => Cash :) [skills] => php, coldfusion, python [timezone] => +0100 [Sign_Up] => Sign Up ) 
-	  $args = array('about', 'contactway', 'payway', 'skills', 'timezone');
-	  foreach ($args as $arg){
-	    $$arg = mysql_real_escape_string(htmlspecialchars($_POST[$arg]));
-	  }
-	  $res = mysql_query("INSERT INTO `".USERS."` ( `username`, `password`, `added`, `nickname`, `about`, `contactway`, `payway`, `skills`, `timezone`, `confirm`, `confirm_string` ) ".
-	      "VALUES ('".mysql_real_escape_string($username)."', '".sha1(mysql_real_escape_string($_POST['password']))."', NOW(), '".
-	      mysql_real_escape_string($_POST['nickname'])."', '".$about."', '".$contactway."', '".$payway."', '".$skills."', '".$timezone."',
+	  
+	  $minimal_POST = array_merge($minimal_POST, array_map('htmlspecialchars', array_intersect_key($minimal_POST, $fields_to_htmlescape)));
+	  unset($minimal_POST['confirmpassword']);
+	  unset($minimal_POST['phone_edit']);
+	  unset($minimal_POST['sign_up']);
+	  $values_for_db = array_map('mysql_real_escape_string', $minimal_POST);
+	  $values_for_db['password'] = sha1($values_for_db['password']);
+	  $values_for_db['confirm'] = (!empty($minimal_POST['confirm']) && $minimal_POST['confirm'] == base64_encode(sha1(SALT.$to))) ? 1 : 0;
+	  $values_for_db['confirm_string'] = rand();
+	  //$values_for_db['added'] = 'NOW()'; <-- need this if we don't change the schema to use CURRENT_TIMESTAMP
+	  /*
+	  $res = mysql_query("INSERT INTO `".USERS."` ( `username`, `password`, `added`, `nickname`, `about`, `contactway`, `payway`, `skills`, `timezone`, `confirm`, `confirm_string`, `phone`, `country-iso`, `smsaddr`  ) ".
+	      "VALUES ('".mysql_real_escape_string($username)."', '".sha1(mysql_real_escape_string($minimal_POST['password']))."', NOW(), '".
+	      mysql_real_escape_string($minimal_POST['nickname'])."', '".$about."', '".$contactway."', '".$payway."', '".$skills."', '".$timezone."',
 	      '$confirm', '$confirm_string' )");
+	  */
+	  $sql = 'INSERT INTO `'.USERS.'` (`'. implode('`,`', array_keys($values_for_db)) . '`) VALUES ("'. implode('","', array_values($values_for_db)). '")';
+	  $res = mysql_query($sql);
 	  $user_id = mysql_insert_id();
 	  
 	  $to = $username;
 	  $subject = "Registration Confirmation";
-	  $link = SECURE_SERVER_URL."confirmation.php?cs=$confirm_string&str=".base64_encode($username);
+	  $link = SECURE_SERVER_URL."confirmation.php?cs=${values_for_db['confirm_string']}&str=".base64_encode($username);
 	  $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
 	  $body .= "<p><a href=\"$link\">Click here to verify your email address and activate your account.</a></p>";
 	  $body .= "<p>Love,<br/>Philip and Ryan</p>";
 	  $plain = "You are only one click away from completing your registration!\n\n";
 	  $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
-	  $plain .= "    ".SECURE_SERVER_URL."confirmation.php?cs=$confirm_string&str=".base64_encode($username)."\n\n";
+	  $plain .= "    ${link}\n\n";
 	  $plain .= "Love,\nPhilip and Ryan</p>";
 	  sl_send_email($to, $subject, $body, $plain);
 
@@ -75,6 +110,8 @@ include("head.html"); ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userinfo.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/sendlove.js"></script>
 <script type="text/javascript">
 
 
@@ -132,6 +169,8 @@ include("head.html"); ?>
 	      username.add(Validate.Length, { minimum: 10, maximum: 50 } );
 	    </script>
 
+<?php include("sms-inc.php"); ?>
+
             <div class="LVspace"><p>
             <label>Password *<br />
             <input type="password" id="password" name="password" class="text-field" size="35" />
@@ -163,7 +202,6 @@ include("head.html"); ?>
 	      var about = new LiveValidation('about');
 	      about.add(Validate.Length, { minimum: 0, maximum: 150 } ); 
 	    </script>
-
             <div class="LVspace">
 	      <p>
 	      <label for = "contactway">What is the preferred way to contact you?</label><br />

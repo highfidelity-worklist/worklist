@@ -112,6 +112,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 	}
 
 	sendMailToOwner($worklist_id, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $ownerIsRunner);
+	sl_notify_sms_by_id($_SESSION['userid'], 'Bid placed', $journal_message);
 	
 	$redirectToDefaultView = true;
 }
@@ -140,6 +141,7 @@ if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
     $body = "Promised by: ".$_SESSION['nickname']."</p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
+    sl_notify_sms_by_id($bid_info['bidder__id'], $subject, $body);
     $redirectToDefaultView = true;
 }
 
@@ -186,9 +188,9 @@ $bids = $workitem->getBids($worklist_id);
 //Findout if the current user already has any bids.
 // Yes, it's a String instead of boolean to make it easy to use in JS.
 $currentUserHasBid = "false";
-if($bids != null) {
+if(!empty($bids) && is_array($bids)) {
   foreach($bids as $bid) {
-    if($bid['username'] == $currentUsername ){
+    if($bid['email'] == $currentUsername ){
       $currentUserHasBid = "true";
       break;
     }

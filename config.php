@@ -27,7 +27,7 @@ if (!defined("DB_PASSWORD"))    define("DB_PASSWORD", "test30");
 if (!defined("DB_NAME"))        define("DB_NAME", "worklist_dev");
 
 if (!defined("WORKLIST"))       define("WORKLIST", "worklist");
-if (!defined("USERS"))          define("USERS", "users");
+if (!defined("USERS"))          define("USERS", "test_users");
 if (!defined("BIDS"))          define("BIDS", "bids");
 if (!defined("FEES"))          define("FEES", "fees");
 
@@ -58,5 +58,18 @@ if (!defined("IMG_BWD"))        define("IMG_BWD", "images/right.png");
 // User features: bits in the users.features column
 define("FEATURE_SUPER_ADMIN",	0x0001);
 define("FEATURE_USER_MASK",	    0x0001);
+
+if (empty($mail_user) || !is_array($mail_user)) {
+$mail_user = array (
+  'authuser' => array (
+    'from' => 'SendLove <love@sendlove.us>',
+    'replyto' => 'SendLove <love@sendlove.us>',
+    ),
+  'smsuser' => array (
+    'from' =>  'SendLove SMSReply <sms@sendlove.us>',
+    'replyto' => 'SendLove SMSReply <sms@sendlove.us>'
+    )
+  );
+}
 
 ?>

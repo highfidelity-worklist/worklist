@@ -10,6 +10,8 @@ include("class.session_handler.php");
 include("check_session.php");
 include("functions.php");
 include("timezones.php");
+include("countrylist.php");
+include("smslist.php");
 
 $con=mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
 mysql_select_db(DB_NAME,$con);
@@ -26,6 +28,22 @@ $errors = 0;
     $msg .= "Text in field can't be more than 150 characters!<br />";
   }
 
+
+// check if phone was updated
+$phone_sql = '';
+if (isset($_POST['phone_edit']))
+{
+	$phone_sql_parts = array();
+	$phone_keys = array('phone', 'country', 'smsaddr', 'provider');
+
+	foreach ($phone_keys as $phone_key)
+	{
+		$phone_item = mysql_real_escape_string(htmlspecialchars($_POST[$phone_key]));
+		$phone_sql_parts[] = "`${phone_key}` = '${phone_item}'";
+	}
+	$phone_sql = implode(',', $phone_sql_parts);
+}
+
 if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for now but who knows :)
     $nickname = mysql_real_escape_string(trim($_POST['nickname']));
 
@@ -40,7 +58,8 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
 	  $$arg = mysql_real_escape_string(htmlspecialchars($_POST[$arg]));
 	}
 
-        $sql = "UPDATE `".USERS."` SET `nickname` = '".$nickname."', `about` = '".$about."', `contactway` = '".$contactway."', `payway` = '".$payway."', `skills` = '".$skills."', `timezone` = '".$timezone."' WHERE id ='".$_SESSION['userid']."'";
+        $sql = 'UPDATE `'.USERS."` SET `nickname` = '${nickname}', `about` = '${about}', `contactway` = '${contactway}', `payway` = '${payway}', `skills` = '${skills}', `timezone` = '${timezone}' ". ($phone_sql?", ${phone_sql}":'') ;
+	$sql .= "WHERE id = '${_SESSION['userid']}'";
 	mysql_unbuffered_query($sql);
 
 	
@@ -50,6 +69,7 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
         session::init();
         header("Location:login.php");
     }
+
 
     if($_POST['oldpassword']!="")
     {
@@ -71,7 +91,6 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
     }
 
 
-
     if (!empty($messages)) {
         $to = $_SESSION['username'];
         $subject = "Account Edit Successful.";
@@ -91,6 +110,14 @@ $sqlView = "SELECT * FROM ".USERS." WHERE username = '".mysql_real_escape_string
 $resView = mysql_query($sqlView);
 $userInfo = mysql_fetch_array($resView);
 
+if (!$resView || !$userInfo)
+{
+	session::init();
+	header("Location:login.php");
+} else {
+	extract($userInfo, EXTR_SKIP | EXTR_REFS); // dump values into symbol tables as references
+}
+
 if( isset( $_POST['Delete']) ){
 	$sql = "DELETE FROM `".USERS."` ".
                 "WHERE `id` ='".$_SESSION['userid']."'";
@@ -108,6 +135,8 @@ include("head.html"); ?>
 
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userinfo.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/sendlove.js"></script>
 
 <title>Worklist | Account Settings</title>
 
@@ -172,6 +201,8 @@ include("head.html"); ?>
 	      var about = new LiveValidation('about');
 	      about.add(Validate.Length, { minimum: 0, maximum: 150 } ); 
 	    </script>
+
+<?php include("sms-inc.php"); ?>
 
             <div class="LVspace">
 	      <p>

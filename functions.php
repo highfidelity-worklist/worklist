@@ -370,6 +370,7 @@
 	        $body = "Your bid has been withdrawn by: ".$_SESSION['nickname']."</p>";
 	        $body .= "<p>Love,<br/>Worklist</p>";
 	        sl_send_email($user->username, $subject, $body);
+            sl_notify_sms_by_object($user, $subject, $body);
 	    }
     }
     
@@ -403,6 +404,7 @@
 	        $body = "Your fee has been withdrawn by: ".$_SESSION['nickname']."</p>";
 	        $body .= "<p>Love,<br/>Worklist</p>";
 	        sl_send_email($user->username, $subject, $body);
+            sl_notify_sms_by_object($user, $subject, $body);
 	    }
     }
     

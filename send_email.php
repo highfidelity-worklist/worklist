@@ -5,7 +5,9 @@
 //  http://www.lovemachineinc.com
 //
 
+require_once('authmail.php');
 require_once('html2text.php');
+require_once('smslist.php');
 
 /*  sl_send_email
  * 
@@ -45,3 +47,43 @@ Content-Transfer-Encoding: 7bit
 
     return true;
 }
+
+/* sl_notify_sms functions
+ *
+ * Notify by user_id or by user object
+ *
+ */
+function sl_notify_sms_by_id($user_id, $smssubject, $smsbody)
+{
+    //Fetch phone info using user_id
+    $sql = 'SELECT phone, country, provider, smsaddr FROM '.USERS." WHERE id = ${user_id}";
+    $res = mysql_query($sql);
+    $phone_info = mysql_fetch_object($res);
+    if (is_object($phone_info))
+    {
+	sl_notify_sms_by_object($phone_info, $smssubject, $smsbody);
+    } else {
+	error_log("sl_notify_sms_by_id: Query '$sql' failed. Not sending SMS");
+    }
+}
+
+function sl_notify_sms_by_object($user_obj, $smssubject, $smsbody)
+{
+    global $smslist;
+
+    if ($user_obj->smsaddr)
+    {
+       $smsaddr = $user_obj->smsaddr;
+    } else {
+       if ($user_obj->provider{0} != '+') {
+          $smsaddr = str_replace('{n}', $user_obj->phone, $smslist[$user_obj->country][$user_obj->provider]);
+       } else {
+          $smsaddr = substr($user_obj->provider, 1);
+       }
+    }
+
+    send_authmail(array('sender'=>'smsuser', 'server'=>'gmail-ssl-smsuser'),
+    					$smsaddr, strip_tags($smssubject), strip_tags($smsbody), '');
+
+}
+
