@@ -55,7 +55,7 @@ if($action =='save_workitem') {
       $funded = null;
     }
 
-    $workitem->updateWorkItem($worklist_id, $summary_quoted, $notes, $status, $funded) ? 1 : 0;
+    $workitem->updateWorkItem($worklist_id, $summary, $notes, $status, $funded) ? 1 : 0;
     $redirectToDefaultView = true;
     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary. ";
 }
