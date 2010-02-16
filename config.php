@@ -27,7 +27,7 @@ if (!defined("DB_PASSWORD"))    define("DB_PASSWORD", "test30");
 if (!defined("DB_NAME"))        define("DB_NAME", "worklist_dev");
 
 if (!defined("WORKLIST"))       define("WORKLIST", "worklist");
-if (!defined("USERS"))          define("USERS", "test_users");
+if (!defined("USERS"))          define("USERS", "users");
 if (!defined("BIDS"))          define("BIDS", "bids");
 if (!defined("FEES"))          define("FEES", "fees");
 
