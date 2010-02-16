@@ -55,9 +55,9 @@ if($action =='save_workitem') {
       $funded = null;
     }
 
-    $workitem->updateWorkItem($worklist_id, $summary, $notes, $status, $funded) ? 1 : 0;
+    $workitem->updateWorkItem($worklist_id, $summary_quoted, $notes, $status, $funded) ? 1 : 0;
     $redirectToDefaultView = true;
-    $journal_message .= $_SESSION['nickname'] . " updated $summary. ";
+    $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary. ";
 }
 
 
@@ -96,11 +96,11 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
     // Journal notification
     if($mechanic_id == $_SESSION['userid'])
     {
-      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on {$summary}. ";
+      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on item #$worklist_id: {$summary}. ";
     }
     else
     {
-      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on {$summary}. ";
+      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on item #$worklist_id: {$summary}. ";
     }
 
     //sending email to the owner of worklist item
@@ -133,7 +133,7 @@ if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
     $bid_info = $workitem->acceptBid($bid_id);
     
     // Journal notification
-    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on " . $bid_info['summary'] . ".";
+    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #$itemid: " . $bid_info['summary'] . ".";
 
     //sending email to the bidder 
     $subject = "bid accepted: " . $bid_info['summary'];

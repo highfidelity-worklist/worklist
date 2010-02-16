@@ -242,7 +242,7 @@
       // Journal notification
       if($mechanic_id == $_SESSION['userid'])
       {
-	$journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to $summary. ";
+	$journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to item #$itemid: $summary. ";
       }
       else
       {
@@ -257,7 +257,7 @@
 	  $nickname = "unknown-{$mechanic_id}";
 	}
 	
-	$journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of $fee_amount to $summary. ";
+	$journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of $fee_amount to item #$itemid:  $summary. ";
       }
 
       return $journal_message;
@@ -358,7 +358,8 @@
 	        
 			// Journal message	        
 			$message  = $_SESSION['nickname'] . ' withdrawing the bid from ';
-			$message .= $user->nickname . ' on ';
+			$message .= $user->nickname . ' on item #';
+            $message .= $worklistItem->id . ': ';
 			$message .= $worklistItem->summary . '. ';
 			
 	        // Journal notification 
@@ -390,7 +391,8 @@
 			
 			// Journal message	        
 			$message  = $_SESSION['nickname'] . ' withdrawing the fee from ';
-			$message .= $user->nickname . ' on ';
+			$message .= $user->nickname . ' on item #';
+			$message .= $worklistItem->id . ': ';
 			$message .= $worklistItem->summary . '. ';
 			
 	        // Journal notification 

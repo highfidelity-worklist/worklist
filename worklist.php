@@ -54,11 +54,11 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
             $query .= " , funded='$funded' ";
         }
         $query .= " where id='$itemid'";
-        $journal_message .= $_SESSION['nickname'] . " updated $summary. ";
+        $journal_message .= $_SESSION['nickname'] . " updated ";
     } else {
         $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, funded, notes, created ) ".
             "values ( '$summary', '$creator_id', '$owner_id', '$status', '$funded', '$notes', now() )";
-        $journal_message .= $_SESSION['nickname'] . " added $summary. ";
+        $journal_message .= $_SESSION['nickname'] . " added ";
     }
     
     $rt = mysql_query($query);
@@ -66,10 +66,12 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
     if(empty($_POST['itemid']))
     {
       $bid_fee_itemid = mysql_insert_id();
+      $journal_message .= " item #$bid_fee_itemid: $summary. ";
     }
     else
     {
       $bid_fee_itemid = $itemid;
+      $journal_message .=  "item #$itemid: $summary. ";
     }
     
     if ($bid_fee_amount > 0) {
@@ -78,7 +80,7 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
 } else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid']) && $is_runner) {
     mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
-    $journal_message .= $_SESSION['nickname'] . " deleted " . getWorkItemSummary($_POST['itemid']);
+    $journal_message .= $_SESSION['nickname'] . " deleted item #" . $_POST['itemid'] . ": " . getWorkItemSummary($_POST['itemid']);
 }
 
 //placing a bid
@@ -136,9 +138,9 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
 
     // Journal notification
     if($mechanic_id == $_SESSION['userid']) {
-      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on {$summary}. ";
+      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on item #$itemid:  {$summary}. ";
     } else {
-      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on {$summary}. ";
+      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on item #$itemid:  {$summary}. ";
     }
 
 }
@@ -164,7 +166,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
 
     // Journal notification
     $summary = getWorkItemSummary($bid_info['worklist_id']);
-    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on $summary. ";
+    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #{$bid_info['worklist_id']}: $summary. ";
 
     //sending email to the bidder 
     $subject = "bid accepted: $summary";
