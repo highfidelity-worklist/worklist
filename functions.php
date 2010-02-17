@@ -424,4 +424,18 @@
         }
         return false;
     }
+    
+    function GetTimeStamp($MySqlDate, $i='')
+    {
+	    if (empty($MySqlDate)) $MySqlDate = date('Y/m/d');
+	    $date_array = explode("/",$MySqlDate); // split the array
+
+	    $var_year = $date_array[0];
+	    $var_month = $date_array[1];
+	    $var_day = $date_array[2];
+	    $var_timestamp=$date_array[2]."-".$date_array[0]."-".$date_array[1];
+	    //$var_timestamp=$var_month ."/".$var_day ."-".$var_year;
+	    return($var_timestamp); // return it to the user
+    }
+
 ?>

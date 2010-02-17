@@ -22,12 +22,15 @@ if(!isset($_SESSION['ufilter'])) {
   $_SESSION['ufilter'] = 'ALL';
 }
 
+$t_date = (isset($_POST['end_date'])) ? strtotime(trim($_POST['end_date'])) : time();
+$f_date = (isset($_POST['start_date'])) ? strtotime(trim($_POST['start_date'])) : strtotime('-1 month', $t_date);
+
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
     foreach (explode(',', trim($_POST['paidList'], ',')) as $fee_id) {
         $fee_id = intval($fee_id);
-        $query = "update `".FEES."` set `user_paid`={$_SESSION['userid']}, `paid`=1 WHERE `id`={$fee_id}";
+        $query = "update `".FEES."` set `user_paid`={$_SESSION['userid']}, `paid`=1, paid_date = now() WHERE `id`={$fee_id}";
         $rt = mysql_query($query);
     }
 }
@@ -42,14 +45,59 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
-<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
+
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
-<script type="text/javascript" src="js/timepicker.js"></script>
+<link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
+<style type="text/css">
+
+#date-fields {
+float:top;
+margin-left:10px;
+margin-top:20px;
+}
+#date-fields label {
+  float: left;    
+  width: 2em;    
+  margin-right: 1em;  
+}
+.text-field-sm {
+  width:80px;
+}
+.report-left-label {
+width:8em;
+}
+.start-date-label {
+width:8em;
+}
+#search-filter-section {
+list-style:none;
+margin-bottom:1em;
+}
+#search-filter-section table, #search-filter-section table td #search-filter-section table th{
+border: none;
+}
+</style>
 <script type="text/javascript">
+
+
+var _fromDate, _toDate;
+var fromDate = '';
+var toDate = '';
+var datePickerControl; // Month/Year date picker.
+var dateChangedUsingField = false; // True  if the date was changed using date field rather than picker.
+
+function fmtDate(d) {
+    return '' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
+}
+
+function fmtDate2(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 101).slice(-2) + '-' + String(d.getDate() + 101).slice(-2);
+}
+
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
     var page = <?php echo $page ?>;
     var timeoutId;
@@ -63,7 +111,7 @@ include("head.html"); ?>
 
     function AppendPagination(page, cPages, table)
     {
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="7" style="text-align:center;">Pages : &nbsp;';
+        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="8" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) { 
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;'; 
         } 
@@ -91,23 +139,64 @@ include("head.html"); ?>
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += '">';
         row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[6] + '" class="workitem-paid" /></td>';
+	pre = '<a href="workitem.php?job_id='+json[0]+'">';
+	post = '</a>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
+	pre = '', post = '';
         row += '<td>' + pre + json[2] + post + '</td>'; // Summary
         row += '<td>' + pre + json[3] + post + '</td>'; // Description
-        row += '<td>' + pre + json[7] + post + '</td>'; // Category
-        row += '<td>' + pre + json[4] + post + '</td>'; // Status
-        row += '<td>' + pre + json[5] + post + '</td>'; // Payee
+	var funded = 'No';
+	if(json[4] == 1) {
+	     funded = 'Yes' ;
+	}
+        row += '<td>' + pre + funded+ post + '</td>'; // Funded Flag
+        row += '<td>' + pre + formatValueForDisplay(json[5]) + post + '</td>'; // Payee
+        row += '<td>' + pre + formatValueForDisplay(json[7]) + post + '</td>'; // Paid Date
         row += '<td>' + pre + '$' + json[6] + post + '</td>'; // Amount
         row += '</tr>';
 
         $('.table-worklist tbody').append(row);
     }
 
+    /**
+     *Formats the given value for display. For now null values are shown as --
+     *
+    */
+    function formatValueForDisplay(valueToFormat) {
+	var formattedValue = '--';
+	if(valueToFormat != null) {
+	    formattedValue = valueToFormat;
+	}
+	return formattedValue;
+    }
+
+    /**
+     * Appends the Page total to the bottom of table
+     *
+    */
+    function AppendPageTotal(pageTotal) {
+        row =  '<tr class="row-worklist-live rowodd">'+
+                '   <td colspan="7" align="center">Page Total </td>' +
+                '   <td align="center">'+ '$' + pageTotal +'</td>' +
+                '</tr>';
+        $('.table-worklist tbody').append(row);
+    }
+
     function GetReport(npage) {
+	      _fromDate = $("#start-date").datepicker('getDate');
+	     _toDate = $("#end-date").datepicker('getDate');
+	      if(_fromDate != null) {
+		fromDate = fmtDate(_fromDate);
+	      }
+	      if(_toDate != null) {
+		toDate = fmtDate(_toDate);
+	      }
+
+	      var paidStatus = $('#paid-status').val();
         $.ajax({
             type: "POST",
             url: 'getreport.php',
-            data: 'page='+npage+'&ufilter='+$("#user-filter").val(),
+            data: 'page='+npage+'&ufilter='+$("#user-filter").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
             dataType: 'json',
             success: function(json) {
                 $("#loader_img").css("display","none");
@@ -116,7 +205,14 @@ include("head.html"); ?>
 
                 $('.row-worklist-live').remove();
                 workitems = json;
-                if (!json[0][0]) return;
+                if (json[0][0] == 0 ) {
+		  $('.table-worklist').append(
+		      '<tr class="row-worklist-live rowodd">'+
+		      '   <td colspan="8" align="center">Oops! We couldn\'t find any work items.</td>' +
+		      '</tr>');
+
+		  return;
+		}
 
                 /* Output the worklist rows. */
                 var odd = true;
@@ -125,7 +221,7 @@ include("head.html"); ?>
                     odd = !odd;
                 }
                 AppendPagination(page, cPages, 'worklist');
-
+                AppendPageTotal(json[0][3]|0.00);
                 $('.table-worklist .workitem-paid').click(function(e){
                     $('#amtpaid').show();
                     if ($(this).attr('checked')) {
@@ -148,7 +244,7 @@ include("head.html"); ?>
                 $('.row-worklist-live').remove();
                 $('.table-worklist').append(
                     '<tr class="row-worklist-live rowodd">'+
-                    '   <td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td>' +
+                    '   <td colspan="8" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td>' +
                     '</tr>');
                 $('#again').click(function(e){
                     $("#loader_img").css("display","none");
@@ -212,6 +308,21 @@ include("head.html"); ?>
             return true;
         });
 
+	$('.text-field-sm').datepicker({
+		changeMonth: true,
+		changeYear: true,
+		maxDate: 0,
+		showOn: 'button', 
+		dateFormat: 'mm/dd/yy',
+		buttonImage: 'images/Calendar.gif',
+		buttonImageOnly: true
+	});
+
+	$('#refreshReport').click(function() {
+	    if (timeoutId) clearTimeout(timeoutId);
+	    GetReport(page);
+	});
+
     });
 </script> 
 
@@ -225,26 +336,48 @@ include("head.html"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
+
+
+<div>
     <div id="search-filter-wrap">
-         <div style="float:right" >
-            <?php DisplayFilter('ufilter'); ?>
-        </div>
-    </div>    
-
+      <table id="search-filter-section">
+	  <tr>
+	    <td class="report-left-label">Payee</td>
+	    <td ><?php DisplayFilter('ufilter'); ?></td>
+	    <td class="report-left-label">Paid Status</td>
+	    <td>
+	      <select id="paid-status" >
+		    <option value="ALL">ALL</option>
+		    <option value="1">Paid</option>
+		    <option value="0" selected>Unpaid</option>
+	      </select>
+	    </td>
+	   </tr>
+	  <tr>
+	      <td class="report-left-label">Fee added between</td>
+	      <td colspan="2">
+	      <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="" title="Start Date" size="20" />
+	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="" title="End Date" size="20" /> 
+	      </td>
+	      <td >
+		<input type="submit" value="Go" id="refreshReport"></input>
+	      </td>
+	  </tr>
+      </table>
+    </div>
     <div style="clear:both"></div>
-
     <form id="reportForm" method="post" action="" />
         <input type="hidden" id="paid-list" name="paidList" value="" />
         <table width="100%" class="table-worklist">
             <thead>
             <tr class="table-hdng">
                 <td width="3%"><input type="checkbox" id="report-check-all" value="1" /></td>
-                <td width="4%">ID</td>
-                <td width="38%">Summary</td>
+                <td width="7%">ID</td>
+                <td width="35%">Summary</td>
                 <td width="25%">Description</td>
-                <td width="10%">Category</td>
-                <td width="7%">Status</td>
-                <td width="8%">Payee</td>
+                <td width="5%">Funded</td>
+                <td width="12%">Payee</td>
+                <td width="8%">Paid Date</td>
                 <td width="5%">Fee</td>
             </tr>
             </thead>
@@ -255,5 +388,5 @@ include("head.html"); ?>
         <input type="submit" id="pay" name="paid" value="Mark Paid" /> <span id="amtpaid" style="display:none">($0 paid)</span>
         <?php } ?>
     </form>
-      
+</div>      
 <?php include("footer.php"); ?>

@@ -44,7 +44,8 @@ $user = mysql_real_escape_string($_SESSION['userid']);
 $query = 'UPDATE `' . FEES . '` 
 			SET `user_paid` = ' . $user . ',
 			`notes` = "' . $paid_notes . '",
-			`paid` = ' . $paid_check . ' 
+			`paid` = ' . $paid_check . ', 
+			`paid_date` = now()
 			WHERE `id` = ' . $fee_id . ' LIMIT 1';
 
 

@@ -371,7 +371,7 @@ include("head.html"); ?>
 		 $row = 1;
 		 foreach($fees as $fee): ?>
 		<tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-		    <td><?php echo $fee['nickname'];?></td>
+		    <td><?php echo $fee['nickname'] ? $fee['nickname'] : '--';?></td>
 		    <td><?php echo $fee['amount'];?></td>
 		    <td><?php echo $fee['desc'];?></td>
 		    <td><?php echo $fee['date'];?></td>

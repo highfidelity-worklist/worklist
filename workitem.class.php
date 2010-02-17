@@ -55,9 +55,9 @@ class WorkItem
     public function getFees($worklist_id)
     {
         $query = "SELECT fees.`id`, fees.`amount`, u.`nickname`, fees.`desc`, DATE_FORMAT(fees.`date`, '%m/%d/%Y') as date, fees.`paid`
-			FROM `".FEES. "` as fees, `".USERS."` as u
+			FROM `".FEES. "` as fees LEFT OUTER JOIN `".USERS."` u ON u.`id` = fees.`user_id`
 			WHERE worklist_id = ".$worklist_id."
-			AND u.`id` = fees.`user_id` and fees.withdrawn = 0 ";
+			AND fees.withdrawn = 0 ";
 
         $result_query = mysql_query($query);
         if($result_query){
