@@ -1,6 +1,6 @@
 <?php
 //  Copyright (c) 2009, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 define('PS_DELIMITER', '|');
@@ -28,12 +28,12 @@ function session_real_decode($str)
     } else {
       $has_value = true;
     }
-       
+
     $name = substr($str, $p, $q - $p);
     $q++;
 
     $serialized .= 's:' . strlen($name) . ':"' . $name . '";';
-       
+
     if ($has_value) {
       for (;;) {
 	$p = $q;
@@ -112,7 +112,7 @@ class session {
                                  array(&self::$objSession,"read"),
                                  array(&self::$objSession,"write"),
                                  array(&self::$objSession,"destroy"),
-                                 array(&self::$objSession,"gc")); 
+                                 array(&self::$objSession,"gc"));
         session_set_cookie_params(SESSION_EXPIRE);
         session_start();
     }
@@ -155,30 +155,6 @@ class session {
         if($res && mysql_num_rows($res)) {
             // ...update session-data
 
-	  $row = mysql_fetch_assoc($res);
-	  $new_session_data = session_real_decode($sessData);
-	  $old_session_data = session_real_decode($row['session_data']);
-
-	  //
-	  // Stateful Filters - The only filters that will be accepted need to
-	  //                    have the update_filter session set.  Otherwise
-	  //                    we grab the original values from the already
-	  //                    stored session data.
-	  // 
-	  if(isset($new_session_data['update_filter']))
-	  {
-	    // Push change into the DB
-	    unset($new_session_data['update_filter']);
-	  }
-	  else
-	  {
-	    // Pull the old change
-	    $new_session_data['sfilter'] = $old_session_data['sfilter'];
-	    $new_session_data['ufilter'] = $old_session_data['ufilter'];
-	  }
-
-	  $_SESSION = $new_session_data;
-	  $sessData = session_encode();
 
             mysql_query("UPDATE ws_sessions
                          SET session_expires = '$newExp',

@@ -15,8 +15,6 @@ if(isset($_REQUEST['sfilter'])) {
 if(isset($_REQUEST['ufilter'])) {
   $_SESSION['ufilter'] = $_REQUEST['ufilter'];
 }
-
-$_SESSION['update_filter'] = 1;
-
+session_write_close();
 exit;
 ?>
