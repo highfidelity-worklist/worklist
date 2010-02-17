@@ -142,8 +142,11 @@ if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
         $body = "Promised by: ".$_SESSION['nickname']."</p>";
         $body .= "<p>Love,<br/>Worklist</p>";
         sl_send_email($bid_info['email'], $subject, $body);
-        sl_notify_sms_by_id($bid_info['bidder__id'], $subject, $body);
+        sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);
         $redirectToDefaultView = true;
+		
+		// Send email to not accepted bidders
+		sendMailToDiscardedBids($worklist_id);
     }
 }
 
@@ -206,6 +209,29 @@ $fees = $workitem->getFees($worklist_id);
 $total_fee = $workitem->getSumOfFee($worklist_id);
 include "workitem.inc";
 
+function sendMailToDiscardedBids($worklist_id)	{
+	// Get all bids marked as not accepted
+	$query = "SELECT bids.email, u.nickname FROM ".BIDS." as bids
+					INNER JOIN ".USERS." as u on (u.id = bids.bidder_id)
+					WHERE bids.worklist_id=$worklist_id and bids.withdrawn = 0 AND bids.accepted = 0";
+	$result_query = mysql_query($query);
+	$bids = array();
+	while($row = mysql_fetch_assoc($result_query)) {
+		$bids[] = $row;
+	}
+	
+	$workitem = new WorkItem();
+	$item = $workitem->getWorkItem($worklist_id);
+	
+	foreach( $bids as $bid )	{
+		$subject = "Job Filled: ".$item['summary'];
+		$body = "<p>Hey ".$bid['nickname'].",</p>";
+		$body .= "<p>Thanks for adding your bid to <a href='http://dev.sendlove.us/workitem.php?job_id=".$item['id']."'>#".$item['id']."</a> '".$item['summary']."'. This job has just been filled by another mechanic.</br></p>";
+		$body .= "There are lots of work to be done so please keep checking the <a href='http://dev.sendlove.us/worklist/'>worklist</a> and bidding!</br></p><p>Thanks!</p>LoveMachine</p>";
+
+		sl_send_email($bid['email'], $subject, $body);
+	}
+}
 
 function sendMailToOwner($itemid, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $is_runner) {
 	  $subject = "new bid: ".$summary;

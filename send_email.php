@@ -75,15 +75,18 @@ function sl_notify_sms_by_object($user_obj, $smssubject, $smsbody)
     {
        $smsaddr = $user_obj->smsaddr;
     } else {
-       if ($user_obj->provider{0} != '+') {
-          $smsaddr = str_replace('{n}', $user_obj->phone, $smslist[$user_obj->country][$user_obj->provider]);
-       } else {
-          $smsaddr = substr($user_obj->provider, 1);
-       }
+		if( !empty($user_obj->provider))	{
+			if ($user_obj->provider{0} != '+') {
+				$smsaddr = str_replace('{n}', $user_obj->phone, $smslist[$user_obj->country][$user_obj->provider]);
+			} else {
+				$smsaddr = substr($user_obj->provider, 1);
+			}
+		}	else	{
+			return;
+		}
     }
 
     send_authmail(array('sender'=>'smsuser', 'server'=>'gmail-ssl-smsuser'),
     					$smsaddr, strip_tags($smssubject), strip_tags($smsbody), '');
-
 }
 
