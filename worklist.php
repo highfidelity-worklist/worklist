@@ -33,7 +33,7 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
   }else{
     $funded = 0;
   }
-    $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id');
+    $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite');
     foreach ($args as $arg) {
       $$arg = mysql_real_escape_string($_POST[$arg]);
     }
@@ -72,6 +72,11 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
     {
       $bid_fee_itemid = $itemid;
       $journal_message .=  "item #$itemid: $summary. ";
+    }
+    
+    if (!empty($_POST['invite'])) {
+    	$people = explode(',', $_POST['invite']);
+    	invitePeople($people, $bid_fee_itemid, $summary, $notes);
     }
     
     if ($bid_fee_amount > 0) {

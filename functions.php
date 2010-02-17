@@ -409,21 +409,119 @@
     }
     
     function getUserById($id) {
-        $res = mysql_query("select * from ".USERS." where id='$id'");
-        if ($res) {
+        $res = mysql_query('SELECT * FROM `' . USERS . '` WHERE id = ' . $id);
+        if ($res && (mysql_num_rows($res) == 1)) {
             return mysql_fetch_object($res);
         }
         return false;
     }
     
+    function getUserByNickname($nickname) {
+    	$res = mysql_query('SELECT * FROM `' . USERS . '` WHERE `nickname` = "' . $nickname . '";');
+    	if ($res && (mysql_num_rows($res) == 1)) {
+    		return mysql_fetch_object($res);
+    	}
+    	return false;
+    }
+    
     function getWorklistById($id) {
         $query = "select * from ".WORKLIST." where id='$id'";
         $rt = mysql_query($query);
-        if ($rt) {
+        if ($rt && (mysql_num_rows($res) == 1)) {
             return mysql_fetch_object($rt);
         }
         return false;
     }
+    
+    function invitePeople(array $people, $item, $summary = null, $description = null) {
+    	foreach ($people as $invite) {
+    		// trim the whitespaces
+    		$invite = trim($invite);
+    		if (!empty($invite)) {
+    			// get the user by Nickname
+    			$user = getUserByNickname($invite);
+		        
+                if ($user !== false) {
+        			//sending email to the invited developer 
+		            $subject = "Invitation for " . $summary;
+                    $body = "<p>Hi there,</p>";
+                    $body .= "<p>you have been invited by " . $_SESSION['nickname'] . " at LoveMachine Inc. to bid on " . $summary . ".";
+		            $body .= "<p>To see more details and place a bid follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
+		            $body .= "<p>Love,<br/>Worklist</p>";
+		            sl_send_email($user->username, $subject, $body);
+                } else if (validEmail($invite)) {
+        			//sending email to the NEW invited developer 
+		            $subject = "Invitation for " . $summary;
+                    $body = "<p>Hey there!</p>";
+                    $body .= "<p>" . $_SESSION['nickname'] . " from LoveMachine Inc. thought you might be interested in looking at and possibly bidding on <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this job</a>:</p>";
+                    $body .= "<p>Summary of the job: " . $summary . "</p>";
+                    $body .= "<p>Description:</p>";
+                    $body .= "<p>------------------------------</p>";
+                    $body .= "<p>" . $description . "</p>";
+                    $body .= "<p>------------------------------</p>";
+                    $body .= "<p>To bid on that job, follow the link, create an account (less than a minute) and set the price you want to be paid for completing it!</p>";
+                    $body .= "<p>This item is part of a larger body of work being done at LoveMachine. You can join our Live Workroom to ask more questions by going <a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>";
+                    $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>";
+                    $body .= "<p><a href=\"http://www.lovemachineinc.com/\">Learn more about LoveMachine the company</a><br />";
+                    $body .= "<a href=\"http://svn.sendlove.us/\">Browse our SVN repositories</a><br />";
+                    $body .= "<a href=\"http://dev.sendllove.us/\">Play around with SendLove</a><br />";
+                    $body .= "<a href=\"http://dev.sendlove.us/worklist/\">Look over all our open work items</a><br />";
+                    $body .= "<a href=\"http://dev.sendlove.us/journal/\">Talk with us in our Journal</a><br />";
+		            sl_send_email($invite, $subject, $body);
+                }
+    		}
+    	}
+    }
+
+    /**
+    Validate an email address.
+    Provide email address (raw input)
+    Returns true if the email address has the email 
+    address format and the domain exists.
+    */
+    function validEmail($email) {
+        $isValid = true;
+        $atIndex = strrpos($email, "@");
+        if (is_bool($atIndex) && !$atIndex) {
+            $isValid = false;
+        } else {
+            $domain = substr($email, $atIndex+1);
+            $local = substr($email, 0, $atIndex);
+            $localLen = strlen($local);
+            $domainLen = strlen($domain);
+            if ($localLen < 1 || $localLen > 64) {
+                // local part length exceeded
+                $isValid = false;
+            } else if ($domainLen < 1 || $domainLen > 255) {
+                // domain part length exceeded
+                $isValid = false;
+            } else if ($local[0] == '.' || $local[$localLen-1] == '.') {
+                // local part starts or ends with '.'
+                $isValid = false;
+            } else if (preg_match('/\\.\\./', $local)) {
+                // local part has two consecutive dots
+                $isValid = false;
+            } else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {
+                // character not valid in domain part
+                $isValid = false;
+            } else if (preg_match('/\\.\\./', $domain)) {
+                // domain part has two consecutive dots
+                $isValid = false;
+            } else if (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/', str_replace("\\\\","",$local))) {
+                // character not valid in local part unless 
+                // local part is quoted
+                if (!preg_match('/^"(\\\\"|[^"])+"$/', str_replace("\\\\","",$local))) {
+                    $isValid = false;
+                }
+            }
+            if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {
+                // domain not found in DNS
+                $isValid = false;
+            }
+        }
+        return $isValid;
+    }
+
     
     function GetTimeStamp($MySqlDate, $i='')
     {

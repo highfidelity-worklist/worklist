@@ -39,6 +39,19 @@
 		  <textarea name="notes" size="48" /></textarea>
 		  </p>
 
+		<p class="info-label">Invite<br />
+			<input type="text" name="invite" class="invite" />
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$('.invite').autocomplete('getUsersForAutocomplete.php', {
+						multiple: true,
+						multipleSeparator: ', '
+					});
+				});
+			</script>
+			<small>Invite someone to do this job. (Comma-separated list of developers.)</small>
+		</p>
+
 		</div><!-- end div #for-edit-->
 		<div id = "for_view">
 		  <p class = "info-label">Summary<br />
