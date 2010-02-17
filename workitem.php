@@ -226,8 +226,8 @@ function sendMailToDiscardedBids($worklist_id)	{
 	foreach( $bids as $bid )	{
 		$subject = "Job Filled: ".$item['summary'];
 		$body = "<p>Hey ".$bid['nickname'].",</p>";
-		$body .= "<p>Thanks for adding your bid to <a href='http://dev.sendlove.us/workitem.php?job_id=".$item['id']."'>#".$item['id']."</a> '".$item['summary']."'. This job has just been filled by another mechanic.</br></p>";
-		$body .= "There are lots of work to be done so please keep checking the <a href='http://dev.sendlove.us/worklist/'>worklist</a> and bidding!</br></p><p>Thanks!</p>LoveMachine</p>";
+		$body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$item['id']."'>#".$item['id']."</a> '".$item['summary']."'. This job has just been filled by another mechanic.</br></p>";
+		$body .= "There are lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bidding!</br></p><p>Thanks!</p>LoveMachine</p>";
 
 		sl_send_email($bid['email'], $subject, $body);
 	}
