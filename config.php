@@ -12,6 +12,11 @@ if (file_exists('server.local.php')) {
 if (!defined("APP_NAME"))       define("APP_NAME","Worklist");
 if (!defined("APP_LOCATION"))   define("APP_LOCATION",substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], "/")));
 if (!defined("APP_BASE"))       define("APP_BASE",substr(APP_LOCATION, 0, strrpos(APP_LOCATION, "/", -2)));
+if (!defined('APP_PATH'))	define('APP_PATH', realpath(dirname(__FILE__)));
+if (!defined('UPLOAD_PATH'))	define('UPLOAD_PATH', realpath(APP_PATH . '/uploads'));
+
+if (!defined('APP_ENV'))	define('APP_ENV', 'production');
+
 //http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
 if (!defined("SERVER_NAME"))    define("SERVER_NAME","dev.sendlove.us");
 if (!defined("SERVER_URL"))     define("SERVER_URL",'http://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80

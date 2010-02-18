@@ -4,6 +4,8 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
+ini_set('display_errors', 1);
+error_reporting(-1);
 
 ob_start();
 
@@ -18,7 +20,6 @@ if(!isset($_SESSION['sfilter']))
 
 if(!isset($_SESSION['ufilter']))
   $_SESSION['ufilter'] = 'ALL';
-
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -172,7 +173,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
 
     // Journal notification
     $summary = getWorkItemSummary($bid_info['worklist_id']);
-    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #" . $bid_info['worklist_id'] . ": $summary.  Status set to WORKING.";
+    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #{$bid_info['worklist_id']}: $summary. ";
 
     //sending email to the bidder
     $subject = "bid accepted: $summary";
@@ -440,7 +441,39 @@ include("head.html"); ?>
 			    worklist_id,
 			    [['input', 'itemid', 'keyId', 'eval']]);
 
+        $('.w9notice').empty();
 		$('#popup-bid').dialog('open');
+
+		$('#bid_amount').bind('blur', function(e) {
+			var amount = $(this).val();
+			var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
+			$.ajax({
+		        type: "POST",
+		        url: 'jsonserver.php',
+		        data: {
+                    action: 'checkUserForW9',
+					amount: amount,
+					userid: user
+		        },
+		        dataType: 'json',
+		        success: function(data) {
+			        $('.w9notice').empty();
+			        if (data.success === false) {
+						// Success message
+						var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">' +
+										'<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
+										'<strong>Info:</strong> With this bid your yearly income would exceed $600. To accept this and further bids we need a signed W-9 form from you.</p><p><a href="files/fw9.pdf">Download it right here!</a></p><p>You can upload it on your <a href="settings.php">Settings</a> Page. After we reviewed it your account will be unlocked.</p>' +
+									'</div>';
+						$('.w9notice').append(html);
+                        $('input[name=place_bid]').hide().parent('form').bind('submit', function() {return false;});
+			        }
+		        },
+		        failure: function(data) {
+
+		        }
+			});
+		});
+		
 		return false;
             });
 

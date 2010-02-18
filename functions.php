@@ -5,6 +5,16 @@
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 
+	// Autoloader
+	function __autoload($class)
+	{
+		$file = realpath(dirname(__FILE__) . '/classes') . "/$class.class.php";
+		if (file_exists($file)) {
+			require_once($file);
+		}
+	}
+
+
     /* Fee Categories
      *
      * The cannonical list of recognized fees.
@@ -453,7 +463,7 @@
         			//sending email to the NEW invited developer 
 		            $subject = "Invitation for " . $summary;
                     $body = "<p>Hey there!</p>";
-                    $body .= "<p>" . $_SESSION['nickname'] . " from LoveMachine Inc. thought you might be interested in looking at and possibly bidding on <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this job</a>:</p>";
+                    $body .= "<p>" . $_SESSION['nickname'] . " from LoveMachine Inc. thought you might be interested in looking at and possibly bidding on this job:</p>";
                     $body .= "<p>Summary of the job: " . $summary . "</p>";
                     $body .= "<p>Description:</p>";
                     $body .= "<p>------------------------------</p>";
@@ -462,11 +472,11 @@
                     $body .= "<p>To bid on that job, follow the link, create an account (less than a minute) and set the price you want to be paid for completing it!</p>";
                     $body .= "<p>This item is part of a larger body of work being done at LoveMachine. You can join our Live Workroom to ask more questions by going <a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>";
                     $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>";
-                    $body .= "<p><a href=\"http://www.lovemachineinc.com/\">Learn more about LoveMachine the company</a><br />";
-                    $body .= "<a href=\"http://svn.sendlove.us/\">Browse our SVN repositories</a><br />";
-                    $body .= "<a href=\"http://dev.sendllove.us/\">Play around with SendLove</a><br />";
-                    $body .= "<a href=\"http://dev.sendlove.us/worklist/\">Look over all our open work items</a><br />";
-                    $body .= "<a href=\"http://dev.sendlove.us/journal/\">Talk with us in our Journal</a><br />";
+                    $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />";
+                    $body .= "[<a href=\"http://svn.sendlove.us/\">svn.sendlove.us</a> | Browse our SVN repositories]<br />";
+                    $body .= "[<a href=\"http://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
+                    $body .= "[<a href=\"http://dev.sendlove.us/worklist/\">dev.sendlove.us/worklist</a> | Look over all our open work items]<br />";
+                    $body .= "[<a href=\"http://dev.sendlove.us/journal/\">dev.sendlove.us/journal</a> | Talk with us in our Journal]<br />";
 		            sl_send_email($invite, $subject, $body);
                 }
     		}
@@ -521,19 +531,18 @@
         }
         return $isValid;
     }
-
     
-    function GetTimeStamp($MySqlDate, $i='')
+    function  GetTimeStamp($MySqlDate, $i='')
     {
-	    if (empty($MySqlDate)) $MySqlDate = date('Y/m/d');
-	    $date_array = explode("/",$MySqlDate); // split the array
+            if (empty($MySqlDate)) $MySqlDate = date('Y/m/d');
+            $date_array = explode("/",$MySqlDate); // split the array
 
-	    $var_year = $date_array[0];
-	    $var_month = $date_array[1];
-	    $var_day = $date_array[2];
-	    $var_timestamp=$date_array[2]."-".$date_array[0]."-".$date_array[1];
-	    //$var_timestamp=$var_month ."/".$var_day ."-".$var_year;
-	    return($var_timestamp); // return it to the user
+            $var_year = $date_array[0];
+            $var_month = $date_array[1];
+            $var_day = $date_array[2];
+            $var_timestamp=$date_array[2]."-".$date_array[0]."-".$date_array[1];
+            //$var_timestamp=$var_month ."/".$var_day ."-".$var_year;
+            return($var_timestamp); // return it to the user
     }
 
 ?>

@@ -1,6 +1,7 @@
 <div id="popup-stats" title = "Statistics for last 7 days" class = "popup-body">
 	<form name="popup-form" id="popup-form-edit" action="" method="post">
 		<input type="hidden" name="itemid" value="0" />
+		<input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
 
 		<div id = "for_view">
 

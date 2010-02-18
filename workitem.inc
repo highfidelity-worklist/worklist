@@ -250,7 +250,7 @@ include("head.html"); ?>
 	      <span class="info-label">Summary</span>
 	      <?php if($is_runner || $worklist['owner_id'] == $user_id): ?>
 		<span>
-		<input type="text" size="33" class="text-field" id="summary" name="summary" value="<?php echo $worklist['summary'];?>"/><span>
+		<input type="text" size="33" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/><span>
 	      <?php else:?>
 	      <span><?php echo $worklist['summary'];?></span>
 	      <?php endif;?>
@@ -371,7 +371,7 @@ include("head.html"); ?>
 		 $row = 1;
 		 foreach($fees as $fee): ?>
 		<tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-		    <td><?php echo $fee['nickname'] ? $fee['nickname'] : '--';?></td>
+		    <td><?php echo $fee['nickname'];?></td>
 		    <td><?php echo $fee['amount'];?></td>
 		    <td><?php echo $fee['desc'];?></td>
 		    <td><?php echo $fee['date'];?></td>

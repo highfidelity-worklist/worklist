@@ -18,6 +18,8 @@
                 <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
                 </p>
     
+    			<div class="w9notice"></div>
+    
                 <p class="info-label">Done By<br />
                   <input type="text" class="text-field date" name="done_by" id="done_by" value="" size="20" />
                   <img src="images/Calendar.gif" class="dpButtonCal" onClick="displayDatePicker('done_by', false, 'mdy', '/');" /> 

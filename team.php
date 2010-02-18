@@ -226,6 +226,42 @@ include("head.html"); ?>
 	    //adding "Edit" button
 	    $('#popup-user-info #popup-form').append('<input type="submit" name="edit" value="Edit">');
 	  }
+
+		$.ajax({
+	        type: "POST",
+	        url: 'jsonserver.php',
+	        data: {
+				action: 'approvalStatus',
+				userid: $('#popup-user-info #userid').val()
+	        },
+	        dataType: 'json',
+	        success: function(data) {
+		        if (data.success === true) {
+					if (data.approved === true) {
+						$('#approve').attr('checked', 'checked').attr('disabled', 'disabled');
+					} else {
+						$('#approve').removeAttr('checked').removeAttr('disabled');
+						$('#approve').bind('click', function() {
+							$.ajax({
+								type: 'POST',
+								url: 'jsonserver.php',
+								data: {
+									action: 'approveUser',
+									userid: $('#popup-user-info #userid').val()
+								},
+								dataType: 'json',
+								success: function(data) {
+									if (data.success === true) {
+										$('#approve').attr('checked', 'checked').attr('disabled', 'disabled');
+									}
+								}
+							});
+						});
+					}
+		        }
+	        }
+		});
+	  
       },
       error: function(xhdr, status, err) {
       }

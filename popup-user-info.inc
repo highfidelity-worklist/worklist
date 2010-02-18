@@ -31,6 +31,12 @@
             <p class = "info-label">Joined<br />
             <span id="info-joined"></span>
             </p>
+            
+	        <?php if (!empty($_SESSION['is_runner'])) { ?>
+            <p class="info-label">W9 Approved<br />
+            <input type="checkbox" id="approve" />
+            </p>
+            <?php } ?>
     
             <form id = "roles" method="post" >
             <p class = "info-label">Roles<br />

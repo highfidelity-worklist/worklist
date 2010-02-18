@@ -26,7 +26,7 @@ $fields_to_htmlescape = array(
 				'timezone' => '', 
 				'phone' => '', 
 				'country' => '', 
-				'smsaddr' => '',
+				'smsaddr' => ''
 			);
 
 $fields_to_not_escape = array(
@@ -37,11 +37,14 @@ $fields_to_not_escape = array(
 				'sign_up' => '', 
 				'phone_edit' => '',
 				'confirm' => '',
+				'is_uscitizen' => ''
 			);
 
 $minimal_POST = array_intersect_key($_POST, $fields_to_not_escape + $fields_to_htmlescape);
 
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
+// make shure uscitizen is either 0 or 1
+$minimal_POST['is_uscitizen'] = ($values_for_db['is_uscitizen'] == 'on') ? 1 : 0;
 
 if(isset($minimal_POST['sign_up'])){
   if(empty($username)||empty($minimal_POST['password'])||empty($minimal_POST['confirmpassword']))
@@ -81,7 +84,6 @@ if(isset($minimal_POST['sign_up'])){
 	  $sql = 'INSERT INTO `'.USERS.'` (`'. implode('`,`', array_keys($values_for_db)) . '`) VALUES ("'. implode('","', array_values($values_for_db)). '")';
 	  $res = mysql_query($sql);
 	  $user_id = mysql_insert_id();
-	  
 	  $to = $username;
 	  $subject = "Registration Confirmation";
 	  $link = SECURE_SERVER_URL."confirmation.php?cs=${values_for_db['confirm_string']}&str=".base64_encode($username);
@@ -171,6 +173,12 @@ include("head.html"); ?>
 
 <?php include("sms-inc.php"); ?>
 
+		<div class="LVspace">
+			<p>
+				<label for="uscitizen">Are you a US citizen?</label><br />
+				<input type="checkbox" id="uscitizen" name="is_uscitizen" <?php echo((isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) ? 'checked="checked" ' : ''); ?> />
+			</p>
+		</div>
             <div class="LVspace"><p>
             <label>Password *<br />
             <input type="password" id="password" name="password" class="text-field" size="35" />

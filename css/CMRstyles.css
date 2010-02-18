@@ -310,10 +310,6 @@ table thead tr:hover{
 	line-height:25px;
 	}
 	
-textarea {
-	font-family: helvetica, arial, sans-serif;
-}
-	
 input[type=text], input[type=password], textarea {
 	border: 2px solid #d1cfcf;;
 	padding:2px 5px;
@@ -357,6 +353,20 @@ p.error {
 input[type=submit] {
     background:  url(../images/button120_01.gif) no-repeat 1px 2px;
 	display:inline-block;
+    color: #444;
+    font: normal 12px;
+    height: 26px;
+	width:121px;
+    line-height: 26px;
+	text-align:center;
+	outline: none;
+	border:none;
+	-moz-outline-style: none;
+}
+
+input[type=button] {
+    background:  url(../images/button120_01.gif) no-repeat 1px 2px;
+    display:inline-block;
     color: #444;
     font: normal 12px;
     height: 26px;
