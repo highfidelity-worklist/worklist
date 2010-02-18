@@ -1,11 +1,11 @@
-<?php 
+<?php
 //  vim:ts=4:et
 
 //  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-ob_start(); 
+ob_start();
 
 
 include("config.php");
@@ -60,7 +60,7 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
             "values ( '$summary', '$creator_id', '$owner_id', '$status', '$funded', '$notes', now() )";
         $journal_message .= $_SESSION['nickname'] . " added ";
     }
-    
+
     $rt = mysql_query($query);
 
     if(empty($_POST['itemid']))
@@ -73,12 +73,12 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
       $bid_fee_itemid = $itemid;
       $journal_message .=  "item #$itemid: $summary. ";
     }
-    
+
     if (!empty($_POST['invite'])) {
     	$people = explode(',', $_POST['invite']);
     	invitePeople($people, $bid_fee_itemid, $summary, $notes);
     }
-    
+
     if ($bid_fee_amount > 0) {
         $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id);
     }
@@ -97,7 +97,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
 
     if($mechanic_id != $_SESSION['userid'])
     {
-      // Get the mechanic's user information 
+      // Get the mechanic's user information
       $rt = mysql_query("select nickname, username from ".USERS." where id='{$mechanic_id}'");
       if ($rt) {
         $row = mysql_fetch_assoc($rt);
@@ -117,9 +117,9 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
       $nickname = $_SESSION['nickname'];
     }
 
-    mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`) 
+    mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`)
                             VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$_SESSION['timezone'])."'), '$notes')");
- 
+
     $bid_id = mysql_insert_id();
 
     //sending email to the owner of worklist item
@@ -174,7 +174,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     $summary = getWorkItemSummary($bid_info['worklist_id']);
     $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #" . $bid_info['worklist_id'] . ": $summary.  Status set to WORKING.";
 
-    //sending email to the bidder 
+    //sending email to the bidder
     $subject = "bid accepted: $summary";
     $body = "Promised by: ".$_SESSION['nickname']."</p>";
     $body .= "<p>Love,<br/>Worklist</p>";
@@ -260,19 +260,19 @@ include("head.html"); ?>
     function AppendPagination(page, cPages, table)
     {
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="6" style="text-align:center;">Pages : &nbsp;';
-        if (page > 1) { 
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;'; 
-        } 
-        for (var i = 1; i <= cPages; i++) { 
-            if (i == page) { 
-                pagination += i + " &nbsp;"; 
-            } else { 
-                pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" >' + i + '</a> &nbsp;'; 
-            } 
+        if (page > 1) {
+            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;';
         }
-        if (page < cPages) { 
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page+1) + '">Next</a> &nbsp;'; 
-        } 
+        for (var i = 1; i <= cPages; i++) {
+            if (i == page) {
+                pagination += i + " &nbsp;";
+            } else {
+                pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" >' + i + '</a> &nbsp;';
+            }
+        }
+        if (page < cPages) {
+            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page+1) + '">Next</a> &nbsp;';
+        }
         pagination += '</td></tr>';
         $('.table-' + table).append(pagination);
     }
@@ -308,10 +308,10 @@ include("head.html"); ?>
 
 	var funded = "";
 	if(json[13] == 0){
-	  funded = "No";  
+	  funded = "No";
 	}
         else{
-  	  funded = "Yes";  
+  	  funded = "Yes";
 	}
 	row += '<td width="5%">' + pre + funded + post + '</td>';
 
@@ -322,7 +322,7 @@ include("head.html"); ?>
 		who +=  ', ' + json[9];
 		tooltip += '<br />Mechanic: '+json[10];
 	    }
-	      
+
             row += '<td width="15%" class="toolparent">' + pre + who + post + '<span class="tooltip">' + tooltip  + '</span>' + '</td>';
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
@@ -332,7 +332,7 @@ include("head.html"); ?>
         } else {
             row += '<td width="15%">' + pre + RelativeTime(json[5]) + ' ago' + post +'</td>';
         }
-        
+
 	var feebids = 0;
 	if(json[6]){
 	  feebids = json[6];
@@ -342,7 +342,7 @@ include("head.html"); ?>
 	  bid = json[7];
 	}
 	if(json[2] == 'BIDDING'){
-	  feebids = parseFloat(feebids) + parseFloat(bid);  
+	  feebids = parseFloat(feebids) + parseFloat(bid);
 	}
 
 	row += '<td width="10%">' + pre + '$' + feebids + post + '</td></tr>';
@@ -546,29 +546,29 @@ include("head.html"); ?>
 
     function ToolTip() {
         xOffset = 10;
-        yOffset = 20;       
+        yOffset = 20;
         var el_parent, el_child;
-        $(".toolparent").hover(function(e){                                             
+        $(".toolparent").hover(function(e){
             if (el_child) el_child.appendTo(el_parent).hide();
             el_parent = $(this);
             el_child = el_parent.children(".tooltip")
                 .appendTo("body")
                 .css("top",(e.pageY - xOffset) + "px")
                 .css("left",(e.pageX + yOffset) + "px")
-                .fadeIn("fast");        
+                .fadeIn("fast");
         },
         function(){
             if (el_child) el_child.appendTo(el_parent);
             $(".tooltip").hide();
             el_child = null;
-        }); 
+        });
         $(".toolparent").mousemove(function(e){
             if (el_child) {
                 el_child
                     .css("top",(e.pageY - xOffset) + "px")
                     .css("left",(e.pageX + yOffset) + "px");
             }
-        });         
+        });
     }
 
     function PopulatePopup(item, edit) {
@@ -588,7 +588,7 @@ include("head.html"); ?>
         $('.popup-body form select option[index=0]').attr('selected', 'selected');
         $('.popup-body form textarea').val('');
     }
-    
+
 
 //Most of the js code for implementing bidding capability starts here
 
@@ -611,7 +611,7 @@ include("head.html"); ?>
                           <td colspan="4" style="text-align:center;">No bids yet.</td></tr>';
               $('.table-bidlist tbody').append(row);
               return;
-            } 
+            }
 
             var already_bid = false;
 
@@ -621,12 +621,12 @@ include("head.html"); ?>
 
             if (json[i].bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"){
 	      already_bid = true;
-	    }		
+	    }
                 AppendBidRow(json[i], odd);
                 odd = !odd;
             }
-            
-            
+
+
             AppendPagination(page, cPages, 'bidlist');
 
             $('.bidlist-pagination-row a').click(function(e){
@@ -634,9 +634,9 @@ include("head.html"); ?>
                 GetBidlist(worklist_id, page);
                 e.stopPropagation();
                 return false;
-            }); 
+            });
 
-            //show additional popup with bid info 
+            //show additional popup with bid info
             $('tr.row-bidlist-live').click(function(){
               var match = $(this).attr('class').match(/biditem-\d+/);
               var bid_id = match[0].substr(8);
@@ -653,22 +653,22 @@ include("head.html"); ?>
 			  ['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 			  ['span', '#info-notes', 'json.notes', 'eval'] ],
 			function(json) {
-			  if( is_runner==1) 
+			  if( is_runner==1)
 			    $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
 			  if( is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
-				$('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');				
+				$('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 			});
 
 	      $('#popup-bid-info').dialog('open');
             });
-	
+
 	    if(already_bid){
-	      $('#bid').click(function(e){  
+	      $('#bid').click(function(e){
 		  if (!confirm("You have already placed a bid, do you want to place a new one?"))
 		{
 		    $('#popup-bid').dialog('close');
 		    return false;
-		} 
+		}
 
 	      });
 	    }
@@ -702,7 +702,7 @@ include("head.html"); ?>
         row += '<td width="20%">' + pre + RelativeTime(json.delta) + ' ago' + post + '</td></tr>';
        $('.table-bidlist tbody').append(row);
     }
-    
+
     function ResetBidInfoPopup(){
       $('#popup-bid-info form input[type="submit"]').remove();
     }
@@ -725,7 +725,7 @@ include("head.html"); ?>
                           <td colspan="5" style="text-align:center;">No fees yet.</td></tr>';
               $('.table-feelist tbody').append(row);
               return;
-            } 
+            }
 
             /* Output the bidlist rows. */
             var odd = topIsOdd;
@@ -733,8 +733,8 @@ include("head.html"); ?>
                 AppendFeeRow(json[i], odd);
                 odd = !odd;
             }
-            
-//will row with total here            
+
+//will row with total here
               var row = '<tr bgcolor="#FFFFFF" class="row-feelist-live feelist-total-row" >\
                           <td colspan="5" style="text-align:center;">Total Fees $' + json[0][0] + '</td></tr>';
               $('.table-feelist tbody').append(row);
@@ -750,13 +750,13 @@ include("head.html"); ?>
 			  [ ['input', 'itemid', 'keyId', 'eval'],
 			    ['textarea', 'paid_notes', 'json[2]', 'eval'],
 			    ['checkbox', 'paid_check', 'json[1]', 'eval'] ]);
-		
+
 			$('.paidnotice').empty();
 			$('#popup-paid').dialog('open');
-			
+
 			// onSubmit event handler for the form
 			$('#popup-paid > form').submit(function() {
-				// now we save the payment via ajax		
+				// now we save the payment via ajax
 				$.ajax({
                     type: 'POST',
 					url: 'paycheck.php',
@@ -790,7 +790,7 @@ include("head.html"); ?>
 						}
 					}
 				});
-				
+
 				return false;
 			});
 
@@ -799,15 +799,15 @@ include("head.html"); ?>
 				$('.table-feelist tbody').empty();
 				GetFeelist(worklist_id);
 			});
-		
+
 		return false;
             });
 
             $('.wd-link').click(function(e) {
             	$(this).parent().submit();
             });
-            
-            
+
+
         },
         error: function(xhdr, status, err) {
             $('.row-feelist-live').remove();
@@ -832,13 +832,13 @@ include("head.html"); ?>
         row += '<td>' + pre + json[1] + post + '</td>';
         row += '<td>' + pre + json[3] + post + '</td>';
         row += '<td>' + pre + json[4] + post + '</td>';
-	
+
 	    var paid = (json[5] == 0) ? 'No' : 'Yes';
 	    if(is_payer) {
 	        pre = '<a href="#" class = "paid-link" id = "feeitem-' + json[0] + '" >';
 	        post = '</a>';
 	    }
-	
+
 	var wd = '';
 	if (is_runner) {
 		var wd = ' - <form action="" method="post">' +
@@ -847,7 +847,7 @@ include("head.html"); ?>
 						'<a href="#" class = "wd-link">WD</a>' +
 					 '</form>';
 	}
-       
+
         row += '<td>' + pre + paid + post + wd + '</td></tr>';
        $('.table-feelist tbody').append(row);
     }
@@ -863,14 +863,14 @@ include("head.html"); ?>
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 
-	$('#done_by').datepicker({  
-	  duration: '',  
-	  showTime: true,  
-	  constrainInput: false,  
-	  stepMinutes: 1,  
-	  stepHours: 1,  
-	  altTimeField: '',  
-	  time24h: false  
+	$('#done_by').datepicker({
+	  duration: '',
+	  showTime: true,
+	  constrainInput: false,
+	  stepMinutes: 1,
+	  stepHours: 1,
+	  altTimeField: '',
+	  time24h: false
 	});
 
 	$('#popup-bid').bind('dialogclose', function(){
@@ -878,7 +878,7 @@ include("head.html"); ?>
 	  $('#ui-timepicker-div').hide();
 	});
 
-        GetWorklist(<?php echo $page?>, false);    
+        GetWorklist(<?php echo $page?>, false);
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#search-filter, #user-filter").change(function(){
@@ -889,14 +889,6 @@ include("head.html"); ?>
             $(".worklist-fees").text('Fees/Bids');
         }
 
-	    $.ajax({
-	      type: "POST",
-	      url: 'update_session.php',
-	      data: {
-		      sfilter: $("#search-filter").val(),
-		      ufilter: $("#user-filter").val()
-	      }
-	    });
 
             page = 1;
             if (timeoutId) clearTimeout(timeoutId);
@@ -934,7 +926,7 @@ include("head.html"); ?>
 	    $('#fees_block').hide();
 	    $('#fees_single_block').show();
 	    $('#popup-edit').dialog('open');
-	    
+
         });
         $('#edit').click(function(){
             $('#popup-edit form input[name="itemid"]').val(workitem);
@@ -954,9 +946,9 @@ include("head.html"); ?>
 	    SimplePopup('#popup-delete',
 			'Delete Workitem',
 			workitem,
-			[['input', 'itemid', 'keyId', 'eval'], 
+			[['input', 'itemid', 'keyId', 'eval'],
 			 ['span', '#popup-delete-summary', summary] ]);
-			
+
 	    $('#popup-delete').dialog('open');
         });
         $('#view').click(function(){
@@ -969,9 +961,9 @@ include("head.html"); ?>
             var name = $(this).attr('name');
 
             $(".popup-page-value").val(page);
-	    
+
 	        switch(name){
-	        case "add_fee_dialog": 
+	        case "add_fee_dialog":
                 SimplePopup('#popup-addfee',
 			        'Add Fee',
 			        workitem,
@@ -995,28 +987,28 @@ include("head.html"); ?>
         return false;
     });
     $("#search_reset").click(function(e){
-    	
+
     	e.preventDefault();
-    	
-        $("#query").val('');    
-   		 
+
+        $("#query").val('');
+
         GetWorklist(1,false);
-        
+
         return false;
     });
 
 
-    $("#searchForm").submit(function(){   
-    	
+    $("#searchForm").submit(function(){
+
         $("#loader_img").css("display","block");
-        
+
         GetWorklist(1,false);
-                    
+
         return false;
     });
 
     });
-</script> 
+</script>
 
 <title>Worklist | Lend a Hand</title>
 
@@ -1058,15 +1050,15 @@ include("head.html"); ?>
             <?php } ?>
     </div>
     <?php } ?>
-            
+
 <div id="search-filter-wrap">
  	<div style="float:right" >
 		<div style="float:left">
 			<form method="get" action="" id="searchForm" />
 				<div style="padding-top:5px;float:left;padding-right:15px;">
 					<?php DisplayFilter('ufilter'); ?>
-					<?php DisplayFilter('sfilter'); ?>		
-				</div>	
+					<?php DisplayFilter('sfilter'); ?>
+				</div>
 				<div class="input_box">
 	            	<input type="text" id="query" name="query" alt="Search" size="20" value="Search..." onfocus="if(this.value=='Search...') this.value='';">
 	            	<div class="onlyfloat_right">
@@ -1075,16 +1067,16 @@ include("head.html"); ?>
 	            		</a>
 	            	</div>
 				</div>
-			</form>	
+			</form>
 		</div>
 		<div style="float: right; margin-top: 3px;">
 			<a style="display: block; float: right;" id="search_reset" href="">
 				<img src="images/cross.png">
 			</a>
 		</div>
-	</div>  
-  
-</div>    
+	</div>
+
+</div>
 
     <div style="clear:both"></div>
 
@@ -1102,5 +1094,5 @@ include("head.html"); ?>
         <tbody>
         </tbody>
     </table>
-      
+
 <?php include("footer.php"); ?>
