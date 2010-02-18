@@ -310,6 +310,10 @@ table thead tr:hover{
 	line-height:25px;
 	}
 	
+textarea {
+	font-family: helvetica, arial, sans-serif;
+}
+	
 input[type=text], input[type=password], textarea {
 	border: 2px solid #d1cfcf;;
 	padding:2px 5px;
