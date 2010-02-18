@@ -172,7 +172,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
 
     // Journal notification
     $summary = getWorkItemSummary($bid_info['worklist_id']);
-    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #{$bid_info['worklist_id']}: $summary. ";
+    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #" . $bid_info['worklist_id'] . ": $summary.  Status set to WORKING.";
 
     //sending email to the bidder 
     $subject = "bid accepted: $summary";

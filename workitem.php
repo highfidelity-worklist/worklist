@@ -55,9 +55,40 @@ if($action =='save_workitem') {
       $funded = isset($_POST['funded']) ? 1 : 0;     
     }
     
+// code to add specifics to journal update messages
+$original_values= $workitem->getWorkItem($worklist_id);
+$new_update_message='';
+if (!($original_values["summary"] == mysql_real_escape_string($summary))){
+  $new_update_message .= "Summary changed";
+}
+if (!($original_values["status"] == mysql_real_escape_string($status)) && !empty($status)){
+  if (!empty($new_update_message)){  // add commas where appropriate
+      $new_update_message .= ", ";
+  }
+  $new_update_message .= "Status set to $status";
+}
+if (!($original_values["notes"] == mysql_real_escape_string($notes))){
+  if (!empty($new_update_message)){  // add commas where appropriate
+      $new_update_message .= ", ";
+  }
+  $new_update_message .= "Notes changed";
+}
+if (!empty($funded)){
+  if (!empty($new_update_message)){  // add commas where appropriate
+      $new_update_message .= ", ";
+  }
+  $new_update_message .= "Funding status set to Yes";
+}
+if (empty($new_update_message)){
+  $new_update_message = " No changes.";}else{
+  $new_update_message = " Changes: $new_update_message.";
+}
+
+
+
     $workitem->updateWorkItem($worklist_id, $summary, $notes, $status, $funded) ? 1 : 0;
     $redirectToDefaultView = true;
-    $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary. ";
+    $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary.  $new_update_message";
 }
 
 
@@ -133,9 +164,10 @@ if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
     $bid_id = intval($_REQUEST['bid_id']);
     if (!$workitem->hasAcceptedBids($workitem->getWorkItemByBid($bid_id))) {
         $bid_info = $workitem->acceptBid($bid_id);
+	$item_id = $workitem->getWorkItemByBid($bid_id);
 
         // Journal notification
-        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #$itemid: " . $bid_info['summary'] . ".";
+        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
 
         //sending email to the bidder
         $subject = "bid accepted: " . $bid_info['summary'];

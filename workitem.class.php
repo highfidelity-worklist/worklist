@@ -101,6 +101,7 @@ class WorkItem
         if($funded !== null) {
             $query .= ' ,funded='. $funded ;
         }
+	
         $query .= ' WHERE id='.$worklist_id;
         return mysql_query($query) ? 1 : 0;
     }
