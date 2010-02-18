@@ -39,37 +39,9 @@
 		  <textarea name="notes" size="48" /></textarea>
 		  </p>
 
-		<p class="info-label">Invite<br />
-			<input type="text" name="invite" class="invite" />
-			<script type="text/javascript">
-				$(document).ready(function() {
-					$('.invite').autocomplete('getUsersForAutocomplete.php', {
-						multiple: true,
-						multipleSeparator: ', '
-					});
-				});
-			</script>
-			<small>Invite someone to do this job. (Comma-separated list of developers.)</small>
-		</p>
-
 		</div><!-- end div #for-edit-->
-		<div id = "for_view">
-		  <p class = "info-label">Summary<br />
-		  <span id="info-summary"></span>
-		  </p>
-
-		  <p class = "info-label">Status<br />
-		  <span id="info-status"></span>
-		  </p>
-
-		  <p class="info-label">Funded<br />
-		  <span id="info-funded"></span>
-		  </p>
-		  <p class = "info-label">Notes<br />
-		  <span id="info-notes"></span>
-		  </p>
-		</div><!-- end div #for_view -->
-                <?php if (isset($_SESSION['userid'])) { ?>
+		
+<?php if (isset($_SESSION['userid'])) { ?>
 		<div id = "fees_block">
 		  <span  class="info-label">Fees</span>
 		  <table width="100%" class="table-feelist">

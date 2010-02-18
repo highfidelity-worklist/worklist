@@ -896,37 +896,28 @@ include("head.html"); ?>
         });
 
         $('#add').click(function(){
-	    $('#popup-edit').data('title.dialog', 'Add Worklist Item');
+	    	$('#popup-edit').data('title.dialog', 'Add Worklist Item');
             $('#popup-edit form input[name="itemid"]').val('');
             ResetPopup();
-
-	    // Kyle
-	    //alert("123abc");
-	    $('#save_item').click(function(){
-
-		//alert("test");
-		if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val())
-		{
-		  // see http://regexlib.com/REDetails.aspx?regexp_id=318
-		  var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-		  var bid_fee_amount = new LiveValidation('bid_fee_amount',{ onlyOnSubmit: true });
-		  var bid_fee_desc = new LiveValidation('bid_fee_desc',{ onlyOnSubmit: true });
-
-		  bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-		  bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
-		  bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-		}
-		else
-		{
-		  bid_fee_amount.destroy();
-		  bid_fee_desc.destroy();
-		}
-		return true;
-	      });
-	    $('#fees_block').hide();
-	    $('#fees_single_block').show();
-	    $('#popup-edit').dialog('open');
-
+		    $('#save_item').click(function(){
+				if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val()) {
+				  // see http://regexlib.com/REDetails.aspx?regexp_id=318
+				  var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+				  var bid_fee_amount = new LiveValidation('bid_fee_amount',{ onlyOnSubmit: true });
+				  var bid_fee_desc = new LiveValidation('bid_fee_desc',{ onlyOnSubmit: true });
+		
+				  bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+				  bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
+				  bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+				} else {
+				  bid_fee_amount.destroy();
+				  bid_fee_desc.destroy();
+				}
+				return true;
+		    });
+	    	$('#fees_block').hide();
+	    	$('#fees_single_block').show();
+	    	$('#popup-edit').dialog('open');
         });
         $('#edit').click(function(){
             $('#popup-edit form input[name="itemid"]').val(workitem);
