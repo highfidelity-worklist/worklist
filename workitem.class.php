@@ -98,7 +98,7 @@ class WorkItem
     public function updateWorkItem($worklist_id, $summary, $notes, $status, $funded)
     {
         $query = 'UPDATE '.WORKLIST.' SET summary= "'.$summary.'", notes="'.$notes.'", status="' .$status.'" ';
-        if($funded != null) {
+        if($funded !== null) {
             $query .= ' ,funded='. $funded ;
         }
         $query .= ' WHERE id='.$worklist_id;

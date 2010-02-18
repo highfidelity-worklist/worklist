@@ -44,17 +44,17 @@ $redirectToDefaultView = false;
 
 // Save WorkItem was requested. We only support Update here
 if($action =='save_workitem') {
+	
     $args = array('summary','notes', 'funded', 'status');
     foreach ($args as $arg) {
       $$arg = mysql_real_escape_string($_POST[$arg]);
     }
 
-    if(isset($_POST['funded']) && $is_runner){
-      $funded = mysql_real_escape_string($_POST['funded']) == 'on'? 1 :0;
-    }else{
-      $funded = null;
+    $funded = null;
+    if ($is_runner){
+      $funded = isset($_POST['funded']) ? 1 : 0;     
     }
-
+    
     $workitem->updateWorkItem($worklist_id, $summary, $notes, $status, $funded) ? 1 : 0;
     $redirectToDefaultView = true;
     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary. ";
