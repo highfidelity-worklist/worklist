@@ -67,23 +67,27 @@ if (!($original_values["status"] == mysql_real_escape_string($status)) && !empty
   }
   $new_update_message .= "Status set to $status";
 }
-if (!($original_values["notes"] == mysql_real_escape_string($notes))){
+if (!( mysql_real_escape_string($original_values["notes"]) == $notes)){
   if (!empty($new_update_message)){  // add commas where appropriate
       $new_update_message .= ", ";
   }
   $new_update_message .= "Notes changed";
 }
-if (!empty($funded)){
+if ((!($original_values["funded"]==$funded)) && !empty($funded)){
   if (!empty($new_update_message)){  // add commas where appropriate
       $new_update_message .= ", ";
   }
-  $new_update_message .= "Funding status set to Yes";
+  if ($funded=="1"){
+     $funded_message="YES";
+  }else{
+     $funded_message="NO";
+  }
+  $new_update_message .= "Funding set to $funded_message";
 }
 if (empty($new_update_message)){
   $new_update_message = " No changes.";}else{
   $new_update_message = " Changes: $new_update_message.";
 }
-
 
 
     $workitem->updateWorkItem($worklist_id, $summary, $notes, $status, $funded) ? 1 : 0;
