@@ -53,10 +53,12 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
 
     } 
 	//updating user info in database
-	$args = array('nickname', 'about', 'contactway', 'payway', 'skills', 'timezone');
+	$args = array('nickname', 'contactway', 'payway', 'skills', 'timezone');
 	foreach ($args as $arg){
 	  $$arg = mysql_real_escape_string(htmlspecialchars($_POST[$arg]));
 	}
+	// Strip out any html tags
+	$about = mysql_real_escape_string(strip_tags($_POST['about']));
 
 	if (isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) {
 		$uscitizen = 1;

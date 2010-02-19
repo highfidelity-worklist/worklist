@@ -19,7 +19,6 @@ mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME);
 
 $fields_to_htmlescape = array(
-				'about' => '', 
 				'contactway' => '', 
 				'payway' => '', 
 				'skills' => '', 
@@ -37,9 +36,13 @@ $fields_to_not_escape = array(
 				'sign_up' => '', 
 				'phone_edit' => '',
 				'confirm' => '',
-				'is_uscitizen' => ''
+				'is_uscitizen' => '',
+				'about' => '', 
 			);
-
+// Remove html tags from about box
+if (isset($_POST['about'])) {
+	$_POST['about'] = strip_tags($_POST['about']);
+}
 $minimal_POST = array_intersect_key($_POST, $fields_to_not_escape + $fields_to_htmlescape);
 
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
