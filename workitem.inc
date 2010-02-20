@@ -265,7 +265,7 @@ include("head.html"); ?>
 		</select>
 		<?php else: ?>
 		    <?php echo $worklist['status'];?>
-		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
+		    <input type="hidden" id="status" name="status" value = "<?php echo $worklist['status']; ?>" />
 		<?php endif;?>
 	      </li>
 		<li>
