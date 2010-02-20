@@ -15,6 +15,7 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 
+
 if(!isset($_SESSION['sfilter']))
   $_SESSION['sfilter'] = 'BIDDING';
 
@@ -260,6 +261,24 @@ include("head.html"); ?>
 
     function AppendPagination(page, cPages, table)
     {
+	// support for moving rows between pages
+	if(table == 'worklist'){
+	    if(page > 1){
+		$('.table-' + table).prepend('<tr class = "row-worklist-live page-switch"><td colspan = "6" "style="text-align: center;"><b>Drop item above this row to move it between pages</b></td></tr>');
+	    }
+	    if(page < cPages){
+		$('.table-' + table).append('<tr class = "row-worklist-live page-switch"><td colspan = "6" "style="text-align: center;"><b>Drop item beneath this row to move it between pages</b></td></tr>');
+	    }
+	    $('.page-switch').hide();
+
+	    // preparing dialog
+	    $('#pages-dialog select').remove();
+	    var selector = $('<select>');
+	    for (var i = 1; i <= cPages; i++) {
+		selector.append('<option value = "' + i + '">' + i + '</option>');
+	    }
+	    $('#pages-dialog').prepend(selector);
+	}
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="6" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;';
@@ -287,7 +306,13 @@ include("head.html"); ?>
         var row;
 
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
-        if (odd) { row += 'rowodd' } else { row += 'roweven' }
+
+	// disable dragging for all rows except with "BIDDING" status
+	if (json[2] != 'BIDDING'){
+	  row += ' nodrag ';
+	}
+
+        if (odd) { row += ' rowodd' } else { row += 'roweven' }
 
 	if(user_id == json[8]){ //is the same person who created the work item
 	  row += ' rowown';
@@ -441,7 +466,7 @@ include("head.html"); ?>
 			    worklist_id,
 			    [['input', 'itemid', 'keyId', 'eval']]);
 
-        $('.w9notice').empty();
+		$('.w9notice').empty();
 		$('#popup-bid').dialog('open');
 
 		$('#bid_amount').bind('blur', function(e) {
@@ -516,32 +541,42 @@ include("head.html"); ?>
 // 		$('#popup-edit').dialog('open');
             });
 
-	     if(is_runner == 1){ //only runners can change priorities. I guess :)
+	     if(is_runner == 1){ // only runners can change priorities. I guess :)
 	      var startIdx;
 	      $('.table-worklist').tableDnD({
 		  onDragStart: function(table, row) {
+		      $('.page-switch').show();
 		      row = $(row);
 		      startIdx = row.parent().children().index(row);
 		      SelectWorkItem(row);
 		  },
 		  onDrop: function(table, row) {
 		      row = $(row);
-		      var worklist_id = row.attr('id').substr(9);
-		      var prev_id = 0;
-		      if (row.prev().attr('id')) prev_id = row.prev().attr('id').substr(9);
-		      var bump = (startIdx - row.parent().children().index(row));
-		      if (bump != 0) {
-			  $.ajax({
-			      type: "POST",
-			      url: 'updatepriority.php',
-			      data: 'id='+worklist_id+'&previd='+prev_id+'&bump='+bump,
-			      success: function(json) {
-			    }
-			  });
+
+		      if(row.next().hasClass('page-switch')){
+			  $('#pages-dialog').dialog('open');
+			  $('#pages-dialog select').val(page - 1);
+			  $('#pages-dialog #worklist-id').val(row.attr('id').substr(9));
+			  $('#pages-dialog #start-index').val(startIdx);
+		      }else if(row.prev().hasClass('page-switch')){
+			  $('#pages-dialog').dialog('open');
+			  $('#pages-dialog select').val(page + 1);
+			  $('#pages-dialog #worklist-id').val(row.attr('id').substr(9));
+			  $('#pages-dialog #start-index').val(startIdx);
+		      }else{
+			  $('.page-switch').hide();
+			  var worklist_id = row.attr('id').substr(9);
+			  var prev_id = 0;
+			  if (row.prev().attr('id')) prev_id = row.prev().attr('id').substr(9);
+			  var bump = (startIdx - row.parent().children().index(row));
+			  if (bump != 0) {
+			      updatePriority(worklist_id, prev_id, bump);
+			  }
 		      }
-		  }
+		  },
 	      });
 	    }
+
 <?php }else{ //for guests - bring pop-up on a single click ?>
             $('tr.row-worklist-live').click(function(e){
 		e.stopPropagation();
@@ -610,7 +645,7 @@ include("head.html"); ?>
 	  action = "edit";
 	}
 
-	window.location.href = "<? echo SERVER_URL ; ?>workitem.php?job_id="+workitem+"&action="+action;
+	window.location.href = "<?php echo SERVER_URL ; ?>workitem.php?job_id="+workitem+"&action="+action;
     }
 
     function ResetPopup() {
@@ -895,6 +930,7 @@ include("head.html"); ?>
 	$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
+	$('#pages-dialog').dialog({ autoOpen: false });
 
 	$('#done_by').datepicker({
 	  duration: '',
@@ -1030,8 +1066,53 @@ include("head.html"); ?>
 
         return false;
     });
+    
+    $('#page-go').click(function(){
+	getIdFromPage($('#pages-dialog select').val(), $('#pages-dialog #worklist-id').val(), $('#pages-dialog #start-index').val());
+	$('#pages-dialog').dialog('close');
+	return false;
+    });
+    $('#page-go-highest').click(function(){
+	updatePriority($('#pages-dialog #worklist-id').val(), 0, 5);
+	$('#pages-dialog').dialog('close');
+	GetWorklist(page, false);
+	return false;
+    })
 
     });
+
+    function getIdFromPage(npage, worklist_id){
+	    $.ajax({
+		type: "POST",
+		url: 'getworklist.php',
+		data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
+		dataType: 'json',
+		success: function(json) {
+
+		    // if moving on the greater page - place item on top, if on page with smaller number - on the end of the list
+		    if(npage > page){
+			prev_id = json[1][0];
+		    }else{
+			prev_id = json[json.length-2][0];
+		    }
+
+		    updatePriority(worklist_id, prev_id, 5);
+		    GetWorklist(page, false);
+
+		}
+		    });
+
+    }
+
+	 function updatePriority(worklist_id, prev_id, bump){
+		$.ajax({
+		    type: "POST",
+		    url: 'updatepriority.php',
+		    data: 'id='+worklist_id+'&previd='+prev_id+'&bump='+bump,
+		    success: function(json) {
+		  }
+		});
+	 }
 </script>
 
 <title>Worklist | Lend a Hand</title>
@@ -1058,6 +1139,14 @@ include("head.html"); ?>
 
     <!-- Popup for adding fee-->
     <?php require_once('popup-addfee.inc') ?>
+
+    <!-- Div for moving items accross the pages -->
+    <div id="pages-dialog" title="Select page to move item" style = "display: none;">
+ 	<input type="submit" id="page-go" value="Go" /><br /><br />
+ 	<input type="submit" id="page-go-highest" value="Highest" />
+	<input type = "hidden" id = "worklist-id" />
+	<input type = "hidden" id = "start-index" />
+    </div>
 
 <?php include("format.php"); ?>
 
