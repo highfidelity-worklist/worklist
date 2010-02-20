@@ -171,7 +171,7 @@ if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
 	$item_id = $workitem->getWorkItemByBid($bid_id);
 
         // Journal notification
-        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
+        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
 
         //sending email to the bidder
         $subject = "bid accepted: " . $bid_info['summary'];

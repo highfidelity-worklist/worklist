@@ -195,6 +195,7 @@ WHERE
         if ($res && ($row = mysql_fetch_assoc($res))) {
             $bidder_nickname = $row['nickname'];
         }
+	$bid_info['nickname']=$bidder_nickname;
 
         //changing owner of the job
         mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
