@@ -400,7 +400,7 @@ include("head.html"); ?>
 <div style="clear:both"></div>
 </div>
 <!-- Popup HTML for Placing a bid -->
-<?php if(isset($message)): ?>
+<?php if (!empty($message)): ?>
 <div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
     <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>
     <strong>Info:</strong><?php echo $message; ?></p>

@@ -60,6 +60,8 @@
      *
      * Initializes the session data for a user.  Takes as input either a username or a an array containing
      * data from a row in the users table.
+     * 
+     * NOTE: keep this function in sync with the same function in journal!!!
      */
     function initSessionData($user) {
         if (!is_array($user)) {
