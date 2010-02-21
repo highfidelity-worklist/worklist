@@ -199,7 +199,7 @@ include("head.html"); ?>
     $.ajax({
       type: "POST",
       url: 'getuseritem.php',
-      data: 'item='+userid,
+      data: 'req=item&item='+userid,
       dataType: 'json',
       success: function(json) {
 	  $('#popup-user-info #userid').val(json[0]);

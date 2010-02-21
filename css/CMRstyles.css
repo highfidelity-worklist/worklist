@@ -103,13 +103,23 @@ body {
 
 #nav {
 	text-align: left;
-	width: 100%;
+	width: 60%;
 	font-weight: bold;
 	color: #98AAB2;
 	height:15px;
 	font-size:12px;
 	margin-bottom:35px;
 	z-index:100;
+}
+
+#stats {
+	float:right;
+	text-align: right;
+	width: 50%;
+	color: #98AAB2;
+	font-weight bold;
+	height: 15px;
+	font-size: 12px;
 }
 
 
