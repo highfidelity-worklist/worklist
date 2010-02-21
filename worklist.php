@@ -263,14 +263,6 @@ include("head.html"); ?>
     {
 	// support for moving rows between pages
 	if(table == 'worklist'){
-	    if(page > 1){
-		$('.table-' + table).prepend('<tr class = "row-worklist-live page-switch"><td colspan = "6" "style="text-align: center;"><b>Drop item above this row to move it between pages</b></td></tr>');
-	    }
-	    if(page < cPages){
-		$('.table-' + table).append('<tr class = "row-worklist-live page-switch"><td colspan = "6" "style="text-align: center;"><b>Drop item beneath this row to move it between pages</b></td></tr>');
-	    }
-	    $('.page-switch').hide();
-
 	    // preparing dialog
 	    $('#pages-dialog select').remove();
 	    var selector = $('<select>');
@@ -503,6 +495,13 @@ include("head.html"); ?>
 		return false;
             });
 
+	    $('.row-worklist-live').bind('contextmenu', function(e) {
+		$('#pages-dialog').dialog('open');
+		$('#pages-dialog select').val(page);
+		$('#pages-dialog #worklist-id').val($(this).attr('id').substr(9));
+                e.preventDefault();
+            });
+
             $('.worklist-pagination-row a').click(function(e){
                 page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                 if (timeoutId) clearTimeout(timeoutId);
@@ -553,18 +552,6 @@ include("head.html"); ?>
 		  },
 		  onDrop: function(table, row) {
 		      row = $(row);
-
-		      if(row.next().hasClass('page-switch')){
-			  $('#pages-dialog').dialog('open');
-			  $('#pages-dialog select').val(page - 1);
-			  $('#pages-dialog #worklist-id').val(row.attr('id').substr(9));
-			  $('#pages-dialog #start-index').val(startIdx);
-		      }else if(row.prev().hasClass('page-switch')){
-			  $('#pages-dialog').dialog('open');
-			  $('#pages-dialog select').val(page + 1);
-			  $('#pages-dialog #worklist-id').val(row.attr('id').substr(9));
-			  $('#pages-dialog #start-index').val(startIdx);
-		      }else{
 			  $('.page-switch').hide();
 			  var worklist_id = row.attr('id').substr(9);
 			  var prev_id = 0;
@@ -573,7 +560,6 @@ include("head.html"); ?>
 			  if (bump != 0) {
 			      updatePriority(worklist_id, prev_id, bump);
 			  }
-		      }
 		  },
 	      });
 	    }
@@ -1069,7 +1055,10 @@ include("head.html"); ?>
     });
     
     $('#page-go').click(function(){
-	getIdFromPage($('#pages-dialog select').val(), $('#pages-dialog #worklist-id').val(), $('#pages-dialog #start-index').val());
+	var npage = $('#pages-dialog select').val();
+	if(npage != page){
+	    getIdFromPage(npage, $('#pages-dialog #worklist-id').val(), 0);
+	}
 	$('#pages-dialog').dialog('close');
 	return false;
     });
@@ -1146,7 +1135,6 @@ include("head.html"); ?>
  	<input type="submit" id="page-go" value="Go" /><br /><br />
  	<input type="submit" id="page-go-highest" value="Highest" />
 	<input type = "hidden" id = "worklist-id" />
-	<input type = "hidden" id = "start-index" />
     </div>
 
 <?php include("format.php"); ?>
