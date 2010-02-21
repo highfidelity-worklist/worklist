@@ -1071,13 +1071,11 @@ include("head.html"); ?>
     $('#page-go').click(function(){
 	getIdFromPage($('#pages-dialog select').val(), $('#pages-dialog #worklist-id').val(), $('#pages-dialog #start-index').val());
 	$('#pages-dialog').dialog('close');
-	GetWorklist(page, true);
 	return false;
     });
     $('#page-go-highest').click(function(){
 	updatePriority($('#pages-dialog #worklist-id').val(), 0, 5);
 	$('#pages-dialog').dialog('close');
-	GetWorklist(page, true);
 	return false;
     })
 
@@ -1112,6 +1110,7 @@ include("head.html"); ?>
 		    url: 'updatepriority.php',
 		    data: 'id='+worklist_id+'&previd='+prev_id+'&bump='+bump,
 		    success: function(json) {
+		    GetWorklist(page, true);
 		  }
 		});
 	 }
