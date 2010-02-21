@@ -279,7 +279,7 @@ include("head.html"); ?>
 	    }
 	    $('#pages-dialog').prepend(selector);
 	}
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="6" style="text-align:center;">Pages : &nbsp;';
+        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row nodrag nodrop " ><td colspan="6" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;';
         }
@@ -423,6 +423,7 @@ include("head.html"); ?>
     $.ajax({
         type: "POST",
         url: 'getworklist.php',
+	cache: false,
         data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
         dataType: 'json',
         success: function(json) {
@@ -1070,12 +1071,13 @@ include("head.html"); ?>
     $('#page-go').click(function(){
 	getIdFromPage($('#pages-dialog select').val(), $('#pages-dialog #worklist-id').val(), $('#pages-dialog #start-index').val());
 	$('#pages-dialog').dialog('close');
+	GetWorklist(page, true);
 	return false;
     });
     $('#page-go-highest').click(function(){
 	updatePriority($('#pages-dialog #worklist-id').val(), 0, 5);
 	$('#pages-dialog').dialog('close');
-	GetWorklist(page, false);
+	GetWorklist(page, true);
 	return false;
     })
 
@@ -1085,6 +1087,7 @@ include("head.html"); ?>
 	    $.ajax({
 		type: "POST",
 		url: 'getworklist.php',
+		cache: false,
 		data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
 		dataType: 'json',
 		success: function(json) {
@@ -1097,7 +1100,6 @@ include("head.html"); ?>
 		    }
 
 		    updatePriority(worklist_id, prev_id, 5);
-		    GetWorklist(page, false);
 
 		}
 		    });
