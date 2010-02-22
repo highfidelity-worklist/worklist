@@ -18,12 +18,14 @@ $page = isset($_REQUEST["page"])?$_REQUEST["page"]:1;
 $sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST["sfilter"] : '';
 $ufilter = isset($_REQUEST["ufilter"])? $_REQUEST["ufilter"] : 0;
 
-if (!isset($_SESSION['sfilter']) || $_SESSION['sfilter'] != $sfilter) {
-    $_SESSION['sfilter'] = $sfilter;
-}
-if (!isset($_SESSION['ufilter']) || $_SESSION['ufilter'] != $ufilter) {
-    $_SESSION['ufilter'] = $ufilter;
-}
+require_once 'lib/Worklist/Filter.php';
+$WorklistFilter = new Worklist_Filter(array(
+    Worklist_Filter::CONFIG_COOKIE_EXPIRY => (60 * 60 * 24 * 30),
+    Worklist_Filter::CONFIG_COOKIE_PATH   => '/' . APP_BASE
+));
+$WorklistFilter->setSfilter($sfilter)
+               ->setUfilter($ufilter)
+               ->saveFilters();
 
 $sfilter = $_REQUEST["sfilter"] ? explode("/",$_REQUEST["sfilter"]) : array();
 $ufilter = intval($_REQUEST["ufilter"]);

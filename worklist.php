@@ -15,13 +15,6 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 
-
-if(!isset($_SESSION['sfilter']))
-  $_SESSION['sfilter'] = 'BIDDING';
-
-if(!isset($_SESSION['ufilter']))
-  $_SESSION['ufilter'] = 'ALL';
-
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -492,7 +485,7 @@ include("head.html"); ?>
 		        }
 			});
 		});
-		
+
 		return false;
             });
 
@@ -962,7 +955,7 @@ include("head.html"); ?>
 				  var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
 				  var bid_fee_amount = new LiveValidation('bid_fee_amount',{ onlyOnSubmit: true });
 				  var bid_fee_desc = new LiveValidation('bid_fee_desc',{ onlyOnSubmit: true });
-		
+
 				  bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 				  bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
 				  bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
@@ -1054,7 +1047,7 @@ include("head.html"); ?>
 
         return false;
     });
-    
+
     $('#page-go').click(function(){
 	var npage = $('#pages-dialog select').val();
 	if(npage != page){
