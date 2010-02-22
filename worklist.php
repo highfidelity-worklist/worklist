@@ -179,6 +179,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     //sending email to the bidder
     $subject = "bid accepted: $summary";
     $body = "Promised by: ".$_SESSION['nickname']."</p>";
+    $body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$bid_info['worklist_id']}&action=view>View Item</a></p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
     sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);

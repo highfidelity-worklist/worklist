@@ -176,6 +176,7 @@ if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
         //sending email to the bidder
         $subject = "bid accepted: " . $bid_info['summary'];
         $body = "Promised by: ".$_SESSION['nickname']."</p>";
+	$body .= "<p><a href=".SERVER_URL."workitem.php?job_id=$item_id&action=view>View Item</a></p>";
         $body .= "<p>Love,<br/>Worklist</p>";
         sl_send_email($bid_info['email'], $subject, $body);
         sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);

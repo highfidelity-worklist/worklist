@@ -380,6 +380,7 @@
 	        //sending email to the bidder 
 	        $subject = "bid withdrawn: " . $summary;
 	        $body = "Your bid has been withdrawn by: ".$_SESSION['nickname']."</p>";
+		$body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view>View Item</a></p>";
 	        $body .= "<p>Love,<br/>Worklist</p>";
 	        sl_send_email($user->username, $subject, $body);
             sl_notify_sms_by_object($user, $subject, $body);
@@ -414,6 +415,7 @@
 	        //sending email to the bidder 
 	        $subject = "fee withdrawn: " . $summary;
 	        $body = "Your fee has been withdrawn by: ".$_SESSION['nickname']."</p>";
+		$body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$fee->worklist_id}&action=view>View Item</a></p>";
 	        $body .= "<p>Love,<br/>Worklist</p>";
 	        sl_send_email($user->username, $subject, $body);
             sl_notify_sms_by_object($user, $subject, $body);
