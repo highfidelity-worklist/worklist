@@ -78,11 +78,14 @@ SELECT *, @rownum := @rownum+1 AS position FROM `".WORKLIST."` WHERE `status` = 
     $row = mysql_fetch_assoc($rt);
     $newpos = $row['position'];
 
-    $data = array();
-    $data['user'] = JOURNAL_API_USER;
-    $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = $_SESSION['nickname'] . " moved \"$summary\" from position $origpos to position $newpos";
-    $prc = postRequest(JOURNAL_API_URL, $data);
+    if($origpos != $newpos){ // they will be the same if position is changed near usual items. not BIDDING
+	$data = array();
+	$data['user'] = JOURNAL_API_USER;
+	$data['pwd'] = sha1(JOURNAL_API_PWD);
+	$data['message'] = $_SESSION['nickname'] . " moved \"$summary\" from position $origpos to position $newpos";
+	$prc = postRequest(JOURNAL_API_URL, $data);
+    }
+
 } else {
     echo 'error: database';
     return;
