@@ -168,15 +168,15 @@ if ($action=='accept_bid' && $is_runner == 1){ //only runners can accept bids
     $bid_id = intval($_REQUEST['bid_id']);
     if (!$workitem->hasAcceptedBids($workitem->getWorkItemByBid($bid_id))) {
         $bid_info = $workitem->acceptBid($bid_id);
-	$item_id = $workitem->getWorkItemByBid($bid_id);
+		$item_id = $workitem->getWorkItemByBid($bid_id);
 
         // Journal notification
         $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
 
         //sending email to the bidder
-        $subject = "bid accepted: " . $bid_info['summary'];
-        $body = "Promised by: ".$_SESSION['nickname']."</p>";
-	$body .= "<p><a href=".SERVER_URL."workitem.php?job_id=$item_id&action=view>View Item</a></p>";
+        $subject = "Bid accepted: " . $bid_info['summary'];
+        $body = "Your bid was accepted for <a href='" . SERVER_URL . "workitem.php?job_id=$item_id'>#$item_id</a><br>\n"; 
+        $body .= "Promised by: {$_SESSION['nickname']}</p>";
         $body .= "<p>Love,<br/>Worklist</p>";
         sl_send_email($bid_info['email'], $subject, $body);
         sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);
