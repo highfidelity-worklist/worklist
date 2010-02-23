@@ -1,5 +1,5 @@
 <?php 
-//  Copyright (c) 2009, LoveMachine Inc.
+//  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 ?>
@@ -14,9 +14,9 @@
 			include 'getfeesums.php';
 			$feeinfo = ' | Your fees: <span class=feesum id=fees-week>$'.$sum['week'].'</span> this week, <span class=feesum id=fees-month>$'.$sum['month'].'</span> this month';
 			if (empty($_SESSION['nickname'])){ ?>
-				Welcome, <? $_SESSION['username']?><?=$feeinfo?> | <a href="logout.php">Logout</a>
+				Welcome, <?php echo $_SESSION['username']; ?><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
 			<?php }else{ ?>
-				Welcome, <?php echo $_SESSION['nickname']; ?><?=$feeinfo?> | <a href="logout.php">Logout</a>
+				Welcome, <?php echo $_SESSION['nickname']; ?><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
 			<?php } ?>
 			<?php }else{?>
 				<a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>
