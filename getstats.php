@@ -70,15 +70,17 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 	}	else if( $req == 'mechanics' )	{
 		// Get Top 10 mechanics
 		$info_q = mysql_query( "SELECT nickname AS nick, (SELECT COUNT(*) FROM ".BIDS." INNER JOIN ".USERS." ON
-					".USERS.".id = ".BIDS.".bidder_id WHERE ".USERS.".nickname=nick) AS bid_no
-					FROM ".USERS." ORDER BY bid_no DESC" );
+					".USERS.".id = ".BIDS.".bidder_id WHERE ".USERS.".nickname=nick) AS bid_no,
+					(SELECT COUNT(*) FROM ".WORKLIST." INNER JOIN ".USERS." ON 
+					".WORKLIST.".mechanic_id=".USERS.".id WHERE ".USERS.".nickname=nick AND
+					".WORKLIST.".status='WORKING') AS work_no FROM ".USERS." ORDER BY work_no DESC" );
 
 		$info = array();
 		// Get user nicknames
 		while( $row = mysql_fetch_assoc( $info_q ) )	{
 			if( count( $info ) < 10 )	{
 				if( !empty( $row['nick'] ) )	{
-					$info[] = array( $row['nick'],$row['bid_no'] );
+					$info[] = array( $row['nick'],$row['bid_no'],$row['work_no'] );
 				}
 			}
 		}
