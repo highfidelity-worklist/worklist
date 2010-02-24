@@ -39,7 +39,7 @@ $paidStatusFilter = '';
 if(isset($paidStatus) && ($paidStatus)!="ALL")
 {
 	$paidStatus= mysql_real_escape_string($paidStatus);
-    $paidStatusFilter = ($paidStatus) ? " AND `".FEES."`.`paid` = ".$paidStatus."" : "";
+    $paidStatusFilter = " AND `".FEES."`.`paid` = ".$paidStatus."";
 }
 
 $ufilter = isset($_REQUEST["ufilter"])?intval($_REQUEST["ufilter"]):0;
