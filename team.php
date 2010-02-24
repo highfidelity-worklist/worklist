@@ -19,8 +19,9 @@ $cur_page = isset($_POST['page']) ? intval($_POST['page']) : 1;
 
 if(isset($_POST['save_roles']) && !empty($_SESSION['is_runner'])){ //only runners can change other user's roles info
     $is_runner = isset($_POST['isrunner']) ? 1 : 0;
+    $is_payer = isset($_POST['ispayer']) ? 1 : 0;
     $user_id = intval($_POST['userid']);
-    mysql_unbuffered_query("UPDATE `users` SET `is_runner` =  '$is_runner' WHERE `id` =".$user_id);
+    mysql_unbuffered_query("UPDATE `users` SET `is_runner`='$is_runner', `is_payer`='$is_payer' WHERE `id` =".$user_id);
 }
 
 $sfilter = !empty($_POST['sfilter']) ? $_POST['sfilter'] : 'PAID';
@@ -216,11 +217,18 @@ include("head.html"); ?>
 	  }else{
 	    $('#popup-user-info #info-isrunner').attr('checked', '');
 	  }
+	  if(json[10] == "1"){
+	    $('#popup-user-info #info-ispayer').attr('checked', 'checked');
+	  }else{
+	    $('#popup-user-info #info-ispayer').attr('checked', '');
+	  }
 	  
 	  if(runner == 1){
 	    $('#popup-user-info #info-isrunner').attr('disabled', ''); 
+	    $('#popup-user-info #info-ispayer').attr('disabled', ''); 
 	  }else{
 	    $('#popup-user-info #info-isrunner').attr('disabled', 'disabled'); 
+	    $('#popup-user-info #info-ispayer').attr('disabled', 'disabled'); 
 	  }
 	  if(json[0] == logged_id){
 	    //adding "Edit" button

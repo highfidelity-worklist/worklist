@@ -40,7 +40,8 @@
     
             <form id = "roles" method="post" >
             <p class = "info-label">Roles<br />
-            <input type="checkbox" name="isrunner" value="isrunner" id = "info-isrunner" /><span>Runner</span>
+            <input type="checkbox" name="isrunner" value="isrunner" id="info-isrunner" /><span>Runner</span>
+            <input type="checkbox" name="ispayer" value="ispayer" id="info-ispayer" /><span>Payer</span>
             </p>
             <input type="hidden" name="userid" id="userid" value="">
             <input type="hidden" name="letter" id="hid_letter" value="">

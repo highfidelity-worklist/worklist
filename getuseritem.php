@@ -27,7 +27,7 @@ if( $req == 'id' )	{
 		return;
 	}
 
-	$query = "SELECT id, nickname,username,about,contactway,payway,skills,timezone,DATE_FORMAT(added, '%m/%d/%Y'),is_runner 
+	$query = "SELECT id, nickname,username,about,contactway,payway,skills,timezone,DATE_FORMAT(added, '%m/%d/%Y'),is_runner,is_payer
 					FROM ".USERS." WHERE id= $item";
 
 	$rt = mysql_query($query);

@@ -303,10 +303,16 @@
 					$('#popup-user-info #info-joined').text(json[8]);
 					if( json[9] == "1" )	{
 						$('#popup-user-info #info-isrunner').attr('checked', 'checked');
-					}	else	{
+					} else {
 						$('#popup-user-info #info-isrunner').attr('checked', '');
 					}
-						$('#popup-user-info #info-isrunner').attr('disabled', 'disabled'); 
+					if( json[10] == "1" )	{
+						$('#popup-user-info #info-ispayer').attr('checked', 'checked');
+					} else {
+						$('#popup-user-info #info-ispayer').attr('checked', '');
+					}
+					$('#popup-user-info #info-isrunner').attr('disabled', 'disabled'); 
+					$('#popup-user-info #info-ispayer').attr('disabled', 'disabled'); 
 				},
 				error: function( xhdr, status, err )	{}
 			});
