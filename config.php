@@ -26,6 +26,8 @@ if (!defined("SERVER_BASE"))    define("SERVER_BASE",'http://'.SERVER_NAME.'/'.A
 //So clone the standard URL
 if (!defined("SECURE_SERVER_URL")) define("SECURE_SERVER_URL",SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 
+if (!defined("FEEDBACK_EMAIL")) define("FEEDBACK_EMAIL","feedback@lovemachineinc.com");
+
 if (!defined("DB_SERVER"))      define("DB_SERVER", "localhost");
 if (!defined("DB_USER"))        define("DB_USER", "project_tofor");
 if (!defined("DB_PASSWORD"))    define("DB_PASSWORD", "test30");

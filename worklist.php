@@ -231,6 +231,8 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
+<link href="css/feedback.css" rel="stylesheet" type="text/css" >
+<link href="css/ui.toaster.css" rel="stylesheet" type="text/css" >
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
@@ -238,6 +240,9 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
+<script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
+<script type="text/javascript" src="js/feedback.js"></script>
+<script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript">
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
     var lastId;
@@ -1130,6 +1135,9 @@ include("head.html"); ?>
  	<input type="submit" id="page-go-highest" value="Highest" />
 	<input type = "hidden" id = "worklist-id" />
     </div>
+
+    <!-- Feedback tab html -->
+    <?php require_once('feedback.inc') ?>
 
 <?php include("format.php"); ?>
 
