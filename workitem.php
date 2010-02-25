@@ -4,12 +4,11 @@
 //  http://www.lovemachineinc.com
 
 // AJAX request from ourselves to retrieve history
-include "config.php";
-include "class.session_handler.php";
-include_once "send_email.php";
-include "workitem.class.php";
-include_once("functions.php");
-
+require_once 'config.php';
+require_once 'class.session_handler.php';
+require_once 'send_email.php';
+require_once 'workitem.class.php';
+require_once 'functions.php';
 
 $get_variable = 'job_id';
 
@@ -20,6 +19,15 @@ if (!defined("WORKITEM_URL")) {
 $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]) : 0;
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $currentUsername = $_SESSION['username'];
+
+$userId = getSessionUserId();
+$user = new User();    
+if ($userId > 0) {
+	$user->findUserById($userId);	
+} else {
+	$user->setId(0);
+}
+// TODO: Would be good to take out all the checks for isset($_SESSION['userid'] etc. and have them use $user instead, check $user->getId() > 0.
 
 if(empty($worklist_id)) {
     return;
@@ -39,7 +47,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 
 //initialize the workitem class
 $workitem = new WorkItem();
-$mechanic_id = $_SESSION['userid'];
+$mechanic_id = $user->getId();
 $redirectToDefaultView = false;
 
 // Save WorkItem was requested. We only support Update here
@@ -229,16 +237,24 @@ $bids = $workitem->getBids($worklist_id);
 
 //Findout if the current user already has any bids.
 // Yes, it's a String instead of boolean to make it easy to use in JS.
+// Suppress names if not is_runner, or owner of Item. Still show if it's user's bid.
+
 $currentUserHasBid = "false";
 if(!empty($bids) && is_array($bids)) {
-  foreach($bids as $bid) {
+  foreach($bids as &$bid) {  	
     if($bid['email'] == $currentUsername ){
       $currentUserHasBid = "true";
-      break;
+      //break;
+    }
+    if ((!$user->isRunner()) || ($user->getId() != $worklist['owner_id'])) {
+    	if ($user->getId() != $bid['bidder_id']) {
+    		$bid['nickname'] = '*name hidden*';
+    	}
     }
   }
 }
-
+// break reference to $bid
+unset($bid);
 //get fees
 $fees = $workitem->getFees($worklist_id);
 

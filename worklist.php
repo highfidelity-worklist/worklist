@@ -315,7 +315,7 @@ include("head.html"); ?>
         if (json[2] == 'BIDDING' && user_id != "nada"){
             pre = '<a href="#" class = "bidding-link" id = "workitem-' + json[0] + '" >';
             post = '</a>';
-            if (json[11] > 0) {
+            if (json[11] > 0 && (user_id == json[8] || is_runner == 1)) {
                 post = '</a> (' + json[11] + ')';
             }
         }
@@ -1189,7 +1189,7 @@ include("head.html"); ?>
         <tr class="table-hdng">
             <td>Summary</td>
             <td>Status</td>
-	    <td>Funded</td>
+	    	<td>Funded</td>
             <td>Who</td>
             <td>When</td>
             <td class="worklist-fees">Fees/Bids</td>

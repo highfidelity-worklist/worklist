@@ -23,7 +23,6 @@ function __autoload($class)
 $feeCategories = array(
        'Bid', 'Code Review', 'Design Spec', 'Misc Expense', 'Management Fee');
 
-
 function checkReferer() {
     $len = strlen(SERVER_NAME);
     if (   empty($_SERVER['HTTP_REFERER'])
@@ -33,6 +32,11 @@ function checkReferer() {
     } else {
         return true;
     }
+}
+
+// Get the userId from the session, or set it to 0 for Guests.
+function getSessionUserId() {
+	return isset($_SESSION['userid']) ? (int)$_SESSION['userid'] : 0;
 }
 
 function getNickName($username) {
