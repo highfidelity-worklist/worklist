@@ -344,7 +344,7 @@ include("head.html"); ?>
 		<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?> <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?>">
 		    <td><?php echo $bid['nickname'];?></td>
 		    <td><?php echo $bid['bid_amount'];?></td>
-		    <td><?php echo relativeTime($bid['future_delta']);?></td>
+		    <td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
 		</tr>
 		<?php endforeach;?>
 	    <?php endif;?>

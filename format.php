@@ -1,6 +1,6 @@
-<?php 
+<?php
 //  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 ?>
 
@@ -26,20 +26,20 @@
 
 	<div id="container">
 		<div id="left"></div>
-        
+
 <!-- MAIN BODY -->
 		<div id="center">
-        
+
 <!-- LOGO -->
 			<div id="stats">
 				<span id='stats-text'></span>
 			</div>
-        
+
 <!-- Navigation placeholder -->
-		<div id="nav">                    
+		<div id="nav">
 			<?php if (isset($_SESSION['username'])) { ?>
-			<a href="worklist.php">Worklist</a> | 
-			<a href="<?php echo SERVER_BASE ?>/journal/">Journal</a> | 
+			<a href="worklist.php">Worklist</a> |
+			<a href="<?php echo SERVER_BASE ?>/journal/">Journal</a> |
 			<?php if (!empty($_SESSION['is_runner'])) {?>
 			<a href="reports.php">Reports</a> |
 			<?php } ?>
@@ -47,13 +47,14 @@
 			<a href="settings.php">Settings</a>
 			<?php } ?>
 		</div>
-			
+
 		<!-- Popup for user info-->
 		<?php require_once('popup-user-info.inc') ?>
 		<script type="text/javascript">
 		// Code for stats
+        $(function() {
 		$('#popup-user-info').dialog({ autoOpen: false});
-		
+
 		$.ajax({
 			type: "POST",
 			url: 'getstats.php',
@@ -63,7 +64,7 @@
 				$('#stats-text').html(html);
 			}
 		});
-	
+        });
 		function ShowStats()    {
 			// Clear the tables
 			$('.row').remove();
@@ -71,16 +72,16 @@
 			$('.mecrow').remove();
 			$('.feerow').remove();
 			$('.pastrow').remove();
-			
+
 			// Set loading text and image
 			$('.table-statslist').append("<tr class='row'><td style='text-align:center; vertical-align:middle;' colspan='7'><img src='images/loader.gif'></img></td></tr>");
 			$('.table-runners').append("<tr class='runrow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
 			$('.table-mechanics').append("<tr class='mecrow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
 			$('.table-feed-adders').append("<tr class='feerow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
 			$('.table-past-due').append("<tr class='pastrow'><td style='text-align:center;  vertical-align:middle;' colspan='2'><img src='images/loader.gif'></td></tr>");
-			
+
 			// From here on we load all the data
-			
+
 			// Load the bids and works labels
 			$.ajax({
 				type: "POST",
@@ -104,7 +105,7 @@
 					});
 				}
 			});
-		
+
 			// Get last completed jobs in last 7 days
 			$.ajax({
 				type: "POST",
@@ -123,7 +124,7 @@
 						}
 						var user = fees[i][2];
 						var funct = "javascript:ShowUserInfo('" + user + "');";
-						var row = '<tr class="row"><td>' + fees[i][0] + '</td><td>' + fees[i][1] + '</td><td  onclick="' + funct + '" width="5%">' 
+						var row = '<tr class="row"><td>' + fees[i][0] + '</td><td>' + fees[i][1] + '</td><td  onclick="' + funct + '" width="5%">'
 										+ user + '</td><td width="10%"style="text-align:right;">$'  + fees[i][3] + '</td><td width="20%">' + fees[i][4] +
 										'</td><td>' + paid + '</td></tr>';
 						$('.table-statslist').append(row);
@@ -146,16 +147,16 @@
 					var data = json;
 					var total_tasks = 0;
 					var total_working = 0;
-					
+
 					for ( var i = 0; i < data.length; i++ )	{
 						var user = data[i][0];
 						var funct = "javascript:ShowUserInfo('" + user + "');";
 						total_tasks += parseInt( data[i][1] );
 						total_working += parseInt( data[i][2] );
-						
+
 						var row = '<tr class="runrow"><td  onclick="' + funct + '" >'+ user + '</td><td style="text-align:right;">' + data[i][1] +
 										'</td><td style="text-align:right;">' + data[i][2]  + '</td></tr>';
-										
+
 						$('.table-runners').append(row);
 					}
 					var totals_row = '<tr class="runrow"><td style="font-weight: bold;">Totals</td><td style="text-align: right; font-weight: bold;">'
@@ -163,7 +164,7 @@
 					$('.table-runners').append(totals_row);
 				}
 			});
-				
+
 			// Get top 10 mechanics
 			$.ajax({
 				type: "POST",
@@ -175,16 +176,16 @@
 					var data = json;
 					var total_tasks = 0;
 					var total_working = 0;
-					
+
 					for ( var i = 0; i < data.length; i++ )	{
 						total_tasks += parseInt( data[i][1] );
 						total_working += parseInt( data[i][2] );
-						
+
 						var user = data[i][0];
 						var funct = "javascript:ShowUserInfo('" + user + "');";
 						var row = '<tr class="mecrow"><td  onclick="' + funct + '" >'+ user + '</td><td style="text-align:right;">' + data[i][1] +
 										'</td><td style="text-align:right;">' + data[i][2] + '</td></tr>';
-						
+
 						$('.table-mechanics').append(row);
 					}
 					var totals_row = '<tr class="mecrow"><td style="font-weight: bold;">Totals</td><td style="text-align: right; font-weight: bold;">'
@@ -192,7 +193,7 @@
 					$('.table-mechanics').append(totals_row);
 				}
 			});
-				
+
 			// Get top 10 feed adders
 			$.ajax({
 				type: "POST",
@@ -204,10 +205,10 @@
 					var data = json;
 					var total_tasks = 0;
 					var total_fees = 0;
-					
+
 					for ( var i = 0; i < data.length; i++ )	{
 						total_tasks += parseInt( data[i][1] );
-						
+
 						var user = data[i][0];
 						var funct = "javascript:ShowUserInfo('" + user + "');";
 						// Round average fee
@@ -215,7 +216,7 @@
 						total_fees += avg_fee;
 						var row = '<tr class="feerow"><td  onclick="' + funct + '" >'+ user + '</td><td style="text-align:right;">' + data[i][1] +
 										'</td><td style="text-align:right;">$' + avg_fee  + '</td></tr>';
-										
+
 						$('.table-feed-adders').append(row);
 					}
 					var totals_row = '<tr class="feerow"><td style="font-weight: bold;">Totals</td><td style="text-align: right; font-weight: bold;">'
@@ -223,7 +224,7 @@
 					$('.table-feed-adders').append(totals_row);
 				}
 			});
-				
+
 			// Get top 10 mechanics with "Past Due"
 			$.ajax({
 				type: "POST",
@@ -234,14 +235,14 @@
 					$('.pastrow').remove();
 					var data = json;
 					var total_tasks = 0;
-					
+
 					for ( var i = 0; i < data.length; i++ )	{
 						total_tasks += parseInt( data[i][1] );
-						
+
 						var user = data[i][0];
 						var funct = "javascript:ShowUserInfo('" + user + "');";
 						var row = '<tr class="pastrow"><td  onclick="' + funct + '" >'+ user + '</td><td style="text-align:right;">' + data[i][1] + '</td></tr>';
-						
+
 						$('.table-past-due').append(row);
 					}
 					var totals_row = '<tr class="pastrow"><td style="font-weight: bold;">Totals</td><td style="text-align: right; font-weight: bold;">'
@@ -255,7 +256,7 @@
 			$('#popup-stats').dialog('open');
 		}
 		// End code for stats
-			
+
 		// Code for showing user info
 		function ShowUserInfo( userid )	{
 			// Check if the user is real or a message
@@ -280,7 +281,7 @@
 				_showInfo( userid );
 			}
 		}
-			
+
 		// Helper function needed because of the async nature of ajax
 		// * Show the popup
 		function _showInfo( userid )	{
@@ -311,17 +312,17 @@
 					} else {
 						$('#popup-user-info #info-ispayer').attr('checked', '');
 					}
-					$('#popup-user-info #info-isrunner').attr('disabled', 'disabled'); 
-					$('#popup-user-info #info-ispayer').attr('disabled', 'disabled'); 
+					$('#popup-user-info #info-isrunner').attr('disabled', 'disabled');
+					$('#popup-user-info #info-ispayer').attr('disabled', 'disabled');
 				},
 				error: function( xhdr, status, err )	{}
 			});
-		
+
 			$('#popup-user-info').dialog('open');
 		}
 		// End of user info code
 		</script>
-			
+
 		<!-- Popup for showing stats-->
 		<?php require_once('popup-stats.inc') ?>
 

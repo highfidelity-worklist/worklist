@@ -283,7 +283,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id)
 }
 
 function relativeTime($time) {
-    $plural = '';
+    $secs = abs($time);
     $mins = 60;
     $hour = $mins * 60;
     $day = $hour * 24;
@@ -291,17 +291,24 @@ function relativeTime($time) {
     $month = $day * 30;
     $year = $day * 365;
 
+    // years
     $segments = array();
-    $segments['yr']   = intval($time / $year);  $time %= $year;
-    $segments['mnth'] = intval($time / $month); $time %= $month;
+    $segments['yr']   = intval($secs / $year);
+    $secs %= $year;
+    // month
+    $segments['mnth'] = intval($secs / $month);
+    $secs %= $month;
     if (!$segments['yr']) {
-        $segments['day']  = intval($time / $day);   $time %= $day;
+        $segments['day']  = intval($secs / $day);
+        $secs %= $day;
         if (!$segments['mnth']) {
-            $segments['hr']   = intval($time / $hour);  $time %= $hour;
+            $segments['hr']   = intval($secs / $hour);
+            $secs %= $hour;
             if (!$segments['day']) {
-                $segments['min']  = intval($time / $mins);  $time %= $mins;
+                $segments['min']  = intval($secs / $mins);
+                $secs %= $mins;
                 if (!$segments['hr'] && !$segments['min']) {
-                    $segments['sec']  = $time;
+                    $segments['sec']  = $secs;
                 }
             }
         }
@@ -311,13 +318,15 @@ function relativeTime($time) {
     foreach ($segments as $unit=>$cnt) {
         if ($segments[$unit]) {
             $relTime .= "$cnt $unit";
-            if ($cnt > 1) $relTime .= 's';
+            if ($cnt > 1) {
+                $relTime .= 's';
+            }
             $relTime .= ', ';
         }
     }
     $relTime = substr($relTime, 0, -2);
     if (!empty($relTime)) {
-        return "$relTime ago";
+        return ($time < 0) ? "$relTime ago" : "in $relTime";
     } else {
         return "just now";
     }

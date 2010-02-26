@@ -559,7 +559,7 @@ include("head.html"); ?>
 			  if (bump != 0) {
 			      updatePriority(worklist_id, prev_id, bump);
 			  }
-		  },
+		  }
 	      });
 	    }
 
