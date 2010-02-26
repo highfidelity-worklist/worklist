@@ -43,8 +43,8 @@ if (!defined("SESSION_EXPIRE")) define("SESSION_EXPIRE", 365*24*60*60);
 if (!defined("REQUIRELOGINAFTERCONFIRM")) define("REQUIRELOGINAFTERCONFIRM", 1);
 
 if (!defined("JOURNAL_API_URL"))     define("JOURNAL_API_URL", "https://dev.sendlove.us/journal/add.php");
-if (!defined("JOURNAL_API_USER"))    define("JOURNAL_API_USER", "api_work@dev.sendlove.us");
-if (!defined("JOURNAL_API_PWD"))     define("JOURNAL_API_PWD", "journalpwd");
+if (!defined("JOURNAL_API_USER"))    define("JOURNAL_API_USER", "api_username");
+if (!defined("JOURNAL_API_PWD"))     define("JOURNAL_API_PWD", "api_password");
 
 // Refresh interval for ajax updates of the history table (in seconds)
 if (!defined("AJAX_REFRESH"))   define("AJAX_REFRESH", 30);

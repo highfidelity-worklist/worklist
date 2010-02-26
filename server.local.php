@@ -6,18 +6,19 @@
 //
 
 // These are the items most likely in need of being changed.
+define("APP_NAME","Worklist");
+
+define("DB_SERVER", "localhost");
+define("DB_USER", "project_tofor");
+define("DB_PASSWORD", "test30");
+define("DB_NAME", "worklist_dev");
 
 // Change this to something private to deter funny business
 define("SALT", "WORKLIST");
 
-// Refresh interval for ajax updates of the history table (in seconds)
-define("AJAX_REFRESH", 300);
+define("JOURNAL_API_URL", "https://dev.sendlove.us/journal/add.php");
+define("JOURNAL_API_USER", "api_work@dev.sendlove.us");
+define("JOURNAL_API_PWD", "journalpwd");
 
-//Server URL's - If running as http://host.domain.com/ (not using app location), defining SERVER_NAME is all that is needed for non-ssl sites
-//define("SERVER_NAME","dev.sendlove.us");
-//define("APP_LOCATION",substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], "/")));
-//define("SERVER_URL",'http://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
-////SSL Not enabled on development
-////define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
-////So clone the standard URL
-//define("SECURE_SERVER_URL",SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
+
+define("AJAX_REFRESH", 300);
