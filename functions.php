@@ -422,7 +422,7 @@ function deleteFee($fee_id) {
         // Journal message
         $message  = $_SESSION['nickname'] . ' withdrawing the fee from ';
         $message .= $user->nickname . ' on item #';
-        $message .= $worklistItem->id . ': ';
+        $message .= $fee->worklist_id . ': ';
         $message .= $worklistItem->summary . '. ';
 
         // Journal notification
