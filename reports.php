@@ -13,7 +13,7 @@ include_once("functions.php");
 include_once("send_email.php");
 
 /* This page is only accessible to runners. */
-if (empty($_SESSION['userid']) || empty($_SESSION['is_runner'])) {
+if (empty($_SESSION['userid']) || (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']))) {
     header("location:worklist.php");
     return;
 }

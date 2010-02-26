@@ -9,7 +9,7 @@ include("config.php");
 include("class.session_handler.php");
 include("functions.php");
 
-if (empty($_SESSION['userid']) || empty($_SESSION['is_runner'])) {
+if (empty($_SESSION['userid']) || (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']))) {
     return;
 }
 

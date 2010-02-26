@@ -40,7 +40,7 @@
 			<?php if (isset($_SESSION['username'])) { ?>
 			<a href="worklist.php">Worklist</a> |
 			<a href="<?php echo SERVER_BASE ?>/journal/">Journal</a> |
-			<?php if (!empty($_SESSION['is_runner'])) {?>
+			<?php if (!empty($_SESSION['is_runner']) || !empty($_SESSION['is_payer'])) {?>
 			<a href="reports.php">Reports</a> |
 			<?php } ?>
 			<a href="team.php">Team</a> |
