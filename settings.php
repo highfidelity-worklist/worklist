@@ -329,7 +329,7 @@ include("head.html"); ?>
 	   </div><!-- end of right-col div -->
             <br style = "clear:both;" />
                 <input type="submit" value="Update" alt="Update" name="submit" />
-                <input type="submit" value="Delete My Account" alt="Delete" name="Delete" onClick="javascript: return confirm('Do you really want to delete the account?');" />
+                <input type="submit" value="Delete My Account" alt="Delete" name="Delete" class="lgbutton" onClick="javascript: return confirm('Do you really want to delete the account?');" />
 
                 </form>
 
