@@ -395,11 +395,12 @@ function withdrawBid($bid_id) {
 
         //sending email to the bidder
         $subject = "bid withdrawn: " . $summary;
-        $body = "Your bid has been withdrawn by: ".$_SESSION['nickname']."</p>";
-        $body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view>View Item</a></p>";
+        $txtbody = $body = "Your bid has been withdrawn by: ".$_SESSION['nickname']."</p>";
+        $item_link = SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view";
+        $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>Love,<br/>Worklist</p>";
         sl_send_email($user->username, $subject, $body);
-        sl_notify_sms_by_object($user, $subject, $body);
+        sl_notify_sms_by_object($user, $subject, "${txtbody}\n${item_link}");
     }
 }
 

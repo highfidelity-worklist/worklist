@@ -118,7 +118,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $bid_id = mysql_insert_id();
 
     //sending email to the owner of worklist item
-    $rt = mysql_query("SELECT `username`,`is_runner`, `summary` FROM `".USERS."` u, `worklist` WHERE `worklist`.`creator_id` = `u`.`id` AND `worklist`.`id` = ".$itemid);
+    $rt = mysql_query("SELECT `id`, `username`,`is_runner`, `summary` FROM `".USERS."` u, `worklist` WHERE `worklist`.`creator_id` = `u`.`id` AND `worklist`.`id` = ".$itemid);
     $row = mysql_fetch_assoc($rt);
     $summary = $row['summary'];
     $subject = "new bid: $summary";
@@ -128,6 +128,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $body .= "Done By: ".$done_by."<br/>";
     $body .= "Bid Amount: ".$bid_amount."<br/>";
     $body .= "Notes: ".$notes."</p>";
+    $urlacceptbid = '';
     if ($row['is_runner']==1) {
       $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
       $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
@@ -171,11 +172,12 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
 
     //sending email to the bidder
     $subject = "bid accepted: $summary";
-    $body = "Promised by: ".$_SESSION['nickname']."</p>";
-    $body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$bid_info['worklist_id']}&action=view>View Item</a></p>";
+    $item_link = SERVER_URL."workitem.php?job_id={$bid_info['worklist_id']}&action=view";
+    $prom = $body = "Promised by: ".$_SESSION['nickname'];
+    $body .= "<p><a href='${item_link}'>View Item</a></p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
-    sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);
+    sl_notify_sms_by_id($bid_info['bidder_id'], $subject, "${prom}\n${item_link}");
 }
 
 //withdrawing bids

@@ -25,7 +25,8 @@ $fields_to_htmlescape = array(
 				'timezone' => '', 
 				'phone' => '', 
 				'country' => '', 
-				'smsaddr' => ''
+				'provider' => '',
+				'smsaddr' => '',
 			);
 
 $fields_to_not_escape = array(
@@ -43,7 +44,14 @@ $fields_to_not_escape = array(
 if (isset($_POST['about'])) {
 	$_POST['about'] = strip_tags($_POST['about']);
 }
-$minimal_POST = array_intersect_key($_POST, $fields_to_not_escape + $fields_to_htmlescape);
+
+$minimal_POST = @array_intersect_key($_POST, $fields_to_not_escape + $fields_to_htmlescape);
+
+// TODO: Code repeated from settings.php. Must be put in a library
+// compute smsaddr from phone and provider
+$prov_address = $smslist[$minimal_POST['country']][$minimal_POST['provider']];
+$phone = preg_replace('/\D/', '', $minimal_POST['phone']);
+$minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
 
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
 // make shure uscitizen is either 0 or 1

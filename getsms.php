@@ -15,7 +15,7 @@
 
 include("config.php");
 include("functions.php");
-if (!checkReferer()) die;
+//if (!checkReferer()) die;
 
 include("smslist.php");
 

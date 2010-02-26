@@ -3,6 +3,7 @@
 //  http://www.lovemachineinc.com
 var smsCountry = '';
 var smsProviderList = new Array();
+var smsProvider = '';
 
 function smsRefreshPhoneHelper()
 {
@@ -32,6 +33,7 @@ function smsRefreshProvider(init)
             $("#sms-provider").hide();
             $("#sms-other").hide();
         } else {
+	    smsProvider = $("#stored-provider").val();
             var el = $("#provider");
             el.empty();
             $("#sms-provider").show();
@@ -65,15 +67,12 @@ function smsRefreshProvider(init)
         }
     }
 
-/* We will show sms-other field regardless of what country and provider say */
-    $("#sms-other").show();
-/*
     if ($("#country").val() == '--' || $("#provider").val() == '--') {
         $("#sms-other").show();
     } else {
         $("#sms-other").hide();
     }
-*/
+
     smsRefreshPhoneHelper();
 }
 

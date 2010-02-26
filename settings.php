@@ -33,6 +33,11 @@ $errors = 0;
 $phone_sql = '';
 if (isset($_POST['phone_edit']))
 {
+	// compute smsaddr from phone and provider
+	$prov_address = $smslist[$_POST['country']][$_POST['provider']];
+	$phone = preg_replace('/\D/', '', $_POST['phone']);
+	$_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
+
 	$phone_sql_parts = array();
 	$phone_keys = array('phone', 'country', 'smsaddr', 'provider');
 
@@ -41,6 +46,7 @@ if (isset($_POST['phone_edit']))
 		$phone_item = mysql_real_escape_string(htmlspecialchars($_POST[$phone_key]));
 		$phone_sql_parts[] = "`${phone_key}` = '${phone_item}'";
 	}
+
 	$phone_sql = implode(',', $phone_sql_parts);
 }
 
@@ -199,6 +205,8 @@ include("head.html"); ?>
 		  nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
 		</script>
 				
+<?php include("sms-inc.php"); ?>
+
                 <p><label>Current Password<br />
                 <input type="password" name="oldpassword" id="oldpassword" size="35" />
                 </label></p>
@@ -283,8 +291,6 @@ include("head.html"); ?>
 	      var about = new LiveValidation('about');
 	      about.add(Validate.Length, { minimum: 0, maximum: 150 } ); 
 	    </script>
-
-<?php include("sms-inc.php"); ?>
 
             <div class="LVspace">
 	      <p>

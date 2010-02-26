@@ -56,7 +56,7 @@ Content-Transfer-Encoding: 7bit
 function sl_notify_sms_by_id($user_id, $smssubject, $smsbody)
 {
     //Fetch phone info using user_id
-    $sql = 'SELECT phone, country, provider, smsaddr FROM '.USERS." WHERE id = ${user_id}";
+    $sql = 'SELECT phone, country, provider, smsaddr FROM '.USERS.' WHERE id = '. mysql_real_escape_string($user_id);
     $res = mysql_query($sql);
     $phone_info = mysql_fetch_object($res);
     if (is_object($phone_info))
