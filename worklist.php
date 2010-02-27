@@ -14,6 +14,7 @@ include("config.php");
 include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
+include_once("update_status.php");
 
 if(!isset($_SESSION['sfilter']))
   $_SESSION['sfilter'] = 'BIDDING';
@@ -239,6 +240,11 @@ if (!empty($_POST)) {
 
 //list of users for filtering
 $userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
+
+/*
+ * Retrieve the latest status update from the user
+ */
+$current_status = get_status(true);
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -1171,8 +1177,15 @@ include("head.html"); ?>
 	        <input type="submit" id="view" name="view" value="View" disabled = "disabled" />
             <?php } ?>
     </div>
-    <?php } ?>
-
+     
+		<br style="clear:both;" />
+		<div id="status-wrap">
+			<form action="" id="status-update-form">				 
+				I am <input type="text" maxlength="38" id="status-update" name="status-update" value="<?php echo $current_status?>"/>
+				<input type="submit" value="share" id="status-share" />	
+			</form>
+		</div>
+       <?php } ?>   
 <div id="search-filter-wrap">
  	<div style="float:right" >
 		<div style="float:left">
@@ -1181,21 +1194,23 @@ include("head.html"); ?>
 					<?php DisplayFilter('ufilter'); ?>
 					<?php DisplayFilter('sfilter'); ?>
 				</div>
-				<div class="input_box">
-	            	<input type="text" id="query" name="query" alt="Search" size="20" value="Search..." onfocus="if(this.value=='Search...') this.value='';">
+				<div style="float:left;" class="input_box">
+	            	<input type="text" id="query" name="query" alt="Search" size="20" />
 	            	<div class="onlyfloat_right">
 	            		<a id="search" href="">
 	            			<img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif">
 	            		</a>
-	            	</div>
+	            		
+	            	</div>	            	
 				</div>
+				<div style="float: left; margin-top: 3px;">
+					<a  id="search_reset" href="">
+						<img src="images/cross.png">
+					</a>
+				</div> 
 			</form>
 		</div>
-		<div style="float: right; margin-top: 3px;">
-			<a style="display: block; float: right;" id="search_reset" href="">
-				<img src="images/cross.png">
-			</a>
-		</div>
+		
 	</div>
 
 </div>

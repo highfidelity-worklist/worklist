@@ -111,3 +111,15 @@ z-index: 1;
 	border:medium none;
 }
 
+
+/* Status Update Fields */
+#status-wrap {
+	float:left;
+	width: 400px;	
+	margin: 0 0 10px 0;		
+	}
+
+#status-update {
+	width: 200px;
+	margin-top: 4px;
+	}

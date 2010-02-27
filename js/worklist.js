@@ -166,3 +166,103 @@ function SimplePopup(popupId,
   }
 }
 
+/* When applied to a textfield or textarea provides default text which is displayed, and once clicked on it goes away
+ Example:  $("#name").DefaultValue("Your fullname.");
+*/
+jQuery.fn.DefaultValue = function(text){
+    return this.each(function(){
+    //Make sure we're dealing with text-based form fields
+    if(this.type != 'text' && this.type != 'password' && this.type != 'textarea')
+      return;
+    
+    //Store field reference
+    var fld_current=this;
+    
+    //Set value initially if none are specified
+        if(this.value=='' || this.value == text) {
+      this.value=text;
+    } else {
+      //Other value exists - ignore
+      return;
+    }
+    
+    //Remove values on focus
+    $(this).focus(function() {
+      if(this.value==text || this.value=='')
+        this.value='';
+    });
+    
+    //Place values back on blur
+    $(this).blur(function() {
+      if(this.value==text || this.value=='')
+        this.value=text;
+    });
+    
+    //Capture parent form submission
+    //Remove field values that are still default
+    $(this).parents("form").each(function() {
+      //Bind parent form submit
+      $(this).submit(function() {
+        if(fld_current.value==text) {
+          fld_current.value='';
+        }
+      });
+    });
+    });
+};
+
+$(function() {
+	$("#status-share").hide();	
+	$("#status-update").DefaultValue("What are you working on?");
+	$("#query").DefaultValue("Search...");
+	
+	// When status-update gets focus enlarge and show the share button
+	$("#status-update").focus(function() {		
+		$("#status-share").show();
+	});
+	
+	$("#status-wrap").mouseenter(function() {		
+		$("#status-share").show();		
+	});
+	
+	//When status-update loses focus hide the share button and shrink the field
+	$("#status-wrap").mouseleave(function(){
+		$("#status-share").hide();
+		$("#status-update").blur();		
+	});
+	
+		
+	//Submit the form using AJAX to the database
+	$("#status-share").click(function() {
+		$("#status-update").attr("disabled","true");
+		$("#status-share").attr("disabled","true");
+		
+		if($("#status-update").val() ==  "What are you working on?"){
+			$("#status-update").val("");
+		}
+		
+		$.ajax({
+			url: "update_status.php",
+			type: "POST",
+			data: "action=update&status=" + $("#status-update").val(),
+			dataType: "text",
+			success: function(){				
+				$("#status-update").removeClass("status-active").addClass("status-deactive");
+				$("#status-share").hide();	
+				
+				$("#status-update").attr("disabled","");
+				$("#status-share").attr("disabled","");
+				
+				if($("#status-update").val() == ""){
+					$("#status-update").val("What are you working on?");
+				}
+			}
+		});
+		
+		
+		
+		return false;
+	});
+});
+
+
