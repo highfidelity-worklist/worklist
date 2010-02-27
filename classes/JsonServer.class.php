@@ -195,6 +195,143 @@ class JsonServer
 			));
 		}
 	}
+	
+	/**
+	 * This method adds a file to a workitem
+	 */
+	protected function actionFileUpload()
+	{
+		// check if we have a file
+		if (empty($_FILES)) {
+			return $this->setOutput(array(
+				'success' => false,
+				'message' => 'No file uploaded!'
+			));
+		}
+		
+		$mime = $_FILES['file']['type'];
+		$ext = end(explode(".", $_FILES['file']['name']));
+		$fileName = File::uniqueFilename($ext);
+		$tempFile = $_FILES['file']['tmp_name'];
+		$title = basename($_FILES['file']['name']);
+		$path = UPLOAD_PATH . '/' . $fileName;
+		
+		if (move_uploaded_file($tempFile, $path)) {
+			$url = SERVER_URL . 'uploads/' . $fileName;
+			$workitem = $this->getRequest()->getParam('workitem');
+			$workitem = (is_numeric($workitem) ? $workitem : null);
+			
+			$file = new File();
+			$file->setMime($mime)
+				 ->setUserid($this->getRequest()->getParam('userid'))
+				 ->setWorkitem($workitem)
+				 ->setTitle($title)
+				 ->setUrl($url);
+			$success = $file->save();
+			
+			$icon = File::getIconFromMime($file->getMime());
+			if ($icon === false) {
+				$filetype = 'image';
+				$icon = $file->getUrl();
+			}
+			
+			return $this->setOutput(array(
+				'success' => $success,
+				'fileid'  => $file->getId(),
+				'url' 	  => $file->getUrl(),
+				'icon'	  => $icon,
+				'title'	  => $file->getTitle(),
+				'description' => '',
+				'filetype'=> (isset($filetype) ? $filetype : '')
+			));
+		} else {
+			return $this->setOutput(array(
+				'success' => false,
+				'message' => 'An error occured while uploading the file, please try again!'
+			));
+		}
+		
+	}
+	
+	protected function actionChangeFileTitle()
+	{
+		$fileid = $this->getRequest()->getParam('fileid');
+		$title = $this->getRequest()->getParam('value');
+		
+		$file = new File();
+		$file->findFileById($fileid);
+		$file->setTitle((string)$title);
+		$success = $file->save();
+		
+		die($title);
+	}
+	
+	protected function actionChangeFileDescription()
+	{
+		$fileid = $this->getRequest()->getParam('fileid');
+		$description = $this->getRequest()->getParam('value');
+		
+		$file = new File();
+		$file->findFileById($fileid);
+		$file->setDescription((string)$description);
+		$success = $file->save();
+		
+		die($description);
+	}
+	
+	protected function actionChangeFileStatus()
+	{
+		$fileid = $this->getRequest()->getParam('fileid');
+		$status = $this->getRequest()->getParam('status');
+		
+		$file = new File();
+		$file->findFileById($fileid);
+		$file->setStatus((int)$status);
+		$success = $file->save();
+		
+		return $this->setOutput(array(
+			'success' => $success
+		));
+	}
+	
+	protected function actionGetFilesForWorkitem()
+	{
+		$files = File::fetchAllFilesForWorkitem($this->getRequest()->getParam('workitem'));
+		$user = new User();
+		$user->findUserById($this->getRequest()->getParam('userid'));
+		$data = array(
+			'images' => array(),
+			'documents' => array()
+		);
+		foreach ($files as $file) {
+			if (!File::isAllowed($file->getStatus(), $user)) {
+				continue;
+			}
+			$icon = File::getIconFromMime($file->getMime());
+			if ($icon === false) {
+				array_push($data['images'], array(
+					'fileid'=> $file->getId(),
+					'url'	=> $file->getUrl(),
+					'icon'	=> $file->getUrl(),
+					'title' => $file->getTitle(),
+					'description' => $file->getDescription()
+				));
+			} else {
+				array_push($data['documents'], array(
+					'fileid'=> $file->getId(),
+					'url'	=> $file->getUrl(),
+					'icon'	=> $icon,
+					'title' => $file->getTitle(),
+					'description' => $file->getDescription()
+				));
+			}
+		}
+		
+		return $this->setOutput(array(
+			'success' => true,
+			'data' => $data
+		));
+	}
 
 	/**
 	 * This method handles the upload of the W9 form
@@ -212,6 +349,7 @@ class JsonServer
 		
 		$tempFile = $_FILES['Filedata']['tmp_name'];
 		$path = UPLOAD_PATH . '/' . $this->getRequest()->getParam('userid') . '_W9.pdf';
+		
 		if (move_uploaded_file($tempFile, $path)) {
 			$user = new User();
 			$user->findUserById($this->getRequest()->getParam('userid'));
@@ -222,7 +360,7 @@ class JsonServer
 			$body .= "<p>Love,<br/>Worklist</p>";
 			
 			$sandy = new User();
-			$sandy->findUserByNickname('Ryan');
+			$sandy->findUserByNickname('Sandy');
 			sl_send_email($sandy->getUsername() . ', finance@lovemachineinc.com', $subject, $body);
 			
 			return $this->setOutput(array(

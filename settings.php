@@ -146,18 +146,57 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 
-<link href="css/uploadify.css" rel="stylesheet" type="text/css">
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userinfo.js"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/sendlove.js"></script>
-<script type="text/javascript" src="js/jquery.uploadify.v2.1.0.min.js"></script>
-<script type="text/javascript" src="js/swfobject.js"></script>
+<script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript">
+<!--//
 	$(document).ready(function () {
 		var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
+		new AjaxUpload('formupload', {
+			action: 'jsonserver.php',
+			name: 'Filedata',
+			data: {
+				action: 'w9Upload',
+				userid: user
+			},
+			autoSubmit: true,
+			responseType: 'json',
+			onSubmit: function(file, extension) {
+				if (! (extension && /^(pdf)$/i.test(extension))){
+					// extension is not allowed
+					$('.uploadnotice').empty();
+					var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
+									'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
+									'<strong>Error:</strong> This filetype is not allowed. Please upload a pdf file.</p>' +
+								'</div>';
+					$('.uploadnotice').append(html);
+					// cancel upload
+					return false;
+				}
+				this.disable();
+			},
+			onComplete: function(file, data) {
+				$('.uploadnotice').empty();
+            	if (data.success) {
+					var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
+									'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
+									'<strong>Info:</strong> ' + data.message + '</p>' +
+								'</div>';
+            	} else {
+					var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
+									'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
+									'<strong>Error:</strong> ' + data.message + '</p>' +
+								'</div>';
+					this.enable();
+            	}
+				$('.uploadnotice').append(html);
+			}
+		});
 		$.ajax({
 	        type: "POST",
 	        url: 'jsonserver.php',
@@ -169,11 +208,13 @@ include("head.html"); ?>
 	        success: function(data) {
 		        if ((data.success === true) && (data.isuscitizen === true)) {
 					$('input[name=uscitizen]').attr('checked', 'checked');
+					
 					$('#w9upload').show();
 		        }
 	        }
 		});
 	});
+//-->
 </script>
 
 <title>Worklist | Account Settings</title>
@@ -230,55 +271,20 @@ include("head.html"); ?>
                 </script>
                  </div>
                 
-                <div class="LVspacelg">
-                <p><label>US Citizen<br />
+                <div class="LVspacelg" style="width: 285px;">
+                <p style="display:inline;float:left;margin-right:50px;"><label>US Citizen<br />
                 <input type="checkbox" name="uscitizen" />
+                </label>
+                </p>
+                <div class="LVspacelg" id="w9upload" style="display: none; height: auto; min-height: 80px; float: right;">
+                <p><label>W-9 Form Upload<br />
+                <input id="formupload" type="button" value="Browse" />
                 </label></p>
+                </div>
+                <br style="clear: both;" />
+                <div class="uploadnotice"></div>
                 </div>
                 
-                <div class="LVspacelg" id="w9upload" style="display: none;">
-                <p><label>W-9 Form Upload<br />
-                <input id="formupload" name="formupload" type="file" />
-                </label></p>
-                <script type="text/javascript">// <![CDATA[
-					$(document).ready(function() {
-						var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
-						$('#formupload').uploadify({
-							uploader: 'images/uploadify.swf',
-							script: 'jsonserver.php',
-							scriptData: {
-								action: 'w9Upload',
-								userid: user
-							},
-							buttonImg: 'images/browse.jpg',
-							cancelImg: 'images/cancel.png',
-							width: 125,
-							height: 24,
-							auto: true,
-							fileDesc: 'Only *.pdf Files',
-							fileExt: '*.pdf',
-							folder: '/uploads',
-				            onComplete: function(a, b, c, d) {
-					            var data = eval("(" + d + ')');
-								$('.uploadnotice').empty();
-				            	if (data.success) {
-									var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
-													'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
-													'<strong>Info:</strong> ' + data.message + '</p>' +
-												'</div>';
-				            	} else {
-									var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
-													'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-													'<strong>Error:</strong> ' + data.message + '</p>' +
-												'</div>';
-				            	}
-								$('.uploadnotice').append(html);
-				            }
-						});
-					});
-				// ]]></script>
-                </div>
-                <div class="uploadnotice"></div>
 	   </div><!-- end of left-col div -->
 	   <div class="right-col">
             <div class="LVspacehg">

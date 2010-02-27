@@ -15,6 +15,12 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 
+if(!isset($_SESSION['sfilter']))
+  $_SESSION['sfilter'] = 'BIDDING';
+
+if(!isset($_SESSION['ufilter']))
+  $_SESSION['ufilter'] = 'ALL';
+
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -62,6 +68,13 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
     {
       $bid_fee_itemid = mysql_insert_id();
       $journal_message .= " item #$bid_fee_itemid: $summary. ";
+	    if (!empty($_POST['files'])) {
+	    	$files = explode(',', $_POST['files']);
+	    	foreach ($files as $file) {
+	    		$sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . $file;
+	    		mysql_query($sql);
+	    	}
+	    }
     }
     else
     {
@@ -173,7 +186,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     //sending email to the bidder
     $subject = "bid accepted: $summary";
     $item_link = SERVER_URL."workitem.php?job_id={$bid_info['worklist_id']}&action=view";
-    $prom = $body = "Promised by: ".$_SESSION['nickname'];
+    $prom = $body = "Promised by: ".$_SESSION['nickname'];                                  
     $body .= "<p><a href='${item_link}'>View Item</a></p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
@@ -239,9 +252,12 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
+<script type="text/javascript" src="js/jquery.template.js"></script>
+<script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
+<script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
 <script type="text/javascript" src="js/feedback.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
@@ -962,7 +978,7 @@ include("head.html"); ?>
 				  var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
 				  var bid_fee_amount = new LiveValidation('bid_fee_amount',{ onlyOnSubmit: true });
 				  var bid_fee_desc = new LiveValidation('bid_fee_desc',{ onlyOnSubmit: true });
-
+		
 				  bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 				  bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
 				  bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
@@ -1191,7 +1207,7 @@ include("head.html"); ?>
         <tr class="table-hdng">
             <td>Summary</td>
             <td>Status</td>
-	    	<td>Funded</td>
+	        <td>Funded</td>
             <td>Who</td>
             <td>When</td>
             <td class="worklist-fees">Fees/Bids</td>

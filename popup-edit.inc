@@ -1,8 +1,28 @@
+	<script type="text/html" id="uploadImage">
+		<div class="filesIcon">
+			<img width="75px" height="75px" src="<#= icon #>" />
+		</div>
+		<div class="filesDescription">
+			<h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
+			<p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
+		</div>
+		<div class="clear"></div>
+	</script>
+	<script type="text/html" id="uploadDocument">
+		<div class="filesIcon">
+			<img width="32px" height="32px" src="<#= icon #>" />
+		</div>
+		<div class="documents filesDescription">
+			<h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
+			<p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
+		</div>
+		<div class="clear"></div>
+	</script>
     <div id="popup-edit" title = "Add Worklist Item" class = "popup-body">
             <form name="popup-form" id="popup-form-edit" action="" method="post">
                 <input type="hidden" name="itemid" value="0" />
-
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
+                <input type="hidden" name="files" value="" />
 
 		<div id = "for_edit" <?php if(!isset($_SESSION['userid'])){ echo 'style = "display:none;"';}?>>
 		  <p class="info-label">Summary<br />
@@ -38,6 +58,29 @@
 		  <p class="info-label">Notes<br />
 		  <textarea name="notes" size="48" /></textarea>
 		  </p>
+
+			<p class="info-label">Attached Files <br />
+				<div id="accordion">
+				    <h3><a href="#">Images (<span id="imageCount">0</span>)</a></h3>
+				    <div id="fileimagecontainer">
+
+				    </div>
+				    <h3><a href="#">Documents (<span id="documentCount">0</span>)</a></h3>
+				    <div id="filedocumentcontainer">
+					</div>
+				</div>
+				<input type="hidden" name="files" value="" />
+
+			
+				<div id="fileUploadButton">
+					Attach new files
+				</div>
+				<div class=".uploadnotice"></div>
+				<script type="text/javascript" src="js/uploadFiles.js"></script>
+			</p>
+
+
+
 
 		</div><!-- end div #for-edit-->
 		

@@ -37,6 +37,7 @@ if (!defined("WORKLIST"))       define("WORKLIST", "worklist");
 if (!defined("USERS"))          define("USERS", "users");
 if (!defined("BIDS"))          define("BIDS", "bids");
 if (!defined("FEES"))          define("FEES", "fees");
+if (!defined("FILES"))		define("FILES", "files");
 
 if (!defined("SALT"))           define("SALT", "WORKLIST");
 if (!defined("SESSION_EXPIRE")) define("SESSION_EXPIRE", 365*24*60*60);

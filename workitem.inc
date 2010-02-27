@@ -17,8 +17,77 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
+<script type="text/javascript" src="js/ajaxupload.js"></script>
+<script type="text/javascript" src="js/jquery.template.js"></script>
+<script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
+<script type="text/html" id="uploadedFiles">
+<div id="accordion">
+	<h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
+	<div id="fileimagecontainer">
+	<# if (images.length > 0) { #> 
+		<# for(var i=0; i < images.length; i++) { 
+		var image = images[i];
+		#>
+		<div class="filesIcon">
+			<a href="<#= image.url #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
+		</div>
+		<div class="filesDescription">
+			<h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
+			<p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
+		</div>
+		<div class="clear"></div>
+		<# } #>
+	<# } #>
+	</div>
+	<h3><a href="#">Documents (<span id="documentCount"><#= documents.length #></span>)</a></h3>
+	<div id="filedocumentcontainer">
+	<# if (documents.length > 0) { #>
+		<# for(var i=0; i < documents.length; i++) { 
+		var doc = documents[i];
+		#>
+		<div class="filesIcon">
+			<a href="<#= doc.url #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+		</div>
+		<div class="documents filesDescription">
+			<h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
+			<p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
+		</div>
+		<div class="clear"></div>
+		<# } #>
+	<# } #>
+	</div>
+</div>
+<div id="fileUploadButton">
+	Attach new files
+</div>
+</script>
+<script type="text/html" id="uploadImage">
+	<div class="filesIcon">
+		<a href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
+	</div>
+	<div class="filesDescription">
+		<h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
+		<p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
+	</div>
+	<div class="clear"></div>
+</script>
+<script type="text/html" id="uploadDocument">
+	<div class="filesIcon">
+		<a href="<#= url #>" target="_blank"><img width="32px" height="32px" src="<#= icon #>" /></a>
+	</div>
+	<div class="documents filesDescription">
+		<h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
+		<p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
+	</div>
+	<div class="clear"></div>
+</script>
 
 <script>
+var user_id = <?php echo($user_id); ?>;
+var workitem_id = <?php echo $worklist['id'];?> ;
+var imageArray = new Array();
+var documentsArray = new Array();
+
   $(document).ready(function(){
 	$('#done_by').datepicker({
 	  duration: '',
@@ -40,7 +109,40 @@ include("head.html"); ?>
 	var workitem_id = <?php echo $worklist['id'];?> ;
 	var already_bid = <?php echo $currentUserHasBid ;?> ;
 	var is_runner = <?php echo $is_runner;?> ;
+	var user_id = <?php echo($user_id); ?>;
 
+	(function($) {
+		$.ajax({
+			type: 'post',
+			url: 'jsonserver.php',
+			data: {
+				workitem: workitem_id,
+				userid: user_id,
+				action: 'getFilesForWorkitem'
+			},
+			dataType: 'json',
+			success: function(data) {
+				if (data.success) {
+					var images = data.data.images;
+					var documents = data.data.documents;
+					for (var i=0; i < images.length; i++) {
+						imageArray.push(images[i].fileid);
+					}
+					for (var i=0; i < documents.length; i++) {
+						documentsArray.push(documents[i].fileid);
+					}
+					var files = $('#uploadedFiles').parseTemplate(data.data);
+					files = files + '<script type="text/javascript" src="js/uploadFiles.js"><\/script>';
+					$('#uploadPanel').append(files);
+					$('#accordion').accordion({
+						clearStyle: true,
+						collapsible: true
+					});
+				}
+			}
+		});
+	})(jQuery);
+	
 	SimplePopup('#popup-bid',
 		    'Place Bid',
 		    workitem_id,
@@ -265,7 +367,7 @@ include("head.html"); ?>
 		</select>
 		<?php else: ?>
 		    <?php echo $worklist['status'];?>
-		    <input type="hidden" id="status" name="status" value = "<?php echo $worklist['status']; ?>" />
+		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
 		<?php endif;?>
 	      </li>
 		<li>
@@ -396,11 +498,14 @@ include("head.html"); ?>
 	    <input type="hidden" class="fee_id" name="fee_id" value="" />
 	</form>
     </div><!--end of right-panel-->
+    <div id="uploadPanel">
+    
+    </div>
 </div>
 <div style="clear:both"></div>
 </div>
 <!-- Popup HTML for Placing a bid -->
-<?php if (!empty($message)): ?>
+<?php if(isset($message)): ?>
 <div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
     <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>
     <strong>Info:</strong><?php echo $message; ?></p>
