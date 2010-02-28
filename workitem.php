@@ -56,7 +56,7 @@ if($action =='save_workitem') {
     $workitem->loadById($worklist_id);
     $args = array('summary','notes', 'funded', 'status');
     foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
+        $$arg = $_POST[$arg];
     }
 
     // funded
