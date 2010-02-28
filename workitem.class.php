@@ -1,13 +1,220 @@
 <?php
+/**
+ * Workitem
+ *
+ * @package Workitem
+ * @version $Id$
+ */
+require_once 'lib/Workitem/Exception.php';
+/**
+ * Workitem
+ *
+ * @package Workitem
+ */
 class WorkItem
 {
-    public function __construct()
+    protected $id;
+    protected $summary;
+    protected $creatorId;
+    protected $ownerId;
+    protected $status;
+    protected $notes;
+    protected $funded;
+
+    public function __construct($id = null)
     {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
             throw new Exception('Error: ' . mysql_error());
         }
         if (!mysql_select_db(DB_NAME)) {
             throw new Exception('Error: ' . mysql_error());
+        }
+        if ($id !== null) {
+            $this->load($id);
+        }
+    }
+
+    public function loadById($id)
+    {
+        return $this->load($id);
+    }
+
+    protected function load($id = null)
+    {
+        if ($id === null && !$this->id) {
+            throw new Workitem_Exception('Missing workitem id.');
+        } elseif ($id === null) {
+            $id = $this->id;
+        }
+        $query = "
+SELECT
+    w.id,
+    w.summary,
+    w.owner_id,
+    w.status,
+    w.notes,
+    w.funded
+FROM  ".WORKLIST. " as w
+WHERE w.id = '" . (int)$id . "'";
+        $res = mysql_query($query);
+        if (!$res) {
+            throw new Workitem_Exception('MySQL error.');
+        }
+        $row = mysql_fetch_assoc($res);
+        if (!$row) {
+            throw new Workitem_Exception('Invalid workitem id.');
+        }
+        $this->setId($row['id'])
+             ->setSummary($row['summary'])
+             ->setOwnerId($row['owner_id'])
+             ->setStatus($row['status'])
+             ->setNotes($row['notes'])
+             ->setFunded($row['funded']);
+        return true;
+    }
+
+    public function idExists($id)
+    {
+        $query = '
+SELECT COUNT(*)
+FROM ' . WORKLIST . '
+WHERE id = ' . (int)$id;
+        $res = mysql_query($query);
+        if (!$res) {
+            throw new Workitem_Exception('MySQL error.');
+        }
+        $row = mysql_fetch_row($res);
+        return (boolean)$row[0];
+    }
+
+    public function setId($id)
+    {
+        $this->id = (int)$id;
+        return $this;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setSummary($summary)
+    {
+        $this->summary = $summary;
+        return $this;
+    }
+
+    public function getSummary()
+    {
+        return $this->summary;
+    }
+
+    public function setCreatorId($creatorId)
+    {
+        $this->creatorId = (int)$creatorId;
+        return $this;
+    }
+
+    public function getCreatorId()
+    {
+        return $this->creatorId;
+    }
+
+    public function setOwnerId($ownerId)
+    {
+        $this->ownerId = (int)$ownerId;
+        return $this;
+    }
+
+    public function getOwnerId()
+    {
+        return $this->ownerId;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+        return $this;
+    }
+
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    public function setFunded($funded)
+    {
+        if ($funded === null) {
+            $this->funded = null;
+        } else {
+            $this->funded = (boolean)$funded;
+        }
+        return $this;
+    }
+
+    public function getFunded()
+    {
+        if ($this->funded === null) {
+            return null;
+        }
+        return (int)$this->funded;
+    }
+
+    protected function insert()
+    {
+        $query = '
+INSERT INTOP ' .WORKLIST. ' (
+    summary,
+    creator_id,
+    owner_id,
+    status,
+    funded,
+    notes,
+    created )
+VALUES (
+        ' . mysql_real_escape_string($this->getSummary()).',
+        ' . mysql_real_escape_string($this->getCreatorId()) . ',
+        ' . mysql_real_escape_string($this->getOwnerId()) . ',
+        ' . mysql_real_escape_string($this->getStatus()) . ',
+        ' . mysql_real_escape_string($this->getFunded()) . ',
+        ' . mysql_real_escape_string($this->getNotes()) . ',
+        NOW()
+)';
+        return mysql_query($query) ? 1 : 0;
+    }
+
+    protected function update()
+    {
+        $query = '
+UPDATE '.WORKLIST.' SET
+    summary= "'. mysql_real_escape_string($this->getSummary()).'",
+    notes="'.mysql_real_escape_string($this->getNotes()).'",
+    status="' .mysql_real_escape_string($this->getStatus()).'" ';
+        if($this->getFunded() !== null) {
+            $query .= ' ,funded='. mysql_real_escape_string($this->getFunded());
+        }
+
+        $query .= ' WHERE id='.$this->getId();
+        return mysql_query($query) ? 1 : 0;
+    }
+
+    public function save()
+    {
+        if ($this->idExists($this->getId())) {
+            return $this->update();
+        } else {
+            return $this->insert();
         }
     }
 
@@ -101,7 +308,7 @@ class WorkItem
         if($funded !== null) {
             $query .= ' ,funded='. $funded ;
         }
-	
+
         $query .= ' WHERE id='.$worklist_id;
         return mysql_query($query) ? 1 : 0;
     }
@@ -144,8 +351,14 @@ WHERE
      * @param int $worklistId
      * @return boolean
      */
-    public function hasAcceptedBids($worklistId)
+    public function hasAcceptedBids($worklistId = null)
     {
+        if ($worklistId === null) {
+            if (!$this->id) {
+                throw new Workitem_Exception('Missing id.');
+            }
+            $worklistId = $this->getId();
+        }
         $query = '
 SELECT COUNT(*)
 FROM `' . BIDS . '`

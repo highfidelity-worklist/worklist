@@ -24,8 +24,8 @@ include("head.html"); ?>
 <div id="accordion">
 	<h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
 	<div id="fileimagecontainer">
-	<# if (images.length > 0) { #> 
-		<# for(var i=0; i < images.length; i++) { 
+	<# if (images.length > 0) { #>
+		<# for(var i=0; i < images.length; i++) {
 		var image = images[i];
 		#>
 		<div class="filesIcon">
@@ -42,7 +42,7 @@ include("head.html"); ?>
 	<h3><a href="#">Documents (<span id="documentCount"><#= documents.length #></span>)</a></h3>
 	<div id="filedocumentcontainer">
 	<# if (documents.length > 0) { #>
-		<# for(var i=0; i < documents.length; i++) { 
+		<# for(var i=0; i < documents.length; i++) {
 		var doc = documents[i];
 		#>
 		<div class="filesIcon">
@@ -142,7 +142,7 @@ var documentsArray = new Array();
 			}
 		});
 	})(jQuery);
-	
+
 	SimplePopup('#popup-bid',
 		    'Place Bid',
 		    workitem_id,
@@ -257,8 +257,9 @@ var documentsArray = new Array();
 			['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 			['span', '#info-notes', 'json.notes', 'eval'] ],
 		      function(json) {
-			if( is_runner==1 && json.any_accepted != 1)
+<?php if ($is_runner || $worklist['owner_id'] == $_SESSION['userid']):?>
 			  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
+<?php endif;?>
 			if( is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
 			      $('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 		      });
@@ -359,7 +360,7 @@ var documentsArray = new Array();
 	    </li>
 	    <li>
 	    <span class="info-label">Status</span>
-	      <?php if ($is_runner):  ?>
+	      <?php if ($is_runner || $worklist['owner_id'] == $user_id):  ?>
 		<select id="status" name="status">
 		<?php foreach($statusList as $status): ?>
 		    <option value="<?php echo $status; ?>" <?=$status==$worklist['status']?' selected = "selected"' : '';?> ><?php echo $status; ?></option>
@@ -499,7 +500,7 @@ var documentsArray = new Array();
 	</form>
     </div><!--end of right-panel-->
     <div id="uploadPanel">
-    
+
     </div>
 </div>
 <div style="clear:both"></div>
