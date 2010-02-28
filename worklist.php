@@ -153,12 +153,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     sl_notify_sms_by_id($row['id'], $subject, "${bid_amount}\n${urlacceptbid}");
 
     // Journal notification
-    if($mechanic_id == $_SESSION['userid']) {
-      $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on item #$itemid:  {$summary}. ";
-    } else {
-      $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on item #$itemid:  {$summary}. ";
-    }
-
+    $journal_message .= "A bid of \${$bid_amount} was placed on item #$itemid: $summary.";
 }
 
 //accepting a bid
