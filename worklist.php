@@ -17,10 +17,10 @@ include_once("send_email.php");
 include_once("update_status.php");
 
 if(!isset($_SESSION['sfilter']))
-  $_SESSION['sfilter'] = 'BIDDING';
+$_SESSION['sfilter'] = 'BIDDING';
 
 if(!isset($_SESSION['ufilter']))
-  $_SESSION['ufilter'] = 'ALL';
+$_SESSION['ufilter'] = 'ALL';
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -30,14 +30,14 @@ $journal_message = '';
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
-  if(isset($_POST['funded']) && $is_runner){
-    $funded = mysql_real_escape_string($_POST['funded']) == 'on'? 1 :0;
-  }else{
-    $funded = 0;
-  }
+    if(isset($_POST['funded']) && $is_runner){
+        $funded = mysql_real_escape_string($_POST['funded']) == 'on'? 1 :0;
+    }else{
+        $funded = 0;
+    }
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite');
     foreach ($args as $arg) {
-      $$arg = mysql_real_escape_string($_POST[$arg]);
+        $$arg = mysql_real_escape_string($_POST[$arg]);
     }
 
     $creator_id = $_SESSION['userid'];
@@ -67,25 +67,25 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
     if(empty($_POST['itemid']))
     {
-      $bid_fee_itemid = mysql_insert_id();
-      $journal_message .= " item #$bid_fee_itemid: $summary. ";
-	    if (!empty($_POST['files'])) {
-	    	$files = explode(',', $_POST['files']);
-	    	foreach ($files as $file) {
-	    		$sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . $file;
-	    		mysql_query($sql);
-	    	}
-	    }
+        $bid_fee_itemid = mysql_insert_id();
+        $journal_message .= " item #$bid_fee_itemid: $summary. ";
+        if (!empty($_POST['files'])) {
+            $files = explode(',', $_POST['files']);
+            foreach ($files as $file) {
+                $sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . $file;
+                mysql_query($sql);
+            }
+        }
     }
     else
     {
-      $bid_fee_itemid = $itemid;
-      $journal_message .=  "item #$itemid: $summary. ";
+        $bid_fee_itemid = $itemid;
+        $journal_message .=  "item #$itemid: $summary. ";
     }
 
     if (!empty($_POST['invite'])) {
-    	$people = explode(',', $_POST['invite']);
-    	invitePeople($people, $bid_fee_itemid, $summary, $notes);
+        $people = explode(',', $_POST['invite']);
+        invitePeople($people, $bid_fee_itemid, $summary, $notes);
     }
 
     if ($bid_fee_amount > 0) {
@@ -106,24 +106,24 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
 
     if($mechanic_id != $_SESSION['userid'])
     {
-      // Get the mechanic's user information
-      $rt = mysql_query("select nickname, username from ".USERS." where id='{$mechanic_id}'");
-      if ($rt) {
-        $row = mysql_fetch_assoc($rt);
-        $nickname = $row['nickname'];
-	$username = $row['username'];
-      }
-      else
-      {
-	$username = "unknown-{$username}";
-	$nickname = "unknown-{$mechanic_id}";
-      }
+        // Get the mechanic's user information
+        $rt = mysql_query("select nickname, username from ".USERS." where id='{$mechanic_id}'");
+        if ($rt) {
+            $row = mysql_fetch_assoc($rt);
+            $nickname = $row['nickname'];
+            $username = $row['username'];
+        }
+        else
+        {
+            $username = "unknown-{$username}";
+            $nickname = "unknown-{$mechanic_id}";
+        }
     }
     else
     {
-      $mechanic_id = $_SESSION['userid'];
-      $username = $_SESSION['username'];
-      $nickname = $_SESSION['nickname'];
+        $mechanic_id = $_SESSION['userid'];
+        $username = $_SESSION['username'];
+        $nickname = $_SESSION['nickname'];
     }
 
     mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`)
@@ -144,9 +144,9 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $body .= "Notes: ".$notes."</p>";
     $urlacceptbid = '';
     if ($row['is_runner']==1) {
-      $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
-      $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
-      $body .= $urlacceptbid;
+        $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
+        $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
+        $body .= $urlacceptbid;
     }
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($row['username'], $subject, $body);
@@ -170,7 +170,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
 
     //changing owner of the job
     mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
-//marking bid as "accepted"
+    //marking bid as "accepted"
     mysql_unbuffered_query("UPDATE `bids` SET `accepted` =  1 WHERE `id` = ".$bid_id);
     //adding bid amount to list of fees
     mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
@@ -182,7 +182,7 @@ if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept b
     //sending email to the bidder
     $subject = "bid accepted: $summary";
     $item_link = SERVER_URL."workitem.php?job_id={$bid_info['worklist_id']}&action=view";
-    $prom = $body = "Promised by: ".$_SESSION['nickname'];                                  
+    $prom = $body = "Promised by: ".$_SESSION['nickname'];
     $body .= "<p><a href='${item_link}'>View Item</a></p>";
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($bid_info['email'], $subject, $body);
@@ -196,11 +196,11 @@ if (isset($_REQUEST['withdraw_bid'])) {
     } else {
         $fee_id = intval($_REQUEST['fee_id']);
         $res = mysql_query('SELECT bid_id FROM `' . FEES . '` WHERE `id`=' . $fee_id);
-	    $fee = mysql_fetch_object($res);
-	    if ((int)$fee->bid_id !== 0) {
-	        withdrawBid($fee->bid_id);
+        $fee = mysql_fetch_object($res);
+        if ((int)$fee->bid_id !== 0) {
+            withdrawBid($fee->bid_id);
         } else {
-        	deleteFee($fee_id);
+            deleteFee($fee_id);
         }
 
     }
@@ -246,22 +246,39 @@ $current_status = get_status(true);
 include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
-<link href="css/worklist.css" rel="stylesheet" type="text/css" >
-<link href="css/feedback.css" rel="stylesheet" type="text/css" >
-<link href="css/ui.toaster.css" rel="stylesheet" type="text/css" >
-<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
-<script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
-<script type="text/javascript" src="js/jquery.template.js"></script>
-<script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
-<script type="text/javascript" src="js/timepicker.js"></script>
-<script type="text/javascript" src="js/ajaxupload.js"></script>
-<script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
-<script type="text/javascript" src="js/feedback.js"></script>
-<script type="text/javascript" src="js/ui.toaster.js"></script>
+<link
+    href="css/worklist.css" rel="stylesheet" type="text/css">
+<link
+    href="css/feedback.css" rel="stylesheet" type="text/css">
+<link
+    href="css/ui.toaster.css" rel="stylesheet" type="text/css">
+<link
+    type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css"
+    rel="stylesheet" />
+<script
+    type="text/javascript" src="js/jquery.livevalidation.js"></script>
+<script
+    type="text/javascript" src="js/jquery.autocomplete.js"></script>
+<script
+    type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
+<script
+    type="text/javascript" src="js/jquery.template.js"></script>
+<script
+    type="text/javascript" src="js/jquery.jeditable.min.js"></script>
+<script
+    type="text/javascript" src="js/worklist.js"></script>
+<script
+    type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<script
+    type="text/javascript" src="js/timepicker.js"></script>
+<script
+    type="text/javascript" src="js/ajaxupload.js"></script>
+<script
+    type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
+<script
+    type="text/javascript" src="js/feedback.js"></script>
+<script
+    type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript">
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
     var lastId;
@@ -378,10 +395,17 @@ include("head.html"); ?>
 	  bid = json[7];
 	}
 	if(json[2] == 'BIDDING'){
-	  feebids = parseFloat(feebids) + parseFloat(bid);
+      bid = parseFloat(bid);
+      if (bid == 0) {
+          feebids = '';
+      } else {
+	   feebids = '$' + parseFloat(bid);
+      }
+	} else {
+        feebids = '$' + feebids;
 	}
 
-	row += '<td width="10%">' + pre + '$' + feebids + post + '</td></tr>';
+	row += '<td width="10%">' + pre + feebids + post + '</td></tr>';
 
         if (prepend) {
             $(row).prependTo('.table-worklist tbody').find('td div.slideDown').fadeIn(500);
@@ -979,7 +1003,7 @@ include("head.html"); ?>
 				  var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
 				  var bid_fee_amount = new LiveValidation('bid_fee_amount',{ onlyOnSubmit: true });
 				  var bid_fee_desc = new LiveValidation('bid_fee_desc',{ onlyOnSubmit: true });
-		
+
 				  bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 				  bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
 				  bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
@@ -1128,103 +1152,98 @@ include("head.html"); ?>
 </head>
 
 <body>
- <div style="display:none;position:fixed;top:0px;left:0px;width:100%;height:100%;text-align:center;line-height:100%;background:white;opacity:0.7; filter: alpha(opacity = 70);z-index:9998" id="loader_img" ><img src="images/final_loading_big.gif" style="z-index:9999" ></div>
+<div
+    style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
+    id="loader_img"><img src="images/final_loading_big.gif"
+    style="z-index: 9999"></div>
 
-    <!-- Popup for editing/adding  a work item -->
-    <?php require_once('popup-edit.inc') ?>
+<!-- Popup for editing/adding  a work item -->
+<?php require_once('popup-edit.inc') ?>
 
-    <!-- Popup for deleting a work item -->
-    <?php require_once('popup-delete.inc') ?>
+<!-- Popup for deleting a work item -->
+<?php require_once('popup-delete.inc') ?>
 
-    <!-- Popup HTML for paying a fee -->
-    <?php require_once('popup-paid-html.inc') ?>
+<!-- Popup HTML for paying a fee -->
+<?php require_once('popup-paid-html.inc') ?>
 
-    <!-- Popup for placing a bid -->
-    <?php require_once('popup-bid.inc') ?>
+<!-- Popup for placing a bid -->
+<?php require_once('popup-bid.inc') ?>
 
-    <!-- Popup for bid info-->
-    <?php require_once('popup-bid-info.inc') ?>
+<!-- Popup for bid info-->
+<?php require_once('popup-bid-info.inc') ?>
 
-    <!-- Popup for adding fee-->
-    <?php require_once('popup-addfee.inc') ?>
+<!-- Popup for adding fee-->
+<?php require_once('popup-addfee.inc') ?>
 
-    <!-- Div for moving items accross the pages -->
-    <div id="pages-dialog" title="Select page to move item" style = "display: none;">
- 	<input type="submit" id="page-go" value="Go" /><br /><br />
- 	<input type="submit" id="page-go-highest" value="Highest" />
-	<input type = "hidden" id = "worklist-id" />
-    </div>
+<!-- Div for moving items accross the pages -->
+<div id="pages-dialog" title="Select page to move item"
+    style="display: none;"><input type="submit" id="page-go" value="Go" /><br />
+<br />
+<input type="submit" id="page-go-highest" value="Highest" /> <input
+    type="hidden" id="worklist-id" /></div>
 
-    <!-- Feedback tab html -->
-    <?php require_once('feedback.inc') ?>
+<!-- Feedback tab html -->
+<?php require_once('feedback.inc') ?>
 
 <?php include("format.php"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
-    <?php if (isset($_SESSION['userid'])) { ?>
-    <div id="buttons">
-        <p>
-            <input type="submit" id="add" name="add" value="Add" />
-            <input type="submit" id="edit" name="edit" value="Edit" <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
-            <input type="submit" id="delete" name="delete" value="Delete" <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
-            <?php if (empty($_SESSION['is_runner'])) { ?>
-	        <input type="submit" id="view" name="view" value="View" disabled = "disabled" />
-            <?php } ?>
-    </div>
-     
-		<br style="clear:both;" />
-		<div id="status-wrap">
-			<form action="" id="status-update-form">				 
-				I am <input type="text" maxlength="38" id="status-update" name="status-update" value="<?php echo $current_status?>"/>
-				<input type="submit" value="share" id="status-share" />	
-			</form>
-		</div>
-       <?php } ?>   
-<div id="search-filter-wrap">
- 	<div style="float:right" >
-		<div style="float:left">
-			<form method="get" action="" id="searchForm" />
-				<div style="padding-top:5px;float:left;padding-right:15px;">
-					<?php DisplayFilter('ufilter'); ?>
-					<?php DisplayFilter('sfilter'); ?>
-				</div>
-				<div style="float:left;" class="input_box">
-	            	<input type="text" id="query" name="query" alt="Search" size="20" />
-	            	<div class="onlyfloat_right">
-	            		<a id="search" href="">
-	            			<img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif">
-	            		</a>
-	            		
-	            	</div>	            	
-				</div>
-				<div style="float: left; margin-top: 3px;">
-					<a  id="search_reset" href="">
-						<img src="images/cross.png">
-					</a>
-				</div> 
-			</form>
-		</div>
-		
-	</div>
+<?php if (isset($_SESSION['userid'])) { ?>
+<div id="buttons">
+<p><input type="submit" id="add" name="add" value="Add" /> <input
+    type="submit" id="edit" name="edit" value="Edit"
+    <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
+<input type="submit" id="delete" name="delete" value="Delete"
+<?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
+<?php if (empty($_SESSION['is_runner'])) { ?> <input type="submit"
+    id="view" name="view" value="View" disabled="disabled" /> <?php } ?>
 
 </div>
 
-    <div style="clear:both"></div>
+<br style="clear: both;" />
+<div id="status-wrap">
+<form action="" id="status-update-form">I am <input type="text"
+    maxlength="38" id="status-update" name="status-update"
+    value="<?php echo $current_status?>" /> <input type="submit"
+    value="share" id="status-share" /></form>
+</div>
+<?php } ?>
+<div id="search-filter-wrap">
+<div style="float: right">
+<div style="float: left">
+<form method="get" action="" id="searchForm" />
+<div style="padding-top: 5px; float: left; padding-right: 15px;"><?php DisplayFilter('ufilter'); ?>
+<?php DisplayFilter('sfilter'); ?></div>
+<div style="float: left;" class="input_box"><input type="text"
+    id="query" name="query" alt="Search" size="20" />
+<div class="onlyfloat_right"><a id="search" href=""> <img height="23"
+    width="24" border="0" alt="zoom" src="images/spacer.gif"> </a></div>
+</div>
+<div style="float: left; margin-top: 3px;"><a id="search_reset" href="">
+<img src="images/cross.png"> </a></div>
+</form>
+</div>
 
-    <table width="100%" class="table-worklist">
-        <thead>
+</div>
+
+</div>
+
+<div style="clear: both"></div>
+
+<table width="100%" class="table-worklist">
+    <thead>
         <tr class="table-hdng">
             <td>Summary</td>
             <td>Status</td>
-	        <td>Funded</td>
+            <td>Funded</td>
             <td>Who</td>
             <td>When</td>
             <td class="worklist-fees">Fees/Bids</td>
         </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
 <?php include("footer.php"); ?>

@@ -32,7 +32,6 @@ $ufilter = intval($_REQUEST["ufilter"]);
 
 $where = '';
 $unpaid_join = '';
-$fees = "total_fees";
 if (!empty($sfilter)) {
     $where = "where (";
     foreach ($sfilter as $val) {
@@ -81,7 +80,7 @@ $totals = '
 CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_totals` (
     `worklist_id` int(11) NOT NULL,
     `total_fees` decimal(10,2) NOT NULL,
-    INDEX worklist_is(worklist_id)
+    INDEX worklist_id(worklist_id)
 )
 ';
 $emptyTotals = '
@@ -96,35 +95,73 @@ mysql_query($emptyTotals);
 mysql_query($fillTotals);
 
 $latest = '
+CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_latest` (
+    `worklist_id` int(11) NOT NULL,
+    `latest` DATETIME NOT NULL,
+    INDEX worklist_id(worklist_id)
+)
+';
+$emptyLatest = 'TRUNCATE `tmp_latest`';
+$fillLatest = '
+INSERT INTO `tmp_latest`
+(SELECT
+    `worklist_id`,
+    MAX(`bid_created`) AS `latest`
+FROM `bids` GROUP BY `worklist_id`)
+';
+mysql_query($latest);
+mysql_query($emptyLatest);
+mysql_query($fillLatest);
+
+$bids = '
 CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
     `worklist_id` int(11) NOT NULL,
     `bid_amount` decimal(10,2) NOT NULL,
     INDEX worklist_id(worklist_id)
 )
 ';
-$emptyLatest = 'TRUNCATE `tmp_latest`';
-$fillLatest = '
+$emptyBids = 'TRUNCATE `tmp_bids`';
+$fillBids = '
 INSERT INTO `tmp_bids`
 SELECT
     `bids`.`worklist_id`,
-    `bids`.`bid_amount` FROM `bids`,
-    (SELECT
-        MAX(`bid_created`) AS `latest`,
-        `worklist_id`
-    FROM `bids` GROUP BY `worklist_id`) AS `latest_bids`
+    `bids`.`bid_amount`
+FROM `bids`, `tmp_latest`
 WHERE
-    `bids`.`worklist_id` = `latest_bids`.`worklist_id`
-     AND `bids`.`bid_created` = `latest_bids`.`latest` AND (`bids`.`withdrawn` = 0)
+    `bids`.`worklist_id` = `tmp_latest`.`worklist_id`
+     AND `bids`.`bid_created` = `tmp_latest`.`latest`
+     AND (`bids`.`withdrawn` = 0)
 ';
-mysql_query($latest);
-mysql_query($emptyLatest);
-mysql_query($fillLatest);
+mysql_query($bids);
+mysql_query($emptyBids);
+mysql_query($fillBids);
 
 $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
-$qsel  = "SELECT DISTINCT `".WORKLIST."`.`id`, `summary`, `status`, `funded`, `ou`.`nickname`, `ou`.`username`,`mu`.`nickname` as mechanic_nickname,
-	         `mu`.`username` as mechanic_username,TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`, `$fees`, `bid_amount`,`creator_id`, (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count, TIMESTAMPDIFF(SECOND,NOW(),(SELECT `".BIDS."`.`bid_done` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` and `".BIDS."`.`accepted` = 1)) as bid_done";
+$qsel  = "SELECT DISTINCT
+    `".WORKLIST."`.`id`,
+    `summary`,
+    `status`,
+    `funded`,
+    `ou`.`nickname`,
+    `ou`.`username`,
+    `mu`.`nickname` as mechanic_nickname,
+	`mu`.`username` as mechanic_username,
+	TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
+	`total_fees`,
+	`bid_amount`,
+	`creator_id`,
+	(SELECT
+	   COUNT(`".BIDS."`.id) FROM `".BIDS."`
+	   WHERE
+	       `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`
+	       AND (`".BIDS."`.`withdrawn` = 0)) as bid_count,
+    TIMESTAMPDIFF(SECOND,NOW(),(SELECT
+        `".BIDS."`.`bid_done` FROM `".BIDS."`
+        WHERE
+            `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`
+            and `".BIDS."`.`accepted` = 1)) as bid_done";
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
           LEFT JOIN `".FEES."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
@@ -155,7 +192,21 @@ for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
     } else {
         $nickname = $username = '';
     }
-    $worklist[$i] = array($row['id'], $row['summary'], $row['status'], $nickname, $username, $row['delta'], $row[$fees], $row['bid_amount'], $row['creator_id'], $row['mechanic_nickname'], $row['mechanic_username'], $row['bid_count'], $row['bid_done'], $row['funded']);
+    $worklist[$i] = array(
+         0 => $row['id'],
+         1 => $row['summary'],
+         2 => $row['status'],
+         3 => $nickname,
+         4 => $username,
+         5 => $row['delta'],
+         6 => $row['total_fees'],
+         7 => $row['bid_amount'],
+         8 => $row['creator_id'],
+         9 => $row['mechanic_nickname'],
+        10 =>$row['mechanic_username'],
+        11 => $row['bid_count'],
+        12 => $row['bid_done'],
+        13 => $row['funded']);
 }
 
 $json = json_encode($worklist);
