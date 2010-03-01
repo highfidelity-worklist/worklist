@@ -11,20 +11,20 @@ include("class.session_handler.php");
 include("check_session.php");
 include("functions.php");
 
-$con=mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
-mysql_select_db(DB_NAME,$con);
+$con=mysql_connect( DB_SERVER,DB_USER,DB_PASSWORD );
+mysql_select_db( DB_NAME,$con );
 
-$cur_letter = isset($_POST['letter']) ? $_POST['letter'] : "all";
-$cur_page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+$cur_letter = isset( $_POST['letter'] ) ? $_POST['letter'] : "all";
+$cur_page = isset( $_POST['page'] ) ? intval($_POST['page'] ) : 1;
 
-if(isset($_POST['save_roles']) && !empty($_SESSION['is_runner'])){ //only runners can change other user's roles info
+if( isset( $_POST['save_roles'] ) && !empty( $_SESSION['is_runner'] ) ){ //only runners can change other user's roles info
     $is_runner = isset($_POST['isrunner']) ? 1 : 0;
     $is_payer = isset($_POST['ispayer']) ? 1 : 0;
     $user_id = intval($_POST['userid']);
     mysql_unbuffered_query("UPDATE `users` SET `is_runner`='$is_runner', `is_payer`='$is_payer' WHERE `id` =".$user_id);
 }
 
-$sfilter = !empty($_POST['sfilter']) ? $_POST['sfilter'] : 'PAID';
+$sfilter = !empty( $_POST['sfilter'] ) ? $_POST['sfilter'] : 'PAID';
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -45,6 +45,8 @@ include("head.html"); ?>
   var current_sortkey = 'nickname';
   var current_order = false;
   var sfilter = 'PAID';
+  var show_actives = "TRUE";
+  
   $(document).ready(function(){
 
     $('#outside').click(function() { //closing userbox on clicking outside of it
@@ -114,7 +116,7 @@ include("head.html"); ?>
     $.ajax({
 	type: "POST",
 	url: 'getuserlist.php',
-	data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order + '&sfilter=' + sfilter,
+	data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order + '&sfilter=' + sfilter + '&active=' + show_actives,
 	dataType: 'json',
 	success: function(json) {
 
@@ -123,11 +125,11 @@ include("head.html"); ?>
 	    //to be on the same page and letter after reloading
 	    $('#popup-user-info #hid_letter').val(current_letter);
 	    $('#popup-user-info #hid_page').val(npage);
+		
+		page = json[0][1]|0;
+        var cPages = json[0][2]|0;
 
-            page = json[0][1]|0;
-            var cPages = json[0][2]|0;
-
-            $('.row-userlist-live').remove();
+        $('.row-userlist-live').remove();
 
 	    if(json.length > 1){
 	      $('.table-hdng').show();
@@ -139,38 +141,35 @@ include("head.html"); ?>
 
 	    var odd = true;
             for (var i = 1; i < json.length; i++) {
-		AppendUserRow(json[i], odd);
-		odd = !odd;
+				AppendUserRow(json[i], odd);
+				odd = !odd;
             }
 
-
-            $('tr.row-userlist-live').click(function(){
-              var match = $(this).attr('class').match(/useritem-\d+/);
-              var userid = match[0].substr(9);
-		populateUserPopup(userid);
-		$('#popup-user-info').dialog('open');
-                return false;
-            });
-
-
+		$('tr.row-userlist-live').click(function(){
+			var match = $(this).attr('class').match(/useritem-\d+/);
+			var userid = match[0].substr(9);
+			populateUserPopup(userid);
+			$('#popup-user-info').dialog('open');
+			return false;
+		});
 
 	    if(cPages > 1){ //showing pagination only if we have more than one page
-	      $('.ln-pages').html('<span>'+outputPagination(page,cPages)+'</span>');
-
-	      $('.ln-pages a').click(function(){
-		page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
-		fillUserlist(page);
-		return false;
-	      });
+			$('.ln-pages').html('<span>'+outputPagination(page,cPages)+'</span>');
+			
+			$('.ln-pages a').click(function(){
+				page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
+				fillUserlist(page);
+				return false;
+			});
 
 	    }else{
-	      $('.ln-pages').html('');
+			$('.ln-pages').html('');
 	    }
 	},
-	error: function(xhdr, status, err) {
-	}
-    });
+	error: function(xhdr, status, err) {}
+	});
   }
+  
   function outputPagination(page, cPages)
   {
       var pagination = '';
@@ -301,6 +300,17 @@ include("head.html"); ?>
        $('.table-userlist tbody').append(row);
     }
 
+    // Bind the checkbox to the results
+    function ShowActive()		{
+		if( show_actives == "FALSE")	{
+			show_actives = "TRUE";
+			fillUserlist( current_page );
+		}	else	{
+			show_actives = "FALSE";
+			fillUserlist( current_page );
+		}
+    }
+
 </script>
 
 
@@ -321,7 +331,8 @@ include("head.html"); ?>
             <div>
                 <h1 style="float:left;margin-left:24px">Team Members</h1>
                 <div style="float:right;line-height:29px;margin-right:24px">
-                    <select id="sfilter" name="sfilter">
+					<input type="checkbox" name="filter_last45" onclick="javascript:ShowActive()" checked="true">Active users only</input>
+                    <select style="margin-left:20px;" id="sfilter" name="sfilter">
                         <option value="TOTAL">TOTAL</option>
                         <option value="PAID" selected>PAID</option>
                         <option value="UNPAID">UNPAID</option>
