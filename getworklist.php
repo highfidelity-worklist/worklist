@@ -77,6 +77,49 @@ if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
     }
 }
 
+$totals = '
+CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_totals` (
+    `worklist_id` int(11) NOT NULL,
+    `total_fees` decimal(10,2) NOT NULL,
+    INDEX worklist_is(worklist_id)
+)
+';
+$emptyTotals = '
+TRUNCATE `tmp_totals`
+';
+$fillTotals = '
+INSERT INTO `tmp_totals`
+SELECT `worklist_id`, SUM(amount) FROM `fees` WHERE `withdrawn` = 0 GROUP BY `worklist_id`
+';
+mysql_query($totals);
+mysql_query($emptyTotals);
+mysql_query($fillTotals);
+
+$latest = '
+CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
+    `worklist_id` int(11) NOT NULL,
+    `bid_amount` decimal(10,2) NOT NULL,
+    INDEX worklist_id(worklist_id)
+)
+';
+$emptyLatest = 'TRUNCATE `tmp_latest`';
+$fillLatest = '
+INSERT INTO `tmp_bids`
+SELECT
+    `bids`.`worklist_id`,
+    `bids`.`bid_amount` FROM `bids`,
+    (SELECT
+        MAX(`bid_created`) AS `latest`,
+        `worklist_id`
+    FROM `bids` GROUP BY `worklist_id`) AS `latest_bids`
+WHERE
+    `bids`.`worklist_id` = `latest_bids`.`worklist_id`
+     AND `bids`.`bid_created` = `latest_bids`.`latest` AND (`bids`.`withdrawn` = 0)
+';
+mysql_query($latest);
+mysql_query($emptyLatest);
+mysql_query($fillLatest);
+
 $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
@@ -86,11 +129,9 @@ $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
           LEFT JOIN `".FEES."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
           LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
-          LEFT JOIN (SELECT `worklist_id`, SUM(amount) AS `total_fees` FROM `".FEES."` WHERE `withdrawn` = 0 GROUP BY `worklist_id`) AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
+          LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
           $unpaid_join
-          LEFT JOIN (SELECT `".BIDS."`.`worklist_id`, `".BIDS."`.`bid_amount` FROM `".BIDS."`, (SELECT MAX(`bid_created`) AS `latest`, `worklist_id`
-          FROM `".BIDS."` GROUP BY `worklist_id`) AS `latest_bids` WHERE `".BIDS."`.`worklist_id` = `latest_bids`.`worklist_id`
-          AND `".BIDS."`.`bid_created` = `latest_bids`.`latest` AND (`".BIDS."`.`withdrawn` = 0)) AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
+          LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           $where";
 $qorder = "ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 
