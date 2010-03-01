@@ -58,7 +58,18 @@
 		  <p class="info-label">Notes<br />
 		  <textarea name="notes" size="48" /></textarea>
 		  </p>
-
+		<p class="info-label">Invite<br />
+			<input type="text" name="invite" class="invite" />
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$('.invite').autocomplete('getUsersForAutocomplete.php', {
+						multiple: true,
+						multipleSeparator: ', '
+					});
+				});
+			</script>
+			<small>Invite someone to do this job. (Comma-separated list of developers.)</small>
+		</p>
 			<p class="info-label">Attached Files <br />
 				<div id="accordion">
 				    <h3><a href="#">Images (<span id="imageCount">0</span>)</a></h3>

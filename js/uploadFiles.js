@@ -61,7 +61,8 @@
 		function editable() {
 			$('.edittextarea').editable('jsonserver.php', { 
 				indicator: 'Saving ...',
-				tooltip: 'Click to edit ...', 
+				tooltip: 'Click to change the title ...', 
+				placeholder: 'Click to add note',
 				type: 'text',
 				submit: 'OK',
 				submitdata: function(value, settings) {
@@ -75,7 +76,8 @@
 			});
 			$('.edittext').editable('jsonserver.php', { 
 				indicator: 'Saving ...',
-				tooltip: 'Click to edit ...', 
+				tooltip: 'Click to change the note ...', 
+				placeholder: 'Add title',
 				type: 'text',
 				submit: 'OK',
 				submitdata: function(value, settings) {
