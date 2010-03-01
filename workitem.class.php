@@ -174,7 +174,7 @@ WHERE id = ' . (int)$id;
     protected function insert()
     {
         $query = '
-INSERT INTOP ' .WORKLIST. ' (
+INSERT INTO ' .WORKLIST. ' (
     summary,
     creator_id,
     owner_id,
