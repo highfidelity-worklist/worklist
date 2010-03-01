@@ -66,6 +66,8 @@ if(isset($_SESSION['username']) and isset($_SESSION['confirm_string']) and $_SES
     }
 }
 
+// XSS scripting fix
+$redir = strip_tags(!empty($_REQUEST['redir'])?$_REQUEST['redir']:(!empty($_REQUEST['reauth'])?$_REQUEST['reauth']:''));
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -107,7 +109,7 @@ include("head.html"); ?>
         <? } ?>
         
         <form id="login" action="" method="post" >
-                <input type="hidden" name="redir" value="<?php echo addslashes(!empty($_REQUEST['redir'])?$_REQUEST['redir']:(!empty($_REQUEST['reauth'])?$_REQUEST['reauth']:''))?>" />
+                <input type="hidden" name="redir" value="<?php echo $redir ?>" />
 
                 <div class="LVspace">
                 <label>Username<br />
