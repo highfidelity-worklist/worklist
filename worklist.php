@@ -4,6 +4,7 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
+
 ini_set('display_errors', 1);
 error_reporting(-1);
 
