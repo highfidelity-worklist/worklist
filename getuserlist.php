@@ -66,8 +66,8 @@ if( $active == 'FALSE' )	{
 	LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `".WORKLIST."` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id` 
 	LEFT JOIN (SELECT `bidder_id`, COUNT(`bidder_id`) AS `count` FROM `".BIDS."` GROUP BY `bidder_id`) AS `bids_placed` ON `".USERS."`.`id` = `bids_placed`.`bidder_id` 
 	LEFT JOIN (SELECT `bidder_id`, COUNT(`bidder_id`) AS `count` FROM `".BIDS."` WHERE `accepted` = 1 GROUP BY `bidder_id`) AS `bids_accepted` ON `".USERS."`.`id` = `bids_accepted`.`bidder_id`  
-	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
-	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
+	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 AND `withdrawn`=0 GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
+	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 AND `withdrawn`=0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
 	WHERE `nickname` REGEXP '^$letter'  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }	else if( $active == 'TRUE' )	{
 	$query = "
@@ -86,8 +86,8 @@ if( $active == 'FALSE' )	{
 	LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `".WORKLIST."` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id` 
 	LEFT JOIN (SELECT `bidder_id`, COUNT(`bidder_id`) AS `count` FROM `".BIDS."` GROUP BY `bidder_id`) AS `bids_placed` ON `".USERS."`.`id` = `bids_placed`.`bidder_id` 
 	LEFT JOIN (SELECT `bidder_id`, COUNT(`bidder_id`) AS `count` FROM `".BIDS."` WHERE `accepted` = 1 GROUP BY `bidder_id`) AS `bids_accepted` ON `".USERS."`.`id` = `bids_accepted`.`bidder_id`  
-	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
-	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
+	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 AND `withdrawn`=0 GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
+	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 AND `withdrawn`=0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
 	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `nickname` REGEXP '^$letter'  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }
 
