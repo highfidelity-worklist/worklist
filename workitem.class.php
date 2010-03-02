@@ -297,7 +297,7 @@ UPDATE '.WORKLIST.' SET
 
     public function getOwnerSummary($worklist_id)
     {
-        $query = "SELECT `username`,`is_runner`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$worklist_id;
+        $query = "SELECT `users`.`id` as id, `username`,`is_runner`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$worklist_id;
         $result_query = mysql_query($query);
         return $result_query ? mysql_fetch_assoc($result_query) : null ;
     }

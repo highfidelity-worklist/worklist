@@ -15,6 +15,7 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 include_once("update_status.php");
+include_once("workitem.class.php");
 
 if(!isset($_SESSION['sfilter']))
 $_SESSION['sfilter'] = 'BIDDING';
@@ -27,6 +28,7 @@ $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $journal_message = '';
 
+$workitem = new WorkItem();
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
@@ -132,7 +134,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $bid_id = mysql_insert_id();
 
     //sending email to the owner of worklist item
-    $rt = mysql_query("SELECT `id`, `username`,`is_runner`, `summary` FROM `".USERS."` u, `worklist` WHERE `worklist`.`creator_id` = `u`.`id` AND `worklist`.`id` = ".$itemid);
+    $rt = mysql_query("SELECT `u`.`id`, `username`,`is_runner`, `summary` FROM `".USERS."` u, `worklist` WHERE `worklist`.`creator_id` = `u`.`id` AND `worklist`.`id` = ".$itemid);
     $row = mysql_fetch_assoc($rt);
     $summary = $row['summary'];
     $subject = "new bid: $summary";
@@ -144,13 +146,13 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $body .= "Notes: ".$notes."</p>";
     $urlacceptbid = '';
     if ($row['is_runner']==1) {
-        $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
-        $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
-        $body .= $urlacceptbid;
+      $urlacceptbid = SERVER_URL.'workitem.php?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid';
+      $body .= '<br><a href="'.$urlacceptbid.'">Click here to accept bid</a>';
     }
     $body .= "<p>Love,<br/>Worklist</p>";
     sl_send_email($row['username'], $subject, $body);
-    sl_notify_sms_by_id($row['id'], $subject, "${bid_amount}\n${urlacceptbid}");
+    $workitem->loadById($itemid);
+    sl_notify_sms_by_id($workitem->getOwnerId(), $subject, "$${bid_amount}\n${urlacceptbid}");
 
     // Journal notification
     $journal_message .= "A bid of \${$bid_amount} was placed on item #$itemid: $summary.";

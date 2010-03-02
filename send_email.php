@@ -63,7 +63,7 @@ function sl_notify_sms_by_id($user_id, $smssubject, $smsbody)
     {
 	sl_notify_sms_by_object($phone_info, $smssubject, $smsbody);
     } else {
-	error_log("sl_notify_sms_by_id: Query '$sql' failed. Not sending SMS");
+	error_log("sl_notify_sms_by_id: Query '$sql' failed. Not sending SMS. ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
     }
 }
 

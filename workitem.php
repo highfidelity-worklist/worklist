@@ -147,18 +147,20 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
 
     // Journal notification
-    $journal_message .= "A bid of \${$bid_amount} was placed on item #$worklist_id: $summary.";
+    $journal_message = "A bid of \${$bid_amount} was placed on item #$worklist_id: $summary.";
 
     //sending email to the owner of worklist item
     $row = $workitem->getOwnerSummary($worklist_id);
     if(!empty($row)) {
+	$id = $row['id'];
         $summary = $row['summary'];
         $username = $row['username'];
         $ownerIsRunner = $row['is_runner'];
     }
 
     sendMailToOwner($worklist_id, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $ownerIsRunner);
-    sl_notify_sms_by_id($_SESSION['userid'], 'Bid placed', $journal_message);
+    $workitem->loadById($worklist_id);
+    sl_notify_sms_by_id($workitem->getOwnerId(), 'Bid placed', $journal_message); 
 
     $redirectToDefaultView = true;
 }
@@ -170,7 +172,9 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
-    $journal_message .= AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id);
+    $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id);
+    $workitem->loadById($_POST['itemid']);
+    sl_notify_sms_by_id($workitem->getOwnerId(), 'Fee added', $journal_message);
     $redirectToDefaultView = true;
 }
 
