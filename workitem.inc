@@ -268,17 +268,14 @@ var documentsArray = new Array();
 	  });
 <?php } ?>
 
-	  if(already_bid){
-	    $('#bid').click(function(e){
-		if (!confirm("You have already placed a bid, do you want to place a new one?"))
-	      {
-		  $('#popup-bid').dialog('close');
-		  return false;
-	      }
-
-	    });
-	  }
-
+        $('#bid').click(function(e){
+            if (   already_bid
+                && $(this).parent().find('#mechanic_id').val() == '<?php echo $_SESSION['userid'] ?>'
+                && !confirm("You have already placed a bid, do you want to place a new one?")) {
+                $('#popup-bid').dialog('close');
+                return false;
+            }
+        });
 
   });
 

@@ -9,12 +9,12 @@ include("functions.php");
 require 'workitem.class.php';
 
 $blankbid = array('id' => 0,
-				  'bidder_id' => 0,
-				  'worklist_id' => 0,
-				  'email' => '*not displayed*',
-				  'bid_amount' => '0',
-				  'done_by' => '',
-				  'notes' => '',
+	'bidder_id' => 0,
+	'worklist_id' => 0,
+	'email' => '*name hidden*',
+	'bid_amount' => '0',
+	'done_by' => '',
+	'notes' => '',
 );
 $blankjson = json_encode($blankbid);
 

@@ -147,14 +147,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
 
     // Journal notification
-    if($mechanic_id == $_SESSION['userid'])
-    {
-        $journal_message .= $_SESSION['nickname'] . " bid \${$bid_amount} on item #$worklist_id: {$summary}. ";
-    }
-    else
-    {
-        $journal_message .= $_SESSION['nickname'] . " on behalf of {$nickname} added a bid of \${$bid_amount} on item #$worklist_id: {$summary}. ";
-    }
+    $journal_message .= "A bid of \${$bid_amount} was placed on item #$worklist_id: $summary.";
 
     //sending email to the owner of worklist item
     $row = $workitem->getOwnerSummary($worklist_id);
