@@ -1,8 +1,7 @@
 <?php $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
   $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
   $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-  $flag = !$is_runner ? "disabled" : "";     //if user is a runner - allow to set funded
-  $statusList = array("BIDDING","WORKING","DONE","SKIP");
+  $statusList = array("SUGGESTED", "BIDDING","WORKING","DONE","SKIP");
   $allowEdit = false;
   if(($is_runner || $worklist['owner_id'] == $user_id)) {
       $allowEdit = true;
@@ -300,7 +299,6 @@ var documentsArray = new Array();
 
   function saveWorkitem() {
       var summary = $('#summary').val();
-      var funded = $('#funded').val();
       var status = $('#status').val();
       var notes = $('#edit-notes').val();
       $('#workitem-form').submit();
@@ -357,10 +355,10 @@ var documentsArray = new Array();
 	    </li>
 	    <li>
 	    <span class="info-label">Status</span>
-	      <?php if ($is_runner || $worklist['owner_id'] == $user_id):  ?>
+	      <?php if ($is_runner):  ?>
 		<select id="status" name="status">
 		<?php foreach($statusList as $status): ?>
-		    <option value="<?php echo $status; ?>" <?=$status==$worklist['status']?' selected = "selected"' : '';?> ><?php echo $status; ?></option>
+		    <option value="<?php echo $status; ?>" <?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
 		<?php endforeach;?>
 		</select>
 		<?php else: ?>
@@ -368,10 +366,6 @@ var documentsArray = new Array();
 		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
 		<?php endif;?>
 	      </li>
-		<li>
-		<span class="info-label">Funded</span>
-		  <input type="checkbox" name="funded" id="funded" <?=$worklist['funded']==1?" checked " : "";?>  <?php echo $flag; ?>/>
-		</li>
 	      </li>
 		<li>
 		<span class="info-label">Owner</span>
@@ -406,10 +400,6 @@ var documentsArray = new Array();
 		  <?php echo $worklist['status'];?>
 		  <input type="hidden" id="status" name="status" value = "BIDDING" />
 	   </li>
-		<li>
-		<span class="info-label">Funded</span>
-		  <?=$worklist['funded']==1?" Yes " : "No";?>
-		</li>
 	      </li>
 		<li>
 		<span class="info-label">Owner</span>

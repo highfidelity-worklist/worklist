@@ -59,12 +59,6 @@ if($action =='save_workitem') {
         $$arg = $_POST[$arg];
     }
 
-    // funded
-    $funded = 0;
-    if ($is_runner){
-        $funded = isset($_POST['funded']) ? 1 : 0;
-    }
-
     // code to add specifics to journal update messages
     $new_update_message='';
 
@@ -74,7 +68,7 @@ if($action =='save_workitem') {
         $new_update_message .= "Summary changed";
     }
     // status
-    if ($is_runner || $workitem->getOwnerId() == $user->getId()) {
+    if ($is_runner) {
         if ($workitem->getStatus() != $status && !empty($status)){
             $workitem->setStatus($status);
             if (!empty($new_update_message)){  // add commas where appropriate
@@ -89,18 +83,6 @@ if($action =='save_workitem') {
             $new_update_message .= ", ";
         }
         $new_update_message .= "Notes changed";
-    }
-    if ($is_runner && $workitem->getFunded() != $funded){
-        $workitem->setFunded($funded);
-        if (!empty($new_update_message)){  // add commas where appropriate
-            $new_update_message .= ", ";
-        }
-        if ($funded=="1"){
-            $funded_message="YES";
-        }else{
-            $funded_message="NO";
-        }
-        $new_update_message .= "Funding set to $funded_message";
     }
     if (empty($new_update_message)){
         $new_update_message = " No changes.";

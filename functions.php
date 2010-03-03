@@ -137,7 +137,7 @@ function GetUserList($userid, $nickname)
  */
 function DisplayFilter($filter_name)
 {
-    $status_array = array('ALL', 'WORKING','BIDDING', 'SKIP', 'DONE');
+    $status_array = array('ALL', 'SUGGESTED', 'WORKING','BIDDING', 'SKIP', 'DONE');
 
     require_once 'lib/Worklist/Filter.php';
     $WorklistFilter = new Worklist_Filter();

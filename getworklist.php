@@ -32,13 +32,9 @@ $ufilter = intval($_REQUEST["ufilter"]);
 
 $where = '';
 $unpaid_join = '';
-$orderby = '';
 if (!empty($sfilter)) {
     $where = "where (";
     foreach ($sfilter as $val) {
-        if ($val == 'BIDDING') {
-            $orderby = 'funded DESC,';
-        }
 
         $val = strtoupper(mysql_real_escape_string($val));
         if ($val == 'ALL') {
@@ -148,7 +144,6 @@ $qsel  = "SELECT DISTINCT
     `".WORKLIST."`.`id`,
     `summary`,
     `status`,
-    `funded`,
     `ou`.`nickname`,
     `ou`.`username`,
     `mu`.`nickname` as mechanic_nickname,
@@ -175,8 +170,7 @@ $qbody = "FROM `".WORKLIST."`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           $where";
-$qorder = "ORDER BY $orderby `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
-error_log($qorder);
+$qorder = "ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {
@@ -211,8 +205,7 @@ for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
          9 => $row['mechanic_nickname'],
         10 =>$row['mechanic_username'],
         11 => $row['bid_count'],
-        12 => $row['bid_done'],
-        13 => $row['funded']);
+        12 => $row['bid_done']);
 }
 
 $json = json_encode($worklist);

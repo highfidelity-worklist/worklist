@@ -33,11 +33,6 @@ $workitem = new WorkItem();
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
-    if(isset($_POST['funded']) && $is_runner){
-        $funded = mysql_real_escape_string($_POST['funded']) == 'on'? 1 :0;
-    }else{
-        $funded = 0;
-    }
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -55,14 +50,11 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
     if (!empty($_POST['itemid'])) {
         $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id', ".
             "status='$status',  notes='$notes'";
-        if($is_runner) {
-            $query .= " , funded='$funded' ";
-        }
         $query .= " where id='$itemid'";
         $journal_message .= $_SESSION['nickname'] . " updated ";
     } else {
-        $query = "insert into ".WORKLIST." ( summary, creator_id, owner_id, status, funded, notes, created ) ".
-            "values ( '$summary', '$creator_id', '$owner_id', '$status', '$funded', '$notes', now() )";
+        $query = "INSERT INTO `".WORKLIST."` ( `summary`, `creator_id`, `owner_id`, `status`, `notes`, `created` ) ".
+            "VALUES ( '$summary', '$creator_id', '$owner_id', '$status', '$notes', NOW() )";
         $journal_message .= $_SESSION['nickname'] . " added ";
     }
 
@@ -361,15 +353,6 @@ include("head.html"); ?>
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
         pre = '';
         post = '';
-
-	var funded = "";
-	if(json[13] == 0){
-	  funded = "No";
-	}
-        else{
-  	  funded = "Yes";
-	}
-	row += '<td width="5%">' + pre + funded + post + '</td>';
 
         if (json[3] != '') {
 	    var who = json[3];
@@ -685,7 +668,7 @@ include("head.html"); ?>
 	$('#for_view').hide();
         $('.popup-body form input[type="text"]').val('');
 	$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
-        $('.popup-body form select option[index=0]').attr('selected', 'selected');
+        $('.popup-body form select option[index=1]').attr('selected', 'selected');
         $('.popup-body form textarea').val('');
     }
 
@@ -1239,7 +1222,6 @@ include("head.html"); ?>
         <tr class="table-hdng">
             <td>Summary</td>
             <td>Status</td>
-            <td>Funded</td>
             <td>Who</td>
             <td>When</td>
             <td class="worklist-fees">Fees/Bids</td>

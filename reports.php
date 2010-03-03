@@ -138,21 +138,16 @@ function fmtDate2(d) {
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += '">';
-        row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[6] + '" class="workitem-paid" /></td>';
+        row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[5] + '" class="workitem-paid" /></td>';
 	pre = '<a href="workitem.php?job_id='+json[0]+'">';
 	post = '</a>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
 	pre = '', post = '';
         row += '<td>' + pre + json[2] + post + '</td>'; // Summary
         row += '<td>' + pre + json[3] + post + '</td>'; // Description
-	var funded = 'No';
-	if(json[4] == 1) {
-	     funded = 'Yes' ;
-	}
-        row += '<td>' + pre + funded+ post + '</td>'; // Funded Flag
-        row += '<td>' + pre + formatValueForDisplay(json[5]) + post + '</td>'; // Payee
-        row += '<td>' + pre + formatValueForDisplay(json[7]) + post + '</td>'; // Paid Date
-        row += '<td>' + pre + '$' + json[6] + post + '</td>'; // Amount
+        row += '<td>' + pre + formatValueForDisplay(json[4]) + post + '</td>'; // Payee
+        row += '<td>' + pre + formatValueForDisplay(json[6]) + post + '</td>'; // Paid Date
+        row += '<td>' + pre + '$' + json[5] + post + '</td>'; // Amount
         row += '</tr>';
 
         $('.table-worklist tbody').append(row);
@@ -375,9 +370,8 @@ function fmtDate2(d) {
                 <td width="7%">ID</td>
                 <td width="35%">Summary</td>
                 <td width="25%">Description</td>
-                <td width="5%">Funded</td>
                 <td width="12%">Payee</td>
-                <td width="8%">Paid Date</td>
+                <td width="13%">Paid Date</td>
                 <td width="5%">Fee</td>
             </tr>
             </thead>

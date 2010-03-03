@@ -19,7 +19,6 @@ class WorkItem
     protected $ownerId;
     protected $status;
     protected $notes;
-    protected $funded;
 
     public function __construct($id = null)
     {
@@ -52,8 +51,7 @@ SELECT
     w.summary,
     w.owner_id,
     w.status,
-    w.notes,
-    w.funded
+    w.notes
 FROM  ".WORKLIST. " as w
 WHERE w.id = '" . (int)$id . "'";
         $res = mysql_query($query);
@@ -68,8 +66,7 @@ WHERE w.id = '" . (int)$id . "'";
              ->setSummary($row['summary'])
              ->setOwnerId($row['owner_id'])
              ->setStatus($row['status'])
-             ->setNotes($row['notes'])
-             ->setFunded($row['funded']);
+             ->setNotes($row['notes']);
         return true;
     }
 
@@ -153,24 +150,6 @@ WHERE id = ' . (int)$id;
         return $this->notes;
     }
 
-    public function setFunded($funded)
-    {
-        if ($funded === null) {
-            $this->funded = null;
-        } else {
-            $this->funded = (boolean)$funded;
-        }
-        return $this;
-    }
-
-    public function getFunded()
-    {
-        if ($this->funded === null) {
-            return null;
-        }
-        return (int)$this->funded;
-    }
-
     protected function insert()
     {
         $query = '
@@ -179,7 +158,6 @@ INSERT INTO ' .WORKLIST. ' (
     creator_id,
     owner_id,
     status,
-    funded,
     notes,
     created )
 VALUES (
@@ -187,7 +165,6 @@ VALUES (
         ' . mysql_real_escape_string($this->getCreatorId()) . ',
         ' . mysql_real_escape_string($this->getOwnerId()) . ',
         ' . mysql_real_escape_string($this->getStatus()) . ',
-        ' . mysql_real_escape_string($this->getFunded()) . ',
         ' . mysql_real_escape_string($this->getNotes()) . ',
         NOW()
 )';
@@ -201,9 +178,6 @@ UPDATE '.WORKLIST.' SET
     summary= "'. mysql_real_escape_string($this->getSummary()).'",
     notes="'.mysql_real_escape_string($this->getNotes()).'",
     status="' .mysql_real_escape_string($this->getStatus()).'" ';
-        if($this->getFunded() !== null) {
-            $query .= ' ,funded='. mysql_real_escape_string($this->getFunded());
-        }
 
         $query .= ' WHERE id='.$this->getId();
         return mysql_query($query) ? 1 : 0;
@@ -224,7 +198,7 @@ UPDATE '.WORKLIST.' SET
      */
     public function getWorkItem($worklist_id)
     {
-        $query = "SELECT w.id, w.summary,w.owner_id, u.nickname, w.status, w.notes, w.funded
+        $query = "SELECT w.id, w.summary,w.owner_id, u.nickname, w.status, w.notes
 			  FROM  ".WORKLIST. " as w
 			  LEFT JOIN ".USERS." as u ON w.owner_id = u.id
 			  WHERE w.id = '$worklist_id'";
@@ -302,12 +276,9 @@ UPDATE '.WORKLIST.' SET
         return $result_query ? mysql_fetch_assoc($result_query) : null ;
     }
 
-    public function updateWorkItem($worklist_id, $summary, $notes, $status, $funded)
+    public function updateWorkItem($worklist_id, $summary, $notes, $status)
     {
         $query = 'UPDATE '.WORKLIST.' SET summary= "'.$summary.'", notes="'.$notes.'", status="' .$status.'" ';
-        if($funded !== null) {
-            $query .= ' ,funded='. $funded ;
-        }
 
         $query .= ' WHERE id='.$worklist_id;
         return mysql_query($query) ? 1 : 0;

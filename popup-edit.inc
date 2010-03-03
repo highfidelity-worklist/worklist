@@ -38,11 +38,11 @@
 
   <?php
   $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-  $flag = !$is_runner ? "disabled" : "";     //if user is a runner - allow to set funded
   if ($is_runner) {//if user is a runner - allow to change status
   ?>
 		  <p class="info-label">Status<br />
 		  <select name="status">
+		      <option value="SUGGESTED">SUGGESTED</option>
 		      <option value="BIDDING" selected = "selected" >BIDDING</option>
 		      <option value="WORKING">WORKING</option>
 		      <option value="SKIP">SKIP</option>
@@ -50,11 +50,8 @@
 		  </select>
 		  </p>
   <?php }else {?>
-		  <input type="hidden" id="status" name="status" value = "BIDDING" />    
+		  <input type="hidden" id="status" name="status" value = "SUGGESTED" />    
   <?php }?>
-<p>Funded<br />
-		  <input type="checkbox" name="funded" id="funded" <?php echo $flag; ?>/>
-</p>
 		  <p class="info-label">Notes<br />
 		  <textarea name="notes" size="48" /></textarea>
 		  </p>

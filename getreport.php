@@ -58,7 +58,7 @@ if($paidStatusFilter) {
 }
 
 $qcnt  = "SELECT count(*)";
-$qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,`worklist`.`funded`,  `worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`";
+$qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,  `worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`";
 $qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
 $qbody = " FROM `".FEES."`
            INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
@@ -91,7 +91,7 @@ $report = array(array($items, $page, $cPages,$pageSum));
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
 {
-    $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['funded'], $row['payee'], $row['amount'], $row['paid_date']);
+    $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date']);
 }
 
 $json = json_encode($report);
