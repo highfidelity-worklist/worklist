@@ -32,9 +32,14 @@ $ufilter = intval($_REQUEST["ufilter"]);
 
 $where = '';
 $unpaid_join = '';
+$orderby = '';
 if (!empty($sfilter)) {
     $where = "where (";
     foreach ($sfilter as $val) {
+        if ($val == 'BIDDING') {
+            $orderby = 'funded DESC,';
+        }
+
         $val = strtoupper(mysql_real_escape_string($val));
         if ($val == 'ALL') {
             $where .= "1 or ";
@@ -170,7 +175,8 @@ $qbody = "FROM `".WORKLIST."`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           $where";
-$qorder = "ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
+$qorder = "ORDER BY $orderby `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
+error_log($qorder);
 
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {
