@@ -54,13 +54,13 @@ $redirectToDefaultView = false;
 if($action =='save_workitem') {
 
     $workitem->loadById($worklist_id);
-    $args = array('summary','notes', 'funded', 'status');
+    $args = array('summary','notes', 'status');
     foreach ($args as $arg) {
         $$arg = $_POST[$arg];
     }
 
     // funded
-    $funded = null;
+    $funded = 0;
     if ($is_runner){
         $funded = isset($_POST['funded']) ? 1 : 0;
     }
@@ -90,7 +90,7 @@ if($action =='save_workitem') {
         }
         $new_update_message .= "Notes changed";
     }
-    if ($workitem->getFunded() != $funded && !empty($funded)){
+    if ($is_runner && $workitem->getFunded() != $funded){
         $workitem->setFunded($funded);
         if (!empty($new_update_message)){  // add commas where appropriate
             $new_update_message .= ", ";
