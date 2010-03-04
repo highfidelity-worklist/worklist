@@ -668,7 +668,7 @@ include("head.html"); ?>
 	$('#for_view').hide();
         $('.popup-body form input[type="text"]').val('');
 	$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
-        $('.popup-body form select option[index=1]').attr('selected', 'selected');
+        $('.popup-body form select option[value=\'BIDDING\']').attr('selected', 'selected');
         $('.popup-body form textarea').val('');
     }
 
