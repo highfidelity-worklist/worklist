@@ -378,8 +378,6 @@ function withdrawBid($bid_id) {
                                     WHERE `worklist_id` = ' . $bid->worklist_id . '
                                     AND `user_id` = ' . $bid->bidder_id . '
                                     AND `bid_id` = ' . $bid->id);
-        // Get worklist item
-        $worklistItem = getWorklistById($bid->worklist_id);
 
         // Get user
         $user = getUserById($bid->bidder_id);
@@ -414,8 +412,9 @@ function deleteFee($fee_id) {
 	    							SET `withdrawn` = 1
 			            			WHERE `id` = ' . $fee_id);
 
-        // Get worklist item
-        $worklistItem = getWorklistById($fee->worklist_id);
+        // Get worklist item summary
+        $summary = getWorkItemSummary($fee->worklist_id);
+        
 
         // Get user
         $user = getUserById($fee->user_id);
@@ -424,7 +423,7 @@ function deleteFee($fee_id) {
         $message  = $_SESSION['nickname'] . ' withdrawing the fee from ';
         $message .= $user->nickname . ' on item #';
         $message .= $fee->worklist_id . ': ';
-        $message .= $worklistItem->summary . '. ';
+        $message .= $summary . '. ';
 
         // Journal notification
         sendJournalNotification($message);
@@ -459,7 +458,7 @@ function getWorklistById($id) {
     $query = "select * from ".WORKLIST." where id='$id'";
     $rt = mysql_query($query);
     if ($rt && (mysql_num_rows($res) == 1)) {
-        return mysql_fetch_object($rt);
+        return mysql_fetch_assoc($rt);
     }
     return false;
 }
