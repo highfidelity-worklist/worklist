@@ -9,33 +9,30 @@
                 <input type="text" name="phone" id="phone" size="35" value="<?php echo $phone ?>" />
                 </label><br/>
                 <em id="phone_helper">
-<?php if (!empty($smsaddr))
-{
-?>
-Your bid updates will be sent to <?php echo $smsaddr ?></em>
-<?php
+<?php 
+if (!empty($smsaddr))	{
+	echo 'Your bid updates will be sent to '.$smsaddr.'</em>';
 } else {
-?>
-Receive bid updates as text messages on your phone.</em>
-<?php
+	echo 'Receive bid updates as text messages on your phone.</em>';
 }
 ?>
                 </p>
 
-                <div id="sms" <?php echo (empty($phone)?'style="display:none"':'') ?>>
+                <div id="sms" >
 
                     <div id="sms-country">
                         <p><label>Country<br />
                         <select id="country" name="country" style="width:274px">
-                            <?php if (empty($country)) { ?>
-                            <option value="" selected></option>
-                            <?php } ?>
-                            <?php foreach ($countrylist as $code=>$cname) {
-                                  if (isset($smslist[$code])) { ?>
-                            <option value="<?php echo $code ?>" <?php echo ($code == $country ? "selected" : "") ?>><?php echo $cname ?></option>
-                            <?php } 
-                                  } ?>
-                            <option value="--" <?php echo ($country == '--' ? "selected" : "") ?>>(Other)</option>
+                            <?php
+							$selected = $code == $country ? "selected" : "";
+							if (empty($country)) {
+								echo '<option value="" selected></option>';
+                            }
+                            foreach ($countrylist as $code=>$cname) {
+								echo '<option value="'.$code.'" '.$selected.'>'.$cname.'</option>';
+							}
+                            echo '<option value="--" '.$selected.'>(Other)</option>';
+							?>
                         </select>
                         </label><br/>
                         </p>
