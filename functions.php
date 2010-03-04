@@ -354,10 +354,10 @@ function withdrawBid($bid_id) {
     if (is_runner() || ($bid->bidder_id == $_SESSION['userid'])) {
         // getting the job
         $res = mysql_query('SELECT * FROM `' . WORKLIST . '` WHERE `id` = ' . $bid->worklist_id);
-        $job = mysql_fetch_object($res);
+        $job = mysql_fetch_assoc($res);
 
         // additional changes if status is WORKING
-        if ($job->status == 'WORKING') {
+        if ($job['status'] == 'WORKING') {
             // change status of worklist item
 
             mysql_unbuffered_query("UPDATE `" . WORKLIST . "`
@@ -387,8 +387,8 @@ function withdrawBid($bid_id) {
         // Journal message
         $message  = $_SESSION['nickname'] . ' withdrew a bid of ';
         $message .= $bid->bid_amount . ' on item #';
-        $message .= $job->id . ': ';
-        $message .= $job->summary . '.';
+        $message .= $job['id'] . ': ';
+        $message .= $job['summary'] . '.';
 
         // Journal notification
         sendJournalNotification($message);
