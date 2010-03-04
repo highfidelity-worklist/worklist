@@ -82,7 +82,7 @@ SELECT *, @rownum := @rownum+1 AS position FROM `".WORKLIST."` WHERE `status` = 
 	$data = array();
 	$data['user'] = JOURNAL_API_USER;
 	$data['pwd'] = sha1(JOURNAL_API_PWD);
-	$data['message'] = $_SESSION['nickname'] . " moved \"$summary\" from position $origpos to position $newpos";
+	$data['message'] = $_SESSION['nickname'] . " moved #$id: $summary from position $origpos to position $newpos";
 	$prc = postRequest(JOURNAL_API_URL, $data);
     }
 
