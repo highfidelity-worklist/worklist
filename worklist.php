@@ -793,6 +793,9 @@ include("head.html"); ?>
 
 
 //code for fees table
+    // !!!
+    // !!! This code is duplicated in workitem.inc
+    // !!!
     function GetFeelist(worklist_id) {
     $.ajax({
         type: "POST",

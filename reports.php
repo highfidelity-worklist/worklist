@@ -112,7 +112,7 @@ function fmtDate2(d) {
 
     function AppendPagination(page, cPages, table)
     {
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="8" style="text-align:center;">Pages : &nbsp;';
+        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="7" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) { 
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;'; 
         } 
@@ -172,7 +172,7 @@ function fmtDate2(d) {
     */
     function AppendPageTotal(pageTotal) {
         row =  '<tr class="row-worklist-live rowodd">'+
-                '   <td colspan="7" align="center">Page Total </td>' +
+                '   <td colspan="6" align="center">Page Total </td>' +
                 '   <td align="center">'+ '$' + pageTotal +'</td>' +
                 '</tr>';
         $('.table-worklist tbody').append(row);
