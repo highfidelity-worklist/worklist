@@ -14,6 +14,7 @@ include("functions.php");
 if (!checkReferer()) die;
 
 $q = mysql_real_escape_string(strtolower($_GET["q"]));
+$byuser = empty($_GET["nnonly"]) ? "or lower(username) like '$q%'" : "";
 
 if (!$q) return;
 $isemail = (strpos($q, '@') !== false);
@@ -23,7 +24,7 @@ if (empty($limit)) $limit = 8;
 $con=mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME,$con);
 
-$query = "select distinct(nickname) from ".USERS." where lower(nickname) like '$q%' or lower(username) like '$q%'".
+$query = "select distinct(nickname) from ".USERS." where lower(nickname) like '$q%' $byuser".
          "order by nickname asc limit ".$limit;
 $result = mysql_query($query);
 

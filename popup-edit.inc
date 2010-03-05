@@ -59,9 +59,10 @@
 			<input type="text" name="invite" class="invite" />
 			<script type="text/javascript">
 				$(document).ready(function() {
-					$('.invite').autocomplete('getUsersForAutocomplete.php', {
+					$('.invite').autocomplete('getusers.php', {
 						multiple: true,
-						multipleSeparator: ', '
+						multipleSeparator: ', ',
+						extraParams: { nnonly: 1 }
 					});
 				});
 			</script>

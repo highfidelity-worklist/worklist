@@ -9,11 +9,12 @@ ob_start();
 
 include("config.php");
 include("class.session_handler.php");
+include("check_session.php");
 include_once("functions.php");
 include_once("send_email.php");
 
 /* This page is only accessible to runners. */
-if (empty($_SESSION['userid']) || (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']))) {
+if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer'])) {
     header("location:worklist.php");
     return;
 }
