@@ -19,6 +19,7 @@ mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME);
 
 $fields_to_htmlescape = array(
+				'paypal_email' => '',
 				'contactway' => '', 
 				'payway' => '', 
 				'skills' => '', 
@@ -37,6 +38,7 @@ $fields_to_not_escape = array(
 				'sign_up' => '', 
 				'phone_edit' => '',
 				'confirm' => '',
+				'paypal' => '',
 				'is_uscitizen' => '',
 				'about' => '', 
 			);
@@ -75,8 +77,6 @@ if(isset($minimal_POST['sign_up'])){
 
       //echo mysql_num_rows($res); exit;
       if(!$res || !mysql_num_rows($res)){
-  //Array ( [nickname] => Proverko [username] => testo@testo.com [password] => proverko [confirmpassword] => proverko [about] => I'm a good guy :) [contactway] => PayPal [payway] => Cash :) [skills] => php, coldfusion, python [timezone] => +0100 [Sign_Up] => Sign Up ) 
-	  
 	  $minimal_POST = array_merge($minimal_POST, array_map('htmlspecialchars', array_intersect_key($minimal_POST, $fields_to_htmlescape)));
 	  unset($minimal_POST['confirmpassword']);
 	  unset($minimal_POST['phone_edit']);
@@ -85,6 +85,7 @@ if(isset($minimal_POST['sign_up'])){
 	  $values_for_db['password'] = sha1($values_for_db['password']);
 	  $values_for_db['confirm'] = (!empty($minimal_POST['confirm']) && $minimal_POST['confirm'] == base64_encode(sha1(SALT.$to))) ? 1 : 0;
 	  $values_for_db['confirm_string'] = rand();
+      if (!$values_for_db['paypal']) $values_for_db['paypal_email'] = '';
 	  //$values_for_db['added'] = 'NOW()'; <-- need this if we don't change the schema to use CURRENT_TIMESTAMP
 	  /*
 	  $res = mysql_query("INSERT INTO `".USERS."` ( `username`, `password`, `added`, `nickname`, `about`, `contactway`, `payway`, `skills`, `timezone`, `confirm`, `confirm_string`, `phone`, `country-iso`, `smsaddr`  ) ".
@@ -126,11 +127,6 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/userinfo.js"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/sendlove.js"></script>
-<script type="text/javascript">
-
-
-
-</script>
 
 <title>Worklist | Sign Up to the Worklist</title>
 </head>
@@ -185,12 +181,22 @@ include("head.html"); ?>
 
 <?php include("sms-inc.php"); ?>
 
-		<div class="LVspace">
-			<p>
-				<label for="uscitizen">Are you a US citizen?</label><br />
-				<input type="checkbox" id="uscitizen" name="is_uscitizen" <?php echo((isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) ? 'checked="checked" ' : ''); ?> />
-			</p>
-		</div>
+            <div class="LVspacelg" style="height:88px">
+            <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo !empty($_POST['paypal']) ? 'checked':''; ?> /><label>&nbsp;Paypal is available in my country</label><br/><br/>
+            <label>Paypal Email<br />
+            <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />   
+            </label>
+            </div>
+            <script type="text/javascript">
+            var username = new LiveValidation('username', {validMessage: "Valid email address."});
+            username.add( Validate.Email );
+            username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+            </script>
+
+            <div class="LVspace">
+            <p><label for="uscitizen">Are you a US citizen?</label><br />
+            <input type="checkbox" id="uscitizen" name="is_uscitizen" <?php echo((isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) ? 'checked="checked" ' : ''); ?> />
+            </p></div>
             <div class="LVspace"><p>
             <label>Password *<br />
             <input type="password" id="password" name="password" class="text-field" size="35" />
@@ -210,6 +216,7 @@ include("head.html"); ?>
                  var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
                  confirmpassword.add(Validate.Confirmation, { match: 'password'} ); 
             </script>
+
 	   </div><!-- end of left-col div -->
 	   <div class="right-col">
             <div class="LVspacehg">
@@ -225,21 +232,21 @@ include("head.html"); ?>
             <div class="LVspace">
 	      <p>
 	      <label for = "contactway">What is the preferred way to contact you?</label><br />
-	      <input type="text" id="contactway" name="contactway" class="text-field" size="35" value = "<?php echo isset($_POST['contactway']) ? $_POST['contactway'] : ""; ?>" />
+	      <input type="text" id="contactway" name="contactway" class="text-field" size="35" value = "<?php echo isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : ""; ?>" />
 	      </p>
 	    </div>
 
             <div class="LVspace">
 	      <p>
 	      <label for = "payway">What is the best way to pay you for the work you will do?</label><br />
-	      <input type="text" id="payway" name="payway" class="text-field" size="35" value = "<?php echo isset($_POST['payway']) ? $_POST['payway'] : ""; ?>" />
+	      <input type="text" id="payway" name="payway" class="text-field" size="35" value = "<?php echo isset($_POST['payway']) ? strip_tags($_POST['payway']) : ""; ?>" />
 	      </p>
 	    </div>
 
             <div class="LVspace">
 	      <p>
 	      <label for = "skills">Pick three skills you think are your strongest</label><br />
-	      <input type="text" id="skills" name="skills" class="text-field" size="35" value = "<?php echo isset($_POST['skills']) ? $_POST['skills'] : ""; ?>" />
+	      <input type="text" id="skills" name="skills" class="text-field" size="35" value = "<?php echo isset($_POST['skills']) ? strip_tags($_POST['skills']) : ""; ?>" />
 	      </p>
 	    </div>
 

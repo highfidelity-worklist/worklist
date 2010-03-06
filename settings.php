@@ -29,6 +29,9 @@ $errors = 0;
   }
 
 
+$paypal = isset($_POST['paypal']) ? intval($_POST['paypal']) : 0;
+$paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
+
 // check if phone was updated
 $phone_sql = '';
 if (isset($_POST['phone_edit']))
@@ -58,25 +61,29 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
         $messages[] = "Your nickname is now '$nickname'.";
 
     } 
-	//updating user info in database
-	$args = array('nickname', 'contactway', 'payway', 'skills', 'timezone');
-	foreach ($args as $arg){
-	  $$arg = mysql_real_escape_string(htmlspecialchars($_POST[$arg]));
-	}
-	// Strip out any html tags
-	$about = mysql_real_escape_string(strip_tags($_POST['about']));
 
-	if (isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) {
-		$uscitizen = 1;
-	} else {
-		$uscitizen = 0;
-	}
-	
-        $sql = 'UPDATE `'.USERS."` SET `nickname` = '${nickname}', `about` = '${about}', `contactway` = '${contactway}', `payway` = '${payway}', `skills` = '${skills}', `is_uscitizen` = $uscitizen, `timezone` = '${timezone}' ". ($phone_sql?", ${phone_sql}":'') ;
-	$sql .= "WHERE id = '${_SESSION['userid']}'";
-	mysql_unbuffered_query($sql);
+    //updating user info in database
+    $args = array('nickname', 'contactway', 'payway', 'skills', 'timezone');
+    foreach ($args as $arg){
+      $$arg = mysql_real_escape_string(htmlspecialchars($_POST[$arg]));
+    }
 
-	
+    // Strip out any html tags
+    $about = mysql_real_escape_string(strip_tags($_POST['about']));
+
+    if (isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) {
+        $uscitizen = 1;
+    } else {
+        $uscitizen = 0;
+    }
+
+    $sql = "UPDATE `".USERS."` SET `nickname`='$nickname', `about`='$about', `contactway`='$contactway', `payway`='$payway',".
+                  "`skills`='$skills', `paypal`=$paypal, `paypal_email`='$paypal_email', `is_uscitizen`=$uscitizen, `timezone`='$timezone' ".
+                  ($phone_sql?", ${phone_sql}":'');
+    $sql .= " WHERE id = '${_SESSION['userid']}'";
+error_log($sql);
+    mysql_unbuffered_query($sql);
+
     $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
     $rs = mysql_query($qry);
     if (!$rs || !($user_row = mysql_fetch_array($rs))) {
@@ -261,16 +268,28 @@ include("head.html"); ?>
                 </script>
                 </div>
 
-                <div class="LVspacelg">
+                <div class="LVspace">
                 <p><label>Re-enter New Password<br />
                 <input type="password" name="confirmpassword" id="confirmpassword" size="35" />
                 </label></p>
                 <script type="text/javascript">
-		  var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
-		  confirmpassword.add(Validate.Confirmation, { match: 'newpassword'} ); 
+                var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
+                confirmpassword.add(Validate.Confirmation, { match: 'newpassword'} ); 
                 </script>
                  </div>
                 
+                <div class="LVspacelg" style="height:88px">
+                <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo $userInfo['paypal'] ? 'checked' : '' ?>/><label>&nbsp;Paypal is available in my country</label><br/><br/>
+                <label>Paypal Email<br />
+                <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo $userInfo['paypal_email']; ?>" />   
+                </label>
+                </div>
+                <script type="text/javascript">
+                var username = new LiveValidation('username', {validMessage: "Valid email address."});
+                username.add( Validate.Email );
+                username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+                </script>
+
                 <div class="LVspacelg" style="width: 285px;">
                 <p style="display:inline;float:left;margin-right:50px;"><label>US Citizen<br />
                 <input type="checkbox" name="uscitizen" />
