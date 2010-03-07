@@ -18,7 +18,7 @@ function smsRefreshPhoneHelper()
         txt = $("#smsaddr").val();
     }
     if ($('#phone').val() != '' && txt != '') {
-        $("#phone_helper").text("Your bid updates will be sent to "+txt);
+        $("#phone_helper").html("Your bid updates will be sent to:<br/> "+txt);
     } else {
         $("#phone_helper").text("Receive bid updates as text messages on your phone.");
     }
