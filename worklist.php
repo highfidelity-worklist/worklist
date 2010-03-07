@@ -87,10 +87,8 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
         $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id);
     }
 
-} else if (isset($_SESSION['userid']) && isset($_POST['delete']) && !empty($_POST['itemid']) && $is_runner) {
-    mysql_query("delete from ".WORKLIST." where id='".intval($_POST['itemid'])."'");
-    $journal_message .= $_SESSION['nickname'] . " deleted item #" . $_POST['itemid'] . ": " . getWorkItemSummary($_POST['itemid']);
-}
+} 
+
 
 //placing a bid
 if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security make sure user is logged in to post bid
@@ -433,9 +431,9 @@ include("head.html"); ?>
             workitem = 0;
         }
         if (workitem != 0) {
-            $("#edit, #delete, #view").attr('disabled', '');
+            $("#edit, #view").attr('disabled', '');
         } else {
-            $("#edit, #delete, #view").attr('disabled', 'disabled');
+            $("#edit, #view").attr('disabled', 'disabled');
         }
     }
 
@@ -546,12 +544,10 @@ include("head.html"); ?>
 		if($(this).hasClass('rowown') || is_runner == 1){
 		  cur_user = true;
 		  $('#edit').show();
-		  $('#delete').show();
 		  $('#view').hide();
 		}else{
 		  cur_user = false;
 		  $('#edit').hide();
-		  $('#delete').hide();
 		  $('#view').show();
 		}
                 SelectWorkItem($(this));
@@ -943,7 +939,6 @@ include("head.html"); ?>
     $(document).ready(function(){
 
 	$('#popup-edit').dialog({ autoOpen: false, maxWidth: 600, width: 400 });
-	$('#popup-delete').dialog({ autoOpen: false});
 	$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 	$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
@@ -1010,29 +1005,13 @@ include("head.html"); ?>
             $('#popup-edit form input[name="itemid"]').val(workitem);
             PopulatePopup(workitem, true);
 	        $('#popup-edit').data('title.dialog', 'Edit Worklist Item');
-// 	        $('#popup-edit').dialog('open');
         });
-        $('#delete').click(function(){
-            var summary = '(No summary)';
-            for (i = 1; i <= workitems[0][0]; i++) {
-                if (workitems[i][0] == workitem) {
-                    summary = workitems[i][1];
-                    break;
-                }
-            }
 
-	    SimplePopup('#popup-delete',
-			'Delete Workitem',
-			workitem,
-			[['input', 'itemid', 'keyId', 'eval'],
-			 ['span', '#popup-delete-summary', summary] ]);
 
-	    $('#popup-delete').dialog('open');
-        });
+
         $('#view').click(function(){
             $('#popup-edit form input[name="id"]').val(workitem);
             PopulatePopup(workitem, false);
-//             $('#popup-edit').dialog('open');
         });
 
         $('.popup-body form input[type="submit"]').click(function(){
@@ -1052,7 +1031,6 @@ include("head.html"); ?>
                 ResetPopup();
                 return false;
 	        case "cancel":
-                $('#popup-delete').dialog('close');
                 $('#popup-edit').dialog('close');
                 $('#popup-paid').dialog('close');
                 return false;
@@ -1149,9 +1127,6 @@ include("head.html"); ?>
 <!-- Popup for editing/adding  a work item -->
 <?php require_once('popup-edit.inc') ?>
 
-<!-- Popup for deleting a work item -->
-<?php require_once('popup-delete.inc') ?>
-
 <!-- Popup HTML for paying a fee -->
 <?php require_once('popup-paid-html.inc') ?>
 
@@ -1183,8 +1158,6 @@ include("head.html"); ?>
 <p><input type="submit" id="add" name="add" value="Add" /> <input
     type="submit" id="edit" name="edit" value="Edit"
     <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
-<input type="submit" id="delete" name="delete" value="Delete"
-<?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
 <?php if (empty($_SESSION['is_runner'])) { ?> <input type="submit"
     id="view" name="view" value="View" disabled="disabled" /> <?php } ?>
 

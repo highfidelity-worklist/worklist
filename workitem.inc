@@ -163,7 +163,6 @@ var documentsArray = new Array();
 	      ResetPopup();
 	      return false;
 	      case "cancel":
-	      $('#popup-delete').dialog('close');
 	      $('#popup-edit').dialog('close');
 	      $('#popup-paid').dialog('close');
 	      return false;
