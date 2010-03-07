@@ -68,7 +68,7 @@ if($action =='save_workitem') {
         $new_update_message .= "Summary changed";
     }
     // status
-    if ($is_runner) {
+    if ($is_runner || ($status=="SKIP" && $workitem->getStatus()=="SUGGESTED")) {
         if ($workitem->getStatus() != $status && !empty($status)){
             $workitem->setStatus($status);
             if (!empty($new_update_message)){  // add commas where appropriate

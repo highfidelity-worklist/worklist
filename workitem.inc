@@ -360,6 +360,11 @@ var documentsArray = new Array();
 		    <option value="<?php echo $status; ?>" <?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
 		<?php endforeach;?>
 		</select>
+		<?php elseif (($worklist['owner_id'] == $user_id) && $worklist['status']=="SUGGESTED"): ?>
+                  <select id="status" name="status">
+		    <option value="SUGGESTED" selected="selected">SUGGESTED</option>
+		    <option value="SKIP">SKIP</option>
+                  </select>
 		<?php else: ?>
 		    <?php echo $worklist['status'];?>
 		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
