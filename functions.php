@@ -101,30 +101,50 @@ function isSuperAdmin() {
     }
 }
 
-
-/*    Function: GetUserList
+/*  Function: GetRewarderUserList
  *
- *     Purpose: This function return a list of confirmed users.
+ *  Purpose: return the list of rewarder users for a given user.
+ *
+ *  Parameters: userid - The userid of the user to retrieve the list for.
+ */
+function GetRewarderUserList($userid) {
+    $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, `".REWARDER."`.`rewarder_points` FROM `".REWARDER."` ".
+           "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
+           "WHERE `giver_id`='$userid' ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
+    $rt = mysql_query($sql);
+
+    $rewarderList = array();
+    while ($rt && ($row = mysql_fetch_assoc($rt))) {
+        $rewarderList[] = array($row['receiver_id'], $row['receiver_nickname'], $row['rewarder_points']);
+    }
+
+    return $rewarderList;
+}
+
+/*  Function: GetUserList
+ *
+ *  Purpose: This function return a list of confirmed users.
  *
  *  Parameters: userid - The userid of the user signed in.
  *              nickname - The nickname of the user signed in.
- *
+ *              skipUser - If true, don't include the row for the user passed in.
  */
-function GetUserList($userid, $nickname)
-{
+function GetUserList($userid, $nickname, $skipUser=false) {
     $rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$userid}' and `confirm`='1' ORDER BY `nickname`");
 
-    $user_array = array();
-    if ($userid != '') {
-        $user_array[] = array('userid' => $userid, 'nickname' => $nickname);
+    $userList = array();
+    if (!$skipUser && !empty($userid) && !empty($nickname)) {
+        $skipUser = true;
+        $userList[$userid] = $nickname;
     }
 
-    while ($row = mysql_fetch_assoc($rt))
-    {
-        $user_array[] = array('userid' => $row['id'], 'nickname' => $row['nickname']);
+    while ($rt && $row = mysql_fetch_assoc($rt)) {
+        if (!$skipUser || $userid != $row['id']) {
+            $userList[$row['id']] = $row['nickname'];
+        }
     }
 
-    return $user_array;
+    return $userList;
 }
 
 
@@ -137,13 +157,13 @@ function GetUserList($userid, $nickname)
  */
 function DisplayFilter($filter_name)
 {
-    $status_array = array('ALL', 'SUGGESTED', 'WORKING','BIDDING', 'SKIP', 'DONE');
-
     require_once 'lib/Worklist/Filter.php';
     $WorklistFilter = new Worklist_Filter();
 
     if($filter_name == 'sfilter')
     {
+        $status_array = array('ALL', 'SUGGESTED', 'WORKING','BIDDING', 'SKIP', 'DONE');
+
         echo "<select name='{$filter_name}' id='search-filter'>\n";
         foreach($status_array as $key => $status)
         {
@@ -161,33 +181,25 @@ function DisplayFilter($filter_name)
         echo "</select>";
     }
 
-    if($filter_name == 'ufilter')
-    {
+    if($filter_name == 'ufilter') {
         echo "<select name='{$filter_name}' id='user-filter'>\n";
-        if($WorklistFilter->getUfilter() == 'ALL')
-        {
+        if($WorklistFilter->getUfilter() == 'ALL') {
             echo "  <option value='ALL' selected='selected'>ALL USERS</option>\n";
-        }
-        else
-        {
+        } else {
             echo "  <option value='ALL'>ALL USERS</option>\n";
         }
 
         if (!empty($_SESSION['userid'])) {
             $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
         } else {
-            $user_array = GetUserList('', '');
+            $user_array = GetUserList();
         }
 
-        foreach($user_array as $user_record)
-        {
-            if($WorklistFilter->getUfilter() == $user_record['userid'])
-            {
-                echo "<option value='{$user_record['userid']}' selected='selected'>{$user_record['nickname']}</option>";
-            }
-            else
-            {
-                echo "<option value='{$user_record['userid']}'>{$user_record['nickname']}</option>";
+        foreach($user_array as $userid=>$nickname) {
+            if($WorklistFilter->getUfilter() == $userid) {
+                echo "<option value='{$userid}' selected='selected'>{$nickname}</option>";
+            } else {
+                echo "<option value='{$userid}'>{$nickname}</option>";
             }
         }
 

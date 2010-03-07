@@ -94,7 +94,6 @@ if(isset($minimal_POST['sign_up'])){
 	      '$confirm', '$confirm_string' )");
 	  */
 	  $sql = 'INSERT INTO `'.USERS.'` (`'. implode('`,`', array_keys($values_for_db)) . '`,`added`) VALUES ("'. implode('","', array_values($values_for_db)). '",NOW() )';
-	  error_log($sql);
 	  $res = mysql_query($sql);
 	  $user_id = mysql_insert_id();
 	  $to = $username;

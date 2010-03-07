@@ -44,6 +44,7 @@
 			<a href="reports.php">Reports</a> |
 			<?php } ?>
 			<a href="team.php">Team</a> |
+			<a href="rewarder.php">Rewarder</a> |
 			<a href="settings.php">Settings</a>
 			<?php } ?>
 		</div>

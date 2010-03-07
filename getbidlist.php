@@ -21,7 +21,6 @@ $rt = mysql_query("SELECT `owner_id` FROM ".WORKLIST." WHERE `id` = " . $worklis
 if (!$rt)  exit;
 $row = mysql_fetch_row($rt);
 $owner_id = $row[0];
-error_log($owner_id);
 
 $rt = mysql_query("SELECT COUNT(*) FROM ".BIDS." WHERE `worklist_id` = " . $worklist_id . " AND withdrawn = 0");
 $row = mysql_fetch_row($rt);

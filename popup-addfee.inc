@@ -33,12 +33,11 @@
 <?php
      $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
 
-     foreach($user_array as $user_record)
-     {
-       if(!empty($filter_name) && $_SESSION[$filter_name] == $user_record['userid']) {
-         echo "<option value='{$user_record['userid']}' selected='selected'>{$user_record['nickname']}</option>\n";
+     foreach($user_array as $userid=>$nickname) {
+       if(!empty($filter_name) && $_SESSION[$filter_name] == $userid) {
+         echo "<option value='{$userid}' selected='selected'>{$nickname}</option>\n";
        } else {
-         echo "<option value='{$user_record['userid']}'>{$user_record['nickname']}</option>\n";
+         echo "<option value='{$userid}'>{$nickname}</option>\n";
        }
      }
 ?>

@@ -32,6 +32,7 @@ class User
 	protected $smsaddr;
 	protected $country;
 	protected $provider;
+	protected $rewarder_points;
 	
     /**
      * With this constructor you can create a user by passing an array.
@@ -537,6 +538,21 @@ class User
 		return $this;
 	}
 	
+	/**
+	 * @return the $rewarderPoints
+	 */
+	public function getRewarder_points() {
+		return $this->rewarder_points;
+	}
+
+	/**
+	 * @param $points: the number rewarder points to set
+	 */
+	public function setRewarder_points($points) {
+		$this->rewarder_points = $points;
+		return $this;
+	}
+
 	private function loadUser($where)
 	{
 		// now we build the sql query

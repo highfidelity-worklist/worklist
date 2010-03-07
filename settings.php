@@ -81,7 +81,6 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
                   "`skills`='$skills', `paypal`=$paypal, `paypal_email`='$paypal_email', `is_uscitizen`=$uscitizen, `timezone`='$timezone' ".
                   ($phone_sql?", ${phone_sql}":'');
     $sql .= " WHERE id = '${_SESSION['userid']}'";
-error_log($sql);
     mysql_unbuffered_query($sql);
 
     $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";

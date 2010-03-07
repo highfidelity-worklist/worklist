@@ -123,3 +123,83 @@ z-index: 1;
 	width: 200px;
 	margin-top: 4px;
 	}
+
+#rewarder-point-info {
+	float: left;
+	line-height: 20p;x
+}
+
+#rewarder-team {
+	float: right;
+	line-height: 20p;x
+}
+
+#rewarder-container {
+	border: 1px solid #CCCCCC;
+	height: 524px;
+	margin-top: 12px;
+	overflow: auto;
+	position: relative;
+}
+
+#rewarder-users {
+	border-right: 1px solid #CCCCCC;
+	float: left;
+	height:100%;
+	padding: 0 8px;
+	width: 132px;
+}
+
+#rewarder-users h6 {
+	padding-top:8px;
+	position:absolute;
+}
+
+#rewarder-users span {
+	-moz-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+	background-color:#CCC6B0;
+	padding:0.25em 0.75em 0.125em;
+}
+
+#rewarder-chart {
+	float: left;
+	height:100%;
+	width: 690px;
+}
+
+#rewarder-chart .chart-remover {
+	background: transparent url(../images/delete.png) repeat-x 0 7px;
+	cursor: pointer;
+	height: 22px;
+	margin-left: 8px;
+	position: absolute;
+	width: 16px;
+}
+
+#rewarder-chart .chart-bar {
+	background: transparent url(../images/header-bar-green.png) repeat-x 0 5px;
+	margin-left: 28px;
+	padding-top: 3px;
+	position: absolute;
+}
+
+#rewarder-chart .chart-thumb {
+	-moz-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+	background-color: #81AB00;
+	cursor: move;
+	font-weight: bold;
+	margin-top: 2px;
+	padding: 0.25em 0.75em 0.125em;
+	position: absolute;
+	text-align: center;
+	width: 80px;
+}
+
+#rewarder-chart .chart-thumb.chart-negative {
+	background-color: #D24B3F;
+	color: #601710;
+}
