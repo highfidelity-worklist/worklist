@@ -79,9 +79,6 @@ if($action =='save_workitem') {
     }
     if ($workitem->getNotes() != $notes) {
         $workitem->setNotes($notes);
-        if (!empty($new_update_message)){  // add commas where appropriate
-            $new_update_message .= ", ";
-        }
         $new_update_message .= "Notes changed. ";
     }
 
