@@ -20,6 +20,9 @@ width:48%;
 #left-panel li {
 border-bottom:1px solid lightgrey;
 }
+#left-panel li.last {
+border-bottom:none;
+}
 
 #right-panel{
 float:right;
@@ -29,7 +32,7 @@ background-color: #FFFFDD;
 border-left:1px solid grey;
 padding-left:3px;
 padding-bottom:5px;
-min-height:510px;
+min-height:542px;
 }
 .info-label{
 font-weight: bold;

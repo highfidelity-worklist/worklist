@@ -1,11 +1,19 @@
-<?php $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
-  $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-  $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-  $statusList = array("SUGGESTED", "BIDDING","WORKING","DONE","SKIP");
-  $allowEdit = false;
-  if(($is_runner || $worklist['owner_id'] == $user_id)) {
-      $allowEdit = true;
-  }
+<?php
+//  vim:ts=4:et
+
+//  Copyright (c) 2010, LoveMachine Inc.
+//  All Rights Reserved.
+//  http://www.lovemachineinc.com
+
+    $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
+    $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+    $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
+    $statusList = array("SUGGESTED", "BIDDING","WORKING","DONE","SKIP");
+    $allowEdit = false;
+    if(($is_runner || $worklist['owner_id'] == $user_id)) {
+        $allowEdit = true;
+    }
+
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>
@@ -340,8 +348,14 @@ var documentsArray = new Array();
 	  <input type="hidden" name="action" value="save_workitem" />
 	  <ul>
 	    <li>
-	      <span class="info-label">ID</span>
-	      <span><?php echo $worklist['id'];?></span>
+          <div style="float:left;width:50%">
+	        <span class="info-label">ID</span>
+	        <span><?php echo $worklist['id'];?></span>
+          </div>
+          <div style="float:right;margin-top:4px;width:50%">
+            <script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
+          </div>
+          <div style="clear:both"></div>
 	    </li>
 	    <li>
 	      <span class="info-label">Summary</span>
@@ -370,12 +384,25 @@ var documentsArray = new Array();
 		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
 		<?php endif;?>
 	      </li>
-	      </li>
-		<li>
-		<span class="info-label">Owner</span>
-		<?php echo $worklist['nickname'];?>
-		</li>
-	    <li>
+              <li>
+                <span class="info-label">Owner</span>
+                <?php echo $worklist['nickname'];?>
+              </li>
+          <li>
+              <span class="info-label">Invite</span>
+              <input type="text" name="invite" class="invite" />
+              <script type="text/javascript">
+              $(document).ready(function() {
+                $('.invite').autocomplete('getusers.php', {
+                    multiple: true,
+                    multipleSeparator: ', ',
+                    extraParams: { nnonly: 1 }
+                });
+              });
+              </script>
+              <small>(Comma-separated list of developers.)</small>
+	    </li>
+	    <li class="last">
 	    <span class="info-label">Notes</span>
 	      <?php if($is_runner || $worklist['owner_id'] == $user_id): ?>
 		<span><textarea size="33" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
@@ -392,27 +419,32 @@ var documentsArray = new Array();
 	<?php else: ?>
 	  <ul>
 	    <li>
-	      <span class="info-label">ID</span>
-	      <span><?php echo $worklist['id'];?></span>
+          <div style="float:left;width:50%">
+	        <span class="info-label">ID</span>
+	        <span><?php echo $worklist['id'];?></span>
+          </div>
+          <div style="float:right;margin-top:4px;width:50%">
+            <script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
+          </div>
+          <div style="clear:both"></div>
 	    </li>
 	    <li>
 	      <span class="info-label">Summary</span>
 	      <span><?php echo $worklist['summary'];?></span>
 	    </li>
 	    <li>
-		  <span class="info-label">Status</span>
-		  <?php echo $worklist['status'];?>
-		  <input type="hidden" id="status" name="status" value = "BIDDING" />
-	   </li>
-	      </li>
-		<li>
-		<span class="info-label">Owner</span>
-		<?php echo $worklist['nickname'];?>
-		</li>
-	    <li>
-	    <span class="info-label">Notes</span>
-		<span><textarea size="33" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
+              <span class="info-label">Status</span>
+              <?php echo $worklist['status'];?>
+              <input type="hidden" id="status" name="status" value = "BIDDING" />
 	    </li>
+            <li>
+              <span class="info-label">Owner</span>
+              <?php echo $worklist['nickname'];?>
+            </li>
+            <li class="last">
+              <span class="info-label">Notes</span>
+              <span><textarea size="33" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
+            </li>
 	  </ul>
       <?php endif;?>
     </div>

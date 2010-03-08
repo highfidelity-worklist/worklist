@@ -218,7 +218,7 @@ include("head.html"); ?>
             if (rewarder.rewarderList.length == 0 && newRewarderList.length > 0) {
                 for (var i = 0; i < newRewarderList.length; i++){
                     this.addNewUser(newRewarderList[i], i);
-                   }
+                }
 
             /* Real changes including add new users, remove out old users, reposition users. */
             } else {

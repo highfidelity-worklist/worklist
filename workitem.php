@@ -65,7 +65,7 @@ if($action =='save_workitem') {
     // summary
     if ($workitem->getSummary() != $summary){
         $workitem->setSummary($summary);
-        $new_update_message .= "Summary changed";
+        $new_update_message .= "Summary changed. ";
     }
     // status
     if ($is_runner || ($status=="SKIP" && $workitem->getStatus()=="SUGGESTED")) {
@@ -74,7 +74,7 @@ if($action =='save_workitem') {
             if (!empty($new_update_message)){  // add commas where appropriate
                 $new_update_message .= ", ";
             }
-            $new_update_message .= "Status set to $status";
+            $new_update_message .= "Status set to $status. ";
         }
     }
     if ($workitem->getNotes() != $notes) {
@@ -82,13 +82,21 @@ if($action =='save_workitem') {
         if (!empty($new_update_message)){  // add commas where appropriate
             $new_update_message .= ", ";
         }
-        $new_update_message .= "Notes changed";
+        $new_update_message .= "Notes changed. ";
     }
+
+    // Send invites
+    if (!empty($_POST['invite'])) {
+        $people = explode(',', $_POST['invite']);
+        invitePeople($people, $worklist_id, $workitem->getSummary(), $workitem->getNotes());
+        $new_update_message .= "Invitations sent. ";
+    }
+
     if (empty($new_update_message)){
         $new_update_message = " No changes.";
     } else {
         $workitem->save();
-        $new_update_message = " Changes: $new_update_message.";
+        $new_update_message = " Changes: $new_update_message";
     }
 
     $redirectToDefaultView = true;

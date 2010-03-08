@@ -487,8 +487,8 @@ function invitePeople(array $people, $item, $summary = null, $description = null
                 //sending email to the invited developer
                 $subject = "Invitation for " . $summary;
                 $body = "<p>Hi there,</p>";
-                $body .= "<p>you have been invited by " . $_SESSION['nickname'] . " at LoveMachine Inc. to bid on " . $summary . ".";
-                $body .= "<p>To see more details and place a bid follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
+                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at LoveMachine Inc. to bid on " . $summary . ".";
+                $body .= "<p>To see more details and to place a bid follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
                 $body .= "<p>Love,<br/>Worklist</p>";
                 sl_send_email($user->username, $subject, $body);
             } else if (validEmail($invite)) {
