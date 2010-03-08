@@ -1,8 +1,8 @@
 <?php
 //  vim:ts=4:et
 
-//  Copyright (c) 2009, LoveMachine Inc.  
-//  All Rights Reserved.  
+//  Copyright (c) 2009, LoveMachine Inc.
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 include("config.php");
@@ -43,6 +43,15 @@ if(isset($paidStatus) && ($paidStatus)!="ALL")
 }
 
 $ufilter = isset($_REQUEST["ufilter"])?intval($_REQUEST["ufilter"]):0;
+
+require_once 'lib/Worklist/Filter.php';
+$WorklistFilter = new Worklist_Filter(array(
+    Worklist_Filter::CONFIG_COOKIE_EXPIRY => (60 * 60 * 24 * 30),
+    Worklist_Filter::CONFIG_COOKIE_PATH   => '/' . APP_BASE
+));
+$WorklistFilter->setUfilter($ufilter)
+               ->saveFilters();
+
 $where = '';
 if ($ufilter) {
     $where = " AND `".FEES."`.`user_id` = $ufilter";
@@ -53,7 +62,7 @@ if($dateRangeFilter) {
 }
 
 if($paidStatusFilter) {
-  
+
   $where = $where . $paidStatusFilter;
 }
 
@@ -73,10 +82,10 @@ if ($rtCount) {
 } else {
     $items = 0;
 }
-$cPages = ceil($items/$limit); 
+$cPages = ceil($items/$limit);
 //echo "$qsel $qbody";
 
-$qSumClose = " LIMIT " . ($page-1)*$limit . ",$limit ) fee_sum ";
+$qSumClose = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit ) fee_sum ";
 $sumResult = mysql_query("$qsum $qbody $qSumClose");
 if ($sumResult) {
     $get_row = mysql_fetch_row($sumResult);
@@ -95,4 +104,4 @@ for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
 }
 
 $json = json_encode($report);
-echo $json;     
+echo $json;

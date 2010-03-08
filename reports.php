@@ -1,11 +1,11 @@
-<?php 
+<?php
 //  vim:ts=4:et
 
 //  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-ob_start(); 
+ob_start();
 
 include("config.php");
 include("class.session_handler.php");
@@ -61,9 +61,9 @@ margin-left:10px;
 margin-top:20px;
 }
 #date-fields label {
-  float: left;    
-  width: 2em;    
-  margin-right: 1em;  
+  float: left;
+  width: 2em;
+  margin-right: 1em;
 }
 .text-field-sm {
   width:80px;
@@ -109,23 +109,33 @@ function fmtDate2(d) {
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
     var is_runner = <?php echo isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : '"nada"' ?>;
 
+var getPaidItems = function() {
+    var paidItems = 0;
+    $(paid_list).each(function(idx, checked) {
+       if (!checked) {
+           return;
+       }
+       paidItems++;
+    });
+    return paidItems;
+};
 
     function AppendPagination(page, cPages, table)
     {
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="7" style="text-align:center;">Pages : &nbsp;';
-        if (page > 1) { 
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;'; 
-        } 
-        for (var i = 1; i <= cPages; i++) { 
-            if (i == page) { 
-                pagination += i + " &nbsp;"; 
-            } else { 
-                pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" title="'+i+'">' + i + '</a> &nbsp;'; 
-            } 
+        if (page > 1) {
+            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;';
         }
-        if (page < cPages) { 
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page+1) + '" title="'+(page+1)+'">Next</a> &nbsp;'; 
-        } 
+        for (var i = 1; i <= cPages; i++) {
+            if (i == page) {
+                pagination += i + " &nbsp;";
+            } else {
+                pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" title="'+i+'">' + i + '</a> &nbsp;';
+            }
+        }
+        if (page < cPages) {
+            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page+1) + '" title="'+(page+1)+'">Next</a> &nbsp;';
+        }
         pagination += '</td></tr>';
         $('.table-' + table).append(pagination);
     }
@@ -227,7 +237,7 @@ function fmtDate2(d) {
                         ttlPaid = parseFloat(ttlPaid) - parseFloat($(this).attr('data'));
                         paid_list[$(this).val()] = 0;
                     }
-                    $('#amtpaid').text('($'+ttlPaid+' paid)');
+                    $('#amtpaid').text('($'+ttlPaid+' paid, ' + getPaidItems() + ' items)');
                 });
 
                 /* Reflect the paid list values as pages are reloaded. */
@@ -256,19 +266,9 @@ function fmtDate2(d) {
     }
 
     $(document).ready(function(){
-        GetReport(<?php echo $page?>);    
+        GetReport(<?php echo $page?>);
 
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
-        $("#user-filter").change(function(){
-            $.ajax({
-                type: "POST",
-                url: 'update_session.php',
-                data: '&ufilter='+$("#user-filter").val()
-            });
-            page = 1;
-            if (timeoutId) clearTimeout(timeoutId);
-            GetReport(page);
-        });
         $("#report-check-all").live('change', function(){
             var isChecked = $("#report-check-all").attr('checked');
 
@@ -282,7 +282,7 @@ function fmtDate2(d) {
                     ttlPaid = parseFloat(ttlPaid) - parseFloat($(this).attr('data'));
                     paid_list[$(this).val()] = 0;
                 }
-                $('#amtpaid').text('($'+ttlPaid+' paid)');
+                $('#amtpaid').text('($'+ttlPaid+' paid, ' + getPaidItems() + ' items)');
             });
 
             $('#amtpaid').show();
@@ -308,19 +308,20 @@ function fmtDate2(d) {
 		changeMonth: true,
 		changeYear: true,
 		maxDate: 0,
-		showOn: 'button', 
+		showOn: 'button',
 		dateFormat: 'mm/dd/yy',
 		buttonImage: 'images/Calendar.gif',
 		buttonImageOnly: true
 	});
 
 	$('#refreshReport').click(function() {
+        paid_list = [];
 	    if (timeoutId) clearTimeout(timeoutId);
 	    GetReport(page);
 	});
 
     });
-</script> 
+</script>
 
 <title>Worklist Reports | Lend a Hand</title>
 
@@ -353,7 +354,7 @@ function fmtDate2(d) {
 	      <td class="report-left-label">Fee added between</td>
 	      <td colspan="2">
 	      <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="" title="Start Date" size="20" />
-	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="" title="End Date" size="20" /> 
+	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="" title="End Date" size="20" />
 	      </td>
 	      <td >
 		<input type="submit" value="Go" id="refreshReport"></input>
@@ -383,5 +384,5 @@ function fmtDate2(d) {
         <input type="submit" id="pay" name="paid" value="Mark Paid" /> <span id="amtpaid" style="display:none">($0 paid)</span>
         <?php } ?>
     </form>
-</div>      
+</div>
 <?php include("footer.php"); ?>
