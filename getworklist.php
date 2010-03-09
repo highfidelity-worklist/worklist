@@ -51,7 +51,16 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     } else {
         $where .= " and ";
     }
-    $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+
+    // If the current user is looking for his bids, we show, else nothing.
+    if( isset( $_SESSION['user_id'] ) ) {
+        if( $_SESSION['user_id'] == $ufilter )  {
+            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
+                        or `bidder_id`='$ufilter')";
+        }   else    {
+            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+        }
+    }
 }
 
 if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
@@ -77,62 +86,51 @@ if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
     }
 }
 
-$totals = '
-CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_totals` (
-    `worklist_id` int(11) NOT NULL,
-    `total_fees` decimal(10,2) NOT NULL,
-    INDEX worklist_id(worklist_id)
-)
-';
-$emptyTotals = '
-TRUNCATE `tmp_totals`
-';
-$fillTotals = '
-INSERT INTO `tmp_totals`
-SELECT `worklist_id`, SUM(amount) FROM `fees` WHERE `withdrawn` = 0 GROUP BY `worklist_id`
-';
+$totals = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_totals` (
+           `worklist_id` int(11) NOT NULL,
+           `total_fees` decimal(10,2) NOT NULL,
+           INDEX worklist_id(worklist_id))';
+
+$emptyTotals = 'TRUNCATE `tmp_totals`';
+
+$fillTotals = 'INSERT INTO `tmp_totals`
+               SELECT `worklist_id`, SUM(amount) FROM `fees` WHERE `withdrawn` = 0 GROUP BY `worklist_id`';
+
 mysql_query($totals);
 mysql_query($emptyTotals);
 mysql_query($fillTotals);
 
-$latest = '
-CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_latest` (
-    `worklist_id` int(11) NOT NULL,
-    `latest` DATETIME NOT NULL,
-    INDEX worklist_id(worklist_id)
-)
-';
+$latest = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_latest` (
+           `worklist_id` int(11) NOT NULL,
+           `latest` DATETIME NOT NULL,
+           INDEX worklist_id(worklist_id))';
+
 $emptyLatest = 'TRUNCATE `tmp_latest`';
-$fillLatest = '
-INSERT INTO `tmp_latest`
-(SELECT
-    `worklist_id`,
-    MAX(`bid_created`) AS `latest`
-FROM `bids` GROUP BY `worklist_id`)
-';
+
+$fillLatest = 'INSERT INTO `tmp_latest`
+               (SELECT `worklist_id`,
+                MAX(`bid_created`) AS `latest`
+                FROM `bids` GROUP BY `worklist_id`)';
+
 mysql_query($latest);
 mysql_query($emptyLatest);
 mysql_query($fillLatest);
 
-$bids = '
-CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
-    `worklist_id` int(11) NOT NULL,
-    `bid_amount` decimal(10,2) NOT NULL,
-    INDEX worklist_id(worklist_id)
-)
-';
+$bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
+         `worklist_id` int(11) NOT NULL,
+         `bid_amount` decimal(10,2) NOT NULL,
+         `bidder_id`  int(11) NOT NULL,
+         INDEX worklist_id(worklist_id))';
+
 $emptyBids = 'TRUNCATE `tmp_bids`';
-$fillBids = '
-INSERT INTO `tmp_bids`
-SELECT
-    `bids`.`worklist_id`,
-    `bids`.`bid_amount`
-FROM `bids`, `tmp_latest`
-WHERE
-    `bids`.`worklist_id` = `tmp_latest`.`worklist_id`
-     AND `bids`.`bid_created` = `tmp_latest`.`latest`
-     AND (`bids`.`withdrawn` = 0)
-';
+
+$fillBids = 'INSERT INTO `tmp_bids`
+             SELECT `bids`.`worklist_id`,`bids`.`bid_amount`,`bids`.`bidder_id`
+             FROM `bids`, `tmp_latest`
+             WHERE `bids`.`worklist_id` = `tmp_latest`.`worklist_id`
+              AND `bids`.`bid_created` = `tmp_latest`.`latest`
+              AND (`bids`.`withdrawn` = 0)';
+
 mysql_query($bids);
 mysql_query($emptyBids);
 mysql_query($fillBids);
@@ -140,28 +138,15 @@ mysql_query($fillBids);
 $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
-$qsel  = "SELECT DISTINCT
-    `".WORKLIST."`.`id`,
-    `summary`,
-    `status`,
-    `ou`.`nickname`,
-    `ou`.`username`,
-    `mu`.`nickname` as mechanic_nickname,
-	`mu`.`username` as mechanic_username,
-	TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
-	`total_fees`,
-	`bid_amount`,
-	`creator_id`,
-	(SELECT
-	   COUNT(`".BIDS."`.id) FROM `".BIDS."`
-	   WHERE
-	       `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`
-	       AND (`".BIDS."`.`withdrawn` = 0)) as bid_count,
-    TIMESTAMPDIFF(SECOND,NOW(),(SELECT
-        `".BIDS."`.`bid_done` FROM `".BIDS."`
-        WHERE
-            `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`
-            and `".BIDS."`.`accepted` = 1)) as bid_done";
+$qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,`ou`.`nickname`,`ou`.`username`,
+          `mu`.`nickname` as mechanic_nickname,`mu`.`username` as mechanic_username,
+	      TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
+	      `total_fees`,`bid_amount`,`creator_id`,
+	      (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."`
+	       WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count,
+          TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
+           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1)) as bid_done";
+
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
           LEFT JOIN `".FEES."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
@@ -170,6 +155,7 @@ $qbody = "FROM `".WORKLIST."`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           $where";
+
 $qorder = "ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 
 $rtCount = mysql_query("$qcnt $qbody");
