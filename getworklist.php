@@ -53,13 +53,11 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     }
 
     // If the current user is looking for his bids, we show, else nothing.
-    if( isset( $_SESSION['user_id'] ) ) {
-        if( $_SESSION['user_id'] == $ufilter )  {
-            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
-                        or `bidder_id`='$ufilter')";
-        }   else    {
-            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
-        }
+    if( $_SESSION['user_id'] == $ufilter )  {
+        $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
+                    or `bidder_id`='$ufilter')";
+    }   else    {
+        $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
     }
 }
 
