@@ -202,7 +202,7 @@ var getPaidItems = function() {
         $.ajax({
             type: "POST",
             url: 'getreport.php',
-            data: 'page='+npage+'&ufilter='+$("#user-filter").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
+            data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
             dataType: 'json',
             success: function(json) {
                 $("#loader_img").css("display","none");
@@ -336,27 +336,26 @@ var getPaidItems = function() {
 
 
 <div>
-    <div id="search-filter-wrap">
+    <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
 	  <tr>
-	    <td class="report-left-label">Payee</td>
-	    <td ><?php DisplayFilter('ufilter'); ?></td>
-	    <td class="report-left-label">Paid Status</td>
-	    <td>
+	    <td>Payee: <?php DisplayFilter('ufilter', true); ?></td>
+	    <td>Paid Status: 
 	      <select id="paid-status" >
 		    <option value="ALL">ALL</option>
 		    <option value="1">Paid</option>
 		    <option value="0" selected>Unpaid</option>
 	      </select>
 	    </td>
+	    <td>Item status: <?php DisplayFilter('sfilter', true); ?></td>
 	   </tr>
 	  <tr>
 	      <td class="report-left-label">Fee added between</td>
-	      <td colspan="2">
-	      <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="" title="Start Date" size="20" />
-	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="" title="End Date" size="20" />
-	      </td>
 	      <td >
+	      <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="<?php echo date("m/d/Y",strtotime('-2 weeks', time())); ?>" title="Start Date" size="20" />
+	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo date("m/d/Y",time()); ?>" title="End Date" size="20" />
+	      </td>
+	      <td style = "text-align: right;">
 		<input type="submit" value="Go" id="refreshReport"></input>
 	      </td>
 	  </tr>

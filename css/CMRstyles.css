@@ -29,6 +29,23 @@ body {
      width:470px! important
 }
 
+#search-filter-wrap-reports {
+    float: right;
+    padding-bottom:10px;
+    font-size: 1.2em;
+}
+#search-filter-section td {
+    white-space:nowrap;
+}
+/*
+#search-filter-section td{
+    border-left: none;
+    border-right: none;
+}
+#search-filter-section .report-left-label {
+    border-left: 1px solid #AAAAAA;
+}
+*/
 #welcome {
 	position:relative;
 	padding: 0 40px 10px 40px;

@@ -155,11 +155,12 @@ function GetUserList($userid, $nickname, $skipUser=false) {
  *
  *   Parameters:  $filter_name [sfilter,ufilter]
  */
-function DisplayFilter($filter_name)
+function DisplayFilter($filter_name, $reports = null)
 {
     require_once 'lib/Worklist/Filter.php';
-    $WorklistFilter = new Worklist_Filter();
-
+    $WorklistFilter = !$reports ? new Worklist_Filter() : new Worklist_Filter(array(Worklist_Filter::CONFIG_COOKIE_NAME => 'reports',
+										    Worklist_Filter::CONFIG_DEFAULT_SFILTER => 'DONE'));
+//$WorklistFilter = new Worklist_Filter();
     if($filter_name == 'sfilter')
     {
         $status_array = array('ALL', 'SUGGESTED', 'WORKING','BIDDING', 'SKIP', 'DONE');

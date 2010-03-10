@@ -42,19 +42,29 @@ if(isset($paidStatus) && ($paidStatus)!="ALL")
     $paidStatusFilter = " AND `".FEES."`.`paid` = ".$paidStatus."";
 }
 
+$sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST["sfilter"] : '';
 $ufilter = isset($_REQUEST["ufilter"])?intval($_REQUEST["ufilter"]):0;
 
 require_once 'lib/Worklist/Filter.php';
 $WorklistFilter = new Worklist_Filter(array(
     Worklist_Filter::CONFIG_COOKIE_EXPIRY => (60 * 60 * 24 * 30),
-    Worklist_Filter::CONFIG_COOKIE_PATH   => '/' . APP_BASE
+    Worklist_Filter::CONFIG_COOKIE_PATH   => '/' . APP_BASE,
+    Worklist_Filter::CONFIG_COOKIE_NAME => 'reports'
 ));
-$WorklistFilter->setUfilter($ufilter)
+
+$WorklistFilter->setSfilter($sfilter)
+               ->setUfilter($ufilter)
                ->saveFilters();
 
 $where = '';
 if ($ufilter) {
-    $where = " AND `".FEES."`.`user_id` = $ufilter";
+    $where = " AND `".FEES."`.`user_id` = $ufilter ";
+}
+
+if ($sfilter){
+    if($sfilter != 'ALL'){
+      $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
+    }
 }
 
 if($dateRangeFilter) {
@@ -72,7 +82,7 @@ $qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
 $qbody = " FROM `".FEES."`
            INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
            LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
-           WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 AND `worklist`.status = 'DONE' $where ";
+           WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
 $qorder = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 
 $rtCount = mysql_query("$qcnt $qbody");
