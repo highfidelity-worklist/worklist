@@ -123,10 +123,12 @@
 						}	else	{
 							paid = 'No';
 						}
+						var date = RelativeTime( fees[i][4] );
 						var user = fees[i][2];
 						var funct = "javascript:ShowUserInfo('" + user + "');";
 						var row = '<tr class="row"><td>' + fees[i][0] + '</td><td>' + fees[i][1] + '</td><td  onclick="' + funct + '" width="5%">'
-										+ user + '</td><td width="10%"style="text-align:right;">$'  + fees[i][3] + '</td><td width="20%">' + fees[i][4] +
+										+ user + '</td><td width="10%"style="text-align:right;">$'  + fees[i][3] +
+										'</td><td width="10%"style="text-align:right;">' + date +
 										'</td><td>' + paid + '</td></tr>';
 						$('.table-statslist').append(row);
 					}
@@ -321,6 +323,7 @@
 
 			$('#popup-user-info').dialog('open');
 		}
+		
 		// End of user info code
 		</script>
 

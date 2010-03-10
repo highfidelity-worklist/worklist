@@ -26,7 +26,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 	
 	}	else	if( $req == 'fees' )	{
 		// Get Average Fees in last 7 days
-		$query = mysql_query( "SELECT AVG(amount) FROM ".FEES." INNER JOIN ".WORKLIST." ON
+		$query = mysql_query( "SELECT AVG(amount) FROM ".FEES." LEFT JOIN ".WORKLIST." ON
 					".FEES.".worklist_id = ".WORKLIST.".id WHERE date > DATE_SUB(NOW(),
 					INTERVAL 7 DAY) AND status = 'DONE'" );
 
@@ -35,24 +35,35 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 	
 	} else if( $req == 'table' )	{
 		// Get jobs done in last 7 days
-		$fees_q = mysql_query( "SELECT ".WORKLIST.".id,summary,nickname,amount,date,user_paid FROM ".FEES."
-					INNER JOIN ".USERS." ON ".FEES.".user_id = ".USERS.".id INNER JOIN ".WORKLIST."
-					ON ".FEES.".worklist_id = ".WORKLIST.".id WHERE status='DONE' AND
-					date > DATE_SUB(NOW(), INTERVAL 7 DAY) ORDER BY date DESC;" );
+		$fees_q = mysql_query( "SELECT `".WORKLIST."`.`id`,`summary`,`nickname` as nick,
+					  (SELECT SUM(`amount`) FROM `".FEES."`
+					   LEFT JOIN `".BIDS."` ON `".FEES."`.`bid_id`=`".BIDS."`.id
+					   LEFT JOIN `".USERS."` ON `".USERS."`.`id`=`".FEES."`.`user_id`
+					   WHERE `".BIDS."`.`worklist_id`=`".WORKLIST."`.`id`
+					   AND `".USERS."`.`nickname`=`nick`) AS total,
+					TIMESTAMPDIFF(SECOND,`bid_done`,NOW()) as `delta`,`user_paid`
+					FROM `".BIDS."`
+					LEFT JOIN `".USERS."` ON `".BIDS."`.`bidder_id` = `".USERS."`.`id` LEFT JOIN `".WORKLIST."`
+					ON `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`
+					LEFT JOIN `".FEES."` ON `".FEES."`.`bid_id`=`".BIDS."`.`id`
+					WHERE `status`='DONE'
+					AND `bid_done` > DATE_SUB(NOW(), INTERVAL 7 DAY)
+					AND `accepted`='1'
+					ORDER BY `delta` ASC;" );
 		$fees = array();
 		// Prepare json
 		while( $row = mysql_fetch_assoc( $fees_q ) )	{
-			$fees[] = array( $row['id'], $row['summary'], $row['nickname'], $row['amount'], $row['date'], $row['user_paid'] );
+			$fees[] = array( $row['id'], $row['summary'], $row['nick'], $row['total'], $row['delta'], $row['user_paid'] );
 		}
 
 		echo json_encode( $fees );
 		
 	} else if( $req == 'runners' )	{
 		// Get Top 10 runners
-		$info_q = mysql_query( "SELECT nickname AS nick, (SELECT COUNT(*) FROM ".FEES." INNER JOIN ".USERS." ON
+		$info_q = mysql_query( "SELECT nickname AS nick, (SELECT COUNT(*) FROM ".FEES." LEFT JOIN ".USERS." ON
 					".USERS.".id = ".FEES.".user_id WHERE ".USERS.".nickname=nick AND
-					".USERS.".is_runner=1) AS fee_no, (SELECT COUNT(*) FROM ".FEES." INNER JOIN
-					".USERS." ON ".USERS.".id=".FEES.".user_id INNER JOIN ".WORKLIST." ON
+					".USERS.".is_runner=1) AS fee_no, (SELECT COUNT(*) FROM ".FEES." LEFT JOIN
+					".USERS." ON ".USERS.".id=".FEES.".user_id LEFT JOIN ".WORKLIST." ON
 					".WORKLIST.".id=".FEES.".worklist_id WHERE ".WORKLIST.".status='WORKING'
 					AND ".USERS.".nickname=nick) AS working_no FROM ".USERS." ORDER BY fee_no DESC" );
 
@@ -69,9 +80,10 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 	
 	}	else if( $req == 'mechanics' )	{
 		// Get Top 10 mechanics
-		$info_q = mysql_query( "SELECT nickname AS nick, (SELECT COUNT(*) FROM ".BIDS." INNER JOIN ".USERS." ON
-					".USERS.".id = ".BIDS.".bidder_id WHERE ".USERS.".nickname=nick) AS bid_no,
-					(SELECT COUNT(*) FROM ".WORKLIST." INNER JOIN ".USERS." ON 
+		$info_q = mysql_query( "SELECT nickname AS nick, (SELECT COUNT(*) FROM ".BIDS." LEFT JOIN ".USERS." ON
+					".USERS.".id = ".BIDS.".bidder_id WHERE ".USERS.".nickname=nick
+					AND `".BIDS."`.`accepted`='1') AS bid_no,
+					(SELECT COUNT(*) FROM ".WORKLIST." LEFT JOIN ".USERS." ON 
 					".WORKLIST.".mechanic_id=".USERS.".id WHERE ".USERS.".nickname=nick AND
 					".WORKLIST.".status='WORKING') AS work_no FROM ".USERS." ORDER BY work_no DESC" );
 
@@ -88,9 +100,9 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 	
 	}	else if( $req == 'feeadders' )	{
 		// Get the top 10 fee adders
-		$info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".FEES." INNER JOIN ".USERS." ON
+		$info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".FEES." LEFT JOIN ".USERS." ON
 					".USERS.".id = ".FEES.".user_id WHERE ".USERS.".nickname=nick) AS fee_no,
-					(SELECT AVG(amount) FROM ".FEES." INNER JOIN ".USERS." ON
+					(SELECT AVG(amount) FROM ".FEES." LEFT JOIN ".USERS." ON
 					".USERS.".id=".FEES.".user_id WHERE ".USERS.".nickname=nick) AS amount
 					FROM ".USERS." ORDER BY fee_no DESC" );
 
@@ -106,10 +118,11 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 
 	}	else if( $req == 'pastdue' )	{
 		// Get the top 10 mechanics with "Past due" fees
-		$info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".BIDS." INNER JOIN ".USERS." ON
-					".USERS.".id=".BIDS.".bidder_id INNER JOIN ".WORKLIST." ON
+		$info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".BIDS." LEFT JOIN ".USERS." ON
+					".USERS.".id=".BIDS.".bidder_id LEFT JOIN ".WORKLIST." ON
 					".WORKLIST.".id=".BIDS.".worklist_id WHERE ".USERS.".nickname=nick
-					AND ".WORKLIST.".status='WORKING' AND bid_done < NOW()) AS past_due
+					AND ".WORKLIST.".status='WORKING' AND `".BIDS."`.`accepted`='1'
+					AND bid_done < NOW()) AS past_due
 					FROM ".USERS." ORDER BY past_due DESC" );
 
 		$info = array();

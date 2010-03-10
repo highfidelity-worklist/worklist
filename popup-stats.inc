@@ -17,8 +17,8 @@
 				<td>Id</td>
 				<td>Summary</td>
 				<td>Who</td>
-				<td style="text-align: right;">Fee</td>
-				<td>Finished</td>
+				<td style="text-align: right;">Fees</td>
+				<td style="text-align: right;">Finished</td>
 				<td>Paid</td>
 				</tr>
 			</thead>
