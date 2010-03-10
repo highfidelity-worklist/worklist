@@ -18,6 +18,8 @@ $page = isset($_REQUEST["page"])?$_REQUEST["page"]:1;
 $sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST["sfilter"] : '';
 $ufilter = isset($_REQUEST["ufilter"])? $_REQUEST["ufilter"] : 0;
 
+$is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
+
 require_once 'lib/Worklist/Filter.php';
 $WorklistFilter = new Worklist_Filter(array(
     Worklist_Filter::CONFIG_COOKIE_EXPIRY => (60 * 60 * 24 * 30),
@@ -52,12 +54,23 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         $where .= " and ";
     }
 
-    // If the current user is looking for his bids, we show, else nothing.
-    if( $_SESSION['user_id'] == $ufilter )  {
-        $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
-                    or `bidder_id`='$ufilter')";
-    }   else    {
-        $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+    // Runner and query is User->Bidding we only show the items the user
+    // is currently bidding on.
+    if( $is_runner )    {
+        foreach( $sfilter as $val ) {
+            if( $val == 'BIDDING' ) {
+                $where .= "( mechanic_id='$ufilter' or `bidder_id`='$ufilter' )";
+            } else  {
+                $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+            }
+        }
+    } else { // Else if the current user is looking for his bids, we show, else nothing.
+        if( $_SESSION['user_id'] == $ufilter )  {
+            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
+                        or `bidder_id`='$ufilter')";
+        }   else    {
+            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+        }
     }
 }
 
