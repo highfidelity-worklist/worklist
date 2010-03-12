@@ -285,7 +285,7 @@ function sendMailToDiscardedBids($worklist_id)	{
 
 function sendMailToOwner($itemid, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $is_runner) {
     $subject = "new bid: ".$summary;
-    $body =  "<p>New bid was placed for worklist item \"".$summary."\"<br/>";
+    $body =  "<p>New bid was placed for worklist item #$itemid: \"$summary\"<br/>";
     $body .= "Details of the bid:<br/>";
     $body .= "Bidder Email: ".$_SESSION['username']."<br/>";
     $body .= "Done By: ".$done_by."<br/>";

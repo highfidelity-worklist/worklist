@@ -10,6 +10,7 @@ include('class.session_handler.php');
 // Include functions
 include('functions.php');
 include_once("send_email.php");
+include_once("classes/Fee.class.php");
 
 $is_payer = !empty($_SESSION['is_payer']) ? true : false;
 // Check if we have a payer
@@ -37,42 +38,32 @@ if (isset($_REQUEST['itemid']) && !empty($_REQUEST['itemid'])) {
 }
 
 // What user is paying
-$user = mysql_real_escape_string($_SESSION['userid']);
-// Now we can be shure it's clean data
-
-// Here comes the database part
-$query = 'UPDATE `' . FEES . '` 
-			SET `user_paid` = ' . $user . ',
-			`notes` = "' . $paid_notes . '",
-			`paid` = ' . $paid_check . ', 
-			`paid_date` = now()
-			WHERE `id` = ' . $fee_id . ' LIMIT 1';
-
+$user = $_SESSION['userid'];
 
 // Exit of this script
-if (mysql_query($query)) {
-    $fees_query  =  'SELECT  `amount`,`user_id`,`worklist_id`,`desc` FROM '.FEES.'  WHERE `id` =  '.$fee_id;
-    $result1 = mysql_query($fees_query);
-    $fee_pay= mysql_fetch_array($result1);
-    $total_fee_pay = $fee_pay['amount'];
-
+if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
+    /* Only send the email when marking as paid. */
+    if ($paid_check) {
+        $fees_query  =  'SELECT  `amount`,`user_id`,`worklist_id`,`desc` FROM '.FEES.'  WHERE `id` =  '.$fee_id;
+        $result1 = mysql_query($fees_query);
+        $fee_pay= mysql_fetch_array($result1);
+        $total_fee_pay = $fee_pay['amount'];
    
-   
-    $summary =  getWorkItemSummary($fee_pay['worklist_id']);
+        $summary =  getWorkItemSummary($fee_pay['worklist_id']);
 
-  
+        $mail = 'SELECT `username`,`rewarder_points` FROM '.USERS.' WHERE `id` = '.$fee_pay['user_id'].'';
+        $userData = mysql_fetch_array(mysql_query($mail));
 
-    $subject =" Love machine paid you ".$total_fee_pay ." for ". $summary;
-    $body = "Fee Description : ".nl2br($fee_pay['desc'])."<br><br>";
-    $body .="Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br>"."<br>"."<br>"."<br>"."Thank you! "."<br>"."<br>"."Love,"."<br>"."<br>"."Philip and Ryan"."<br>"."<br>";
+        $subject = "LoveMachine paid you ".$total_fee_pay ." for ". $summary;
+        $body  = "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
+        $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
+        $body .= "You also earned ".intval($total_fee_pay)." rewarder points.  You currently have ".$userData['rewarder_points']." points available to reward other LoveMachiners with. ";
+	$body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."/worklist/rewarder.php<br/><br/>";
+        $body .= "Thank you!<br/><br/>Love,<br/>Philip and Ryan<br/>";
 
-    $mail = 'SELECT `username` FROM '.USERS.' WHERE `id` = '.$fee_pay['user_id'].'';
-    $username= mysql_fetch_array(mysql_query($mail));
-
-    sl_send_email($username['username'], $subject, $body);
+        sl_send_email($userData['username'], $subject, $body);
+    }
     die('{"success": true, "message": "Payment has been saved!" }');
-
-
 } else {
-	die('{"success": false, "message": "Something went technically wrong!" }');
+    die('{"success": false, "message": "Something went technically wrong!" }');
 }

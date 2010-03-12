@@ -255,7 +255,7 @@ include("head.html"); ?>
                     for (var i in combinedList) {
                         if (combinedList[i][0] == 0) {
                             rewarder.container.find('.user'+i).each(function(){
-                                $(this).fadeOut('slow', fn);
+                                $(this).fadeOut('slow', fn).remove();
                                 fn = null;
                             });
                         }

@@ -129,7 +129,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     $row = mysql_fetch_assoc($rt);
     $summary = $row['summary'];
     $subject = "new bid: $summary";
-    $body =  "<p>New bid was placed for worklist item \"$summary\"<br/>";
+    $body =  "<p>New bid was placed for worklist item #$itemid: \"$summary\"<br/>";
     $body .= "Details of the bid:<br/>";
     $body .= "Bidder Email: ".$_SESSION['username']."<br/>";
     $body .= "Done By: ".$done_by."<br/>";

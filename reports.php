@@ -12,6 +12,7 @@ include("class.session_handler.php");
 include("check_session.php");
 include_once("functions.php");
 include_once("send_email.php");
+include_once("classes/Fee.class.php");
 
 /* This page is only accessible to runners. */
 if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer'])) {
@@ -29,10 +30,20 @@ $f_date = (isset($_POST['start_date'])) ? strtotime(trim($_POST['start_date'])) 
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
-    foreach (explode(',', trim($_POST['paidList'], ',')) as $fee_id) {
-        $fee_id = intval($fee_id);
-        $query = "update `".FEES."` set `user_paid`={$_SESSION['userid']}, `paid`=1, paid_date = now() WHERE `id`={$fee_id}";
-        $rt = mysql_query($query);
+    $summaryData = Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1);
+
+    foreach ($summaryData as $user_id=>$data) {
+        if ($data[0] > 0) {
+            $mail = 'SELECT `username`,`rewarder_points` FROM '.USERS.' WHERE `id` = '.$user_id;
+            $userData = mysql_fetch_array(mysql_query($mail));
+
+            $subject = "LoveMachine paid you $".$data[0];
+            $body  = "You earned ".$data[1]." rewarder points.  You currently have ".$userData['rewarder_points']." points available to reward other LoveMachiners with. ";
+            $body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."/worklist/rewarder.php<br/><br/>";
+            $body .= "Thank you!<br/><br/>Love,<br/>Philip and Ryan<br/>";
+
+            sl_send_email($userData['username'], $subject, $body);
+        }
     }
 }
 
