@@ -10,6 +10,20 @@ require_once 'send_email.php';
 require_once 'workitem.class.php';
 require_once 'functions.php';
 
+
+    $statusMapRunner = array("SUGGESTED" => array("BIDDING","SKIP"),
+				 "BIDDING" => array("SKIP"),
+				 "WORKING" => array("REVIEW"),
+				 "REVIEW" => array("WORKING", "DONE"),
+				 "DONE" => array("REVIEW"),
+				 "SKIP" => array("REVIEW"));
+
+    $statusMapMechanic = array("SUGGESTED" => array("SKIP", "REVIEW"),
+				 "WORKING" => array("REVIEW"),
+				 "REVIEW" => array("WORKING"),
+				 "DONE" => array("WORKING", "REVIEW"),
+				 "SKIP" => array("REVIEW"));
+
 $get_variable = 'job_id';
 
 if (!defined("WORKITEM_URL")) {
@@ -43,6 +57,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "add_fee";
 }else if(isset($_POST['accept_bid'])) {
     $action = "accept_bid";
+}else if(isset($_POST['status-switch'])) {
+    $action = "status-switch";
 }
 
 //initialize the workitem class
@@ -68,7 +84,7 @@ if($action =='save_workitem') {
         $new_update_message .= "Summary changed. ";
     }
     // status
-    if ($is_runner || ($status=="SKIP" && $workitem->getStatus()=="SUGGESTED")) {
+    if ($is_runner || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
         if ($workitem->getStatus() != $status && !empty($status)){
             $workitem->setStatus($status);
             if (!empty($new_update_message)){  // add commas where appropriate
@@ -98,6 +114,16 @@ if($action =='save_workitem') {
 
     $redirectToDefaultView = true;
     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary.  $new_update_message";
+}
+
+if($action =='status-switch' && $user->getId() > 0){
+
+    $workitem->loadById($worklist_id);
+    $status = $_POST['quick-status'];
+    $workitem->setStatus($status);
+    $workitem->save();
+    $new_update_message = "Status set to $status. ";
+    $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
 }
 
 

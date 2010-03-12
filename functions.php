@@ -163,7 +163,7 @@ function DisplayFilter($filter_name, $reports = null)
 //$WorklistFilter = new Worklist_Filter();
     if($filter_name == 'sfilter')
     {
-        $status_array = array('ALL', 'SUGGESTED', 'WORKING','BIDDING', 'SKIP', 'DONE');
+        $status_array = array('ALL', 'SUGGESTED', 'WORKING', 'REVIEW', 'BIDDING', 'SKIP', 'DONE');
 
         echo "<select name='{$filter_name}' id='search-filter'>\n";
         foreach($status_array as $key => $status)

@@ -198,7 +198,7 @@ UPDATE '.WORKLIST.' SET
      */
     public function getWorkItem($worklist_id)
     {
-        $query = "SELECT w.id, w.summary,w.owner_id, u.nickname, w.status, w.notes
+        $query = "SELECT w.id, w.summary,w.owner_id, w.mechanic_id, u.nickname, w.status, w.notes
 			  FROM  ".WORKLIST. " as w
 			  LEFT JOIN ".USERS." as u ON w.owner_id = u.id
 			  WHERE w.id = '$worklist_id'";

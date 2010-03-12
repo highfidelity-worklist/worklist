@@ -8,7 +8,8 @@
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    $statusList = array("SUGGESTED", "BIDDING","WORKING","DONE","SKIP");
+    $statusList = array("SUGGESTED", "BIDDING","WORKING","REVIEW","DONE","SKIP");
+
     $allowEdit = false;
     if(($is_runner || $worklist['owner_id'] == $user_id)) {
         $allowEdit = true;
@@ -359,30 +360,32 @@ var documentsArray = new Array();
 	    </li>
 	    <li>
 	      <span class="info-label">Summary</span>
-	      <?php if($is_runner || $worklist['owner_id'] == $user_id): ?>
+	      <?php if($is_runner || $worklist['owner_id'] == $user_id){ ?>
 		<span>
 		<input type="text" size="33" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/><span>
-	      <?php else:?>
+	      <?php }else{?>
 	      <span><?php echo $worklist['summary'];?></span>
-	      <?php endif;?>
+	      <?php } ?>
 	    </li>
 	    <li>
 	    <span class="info-label">Status</span>
-	      <?php if ($is_runner):  ?>
+	      <?php if ($is_runner){  ?>
 		<select id="status" name="status">
-		<?php foreach($statusList as $status): ?>
+		<?php foreach($statusList as $status){ ?>
 		    <option value="<?php echo $status; ?>" <?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
-		<?php endforeach;?>
+		<?php }?>
 		</select>
-		<?php elseif (($worklist['owner_id'] == $user_id) && $worklist['status']=="SUGGESTED"): ?>
+		<?php }elseif ($worklist['owner_id'] == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?>
                   <select id="status" name="status">
-		    <option value="SUGGESTED" selected="selected">SUGGESTED</option>
-		    <option value="SKIP">SKIP</option>
+		    <option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
+		    <?php foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
+		    <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
+		    <?php } ?>
                   </select>
-		<?php else: ?>
+		<?php }else{ ?>
 		    <?php echo $worklist['status'];?>
 		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
-		<?php endif;?>
+		<?php } ?>
 	      </li>
               <li>
                 <span class="info-label">Owner</span>
@@ -436,6 +439,29 @@ var documentsArray = new Array();
               <span class="info-label">Status</span>
               <?php echo $worklist['status'];?>
               <input type="hidden" id="status" name="status" value = "BIDDING" />
+	      <?php 
+		    // quick status buttons for creators of items and mechanics working on them
+		    if(!$is_runner && ($worklist['owner_id'] == $user_id || $worklist['mechanic_id'] == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic)){
+
+			      foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
+
+		  <form method="post" action="" style = "display:inline;">
+		    <input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px;" />
+		    <input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+		  </form>
+
+			<?php } //2 buttons for runners to quickly adjust status
+		      }elseif($is_runner && array_key_exists($worklist['status'], $statusMapRunner)){
+
+			      foreach($statusMapRunner[$worklist['status']] as $status){?>
+
+		  <form method="post" action="" style = "display:inline;">
+		    <input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px;" />
+		    <input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+		  </form>
+
+			<?php }
+		    } ?>
 	    </li>
             <li>
               <span class="info-label">Owner</span>
