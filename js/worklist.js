@@ -212,8 +212,10 @@ jQuery.fn.DefaultValue = function(text){
 };
 
 $(function() {
-	$("#status-share").hide();	
+	$("#status-share").hide();
+	$('#share-this').hide();
 	$("#status-update").DefaultValue("What are you working on?");
+	$('#status-update').hide();
 	$("#query").DefaultValue("Search...");
 	
 	// When status-update gets focus enlarge and show the share button
@@ -221,22 +223,29 @@ $(function() {
 		$("#status-share").show();
 	});
 	
-	$("#status-wrap").mouseenter(function() {		
-		$("#status-share").show();		
+	$("#status-lbl").mouseenter(function() {
+		//document.getElementById('status-wrap').style.marginTop = "0px";
+		$('#status-lbl').hide();
+		$('#status-update').show();
+		$("#status-share").show();
+		//$('#share-this').show();
 	});
 	
 	//When status-update loses focus hide the share button and shrink the field
 	$("#status-wrap").mouseleave(function(){
+		//document.getElementById('status-wrap').style.marginTop = "5px";
+		$('#status-update').hide();
 		$("#status-share").hide();
-		$("#status-update").blur();		
+		//$('#share-this').hide();
+		$('#status-lbl').show();
 	});
 	
 		
 	//Submit the form using AJAX to the database
-	$("#status-share").click(function() {
-		$("#status-update").attr("disabled","true");
-		$("#status-share").attr("disabled","true");
-		
+	$("#status-share-btn").click(function() {
+		if($("#status-update").val() == "")	{
+			return false;
+		}
 		if($("#status-update").val() ==  "What are you working on?"){
 			$("#status-update").val("");
 		}
@@ -246,20 +255,14 @@ $(function() {
 			type: "POST",
 			data: "action=update&status=" + $("#status-update").val(),
 			dataType: "text",
-			success: function(){				
-				$("#status-update").removeClass("status-active").addClass("status-deactive");
-				$("#status-share").hide();	
-				
-				$("#status-update").attr("disabled","");
-				$("#status-share").attr("disabled","");
-				
-				if($("#status-update").val() == ""){
-					$("#status-update").val("What are you working on?");
-				}
+			success: function(){
+				$('#status-update').hide();
+				$('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
+				$('#status-lbl').show();
+				$("#status-share").hide();
+				$('#share-this').hide();
 			}
 		});
-		
-		
 		
 		return false;
 	});

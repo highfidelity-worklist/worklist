@@ -28,8 +28,16 @@ $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page numbe
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $journal_message = '';
+$nick = '';
 
 $workitem = new WorkItem();
+
+$userId = getSessionUserId();
+if( $userId > 0 )	{
+	$user = new User();
+	$user->findUserById( $userId );
+	$nick = $user->getNickname();
+}
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
 
@@ -1164,12 +1172,30 @@ include("head.html"); ?>
 </div>
 
 <br style="clear: both;" />
+<br/>
 <div id="status-wrap">
-<form action="" id="status-update-form">I am <input type="text"
-    maxlength="38" id="status-update" name="status-update"
-    value="<?php echo $current_status?>" /> <input type="submit"
-    value="share" id="status-share" /></form>
+	<form action="" id="status-update-form"><?php echo $nick?> is <span id="status-lbl"><b>
+		<?php echo $current_status?></b></span>
+		<input type="text" maxlength="45" id="status-update"
+		name="status-update" value="<?php echo $current_status?>"/>
+		<div id="status-share" style="float:right; width:200px;">
+			<input type="submit" value="Share" id="status-share-btn">
+			<!-- TODO: Add ShareThis popup to Share Button. -->
+			<!--<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal&amp;button=false"></script>
+			<script type="text/javascript">
+				var object = SHARETHIS.addEntry({
+					title='share',
+					summary='share is good'},
+					{button=false});
+					
+				var element=document.getElementById('status-share-btn');
+				object.attachButton(element);
+			</script> -->
+			</input>
+		</div>
+	</form>
 </div>
+
 <?php } ?>
 <div id="search-filter-wrap">
 <div style="float: right">

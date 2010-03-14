@@ -114,15 +114,21 @@ z-index: 1;
 
 /* Status Update Fields */
 #status-wrap {
-	float:left;
-	width: 380px;	
-	margin: 0 0 10px 0;		
-	}
+	position:absolute;
+	width: 50%;
+	line-height: 30px;
+	z-index:1;
+}
 
 #status-update {
-	width: 200px;
-	margin-top: 4px;
-	}
+	width: 40%;
+}
+	
+#sharethis_0	{
+	position:absolute;
+	margin-top: 3px;
+	margin-left: 20px;
+}
 
 #rewarder-point-info {
 	float: left;
