@@ -160,7 +160,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
 
     // Journal notification
-    $journal_message = "A bid of \${$bid_amount} was placed on item #$worklist_id: $summary.";
+    $journal_message = "A bid of ".number_format($bid_amount,2)." was placed on item #$worklist_id: $summary.";
 
     //sending email to the owner of worklist item
     $row = $workitem->getOwnerSummary($worklist_id);

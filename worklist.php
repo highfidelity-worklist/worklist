@@ -154,7 +154,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
     sl_notify_sms_by_id($workitem->getOwnerId(), $subject, "$${bid_amount}\n${urlacceptbid}");
 
     // Journal notification
-    $journal_message .= "A bid of \${$bid_amount} was placed on item #$itemid: $summary.";
+    $journal_message .= "A bid of ".number_format($bid_amount,2)." was placed on item #$itemid: $summary.";
 }
 
 //accepting a bid

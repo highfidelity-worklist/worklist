@@ -431,9 +431,8 @@ function withdrawBid($bid_id) {
         $user = getUserById($bid->bidder_id);
 
         // Journal message
-        $message  = $_SESSION['nickname'] . ' withdrew a bid of ';
-        $message .= $bid->bid_amount . ' on item #';
-        $message .= $job['id'] . ': ';
+        $message  = 'A bid of ' . $bid->bid_amount;
+        $message .= ' was withdrawn from item #' . $job['id'] . ': ';
         $message .= $job['summary'] . '.';
 
         // Journal notification
