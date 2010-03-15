@@ -16,8 +16,9 @@ function addEntry($writer, $entryData, $entryDescription) {
 	$entry = $writer->createEntry();
 	$entry->setTitle($entryData['title']); 
 	$entry->setLink(SERVER_URL . 'workitem.php?job_id=' . $entryData['worklist_id'] . '&action=view'); 
-	//$entry->setDescription($entryDescription);
-	$entry->setDescription($entryData['content']);   
+	// must supply a non-empty value for description
+	$content = !empty($entryData['content']) ? $entryData['content'] : "N/A";
+	$entry->setDescription($content);   
 	//$entry->setContent($entryData['content']); 
 	$entry->setDateCreated(time()); 
 	$entry->setDateModified(time()); 
