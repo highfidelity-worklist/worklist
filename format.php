@@ -72,13 +72,16 @@
 			$('.runrow').remove();
 			$('.mecrow').remove();
 			$('.feerow').remove();
+			$('.fee7row').remove();
+			$('.fee30row').remove();
 			$('.pastrow').remove();
 
 			// Set loading text and image
-			$('.table-statslist').append("<tr class='row'><td style='text-align:center; vertical-align:middle;' colspan='7'><img src='images/loader.gif'></img></td></tr>");
+			$('.table-fees-list').append("<tr class='fee30row'><td style='text-align:center; vertical-align:middle;' colspan='7'><img src='images/loader.gif'></img></td></tr>");
+			$('.table-fees-list7').append("<tr class='fee7row'><td style='text-align:center; vertical-align:middle;' colspan='7'><img src='images/loader.gif'></img></td></tr>");
 			$('.table-runners').append("<tr class='runrow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
 			$('.table-mechanics').append("<tr class='mecrow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
-			$('.table-feed-adders').append("<tr class='feerow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
+			$('.table-fee-adders').append("<tr class='feerow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
 			$('.table-past-due').append("<tr class='pastrow'><td style='text-align:center;  vertical-align:middle;' colspan='2'><img src='images/loader.gif'></td></tr>");
 
 			// From here on we load all the data
@@ -100,10 +103,31 @@
 						dataType: 'json',
 						success: function(json) {
 							var data = json['AVG(amount)'];
-							var shorted = Math.round(data*10)/10;
+							var shorted = Math.round(data*100)/100;
 							$('#span-fees').html('$' + shorted);
 						}
 					});
+				}
+			});
+
+			// Get last completed jobs in last 30 days
+			$.ajax({
+				type: "POST",
+				url: 'getstats.php',
+				data: 'req=feeslist&interval=30',
+				dataType: 'json',
+				success: function(json) {
+					$('.fee30row').remove();
+					var fees = json;
+					var rowCount = fees.length;
+					for ( var i = 0; i < rowCount; i++ )	{
+						var user = fees[i][0];
+						var funct = "javascript:ShowUserInfo('" + user + "');";
+						var row = '<tr class="row"><td onclick="' + funct + '">' + user + '</td>';
+						row += '<td>$' + fees[i][1] + '</td>';
+						row += '<td>' + fees[i][2] + '%</td></tr>';
+						$('.table-fees-list').append(row);
+					}
 				}
 			});
 
@@ -111,31 +135,20 @@
 			$.ajax({
 				type: "POST",
 				url: 'getstats.php',
-				data: 'req=table',
+				data: 'req=feeslist&interval=7',
 				dataType: 'json',
 				success: function(json) {
-					$('.row').remove();
-					fees = json;
-					for ( var i = 0; i < fees.length; i++ )	{
-						var paid;
-						if (fees[i][5] != 0)	{
-							paid = 'Yes';
-						}	else	{
-							paid = 'No';
-						}
-						var date = RelativeTime( fees[i][4] );
-						var user = fees[i][2];
-						var funct = "javascript:ShowUserInfo('" + user + "');";
-						var row = '<tr class="row"><td>' + fees[i][0] + '</td><td>' + fees[i][1] + '</td><td  onclick="' + funct + '" width="5%">'
-										+ user + '</td><td width="10%"style="text-align:right;">$'  + fees[i][3] +
-										'</td><td width="10%"style="text-align:right;">' + date +
-										'</td><td>' + paid + '</td></tr>';
-						$('.table-statslist').append(row);
-					}
+					$('.fee7row').remove();
+					var fees = json;
 					var rowCount = fees.length;
-					var endrow = '<tr class="row"><td style="font-weight: bold; text-align:center;" colspan ="7">' + rowCount +
-										' Jobs Completed</td></tr>';
-					$('.table-statslist').append(endrow);
+					for ( var i = 0; i < rowCount; i++ )	{
+						var user = fees[i][0];
+						var funct = "javascript:ShowUserInfo('" + user + "');";
+						var row = '<tr class="row"><td onclick="' + funct + '">' + user + '</td>';
+						row += '<td>$' + fees[i][1] + '</td>';
+						row += '<td>' + fees[i][2] + '%</td></tr>';
+						$('.table-fees-list7').append(row);
+					}
 				}
 			});
 
@@ -220,11 +233,11 @@
 						var row = '<tr class="feerow"><td  onclick="' + funct + '" >'+ user + '</td><td style="text-align:right;">' + data[i][1] +
 										'</td><td style="text-align:right;">$' + avg_fee  + '</td></tr>';
 
-						$('.table-feed-adders').append(row);
+						$('.table-fee-adders').append(row);
 					}
 					var totals_row = '<tr class="feerow"><td style="font-weight: bold;">Totals</td><td style="text-align: right; font-weight: bold;">'
 											+ total_tasks + '</td><td style="text-align: right; font-weight: bold;">$' + (Math.round( total_fees*10 )/10) + '</td></tr>';
-					$('.table-feed-adders').append(totals_row);
+					$('.table-fee-adders').append(totals_row);
 				}
 			});
 

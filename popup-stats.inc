@@ -4,22 +4,19 @@
 		<input type="hidden" name="page" value="<?php echo isset($page) ? $page : 0 ?>" class="popup-page-value" />
 
 		<div id = "for_view">
-		<p class="info-label" id="lbl-bids">Current biddings: <span id="span-bids"></span></p>
-		<p class="info-label" id="lbl-work">Current under work: <span id="span-work"></span></p>
+		<p class="info-label" id="lbl-bids">Jobs Bidding: <span id="span-bids"></span></p>
+		<p class="info-label" id="lbl-work">Jobs Under Way: <span id="span-work"></span></p>
 		<p class = "info-label" id="lbl-fees">Average fees/job: <span id="span-fees"></span></p>
 		</div>
 		
-		<p class="info-label"><br/>Jobs completed in the last 7 days<br/></p>
-		<div id="jobstats_block" style="overflow: auto; height: 250px; border: medium 2px;">
-			<table width="100%" class="table-statslist">
+		<div style="float:left; width:49%">
+			<p class="info-label"><br/>Fees added in the last 30 days<br/></p>
+			<table width="100%" class="table-fees-list">
 			<thead>
 				<tr class="table-hdng" >
-				<td>Id</td>
-				<td>Summary</td>
-				<td>Who</td>
-				<td style="text-align: right;">Fees</td>
-				<td style="text-align: right;">Finished</td>
-				<td>Paid</td>
+				<td>User</td>
+				<td>Fees</td>
+				<td>% of Total</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -27,7 +24,24 @@
 			</table>
 		</div>
 
-		<div style="float:left; width:49%;">
+		<div style="float:right; width:49%">
+			<p class="info-label"><br/>Fees added in the last 7 days<br/></p>
+			<table width="100%" class="table-fees-list7">
+			<thead>
+				<tr class="table-hdng" >
+				<td>User</td>
+				<td>Fees</td>
+				<td>% of Total</td>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+		</div>
+
+		<div style="clear: both"></div>
+
+		<div style="clear: left; float:left; width:49%;">
 			<p class="info-label"><br/>Top 10 runners<br/></p>
 			<table width="100%" class="table-runners">
 			<thead>
@@ -59,7 +73,7 @@
 		
 		<div style="float:left; width:49%;">
 			<p class="info-label"><br/>Top 10 fee adders<br/></p>
-			<table width="100%" class="table-feed-adders">
+			<table width="100%" class="table-fee-adders">
 			<thead>
 				<tr class="table-hdng">
 				<td>Mechanic</td>

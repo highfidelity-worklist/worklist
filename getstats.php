@@ -33,6 +33,36 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		$rt = mysql_fetch_assoc( $query );
 		echo json_encode( $rt );
 	
+	} else if( $req == 'feeslist' )	{
+		// Get Fees by person in last X days
+		$interval = !empty($_REQUEST['interval']) ? intval($_REQUEST['interval']) : 30;
+		$query = mysql_query("SELECT nickname, SUM(amount) as total FROM ".FEES." ".
+					"LEFT JOIN ".WORKLIST." ON ".FEES.".worklist_id = ".WORKLIST.".id ".
+					"LEFT JOIN ".USERS." ON ".FEES.".user_id = ".USERS.".id ".
+					"WHERE date >= DATE_SUB(NOW(), INTERVAL $interval DAY) AND status = 'DONE' ".
+                    "GROUP BY user_id ORDER BY total DESC");
+
+		$tmpList = array();
+        $feeList = array();
+		while ($query && ($rt = mysql_fetch_assoc($query))) {
+			$tmpList[] = array($rt['nickname'], $rt['total']);
+		}
+
+        $total = 0;
+		for ($i = 0; $i < count($tmpList); $i++) {
+			$total += $tmpList[$i][1];
+		}
+		$top10 = 0;
+		for ($i = 0; $i < 10 && $i < count($tmpList); $i++) {
+			$top10 += $tmpList[$i][1];
+			$feeList[$i] = $tmpList[$i];
+			$feeList[$i][2] = number_format($tmpList[$i][1] * 100 / $total, 2);
+		}
+		if (count($tmpList) > 10) {
+			$feeList[10] = array('Other', number_format($total - $top10, 2), number_format(($total - $top10) * 100 / $total, 2));
+        }
+		echo json_encode($feeList);
+
 	} else if( $req == 'table' )	{
 		// Get jobs done in last 7 days
 		$fees_q = mysql_query( "SELECT `".WORKLIST."`.`id`,`summary`,`nickname` as nick,
