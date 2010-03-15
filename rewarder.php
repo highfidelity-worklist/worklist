@@ -433,6 +433,8 @@ include("head.html"); ?>
                 <a href="rewarder.php?audit=1">Audit</a> |
                 Your Rewarder balance is <span id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span>
                 <?php } ?>
+            <?php } else { ?>
+            Your Rewarder balance is <span id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span>
             <?php } ?>
         </div>
         <div id="rewarder-team">

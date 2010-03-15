@@ -348,14 +348,6 @@ include("head.html"); ?>
         row += '">';
         if (prepend) { pre = '<div class="slideDown" style="display:none">'; post = '</div>'; }
         row += '<td width="50%" title="' +json[0]+'">' + pre + json[1] + post + '</td>';
-        //if the status is BIDDING - add link to show bidding popup
-        if (json[2] == 'BIDDING' && user_id != "nada"){
-            pre = '<a href="#" class = "bidding-link" id = "workitem-' + json[0] + '" >';
-            post = '</a>';
-            if (json[11] > 0 && (user_id == json[8] || is_runner == 1)) {
-                post = '</a> (' + json[11] + ')';
-            }
-        }
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
         pre = '';
         post = '';
@@ -480,54 +472,6 @@ include("head.html"); ?>
                 AppendRow(json[lastFirst-1], topIsOdd, true, json, lastFirst-1);
             }
             lastId = json[1][0];
-
-            /* Disabled: ToolTip(); */
-
-            $('.bidding-link').click(function(e){
-                var worklist_id = $(this).attr('id').substr(9);
-                ResetPopup();
-                GetBidlist(worklist_id, 1);
-
-		SimplePopup('#popup-bid',
-			    'Place Bid',
-			    worklist_id,
-			    [['input', 'itemid', 'keyId', 'eval']]);
-
-		$('.w9notice').empty();
-		$('#popup-bid').dialog('open');
-
-		$('#bid_amount').bind('blur', function(e) {
-			var amount = $(this).val();
-			var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
-			$.ajax({
-		        type: "POST",
-		        url: 'jsonserver.php',
-		        data: {
-                    action: 'checkUserForW9',
-					amount: amount,
-					userid: user
-		        },
-		        dataType: 'json',
-		        success: function(data) {
-			        $('.w9notice').empty();
-			        if (data.success === false) {
-						// Success message
-						var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">' +
-										'<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
-										'<strong>Info:</strong> With this bid your yearly income would exceed $600. To accept this and further bids we need a signed W-9 form from you.</p><p><a href="files/fw9.pdf">Download it right here!</a></p><p>You can upload it on your <a href="settings.php">Settings</a> Page. After we reviewed it your account will be unlocked.</p>' +
-									'</div>';
-						$('.w9notice').append(html);
-                        $('input[name=place_bid]').hide().parent('form').bind('submit', function() {return false;});
-			        }
-		        },
-		        failure: function(data) {
-
-		        }
-			});
-		});
-
-		return false;
-            });
 
 	    $('.row-worklist-live').bind('contextmenu', function(e) {
 		$('#pages-dialog').dialog('open');
