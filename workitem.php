@@ -199,7 +199,7 @@ if ($action=='accept_bid'){
 	//$item_id = $workitem->getWorkItemByBid($bid_id);
 	$item_id = intval($_REQUEST['job_id']);
 	$workitem->loadById($item_id);
-	if (($is_runner == 1 || $workitem->getOwnerId() == $user->getId()) && !$workitem->hasAcceptedBids($item_id)) {
+	if (($is_runner == 1 || $workitem->getOwnerId() == $user->getId()) && !$workitem->hasAcceptedBids($item_id) && (strtoupper($workitem->getStatus()) == "BIDDING")) {
 		// query to get a list of bids (to use the current class rather than breaking uniformity)
 		// I could have done this quite easier with just 1 query and an if statement..
 		$bids = (array) $workitem->getBids($item_id);
