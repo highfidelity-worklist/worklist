@@ -348,6 +348,9 @@ include("head.html"); ?>
         row += '">';
         if (prepend) { pre = '<div class="slideDown" style="display:none">'; post = '</div>'; }
         row += '<td width="50%" title="' +json[0]+'">' + pre + json[1] + post + '</td>';
+        if (json[2] == 'BIDDING' && json[11] > 0 && (user_id == json[8] || is_runner == 1)) {
+            post = ' (' + json[11] + ')';
+        }
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
         pre = '';
         post = '';
