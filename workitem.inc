@@ -323,8 +323,14 @@ var documentsArray = new Array();
 <?php include("format.php"); ?>
 
     <div id="popup-buttons">
+	<?php
+		if ($erroneous) {
+			echo "	<div style='color: red; text-align: center;'>{$the_errors}</div>";
+		}
+	?>
 	<form method="get" action="">
-	 <a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
+
+	 <div><a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a></div>
 <?php if($user_id): ?>
       <?php if ($worklist['status'] == 'BIDDING'): ?>
 	<input type="submit" value="Add Bid" onclick="return showPlaceBidForm();"/>

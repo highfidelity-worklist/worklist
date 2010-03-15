@@ -195,27 +195,46 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
 if ($action=='accept_bid'){
     $bid_id = intval($_REQUEST['bid_id']);
     //only runners can accept bids
-    $item_id = $workitem->getWorkItemByBid($bid_id);
-    $workitem->loadById($item_id);
-    if (($is_runner == 1 || $workitem->getOwnerId() == $user->getId()) && !$workitem->hasAcceptedBids($item_id)) {
-        $bid_info = $workitem->acceptBid($bid_id);
-        $item_id = $workitem->getWorkItemByBid($bid_id);
+	//commenting out extra query which makes no sense
+	//$item_id = $workitem->getWorkItemByBid($bid_id);
+	$item_id = intval($_REQUEST['job_id']);
+	$workitem->loadById($item_id);
+	if (($is_runner == 1 || $workitem->getOwnerId() == $user->getId()) && !$workitem->hasAcceptedBids($item_id)) {
+		// query to get a list of bids (to use the current class rather than breaking uniformity)
+		// I could have done this quite easier with just 1 query and an if statement..
+		$bids = (array) $workitem->getBids($item_id);
+		$exists = false;
+		foreach ($bids as $array) {
+			if ($array['id'] == $bid_id) {
+				$exists = true;
+				break;
+			}
+		}
+		if ($exists) {
+			$bid_info = $workitem->acceptBid($bid_id);
+			//commenting out redundancy, uncomment later if needed.. highly unlikely
+			//$item_id = $workitem->getWorkItemByBid($bid_id);
 
-        // Journal notification
-        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
+			// Journal notification
+			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
 
-        //sending email to the bidder
-        $subject = "Bid accepted: " . $bid_info['summary'];
-        $body = "Your bid was accepted for <a href='" . SERVER_URL . "workitem.php?job_id=$item_id'>#$item_id</a><br>\n";
-        $body .= "Promised by: {$_SESSION['nickname']}</p>";
-        $body .= "<p>Love,<br/>Worklist</p>";
-        sl_send_email($bid_info['email'], $subject, $body);
-        sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);
-        $redirectToDefaultView = true;
+			//sending email to the bidder
+			$subject = "Bid accepted: " . $bid_info['summary'];
+			$body = "Your bid was accepted for <a href='" . SERVER_URL . "workitem.php?job_id=$item_id'>#$item_id</a><br>\n";
+			$body .= "Promised by: {$_SESSION['nickname']}</p>";
+			$body .= "<p>Love,<br/>Worklist</p>";
+			sl_send_email($bid_info['email'], $subject, $body);
+			sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);
+			$redirectToDefaultView = true;
 
-        // Send email to not accepted bidders
-        sendMailToDiscardedBids($worklist_id);
-    }
+			// Send email to not accepted bidders
+			sendMailToDiscardedBids($worklist_id);
+		}
+		else {
+			$_SESSION['workitem_error'] = "Failed to accept bid, bid has been withdrawn!";
+			$redirectToDefaultView = true;
+		}
+	}
 }
 
 //Withdraw a bid
@@ -249,7 +268,13 @@ if(isset($postProcessUrl)) {
     header("Location: " . $postProcessUrl);
     die();
 }
-
+// handle the makeshift error I made..
+$erroneous = false;
+if (isset($_SESSION['workitem_error'])) {
+	$erroneous = true;
+	$the_errors = $_SESSION['workitem_error'];
+	unset($_SESSION['workitem_error']);
+}
 // Process the request normally and display the page.
 
 //get worklist
