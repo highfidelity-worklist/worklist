@@ -14,17 +14,22 @@ include("functions.php");
 $con=mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
 mysql_select_db(DB_NAME,$con);
 
-$userList = GetUserList($_SESSION['userid'], $_SESSION['nickname'], true);
-
 $user = new User();
 $user->findUserById($_SESSION['userid']);
 
-/* Strip users already in the rewarderList */
-$rewarderList = GetRewarderUserList($_SESSION['userid']);
-foreach ($rewarderList as $info) {
-    unset($userList[$info[0]]);
-}
+$audit_mode = ($user->getIs_auditor() && !empty($_REQUEST['audit'])) ? 1 : 0;
 
+if ($audit_mode) {
+    $userList = GetUserList($_SESSION['userid'], $_SESSION['nickname'], true, array('is_auditor'));
+} else {
+    $userList = GetUserList($_SESSION['userid'], $_SESSION['nickname'], true);
+
+    /* Strip users already in the rewarderList */
+    $rewarderList = GetRewarderUserList($_SESSION['userid']);
+    foreach ($rewarderList as $info) {
+        unset($userList[$info[0]]);
+    }
+}
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -35,7 +40,8 @@ include("head.html"); ?>
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript">
     var rewarder = {
-        availPoints: <?php echo $user->getRewarder_points() ?>,
+        auditMode: <?php echo $audit_mode ? "true" : "false" ?>,
+        availPoints: <?php echo $audit_mode ? 0 : $user->getRewarder_points() ?>,
         maxPoints: 0,
         container: null,
         usersContainer: null,
@@ -48,7 +54,12 @@ include("head.html"); ?>
         addNewUser: function(newUser, pos) {
             var span = $('<span></span>')
                 .text(newUser[1]);
-            var user = $('<h6 class="user'+newUser[0]+'"></h6>').append(span).css('top', pos * this.userHeight);
+            var user = $('<h6 class="user'+newUser[0]+'"></h6>').append(span).css('top', pos * this.userHeight).data('userid', newUser[0]);
+            if (rewarder.auditMode) {
+                user.addClass('user-popup').click(function(){
+                    rewarder.displayRewarderUserDetail($(this).data('userid'));
+                });
+            }
             this.usersContainer.append(user);
 
             if (rewarder.userHeight == 0) {
@@ -58,15 +69,19 @@ include("head.html"); ?>
 
             var userPoints = newUser[2]|0;
 
-            var remover = $('<div class="chart-remover user'+newUser[0]+'"><div>')
-                .data('userid', newUser[0])
-                .css('top', pos * rewarder.userHeight)
-                .click(function(){
-                    rewarder.deleteRewarderUser($(this).data('userid'), 0);
-                });
-            this.chartContainer.append(remover);
+            var remover = null;
+            if (!rewarder.auditMode) {
+                remover = $('<div class="chart-remover user'+newUser[0]+'"><div>')
+                    .data('userid', newUser[0])
+                    .css('top', pos * rewarder.userHeight)
+                    .click(function(){
+                        rewarder.deleteRewarderUser($(this).data('userid'), 0);
+                    });
+                this.chartContainer.append(remover);
+            }
 
             var thumb = $('<div class="chart-thumb">'+rewarder.getPointsText(newUser[2])+'</div>');
+            if (rewarder.auditMode) thumb.addClass('chart-thumb-static');
             chart = $('<div class="chart-bar user'+newUser[0]+'"></div>')
                 .append(thumb)
                 .data('userid', newUser[0])
@@ -87,6 +102,8 @@ include("head.html"); ?>
          *       element and not the rewarder object.
          */
         bindDragEvents: function(i) {
+            if (rewarder.auditMode) return;
+
             var bar, thumb;
             var dragStartX, thumbStartX, startPoints;
 
@@ -157,7 +174,7 @@ include("head.html"); ?>
             return combinedList;
         },
 
-        deleteRewarderUser: function(userid){
+        deleteRewarderUser: function(userid) {
             $.ajax({
                 url: 'update-rewarder-user.php',
                 data: 'id='+userid+'&delete=1',
@@ -169,6 +186,40 @@ include("head.html"); ?>
                     $('#rewarder-points').text(rewarder.getPointsText(rewarder.availPoints));
 
                     rewarder.updateRewarderList(json[1]);
+                }
+            });
+        },
+
+        displayRewarderUserDetail: function(userid) {
+            $.ajax({
+                url: 'get-rewarder-user-detail.php',
+                data: 'id='+userid,
+                dataType: 'json',
+                type: "POST",
+                cache: false,
+                success: function(json) {
+                    var detailHTML = 
+                        '<div id="detail" title="Rewarder Detail for '+json[0]+'">' +
+                        '  <table style="text-align: left">' +
+                        '    <tr><th style="width: 120px">User</th><th style="width: 100px">Points</th></tr>';
+
+                    for (var i = 0; i < json[1].length; i++) {
+                        detailHTML += '    <tr><td>'+json[1][i][0]+'</td><td>'+json[1][i][1]+' points</td></tr>';
+                    }
+
+                    detailHTML +=
+                        '  </table>' +
+                        '  <form id="detailForm" method="post">' +
+                        '    <input type="submit" name="submit" value="Ok" />' +
+                        '  </form>';
+                    '</div>';
+                    var detail = $(detailHTML).dialog({ modal: true, width: 'auto', height: 'auto' });
+
+                    $("#detailForm").submit(function(){
+                        detail.dialog('close');
+                        detail.remove();
+                        return false;
+                    });
                 }
             });
         },
@@ -189,6 +240,18 @@ include("head.html"); ?>
             return txt;
         },
 
+        loadAuditList: function() {
+            $.ajax({
+                url: 'get-audit-list.php',
+                dataType: 'json',
+                type: "POST",
+                cache: false,
+                success: function(json) {
+                    rewarder.updateRewarderList(json);
+                }
+            });
+        },
+
         loadRewarderList: function() {
             $.ajax({
                 url: 'get-rewarder-list.php',
@@ -200,6 +263,25 @@ include("head.html"); ?>
                     $('#rewarder-points').text(rewarder.getPointsText(rewarder.availPoints));
 
                     rewarder.updateRewarderList(json[1]);
+                }
+            });
+        },
+
+        toggleRewarderAuditor: function(el){
+            var userid = el.val();
+            $.ajax({
+                url: 'update-rewarder-auditor.php',
+                data: 'id='+userid+'&toggle=1',
+                type: "POST",
+                cache: false,
+                success: function(data) {
+                    var opt = el.find('option:selected');
+                    if (opt.text()[0] == '*') {
+                        opt.text(opt.text().substr(2));
+                    } else {
+                        opt.text('* '+opt.text());
+                    }
+                    opt.attr('selected','');
                 }
             });
         },
@@ -274,19 +356,6 @@ include("head.html"); ?>
                 rewarder.updateChart(chart, thumb, newRewarderList[i][2]|0);
             }
 
-            this.usersContainer.find('span')
-                .unbind()
-                .mouseenter(function(e){
-                    var msg = 'Never'; 
-                    $('#livetip')
-                    .css({ top: e.pageY - 8, left: e.pageX + 12 })
-                    .html('<div>' + msg + '</div>')
-                    .show();
-                    })
-                .mouseleave(function(){
-                    $('#livetip').hide();
-                    });
-
             this.rewarderList = newRewarderList;
         },
 
@@ -324,12 +393,21 @@ include("head.html"); ?>
     };
 
     $(window).ready(function(){
-        $('#user-list').change(function(){
-            var userid = $(this).val();
-            rewarder.updateRewarderUser(userid, 0);
-            $(this).find('option:selected').remove();
-        });
-        rewarder.loadRewarderList();
+        if (rewarder.auditMode) {
+            $('#user-list').change(function(){
+                rewarder.toggleRewarderAuditor($(this));
+            });
+
+            rewarder.loadAuditList();
+        } else {
+            $('#user-list').change(function(){
+                var userid = $(this).val();
+                rewarder.updateRewarderUser(userid, 0);
+                $(this).find('option:selected').remove();
+            });
+    
+            rewarder.loadRewarderList();
+        }
     });
 </script>
 
@@ -347,13 +425,33 @@ include("head.html"); ?>
     <h1>Rewarder</h1>
 
     <div id="rewarder-controls">
-        <div id="rewarder-point-info">Your Rewarder balance is <span id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span></div>
+        <div id="rewarder-point-info">
+           <?php if ($_SESSION['is_auditor']) { ?>
+                <?php if ($audit_mode) { ?>
+                <a href="rewarder.php">Award</a>
+                <?php } else { ?>
+                <a href="rewarder.php?audit=1">Audit</a> |
+                Your Rewarder balance is <span id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span>
+                <?php } ?>
+            <?php } ?>
+        </div>
         <div id="rewarder-team">
+            <?php if ($audit_mode) { ?>
+            <label for="user-list">Manage Auditors:</label>&nbsp;
+            <?php } else { ?>
             <label for="user-list">Reward:</label>&nbsp;
+            <?php } ?>
             <select id="user-list" name="user-list">
-                <option value="0">-- team member --</option>
-                <?php foreach ($userList as $userid=>$nickname) { ?>
-                <option value="<?php echo $userid ?>"><?php echo $nickname ?></option>
+                <?php if ($audit_mode) { ?>
+                    <option value="0">-- toggle auditor --</option>
+                    <?php foreach ($userList as $userid=>$info) { ?>
+                    <option value="<?php echo $userid ?>"><?php echo ($info['is_auditor'] ? '* ' : '') . $info['nickname'] ?></option>
+                    <?php } ?>
+                <?php } else { ?>
+                    <option value="0">-- team member --</option>
+                    <?php foreach ($userList as $userid=>$nickname) { ?>
+                    <option value="<?php echo $userid ?>"><?php echo $nickname ?></option>
+                    <?php } ?>
                 <?php } ?>
             </select>
         </div>

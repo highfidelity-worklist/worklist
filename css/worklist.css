@@ -132,12 +132,12 @@ z-index: 1;
 
 #rewarder-point-info {
 	float: left;
-	line-height: 20p;x
+	line-height: 20px;
 }
 
 #rewarder-team {
 	float: right;
-	line-height: 20p;x
+	line-height: 20px;
 }
 
 #rewarder-container {
@@ -159,6 +159,10 @@ z-index: 1;
 #rewarder-users h6 {
 	padding-top:8px;
 	position:absolute;
+}
+
+#rewarder-users h6.user-popup {
+	cursor: pointer;
 }
 
 #rewarder-users span {
@@ -208,4 +212,8 @@ z-index: 1;
 #rewarder-chart .chart-thumb.chart-negative {
 	background-color: #D24B3F;
 	color: #601710;
+}
+
+#rewarder-chart .chart-thumb-static {
+	cursor: default;
 }

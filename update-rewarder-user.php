@@ -49,7 +49,6 @@ if ($rt && ($row = mysql_fetch_assoc($rt))) {
 }
 
 if ($newUser || $delete || $delta != 0) {
-error_log($query);
     $rt = mysql_query($query);
     if ($rt) {
         $user->setRewarder_points($availPoints - $delta);

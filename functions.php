@@ -83,6 +83,7 @@ function initSessionData($user) {
     $_SESSION['timezone']           = $user_row['timezone'];
     $_SESSION['is_runner']          = intval($user_row['is_runner']);
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
+    $_SESSION['is_auditor']         = intval($user_row['is_auditor']);
 }
 
 function isEnabled($features) {
@@ -101,6 +102,26 @@ function isSuperAdmin() {
     }
 }
 
+/*  Function: GetRewarderAuditList
+ *
+ *  Purpose: return the complete list of rewardered users and their rewards - EXCEPT the user specified
+ *
+ *  Parameters: userid - The userid of the user to exclude from the audit list.
+ */
+function GetRewarderAuditList($userid) {
+    $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, SUM(`".REWARDER."`.`rewarder_points`) AS `total_points` FROM `".REWARDER."` ".
+           "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
+           "WHERE `receiver_id`!='$userid' AND `".REWARDER."`.`rewarder_points` > 0 GROUP BY `receiver_id` ORDER BY `receiver_nickname` ASC";
+    $rt = mysql_query($sql);
+
+    $rewarderList = array();
+    while ($rt && ($row = mysql_fetch_assoc($rt))) {
+        $rewarderList[] = array($row['receiver_id'], $row['receiver_nickname'], $row['total_points']);
+    }
+
+    return $rewarderList;
+}
+
 /*  Function: GetRewarderUserList
  *
  *  Purpose: return the list of rewarder users for a given user.
@@ -110,7 +131,7 @@ function isSuperAdmin() {
 function GetRewarderUserList($userid) {
     $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, `".REWARDER."`.`rewarder_points` FROM `".REWARDER."` ".
            "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
-           "WHERE `giver_id`='$userid' ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
+           "WHERE `giver_id`='$userid' AND `".USERS."`.`confirm`=1 ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
     $rt = mysql_query($sql);
 
     $rewarderList = array();
@@ -128,9 +149,16 @@ function GetRewarderUserList($userid) {
  *  Parameters: userid - The userid of the user signed in.
  *              nickname - The nickname of the user signed in.
  *              skipUser - If true, don't include the row for the user passed in.
+ *              attrs - list of additional attributes to return
  */
-function GetUserList($userid, $nickname, $skipUser=false) {
-    $rt = mysql_query("SELECT `id`, `nickname` FROM `users` WHERE `id`!='{$userid}' and `confirm`='1' ORDER BY `nickname`");
+function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
+    if (!empty($attrs)) {
+        $extra = ", `" . implode("`,`", $attrs) . "`"; 
+    } else {
+        $extra = "";
+    }
+
+    $rt = mysql_query("SELECT `id`, `nickname` $extra  FROM `users` WHERE `id`!='{$userid}' and `confirm`='1' ORDER BY `nickname`");
 
     $userList = array();
     if (!$skipUser && !empty($userid) && !empty($nickname)) {
@@ -140,7 +168,14 @@ function GetUserList($userid, $nickname, $skipUser=false) {
 
     while ($rt && $row = mysql_fetch_assoc($rt)) {
         if (!$skipUser || $userid != $row['id']) {
-            $userList[$row['id']] = $row['nickname'];
+            if (empty($attrs)) {
+                $userList[$row['id']] = $row['nickname'];
+            } else {
+                $userList[$row['id']] = array('nickname'=>$row['nickname']);
+                foreach ($attrs as $attr) {
+                    $userList[$row['id']][$attr] = $row[$attr];
+                }
+            }
         }
     }
 

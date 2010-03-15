@@ -26,6 +26,7 @@ class User
 	protected $has_w9approval;
 	protected $is_runner;
 	protected $is_payer;
+	protected $is_auditor;
 	protected $journal_nick;
 	protected $is_guest;
 	protected $phone;
@@ -419,6 +420,21 @@ class User
 	 */
 	public function setHas_w9approval($has_w9approval) {
 		$this->has_w9approval = $has_w9approval;
+	}
+
+	/**
+	 * @return the $is_auditor
+	 */
+	public function getIs_auditor() {
+		return $this->is_auditor;
+	}
+
+	/**
+	 * @param $is_auditor the $is_auditor to set
+	 */
+	public function setIs_auditor($is_auditor) {
+		$this->is_auditor = $is_auditor;
+		return $this;
 	}
 
 	public function getIs_runner() {
