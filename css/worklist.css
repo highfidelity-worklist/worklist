@@ -8,14 +8,16 @@
 	display: none;
 }
 
-.popup-body
+.popup-body, .user-info
 {
     padding: 8px;
     text-align: left;
 }
 
 .popup-body input[type="text"], .popup-body textarea,
-.popup-body select
+.popup-body select,
+.user-info input[type="text"], .user-info textarea,
+.user-info select
 {
     font-size: 14px;
     font-family: helvetica, arial, sans-serif;
@@ -26,14 +28,14 @@
     height: 110px;
 }
 
-.popup-body input.date {
+.popup-body input.date, .user-info input.date {
     width: 130px;
 }
-.popup-body input.money {
+.popup-body input.money, .user-info input.money {
     width: 50px;
 }
 
-.popup-body p
+.popup-body p, .user-info p
 {
     margin: 0 0 2px;
 }
@@ -213,6 +215,8 @@ z-index: 1;
 	background-color: #D24B3F;
 	color: #601710;
 }
+
+
 
 #rewarder-chart .chart-thumb-static {
 	cursor: default;

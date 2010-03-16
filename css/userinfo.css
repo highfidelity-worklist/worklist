@@ -1,0 +1,47 @@
+body {
+    background-color: white;
+    background-image: none;
+}
+.user-info p{
+    font-size: 1.3em;
+    margin: 0;
+}
+
+#unixusername, #projects{
+    width: 200px;
+} 
+
+.left-column, .right-column{
+    width: 300px;
+    float: left;
+}
+.left-column {
+    margin-right: 10px;
+}
+
+#reward-link {
+  float: right;
+  margin-right: 3em;
+}
+
+#quick-reward {
+    display:none;
+    text-align: left;
+}
+
+#quick-reward p {
+    font-size: 1.2em;
+} 
+
+#quick-reward input[type="text"] {
+    width: 3em;
+}
+
+#quick-reward .labelo {
+    display: inline-block;
+    width: 11em;
+}
+
+#quick-reward .points {
+    font-weight: bold;
+}

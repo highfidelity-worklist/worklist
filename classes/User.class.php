@@ -34,6 +34,9 @@ class User
 	protected $country;
 	protected $provider;
 	protected $rewarder_points;
+	protected $has_sandbox;
+	protected $unixusername;
+	protected $projects_checkedout;
 	
     /**
      * With this constructor you can create a user by passing an array.
@@ -566,6 +569,51 @@ class User
 	 */
 	public function setRewarder_points($points) {
 		$this->rewarder_points = $points;
+		return $this;
+	}
+////////////
+	/**
+	 * @return the $has_sandbox
+	 */
+	public function getHas_sandbox() {
+		return $this->has_sandbox;
+	}
+
+	/**
+	 * @param $sendbox_status: status of the sandbox
+	 */
+	public function setHas_sandbox($sendbox_status) {
+		$this->has_sandbox = $sendbox_status;
+		return $this;
+	}
+
+	/**
+	 * @return the $unixusername
+	 */
+	public function getUnixusername() {
+		return $this->unixusername;
+	}
+
+	/**
+	 * @param $unixusername: unix username to set
+	 */
+	public function setUnixusername($unixusername) {
+		$this->unixusername = $unixusername;
+		return $this;
+	}
+
+	/**
+	 * @return the $projects_checkedout
+	 */
+	public function getProjects_checkedout() {
+		return $this->projects_checkedout;
+	}
+
+	/**
+	 * @param $projects_checkedout: projects checked out for user
+	 */
+	public function setProjects_checkedout($projects_checkedout) {
+		$this->projects_checkedout = $projects_checkedout;
 		return $this;
 	}
 

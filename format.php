@@ -49,8 +49,6 @@
 			<?php } ?>
 		</div>
 
-		<!-- Popup for user info-->
-		<?php require_once('popup-user-info.inc') ?>
 		<script type="text/javascript">
 		// Code for stats
         $(function() {

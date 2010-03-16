@@ -17,13 +17,6 @@ mysql_select_db( DB_NAME,$con );
 $cur_letter = isset( $_POST['letter'] ) ? $_POST['letter'] : "all";
 $cur_page = isset( $_POST['page'] ) ? intval($_POST['page'] ) : 1;
 
-if( isset( $_POST['save_roles'] ) && !empty( $_SESSION['is_runner'] ) ){ //only runners can change other user's roles info
-    $is_runner = isset($_POST['isrunner']) ? 1 : 0;
-    $is_payer = isset($_POST['ispayer']) ? 1 : 0;
-    $user_id = intval($_POST['userid']);
-    mysql_unbuffered_query("UPDATE `users` SET `is_runner`='$is_runner', `is_payer`='$is_payer' WHERE `id` =".$user_id);
-}
-
 $sfilter = !empty( $_POST['sfilter'] ) ? $_POST['sfilter'] : 'PAID';
 
 /*********************************** HTML layout begins here  *************************************/
@@ -33,9 +26,13 @@ include("head.html"); ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
+<link href="css/thickbox.css" rel="stylesheet" type="text/css" >
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/fancybox/jquery.fancybox-1.3.1.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
+<script type="text/javascript" src="js/jquery.fancybox-1.3.1.pack.js"></script>
+<script type="text/javascript" src="js/jquery.easing-1.3.pack.js"></script>
 
 <script type="text/javascript">
   var current_letter = '<?php echo $cur_letter; ?>';
@@ -50,7 +47,7 @@ include("head.html"); ?>
   $(document).ready(function(){
 
     $('#outside').click(function() { //closing userbox on clicking outside of it
-      $('#popup-user-info').dialog('close');
+      $('#user-info').dialog('close');
     });
 
     fillUserlist(current_page);
@@ -61,8 +58,6 @@ include("head.html"); ?>
       fillUserlist(1);
       return false;
     });
-
-    $('#popup-user-info').dialog({ autoOpen: false});
 
     //table sorting thing
     $('.table-userlist thead tr th').hover(function(e){
@@ -108,7 +103,20 @@ include("head.html"); ?>
         fillUserlist(current_page);
         return false;
     });
+
+   $('#user-info').dialog({
+           autoOpen: false,
+           modal: true,
+           height: 500,
+           width: 700
+       });
   });
+
+  function showUserInfo(userId){
+    $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
+    $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+    return false;
+  }
 
   function fillUserlist(npage){
     current_page = npage;
@@ -122,9 +130,6 @@ include("head.html"); ?>
 
 	    $('.ln-letters a').removeClass('ln-selected');
 	    $('.ln-letters a.' + current_letter).addClass('ln-selected');
-	    //to be on the same page and letter after reloading
-	    $('#popup-user-info #hid_letter').val(current_letter);
-	    $('#popup-user-info #hid_page').val(npage);
 		
 		page = json[0][1]|0;
         var cPages = json[0][2]|0;
@@ -148,9 +153,15 @@ include("head.html"); ?>
 		$('tr.row-userlist-live').click(function(){
 			var match = $(this).attr('class').match(/useritem-\d+/);
 			var userid = match[0].substr(9);
-			populateUserPopup(userid);
-			$('#popup-user-info').dialog('open');
+			showUserInfo(userid);
 			return false;
+		});
+
+		$('a.fancylink').fancybox({
+			'hideOnContentClick': true,
+			'width': 650,
+			'height': 400,
+
 		});
 
 	    if(cPages > 1){ //showing pagination only if we have more than one page
@@ -193,88 +204,6 @@ include("head.html"); ?>
       return pagination;
   }
 
-  function populateUserPopup(userid){
-    $('#popup-user-info  #popup-form input[type="submit"]').remove();
-    $('#roles').show();
-    $.ajax({
-      type: "POST",
-      url: 'getuseritem.php',
-      data: 'req=item&item='+userid,
-      dataType: 'json',
-      success: function(json) {
-	  $('#popup-user-info #userid').val(json[0]);
-	  $('#popup-user-info #info-nickname').text(json[1]);
-	  $('#popup-user-info #info-email').text(json[2]);
-	  $('#popup-user-info #info-about').text(json[3]);
-	  $('#popup-user-info #info-contactway').text(json[4]);
-	  $('#popup-user-info #info-payway').text(json[5]);
-	  $('#popup-user-info #info-skills').text(json[6]);
-	  $('#popup-user-info #info-timezone').text(json[7]);
-	  $('#popup-user-info #info-joined').text(json[8]);
-	  if(json[9] == "1"){
-	    $('#popup-user-info #info-isrunner').attr('checked', 'checked');
-	  }else{
-	    $('#popup-user-info #info-isrunner').attr('checked', '');
-	  }
-	  if(json[10] == "1"){
-	    $('#popup-user-info #info-ispayer').attr('checked', 'checked');
-	  }else{
-	    $('#popup-user-info #info-ispayer').attr('checked', '');
-	  }
-	  
-	  if(runner == 1){
-	    $('#popup-user-info #info-isrunner').attr('disabled', ''); 
-	    $('#popup-user-info #info-ispayer').attr('disabled', ''); 
-	  }else{
-	    $('#popup-user-info #info-isrunner').attr('disabled', 'disabled'); 
-	    $('#popup-user-info #info-ispayer').attr('disabled', 'disabled'); 
-	  }
-	  if(json[0] == logged_id){
-	    //adding "Edit" button
-	    $('#popup-user-info #popup-form').append('<input type="submit" name="edit" value="Edit">');
-	  }
-
-		$.ajax({
-	        type: "POST",
-	        url: 'jsonserver.php',
-	        data: {
-				action: 'approvalStatus',
-				userid: $('#popup-user-info #userid').val()
-	        },
-	        dataType: 'json',
-	        success: function(data) {
-		        if (data.success === true) {
-					if (data.approved === true) {
-						$('#approve').attr('checked', 'checked').attr('disabled', 'disabled');
-					} else {
-						$('#approve').removeAttr('checked').removeAttr('disabled');
-						$('#approve').bind('click', function() {
-							$.ajax({
-								type: 'POST',
-								url: 'jsonserver.php',
-								data: {
-									action: 'approveUser',
-									userid: $('#popup-user-info #userid').val()
-								},
-								dataType: 'json',
-								success: function(data) {
-									if (data.success === true) {
-										$('#approve').attr('checked', 'checked').attr('disabled', 'disabled');
-									}
-								}
-							});
-						});
-					}
-		        }
-	        }
-		});
-	  
-      },
-      error: function(xhdr, status, err) {
-      }
-  });
-  }
-
     function AppendUserRow(json, odd)
     {
         var row;
@@ -288,7 +217,7 @@ include("head.html"); ?>
 	}else{
 	    is_runner = 'No';
 	}
-        row += '<td >' + is_runner + '</td>';
+        row += '<td >' + '<a class="fancylink iframe" href="userinfo.php?id=' + json.id + '"></a>  ' + is_runner + '</td>';
 	row += '<td >' + json.created_count + '</td>';
 	row += '<td >' + json.mechanic_count + '</td>';
 	row += '<td >' + json.bids_placed + '</td>';
@@ -321,7 +250,6 @@ include("head.html"); ?>
 <body>
 
 <?php
-	include_once("popup-user-info.inc");
 	include("format.php");
 ?>
 
@@ -365,5 +293,6 @@ include("head.html"); ?>
     </table>
 <br/>
 <div class="ln-pages"></div>
+<div id="user-info" title="User Info"></div>
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php"); ?>
