@@ -1,4 +1,4 @@
-<?php ob_start(); 
+<?php ob_start();
 //
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
@@ -12,6 +12,8 @@ include("functions.php");
 include("timezones.php");
 include("countrylist.php");
 include("smslist.php");
+
+require_once 'lib/Sms.php';
 
 $con=mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
 mysql_select_db(DB_NAME,$con);
@@ -36,11 +38,6 @@ $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST[
 $phone_sql = '';
 if (isset($_POST['phone_edit']))
 {
-	// compute smsaddr from phone and provider
-	$prov_address = $smslist[$_POST['country']][$_POST['provider']];
-	$phone = preg_replace('/\D/', '', $_POST['phone']);
-	$_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
-
 	$phone_sql_parts = array();
 	$phone_keys = array('phone', 'country', 'smsaddr', 'provider');
 
@@ -60,7 +57,7 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
         $_SESSION['nickname'] = $_POST['nickname'];
         $messages[] = "Your nickname is now '$nickname'.";
 
-    } 
+    }
 
     //updating user info in database
     $args = array('nickname', 'contactway', 'payway', 'skills', 'timezone');
@@ -214,7 +211,7 @@ include("head.html"); ?>
 	        success: function(data) {
 		        if ((data.success === true) && (data.isuscitizen === true)) {
 					$('input[name=uscitizen]').attr('checked', 'checked');
-					
+
 					$('#w9upload').show();
 		        }
 	        }
@@ -248,10 +245,10 @@ include("head.html"); ?>
 		  </p>
 		</div>
 		<script type="text/javascript">
-		  var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});                                    
+		  var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});
 		  nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
 		</script>
-				
+
 <?php include("sms-inc.php"); ?>
 
                 <p><label>Current Password<br />
@@ -273,20 +270,20 @@ include("head.html"); ?>
                 </label></p>
                 <script type="text/javascript">
                 var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
-                confirmpassword.add(Validate.Confirmation, { match: 'newpassword'} ); 
+                confirmpassword.add(Validate.Confirmation, { match: 'newpassword'} );
                 </script>
                  </div>
-                
+
                 <div class="LVspacelg" style="height:88px">
                 <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo $userInfo['paypal'] ? 'checked' : '' ?>/><label>&nbsp;Paypal is available in my country</label><br/><br/>
                 <label>Paypal Email<br />
-                <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo $userInfo['paypal_email']; ?>" />   
+                <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo $userInfo['paypal_email']; ?>" />
                 </label>
                 </div>
                 <script type="text/javascript">
-                var username = new LiveValidation('username', {validMessage: "Valid email address."});
-                username.add( Validate.Email );
-                username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+                var paypal = new LiveValidation('paypal', {validMessage: "Valid email address."});
+                paypal.add( Validate.Email );
+                paypal.add(Validate.Length, { minimum: 10, maximum: 50 } );
                 </script>
 
                 <div class="LVspacelg" style="width: 285px;">
@@ -302,7 +299,7 @@ include("head.html"); ?>
                 <br style="clear: both;" />
                 <div class="uploadnotice"></div>
                 </div>
-                
+
 	   </div><!-- end of left-col div -->
 	   <div class="right-col">
             <div class="LVspacehg">
@@ -313,7 +310,7 @@ include("head.html"); ?>
 	    </div>
             <script type="text/javascript">
 	      var about = new LiveValidation('about');
-	      about.add(Validate.Length, { minimum: 0, maximum: 150 } ); 
+	      about.add(Validate.Length, { minimum: 0, maximum: 150 } );
 	    </script>
 
             <div class="LVspace">
@@ -348,7 +345,7 @@ include("head.html"); ?>
       $selected = 'selected = "selected"';
     }
     echo '
-  <option value = "'.$key.'" '.$selected.'>'.$value.'</option>    
+  <option value = "'.$key.'" '.$selected.'>'.$value.'</option>
   ';
 }
 ?>

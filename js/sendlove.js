@@ -2,27 +2,7 @@
 //  All Rights Reserved.  
 //  http://www.lovemachineinc.com
 var smsCountry = '';
-var smsProviderList = new Array();
 var smsProvider = '';
-
-function smsRefreshPhoneHelper()
-{
-    var txt = '';
-    if ($("#provider").val() != '--') {
-        var prov = $("#provider").val();
-        if (smsProviderList[prov] != undefined) {
-            var phone = $("#phone").val().replace(/\D/g,'');
-            txt = smsProviderList[prov].replace(/{n}/, phone);
-        }
-    } else if ($("#smsaddr").val()) {
-        txt = $("#smsaddr").val();
-    }
-    if ($('#phone').val() != '' && txt != '') {
-        $("#phone_helper").html("Your bid updates will be sent to:<br/> "+txt);
-    } else {
-        $("#phone_helper").text("Receive bid updates as text messages on your phone.");
-    }
-}
 
 function smsRefreshProvider(init)
 {
@@ -43,25 +23,29 @@ function smsRefreshProvider(init)
                 data: "c="+smsCountry,
                 dataType: "json",
                 success: function(json) {
+            		if (!json) {
+            			el.append('<option value="--">(Other)</option>');
+                        $("#sms-other").show();
+            			return;
+            		}
                     smsProviderList = new Array();
                     for (var i = 0; i < json.length; i++) {
-                        smsProviderList[json[i][0]] = json[i][1];
-                        if (smsProvider && smsProvider == json[i][0]) {
-                            el.append('<option value="'+json[i][0]+'" selected>'+json[i][0]+'</option>');
+                        if (smsProvider && smsProvider == json[i]) {
+                            el.append('<option value="'+json[i]+'" selected="selected">'+json[i]+'</option>');
                         } else {
-                            el.append('<option value="'+json[i][0]+'">'+json[i][0]+'</option>');
+                            el.append('<option value="'+json[i]+'">'+json[i]+'</option>');
                         }
                     }
                     if (smsProvider && smsProvider[0] == '+') {
-                        el.append('<option value="--" selected>(Other)</option>');
+                        el.append('<option value="--" selected="selected">(Other)</option>');
                         $("#sms-other").show();
                     } else {
                         el.append('<option value="--">(Other)</option>');
                     }
                 }, 
                 error: function(xhdr, status, err) {
-                    smsProviderList = new Array();
                     el.append('<option value="--">(Other)</option>');
+                    $("#sms-other").show();
                 }
             });
         }
@@ -72,8 +56,6 @@ function smsRefreshProvider(init)
     } else {
         $("#sms-other").hide();
     }
-
-    smsRefreshPhoneHelper();
 }
 
 function smsUpdatePhone(filter)
@@ -89,13 +71,11 @@ function smsUpdatePhone(filter)
     } else {
         $("#sms").hide();
     }
-    smsRefreshPhoneHelper();
 }
 
 $(document).ready(function(){
     $("#phone").blur(function() { smsUpdatePhone(true); });
     $("#phone").keypress(function() { smsUpdatePhone(false); });
-    $("#smsaddr").blur(function() { smsRefreshPhoneHelper(); });
     $("#country, #provider, #smsaddr").change(function() { smsRefreshProvider(); });
     smsRefreshProvider(true);
 });

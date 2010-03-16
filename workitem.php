@@ -9,7 +9,7 @@ require_once 'class.session_handler.php';
 require_once 'send_email.php';
 require_once 'workitem.class.php';
 require_once 'functions.php';
-
+require_once 'lib/Sms.php';
 
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","SKIP"),
 				 "BIDDING" => array("SKIP"),
@@ -173,7 +173,20 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
     sendMailToOwner($worklist_id, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $ownerIsRunner);
     $workitem->loadById($worklist_id);
-    sl_notify_sms_by_id($workitem->getOwnerId(), 'Bid placed', $journal_message); 
+
+    $owner = new User();
+    $owner->findUserById($workitem->getOwnerId());
+    try {
+        $smsBackend = Sms::createBackend(null, array(
+            'mailFrom'    => $mail_user['smsuser']['from'],
+            'mailReplyTo' => $mail_user['smsuser']['replyto']
+        ));
+        $smsMessage = new Sms_Message($owner, 'Bid placed', $journal_message);
+        $smsBackend->send($smsMessage);
+    } catch (Sms_Backend_Exception $e) {
+    }
+
+//    sl_notify_sms_by_id($workitem->getOwnerId(), 'Bid placed', $journal_message);
 
     $redirectToDefaultView = true;
 }
@@ -187,7 +200,19 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
     }
     $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id);
     $workitem->loadById($_POST['itemid']);
-    sl_notify_sms_by_id($workitem->getOwnerId(), 'Fee added', $journal_message);
+
+    $owner = new User();
+    $owner->findUserById($workitem->getOwnerId());
+    try {
+        $smsBackend = Sms::createBackend(null, array(
+            'mailFrom'    => $mail_user['smsuser']['from'],
+            'mailReplyTo' => $mail_user['smsuser']['replyto']
+        ));
+        $smsMessage = new Sms_Message($owner, 'Fee added', $journal_message);
+        $smsBackend->send($smsMessage);
+    } catch (Sms_Backend_Exception $e) {
+    }
+
     $redirectToDefaultView = true;
 }
 
@@ -224,7 +249,27 @@ if ($action=='accept_bid'){
 			$body .= "Promised by: {$_SESSION['nickname']}</p>";
 			$body .= "<p>Love,<br/>Worklist</p>";
 			sl_send_email($bid_info['email'], $subject, $body);
-			sl_notify_sms_by_id($bid_info['bidder_id'], $subject, $body);
+
+            $bidder = new User();
+            $bidder->findUserById($bid_info['bidder_id']);
+            try {
+                $smsBackend = Sms::createBackend(null, array(
+                    'mailFrom'    => $mail_user['smsuser']['from'],
+                    'mailReplyTo' => $mail_user['smsuser']['replyto']
+                ));
+                $smsMessage = new Sms_Message($bidder, 'Fee added', $journal_message);
+                $smsBackend->send($smsMessage);
+            } catch (Sms_Backend_Exception $e) {
+            }
+
+            $bidder = new User();
+            $bidder->findUserById($bid_info['bidder_id']);
+            try {
+                $smsBackend = Sms::createBackend();
+                $smsMessage = new Sms_Message($bidder, $subject, $body);
+                $smsBackend->send($smsMessage);
+            } catch (Sms_Backend_Exception $e) {
+            }
 			$redirectToDefaultView = true;
 
 			// Send email to not accepted bidders

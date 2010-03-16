@@ -1,6 +1,6 @@
-<?php 
+<?php
 //  Copyright (c) 2009, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
 ?>
@@ -8,14 +8,7 @@
                 <p><label>Cell Phone Number<br />
                 <input type="text" name="phone" id="phone" size="35" value="<?php echo $phone ?>" />
                 </label><br/>
-                <em id="phone_helper">
-<?php 
-if (!empty($smsaddr))    {
-    echo 'Your bid updates will be sent to:<br/> '.$smsaddr.'</em>';
-} else {
-    echo 'Receive bid updates as text messages on your phone.</em>';
-}
-?>
+                <em id="phone_helper">Receive bid updates as text messages on your phone.</em>
                 </p>
 
                 <div id="sms" >
@@ -25,10 +18,10 @@ if (!empty($smsaddr))    {
                         <select id="country" name="country" style="width:274px">
                             <?php
                             if (empty($country)) {
-                                echo '<option value="" selected></option>';
+                                echo '<option value="" selected="selected"></option>';
                             }
                             foreach ($countrylist as $code=>$cname) {
-                                $selected = ($code == $country) ? "selected" : "";
+                                $selected = ($code == $country) ? "selected=\"selected\"" : "";
                                 echo '<option value="'.$code.'" '.$selected.'>'.$cname.'</option>';
                             }
                             echo '<option value="--" '.$selected.'>(Other)</option>';
