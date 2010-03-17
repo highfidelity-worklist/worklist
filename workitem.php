@@ -220,11 +220,9 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
 if ($action=='accept_bid'){
     $bid_id = intval($_REQUEST['bid_id']);
     //only runners can accept bids
-	//commenting out extra query which makes no sense
-	//$item_id = $workitem->getWorkItemByBid($bid_id);
 	$item_id = intval($_REQUEST['job_id']);
 	$workitem->loadById($item_id);
-	if (($is_runner == 1 || $workitem->getOwnerId() == $user->getId()) && !$workitem->hasAcceptedBids($item_id) && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+	if (($is_runner == 1 || $workitem->getOwnerId() == $user->getId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
 		// query to get a list of bids (to use the current class rather than breaking uniformity)
 		// I could have done this quite easier with just 1 query and an if statement..
 		$bids = (array) $workitem->getBids($item_id);
@@ -237,8 +235,6 @@ if ($action=='accept_bid'){
 		}
 		if ($exists) {
 			$bid_info = $workitem->acceptBid($bid_id);
-			//commenting out redundancy, uncomment later if needed.. highly unlikely
-			//$item_id = $workitem->getWorkItemByBid($bid_id);
 
 			// Journal notification
 			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";

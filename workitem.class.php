@@ -1,4 +1,6 @@
 <?php
+//  vim:ts=4:et
+
 /**
  * Workitem
  *
@@ -20,6 +22,8 @@ class WorkItem
     protected $status;
     protected $notes;
 
+    protected $origStatus = null;
+
     public function __construct($id = null)
     {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -31,6 +35,13 @@ class WorkItem
         if ($id !== null) {
             $this->load($id);
         }
+    }
+
+    static public function getById($id)
+    {
+        $workitem = new WorkItem();
+        $workitem->loadById($id);
+        return $workitem;
     }
 
     public function loadById($id)
@@ -130,6 +141,9 @@ WHERE id = ' . (int)$id;
 
     public function setStatus($status)
     {
+        if (empty($this->origStatus)) {
+            $this->origStatus = $status;
+        }
         $this->status = $status;
         return $this;
     }
@@ -152,32 +166,39 @@ WHERE id = ' . (int)$id;
 
     protected function insert()
     {
-        $query = '
-INSERT INTO ' .WORKLIST. ' (
-    summary,
-    creator_id,
-    owner_id,
-    status,
-    notes,
-    created )
-VALUES (
-        ' . mysql_real_escape_string($this->getSummary()).',
-        ' . mysql_real_escape_string($this->getCreatorId()) . ',
-        ' . mysql_real_escape_string($this->getOwnerId()) . ',
-        ' . mysql_real_escape_string($this->getStatus()) . ',
-        ' . mysql_real_escape_string($this->getNotes()) . ',
-        NOW()
-)';
-        return mysql_query($query) ? 1 : 0;
+        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, owner_id, status, notes, created ) ".
+            "VALUES (".
+            "'".mysql_real_escape_string($this->getSummary())."', ".
+            "'".mysql_real_escape_string($this->getCreatorId())."', ".
+            "'".mysql_real_escape_string($this->getOwnerId())."', ".
+            "'".mysql_real_escape_string($this->getStatus())."', ".
+            "'".mysql_real_escape_string($this->getNotes())."', ".
+            "NOW())";
+        $rt = mysql_query($query);
+
+        $this->id = mysql_insert_id();
+
+        /* Keep track of status changes including the initial one */
+        $status = mysql_real_escape_string($this->status);
+        $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
+        mysql_unbuffered_query($query);
+
+        return $rt ? 1 : 0;
     }
 
     protected function update()
     {
-        $query = '
-UPDATE '.WORKLIST.' SET
-    summary= "'. mysql_real_escape_string($this->getSummary()).'",
-    notes="'.mysql_real_escape_string($this->getNotes()).'",
-    status="' .mysql_real_escape_string($this->getStatus()).'" ';
+        /* Keep track of status changes */
+        if ($this->origStatus != $this->status) {
+            $status = mysql_real_escape_string($this->status);
+            $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
+            mysql_unbuffered_query($query);
+        }
+
+        $query = 'UPDATE '.WORKLIST.' SET
+            summary= "'. mysql_real_escape_string($this->getSummary()).'",
+            notes="'.mysql_real_escape_string($this->getNotes()).'",
+            status="' .mysql_real_escape_string($this->getStatus()).'" ';
 
         $query .= ' WHERE id='.$this->getId();
         return mysql_query($query) ? 1 : 0;
@@ -276,14 +297,6 @@ UPDATE '.WORKLIST.' SET
         return $result_query ? mysql_fetch_assoc($result_query) : null ;
     }
 
-    public function updateWorkItem($worklist_id, $summary, $notes, $status)
-    {
-        $query = 'UPDATE '.WORKLIST.' SET summary= "'.$summary.'", notes="'.$notes.'", status="' .$status.'" ';
-
-        $query .= ' WHERE id='.$worklist_id;
-        return mysql_query($query) ? 1 : 0;
-    }
-
     public function getSumOfFee($worklist_id)
     {
         $query = "SELECT SUM(`amount`) FROM `".FEES."` WHERE worklist_id = ".$worklist_id . " and withdrawn = 0 ";
@@ -293,27 +306,24 @@ UPDATE '.WORKLIST.' SET
     }
 
     /**
-     * Returns work item id for given bid
+     * Given a bid_id, get the corresponding worklist_id. If this is loaded compare the two ids
+     * and throw an error if the don't match.  If not loaded, load the item.
      *
      * @param int $bidId
      * @return int
      */
-    public function getWorkItemByBid($bidId)
+    public function conditionalLoadByBidId($bid_id)
     {
-        $query = '
-SELECT `worklist_id` FROM `' . BIDS . '`
-WHERE
-    `id` = ' . (int)$bidId . '
-        ';
-        $res   = mysql_query($query);
-        if (!$res) {
-            throw new Exception('Could not retrieve result.');
-        }
-        $row = mysql_fetch_row($res);
-        if (!$row) {
+        $query = "SELECT `worklist_id` FROM `".BIDS."` WHERE `id` = ".(int)$bid_id;
+        $res = mysql_query($query);
+        if (!$res || !($row = mysql_fetch_row($res))) {
             throw new Exception('Bid not found.');
         }
-        return $row[0];
+        if ($this->id && $this->id != $row[0]) {
+            throw new Exception('Bid belongs to another work item.');
+        } else if (!$this->id) {
+            $this->load($row[0]);
+        }
     }
 
     /**
@@ -322,24 +332,10 @@ WHERE
      * @param int $worklistId
      * @return boolean
      */
-    public function hasAcceptedBids($worklistId = null)
+    public function hasAcceptedBids()
     {
-        if ($worklistId === null) {
-            if (!$this->id) {
-                throw new Workitem_Exception('Missing id.');
-            }
-            $worklistId = $this->getId();
-        }
-        $query = '
-SELECT COUNT(*)
-FROM `' . BIDS . '`
-WHERE
-    `worklist_id` = ' . (int)$worklistId . '
-    AND
-    `accepted` = 1
-    AND
-    `withdrawn` = 0
-        ';
+        $query = "SELECT COUNT(*) FROM `".BIDS."` ".
+            "WHERE `worklist_id`=".(int)$this->id." AND `accepted` = 1 AND `withdrawn` = 0";
         $res   = mysql_query($query);
         if (!$res) {
             throw new Exception('Could not retrieve result.');
@@ -368,7 +364,8 @@ WHERE
     // Accept a bid given it's Bid id
     public function acceptBid($bid_id)
     {
-        if ($this->hasAcceptedBids($this->getWorkItemByBid($bid_id))) {
+        $this->conditionalLoadByBidId($bid_id);
+        if ($this->hasAcceptedBids()) {
             throw new Exception('Can not accept an already accepted bid.');
         }
         $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
@@ -379,7 +376,7 @@ WHERE
         if ($res && ($row = mysql_fetch_assoc($res))) {
             $bidder_nickname = $row['nickname'];
         }
-	$bid_info['nickname']=$bidder_nickname;
+        $bid_info['nickname']=$bidder_nickname;
 
         //changing owner of the job
         mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
@@ -390,4 +387,5 @@ WHERE
         $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
         return $bid_info;
     }
+
 }// end of the class

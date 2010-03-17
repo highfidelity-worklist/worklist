@@ -42,6 +42,7 @@ if (!defined('FEES'))		define('FEES', 'fees');
 if (!defined('FILES'))		define('FILES', 'files');
 if (!defined('REWARDER'))	define('REWARDER', 'rewarder_distribution');
 if (!defined('REWARDER_LOG'))	define('REWARDER_LOG', 'rewarder_log');
+if (!defined('STATUS_LOG'))	define('STATUS_LOG', 'status_log');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);

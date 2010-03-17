@@ -40,7 +40,6 @@ if( $userId > 0 )	{
 }
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
-
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -56,21 +55,21 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
     }
 
     if (!empty($_POST['itemid'])) {
-        $query = "update ".WORKLIST." set summary='$summary', owner_id='$owner_id', ".
-            "status='$status',  notes='$notes'";
-        $query .= " where id='$itemid'";
+        $workitem->loadById($_POST['itemid']);
         $journal_message .= $_SESSION['nickname'] . " updated ";
     } else {
-        $query = "INSERT INTO `".WORKLIST."` ( `summary`, `creator_id`, `owner_id`, `status`, `notes`, `created` ) ".
-            "VALUES ( '$summary', '$creator_id', '$owner_id', '$status', '$notes', NOW() )";
+        $workitem->setCreatorId($owner_id);
         $journal_message .= $_SESSION['nickname'] . " added ";
     }
-
-    $rt = mysql_query($query);
+    $workitem->setSummary($summary);
+    $workitem->setOwnerId($owner_id);
+    $workitem->setStatus($status);
+    $workitem->setNotes($notes);
+    $workitem->save();
 
     if(empty($_POST['itemid']))
     {
-        $bid_fee_itemid = mysql_insert_id();
+        $bid_fee_itemid = $workitem->getId();
         $journal_message .= " item #$bid_fee_itemid: $summary. ";
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
@@ -160,21 +159,7 @@ if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security ma
 //accepting a bid
 if (isset($_POST['accept_bid']) && $is_runner == 1){ //only runners can accept bids
     $bid_id = intval($_POST['bid_id']);
-    $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
-    $bid_info = mysql_fetch_assoc($res);
-
-    // Get bidder nickname
-    $res = mysql_query("select nickname from ".USERS." where id='{$bid_info['bidder_id']}'");
-    if ($res && ($row = mysql_fetch_assoc($res))) {
-        $bidder_nickname = $row['nickname'];
-    }
-
-    //changing owner of the job
-    mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
-    //marking bid as "accepted"
-    mysql_unbuffered_query("UPDATE `bids` SET `accepted` =  1 WHERE `id` = ".$bid_id);
-    //adding bid amount to list of fees
-    mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
+    $workitem->acceptBid($bid_id);
 
     // Journal notification
     $summary = getWorkItemSummary($bid_info['worklist_id']);
