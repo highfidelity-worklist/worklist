@@ -42,7 +42,7 @@ $bid = new Bid($item);
 
 if ($bid->id) {
 	$workItem = new WorkItem();
-	$workItem->loadById($workItem->getWorkItemByBid($item));
+	$workItem->conditionalLoadByBidId($item);
 	// Runner, item owner, or bidder can see item.
 	if ($user->isRunner() || ($user->getId() == $workItem->getOwnerId()) || ($user->getId() == $bid->bidder_id)) {
 		$bid->setAnyAccepted($workItem->hasAcceptedBids());
