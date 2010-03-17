@@ -84,7 +84,7 @@ padding:5px;
 }
 #popup-buttons input {
 float:right;
-};
+}
 .workitem-back {
 height:26px;
 line-height:26px;
@@ -135,3 +135,15 @@ width:98%;
 .popup-body .popup-delete-summary {
     padding: 4px;
 }
+
+.comment-info{height:42px;}
+.gravatar{float:left;height:32px;margin-bottom:10px;margin-right:5px;width:32px;}
+.author{display:block;}
+.depth-1{margin-left:20px;}
+.depth-2{margin-left:40px;}
+.depth-3{margin-left:60px;}
+.depth-4{margin-left:80px;}
+.depth-5{margin-left:100px;}
+.depth-6{margin-left:120px;}
+.commentform textarea{width:400px;}
+.commentform, .comments{border-bottom:none!important;}

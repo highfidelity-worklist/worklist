@@ -40,6 +40,7 @@ if (!defined('USERS'))          define('USERS', 'users');
 if (!defined('BIDS'))		define('BIDS', 'bids');
 if (!defined('FEES'))		define('FEES', 'fees');
 if (!defined('FILES'))		define('FILES', 'files');
+if (!defined('COMMENTS'))		define('COMMENTS', 'comments');
 if (!defined('REWARDER'))	define('REWARDER', 'rewarder_distribution');
 if (!defined('REWARDER_LOG'))	define('REWARDER_LOG', 'rewarder_log');
 if (!defined('STATUS_LOG'))	define('STATUS_LOG', 'status_log');

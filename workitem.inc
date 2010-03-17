@@ -96,6 +96,14 @@ var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
 var documentsArray = new Array();
 
+function reply(id) {
+	var commentForm = $('.commentform');
+	var clone = commentForm.clone();
+	commentForm.remove();
+	clone.insertAfter($('#comment-' + id));
+	$('.commentform input[name=comment_id]').val(id);
+}
+
   $(document).ready(function(){
 	$('#done_by').datepicker({
 	  duration: '',
@@ -314,7 +322,6 @@ var documentsArray = new Array();
     return false;
   }
 
-
 </script>
 <title>Workitem | Lend a Hand</title>
 
@@ -479,6 +486,48 @@ var documentsArray = new Array();
             </li>
 	  </ul>
       <?php endif;?>
+      <ul>
+      	<li class="comments">
+      		<span class="info-label">Comments</span>
+	      	<ul>
+	      	<?php 
+	      		$comments = Comment::findCommentsForWorkitem($worklist['id']);
+	      		if (empty($comments)) :
+	      	?>
+	      		<li>No comments!</li>
+	      	<?php
+	      		else :
+	      			foreach ($comments as $comment) :
+	      	?>
+	      		<li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?>">
+	      			<div class="comment-info">
+	      				<span class="author"><?php echo $comment['comment']->getUser()->getNickname(); ?> says:</span>
+						<span class="date"><?php echo date('F j, Y, g:i a', strtotime($comment['comment']->getDate()))?> <?php if (!empty($user_id)) : ?>(<a href="#commentform" onclick="reply(<?php echo $comment['id']; ?>);return false;">reply</a>)<?php endif; ?></span>
+	      			</div>
+	      			<div class="comment">
+						<?php echo $comment['comment']->getComment(); ?>
+					</div>
+	      		</li>
+	        <?php 
+	        		endforeach;
+	        	endif;
+	        ?>
+	      	</ul>
+	  	</li>
+	  	<?php if (!empty($user_id)) : ?>
+      	<li class="commentform">
+      		<a name="commentform"></a>
+      		<span class="info-label">Write a comment</span>
+      		<form action="" method="post">
+      			<input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
+      			<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
+      			<input type="hidden" name="comment_id" value="" />
+      			<textarea name="comment" cols="20" rows="10" size="33"></textarea>
+      			<input type="submit" name="newcomment" value="Post Comment" />
+      		</form>
+      	</li>
+      	<?php endif; ?>
+      </ul>
     </div>
   </div>
   <div id="right-panel">

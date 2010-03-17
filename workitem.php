@@ -59,6 +59,22 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "accept_bid";
 }else if(isset($_POST['status-switch'])) {
     $action = "status-switch";
+}else if (isset($_POST['newcomment'])) {
+	$comment = new Comment();
+	if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
+		$comment->setWorklist_id((int) $_POST['worklist_id']);
+	}
+	if (isset($_POST['user_id']) && !empty($_POST['user_id'])) {
+		$comment->setUser_id((int) $_POST['user_id']);
+	}
+	if (isset($_POST['comment_id']) && !empty($_POST['comment_id'])) {
+		$comment->setComment_id((int) $_POST['comment_id']);
+	}
+	if (isset($_POST['comment']) && !empty($_POST['comment'])) {
+		$comment->setComment($_POST['comment']);
+	}
+	$comment->save();
+	header('Location: http://' . SERVER_NAME . $_SERVER['REQUEST_URI']);
 }
 
 //initialize the workitem class
