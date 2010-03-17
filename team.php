@@ -223,6 +223,7 @@ include("head.html"); ?>
 	row += '<td >' + json.bids_placed + '</td>';
 	row += '<td >' + json.bids_accepted + '</td>';
 	row += '<td >$' + json.fees_received + '</td>';
+	row += '<td >$' + json.expenses_billed + '</td>';
 	row += '<td >$' + json.contracts_received + '</td>';
 	row += '<td >$' + json.rewards_received + '</td>';
 	row += '<td >$' + json.sum_all + '</td>';
@@ -283,6 +284,7 @@ include("head.html"); ?>
 	    <th class = "sort {sortkey: 'bids_placed'}">Bids Placed<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'bids_accepted'}">Bids accepted<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'fees_received'}">Fees<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'expenses_billed'}">Expenses<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'contracts_received'}">Contracts<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'rewards_received'}">Rewards<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'sum_all'}">All<div class = "arrow"><div/></th>

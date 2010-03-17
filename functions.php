@@ -293,7 +293,7 @@ function getUserTime($timestamp){
  *             mechanic_id - userid of the mechanic
  *
  */
-function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id)
+function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense)
 {
     // Get work item summary
     $query = "select summary from ".WORKLIST." where id='$itemid'";
@@ -303,7 +303,8 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id)
         $summary = $row['summary'];
     }
 
-    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`) VALUES (NULL, '$itemid', '$fee_amount', '$fee_category', '$mechanic_id', '$fee_desc', NOW(), '0')";
+    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`) ".
+        "VALUES (NULL, '$itemid', '$fee_amount', '$fee_category', '$mechanic_id', '$fee_desc', NOW(), '0', '$is_expense')";
     $result = mysql_unbuffered_query($query);
 
     // Journal notification

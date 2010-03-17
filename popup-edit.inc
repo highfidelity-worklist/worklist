@@ -117,10 +117,18 @@
 		</div><!-- end of fees_block -->
 
 		<div id='fees_single_block'>
-		<span  class="info-label">Fees</span>
-                <p class="info-label">Amount<br />
+		<div style="float:left;width:33%">
+                <p class="info-label">Fee Amount<br />
 		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money" size="48" />
                 </p>
+		</div>
+		<div style="float:left;width:66%">
+                <p class="info-label">Reimbursable Expense?<br />
+                <input type="checkbox" name="is_expense" id="is_expense" value="1" />
+                </p>
+		</div>
+		<div style="clear:both"></div>
+
                  <p class="info-label">Description<br />
 		  <input type="text" name="bid_fee_desc" id="bid_fee_desc" class="text-field" size="48" />
                 </p>

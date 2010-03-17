@@ -2,11 +2,18 @@
         <form name="popup-form" id="popup-form-addfee" action="" method="post">
             <input type="hidden" name="itemid" value="" />
 
-            <div>
+            <div style="float:left;width:33%">
                 <p class="info-label">Amount<br />
                 <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />
                 </p>
             </div>
+
+            <div style="float:left;width:66%">
+                <p class="info-label">Reimbursable Expense?<br />
+                <input type="checkbox" name="is_expense" id="is_expense" value="1" />
+                </p>
+            </div>
+            <div style="clear:both"></div>
 
                 <p class="info-label">Description<br />
                 <input type="text" name="fee_desc" id="fee_desc" class="text-field" size="48" />

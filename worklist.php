@@ -40,7 +40,7 @@ if( $userId > 0 )	{
 }
 
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
-    $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite');
+    $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite', 'is_expense');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
@@ -91,7 +91,7 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
     }
 
     if ($bid_fee_amount > 0) {
-        $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id);
+        $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id, $is_expense);
     }
 
 } 
@@ -195,12 +195,12 @@ if (isset($_REQUEST['withdraw_bid'])) {
 //adding fee to fees table
 if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can add fees
 
-    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id');
+    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
 
-    $journal_message .= AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id);
+    $journal_message .= AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
 }
 
 if (!empty($journal_message)) {
