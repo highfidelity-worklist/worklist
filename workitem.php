@@ -193,11 +193,11 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
     $owner = new User();
     $owner->findUserById($workitem->getOwnerId());
     try {
-        $smsBackend = Sms::createBackend(null, array(
+        $smsMessage = new Sms_Message($owner, 'Bid placed', $journal_message);
+        $smsBackend = Sms::createBackend($smsMessage, null, array(
             'mailFrom'    => $mail_user['smsuser']['from'],
             'mailReplyTo' => $mail_user['smsuser']['replyto']
         ));
-        $smsMessage = new Sms_Message($owner, 'Bid placed', $journal_message);
         $smsBackend->send($smsMessage);
     } catch (Sms_Backend_Exception $e) {
     }
@@ -220,11 +220,11 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
     $owner = new User();
     $owner->findUserById($workitem->getOwnerId());
     try {
-        $smsBackend = Sms::createBackend(null, array(
+        $smsMessage = new Sms_Message($owner, 'Fee added', $journal_message);
+        $smsBackend = Sms::createBackend($smsMessage, null, array(
             'mailFrom'    => $mail_user['smsuser']['from'],
             'mailReplyTo' => $mail_user['smsuser']['replyto']
         ));
-        $smsMessage = new Sms_Message($owner, 'Fee added', $journal_message);
         $smsBackend->send($smsMessage);
     } catch (Sms_Backend_Exception $e) {
     }
@@ -265,20 +265,11 @@ if ($action=='accept_bid'){
             $bidder = new User();
             $bidder->findUserById($bid_info['bidder_id']);
             try {
-                $smsBackend = Sms::createBackend(null, array(
+                $smsMessage = new Sms_Message($bidder, 'Bid accepted', $journal_message);
+                $smsBackend = Sms::createBackend($smsMessage, null, array(
                     'mailFrom'    => $mail_user['smsuser']['from'],
                     'mailReplyTo' => $mail_user['smsuser']['replyto']
                 ));
-                $smsMessage = new Sms_Message($bidder, 'Fee added', $journal_message);
-                $smsBackend->send($smsMessage);
-            } catch (Sms_Backend_Exception $e) {
-            }
-
-            $bidder = new User();
-            $bidder->findUserById($bid_info['bidder_id']);
-            try {
-                $smsBackend = Sms::createBackend();
-                $smsMessage = new Sms_Message($bidder, $subject, $body);
                 $smsBackend->send($smsMessage);
             } catch (Sms_Backend_Exception $e) {
             }

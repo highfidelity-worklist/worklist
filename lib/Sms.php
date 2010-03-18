@@ -5,7 +5,17 @@
  * @package Sms
  * @version $Id$
  */
+/**
+ * Sms_Exception
+ */
 require_once 'lib/Sms/Exception.php';
+/**
+ * Sms_Message
+ */
+require_once 'lib/Sms/Message.php';
+/**
+ * Sms_Backend
+ */
 require_once 'lib/Sms/Backend.php';
 /**
  * Sms class
@@ -26,10 +36,10 @@ class Sms
      * @param string $type
      * @return Sms_Backend
      */
-    public static function createBackend($type = null, Array $options = null)
+    public static function createBackend(Sms_Message $message, $type = null, Array $options = null)
     {
         if ($type === null) {
-            $type = self::getBackendType($options);
+            $type = self::getBackendType($message, $options);
         }
         if (!in_array($type, self::$types)) {
             throw new Sms_Exception('Invalid backend type: '.$type);
@@ -46,7 +56,7 @@ class Sms
      * @param array $options
      * @return string backend type
      */
-    protected static function getBackendType(Array $options = null)
+    protected static function getBackendType(Sms_Message $message, Array $options = null)
     {
         // currently only use e-mail
         return 'email';

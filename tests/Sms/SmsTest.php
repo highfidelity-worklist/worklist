@@ -28,7 +28,8 @@ class Sms_SmsTest extends PHPUnit_Framework_TestCase
 {
     public function testFactoryCreatesEmailBackend()
     {
-        $backend = Sms::createBackend();
+        $msg = new Sms_Message(null, null, null);
+        $backend = Sms::createBackend($msg);
         $this->assertEquals('Sms_Backend_Email', get_class($backend));
     }
 }

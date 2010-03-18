@@ -425,7 +425,7 @@ class Sms_Backend_Email implements Sms_Backend
         return self::TYPE;
     }
 
-    protected function setUserSettings(User $user)
+    public function setUserSettings(User $user)
     {
         try {
             $this->setCountry($user->getCountry())
@@ -517,6 +517,11 @@ class Sms_Backend_Email implements Sms_Backend
     {
         $this->targetEmail = $targetEmail;
         return $this;
+    }
+
+    public function getTargetEmail()
+    {
+        return $this->targetEmail;
     }
 
     /**
