@@ -115,7 +115,8 @@ function reply(id) {
 	  time24h: false
 	});
 
-	$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
+	$('#popup-bid').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
+	$('#popup-confirmation').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
 	$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
@@ -305,6 +306,22 @@ function reply(id) {
 		$('.popup-body form textarea').val('');
     }
 
+  function showConfirmForm(i) {
+      $('#popup-confirmation-type').val(i);
+      $('#popup-confirmation').dialog('open');
+      return false;
+  }
+  function doConfirmForm(i) {
+      if (i == 'bid') {
+      	  $('#popup-confirmation').dialog('close');
+      	  showPlaceBidForm();
+      } else if (i == 'fee') {
+      	  $('#popup-confirmation').dialog('close');
+	  	  showFeeForm();
+	  }
+      return false;
+  }
+  
   function showPlaceBidForm() {
       $('#popup-bid').dialog('open');
       return false;
@@ -370,9 +387,9 @@ function reply(id) {
 	 <div><a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a></div>
 <?php if($user_id): ?>
       <?php if ($worklist['status'] == 'BIDDING'): ?>
-	<input type="submit" value="Add Bid" onclick="return showPlaceBidForm();"/>
+	<input type="submit" value="Add Bid" onclick="return showConfirmForm('bid');"/>
       <?php endif; ?>
-      <input type="submit" value="Add Fee" onclick="return showFeeForm();"/>
+      <input type="submit" value="Add Fee" onclick="return showConfirmForm('fee');"/>
       <?php if(($allowEdit && $action!="edit")): ?>
 	  <input type="hidden" name="job_id" value="<?php echo $worklist_id;?>" />
 	  <input type="hidden" name="action" value="edit" />
@@ -663,5 +680,8 @@ function reply(id) {
 
 <!-- Popup for bid info-->
 <?php require_once('popup-bid-info.inc') ?>
+
+<!-- Popup for confirmation info-->
+<?php require_once('popup-confirmation.inc') ?>
 
 <?php include("footer.php"); ?>
