@@ -90,7 +90,7 @@ include("head.html"); ?>
 	<div class="clear"></div>
 </script>
 
-<script>
+<script type="text/javascript">
 var user_id = <?php echo($user_id); ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
@@ -120,6 +120,8 @@ function reply(id) {
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 	$('#message').dialog({ autoOpen: true});
+	$('#popup-pingtask').dialog({ autoOpen: false, width: 400});
+
 
 	// JS Variables initialized from host PHP page
 	var workitem_id = <?php echo $worklist['id'];?> ;
@@ -295,12 +297,12 @@ function reply(id) {
   });
 
     function ResetPopup() {
-	$('#for_edit').show();
-	$('#for_view').hide();
-        $('.popup-body form input[type="text"]').val('');
-	$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
-        $('.popup-body form select option[index=0]').attr('selected', 'selected');
-        $('.popup-body form textarea').val('');
+		$('#for_edit').show();
+		$('#for_view').hide();
+		$('.popup-body form input[type="text"]').val('');
+		$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
+		$('.popup-body form select option[index=0]').attr('selected', 'selected');
+		$('.popup-body form textarea').val('');
     }
 
   function showPlaceBidForm() {
@@ -322,6 +324,34 @@ function reply(id) {
     return false;
   }
 
+	$(function()	{
+		// Call via Ajax to ping the user in the journal
+		// and in email.
+		$('#send-ping-btn').click(function()	{
+			var msg = $('#ping-msg').val();
+			var mail = 0;
+			if( $('#send-mail:checked').val() )
+				mail = 1;
+			
+			$.ajax({
+				type: "POST",
+				url: 'pingtask.php',
+				data: 'id=' + <?php echo $worklist_id; ?> + '&msg=' + msg + '&mail=' + mail,
+				dataType: 'json',
+				success: function() {}
+			});
+			$('#popup-pingtask').dialog('close');
+			return false;
+			
+		});
+
+		$('#ping-btn').click(function()	{
+			$('#popup-pingtask').dialog('open');
+			return false;
+		});
+		return false;
+	});
+  
 </script>
 <title>Workitem | Lend a Hand</title>
 
@@ -395,6 +425,7 @@ function reply(id) {
 		    <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
 		    <?php } ?>
                   </select>
+
 		<?php }else{ ?>
 		    <?php echo $worklist['status'];?>
 		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
@@ -403,6 +434,9 @@ function reply(id) {
               <li>
                 <span class="info-label">Owner</span>
                 <?php echo $worklist['nickname'];?>
+				<form method="post" action="" style="display:inline;">
+					<input type="submit" id="ping-btn" style="margin-top:4px; float:right;" value="Ping mechanic"></input>
+				</form>
               </li>
           <li>
               <span class="info-label">Invite</span>
@@ -458,27 +492,30 @@ function reply(id) {
 
 			      foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
 
-		  <form method="post" action="" style = "display:inline;">
-		    <input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px;" />
-		    <input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
-		  </form>
+					  <form method="post" action="" style = "display:inline;">
+						<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px; float: right;" />
+						<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+					  </form>
 
 			<?php } //2 buttons for runners to quickly adjust status
-		      }elseif($is_runner && array_key_exists($worklist['status'], $statusMapRunner)){
+		    } else if($is_runner && array_key_exists($worklist['status'], $statusMapRunner))	{
 
 			      foreach($statusMapRunner[$worklist['status']] as $status){?>
 
-		  <form method="post" action="" style = "display:inline;">
-		    <input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px;" />
-		    <input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
-		  </form>
+				<form method="post" action="" style = "display:inline;">
+					<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px; float: right;" />
+					<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+				</form>
 
 			<?php }
 		    } ?>
 	    </li>
             <li>
-              <span class="info-label">Owner</span>
-              <?php echo $worklist['nickname'];?>
+				<span class="info-label">Owner</span>
+				<?php echo $worklist['nickname'];?>
+				<form method="post" action="" style="display:inline;">
+					<input type="submit" id="ping-btn" style="margin-top:3px; float:right;" value="Ping mechanic"></input>
+				</form>
             </li>
             <li class="last">
               <span class="info-label">Notes</span>
@@ -621,6 +658,8 @@ function reply(id) {
 <?php include("popup-addfee.inc"); ?>
 <!-- Popup HTML for paying a fee -->
 <?php require_once('popup-paid-html.inc') ?>
+<!-- Popup for ping user on task-->
+<?php require_once('popup-pingtask.inc') ?>
 
 <!-- Popup for bid info-->
 <?php require_once('popup-bid-info.inc') ?>

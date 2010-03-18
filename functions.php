@@ -505,7 +505,7 @@ function getUserByNickname($nickname) {
 function getWorklistById($id) {
     $query = "select * from ".WORKLIST." where id='$id'";
     $rt = mysql_query($query);
-    if ($rt && (mysql_num_rows($res) == 1)) {
+    if ($rt && (mysql_num_rows($rt) == 1)) {
         return mysql_fetch_assoc($rt);
     }
     return false;
