@@ -44,6 +44,7 @@ if(isset($paidStatus) && ($paidStatus)!="ALL")
 
 $sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST["sfilter"] : '';
 $ufilter = isset($_REQUEST["ufilter"])?intval($_REQUEST["ufilter"]):0;
+$order = isset( $_REQUEST['order'] ) ? $_REQUEST['order'] :'';
 
 require_once 'lib/Worklist/Filter.php';
 $WorklistFilter = new Worklist_Filter(array(
@@ -67,6 +68,16 @@ if ($sfilter){
     }
 }
 
+// Add option for order results
+$orderby = "ORDER BY ";
+if( $order )    {
+    if( $order == 'date' )  {
+        $orderby .= "`".FEES."`.`date` DESC";
+    } else if( $order == 'name' ) {
+        $orderby .= "`".USERS."`.`nickname` ASC";
+    }
+}
+
 if($dateRangeFilter) {
   $where = $where . $dateRangeFilter;
 }
@@ -83,7 +94,7 @@ $qbody = " FROM `".FEES."`
            INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
            LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
            WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
-$qorder = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";
+$qorder = "$orderby, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {

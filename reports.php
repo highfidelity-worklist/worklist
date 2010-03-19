@@ -213,7 +213,7 @@ var getPaidItems = function() {
         $.ajax({
             type: "POST",
             url: 'getreport.php',
-            data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
+            data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+'&order='+$("#sort-by").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
             dataType: 'json',
             success: function(json) {
                 $("#loader_img").css("display","none");
@@ -358,7 +358,12 @@ var getPaidItems = function() {
 		    <option value="0" selected>Unpaid</option>
 	      </select>
 	    </td>
-	    <td>Item status: <?php DisplayFilter('sfilter', true); ?></td>
+	    <td style="text-align: right;">Item status: <?php DisplayFilter('sfilter', true); ?><br/>Order:
+            <select id="sort-by">
+                <option value="name">Alphabetically</option>
+                <option value="date">Chronologically</option>
+            </select>
+        </td>
 	   </tr>
 	  <tr>
 	      <td class="report-left-label">Fee added between</td>
