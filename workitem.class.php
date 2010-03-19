@@ -57,14 +57,14 @@ class WorkItem
             $id = $this->id;
         }
         $query = "
-SELECT
-    w.id,
-    w.summary,
-    w.owner_id,
-    w.status,
-    w.notes
-FROM  ".WORKLIST. " as w
-WHERE w.id = '" . (int)$id . "'";
+					SELECT
+					    w.id,
+					    w.summary,
+					    w.owner_id,
+					    w.status,
+					    w.notes
+					FROM  ".WORKLIST. " as w
+					WHERE w.id = '" . (int)$id . "'";
         $res = mysql_query($query);
         if (!$res) {
             throw new Workitem_Exception('MySQL error.');

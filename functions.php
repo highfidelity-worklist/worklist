@@ -304,7 +304,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     }
 
     $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`) ".
-        "VALUES (NULL, '$itemid', '$fee_amount', '$fee_category', '$mechanic_id', '$fee_desc', NOW(), '0', '$is_expense')";
+        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string($fee_desc)."', NOW(), '0', '".mysql_real_escape_string($is_expense)."')";
     $result = mysql_unbuffered_query($query);
 
     // Journal notification
@@ -315,7 +315,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     else
     {
         // Get the mechanic's nickname
-        $rt = mysql_query("select nickname from ".USERS." where id='{$mechanic_id}'");
+        $rt = mysql_query("select nickname from ".USERS." where id='".(int)$mechanic_id."'");
         if ($rt) {
             $row = mysql_fetch_assoc($rt);
             $nickname = $row['nickname'];

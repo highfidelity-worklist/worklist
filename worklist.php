@@ -41,7 +41,9 @@ if( $userId > 0 )	{
 if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite', 'is_expense');
     foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
+    		// Removed mysql_real_escape_string, because we should 
+    		// use it in sql queries, not here. Otherwise it can be applied twice sometimes
+        $$arg = $_POST[$arg];
     }
 
     $creator_id = $_SESSION['userid'];
@@ -72,7 +74,7 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
             foreach ($files as $file) {
-                $sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . $file;
+                $sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . (int)$file;
                 mysql_query($sql);
             }
         }
@@ -1045,12 +1047,11 @@ include("head.html"); ?>
 
 <br style="clear: both;" />
 <br/>
-<div id="status-wrap">
-	<form action="" id="status-update-form"><?php echo $nick?> is <span id="status-lbl"><b>
-		<?php echo $current_status?></b></span>
+<div id="status-wrap" style="width:380px;">
+	<form action="" id="status-update-form" style="width:380px;"><?php echo $nick?> is <span id="status-lbl"><b><?php echo $current_status?></b></span>
 		<input type="text" maxlength="45" id="status-update" name="status-update"
 			value="<?php echo $current_status?>"></input>
-		<div id="status-share" style="float:right; width:200px;">
+		<div id="status-share" style="float:right; width:122px;">
 			<input type="submit" value="Share" id="status-share-btn"></input>
 		</div>
 	</form>

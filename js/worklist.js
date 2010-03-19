@@ -218,6 +218,13 @@ $(function() {
 	$('#status-update').hide();
 	$("#query").DefaultValue("Search...");
 	
+	// if the status is empty, show input field - allow user to enter the status
+	if ($('#status-lbl').find('b').html()=="") {
+		$('#status-lbl').hide();
+		$('#status-update').show();
+		$("#status-share").show();
+	}
+	
 	// When status-update gets focus enlarge and show the share button
 	$("#status-update").focus(function() {		
 		$("#status-share").show();
@@ -234,17 +241,20 @@ $(function() {
 	//When status-update loses focus hide the share button and shrink the field
 	$("#status-wrap").mouseleave(function(){
 		//document.getElementById('status-wrap').style.marginTop = "5px";
-		$('#status-update').hide();
-		$("#status-share").hide();
-		//$('#share-this').hide();
-		$('#status-lbl').show();
+		// if the status is not empty - hide input field, otherwise do not hide input
+		if ($('#status-lbl').find('b').html()!="") {
+			$('#status-update').hide();
+			$("#status-share").hide();
+			//$('#share-this').hide();
+			$('#status-lbl').show();
+		}
 	});
 	
 		
 	//Submit the form using AJAX to the database
 	$("#status-share-btn").click(function() {
 		if($("#status-update").val() == "")	{
-			return false;
+			//return false;
 		}
 		if($("#status-update").val() ==  "What are you working on?"){
 			$("#status-update").val("");
@@ -256,11 +266,14 @@ $(function() {
 			data: "action=update&status=" + $("#status-update").val(),
 			dataType: "text",
 			success: function(){
-				$('#status-update').hide();
+				// if entered blank status - do not hide input
+				if ($("#status-update").val()!="") {
+					$('#status-update').hide();$('#status-lbl').show();
+					$("#status-share").hide();
+					$('#share-this').hide();
+				} 
 				$('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
-				$('#status-lbl').show();
-				$("#status-share").hide();
-				$('#share-this').hide();
+				
 			}
 		});
 		
