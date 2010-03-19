@@ -22,6 +22,10 @@
             <p class = "info-label">Time zone<br />
             <span id="info-timezone"><?php echo $timezoneTable[$user -> getTimezone()]; ?></span>
             </p>
+			
+            <p class = "info-label">Current Local Time<br />
+            <span id="info-currenttime"><?php echo convertTimeZoneToLocalTime($user -> getTimezone()); ?></span>
+            </p>
 
             <p class = "info-label">Joined<br />
             <span id="info-joined"><?php echo date('m/d/Y', strtotime($user -> getAdded())); ?></span>
