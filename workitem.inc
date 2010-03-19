@@ -117,7 +117,9 @@ function reply(id) {
 
 	$('#popup-bid').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
 	$('#popup-confirmation').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
-	$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
+	
+	// If the bid info popup is set to modal clipboard won't work!
+	$('#popup-bid-info').dialog({ autoOpen: false, modal: false});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 	$('#message').dialog({ autoOpen: true});
