@@ -18,6 +18,9 @@
         
 <!-- Close DIV container -->
     </div>
+<?php if (!isset($inFeedlist)) { ?>
+	<div style="text-align:center;"><a href="feedlist.php" title="Rss & Atom Feeds"><img src="images/rss20.png"></img><img src="images/atom20.png"></img></a></div>
+<?php } ?>	
 
 	<div id="footer">
     <p>&copy; <? echo date("Y"); ?> <a href="http://www.lovemachineinc.com" target="_blank">LoveMachine, Inc.</a> &nbsp;| &nbsp;<a href="privacy.php">Privacy Policy</a><br/><a href="http://svn.sendlove.us/" target="_blank">View the source code</a></p>
