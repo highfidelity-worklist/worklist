@@ -28,8 +28,6 @@
 		  <p class="info-label">Summary<br />
 		  <input type="text" name="summary" id="summary" class="text-field" size="48" />
 		  </p>
-
-		  <input type="hidden" id="owner" name="owner" /><!-- for now -->
                   <script type="text/javascript">
                     var summary = new LiveValidation('summary',{ onlyOnSubmit: true });
                         summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });

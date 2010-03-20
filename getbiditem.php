@@ -43,8 +43,8 @@ $bid = new Bid($item);
 if ($bid->id) {
 	$workItem = new WorkItem();
 	$workItem->conditionalLoadByBidId($item);
-	// Runner, item owner, or bidder can see item.
-	if ($user->isRunner() || ($user->getId() == $workItem->getOwnerId()) || ($user->getId() == $bid->bidder_id)) {
+	// Runner, item creator, or bidder can see item.
+	if ($user->isRunner() || ($user->getId() == $workItem->getCreatorId()) || ($user->getId() == $bid->bidder_id)) {
 		$bid->setAnyAccepted($workItem->hasAcceptedBids());
 		$json = json_encode($bid->toArray());
 		echo $json;

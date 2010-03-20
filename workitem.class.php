@@ -18,7 +18,7 @@ class WorkItem
     protected $id;
     protected $summary;
     protected $creatorId;
-    protected $ownerId;
+    protected $runnerId;
     protected $status;
     protected $notes;
 
@@ -60,7 +60,7 @@ class WorkItem
 					SELECT
 					    w.id,
 					    w.summary,
-					    w.owner_id,
+					    w.runner_id,
 					    w.status,
 					    w.notes
 					FROM  ".WORKLIST. " as w
@@ -75,7 +75,7 @@ class WorkItem
         }
         $this->setId($row['id'])
              ->setSummary($row['summary'])
-             ->setOwnerId($row['owner_id'])
+             ->setRunnerId($row['runner_id'])
              ->setStatus($row['status'])
              ->setNotes($row['notes']);
         return true;
@@ -128,15 +128,15 @@ WHERE id = ' . (int)$id;
         return $this->creatorId;
     }
 
-    public function setOwnerId($ownerId)
+    public function setRunnerId($runnerId)
     {
-        $this->ownerId = (int)$ownerId;
+        $this->runnerId = (int)$runnerId;
         return $this;
     }
 
-    public function getOwnerId()
+    public function getRunnerId()
     {
-        return $this->ownerId;
+        return $this->runnerId;
     }
 
     public function setStatus($status)
@@ -166,11 +166,11 @@ WHERE id = ' . (int)$id;
 
     protected function insert()
     {
-        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, owner_id, status, notes, created ) ".
+        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status, notes, created ) ".
             "VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
-            "'".mysql_real_escape_string($this->getOwnerId())."', ".
+            "'".mysql_real_escape_string($this->getRunnerId())."', ".
             "'".mysql_real_escape_string($this->getStatus())."', ".
             "'".mysql_real_escape_string($this->getNotes())."', ".
             "NOW())";
@@ -198,7 +198,8 @@ WHERE id = ' . (int)$id;
         $query = 'UPDATE '.WORKLIST.' SET
             summary= "'. mysql_real_escape_string($this->getSummary()).'",
             notes="'.mysql_real_escape_string($this->getNotes()).'",
-            status="' .mysql_real_escape_string($this->getStatus()).'" ';
+            status="' .mysql_real_escape_string($this->getStatus()).'",
+	    runner_id="' .intval($this->getRunnerId()). '"';
 
         $query .= ' WHERE id='.$this->getId();
         return mysql_query($query) ? 1 : 0;
@@ -219,9 +220,11 @@ WHERE id = ' . (int)$id;
      */
     public function getWorkItem($worklist_id)
     {
-        $query = "SELECT w.id, w.summary,w.owner_id, w.mechanic_id, u.nickname, w.status, w.notes
+        $query = "SELECT w.id, w.summary,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname,
+			  uc.nickname AS creator_nickname, w.status, w.notes
 			  FROM  ".WORKLIST. " as w
-			  LEFT JOIN ".USERS." as u ON w.owner_id = u.id
+			  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
+			  LEFT JOIN ".USERS." as u ON w.runner_id = u.id
 			  WHERE w.id = '$worklist_id'";
         $result_query = mysql_query($query);
         $row =  $result_query ? mysql_fetch_assoc($result_query) : null;
@@ -273,7 +276,7 @@ WHERE id = ' . (int)$id;
         }
     }
 
-    public function placeBid($mechanic_id, $username, $itemid, $bid_amount, $done_by, $timezone,$notes)
+    public function placeBid($mechanic_id, $username, $itemid, $bid_amount, $done_by, $timezone, $notes)
     {
         $query =  "INSERT INTO `".BIDS."`
 				(`id`, `bidder_id`, `email`,`worklist_id`,`bid_amount`,`bid_created`,`bid_done`, `notes`)
@@ -289,10 +292,12 @@ WHERE id = ' . (int)$id;
         $result_query = mysql_query($query);
         return  $result_query ?  mysql_fetch_assoc($result_query) : null;
     }
-
-    public function getOwnerSummary($worklist_id)
+// look for getOwnerSummary !!!
+    public function getRunnerSummary($worklist_id)
     {
-        $query = "SELECT `users`.`id` as id, `username`,`is_runner`, `summary` FROM `users`, `worklist` WHERE `worklist`.`creator_id` = `users`.`id` AND `worklist`.`id` = ".$worklist_id;
+        $query = "SELECT `" . USERS . "`.`id` as id, `username`, `summary`"
+		  . " FROM `" . USERS . "`, `" . WORKLIST . "`"
+		  . " WHERE `" . WORKLIST . "`.`runner_id` = `" . USERS . "`.`id` AND `" . WORKLIST . "`.`id` = ".$worklist_id;
         $result_query = mysql_query($query);
         return $result_query ? mysql_fetch_assoc($result_query) : null ;
     }
@@ -378,11 +383,11 @@ WHERE id = ' . (int)$id;
         }
         $bid_info['nickname']=$bidder_nickname;
 
-        //changing owner of the job
+        // changing mechanic of the job
         mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
-        //marking bid as "accepted"
+        // marking bid as "accepted"
         mysql_unbuffered_query("UPDATE `bids` SET `accepted` =  1 WHERE `id` = ".$bid_id);
-        //adding bid amount to list of fees
+        // adding bid amount to list of fees
         mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
         $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
         return $bid_info;

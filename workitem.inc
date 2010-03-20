@@ -11,7 +11,7 @@
     $statusList = array("SUGGESTED", "BIDDING","WORKING","REVIEW","DONE","SKIP");
 
     $allowEdit = false;
-    if(($is_runner || $worklist['owner_id'] == $user_id)) {
+    if(($is_runner || $worklist['creator_id'] == $user_id)) {
         $allowEdit = true;
     }
 
@@ -277,7 +277,7 @@ function reply(id) {
 			['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 			['span', '#info-notes', 'json.notes', 'eval'] ],
 		      function(json) {
-<?php if ($is_runner || $worklist['owner_id'] == $_SESSION['userid']):?>
+<?php if ($is_runner):?>
 			  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
 <?php endif;?>
 			if( is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
@@ -303,7 +303,6 @@ function reply(id) {
 		$('#for_edit').show();
 		$('#for_view').hide();
 		$('.popup-body form input[type="text"]').val('');
-		$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
 		$('.popup-body form select option[index=0]').attr('selected', 'selected');
 		$('.popup-body form textarea').val('');
     }
@@ -405,7 +404,11 @@ function reply(id) {
   <div id="left-panel">
     <div id="for_view">
 
-      <?php if ($action =="edit"):  ?>
+      <?php 
+	
+	$runner_nickname = $worklist['runner_nickname'] != '' ? $worklist['runner_nickname'] : 'No runner assigned yet'; 
+
+	if ($action =="edit"):  ?>
 	<form id="workitem-form" method="post" action="">
 	  <input type="hidden" name="save_workitem" value="save_workitem" />
 	  <input type="hidden" name="action" value="save_workitem" />
@@ -422,7 +425,7 @@ function reply(id) {
 	    </li>
 	    <li>
 	      <span class="info-label">Summary</span>
-	      <?php if($is_runner || $worklist['owner_id'] == $user_id){ ?>
+	      <?php if($is_runner || $worklist['creator_id'] == $user_id){ ?>
 		<span>
 		<input type="text" size="33" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/><span>
 	      <?php }else{?>
@@ -437,7 +440,7 @@ function reply(id) {
 		    <option value="<?php echo $status; ?>" <?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
 		<?php }?>
 		</select>
-		<?php }elseif ($worklist['owner_id'] == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?>
+		<?php }elseif ($worklist['creator_id'] == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?>
                   <select id="status" name="status">
 		    <option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
 		    <?php foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
@@ -451,8 +454,12 @@ function reply(id) {
 		<?php } ?>
 	      </li>
               <li>
-                <span class="info-label">Owner</span>
-                <?php echo $worklist['nickname'];?>
+                <span class="info-label">Creator</span>
+                <?php echo $worklist['creator_nickname'];?>
+              </li>
+              <li>
+                <span class="info-label">Runner</span>
+                <?php echo $runner_nickname;?>
 				<form method="post" action="" style="display:inline;">
 					<input type="submit" id="ping-btn" style="margin-top:4px; float:right;" value="Ping mechanic"></input>
 				</form>
@@ -473,7 +480,7 @@ function reply(id) {
 	    </li>
 	    <li class="last">
 	    <span class="info-label">Notes</span>
-	      <?php if($is_runner || $worklist['owner_id'] == $user_id): ?>
+	      <?php if($is_runner || $worklist['creator_id'] == $user_id): ?>
 		<span><textarea size="33" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
 	      <?php else:?>
 	      <span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
@@ -507,7 +514,7 @@ function reply(id) {
               <input type="hidden" id="status" name="status" value = "BIDDING" />
 	      <?php 
 		    // quick status buttons for creators of items and mechanics working on them
-		    if(!$is_runner && ($worklist['owner_id'] == $user_id || $worklist['mechanic_id'] == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic)){
+		    if(!$is_runner && ($worklist['creator_id'] == $user_id || $worklist['mechanic_id'] == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic)){
 
 			      foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
 
@@ -530,8 +537,12 @@ function reply(id) {
 		    } ?>
 	    </li>
             <li>
-				<span class="info-label">Owner</span>
-				<?php echo $worklist['nickname'];?>
+				<span class="info-label">Creator</span>
+				<?php echo $worklist['creator_nickname'];?>
+            </li>
+            <li>
+				<span class="info-label">Runner</span>
+				<?php echo $runner_nickname;?>
 				<form method="post" action="" style="display:inline;">
 					<input type="submit" id="ping-btn" style="margin-top:3px; float:right;" value="Ping mechanic"></input>
 				</form>

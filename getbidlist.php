@@ -17,10 +17,10 @@ if(isset($_REQUEST["worklist_id"])){
   exit;
 }
 
-$rt = mysql_query("SELECT `owner_id` FROM ".WORKLIST." WHERE `id` = " . $worklist_id);
+$rt = mysql_query("SELECT `creator_id` FROM ".WORKLIST." WHERE `id` = " . $worklist_id);
 if (!$rt)  exit;
 $row = mysql_fetch_row($rt);
-$owner_id = $row[0];
+$creator_id = $row[0];
 
 $rt = mysql_query("SELECT COUNT(*) FROM ".BIDS." WHERE `worklist_id` = " . $worklist_id . " AND withdrawn = 0");
 $row = mysql_fetch_row($rt);
@@ -49,7 +49,7 @@ if ($userId > 0) {
 }
 
 while ($row = mysql_fetch_assoc($rt)){
-	if (!$user->isRunner() && ($user->getId() != $owner_id) && ($user->getId() != $row['bidder_id'])) {
+	if (!$user->isRunner() && ($user->getId() != $row['bidder_id'])) {
 		$row['bidder_id'] = 0;
 		$row['email'] = '*name hidden*';
 	}

@@ -60,7 +60,7 @@ switch ($name) {
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
 					FROM worklist w
-					JOIN users u1 ON u1.id = w.owner_id AND w.status = 'BIDDING'
+					JOIN users u1 ON u1.id = w.creator_id AND w.status = 'BIDDING'
 					ORDER BY priority LIMIT 20";
 		break;
 	case 'completed' : 
@@ -71,7 +71,7 @@ switch ($name) {
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
 					FROM worklist w
-					JOIN users u1 ON u1.id = w.owner_id AND w.status = 'DONE'
+					JOIN users u1 ON u1.id = w.creator_id AND w.status = 'DONE'
 					ORDER BY created DESC LIMIT 20";
 }
 

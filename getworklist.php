@@ -13,10 +13,10 @@ include("class.session_handler.php");
 
 error_reporting(-1);
 $limit = 30;
-$page = isset($_REQUEST["page"])?$_REQUEST["page"]:1;
+$page = isset($_REQUEST['page'])?$_REQUEST['page']:1;
 
-$sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST["sfilter"] : '';
-$ufilter = isset($_REQUEST["ufilter"])? $_REQUEST["ufilter"] : 0;
+$sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST['sfilter'] : '';
+$ufilter = isset($_REQUEST['ufilter'])? $_REQUEST['ufilter'] : 0;
 
 $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
 
@@ -29,8 +29,9 @@ $WorklistFilter->setSfilter($sfilter)
                ->setUfilter($ufilter)
                ->saveFilters();
 
-$sfilter = $_REQUEST["sfilter"] ? explode("/",$_REQUEST["sfilter"]) : array();
-$ufilter = intval($_REQUEST["ufilter"]);
+
+$sfilter = $sfilter ? explode("/",$sfilter) : array();
+$ufilter = intval($ufilter);
 
 $where = '';
 $unpaid_join = '';
@@ -61,21 +62,23 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             if( $val == 'BIDDING' ) {
                 $where .= "( mechanic_id='$ufilter' or `bidder_id`='$ufilter' )";
             } else  {
-                $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+                $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
             }
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
-        if( $_SESSION['user_id'] == $ufilter )  {
-            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
+	$userId = isset($_SESSION['user_id'])? $_SESSION['user_id'] : 0;
+        if( $userId == $ufilter )  {
+            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
                         or `bidder_id`='$ufilter')";
         }   else    {
-            $where .= "(creator_id='$ufilter' or owner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
         }
     }
 }
 
-if($_REQUEST['query']!='' & $_REQUEST['query']!='Search...') {
-    $query = $_REQUEST['query'];
+$query = isset($_REQUEST['query']) ? $_REQUEST["query"] : '';
+
+if($query!='' & $query!='Search...') {
     $searchById = false;
      if(is_numeric(trim($query))) {
         $rt = mysql_query("select count(*) from ".WORKLIST." LEFT JOIN `".FEES."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id` $where AND `".WORKLIST."`.`id` = " .$query);
@@ -149,8 +152,10 @@ mysql_query($fillBids);
 $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
-$qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,`ou`.`nickname`,`ou`.`username`,
-          `mu`.`nickname` as mechanic_nickname,`mu`.`username` as mechanic_username,
+$qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
+	      `cu`.`nickname` AS `creator_nickname`,
+	      `ru`.`nickname` AS `runner_nickname`,
+	      `mu`.`nickname` AS `mechanic_nickname`,
 	      TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
 	      `total_fees`,`bid_amount`,`creator_id`,
 	      (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."`
@@ -159,7 +164,8 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,`ou`.`nickname
            WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1)) as bid_done";
 
 $qbody = "FROM `".WORKLIST."`
-          LEFT JOIN `".USERS."` AS ou ON `".WORKLIST."`.`owner_id` = `ou`.`id`
+          LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
+          LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
           LEFT JOIN `".FEES."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
           LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
           LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
@@ -183,26 +189,20 @@ $worklist = array(array($items, $page, $cPages));
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
 {
-    if (!empty($row['username'])) {
-        $nickname = $row['nickname'];
-        $username = ''; //tcrowe: security: disabled for now. $row['username'];
-    } else {
-        $nickname = $username = '';
-    }
+
     $worklist[$i] = array(
          0 => $row['id'],
          1 => $row['summary'],
          2 => $row['status'],
-         3 => $nickname,
-         4 => $username,
-         5 => $row['delta'],
-         6 => $row['total_fees'],
-         7 => $row['bid_amount'],
-         8 => $row['creator_id'],
-         9 => $row['mechanic_nickname'],
-        10 =>$row['mechanic_username'],
-        11 => $row['bid_count'],
-        12 => $row['bid_done']);
+         3 => $row['creator_nickname'],
+         4 => $row['runner_nickname'],
+         5 => $row['mechanic_nickname'],
+         6 => $row['delta'],
+         7 => $row['total_fees'],
+         8 => $row['bid_amount'],
+         9 => $row['creator_id'],
+        10 => $row['bid_count'],
+        11 => $row['bid_done']);
 }
 
 $json = json_encode($worklist);

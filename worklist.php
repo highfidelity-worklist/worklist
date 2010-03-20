@@ -38,7 +38,7 @@ if( $userId > 0 )	{
 	$nick = $user->getNickname();
 }
 
-if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
+if ($userId > 0 && isset($_POST['save_item'])) {
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite', 'is_expense');
     foreach ($args as $arg) {
     		// Removed mysql_real_escape_string, because we should 
@@ -46,24 +46,27 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
         $$arg = $_POST[$arg];
     }
 
-    $creator_id = $_SESSION['userid'];
-
-    $owner_id = 0;
-    $owner = mysql_real_escape_string($_POST['owner']);
-    $res = mysql_query("select id from ".USERS." where username='$owner' || nickname='$owner'");
-    if ($res && ($row = mysql_fetch_assoc($res))) {
-        $owner_id = $row['id'];
-    }
+    $creator_id = $userId;
 
     if (!empty($_POST['itemid'])) {
         $workitem->loadById($_POST['itemid']);
-        $journal_message .= $_SESSION['nickname'] . " updated ";
+        $journal_message .= $nick . " updated ";
     } else {
-        $workitem->setCreatorId($owner_id);
-        $journal_message .= $_SESSION['nickname'] . " added ";
+        $workitem->setCreatorId($creator_id);
+        $journal_message .= $nick . " added ";
     }
     $workitem->setSummary($summary);
-    $workitem->setOwnerId($owner_id);
+
+    // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
+    if($status == 'BIDDING' && $user->getIs_runner() == 1){
+
+	$runner_id = $userId;
+    }else{
+	
+	$runner_id = 0;
+    }
+
+    $workitem->setRunnerId($runner_id);
     $workitem->setStatus($status);
     $workitem->setNotes($notes);
     $workitem->save();
@@ -92,106 +95,6 @@ if (isset($_SESSION['userid']) && isset($_POST['save_item'])) {
         $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id, $is_expense);
     }
 } 
-
-//placing a bid
-if (isset($_SESSION['userid']) && isset($_POST['place_bid'])){ //for security make sure user is logged in to post bid
-    $args = array('itemid', 'bid_amount','done_by', 'notes', 'mechanic_id');
-    foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
-    }
-
-    if($mechanic_id != $_SESSION['userid']) {
-        // Get the mechanic's user information
-        $rt = mysql_query("select nickname, username from ".USERS." where id='{$mechanic_id}'");
-        if ($rt) {
-            $row = mysql_fetch_assoc($rt);
-            $nickname = $row['nickname'];
-            $username = $row['username'];
-        } else {
-            $username = "unknown-{$username}";
-            $nickname = "unknown-{$mechanic_id}";
-        }
-    } else	{
-        $mechanic_id = $_SESSION['userid'];
-        $username = $_SESSION['username'];
-        $nickname = $_SESSION['nickname'];
-    }
-
-    mysql_unbuffered_query("INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_done`, `notes`)
-                            VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$_SESSION['timezone'])."'), '$notes')");
-
-    $bid_id = mysql_insert_id();
-
-    //sending email to the owner of worklist item
-    $rt = mysql_query("SELECT `u`.`id`, `username`,`is_runner`, `summary` FROM `".USERS."` u, `worklist` WHERE `worklist`.`creator_id` = `u`.`id` AND `worklist`.`id` = ".$itemid);
-    $row = mysql_fetch_assoc($rt);
-    $summary = $row['summary'];
-    $subject = "new bid: $summary";
-    $body =  "<p>New bid was placed for worklist item #$itemid: \"$summary\"<br/>";
-    $body .= "Details of the bid:<br/>";
-    $body .= "Bidder Email: ".$_SESSION['username']."<br/>";
-    $body .= "Done By: ".$done_by."<br/>";
-    $body .= "Bid Amount: ".$bid_amount."<br/>";
-    $body .= "Notes: ".$notes."</p>";
-    $urlacceptbid = '';
-    if ($row['is_runner']==1) {
-		$urlacceptbid = SERVER_URL.'workitem.php?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid';
-		$body .= '<br><a href="'.$urlacceptbid.'">Click here to accept bid</a>';
-    }
-    $body .= "<p>Love,<br/>Worklist</p>";
-    sl_send_email($row['username'], $subject, $body);
-    $workitem->loadById($itemid);
-    sl_notify_sms_by_id($workitem->getOwnerId(), $subject, "$${bid_amount}\n${urlacceptbid}");
-
-    // Journal notification
-    $journal_message .= "A bid of ".number_format($bid_amount,2)." was placed on item #$itemid: $summary.";
-}
-
-//accepting a bid
-if (isset($_POST['accept_bid']) && $is_runner == 1)	{ //only runners can accept bids
-    $bid_id = intval($_POST['bid_id']);
-    $workitem->acceptBid($bid_id);
-
-    // Journal notification
-    $summary = getWorkItemSummary($bid_info['worklist_id']);
-    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from $bidder_nickname on item #{$bid_info['worklist_id']}: $summary. ";
-
-    //sending email to the bidder
-    $subject = "bid accepted: $summary";
-    $item_link = SERVER_URL."workitem.php?job_id={$bid_info['worklist_id']}&action=view";
-    $prom = $body = "Promised by: ".$_SESSION['nickname'];
-    $body .= "<p><a href='${item_link}'>View Item</a></p>";
-    $body .= "<p>Love,<br/>Worklist</p>";
-    sl_send_email($bid_info['email'], $subject, $body);
-    sl_notify_sms_by_id($bid_info['bidder_id'], $subject, "${prom}\n${item_link}");
-}
-
-//withdrawing bids
-if (isset($_REQUEST['withdraw_bid'])) {
-    if (isset($_REQUEST['bid_id'])) {
-        withdrawBid(intval($_REQUEST['bid_id']));
-    } else {
-        $fee_id = intval($_REQUEST['fee_id']);
-        $res = mysql_query('SELECT bid_id FROM `' . FEES . '` WHERE `id`=' . $fee_id);
-        $fee = mysql_fetch_object($res);
-        if ((int)$fee->bid_id !== 0) {
-            withdrawBid($fee->bid_id);
-        } else {
-            deleteFee($fee_id);
-        }
-    }
-}
-
-//adding fee to fees table
-if (isset($_POST['add_fee']) && isset($_SESSION['userid'])){ //only users can add fees
-
-    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense');
-    foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
-    }
-
-    $journal_message .= AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
-}
 
 if (!empty($journal_message)) {
     //sending journal notification
@@ -283,7 +186,7 @@ include("head.html"); ?>
     function return2br(dataStr) {
         return dataStr.replace(/(\r\n|\r|\n)/g, "<br />");
     }
-    // json row fields: id, summary, status, owner nickname, owner username, delta
+    // see getworklist.php for json column mapping
     function AppendRow(json, odd, prepend, moreJson, idx)    {
         var pre = '', post = '';
         var row;
@@ -297,7 +200,7 @@ include("head.html"); ?>
 
         if (odd) { row += ' rowodd' } else { row += 'roweven' }
 
-		if(user_id == json[8]){ //is the same person who created the work item
+		if(user_id == json[9]){ //is the same person who created the work item
 		  row += ' rowown';
 		}
         row += '">';
@@ -307,13 +210,13 @@ include("head.html"); ?>
 		}
 		
         row += '<td width="50%" title="' +json[0]+'">' + pre + json[1] + post + '</td>';
-        if (json[2] == 'BIDDING' && json[11] > 0 && (user_id == json[8] || is_runner == 1)) {
-            post = ' (' + json[11] + ')';
+        if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
+            post = ' (' + json[10] + ')';
         }
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
         pre = '';
         post = '';
-
+/*
         if (json[3] != '') {
 			var who = json[3];
 			var tooltip = "Owner: "+json[4];
@@ -326,19 +229,37 @@ include("head.html"); ?>
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
-        if (json[2] == 'WORKING' && json[12] != null) {
-            row += '<td width="15%">' + pre + (RelativeTime(json[12]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
+*/
+	var who = '';
+	if(json[3] == json[4]){
+	
+		// creator nickname can't be null, so not checking here
+		who += json[3];
+	}else{
+
+		var runnerNickname = json[4] != null ? ', ' + json[4] : '';
+		who += json[3] + runnerNickname;
+	}
+	if(json[5] != null){
+
+		who += ', ' + json[5];
+	}
+
+	row += '<td width="15%">' + pre + who + post + '</td>';
+
+        if (json[2] == 'WORKING' && json[11] != null) {
+            row += '<td width="15%">' + pre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
         } else {
-            row += '<td width="15%">' + pre + RelativeTime(json[5]) + ' ago' + post +'</td>';
+            row += '<td width="15%">' + pre + RelativeTime(json[6]) + ' ago' + post +'</td>';
         }
 
 		var feebids = 0;
-		if(json[6]){
-			feebids = json[6];
+		if(json[7]){
+			feebids = json[7];
 		}
 		var bid = 0;
-		if(json[7]){
-			bid = json[7];
+		if(json[8]){
+			bid = json[8];
 		}
 		if(json[2] == 'BIDDING'){
 			bid = parseFloat(bid);
@@ -574,7 +495,6 @@ include("head.html"); ?>
 		$('#for_edit').show();
 		$('#for_view').hide();
 		$('.popup-body form input[type="text"]').val('');
-		$('.popup-body form input[name="owner"]').val('<?php echo (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : ''; ?>');
 		$('.popup-body form select option[value=\'BIDDING\']').attr('selected', 'selected');
 		$('.popup-body form textarea').val('');
     }

@@ -13,7 +13,7 @@ if (empty($item))
     return;
 
 $query = "SELECT ".WORKLIST.".`id`, `summary`, `nickname`, `status`, `notes` FROM ".WORKLIST. 
-         " LEFT JOIN ".USERS." ON ".WORKLIST.".`owner_id` = ".USERS.".`id` WHERE ".WORKLIST.".id = '$item'";
+         " LEFT JOIN ".USERS." ON ".WORKLIST.".`creator_id` = ".USERS.".`id` WHERE ".WORKLIST.".id = '$item'";
 $rt = mysql_query($query);
 $row = mysql_fetch_assoc($rt);
 

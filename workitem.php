@@ -102,7 +102,7 @@ if($action =='save_workitem') {
     // status
     if ($is_runner || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
         if ($workitem->getStatus() != $status && !empty($status)){
-            $workitem->setStatus($status);
+	    changeStatus($workitem, $status, $user);
             if (!empty($new_update_message)){  // add commas where appropriate
                 $new_update_message .= ", ";
             }
@@ -136,7 +136,7 @@ if($action =='status-switch' && $user->getId() > 0){
 
     $workitem->loadById($worklist_id);
     $status = $_POST['quick-status'];
-    $workitem->setStatus($status);
+    changeStatus($workitem, $status, $user);
     $workitem->save();
     $new_update_message = "Status set to $status. ";
     $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
@@ -178,22 +178,21 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
     // Journal notification
     $journal_message = "A bid of ".number_format($bid_amount,2)." was placed on item #$worklist_id: $summary.";
 
-    //sending email to the owner of worklist item
-    $row = $workitem->getOwnerSummary($worklist_id);
+    //sending email to the runner of worklist item
+    $row = $workitem->getRunnerSummary($worklist_id);
     if(!empty($row)) {
 	$id = $row['id'];
         $summary = $row['summary'];
         $username = $row['username'];
-        $ownerIsRunner = $row['is_runner'];
     }
 
-    sendMailToOwner($worklist_id, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $ownerIsRunner);
+    sendMailToRunner($worklist_id, $bid_id, $summary, $username, $done_by, $bid_amount, $notes);
     $workitem->loadById($worklist_id);
 
-    $owner = new User();
-    $owner->findUserById($workitem->getOwnerId());
+    $runner = new User();
+    $runner->findUserById($workitem->getRunnerId());
     try {
-        $smsMessage = new Sms_Message($owner, 'Bid placed', $journal_message);
+        $smsMessage = new Sms_Message($runner, 'Bid placed', $journal_message);
         $smsBackend = Sms::createBackend($smsMessage, null, array(
             'mailFrom'    => $mail_user['smsuser']['from'],
             'mailReplyTo' => $mail_user['smsuser']['replyto']
@@ -217,10 +216,10 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
     $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
     $workitem->loadById($_POST['itemid']);
 
-    $owner = new User();
-    $owner->findUserById($workitem->getOwnerId());
+    $runner = new User();
+    $runner->findUserById($workitem->getRunnerId());
     try {
-        $smsMessage = new Sms_Message($owner, 'Fee added', $journal_message);
+        $smsMessage = new Sms_Message($runner, 'Fee added', $journal_message);
         $smsBackend = Sms::createBackend($smsMessage, null, array(
             'mailFrom'    => $mail_user['smsuser']['from'],
             'mailReplyTo' => $mail_user['smsuser']['replyto']
@@ -238,7 +237,7 @@ if ($action=='accept_bid'){
     //only runners can accept bids
 	$item_id = intval($_REQUEST['job_id']);
 	$workitem->loadById($item_id);
-	if (($is_runner == 1 || $workitem->getOwnerId() == $user->getId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+	if ($is_runner == 1 && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
 		// query to get a list of bids (to use the current class rather than breaking uniformity)
 		// I could have done this quite easier with just 1 query and an if statement..
 		$bids = (array) $workitem->getBids($item_id);
@@ -333,7 +332,7 @@ $bids = $workitem->getBids($worklist_id);
 
 //Findout if the current user already has any bids.
 // Yes, it's a String instead of boolean to make it easy to use in JS.
-// Suppress names if not is_runner, or owner of Item. Still show if it's user's bid.
+// Suppress names if not is_runner, or creator of Item. Still show if it's user's bid.
 
 $currentUserHasBid = "false";
 if(!empty($bids) && is_array($bids)) {
@@ -342,7 +341,7 @@ if(!empty($bids) && is_array($bids)) {
             $currentUserHasBid = "true";
             //break;
         }
-        if ((!$user->isRunner()) && ($user->getId() != $worklist['owner_id'])) {
+        if ((!$user->isRunner()) && ($user->getId() != $worklist['creator_id'])) {
             if ($user->getId() != $bid['bidder_id']) {
                 $bid['nickname'] = '*name hidden*';
             }
@@ -382,7 +381,7 @@ function sendMailToDiscardedBids($worklist_id)	{
     }
 }
 
-function sendMailToOwner($itemid, $bid_id, $summary, $username, $done_by, $bid_amount, $notes, $is_runner) {
+function sendMailToRunner($itemid, $bid_id, $summary, $username, $done_by, $bid_amount, $notes) {
     $subject = "new bid: ".$summary;
     $body =  "<p>New bid was placed for worklist item #$itemid: \"$summary\"<br/>";
     $body .= "Details of the bid:<br/>";
@@ -390,11 +389,30 @@ function sendMailToOwner($itemid, $bid_id, $summary, $username, $done_by, $bid_a
     $body .= "Done By: ".$done_by."<br/>";
     $body .= "Bid Amount: ".$bid_amount."<br/>";
     $body .= "Notes: ".$notes."</p>";
-    if ($is_runner) {
-        $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
-        $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
-        $body .=  $urlacceptbid;
-    }
+
+    $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
+    $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
+    $body .=  $urlacceptbid;
+
     $body .= "<p>Love,<br/>Workitem</p>";
     sl_send_email($username, $subject, $body);
+}
+
+function changeStatus($workitem,$newStatus, $user){
+
+    $allowable = array("SUGGESTED", "REVIEW", "SKIP");
+    
+    if($user->getIs_runner() == 1){
+
+	  if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)){
+
+		$workitem->setRunnerId($user->getId());	    
+	  }
+
+	  $workitem->setStatus($newStatus);
+
+    }else{
+
+	$workitem->setStatus($newStatus);
+    }
 }
