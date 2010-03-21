@@ -234,8 +234,7 @@ $(function() {
 		//document.getElementById('status-wrap').style.marginTop = "0px";
 		$('#status-lbl').hide();
 		$('#status-update').show();
-		$("#status-share").show();
-		//$('#share-this').show();
+		$('#status-share').show();
 	});
 	
 	//When status-update loses focus hide the share button and shrink the field
@@ -245,7 +244,6 @@ $(function() {
 		if ($('#status-lbl').find('b').html()!="") {
 			$('#status-update').hide();
 			$("#status-share").hide();
-			//$('#share-this').hide();
 			$('#status-lbl').show();
 		}
 	});
@@ -273,7 +271,6 @@ $(function() {
 					$('#share-this').hide();
 				} 
 				$('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
-				
 			}
 		});
 		

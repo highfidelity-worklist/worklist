@@ -969,9 +969,9 @@ include("head.html"); ?>
 <br/>
 <div id="status-wrap" style="width:380px;">
 	<form action="" id="status-update-form" style="width:380px;"><?php echo $nick?> is <span id="status-lbl"><b><?php echo $current_status?></b></span>
-		<input type="text" maxlength="45" id="status-update" name="status-update"
+		<input style="display: none;" type="text" maxlength="45" id="status-update" name="status-update"
 			value="<?php echo $current_status?>"></input>
-		<div id="status-share" style="float:right; width:122px;">
+		<div id="status-share" style="display: none; float:right; width:122px;">
 			<input type="submit" value="Share" id="status-share-btn"></input>
 		</div>
 	</form>
