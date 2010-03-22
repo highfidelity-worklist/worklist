@@ -71,7 +71,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 		$comment->setComment_id((int) $_POST['comment_id']);
 	}
 	if (isset($_POST['comment']) && !empty($_POST['comment'])) {
-		$comment->setComment($_POST['comment']);
+		$comment->setComment(nl2br($_POST['comment']));
 	}
 	$comment->save();
 	header('Location: http://' . SERVER_NAME . $_SERVER['REQUEST_URI']);
