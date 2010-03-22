@@ -121,6 +121,7 @@ $userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
 $current_status = get_status(true);
 
 /*********************************** HTML layout begins here  *************************************/
+$worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
 include("head.html"); ?>
 
@@ -303,7 +304,7 @@ include("head.html"); ?>
     }
 
     function SelectWorkItem(item) {
-        if (workitem > 0) $('#workitem-'+workitem).removeClass('workitem-selected');
+	    if (workitem > 0) $('#workitem-'+workitem).removeClass('workitem-selected');
         var match = item.attr('id').match(/workitem-\d+/);
         if (match) {
             workitem = match[0].substr(9);
@@ -317,7 +318,29 @@ include("head.html"); ?>
             $("#edit, #view").attr('disabled', 'disabled');
         }
     }
-
+    function SelectEditedWorkItem() {
+	    if (workitem > 0) $('#workitem-'+workitem).removeClass('workitem-selected');
+		<?php if(!empty($worklist_id))
+		{
+		?>
+        workitem = <?php echo $worklist_id;?>;
+		$('#workitem-'+workitem).addClass('workitem-selected');
+		
+		<?php
+		}
+		else
+		{
+		?>
+		workitem = 0;
+		<?php
+		}
+		?>
+        if (workitem != 0) {
+            $("#edit, #view").attr('disabled', '');
+        } else {
+            $("#edit, #view").attr('disabled', 'disabled');
+        }
+    }
     function GetWorklist(npage, update) {
 		$.ajax({
 			type: "POST",
@@ -884,6 +907,16 @@ include("head.html"); ?>
 			$('#pages-dialog').dialog('close');
 			return false;
 		});
+		<?php if(!empty($worklist_id))
+		{
+		?>
+		SelectEditedWorkItem();
+		$('#edit').show();
+		$('#view').hide();
+
+		<?php
+		}
+		?>
 	});
 
     function getIdFromPage(npage, worklist_id)	{
@@ -904,7 +937,6 @@ include("head.html"); ?>
 			}
 		});
     }
-
 	function updatePriority(worklist_id, prev_id, bump){
 		$.ajax({
 			type: "POST",
@@ -916,11 +948,8 @@ include("head.html"); ?>
 		});
 	}
 </script>
-
 <title>Worklist | Lend a Hand</title>
-
 </head>
-
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
      id="loader_img"><img src="images/final_loading_big.gif"
@@ -948,12 +977,9 @@ include("head.html"); ?>
 	<input type="submit" id="page-go-highest" value="Highest" />
 	<input type="hidden" id="worklist-id" />
 </div>
-
 <!-- Feedback tab html -->
 <?php require_once('feedback.inc') ?>
-
 <?php include("format.php"); ?>
-
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <?php if (isset($_SESSION['userid'])) { ?>
@@ -993,13 +1019,9 @@ include("head.html"); ?>
 <img src="images/cross.png"> </a></div>
 </form>
 </div>
-
 </div>
-
 </div>
-
 <div style="clear: both"></div>
-
 <table width="100%" class="table-worklist">
     <thead>
         <tr class="table-hdng">
@@ -1013,5 +1035,4 @@ include("head.html"); ?>
     <tbody>
     </tbody>
 </table>
-
 <?php include("footer.php"); ?>
