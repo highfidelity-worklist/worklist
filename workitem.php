@@ -29,7 +29,9 @@ $get_variable = 'job_id';
 if (!defined("WORKITEM_URL")) {
     define("WORKITEM_URL",SERVER_URL . "workitem.php?$get_variable=");
 }
-
+if (!defined("WORKLIST_URL")) {
+    define("WORKLIST_URL",SERVER_URL . "worklist.php?$get_variable=");
+}
 $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]) : 0;
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $currentUsername = $_SESSION['username'];
@@ -81,7 +83,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 $workitem = new WorkItem();
 $mechanic_id = $user->getId();
 $redirectToDefaultView = false;
-
+$redirectToWorklistView = false;
 // Save WorkItem was requested. We only support Update here
 if($action =='save_workitem') {
 
@@ -128,7 +130,7 @@ if($action =='save_workitem') {
         $new_update_message = " Changes: $new_update_message";
     }
 
-    $redirectToDefaultView = true;
+ 	$redirectToWorklistView = true;
     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary.  $new_update_message";
 }
 
@@ -304,7 +306,9 @@ if (isset($_SESSION['userid']) && $action == "withdraw_bid") {
 if($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id;
 }
-
+if($redirectToWorklistView) {
+    $postProcessUrl = WORKLIST_URL . $worklist_id;
+}
 // We have a Journal message. Send it to Journal
 if(isset($journal_message)) {
     sendJournalNotification($journal_message);
