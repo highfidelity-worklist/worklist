@@ -48,6 +48,13 @@ if ($userId > 0) {
 if(empty($worklist_id)) {
     return;
 }
+
+//initialize the workitem class
+$workitem = new WorkItem();
+$mechanic_id = $user->getId();
+$redirectToDefaultView = false;
+$redirectToWorklistView = false;
+
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
 if (isset($_REQUEST['withdraw_bid'])) {
     $action = "withdraw_bid";
@@ -76,14 +83,14 @@ if (isset($_REQUEST['withdraw_bid'])) {
 		$comment->setComment(nl2br($_POST['comment']));
 	}
 	$comment->save();
-	header('Location: http://' . SERVER_NAME . $_SERVER['REQUEST_URI']);
+
+	$workitem = new WorkItem();
+	$workitem->loadById($worklist_id);
+	$journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
+
+	$redirectToDefaultView = true;
 }
 
-//initialize the workitem class
-$workitem = new WorkItem();
-$mechanic_id = $user->getId();
-$redirectToDefaultView = false;
-$redirectToWorklistView = false;
 // Save WorkItem was requested. We only support Update here
 if($action =='save_workitem') {
 
@@ -133,6 +140,8 @@ if($action =='save_workitem') {
  	$redirectToWorklistView = true;
     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary.  $new_update_message";
 }
+
+
 
 if($action =='status-switch' && $user->getId() > 0){
 
