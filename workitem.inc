@@ -10,8 +10,11 @@
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
     $statusList = array("SUGGESTED", "BIDDING","WORKING","REVIEW","DONE","SKIP");
 
+    $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
+    $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
+
     $allowEdit = false;
-    if(($is_runner || $worklist['creator_id'] == $user_id)) {
+    if ($is_runner || $creator_id == $user_id) {
         $allowEdit = true;
     }
 
@@ -280,7 +283,7 @@ function reply(id) {
 <?php if ($is_runner):?>
 			  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
 <?php endif;?>
-			if( is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
+			if( is_runner==1 || (json.bidder_id == "<?php echo $user_id ?>"))
 			      $('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 		      });
 
@@ -290,7 +293,7 @@ function reply(id) {
 
         $('#bid').click(function(e){
             if (   already_bid
-                && $(this).parent().find('#mechanic_id').val() == '<?php echo $_SESSION['userid'] ?>'
+                && $(this).parent().find('#mechanic_id').val() == '<?php echo $user_id ?>'
                 && !confirm("You have already placed a bid, do you want to place a new one?")) {
                 $('#popup-bid').dialog('close');
                 return false;
@@ -425,7 +428,7 @@ function reply(id) {
 	    </li>
 	    <li>
 	      <span class="info-label">Summary</span>
-	      <?php if($is_runner || $worklist['creator_id'] == $user_id){ ?>
+	      <?php if($is_runner || $creator_id == $user_id){ ?>
 		<span>
 		<input type="text" size="33" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/><span>
 	      <?php }else{?>
@@ -440,7 +443,7 @@ function reply(id) {
 		    <option value="<?php echo $status; ?>" <?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
 		<?php }?>
 		</select>
-		<?php }elseif ($worklist['creator_id'] == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?>
+		<?php }elseif ($creator_id == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?>
                   <select id="status" name="status">
 		    <option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
 		    <?php foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
@@ -480,7 +483,7 @@ function reply(id) {
 	    </li>
 	    <li class="last">
 	    <span class="info-label">Notes</span>
-	      <?php if($is_runner || $worklist['creator_id'] == $user_id): ?>
+	      <?php if($is_runner || $creator_id == $user_id): ?>
 		<span><textarea size="33" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
 	      <?php else:?>
 	      <span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
@@ -514,7 +517,7 @@ function reply(id) {
               <input type="hidden" id="status" name="status" value = "BIDDING" />
 	      <?php 
 		    // quick status buttons for creators of items and mechanics working on them
-		    if(!$is_runner && ($worklist['creator_id'] == $user_id || $worklist['mechanic_id'] == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic)){
+		    if(!$is_runner && ($creator_id == $user_id || $mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic)){
 
 			      foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
 

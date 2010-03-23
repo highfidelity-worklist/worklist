@@ -228,7 +228,7 @@ function DisplayFilter($filter_name, $reports = null)
         if (!empty($_SESSION['userid'])) {
             $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
         } else {
-            $user_array = GetUserList();
+            $user_array = GetUserList(0, '');
         }
 
         foreach($user_array as $userid=>$nickname) {

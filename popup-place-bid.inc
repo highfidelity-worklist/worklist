@@ -45,7 +45,7 @@
 ?>
 	 </select></label></p>
 
-<?php   } else  {  ?>
+<?php   } else if (isset($_SESSION['userid'])) {  ?>
 
 	 <p class="info-label">Mechanic<br />
 	   <span id="mechanic_id"><?php echo $_SESSION['nickname']; ?></span>

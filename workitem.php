@@ -34,7 +34,7 @@ if (!defined("WORKLIST_URL")) {
 }
 $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]) : 0;
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-$currentUsername = $_SESSION['username'];
+$currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 
 $userId = getSessionUserId();
 $user = new User();

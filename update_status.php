@@ -59,6 +59,8 @@ function update_status($status = ""){
  * @return an xml structure containing the status and timeplaced OR if as_string is true will return the string status only
  */
 function get_status($as_string = true){
+	if (empty($_SESSION['userid'])) return "";
+
 	// Connect to the database
 	$connection = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 	mysql_select_db(DB_NAME,$connection);	
@@ -75,8 +77,6 @@ function get_status($as_string = true){
 		  $status_info[] = $row;
 		 
 		}
-		
-		
 		
 		if(!$as_string){
 			// Return the array as a json element
