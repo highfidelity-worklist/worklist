@@ -13,6 +13,10 @@
   padding-bottom: 0;
 } 
 
+.slide-out-div .handle {
+  cursor: pointer;
+}
+
 #ui-toaster-tr {
   z-index: 100;
 }

@@ -2,7 +2,7 @@
   $feedback_email = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 ?>
 <div class="slide-out-div">
-    <a class="handle">Content</a>
+    <a class="handle">feedback</a>
     <h3>Leave Feedback</h3>
     <form>
       <p>
@@ -18,7 +18,7 @@
 	<label for = "feedback-message">Message:</label><br />
 	<textarea id = "feedback-message" name = "message" cols = "30" rows = "8"></textarea>
       </p>
-      <p class = "last">
+      <p>
 	<input type = "submit" name = "feedback-submit" id = "feedback-submit" value = "Submit" />
       </p>
     </form>

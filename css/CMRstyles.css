@@ -170,7 +170,7 @@ body {
 
 #footer .loves {
 	margin:0px;
-	padding: 0px 15px;
+	padding: 0px 15px 15px 0px;
 	float: right;
 }
 #footer .lefticon {
@@ -209,6 +209,14 @@ p, label {
 	color:#333333;
 }
 
+#slide-out-div p, label {	
+	padding: 0;
+	margin:0;
+	font-size:13px;
+	color:#333333;
+    text-align:right;
+	line-height:14px;
+}
 
 p{
 	margin: 0 0 20px 0;
