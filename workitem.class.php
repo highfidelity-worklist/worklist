@@ -19,6 +19,7 @@ class WorkItem
     protected $summary;
     protected $creatorId;
     protected $runnerId;
+    protected $mechanicId;
     protected $status;
     protected $notes;
 
@@ -60,7 +61,9 @@ class WorkItem
 					SELECT
 					    w.id,
 					    w.summary,
+					    w.creator_id,
 					    w.runner_id,
+					    w.mechanic_id,
 					    w.status,
 					    w.notes
 					FROM  ".WORKLIST. " as w
@@ -75,7 +78,9 @@ class WorkItem
         }
         $this->setId($row['id'])
              ->setSummary($row['summary'])
+             ->setCreatorId($row['creator_id'])
              ->setRunnerId($row['runner_id'])
+	     ->setMechanicId($row['mechanic_id'])
              ->setStatus($row['status'])
              ->setNotes($row['notes']);
         return true;
@@ -137,6 +142,17 @@ WHERE id = ' . (int)$id;
     public function getRunnerId()
     {
         return $this->runnerId;
+    }
+
+    public function setMechanicId($mechanicId)
+    {
+        $this->mechanicId = (int)$mechanicId;
+        return $this;
+    }
+
+    public function getMechanicId()
+    {
+        return $this->mechanicId;
     }
 
     public function setStatus($status)
@@ -390,6 +406,7 @@ WHERE id = ' . (int)$id;
         // adding bid amount to list of fees
         mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
         $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
+	$this -> setMechanicId($bid_info['bidder_id']);
         return $bid_info;
     }
 

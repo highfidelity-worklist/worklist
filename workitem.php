@@ -2,7 +2,6 @@
 //  Copyright (c) 2009, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-
 // AJAX request from ourselves to retrieve history
 require_once 'config.php';
 require_once 'class.session_handler.php';
@@ -36,6 +35,7 @@ $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 
+//initialize user accessing the page
 $userId = getSessionUserId();
 $user = new User();
 if ($userId > 0) {
@@ -51,6 +51,7 @@ if(empty($worklist_id)) {
 
 //initialize the workitem class
 $workitem = new WorkItem();
+$workitem->loadById($worklist_id);
 $mechanic_id = $user->getId();
 $redirectToDefaultView = false;
 $redirectToWorklistView = false;
@@ -84,17 +85,21 @@ if (isset($_REQUEST['withdraw_bid'])) {
 	}
 	$comment->save();
 
-	$workitem = new WorkItem();
-	$workitem->loadById($worklist_id);
 	$journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
+
+	workitemNotify(array('type' => 'comment', 
+		      'workitem' => $workitem,
+		      'recipients' => array('creator', 'runner', 'mechanic')),
+		       array('who' => $_SESSION['nickname'],
+			     'comment' => nl2br($_POST['comment'])));
 
 	$redirectToDefaultView = true;
 }
 
 // Save WorkItem was requested. We only support Update here
+$notifyEmpty = true;
 if($action =='save_workitem') {
 
-    $workitem->loadById($worklist_id);
     $args = array('summary','notes', 'status');
     foreach ($args as $arg) {
         $$arg = $_POST[$arg];
@@ -135,6 +140,7 @@ if($action =='save_workitem') {
     } else {
         $workitem->save();
         $new_update_message = " Changes: $new_update_message";
+	$notifyEmpty = false;
     }
 
  	$redirectToWorklistView = true;
@@ -145,14 +151,20 @@ if($action =='save_workitem') {
 
 if($action =='status-switch' && $user->getId() > 0){
 
-    $workitem->loadById($worklist_id);
     $status = $_POST['quick-status'];
     changeStatus($workitem, $status, $user);
     $workitem->save();
     $new_update_message = "Status set to $status. ";
+    $notifyEmpty = false;
     $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
 }
 
+    if(!$notifyEmpty){
+	  workitemNotify(array('type' => 'modified',
+			      'workitem' => $workitem,
+			      'recipients' => array('runner', 'creator', 'mechanic')), 
+			  array('changes' => $new_update_message));
+    }
 
 if (isset($_SESSION['userid']) && $action =="place_bid"){
     $args = array('bid_amount','done_by', 'notes', 'mechanic_id');
@@ -197,8 +209,14 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
         $username = $row['username'];
     }
 
-    sendMailToRunner($worklist_id, $bid_id, $summary, $username, $done_by, $bid_amount, $notes);
-    $workitem->loadById($worklist_id);
+    // notify runner of new bid
+    workitemNotify(array('type' => 'bid_placed',
+			 'workitem' => $workitem,
+			 'recipients' => array('runner')), 
+		    array('done_by' => $done_by,
+			  'bid_amount' => $bid_amount,
+			  'notes' => $notes,
+			  'bid_id' => $bid_id));
 
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
@@ -225,7 +243,14 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
     $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
-    $workitem->loadById($_POST['itemid']);
+
+    // notify runner of new fee
+    workitemNotify(array('type' => 'fee_added',
+			 'workitem' => $workitem,
+			 'recipients' => array('runner')), 
+		    array('fee_adder' => $user->getNickname(),
+			  'fee_amount' => $fee_amount));
+
 
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
@@ -246,12 +271,11 @@ if (isset($_SESSION['userid']) && $action == "add_fee") {
 if ($action=='accept_bid'){
     $bid_id = intval($_REQUEST['bid_id']);
     //only runners can accept bids
-	$item_id = intval($_REQUEST['job_id']);
-	$workitem->loadById($item_id);
+
 	if ($is_runner == 1 && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
 		// query to get a list of bids (to use the current class rather than breaking uniformity)
 		// I could have done this quite easier with just 1 query and an if statement..
-		$bids = (array) $workitem->getBids($item_id);
+		$bids = (array) $workitem->getBids($workitem -> getId());
 		$exists = false;
 		foreach ($bids as $array) {
 			if ($array['id'] == $bid_id) {
@@ -264,13 +288,11 @@ if ($action=='accept_bid'){
 
 			// Journal notification
 			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
-
-			//sending email to the bidder
-			$subject = "Bid accepted: " . $bid_info['summary'];
-			$body = "Your bid was accepted for <a href='" . SERVER_URL . "workitem.php?job_id=$item_id'>#$item_id</a><br>\n";
-			$body .= "Promised by: {$_SESSION['nickname']}</p>";
-			$body .= "<p>Love,<br/>Worklist</p>";
-			sl_send_email($bid_info['email'], $subject, $body);
+	  
+			// mail notification
+			workitemNotify(array('type' => 'bid_accepted', 
+					     'workitem' => $workitem,
+					     'recipients' => array('mechanic')));
 
             $bidder = new User();
             $bidder->findUserById($bid_info['bidder_id']);
@@ -394,23 +416,6 @@ function sendMailToDiscardedBids($worklist_id)	{
     }
 }
 
-function sendMailToRunner($itemid, $bid_id, $summary, $username, $done_by, $bid_amount, $notes) {
-    $subject = "new bid: ".$summary;
-    $body =  "<p>New bid was placed for worklist item #$itemid: \"$summary\"<br/>";
-    $body .= "Details of the bid:<br/>";
-    $body .= "Bidder Email: ".$_SESSION['username']."<br/>";
-    $body .= "Done By: ".$done_by."<br/>";
-    $body .= "Bid Amount: ".$bid_amount."<br/>";
-    $body .= "Notes: ".$notes."</p>";
-
-    $urlacceptbid = '<br><a href='.SERVER_URL.'workitem.php';
-    $urlacceptbid .= '?job_id='.$itemid.'&bid_id='.$bid_id.'&action=accept_bid>Click here to accept bid.</a>';
-    $body .=  $urlacceptbid;
-
-    $body .= "<p>Love,<br/>Workitem</p>";
-    sl_send_email($username, $subject, $body);
-}
-
 function changeStatus($workitem,$newStatus, $user){
 
     $allowable = array("SUGGESTED", "REVIEW", "SKIP");
@@ -428,4 +433,94 @@ function changeStatus($workitem,$newStatus, $user){
 
 	$workitem->setStatus($newStatus);
     }
+}
+
+function workitemNotify($options, $data = null){
+
+	$recipients = $options['recipients'];
+	$workitem = $options['workitem'];
+	$itemId = $workitem -> getId();
+	$itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId 
+			    . '</a> (' . $workitem -> getSummary() . ')';
+	$itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
+	$body = '';
+	$subject = '';
+
+	switch($options['type']){
+
+	    case 'comment':
+    
+		  $subject = 'New comment: ' . $itemTitle;
+		  $body = 'New comment was added to the item ' . $itemLink . '.<br>';
+		  $body .= $data['who'] . ' says:<br />'
+			    . $data['comment'];
+
+	    break;
+
+	    case 'fee_added':
+
+		  $subject = 'Fee added: ' . $itemTitle;
+		  $body = 'New fee was added to the item ' . $itemLink . '.<br>'
+			. 'Who: ' . $data['fee_adder'] . '<br>'
+			. 'Amount: ' . $data['fee_amount'];    
+
+	    break;
+
+	    case 'bid_accepted':
+
+		  $subject = 'Bid accepted: ' . $itemTitle;
+		  $body = 'Your bid was accepted for ' . $itemLink . '<br>'
+			. 'Promised by: ' . $_SESSION['nickname'];
+
+	    break;
+
+	    case 'bid_placed':
+
+		  $subject = 'New bid: ' . $itemTitle;
+		  $body =  'New bid was placed for ' . $itemLink . '<br>'
+			 . 'Details of the bid:<br>'
+			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
+			 . 'Done By: ' . $data['done_by'] . '<br>'
+			 . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
+			 . 'Notes: ' . $data['notes'] . '<br>';
+
+		  $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
+		  $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
+		  $body .=  $urlacceptbid;
+
+	    break;
+
+	    case 'modified':
+
+		  $subject = "Item modified: ".$itemTitle;
+		  $body =  $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
+			 . $data['changes'];
+
+	    break;
+
+	}
+
+	$body .= '<p>Love,<br/>Workitem</p>';
+	
+	$emails = array();
+	foreach($recipients as $recipient){
+		$recipientUser = new User();
+		$method = 'get' . ucfirst($recipient) . 'Id'; 
+		$recipientUser->findUserById($workitem->$method());
+
+		// do not send mail to the same user making changes 
+		if(($username = $recipientUser->getUsername()) && $recipientUser->getId() != getSessionUserId()){
+	      
+			// check if we already sending email to this user
+			if(!in_array($username, $emails)){
+
+				$emails[] = $username;
+			}
+		}
+	}
+
+	foreach($emails as $email){
+
+		sl_send_email($email, $subject, $body);
+	}
 }
