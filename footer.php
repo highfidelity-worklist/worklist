@@ -27,7 +27,7 @@ $filename = array_pop($res);
 $repname = array_pop($res);
 $viewSourceLink = "http://svn.sendlove.us/filedetails.php?repname=".$repname."&path=/".$filename;
 ?>
- &copy;&nbsp;<? echo date("Y"); ?> <a href="http://www.lovemachineinc.com" target="_blank">LoveMachine, Inc.</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="privacy.php">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a>
+ &copy;&nbsp;<? echo date("Y"); ?> <a href="http://www.lovemachineinc.com" target="_blank">LoveMachine, Inc.</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="privacy.php" target="_blank">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a>
     </div>
 <!-- 
     </div>
