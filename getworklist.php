@@ -60,7 +60,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     if( $is_runner )    {
         foreach( $sfilter as $val ) {
             if( $val == 'BIDDING' ) {
-                $where .= "( mechanic_id='$ufilter' or `bidder_id`='$ufilter' )";
+                $where .= "( mechanic_id='$ufilter' or `bidder_id`='$ufilter' or `runner_id` = '$ufilter')";
             } else  {
                 $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
             }
