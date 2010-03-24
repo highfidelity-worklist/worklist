@@ -398,6 +398,27 @@ class File
     	return $files;
     }
 	
+	public static function fileUploadErrorMessage($error_code) {
+		switch ($error_code) {
+		    case UPLOAD_ERR_INI_SIZE:
+		        return 'The uploaded file exceeds the max filesize of 2 MB.';
+		    case UPLOAD_ERR_FORM_SIZE:
+		        return 'The uploaded file exceeds the max filesize of 2 MB.';
+		    case UPLOAD_ERR_PARTIAL:
+		        return 'The uploaded file was only partially uploaded, please try again later.';
+		    case UPLOAD_ERR_NO_FILE:
+		        return 'No file was uploaded.';
+		    case UPLOAD_ERR_NO_TMP_DIR:
+		        return 'Missing a temporary folder, please try again later.';
+		    case UPLOAD_ERR_CANT_WRITE:
+		        return 'Failed to write file to disk, please try again later.';
+		    case UPLOAD_ERR_EXTENSION:
+		        return 'File upload stopped by extension, please try again later.';
+		    default:
+		        return 'Unknown upload error, please try again later.';
+		}
+	} 
+	
 	public static function getIconFromMime($mime = '')
 	{
 		$mimes = array(

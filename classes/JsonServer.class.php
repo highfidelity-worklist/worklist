@@ -201,15 +201,19 @@ class JsonServer
 	 */
 	protected function actionFileUpload()
 	{
-		// check if we have a file
-		if (empty($_FILES)) {
+		// check if we have a error
+		if ($_FILES['file']['error'] !== UPLOAD_ERR_OK) {
 			return $this->setOutput(array(
 				'success' => false,
-				'message' => 'No file uploaded!'
+				'message' => File::fileUploadErrorMessage($_FILES['file']['error'])
 			));
 		}
 		
-		$mime = $_FILES['file']['type'];
+		if ((isset($_FILES['file']['type']) && !empty($_FILES['file']['type']))) {
+			$mime = $_FILES['file']['type'];
+		} else {
+			$mime = 'application/pdf';
+		}
 		$ext = end(explode(".", $_FILES['file']['name']));
 		$fileName = File::uniqueFilename($ext);
 		$tempFile = $_FILES['file']['tmp_name'];
@@ -236,7 +240,7 @@ class JsonServer
 			}
 			
 			return $this->setOutput(array(
-				'success' => $success,
+				'success' => true,
 				'fileid'  => $file->getId(),
 				'url' 	  => $file->getUrl(),
 				'icon'	  => $icon,

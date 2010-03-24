@@ -39,21 +39,25 @@
 			},
 			onComplete: function(file, data) {
 				this.enable();
-				if (data.filetype == 'image') {
-					var newFile = $('#uploadImage').parseTemplate(data);
-					$('#fileimagecontainer').append(newFile);
-					images.push(data.fileid);
-					$('#imageCount').empty().html(images.length);
-					$('#accordion').accordion('activate', 0);
+				if (data.success == true) {
+					if (data.filetype == 'image') {
+						var newFile = $('#uploadImage').parseTemplate(data);
+						$('#fileimagecontainer').append(newFile);
+						images.push(data.fileid);
+						$('#imageCount').empty().html(images.length);
+						$('#accordion').accordion('activate', 0);
+					} else {
+						var newFile = $('#uploadDocument').parseTemplate(data);
+						$('#filedocumentcontainer').append(newFile);
+						documents.push(data.fileid);
+						$('#documentCount').empty().html(documents.length);
+						$('#accordion').accordion('activate', 1);
+					}
+					$('input[name=files]').val(images.concat(documents).join(','));
+					editable();
 				} else {
-					var newFile = $('#uploadDocument').parseTemplate(data);
-					$('#filedocumentcontainer').append(newFile);
-					documents.push(data.fileid);
-					$('#documentCount').empty().html(documents.length);
-					$('#accordion').accordion('activate', 1);
+					alert(data.message);
 				}
-				$('input[name=files]').val(images.concat(documents).join(','));
-				editable();
 			}
 		});
 		
