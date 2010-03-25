@@ -43,12 +43,21 @@
             <input type="checkbox" name="isrunner" value="isrunner" id="info-isrunner" <?php if($user->isRunner()) echo 'checked = "checked" '; echo $disabled; ?> /><span>Runner</span>
             <input type="checkbox" name="ispayer" value="ispayer" id="info-ispayer" <?php if($user->isPayer()) echo 'checked = "checked" '; echo $disabled; ?> /><span>Payer</span>
             </p>
+            
             <input type="hidden" name="userid" id="userid" value="<?php echo $user -> getId(); ?>">
 
 	        <?php if ($is_runner) { ?>
             <input type="submit" name="save_roles" value="Save Roles">
             <?php } ?>
 	        </form>
+            
+            <p class="info-label">Status<br />
+            	<select id="changeUserStatus" style="width:auto;"<?php echo(($user->isRunner()) ? '' : 'disabled="disabled"'); ?>>
+					<option value="0"<?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
+					<option value="1"<?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
+					<option value="2"<?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
+            	</select>
+            </p>
 	</div><!-- end of left-column div -->
 	<div class = "right-column">
 

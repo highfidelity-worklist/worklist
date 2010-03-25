@@ -131,7 +131,7 @@ function GetRewarderAuditList($userid) {
 function GetRewarderUserList($userid) {
     $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, `".REWARDER."`.`rewarder_points` FROM `".REWARDER."` ".
            "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
-           "WHERE `giver_id`='$userid' AND `".USERS."`.`confirm`=1 ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
+           "WHERE `giver_id`='$userid' AND `".USERS."`.`confirm`=1 `is_active`=1 ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
     $rt = mysql_query($sql);
 
     $rewarderList = array();
@@ -158,7 +158,7 @@ function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
         $extra = "";
     }
 
-    $rt = mysql_query("SELECT `id`, `nickname` $extra  FROM `users` WHERE `id`!='{$userid}' and `confirm`='1' ORDER BY `nickname`");
+    $rt = mysql_query("SELECT `id`, `nickname` $extra  FROM `users` WHERE `id`!='{$userid}' AND `confirm`='1' AND `is_active` = 1 ORDER BY `nickname`");
 
     $userList = array();
     if (!$skipUser && !empty($userid) && !empty($nickname)) {
@@ -228,7 +228,7 @@ function DisplayFilter($filter_name, $reports = null)
         if (!empty($_SESSION['userid'])) {
             $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
         } else {
-            $user_array = GetUserList(0, '');
+            $user_array = GetUserList();
         }
 
         foreach($user_array as $userid=>$nickname) {

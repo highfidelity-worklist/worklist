@@ -27,6 +27,7 @@ class User
 	protected $is_runner;
 	protected $is_payer;
 	protected $is_auditor;
+	protected $is_active;
 	protected $journal_nick;
 	protected $is_guest;
 	protected $phone;
@@ -156,6 +157,20 @@ class User
 	public function isPayer()
 	{
 		if ((int)$this->getIs_payer() === 1) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * A method to check if this user is active or not.
+	 * Attention a user can also be secured and it would return false!
+	 * 
+	 * @return (boolean)
+	 */
+	public function isActive()
+	{
+		if ((int)$this->getIs_active() === 1) {
 			return true;
 		}
 		return false;
@@ -437,6 +452,21 @@ class User
 	 */
 	public function setIs_auditor($is_auditor) {
 		$this->is_auditor = $is_auditor;
+		return $this;
+	}
+
+	/**
+	 * @return the $is_active
+	 */
+	public function getIs_active() {
+		return $this->is_active;
+	}
+
+	/**
+	 * @param $is_auditor the $is_auditor to set
+	 */
+	public function setIs_active($is_active) {
+		$this->is_active = $is_active;
 		return $this;
 	}
 

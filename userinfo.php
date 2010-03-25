@@ -94,7 +94,21 @@
   var rewarded = 0;
 
   $(document).ready(function(){
-  
+
+	$('#changeUserStatus').change(function() {
+		var change = $.ajax({
+			type: 'post',
+			url: 'jsonserver.php',
+			data: {
+				status: $(this).val(),
+				userid: <?php echo $userId; ?>,
+				action: 'changeUserStatus'
+			},
+			dataType: 'json',
+			success: function() {}
+		});
+	});
+
   $('#quick-reward').dialog({ autoOpen: false });
 
   $('a#reward-link').click(function(){
@@ -157,8 +171,6 @@
 
 	return false;
   });
-
-
 
   });
 </script>

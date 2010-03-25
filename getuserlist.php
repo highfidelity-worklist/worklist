@@ -35,14 +35,14 @@ if($letter == "_"){ //numbers
 }
 
 if( $active == 'FALSE' )	{
-	$rt = mysql_query("SELECT COUNT(*) FROM `users` WHERE `nickname` REGEXP '^$letter'");
+	$rt = mysql_query("SELECT COUNT(*) FROM `users` WHERE `nickname` REGEXP '^$letter' AND `is_active` = 1");
 	$row = mysql_fetch_row($rt);
 	$users = intval($row[0]);
 }	else if( $active == 'TRUE' )	{
 	$rt = mysql_query("
 	SELECT COUNT(*) FROM `users` 
 	LEFT JOIN (SELECT `user_id`,MAX(`date`) AS `date` FROM `".FEES."` GROUP BY `user_id`) AS `dates` ON `".USERS."`.id = `dates`.user_id
-	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `nickname` REGEXP '^$letter'");
+	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `is_active` = 1 AND `nickname` REGEXP '^$letter'");
 	
 	$row = mysql_fetch_row($rt);
 	$users = intval($row[0]);
@@ -70,7 +70,7 @@ if( $active == 'FALSE' )	{
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 AND `withdrawn`=0 and `expense`=0 GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 AND `withdrawn`=0 and `expense`=1 GROUP BY `user_id`) AS `expenses_billed` ON `".USERS."`.`id` = `expenses_billed`.`user_id`  
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 AND `withdrawn`=0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
-	WHERE `nickname` REGEXP '^$letter'  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
+	WHERE `nickname` REGEXP '^$letter' AND `is_active` = 1  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }	else if( $active == 'TRUE' )	{
 	$query = "
 	SELECT `id`, `nickname`, `is_runner`,
@@ -92,7 +92,7 @@ if( $active == 'FALSE' )	{
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 AND `withdrawn`=0 GROUP BY `user_id`) AS `fees_received` ON `".USERS."`.`id` = `fees_received`.`user_id`  
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id`=0 AND `withdrawn`=0 and `expense`=1 GROUP BY `user_id`) AS `expenses_billed` ON `".USERS."`.`id` = `expenses_billed`.`user_id`  
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `bid_id` != 0 AND `withdrawn`=0 GROUP BY `user_id`) AS `contracts_received` ON `".USERS."`.`id` = `contracts_received`.`user_id` 
-	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `nickname` REGEXP '^$letter'  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
+	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `nickname` REGEXP '^$letter' AND `is_active` = 1  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }
 
 $rt = mysql_query($query);

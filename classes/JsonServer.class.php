@@ -379,6 +379,24 @@ class JsonServer
 		}
 	}
 	
+	protected function actionChangeUserStatus()
+	{
+		$aUser = $this->getUser();
+		if ($aUser->isRunner()) {
+			$user = new User();
+			$user->findUserById($this->getRequest()->getParam('userid'));
+			$user->setIs_active($this->getRequest()->getParam('status'));
+			$user->save();
+			return $this->setOutput(array(
+				'success' => true
+			));
+		}
+		return $this->setOutput(array(
+			'success' => false
+		));
+		
+	}
+	
 	/**
 	 * This method checks if the user is allowed to bid in the W9 context
 	 */
