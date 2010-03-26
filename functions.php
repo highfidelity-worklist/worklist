@@ -131,7 +131,7 @@ function GetRewarderAuditList($userid) {
 function GetRewarderUserList($userid) {
     $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, `".REWARDER."`.`rewarder_points` FROM `".REWARDER."` ".
            "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
-           "WHERE `giver_id`='$userid' AND `".USERS."`.`confirm`=1 `is_active`=1 ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
+           "WHERE `giver_id`='$userid' AND `".USERS."`.`confirm`=1 AND `is_active`=1 ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
     $rt = mysql_query($sql);
 
     $rewarderList = array();
