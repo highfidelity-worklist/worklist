@@ -52,7 +52,7 @@
 	        </form>
             
             <p class="info-label">Status<br />
-            	<select id="changeUserStatus" style="width:auto;"<?php echo($is_runner) ? '' : 'disabled="disabled"'); ?>>
+            	<select id="changeUserStatus" style="width:auto;"<?php echo(($is_runner) ? '' : 'disabled="disabled"'); ?>>
 					<option value="0"<?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
 					<option value="1"<?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
 					<option value="2"<?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
