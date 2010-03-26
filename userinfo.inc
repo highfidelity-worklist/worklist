@@ -104,3 +104,6 @@
 	</form>
     </p>
     </div>
+<div id="loading" style="display:none">
+       <img src="images/loader.gif"></img> <span>Please wait..</span>
+</div>  

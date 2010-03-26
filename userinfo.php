@@ -164,6 +164,7 @@
 		if(json.error) {
 			alert("Sandbox Creation failed:"+json.error);
 		} else {
+			alert("Sandbox created successfully");
 			$('#popup-user-info').dialog('close');
 		}
 	}
@@ -173,4 +174,11 @@
   });
 
   });
+
+    $("#loading").ajaxStart(function(){                                                                                                                             
+	       $(this).show();                                                                                                                                      
+    });                                                                                                                                                             
+    $("#loading").ajaxStop(function(){                                                                                                                              
+	       $(this).hide();                                                                                                                                      
+    });                                                                                                                                                             
 </script>
