@@ -14,8 +14,9 @@
 	    return;
 
 	$query = "SELECT `" . WORKLIST . "`.`id`, `summary`, `bid_amount`, `bid_done`,"
-		  . " TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta` FROM `" . WORKLIST . "`"
-		  . " LEFT JOIN `" . BIDS . "` ON `bidder_id` = `mechanic_id` AND `worklist_id` = `" . WORKLIST . "`.`id`"
+		  . " TIMESTAMPDIFF(SECOND, NOW(), `" . BIDS . "`.`bid_done`) AS `future_delta` FROM `" . WORKLIST . "`"
+		  . " LEFT JOIN `" . BIDS . "` ON `bidder_id` = `mechanic_id`"
+		  . " AND `" . BIDS . "`.`accepted`= 1 AND `" . BIDS . "`.`withdrawn`= 0 AND `worklist_id` = `" . WORKLIST . "`.`id`"
 		  . " WHERE `mechanic_id` = $userId AND status = 'WORKING'";
 	$rt = mysql_query($query);
 
