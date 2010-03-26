@@ -150,7 +150,7 @@ class SandBoxUtil
 	// Make sure we have proper line breaks in HTML
 	$body =  nl2br($body);
 
-	$body = str_replace("{USERNAME}",$username,$body);
+	$body = str_replace("{USERNAME}",$unixusername,$body);
 	$body = str_replace("{PASSWORD}",$password,$body);
 	//$username = "vijay@bambeeq.com";
         sl_send_email($username , $subject, $body);
