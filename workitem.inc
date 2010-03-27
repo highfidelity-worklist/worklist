@@ -21,7 +21,6 @@
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>
-
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
@@ -31,6 +30,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="js/jquery.tallest.js"></script>
 <script type="text/html" id="uploadedFiles">
 <div id="accordion">
 	<h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
@@ -92,7 +92,6 @@ include("head.html"); ?>
 	</div>
 	<div class="clear"></div>
 </script>
-
 <script type="text/javascript">
 var user_id = <?php echo($user_id); ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
@@ -104,7 +103,10 @@ function reply(id) {
 	var clone = commentForm.clone();
 	commentForm.remove();
 	clone.insertAfter($('#comment-' + id));
+	clone.css({'margin-left':(function(){return $('#comment-' + id).css('margin-left');})()});
+	
 	$('.commentform input[name=comment_id]').val(id);
+	
 }
 
   $(document).ready(function(){
@@ -344,6 +346,8 @@ function reply(id) {
 
     return false;
   }
+  
+  
 
 	$(function()	{
 		// Call via Ajax to ping the user in the journal
@@ -370,334 +374,343 @@ function reply(id) {
 			$('#popup-pingtask').dialog('open');
 			return false;
 		});
+		
+		// applies the same size as the thinnest to all comments the show'em
+		var thinnestComment = $('div.commentZone li').thinnestSize();
+		$('div.commentZone li').width(thinnestComment);
+		$('div.commentform textarea').width(thinnestComment);
+	
 		return false;
 	});
   
 </script>
 <title>Workitem | Lend a Hand</title>
-
 </head>
 <body>
-<?php include("format.php"); ?>
+	<?php include("format.php"); ?>
+	<?php if ($erroneous) echo "<div style='color: red; text-align: center;'>{$the_errors}</div>"; ?>
+		<div><a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
+		<?php if(($allowEdit && $action!="edit")): ?>
+			&nbsp;|&nbsp;&nbsp;<a class="workitem-back" title="Switch to Edit Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit">Switch to Edit Mode</a>
+		<?php endif;?>
+		<?php if(($action=="edit")): ?>
+			&nbsp;|&nbsp;&nbsp;<a class="workitem-back" title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view">Switch to View Mode</a>
+		<?php endif;?>
+		<div style="clear:both; float:none;"> </div>
+		</div>
+		<div id="page-content">
+			<div style="margin:0px 101px 20px 0px;line-height:50px;float:right;display:inline-block;">
+				<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
+			</div>
+			<div class="info-summ-big">
+				<div class="info-ID">
+					<span class="info-label">#</span> <?php echo $worklist['id'];?>
+				</div>
+				<span class="info-summ-big-text"><?php echo $worklist['summary'];?></span>
+			</div>
+			<div style="clear:both; width:100%; float:none;"> </div>
+			<div id="left-panel">
+				<div id="for_view">
+<?php $runner_nickname = $worklist['runner_nickname'] != '' ? $worklist['runner_nickname'] : 'Not funded yet'; 
 
-    <div id="popup-buttons">
-	<?php
-		if ($erroneous) {
-			echo "	<div style='color: red; text-align: center;'>{$the_errors}</div>";
-		}
-	?>
-	<form method="get" action="">
-
-	 <div><a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a></div>
-<?php if($user_id): ?>
-      <?php if ($worklist['status'] == 'BIDDING'): ?>
-	<input type="submit" value="Add Bid" onclick="return showConfirmForm('bid');"/>
-      <?php endif; ?>
-      <input type="submit" value="Add Fee" onclick="return showConfirmForm('fee');"/>
-      <?php if(($allowEdit && $action!="edit")): ?>
-	  <input type="hidden" name="job_id" value="<?php echo $worklist_id;?>" />
-	  <input type="hidden" name="action" value="edit" />
-	  <input type="submit" value="Edit" id="edit_workitem"/>
-      <?php endif;?>
+if ($action =="edit"):  ?>
+<!-- *** Action is Edit *** -->
+				<form id="workitem-form" method="post" action="">
+					<input type="hidden" name="save_workitem" value="save_workitem" />
+					<input type="hidden" name="action" value="save_workitem" />
+					<ul style="margin:0; padding:0;">
+				<!-- Edit: Summary info -->
+						<li><span class="info-label">Summary</span>
+							<?php if($is_runner || $creator_id == $user_id){ ?>
+							<span class="info-data">
+							<input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
+							<?php }else{?>
+							<span class="info-summ"><?php echo $worklist['summary'];?>
+							<?php } ?></span>
+						</li>
+				<!-- Edit: Status info -->
+						<li><span class="info-label">Status</span><span class="info-data">
+							<?php if ($is_runner){  ?><span class="info-data">
+							<select id="status" name="status" style="margin-left:-10px;font-size:18px ">
+								<?php foreach($statusList as $status){ ?>
+								<option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
+								<?php }?>
+							</select>
+							<?php }elseif ($creator_id == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?><span class="info-data">
+							<select id="status" name="status" style="margin-left:-10px; font-size:18px">
+								<option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
+								<?php foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
+								<option value="<?php echo $status; ?>"><?php echo $status; ?></option>
+								<?php } ?>
+							</select>
+							<?php }else{ ?><span class="info-data" style="font-size:18px"><?php echo $worklist['status'];?>
+							<input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
+							<?php } ?></span>
+						</li>
+				<!-- Edit: Key People info box -->
+						<li>
+							<span class="info-label">Key people</span>
+							
+								<div id="creatorBox"><span class="info-label">Creator</span><?php echo $worklist['creator_nickname'];?></div>
+								<div id="runnerBox"><span class="info-label">Runner</span><?php echo $runner_nickname;?></div>
+								<?php								
+									$mech = '';							
+									if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
+									if($mech==''){$mech='Not assigned yet';}
+									else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
+									echo'<div id="mechanicBox"><span class="info-label">Mechanic</span>'.$mech.'</div>';
+								?>
+							
+					<!-- Edit: Invite People field -->
+							<div>
+								<span style="font-weight:bold; margin-top:-5px;">Invite people to this task</span>
+								<span class="info-invite" style="clear:none"><input type="text" name="invite" class="invite" /></span>
+								<script type="text/javascript">
+									$(document).ready(function() {
+									$('.invite').autocomplete('getusers.php', {
+										multiple: true,
+										multipleSeparator: ', ',
+										extraParams: { nnonly: 1 }
+									});
+								});
+								</script>
+							</div>
+						</li>
+				<!-- Edit: Notes textarea -->
+						<li class="last">
+							<span class="info-label">Notes</span>
+							<?php if($is_runner || $creator_id == $user_id): ?>
+								<span id="info-notes">
+									<textarea size="33" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
+								</span>
+							<?php else:?>
+								<span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
+							<?php endif;?>
+						</li>
+					</ul>
+					<?php if($allowEdit && $action=="edit"): ?>
+						<input type="submit" value="Save" name="save_workitem" id="save_workitem" onClick="return saveWorkitem();"/>
+					<?php endif;?>
+				</form>
+<!-- *** End of Action is Edit *** -->
+<?php else: ?>
+<!-- *** Action is View *** -->
+				<ul>
+				<!-- View: Status info -->
+					<li>
+						<span class="info-label">Status</span><span class="info-data" style="font-size:18px"><?php echo $worklist['status'];?></span>
+						<input type="hidden" id="status" name="status" value = "BIDDING" />
+						<?php
+							// quick status buttons for creators of items and mechanics working on them
+							if(!$is_runner && ($creator_id == $user_id || $mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic))
+							{
+								foreach($statusMapMechanic[$worklist['status']] as $status)
+								{?>
+									<form method="post" action="" style = "display:inline;">
+										<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
+										<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+									</form>
+								<?php 
+								}
+							}
+							else if($is_runner && array_key_exists($worklist['status'], $statusMapRunner))
+							{
+								foreach($statusMapRunner[$worklist['status']] as $status)
+								{?>
+									<form method="post" action="" style = "display:inline;">
+										<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
+										<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+									</form>
+								<?php
+								}
+							}?>
+					</li>
+				<!-- View: Key People info -->
+					<li>
+						<span class="info-label">Key people</span>
+						
+							<div id="creatorBox"><span class="info-label">Creator</span><?php echo $worklist['creator_nickname'];?></div>
+							<div id="runnerBox"><span class="info-label">Runner</span><?php echo $runner_nickname;?></div>
+							<?php								
+								$mech = '';							
+								if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
+								if($mech==''){$mech='Not assigned yet';}
+								else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
+								echo'<div id="mechanicBox"><span class="info-label">Mechanic</span>'.$mech.'</div>';
+							?>
+						
+					</li>
+				<!-- View: Notes textarea -->
+					<li class="last">
+						<span class="info-label">Notes</span>
+						<textarea size="33" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
+					</li>
+				</ul>
+<!-- *** End of Action IF *** -->
 <?php endif;?>
-	</form>
-    <div style="clear:both; float:none;"> </div>
-    </div>
-<div id="page-content">
-  <div id="left-panel">
-    <div id="for_view">
-
-      <?php 
-	
-	$runner_nickname = $worklist['runner_nickname'] != '' ? $worklist['runner_nickname'] : 'No runner assigned yet'; 
-
-	if ($action =="edit"):  ?>
-	<form id="workitem-form" method="post" action="">
-	  <input type="hidden" name="save_workitem" value="save_workitem" />
-	  <input type="hidden" name="action" value="save_workitem" />
-	  <ul>
-	    <li>
-          <div style="float:left;width:50%">
-	        <span class="info-label">ID</span>
-	        <span><?php echo $worklist['id'];?></span>
-          </div>
-          <div style="float:right;margin-top:4px;width:50%">
-            <script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
-          </div>
-          <div style="clear:both"></div>
-	    </li>
-	    <li>
-	      <span class="info-label">Summary</span>
-	      <?php if($is_runner || $creator_id == $user_id){ ?>
-		<span>
-		<input type="text" size="33" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/><span>
-	      <?php }else{?>
-	      <span><?php echo $worklist['summary'];?></span>
-	      <?php } ?>
-	    </li>
-	    <li>
-	    <span class="info-label">Status</span>
-	      <?php if ($is_runner){  ?>
-		<select id="status" name="status">
-		<?php foreach($statusList as $status){ ?>
-		    <option value="<?php echo $status; ?>" <?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
-		<?php }?>
-		</select>
-		<?php }elseif ($creator_id == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?>
-                  <select id="status" name="status">
-		    <option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
-		    <?php foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
-		    <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
-		    <?php } ?>
-                  </select>
-
-		<?php }else{ ?>
-		    <?php echo $worklist['status'];?>
-		    <input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
-		<?php } ?>
-	      </li>
-              <li>
-                <span class="info-label">Creator</span>
-                <?php echo $worklist['creator_nickname'];?>
-              </li>
-              <li>
-                <span class="info-label">Runner</span>
-                <?php echo $runner_nickname;?>
-				<form method="post" action="" style="display:inline;">
-					<input type="submit" id="ping-btn" style="margin-top:4px; float:right;" value="Ping mechanic"></input>
-				</form>
-              </li>
-          <li>
-              <span class="info-label">Invite</span>
-              <input type="text" name="invite" class="invite" />
-              <script type="text/javascript">
-              $(document).ready(function() {
-                $('.invite').autocomplete('getusers.php', {
-                    multiple: true,
-                    multipleSeparator: ', ',
-                    extraParams: { nnonly: 1 }
-                });
-              });
-              </script>
-              <small>(Comma-separated list of developers.)</small>
-	    </li>
-	    <li class="last">
-	    <span class="info-label">Notes</span>
-	      <?php if($is_runner || $creator_id == $user_id): ?>
-		<span><textarea size="33" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
-	      <?php else:?>
-	      <span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
-	      <?php endif;?>
-	    </li>
-	  </ul>
-      <?php if($allowEdit && $action=="edit"): ?>
-	  <input type="submit" value="Save" name="save_workitem" id="save_workitem" onclick="return saveWorkitem();"/>
-      <?php endif;?>
-
-	</form>
-	<?php else: ?>
-	  <ul>
-	    <li>
-          <div style="float:left;width:50%">
-	        <span class="info-label">ID</span>
-	        <span><?php echo $worklist['id'];?></span>
-          </div>
-          <div style="float:right;margin-top:4px;width:50%">
-            <script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
-          </div>
-          <div style="clear:both"></div>
-	    </li>
-	    <li>
-	      <span class="info-label">Summary</span>
-	      <span><?php echo $worklist['summary'];?></span>
-	    </li>
-	    <li>
-              <span class="info-label">Status</span>
-              <?php echo $worklist['status'];?>
-              <input type="hidden" id="status" name="status" value = "BIDDING" />
-	      <?php 
-		    // quick status buttons for creators of items and mechanics working on them
-		    if(!$is_runner && ($creator_id == $user_id || $mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic)){
-
-			      foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
-
-					  <form method="post" action="" style = "display:inline;">
-						<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px; float: right;" />
-						<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
-					  </form>
-
-			<?php } //2 buttons for runners to quickly adjust status
-		    } else if($is_runner && array_key_exists($worklist['status'], $statusMapRunner))	{
-
-			      foreach($statusMapRunner[$worklist['status']] as $status){?>
-
-				<form method="post" action="" style = "display:inline;">
-					<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-bottom: 5px; float: right;" />
-					<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
-				</form>
-
-			<?php }
-		    } ?>
-	    </li>
-            <li>
-				<span class="info-label">Creator</span>
-				<?php echo $worklist['creator_nickname'];?>
-            </li>
-            <li>
-				<span class="info-label">Runner</span>
-				<?php echo $runner_nickname;?>
-				<form method="post" action="" style="display:inline;">
-					<input type="submit" id="ping-btn" style="margin-top:3px; float:right;" value="Ping mechanic"></input>
-				</form>
-            </li>
-            <li class="last">
-              <span class="info-label">Notes</span>
-              <span><textarea size="33" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php echo $worklist['notes'];?></textarea><span>
-            </li>
-	  </ul>
-      <?php endif;?>
-      <ul>
-      	<li class="comments">
-      		<span class="info-label">Comments</span>
-	      	<ul>
-	      	<?php 
-	      		$comments = Comment::findCommentsForWorkitem($worklist['id']);
-	      		if (empty($comments)) :
-	      	?>
-	      		<li>No comments!</li>
-	      	<?php
-	      		else :
-	      			foreach ($comments as $comment) :
-	      	?>
-	      		<li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?>">
-	      			<div class="comment-info">
-	      				<span class="author"><?php echo $comment['comment']->getUser()->getNickname(); ?> says:</span>
-						<span class="date"><?php echo date('F j, Y, g:i a', strtotime($comment['comment']->getDate()))?> <?php if (!empty($user_id)) : ?>(<a href="#commentform" onclick="reply(<?php echo $comment['id']; ?>);return false;">reply</a>)<?php endif; ?></span>
-	      			</div>
-	      			<div class="comment">
-						<?php echo $comment['comment']->getComment(); ?>
+	<!-- End of div for_view -->
+			</div>
+<!-- End of div left-panel -->
+		</div>
+		<div id="right-panel">
+			<div class="moneyZone">
+				<div id="bid-panel">
+					<table width="100%" class="table-bids">
+						<caption class="table-caption" >
+							<b>Bids</b>
+						</caption>
+						<thead>
+							<tr class="table-hdng">
+								<td>Who</td>
+								<td>Bid Amount</td>
+								<td>Done In</td>
+							</tr>
+						</thead>
+						<tbody>
+						<?php if(empty($bids)): ?>
+							<tr>
+								<td style="text-align: center;" colspan="4">No bids yet.</td>
+							</tr>
+						<?php else: $row = 1;
+							foreach($bids as $bid): ?>
+							<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?> <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?>">
+								<td><?php echo $bid['nickname'];?></td>
+								<td>$ <?php echo $bid['bid_amount'];?></td>
+								<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
+							</tr>
+							<?php endforeach;?>
+						<?php endif;?>
+						</tbody>
+					</table>
+					<?php if($user_id): ?>
+					<?php 	if ($worklist['status'] == 'BIDDING'): ?>
+					<div class="buttonContainer">
+						<input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');"/>
 					</div>
-	      		</li>
-	        <?php 
-	        		endforeach;
-	        	endif;
-	        ?>
-	      	</ul>
-	  	</li>
-	  	<?php if (!empty($user_id)) : ?>
-      	<li class="commentform">
-      		<a name="commentform"></a>
-      		<span class="info-label">Write a comment</span>
-      		<form action="" method="post">
-      			<input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
-      			<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
-      			<input type="hidden" name="comment_id" value="" />
-      			<textarea name="comment" cols="20" rows="10" size="33"></textarea>
-      			<input type="submit" name="newcomment" value="Post Comment" />
-      		</form>
-      	</li>
-      	<?php endif; ?>
-      </ul>
-    </div>
-  </div>
-  <div id="right-panel">
-	<table width="100%" class="table-bids"><caption class="table-caption" ><b>Bids</b></caption>
-	  <thead>
-		<tr class="table-hdng">
-		  <td>Who</td>
-		  <td>Bid Amount</td>
-		  <td>Done In</td>
-		</tr>
-	  </thead>
-	  <tbody>
-	    <?php if(empty($bids)): ?>
-	    <tr>
-		<td style="text-align: center;" colspan="4">No bids yet.</td>
-	    </tr>
-	    <?php else:  ?>
-		<?php
-		$row = 1;
-		foreach($bids as $bid): ?>
-		<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?> <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?>">
-		    <td><?php echo $bid['nickname'];?></td>
-		    <td><?php echo $bid['bid_amount'];?></td>
-		    <td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
-		</tr>
-		<?php endforeach;?>
-	    <?php endif;?>
-	  </tbody>
-	</table></br>
-	<div id="bid-panel" >
-    <table width="100%" class="table-bids"><caption class="table-caption" ><b>Fees</b></caption>
-        <thead>
-        <tr class="table-hdng">
-            <td>Who</td>
-            <td>Amount</td>
-            <td>Description</td>
-            <td>Date</td>
-            <td>Paid</td>
-        </tr>
-	</thead>
-	<tbody>
-	    <?php if(empty($fees)): ?>
-	    <tr>
-		<td style="text-align: center;" colspan="5">No fees yet.</td>
-	    </tr>
-	    <?php else: ?>
-		<?php
-		 $row = 1;
-		 foreach($fees as $fee): ?>
-		<tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-		    <td><?php echo $fee['nickname'];?></td>
-		    <td><?php echo $fee['amount'];?></td>
-		    <td><?php echo $fee['desc'];?></td>
-		    <td><?php echo $fee['date'];?></td>
-		    <td>
-		      <?php if($is_payer): ?>
-			<a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
-		      <?php else: ?>
-			<?php echo $fee['paid'] == 0 ? "No" : "Yes";?>
-		      <?php endif;?>
-		      <?php if($user_id): ?>
-		       - <a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link">WD</a>
-		      <?php endif;?>
- 		    </td>
-		</tr>
-		<?php endforeach;?>
-		<tr><td colspan="5" style="text-align:center">Total Fees $<?php echo $total_fee;?></td></tr>
-	    <?php endif;?>
-	</tbody>
-    </table>
-	<form id="withdraw" method="post" action="" >
-	    <input type="hidden" name="action" value="withdraw_bid" />
-	    <input type="hidden" class="fee_id" name="fee_id" value="" />
-	</form>
-    </div><!--end of right-panel-->
-    <div id="uploadPanel">
-
-    </div>
-</div>
-<div style="clear:both"></div>
-</div>
-<!-- Popup HTML for Placing a bid -->
-<?php if(isset($message)): ?>
-<div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
-    <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>
-    <strong>Info:</strong><?php echo $message; ?></p>
-</div>
-<?php endif;?>
-<?php include("popup-place-bid.inc"); ?>
-<!-- Popup HTML for adding a fee -->
-<?php include("popup-addfee.inc"); ?>
-<!-- Popup HTML for paying a fee -->
-<?php require_once('popup-paid-html.inc') ?>
-<!-- Popup for ping user on task-->
-<?php require_once('popup-pingtask.inc') ?>
-
-<!-- Popup for bid info-->
-<?php require_once('popup-bid-info.inc') ?>
-
-<!-- Popup for confirmation info-->
-<?php require_once('popup-confirmation.inc') ?>
-
-<?php include("footer.php"); ?>
+					<?php 	endif; ?>
+					<?php endif;?>
+			<!-- End of div bid-panel -->
+				</div>
+				<div id="fee-panel" >
+					<table width="100%" class="table-fees">
+						<caption class="table-caption" >
+							<b>Fees</b>
+						</caption>
+						<thead>
+							<tr class="table-hdng">
+								<td>Who</td>
+								<td>Amount</td>
+								<td>Description</td>
+								<td>Date</td>
+								<td>Paid</td>
+							</tr>
+						</thead>
+						<tbody>
+						<?php if(empty($fees)): ?>
+							<tr>
+								<td style="text-align: center;" colspan="5">No fees yet.</td>
+							</tr>
+						<?php else:	$row = 1; 
+							foreach($fees as $fee): ?>
+							<tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
+								<td><?php echo $fee['nickname'];?></td>
+								<td>$ <?php echo $fee['amount'];?></td>
+								<td><?php echo $fee['desc'];?></td>
+								<td><?php echo $fee['date'];?></td>
+								<td>
+									<?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
+									<?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
+									<?php endif;?>
+									<?php if($user_id): ?>- <a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link">WD</a>
+									<?php endif;?>
+								</td>
+							</tr>
+							<?php endforeach;?>
+							<tr>
+								<td colspan="1" style="text-align:right; font-weight:bold;">Total</td>
+								<td colspan="4" style="text-align:left"><span style="line-height:20px; font-weight:bold; font-size:16px">$ <?php echo $total_fee;?></span></td>
+							</tr>
+						<?php endif;?>
+						</tbody>
+					</table>
+					<?php if($user_id): ?>
+					<div class="buttonContainer">
+						<input type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+					</div>
+					<?php endif;?>
+					<form id="withdraw" method="post" action="" >
+						<input type="hidden" name="action" value="withdraw_bid" />
+						<input type="hidden" class="fee_id" name="fee_id" value="" />
+					</form>
+			<!-- End of div fee-panel -->
+				</div>
+		<!-- End of div moneyZone -->
+			</div>
+			<div id="uploadPanel"> </div>
+<!-- End of div right-panel-->
+		</div>
+<!-- End of div pageContent -->			
+	</div>
+	<div style="clear:both"></div>
+	<div class="commentZone">
+		<div class="info-comments">Comments</div>
+		<ul>
+		<?php 
+			$comments = Comment::findCommentsForWorkitem($worklist['id']);
+			if (empty($comments)) :
+				?><li>No comments!</li><?php
+			else :
+				$it=0;
+				foreach ($comments as $comment) :
+					?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?>">
+						<div class="comment-info">
+							<span class="author"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
+								<span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
+							</span>
+						</div>
+						<div class="comment"><?php echo $comment['comment']->getComment(); ?></div>
+						<?php if (!empty($user_id)) : ?>
+						<div class="reply-lnk">
+							<a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>
+						</div>
+						<?php endif; ?>
+					</li>
+				<?php
+				endforeach;
+			endif;
+		?>
+		</ul>
+		<?php if (!empty($user_id)) : ?>
+		<div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
+			<form action="" method="post">
+				<input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
+				<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
+				<input type="hidden" name="comment_id" value="" />
+				<textarea name="comment" cols="20" rows="10" size="33"></textarea>
+				<br>
+				<input type="submit" name="newcomment" value="Post Comment" />
+			</form>
+		</div>
+		<?php endif; ?>
+<!-- End of div commentZone -->	
+	</div>
+	<div style="clear:both"></div>
+			
+	<!-- Popup HTML for Placing a bid -->
+	<?php if(isset($message)): ?>
+	<div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
+		<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong><?php echo $message; ?></p>
+	</div>
+	<?php endif;?>
+	<?php include("popup-place-bid.inc"); ?>
+	<!-- Popup HTML for adding a fee -->
+	<?php include("popup-addfee.inc"); ?>
+	<!-- Popup HTML for paying a fee -->
+	<?php require_once('popup-paid-html.inc') ?>
+	<!-- Popup for ping user on task-->
+	<?php require_once('popup-pingtask.inc') ?>
+	<!-- Popup for bid info-->
+	<?php require_once('popup-bid-info.inc') ?>
+	<!-- Popup for confirmation info-->
+	<?php require_once('popup-confirmation.inc') ?>
+	<?php include("footer.php"); ?>
