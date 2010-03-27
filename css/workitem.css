@@ -13,25 +13,35 @@
 }*/
 .info-label {
 	font-weight:bold;
+	display:inline-block;
+	margin:0!important;
+	padding:0!important;
 }
 .info-summ,.info-data,.info-invite {
-	margin-left:10px;
+	margin-left:4px;
 	height:25px;
 }
+
 .info-summ-big{
 	clear:both;
-	margin:5px 10px 15px 0;
+	margin:7px 0px 8px 0;
 }
-
+ 
 .info-summ-big-text{
 	font-size:24px;
 	color:#876F6D;
 }
+
+.info-data{
+	display:inline-block;
+}
 .info-data input[type=text]{
-	width:378px;
+	width:351px;
+	margin-bottom:8px;
 }
 .info-invite input[type=text]{
-	width:220px;
+	margin-top:8px!important;
+	width:256px;
 }
 .info-comments{
 	font-size:14px;
@@ -44,21 +54,21 @@
 #left-panel {
 	float:left;
 	width:48%;
-	margin:0!important;
+	margin:12px 0px 0px 0px!important;
 	padding:0!important;
 }
 #left-panel ul{
 	list-style:none!important;
-	width:100%;
+	width:447px;
 	margin:0!important;
 	padding:0!important;
 }
 #left-panel li {
-	padding:0px 0 6px 0;
+	padding:1px 0px 5px 0px;
 	border-bottom:1px solid lightgrey;
 }
 #status-switch{
-	margin-right:10px;
+	margin-right:14px;
 }
 #left-panel li.last {
 	border-bottom:none;
@@ -73,19 +83,16 @@
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
 	border:2px #DCD998 solid;
-	padding:0px 8px 25px 8px;
+	padding:0px 8px 19px 8px;
 	background-color: #FFFFDD;
 }
-
+ 
 #uploadPanel {
 	margin:11px 0 0 0;
 }
-
+ 
 #fileimagecontainer{
 	margin-bottom:10px;
-}
-.info-label {
-	font-weight: bold;
 }
 .bid-form p {
 	line-height:1.2em;
@@ -106,60 +113,59 @@
 .bid-form textarea {
 	width:18em;
 }
-#for_view .info-label {
-	display:block;
-}
-
+ 
 .info-notes{
 	font-size:14px;
 }
-
+ 
 #creatorBox, #runnerBox, #mechanicBox, .keyPeople{
 	display:inline-block!important;
 	border:none;
-	width:132px;
-	text-align:center;
+	margin: 5px 0px 5px 0px;
 	float:none!important;
 	clear:none!important;
-	margin-top: 2px;
-	margin-bottom: 8px;
 }
-
+.runnerName, .mechanicName{
+	font-weight:bold;
+	margin:0px 7px 0px 15px!important;
+}
+.creatorName{
+	font-weight:bold;
+	margin:0px 7px 0px 0px!important;
+}
+ 
 #ping-btn{
 	text-decoration:underline;
 	cursor:pointer;
 }
-
+ 
 #ping-btn{
 	/*margin-left:10px;
 	text-decoration:underline;
 	cursor:pointer;*/
 }
-
+ 
 .table-caption {
-	/*border: 1px solid #aaa;
-	border-bottom:none;*/
 	font-size:14px;
 	font-weight:bold;
 	text-align:left;
 	color: black;
-	/*background: none repeat scroll 0% 0% lightgrey;*/
-	padding: 8px 0 3px 5px;
+	padding: 0px 0px 3px 0px;
 }
-
+ 
 .buttonContainer {
-	margin:5px 0px -18px;
+	margin:4px 0px -18px;
 	text-align:right;
 }
-
+ 
 #bid-panel{
 	margin:10px 0 0px;
 }
-
+ 
 #fee-panel{
 	margin:10px 0 10px;
 }
-
+ 
 #edit_workitem_form ul li {
 	float:left;
 	list-style: none!important;
@@ -171,28 +177,27 @@
 	float:left;
 	list-style: none!important;
 }
-
+ 
 .workitem-back {
 	height:26px;
 	line-height:26px;
 }
 #edit-notes {
+	height:164px;
 	min-height:100px;
 	max-height:230px;
-	width:378px;
-	margin-top:3px;
-	margin-left:10px;
+	width:418px;
 }
 .table-hdng{
 	background-image:none;
 	background-color:#eee;
 }
-
+ 
 .table-hdng:hover{
 	background-image:none;
 	background-color:#ddd;
 }
-
+ 
 .roweven{
 	background-image:none;
 	background-color:#f5f5f5;
@@ -227,7 +232,7 @@
 .popup-body .popup-delete-summary {
 	padding: 4px;
 }
-
+ 
 .gravatar {
 	float:left;
 	height:32px;
@@ -236,28 +241,27 @@
 	width:32px;
 }
 .commentZone{
-	margin-top:20px;
-	padding:0px 8px 0px 8px;
+	width:418px;
 }
 .commentZone ul{
 	list-style:none!important;
 	padding:0px!important;
 	margin:0px 0px 0px 10px!important;
 }
-
+ 
 .commentZone li{
 	list-style:none!important;
-	padding:8px 8px 5px 8px;
+	padding:5px 8px 5px 8px!important;
 	margin-bottom:12px;
 }
-
+ 
 .commentZone li.imOdd{
 	border:1px #CCC solid;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
 }
-
+ 
 .commentZone li.imEven{
 	border:1px #CCC solid;
 	background-color:#f1f1f1;
@@ -265,7 +269,7 @@
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
 }
-
+ 
 .comment-info {
 	margin-bottom:5px
 }
@@ -278,18 +282,19 @@
 	display:inline;
 	font-size:14;
 }
-
-
+ 
+ 
 .date{
 	font-size:11px;
-	color:#333;
+	color:#666;
 }
 .reply-lnk{
 	font-size:11px;
 	width:100%;
+	margin-top:-11px;
 	text-align:right;
 }
-
+ 
 .depth-1 {
 	margin-left:20px;
 	margin-top:-10px;
@@ -304,7 +309,7 @@
 }
 .depth-4 {
 	margin-left:80px;
-	margin-bottom:-10px;
+	margin-top:-10px;
 }
 .depth-5 {
 	margin-left:100px;
@@ -319,10 +324,13 @@
 	margin-bottom:25px;
 }
 .commentform textarea {
-	width:376px;
-	height:120px;
-	margin-left:10px;
+	width:422px;
+	height:80px;
+	margin-top:5px;
 	clear:right;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 .commentform, .comments {
 	border-bottom:none!important;

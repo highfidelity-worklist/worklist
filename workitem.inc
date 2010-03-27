@@ -350,6 +350,8 @@ function reply(id) {
   
 
 	$(function()	{
+			   
+		$('#commentZone').css({'opacity':'0'});
 		// Call via Ajax to ping the user in the journal
 		// and in email.
 		$('#send-ping-btn').click(function()	{
@@ -376,10 +378,12 @@ function reply(id) {
 		});
 		
 		// applies the same size as the thinnest to all comments the show'em
-		var thinnestComment = $('div.commentZone li').thinnestSize();
+		var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
 		$('div.commentZone li').width(thinnestComment);
 		$('div.commentform textarea').width(thinnestComment);
-	
+		$('#commentZone').css({'opacity':'1'});
+		
+		
 		return false;
 	});
   
@@ -399,7 +403,7 @@ function reply(id) {
 		<div style="clear:both; float:none;"> </div>
 		</div>
 		<div id="page-content">
-			<div style="margin:0px 101px 20px 0px;line-height:50px;float:right;display:inline-block;">
+			<div style="margin:0px 101px 6px 0px;line-height:50px;float:right;display:inline-block;">
 				<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
 			</div>
 			<div class="info-summ-big">
@@ -411,7 +415,7 @@ function reply(id) {
 			<div style="clear:both; width:100%; float:none;"> </div>
 			<div id="left-panel">
 				<div id="for_view">
-<?php $runner_nickname = $worklist['runner_nickname'] != '' ? $worklist['runner_nickname'] : 'Not funded yet'; 
+<?php $runner_nickname = $worklist['runner_nickname'] != '' ? $worklist['runner_nickname'] : 'Not funded'; 
 
 if ($action =="edit"):  ?>
 <!-- *** Action is Edit *** -->
@@ -431,13 +435,13 @@ if ($action =="edit"):  ?>
 				<!-- Edit: Status info -->
 						<li><span class="info-label">Status</span><span class="info-data">
 							<?php if ($is_runner){  ?><span class="info-data">
-							<select id="status" name="status" style="margin-left:-10px;font-size:18px ">
+							<select id="status" name="status">
 								<?php foreach($statusList as $status){ ?>
 								<option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
 								<?php }?>
 							</select>
 							<?php }elseif ($creator_id == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?><span class="info-data">
-							<select id="status" name="status" style="margin-left:-10px; font-size:18px">
+							<select id="status" name="status">
 								<option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
 								<?php foreach($statusMapMechanic[$worklist['status']] as $status){ ?>
 								<option value="<?php echo $status; ?>"><?php echo $status; ?></option>
@@ -449,18 +453,15 @@ if ($action =="edit"):  ?>
 						</li>
 				<!-- Edit: Key People info box -->
 						<li>
-							<span class="info-label">Key people</span>
-							
-								<div id="creatorBox"><span class="info-label">Creator</span><?php echo $worklist['creator_nickname'];?></div>
-								<div id="runnerBox"><span class="info-label">Runner</span><?php echo $runner_nickname;?></div>
-								<?php								
-									$mech = '';							
-									if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
-									if($mech==''){$mech='Not assigned yet';}
-									else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
-									echo'<div id="mechanicBox"><span class="info-label">Mechanic</span>'.$mech.'</div>';
-								?>
-							
+							<div id="creatorBox"><span class="creatorName">Creator</span><?php echo $worklist['creator_nickname'];?></div>
+							<div id="runnerBox"><span class="runnerName">Runner</span><?php echo $runner_nickname;?></div>
+							<?php								
+								$mech = '';							
+								if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
+								if($mech==''){$mech='Not assigned';}
+								else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
+								echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>'.$mech.'</div>';
+							?>
 					<!-- Edit: Invite People field -->
 							<div>
 								<span style="font-weight:bold; margin-top:-5px;">Invite people to this task</span>
@@ -481,7 +482,7 @@ if ($action =="edit"):  ?>
 							<span class="info-label">Notes</span>
 							<?php if($is_runner || $creator_id == $user_id): ?>
 								<span id="info-notes">
-									<textarea size="33" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
+									<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px; height:164px; margin-top:8px;" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
 								</span>
 							<?php else:?>
 								<span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
@@ -489,7 +490,7 @@ if ($action =="edit"):  ?>
 						</li>
 					</ul>
 					<?php if($allowEdit && $action=="edit"): ?>
-						<input type="submit" value="Save" name="save_workitem" id="save_workitem" onClick="return saveWorkitem();"/>
+						<input style="margin-bottom:19px; margin-left:-8px;"type="submit" value="Save" name="save_workitem" id="save_workitem" onClick="return saveWorkitem();"/>
 					<?php endif;?>
 				</form>
 <!-- *** End of Action is Edit *** -->
@@ -498,7 +499,7 @@ if ($action =="edit"):  ?>
 				<ul>
 				<!-- View: Status info -->
 					<li>
-						<span class="info-label">Status</span><span class="info-data" style="font-size:18px"><?php echo $worklist['status'];?></span>
+						<span class="info-label">Status</span><span class="info-data" style="margin-left:12px;font-size:16px"><?php echo $worklist['status'];?></span>
 						<input type="hidden" id="status" name="status" value = "BIDDING" />
 						<?php
 							// quick status buttons for creators of items and mechanics working on them
@@ -527,27 +528,67 @@ if ($action =="edit"):  ?>
 					</li>
 				<!-- View: Key People info -->
 					<li>
-						<span class="info-label">Key people</span>
-						
-							<div id="creatorBox"><span class="info-label">Creator</span><?php echo $worklist['creator_nickname'];?></div>
-							<div id="runnerBox"><span class="info-label">Runner</span><?php echo $runner_nickname;?></div>
+							<div id="creatorBox"><span class="creatorName">Creator</span><?php echo $worklist['creator_nickname'];?></div>
+							<div id="runnerBox"><span class="runnerName">Runner</span><?php echo $runner_nickname;?></div>
 							<?php								
 								$mech = '';							
 								if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
-								if($mech==''){$mech='Not assigned yet';}
+								if($mech==''){$mech='Not assigned';}
 								else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
-								echo'<div id="mechanicBox"><span class="info-label">Mechanic</span>'.$mech.'</div>';
+								echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>'.$mech.'</div>';
 							?>
 						
 					</li>
 				<!-- View: Notes textarea -->
 					<li class="last">
 						<span class="info-label">Notes</span>
-						<textarea size="33" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
+						<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
 					</li>
 				</ul>
 <!-- *** End of Action IF *** -->
 <?php endif;?>
+			<div class="commentZone">
+				<div class="info-comments">Comments</div>
+				<ul>
+				<?php 
+					$comments = Comment::findCommentsForWorkitem($worklist['id']);
+					if (empty($comments)) :
+						?>No comments!<?php
+					else :
+						$it=0;
+						foreach ($comments as $comment) :
+							?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?>">
+								<div class="comment-info">
+									<span class="author"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
+										<span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
+									</span>
+								</div>
+								<div class="comment"><?php echo $comment['comment']->getComment(); ?></div>
+								<?php if (!empty($user_id) && $comment['depth'] < 6) : ?>
+								<div class="reply-lnk">
+									<a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>
+								</div>
+								<?php endif; ?>
+							</li>
+						<?php
+						endforeach;
+					endif;
+				?>
+				</ul>
+				<?php if (!empty($user_id)) : ?>
+				<div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
+					<form action="" method="post">
+						<input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
+						<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
+						<input type="hidden" name="comment_id" value="" />
+						<textarea name="comment" cols="20" rows="10" size="33"></textarea>
+						<br>
+						<input type="submit" name="newcomment" value="Post Comment" />
+					</form>
+				</div>
+				<?php endif; ?>
+		<!-- End of div commentZone -->	
+			</div>
 	<!-- End of div for_view -->
 			</div>
 <!-- End of div left-panel -->
@@ -621,7 +662,7 @@ if ($action =="edit"):  ?>
 									<?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
 									<?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
 									<?php endif;?>
-									<?php if($user_id): ?>- <a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link">WD</a>
+									<?php if($user_id): ?><br><a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link">WD</a>
 									<?php endif;?>
 								</td>
 							</tr>
@@ -650,49 +691,6 @@ if ($action =="edit"):  ?>
 <!-- End of div right-panel-->
 		</div>
 <!-- End of div pageContent -->			
-	</div>
-	<div style="clear:both"></div>
-	<div class="commentZone">
-		<div class="info-comments">Comments</div>
-		<ul>
-		<?php 
-			$comments = Comment::findCommentsForWorkitem($worklist['id']);
-			if (empty($comments)) :
-				?><li>No comments!</li><?php
-			else :
-				$it=0;
-				foreach ($comments as $comment) :
-					?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?>">
-						<div class="comment-info">
-							<span class="author"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
-								<span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
-							</span>
-						</div>
-						<div class="comment"><?php echo $comment['comment']->getComment(); ?></div>
-						<?php if (!empty($user_id)) : ?>
-						<div class="reply-lnk">
-							<a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>
-						</div>
-						<?php endif; ?>
-					</li>
-				<?php
-				endforeach;
-			endif;
-		?>
-		</ul>
-		<?php if (!empty($user_id)) : ?>
-		<div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
-			<form action="" method="post">
-				<input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
-				<input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
-				<input type="hidden" name="comment_id" value="" />
-				<textarea name="comment" cols="20" rows="10" size="33"></textarea>
-				<br>
-				<input type="submit" name="newcomment" value="Post Comment" />
-			</form>
-		</div>
-		<?php endif; ?>
-<!-- End of div commentZone -->	
 	</div>
 	<div style="clear:both"></div>
 			
