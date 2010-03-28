@@ -6,7 +6,7 @@
 //
 
 require_once('authmail.php');
-require_once('html2text.php');
+require_once('html2text.inc');
 require_once('smslist.php');
 
 /*  sl_send_email
@@ -20,8 +20,8 @@ function sl_send_email($to, $subject, $html, $plain=null) {
     $headers = "From: SendLove <love@sendlove.us>\n";
     if (!empty($html)) {
         if (empty($plain)) {
-            $h2t = new html2text($html);
-            $plain = $h2t->get_text();
+            $h2t = new html2text($html, 75);
+            $plain = $h2t->convert();
         }
 
         $headers .= "Content-Type: multipart/alternative; boundary=\"PHP-alt-$hash\"\n";
