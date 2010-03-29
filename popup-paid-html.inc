@@ -6,7 +6,7 @@
 		<?php } ?>
 
                 <p class="popup-paid-summary"></p>
-                <p><label>Are you sure you want to pay this fee? <input type="checkbox" name="paid_check" id="paid_check" size="48">Yes</input>
+                <p><label>Are you sure you want to pay/not pay this fee? <input type="checkbox" name="paid_check" id="paid_check" value="1">Yes</input>
                 </label></p>
 
                 <p><label>Notes<br />

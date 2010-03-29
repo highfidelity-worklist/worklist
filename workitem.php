@@ -272,7 +272,7 @@ if ($action=='accept_bid'){
     $bid_id = intval($_REQUEST['bid_id']);
     //only runners can accept bids
 
-	if ($is_runner == 1 && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+	if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
 		// query to get a list of bids (to use the current class rather than breaking uniformity)
 		// I could have done this quite easier with just 1 query and an if statement..
 		$bids = (array) $workitem->getBids($workitem -> getId());

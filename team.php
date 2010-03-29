@@ -220,13 +220,10 @@ include("head.html"); ?>
         row += '<td >' + '<a class="fancylink iframe" href="userinfo.php?id=' + json.id + '"></a>  ' + is_runner + '</td>';
 	row += '<td >' + json.created_count + '</td>';
 	row += '<td >' + json.mechanic_count + '</td>';
-	row += '<td >' + json.bids_placed + '</td>';
-	row += '<td >' + json.bids_accepted + '</td>';
-	row += '<td >$' + json.fees_received + '</td>';
+	row += '<td >$' + json.budget + '</td>';
+	row += '<td >' + json.bids_accepted + '/' + json.bids_placed + '</td>';
+	row += '<td >$' + json.earnings + '</td>';
 	row += '<td >$' + json.expenses_billed + '</td>';
-	row += '<td >$' + json.contracts_received + '</td>';
-	row += '<td >$' + json.rewards_received + '</td>';
-	row += '<td >$' + json.sum_all + '</td>';
        $('.table-userlist tbody').append(row);
     }
 
@@ -274,20 +271,17 @@ include("head.html"); ?>
 <br />
 <div class="ln-pages"></div><br />
   <div id="message">No results</div>
-    <table class="table-userlist">
+    <table class="table-userlist" style="width:100%">
         <thead>
         <tr class="table-hdng">
             <th class = "sort {sortkey: 'nickname'}">Nickname<div class = "arrow"><div/></th>
-            <th class = "sort {sortkey: 'is_runner'}">Runner?<div class = "arrow"><div/></th>
+            <th class = "sort {sortkey: 'is_runner'}">Runner<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'mechanic_count'}">Mechanic<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'bids_placed'}">Bids Placed<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'bids_accepted'}">Bids accepted<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'fees_received'}">Fees<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'budget'}">Budget<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'bids_accepted'}">Bids<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'earnings'}">Earnings<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'expenses_billed'}">Expenses<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'contracts_received'}">Contracts<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'rewards_received'}">Rewards<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'sum_all'}">All<div class = "arrow"><div/></th>
         </tr>
         </thead>
         <tbody>

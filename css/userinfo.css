@@ -4,7 +4,7 @@ body {
 }
 .user-info p{
     font-size: 1.3em;
-    margin: 0;
+    margin: 4px 0 0;
 }
 
 #unixusername, #projects{

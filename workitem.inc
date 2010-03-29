@@ -13,8 +13,17 @@
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
 
+    $has_budget = 0;
+    if (!empty($user_id)) {
+        $user = new User();
+        $user->findUserById($user_id);
+        if ($user->getBudget() > 0) {
+            $has_budget = 1;
+        }
+    }
+
     $allowEdit = false;
-    if ($is_runner || $creator_id == $user_id) {
+    if ($is_runner || $creator_id == $user_id || $has_budget) {
         $allowEdit = true;
     }
 
@@ -132,9 +141,10 @@ function reply(id) {
 
 
 	// JS Variables initialized from host PHP page
-	var workitem_id = <?php echo $worklist['id'];?> ;
-	var already_bid = <?php echo $currentUserHasBid ;?> ;
-	var is_runner = <?php echo $is_runner;?> ;
+	var workitem_id = <?php echo $worklist['id'];?>;
+	var already_bid = <?php echo $currentUserHasBid ;?>;
+	var is_runner = <?php echo $is_runner;?>;
+    var has_budget = <?php echo $has_budget;?>;
 	var user_id = <?php echo($user_id); ?>;
 
 	(function($) {
@@ -220,7 +230,7 @@ function reply(id) {
 				    dataType: 'json',
 				    data: {
 					    itemid: $('#' + this.id + ' input[name=itemid]').val(),
-					    paid_check: $('#' + this.id + ' input[name=paid_check]').val(),
+					    paid_check: $('#' + this.id + ' input[name=paid_check]').attr('checked') ? 1 : 0,
 					    paid_notes: $('#' + this.id + ' textarea[name=paid_notes]').val()
 				    },
 				    success: function(data) {
@@ -282,9 +292,9 @@ function reply(id) {
 			['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 			['span', '#info-notes', 'json.notes', 'eval'] ],
 		      function(json) {
-<?php if ($is_runner):?>
+<?php if ($is_runner || $user_id == $runner_id) { ?>
 			  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
-<?php endif;?>
+<?php } ?>
 			if( is_runner==1 || (json.bidder_id == "<?php echo $user_id ?>"))
 			      $('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 		      });
@@ -440,7 +450,12 @@ if ($action =="edit"):  ?>
 								<option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
 								<?php }?>
 							</select>
-							<?php }elseif ($creator_id == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?><span class="info-data">
+                            <?php } else if ($has_budget && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SKIP')) {?>
+                            <select id="status" name="status">
+                                <option value="BIDDING" <?php echo 'BIDDING' == $worklist['status']?' selected = "selected"' : ''; ?> >BIDDING</option>
+                                <option value="WORKING" <?php echo 'WORKING' == $worklist['status']?' selected = "selected"' : ''; ?> >WORKING</option>
+                            </select>
+							<?php } elseif ($creator_id == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?><span class="info-data">
 							<select id="status" name="status">
 								<option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
 								<?php foreach($statusMapMechanic[$worklist['status']] as $status){ ?>

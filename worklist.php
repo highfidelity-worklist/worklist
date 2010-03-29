@@ -58,12 +58,10 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     $workitem->setSummary($summary);
 
     // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
-    if($status == 'BIDDING' && $user->getIs_runner() == 1){
-
-	$runner_id = $userId;
+    if($status == 'BIDDING' && ($user->getIs_runner() == 1 || $user->getBudget() > 0)){
+        $runner_id = $userId;
     }else{
-	
-	$runner_id = 0;
+        $runner_id = 0;
     }
 
     $workitem->setRunnerId($runner_id);

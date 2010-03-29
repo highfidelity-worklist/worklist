@@ -36,15 +36,22 @@
 
   <?php
   $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-  if ($is_runner) {//if user is a runner - allow to change status
+  if (!$is_runner) {
+	$budgetUser = new User();
+	$budgetUser->findUserById($_SESSION['userid']);
+	$has_budget = $budgetUser->getBudget() > 0 ? 1 : 0;
+  }
+  if ($is_runner || $has_budget) {//if user is a runner - allow to change status
   ?>
 		  <p class="info-label">Status<br />
 		  <select name="status">
 		      <option value="SUGGESTED">SUGGESTED</option>
-		      <option value="BIDDING" selected = "selected" >BIDDING</option>
+		      <option value="BIDDING" selected="selected">BIDDING</option>
 		      <option value="WORKING">WORKING</option>
+                      <?php if ($is_runner) { ?>
 		      <option value="SKIP">SKIP</option>
 		      <option value="DONE">DONE</option>
+                      <?php } ?>
 		  </select>
 		  </p>
   <?php }else {?>

@@ -11,31 +11,29 @@
 
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 
-    if( isset( $_POST['save_roles'] ) && !empty( $_SESSION['is_runner'] ) ){ //only runners can change other user's roles info
+    $reqUserId = getSessionUserId();
+    $reqUser = new User();
+    if ($reqUserId > 0) {
+	$reqUser->findUserById($reqUserId);
+    } else {
+	die("You have to be logged in to access user info!");
+    }
+    $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+
+    if (isset($_POST['save_roles']) && $is_runner) { //only runners can change other user's roles info
 	$is_runnerSave = isset($_POST['isrunner']) ? 1 : 0;
 	$is_payerSave = isset($_POST['ispayer']) ? 1 : 0;
 	$user_idSave = intval($_POST['userid']);
 	mysql_unbuffered_query("UPDATE `users` SET `is_runner`='$is_runnerSave', `is_payer`='$is_payerSave' WHERE `id` =".$user_idSave);
     }
 
-    $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-
-    if(isset($_REQUEST['id'])){
-	
+    if (isset($_REQUEST['id'])) {
 	$userId = (int)$_REQUEST['id'];
-    }else{
-	
+    } else {
 	die("No id provided");
     }
 
-    // $reqUser - id of user requesting the page
-    $reqUserId = getSessionUserId();
-    $reqUser = new User();
-    if ($reqUserId > 0) {
-	$reqUser->findUserById($reqUserId);
-    } else {
-	
-	die("You have to be logged in to access user info!");
+    if (isset($_POST['give_budget']) && $_SESSION['userid'] == $reqUser->getId()) {
     }
 
     $user = new User();
@@ -84,9 +82,8 @@
 	<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
-</head><?php
-    include('userinfo.inc');
-?> 
+</head>
+<?php include('userinfo.inc'); ?> 
 <script type="text/javascript">
 
   var userId = <?php echo $userId; ?>;
@@ -109,10 +106,32 @@
 		});
 	});
 
+  $('#give-budget').dialog({ autoOpen: false });
+  $('#give').click(function(){
+	$('#give-budget form input[type="text"]').val('');
+	$('#give-budget').dialog('open');
+	return false;
+  });
+  $('#give-budget form input[type="submit"]').click(function(){
+        $('#give-budget').dialog('close');
+	    var toReward = parseInt(rewarded) + parseInt($('#toreward').val());
+            $.ajax({
+                url: 'update-budget.php',
+                data: 'receiver_id=' + $('#budget-receiver').val() + '&reason=' + $('#budget-reason').val() + '&amount=' + $('#budget-amount').val(),
+                dataType: 'json',
+                type: "POST",
+                cache: false,
+                success: function(json) {
+                    $('#info-budget').text(json);
+                }
+            });
+	return false;
+  });
+
+
   $('#quick-reward').dialog({ autoOpen: false });
 
   $('a#reward-link').click(function(){
-
 	$('#quick-reward form input[type="text"]').val('');
 
 	$.getJSON('get-rewarder-user.php', {'id': userId}, function(json){

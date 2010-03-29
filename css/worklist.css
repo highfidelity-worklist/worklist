@@ -10,7 +10,7 @@
 
 .popup-body, .user-info
 {
-    padding: 8px;
+    padding: 0 8px;
     text-align: left;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .info-label{
-font-weight: bold;
+    font-weight: bold;
 }
 .info-label span{
 font-weight:normal;

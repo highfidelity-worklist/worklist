@@ -14,6 +14,7 @@ class User
 	protected $username;
 	protected $password;
 	protected $added;
+	protected $budget;
 	protected $nickname;
 	protected $confirm;
 	protected $confirm_string;
@@ -285,6 +286,15 @@ class User
 	 */
 	public function setAdded($added) {
 		$this->added = $added;
+		return $this;
+	}
+
+	public function getBudget() {
+		return $this->budget;
+	}
+
+	public function setBudget($budget) {
+		$this->budget = $budget;
 		return $this;
 	}
 

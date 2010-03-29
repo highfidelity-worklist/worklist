@@ -49,6 +49,15 @@ class Fee
                     $worklist_id = $row['worklist_id'];
                     $amount = $row['amount'];
 
+                    /* Find the runner for this task so we can adjust their budget. */
+                    $query = "SELECT `runner_id` FROM `".WORKLIST."` WHERE `id`=$worklist_id";
+                    $rt = mysql_query($query);
+                    if ($rt && ($row = mysql_fetch_assoc($rt))) {
+                        $runner_id = $row['runner_id'];
+                    } else {
+                        $runner_id = 0;
+                    }
+
                     /* If we're unmarking the fee paid, deduct the points. */
                     if ($paid == 0) {
                         $amount = $amount * -1;
@@ -58,6 +67,9 @@ class Fee
 
                     mysql_unbuffered_query("INSERT INTO `".REWARDER_LOG."` (`user_id`, `worklist_id`, `fee_id`, `rewarder_points`) VALUES ('$user_id', '$worklist_id', '$fee_id', '$points')");
                     mysql_unbuffered_query("UPDATE `".USERS."` SET `rewarder_points`=`rewarder_points`+$amount WHERE `id`=$user_id");
+                    if ($runner_id != 0) {
+                        mysql_unbuffered_query("UPDATE `".USERS."` SET `budget`=`budget`-$amount WHERE `id`=$runner_id");
+                    }
                 }
             } else {
                 return false;

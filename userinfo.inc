@@ -27,16 +27,13 @@
             <span id="info-currenttime"><?php echo convertTimeZoneToLocalTime($user -> getTimezone()); ?></span>
             </p>
 
-            <p class = "info-label">Joined<br />
-            <span id="info-joined"><?php echo date('m/d/Y', strtotime($user -> getAdded())); ?></span>
+            <p class = "info-label">Budget<br />
+            <span id="info-budget"><?php echo $user->getBudget(); ?></span>
+	    <?php if ($user->getId() == $_SESSION['userid'] && $user->getBudget() > 0) { ?>
+            <input type="submit" id="give" value="Give Budget...">
+            <?php } ?>
             </p>
             
-	        <?php if ($is_runner) { ?>
-            <p class="info-label">W9 Approved<br />
-            <input type="checkbox" id="approve" <?php if($user->isW9Approved()) echo 'checked = "checked"'; ?> />
-            </p>
-            <?php } ?>
-    
             <form id = "roles" method="post" >
             <p class = "info-label">Roles<br />
 	    <?php $disabled = !$is_runner ? 'disabled = "disabled"' : '';?>
@@ -44,23 +41,20 @@
             <input type="checkbox" name="ispayer" value="ispayer" id="info-ispayer" <?php if($user->isPayer()) echo 'checked = "checked" '; echo $disabled; ?> /><span>Payer</span>
             </p>
             
-            <input type="hidden" name="userid" id="userid" value="<?php echo $user -> getId(); ?>">
+            <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>">
 
 	        <?php if ($is_runner) { ?>
             <input type="submit" name="save_roles" value="Save Roles">
             <?php } ?>
 	        </form>
             
-            <p class="info-label">Status<br />
-            	<select id="changeUserStatus" style="width:auto;"<?php echo(($is_runner) ? '' : 'disabled="disabled"'); ?>>
-					<option value="0"<?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
-					<option value="1"<?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
-					<option value="2"<?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
-            	</select>
-            </p>
 	</div><!-- end of left-column div -->
 	<div class = "right-column">
 
+            <p class = "info-label">Joined<br />
+            <span id="info-joined"><?php echo date('m/d/Y', strtotime($user -> getAdded())); ?></span>
+            </p>
+            
             <p class = "info-label">Preferred Method of Contact<br />
             <span id="info-contactway"><?php echo $user -> getContactway(); ?></span>
             </p>
@@ -68,7 +62,22 @@
             <p class = "info-label">Preferred Method of Payment<br />
             <span id="info-payway"><?php echo $user -> getPayway(); ?></span>
             </p>
+
+	    <?php if ($is_runner) { ?>
+            <p class="info-label">W9 Approved<br />
+            <input type="checkbox" id="approve" <?php if($user->isW9Approved()) echo 'checked = "checked"'; ?> />
+            </p>
+            <?php } ?>
+    
 		  
+            <p class="info-label">Status<br />
+            	<select id="changeUserStatus" style="width:auto;"<?php echo(($is_runner) ? '' : 'disabled="disabled"'); ?>>
+					<option value="0"<?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
+					<option value="1"<?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
+					<option value="2"<?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
+            	</select>
+            </p>
+
 		<?php if ($is_runner) { ?>
 	    <form>
 	    <p id="unixusername-field" class = "info-label">UNIX Username: <br />
@@ -90,6 +99,27 @@
 	</div><!-- end of right-column div -->
     </div><!-- end of user-info div -->
 
+    <div id="give-budget" title="Give Budget" style="text-align: left;display: none">
+	<form>
+	    <label for="amount" class="info-label">Amount: </label><br/>
+            <input type="text" id="budget-amount" name="amount" /><br/>
+	    <label for="reason" class="info-label">Reason: </label><br/>
+            <input type="text" id="budget-reason" name="reason" style="width:95%" /><br/>
+	    <label for="receiver_id" class="info-label">Receiver: </label><br/>
+            <select id="budget-receiver" name='receiver_id'>
+            <?php
+            $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
+            foreach($user_array as $userid=>$nickname) {
+                if ($userid == $_SESSION['userid']) continue;
+                echo "<option value='{$userid}'>{$nickname}</option>\n";
+            }
+            ?>
+            </select><br/>
+	    <input type="submit" value="Give" />
+	</form>
+    </p>
+    </div>
+
     <div id="quick-reward" title = "Reward User">
     <p>
 	<span class = "labelo">Available points: </span><span id = "available" class = "points"></span>
@@ -104,6 +134,7 @@
 	</form>
     </p>
     </div>
+
 <div id="loading" style="display:none">
        <img src="images/loader.gif"></img> <span>Please wait..</span>
 </div>  

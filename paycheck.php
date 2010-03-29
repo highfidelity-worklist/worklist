@@ -19,7 +19,7 @@ if (!$is_payer) {
 }
 
 // Get clean data
-if (isset($_REQUEST['paid_check']) && ($_REQUEST['paid_check'] == 'on')) {
+if (isset($_REQUEST['paid_check']) && ($_REQUEST['paid_check'] == '1')) {
 	$paid_check = 1;
 } else {
 	$paid_check = 0;
