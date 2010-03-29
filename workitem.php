@@ -171,7 +171,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
-
+    if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
     $summary = getWorkItemSummary($worklist_id);
 
 

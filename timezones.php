@@ -13,7 +13,7 @@
 	  "-0300" => "(GMT -3:00) Brazil, Buenos Aires, Georgetown",
 	  "-0200" => "(GMT -2:00) Mid-Atlantic",
 	  "-0100" => "(GMT -1:00 hour) Azores, Cape Verde Islands",
-	  "0000" => "(GMT) Western Europe Time, London, Lisbon, Casablanca",
+	  "+0000" => "(GMT) Western Europe Time, London, Lisbon, Casablanca",
 	  "+0100" => "(GMT +1:00 hour) Brussels, Copenhagen, Madrid, Paris",
 	  "+0200" => "(GMT +2:00) Kaliningrad, South Africa",
 	  "+0300" => "(GMT +3:00) Baghdad, Riyadh, Moscow, St. Petersburg",
@@ -46,7 +46,7 @@ function getTimeZoneDateTime($GMT) {
         '-0300'=>'America/Argentina/Buenos_Aires',
         '-0200'=>'Atlantic/Azores',// no cities here so just picking an hour ahead
         '-0100'=>'Atlantic/Azores',
-        '0000'=>'Europe/London',
+        '+0000'=>'Europe/London',
         '+0100'=>'Europe/Paris',
         '+0200'=>'Europe/Helsinki',
         '+0300'=>'Europe/Moscow',
