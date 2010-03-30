@@ -166,4 +166,3 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		echo json_encode( $info );
 	}
 
-?>
