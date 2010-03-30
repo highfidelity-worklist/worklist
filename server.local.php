@@ -22,3 +22,6 @@ define("JOURNAL_API_PWD", "journalpwd");
 
 
 define("AJAX_REFRESH", 300);
+
+define('SMS_INI_FILE', '/etc/love/worklist/sms.ini');
+

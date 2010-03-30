@@ -5,6 +5,7 @@
 //  http://www.lovemachineinc.com
 //
 require_once('Zend/Config.php');
+require_once('Zend/Config/Ini.php');
 require_once('Zend/Registry.php');
 
 if (file_exists('server.local.php')) {
@@ -68,6 +69,17 @@ if (!defined('IMG_BWD'))        define('IMG_BWD', 'images/right.png');
 /**
  * Clickatell sms gateway settings
  */
+if (defined('SMS_INI_FILE') && file_exists(SMS_INI_FILE) && is_readable(SMS_INI_FILE)) {
+    $smsIni = new Zend_Config_Ini(SMS_INI_FILE);
+    $clickatell = $smsIni->clickatell;
+    if ($clickatell !== null) {
+        define('CLICKATELL_WSDL',     $clickatell->wsdl);
+        define('CLICKATELL_LOCATION', $clickatell->location);
+        define('CLICKATELL_API_ID',   $clickatell->api_id);
+        define('CLICKATELL_USERNAME', $clickatell->username);
+        define('CLICKATELL_PASSWORD', $clickatell->password);
+    }
+}
 if (!defined('CLICKATELL_WSDL'))     define('CLICKATELL_WSDL', null);
 if (!defined('CLICKATELL_LOCATION')) define('CLICKATELL_LOCATION', null);
 if (!defined('CLICKATELL_API_ID'))   define('CLICKATELL_API_ID', null);
