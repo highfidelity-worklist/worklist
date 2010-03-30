@@ -14,7 +14,7 @@ require_once 'lib/Sms/Numberlist.php';
                     <label>International code<br /></label>
                     <select id="int-code" name="int_code">
                         <option value="">--</option>
-<?php foreach (Sms_Numberlist::$codeList as $code=>$codeDescription):?>
+<?php foreach (Sms_Numberlist::$codeList as $codeDescription=>$code):?>
                         <option value="<?php echo $code;?>"<?php
 echo ($int_code == $code) ? ' selected="selected"' : '';
 ?>><?php echo $codeDescription . ' (+' . $code . ')'; ?></option>
