@@ -28,6 +28,7 @@ require_once 'MessageTest.php';
  * Sms_Backend_EmailTest
  */
 require_once 'Sms/Backend/EmailTest.php';
+require_once 'Sms/Backend/ClickatellTest.php';
 /**
  * @package Sms
  * @subpackage UnitTests
@@ -52,6 +53,21 @@ class Sms_AllTests
         $suite->addTestSuite('Sms_SmsTest');
         $suite->addTestSuite('Sms_MessageTest');
         $suite->addTestSuite('Sms_Backend_EmailTest');
+        $suite->addTestSuite('Sms_Backend_ClickatellTest');
+        if (defined('TESTS_SMS_CLICKATELL_SOAP') && TESTS_SMS_CLICKATELL_SOAP) {
+            require_once 'Sms/Backend/ClickatellTest/SoapTest.php';
+            $suite->addTestSuite('Sms_Backend_ClickatellTest_SoapTest');
+        } else {
+            require_once 'Sms/Backend/ClickatellTest/SkipSoapTest.php';
+            $suite->addTestSuite('Sms_Backend_ClickatellTest_SkipSoapTest');
+        }
+        if (defined('TESTS_SMS_CLICKATELL_SOAP_MESSAGE') && TESTS_SMS_CLICKATELL_SOAP_MESSAGE) {
+            require_once 'Sms/Backend/ClickatellTest/SendMessageTest.php';
+            $suite->addTestSuite('Sms_Backend_ClickatellTest_SendMessageTest');
+        } else {
+            require_once 'Sms/Backend/ClickatellTest/SkipSendMessageTest.php';
+            $suite->addTestSuite('Sms_Backend_ClickatellTest_SkipSendMessageTest');
+        }
 
         return $suite;
     }

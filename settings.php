@@ -36,10 +36,10 @@ $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST[
 
 // check if phone was updated
 $phone_sql = '';
-if (isset($_POST['phone_edit']))
+if (isset($_POST['phone_edit']) || isset($_POST['int_code']))
 {
 	$phone_sql_parts = array();
-	$phone_keys = array('phone', 'country', 'smsaddr', 'provider');
+	$phone_keys = array('int_code', 'phone', 'country', 'smsaddr', 'provider');
 
 	foreach ($phone_keys as $phone_key)
 	{

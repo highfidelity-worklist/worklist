@@ -1,7 +1,7 @@
 <?php
 //
 //  Copyright (c) 2009, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
 require_once('Zend/Config.php');
@@ -65,6 +65,14 @@ if (!defined('STR_BWD'))        define('STR_BWD', 'Prev&nbsp;&nbsp;');
 if (!defined('IMG_FWD'))        define('IMG_FWD', 'images/left.png');
 if (!defined('IMG_BWD'))        define('IMG_BWD', 'images/right.png');
 
+/**
+ * Clickatell sms gateway settings
+ */
+if (!defined('CLICKATELL_WSDL'))     define('CLICKATELL_WSDL', null);
+if (!defined('CLICKATELL_LOCATION')) define('CLICKATELL_LOCATION', null);
+if (!defined('CLICKATELL_API_ID'))   define('CLICKATELL_API_ID', null);
+if (!defined('CLICKATELL_USERNAME')) define('CLICKATELL_USERNAME', null);
+if (!defined('CLICKATELL_PASSWORD')) define('CLICKATELL_PASSWORD', null);
 /*
  * Non-configuration values (CONSTANTS)
  */
@@ -99,6 +107,15 @@ $config = array(
             'password' => DB_PASSWORD,
             'dbname'   => DB_NAME,
         )
+    ),
+    'sms' => array(
+        'mailFrom'              => $mail_user['smsuser']['from'],
+        'mailReplyTo'           => $mail_user['smsuser']['replyto'],
+        'clickatellApiWSDL'     => CLICKATELL_WSDL,
+        'clickatellApiLocation' => CLICKATELL_LOCATION,
+        'clickatellApiId'       => CLICKATELL_API_ID,
+        'clickatellUsername'    => CLICKATELL_USERNAME,
+        'clickatellPassword'    => CLICKATELL_PASSWORD
     )
 );
 // New config object, allows additional merging

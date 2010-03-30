@@ -1,6 +1,6 @@
 <?php
 //  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 //  This class handles a User if you need more functionality don't hesitate to add it.
@@ -9,7 +9,7 @@
 
 class User
 {
-	
+
 	protected $id;
 	protected $username;
 	protected $password;
@@ -31,6 +31,7 @@ class User
 	protected $is_active;
 	protected $journal_nick;
 	protected $is_guest;
+	protected $int_code;
 	protected $phone;
 	protected $smsaddr;
 	protected $country;
@@ -39,7 +40,7 @@ class User
 	protected $has_sandbox;
 	protected $unixusername;
 	protected $projects_checkedout;
-	
+
     /**
      * With this constructor you can create a user by passing an array.
      *
@@ -53,7 +54,7 @@ class User
         }
         return $this;
     }
-	
+
 	/**
 	 * This method fetches a user by his id.
 	 *
@@ -65,7 +66,7 @@ class User
 		$where = sprintf('`id` = %d', (int)$id);
 		return $this->loadUser($where);
 	}
-	
+
 	/**
 	 * This method fetches a user by his nickname.
 	 *
@@ -78,7 +79,7 @@ class User
 		$where = sprintf('`nickname` = "%s"', $nick);
 		return $this->loadUser($where);
 	}
-	
+
 	/**
 	 * This method fetches a user by his username.
 	 *
@@ -91,10 +92,10 @@ class User
 		$where = sprintf('`username` = "%s"', $user);
 		return $this->loadUser($where);
 	}
-	
+
 	/**
 	 * Use this method to update or insert a user.
-	 * 
+	 *
 	 * @return (boolean)
 	 */
 	public function save()
@@ -110,10 +111,10 @@ class User
 			return $this->update();
 		}
 	}
-	
+
 	/**
 	 * A method to check if this user is a US citizen.
-	 * 
+	 *
 	 * @return (boolean)
 	 */
 	public function isUsCitizen()
@@ -123,10 +124,10 @@ class User
 		}
 		return false;
 	}
-	
+
 	/**
 	 * A method to check if this user has a W9 approval.
-	 * 
+	 *
 	 * @return (boolean)
 	 */
 	public function isW9Approved()
@@ -136,10 +137,10 @@ class User
 		}
 		return false;
 	}
-	
+
 	/**
 	 * A method to check if this user is a Runner.
-	 * 
+	 *
 	 * @return (boolean)
 	 */
 	public function isRunner()
@@ -149,10 +150,10 @@ class User
 		}
 		return false;
 	}
-	
+
 	/**
 	 * A method to check if this user is a payer.
-	 * 
+	 *
 	 * @return (boolean)
 	 */
 	public function isPayer()
@@ -162,11 +163,11 @@ class User
 		}
 		return false;
 	}
-	
+
 	/**
 	 * A method to check if this user is active or not.
 	 * Attention a user can also be secured and it would return false!
-	 * 
+	 *
 	 * @return (boolean)
 	 */
 	public function isActive()
@@ -210,7 +211,7 @@ class User
         }
         $this->$method();
     }
-	
+
     /**
      * Automatically sets the options array
      * Array: Name => Value
@@ -229,7 +230,7 @@ class User
         }
         return $this;
 	}
-	
+
 	/**
 	 * @return the $username
 	 */
@@ -538,6 +539,24 @@ class User
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getInt_code()
+	{
+	    return $this->int_code;
+	}
+
+	/**
+	 * @param string $intCode
+	 * @return User
+	 */
+	public function setInt_code($intCode)
+	{
+	    $this->int_code = $intCode;
+	    return $this;
+	}
+
+	/**
 	 * @return the $phone
 	 */
 	public function getPhone() {
@@ -596,7 +615,7 @@ class User
 		$this->provider = $provider;
 		return $this;
 	}
-	
+
 	/**
 	 * @return the $rewarderPoints
 	 */
@@ -663,7 +682,7 @@ class User
 		$sql = 'SELECT * FROM `' . USERS . '` WHERE ' . $where . ' LIMIT 1;';
 		// and get the result
 		$result = mysql_query($sql);
-		
+
 		if ($result && (mysql_num_rows($result) == 1)) {
 			$options = mysql_fetch_assoc($result);
 			$this->setOptions($options);
@@ -671,7 +690,7 @@ class User
 		}
 		return false;
 	}
-	
+
 	private function getUserColumns()
 	{
 		$columns = array();
@@ -684,7 +703,7 @@ class User
 		}
 		return false;
 	}
-	
+
 	private function prepareData()
 	{
 		$columns = $this->getUserColumns();
@@ -716,7 +735,7 @@ class User
 		}
 		return false;
 	}
-	
+
 	private function update()
 	{
 		$flag = false;
@@ -732,7 +751,7 @@ class User
 			$sql .= '`' . $column . '` = "' . $data['values'][$index] . '"';
 			$flag = true;
 		}
-		$sql .= ' WHERE `id` = ' . (int)$this->getId() . ';'; 
+		$sql .= ' WHERE `id` = ' . (int)$this->getId() . ';';
 		$result = mysql_query($sql);
 		if ($result) {
 			return true;

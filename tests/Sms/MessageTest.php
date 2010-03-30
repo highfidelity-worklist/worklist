@@ -37,4 +37,18 @@ class Sms_MessageTest extends PHPUnit_Framework_TestCase
         $message = new Sms_Message($userStub, null, null);
         $this->assertEquals($userPhone, $message->getPhoneNumber());
     }
+
+    public function testSetSubject()
+    {
+        $subject = 'testSubject';
+        $message = new Sms_Message('test', $subject, null);
+        $this->assertEquals($subject, $message->getSubject());
+    }
+
+    public function setSetMessage()
+    {
+        $text = 'testMessage';
+        $message = new Sms_Message('test', null, $text);
+        $this->assertEquals($text, $message->getMessage());
+    }
 }

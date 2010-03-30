@@ -4,6 +4,24 @@
 //  http://www.lovemachineinc.com
 //
 ?>
+<?php
+/**
+ * Sms_Numberlist
+ */
+require_once 'lib/Sms/Numberlist.php';
+?>
+                <p>
+                    <label>International code<br /></label>
+                    <select id="int-code" name="int_code">
+                        <option value="">--</option>
+<?php foreach (Sms_Numberlist::$codeList as $code=>$codeDescription):?>
+                        <option value="<?php echo $code;?>"<?php
+echo ($int_code == $code) ? ' selected="selected"' : '';
+?>><?php echo $codeDescription . ' (+' . $code . ')'; ?></option>
+<?php endforeach;?>
+                    </select>
+                </p>
+
                 <input name="phone_edit" type="hidden" id="phone_edit" value="0"/>
                 <p><label>Cell Phone Number<br />
                 <input type="text" name="phone" id="phone" size="35" value="<?php echo $phone ?>" />
