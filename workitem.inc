@@ -444,7 +444,7 @@ if ($action =="edit"):  ?>
 						</li>
 				<!-- Edit: Status info -->
 						<li><span class="info-label">Status</span><span class="info-data">
-							<?php if ($is_runner){  ?><span class="info-data">
+							<?php if ($is_runner || $user_id == $worklist['runner_id']){  ?><span class="info-data">
 							<select id="status" name="status">
 								<?php foreach($statusList as $status){ ?>
 								<option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected = "selected"' : ''; ?> ><?php echo $status; ?></option>
@@ -452,6 +452,7 @@ if ($action =="edit"):  ?>
 							</select>
                             <?php } else if ($has_budget && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SKIP')) {?>
                             <select id="status" name="status">
+                                <option value="<?php echo $worklist['status'] ?>" selected="selected"><?php echo $worklist['status'] ?></option>
                                 <option value="BIDDING" <?php echo 'BIDDING' == $worklist['status']?' selected = "selected"' : ''; ?> >BIDDING</option>
                                 <option value="WORKING" <?php echo 'WORKING' == $worklist['status']?' selected = "selected"' : ''; ?> >WORKING</option>
                             </select>

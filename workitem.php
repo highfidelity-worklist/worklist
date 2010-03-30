@@ -109,12 +109,15 @@ if($action =='save_workitem') {
     $new_update_message='';
 
     // summary
-    if ($workitem->getSummary() != $summary){
+    if (isset($_POST['summary']) && $workitem->getSummary() != $summary){
         $workitem->setSummary($summary);
         $new_update_message .= "Summary changed. ";
     }
     // status
-    if ($is_runner || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
+    if (   $is_runner
+	|| $userId == $workitem->getRunnerId()
+        || (($status == 'BIDDING' || $status == 'WORKING') && $user->getBudget() > 0)
+        || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
         if ($workitem->getStatus() != $status && !empty($status)){
 	    changeStatus($workitem, $status, $user);
             if (!empty($new_update_message)){  // add commas where appropriate
@@ -144,7 +147,7 @@ if($action =='save_workitem') {
     }
 
  	$redirectToWorklistView = true;
-    $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: $summary.  $new_update_message";
+    $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . $new_update_message;
 }
 
 
@@ -420,7 +423,7 @@ function changeStatus($workitem,$newStatus, $user){
 
     $allowable = array("SUGGESTED", "REVIEW", "SKIP");
 
-    if($user->getIs_runner() == 1){
+    if($user->getIs_runner() == 1 || $user->getBudget() > 0){
 
 	  if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)){
 
