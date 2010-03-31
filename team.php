@@ -224,6 +224,7 @@ include("head.html"); ?>
 	row += '<td >' + json.bids_accepted + '/' + json.bids_placed + '</td>';
 	row += '<td >$' + json.earnings + '</td>';
 	row += '<td >$' + json.expenses_billed + '</td>';
+	row += '<td >' + json.rewarder_points + '</td>';
        $('.table-userlist tbody').append(row);
     }
 
@@ -282,6 +283,7 @@ include("head.html"); ?>
 	    <th class = "sort {sortkey: 'bids_accepted'}">Bids<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'earnings'}">Earnings<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'expenses_billed'}">Expenses<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'rewarder_points'}">Reward Pts<div class = "arrow"><div/></th>
         </tr>
         </thead>
         <tbody>
