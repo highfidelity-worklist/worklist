@@ -436,9 +436,8 @@ if ($action =="edit"):  ?>
 					<input type="hidden" name="action" value="save_workitem" />
 					<ul style="margin:0; padding:0;">
 				<!-- Edit: Summary info -->
-						<li><span class="info-label">Summary</span>
+						<li><span class="info-label">Summary</span><span class="info-data">
 							<?php if($is_runner || $creator_id == $user_id){ ?>
-							<span class="info-data">
 							<input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
 							<?php }else{?>
 							<span class="info-summ"><?php echo $worklist['summary'];?>
@@ -465,7 +464,7 @@ if ($action =="edit"):  ?>
 								<option value="<?php echo $status; ?>"><?php echo $status; ?></option>
 								<?php } ?>
 							</select>
-							<?php }else{ ?><span class="info-data" style="font-size:18px"><?php echo $worklist['status'];?>
+							<?php }else{ ?><?php echo $worklist['status'];?>
 							<input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
 							<?php } ?></span>
 						</li>
@@ -500,7 +499,7 @@ if ($action =="edit"):  ?>
 							<span class="info-label">Notes</span>
 							<?php if($is_runner || $creator_id == $user_id): ?>
 								<span id="info-notes">
-									<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px; height:164px; margin-top:8px;" name="notes" rows="25" cols="20" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
+									<textarea name="notes" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
 								</span>
 							<?php else:?>
 								<span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
@@ -508,7 +507,9 @@ if ($action =="edit"):  ?>
 						</li>
 					</ul>
 					<?php if($allowEdit && $action=="edit"): ?>
-						<input style="margin-bottom:19px; margin-left:-8px;"type="submit" value="Save" name="save_workitem" id="save_workitem" onClick="return saveWorkitem();"/>
+						<div class="buttonContainer-save">
+							<input type="submit" value="Save" name="save_workitem" id="save_workitem" onClick="return saveWorkitem();"/>
+						</div>
 					<?php endif;?>
 				</form>
 <!-- *** End of Action is Edit *** -->
@@ -612,100 +613,103 @@ if ($action =="edit"):  ?>
 <!-- End of div left-panel -->
 		</div>
 		<div id="right-panel">
-			<div class="moneyZone">
-				<div id="bid-panel">
-					<table width="100%" class="table-bids">
-						<caption class="table-caption" >
-							<b>Bids</b>
-						</caption>
-						<thead>
-							<tr class="table-hdng">
-								<td>Who</td>
-								<td>Bid Amount</td>
-								<td>Done In</td>
-							</tr>
-						</thead>
-						<tbody>
-						<?php if(empty($bids)): ?>
-							<tr>
-								<td style="text-align: center;" colspan="4">No bids yet.</td>
-							</tr>
-						<?php else: $row = 1;
-							foreach($bids as $bid): ?>
-							<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?> <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?>">
-								<td><?php echo $bid['nickname'];?></td>
-								<td>$ <?php echo $bid['bid_amount'];?></td>
-								<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
-							</tr>
-							<?php endforeach;?>
+			<div id="for_view">
+				<div class="moneyZone">
+					<div id="bid-panel">
+						<table width="100%" class="table-bids">
+							<caption class="table-caption" >
+								<b>Bids</b>
+							</caption>
+							<thead>
+								<tr class="table-hdng">
+									<td>Who</td>
+									<td>Bid Amount</td>
+									<td>Done In</td>
+								</tr>
+							</thead>
+							<tbody>
+							<?php if(empty($bids)): ?>
+								<tr>
+									<td style="text-align: center;" colspan="4">No bids yet.</td>
+								</tr>
+							<?php else: $row = 1;
+								foreach($bids as $bid): ?>
+								<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?> <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?>">
+									<td><?php echo $bid['nickname'];?></td>
+									<td>$ <?php echo $bid['bid_amount'];?></td>
+									<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
+								</tr>
+								<?php endforeach;?>
+							<?php endif;?>
+							</tbody>
+						</table>
+						<?php if($user_id): ?>
+						<?php 	if ($worklist['status'] == 'BIDDING'): ?>
+						<div class="buttonContainer">
+							<input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');"/>
+						</div>
+						<?php 	endif; ?>
 						<?php endif;?>
-						</tbody>
-					</table>
-					<?php if($user_id): ?>
-					<?php 	if ($worklist['status'] == 'BIDDING'): ?>
-					<div class="buttonContainer">
-						<input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');"/>
+				<!-- End of div bid-panel -->
 					</div>
-					<?php 	endif; ?>
-					<?php endif;?>
-			<!-- End of div bid-panel -->
-				</div>
-				<div id="fee-panel" >
-					<table width="100%" class="table-fees">
-						<caption class="table-caption" >
-							<b>Fees</b>
-						</caption>
-						<thead>
-							<tr class="table-hdng">
-								<td>Who</td>
-								<td>Amount</td>
-								<td>Description</td>
-								<td>Date</td>
-								<td>Paid</td>
-							</tr>
-						</thead>
-						<tbody>
-						<?php if(empty($fees)): ?>
-							<tr>
-								<td style="text-align: center;" colspan="5">No fees yet.</td>
-							</tr>
-						<?php else:	$row = 1; 
-							foreach($fees as $fee): ?>
-							<tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-								<td><?php echo $fee['nickname'];?></td>
-								<td>$ <?php echo $fee['amount'];?></td>
-								<td><?php echo $fee['desc'];?></td>
-								<td><?php echo $fee['date'];?></td>
-								<td>
-									<?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
-									<?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
-									<?php endif;?>
-									<?php if($user_id): ?><br><a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link">WD</a>
-									<?php endif;?>
-								</td>
-							</tr>
-							<?php endforeach;?>
-							<tr>
-								<td colspan="1" style="text-align:right; font-weight:bold;">Total</td>
-								<td colspan="4" style="text-align:left"><span style="line-height:20px; font-weight:bold; font-size:16px">$ <?php echo $total_fee;?></span></td>
-							</tr>
+					<div id="fee-panel" >
+						<table width="100%" class="table-fees">
+							<caption class="table-caption" >
+								<b>Fees</b>
+							</caption>
+							<thead>
+								<tr class="table-hdng">
+									<td>Who</td>
+									<td>Amount</td>
+									<td>Description</td>
+									<td>Date</td>
+									<td>Paid</td>
+								</tr>
+							</thead>
+							<tbody>
+							<?php if(empty($fees)): ?>
+								<tr>
+									<td style="text-align: center;" colspan="5">No fees yet.</td>
+								</tr>
+							<?php else:	$row = 1; 
+								foreach($fees as $fee): ?>
+								<tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
+									<td><?php echo $fee['nickname'];?></td>
+									<td>$ <?php echo $fee['amount'];?></td>
+									<td><?php echo $fee['desc'];?></td>
+									<td><?php echo $fee['date'];?></td>
+									<td>
+										<?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
+										<?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
+										<?php endif;?>
+										<?php if($user_id): ?><br><a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link">WD</a>
+										<?php endif;?>
+									</td>
+								</tr>
+								<?php endforeach;?>
+								<tr>
+									<td colspan="1" style="text-align:right; font-weight:bold;">Total</td>
+									<td colspan="4" style="text-align:left"><span style="line-height:20px; font-weight:bold; font-size:16px">$ <?php echo $total_fee;?></span></td>
+								</tr>
+							<?php endif;?>
+							</tbody>
+						</table>
+						<?php if($user_id): ?>
+						<div class="buttonContainer">
+							<input type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+						</div>
 						<?php endif;?>
-						</tbody>
-					</table>
-					<?php if($user_id): ?>
-					<div class="buttonContainer">
-						<input type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+						<form id="withdraw" method="post" action="" >
+							<input type="hidden" name="action" value="withdraw_bid" />
+							<input type="hidden" class="fee_id" name="fee_id" value="" />
+						</form>
+				<!-- End of div fee-panel -->
 					</div>
-					<?php endif;?>
-					<form id="withdraw" method="post" action="" >
-						<input type="hidden" name="action" value="withdraw_bid" />
-						<input type="hidden" class="fee_id" name="fee_id" value="" />
-					</form>
-			<!-- End of div fee-panel -->
+			<!-- End of div moneyZone -->
 				</div>
-		<!-- End of div moneyZone -->
+				<div id="uploadPanel"> </div>
+		<!-- End of for_view-->
 			</div>
-			<div id="uploadPanel"> </div>
 <!-- End of div right-panel-->
 		</div>
 <!-- End of div pageContent -->			

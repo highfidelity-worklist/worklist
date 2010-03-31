@@ -31,6 +31,14 @@ if ($audit_mode) {
     }
 }
 
+//-- Overall balance variables ---
+	$logPoints = mysql_fetch_row(mysql_query('select sum(`rewarder_points`) from `rewarder_log`;'));
+	$totalAlloc = $logPoints[0];
+	$DistribPoints = mysql_fetch_row(mysql_query('select sum(`rewarder_points`) from `rewarder_distribution`;'));
+	$totalGrant = $DistribPoints[0];
+	$percentGranted = ceil(($totalGrant/$totalAlloc)*100);
+//-----
+
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>
@@ -38,6 +46,8 @@ include("head.html"); ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/rewarder.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery.sort-1.1.js"></script>
 <script type="text/javascript">
     var rewarder = {
         auditMode: <?php echo $audit_mode ? "true" : "false" ?>,
@@ -408,6 +418,88 @@ include("head.html"); ?>
     
             rewarder.loadRewarderList();
         }
+		
+		$('#users-header').toggle(function(){
+			var r = rewarder.rewarderList;
+			r.sort(alphaNumSort);
+			r.reverse();
+			rewarder.updateRewarderList(r);
+			$('#points-arrow').hide();
+			$('#users-arrow').removeClass('arrow-up').addClass('arrow-down').show();
+			$(this).attr('title','Sort A-Z');
+		},function(){
+			var r = rewarder.rewarderList;
+			r.sort(alphaNumSort);
+			rewarder.updateRewarderList(r);
+			$('#points-arrow').hide();
+			$('#users-arrow').removeClass('arrow-down').addClass('arrow-up').show();
+			$(this).attr('title','Sort Z-A');
+		});
+		
+		$('#points-arrow').hide();
+		$('#points-header').toggle(function(){
+			var r = rewarder.rewarderList;
+			r.sort(numSort);
+			r.reverse();
+			rewarder.updateRewarderList(r);
+			$('#users-arrow').hide();
+			$('#points-arrow').removeClass('arrow-up').addClass('arrow-down').show();
+			$(this).attr('title','Sort Ascendent');
+		},function(){
+			var r = rewarder.rewarderList;
+			r.sort(numSort);
+			rewarder.updateRewarderList(r);
+			$('#users-arrow').hide();
+			$('#points-arrow').removeClass('arrow-down').addClass('arrow-up').show();
+			$(this).attr('title','Sort Descendent');
+		});
+		
+		function alphaNumSort(m,n){
+			try{
+				var cnt= 0,tem;
+				var a= m[1].toLowerCase();
+				var b= n[1].toLowerCase();
+				if(a== b) return 0;
+				var x=/^(\.)?\d/;
+			
+				var L= Math.min(a.length,b.length)+ 1;
+				while(cnt< L && a.charAt(cnt)=== b.charAt(cnt) &&
+				x.test(b.substring(cnt))== false && x.test(a.substring(cnt))== false) cnt++;
+				a= a.substring(cnt);
+				b= b.substring(cnt);
+			
+				if(x.test(a) || x.test(b)){
+					if(x.test(a)== false)return (a)? 1: -1;
+					else if(x.test(b)== false)return (b)? -1: 1;
+					else{
+						var tem= parseFloat(a)-parseFloat(b);
+						if(tem!= 0) return tem;
+						else tem= a.search(/[^\.\d]/);
+						if(tem== -1) tem= b.search(/[^\.\d]/);
+						a= a.substring(tem);
+						b= b.substring(tem);
+					}
+				}
+				if(a== b) return 0;
+				else return (a >b)? 1: -1;
+			}
+			catch(er){
+				return 0;
+			}
+		}
+		
+		function numSort(m,n){
+			try{
+				var a = parseInt(m[2]);
+				var b = parseInt(n[2]);
+				if(a== b) return 0;
+				else return (a >b)? 1: -1;
+			}
+			catch(er){
+				return 0;
+			}
+		}
+		
     });
 </script>
 
@@ -425,8 +517,29 @@ include("head.html"); ?>
     <h1>Rewarder</h1>
 
     <div id="rewarder-controls">
+	
+	   <?php if ($_SESSION['is_auditor'] && $audit_mode) { ?>
+			
+			<div id="rewarder_balance">
+				<div class="balanceTitle">Overall balance</div>
+				<div style="display:table-row">
+					<div id="percentGrant">
+						<span class="balancePercent"><?php echo $percentGranted;?></span>&nbsp;<span style="">%</span><br/>
+						<span style="margin-top:-3px;">granted</span>
+					</div>
+					<div id="balanceDetails">
+						<div id="totPointsAlloc">
+							<span class="balanceLabel">Allocated</span><span class="balanceData"><?php echo $totalAlloc; ?></span>
+						</div>
+						<div id="totPointsGrant">
+							<span class="balanceLabel">Granted</span><span class="balanceData"><?php echo $totalGrant; ?></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		<?php } ?>
         <div id="rewarder-point-info">
-           <?php if ($_SESSION['is_auditor']) { ?>
+			<?php if ($_SESSION['is_auditor']) { ?>
                 <?php if ($audit_mode) { ?>
                 <a href="rewarder.php">Award</a>
                 <?php } else { ?>
@@ -459,7 +572,10 @@ include("head.html"); ?>
         </div>
     </div>
     <div style="clear:both"></div>
-
+	<div id="list-headers">
+		<div id="users-header" title='Sort Z-A'>User <div id="users-arrow" class="arrow arrow-up"></div></div>
+		<div id="points-header"title='Sort Descendent'>Points Rewarded <div id="points-arrow" class="arrow arrow-down"></div></div>
+	</div>
     <div id="rewarder-container">
         <div id="rewarder-users"></div>
         <div id="rewarder-chart"></div>
@@ -467,4 +583,5 @@ include("head.html"); ?>
     <div style="clear:both"></div>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
+
 <?php include("footer.php"); ?>
