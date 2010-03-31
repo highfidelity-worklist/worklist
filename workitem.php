@@ -241,11 +241,11 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
 // Request submitted from Add Fee popup
 if (isset($_SESSION['userid']) && $action == "add_fee") {
-    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense');
+    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
-    $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
+    $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
 
     // notify runner of new fee
     workitemNotify(array('type' => 'fee_added',

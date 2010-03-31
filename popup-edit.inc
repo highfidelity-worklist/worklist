@@ -127,11 +127,25 @@
 		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money" size="48" />
                 </p>
 		</div>
-		<div style="float:left;width:66%">
+		<div style="float:left;width:33%">
                 <p class="info-label">Reimbursable Expense?<br />
                 <input type="checkbox" name="is_expense" id="is_expense" value="1" />
                 </p>
 		</div>
+<?php
+         $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
+		if ($is_payer)
+            {
+?>
+            <div style="float:left;width:33%">
+                <p class="info-label">Or<br />Rewarder?<br />
+                <input type="checkbox" name="is_rewarder" id="is_rewarder" value="1" />
+                </p>
+            </div>
+<?php
+            }
+?>
+
 		<div style="clear:both"></div>
 
                  <p class="info-label">Description<br />

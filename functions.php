@@ -293,8 +293,9 @@ function getUserTime($timestamp){
  *             mechanic_id - userid of the mechanic
  *
  */
-function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense)
+function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder=0)
 {
+	if ($is_rewarder) $is_expense = 0;
     // Get work item summary
     $query = "select summary from ".WORKLIST." where id='$itemid'";
     $rt = mysql_query($query);
@@ -303,8 +304,8 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
         $summary = $row['summary'];
     }
 
-    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`) ".
-        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string($fee_desc)."', NOW(), '0', '".mysql_real_escape_string($is_expense)."')";
+    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`, `rewarder`) ".
+        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string($fee_desc)."', NOW(), '0', '".mysql_real_escape_string($is_expense)."', '".mysql_real_escape_string($is_rewarder)."' )";
     $result = mysql_unbuffered_query($query);
 
     // Journal notification
