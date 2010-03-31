@@ -7,11 +7,11 @@ $tooltips = array(
 					  
 	/* List page top tooltips 		*/
 	
-	'menuWorklist'	=> 'Explore tasks or new ones.',
+	'menuWorklist'	=> 'Explore jobs or add new ones.',
 	'menuJournal'	=> 'Live Chat',
-	'menuLove'		=> 'Show appreciation for cool thing people have done',
+	'menuLove'		=> 'Show appreciation for cool things people have done',
 	'menuRewarder'	=> 'Give earned points/money to other teammates.',
-	'menuReports'	=> 'Audit all the activities.',
+	'menuReports'	=> 'Audit all the work and money flow.',
 	'jobsBidding'	=> 'See more stats on jobs and team members.',
 	
 	
