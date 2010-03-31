@@ -47,3 +47,21 @@
 	    }, <?php echo AJAX_REFRESH*1000 ?>);
 
 </script>
+<!--  tooltip plugin and dictionary -->
+	<script type="text/javascript" src="js/jquery.tooltip.js"></script>
+	<script type="text/javascript">
+		function MapToolTips(){
+			$.each(<?php include("tooltip.php"); ?>, function(key, val){
+				$('.iToolTip.'+key).attr('title', val);
+			});
+			$('.iToolTip').tooltip({
+				track: false,
+				delay: 450,
+				showURL: false,
+				showBody: " - ",
+				fade: 150,
+				positionLeft: true
+			});
+		};
+	</script>
+<!-- -->

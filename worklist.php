@@ -8,6 +8,7 @@
 ini_set('display_errors', 1);
 error_reporting(-1);
 
+
 ob_start();
 
 include("config.php");
@@ -191,7 +192,7 @@ include("head.html"); ?>
         var pre = '', post = '';
         var row;
 
-        row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
+        row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live iToolTip hoverJobRow ';
 
 		// disable dragging for all rows except with "BIDDING" status
 		if (json[2] != 'BIDDING'){
@@ -209,7 +210,7 @@ include("head.html"); ?>
 			post = '</div>';
 		}
 		
-        row += '<td width="50%" title="' +json[0]+'">' + pre + json[1] + post + '</td>';
+        row += '<td width="50%">' + pre + json[1] + post + '</td>';
         if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
             post = ' (' + json[10] + ')';
         }
@@ -375,6 +376,8 @@ include("head.html"); ?>
 					AppendRow(json[lastFirst-1], topIsOdd, true, json, lastFirst-1);
 				}
 				lastId = json[1][0];
+				
+				MapToolTips();
 
 				$('.row-worklist-live').bind('contextmenu', function(e) {
 					$('#pages-dialog').dialog('open');
@@ -478,6 +481,11 @@ include("head.html"); ?>
 		timeoutId = setTimeout("GetWorklist("+page+", true)", refresh);
     }
 
+
+	/*
+	*    aneu: Added jquery.hovertip.min.js 
+	*          Is this function below needed or used somewhere?
+	*/
     function ToolTip() {
         xOffset = 10;
         yOffset = 20;
@@ -801,7 +809,7 @@ include("head.html"); ?>
 		});
 
 		GetWorklist(<?php echo $page?>, false);
-
+		
 		$("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
 		$("#search-filter, #user-filter").change(function(){
 			if ($("#search-filter").val() == 'UNPAID') {
@@ -906,6 +914,9 @@ include("head.html"); ?>
 			$('#pages-dialog').dialog('close');
 			return false;
 		});
+		//-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
+		setTimeout(MapToolTips, 800);
+
 		<?php if(!empty($worklist_id))
 		{
 		?>
@@ -983,7 +994,7 @@ include("head.html"); ?>
 
 <?php if (isset($_SESSION['userid'])) { ?>
 <div id="buttons">
-<p><input type="submit" id="add" name="add" value="Add" /> <input
+<p><input type="submit" id="add" name="add" value="Add" class="iToolTip addButton" /> <input
     type="submit" id="edit" name="edit" value="Edit"
     <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
 <?php if (empty($_SESSION['is_runner'])) { ?> <input type="submit"

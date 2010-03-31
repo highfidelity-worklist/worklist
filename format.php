@@ -38,15 +38,16 @@
 <!-- Navigation placeholder -->
 		<div id="nav">
 			<?php if (isset($_SESSION['username'])) { ?>
-			<a href="worklist.php">Worklist</a> |
-			<a href="<?php echo SERVER_BASE ?>/journal/" target="_blank">Journal</a> |
-			<a href="<?php echo SERVER_BASE ?>/sendlove/" target="_blank">Love</a> |
+
+			<a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
+			<a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> |
+			<a href="<?php echo SERVER_BASE ?>/sendlove/" class="iToolTip menuLove" target="_blank">Love</a> |
 			<?php if (!empty($_SESSION['is_runner']) || !empty($_SESSION['is_payer'])) {?>
-			<a href="reports.php">Reports</a> |
+			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<?php } ?>
 			<a href="team.php">Team</a> |
-			<a href="rewarder.php">Rewarder</a> |
-			<a href="settings.php">Settings</a>
+			<a href="rewarder.php" class="iToolTip menuRewarder">Rewarder</a> |
+			<a href="settings.php" class="iToolTip menuSettings">Settings</a>
 			<?php } ?>
 		</div>
 
@@ -62,6 +63,7 @@
 			dataType: 'html',
 			success: function(html) {
 				$('#stats-text').html(html);
+				MapToolTip();
 			}
 		});
         });

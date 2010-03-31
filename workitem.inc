@@ -395,6 +395,8 @@ function reply(id) {
 		$('div.commentform textarea').width(thinnestComment);
 		$('#commentZone').css({'opacity':'1'});
 		
+		//-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
+		setTimeout(MapToolTips, 800);
 		
 		return false;
 	});
@@ -650,7 +652,9 @@ if ($action =="edit"):  ?>
 						</div>
 						<?php 	endif; ?>
 						<?php endif;?>
+
 				<!-- End of div bid-panel -->
+
 					</div>
 					<div id="fee-panel" >
 						<table width="100%" class="table-fees">
@@ -696,7 +700,7 @@ if ($action =="edit"):  ?>
 						</table>
 						<?php if($user_id): ?>
 						<div class="buttonContainer">
-							<input type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+							<input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
 						</div>
 						<?php endif;?>
 						<form id="withdraw" method="post" action="" >

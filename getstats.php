@@ -14,7 +14,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		$query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'WORKING'" );
 		$count_b = mysql_num_rows( $query_b );
 		$count_w = mysql_num_rows( $query_w );
-		echo "<a href='javascript:ShowStats()' id='stats'>". $count_b. " jobs bidding, ". $count_w. " jobs underway</a>";
+		echo "<a href='javascript:ShowStats()' class='iToolTip jobsBidding' id='stats'>". $count_b. " jobs bidding, ". $count_w. " jobs underway</a>";
 		
 	}	else if( $req == 'current' )	{
 		$query_b = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'bidding'");
