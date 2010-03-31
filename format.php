@@ -39,7 +39,8 @@
 		<div id="nav">
 			<?php if (isset($_SESSION['username'])) { ?>
 			<a href="worklist.php">Worklist</a> |
-			<a href="<?php echo SERVER_BASE ?>/journal/">Journal</a> |
+			<a href="<?php echo SERVER_BASE ?>/journal/" target="_blank">Journal</a> |
+			<a href="<?php echo SERVER_BASE ?>/sendlove/" target="_blank">Love</a> |
 			<?php if (!empty($_SESSION['is_runner']) || !empty($_SESSION['is_payer'])) {?>
 			<a href="reports.php">Reports</a> |
 			<?php } ?>
