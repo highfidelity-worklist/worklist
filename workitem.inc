@@ -22,6 +22,8 @@
         }
     }
 
+    $workitem = WorkItem::getById($worklist['id']);
+
     $allowEdit = false;
     if ($is_runner || $creator_id == $user_id || $has_budget) {
         $allowEdit = true;
@@ -292,8 +294,8 @@ function reply(id) {
 			['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 			['span', '#info-notes', 'json.notes', 'eval'] ],
 		      function(json) {
-<?php if ($is_runner || $user_id == $runner_id) { ?>
-			  $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
+<?php if ($is_runner || $user_id == $workitem->getRunnerId()) { ?>
+            $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
 <?php } ?>
 			if( is_runner==1 || (json.bidder_id == "<?php echo $user_id ?>"))
 			      $('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');

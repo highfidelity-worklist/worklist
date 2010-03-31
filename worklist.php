@@ -152,6 +152,7 @@ include("head.html"); ?>
     var workitems;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
+    var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
 
     function AppendPagination(page, cPages, table)    {
@@ -579,9 +580,9 @@ include("head.html"); ?>
 							  ['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 							  ['span', '#info-notes', 'json.notes', 'eval'] ],
 							function(json) {
-								if( is_runner==1)
+								if (is_runner==1 || runner_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>")
 									$('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
-								if( is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
+								if (is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
 									$('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 							});
 
