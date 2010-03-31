@@ -39,7 +39,6 @@ $fields_to_not_escape = array(
 				'phone_edit' => '',
 				'confirm' => '',
 				'paypal' => '',
-				'is_uscitizen' => '',
 				'about' => '', 
 			);
 // Remove html tags from about box
@@ -192,10 +191,6 @@ include("head.html"); ?>
             username.add(Validate.Length, { minimum: 10, maximum: 50 } );
             </script>
 
-            <div class="LVspace">
-            <p><label for="uscitizen">Are you a US citizen?</label><br />
-            <input type="checkbox" id="uscitizen" name="is_uscitizen" <?php echo((isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) ? 'checked="checked" ' : ''); ?> />
-            </p></div>
             <div class="LVspace"><p>
             <label>Password *<br />
             <input type="password" id="password" name="password" class="text-field" size="35" />

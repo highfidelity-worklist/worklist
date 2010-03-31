@@ -20,6 +20,7 @@ mysql_select_db(DB_NAME,$con);
 include_once("send_email.php");
 $msg="";
 $company="";
+$uscitizen=0;
 
 $messages = array();
 $errors = 0;
@@ -41,10 +42,12 @@ if (isset($_POST['phone_edit']) || isset($_POST['int_code']))
 	$phone_sql_parts = array();
 	$phone_keys = array('int_code', 'phone', 'country', 'smsaddr', 'provider');
 
-	foreach ($phone_keys as $phone_key)
-	{
+	foreach ($phone_keys as $phone_key) {
 		$phone_item = mysql_real_escape_string(htmlspecialchars($_POST[$phone_key]));
 		$phone_sql_parts[] = "`${phone_key}` = '${phone_item}'";
+		// Find if the country is US, if so mark the user as US citizen
+		if( $_POST['country'] == 'US' ) $uscitizen = 1;
+		else $uscitizen = 0;
 	}
 
 	$phone_sql = implode(',', $phone_sql_parts);
@@ -67,12 +70,6 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
 
     // Strip out any html tags
     $about = mysql_real_escape_string(strip_tags($_POST['about']));
-
-    if (isset($_POST['uscitizen']) && ($_POST['uscitizen'] == 'on')) {
-        $uscitizen = 1;
-    } else {
-        $uscitizen = 0;
-    }
 
     $sql = "UPDATE `".USERS."` SET `nickname`='$nickname', `about`='$about', `contactway`='$contactway', `payway`='$payway',".
                   "`skills`='$skills', `paypal`=$paypal, `paypal_email`='$paypal_email', `is_uscitizen`=$uscitizen, `timezone`='$timezone' ".
@@ -185,7 +182,7 @@ include("head.html"); ?>
 			},
 			onComplete: function(file, data) {
 				$('.uploadnotice').empty();
-            	if (data.success) {
+		            	if (data.success) {
 					var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
 									'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
 									'<strong>Info:</strong> ' + data.message + '</p>' +
@@ -210,9 +207,7 @@ include("head.html"); ?>
 	        dataType: 'json',
 	        success: function(data) {
 		        if ((data.success === true) && (data.isuscitizen === true)) {
-					$('input[name=uscitizen]').attr('checked', 'checked');
-
-					$('#w9upload').show();
+				$('#w9upload').show();
 		        }
 	        }
 		});
@@ -287,11 +282,8 @@ include("head.html"); ?>
                 </script>
 
                 <div class="LVspacelg" style="width: 285px;">
-                <p style="display:inline;float:left;margin-right:50px;"><label>US Citizen<br />
-                <input type="checkbox" name="uscitizen" />
-                </label>
                 </p>
-                <div class="LVspacelg" id="w9upload" style="display: none; height: auto; min-height: 80px; float: right;">
+                <div class="LVspacelg" id="w9upload" style="display: none; height: auto; min-height: 80px; float: left;">
                 <p><label>W-9 Form Upload<br />
                 <input id="formupload" type="button" value="Browse" />
                 </label></p>
