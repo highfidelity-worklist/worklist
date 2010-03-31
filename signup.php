@@ -55,8 +55,6 @@ $phone = preg_replace('/\D/', '', $minimal_POST['phone']);
 $minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
 
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
-// make shure uscitizen is either 0 or 1
-$minimal_POST['is_uscitizen'] = ($values_for_db['is_uscitizen'] == 'on') ? 1 : 0;
 
 if(isset($minimal_POST['sign_up'])){
   if(empty($username)||empty($minimal_POST['password'])||empty($minimal_POST['confirmpassword']))

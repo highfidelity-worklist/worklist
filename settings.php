@@ -284,7 +284,8 @@ include("head.html"); ?>
                 <div class="LVspacelg" style="width: 285px;">
                 </p>
                 <div class="LVspacelg" id="w9upload" style="display: none; height: auto; min-height: 80px; float: left;">
-                <p><label>W-9 Form Upload<br />
+                <p><label>All US Citizens must submit a W-9 to be paid by LoveMachine</label><br/></p>
+		<p><label>W-9 Form Upload<br />
                 <input id="formupload" type="button" value="Browse" />
                 </label></p>
                 </div>
