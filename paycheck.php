@@ -58,7 +58,7 @@ if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
         $body  = "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
         $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
         $body .= "You also earned ".intval($total_fee_pay)." rewarder points.  You currently have ".$userData['rewarder_points']." points available to reward other LoveMachiners with. ";
-	$body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."/worklist/rewarder.php<br/><br/>";
+	$body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."worklist/rewarder.php<br/><br/>";
         $body .= "Thank you!<br/><br/>Love,<br/>Philip and Ryan<br/>";
 
         sl_send_email($userData['username'], $subject, $body);
