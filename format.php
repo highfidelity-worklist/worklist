@@ -63,7 +63,7 @@
 			dataType: 'html',
 			success: function(html) {
 				$('#stats-text').html(html);
-				MapToolTip();
+				MapToolTips();
 			}
 		});
         });
