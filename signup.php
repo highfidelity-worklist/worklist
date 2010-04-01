@@ -1,10 +1,11 @@
-<?php ob_start();
+<?php
 //
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 //
 
+ob_start();
 include("config.php");
 include("class.session_handler.php");
 include_once("send_email.php");
@@ -116,7 +117,8 @@ if(isset($minimal_POST['sign_up'])){
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html"); ?>
+include("head.html");
+?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <script type="text/javascript" src="js/skills.js"></script>

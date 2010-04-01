@@ -1,10 +1,11 @@
-<?php ob_start();
+<?php
 //
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
 
+ob_start();
 include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
@@ -142,7 +143,8 @@ if( isset( $_POST['Delete']) ){
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html"); ?>
+include("head.html");
+?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 

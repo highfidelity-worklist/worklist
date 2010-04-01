@@ -1,8 +1,10 @@
-<?php ob_start();
+<?php
 //
-//  Copyright (c) 2009, LoveMachine Inc.
+//  Copyright (c) 2009-2010, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
+
+ob_start();
 include("config.php");
 include("class.session_handler.php");
 // Database Connection Establishment String
@@ -13,7 +15,9 @@ mysql_select_db(DB_NAME);
 
 include("functions.php");
 
-include("head.html");?>
+include("head.html");
+?>
+
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/feedback.css" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
@@ -30,8 +34,10 @@ include("head.html");?>
 </head>
 
 <body>
-<?php require_once('feedback.inc') ?>
-<?php include("format.php"); ?>
+<?php
+	require_once('feedback.inc');
+	include("format.php");
+?>
 
 
 

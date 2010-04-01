@@ -1,4 +1,4 @@
-<?php ob_start(); 
+<?php
 //  vim:ts=4:et
 //
 //  Copyright (c) 2010, LoveMachine Inc.
@@ -6,6 +6,7 @@
 //  http://www.lovemachineinc.com
 //
 
+ob_start();
 include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
@@ -21,7 +22,8 @@ $sfilter = !empty( $_POST['sfilter'] ) ? $_POST['sfilter'] : 'PAID';
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html"); ?>
+include("head.html");
+?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">

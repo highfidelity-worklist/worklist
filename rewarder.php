@@ -1,4 +1,4 @@
-<?php ob_start(); 
+<?php
 //  vim:ts=4:et
 //
 //  Copyright (c) 2010, LoveMachine Inc.
@@ -6,6 +6,7 @@
 //  http://www.lovemachineinc.com
 //
 
+ob_start();
 include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
@@ -41,7 +42,8 @@ if ($audit_mode) {
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html"); ?>
+include("head.html");
+?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 

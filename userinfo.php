@@ -75,7 +75,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="copyright" content="Copyright (c) 2009, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com ">
+	<meta name="copyright" content="Copyright (c) 2009-2010, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com ">
 	<link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
 	<link type="text/css" href="css/worklist.css" rel="stylesheet" />
 	<link type="text/css" href="css/userinfo.css" rel="stylesheet" />

@@ -1,8 +1,10 @@
-<?php ob_start();
-//  Copyright (c) 2009, LoveMachine Inc.
+<?php
+//  Copyright (c) 2009-2010, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 //
+
+ob_start();
 include("config.php");
 include("class.session_handler.php");
 if (!empty($_SESSION['username'])) {
