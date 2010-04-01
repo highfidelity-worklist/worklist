@@ -108,6 +108,7 @@ var user_id = <?php echo($user_id); ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
 var documentsArray = new Array();
+var ping_who = '';
 
 function reply(id) {
 	var commentForm = $('.commentform');
@@ -369,13 +370,12 @@ function reply(id) {
 		$('#send-ping-btn').click(function()	{
 			var msg = $('#ping-msg').val();
 			var mail = 0;
-			if( $('#send-mail:checked').val() )
-				mail = 1;
+			if( $('#send-mail:checked').val() ) mail = 1;
 			
 			$.ajax({
 				type: "POST",
 				url: 'pingtask.php',
-				data: 'id=' + <?php echo $worklist_id; ?> + '&msg=' + msg + '&mail=' + mail,
+				data: 'id=' + <?php echo $worklist_id; ?> + '&who=' + ping_who  + '&msg=' + msg + '&mail=' + mail,
 				dataType: 'json',
 				success: function() {}
 			});
@@ -385,9 +385,16 @@ function reply(id) {
 		});
 
 		$('#ping-btn').click(function()	{
+            ping_who = 'mechanic';
 			$('#popup-pingtask').dialog('open');
 			return false;
 		});
+
+        $('#ping-r-btn').click(function() {
+            ping_who = 'runner';
+            $('#popup-pingtask').dialog('open');
+            return false;
+        });
 		
 		// applies the same size as the thinnest to all comments the show'em
 		var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
@@ -473,10 +480,16 @@ if ($action =="edit"):  ?>
 				<!-- Edit: Key People info box -->
 						<li>
 							<div id="creatorBox"><span class="creatorName">Creator</span><?php echo $worklist['creator_nickname'];?></div>
-							<div id="runnerBox"><span class="runnerName">Runner</span><?php echo $runner_nickname;?></div>
-							<?php								
+							<div id="runnerBox"><span class="runnerName">Runner</span>
+                            <?php
+                                if( $runner_nickname != '' ) echo '<span id="ping-r-btn" title="Ping Runner">'.$runner_nickname.'</span>';
+                                else echo $runner_nickname;?></div>
+                                <?php
 								$mech = '';							
-								if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
+								if( count($fees) >0 ) {
+                                    foreach( $fees as $fe )
+                                        if( $fe['desc'] == 'Accepted Bid' ) $mech = $fe['nickname'];
+                                }
 								if($mech==''){$mech='Not assigned';}
 								else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
 								echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>'.$mech.'</div>';
@@ -550,7 +563,10 @@ if ($action =="edit"):  ?>
 				<!-- View: Key People info -->
 					<li>
 							<div id="creatorBox"><span class="creatorName">Creator</span><?php echo $worklist['creator_nickname'];?></div>
-							<div id="runnerBox"><span class="runnerName">Runner</span><?php echo $runner_nickname;?></div>
+							<div id="runnerBox"><span class="runnerName">Runner</span>
+                            <?php
+                                if( $runner_nickname != '' ) echo '<span id="ping-r-btn" title="Ping Runner">'.$runner_nickname.'</span>';
+                                else echo $runner_nickname; ?></div>
 							<?php								
 								$mech = '';							
 								if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
