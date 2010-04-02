@@ -8,7 +8,7 @@ error_reporting(-1);
 
 ob_start();
 
-require_once('../config.php');
+require_once(dirname(dirname(__FILE__)).'/config.php');
 
 $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
 if (!$con) {
