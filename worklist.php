@@ -155,7 +155,6 @@ include("head.html"); ?>
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
     var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
-
     function AppendPagination(page, cPages, table)    {
 	// support for moving rows between pages
 	if(table == 'worklist')	{
@@ -349,6 +348,12 @@ include("head.html"); ?>
 			data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
 			dataType: 'json',
 			success: function(json) {
+				if (json[0] == "redirect") {
+					$("#query").val('');
+					workitem = json[1];
+					PopulatePopup(100);
+					return false;
+				}
 				$("#loader_img").css("display","none");
 				page = json[0][1]|0;
 				var cPages = json[0][2]|0;

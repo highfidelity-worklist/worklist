@@ -12,6 +12,20 @@ include("config.php");
 include("class.session_handler.php");
 
 error_reporting(-1);
+// Test for a string containing 0 characters of anything other than 0-9 and #
+// After a quick trim ofcourse! :)
+// I knowww regex is usually the bad first stop, but there would be no back tracking in this
+// particular regular expression
+if (preg_match("/^\#\d+$/",$query = trim($_REQUEST['query']))) {
+	// if we reach here, include workitem package
+	include_once("workitem.class.php");
+	$workitem = new Workitem();
+	if ($workitem->idExists($id = ltrim($query,"#"))) {
+		$obj = array('redirect',$id);
+		die(JSON_encode($obj));
+	}
+	// if we're not dead continue on!
+}
 $limit = 30;
 $page = isset($_REQUEST['page'])?$_REQUEST['page']:1;
 
