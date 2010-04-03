@@ -31,14 +31,14 @@ if( $who == 'mechanic' ) {
     // Get mechanic Nickname & email
     $receiver_id = $item['mechanic_id'];
     $receiver = getUserById( $receiver_id );
-    $receiver_nick = $reciever->nickname;
+    $receiver_nick = $receiver->nickname;
     $receiver_email = $receiver->username;
 } else if( $who == 'runner' ) {
     // Get runner Nickname & email
     $receiver_id = $item['runner_id'];
     $receiver = getUserById( $receiver_id );
     $receiver_nick = $receiver->nickname;
-    $receiver_email = $reciever->username;
+    $receiver_email = $receiver->username;
 }
 
 // Compose journal message
