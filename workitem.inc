@@ -295,11 +295,13 @@ function reply(id) {
 			['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 			['span', '#info-notes', 'json.notes', 'eval'] ],
 		      function(json) {
-<?php if ($is_runner || $user_id == $workitem->getRunnerId()) { ?>
-            $('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
+<?php if ($is_runner || $user_id == $runner_id) { ?>
+				if($('#accept_bid').length == 0) {
+			  		$('#popup-bid-info form').append('<input id="accept_bid" type="submit" name="accept_bid" value="Accept">');
+				}
 <?php } ?>
-			if( is_runner==1 || (json.bidder_id == "<?php echo $user_id ?>"))
-			      $('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
+			if( (is_runner==1 || (json.bidder_id == '<?php echo $user_id ?>')) && $('#withdraw_bid').length == 0)
+			      $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 		      });
 
 	    $('#popup-bid-info').dialog('open');
