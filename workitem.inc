@@ -431,7 +431,7 @@ function reply(id) {
 			</div>
 			<div class="info-summ-big">
 				<div class="info-ID">
-					<span class="info-label">#</span> <?php echo $worklist['id'];?>
+					<span class="info-label">#</span><?php echo $worklist['id'];?>
 				</div>
 				<span class="info-summ-big-text"><?php echo $worklist['summary'];?></span>
 			</div>
