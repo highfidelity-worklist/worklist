@@ -131,12 +131,23 @@ function reply(id) {
 	  altTimeField: '',
 	  time24h: false
 	});
+	$('#done_by_edit').datepicker({
+	  duration: '',
+	  showTime: true,
+	  constrainInput: false,
+	  stepMinutes: 1,
+	  stepHours: 1,
+	  altTimeField: '',
+	  time24h: false
+	});
 
 	$('#popup-bid').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
+	$('#popup-edit-bid-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
 	$('#popup-confirmation').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
 	
 	// If the bid info popup is set to modal clipboard won't work!
-	$('#popup-bid-info').dialog({ autoOpen: false, modal: false});
+	$('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 450});
+	$('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: false,width: 500});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 	$('#message').dialog({ autoOpen: true});
@@ -283,7 +294,7 @@ function reply(id) {
 	    var match = $(this).attr('class').match(/biditem-\d+/);
 	    var bid_id = match[0].substr(8);
 	    $('#popup-bid-info form input[type="submit"]').remove();
-
+		$('#popup-bid-info form input[type="button"]').remove();
 	    AjaxPopup('#popup-bid-info',
 		      'Bid Info',
 		      'getbiditem.php',
@@ -300,14 +311,19 @@ function reply(id) {
 			  		$('#popup-bid-info form').append('<input id="accept_bid" type="submit" name="accept_bid" value="Accept">');
 				}
 <?php } ?>
+			if((json.bidder_id == '<?php echo $user_id ?>')){
+			<?php if(!$workitem->hasAcceptedBids()){?>
+			      $('#popup-bid-info form').append('<input type="button" name="edit" id="edit" value="Edit" onClick="return ConfirmEditBid()"  style="padding-left:20px;padding-right:20px;">');
+				 <?php
+				 }
+				 ?>
+				 }
 			if( (is_runner==1 || (json.bidder_id == '<?php echo $user_id ?>')) && $('#withdraw_bid').length == 0)
-			      $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
+				  $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 		      });
-
 	    $('#popup-bid-info').dialog('open');
 	  });
 <?php } ?>
-
         $('#bid').click(function(e){
             if (   already_bid
                 && $(this).parent().find('#mechanic_id').val() == '<?php echo $user_id ?>'
@@ -316,7 +332,6 @@ function reply(id) {
                 return false;
             }
         });
-
   });
 
     function ResetPopup() {
@@ -326,7 +341,21 @@ function reply(id) {
 		$('.popup-body form select option[index=0]').attr('selected', 'selected');
 		$('.popup-body form textarea').val('');
     }
-
+	function ConfirmEditBid(){
+		var bid_id = $("input[name$='bid_id']").val();
+		if (confirm("Do you want to Edit Bid?")) {
+		$('#popup-bid-info').dialog('close');
+	    AjaxPopup('#popup-edit-bid-info',
+		      'Edit Bid',
+		      'getbiditem.php',
+		      bid_id,
+		      [ ['input', 'bid_id', 'keyId', 'eval'],
+			['input', 'bid_amount', 'json.bid_amount', 'eval'],
+			['input', 'done_by_edit', 'json.done_by', 'eval'],
+			['textarea', 'notes', 'json.notes', 'eval'] ]);
+	    $('#popup-edit-bid-info').dialog('open');
+		}
+	}
   function showConfirmForm(i) {
       $('#popup-confirmation-type').val(i);
       $('#popup-confirmation').dialog('open');
@@ -345,6 +374,12 @@ function reply(id) {
   
   function showPlaceBidForm() {
       $('#popup-bid').dialog('open');
+
+
+
+
+
+
       return false;
   }
 
@@ -362,7 +397,18 @@ function reply(id) {
     return false;
   }
   
-  
+ function AcceptMultipleBidOpen(){
+		var job_id = workitem_id;
+		$.ajax({
+			type: 'POST',
+			url: 'getmultiplebidlist.php',
+			data: "job_id=" + job_id,
+			success:function(response) {
+			 $('#popup-multiple-bid-info').html(response);
+			}
+			});		
+	$('#popup-multiple-bid-info').dialog('open');
+  }
 
 	$(function()	{
 			   
@@ -658,7 +704,7 @@ if ($action =="edit"):  ?>
 									<td><?php echo $bid['nickname'];?></td>
 									<td>$ <?php echo $bid['bid_amount'];?></td>
 									<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
-								</tr>
+										</tr>
 								<?php endforeach;?>
 							<?php endif;?>
 							</tbody>
@@ -667,10 +713,12 @@ if ($action =="edit"):  ?>
 						<?php 	if ($worklist['status'] == 'BIDDING'): ?>
 						<div class="buttonContainer">
 							<input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');"/>
-						</div>
+					<?php if(!empty($bids)&& ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 &&!$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")):?>
+							<input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
+					<?php endif;?>
+					</div>
 						<?php 	endif; ?>
 						<?php endif;?>
-
 				<!-- End of div bid-panel -->
 
 					</div>
@@ -744,6 +792,9 @@ if ($action =="edit"):  ?>
 		<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong><?php echo $message; ?></p>
 	</div>
 	<?php endif;?>
+	
+	<?php include('popup-edit-bid-info.inc') ?>
+	
 	<?php include("popup-place-bid.inc"); ?>
 	<!-- Popup HTML for adding a fee -->
 	<?php include("popup-addfee.inc"); ?>
@@ -753,6 +804,8 @@ if ($action =="edit"):  ?>
 	<?php require_once('popup-pingtask.inc') ?>
 	<!-- Popup for bid info-->
 	<?php require_once('popup-bid-info.inc') ?>
+		<!-- Popup for multipleBid info-->
+	<?php require_once('popup-multiple-bid-info.inc') ?>
 	<!-- Popup for confirmation info-->
 	<?php require_once('popup-confirmation.inc') ?>
 	<?php include("footer.php"); ?>

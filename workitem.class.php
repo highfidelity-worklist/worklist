@@ -254,7 +254,7 @@ WHERE id = ' . (int)$id;
     public function getBids($worklist_id)
     {
         $query = "SELECT bids.`id`, bids.`bidder_id`, `email`, u.`nickname`, bids.`bid_amount`,
-				TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
+		bids.`notes`,TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
 				TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
 				DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`
 				FROM `".BIDS. "` as bids
@@ -301,7 +301,14 @@ WHERE id = ' . (int)$id;
 
         return mysql_query($query) ? mysql_insert_id() : null;
     }
-
+    public function updateBid($bid_id,$bid_amount, $done_by, $timezone, $notes)
+    {
+       if($bid_id > 0){
+	    $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."',`bid_done` = FROM_UNIXTIME('".strtotime($done_by." ".$timezone)."'),`notes` = '".$notes."' WHERE id = '".$bid_id."'";
+       mysql_query($query);
+	   }
+	   return $bid_id;
+    }
     public function getUserDetails($mechanic_id)
     {
         $query = "SELECT nickname, username FROM ".USERS." WHERE id='{$mechanic_id}'";
@@ -386,9 +393,9 @@ WHERE id = ' . (int)$id;
     public function acceptBid($bid_id)
     {
         $this->conditionalLoadByBidId($bid_id);
-        if ($this->hasAcceptedBids()) {
+        /*if ($this->hasAcceptedBids()) {
             throw new Exception('Can not accept an already accepted bid.');
-        }
+        }*/
         $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
         $bid_info = mysql_fetch_assoc($res);
 

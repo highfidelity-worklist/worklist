@@ -1004,6 +1004,7 @@ include("head.html"); ?>
     <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
 <?php if (empty($_SESSION['is_runner'])) { ?> <input type="submit"
     id="view" name="view" value="View" disabled="disabled" /> <?php } ?>
+</p>
 </div>
 
 <br style="clear: both;" />
@@ -1051,3 +1052,4 @@ include("head.html"); ?>
     </tbody>
 </table>
 <?php include("footer.php"); ?>
+

@@ -67,6 +67,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "add_fee";
 }else if(isset($_POST['accept_bid'])) {
     $action = "accept_bid";
+}else if(isset($_POST['accept_multiple_bid'])) {
+    $action = "accept_multiple_bid";
 }else if(isset($_POST['status-switch'])) {
     $action = "status-switch";
 }else if (isset($_POST['newcomment'])) {
@@ -237,8 +239,53 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
     $redirectToDefaultView = true;
 }
+// Edit Bid
+if (isset($_SESSION['userid']) && $action =="edit_bid"){
+    $args = array('bid_id','bid_amount','done_by', 'notes');
+    foreach ($args as $arg) {
+        $$arg = mysql_real_escape_string($_POST[$arg]);
+    }
+    if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
+    $summary = getWorkItemSummary($worklist_id);
 
+    $bid_id = $workitem->updateBid($bid_id,$bid_amount,$done_by,$_SESSION['timezone'],$notes);
 
+    // Journal notification
+    $journal_message = "Bid updated on item #$worklist_id: $summary. with ".number_format($bid_amount,2)." ";
+
+    //sending email to the runner of worklist item
+    $row = $workitem->getRunnerSummary($worklist_id);
+    if(!empty($row)) {
+	$id = $row['id'];
+        $summary = $row['summary'];
+        $username = $row['username'];
+    }
+
+    // notify runner of new bid
+    workitemNotify(array('type' => 'bid_updated',
+			 'workitem' => $workitem,
+			 'recipients' => array('runner')),
+		    array('done_by' => $done_by,
+			  'bid_amount' => $bid_amount,
+			  'notes' => $notes,
+			  'bid_id' => $bid_id));
+
+    $runner = new User();
+    $runner->findUserById($workitem->getRunnerId());
+    try {
+        $config = Zend_Registry::get('config')->get('sms', array());
+        if ($config instanceof Zend_Config) {
+            $config = $config->toArray();
+        }
+        $smsMessage = new Sms_Message($runner, 'Bid updated', $journal_message);
+        Sms::send($smsMessage, $config);
+    } catch (Sms_Backend_Exception $e) {
+    }
+
+//    sl_notify_sms_by_id($workitem->getOwnerId(), 'Bid placed', $journal_message);
+
+    $redirectToDefaultView = true;
+}
 // Request submitted from Add Fee popup
 if (isset($_SESSION['userid']) && $action == "add_fee") {
     $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
@@ -319,7 +366,40 @@ if ($action=='accept_bid'){
 		}
 	}
 }
-
+// Accept Multiple  bid
+if ($action=='accept_multiple_bid'){
+    $bid_id = $_REQUEST['chkMultipleBid'];
+	if(count($bid_id) > 0){
+	//only runners can accept bids
+	if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+			foreach($bid_id as $bid){
+				$bids = (array) $workitem->getBids($workitem -> getId());
+				$exists = false;
+				foreach ($bids as $array) {
+					if ($array['id'] == $bid) {
+						$exists = true;
+						break;
+					}
+				}
+				if ($exists) {
+					$bid_info = $workitem->acceptBid($bid);
+					// Journal notification
+			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . ". Status set to WORKING.<br>";
+					// mail notification
+					workitemNotify(array('type' => 'bid_accepted',
+								 'workitem' => $workitem,
+								 'recipients' => array('mechanic')));
+				}
+				else {
+					$_SESSION['workitem_error'] = "Failed to accept bid, bid has been withdrawn!";
+				}
+			}
+			// Send email to not accepted bidders
+			sendMailToDiscardedBids($worklist_id);
+			$redirectToDefaultView = true;
+		}
+	}
+}
 //Withdraw a bid
 if (isset($_SESSION['userid']) && $action == "withdraw_bid") {
     if (isset($_REQUEST['bid_id'])) {
@@ -438,6 +518,7 @@ function changeStatus($workitem,$newStatus, $user){
     }
 }
 
+
 function workitemNotify($options, $data = null){
 
 	$recipients = $options['recipients'];
@@ -492,7 +573,21 @@ function workitemNotify($options, $data = null){
 		  $body .=  $urlacceptbid;
 
 	    break;
+	    case 'bid_updated':
 
+		  $subject = 'Bid Updated: ' . $itemTitle;
+		  $body =  'Bid Updated for ' . $itemLink . '<br>'
+			 . 'Details of the bid:<br>'
+			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
+			 . 'Done By: ' . $data['done_by'] . '<br>'
+			 . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
+			 . 'Notes: ' . $data['notes'] . '<br>';
+
+		  $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
+		  $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
+		  $body .=  $urlacceptbid;
+
+	    break;
 	    case 'modified':
 
 		  $subject = "Item modified: ".$itemTitle;
