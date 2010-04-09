@@ -83,19 +83,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="copyright" content="Copyright (c) 2009-2010, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com ">
-	<link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
-	<link type="text/css" href="css/worklist.css" rel="stylesheet" />
-	<link type="text/css" href="css/userinfo.css" rel="stylesheet" />
-	<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
-    <script type="text/javascript" src="js/userstats.js"></script>
-</head>
-
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="copyright" content="Copyright (c) 2009-2010, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com" />
+        <link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
+        <link type="text/css" href="css/worklist.css" rel="stylesheet" />
+        <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
+        <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+        <script type="text/javascript" src="js/userstats.js"></script>
+        <title>User info</title>
+    </head>
+<body>
 <?php include('userinfo.inc'); ?>
-<?php require_once('popup-pingtask.inc') ?> 
+<?php require_once('popup-pingtask.inc') ?>
+
 <script type="text/javascript">
 
   var userId = <?php echo $userId; ?>;
@@ -104,6 +106,14 @@
   var showTabs = <?php echo $is_runner; ?>;
 
   $(document).ready(function(){
+
+
+    if(showTabs){
+        $("#tabs").tabs();
+        $(".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *")
+        .removeClass("ui-corner-all ui-corner-top")
+        .addClass("ui-corner-bottom");
+    } 
 
     $('#popup-pingtask').dialog({ autoOpen: false, width: 400});
 
@@ -243,3 +253,5 @@
     });
 
 </script>
+</body>
+</html>

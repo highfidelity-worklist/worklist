@@ -25,7 +25,7 @@
                         <th>Job #</th><th>Summary</th><th>Creator</th><th>Runner</th><th>Date</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody><tr><td></td></tr>
                 </tbody>
             </table>
         </div>
@@ -37,7 +37,7 @@
                         <th>Job #</th><th>Summary</th><th>Creator</th><th>Runner</th><th>Date</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody><tr><td></td></tr>
                 </tbody>
             </table>
         </div>
@@ -49,7 +49,7 @@
                         <th>From</th><th>Why</th><th>When</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody><tr><td></td></tr>
                 </tbody>
             </table>
         </div>

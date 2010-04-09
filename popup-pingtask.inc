@@ -4,8 +4,8 @@
 
 		<h5>Ping about the task progress.</h5>
 		<input type="text" id="ping-msg" name="ping-msg"></input>
-		<input type="checkbox" id="send-mail" name="send_mail" checked="true">Also send email.</input>
-		<input type="submit" id="send-ping-btn" value="Send ping" style="float:right;"></input>
+		<input type="checkbox" id="send-mail" name="send_mail" checked="checked" />Also send email.
+		<input type="submit" id="send-ping-btn" value="Send ping" style="float:right;" />
 		
 	</form>
 </div>
