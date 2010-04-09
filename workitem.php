@@ -63,6 +63,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "save_workitem";
 }else if(isset($_POST['place_bid'])) {
     $action = "place_bid";
+}else if(isset($_POST['edit_bid'])) {
+    $action = "edit_bid";
 }else if(isset($_POST['add_fee'])) {
     $action = "add_fee";
 }else if(isset($_POST['accept_bid'])) {
@@ -241,18 +243,16 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 }
 // Edit Bid
 if (isset($_SESSION['userid']) && $action =="edit_bid"){
-    $args = array('bid_id','bid_amount','done_by', 'notes');
+    $args = array('bid_id','bid_amount','done_by_edit', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
     if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
     $summary = getWorkItemSummary($worklist_id);
-
-    $bid_id = $workitem->updateBid($bid_id,$bid_amount,$done_by,$_SESSION['timezone'],$notes);
+    $bid_id = $workitem->updateBid($bid_id,$bid_amount,$done_by_edit,$_SESSION['timezone'],$notes);
 
     // Journal notification
     $journal_message = "Bid updated on item #$worklist_id: $summary. with ".number_format($bid_amount,2)." ";
-
     //sending email to the runner of worklist item
     $row = $workitem->getRunnerSummary($worklist_id);
     if(!empty($row)) {
@@ -260,12 +260,11 @@ if (isset($_SESSION['userid']) && $action =="edit_bid"){
         $summary = $row['summary'];
         $username = $row['username'];
     }
-
     // notify runner of new bid
     workitemNotify(array('type' => 'bid_updated',
 			 'workitem' => $workitem,
 			 'recipients' => array('runner')),
-		    array('done_by' => $done_by,
+		    array('done_by' => $done_by_edit,
 			  'bid_amount' => $bid_amount,
 			  'notes' => $notes,
 			  'bid_id' => $bid_id));
@@ -284,7 +283,7 @@ if (isset($_SESSION['userid']) && $action =="edit_bid"){
 
 //    sl_notify_sms_by_id($workitem->getOwnerId(), 'Bid placed', $journal_message);
 
-    $redirectToDefaultView = true;
+  $redirectToDefaultView = true;
 }
 // Request submitted from Add Fee popup
 if (isset($_SESSION['userid']) && $action == "add_fee") {
