@@ -47,5 +47,5 @@ if ($amount > 0) {
     postRequest(JOURNAL_API_URL, $data);
 }
 
-$json = json_encode(number_format($giver->getBudget(), 2));
+$json = json_encode(number_format($receiver->getBudget(), 2));
 echo $json;

@@ -2,6 +2,7 @@ body {
     background-color: white;
     background-image: none;
 }
+
 .user-info p{
     font-size: 1.3em;
     margin: 4px 0 0;
@@ -9,19 +10,10 @@ body {
 
 #unixusername, #projects{
     width: 200px;
-} 
-
-.left-column, .right-column{
-    width: 300px;
-    float: left;
-}
-.left-column {
-    margin-right: 10px;
 }
 
 #reward-link {
   float: right;
-  margin-right: 3em;
 }
 
 #quick-reward {
@@ -45,3 +37,63 @@ body {
 #quick-reward .points {
     font-weight: bold;
 }
+
+.big-text{
+    font-size: 1.6em;
+}
+p.small-text{
+    font-size: 1.1em;
+}
+
+#user-stats {
+    position: absolute;
+    left: 20em;
+    top: 2em;
+}
+
+#user-stats tbody tr td {
+    text-align: center;
+    font-weight: bold;
+}
+#user-stats tbody tr:hover{
+    background-color: white;
+}
+div.left-column, div.right-column {
+    float: left;
+    width:45%;
+}
+
+#admin-left, #admin-middle, #admin-right {
+    float: left;
+    width: 230px;
+}
+
+#admin-left, #admin-middle{
+    border-right: solid 2px #ccc;
+}
+#admin-middle, #admin-right{
+    margin-left: 0.5em;
+}
+#admin-middle {
+    width: 230px;
+}
+p.bottom {
+    position: absolute;
+    bottom: 40px;
+}
+
+#loading{
+    position: absolute;
+    top: 6em;
+}
+
+#tabs {
+    margin-top: 1em;
+}
+#tabs { height: 280px; } 
+.tabs-bottom { position: relative; } 
+.tabs-bottom .ui-tabs-panel { height: 220px; overflow: auto; } 
+.tabs-bottom .ui-tabs-nav { position: absolute !important; left: 0; bottom: 0; right:0; padding: 0 0.2em 0.2em 0; } 
+.tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
+.ui-tabs-selected { margin-top: -3px !important; }
+

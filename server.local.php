@@ -20,6 +20,7 @@ define("JOURNAL_API_URL", "https://dev.sendlove.us/journal/add.php");
 define("JOURNAL_API_USER", "api_work@dev.sendlove.us");
 define("JOURNAL_API_PWD", "journalpwd");
 
+define("SENDLOVE_API_URL", "https://dev.sendlove.us/~leonty/sendlove/api.php");
 
 define("AJAX_REFRESH", 300);
 

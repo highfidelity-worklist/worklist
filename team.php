@@ -30,10 +30,8 @@ include("head.html");
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <link href="css/thickbox.css" rel="stylesheet" type="text/css" >
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-<link type="text/css" href="css/fancybox/jquery.fancybox-1.3.1.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/jquery.fancybox-1.3.1.pack.js"></script>
 <script type="text/javascript" src="js/jquery.easing-1.3.pack.js"></script>
 
 <script type="text/javascript">
@@ -110,7 +108,7 @@ include("head.html");
            autoOpen: false,
            modal: true,
            height: 500,
-           width: 700
+           width: 800
        });
   });
 
@@ -157,13 +155,6 @@ include("head.html");
 			var userid = match[0].substr(9);
 			showUserInfo(userid);
 			return false;
-		});
-
-		$('a.fancylink').fancybox({
-			'hideOnContentClick': true,
-			'width': 650,
-			'height': 400,
-
 		});
 
 	    if(cPages > 1){ //showing pagination only if we have more than one page
@@ -219,7 +210,7 @@ include("head.html");
 	}else{
 	    is_runner = 'No';
 	}
-        row += '<td >' + '<a class="fancylink iframe" href="userinfo.php?id=' + json.id + '"></a>  ' + is_runner + '</td>';
+    row += '<td >' + is_runner + '</td>';
 	row += '<td >' + json.created_count + '</td>';
 	row += '<td >' + json.mechanic_count + '</td>';
 	row += '<td >$' + json.budget + '</td>';
