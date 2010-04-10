@@ -9,20 +9,22 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 
 
-ob_start();
-
 include("config.php");
 include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 include_once("update_status.php");
 include_once("workitem.class.php");
+include('worklist_filter.php');
 
 if(!isset($_SESSION['sfilter']))
 $_SESSION['sfilter'] = 'BIDDING';
 
 if(!isset($_SESSION['ufilter']))
 $_SESSION['ufilter'] = 'ALL';
+
+$ofilter = $WorklistFilter->getOfilter();
+$dfilter = $WorklistFilter->getDfilter();
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -142,6 +144,8 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/feedback.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript">
+	var affectedHeader = false;
+	var directions = {"UP":"images/arrow-up.png","DN":"images/arrow-down.png"};
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
     var lastId;
     var page = <?php echo $page ?>;
@@ -151,10 +155,14 @@ include("head.html"); ?>
     var workitem = 0;
     var cur_user = false;
     var workitems;
+	var dirDiv;
+	var dirImg;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
     var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
+	var direction = '<?php echo $dfilter ?>';
+	var order = '<?php echo $ofilter ?>';
     function AppendPagination(page, cPages, table)    {
 	// support for moving rows between pages
 	if(table == 'worklist')	{
@@ -340,12 +348,21 @@ include("head.html"); ?>
             $("#edit, #view").attr('disabled', 'disabled');
         }
     }
+	function orderBy(option) {
+		if (option == order) direction = ((direction == 'up')? 'dn':'up');
+		else {
+			order = option;
+			direction = 'up';
+		}
+		GetWorklist(1,false);
+	}
     function GetWorklist(npage, update) {
+		$("#loader_img").css("display","block");
 		$.ajax({
 			type: "POST",
 			url: 'getworklist.php',
 			cache: false,
-			data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
+			data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ofilter='+order+'&dfilter='+direction+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
 			dataType: 'json',
 			success: function(json) {
 				if (json[0] == "redirect") {
@@ -354,7 +371,16 @@ include("head.html"); ?>
 					PopulatePopup(100);
 					return false;
 				}
+				
 				$("#loader_img").css("display","none");
+				if (affectedHeader) {
+					affectedHeader.append(dirDiv);
+					dirImg.attr('src',directions[direction.toUpperCase()]);
+					dirDiv.css('display','block');
+				} else {
+					dirDiv.css('display','none');
+				}
+				affectedHeader = false;
 				page = json[0][1]|0;
 				var cPages = json[0][2]|0;
 
@@ -789,7 +815,21 @@ include("head.html"); ?>
 
 //end of code for fees table
 
-    $(document).ready(function()	{
+    $(document).ready(function() {
+		dirDiv = $("#direction");
+		dirImg = $("#direction img");
+		hdr = $(".table-hdng");
+		if (order != 'priority') {
+			hdr.children().each(function() {
+				if ($(this).text().toLowerCase() == unescape(order.toLowerCase())) {
+					affectedHeader = $(this);
+				}
+			});
+		}
+		hdr.children().click(function() {
+			affectedHeader = $(this);
+			orderBy($(this).text().toLowerCase());
+		});
 
 		$('#popup-edit').dialog({ autoOpen: false, maxWidth: 600, width: 400 });
 		$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
@@ -895,12 +935,15 @@ include("head.html"); ?>
 		$("#search_reset").click(function(e){
 			e.preventDefault();
 			$("#query").val('');
+			affectedHeader = false;
+			order = 'null';
+			direction = 'up';
 			GetWorklist(1,false);
 			return false;
 		});
 
 		$("#searchForm").submit(function(){
-			$("#loader_img").css("display","block");
+			//$("#loader_img").css("display","block");
 			GetWorklist(1,false);
 			return false;
 		});
@@ -1051,5 +1094,6 @@ include("head.html"); ?>
     <tbody>
     </tbody>
 </table>
+<span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
 <?php include("footer.php"); ?>
 

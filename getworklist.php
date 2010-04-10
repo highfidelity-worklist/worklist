@@ -10,7 +10,9 @@
 
 include("config.php");
 include("class.session_handler.php");
+include('worklist_filter.php');
 
+ob_start();
 error_reporting(-1);
 // Test for a string containing 0 characters of anything other than 0-9 and #
 // After a quick trim ofcourse! :)
@@ -31,21 +33,22 @@ $page = isset($_REQUEST['page'])?$_REQUEST['page']:1;
 
 $sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST['sfilter'] : '';
 $ufilter = isset($_REQUEST['ufilter'])? $_REQUEST['ufilter'] : 0;
+$ofilter = isset($_REQUEST['ofilter'])? $_REQUEST['ofilter'] : 'priority';
+$dfilter = isset($_REQUEST['dfilter'])? $_REQUEST['dfilter'] : 'UP';
 
 $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
 
-require_once 'lib/Worklist/Filter.php';
-$WorklistFilter = new Worklist_Filter(array(
-    Worklist_Filter::CONFIG_COOKIE_EXPIRY => (60 * 60 * 24 * 30),
-    Worklist_Filter::CONFIG_COOKIE_PATH   => '/' . APP_BASE
-));
 $WorklistFilter->setSfilter($sfilter)
                ->setUfilter($ufilter)
+			   ->setOfilter($ofilter)
+			   ->setDfilter($dfilter)
                ->saveFilters();
 
 
-$sfilter = $sfilter ? explode("/",$sfilter) : array();
-$ufilter = intval($ufilter);
+$sfilter = $WorklistFilter->getSfilter() ? explode("/",$WorklistFilter->getSfilter()) : array();
+$ufilter = intval($WorklistFilter->getUfilter());
+$ofilter = $WorklistFilter->getOfilterConverted();
+$dfilter = $WorklistFilter->getDfilterConverted();
 
 $where = '';
 $unpaid_join = '';
@@ -173,9 +176,9 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 	      TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
 	      `total_fees`,`bid_amount`,`creator_id`,
 	      (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."`
-	       WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0)) as bid_count,
+	       WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) LIMIT 1) as bid_count,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
-           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1)) as bid_done";
+           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done";
 
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
@@ -187,7 +190,7 @@ $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           $where";
 
-$qorder = "ORDER BY `".WORKLIST."`.`priority` ASC LIMIT " . ($page-1)*$limit . ",$limit";
+$qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
 
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {
@@ -201,10 +204,10 @@ $worklist = array(array($items, $page, $cPages));
 
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
-for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
-{
+echo mysql_error();
+while ($row=mysql_fetch_assoc($rtQuery)) {
 
-    $worklist[$i] = array(
+    $worklist[] = array(
          0 => $row['id'],
          1 => $row['summary'],
          2 => $row['status'],
@@ -216,8 +219,11 @@ for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
          8 => $row['bid_amount'],
          9 => $row['creator_id'],
         10 => $row['bid_count'],
-        11 => $row['bid_done']);
+        11 => $row['bid_done']
+	);
 }
 
 $json = json_encode($worklist);
 echo $json;
+ob_end_flush();
+?>
