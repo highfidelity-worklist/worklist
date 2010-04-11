@@ -8,7 +8,7 @@
  * @version $Id$
  */
 require_once 'lib/Workitem/Exception.php';
-require_once 'twitter.class.php';
+//require_once 'twitter.class.php';
 /**
  * Workitem
  *
@@ -161,7 +161,7 @@ WHERE id = ' . (int)$id;
         if (empty($this->origStatus)) {
             $this->origStatus = $status;
         }
-        if($status == 'BIDDING') {
+        /*if($status == 'BIDDING') {
         	//Get the Twitter config
         	$config = Zend_Registry::get('config')->get('twitter', array());
         	if ($config instanceof Zend_Config) {
@@ -183,7 +183,7 @@ WHERE id = ' . (int)$id;
         	//Set the twitter status for a new job
         	$twitter = new Twitter();
         	$twitter->setStatus('New job: ' . $summary . ' ' . $link, $config);
-        }
+        }*/
         $this->status = $status;
         return $this;
     }
