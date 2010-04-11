@@ -35,7 +35,7 @@ class Fee
         $user_id = 0;
         $amount = 0;
         $points = 0;
-        $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid` FROM `".FEES."` WHERE `id`=$fee_id";
+        $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid`, `expense`, `rewarder` FROM `".FEES."` WHERE `id`=$fee_id";
         $rt = mysql_query($query);
         if ($rt && ($row = mysql_fetch_assoc($rt))) {
             $query = "UPDATE `".FEES."` SET `user_paid`=$user_paid, `notes`='$paid_notes', `paid`=$paid, paid_date = NOW() WHERE `id`=$fee_id";
@@ -43,8 +43,12 @@ class Fee
 
             /* Add rewarder points and log */
             if ($rt) {
-                /* Don't do anything if there is no real change. */
-                if ($paid != $row['paid']) {
+                /* Don't do update reward point or budget:
+                 *  1) for expenses,
+                 *  2) for rewarder payments,
+                 *  3) there is no real change.
+                 */
+                if (!$row['expense'] && !$row['rewarder'] && $paid != $row['paid']) {
                     $user_id = $row['user_id'];
                     $worklist_id = $row['worklist_id'];
                     $amount = $row['amount'];
