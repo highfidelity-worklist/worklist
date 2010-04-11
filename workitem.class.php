@@ -8,6 +8,7 @@
  * @version $Id$
  */
 require_once 'lib/Workitem/Exception.php';
+require_once 'twitter.class.php';
 /**
  * Workitem
  *
@@ -159,6 +160,29 @@ WHERE id = ' . (int)$id;
     {
         if (empty($this->origStatus)) {
             $this->origStatus = $status;
+        }
+        if($status == 'BIDDING') {
+        	//Get the Twitter config
+        	$config = Zend_Registry::get('config')->get('twitter', array());
+        	if ($config instanceof Zend_Config) {
+        		$config = $config->toArray();
+        	}
+        	if (empty($_SERVER['HTTPS']))
+        	{
+        		$prefix	= 'http://';
+            	$port	= ((int)$_SERVER['SERVER_PORT'] == 80) ? '' :  ":{$_SERVER['SERVER_PORT']}";
+        	}
+        	else
+        	{
+            	$prefix	= 'https://';
+            	$port	= ((int)$_SERVER['SERVER_PORT'] == 443) ? '' :  ":{$_SERVER['SERVER_PORT']}";
+        	}
+        	$link = $prefix . $_SERVER['HTTP_HOST'] . $port . '/rw/?' . $this->id;
+        	$summary_max_length = 140-strlen('New job: ')-strlen($link)-1;
+        	$summary = substr($this->summary, 0, $summary_max_length);
+        	//Set the twitter status for a new job
+        	$twitter = new Twitter();
+        	$twitter->setStatus('New job: ' . $summary . ' ' . $link, $config);
         }
         $this->status = $status;
         return $this;

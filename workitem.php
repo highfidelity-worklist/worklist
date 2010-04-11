@@ -49,6 +49,9 @@ if(empty($worklist_id)) {
     return;
 }
 
+//Set an empty variable for $journal_message to avoid errors/warnings with .=
+$journal_message = null;
+
 //initialize the workitem class
 $workitem = new WorkItem();
 $workitem->loadById($worklist_id);

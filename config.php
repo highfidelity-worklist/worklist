@@ -131,6 +131,10 @@ $config = array(
         'clickatellApiId'       => CLICKATELL_API_ID,
         'clickatellUsername'    => CLICKATELL_USERNAME,
         'clickatellPassword'    => CLICKATELL_PASSWORD
+    ),
+    'twitter' => array(
+    	'twitterUsername'		=> 'sendlovetest',
+    	'twitterPassword'		=> 'sendlove'
     )
 );
 // New config object, allows additional merging

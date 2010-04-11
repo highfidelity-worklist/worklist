@@ -143,7 +143,6 @@ class Sms_Backend_Clickatell implements Sms_Backend
         } elseif (substr_count($response, 'ERR') > 0) {
             throw new Sms_Backend_Exception($response);
         }
-
         return true;
     }
 

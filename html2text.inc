@@ -29,7 +29,8 @@ class Html2Text {
     var $iHtmlText;
     var $iMaxColumns;
     var $iHtmlParser;
-
+    var $iInText;
+    
     // Constants
 
     var $TOKEN_BR       = 0;
