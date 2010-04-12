@@ -163,6 +163,7 @@ include("head.html"); ?>
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
 	var direction = '<?php echo $dfilter ?>';
 	var order = '<?php echo $ofilter ?>';
+	var resetOrder = false;
     function AppendPagination(page, cPages, table)    {
 	// support for moving rows between pages
 	if(table == 'worklist')	{
@@ -378,7 +379,10 @@ include("head.html"); ?>
 					dirImg.attr('src',directions[direction.toUpperCase()]);
 					dirDiv.css('display','block');
 				} else {
-					dirDiv.css('display','none');
+					if (resetOrder) {
+						dirDiv.css('display','none');
+						resetOrder = false;
+					}
 				}
 				affectedHeader = false;
 				page = json[0][1]|0;
@@ -936,6 +940,7 @@ include("head.html"); ?>
 			e.preventDefault();
 			$("#query").val('');
 			affectedHeader = false;
+			resetOrder = true;
 			order = 'null';
 			direction = 'up';
 			GetWorklist(1,false);
