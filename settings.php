@@ -71,11 +71,13 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
 
     // Strip out any html tags
     $about = mysql_real_escape_string(strip_tags($_POST['about']));
+    $rewarder_limit_day = mysql_real_escape_string(strip_tags($_POST['rewarder_limit_day']));
 
     $sql = "UPDATE `".USERS."` SET `nickname`='$nickname', `about`='$about', `contactway`='$contactway', `payway`='$payway',".
-                  "`skills`='$skills', `paypal`=$paypal, `paypal_email`='$paypal_email', `is_uscitizen`=$uscitizen, `timezone`='$timezone' ".
+                  "`skills`='$skills', `paypal`=$paypal, `paypal_email`='$paypal_email', `is_uscitizen`=$uscitizen, `rewarder_limit_day` = $rewarder_limit_day, `timezone`='$timezone' ".
                   ($phone_sql?", ${phone_sql}":'');
     $sql .= " WHERE id = '${_SESSION['userid']}'";
+
     mysql_unbuffered_query($sql);
 
     $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
@@ -277,6 +279,7 @@ include("head.html");
                 <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo $userInfo['paypal_email']; ?>" />
                 </label>
                 </div>
+		
                 <script type="text/javascript">
                 var paypal = new LiveValidation('paypal', {validMessage: "Valid email address."});
                 paypal.add( Validate.Email );
@@ -345,6 +348,12 @@ include("head.html");
 }
 ?>
 	      </select>
+	      </p>
+	    </div>
+	    <div class="LVspace">
+	      <p>
+		<label for="rewarder_limit_day">Auto-populate Rewarder with people you've worked with in the last n days </label> <br />
+		  <input type="text" id="rewarder_limit_day" name="rewarder_limit_day" class="text-field" size="5" value="<?php echo $userInfo['rewarder_limit_day']; ?>" />
 	      </p>
 	    </div>
 

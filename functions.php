@@ -141,6 +141,29 @@ function GetRewarderUserList($userid) {
 
     return $rewarderList;
 }
+/* 
+* Populate the rewarder team automatically. It's based on who added a fee to a task you worked on in the last 30 days.
+*
+*
+*/
+ function PopulateRewarderTeam($user_id, $worklist_id = '') {
+
+   $where = !empty($worklist_id) ?  " f.worklist_id = $worklist_id  " : "  f.worklist_id IN (SELECT DISTINCT  f1.worklist_id FROM " . FEES . " f1 WHERE f1.user_id = $user_id and f1.rewarder = 0) ";
+   $rewarder_limit_day = GetPopulateRewarderLimit($user_id);
+   $rewarder_limit_day = $rewarder_limit_day == 0 ? 30 : $rewarder_limit_day; 
+   $where .= " AND f.paid_date BETWEEN  (NOW() - INTERVAL $rewarder_limit_day day) AND NOW() " ;
+   $sql = "INSERT INTO " . REWARDER . " (giver_id,receiver_id,rewarder_points) SELECT DISTINCT $user_id, u.id, 0 FROM " . USERS . " u INNER JOIN " . FEES . " f ON (f.user_id = u.id) WHERE  $where AND NOT EXISTS (SELECT 1 FROM " . REWARDER . " rd WHERE rd.giver_id = $user_id) AND u.id <> $user_id ";
+   mysql_query($sql); 
+ }
+
+ function GetPopulateRewarderLimit($user_id) {
+    $sql = "SELECT rewarder_limit_day FROM ". USERS . " WHERE id= $user_id ";
+    $rt = mysql_query($sql);
+    if($row = mysql_fetch_assoc($rt)) {
+      return $row['rewarder_limit_day'];
+    }
+    return 0;
+ }
 
 /*  Function: GetUserList
  *

@@ -18,7 +18,9 @@ if (!isset($_SESSION['userid'])) {
 
 $user = new User();
 $user->findUserById($_SESSION['userid']);
-
+if($_SESSION['userid'] >  0) {
+  PopulateRewarderTeam($_SESSION['userid']);
+}
 $rewarderList = GetRewarderUserList($_SESSION['userid']);
 $json = json_encode(array($user->getRewarder_points(), $rewarderList));
 echo $json;

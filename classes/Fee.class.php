@@ -74,6 +74,8 @@ class Fee
                     if ($runner_id != 0) {
                         mysql_unbuffered_query("UPDATE `".USERS."` SET `budget`=`budget`-$amount WHERE `id`=$runner_id");
                     }
+		            //  Auto populate rewarder with team members of this task
+		            PopulateRewarderTeam($user_id, $worklist_id);    
                 }
             } else {
                 return false;
