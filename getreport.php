@@ -9,7 +9,7 @@ include("config.php");
 include("class.session_handler.php");
 include("functions.php");
 
-if (empty($_SESSION['userid']) || (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']))) {
+if (empty($_SESSION['userid'])) {
     return;
 }
 
@@ -106,15 +106,23 @@ if ($rtCount) {
 $cPages = ceil($items/$limit);
 //echo "$qsel $qbody";
 
-$qSumClose = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit ) fee_sum ";
-$sumResult = mysql_query("$qsum $qbody $qSumClose");
+$qPageSumClose = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit ) fee_sum ";
+$sumResult = mysql_query("$qsum $qbody $qPageSumClose");
 if ($sumResult) {
     $get_row = mysql_fetch_row($sumResult);
     $pageSum = $get_row[0];
 } else {
     $pageSum = 0;
 }
-$report = array(array($items, $page, $cPages,$pageSum));
+$qGrandSumClose = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC ) fee_sum ";
+$grandSumResult = mysql_query("$qsum $qbody $qGrandSumClose");
+if ($grandSumResult) {
+    $get_row = mysql_fetch_row($grandSumResult);
+    $grandSum = $get_row[0];
+} else {
+    $grandSum = 0;
+}
+$report = array(array($items, $page, $cPages,$pageSum,$grandSum));
 
 
 // Construct json for history

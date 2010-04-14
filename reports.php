@@ -15,7 +15,7 @@ include_once("send_email.php");
 include_once("classes/Fee.class.php");
 
 /* This page is only accessible to runners. */
-if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer'])) {
+if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']) && isset($_POST['paid'])) {
     header("location:worklist.php");
     return;
 }
@@ -188,14 +188,20 @@ var getPaidItems = function() {
     }
 
     /**
-     * Appends the Page total to the bottom of table
+     * Appends the Page , Grand totals to the bottom of table
      *
     */
-    function AppendPageTotal(pageTotal) {
+    function AppendTotals(pageTotal, grandTotal) {
         row =  '<tr class="row-worklist-live rowodd">'+
-                '   <td colspan="6" align="center">Page Total </td>' +
+                '   <td colspan="6" align="right">Page Total </td>' +
                 '   <td align="center">'+ '$' + pageTotal +'</td>' +
                 '</tr>';
+        $('.table-worklist tbody').append(row);
+        row =  '<tr class="row-worklist-live rowodd">'+
+                '   <td colspan="6" align="right">Grand Total </td>' +
+                '   <td align="center">'+ '$' + grandTotal +'</td>' +
+                '</tr>';
+
         $('.table-worklist tbody').append(row);
     }
 
@@ -238,7 +244,7 @@ var getPaidItems = function() {
                     odd = !odd;
                 }
                 AppendPagination(page, cPages, 'worklist');
-                AppendPageTotal(json[0][3]|0.00);
+                AppendTotals(json[0][3]|0.00 ,json[0][4]|0.00);
                 $('.table-worklist .workitem-paid').click(function(e){
                     $('#amtpaid').show();
                     if ($(this).attr('checked')) {
