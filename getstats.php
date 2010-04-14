@@ -16,6 +16,14 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		$count_w = mysql_num_rows( $query_w );
 		echo "<a href='javascript:ShowStats()' class='iToolTip jobsBidding' id='stats'>". $count_b. " jobs bidding, ". $count_w. " jobs underway</a>";
 		
+	}	else if( $req == 'bidding' )	{
+		$query_b = mysql_query("SELECT id FROM ".WORKLIST." WHERE status = 'bidding'");
+		$results_b = array();
+        while ($row = mysql_fetch_array($query_b, MYSQL_NUM)) {
+    		$results_b[] = $row[0];
+        }
+		echo json_encode( $results_b );
+
 	}	else if( $req == 'current' )	{
 		$query_b = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'bidding'");
 		$query_w = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'working'");

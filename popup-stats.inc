@@ -9,7 +9,21 @@
 		<p class = "info-label" id="lbl-fees">Average fees/job: <span id="span-fees"></span></p>
 		</div>
 		
-		<div style="float:left; width:49%">
+		<div style="float:left; width:22%;margin-right:2%">
+			<p class="info-label"><br/>Top Viewed Bidding Jobs<br/></p>
+			<table width="100%" class="table-visited-list">
+			<thead>
+				<tr class="table-hdng" >
+				<td>Job Id</td>
+				<td>Visits</td>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+			</table>
+		</div>
+
+		<div style="float:left; width:37%">
 			<p class="info-label"><br/>Fees added in the last 30 days<br/></p>
 			<table width="100%" class="table-fees-list">
 			<thead>
@@ -24,7 +38,7 @@
 			</table>
 		</div>
 
-		<div style="float:right; width:49%">
+		<div style="float:right; width:37%">
 			<p class="info-label"><br/>Fees added in the last 7 days<br/></p>
 			<table width="100%" class="table-fees-list7">
 			<thead>

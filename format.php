@@ -74,8 +74,10 @@
 			$('.fee7row').remove();
 			$('.fee30row').remove();
 			$('.pastrow').remove();
+			$('.visitrow').remove();
 
 			// Set loading text and image
+			$('.table-visited-list').append("<tr class='visitrow'><td style='text-align:center; vertical-align:middle;' colspan='2'><img src='images/loader.gif'></img></td></tr>");
 			$('.table-fees-list').append("<tr class='fee30row'><td style='text-align:center; vertical-align:middle;' colspan='7'><img src='images/loader.gif'></img></td></tr>");
 			$('.table-fees-list7').append("<tr class='fee7row'><td style='text-align:center; vertical-align:middle;' colspan='7'><img src='images/loader.gif'></img></td></tr>");
 			$('.table-runners').append("<tr class='runrow'><td style='text-align:center; vertical-align:middle;' colspan='3'><img src='images/loader.gif'></td></tr>");
@@ -84,6 +86,54 @@
 			$('.table-past-due').append("<tr class='pastrow'><td style='text-align:center;  vertical-align:middle;' colspan='2'><img src='images/loader.gif'></td></tr>");
 
 			// From here on we load all the data
+			$.ajax({
+				type: "GET",
+				url: 'visitQuery.php',
+				data: 'jobid=0',
+				dataType: 'json',
+				success: function(json) {
+				    $.bidvisits = {};
+					$.bidvisits.visits = json;
+					$.bidvisits.count = json.length;
+                    if ($.bidvisits.count > 0) {
+    					$.ajax({
+    						type: "POST",
+    						url: 'getstats.php',
+    						data: 'req=bidding',
+    						dataType: 'json',
+    						success: function(json) {
+    						    $.bidvisits.jobs = json;
+            					var bidcount = 0;
+            					var otherTotal = 0;
+            					for ( var i = 0; i < $.bidvisits.count; i++) {
+            					    var current = $.bidvisits.visits[i];
+            						var job = current.job;
+            						if($.inArray(job, $.bidvisits.jobs) != -1) {
+            						    bidcount++
+                						if (bidcount <= 10) {
+                    						var href = current.url;
+                    						var visitCount = current.visits;
+                    						var row = '<tr class="row"><td><a href="' + href + '">#' + job + '</a></td>';
+                    						row += '<td>' + visitCount + '</td></tr>';
+                    						$('.table-visited-list').append(row);
+                						} else {
+                						    otherTotal += parseInt(current.visits);
+                						}
+            						}
+            					}
+        						if (bidcount > 10) {
+            						var row = '<tr class="row"><td>Other</td>';
+            						row += '<td>' + otherTotal + '</td></tr>';
+            						$('.table-visited-list').append(row);
+        						}
+    						}
+    					});
+                    }
+				},
+				complete: function() {
+				    $('.visitrow').remove();
+				}
+			});
 
 			// Load the bids and works labels
 			$.ajax({

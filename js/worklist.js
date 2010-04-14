@@ -278,4 +278,25 @@ $(function() {
 	});
 });
 
-
+/* get analytics info for this page */
+$(function() {
+    $.analytics = $('#analytics');
+    if($.analytics) {
+        var jobid=$.analytics.attr('data');
+        $.ajax({
+            url: 'visitQuery.php?jobid='+jobid,
+            dataType: 'json',
+            success: function(json) {
+                if(parseInt(json.visits)+parseInt(json.views) == 0)
+                {
+                    $.analytics.hide();
+                    return;
+                }
+                var p = $('<p>').html('Page views');
+                p.append($('<span>').html(' Unique: ' + json.visits))
+                p.append($('<span>').html(' Total: ' + json.views));
+                $.analytics.append(p);
+            },
+        });
+    }
+});

@@ -104,8 +104,8 @@ include("head.html"); ?>
 	<div class="clear"></div>
 </script>
 <script type="text/javascript">
-var user_id = <?php echo($user_id); ?>;
-var workitem_id = <?php echo $worklist['id'];?> ;
+var user_id = '<?php echo($user_id); ?>';
+var workitem_id = '<?php echo $worklist['id'];?>';
 var imageArray = new Array();
 var documentsArray = new Array();
 var ping_who = '';
@@ -159,7 +159,7 @@ function reply(id) {
 	var already_bid = <?php echo $currentUserHasBid ;?>;
 	var is_runner = <?php echo $is_runner;?>;
     var has_budget = <?php echo $has_budget;?>;
-	var user_id = <?php echo($user_id); ?>;
+	var user_id = '<?php echo($user_id); ?>';
 
 	(function($) {
 		$.ajax({
@@ -472,6 +472,7 @@ function reply(id) {
 		<div style="clear:both; float:none;"> </div>
 		</div>
 		<div id="page-content">
+            <div id="analytics" data="<?php echo $worklist['id']; ?>"></div>
 			<div style="margin:0px 101px 6px 0px;line-height:50px;float:right;display:inline-block;">
 				<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
 			</div>

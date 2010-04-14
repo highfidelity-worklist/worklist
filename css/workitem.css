@@ -405,4 +405,24 @@
 	width:418px;
 }
 
--->
+/* style analytics info */
+#analytics {
+    position:absolute;
+    left:14px;
+    width:85px;
+    background:#FFFFDD url(../images/analytics-bg.gif) 100% 0 repeat-y;
+    margin-left:-85px;
+    color:#FFF;
+    line-height:1.4;
+}
+#analytics p {
+    font-size:0.9em;
+    padding:10px;
+    margin:0;
+    font-weight:bold;
+    text-align:right;
+}
+#analytics span {
+    display:block;
+    font-weight:normal;
+}
