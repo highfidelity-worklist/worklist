@@ -154,16 +154,6 @@ include("head.html");
         <form action="" name="signup" method="post">
 	   <!-- Column containing left part of the fields -->
 	   <div class="left-col">
-            <div class="LVspace">
-	      <p>
-		<label for = "nickname">Nickname</label><br />
-		<input type="text" id="nickname" name="nickname" class="text-field" size="35" value = "<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
-	      </p>
-	    </div>
-            <script type="text/javascript">
-	      var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});                                    
-	      nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
-	    </script>
 
             <div class="LVspace">
 	      <p>
@@ -176,21 +166,6 @@ include("head.html");
 	      username.add( Validate.Email );
 	      username.add(Validate.Length, { minimum: 10, maximum: 50 } );
 	    </script>
-
-<?php include("sms-inc.php"); ?>
-
-            <div class="LVspacelg" style="height:88px">
-            <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo !empty($_POST['paypal']) ? 'checked':''; ?> /><label>&nbsp;Paypal is available in my country</label><br/><br/>
-            <label>Paypal Email<br />
-            <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />   
-            </label>
-            </div>
-            <script type="text/javascript">
-            var username = new LiveValidation('username', {validMessage: "Valid email address."});
-            username.add( Validate.Email );
-            username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-            </script>
-
             <div class="LVspace"><p>
             <label>Password *<br />
             <input type="password" id="password" name="password" class="text-field" size="35" />
@@ -210,6 +185,30 @@ include("head.html");
                  var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
                  confirmpassword.add(Validate.Confirmation, { match: 'password'} ); 
             </script>
+            <div class="LVspace">
+	      <p>
+		<label for = "nickname">Nickname</label><br />
+		<input type="text" id="nickname" name="nickname" class="text-field" size="35" value = "<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
+	      </p>
+	    </div>
+            <script type="text/javascript">
+	      var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});                                    
+	      nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
+	    </script>
+<?php include("sms-inc.php"); ?>
+
+            <div class="LVspacelg" style="height:88px">
+            <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo !empty($_POST['paypal']) ? 'checked':''; ?> /><label>&nbsp;Paypal is available in my country</label><br/><br/>
+            <label>Paypal Email<br />
+            <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />   
+            </label>
+            </div>
+            <script type="text/javascript">
+            var username = new LiveValidation('username', {validMessage: "Valid email address."});
+            username.add( Validate.Email );
+            username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+            </script>
+
 
 	   </div><!-- end of left-col div -->
 	   <div class="right-col">
