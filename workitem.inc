@@ -42,6 +42,8 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/jquery.tallest.js"></script>
+<script type="text/javascript" src="js/userstats.js"></script>
+<script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/html" id="uploadedFiles">
 <div id="accordion">
 	<h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
@@ -110,6 +112,10 @@ var imageArray = new Array();
 var documentsArray = new Array();
 var ping_who = '';
 
+// this user Id is used in popup info for user stats
+var userId = 0;
+worklistUrl = '<?php echo SERVER_URL; ?>';
+
 function reply(id) {
 	var commentForm = $('.commentform');
 	var clone = commentForm.clone();
@@ -146,7 +152,7 @@ function reply(id) {
 	$('#popup-confirmation').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
 	
 	// If the bid info popup is set to modal clipboard won't work!
-	$('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 450});
+	$('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400});
 	$('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: false,width: 500});
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
@@ -159,6 +165,7 @@ function reply(id) {
 	var already_bid = <?php echo $currentUserHasBid ;?>;
 	var is_runner = <?php echo $is_runner;?>;
     var has_budget = <?php echo $has_budget;?>;
+	var user_id = <?php echo $user_id; ?>;
 	var user_id = <?php echo($user_id); ?>;
 
 	(function($) {
@@ -319,39 +326,64 @@ function reply(id) {
 	    $('#withdraw .fee_id').val(fee_id);
 	    $('#withdraw').submit();
 	});
+
 	  $('tr.row-bidlist-live').click(function(){
-	    var match = $(this).attr('class').match(/biditem-\d+/);
-	    var bid_id = match[0].substr(8);
-	    $('#popup-bid-info form input[type="submit"]').remove();
-		$('#popup-bid-info form input[type="button"]').remove();
-	    AjaxPopup('#popup-bid-info',
-		      'Bid Info',
-		      'getbiditem.php',
-		      bid_id,
-		      [ ['input', 'bid_id', 'keyId', 'eval'],
-			['input', 'info-email2', 'json.email', 'eval'],
-			['span', '#info-email', 'json.email', 'eval'],
-			['span', '#info-bid-amount', 'json.bid_amount', 'eval'],
-			['span', '#info-bid-done-by', 'json.done_by', 'eval'],
-			['span', '#info-notes', 'json.notes', 'eval'] ],
-		      function(json) {
+
+        $.metadata.setType("elem", "script")
+        var bidData = $(this).metadata();
+
+        // row has bid data attached so user is a bidder or a runner
+        // - see table creation routine
+        if(bidData.id){
+            $('#popup-bid-info form input[type="submit"]').remove();
+            $('#popup-bid-info form input[type="button"]').remove();
+
+            $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
+            $('#popup-bid-info #info-email').text(bidData.email);
+            $('#popup-bid-info #info-bid-amount').text(bidData.amount);
+            $('#popup-bid-info #info-bid-done-by').text(bidData.done_by);
+            $('#popup-bid-info #info-notes').text(bidData.notes);
+
 <?php if ($is_runner || $user_id == $runner_id) { ?>
-				if($('#accept_bid').length == 0) {
-			  		$('#popup-bid-info form').append('<input id="accept_bid" type="submit" name="accept_bid" value="Accept">');
-				}
+                if($('#accept_bid').length == 0) {
+                    $('#popup-bid-info form').append('<input id="accept_bid" type="submit" name="accept_bid" value="Accept">');
+                }
 <?php } ?>
-			if((json.bidder_id == '<?php echo $user_id ?>')){
-			<?php if(!$workitem->hasAcceptedBids()){?>
-			      $('#popup-bid-info form').append('<input type="button" name="edit" id="edit" value="Edit" onClick="return ConfirmEditBid()"  style="padding-left:20px;padding-right:20px;">');
-				 <?php
-				 }
-				 ?>
-				 }
-			if( (is_runner==1 || (json.bidder_id == '<?php echo $user_id ?>')) && $('#withdraw_bid').length == 0)
-				  $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
-		      });
-	    $('#popup-bid-info').dialog('open');
-	  });
+
+            if((bidData.bidder_id == user_id)){
+<?php if(!$workitem->hasAcceptedBids()){?>
+                $('#popup-bid-info form').append('<input type="button" name="edit" id="edit" value="Edit" onClick="return ConfirmEditBid()"  style="padding-left:20px;padding-right:20px;">');
+<?php } ?>
+            }
+
+
+            if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid').length == 0){
+                  $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
+            }
+
+            // we need this userId for user stats popups functions
+            userId = bidData.bidder_id;
+
+            // filling and appending user stats table
+            $('.loader').show();
+            $.getJSON('getuserstats.php', {id: bidData.bidder_id, statstype: 'counts'}, function(json) {
+
+                // filling the table from json stats
+                $('#total-jobs').html(json.total_jobs);
+                $('#active-jobs').html(json.active_jobs);
+                $('#total-earnings').html(json.total_earnings);
+                $('#latest-earnings').html(json.latest_earnings);
+                $('#love').html(json.love);
+                $('.loader').hide();
+            });
+
+            $('#popup-bid-info').dialog('open');
+
+        }
+
+	});
+
+
 <?php } ?>
         $('#bid').click(function(e){
             if (   already_bid
@@ -371,7 +403,8 @@ function reply(id) {
 		$('.popup-body form textarea').val('');
     }
 	function ConfirmEditBid(){
-		var bid_id = $("input[name$='bid_id']").val();
+        var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
+
 		if (confirm("Do you want to Edit Bid?")) {
 		$('#popup-bid-info').dialog('close');
 	    AjaxPopup('#popup-edit-bid-info',
@@ -723,19 +756,26 @@ if ($action =="edit"):  ?>
 								</tr>
 							</thead>
 							<tbody>
-							<?php if(empty($bids)): ?>
+							<?php if(empty($bids)){ ?>
 								<tr>
 									<td style="text-align: center;" colspan="4">No bids yet.</td>
 								</tr>
-							<?php else: $row = 1;
-								foreach($bids as $bid): ?>
-								<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?> <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?>">
+							<?php }else{ $row = 1;
+								foreach($bids as $bid){ ?>
+								<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?>
+                                    <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?><?php
+                                        // store bid info into jquery metadata so we won't have to fetch it again on user click
+                                        if($is_runner || $user_id == $bid['bidder_id']){
+                                            $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
+                                        }
+                                    ?>">
+                                        <script type="data"><?php echo "{id: {$bid['id']}, email: '{$bid['email']}', amount: '{$bid['bid_amount']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
 									<td><?php echo $bid['nickname'];?></td>
 									<td>$ <?php echo $bid['bid_amount'];?></td>
 									<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
 										</tr>
-								<?php endforeach;?>
-							<?php endif;?>
+								<?php } ?>
+							<?php } ?>
 							</tbody>
 						</table>
 						<?php if($user_id): ?>
@@ -843,6 +883,8 @@ if ($action =="edit"):  ?>
 	<?php require_once('popup-pingtask.inc') ?>
 	<!-- Popup for bid info-->
 	<?php require_once('popup-bid-info.inc') ?>
+    <!-- Popups for showing user statistics-->
+    <?php require_once('popups-userstats.inc') ?>
 		<!-- Popup for multipleBid info-->
 	<?php require_once('popup-multiple-bid-info.inc') ?>
 	<!-- Popup for confirmation info-->

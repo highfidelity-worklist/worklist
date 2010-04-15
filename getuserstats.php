@@ -31,4 +31,18 @@ if (isset($_REQUEST['id'])) {
     case 'activejobs':
         echo json_encode($userStats->getActiveJobs($page));
         break;
+
+    case 'latest_earnings':
+        echo json_encode($userStats->getLatestEarningsJobs(30, $page));
+        break;
+
+    case 'counts':
+        echo json_encode(array(
+                            'total_jobs' => $userStats->getTotalJobsCount(),
+                            'active_jobs' => $userStats->getActiveJobsCount(),
+                            'total_earnings' => $userStats->getTotalEarnings(),
+                            'latest_earnings' => $userStats->getLatestEarnings(30),
+                            'love' => $userStats->getLoveCount(),
+                              ));
+        break;
     }

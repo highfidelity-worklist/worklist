@@ -280,7 +280,8 @@ WHERE id = ' . (int)$id;
         $query = "SELECT bids.`id`, bids.`bidder_id`, `email`, u.`nickname`, bids.`bid_amount`,
 		bids.`notes`,TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
 				TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
-				DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`
+				DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`,
+                UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`
 				FROM `".BIDS. "` as bids
 				INNER JOIN `".USERS."` as u on (u.id = bids.bidder_id)
 				WHERE bids.worklist_id=".$worklist_id.
@@ -289,6 +290,7 @@ WHERE id = ' . (int)$id;
         if($result_query) {
             $temp_array = array();
             while($row = mysql_fetch_assoc($result_query)) {
+                $row['full_done_by'] = getUserTime($row['unix_done_by']);
                 $temp_array[] = $row;
             }
             return $temp_array;

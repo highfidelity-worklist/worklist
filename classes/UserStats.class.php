@@ -90,6 +90,57 @@ class UserStats{
         return $this->getEarningsForPeriod(strtotime("- $daysCount days"), time());
     }
 
+    // gets list of fees and jobs associated with them for the preiod
+    // start date and end date are included
+    public function getEarningsJobsForPeriod($startDate, $endDate, $page = 1){
+
+        $startDate = date("Y-m-d", $startDate);
+        $endDate = date("Y-m-d", $endDate);
+
+        $count = 0;
+        $sql = "SELECT COUNT(*) FROM `" . FEES . "` "
+                . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0
+                        AND `rewarder`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
+                        AND `user_id` = {$this->userId}";
+
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            $count = $row[0];
+        }
+
+        $sql = "SELECT `worklist_id`, `amount`, `summary`, `paid_date`,
+                    DATE_FORMAT(`paid_date`, '%m/%d/%Y') AS `paid_formatted`,
+                    `cn`.`nickname` AS `creator_nickname`, `rn`.`nickname` AS `runner_nickname`
+                        FROM `" . FEES . "`
+                        LEFT JOIN `" . WORKLIST . "` ON `worklist_id` = `worklist`.`id`
+                        LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
+                        LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
+                    WHERE `" . FEES . "`.`paid` = 1 AND `withdrawn`=0 AND `expense`=0
+                        AND `rewarder`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
+                        AND `user_id` = {$this->userId} ORDER BY `paid_date` DESC 
+                        LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
+
+        $itemsArray = array();
+        $res = mysql_query($sql);
+        if($res ){
+            while($row = mysql_fetch_assoc($res)){
+                $itemsArray[] = $row;
+            }
+            return array(
+                        'count' => $count,
+                        'pages' => ceil($count/$this->itemsPerPage),
+                        'page' => $page,
+                        'joblist' => $itemsArray);
+        }
+        return false;
+    }
+
+    // gets list of fees and jobs associated with them for a number of days back
+    // works similar to getLatestEarnings(30) - will give earnings with jobs (paid) for last 30 days
+    public function getLatestEarningsJobs($daysCount, $page = 1){
+        return $this->getEarningsJobsForPeriod(strtotime("- $daysCount days"), time(), $page);
+    }
+
     // get number of total love received by user using sendlove api
     public function getLoveCount(){
         $data = $this->sendloveApiRequest('getcount');

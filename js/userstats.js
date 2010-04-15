@@ -5,20 +5,30 @@ $(function(){
     $('#done-jobs-popup').dialog({autoOpen: false, width: 'auto'});
     $('#active-jobs-popup').dialog({autoOpen: false, width: 'auto'});
     $('#lovelist-popup').dialog({autoOpen: false, width: 'auto'});
+    $('#latest-earnings-popup').dialog({autoOpen: false, width: 'auto'});
 
     $('#total-jobs').click(function(){
         statsPage = 1;
         showTotalJobs();
+        return false;
     });
 
     $('#active-jobs').click(function(){
         statsPage = 1;
         showActiveJobs();
+        return false;
+    });
+
+    $('#latest-earnings').click(function(){
+        statsPage = 1;
+        showLatestEarnings();
+        return false;
     });
 
     $('#love').click(function(){
         statsPage = 1;
         showLove();
+        return false;
     });
 
 });
@@ -38,6 +48,15 @@ function showActiveJobs(){
                 function(json){
                     fillJobs(json, 'active', showActiveJobs);
                     $('#active-jobs-popup').dialog('open');
+                });
+}
+
+function showLatestEarnings(){
+    $.getJSON('getuserstats.php',
+                {id: userId, statstype: 'latest_earnings', page: statsPage},
+                function(json){
+                    fillEarnings(json, showLatestEarnings);
+                    $('#latest-earnings-popup').dialog('open');
                 });
 }
 
@@ -64,6 +83,28 @@ function fillJobs(json, table, func){
                     + '<td>' + jsonjob.creator_nickname + '</td>'
                     + '<td>' + jsonjob.runner_nickname + '</td>'
                     + '<td>' + jsonjob.created + '</td>'
+                    + '</tr>';
+
+        table.append(toAppend);
+    });
+    table.data('func', func);
+    AppendStatsPagination(json.page, json.pages, table);
+}
+
+function fillEarnings(json, func){
+
+    var table = $('#latest-earnings-popup table tbody');
+    $('tr', table).remove();
+    $.each(json.joblist, function(i, jsonjob){
+        var toAppend = '<tr>'
+                    + '<td><a href = "' + worklistUrl
+                    + 'workitem.php?job_id=' + jsonjob.worklist_id
+                    + '&action=view" target = "_blank">#'+ jsonjob.worklist_id + '</a></td>'
+                    + '<td>$' + jsonjob.amount + '</td>'
+                    + '<td>' + jsonjob.summary + '</td>'
+                    + '<td>' + jsonjob.creator_nickname + '</td>'
+                    + '<td>' + jsonjob.runner_nickname + '</td>'
+                    + '<td>' + jsonjob.paid_formatted + '</td>'
                     + '</tr>';
 
         table.append(toAppend);
@@ -121,6 +162,7 @@ function AppendStatsPagination(page, cPages, table){
         statsPage = $(this).data('page');
         var func = table.data('func');
         func();
+        return false;
     });
 }
 

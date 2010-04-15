@@ -427,6 +427,29 @@
     font-weight:normal;
 }
 
+/* bid info popup (accepting, withdrawing bids)*/
+.block{
+    display: block;
+}
+#popup-bid-info #left-column, #popup-bid-info #right-column{
+    float: left;
+    margin-bottom: 15px;
+}
+#popup-bid-info #left-column{
+    margin-right: 10px;
+}
+
+#popup-bid-info #user-stats{
+    margin-top: 10px;
+    width: 370px;
+}
+#popup-bid-info #user-stats td{
+    text-align: center;
+}
+.loader{
+    display: none;
+}
+
 /* journalChat styles */
 #journalChat {
     height:15em;
