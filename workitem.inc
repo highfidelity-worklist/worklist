@@ -104,8 +104,8 @@ include("head.html"); ?>
 	<div class="clear"></div>
 </script>
 <script type="text/javascript">
-var user_id = '<?php echo($user_id); ?>';
-var workitem_id = '<?php echo $worklist['id'];?>';
+var user_id = <?php echo($user_id); ?>;
+var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
 var documentsArray = new Array();
 var ping_who = '';
@@ -159,9 +159,38 @@ function reply(id) {
 	var already_bid = <?php echo $currentUserHasBid ;?>;
 	var is_runner = <?php echo $is_runner;?>;
     var has_budget = <?php echo $has_budget;?>;
-	var user_id = '<?php echo($user_id); ?>';
+	var user_id = <?php echo($user_id); ?>;
 
 	(function($) {
+	    // journal info accordian
+	    // flag to say we've not loaded anything in there yet
+	    $.journalChat = false;
+	    $('.accordion').accordion({
+			clearStyle: true,
+			collapsible: true,
+			active: false,
+			change: function() {
+                // we only need to get this once
+			    if(!$.journalChat) {
+    			    $.ajax({
+                        // use journal's aj.php to query results on worklist id
+    			        type: 'get',
+    			        url: '<?php echo JOURNAL_QUERY_URL;?>',
+                        data: {
+                            what: 'latest', count: 50, query: <?php echo $worklist['id'];?>, filter: 'all',
+                        },
+    			        dataType: 'json',
+    			        success: function(json)
+    			        {
+        			        $('#journalChatThrobber').fadeOut();
+    			            $.journalChat = true;
+    			            $('#journalChat').hide(0).html(json.html).fadeIn();
+    			        }
+    			    });
+			    }
+			},
+		});
+		
 		$.ajax({
 			type: 'post',
 			url: 'jsonserver.php',
@@ -472,7 +501,6 @@ function reply(id) {
 		<div style="clear:both; float:none;"> </div>
 		</div>
 		<div id="page-content">
-            <div id="analytics" data="<?php echo $worklist['id']; ?>"></div>
 			<div style="margin:0px 101px 6px 0px;line-height:50px;float:right;display:inline-block;">
 				<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
 			</div>
@@ -779,6 +807,16 @@ if ($action =="edit"):  ?>
 			<!-- End of div moneyZone -->
 				</div>
 				<div id="uploadPanel"> </div>
+				<?php if(JOURNAL_EXISTS) { // include the journal dropdown if the journal setting is true ?>
+				<div id="journalPanel">
+                    <div class="accordion">
+                    	<h3><a href="#" id="loadJournalInfo">Related Journal Discussion</a></h3>
+                    	<div id="journalChat">
+                    	    <img src="images/loader.gif" id="journalChatThrobber"/>
+                    	</div>
+                    </div>
+				</div>
+				<?php } ?>
 		<!-- End of for_view-->
 			</div>
 <!-- End of div right-panel-->

@@ -426,3 +426,59 @@
     display:block;
     font-weight:normal;
 }
+
+/* journalChat styles */
+#journalChat {
+    height:15em;
+    overflow:auto;
+}
+#journalChat .entry {
+    margin-bottom:8px;
+}
+#journalChat .entry-author {
+    font-weight:bold;
+    margin-right:7px;
+}
+#journalChat h2, #journalChat div {
+    font-size:12px;
+    line-height:1.4;
+    margin:0 -5px;
+    padding:0px 5px;
+}
+#journalChat h2 {
+    padding:3px 5px 2px;
+    margin-bottom:2px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+/* color entries */
+#journalChat .entry h2 {
+	background-color:#ccc;
+	color: #444;
+}
+#journalChat .entry h2.extra {
+    background-color: #E5E5E5;
+}
+#journalChat .entry h2.other {
+    background-color: #CCC6B0;
+}
+#journalChat .entry h2.extra.other {
+    background-color: #E6DFC6;
+}
+#journalChat .entry.sendlove h2 {
+	background-color:#D24B3F;
+	color: #601710;
+}
+#journalChat .entry.svn h2 {
+	background-color:#DBDB6E;
+	color: #4F4F28;
+}
+#journalChat .entry.worklist h2 {
+	background-color:#5488D1;
+    color: #1F3C66;
+}
+#journalChat .entry.bot h2 {
+	background-color:#D98D4B;
+	color: #54371D;
+}

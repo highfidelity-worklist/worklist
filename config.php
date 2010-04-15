@@ -51,9 +51,13 @@ if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
 if (!defined('REQUIRELOGINAFTERCONFIRM')) define('REQUIRELOGINAFTERCONFIRM', 1);
 
-if (!defined('JOURNAL_API_URL'))     define('JOURNAL_API_URL', 'https://dev.sendlove.us/journal/add.php');
-if (!defined('JOURNAL_API_USER'))    define('JOURNAL_API_USER', 'api_username');
-if (!defined('JOURNAL_API_PWD'))     define('JOURNAL_API_PWD', 'api_password');
+if (!defined('JOURNAL_EXISTS'))     define('JOURNAL_EXISTS', 1);
+
+if (!defined('JOURNAL_QUERY_URL'))  define('JOURNAL_QUERY_URL', 'http://dev.sendlove.us/journal/aj.php');
+
+if (!defined('JOURNAL_API_URL'))    define('JOURNAL_API_URL', 'https://dev.sendlove.us/journal/add.php');
+if (!defined('JOURNAL_API_USER'))   define('JOURNAL_API_USER', 'api_username');
+if (!defined('JOURNAL_API_PWD'))    define('JOURNAL_API_PWD', 'api_password');
 
 if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/sendlove/api.php");
 if (!defined("SENDLOVE_API_KEY"))    define("SENDLOVE_API_KEY", "uierbycur4yt73467t6trtycff3rt");
