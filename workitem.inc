@@ -106,7 +106,7 @@ include("head.html"); ?>
 	<div class="clear"></div>
 </script>
 <script type="text/javascript">
-var user_id = <?php echo($user_id); ?>;
+var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
 var documentsArray = new Array();
@@ -165,8 +165,7 @@ function reply(id) {
 	var already_bid = <?php echo $currentUserHasBid ;?>;
 	var is_runner = <?php echo $is_runner;?>;
     var has_budget = <?php echo $has_budget;?>;
-	var user_id = <?php echo $user_id; ?>;
-	var user_id = <?php echo($user_id); ?>;
+	var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
 
 	(function($) {
 	    // journal info accordian
