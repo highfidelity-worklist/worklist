@@ -133,7 +133,12 @@ var getPaidItems = function() {
 
     function AppendPagination(page, cPages, table)
     {
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="7" style="text-align:center;">Pages : &nbsp;';
+        <?php if (!empty($_SESSION['is_payer'])) { ?>
+            cspan = '7'
+        <?php } else { ?> 
+            cspan = '6'
+        <?php } ?> 
+        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="'+cspan+'" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;';
         }
@@ -160,9 +165,11 @@ var getPaidItems = function() {
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += '">';
-        row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[5] + '" class="workitem-paid" /></td>';
-	pre = '<a href="workitem.php?job_id='+json[0]+'">';
-	post = '</a>';
+        <?php if (!empty($_SESSION['is_payer'])) { ?>
+            row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[5] + '" class="workitem-paid" /></td>';
+	    <?php } ?> 
+        pre = '<a href="workitem.php?job_id='+json[0]+'">';
+	    post = '</a>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
 	pre = '', post = '';
         row += '<td>' + pre + json[2] + post + '</td>'; // Summary
@@ -192,13 +199,18 @@ var getPaidItems = function() {
      *
     */
     function AppendTotals(pageTotal, grandTotal) {
+        <?php if (!empty($_SESSION['is_payer'])) { ?>
+            cspan = '6'
+        <?php } else { ?> 
+            cspan = '5'
+        <?php } ?> 
         row =  '<tr class="row-worklist-live rowodd">'+
-                '   <td colspan="6" align="right">Page Total </td>' +
+                '   <td colspan="'+cspan+'" align="right">Page Total </td>' +
                 '   <td align="center">'+ '$' + pageTotal +'</td>' +
                 '</tr>';
         $('.table-worklist tbody').append(row);
         row =  '<tr class="row-worklist-live rowodd">'+
-                '   <td colspan="6" align="right">Grand Total </td>' +
+                '   <td colspan="'+cspan+'" align="right">Grand Total </td>' +
                 '   <td align="center">'+ '$' + grandTotal +'</td>' +
                 '</tr>';
 
@@ -350,8 +362,6 @@ var getPaidItems = function() {
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
-
-
 <div>
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
@@ -389,7 +399,9 @@ var getPaidItems = function() {
         <table width="100%" class="table-worklist">
             <thead>
             <tr class="table-hdng">
+                <?php if (!empty($_SESSION['is_payer'])) { ?>
                 <td width="3%"><input type="checkbox" id="report-check-all" value="1" /></td>
+                <?php } ?>
                 <td width="7%">ID</td>
                 <td width="35%">Summary</td>
                 <td width="25%">Description</td>
