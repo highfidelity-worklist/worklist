@@ -137,8 +137,14 @@ $config = array(
         'clickatellPassword'    => CLICKATELL_PASSWORD
     ),
     'twitter' => array(
-    	'twitterUsername'		=> 'sendlovetest',
-    	'twitterPassword'		=> 'sendlove'
+    	array(
+    	'twitterUsername'		=> 'lovemachineinc',
+    	'twitterPassword'		=> 'martini10'
+    	),
+    	array(
+    	'twitterUsername'		=> 'cash4code',
+    	'twitterPassword'		=> 'martini10'
+    	)
     )
 );
 // New config object, allows additional merging

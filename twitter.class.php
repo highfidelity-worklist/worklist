@@ -24,22 +24,24 @@ class Twitter
     }
 
     public function setStatus($status, $config) {
-    	if(is_array($config)) {
-    		$this->username = $config['twitterUsername'];
-    		$this->password	= $config['twitterPassword'];
-    	}
 
     	$data = array();
     	$data['status'] = $status;
 
-    	$ch = curl_init('http://twitter.com/statuses/update.json');
-    	curl_setopt($ch, CURLOPT_USERPWD, $this->username . ':' . $this->password);
-    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
-    	$twitter_result_json = curl_exec($ch);
-    	curl_close($ch);
-    	$twitter_result = json_decode($twitter_result_json);
+    	foreach($config as $index => $twitter_config) {
+    		if(is_array($twitter_config)) {
+    			$this->username = $twitter_config['twitterUsername'];
+    			$this->password	= $twitter_config['twitterPassword'];
+    		}
+    		$ch = curl_init('http://twitter.com/statuses/update.json');
+    		curl_setopt($ch, CURLOPT_USERPWD, $this->username . ':' . $this->password);
+    		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
+    		$twitter_result_json = curl_exec($ch);
+    		curl_close($ch);
+    		$twitter_result = json_decode($twitter_result_json);
+    	}
     }
 }
 ?>
