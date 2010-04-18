@@ -19,7 +19,7 @@ require_once 'lib/Sms.php';
 
     $statusMapMechanic = array("SUGGESTED" => array("SKIP", "REVIEW"),
 				 "WORKING" => array("REVIEW"),
-				 "REVIEW" => array("WORKING"),
+				 "REVIEW" => array("SKIP", "WORKING"),
 				 "DONE" => array("WORKING", "REVIEW"),
 				 "SKIP" => array("REVIEW"));
 
