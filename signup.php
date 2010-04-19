@@ -15,7 +15,7 @@ include("timezones.php");
 include("countrylist.php");
 include("smslist.php");
 
-$phone = $country = $provider = "";
+$phone = $country = $provider = $authtype = "";
 $msg="";
 $to=1;
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
@@ -44,6 +44,7 @@ $fields_to_not_escape = array(
 				'confirm' => '',
 				'paypal' => '',
 				'about' => '', 
+				'openid' => ''
 			);
 // Remove html tags from about box
 if (isset($_POST['about'])) {
@@ -65,7 +66,7 @@ $minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
 
 if(isset($minimal_POST['sign_up'])){
-  if(empty($username)||empty($minimal_POST['password'])||empty($minimal_POST['confirmpassword']))
+  if(empty($username)||(($_GET['authtype'] != 'openid') && empty($minimal_POST['password']))||(($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword'])))
   {
     $msg = "Please fill all required fields.<br />";
   }
@@ -115,6 +116,14 @@ if(isset($minimal_POST['sign_up'])){
   }
 }
 
+// if we have openid authentication there are a few prefilled values
+if ($_GET['authtype'] == 'openid') {
+	$_POST['nickname'] = rawurldecode($_GET['nickname']);
+	$_POST['username'] = rawurldecode($_GET['email']);
+	$country = rawurldecode($_GET['country']);
+	$_POST['timezone'] = rawurldecode($_GET['timezone']);
+	$authtype = 'openid';
+}
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -153,8 +162,19 @@ include("head.html");
 		<?php } ?>
             
         <form action="" name="signup" method="post">
+        <?php echo(($authtype === 'openid') ? '<input type="hidden" name="openid" value="' . rawurldecode($_GET['id']) . '" />' : '');?>
 	   <!-- Column containing left part of the fields -->
 	   <div class="left-col">
+            <div class="LVspace">
+	      <p>
+		<label for = "nickname">Nickname</label><br />
+		<input type="text" id="nickname" name="nickname" class="text-field" size="35" value = "<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
+	      </p>
+	    </div>
+            <script type="text/javascript">
+	      var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});                                    
+	      nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
+	    </script>
 
             <div class="LVspace">
 	      <p>
@@ -167,6 +187,22 @@ include("head.html");
 	      username.add( Validate.Email );
 	      username.add(Validate.Length, { minimum: 10, maximum: 50 } );
 	    </script>
+
+<?php include("sms-inc.php"); ?>
+
+            <div class="LVspacelg" style="height:88px">
+            <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo !empty($_POST['paypal']) ? 'checked':''; ?> /><label>&nbsp;Paypal is available in my country</label><br/><br/>
+            <label>Paypal Email<br />
+            <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />   
+            </label>
+            </div>
+            <script type="text/javascript">
+            var username = new LiveValidation('username', {validMessage: "Valid email address."});
+            username.add( Validate.Email );
+            username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+            </script>
+
+            <?php if ($_GET['authtype'] != 'openid' ) :?>
             <div class="LVspace"><p>
             <label>Password *<br />
             <input type="password" id="password" name="password" class="text-field" size="35" />
@@ -186,31 +222,7 @@ include("head.html");
                  var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
                  confirmpassword.add(Validate.Confirmation, { match: 'password'} ); 
             </script>
-            <div class="LVspace">
-	      <p>
-		<label for = "nickname">Nickname</label><br />
-		<input type="text" id="nickname" name="nickname" class="text-field" size="35" value = "<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
-	      </p>
-	    </div>
-            <script type="text/javascript">
-	      var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});                                    
-	      nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
-	    </script>
-<?php include("sms-inc.php"); ?>
-
-            <div class="LVspacelg" style="height:88px">
-            <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo !empty($_POST['paypal']) ? 'checked':''; ?> /><label>&nbsp;Paypal is available in my country</label><br/><br/>
-            <label>Paypal Email<br />
-            <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />   
-            </label>
-            </div>
-            <script type="text/javascript">
-            var username = new LiveValidation('username', {validMessage: "Valid email address."});
-            username.add( Validate.Email );
-            username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-            </script>
-
-
+			<?php endif; ?>
 	   </div><!-- end of left-col div -->
 	   <div class="right-col">
             <div class="LVspacehg">

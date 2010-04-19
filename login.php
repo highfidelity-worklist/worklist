@@ -3,7 +3,6 @@
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 //
-
 ob_start();
 include("config.php");
 include("class.session_handler.php");
@@ -50,6 +49,8 @@ if($_POST) {
     }
 }
 
+include('openid.php');
+
 if(isset($_SESSION['username']) and isset($_SESSION['confirm_string']) and $_SESSION['username']!="") {
     $res = mysql_query("select id from ".USERS.
                        " where username = '".mysql_real_escape_string($_SESSION['username'])."' and confirm_string = '".mysql_real_escape_string($_SESSION['confirm_string'])."'");
@@ -80,7 +81,6 @@ include("head.html"); ?>
 <!-- jquery file is for LiveValidation -->
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 
-
 <title>Welcome to the Worklist</title>
 
 </head>
@@ -109,29 +109,45 @@ include("head.html"); ?>
         <? if(!empty($msg)) { ?>
             <p class="LV_invalid"><?=$msg?></p>
         <? } ?>
-        
-        <form id="login" action="" method="post" >
-                <input type="hidden" name="redir" value="<?php echo $redir ?>" />
-
-                <div class="LVspace">
-                <label>Username<br />
-                  <input type="text" id="username" name="username" class="text-field" size="40" />
-                </label>
-                <script type="text/javascript">
-                    var username = new LiveValidation('username',{ validMessage: "Valid email address.", onlyOnBlur: false });
-                        username.add(SLEmail);
-                        username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-                </script>
-                 </div>
-                
-                  <p><label>Password<br />
-                  <input type="password" id="password" name="password" class="text-field" size="40"  />
-                  </label></p>
-             
-                <p><input type="submit" id="Login" value="Login" name="Login" alt="Login"></p>
-                
-      </form>
-
+	<div class="login_left">
+		<form id="login" action="" method="post">
+			<input type="hidden" name="redir" value="<?php echo $redir ?>" />
+			<div class="LVspace">
+				<label>Username<br />
+					<input type="text" id="username" name="username" class="text-field" size="40" />
+				</label>
+				<script type="text/javascript">
+					var username = new LiveValidation('username',{ validMessage: "Valid email address.", onlyOnBlur: false });
+						username.add(SLEmail);
+						username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+				</script>
+			</div>
+			<div class="LVspace"><label>Password<br />
+				<input type="password" id="password" name="password" class="text-field" size="40"  />
+			</label></div>
+			<p><input type="submit" id="Login" value="Login" name="Login" alt="Login"></p>
+		</form>
+	</div>
+	<div class="login_right">
+		<form action="" method="post">
+			<!--<ul class="openidlist">
+				<li><a href="?authtype=google" class="google" title="Google OpenID">Sign in with a Google Account</a></li>
+				 <li><a href="?authtype=yahoo" class="yahoo" title="Yahoo OpenID">Sign in with a Yahoo Account</a></li>
+			</ul> -->
+			<div class="LVspace">
+				<label>Google Login<br />
+					<input type="text" name="google_identifier" class="text-field google" id="google_identifier" value="" size="40" />
+				</label>
+				<script type="text/javascript">
+					var openid = new LiveValidation('openid_identifier', {validMessage: 'Valid url.', onlyOnBlur: false});
+						openid.add(Validate.Format, { pattern: /((http|https)(:\/\/))?([a-zA-Z0-9]+[.]{1}){2}[a-zA-z0-9]+(\/{1}[a-zA-Z0-9]+)*\/?/i, failureMessage: "Must be a valid url!" });
+				</script>
+			</div>
+			<p>
+				<input type="submit" name="openid_action" value="Google Login" />
+			</p>
+		</form>
+	</div>
 </div>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
