@@ -29,7 +29,8 @@ if (!defined('SERVER_BASE'))    define('SERVER_BASE','http://'.SERVER_NAME.'/'.A
 //So clone the standard URL
 if (!defined('SECURE_SERVER_URL')) define('SECURE_SERVER_URL',SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 
-if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL','feedback@lovemachineinc.com');
+if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
+if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
 
 if (!defined('DB_SERVER'))      define('DB_SERVER', 'localhost');
 if (!defined('DB_USER'))        define('DB_USER', 'project_tofor');
@@ -97,8 +98,11 @@ if (!defined('CLICKATELL_PASSWORD')) define('CLICKATELL_PASSWORD', null);
  */
 
 // User features: bits in the users.features column
-define('FEATURE_SUPER_ADMIN',	0x0001);
-define('FEATURE_USER_MASK',	    0x0001);
+define('FEATURE_SUPER_ADMIN',       0x0001);
+define('FEATURE_USER_MASK',         0x0001);
+
+define('SMS_FLAG_JOURNAL_ALERTS',   0x0001);
+define('SMS_FLAG_BID_ALERTS',       0x0002);
 
 if (empty($mail_user) || !is_array($mail_user)) {
 $mail_user = array (

@@ -551,6 +551,38 @@ div.documents.filesDescription {
 	padding-left:35px;
 }
 
+h1.header {
+	padding-bottom: 0px;
+}
+
+h2.subheader {
+	margin-top: 32px;
+	padding-bottom: 0px;
+}
+
+.heading-links {
+	font-size: 12px;
+	float: right;
+	line-height: 24px;
+}
+
+.settings form {
+	padding-left: 28px;
+}
+
+.settings p {
+	margin: 20px 0;
+}
+
+.required {
+	color: #F00;
+}
+
+span.required-bullet {
+	color: #F00;
+	margin-left: -1em;
+}
+
 .clear {
 	clear: both;
 }

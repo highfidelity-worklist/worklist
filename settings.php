@@ -1,4 +1,6 @@
 <?php
+//  vim:ts=4:et
+
 //
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
@@ -13,100 +15,105 @@ include("functions.php");
 include("timezones.php");
 include("countrylist.php");
 include("smslist.php");
-
-require_once 'lib/Sms.php';
-
-$con=mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
-mysql_select_db(DB_NAME,$con);
 include_once("send_email.php");
+require_once("lib/Sms.php");
+
+$qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
+$rs = mysql_query($qry);
+if (!$rs || !($userInfo = mysql_fetch_array($rs))) {
+    session::init();
+    header("Location:login.php");
+}
+
 $msg="";
 $company="";
-$uscitizen=0;
 
+$saveArgs = array();
 $messages = array();
 $errors = 0;
 
-  $about = isset($_POST['about']) ? $_POST['about'] : "";
-  if(strlen($about) > 150){
-    $errors = 1;
-    $msg .= "Text in field can't be more than 150 characters!<br />";
-  }
-
-
-$paypal = isset($_POST['paypal']) ? intval($_POST['paypal']) : 0;
-$paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
-
-// check if phone was updated
-$phone_sql = '';
-if (isset($_POST['phone_edit']) || isset($_POST['int_code']))
-{
-	$phone_sql_parts = array();
-	$phone_keys = array('int_code', 'phone', 'country', 'smsaddr', 'provider');
-
-	foreach ($phone_keys as $phone_key) {
-		$phone_item = mysql_real_escape_string(htmlspecialchars($_POST[$phone_key]));
-		$phone_sql_parts[] = "`${phone_key}` = '${phone_item}'";
-		// Find if the country is US, if so mark the user as US citizen
-		if( $_POST['country'] == 'US' ) $uscitizen = 1;
-		else $uscitizen = 0;
-	}
-
-	$phone_sql = implode(',', $phone_sql_parts);
-}
-
-if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for now but who knows :)
-    $nickname = mysql_real_escape_string(trim($_POST['nickname']));
-
-    if ($nickname != $_SESSION['nickname']) {
-        $_SESSION['nickname'] = $_POST['nickname'];
-        $messages[] = "Your nickname is now '$nickname'.";
-
-    }
-
-    //updating user info in database
-    $args = array('nickname', 'contactway', 'payway', 'skills', 'timezone');
-    foreach ($args as $arg){
-      $$arg = mysql_real_escape_string(htmlspecialchars($_POST[$arg]));
-    }
-
-    // Strip out any html tags
-    $about = mysql_real_escape_string(strip_tags($_POST['about']));
-    $rewarder_limit_day = mysql_real_escape_string(strip_tags($_POST['rewarder_limit_day']));
-
-    $sql = "UPDATE `".USERS."` SET `nickname`='$nickname', `about`='$about', `contactway`='$contactway', `payway`='$payway',".
-                  "`skills`='$skills', `paypal`=$paypal, `paypal_email`='$paypal_email', `is_uscitizen`=$uscitizen, `rewarder_limit_day` = $rewarder_limit_day, `timezone`='$timezone' ".
-                  ($phone_sql?", ${phone_sql}":'');
-    $sql .= " WHERE id = '${_SESSION['userid']}'";
-
-    mysql_unbuffered_query($sql);
-
-    $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
-    $rs = mysql_query($qry);
-    if (!$rs || !($user_row = mysql_fetch_array($rs))) {
-        session::init();
-        header("Location:login.php");
-    }
-
-
-    if($_POST['oldpassword']!="")
+if (isset($_POST['save_account'])) {
+    // check if phone was updated
+    if (isset($_POST['phone_edit']) || isset($_POST['int_code']))
     {
-        $qry="select id from ".USERS." where username='".mysql_real_escape_string($_SESSION['username'])."' and password='".sha1(mysql_real_escape_string($_POST['oldpassword']))."'";
-        $rs=mysql_query($qry);
-        if(mysql_num_rows($rs) > 0)
-        {
-            if(($_POST['newpassword']!="")&&($_POST['newpassword']==$_POST['confirmpassword']))
-            {
-                $qry="update ".USERS." SET password='".sha1(mysql_real_escape_string($_POST['newpassword']))."' where id='".$_SESSION['userid']."'";
-                mysql_query($qry);
-                $messages[] = "Your password has been updated!";
-            } else {
-                $msg ="New passwords don't match!";
-            }
-        } else {
-            $msg ="Old password doesn't match!";
+        $saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
+
+        foreach ($saveArgs as $arg=>$esc) {
+            $$arg = ($esc ? $_POST[$arg] : intval($_POST[$arg]));
+        }
+
+        $provider = mysql_real_escape_string($_POST['provider']);
+        $saveArgs['provider'] = 0;
+        $is_uscitizen = ($_POST['country'] == 'US' ? 1 : 0);
+        $saveArgs['is_uscitizen'] = 0;
+
+        $sms_flags = 0;
+        if (!empty($_POST['journal_alerts'])) $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
+        if (!empty($_POST['bid_alerts'])) $sms_flags |= SMS_FLAG_BID_ALERTS;
+        $saveArgs['sms_flags'] = 0;
+
+        $messages[] = "Your country/phone settings have been updated.";
+    }
+
+    if (isset($_POST['nickname']) && $errors == 0) {
+        $nickname = mysql_real_escape_string(trim($_POST['nickname']));
+
+        if ($nickname != $_SESSION['nickname']) {
+            $_SESSION['nickname'] = $_POST['nickname'];
+            $saveArgs['nickname'] = 0;
+            $messages[] = "Your nickname is now '$nickname'.";
         }
     }
 
+    $rewarder_limit_day = intval($_POST['rewarder_limit_day']);
+    $saveArgs['rewarder_limit_day'] = 0;
+} else if (isset($_POST['save_personal'])) {
+    $about = isset($_POST['about']) ? strip_tags(substr($_POST['about'], 0, 150)) : "";
+    $skills = isset($_POST['skills']) ? strip_tags($_POST['skills']) : "";
+    $contactway = isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : "";
+
+    $saveArgs = array('about'=>1, 'skills'=>1, 'contactway'=>1);
+    $messages[] = "Your personal information has been updated.";
+} else if (isset($_POST['save_payment'])) {
+    $paypal = 0;
+    $paypal_email = '';
+    $payway = '';
+    if ($_POST['paytype'] == 'paypal') {
+        $paypal = 1;
+        $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
+    } else if ($_POST['paytype'] == 'other') {
+        $payway = isset($_POST['payway']) ? $_POST['payway'] : '';
+    }
+
+    $saveArgs = array('paypal'=>0, 'paypal_email'=>0, 'payway'=>1);
+    $messages[] = "Your payment information has been updated.";
+}
+
+if (!empty($saveArgs)) {
+    //updating user info in database
+    foreach ($saveArgs as $arg=>$esc){
+        if ($esc) $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+    }
+
+    $sql = "UPDATE `".USERS."` SET ";
+    foreach ($saveArgs as $arg=>$esc) {
+        if ($esc) $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+        if (is_int($$arg)) {
+            $sql .= "`$arg`=".$$arg.",";
+        } else {
+            $sql .= "`$arg`='".$$arg."',";
+        }
+    }
+    $sql = rtrim($sql, ',');
+    $sql .= " WHERE id = '${_SESSION['userid']}'";
+
+    mysql_query($sql);
+
+    $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
+    $rs = mysql_query($qry);
+    if ($rs) {
+        $userInfo = mysql_fetch_array($rs);
+    }
 
     if (!empty($messages)) {
         $to = $_SESSION['username'];
@@ -121,26 +128,8 @@ if (isset($_POST['nickname']) && $errors == 0) { //only 150 characters check for
 
         $msg="Account updated successfully!";
     }
-}
 
-$sqlView = "SELECT * FROM ".USERS." WHERE username = '".mysql_real_escape_string($_SESSION['username'])."'";
-$resView = mysql_query($sqlView);
-$userInfo = mysql_fetch_array($resView);
-
-if (!$resView || !$userInfo)
-{
-	session::init();
-	header("Location:login.php");
-} else {
-	extract($userInfo, EXTR_SKIP | EXTR_REFS); // dump values into symbol tables as references
-}
-
-if( isset( $_POST['Delete']) ){
-	$sql = "DELETE FROM `".USERS."` ".
-                "WHERE `id` ='".$_SESSION['userid']."'";
-    mysql_query($sql);
-    header("Location: logout.php");
-    exit;
+    return 'ok';
 }
 
 /*********************************** HTML layout begins here  *************************************/
@@ -159,63 +148,194 @@ include("head.html");
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript">
 <!--//
-	$(document).ready(function () {
-		var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
-		new AjaxUpload('formupload', {
-			action: 'jsonserver.php',
-			name: 'Filedata',
-			data: {
-				action: 'w9Upload',
-				userid: user
-			},
-			autoSubmit: true,
-			responseType: 'json',
-			onSubmit: function(file, extension) {
-				if (! (extension && /^(pdf)$/i.test(extension))){
-					// extension is not allowed
-					$('.uploadnotice').empty();
-					var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
-									'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-									'<strong>Error:</strong> This filetype is not allowed. Please upload a pdf file.</p>' +
-								'</div>';
-					$('.uploadnotice').append(html);
-					// cancel upload
-					return false;
-				}
-				this.disable();
-			},
-			onComplete: function(file, data) {
-				$('.uploadnotice').empty();
-		            	if (data.success) {
-					var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
-									'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
-									'<strong>Info:</strong> ' + data.message + '</p>' +
-								'</div>';
-            	} else {
-					var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
-									'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-									'<strong>Error:</strong> ' + data.message + '</p>' +
-								'</div>';
-					this.enable();
-            	}
-				$('.uploadnotice').append(html);
-			}
-		});
-		$.ajax({
-	        type: "POST",
-	        url: 'jsonserver.php',
-	        data: {
+    var nclass;
+
+    function validateLocalUpload(file, extension) {
+        nclass = '.uploadnotice-local';
+        return validateUpload(file, extension);
+    }
+    function validateW9Upload(file, extension) {
+        nclass = '.uploadnotice-w9';
+        return validateUpload(file, extension);
+    }
+    function validateUpload(file, extension) {
+        if (! (extension && /^(pdf)$/i.test(extension))){
+            // extension is not allowed
+            $(nclass).empty();
+            var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
+                            '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
+                            '<strong>Error:</strong> This filetype is not allowed. Please upload a pdf file.</p>' +
+                        '</div>';
+            $(nclass).append(html);
+            // cancel upload
+            return false;
+        }
+    }
+
+    function completeUpload(file, data) {
+        $(nclass).empty();
+        if (data.success) {
+            var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
+                            '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
+                            '<strong>Info:</strong> ' + data.message + '</p>' +
+                        '</div>';
+        } else {
+            var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
+                            '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
+                            '<strong>Error:</strong> ' + data.message + '</p>' +
+                        '</div>';
+            this.enable();
+        }
+        $(nclass).append(html);
+    }
+
+    function saveSettings(type) {
+        var values;
+
+        if (type == 'account') {
+            values = { 
+                int_code: $('#int_code').val(),
+                phone: $('#phone').val(),
+                phone_edit: $('#phone_edit').val(),
+                country: $('#country').val(),
+                smsaddr: $('#smsaddr').val(),
+                provider: $('#provider').val(),
+                journal_alerts: $('#journal_alerts').val(),
+                bid_alerts: $('#bid_alerts').val(),
+                nickname: $('#nickname').val(),
+                rewarder_limit_day: $('#rewarder_limit_day').val(),
+                save_account: 1
+            };
+        } else if (type == 'personal') {
+            values = {
+                about: $("#about").val(),
+                skills: $("#skills").val(),
+                contactway: $("#contactway").val(),
+                save_personal: 1
+            }
+        } else if (type == 'payment') {
+            values = {
+                paytype: $("#paytype").val(),
+                paypal_email: $("#paypal_email").val(),
+                payway: $("#payway").val(),
+                save_payment: 1
+            }
+        }
+
+        $('.error').text('');
+
+        $.ajax({
+            type: "POST",
+            url: 'settings.php',
+            data: values,
+            dataType: 'html',
+            success: function(json) {
+                $('#msg-'+type).text('Account settings saved!');
+            },
+			error: function(xhdr, status, err) {
+                $('#msg-'+type).text('We were unable to save your settings. Please try again.');
+            }
+        });
+    }
+
+    function smsSendTestMessage() {
+        var int_code = $('#int-code').val();
+        var phone = $('#phone').val();
+        if (int_code != '' && phone != '') {
+            $.ajax({
+                type: "POST",
+                url: 'jsonserver.php',
+                data: {
+                    action: 'sendTestSMS',
+                    phone: int_code + phone
+                },
+                dataType: 'json'
+            });
+            alert('Test SMS Sent');
+        } else {
+            alert('Please enter a valid telephone number.');
+        }
+        return false;
+    }
+
+    $(document).ready(function () {
+        var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
+
+        var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
+        paypal.add(Validate.Email);
+        paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+
+        var payway = new LiveValidation('payway');
+        payway.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+        payway.add(Validate.Format, { pattern: /^((?!Contract services, check, etc.).)*$/, failureMessage: "Can't be empty!" });
+
+        new AjaxUpload('formupload', {
+            action: 'jsonserver.php',
+            name: 'Filedata',
+            data: { action: 'w9Upload', userid: user },
+            autoSubmit: true,
+            responseType: 'json',
+            onSubmit: validateW9Upload,
+            onComplete: completeUpload
+        });
+
+        new AjaxUpload('formupload-local', {
+            action: 'jsonserver.php',
+            name: 'Filedata',
+            data: { action: 'localUpload', userid: user },
+            autoSubmit: true,
+            responseType: 'json',
+            onSubmit: validateLocalUpload,
+            onComplete: completeUpload
+        });
+
+        $.ajax({
+            type: "POST",
+            url: 'jsonserver.php',
+            data: {
                 action: 'isUSCitizen',
-				userid: user
-	        },
-	        dataType: 'json',
-	        success: function(data) {
-		        if ((data.success === true) && (data.isuscitizen === true)) {
-				$('#w9upload').show();
-		        }
-	        }
-		});
-	});
+                userid: user
+            },
+            dataType: 'json',
+            success: function(data) {
+                if ((data.success === true) && (data.isuscitizen === true)) {
+                $('#w9upload').show();
+                }
+            }
+        });
+
+        $("#send-test").click(smsSendTestMessage);
+        $("#save_account").click(function(){
+            saveSettings('account');
+            return false;
+        });
+        $("#save_personal").click(function(){
+            saveSettings('personal');
+            return false;
+        });
+        $("#save_payment").click(function(){
+            saveSettings('payment');
+            return false;
+        });
+
+        $('#paytype').change(function(){
+            var paytype = $(this).val();
+
+            paypal.enable();
+            payway.enable();
+            if (paytype == 'paypal') {
+                $('#paytype-paypal').show();
+                $('#paytype-other').hide();
+            } else if (paytype == 'other') {
+                $('#paytype-paypal').hide();
+                $('#paytype-other').show();
+            } else {
+                $('#paytype-paypal').hide();
+                $('#paytype-other').hide();
+            }
+        });
+        $('#paytype').change();
+    });
 //-->
 </script>
 
@@ -230,139 +350,146 @@ include("head.html");
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 
-            <h1>Edit Account Settings</h1>
+<h1 class="header">Edit Account Settings</h1>
 
+<div id="account-info" class="settings">
 
-                <form method="post" action="settings.php" name="frmsetting" onSubmit="return validate();">
+    <table width="100%">
+    <tr>
+        <td align="left"><h2 class="subheader">Account Info<span class="heading-links"></h2></td>
+        <td align="right"><a href="password.php">Change my password...</a> | <a href="delete_account.php">Delete my account...</a></td>
+    </tr>
+    </table>
 
-                <p class="error"><?php echo isset($msg)?$msg:''?></p>
-	   <!-- Column containing left part of the fields -->
-	   <div class="left-col">
-                <div class="LVspace">
-		  <p><label for = "nickname">Nickname</label><br />
-		    <input name="nickname" type="text" id="nickname"  value = "<?php echo $userInfo['nickname']; ?>" size="35"/>
-		  </p>
-		</div>
-		<script type="text/javascript">
-		  var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});
-		  nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
-		</script>
+    <form method="post" action="settings.php" name="frmsetting">
 
-<?php include("sms-inc.php"); ?>
+        <span class="required-bullet">*</span> <span class="required">required fields</span>
 
-                <p><label>Current Password<br />
-                <input type="password" name="oldpassword" id="oldpassword" size="35" />
-                </label></p>
-                <div class="LVspace">
-                <p><label>New Password<br />
-                <input type="password" name="newpassword" id="newpassword" size="35" />
-                </label></p>
-                <script type="text/javascript">
-		  var newpassword = new LiveValidation('newpassword',{ validMessage: "You have an OK password.", onlyOnBlur: true });
-		  newpassword.add(Validate.Length, { minimum: 5, maximum: 12 } );
-                </script>
-                </div>
+        <p id="msg-account" class="error"></p>
 
-                <div class="LVspace">
-                <p><label>Re-enter New Password<br />
-                <input type="password" name="confirmpassword" id="confirmpassword" size="35" />
-                </label></p>
-                <script type="text/javascript">
-                var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
-                confirmpassword.add(Validate.Confirmation, { match: 'newpassword'} );
-                </script>
-                 </div>
+        <p><label for = "nickname">Nickname</label><br />
+            <span class="required-bullet">*</span> <input name="nickname" type="text" id="nickname"  value = "<?php echo $userInfo['nickname']; ?>" size="35"/>
+        </p>
+        <script type="text/javascript">
+            var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});
+            nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
+        </script>
 
-                <div class="LVspacelg" style="height:88px">
-                <input type="checkbox" id="paypal" name="paypal" value="1" <?php echo $userInfo['paypal'] ? 'checked' : '' ?>/><label>&nbsp;Paypal is available in my country</label><br/><br/>
-                <label>Paypal Email<br />
-                <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo $userInfo['paypal_email']; ?>" />
-                </label>
-                </div>
-		
-                <script type="text/javascript">
-                var paypal = new LiveValidation('paypal', {validMessage: "Valid email address."});
-                paypal.add( Validate.Email );
-                paypal.add(Validate.Length, { minimum: 10, maximum: 50 } );
-                </script>
+        <p><label for = "timezone">What timezone are you in?</label><br />
+            <span class="required-bullet">*</span> <select id="timezone" name="timezone">
+            <?php
+            foreach($timezoneTable as $key => $value){
+                $selected = '';
+                if ($key == $userInfo['timezone']){
+                $selected = 'selected = "selected"';
+                }
+                echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
+            }
+            ?>
+            </select>
+        </p>
 
-                <div class="LVspacelg" style="width: 285px;">
-                </p>
-                <div class="LVspacelg" id="w9upload" style="display: none; height: auto; min-height: 80px; float: left;">
-                <p><label>All US Citizens must submit a W-9 to be paid by LoveMachine</label><br/></p>
-		<p><label>W-9 Form Upload<br />
-                <input id="formupload" type="button" value="Browse" />
-                </label></p>
-                </div>
-                <br style="clear: both;" />
-                <div class="uploadnotice"></div>
-                </div>
+        <?php
+        $country = $userInfo['country'];
+        $int_code = $userInfo['int_code'];
+        $phone = $userInfo['phone'];
+        $provider = $userInfo['provider'];
+        $sms_flags = $userInfo['sms_flags'];
+        $settingsPage = true;
+        include("sms-inc.php");
+         ?>
 
-	   </div><!-- end of left-col div -->
-	   <div class="right-col">
-            <div class="LVspacehg">
-	      <p>
-		<label for = "about">What do we need to know about you?</label><br />
-		<textarea id = "about" name = "about" cols = "35" rows = "4"><?php echo $userInfo['about'] ?></textarea>
-	      </p>
-	    </div>
-            <script type="text/javascript">
-	      var about = new LiveValidation('about');
-	      about.add(Validate.Length, { minimum: 0, maximum: 150 } );
-	    </script>
+        <p><label for="rewarder_limit_day">Auto-populate Rewarder with people you've worked with in the last 
+            <input type="text" id="rewarder_limit_day" name="rewarder_limit_day" class="text-field" size="5" value="<?php echo $userInfo['rewarder_limit_day']; ?>" />
+            days </label> <br />
+        </p>
 
-            <div class="LVspace">
-	      <p>
-	      <label for = "contactway">What is the preferred way to contact you?</label><br />
-	      <input type="text" id="contactway" name="contactway" class="text-field" size="35" value = "<?php echo $userInfo['contactway']; ?>" />
-	      </p>
-	    </div>
+        <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
 
-            <div class="LVspace">
-	      <p>
-	      <label for = "payway">What is the best way to pay you for the work you will do?</label><br />
-	      <input type="text" id="payway" name="payway" class="text-field" size="35" value = "<?php echo $userInfo['payway']; ?>" />
-	      </p>
-	    </div>
+    </form>
 
-            <div class="LVspace">
-	      <p>
-	      <label for = "skills">Pick three skills you think are your strongest</label><br />
-	      <input type="text" id="skills" name="skills" class="text-field" size="35" value = "<?php echo $userInfo['skills']; ?>" />
-	      </p>
-	    </div>
+</div>
 
-            <div class="LVspace">
-	      <p>
-	      <label for = "timezone">What timezone are you in?</label><br />
-	      <select id="timezone" name="timezone">
-<?php
-  foreach($timezoneTable as $key => $value){
-    $selected = '';
-    if ($key == $userInfo['timezone']){
-      $selected = 'selected = "selected"';
-    }
-    echo '
-  <option value = "'.$key.'" '.$selected.'>'.$value.'</option>
-  ';
-}
-?>
-	      </select>
-	      </p>
-	    </div>
-	    <div class="LVspace">
-	      <p>
-		<label for="rewarder_limit_day">Auto-populate Rewarder with people you've worked with in the last n days </label> <br />
-		  <input type="text" id="rewarder_limit_day" name="rewarder_limit_day" class="text-field" size="5" value="<?php echo $userInfo['rewarder_limit_day']; ?>" />
-	      </p>
-	    </div>
+<div id="personal-info" class="settings">
 
-	   </div><!-- end of right-col div -->
-            <br style = "clear:both;" />
-                <input type="submit" value="Update" alt="Update" name="submit" />
-                <input type="submit" value="Delete My Account" alt="Delete" name="Delete" class="lgbutton" onClick="javascript: return confirm('Do you really want to delete the account?');" />
+    <h2 class="subheader">Personal Info</h2>
 
-                </form>
+    <p id="msg-personal" class="error"></p>
+
+    <form method="post" action="settings.php" name="frmsetting">
+
+        <p><label for = "about">What do we need to know about you?</label><br />
+            <textarea id="about" name="about" rows="5" style="width:95%"><?php echo $userInfo['about'] ?></textarea>
+        </p>
+        <script type="text/javascript">
+            var about = new LiveValidation('about');
+            about.add(Validate.Length, { minimum: 0, maximum: 150 } );
+        </script>
+
+        <p><label for = "skills">Pick three skills you think are your strongest</label><br />
+            <input type="text" id="skills" name="skills" class="text-field" value="<?php echo $userInfo['skills']; ?>" style="width:95%" />
+        </p>
+
+        <p><label for = "contactway">What is the preferred way to contact you?</label><br />
+            <input type="text" id="contactway" name="contactway" class="text-field" value="<?php echo $userInfo['contactway']; ?>" style="width:95%" />
+        </p>
+
+        <input type="submit" id="save_personal" value="Save Personal Info" alt="Save Personal Info" name="save_personal" />
+
+    </form>
+
+</div>
+
+<div id="payment-info" class="settings">
+
+    <h2 class="subheader">Payment Info</h2>
+
+    <p id="msg-payment" class="error"></p>
+
+    <form method="post" action="settings.php" name="frmsetting">
+
+        <p>
+            <span class="required-bullet">*</span> <select id="paytype" name="paytype">
+                <?php if (empty($userInfo['paypal_email']) && empty($userInfo['payway'])) { ?>
+                <option value="how" selected>How shall we pay you?</option>
+                <?php } ?>
+                <option value="paypal" <?php echo !empty($userInfo['paypal_email']) ? 'selected' : ''?>>Please pay me via Paypal</option>
+                <option value="other" <?php echo empty($userInfo['paypal_email']) && !empty($userInfo['payway']) ? 'selected' : ''?>>I would prefer another method</option>
+            </select>
+        </p>
+
+        <blockquote>
+
+            <p id="paytype-paypal"><label>Paypal Email</label><br />
+                <span class="required-bullet">*</span> <input type="text" id="paypal_email" name="paypal_email" class="text-field" value="<?php echo $userInfo['paypal_email']; ?>" style="width:95%" />
+            </p>
+
+            <p id="paytype-other"><label>Please explain your preferred payment method</label><br />
+                <span class="required-bullet">*</span> <input type="text" id="payway" name="payway" class="text-field" value="<?php echo $userInfo['payway']; ?>" style="width:95%" />
+            </p>
+
+        </blockquote>
+
+        <p><label>All US Citizens must submit a W-9 to be paid by LoveMachine</label><br/></p>
+        <blockquote>
+            <p><label style="float:left;line-height:26px">Upload W-9</label>
+                <input id="formupload" type="button" value="Browse" style="float:left;margin-left: 8px;" />
+            </p>
+            <br style="clear:both" />
+            <div class="uploadnotice-w9"></div>
+
+            <p><label style="float:left">Upload local<br/>tax doc</label>
+                <input id="formupload-local" type="button" value="Browse" style="float:left;margin-left: 8px;" />
+            </p>
+            <br style="clear:both" />
+            <div class="uploadnotice-local"></div>
+        </blockquote>
+
+        <input type="submit" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
+
+    </form>
+
+</div>
 
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->

@@ -91,7 +91,6 @@ if( $active == 'FALSE' ) {
 	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `nickname` REGEXP '^$letter' AND `is_active` = 1  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }
 
-error_log($query);
 $rt = mysql_query($query);
 
 // Construct json for pagination

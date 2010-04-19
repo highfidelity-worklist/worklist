@@ -6,6 +6,7 @@ var smsProvider = '';
 
 function smsRefreshProvider(init)
 {
+var pos=4;
     if (!init) $("#phone_edit").val('1');
     if (smsCountry != $("#country").val()) {
         smsCountry = $("#country").val();
@@ -13,6 +14,15 @@ function smsRefreshProvider(init)
             $("#sms-provider").hide();
             $("#sms-other").hide();
         } else {
+            var country = $("#country option:selected").text();
+            var len = country.length;
+	    $("#int-code option").each(function(){
+                if ($(this).text().trim().substr(0, len) == country) {
+                    $(this).attr('selected', 'selected');
+                    return false;
+                }
+            });
+
 	    smsProvider = $("#stored-provider").val();
             var el = $("#provider");
             el.empty();
@@ -23,11 +33,11 @@ function smsRefreshProvider(init)
                 data: "c="+smsCountry,
                 dataType: "json",
                 success: function(json) {
-            		if (!json) {
-            			el.append('<option value="--">(Other)</option>');
+                    if (!json) {
+                        el.append('<option value="--">Another wireless provider</option>');
                         $("#sms-other").show();
-            			return;
-            		}
+                        return;
+                    }
                     smsProviderList = new Array();
                     for (var i = 0; i < json.length; i++) {
                         if (smsProvider && smsProvider == json[i]) {
@@ -37,14 +47,14 @@ function smsRefreshProvider(init)
                         }
                     }
                     if (smsProvider && smsProvider[0] == '+') {
-                        el.append('<option value="--" selected="selected">(Other)</option>');
+                        el.append('<option value="--" selected="selected">Another wireless provider</option>');
                         $("#sms-other").show();
                     } else {
-                        el.append('<option value="--">(Other)</option>');
+                        el.append('<option value="--">Another wireless provider</option>');
                     }
                 }, 
                 error: function(xhdr, status, err) {
-                    el.append('<option value="--">(Other)</option>');
+                    el.append('<option value="--">Another wireless provider</option>');
                     $("#sms-other").show();
                 }
             });
@@ -64,12 +74,6 @@ function smsUpdatePhone(filter)
     var phone = $("#phone").val();
     if (filter) {
         $("#phone").val(phone.replace(/\D/g,''));
-    }
-
-    if (phone != "") {
-        $("#sms").show();
-    } else {
-        $("#sms").hide();
     }
 }
 

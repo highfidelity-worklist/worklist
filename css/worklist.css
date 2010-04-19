@@ -131,3 +131,42 @@ z-index: 1;
 	margin-top: 3px;
 	margin-left: 20px;
 }
+
+#account-info, #personal-info, #payment-info {
+	border: 1px solid black;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	padding: 8px;
+	margin-bottom: 6px;
+}
+
+#account-info {
+	background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;
+	margin-left: 16px;
+	margin-top: 24px;
+}
+#account-info table {
+	border: none;
+}
+#account-info tr:hover {
+	background: inherit;
+}
+#account-info td {
+	border: none;
+	padding: 0px;
+}	
+
+#personal-info {
+	background: #FFF url(../images/lm_gradient2.jpg) no-repeat top center;
+	margin-left: 64px;
+}
+
+#payment-info {
+	background: #FFF url(../images/lm_gradient3.jpg) no-repeat top center;
+	margin-left: 112px;
+}
+
+#account-info h2, #personal-info h2, #payment-info h2 {
+	color: #000;
+	margin-top: 8px;

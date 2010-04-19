@@ -1,4 +1,6 @@
 <?php
+//  vim:ts=4:et
+
 //
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved. 
@@ -25,6 +27,7 @@ $fields_to_htmlescape = array(
 				'payway' => '', 
 				'skills' => '', 
 				'timezone' => '', 
+				'int_code' => '', 
 				'phone' => '', 
 				'country' => '', 
 				'provider' => '',
@@ -51,8 +54,12 @@ $minimal_POST = @array_intersect_key($_POST, $fields_to_not_escape + $fields_to_
 
 // TODO: Code repeated from settings.php. Must be put in a library
 // compute smsaddr from phone and provider
-$prov_address = $smslist[$minimal_POST['country']][$minimal_POST['provider']];
-$phone = preg_replace('/\D/', '', $minimal_POST['phone']);
+$prov_address = isset($minimal_POST['country']) ? $smslist[$minimal_POST['country']][$minimal_POST['provider']] : '';
+$country = '';
+$provider = '';
+$int_code = '';
+$phone = isset($minimal_POST['phone']) ? preg_replace('/\D/', '', $minimal_POST['phone']) : '';
+$sms_flags = 0;
 $minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
 
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
@@ -83,14 +90,8 @@ if(isset($minimal_POST['sign_up'])){
 	  $values_for_db['password'] = sha1($values_for_db['password']);
 	  $values_for_db['confirm'] = (!empty($minimal_POST['confirm']) && $minimal_POST['confirm'] == base64_encode(sha1(SALT.$to))) ? 1 : 0;
 	  $values_for_db['confirm_string'] = rand();
-      if (!$values_for_db['paypal']) $values_for_db['paypal_email'] = '';
-	  //$values_for_db['added'] = 'NOW()'; <-- need this if we don't change the schema to use CURRENT_TIMESTAMP
-	  /*
-	  $res = mysql_query("INSERT INTO `".USERS."` ( `username`, `password`, `added`, `nickname`, `about`, `contactway`, `payway`, `skills`, `timezone`, `confirm`, `confirm_string`, `phone`, `country-iso`, `smsaddr`  ) ".
-	      "VALUES ('".mysql_real_escape_string($username)."', '".sha1(mysql_real_escape_string($minimal_POST['password']))."', NOW(), '".
-	      mysql_real_escape_string($minimal_POST['nickname'])."', '".$about."', '".$contactway."', '".$payway."', '".$skills."', '".$timezone."',
-	      '$confirm', '$confirm_string' )");
-	  */
+	  $values_for_db['sms_flags'] = (!empty($_POST['journal_alerts']) ? SMS_FLAG_JOURNAL_ALERTS : 0) | (!empty($_POST['bid_alerts']) ? SMS_FLAG_BID_ALERTS : 0);
+      if (!isset($values_for_db['paypal'])) $values_for_db['paypal_email'] = '';
 	  $sql = 'INSERT INTO `'.USERS.'` (`'. implode('`,`', array_keys($values_for_db)) . '`,`added`) VALUES ("'. implode('","', array_values($values_for_db)). '",NOW() )';
 	  $res = mysql_query($sql);
 	  $user_id = mysql_insert_id();
