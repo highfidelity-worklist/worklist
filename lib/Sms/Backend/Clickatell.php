@@ -89,8 +89,7 @@ class Sms_Backend_Clickatell implements Sms_Backend
             return false;
         }
         $phone = $message->getPhoneNumber();
-        if (   empty($phone)
-            && (!$user = $message->getUser() || !$this->getUserPhone($user))) {
+        if (empty($phone) && (!$user = $message->getUser() || !$this->getUserPhone($user))) {
             return false;
         }
         if ($this->getBalance() < $this->balanceThreshold) {
