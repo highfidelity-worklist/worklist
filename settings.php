@@ -239,7 +239,7 @@ include("head.html");
     }
 
     function smsSendTestMessage() {
-        var int_code = $('#int-code').val();
+        var int_code = $('#int_code').val();
         var phone = $('#phone').val();
         if (int_code != '' && phone != '') {
             $.ajax({
