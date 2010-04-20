@@ -150,6 +150,15 @@ class UserStats{
         return false;
     }
 
+    public function getUniqueLoveCount(){
+       $data = $this->sendloveApiRequest('getuniquecount');
+	    if($data){
+            return $data['count'];
+        }
+        return false;
+    }
+
+
     // get total love received by user using sendlove api
     public function getTotalLove($page = 1){
         $data = $this->sendloveApiRequest('getlove', $page);

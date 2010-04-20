@@ -13,7 +13,7 @@
                     <td><a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a></td>
                     <td>$<?php echo $userStats->getTotalEarnings(); ?></td>
                     <td><a href = "#" id = "latest-earnings">$<?php echo $userStats->getLatestEarnings(30); ?></a></td>
-                    <td><a href = "#" id = "love"><?php echo $userStats->getLoveCount(); ?></a></td>
+                    <td><a href = "#" id = "love"><?php echo $userStats->getLoveCount(); ?>(<?php echo $userStats->getUniqueLoveCount(); ?>)</a></td>
                 </tr>
             </tbody>
         </table>
