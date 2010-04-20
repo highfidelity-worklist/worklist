@@ -431,11 +431,18 @@ WHERE id = ' . (int)$id;
             $bidder_nickname = $row['nickname'];
         }
         $bid_info['nickname']=$bidder_nickname;
-
+        
+        //adjust bid_done date/time
+        $prev_start = strtotime($bid_info['bid_created']);
+        $new_start = strtotime(date('Y-m-d H:i:s O'));
+        $end = strtotime($bid_info['bid_done']);
+        $diff = $end - $prev_start;
+        $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
+            
         // changing mechanic of the job
         mysql_unbuffered_query("UPDATE `worklist` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `worklist`.`id` = ".$bid_info['worklist_id']);
         // marking bid as "accepted"
-        mysql_unbuffered_query("UPDATE `bids` SET `accepted` =  1 WHERE `id` = ".$bid_id);
+        mysql_unbuffered_query("UPDATE `bids` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id);
         // adding bid amount to list of fees
         mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
         $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
