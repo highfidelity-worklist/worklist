@@ -130,10 +130,6 @@ include("head.html"); ?>
 	</div>
 	<div class="login_right">
 		<form action="" method="post">
-			<!--<ul class="openidlist">
-				<li><a href="?authtype=google" class="google" title="Google OpenID">Sign in with a Google Account</a></li>
-				 <li><a href="?authtype=yahoo" class="yahoo" title="Yahoo OpenID">Sign in with a Yahoo Account</a></li>
-			</ul> -->
 			<div class="LVspace">
 				<label>Google Login<br />
 					<input type="text" name="google_identifier" class="text-field google" id="google_identifier" value="" size="40" />

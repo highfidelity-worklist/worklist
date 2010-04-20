@@ -9,7 +9,7 @@ if (isset($_REQUEST['google_identifier']) && !empty($_REQUEST['google_identifier
 		'email' => true
 	), null, 1.0);
 	$consumer = new Agency_OpenId_Consumer();
-	if (!$consumer->login($_REQUEST['google_identifier'], null, null, $ax)) {
+	if (!$consumer->login($_REQUEST['google_identifier'], null, 'http://' . SERVER_NAME . '/', $ax)) {
 		$msg = "Google Authentication failed!";
 	}
 }
@@ -33,11 +33,19 @@ if (isset($_GET['openid_mode'])) {
 				initSessionData($row);
 				if ($_POST['redir']) {
 			        header("Location:".urldecode($_POST['redir']));
+			        exit();
 			    } else { 
 			          if (!empty($_POST['reauth'])) {
 			              header("Location:".urldecode($_POST['reauth']));
+			              exit();
 			          } else {
-			              header("Location:worklist.php");
+			              if (isset($_GET['redirectto']) && ($_GET['redirectto'] == 'journal')) {
+			                  header('Location: ' . SERVER_BASE . '/journal/index.php');
+			                  exit();
+			              } else {
+			              	  header("Location:worklist.php");
+			              	  exit();
+			              }
 			          }
 			    }
 			} else {
@@ -47,6 +55,7 @@ if (isset($_GET['openid_mode'])) {
 		    // user needs to sign up
 			$data = $ext->getProperties();
 			header('Location: signup.php?authtype=openid&id=' . rawurlencode($id) . '&nickname=' . rawurlencode($data['firstname']) . '&email=' . rawurlencode($data['email']) . '&country=' . rawurlencode($data['country']));
+			exit();
 		}
 	} else {
 	    // the user couldn't be verified

@@ -68,7 +68,6 @@ class Agency_OpenId_Consumer extends Zend_OpenId_Consumer
         $expire = time() + 60 * 60;
         $this->_storage->addDiscoveryInfo($id, 
         $realId, $server, $version, $expire);
-        #$id = $realId;
         return true;
     }
 
@@ -156,10 +155,15 @@ class Agency_OpenId_Consumer extends Zend_OpenId_Consumer
         $claimedId = $id;
         if (! $this->_discovery($id, $server, 
         $version)) {
-            $this->_setError(
-            "Discovery failed: " .
-             $this->getError());
-            return false;
+        	// retry with normal google account
+        	$claimedId = $id = 'https://www.google.com/accounts/o8/id';
+        	if (! $this->_discovery($id, $server,
+        	$version)) {
+		        $this->_setError(
+		        "Discovery failed: " .
+		         $this->getError());
+		        return false;
+		    }
         }
         
         if (! $this->_associate($server, 
