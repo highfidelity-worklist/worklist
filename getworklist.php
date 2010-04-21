@@ -178,7 +178,9 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 	      (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."`
 	       WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) LIMIT 1) as bid_count,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
-           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done";
+           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
+           (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
+           WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
 
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
@@ -191,6 +193,7 @@ $qbody = "FROM `".WORKLIST."`
           $where";
 
 $qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
+
 
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {
@@ -219,7 +222,8 @@ while ($row=mysql_fetch_assoc($rtQuery)) {
          8 => $row['bid_amount'],
          9 => $row['creator_id'],
         10 => $row['bid_count'],
-        11 => $row['bid_done']
+        11 => $row['bid_done'],
+        12 => $row['comments']
 	);
 }
 

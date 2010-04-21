@@ -218,7 +218,7 @@ include("head.html"); ?>
 			post = '</div>';
 		}
 		
-        row += '<td width="50%">' + pre + json[1] + post + '</td>';
+        row += '<td width="45%">' + pre + json[1] + post + '</td>';
         if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
             post = ' (' + json[10] + ')';
         }
@@ -262,6 +262,9 @@ include("head.html"); ?>
             row += '<td width="15%">' + pre + RelativeTime(json[6]) + ' ago' + post +'</td>';
         }
 
+        // Comments
+        row += '<td width="7.5%">' + json[12] + '</td>';
+
 		var feebids = 0;
 		if(json[7]){
 			feebids = json[7];
@@ -281,7 +284,7 @@ include("head.html"); ?>
 			feebids = '$' + feebids;
 		}
 
-		row += '<td width="10%">' + pre + feebids + post + '</td></tr>';
+		row += '<td width="7.5%">' + pre + feebids + post + '</td></tr>';
 
         if (prepend) {
             $(row).prependTo('.table-worklist tbody').find('td div.slideDown').fadeIn(500);
@@ -1093,6 +1096,7 @@ include("head.html"); ?>
             <td>Status</td>
             <td>Who</td>
             <td>When</td>
+            <td>Comments</td>
             <td class="worklist-fees">Fees/Bids</td>
         </tr>
     </thead>
