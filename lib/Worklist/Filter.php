@@ -219,6 +219,10 @@ class Worklist_Filter
 				$order = "IF(STRCMP(status,'BIDDING'),total_fees,IF(bid_amount,bid_amount,0))";
 			break;
 			
+			case 'COMMENTS':
+				$order = 'comments';
+			break;
+			
 			default:
 				$order = 'priority';
 			break;

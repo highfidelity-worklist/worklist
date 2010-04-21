@@ -194,7 +194,6 @@ $qbody = "FROM `".WORKLIST."`
 
 $qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
 
-
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {
     $row = mysql_fetch_row($rtCount);
