@@ -415,7 +415,8 @@ include("head.html"); ?>
 				}
 				lastId = json[1][0];
 				
-				MapToolTips();
+				/*commented for remove tooltip */
+				//MapToolTips();
 
 				$('.row-worklist-live').bind('contextmenu', function(e) {
 					$('#pages-dialog').dialog('open');
@@ -971,7 +972,8 @@ include("head.html"); ?>
 			return false;
 		});
 		//-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
-		setTimeout(MapToolTips, 800);
+		/* function commented for remove tooltip */
+		//setTimeout(MapToolTips, 800);
 
 		<?php if(!empty($worklist_id))
 		{
