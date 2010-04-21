@@ -161,7 +161,7 @@ WHERE id = ' . (int)$id;
         if (empty($this->origStatus)) {
             $this->origStatus = $status;
         }
-        if($status == 'BIDDING') {
+        if($status == 'BIDDING' && $this->status != 'BIDDING') {
         	//Get the Twitter config
         	$config = Zend_Registry::get('config')->get('twitter', array());
         	if ($config instanceof Zend_Config) {
