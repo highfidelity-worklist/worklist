@@ -265,26 +265,28 @@ include("head.html"); ?>
         // Comments
         row += '<td width="7.5%">' + json[12] + '</td>';
 
-		var feebids = 0;
-		if(json[7]){
-			feebids = json[7];
-		}
-		var bid = 0;
-		if(json[8]){
-			bid = json[8];
-		}
-		if(json[2] == 'BIDDING'){
-			bid = parseFloat(bid);
-			if (bid == 0) {
-				feebids = '';
-			} else {
-				feebids = '$' + parseFloat(bid);
+        if (is_runner == 1) {
+			 var feebids = 0;
+			if(json[7]){
+				feebids = json[7];
 			}
-		} else {
-			feebids = '$' + feebids;
-		}
-
-		row += '<td width="7.5%">' + pre + feebids + post + '</td></tr>';
+			var bid = 0;
+			if(json[8]){
+				bid = json[8];
+			}
+			if(json[2] == 'BIDDING'){
+				bid = parseFloat(bid);
+				if (bid == 0) {
+					feebids = '';
+				} else {
+					feebids = '$' + parseFloat(bid);
+				}
+			} else {
+				feebids = '$' + feebids;
+			}
+			row += '<td width="7.5%">' + pre + feebids + post + '</td>';
+        }
+		row += '</tr>';
 
         if (prepend) {
             $(row).prependTo('.table-worklist tbody').find('td div.slideDown').fadeIn(500);
@@ -1099,7 +1101,7 @@ include("head.html"); ?>
             <td>Who</td>
             <td>When</td>
             <td>Comments</td>
-            <td class="worklist-fees">Fees/Bids</td>
+            <td class="worklist-fees"  <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?>>Fees/Bids</td>
         </tr>
     </thead>
     <tbody>
