@@ -36,7 +36,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		// Get Average Fees in last 7 days
 		$query = mysql_query( "SELECT AVG(amount) FROM ".FEES." LEFT JOIN ".WORKLIST." ON
 					".FEES.".worklist_id = ".WORKLIST.".id WHERE date > DATE_SUB(NOW(),
-					INTERVAL 7 DAY) AND status = 'DONE'" );
+					INTERVAL 7 DAY) AND status = 'DONE' AND `" . FEES . "`.`withdrawn` = 0" );
 
 		$rt = mysql_fetch_assoc( $query );
 		echo json_encode( $rt );
@@ -47,7 +47,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		$query = mysql_query("SELECT nickname, SUM(amount) as total FROM ".FEES." ".
 					"LEFT JOIN ".WORKLIST." ON ".FEES.".worklist_id = ".WORKLIST.".id ".
 					"LEFT JOIN ".USERS." ON ".FEES.".user_id = ".USERS.".id ".
-					"WHERE date >= DATE_SUB(NOW(), INTERVAL $interval DAY) AND status = 'DONE' ".
+					"WHERE date >= DATE_SUB(NOW(), INTERVAL $interval DAY) AND status = 'DONE' AND `" . FEES . "`.`withdrawn` = 0 ".
                     "GROUP BY user_id ORDER BY total DESC");
 
 		$tmpList = array();
