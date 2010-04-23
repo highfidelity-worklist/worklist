@@ -188,7 +188,7 @@ echo $json;
     echo $json;
 }
 
-function  getMySQLDate($sourceDat)
+function  getMySQLDate($sourceDate)
 {
     if (empty($sourceDate)) $sourceDate = date('Y/m/d');
     $date_array = explode("/",$sourceDate); // split the array
