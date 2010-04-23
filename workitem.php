@@ -339,7 +339,7 @@ if ($action=='accept_bid'){
 			$bid_info = $workitem->acceptBid($bid_id);
 
 			// Journal notification
-			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #$item_id: " . $bid_info['summary'] . ". Status set to WORKING.";
+			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " . $bid_info['summary'] . ". Status set to WORKING.";
 
 			// mail notification
 			workitemNotify(array('type' => 'bid_accepted',
