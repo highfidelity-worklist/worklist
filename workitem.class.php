@@ -158,32 +158,6 @@ WHERE id = ' . (int)$id;
 
     public function setStatus($status)
     {
-        if (empty($this->origStatus)) {
-            $this->origStatus = $status;
-        }
-        if($status == 'BIDDING' && $this->status != 'BIDDING') {
-        	//Get the Twitter config
-        	$config = Zend_Registry::get('config')->get('twitter', array());
-        	if ($config instanceof Zend_Config) {
-        		$config = $config->toArray();
-        	}
-        	if (empty($_SERVER['HTTPS']))
-        	{
-        		$prefix	= 'http://';
-            	$port	= ((int)$_SERVER['SERVER_PORT'] == 80) ? '' :  ":{$_SERVER['SERVER_PORT']}";
-        	}
-        	else
-        	{
-            	$prefix	= 'https://';
-            	$port	= ((int)$_SERVER['SERVER_PORT'] == 443) ? '' :  ":{$_SERVER['SERVER_PORT']}";
-        	}
-        	$link = $prefix . $_SERVER['HTTP_HOST'] . $port . '/rw/?' . $this->id;
-        	$summary_max_length = 140-strlen('New job: ')-strlen($link)-1;
-        	$summary = substr($this->summary, 0, $summary_max_length);
-        	//Set the twitter status for a new job
-        	$twitter = new Twitter();
-        	$twitter->setStatus('New job: ' . $summary . ' ' . $link, $config);
-        }
         $this->status = $status;
         return $this;
     }
@@ -230,6 +204,9 @@ WHERE id = ' . (int)$id;
     {
         /* Keep track of status changes */
         if ($this->origStatus != $this->status) {
+            if ($this->status == 'BIDDING') {
+                $this->tweetNewJob();
+            }
             $status = mysql_real_escape_string($this->status);
             $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
             mysql_unbuffered_query($query);
@@ -243,6 +220,31 @@ WHERE id = ' . (int)$id;
 
         $query .= ' WHERE id='.$this->getId();
         return mysql_query($query) ? 1 : 0;
+    }
+
+    protected function tweetNewJob()
+    {
+    	//Get the Twitter config
+    	$config = Zend_Registry::get('config')->get('twitter', array());
+    	if ($config instanceof Zend_Config) {
+    		$config = $config->toArray();
+    	}
+    	if (empty($_SERVER['HTTPS']))
+    	{
+    		$prefix	= 'http://';
+        	$port	= ((int)$_SERVER['SERVER_PORT'] == 80) ? '' :  ":{$_SERVER['SERVER_PORT']}";
+    	}
+    	else
+    	{
+        	$prefix	= 'https://';
+        	$port	= ((int)$_SERVER['SERVER_PORT'] == 443) ? '' :  ":{$_SERVER['SERVER_PORT']}";
+    	}
+    	$link = $prefix . $_SERVER['HTTP_HOST'] . $port . '/rw/?' . $this->id;
+    	$summary_max_length = 140-strlen('New job: ')-strlen($link)-1;
+    	$summary = substr($this->summary, 0, $summary_max_length);
+    	//Set the twitter status for a new job
+    	$twitter = new Twitter();
+    	$twitter->setStatus('New job: ' . $summary . ' ' . $link, $config);
     }
 
     public function save()
