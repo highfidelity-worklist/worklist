@@ -57,6 +57,12 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
+<script
+	src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
+<script
+	src="js/timeline-chart.js" type="text/javascript" charset="utf-8"></script>
+
+
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
@@ -101,13 +107,14 @@ var fromDate = '';
 var toDate = '';
 var datePickerControl; // Month/Year date picker.
 var dateChangedUsingField = false; // True  if the date was changed using date field rather than picker.
+var currentTab = "details";
 
 function fmtDate(d) {
     return '' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
 }
 
 function fmtDate2(d) {
-    return d.getFullYear() + '-' + String(d.getMonth() + 101).slice(-2) + '-' + String(d.getDate() + 101).slice(-2);
+    return d.getFullYear() + '-' + String(d.getMonth() + 101).slice(-2) + '-' + String(d.getDate() + 100).slice(-2);
 }
 
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
@@ -294,9 +301,89 @@ var getPaidItems = function() {
         timeoutId = setTimeout("GetReport("+page+", true)", refresh);
     }
 
+function initializeTabs()                                                                                                                                               
+{                                                                                                                                                                       
+        $("#tabs").tabs({selected: 0,
+                select: function(event, ui) {
+                    if(ui.index == 0)
+                    {
+                            currentTab = "details";
+			    timeoutId = setTimeout("GetReport("+page+", true)", 50);
+                    }
+                    else
+                    {
+                            currentTab = "chart";
+                            timeoutId = setTimeout("setupTimelineChart()", 50);
+                    }
+                }                                                                                                                                                       
+        });
+
+}
+
+function setupTimelineChart()
+{
+	var chartPanelId = 'timeline-chart';
+	$('#'+chartPanelId).empty();
+	LoveChart.initialize(chartPanelId, 700, 300, 30);
+	LoveChart.forceWeeklyLabels(false);
+	LoveChart.fetchData = function (from, to, username, callback) {
+	    if (from.getTime() > to.getTime()) {
+	        var tmp = from;
+	        from = to;
+	        to = tmp;
+	    }
+
+	    var fromDate = fmtDate(from), toDate = fmtDate(to);
+	    var paidStatus = $('#paid-status').val();
+$.ajax({
+            type: "POST",
+            url: 'getreport.php',
+            data: 'qType=chart&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+'&order='+$("#sort-by").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
+            dataType: 'json',
+            success: function(data) {
+	        var fees = [], uniquePeople = [], feeCount = [];
+	        var d = new Date(from);
+
+	        while (d.getTime() <= to.getTime()) {
+	            var key = fmtDate2(d);
+	            fees.push(data.fees[key] || undefined);
+	            feeCount.push(data.feeCount[key] || undefined);
+	            uniquePeople.push(data.uniquePeople[key] || undefined);
+	            d.setDate(d.getDate() + 1);
+	        }
+            var messages = [], senders = [];
+            messages = data.fees;
+            senders = data.uniquePeople;
+	        callback(messages, senders, data.feeCount, data.labels);
+	    } ,
+            error: function(xhdr, status, err) {
+                 $('#again').click(function(e){
+                    $("#loader_img").css("display","none");
+                    if (timeoutId) clearTimeout(timeoutId);
+                    e.stopPropagation();
+                    return false;
+                });
+            }
+        });
+	};
+    loadTimelineChart();
+}
+
+function loadTimelineChart() {
+	_fromDate = $("#start-date").datepicker('getDate');
+	_toDate = $("#end-date").datepicker('getDate');
+	if(_fromDate != null) {
+	  fromDate = fmtDate(_fromDate);
+	}
+	if(_toDate != null) {
+	  toDate = fmtDate(_toDate);
+	}
+
+	LoveChart.load(_fromDate, _toDate, "");
+}
     $(document).ready(function(){
         GetReport(<?php echo $page?>);
-
+        initializeTabs();
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#report-check-all").live('change', function(){
             var isChecked = $("#report-check-all").attr('checked');
@@ -346,7 +433,11 @@ var getPaidItems = function() {
 	$('#refreshReport').click(function() {
         paid_list = [];
 	    if (timeoutId) clearTimeout(timeoutId);
-	    GetReport(page);
+	    if(currentTab == "details") {
+	      GetReport(page);
+	    } else {
+	      loadTimelineChart();
+	    }
 	});
 
     });
@@ -394,7 +485,13 @@ var getPaidItems = function() {
       </table>
     </div>
     <div style="clear:both"></div>
-    <form id="reportForm" method="post" action="" />
+    <div id="tabs">
+    <ul>
+        <li><a href="#tab-details" >Details</a></li>
+        <li><a href="#tab-chart" >Chart</a></li>
+    </ul>
+    <div id="tab-details">
+            <form id="reportForm" method="post" action="" />
         <input type="hidden" id="paid-list" name="paidList" value="" />
         <table width="100%" class="table-worklist">
             <thead>
@@ -417,5 +514,12 @@ var getPaidItems = function() {
         <input type="submit" id="pay" name="paid" value="Mark Paid" /> <span id="amtpaid" style="display:none">($0 paid)</span>
         <?php } ?>
     </form>
+    </div>
+    <div id="tab-chart">
+        <div id="timeline-chart">
+
+        </div>
+    </div>
+    </div>
 </div>
 <?php include("footer.php"); ?>
