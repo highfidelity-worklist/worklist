@@ -232,9 +232,6 @@ class User
 	}
 
 	/**
-	 * @return the $username
-	 */
-	/**
 	 * @return the $id
 	 */
 	public function getId() {
@@ -248,6 +245,9 @@ class User
 		$this->id = $id;
 	}
 
+    /**
+     * @return the $username
+     */
 	public function getUsername() {
 		return $this->username;
 	}

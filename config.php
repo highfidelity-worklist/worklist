@@ -15,10 +15,10 @@ if (file_exists('server.local.php')) {
 if (!defined('APP_NAME'))       define('APP_NAME','Worklist');
 if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], '/')));
 if (!defined('APP_BASE'))       define('APP_BASE',substr(APP_LOCATION, 0, strrpos(APP_LOCATION, '/', -2)));
-if (!defined('APP_PATH'))	define('APP_PATH', realpath(dirname(__FILE__)));
+if (!defined('APP_PATH'))	    define('APP_PATH', realpath(dirname(__FILE__)));
 if (!defined('UPLOAD_PATH'))	define('UPLOAD_PATH', realpath(APP_PATH . '/uploads'));
 
-if (!defined('APP_ENV'))	define('APP_ENV', 'production');
+if (!defined('APP_ENV'))	    define('APP_ENV', 'production');
 
 //http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
 if (!defined('SERVER_NAME'))    define('SERVER_NAME','dev.sendlove.us');
@@ -39,29 +39,30 @@ if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_dev');
 
 if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('USERS'))          define('USERS', 'users');
-if (!defined('BIDS'))		define('BIDS', 'bids');
-if (!defined('FEES'))		define('FEES', 'fees');
-if (!defined('FILES'))		define('FILES', 'files');
-if (!defined('COMMENTS'))	define('COMMENTS', 'comments');
-if (!defined('REWARDER'))	define('REWARDER', 'rewarder_distribution');
-if (!defined('BUDGET_LOG'))	define('BUDGET_LOG', 'budget_log');
+if (!defined('BIDS'))		    define('BIDS', 'bids');
+if (!defined('FEES'))		    define('FEES', 'fees');
+if (!defined('FILES'))		    define('FILES', 'files');
+if (!defined('COMMENTS'))	    define('COMMENTS', 'comments');
+if (!defined('REWARDER'))	    define('REWARDER', 'rewarder_distribution');
+if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
 if (!defined('REWARDER_LOG'))	define('REWARDER_LOG', 'rewarder_log');
-if (!defined('STATUS_LOG'))	define('STATUS_LOG', 'status_log');
+if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
+if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
 if (!defined('REQUIRELOGINAFTERCONFIRM')) define('REQUIRELOGINAFTERCONFIRM', 1);
 
-if (!defined('JOURNAL_EXISTS'))     define('JOURNAL_EXISTS', 1);
+if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 
-if (!defined('JOURNAL_QUERY_URL'))  define('JOURNAL_QUERY_URL', 'http://dev.sendlove.us/journal/aj.php');
+if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'http://dev.sendlove.us/journal/aj.php');
 
-if (!defined('JOURNAL_API_URL'))    define('JOURNAL_API_URL', 'https://dev.sendlove.us/journal/add.php');
-if (!defined('JOURNAL_API_USER'))   define('JOURNAL_API_USER', 'api_username');
-if (!defined('JOURNAL_API_PWD'))    define('JOURNAL_API_PWD', 'api_password');
+if (!defined('JOURNAL_API_URL')) define('JOURNAL_API_URL', 'https://dev.sendlove.us/journal/add.php');
+if (!defined('JOURNAL_API_USER')) define('JOURNAL_API_USER', 'api_username');
+if (!defined('JOURNAL_API_PWD')) define('JOURNAL_API_PWD', 'api_password');
 
 if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/sendlove/api.php");
-if (!defined("SENDLOVE_API_KEY"))    define("SENDLOVE_API_KEY", "uierbycur4yt73467t6trtycff3rt");
+if (!defined("SENDLOVE_API_KEY")) define("SENDLOVE_API_KEY", "uierbycur4yt73467t6trtycff3rt");
 
 // Refresh interval for ajax updates of the history table (in seconds)
 if (!defined('AJAX_REFRESH'))   define('AJAX_REFRESH', 30);
