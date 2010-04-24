@@ -232,7 +232,7 @@ include("head.html");
             success: function(json) {
                 $('#msg-'+type).text('Account settings saved!');
             },
-			error: function(xhdr, status, err) {
+            error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');
             }
         });
@@ -470,11 +470,14 @@ include("head.html");
 
         </blockquote>
 
-        <p><label>All US Citizens must submit a W-9 to be paid by LoveMachine</label><br/></p>
+        <p><label>All US Citizens must submit a W-9 to be paid by LoveMachine </label>
+        <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><FONT
+COLOR="Blue">Download W-9 Here</FONT></a>
+        </p>
         <blockquote>
-            <p><label style="float:left;line-height:26px">Upload W-9</label>
+          <p><label style="float:left;line-height:26px">Upload W-9</label>
                 <input id="formupload" type="button" value="Browse" style="float:left;margin-left: 8px;" />
-            </p>
+          </p>
             <br style="clear:both" />
             <div class="uploadnotice-w9"></div>
 
@@ -483,7 +486,7 @@ include("head.html");
             </p>
             <br style="clear:both" />
             <div class="uploadnotice-local"></div>
-        </blockquote>
+    </blockquote>
 
         <input type="submit" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
 
