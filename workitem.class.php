@@ -197,6 +197,10 @@ WHERE id = ' . (int)$id;
         $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
         mysql_unbuffered_query($query);
 
+        if($this->getStatus() == 'BIDDING') {
+        	$this->tweetNewJob();
+        }
+
         return $rt ? 1 : 0;
     }
 
