@@ -194,7 +194,7 @@ include("head.html");
             </p></div>
             <script type="text/javascript">
                  var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
-                 confirmpassword.add(Validate.Confirmation, { match: 'password'} ); 
+                 confirmpassword.add(Validate.Custom1, { match: 'password'} ); 
             </script>
 			<?php endif; ?>
             <div class="LVspace">
