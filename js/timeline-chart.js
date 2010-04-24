@@ -433,7 +433,7 @@ TimelineChart.prototype.setBottomLabels = function (attrs, labels) {
 
         if (row.length > 1) {
             for (var j = 0; j < row.length; j++) {
-                if (typeof row[j] !== 'undefined') {
+                if (typeof row[j] !== 'undefined' && row[j] != null) {
                     var x = this.chartLeft + j / (row.length - 1) * this.chartWidth;
                     var t = this.r.text(x, y, '' + row[j]).attr({ 'text-anchor':'middle' }).attr(attrs);
                     if (x - t.getBBox().width / 2 < minX) {
@@ -559,13 +559,14 @@ LoveChart = {
 	   feeCount = LoveChart.chart.normalizeSeries(data.feeCount, rightMax);
 
             var labels = [];
-            var dayLabels = [], weekLabels = [], monthLabels = [], yearLabels = [];
+            var fullLabels = data.labels.xFull;
             var month, year;
             var nonEmptyDateLabels = 0, nonEmptyWeekLabels = 0, nonEmptyMonthLabels = 0, nonEmptyYearLabels = 0;
-            labels.push(data.labels);
+            labels.push(data.labels.x1);
+            labels.push(data.labels.x2);
 
             LoveChart.chart.setBottomLabels({ fill:'black', font:'11px Arial, sans-serif' }, labels);
-            LoveChart.chart.setLeftLabels({ fill:'black', font:'11px Arial, sans-serif', 'text-anchor':'end' }, leftMax, 100);
+            LoveChart.chart.setLeftLabels({ fill:'#F4B645', font:'11px Arial, sans-serif', 'text-anchor':'end' }, leftMax, 100);
             LoveChart.chart.setRightLabels({ fill:'#00F01B', font:'11px Arial, sans-serif', 'text-anchor':'start' }, rightMax, 100);
 
             var messagesFillData = [].concat(messages);
@@ -585,12 +586,15 @@ LoveChart = {
             yAxisDots = LoveChart.chart.updateAxisMax(sendersFillData,yAxisDots);
             yAxisDots = LoveChart.chart.updateAxisMax(feeCountFillData,yAxisDots);
 
+	    messages[0] = messages[0] || 0;
+	    messages[messages.length - 1] = messages[messages.length - 1] || 0;
+
             LoveChart.messagesVerticals.setData(messages, true);
             LoveChart.messagesFill.setData(messagesFillData, true);
-            LoveChart.messagesStroke.setData(yAxisDots, true);
+            LoveChart.messagesStroke.setData(messages, true);
             LoveChart.sendersFill.setData(sendersFillData, true);
             LoveChart.feeCountFill.setData(feeCountFillData, true);
-            LoveChart.messagesDots.setData(yAxisDots, true);
+            LoveChart.messagesDots.setData(messages, true);
 
             LoveChart.chart.popupTextCallback = function (xs) {
                 var o = xs[0];
@@ -610,11 +614,13 @@ LoveChart = {
                 {
                     selectedFeeCountValue = feeCount[o - 1] || 0;
                 }
+		var dateRangeText = fullLabels[o];
 
                 return [
-                    { fill:'#F4B645', font:'bold 11px Arial, sans-serif', text:' Total fees: $'+ Math.round(selectedMessageValue * leftMax) + ' ' },
+                    { fill:'#F4B645', font:'bold 11px Arial, sans-serif', text:' Total fees: $'+ formatAsCurrency(Math.round(selectedMessageValue * leftMax)+'') + ' ' },
                     { fill:'#00F01B', font:'bold 11px Arial, sans-serif', text:' Unique people ' + Math.round(selectedSendersValue * rightMax) + ' '  },
-                    { fill:'#00FFFB', font:'bold 11px Arial, sans-serif', text:' Fee Count: ' + Math.round(selectedFeeCountValue * rightMax) + ' ' }
+                    { fill:'#00FFFB', font:'bold 11px Arial, sans-serif', text:' Fee Count: ' + Math.round(selectedFeeCountValue * rightMax) + ' ' },
+                    { fill:'black', font:'bold 11px Arial, sans-serif', text: dateRangeText }
                 ];
             };
         });
@@ -655,3 +661,32 @@ LoveChart = {
 };
 
 }());
+
+function formatAsCurrency(amount)
+{
+	var delimiter = ","; // replace comma if desired
+	var a = amount.split('.',2)
+	var d = '';
+	if(a && a.length == 2) {
+	   d = a[1];
+	}
+	var i = parseInt(a[0]);
+	if(isNaN(i)) { return ''; }
+	var minus = '';
+	if(i < 0) { minus = '-'; }
+	i = Math.abs(i);
+	var n = new String(i);
+	var a = [];
+	while(n.length > 3)
+	{
+		var nn = n.substr(n.length-3);
+		a.unshift(nn);
+		n = n.substr(0,n.length-3);
+	}
+	if(n.length > 0) { a.unshift(n); }
+	n = a.join(delimiter);
+	if(d.length < 1) { amount = n; }
+	else { amount = n + '.' + d; }
+	amount = minus + amount;
+	return amount;
+}

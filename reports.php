@@ -324,7 +324,7 @@ function setupTimelineChart()
 {
 	var chartPanelId = 'timeline-chart';
 	$('#'+chartPanelId).empty();
-	LoveChart.initialize(chartPanelId, 700, 300, 30);
+	LoveChart.initialize(chartPanelId, 780, 300, 30);
 	LoveChart.forceWeeklyLabels(false);
 	LoveChart.fetchData = function (from, to, username, callback) {
 	    if (from.getTime() > to.getTime()) {
