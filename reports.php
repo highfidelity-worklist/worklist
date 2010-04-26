@@ -341,20 +341,7 @@ $.ajax({
             data: 'qType=chart&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+'&order='+$("#sort-by").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
             dataType: 'json',
             success: function(data) {
-	        var fees = [], uniquePeople = [], feeCount = [];
-	        var d = new Date(from);
-
-	        while (d.getTime() <= to.getTime()) {
-	            var key = fmtDate2(d);
-	            fees.push(data.fees[key] || undefined);
-	            feeCount.push(data.feeCount[key] || undefined);
-	            uniquePeople.push(data.uniquePeople[key] || undefined);
-	            d.setDate(d.getDate() + 1);
-	        }
-            var messages = [], senders = [];
-            messages = data.fees;
-            senders = data.uniquePeople;
-	        callback(messages, senders, data.feeCount, data.labels);
+	        callback(data.fees, data.uniquePeople, data.feeCount, data.labels);
 	    } ,
             error: function(xhdr, status, err) {
                  $('#again').click(function(e){

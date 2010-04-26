@@ -511,6 +511,7 @@ LoveChart = {
         this.chart.framePointAttr = { fill:'#F4B645', stroke:'#FFF' };
         this.userType = 'sender';
         this.forceWeekly = false;
+	this.enableCache = false;
 
         this.messagesVerticals = this.chart.addVerticalsSeries({ stroke:'#000', opacity:0.1 });
         this.messagesFill = this.chart.addFillSeries({ fill:'#F4B645', opacity:0.3 });
@@ -639,18 +640,30 @@ LoveChart = {
             to = tmp;
         }
 
-	this.fetchData(from, to, username, function (messages, senders, feeCount, labels) {
-	    var result = {
-		from:from,
-		to:to,
-		messages:messages,
-		senders:senders,
-		feeCount:feeCount,
-		labels:labels
-	    };
+	var key = from.toDateString() + ' ' + to.toDateString() + ' ' + username;
+	if(this.userType != 'undefined') {
+	    key = key + ' ' + this.userType;
+	}
 
-	    callback(result);
-	});
+	if (!this.enableCache || !LoveChart.cache[key]) {
+	  this.fetchData(from, to, username, function (messages, senders, feeCount, labels) {
+	      var result = {
+		  from:from,
+		  to:to,
+		  messages:messages,
+		  senders:senders,
+		  feeCount:feeCount,
+		  labels:labels
+	      };
+	      if(this.enableCache) {
+		LoveChart.cache[key] = result;
+	      }
+	      callback(result);
+	    });
+	} else {
+	  callback(LoveChart.cache[key]);
+	}
+	   
     },
     /**
      * Set the User type ( as Sender or Receiver )

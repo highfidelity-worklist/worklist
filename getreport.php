@@ -149,21 +149,8 @@ echo $json;
     $toDateTime = mktime(0,0,0,substr($toDate,5,2),  substr($toDate,8,2), substr($toDate,0,4));
 
     $daysInRange = round( abs($toDateTime-$fromDateTime) / 86400, 0 );
-    $dateRangeType = 'd';
-    $dateRangeQuery = "DATE_FORMAT(`date`,'%Y-%m-%d') ";
-    if($daysInRange > 31 && $daysInRange <= 180) {
-      $dateRangeType = 'w';
-      $dateRangeQuery = "yearweek(`date`, 3) ";
-    } else if($daysInRange > 180 && $daysInRange <= 365) {
-      $dateRangeType = 'm';
-      $dateRangeQuery = "DATE_FORMAT(`date`,'%Y-%m') ";
-    } else if($daysInRange > 365 && $daysInRange <= 730) {
-      $dateRangeType = 'q';
-      $dateRangeQuery = "concat(year(`date`),QUARTER(`date`)) ";
-    } else if($daysInRange > 730) {
-      $dateRangeType = 'y';
-      $dateRangeQuery = "DATE_FORMAT(`date`,'%Y') ";
-    }
+    $rollupColumn = getRollupColumn('`date`');
+    $dateRangeType = $rollupColumn['rollupRangeType'];
 
     $qbody = " FROM `".FEES."`
 	      INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
@@ -171,7 +158,7 @@ echo $json;
 	      WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
     $qgroup = " GROUP BY fee_date";
 
-    $qcols = "SELECT " . $dateRangeQuery . " as fee_date, count(1) as fee_count,sum(amount) as total_fees, count(distinct user_id) as unique_people ";
+    $qcols = "SELECT " . $rollupColumn['rollupQuery'] . " as fee_date, count(1) as fee_count,sum(amount) as total_fees, count(distinct user_id) as unique_people ";
 
     $res = mysql_query("$qcols $qbody $qgroup");
     if($res && mysql_num_rows($res) > 0) {
@@ -186,6 +173,26 @@ echo $json;
     $json_data = array('fees' => fillAndRollupSeries($fromDate, $toDate, $fees, false, $dateRangeType), 'uniquePeople' => fillAndRollupSeries($fromDate, $toDate, $uniquePeople, false, $dateRangeType), 'feeCount' => fillAndRollupSeries($fromDate, $toDate, $feeCount, false, $dateRangeType), 'labels' => fillAndRollupSeries($fromDate, $toDate, null, true, $dateRangeType), 'fromDate' => $fromDate, 'toDate' => $toDate);
     $json = json_encode($json_data);
     echo $json;
+}
+
+function  getRollupColumn($columnName)
+{
+    $dateRangeType = 'd';
+    $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y-%m-%d') ";
+    if($daysInRange > 31 && $daysInRange <= 180) {
+      $dateRangeType = 'w';
+      $dateRangeQuery = "yearweek(" .$columnName . ", 3) ";
+    } else if($daysInRange > 180 && $daysInRange <= 365) {
+      $dateRangeType = 'm';
+      $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y-%m') ";
+    } else if($daysInRange > 365 && $daysInRange <= 730) {
+      $dateRangeType = 'q';
+      $dateRangeQuery = "concat(year(" .$columnName . "),QUARTER(" .$columnName . ")) ";
+    } else if($daysInRange > 730) {
+      $dateRangeType = 'y';
+      $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y') ";
+    }
+    return array('rollupRangeType' => $dateRangeType, 'rollupQuery' => $dateRangeQuery);
 }
 
 function  getMySQLDate($sourceDate)
