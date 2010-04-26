@@ -407,6 +407,13 @@ function loadTimelineChart() {
             return true;
         });
 
+        // Show PayPal reports page
+        $('#pp-reports-button').click(function() {
+            var new_window = window.open('ppreports.php', '_blank');
+            new_window.focus();
+            return false;
+        });
+
 	$('.text-field-sm').datepicker({
 		changeMonth: true,
 		changeYear: true,
@@ -441,6 +448,9 @@ function loadTimelineChart() {
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <div>
+    <div id="pp-reports-box" style="float:left;">
+        <input type="submit" value="PayPal Reports" id="pp-reports-button"></input>
+    </div>
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
 	  <tr>
