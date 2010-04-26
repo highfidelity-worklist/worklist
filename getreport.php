@@ -149,7 +149,7 @@ echo $json;
     $toDateTime = mktime(0,0,0,substr($toDate,5,2),  substr($toDate,8,2), substr($toDate,0,4));
 
     $daysInRange = round( abs($toDateTime-$fromDateTime) / 86400, 0 );
-    $rollupColumn = getRollupColumn('`date`');
+    $rollupColumn = getRollupColumn('`date`', $daysInRange);
     $dateRangeType = $rollupColumn['rollupRangeType'];
 
     $qbody = " FROM `".FEES."`
@@ -175,7 +175,7 @@ echo $json;
     echo $json;
 }
 
-function  getRollupColumn($columnName)
+function  getRollupColumn($columnName, $daysInRange)
 {
     $dateRangeType = 'd';
     $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y-%m-%d') ";
