@@ -1139,4 +1139,3 @@ include("head.html"); ?>
 </table>
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
 <?php include("footer.php"); ?>
-<?php var_dump($filter); ?>
