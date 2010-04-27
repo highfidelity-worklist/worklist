@@ -109,6 +109,20 @@ var datePickerControl; // Month/Year date picker.
 var dateChangedUsingField = false; // True  if the date was changed using date field rather than picker.
 var currentTab = "details";
 
+    /**
+    * 
+    */
+    function withdraw_fee(fee_id) {
+        var ajax_connection = $.get('wd_fee.php', { 'wd_fee_id': fee_id  }, 
+            function(data) {
+                if (data = 'Update Successful!') {
+                    $('#workitem-'+fee_id).remove();
+                }
+                alert(data); 
+            }
+        );
+    }
+
 function fmtDate(d) {
     return '' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
 }
@@ -141,7 +155,7 @@ var getPaidItems = function() {
     function AppendPagination(page, cPages, table)
     {
         <?php if (!empty($_SESSION['is_payer'])) { ?>
-            cspan = '7'
+            cspan = '8'
         <?php } else { ?> 
             cspan = '6'
         <?php } ?> 
@@ -162,6 +176,7 @@ var getPaidItems = function() {
         pagination += '</td></tr>';
         $('.table-' + table).append(pagination);
     }
+    
 
     // json row fields: id, summary, status, payee, fee
     function AppendRow(json, odd)
@@ -169,12 +184,13 @@ var getPaidItems = function() {
         var pre = '', post = '';
         var row;
 
-        row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live ';
+        row = '<tr id="workitem-' + json[1] + '" class="row-worklist-live ';
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += '">';
-        <?php if (!empty($_SESSION['is_payer'])) { ?>
-            row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[5] + '" class="workitem-paid" /></td>';
-	    <?php } ?> 
+        <?php  if (!empty($_SESSION['is_payer'])) { ?>
+            row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[5] + '" class="workitem-paid" /> </td>';
+            row += '<td> <a href="javascript: void();" onclick="withdraw_fee(\'' + json[1] + '\')">Void</a> </td>';
+        <?php } ?> 
         pre = '<a href="workitem.php?job_id='+json[0]+'">';
 	    post = '</a>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
@@ -207,7 +223,7 @@ var getPaidItems = function() {
     */
     function AppendTotals(pageTotal, grandTotal) {
         <?php if (!empty($_SESSION['is_payer'])) { ?>
-            cspan = '6'
+            cspan = '7'
         <?php } else { ?> 
             cspan = '5'
         <?php } ?> 
@@ -495,12 +511,13 @@ function loadTimelineChart() {
             <tr class="table-hdng">
                 <?php if (!empty($_SESSION['is_payer'])) { ?>
                 <td width="3%"><input type="checkbox" id="report-check-all" value="1" /></td>
+                <td width="5%">Void Fee</td>
                 <?php } ?>
                 <td width="7%">ID</td>
-                <td width="35%">Summary</td>
+                <td width="30%">Summary</td>
                 <td width="25%">Description</td>
                 <td width="12%">Payee</td>
-                <td width="13%">Paid Date</td>
+                <td width="12%">Paid Date</td>
                 <td width="5%">Fee</td>
             </tr>
             </thead>
