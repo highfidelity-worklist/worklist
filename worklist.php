@@ -29,6 +29,8 @@ if( $userId > 0 )	{
 }
 
 $filter = new Agency_Worklist_Filter();
+$filter->setName('.worklist')
+       ->initFilter();
 
 if ($userId > 0 && isset($_POST['save_item'])) {
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder');
@@ -1137,3 +1139,4 @@ include("head.html"); ?>
 </table>
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
 <?php include("footer.php"); ?>
+<?php var_dump($filter); ?>

@@ -8,6 +8,10 @@
 include("config.php");
 include("class.session_handler.php");
 include("functions.php");
+require_once('lib/Agency/Worklist/Filter.php');
+
+ini_set('display_errors', true);
+error_reporting(-1);
 
 if (empty($_SESSION['userid'])) {
     return;
@@ -15,17 +19,14 @@ if (empty($_SESSION['userid'])) {
 
 $limit = 30;
 
-if(isset($_REQUEST['from_date'])) {
-  $from_date = mysql_real_escape_string($_REQUEST['from_date']);
-}
-if(isset($_REQUEST['to_date'])) {
-  $to_date = mysql_real_escape_string($_REQUEST['to_date']);
-}
-if(isset($_REQUEST['paid_status'])) {
-  $paidStatus = $_REQUEST['paid_status'];
-}
+$_REQUEST['name'] = '.reports';
+$filter = new Agency_Worklist_Filter($_REQUEST);
 
-$page = isset($_REQUEST["page"])?$_REQUEST["page"]:1;
+$from_date = mysql_real_escape_string($filter->getStart());
+$to_date = mysql_real_escape_string($filter->getEnd());
+$paidStatus = $filter->getPaidstatus();
+
+$page = $filter->getPage();
 
 $dateRangeFilter = '';
 if(isset($from_date) && isset($to_date))
@@ -42,21 +43,10 @@ if(isset($paidStatus) && ($paidStatus)!="ALL")
     $paidStatusFilter = " AND `".FEES."`.`paid` = ".$paidStatus."";
 }
 
-$sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST["sfilter"] : '';
-$ufilter = isset($_REQUEST["ufilter"])?intval($_REQUEST["ufilter"]):0;
-$order = isset( $_REQUEST['order'] ) ? $_REQUEST['order'] :'';
+$sfilter = $filter->getStatus();
+$ufilter = $filter->getUser();
+$order = $filter->getOrder();
 $queryType = isset( $_REQUEST['qType'] ) ? $_REQUEST['qType'] :'detail';
-
-require_once 'lib/Worklist/Filter.php';
-$WorklistFilter = new Worklist_Filter(array(
-    Worklist_Filter::CONFIG_COOKIE_EXPIRY => (60 * 60 * 24 * 30),
-    Worklist_Filter::CONFIG_COOKIE_PATH   => '/' . APP_BASE,
-    Worklist_Filter::CONFIG_COOKIE_NAME => 'reports'
-));
-
-$WorklistFilter->setSfilter($sfilter)
-               ->setUfilter($ufilter)
-               ->saveFilters();
 
 $where = '';
 if ($ufilter) {

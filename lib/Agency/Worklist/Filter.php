@@ -9,13 +9,65 @@ require_once ('workitem.class.php');
 
 class Agency_Worklist_Filter
 {
+    protected $name = '.worklist';
 
+	// Filter for worklist
     protected $user = 0;
     protected $status = 'BIDDING';
     protected $query = '';
     protected $sort = 'priority';
     protected $dir = 'ASC';
     protected $page = 1;
+    
+    // Additional filter for reports
+    protected $paidstatus = 'ALL';
+    protected $order = 'name';
+    protected $start = '';
+    protected $end = '';
+    
+    
+    public function getPaidstatus()
+    {
+    	return $this->paidstatus;
+    }
+    
+    public function setPaidstatus($paidStatus)
+    {
+    	$this->paidstatus = $paidStatus;
+    	return $this;
+    }
+    
+    public function getOrder()
+    {
+    	return $this->order;
+    }
+    
+    public function setOrder($order)
+    {
+    	$this->order = $order;
+    }
+    
+    public function getStart()
+    {
+    	return$this->start;    
+	}
+	
+	public function setStart($start)
+	{
+		$this->start = $start;
+		return $this;
+	}
+	
+	public function getEnd()
+	{
+		return $this->end;
+	}
+	
+	public function setEnd($end)
+	{
+		$this->end = $end;
+		return $end;
+	}
 
     /**
      * @return the $user
@@ -64,6 +116,14 @@ class Agency_Worklist_Filter
     {
         return $this->page;	
     }
+    
+    /**
+     * @return the $name
+     */
+    public function getName()
+    {
+        return $this->name;	
+    }
 
     /**
      * @param $user the $user to set
@@ -93,11 +153,20 @@ class Agency_Worklist_Filter
     }
 
     /**
-     * @param $query the $query to set
+     * @param $page the $page to set
      */
     public function setPage($page)
     {
         $this->page = (int)$page;
+        return $this;
+    }
+
+    /**
+     * @param $name the $name to set
+     */
+    public function setName($name)
+    {
+        $this->name = (string)$name;
         return $this;
     }
 
@@ -147,18 +216,11 @@ class Agency_Worklist_Filter
 
     public function getUserSelectbox()
     {
-        $users = User::getUserlist(
-        getSessionUserId());
+        $users = User::getUserlist(getSessionUserId());
         $box = '<select name="user">';
-        $box .= '<option value="0"' . (($this->getUser() ==
-         0) ? ' selected="selected"' : '') . '>All Users</option>';
+        $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '>All Users</option>';
         foreach ($users as $user) {
-            $box .= '<option value="' .
-             $user->getId() . '"' .
-             (($this->getUser() ==
-             $user->getId()) ? ' selected="selected"' : '') .
-             '>' . $user->getNickname() .
-             '</option>';
+            $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
         }
         $box .= '</select>';
         return $box;
@@ -186,62 +248,77 @@ class Agency_Worklist_Filter
 
     public function __construct(array $options = array())
     {
-        if (!empty($options) && ($options['reload'] ==
-         'false')) {
-            $this->setOptions(
-            $options);
-        } elseif (getSessionUserId() > 0) {
-            $this->initByDatabase();
-        } else {
-            $this->initByCookie();
+        if (!empty($options) && ($options['reload'] == 'false')) {
+            $this->setOptions($options);
+        } elseif (isset($options['name'])) {
+        	$this->setName($options['name'])
+        		 ->initFilter();
         }
+    }
+    
+    public function initFilter()
+    {
+    	if (getSessionUserId() > 0) {
+    		$this->initByDatabase();
+    	} else {
+    		$this->inigByCookie();
+    	}
     }
 
     private function setOptions(array $options)
     {
+    	if (isset($options['name'])) {
+    		$this->setName($options['name']);
+    	} else {
+    		$options = $options[$this->getName()];
+    	}
         $cleanOptions = array();
         $methods = get_class_methods($this);
         foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst(
-            $key);
-            if (in_array($method, 
-            $methods)) {
-                $this->$method(
-                $value);
-                $cleanOptions[$key] = $value;
+            $method = 'set' . ucfirst($key);
+            if (in_array($method, $methods)) {
+                $this->$method($value);
+                if ($key != 'name') {
+                	$cleanOptions[$key] = $value;
+                }
             }
         }
-        $this->save(serialize($cleanOptions));
+        $this->save($cleanOptions);
         return $this;
     }
 
-    private function saveToDatabase($serializedOptions)
+    private function saveToDatabase($cleanOptions)
     {
         $user = new User();
         $user->findUserById(getSessionUserId());
-        $user->setFilter($serializedOptions);
+        $filter = unserialize($user->getFilter());
+        
+        $filter[$this->getName()] = $cleanOptions;
+        
+        $user->setFilter(serialize($filter));
         $user->save();
     }
 
-    private function saveToCookie($serializedOptions)
+    private function saveToCookie($cleanOptions)
     {
-        $setcookie = setcookie('FilterCookie', 
-        $serializedOptions, time() + 3600, '/', 
-        SERVER_NAME, false, false);
+    	if (isset($_COOKIE['FilterCookie'])) {
+    		$filter = unserialize($_COOKIE['FilterCookie']);
+    	} else {
+    		$filter = array();
+    	}
+    	$filter[$this->getName()] = $cleanOptions;
+        $setcookie = setcookie('FilterCookie', serialize($filter), time() + 3600, '/', SERVER_NAME, false, false);
         if ($setcookie === false) {
-            throw new Exception(
-            'Cookie could not be set!');
+            throw new Exception('Cookie could not be set!');
         }
     }
 
-    private function save($serializedOptions)
+    private function save($cleanOptions)
     {
         if (getSessionUserId() > 0) {
-            $this->saveToDatabase(
-            $serializedOptions);
+            $this->saveToDatabase($cleanOptions);
         } else {
-            $this->saveToCookie(
-            $serializedOptions);
+            $this->saveToCookie($cleanOptions);
         }
     }
 
@@ -250,18 +327,14 @@ class Agency_Worklist_Filter
         $user = new User();
         $user->findUserById(getSessionUserId());
         if ($user->getFilter()) {
-            $this->setOptions(
-            unserialize(
-            $user->getFilter()));
+            $this->setOptions(unserialize($user->getFilter()));
         }
     }
 
     private function initByCookie()
     {
         if (isset($_COOKIE['FilterCookie'])) {
-            $this->setOptions(
-            unserialize(
-            $_COOKIE['FilterCookie']));
+            $this->setOptions(unserialize($_COOKIE['FilterCookie']));
         }
     }
 }

@@ -13,6 +13,7 @@ include("check_session.php");
 include_once("functions.php");
 include_once("send_email.php");
 include_once("classes/Fee.class.php");
+require_once('lib/Agency/Worklist/Filter.php');
 
 /* This page is only accessible to runners. */
 if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']) && isset($_POST['paid'])) {
@@ -20,14 +21,14 @@ if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']) && isset($_POS
     return;
 }
 
-if(!isset($_SESSION['ufilter'])) {
-  $_SESSION['ufilter'] = 'ALL';
-}
-
 $t_date = (isset($_POST['end_date'])) ? strtotime(trim($_POST['end_date'])) : time();
 $f_date = (isset($_POST['start_date'])) ? strtotime(trim($_POST['start_date'])) : strtotime('-1 month', $t_date);
 
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+
+$filter = new Agency_Worklist_Filter();
+$filter->setName('.reports')
+       ->initFilter();
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
     $summaryData = Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1);
@@ -240,7 +241,7 @@ var getPaidItems = function() {
         $('.table-worklist tbody').append(row);
     }
 
-    function GetReport(npage) {
+    function GetReport(npage, reload) {
 	      _fromDate = $("#start-date").datepicker('getDate');
 	     _toDate = $("#end-date").datepicker('getDate');
 	      if(_fromDate != null) {
@@ -254,7 +255,16 @@ var getPaidItems = function() {
         $.ajax({
             type: "POST",
             url: 'getreport.php',
-            data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+'&order='+$("#sort-by").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
+            data: {
+                page: npage,
+                status: $('select[name=status]').val(),
+                user: $('select[name=user]').val(),
+                order: $('#sort-by').val(),
+                start: fromDate,
+                end: toDate,
+                paidstatus: paidStatus,
+                reload: ((reload == true) ? true : false)
+            },
             dataType: 'json',
             success: function(json) {
                 $("#loader_img").css("display","none");
@@ -329,14 +339,14 @@ function initializeTabs()
                     else
                     {
                             currentTab = "chart";
-                            timeoutId = setTimeout("setupTimelineChart()", 50);
+                            timeoutId = setTimeout("setupTimelineChart(true)", 50);
                     }
                 }                                                                                                                                                       
         });
 
 }
 
-function setupTimelineChart()
+function setupTimelineChart(reload)
 {
 	var chartPanelId = 'timeline-chart';
 	$('#'+chartPanelId).empty();
@@ -354,7 +364,16 @@ function setupTimelineChart()
 $.ajax({
             type: "POST",
             url: 'getreport.php',
-            data: 'qType=chart&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+'&order='+$("#sort-by").val()+'&from_date='+fromDate+'&to_date='+toDate+'&paid_status='+paidStatus,
+            data: {
+                qType: 'chart',
+                status: $('select[name=status]').val(),
+                user: $('select[name=user]').val(),
+                order: $('#sort-by').val(),
+                start: fromDate,
+                end: toDate,
+                paidstatus: paidStatus,
+                reload: ((reload == true) ? true : false)
+            },
             dataType: 'json',
             success: function(data) {
 	        callback(data.fees, data.uniquePeople, data.feeCount, data.labels);
@@ -385,7 +404,7 @@ function loadTimelineChart() {
 	LoveChart.load(_fromDate, _toDate, "");
 }
     $(document).ready(function(){
-        GetReport(<?php echo $page?>);
+        GetReport(<?php echo $page; ?>, true);
         initializeTabs();
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#report-check-all").live('change', function(){
@@ -480,7 +499,7 @@ function loadTimelineChart() {
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
 	  <tr>
-	    <td>Payee: <?php DisplayFilter('ufilter', true); ?></td>
+	    <td>Payee: <?php echo $filter->getUserSelectbox(); ?></td>
 	    <td>Paid Status: 
 	      <select id="paid-status" >
 		    <option value="ALL">ALL</option>
@@ -488,7 +507,7 @@ function loadTimelineChart() {
 		    <option value="0" selected>Unpaid</option>
 	      </select>
 	    </td>
-	    <td style="text-align: right;">Item status: <?php DisplayFilter('sfilter', true); ?><br/>Order:
+	    <td style="text-align: right;">Item status: <?php echo $filter->getStatusSelectbox(); ?><br/>Order:
             <select id="sort-by">
                 <option value="name">Alphabetically</option>
                 <option value="date">Chronologically</option>

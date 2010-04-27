@@ -29,7 +29,7 @@ if (preg_match("/^\#\d+$/",$query = trim($_REQUEST['query']))) {
 }
 $limit = 30;
 
-
+$_REQUEST['name'] = '.worklist';
 $filter = new Agency_Worklist_Filter($_REQUEST);
 
 $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
