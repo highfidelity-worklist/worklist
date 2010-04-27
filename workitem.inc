@@ -534,9 +534,6 @@ function reply(id) {
 		</div>
 		<div id="page-content">
 			<div id="analytics" data="<?php echo $worklist['id']; ?>"></div>
-			<div style="margin:0px 101px 6px 0px;line-height:50px;float:right;display:inline-block;">
-				<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
-			</div>
 			<div class="info-summ-big">
 				<div class="info-ID">
 					<span class="info-label">#</span><?php echo $worklist['id'];?>
@@ -862,8 +859,11 @@ if ($action =="edit"):  ?>
 <!-- End of div right-panel-->
 		</div>
 <!-- End of div pageContent -->			
-	</div>
-	<div style="clear:both"></div>
+	</div><br>
+			<div style="margin:0px 101px 6px 0px;line-height:50px; padding-top:30px;padding-right:10px; float:right;display:inline-block;">
+				<script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
+			</div>
+			<div style="clear:both"></div>
 			
 	<!-- Popup HTML for Placing a bid -->
 	<?php if(isset($message)): ?>
@@ -871,7 +871,6 @@ if ($action =="edit"):  ?>
 		<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong><?php echo $message; ?></p>
 	</div>
 	<?php endif;?>
-	
 	<?php include('popup-edit-bid-info.inc') ?>
 	
 	<?php include("popup-place-bid.inc"); ?>
