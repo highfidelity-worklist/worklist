@@ -1,0 +1,27 @@
+div.debug { border: solid 1px #84142B; margin: 10px; }
+
+div#select-actions {
+    font-weight: bold; 
+    color: #777; 
+    text-align: right; 
+    margin: 5px 10px 5px 0;
+}
+
+table#payments-table { 
+    width: 95%; 
+    margin: 5px auto; 
+}
+
+table#payments-table td {
+    vertical-align: top;
+}
+
+table#payments-table td.fee-row input {
+    margin-left: 15px;
+}
+
+div#submit-btns {
+    text-align: right; 
+    margin: 5px 10px 5px 0;
+}
+
