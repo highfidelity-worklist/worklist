@@ -364,9 +364,9 @@ include("head.html"); ?>
 		
 		// sets reviewOnly to true of the selected option is REVIEW 
 		// otherwise sets it to false.				26-APR-2010 <Yani>
-		var reviewOnly = $("#search-filter").val() == 'REVIEW' ? true : false;
+		var reviewOnly = $('select[name=status]').val() == 'REVIEW' ? true : false;
 		
-		if ($("#search-filter").val() == 'REVIEW') {
+		if ($('select[name=status]').val() == 'REVIEW') {
 			$(".table-worklist > thead > tr").prepend("<td>ID</td>");
 		} else if($('.table-worklist > thead > tr > td:first').text() == 'ID') {
 			$('.table-worklist > thead > tr > td:first').remove();
