@@ -209,7 +209,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
 
 
     // Journal notification
-    $journal_message = "A bid of ".number_format($bid_amount,2)." was placed on item #$worklist_id: $summary.";
+    $journal_message = "A bid was placed on item #$worklist_id: $summary.";
 
     //sending email to the runner of worklist item
     $row = $workitem->getRunnerSummary($worklist_id);
@@ -255,7 +255,7 @@ if (isset($_SESSION['userid']) && $action =="edit_bid"){
     $bid_id = $workitem->updateBid($bid_id,$bid_amount,$done_by_edit,$_SESSION['timezone'],$notes);
 
     // Journal notification
-    $journal_message = "Bid updated on item #$worklist_id: $summary. with ".number_format($bid_amount,2)." ";
+    $journal_message = "Bid updated on item #$worklist_id: $summary.";
     //sending email to the runner of worklist item
     $row = $workitem->getRunnerSummary($worklist_id);
     if(!empty($row)) {
