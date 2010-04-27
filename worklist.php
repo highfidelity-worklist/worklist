@@ -199,7 +199,13 @@ include("head.html"); ?>
     function AppendRow(json, odd, prepend, moreJson, idx)    {
         var pre = '', post = '';
         var row;
-
+		
+		// sets reviewOnly to true if the lenght of the array is above 13 items
+		// 26-APR-2010 <Yani>
+		var reviewOnly = false;
+		if(json.length > 13)
+			reviewOnly = true;
+			
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live iToolTip hoverJobRow ';
 
 		// disable dragging for all rows except with "BIDDING" status
@@ -217,6 +223,11 @@ include("head.html"); ?>
 			pre = '<div class="slideDown" style="display:none">';
 			post = '</div>';
 		}
+		
+		// Displays the ID of the task in the first row
+		// 26-APR-2010 <Yani>
+		if(reviewOnly)
+			row+= '<td width="5%">' + json[0] + '</td>';
 		
         row += '<td width="45%">' + pre + json[1] + post + '</td>';
         if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
@@ -364,6 +375,17 @@ include("head.html"); ?>
 	}
     function GetWorklist(npage, update) {
 		$("#loader_img").css("display","block");
+		
+		// sets reviewOnly to true of the selected option is REVIEW 
+		// otherwise sets it to false.				26-APR-2010 <Yani>
+		var reviewOnly = $("#search-filter").val() == 'REVIEW' ? true : false;
+		
+		if ($("#search-filter").val() == 'REVIEW') {
+			$(".table-worklist > thead > tr").prepend("<td>ID</td>");
+		} else if($('.table-worklist > thead > tr > td:first').text() == 'ID') {
+			$('.table-worklist > thead > tr > td:first').remove();
+		}
+		
 		$.ajax({
 			type: "POST",
 			url: 'getworklist.php',
@@ -404,10 +426,23 @@ include("head.html"); ?>
 
 				/* Output the worklist rows. */
 				var odd = topIsOdd;
-				for (var i = lastFirst; i < json.length; i++) {
-					AppendRow(json[i], odd);
-					odd = !odd;
+				
+				// if reviewOnly is set to true, call AppendRow with additional argument
+				// 26-APR-2010 <Yani>
+				if(reviewOnly) {
+					for (var i = lastFirst; i < json.length; i++) {
+						var row = $.extend(true, [], json[i]);
+						row[row.length+1] = true;
+						AppendRow(row, odd);
+						odd = !odd;
+					}
+				} else {
+					for (var i = lastFirst; i < json.length; i++) {
+						AppendRow(json[i], odd);
+						odd = !odd;
+					}
 				}
+				
 				AppendPagination(page, cPages, 'worklist');
 
 				if (update && lastFirst > 1) {

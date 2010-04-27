@@ -32,6 +32,9 @@ $fields_to_htmlescape = array(
 				'country' => '', 
 				'provider' => '',
 				'smsaddr' => '',
+                // adds findus field to the sql query
+                // 26-APR-2010 <Yani>
+                'findus' => ''
 			);
 
 $fields_to_not_escape = array(
@@ -233,6 +236,12 @@ include("head.html");
 	      var about = new LiveValidation('about');
 	      about.add(Validate.Length, { minimum: 0, maximum: 150 } ); 
 	    </script>
+        <div class="LVspace">
+          <p>
+          <label for = "findus">How did you find us?</label><br />
+          <input type="text" id="findus" name="findus" class="text-field" size="35" value = "<?php echo isset($_POST['findus']) ? strip_tags($_POST['findus']) : ""; ?>" />
+          </p>
+        </div>
             <div class="LVspace">
 	      <p>
 	      <label for = "contactway">What is the preferred way to contact you?</label><br />
