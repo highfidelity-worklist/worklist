@@ -12,6 +12,10 @@ $fee_id = $_GET["wd_fee_id"];
 $fee_update_sql = 'UPDATE '.FEES.' SET withdrawn = \'1\' WHERE id = '.$fee_id;
 $fee_update = mysql_query($fee_update_sql);
 
-if ($fee_update) { echo 'Update Successful!'; } else { echo 'Update Failed: '.mysql_error(); }
+if ($fee_update) { 
+    echo 'Update Successful!'; 
+} else { 
+    echo 'Update Failed: '.mysql_error(); 
+}
 
 ?>
