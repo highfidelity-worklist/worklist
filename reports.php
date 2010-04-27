@@ -473,7 +473,9 @@ function loadTimelineChart() {
 <div>
     <div id="pp-reports-box" style="float:left;">
         <input type="submit" value="PayPal Reports" id="pp-reports-button"></input><br />
-        <input type="submit" value="Run MassPay" id="pp-masspay-button" />
+        <?php if (!empty($_SESSION['is_payer'])) { ?>
+            <input type="submit" value="Run MassPay" id="pp-masspay-button" />
+        <?php } ?>
     </div>
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">

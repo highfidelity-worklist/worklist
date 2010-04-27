@@ -30,6 +30,11 @@ include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 
+//send non-payers back to the reports page.
+if (empty($_SESSION['is_payer'])) {
+    header("Location:reports.php");
+}
+
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 
