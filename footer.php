@@ -17,7 +17,7 @@
 <!-- Close DIV container -->
 	</div>
 	<div id="footer">
-		<div class="lefticon" style="padding-top:10px;"><a href="feedlist.php" title="Rss & Atom Feeds" style="text-decoration:none;"><img src="images/rss20.png"></img>&nbsp;<img src="images/atom20.png"></img></a></div>
+		<div class="lefticon" style="padding-top:10px;"><a href="feedlist.php" title="Rss & Atom Feeds" style="text-decoration:none;"><img src="images/rss20.png" />&nbsp;<img src="images/atom20.png" /></a></div>
 		<?php
 			$res = preg_split('%/%', $_SERVER['SCRIPT_NAME']);
 			$filename = array_pop($res);
