@@ -40,6 +40,7 @@ class User
 	protected $has_sandbox;
 	protected $unixusername;
 	protected $projects_checkedout;
+	protected $filter;
 
     /**
      * With this constructor you can create a user by passing an array.
@@ -674,6 +675,45 @@ class User
 	public function setProjects_checkedout($projects_checkedout) {
 		$this->projects_checkedout = $projects_checkedout;
 		return $this;
+	}
+
+	/**
+	 * @return the $filter
+	 */
+	public function getFilter() {
+		return $this->filter;
+	}
+	
+	/**
+	 * Get a list of active users.
+	 * 
+	 * @param $attributes array Array containing all columns you would like to fetch
+	 * @param $populate int Populate a user by id
+	 * @return array Userlist
+	 *
+	 */
+	public static function getUserlist($populate = 0, $order = null)
+	{
+        $sql = 'SELECT `id` FROM `' . USERS . '` WHERE `confirm`= 1 AND `is_active` = 1 ORDER BY `' . (((null !== $order) && (in_array($order, $columns))) ? $order : 'nickname') . '` ASC;';
+        $result = mysql_query($sql);
+        $i = (((int)$populate > 0) ? (int)1 : 0);
+        while ($result && ($row = mysql_fetch_assoc($result))) {
+            $user = new User();
+            if ($populate != $row['id']) {
+                $userlist[$i++] = $user->findUserById($row['id']);
+            } else {
+                $userlist[0] = $user->findUserById($row['id']);
+            }
+        }
+        ksort($userlist);
+	    return ((!empty($userlist)) ? $userlist : false);
+	}
+
+	/**
+	 * @param $filter the $filter to set
+	 */
+	public function setFilter($filter) {
+		$this->filter = $filter;
 	}
 
 	private function loadUser($where)

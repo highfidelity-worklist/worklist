@@ -177,6 +177,19 @@ WHERE id = ' . (int)$id;
     {
         return $this->notes;
     }
+    
+    public static function getStates()
+    {
+        $states = array();
+        $query = 'SELECT DISTINCT `status` FROM `' . WORKLIST . '` LIMIT 0 , 30';
+        $result = mysql_query($query);
+        if ($result) {
+            while ($row = mysql_fetch_assoc($result)) {
+                $states[] = $row['status'];
+            }
+        }
+        return $states;
+    }
 
     protected function insert()
     {

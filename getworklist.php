@@ -10,10 +10,9 @@
 
 include("config.php");
 include("class.session_handler.php");
-include('worklist_filter.php');
+require_once('lib/Agency/Worklist/Filter.php');
 
 ob_start();
-error_reporting(-1);
 // Test for a string containing 0 characters of anything other than 0-9 and #
 // After a quick trim ofcourse! :)
 // I knowww regex is usually the bad first stop, but there would be no back tracking in this
@@ -29,26 +28,17 @@ if (preg_match("/^\#\d+$/",$query = trim($_REQUEST['query']))) {
 	// if we're not dead continue on!
 }
 $limit = 30;
-$page = isset($_REQUEST['page'])?$_REQUEST['page']:1;
 
-$sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST['sfilter'] : '';
-$ufilter = isset($_REQUEST['ufilter'])? $_REQUEST['ufilter'] : 0;
-$ofilter = isset($_REQUEST['ofilter'])? $_REQUEST['ofilter'] : 'priority';
-$dfilter = isset($_REQUEST['dfilter'])? $_REQUEST['dfilter'] : 'UP';
+
+$filter = new Agency_Worklist_Filter($_REQUEST);
 
 $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
 
-$WorklistFilter->setSfilter($sfilter)
-               ->setUfilter($ufilter)
-			   ->setOfilter($ofilter)
-			   ->setDfilter($dfilter)
-               ->saveFilters();
-
-
-$sfilter = $WorklistFilter->getSfilter() ? explode("/",$WorklistFilter->getSfilter()) : array();
-$ufilter = intval($WorklistFilter->getUfilter());
-$ofilter = $WorklistFilter->getOfilterConverted();
-$dfilter = $WorklistFilter->getDfilterConverted();
+$sfilter = explode('/', $filter->getStatus());
+$ufilter = $filter->getUser();
+$ofilter = $filter->getSort();
+$dfilter = $filter->getDir();
+$page = $filter->getPage();
 
 $where = '';
 $unpaid_join = '';
@@ -93,9 +83,9 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     }
 }
 
-$query = isset($_REQUEST['query']) ? $_REQUEST["query"] : '';
+$query = $filter->getQuery();
 
-if($query!='' & $query!='Search...') {
+if($query!='' && $query!='Search...') {
     $searchById = false;
      if(is_numeric(trim($query))) {
         $rt = mysql_query("select count(*) from ".WORKLIST." LEFT JOIN `".FEES."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id` $where AND `".WORKLIST."`.`id` = " .$query);
@@ -108,7 +98,7 @@ if($query!='' & $query!='Search...') {
         }
     }
     if(!$searchById) {
-        $array=explode(" ",rawurldecode($_REQUEST['query']));
+        $array=explode(" ",rawurldecode($query));
 
         foreach ($array as $item) {
             $item = mysql_escape_string($item);
@@ -207,7 +197,7 @@ $worklist = array(array($items, $page, $cPages));
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 echo mysql_error();
-while ($row=mysql_fetch_assoc($rtQuery)) {
+while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
 
     $worklist[] = array(
          0 => $row['id'],

@@ -5,26 +5,13 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-
 include("config.php");
 include("class.session_handler.php");
 include_once("functions.php");
 include_once("send_email.php");
 include_once("update_status.php");
 include_once("workitem.class.php");
-include('worklist_filter.php');
-
-if(!isset($_SESSION['sfilter']))
-$_SESSION['sfilter'] = 'BIDDING';
-
-if(!isset($_SESSION['ufilter']))
-$_SESSION['ufilter'] = 'ALL';
-
-$ofilter = $WorklistFilter->getOfilter();
-$dfilter = $WorklistFilter->getDfilter();
+require_once('lib/Agency/Worklist/Filter.php');
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -40,6 +27,8 @@ if( $userId > 0 )	{
 	$user->findUserById( $userId );
 	$nick = $user->getNickname();
 }
+
+$filter = new Agency_Worklist_Filter();
 
 if ($userId > 0 && isset($_POST['save_item'])) {
     $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder');
@@ -113,9 +102,6 @@ if (!empty($_POST)) {
     exit();
 }
 
-//list of users for filtering
-$userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
-
 /*
  * Retrieve the latest status update from the user
  */
@@ -145,7 +131,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript">
 	var affectedHeader = false;
-	var directions = {"UP":"images/arrow-up.png","DN":"images/arrow-down.png"};
+	var directions = {"ASC":"images/arrow-up.png","DESC":"images/arrow-down.png"};
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
     var lastId;
     var page = <?php echo $page ?>;
@@ -161,8 +147,8 @@ include("head.html"); ?>
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
     var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
-	var direction = '<?php echo $dfilter ?>';
-	var order = '<?php echo $ofilter ?>';
+	var dir = '<?php echo $filter->getDir(); ?>';
+	var sort = '<?php echo $filter->getSort(); ?>';
 	var resetOrder = false;
     function AppendPagination(page, cPages, table)    {
 	// support for moving rows between pages
@@ -366,14 +352,14 @@ include("head.html"); ?>
         }
     }
 	function orderBy(option) {
-		if (option == order) direction = ((direction == 'up')? 'dn':'up');
+		if (option == sort) dir = ((dir == 'asc')? 'desc':'asc');
 		else {
-			order = option;
-			direction = 'up';
+			sort = option;
+			dir = 'asc';
 		}
 		GetWorklist(1,false);
 	}
-    function GetWorklist(npage, update) {
+    function GetWorklist(npage, update, reload) {
 		$("#loader_img").css("display","block");
 		
 		// sets reviewOnly to true of the selected option is REVIEW 
@@ -390,7 +376,15 @@ include("head.html"); ?>
 			type: "POST",
 			url: 'getworklist.php',
 			cache: false,
-			data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ofilter='+order+'&dfilter='+direction+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
+			data: {
+				page: npage,
+				status: $('select[name=status]').val(),
+				sort: sort,
+				dir: dir,
+				user: $('select[name=user]').val(),
+				query: $("#query").val(),
+				reload: ((reload == undefined) ? false : true)
+			},
 			dataType: 'json',
 			success: function(json) {
 				if (json[0] == "redirect") {
@@ -403,7 +397,7 @@ include("head.html"); ?>
 				$("#loader_img").css("display","none");
 				if (affectedHeader) {
 					affectedHeader.append(dirDiv);
-					dirImg.attr('src',directions[direction.toUpperCase()]);
+					dirImg.attr('src',directions[dir.toUpperCase()]);
 					dirDiv.css('display','block');
 				} else {
 					if (resetOrder) {
@@ -554,7 +548,7 @@ include("head.html"); ?>
 			}
 		});
 
-		timeoutId = setTimeout("GetWorklist("+page+", true)", refresh);
+		timeoutId = setTimeout("GetWorklist("+page+", true, true)", refresh);
     }
 
 
@@ -864,9 +858,9 @@ include("head.html"); ?>
 		dirDiv = $("#direction");
 		dirImg = $("#direction img");
 		hdr = $(".table-hdng");
-		if (order != 'priority') {
+		if (sort != 'priority') {
 			hdr.children().each(function() {
-				if ($(this).text().toLowerCase() == unescape(order.toLowerCase())) {
+				if ($(this).text().toLowerCase() == unescape(sort.toLowerCase())) {
 					affectedHeader = $(this);
 				}
 			});
@@ -898,10 +892,10 @@ include("head.html"); ?>
 			$('#ui-timepicker-div').hide();
 		});
 
-		GetWorklist(<?php echo $page?>, false);
+		GetWorklist(<?php echo $page?>, false, true);
 		
 		$("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
-		$("#search-filter, #user-filter").change(function(){
+		$("select[name=user], select[name=status]").change(function(){
 			if ($("#search-filter").val() == 'UNPAID') {
 				$(".worklist-fees").text('Unpaid');
 			} else {
@@ -982,8 +976,8 @@ include("head.html"); ?>
 			$("#query").val('');
 			affectedHeader = false;
 			resetOrder = true;
-			order = 'null';
-			direction = 'up';
+			sort = 'null';
+			dir = 'asc';
 			GetWorklist(1,false);
 			return false;
 		});
@@ -1114,10 +1108,9 @@ include("head.html"); ?>
 <div style="float: right">
 <div style="float: left">
 <form method="get" action="" id="searchForm" />
-<div style="padding-top: 5px; float: left; padding-right: 15px;"><?php DisplayFilter('ufilter'); ?>
-<?php DisplayFilter('sfilter'); ?></div>
-<div style="float: left;" class="input_box"><input type="text"
-    id="query" name="query" alt="Search" size="20" />
+<div style="padding-top: 5px; float: left; padding-right: 15px;"><?php echo $filter->getUserSelectbox(); ?>
+<?php echo $filter->getStatusSelectbox(); ?></div>
+<div style="float: left;" class="input_box"><input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
 <div class="onlyfloat_right"><a id="search" href=""> <img height="23"
     width="24" border="0" alt="zoom" src="images/spacer.gif"> </a></div>
 </div>
