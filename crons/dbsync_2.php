@@ -894,6 +894,7 @@ if ($bSuccess)
 {
 	//save the id that we last processed
 	$state[1] = $lastId;
+	chmod($PathToStateFile, 0755);
     file_put_contents($PathToStateFile, implode("\n", $state));
 }
 
