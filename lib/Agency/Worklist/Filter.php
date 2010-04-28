@@ -261,7 +261,7 @@ class Agency_Worklist_Filter
     	if (getSessionUserId() > 0) {
     		$this->initByDatabase();
     	} else {
-    		$this->inigByCookie();
+    		$this->initByCookie();
     	}
     }
 
