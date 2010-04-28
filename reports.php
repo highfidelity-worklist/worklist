@@ -4,12 +4,11 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-
 ob_start();
 
 include("config.php");
 include("class.session_handler.php");
-include("check_session.php");
+#include("check_session.php");
 include_once("functions.php");
 include_once("send_email.php");
 include_once("classes/Fee.class.php");
@@ -21,14 +20,23 @@ if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']) && isset($_POS
     return;
 }
 
-$t_date = (isset($_POST['end_date'])) ? strtotime(trim($_POST['end_date'])) : time();
-$f_date = (isset($_POST['start_date'])) ? strtotime(trim($_POST['start_date'])) : strtotime('-1 month', $t_date);
+if (!empty($_REQUEST['payee'])) {
+    $payee = new User();
+    $payee->findUserByNickname($_REQUEST['payee']);
+    $_REQUEST['user'] = $payee->getId();
+}
 
-$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+$showTab = 0;
+if (!empty($_REQUEST['view'])) {
+    if ($_REQUEST['view'] == 'chart') {
+        $showTab = 1;
+    }
+}
 
-$filter = new Agency_Worklist_Filter();
-$filter->setName('.reports')
-       ->initFilter();
+$_REQUEST['name'] = '.reports';
+$filter = new Agency_Worklist_Filter($_REQUEST);
+
+$page = $filter->getPage();
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
     $summaryData = Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1);
@@ -47,10 +55,6 @@ if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_p
         }
     }
 }
-
-//list of users for filtering
-$userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
-
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -108,7 +112,7 @@ var fromDate = '';
 var toDate = '';
 var datePickerControl; // Month/Year date picker.
 var dateChangedUsingField = false; // True  if the date was changed using date field rather than picker.
-var currentTab = "details";
+var currentTab = <?php echo $showTab; ?>; // 0 for details and 1 for chart
 
     /**
     * 
@@ -333,12 +337,12 @@ function initializeTabs()
                 select: function(event, ui) {
                     if(ui.index == 0)
                     {
-                            currentTab = "details";
+                            currentTab = 0;
 			    timeoutId = setTimeout("GetReport("+page+", true)", 50);
                     }
                     else
                     {
-                            currentTab = "chart";
+                            currentTab = 1;
                             timeoutId = setTimeout("setupTimelineChart(true)", 50);
                     }
                 }                                                                                                                                                       
@@ -469,12 +473,14 @@ function loadTimelineChart() {
 	$('#refreshReport').click(function() {
         paid_list = [];
 	    if (timeoutId) clearTimeout(timeoutId);
-	    if(currentTab == "details") {
+	    if(currentTab == 0) {
 	      GetReport(page);
 	    } else {
 	      loadTimelineChart();
 	    }
 	});
+
+    $('#tabs').tabs('select', currentTab);
 
     });
 </script>
@@ -502,23 +508,23 @@ function loadTimelineChart() {
 	    <td>Payee: <?php echo $filter->getUserSelectbox(); ?></td>
 	    <td>Paid Status: 
 	      <select id="paid-status" >
-		    <option value="ALL">ALL</option>
-		    <option value="1">Paid</option>
-		    <option value="0" selected>Unpaid</option>
+		    <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
+		    <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
+		    <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
 	      </select>
 	    </td>
 	    <td style="text-align: right;">Item status: <?php echo $filter->getStatusSelectbox(); ?><br/>Order:
             <select id="sort-by">
-                <option value="name">Alphabetically</option>
-                <option value="date">Chronologically</option>
+                <option value="name"<?php echo(($filter->getOrder() == 'name') ? ' selected="selected"' : ''); ?>>Alphabetically</option>
+                <option value="date"<?php echo(($filter->getOrder() == 'date') ? ' selected="selected"' : ''); ?>>Chronologically</option>
             </select>
         </td>
 	   </tr>
 	  <tr>
 	      <td class="report-left-label">Fee added between</td>
 	      <td >
-	      <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="<?php echo date("m/d/Y",strtotime('-2 weeks', time())); ?>" title="Start Date" size="20" />
-	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo date("m/d/Y",time()); ?>" title="End Date" size="20" />
+	      <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="<?php echo($filter->getStart()); ?>" title="Start Date" size="20" />
+	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo($filter->getEnd()); ?>" title="End Date" size="20" />
 	      </td>
 	      <td style = "text-align: right;">
 		<input type="submit" value="Go" id="refreshReport"></input>

@@ -10,13 +10,6 @@ include("class.session_handler.php");
 include("functions.php");
 require_once('lib/Agency/Worklist/Filter.php');
 
-ini_set('display_errors', true);
-error_reporting(-1);
-
-if (empty($_SESSION['userid'])) {
-    return;
-}
-
 $limit = 30;
 
 $_REQUEST['name'] = '.reports';
