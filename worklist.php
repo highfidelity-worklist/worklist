@@ -845,7 +845,8 @@ include("head.html"); ?>
 			var wd = ' - <form action="" method="post">' +
 							'<input type="hidden" name="withdraw_bid" value="withdraw" />' +
 							'<input type="hidden" name="fee_id" value="' + json[0] + '" />' +
-							'<a href="#" class = "wd-link" title='Delete Entry'>DEL</a>' +
+							'<a href="#" 
+class = "wd-link" title="Delete Entry">DEL</a>' +
 						 '</form>';
 		}
 
