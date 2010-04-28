@@ -702,6 +702,7 @@ include("head.html"); ?>
         row += '<td width="30%">' + pre + json.email + post + '</td>';//email
         row += '<td width="20%">' + pre + json.bid_amount + post + '</td>';
         row += '<td width="20%">' + pre + RelativeTime(json.future_delta) + post + '</td>';
+
         row += '<td width="20%">' + pre + RelativeTime(json.delta) + ' ago' + post + '</td></tr>';
        $('.table-bidlist tbody').append(row);
     }
@@ -845,8 +846,7 @@ include("head.html"); ?>
 			var wd = ' - <form action="" method="post">' +
 							'<input type="hidden" name="withdraw_bid" value="withdraw" />' +
 							'<input type="hidden" name="fee_id" value="' + json[0] + '" />' +
-							'<a href="#" 
-class = "wd-link" title="Delete Entry">DEL</a>' +
+							'<a href="#" class = "wd-link" title="Delete Entry">DEL</a>' +
 						 '</form>';
 		}
 
