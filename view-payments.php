@@ -131,8 +131,6 @@ include_once("classes/Fee.class.php");
                 sl_send_email($userData['username'], $subject, $body);
             }
         }
-    }
-
 
     } else  {
         $pp_message = '<p>MassPay failed:</p><p><pre>' . print_r($httpParsedResponseAr, true).'</pre></p>';
