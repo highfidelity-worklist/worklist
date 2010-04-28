@@ -68,7 +68,8 @@ switch ($_POST["action"])
 
 
 include_once("paypal-functions.php");
-   
+include_once("classes/Fee.class.php");   
+
     //Get fee information for paypal transaction 
     $num_fees = count($_POST["payfee"]);
     $fees_csv = implode(',', $_POST["payfee"]);
@@ -112,8 +113,27 @@ include_once("paypal-functions.php");
     if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
         $pp_message = '<p>MassPay Completed Successfully!</p>';
         if (isset($_GET["debug"])) { $pp_message .= '<p><pre>'.print_r($httpParsedResponseAr, true).'</pre></p>'; }
-        $fee_sql_update = "UPDATE ".FEES." SET paid=1, paid_date='".date("Y-m-d H:i:s")."' WHERE id in (".$fees_csv.")";
-        $update_fees_paid = mysql_query($fee_sql_update);
+        //$fee_sql_update = "UPDATE ".FEES." SET paid=1, paid_date='".date("Y-m-d H:i:s")."' WHERE id in (".$fees_csv.")";
+        //$update_fees_paid = mysql_query($fee_sql_update);
+        
+        $summaryData = Fee::markPaidByList(explode($fees_csv), $user_paid=0, $paid_notes='', $paid=1);
+
+        foreach ($summaryData as $user_id=>$data) {
+            if ($data[0] > 0) {
+                $mail = 'SELECT `username`,`rewarder_points` FROM '.USERS.' WHERE `id` = '.$user_id;
+                $userData = mysql_fetch_array(mysql_query($mail));
+
+                $subject = "LoveMachine paid you $".$data[0];
+                $body  = "You earned ".$data[1]." rewarder points.  You currently have ".$userData['rewarder_points']." points available to reward other LoveMachiners with. ";
+                $body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."worklist/rewarder.php<br/><br/>";
+                $body .= "Thank you!<br/><br/>Love,<br/>Philip and Ryan<br/>";
+
+                sl_send_email($userData['username'], $subject, $body);
+            }
+        }
+    }
+
+
     } else  {
         $pp_message = '<p>MassPay failed:</p><p><pre>' . print_r($httpParsedResponseAr, true).'</pre></p>';
         //TODO: add a email send here to alert someone?
