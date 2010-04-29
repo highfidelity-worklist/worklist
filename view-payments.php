@@ -48,8 +48,10 @@ $db = @mysql_select_db(DB_NAME);
 
 $rowclass = 'rowodd';
 
+$action = (isset($_POST["action"])) ? $_POST["action"] : '';
+
 //Check action - should be confirm, pay or not set
-switch ($_POST["action"])
+switch ($action)
 {
     case 'confirm':
     $fees_csv = implode(',', $_POST["payfee"]);
@@ -163,7 +165,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/payments.js"></script>
 </head>
-<body>
+<body onload="updateTotalFees('0');">
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <div id="outside">
 <div id="container">
@@ -198,7 +200,7 @@ if (!isset($_POST["action"]) || ($_POST["action"] != 'pay')) {
 
 while ($payees = mysql_fetch_array($payee_group_query)) {
     echo "\r\n"; //added \r\n to make output code modestly presentable
-    echo '<tr><td><input type="checkbox" name="'.$payees["mechanic_id"].'fees" onclick="javascript:toggleCBGroup(\'fees'.$payees["mechanic_id"].'\', this);" /></td>';    
+    echo '<tr><td><input type="checkbox" name="'.$payees["mechanic_id"].'fees" onclick="javascript:toggleCBGroup(\'fees'.$payees["mechanic_id"].'\', this);" rel="0" /></td>';    
     echo '<td colspan="3" align="left"><a href="javascript:void(0);" onclick="toggleVis(\'indfees'.$payees["mechanic_id"].'\')">'.$payees["mechanic_nick"].'</a></td>';
     echo '<td align="right" onclick="toggleBox(\'payfee'.$payees["mechanic_id"].'\')">'.$payees["total_amount"].'</td>';
     echo '<td>&nbsp;</td></tr></tbody>'; 
@@ -210,7 +212,7 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
         $display_set = false;
         while ($ind_fees = mysql_fetch_array($ind_query)) {
             $fee_rows .= '<tr class="'.$rowclass.'">';
-            $fee_rows .= '<td class="fee-row"><input type="checkbox" class="fees'.$payees["mechanic_id"].'" name="payfee[]" id="payfee'.$ind_fees["id"].'" value="'.$ind_fees["id"].'"';
+            $fee_rows .= '<td class="fee-row"><input type="checkbox" class="fees'.$payees["mechanic_id"].'" name="payfee[]" id="payfee'.$ind_fees["id"].'" value="'.$ind_fees["id"].'" onclick="updateTotalFees(\'1\');" rel="'.$ind_fees["amount"].'"';
             if (isset($_POST["action"]) && ($_POST["action"] == 'confirm') && in_array($ind_fees["id"], $_POST["payfee"])) { $fee_rows .= ' checked="checked"'; $display_set = true;}
             $fee_rows .= ' /></td>';
             $fee_rows .= '<td>'.strftime("%m-%d-%Y", strtotime($ind_fees["date"])).'</td>';
@@ -238,6 +240,7 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
 </table>
 <div id="submit-btns">
     <input type="submit" id="commit-btn" name="commit" value="<?php echo isset($_POST["action"])?'Pay Now':'Confirm'; ?>" />
+    &nbsp;&nbsp;Total Selected: $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
 </div>
 </form>
 

@@ -8,7 +8,7 @@ div#select-actions {
 }
 
 table#payments-table { 
-    width: 95%; 
+    width: 820px; 
     margin: 5px auto; 
 }
 
@@ -21,7 +21,13 @@ table#payments-table td.fee-row input {
 }
 
 div#submit-btns {
+    width: 820px;
     text-align: right; 
-    margin: 5px 10px 5px 0;
+    margin: 5px auto;
+}
+
+div#submit-btns input#total-selected-fees {
+    text-align: right;
+    width: 50px;
 }
 

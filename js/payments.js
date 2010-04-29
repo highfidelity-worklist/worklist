@@ -22,11 +22,9 @@ function toggleCBGroup(classname, check) {
             }
         } 
     }
-    //reset action to 'confirm' if it isn't
-    action = document.getElementById('action');
-    btn = document.getElementById('commit-btn');
-    if (action.value == 'pay') { action.value = 'confirm'; }
-    if (btn.value != 'Confirm') { btn.value = 'Confirm'; }
+    
+    //update Fees Total
+    updateTotalFees('1');
 }
 
 function toggleCBs(option) {
@@ -49,11 +47,9 @@ function toggleCBs(option) {
         }
     }   
     }
-    //reset action to 'confirm' if it isn't
-    action = document.getElementById('action');
-    btn = document.getElementById('commit-btn');
-    if (action.value == 'pay') { action.value = 'confirm'; }
-    if (btn.value != 'Confirm') { btn.value = 'Confirm'; }
+    
+    //update Fees Total
+    updateTotalFees('1');
 }
 
 function toggleBox(box) {
@@ -63,9 +59,36 @@ function toggleBox(box) {
     } else {
         cbox.checked = true;
     }
+    
+    //update Fees Total
+    updateTotalFees('1');
+}
+
+function updateTotalFees(resA) {
+	
+    if (resA == '1') {
+        resetAction();
+    }
+    var totalFees = 0.00;
+    var checklist = document.getElementsByTagName("input");
+    for (i = 0; i < checklist.length; i++) {
+        if (checklist[i].getAttribute("type") == 'checkbox') {
+	    if (checklist[i].checked) {
+		var fee = parseFloat(checklist[i].getAttribute("rel")); 
+	        totalFees = totalFees + fee;
+            }
+        }
+    }
+    var totalBox = document.getElementById("total-selected-fees");
+    totalBox.value = totalFees.toFixed(2);
+    
+}
+
+function resetAction() {
+
     //reset action to 'confirm' if it isn't
-    action = document.getElementById('action');
-    btn = document.getElementById('commit-btn');
-    if (action.value == 'pay') { action.value = 'confirm'; }
-    if (btn.value != 'Confirm') { btn.value = 'Confirm'; }
+    var action = $('#action');
+    var btn = $('#commit-btn');
+    if (action.val() == 'pay') { action.val('confirm'); }
+    if (btn.val() != 'Confirm') { btn.val('Confirm'); }
 }
