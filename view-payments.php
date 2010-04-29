@@ -112,7 +112,7 @@ switch ($action)
         //$fee_sql_update = "UPDATE ".FEES." SET paid=1, paid_date='".date("Y-m-d H:i:s")."' WHERE id in (".$fees_csv.")";
         //$update_fees_paid = mysql_query($fee_sql_update);
         
-        $summaryData = Fee::markPaidByList(explode($fees_csv), $user_paid=0, $paid_notes='', $paid=1);
+        $summaryData = Fee::markPaidByList(explode(',', $fees_csv), $user_paid=0, $paid_notes='', $paid=1);
 
         foreach ($summaryData as $user_id=>$data) {
             if ($data[0] > 0) {
