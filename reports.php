@@ -36,6 +36,14 @@ if (!empty($_REQUEST['view'])) {
 $_REQUEST['name'] = '.reports';
 $filter = new Agency_Worklist_Filter($_REQUEST);
 
+if (!$filter->getStart()) {
+    $filter->setStart(date("m/d/Y",strtotime('-2 weeks', time())));
+}
+
+if (!$filter->getEnd()) {
+    $filter->setEnd(date("m/d/Y",time()));
+}
+
 $page = $filter->getPage();
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
@@ -476,10 +484,18 @@ function loadTimelineChart() {
 	$('#refreshReport').click(function() {
         paid_list = [];
 	    if (timeoutId) clearTimeout(timeoutId);
+	    _fromDate = $("#start-date").datepicker('getDate');
+	    _toDate = $("#end-date").datepicker('getDate');
+	    if(_fromDate != null) {
+		    fromDate = fmtDate(_fromDate);
+	    }
+	    if(_toDate != null) {
+		    toDate = fmtDate(_toDate);
+	    }
 	    if(currentTab == 0) {
-	      GetReport(page);
+	      location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 	    } else {
-	      loadTimelineChart();
+	      location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 	    }
 	});
 
