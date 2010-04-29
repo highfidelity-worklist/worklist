@@ -264,6 +264,9 @@ var getPaidItems = function() {
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
                 order: $('#sort-by').val(),
+                // adding type field to the request
+                // 28-APR-2010 <Yani>
+                type: $('#type-status').val(),
                 start: fromDate,
                 end: toDate,
                 paidstatus: paidStatus,
@@ -506,12 +509,20 @@ function loadTimelineChart() {
       <table id="search-filter-section">
 	  <tr>
 	    <td>Payee: <?php echo $filter->getUserSelectbox(); ?></td>
-	    <td>Paid Status: 
+	    <td style="text-align: right;">Paid Status: 
 	      <select id="paid-status" >
 		    <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
 		    <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
 		    <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
 	      </select>
+	      <br />
+        Type:
+        <select id="type-status">
+            <option value="0">ALL</option>
+            <option value="1">Fee</option>
+            <option value="2">Expense</option>
+            <option value="3">Rewarder</option>
+        </select>
 	    </td>
 	    <td style="text-align: right;">Item status: <?php echo $filter->getStatusSelectbox(); ?><br/>Order:
             <select id="sort-by">
