@@ -61,14 +61,8 @@ switch ($_POST["action"])
     case 'pay':
     //collect confirmed payees and run paypal transaction
     
-    //foreach ($_POST["payfee"] as $fees_to_pay) {
-    //    echo $fees_to_pay.'<br />';     
-    //}
-    
-
-
-include_once("paypal-functions.php");
-include_once("classes/Fee.class.php");   
+    include_once("paypal-functions.php");
+    include_once("classes/Fee.class.php");   
 
     //Get fee information for paypal transaction 
     $num_fees = count($_POST["payfee"]);
