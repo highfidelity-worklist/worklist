@@ -320,7 +320,7 @@ WHERE id = ' . (int)$id;
 
     public function getFees($worklist_id)
     {
-        $query = "SELECT fees.`id`, fees.`amount`, u.`nickname`, fees.`desc`, DATE_FORMAT(fees.`date`, '%m/%d/%Y') as date, fees.`paid`
+        $query = "SELECT fees.`id`, fees.`amount`, u.`nickname`, fees.`desc`,fees.`user_id`, DATE_FORMAT(fees.`date`, '%m/%d/%Y') as date, fees.`paid`
 			FROM `".FEES. "` as fees LEFT OUTER JOIN `".USERS."` u ON u.`id` = fees.`user_id`
 			WHERE worklist_id = ".$worklist_id."
 			AND fees.withdrawn = 0 ";

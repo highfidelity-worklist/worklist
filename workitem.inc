@@ -818,7 +818,8 @@ if ($action =="edit"):  ?>
 										<?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
 										<?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
 										<?php endif;?>
-										<?php if($user_id && empty($fee['paid'])): ?><br><a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>DEL</a>
+										<?php if(($is_runner ||$user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
+										<br><a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>DEL</a>
 										<?php endif;?>
 									</td>
 								</tr>
