@@ -637,4 +637,13 @@ function  GetTimeStamp($MySqlDate, $i='')
     return($var_timestamp); // return it to the user
 }
 
+function checkLogin(){
+
+    if(!getSessionUserId()){
+        $_SESSION = array();
+        header("location:login.php?expired=1&redir=" . urlencode($_SERVER['REQUEST_URI']));
+        exit;
+    }
+}
+
 ?>

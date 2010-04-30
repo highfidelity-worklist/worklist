@@ -60,6 +60,12 @@ $redirectToDefaultView = false;
 $redirectToWorklistView = false;
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
+
+// for any other action user has to be logged in
+if($action != 'view'){
+    checkLogin();
+}
+
 if (isset($_REQUEST['withdraw_bid'])) {
     $action = "withdraw_bid";
 }else if(isset($_POST['save_workitem'])) {
@@ -159,7 +165,7 @@ if($action =='save_workitem') {
 
 
 
-if($action =='status-switch' && $user->getId() > 0){
+if($action =='status-switch'){
 
     $status = $_POST['quick-status'];
     changeStatus($workitem, $status, $user);
@@ -176,7 +182,7 @@ if($action =='status-switch' && $user->getId() > 0){
 			  array('changes' => $new_update_message));
     }
 
-if (isset($_SESSION['userid']) && $action =="place_bid"){
+if ($action =="place_bid"){
     $args = array('bid_amount','done_by', 'notes', 'mechanic_id');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -185,7 +191,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
     $summary = getWorkItemSummary($worklist_id);
 
 
-    if($mechanic_id != $_SESSION['userid'])
+    if($mechanic_id != getSessionUserId())
     {
         $row = $workitem->getUserDetails($mechanic_id);
         if(!empty($row)){
@@ -245,7 +251,7 @@ if (isset($_SESSION['userid']) && $action =="place_bid"){
     $redirectToDefaultView = true;
 }
 // Edit Bid
-if (isset($_SESSION['userid']) && $action =="edit_bid"){
+if ($action =="edit_bid"){
     $args = array('bid_id','bid_amount','done_by_edit', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -289,7 +295,7 @@ if (isset($_SESSION['userid']) && $action =="edit_bid"){
   $redirectToDefaultView = true;
 }
 // Request submitted from Add Fee popup
-if (isset($_SESSION['userid']) && $action == "add_fee") {
+if ($action == "add_fee") {
     $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -373,7 +379,7 @@ if ($action=='accept_multiple_bid'){
     $bid_id = $_REQUEST['chkMultipleBid'];
 	if(count($bid_id) > 0){
 	//only runners can accept bids
-	if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+	if (($is_runner == 1 || $workitem->getRunnerId() == getSessionUserId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
 			foreach($bid_id as $bid){
 				$bids = (array) $workitem->getBids($workitem -> getId());
 				$exists = false;
@@ -403,7 +409,7 @@ if ($action=='accept_multiple_bid'){
 	}
 }
 //Withdraw a bid
-if (isset($_SESSION['userid']) && $action == "withdraw_bid") {
+if ($action == "withdraw_bid") {
     if (isset($_REQUEST['bid_id'])) {
         withdrawBid(intval($_REQUEST['bid_id']));
     } else {
