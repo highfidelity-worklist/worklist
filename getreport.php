@@ -54,26 +54,17 @@ if ($sfilter){
 
 // adding type to the where clause
 // 28-APR-2010 <Yani
-$type = (int) $_REQUEST['type'];
-switch($type)
-{
-    // ALL
-    case 0:
-        break;
-    // Fee
-    case 1:
-        $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0";
-        break; 
-    // Expense
-    case 2:
-        $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0";
-        break;
-        
-    // Rewarder
-    case 3:
-        $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 1";
-        break;
-}
+$type = mysql_real_escape_string($_REQUEST['type']);
+
+// Fee
+if($type == 'Fee')
+  $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0";
+// Expense
+else if($type == 'Expense')
+  $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0";
+// Rewarder
+else if($type == 'Rewarder')
+  $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 1";
 
 // Add option for order results
 $orderby = "ORDER BY ";

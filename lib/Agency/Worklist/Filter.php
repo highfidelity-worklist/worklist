@@ -24,6 +24,9 @@ class Agency_Worklist_Filter
     protected $order = 'name';
     protected $start = '';
     protected $end = '';
+    // Additional filter for type for reports page
+    // 30-APR-2010 <Yani>
+    protected $type = 0;
     
     
     public function getPaidstatus()
@@ -67,6 +70,22 @@ class Agency_Worklist_Filter
 	{
 		$this->end = $end;
 		return $end;
+	}
+	
+	// getter for $type
+	// @return type of the fee
+	// 30-APR-2010 <Yani>
+	public function getType()
+	{
+	    return $this->type;
+	}
+
+  // setter for $type
+  // @param $type type to set  
+  // 30-APR-2010 <Yani>	
+	public function setType($type)
+	{
+	    $this->type = $type;
 	}
 
     /**

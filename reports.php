@@ -387,6 +387,9 @@ $.ajax({
                 start: fromDate,
                 end: toDate,
                 paidstatus: paidStatus,
+                // adding type filter content to the request
+                // 30-APR-2010
+                type: $('#type-status').val(),
                 reload: ((reload == true) ? true : false)
             },
             dataType: 'json',
@@ -493,9 +496,9 @@ function loadTimelineChart() {
 		    toDate = fmtDate(_toDate);
 	    }
 	    if(currentTab == 0) {
-	      location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+	      location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 	    } else {
-	      location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+	      location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 	    }
 	});
 
@@ -534,10 +537,10 @@ function loadTimelineChart() {
 	      <br />
         Type:
         <select id="type-status">
-            <option value="0">ALL</option>
-            <option value="1">Fee</option>
-            <option value="2">Expense</option>
-            <option value="3">Rewarder</option>
+            <option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
+            <option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
+            <option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
+            <option value="Rewarder"<?php echo(($filter->getType() == 'Rewarder') ? ' selected="selected"' : ''); ?>>Rewarder</option>
         </select>
 	    </td>
 	    <td style="text-align: right;">Item status: <?php echo $filter->getStatusSelectbox(); ?><br/>Order:
