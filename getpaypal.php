@@ -7,12 +7,15 @@
 
 include("config.php");
 include("class.session_handler.php");
-include_once("functions.php");
-require_once('lib/Worklist/Filter.php');
+include("functions.php");
+require_once('lib/Agency/Worklist/Filter.php');
 
 if (empty($_SESSION['userid'])) {
     return;
 }
+
+$_REQUEST['name'] = '.reports';
+$filter = new Agency_Worklist_Filter($_REQUEST);
 
 // If the item id is set we will return the transaction info
 if (isset($_REQUEST['get_t_id'])) {
@@ -39,53 +42,36 @@ if (isset($_REQUEST['get_t_id'])) {
 
 $limit = 30;
 
-if (isset($_REQUEST['from_date'])) {
-  $from_date = $_REQUEST['from_date'];
-}
-if (isset($_REQUEST['to_date'])) {
-  $to_date = $_REQUEST['to_date'];
-}
+$from_date = mysql_real_escape_string($filter->getStart());
+$to_date = mysql_real_escape_string($filter->getEnd());
 
-$page = isset($_REQUEST["page"])?$_REQUEST["page"]:1;
+$page = $filter->getPage();
 
 $dateRangeFilter = '';
 if (isset($from_date) && isset($to_date)) {
-    $mysqlFromDate = mysql_real_escape_string(GetTimeStamp($from_date));
-    $mysqlToDate = mysql_real_escape_string(GetTimeStamp($to_date));
+    $mysqlFromDate = GetTimeStamp($from_date);
+    $mysqlToDate = GetTimeStamp($to_date);
     $dateRangeFilter = ($from_date && $to_date) ? "DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" : "";
 }
 
-$sfilter = isset($_REQUEST['sfilter']) ? $_REQUEST["sfilter"] : '';
-$ufilter = isset($_REQUEST["ufilter"]) ? intval($_REQUEST["ufilter"]):0;
-$order = isset( $_REQUEST['order'] ) ? $_REQUEST['order'] :'';
-$jfilter = isset($_REQUEST['jfilter']) ? intval($_REQUEST["jfilter"]):0;
-
-$WorklistFilter = new Worklist_Filter(array(
-    Worklist_Filter::CONFIG_COOKIE_EXPIRY => (60 * 60 * 24 * 30),
-    Worklist_Filter::CONFIG_COOKIE_PATH   => '/' . APP_BASE,
-    Worklist_Filter::CONFIG_COOKIE_NAME => 'pp_reports'
-));
-
-$WorklistFilter->setSfilter($sfilter)
-               ->setUfilter($ufilter)
-               ->saveFilters();
+$sfilter = $filter->getStatus();
+$ufilter = $filter->getUser();
+$order = $filter->getOrder();
+$jfilter = $filter->getJob();
 
 $where = '';
 if ($ufilter) {
-    $where = "`user_id` = $ufilter ";
+    $where = "`user_id` = $ufilter AND ";
 }
 
 if ($sfilter) {
-    if ($where != '') {
-        $where .= " AND ";
-    }
     if ($sfilter != 'ALL'){
-        $where .= "`".PAYPAL_LOG."`.`status` = '$sfilter' "; 
+        $where .= "`".PAYPAL_LOG."`.`status` = '$sfilter' AND "; 
     }
 }
 
 if ($jfilter) {
-    $where .= " AND `worklist_id` = $jfilter ";
+    $where .= "`worklist_id` = $jfilter AND";
 }
 
 // Add option for order results
@@ -100,9 +86,6 @@ if ($order)    {
 }
 
 if ($dateRangeFilter) {
-    if ($where != '') {
-        $where .= " AND ";
-    }
     $where = $where . $dateRangeFilter;
 }
 

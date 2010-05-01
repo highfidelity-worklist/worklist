@@ -28,6 +28,10 @@ class Agency_Worklist_Filter
     // 30-APR-2010 <Yani>
     protected $type = 0;
     
+    // Additional filter for job in PayPal reports
+    // 30-APR-2010 <Andres>
+    protected $job = 0;
+    
     
     public function getPaidstatus()
     {
@@ -80,13 +84,27 @@ class Agency_Worklist_Filter
 	    return $this->type;
 	}
 
-  // setter for $type
-  // @param $type type to set  
-  // 30-APR-2010 <Yani>	
+    // setter for $type
+    // @param $type type to set  
+    // 30-APR-2010 <Yani>	
 	public function setType($type)
 	{
 	    $this->type = $type;
 	}
+	
+	// getter for $job
+	// @return job_id number
+	// 30-APR-2010 <Andres>
+	public function getJob() {
+	   return $this->job;
+	}
+	
+    // setter for $job
+    // @param $job job id number
+    // 30-APR-2010 <Andres>
+    public function setJob($job) {
+       return $this->job = (int) $job;
+    }
 
     /**
      * @return the $user

@@ -12,23 +12,26 @@ include("class.session_handler.php");
 include("check_session.php");
 include_once("functions.php");
 include_once("send_email.php");
+require_once('lib/Agency/Worklist/Filter.php');
 
 /* This page is only accessible to runners. */
 if (!empty($_SESSION['is_runner']) || !empty($_SESSION['is_payer'])) {
     $u_runner = true;
 }
 
-if(!isset($_SESSION['ufilter'])) {
-  $_SESSION['ufilter'] = 'ALL';
+$filter = new Agency_Worklist_Filter();
+$filter->setName('.reports')
+       ->initFilter();
+
+if (!$filter->getStart()) {
+    $filter->setStart(date("m/d/Y",strtotime('-2 weeks', time())));
 }
 
-$t_date = (isset($_POST['end_date'])) ? strtotime(trim($_POST['end_date'])) : time();
-$f_date = (isset($_POST['start_date'])) ? strtotime(trim($_POST['start_date'])) : strtotime('-1 month', $t_date);
+if (!$filter->getEnd()) {
+    $filter->setEnd(date("m/d/Y",time()));
+}
 
-$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
-
-//list of users for filtering
-$userid = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
+$page = $filter->getPage();
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -73,7 +76,7 @@ include("head.html"); ?>
         </div>
         <div id="pp-filter-lbox">
             <h3 style="margin-bottom:3px;">Filter results based on:</h3>
-            User <?php DisplayFilter('ufilter', true); ?>
+            User <?php echo $filter->getUserSelectbox(); ?>
             <br/>
             Sort by
             <select id="sort">
@@ -286,7 +289,16 @@ include("head.html"); ?>
         $.ajax({
             type: "POST",
             url: 'getpaypal.php',
-            data: 'page='+npage+'&sfilter='+$("#filter_status").val()+'&ufilter='+$("#user-filter").val()+'&order='+$("#sort").val()+'&from_date='+fromDate+'&to_date='+toDate+'&jfilter='+$("#job_id").val(),
+            data: {
+                page: npage,
+                status: $('#filter_status').val(),
+                user: $('select[name=user]').val(),
+                order: $('#sort').val(),
+                start: fromDate,
+                end: toDate,
+                job: $('#job_id').val(),
+                reload: false
+            },
             dataType: 'json',
             success: function(json) {
                 $("#loader_img").css("display","none");
