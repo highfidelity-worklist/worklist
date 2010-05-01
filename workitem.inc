@@ -81,9 +81,11 @@ include("head.html"); ?>
 	<# } #>
 	</div>
 </div>
+<?php if ($worklist['status'] != 'DONE') : ?>
 <div id="fileUploadButton">
 	Attach new files
 </div>
+<?php endif; ?>
 </script>
 <script type="text/html" id="uploadImage">
 	<div class="filesIcon">
@@ -644,7 +646,7 @@ if ($action =="edit"):  ?>
 						<input type="hidden" id="status" name="status" value = "BIDDING" />
 						<?php
 							// quick status buttons for creators of items and mechanics working on them
-							if(!$is_runner && ($creator_id == $user_id || $mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic))
+							if(!$is_runner && ($creator_id == $user_id || $mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) && $worklist['status'] != 'DONE')
 							{
 								foreach($statusMapMechanic[$worklist['status']] as $status)
 								{?>
@@ -708,7 +710,7 @@ if ($action =="edit"):  ?>
 									</span>
 								</div>
 								<div class="comment"><?php echo $comment['comment']->getComment(); ?></div>
-								<?php if (!empty($user_id) && $comment['depth'] < 6) : ?>
+								<?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
 								<div class="reply-lnk">
 									<a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>
 								</div>
@@ -719,7 +721,7 @@ if ($action =="edit"):  ?>
 					endif;
 				?>
 				</ul>
-				<?php if (!empty($user_id)) : ?>
+				<?php if (!empty($user_id) && ($worklist['status'] != 'DONE')) : ?>
 				<div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
 					<form action="" method="post">
 						<input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
@@ -831,7 +833,7 @@ if ($action =="edit"):  ?>
 							<?php endif;?>
 							</tbody>
 						</table>
-						<?php if($user_id): ?>
+						<?php if($user_id && ($worklist['status'] != 'DONE')): ?>
 						<div class="buttonContainer">
 							<input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
 						</div>

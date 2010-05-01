@@ -96,16 +96,16 @@ if (isset($_REQUEST['withdraw_bid'])) {
 	if (isset($_POST['comment']) && !empty($_POST['comment'])) {
 		$comment->setComment(nl2br($_POST['comment']));
 	}
-	$comment->save();
-
-	$journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
-
-	workitemNotify(array('type' => 'comment',
+	
+	try {
+		$comment->save();
+		$journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
+		workitemNotify(array('type' => 'comment',
 		      'workitem' => $workitem,
 		      'recipients' => array('creator', 'runner', 'mechanic')),
 		       array('who' => $_SESSION['nickname'],
 			     'comment' => nl2br($_POST['comment'])));
-
+	} catch(Exception $e) {}
 	$redirectToDefaultView = true;
 }
 

@@ -171,7 +171,7 @@ class Comment
 	 */
 	public function setComment($comment) 
 	{
-		$this->comment = $comment;
+		$this->comment = trim($comment);
 		return $this;
 	}
 
@@ -195,6 +195,9 @@ class Comment
 	 */
 	public function save()
 	{
+		if (!$this->validate()) {
+			throw new Exception('Comment is not valid!');
+		}
 		if (null === $this->getId()) {
 			$id = $this->insert();
 			if ($id !== false) {
@@ -381,6 +384,15 @@ class Comment
 			return mysql_insert_id();
 		}
 		return false;
+	}
+	
+	private function validate()
+	{
+		$valid = false;
+		if ((null !== $this->worklist_id) && (null !== $this->user_id) && (null !== $this->comment) && (!empty($this->comment))) {
+			$valid = true;
+		}
+		return $valid;
 	}
 	
 	private function update()
