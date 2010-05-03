@@ -71,6 +71,12 @@ include("head.html");
                 user.addClass('user-popup').click(function(){
                     rewarder.displayRewarderUserDetail($(this).data('userid'));
                 });
+            } else {
+	            // Add the love popup
+	            // 01-MAY-2010 <Andres>
+	            user.addClass('user-popup').click(function() {
+	                rewarder.showLove($(this).data('userid'), newUser[1]);
+	            });
             }
             this.usersContainer.append(user);
 
@@ -203,6 +209,20 @@ include("head.html");
         },
 
         displayRewarderUserDetail: function(userid) {
+            // Show love sent to clicked user
+            // 1-MAY-2010 <andres>
+            var love_sent;
+            $.ajax({
+                url: 'get-love.php',
+                data: 'id='+userid,
+                dataType: 'json',
+                type: "POST",
+                cache: false,
+                success: function(json) {
+                    love_sent = json;
+                }
+            });
+            
             $.ajax({
                 url: 'get-rewarder-user-detail.php',
                 data: 'id='+userid,
@@ -212,15 +232,34 @@ include("head.html");
                 success: function(json) {
                     var detailHTML = 
                         '<div id="detail" title="Rewarder Detail for '+json[0]+'">' +
+                        '<div id="audit" style="float:left;">' +
                         '  <table style="text-align: left">' +
-                        '    <tr><th style="width: 120px">User</th><th style="width: 100px">Points</th></tr>';
+                        '    <tr class="table-hdng"><th style="width: 120px">User</th><th style="width: 100px">Points</th></tr>';
 
                     for (var i = 0; i < json[1].length; i++) {
                         detailHTML += '    <tr><td>'+json[1][i][0]+'</td><td>'+json[1][i][1]+' points</td></tr>';
                     }
 
-                    detailHTML +=
-                        '  </table>' +
+                    // Show love sent to clicked user
+                    // 1-MAY-2010 <andres>
+                    detailHTML += '  </table></div>' +
+                        '  <div id="love" style="float:left; margin-left:15px;">' +
+                        '      <table stlye="text-align:left;">' +
+                        '      <tr class="table-hdng"><th>Why</th><th style="width: 25%;">When</th></tr>';
+                    for (var i = 0; i < love_sent.length; i++) {
+                        var json_when = love_sent[i].when;
+                        var when = relativeTime(json_when);
+                        detailHTML += '    <tr><td>'+love_sent[i].why+'</td><td>'+when+'</td></tr>';
+                    }
+
+                    if (love_sent.length == 0) {
+                        // Add a no love sent message
+                        detailHTML += '    <tr><td style="text-align:center;" colspan="2">No love sent to '+json[0]+'</td></tr>';
+                    }
+
+                    detailHTML += 
+                        '    </table></div>' +
+                        '  <div style="clear:both;"></div>' +
                         '  <form id="detailForm" method="post">' +
                         '    <input type="submit" name="submit" value="Ok" />' +
                         '  </form>';
@@ -400,8 +439,50 @@ include("head.html");
                 .css('left', (rewarder.chartWidth - rewarder.thumbWidth) * (points / rewarder.maxPoints));
 
             thumb.text(rewarder.getPointsText(points));
-        }
+        },
 
+        // Show love sent to clicked user
+        // 1-MAY-2010 <andres>
+        showLove: function(userid, name) {
+            $.ajax({
+                url: 'get-love.php',
+                data: 'id='+userid,
+                dataType: 'json',
+                type: "POST",
+                cache: false,
+                success: function(json) {
+                    var detailHTML = 
+                        '<div id="detail" title="Love sent to '+name+'">' +
+                        '  <table style="text-align: left">' +
+                        '    <tr class="table-hdng"><th>Why</th><th style="width: 25%;">When</th></tr>';
+
+                    for (var i = 0; i < json.length; i++) {
+                        var json_when = json[i].when;
+                        var when = relativeTime(json_when);
+                        detailHTML += '    <tr><td>'+json[i].why+'</td><td>'+when+'</td></tr>';
+                    }
+
+                    if (json.length == 0) {
+                        // Add a no love sent message
+                        detailHTML += '    <tr><td style="text-align:center;" colspan="2">No love sent to '+name+'</td></tr>';
+                    }
+
+                    detailHTML +=
+                        '  </table>' +
+                        '  <form id="detailForm" method="post">' +
+                        '    <input type="submit" name="submit" value="Ok" />' +
+                        '  </form>';
+                    '</div>';
+                    var detail = $(detailHTML).dialog({ modal: true, width: 'auto', height: 'auto' });
+
+                    $("#detailForm").submit(function(){
+                        detail.dialog('close');
+                        detail.remove();
+                        return false;
+                    });
+                }
+            });
+        }
     };
 
     $(window).ready(function(){
@@ -501,8 +582,23 @@ include("head.html");
 				return 0;
 			}
 		}
-		
     });
+
+    function relativeTime(x) {
+        var plural = '';
+
+        var mins = 60, hour = mins * 60; day = hour * 24,
+            week = day * 7, month = day * 30, year = day * 365;
+
+        if (x >= year) { x = (x / year)|0; dformat="yr"; }
+        else if (x >= month) { x = (x / month)|0; dformat="mnth"; }
+        else if (x >= day) { x = (x / day)|0; dformat="day"; }
+        else if (x >= hour) { x = (x / hour)|0; dformat="hr"; }
+        else if (x >= mins) { x = (x / mins)|0; dformat="min"; }
+        else { x |= 0; dformat="sec"; }
+        if (x > 1) plural = 's';
+        return x + ' ' + dformat + plural + ' ago';
+    }
 </script>
 
 <title>Worklist | Rewarder</title>
