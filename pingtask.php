@@ -9,6 +9,7 @@ require_once 'config.php';
 require_once 'class.session_handler.php';
 require_once 'send_email.php';
 require_once 'functions.php';
+require_once 'lib/Sms.php';
 
 // Get sender Nickname
 $id = getSessionUserId();
@@ -58,6 +59,19 @@ if(isset($_REQUEST['id'])){
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p><p>LoveMachine</p>";
 
         sl_send_email( $receiver_email, $mail_subject, $mail_msg);
+
+        // sms
+        try {
+            $user = new User();
+            $user->findUserById($receiver->id);
+            $config = Zend_Registry::get('config')->get('sms', array());
+            if ($config instanceof Zend_Config) {
+                $config = $config->toArray();
+            }
+            $sms = new Sms_Message($user, $mail_subject, $msg);
+            Sms::send($sms, $config);
+        } catch (Sms_Backend_Exception $e) {
+        }
     }
 
 }else{
@@ -81,8 +95,18 @@ if(isset($_REQUEST['id'])){
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p><p>LoveMachine</p>";
 
         sl_send_email( $receiver_email, $mail_subject, $mail_msg);
-    }
 
+        // sms
+        try {
+            $user = new User();
+            $user->findUserById($receiver->id);
+            $config = Zend_Registry::get('config')->get('sms', array());
+            if ($config instanceof Zend_Config) {
+                $config = $config->toArray();
+            }
+            $sms = new Sms_Message($user, $mail_subject, $msg);
+            Sms::send($sms, $config);
+        } catch (Sms_Backend_Exception $e) {
+        }
+    }
 }
-	
-?>
