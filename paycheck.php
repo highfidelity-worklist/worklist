@@ -15,7 +15,7 @@ include_once("classes/Fee.class.php");
 $is_payer = !empty($_SESSION['is_payer']) ? true : false;
 // Check if we have a payer
 if (!$is_payer) {
-	exit('{"success": false, "message": "You are not allowed to be here!" }');
+	exit('{"success": false, "message": "Nothing to see here. Move along!" }');
 }
 
 // Get clean data
@@ -55,15 +55,16 @@ if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
         $userData = mysql_fetch_array(mysql_query($mail));
 
         $subject = "LoveMachine paid you ".$total_fee_pay ." for ". $summary;
-        $body  = "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
+        $body  = "Cha-ching! You've got funds!<br/>";
+        $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
         $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
-        $body .= "You also earned ".intval($total_fee_pay)." rewarder points.  You currently have ".$userData['rewarder_points']." points available to reward other LoveMachiners with. ";
-	$body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."worklist/rewarder.php<br/><br/>";
-        $body .= "Thank you!<br/><br/>Love,<br/>Philip and Ryan<br/>";
+        $body .= "You also earned ".intval($total_fee_pay)." rewarder points.  You currently have ".$userData['rewarder_points']." points available to reward to your fellow LoveMachinists. ";
+	    $body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."worklist/rewarder.php<br/><br/>";
+        $body .= "Thank you!<br/><br/>Love,<br/>The LoveMachine<br/>";
 
         sl_send_email($userData['username'], $subject, $body);
     }
     die('{"success": true, "message": "Payment has been saved!" }');
 } else {
-    die('{"success": false, "message": "Something went technically wrong!" }');
+    die('{"success": false, "message": "Hmm, that was unexpected... Payment Failed!" }');
 }

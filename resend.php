@@ -18,14 +18,14 @@ if(!empty($_POST['username']))
     if(mysql_num_rows($res) > 0 ) {
         $row = mysql_fetch_array($res);
         $to = $_POST['username'];
-        $subject = "Registration Confirmation";
+        $subject = "LoveMachine SendLove Registration Confirmation";
         $body = "<p>You are only one click away from completing your registration with SendLove!</p><p>Click the link below or copy into your browser's window to verify your email address and activate your account. <br/>";
         $body .= "&nbsp;&nbsp;&nbsp;&nbsp;".SECURE_SERVER_URL."confirmation.php?cs=".$row['confirm_string']."&str=".base64_encode($_POST['username'])."</p>";
-        $body .= "<p>Love,<br/>Philip and Ryan</p>";
+        $body .= "<p>Love,<br/>The LoveMachine</p>";
         sl_send_email($to, $subject, $body);
         $msg= "An email containing a link to confirm your email address is sent to ".$to;
     }
-    else $msg= "Your email address does't match";
+    else $msg= "Your email address doesn't match";
 }
 
 

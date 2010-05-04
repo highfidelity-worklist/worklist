@@ -369,7 +369,7 @@ if ($action=='accept_bid'){
 			sendMailToDiscardedBids($worklist_id);
 		}
 		else {
-			$_SESSION['workitem_error'] = "Failed to accept bid, bid has been withdrawn!";
+			$_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
 			$redirectToDefaultView = true;
 		}
 	}
@@ -399,7 +399,7 @@ if ($action=='accept_multiple_bid'){
 								 'recipients' => array('mechanic')));
 				}
 				else {
-					$_SESSION['workitem_error'] = "Failed to accept bid, bid has been withdrawn!";
+					$_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
 				}
 			}
 			// Send email to not accepted bidders
@@ -562,7 +562,7 @@ function workitemNotify($options, $data = null){
 	    case 'bid_accepted':
 
 		  $subject = 'Bid accepted: ' . $itemTitle;
-		  $body = 'Your bid was accepted for ' . $itemLink . '<br>'
+		  $body = 'Cha-ching! Your bid was accepted for ' . $itemLink . '<br>'
 			. 'Promised by: ' . $_SESSION['nickname'];
 
 	    break;
@@ -607,7 +607,7 @@ function workitemNotify($options, $data = null){
 
 	}
 
-	$body .= '<p>Love,<br/>Workitem</p>';
+	$body .= '<p>Love,<br/>The LoveMachine</p>';
 
 	$emails = array();
 	foreach($recipients as $recipient){

@@ -39,10 +39,10 @@ if (isset($_REQUEST['str']) && isset($_REQUEST['cs'])) {
 				mysql_query("UPDATE ".USERS." SET password = '".sha1(mysql_real_escape_string($_POST['password']))."', forgot_hash = 'NULL', forgot_expire = '00/00/00 00:00:00' WHERE id = '$id'");
 				// SEND EMAIL TO CHANGEE
 				$to = $row['username'];
-				$subject = "Password Changed";
+				$subject = "LoveMachine Password Changed";
 				$body = "<p>Congratulations!</p>";
 				$body .= "<p>You have successfully changed your password with ".APP_NAME."<br/>";
-				$body .= "<p>Love,<br/>Philip and Ryan</p>";
+				$body .= "<p>Love,<br/>The LoveMachine</p>";
 				sl_send_email($to, $subject, $body);
 				$msg = "Password has been changed!";
 				header('Location: index.php');

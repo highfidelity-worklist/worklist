@@ -117,13 +117,13 @@ if (!empty($saveArgs)) {
 
     if (!empty($messages)) {
         $to = $_SESSION['username'];
-        $subject = "Account Edit Successful.";
+        $subject = "LoveMachine Account Edit Successful.";
         $body  = "<p>Congratulations!</p>";
         $body .= "<p>You have successfully updated your settings with ".SERVER_NAME.": <br/>";
         foreach ($messages as $msg) {
             $body .= "&nbsp;&nbsp;$msg<br/>";
         }
-        $body .= "</p><p>Love,<br/>Philip and Ryan</p>";
+        $body .= "</p><p>Love,<br/>The LoveMachine</p>";
         sl_send_email($to, $subject, $body);
 
         $msg="Account updated successfully!";

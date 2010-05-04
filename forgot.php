@@ -19,17 +19,17 @@ if(!empty($_POST['username'])) {
 		$token = md5((rand(1,100) + ord(substr($row['username'],rand(0,strlen($row['username']) - 2),1)))."salt is the prev part.. this too :)".$row['id']);
 		// insert token into db table if successful, send email
 		if (mysql_query("UPDATE ".USERS." SET forgot_hash = '{$token}', forgot_expire = ADDDATE(NOW(), INTERVAL 1 HOUR) WHERE username = '".mysql_real_escape_string($_POST['username'])."'")) {
-			$subject = "Password Recovery";
-			$body = "<p>Hi,</p>";
-			$body .= "<p>Please click on the link below or copy and paste the url in browser to reset your password. <br/>";
+			$subject = "LoveMachine Password Recovery";
+			$body  = "<p>Hi!</p><P> Forgot your password?  No worries, it will be ok. :)";
+			$body .= "<p>Just click on the link below or copy and paste the url in browser to reset your password. <br/>";
 			$body .= "&nbsp;&nbsp;&nbsp;&nbsp;".SECURE_SERVER_URL."resetpass.php?cs=".base64_encode($row['id'])."&str={$token}</p>";
-			$body .= "<p>Love,<br/>Philip and Ryan</p>";			
+			$body .= "<p>Love,<br/>The LoveMachine</p>";			
 			sl_send_email($row['username'], $subject, $body);
-			$msg= "<p class='LV_valid'>Login information will be sent if the email address ".$row['username']." is registered.</p>";
+			$msg = "<p class='LV_valid'>Login information will be sent if the email address ".$row['username']." is registered.</p>";
 		}
-		else $msg = "<p class='LV_invalid'>Failed to send password reset information! Try again or contact an administrator! ".mysql_error()."</p>";
+		else $msg = "<p class='LV_invalid'>Rut Roh! I was unable to send password reset information! Try again or contact an administrator! ".mysql_error()."</p>";
 	}
-	else $msg = "<p class='LV_invalid'>Failed to send password reset information! Try again or contact an administrator!</p>";
+	else $msg = "<p class='LV_invalid'>Failed to send password reset information! Please try again or contact an administrator!</p>";
 	// END Edits
 }
 
@@ -57,7 +57,7 @@ include("head.html"); ?>
        	
             <h1>Recover Your Password</h1>
                        
-            <h3>Forget your password? It happens to the best of us.</h3><br />
+            <h3>So many passwords, so little time... :)</h3><br />
 
                        
         <form action="#" method="post">
