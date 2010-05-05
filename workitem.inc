@@ -8,7 +8,7 @@
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    $statusList = array("SUGGESTED", "BIDDING","WORKING","REVIEW","DONE","SKIP");
+    $statusList = array("SUGGESTED", "BIDDING","WORKING","REVIEW","COMPLETED","DONE","PASS");
 
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
@@ -651,7 +651,7 @@ if ($action =="edit"):  ?>
 								foreach($statusMapMechanic[$worklist['status']] as $status)
 								{?>
 									<form method="post" action="" style = "display:inline;">
-										<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
+										<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
 										<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
 									</form>
 								<?php 
@@ -662,7 +662,7 @@ if ($action =="edit"):  ?>
 								foreach($statusMapRunner[$worklist['status']] as $status)
 								{?>
 									<form method="post" action="" style = "display:inline;">
-										<input type="submit" id="status-switch" name="status-switch" value="Set to <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
+										<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
 										<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
 									</form>
 								<?php
