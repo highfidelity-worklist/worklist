@@ -10,18 +10,20 @@ require_once 'workitem.class.php';
 require_once 'functions.php';
 require_once 'lib/Sms.php';
 
-    $statusMapRunner = array("SUGGESTED" => array("BIDDING","SKIP"),
-				 "BIDDING" => array("SKIP"),
+    $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
+				 "BIDDING" => array("PASS"),
 				 "WORKING" => array("REVIEW"),
-				 "REVIEW" => array("WORKING", "DONE"),
+				 "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
+				 "COMPLETED" => array("REVIEW", "DONE"),
 				 "DONE" => array("REVIEW"),
-				 "SKIP" => array("REVIEW"));
+				 "PASS" => array("REVIEW"));
 
-    $statusMapMechanic = array("SUGGESTED" => array("SKIP", "REVIEW"),
+    $statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
 				 "WORKING" => array("REVIEW"),
-				 "REVIEW" => array("SKIP", "WORKING"),
+				 "REVIEW" => array("PASS", "COMPLETED", "WORKING"),
+				 "COMPLETED" => array("REVIEW", "DONE"),
 				 "DONE" => array("WORKING", "REVIEW"),
-				 "SKIP" => array("REVIEW"));
+				 "PASS" => array("REVIEW"));
 
 $get_variable = 'job_id';
 
@@ -510,7 +512,7 @@ function sendMailToDiscardedBids($worklist_id)	{
 
 function changeStatus($workitem,$newStatus, $user){
 
-    $allowable = array("SUGGESTED", "REVIEW", "SKIP");
+    $allowable = array("SUGGESTED", "REVIEW", "PASS", "COMPLETED");
 
     if($user->getIs_runner() == 1 || $user->getBudget() > 0){
 
