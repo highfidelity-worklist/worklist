@@ -25,6 +25,9 @@ if( $userId > 0 )	{
 	$user = new User();
 	$user->findUserById( $userId );
 	$nick = $user->getNickname();
+	$userbudget =$user->getBudget();
+	setlocale(LC_MONETARY, 'en_US');
+	$budget = money_format('%#10n', $userbudget);
 }
 
 $filter = new Agency_Worklist_Filter();
@@ -1053,6 +1056,9 @@ include("head.html"); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <?php if (isset($_SESSION['userid'])) { ?>
+<?php if($is_runner){ ?>
+<div style="float: right; margin-top: 3px; font-weight:bold; font-size:16px;">Remaining Budget: <?php echo $budget; ?></div>
+<?php }?>
 <div id="buttons">
 <p><input type="submit" id="add" name="add" value="Add" class="iToolTip addButton" /> <input
     type="submit" id="edit" name="edit" value="Edit"
@@ -1061,7 +1067,6 @@ include("head.html"); ?>
     id="view" name="view" value="View" disabled="disabled" /> <?php } ?>
 </p>
 </div>
-
 <br style="clear: both;" />
 <br/>
 <div id="status-wrap" style="width:380px;">
