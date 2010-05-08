@@ -334,6 +334,7 @@ table {
 	border-color: #aaa;
 	border-collapse: collapse;
 	background-color: white;
+	width:100%;
 	font-family: helvetica, arial, sans-serif;
 }
 table th {

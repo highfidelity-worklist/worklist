@@ -23,21 +23,21 @@ $audit_mode = ($user->getIs_auditor() && !empty($_REQUEST['audit'])) ? 1 : 0;
 if ($audit_mode) {
     $userList = GetUserList($_SESSION['userid'], $_SESSION['nickname'], true, array('is_auditor'));
 } else {
-    $userList = GetUserList($_SESSION['userid'], $_SESSION['nickname'], true);
-
-    /* Strip users already in the rewarderList */
-    $rewarderList = GetRewarderUserList($_SESSION['userid']);
-    foreach ($rewarderList as $info) {
-        unset($userList[$info[0]]);
-    }
+	$userList = GetUserList($_SESSION['userid'], $_SESSION['nickname'], true);
+	
+	/* Strip users already in the rewarderList */
+	$rewarderList = GetRewarderUserList($_SESSION['userid']);
+	foreach ($rewarderList as $info) {
+	   unset($userList[$info[0]]);
+	}
 }
 
 //-- Overall balance variables ---
-	$logPoints = mysql_fetch_row(mysql_query('select sum(`rewarder_points`) from `rewarder_log`;'));
-	$totalAlloc = $logPoints[0];
-	$DistribPoints = mysql_fetch_row(mysql_query('select sum(`rewarder_points`) from `rewarder_distribution`;'));
-	$totalGrant = $DistribPoints[0];
-	$percentGranted = ceil(($totalGrant/$totalAlloc)*100);
+$logPoints = mysql_fetch_row(mysql_query('select sum(`rewarder_points`) from `rewarder_log`;'));
+$totalAlloc = $logPoints[0];
+$DistribPoints = mysql_fetch_row(mysql_query('select sum(`rewarder_points`) from `rewarder_distribution`;'));
+$totalGrant = $DistribPoints[0];
+$percentGranted = ceil(($totalGrant/$totalAlloc)*100);
 //-----
 
 /*********************************** HTML layout begins here  *************************************/
@@ -49,7 +49,91 @@ include("head.html");
 
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/rewarder.css" rel="stylesheet" />
+
+<title>Worklist | Rewarder</title>
+
+</head>
+
+<body>
+
+<?php include("format.php"); ?>
+
+<!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
+
+
+<h1>Rewarder</h1>
+
+<div id="rewarder-controls"><?php if ($_SESSION['is_auditor'] && $audit_mode) { ?>
+
+<div id="rewarder_balance">
+<div class="balanceTitle">Overall balance</div>
+<div style="display: table-row">
+<div id="percentGrant"><span class="balancePercent"><?php echo $percentGranted;?></span>&nbsp;<span
+	style="">%</span><br />
+<span style="margin-top: -3px;">granted</span></div>
+<div id="balanceDetails">
+<div id="totPointsAlloc"><span class="balanceLabel">Allocated</span><span
+	class="balanceData"><?php echo $totalAlloc; ?></span></div>
+<div id="totPointsGrant"><span class="balanceLabel">Granted</span><span
+	class="balanceData"><?php echo $totalGrant; ?></span></div>
+</div>
+</div>
+</div>
+<?php } ?>
+<div id="rewarder-point-info"><?php if ($_SESSION['is_auditor']) { ?> <?php if ($audit_mode) { ?>
+<a href="rewarder.php">Award</a> <?php } else { ?> <a
+	href="rewarder.php?audit=1">Audit</a> | Your Rewarder balance is <span
+	id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span>
+<?php } ?> <?php } else { ?> Your Rewarder balance is <span
+	id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span>
+<?php } ?></div>
+<div id="rewarder-team"><?php if ($audit_mode) { ?> <label
+	for="user-list">Manage Auditors:</label>&nbsp; <?php } else { ?> <label
+	for="user-list">Reward:</label>&nbsp; <?php } ?> <select id="user-list"
+	name="user-list">
+	<?php if ($audit_mode) { ?>
+	<option value="0">-- toggle auditor --</option>
+	<?php foreach ($userList as $userid=>$info) { ?>
+	<option value="<?php echo $userid ?>"><?php echo ($info['is_auditor'] ? '* ' : '') . $info['nickname'] ?></option>
+	<?php } ?>
+	<?php } else { ?>
+	<option value="0">-- team member --</option>
+	<?php foreach ($userList as $userid=>$nickname) { ?>
+	<option value="<?php echo $userid ?>"><?php echo $nickname ?></option>
+	<?php } ?>
+	<?php } ?>
+</select></div>
+</div>
+<div style="clear: both"></div>
+<div id="list-headers">
+<div id="users-header" title='Sort Z-A'>User
+<div id="users-arrow" class="arrow arrow-up"></div>
+</div>
+<div id="points-header" title='Sort Descendent'>Points Rewarded
+<div id="points-arrow" class="arrow arrow-down"></div>
+</div>
+</div>
+<div id="rewarder-container">
+<div id="rewarder-users"></div>
+<div id="tabs">
+<div id="tab-chart">
+<div id="rewarder-chart"></div>
+</div>
+<div id="tab-graph">
+<div id="rewarder-graph"></div>
+</div>
+</div>
+</div>
+<div style="clear: both"></div>
+
+<!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
+
 <script type="text/javascript" src="js/jquery.sort-1.1.js"></script>
+
+<!-- Import scripts for the chart -->
+<script src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/rewarder-chart.js" type="text/javascript" charset="utf-8"></script>
+
 <script type="text/javascript">
     var rewarder = {
         auditMode: <?php echo $audit_mode ? "true" : "false" ?>,
@@ -64,19 +148,18 @@ include("head.html");
         rewarderList: [],
 
         addNewUser: function(newUser, pos) {
-            var span = $('<span></span>')
-                .text(newUser[1]);
+            var span = $('<span></span>').html(newUser[1] + ' - <b>' + newUser.loveFrom + ' (' + newUser.totalLove + ')</b>');
             var user = $('<h6 class="user'+newUser[0]+'"></h6>').append(span).css('top', pos * this.userHeight).data('userid', newUser[0]);
             if (rewarder.auditMode) {
                 user.addClass('user-popup').click(function(){
                     rewarder.displayRewarderUserDetail($(this).data('userid'));
                 });
             } else {
-	            // Add the love popup
-	            // 01-MAY-2010 <Andres>
-	            user.addClass('user-popup').click(function() {
-	                rewarder.showLove($(this).data('userid'), newUser[1]);
-	            });
+                // Add the love popup
+                // 01-MAY-2010 <Andres>
+                user.addClass('user-popup').click(function() {
+                    rewarder.showLove($(this).data('userid'), newUser[1]);
+                });
             }
             this.usersContainer.append(user);
 
@@ -213,6 +296,7 @@ include("head.html");
             // 1-MAY-2010 <andres>
             var love_sent;
             $.ajax({
+                async: false,
                 url: 'get-love.php',
                 data: 'id='+userid,
                 dataType: 'json',
@@ -222,7 +306,7 @@ include("head.html");
                     love_sent = json;
                 }
             });
-            
+
             $.ajax({
                 url: 'get-rewarder-user-detail.php',
                 data: 'id='+userid,
@@ -230,9 +314,11 @@ include("head.html");
                 type: "POST",
                 cache: false,
                 success: function(json) {
-                    var detailHTML = 
+                    var name = json[0];
+                    var detailHTML =
                         '<div id="detail" title="Rewarder Detail for '+json[0]+'">' +
                         '<div id="audit" style="float:left;">' +
+                        '  <h3>Rewarded Users</h3>'+
                         '  <table style="text-align: left">' +
                         '    <tr class="table-hdng"><th style="width: 120px">User</th><th style="width: 100px">Points</th></tr>';
 
@@ -244,33 +330,48 @@ include("head.html");
                     // 1-MAY-2010 <andres>
                     detailHTML += '  </table></div>' +
                         '  <div id="love" style="float:left; margin-left:15px;">' +
-                        '      <table stlye="text-align:left;">' +
-                        '      <tr class="table-hdng"><th>Why</th><th style="width: 25%;">When</th></tr>';
-                    for (var i = 0; i < love_sent.length; i++) {
-                        var json_when = love_sent[i].when;
+                        '  <h3>Love I sent ' +name+ '</h3>' +
+                        '  <div style="overflow:auto; width=100%; max-height:300px;">'+
+                        '  <table style="text-align: left; margin-bottom:10px;">' +
+                        '    <tr class="table-hdng"><th>Why</th><th style="width: 80px;">When</th></tr>';
+
+                    for (var i = 0; i < love_sent[0].love.length; i++) {
+                        var json_when = love_sent[0].love[i].when;
                         var when = relativeTime(json_when);
-                        detailHTML += '    <tr><td>'+love_sent[i].why+'</td><td>'+when+'</td></tr>';
+                        detailHTML += '    <tr><td>'+love_sent[0].love[i].why+'</td><td>'+when+'</td></tr>';
                     }
 
-                    if (love_sent.length == 0) {
+                    if (love_sent[0].love.length == 0) {
                         // Add a no love sent message
-                        detailHTML += '    <tr><td style="text-align:center;" colspan="2">No love sent to '+json[0]+'</td></tr>';
+                        detailHTML += '    <tr><td style="text-align:center;" colspan="2">No love sent to '+name+'</td></tr>';
                     }
 
-                    detailHTML += 
-                        '    </table></div>' +
-                        '  <div style="clear:both;"></div>' +
-                        '  <form id="detailForm" method="post">' +
-                        '    <input type="submit" name="submit" value="Ok" />' +
-                        '  </form>';
-                    '</div>';
-                    var detail = $(detailHTML).dialog({ modal: true, width: 'auto', height: 'auto' });
+                    detailHTML += '  </table>'+
+                    '  </div>'+
+                    '  <h3>Love everyone else sent to '+name+'</h3>'+
+                    '  <div style="overflow:scroll; height: 300px;">' +
+                    '  <table style="text-align: left">' +
+                    '      <tr class="table-hdng"><th>Why</th><th style="width: 80px;">When</th></tr>';
 
-                    $("#detailForm").submit(function(){
-                        detail.dialog('close');
-                        detail.remove();
-                        return false;
-                    });
+                    for (var i = 0; i < love_sent[1].love.length; i++) {
+                        var json_when = love_sent[1].love[i].when;
+                        var when = relativeTime(json_when);
+                        detailHTML += '    <tr><td>'+love_sent[1].love[i].why+'</td><td>'+when+'</td></tr>';
+                    }
+                
+                    if (love_sent[1].love.length == 0) {
+                        // Add a no love sent message
+                        detailHTML += '    <tr><td style="text-align:center;" colspan="2">No love sent to '+name+'</td></tr>';
+                    }
+                
+                    detailHTML += '    </table>'+
+                                  '    </div>'+
+                    '</div>';
+
+                    detailHTML +=
+                        '    </table></div></div>' +
+                        '</div>';
+                    var detail = $(detailHTML).dialog({ modal: true, width: 'auto', height: 'auto' });
                 }
             });
         },
@@ -357,7 +458,7 @@ include("head.html");
             } else {
                 var combinedList = rewarder.combineUserLists(rewarder.rewarderList, newRewarderList);
 
-                var animateFadeIn = function() { 
+                var animateFadeIn = function() {
                     var j = 0;
                     for (var i in combinedList) {
                         if (combinedList[i][0] == 2) {
@@ -367,7 +468,7 @@ include("head.html");
                     }
                 };
 
-                var animateReposition = function() { 
+                var animateReposition = function() {
                     var j = 0;
                     var fn = animateFadeIn;
                     for (var i in combinedList) {
@@ -382,7 +483,7 @@ include("head.html");
                     if (fn) animateFadeIn();
                 }
 
-                var animateFadeOut = function() { 
+                var animateFadeOut = function() {
                     var j = 0;
                     var fn = animateReposition;
                     for (var i in combinedList) {
@@ -442,7 +543,7 @@ include("head.html");
         },
 
         // Show love sent to clicked user
-        // 1-MAY-2010 <andres>
+        // 01-MAY-2010 <andres>
         showLove: function(userid, name) {
             $.ajax({
                 url: 'get-love.php',
@@ -451,35 +552,46 @@ include("head.html");
                 type: "POST",
                 cache: false,
                 success: function(json) {
-                    var detailHTML = 
+                    var detailHTML =
                         '<div id="detail" title="Love sent to '+name+'">' +
-                        '  <table style="text-align: left">' +
-                        '    <tr class="table-hdng"><th>Why</th><th style="width: 25%;">When</th></tr>';
+                        '  <h3>Love I sent ' +name+ '</h3>' +
+                        '  <div style="overflow:auto; width=100%; max-height:300px;">'+
+                        '  <table style="text-align: left; margin-bottom:10px;">' +
+                        '    <tr class="table-hdng"><th>Why</th><th style="width: 80px;">When</th></tr>';
 
-                    for (var i = 0; i < json.length; i++) {
-                        var json_when = json[i].when;
+                    for (var i = 0; i < json[0].love.length; i++) {
+                        var json_when = json[0].love[i].when;
                         var when = relativeTime(json_when);
-                        detailHTML += '    <tr><td>'+json[i].why+'</td><td>'+when+'</td></tr>';
+                        detailHTML += '    <tr><td>'+json[0].love[i].why+'</td><td>'+when+'</td></tr>';
                     }
 
-                    if (json.length == 0) {
+                    if (json[0].love.length == 0) {
                         // Add a no love sent message
                         detailHTML += '    <tr><td style="text-align:center;" colspan="2">No love sent to '+name+'</td></tr>';
                     }
 
-                    detailHTML +=
-                        '  </table>' +
-                        '  <form id="detailForm" method="post">' +
-                        '    <input type="submit" name="submit" value="Ok" />' +
-                        '  </form>';
-                    '</div>';
-                    var detail = $(detailHTML).dialog({ modal: true, width: 'auto', height: 'auto' });
+                    detailHTML += '  </table>'+
+                                  '  </div>'+
+                                  '  <h3>Love everyone else sent to '+name+'</h3>'+
+                                  '  <div style="overflow:scroll; height: 300px;">' +
+                                  '  <table style="text-align: left">' +
+                                  '      <tr class="table-hdng"><th>Why</th><th style="width: 80px;">When</th></tr>';
 
-                    $("#detailForm").submit(function(){
-                        detail.dialog('close');
-                        detail.remove();
-                        return false;
-                    });
+                    for (var i = 0; i < json[1].love.length; i++) {
+                        var json_when = json[1].love[i].when;
+                        var when = relativeTime(json_when);
+                        detailHTML += '    <tr><td>'+json[1].love[i].why+'</td><td>'+when+'</td></tr>';
+                    }
+
+                    if (json[1].love.length == 0) {
+                        // Add a no love sent message
+                        detailHTML += '    <tr><td style="text-align:center;" colspan="2">No love sent to '+name+'</td></tr>';
+                    }
+
+                    detailHTML += '    </table>'+
+                                  '    </div>'+
+                                  '</div>';
+                    var detail = $(detailHTML).dialog({ modal: true, width: 'auto', height: 'auto' });
                 }
             });
         }
@@ -498,91 +610,105 @@ include("head.html");
                 rewarder.updateRewarderUser(userid, 0);
                 $(this).find('option:selected').remove();
             });
-    
+
             rewarder.loadRewarderList();
         }
-		
-		$('#users-header').toggle(function(){
-			var r = rewarder.rewarderList;
-			r.sort(alphaNumSort);
-			r.reverse();
-			rewarder.updateRewarderList(r);
-			$('#points-arrow').hide();
-			$('#users-arrow').removeClass('arrow-up').addClass('arrow-down').show();
-			$(this).attr('title','Sort A-Z');
-		},function(){
-			var r = rewarder.rewarderList;
-			r.sort(alphaNumSort);
-			rewarder.updateRewarderList(r);
-			$('#points-arrow').hide();
-			$('#users-arrow').removeClass('arrow-down').addClass('arrow-up').show();
-			$(this).attr('title','Sort Z-A');
-		});
-		
-		$('#points-arrow').hide();
-		$('#points-header').toggle(function(){
-			var r = rewarder.rewarderList;
-			r.sort(numSort);
-			r.reverse();
-			rewarder.updateRewarderList(r);
-			$('#users-arrow').hide();
-			$('#points-arrow').removeClass('arrow-up').addClass('arrow-down').show();
-			$(this).attr('title','Sort Ascendent');
-		},function(){
-			var r = rewarder.rewarderList;
-			r.sort(numSort);
-			rewarder.updateRewarderList(r);
-			$('#users-arrow').hide();
-			$('#points-arrow').removeClass('arrow-down').addClass('arrow-up').show();
-			$(this).attr('title','Sort Descendent');
-		});
-		
-		function alphaNumSort(m,n){
-			try{
-				var cnt= 0,tem;
-				var a= m[1].toLowerCase();
-				var b= n[1].toLowerCase();
-				if(a== b) return 0;
-				var x=/^(\.)?\d/;
-			
-				var L= Math.min(a.length,b.length)+ 1;
-				while(cnt< L && a.charAt(cnt)=== b.charAt(cnt) &&
-				x.test(b.substring(cnt))== false && x.test(a.substring(cnt))== false) cnt++;
-				a= a.substring(cnt);
-				b= b.substring(cnt);
-			
-				if(x.test(a) || x.test(b)){
-					if(x.test(a)== false)return (a)? 1: -1;
-					else if(x.test(b)== false)return (b)? -1: 1;
-					else{
-						var tem= parseFloat(a)-parseFloat(b);
-						if(tem!= 0) return tem;
-						else tem= a.search(/[^\.\d]/);
-						if(tem== -1) tem= b.search(/[^\.\d]/);
-						a= a.substring(tem);
-						b= b.substring(tem);
-					}
-				}
-				if(a== b) return 0;
-				else return (a >b)? 1: -1;
-			}
-			catch(er){
-				return 0;
-			}
-		}
-		
-		function numSort(m,n){
-			try{
-				var a = parseInt(m[2]);
-				var b = parseInt(n[2]);
-				if(a== b) return 0;
-				else return (a >b)? 1: -1;
-			}
-			catch(er){
-				return 0;
-			}
-		}
+
+        $('#users-header').toggle(function(){
+            var r = rewarder.rewarderList;
+            r.sort(alphaNumSort);
+            r.reverse();
+            rewarder.updateRewarderList(r);
+            $('#points-arrow').hide();
+            $('#users-arrow').removeClass('arrow-up').addClass('arrow-down').show();
+            $(this).attr('title','Sort A-Z');
+        },function(){
+            var r = rewarder.rewarderList;
+            r.sort(alphaNumSort);
+            rewarder.updateRewarderList(r);
+            $('#points-arrow').hide();
+            $('#users-arrow').removeClass('arrow-down').addClass('arrow-up').show();
+            $(this).attr('title','Sort Z-A');
+        });
+
+        $('#points-arrow').hide();
+        $('#points-header').toggle(function(){
+            var r = rewarder.rewarderList;
+            r.sort(numSort);
+            r.reverse();
+            rewarder.updateRewarderList(r);
+            $('#users-arrow').hide();
+            $('#points-arrow').removeClass('arrow-up').addClass('arrow-down').show();
+            $(this).attr('title','Sort Ascendent');
+        },function(){
+            var r = rewarder.rewarderList;
+            r.sort(numSort);
+            rewarder.updateRewarderList(r);
+            $('#users-arrow').hide();
+            $('#points-arrow').removeClass('arrow-down').addClass('arrow-up').show();
+            $(this).attr('title','Sort Descendent');
+        });
+
+        function alphaNumSort(m,n){
+            try{
+                var cnt= 0,tem;
+                var a= m[1].toLowerCase();
+                var b= n[1].toLowerCase();
+                if(a== b) return 0;
+                var x=/^(\.)?\d/;
+
+                var L= Math.min(a.length,b.length)+ 1;
+                while(cnt< L && a.charAt(cnt)=== b.charAt(cnt) &&
+                x.test(b.substring(cnt))== false && x.test(a.substring(cnt))== false) cnt++;
+                a= a.substring(cnt);
+                b= b.substring(cnt);
+
+                if(x.test(a) || x.test(b)){
+                    if(x.test(a)== false)return (a)? 1: -1;
+                    else if(x.test(b)== false)return (b)? -1: 1;
+                    else{
+                        var tem= parseFloat(a)-parseFloat(b);
+                        if(tem!= 0) return tem;
+                        else tem= a.search(/[^\.\d]/);
+                        if(tem== -1) tem= b.search(/[^\.\d]/);
+                        a= a.substring(tem);
+                        b= b.substring(tem);
+                    }
+                }
+                if(a== b) return 0;
+                else return (a >b)? 1: -1;
+            }
+            catch(er){
+                return 0;
+            }
+        }
+
+        function numSort(m,n){
+            try{
+                var a = parseInt(m[2]);
+                var b = parseInt(n[2]);
+                if(a== b) return 0;
+                else return (a >b)? 1: -1;
+            }
+            catch(er){
+                return 0;
+            }
+        }
     });
+
+    function initializeTabs() {                                                                                                                                                                       
+        $("#tabs").tabs({selected: 0,
+            select: function(event, ui) {
+                if(ui.index == 0) {
+                    currentTab = 0;
+                    timeoutId = setTimeout("GetReport("+page+", true)", 50);
+                } else {
+                    currentTab = 1;
+                    timeoutId = setTimeout("setupTimelineChart(true)", 50);
+                }
+            }                                                                                                                                                       
+        });
+    }
 
     function relativeTime(x) {
         var plural = '';
@@ -601,85 +727,4 @@ include("head.html");
     }
 </script>
 
-<title>Worklist | Rewarder</title>
-
-</head>
-
-<body>
-
-<?php include("format.php"); ?>
-
-<!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-
-
-    <h1>Rewarder</h1>
-
-    <div id="rewarder-controls">
-	
-	   <?php if ($_SESSION['is_auditor'] && $audit_mode) { ?>
-			
-			<div id="rewarder_balance">
-				<div class="balanceTitle">Overall balance</div>
-				<div style="display:table-row">
-					<div id="percentGrant">
-						<span class="balancePercent"><?php echo $percentGranted;?></span>&nbsp;<span style="">%</span><br/>
-						<span style="margin-top:-3px;">granted</span>
-					</div>
-					<div id="balanceDetails">
-						<div id="totPointsAlloc">
-							<span class="balanceLabel">Allocated</span><span class="balanceData"><?php echo $totalAlloc; ?></span>
-						</div>
-						<div id="totPointsGrant">
-							<span class="balanceLabel">Granted</span><span class="balanceData"><?php echo $totalGrant; ?></span>
-						</div>
-					</div>
-				</div>
-			</div>
-		<?php } ?>
-        <div id="rewarder-point-info">
-			<?php if ($_SESSION['is_auditor']) { ?>
-                <?php if ($audit_mode) { ?>
-                <a href="rewarder.php">Award</a>
-                <?php } else { ?>
-                <a href="rewarder.php?audit=1">Audit</a> |
-                Your Rewarder balance is <span id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span>
-                <?php } ?>
-            <?php } else { ?>
-            Your Rewarder balance is <span id="rewarder-points"><?php echo $user->getRewarder_points() ?> points</span>
-            <?php } ?>
-        </div>
-        <div id="rewarder-team">
-            <?php if ($audit_mode) { ?>
-            <label for="user-list">Manage Auditors:</label>&nbsp;
-            <?php } else { ?>
-            <label for="user-list">Reward:</label>&nbsp;
-            <?php } ?>
-            <select id="user-list" name="user-list">
-                <?php if ($audit_mode) { ?>
-                    <option value="0">-- toggle auditor --</option>
-                    <?php foreach ($userList as $userid=>$info) { ?>
-                    <option value="<?php echo $userid ?>"><?php echo ($info['is_auditor'] ? '* ' : '') . $info['nickname'] ?></option>
-                    <?php } ?>
-                <?php } else { ?>
-                    <option value="0">-- team member --</option>
-                    <?php foreach ($userList as $userid=>$nickname) { ?>
-                    <option value="<?php echo $userid ?>"><?php echo $nickname ?></option>
-                    <?php } ?>
-                <?php } ?>
-            </select>
-        </div>
-    </div>
-    <div style="clear:both"></div>
-	<div id="list-headers">
-		<div id="users-header" title='Sort Z-A'>User <div id="users-arrow" class="arrow arrow-up"></div></div>
-		<div id="points-header"title='Sort Descendent'>Points Rewarded <div id="points-arrow" class="arrow arrow-down"></div></div>
-	</div>
-    <div id="rewarder-container">
-        <div id="rewarder-users"></div>
-        <div id="rewarder-chart"></div>
-    </div>
-    <div style="clear:both"></div>
-
-<!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
-
-<?php include("footer.php"); ?>
+	<?php include("footer.php"); ?>

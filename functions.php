@@ -129,6 +129,11 @@ function GetRewarderAuditList($userid) {
  *  Parameters: userid - The userid of the user to retrieve the list for.
  */
 function GetRewarderUserList($userid) {
+	// From user
+	$fromUser = new User();
+	$fromUser->findUserById($userid);
+	$fromUsername = mysql_real_escape_string($fromUser->getUsername());
+
     $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, `".REWARDER."`.`rewarder_points` FROM `".REWARDER."` ".
            "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
            "WHERE `giver_id`='$userid' AND `".USERS."`.`confirm`=1 AND `is_active`=1 ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
@@ -136,11 +141,103 @@ function GetRewarderUserList($userid) {
 
     $rewarderList = array();
     while ($rt && ($row = mysql_fetch_assoc($rt))) {
-        $rewarderList[] = array($row['receiver_id'], $row['receiver_nickname'], $row['rewarder_points']);
+        // Get the rewardee username
+	    $r_user = new User();
+	    $r_user->findUserById($row['receiver_id']);
+	    $r_username = mysql_real_escape_string($r_user->getUsername());
+	    
+        $lovecount = countLove($r_username, $fromUsername);
+        $totallove = countLove($r_username);
+        $rewarderList[] = array($row['receiver_id'], $row['receiver_nickname'], $row['rewarder_points'], 'loveFrom' => $lovecount, 'totalLove' => $totallove);
     }
 
     return $rewarderList;
 }
+
+/*  Function: countLoveToUser
+ * 
+ *  Purpose: Gets the count of love sent to a user.
+ *  
+ *  Parameters: username - The username of the desired user.
+ *              fromUser - If set will get the love sent by this user. 
+ */
+function countLove($username, $fromUsername="") {
+    defineSendLoveAPI();
+    
+    if($fromUsername != "") {
+        $params = array (
+                'action' => 'getcount',
+                'api_key' => SENDLOVE_API_KEY,
+                'username' => $username,
+                'fromUsername' => $fromUsername);
+    } else {
+        $params = array (
+                'action' => 'getcount',
+                'api_key' => SENDLOVE_API_KEY,
+                'username' => $username);
+    }
+    $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+    $retval = json_decode(postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+
+    if ($retval['status'] == "ok") {
+        return $retval['data']['count'];
+    } else {
+        return -1;
+    }
+}
+
+/*  Function: getUserLove
+ * 
+ *  Purpose: Get Love sent to the user
+ *  
+ *  Parameters: username - The username of the user to get love from.
+ *              fromUsername - If set it will filter to the love sent by this username.
+ */
+function getUserLove($username, $fromUsername="") {
+    defineSendLoveAPI();
+	
+    if($fromUsername != "") {
+		$params = array (
+		        'action' => 'getlove',
+		        'api_key' => SENDLOVE_API_KEY,
+		        'username' => $username,
+		        'fromUsername' => $fromUsername,
+		        'pagination' => 0);
+    } else {
+        $params = array (
+                'action' => 'getlove',
+                'api_key' => SENDLOVE_API_KEY,
+                'username' => $username,
+                'pagination' => 0);
+    }
+	$referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+    $retval = json_decode(postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    
+    if ($retval['status'] == "ok") {
+        return $retval['data'];
+    } else {
+        return -1;
+    }
+}
+
+function defineSendLoveAPI() {
+    // Sendlove API status and error codes. Keep in sync with .../sendlove/add.php
+    define ('SL_OK', 'ok');
+    define ('SL_ERROR', 'error');
+    define ('SL_WARNING', 'warning');
+    define ('SL_NO_ERROR', '');
+    define ('SL_NO_RESPONSE', 'no response');
+    define ('SL_BAD_CALL', 'bad call');
+    define ('SL_DB_FAILURE', 'db failure');
+    define ('SL_UNKNOWN_USER', 'unknown user');
+    define ('SL_NOT_COWORKER', 'receiver not co-worker');
+    define ('SL_RATE_LIMIT', 'rate limit');
+    define ('SL_SEND_FAILED', 'send failed');
+    define ('SL_JOURNAL_FAILED', 'journal failed');
+    define ('SL_NO_SSL', 'no ssl call');
+    define ('SL_WRONG_KEY', 'wrong api key');
+}
+
 /* 
 * Populate the rewarder team automatically. It's based on who added a fee to a task you worked on in the last 30 days.
 *

@@ -1,8 +1,8 @@
 <?php
 //  vim:ts=4:et
 
-//  Copyright (c) 2009-2010, LoveMachine Inc.  
-//  All Rights Reserved.  
+//  Copyright (c) 2009-2010, LoveMachine Inc.
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 // AJAX request to get love sent to an user
@@ -22,45 +22,18 @@ if (empty($_REQUEST['id'])) {
 }
 
 // From user
-$m_userid = intval($_SESSION['userid']);
-$m_user = new User();
-$m_user->findUserById($m_userid);
-$m_username = $m_user->getUsername();
-$m_email = mysql_real_escape_string($m_username);
+$fromUser = new User();
+$fromUser->findUserById($_SESSION['userid']);
+$fromUsername = mysql_real_escape_string($fromUser->getUsername());
 
 // Sent to user
-$userid = intval($_REQUEST['id']);
 $user = new User();
-$user->findUserById($userid);
-$username = $user->getUsername();
-$email = mysql_real_escape_string($username);
+$user->findUserById($_REQUEST['id']);
+$username = mysql_real_escape_string($user->getUsername());
 
-$db = mysql_connect("localhost", "project_tofor", "test30");
-if (!$db) {
-    echo 'error: DB connection';
-    return;
-}
-mysql_select_db("sendlove_dev", $db);
+$love = getUserLove($username, $fromUsername);
+$total_love = getUserLove($username);
 
-$sql = "SELECT `why`, TIMESTAMPDIFF(SECOND,`at`,NOW()) AS `when` 
-        FROM `love` LEFT JOIN `users` ON 
-        `love`.`giver`  = `users`.`username` AND `users`.`company_id` = `love`.`company_id` 
-        WHERE `username` = '$m_email' AND `receiver` = '$email' ORDER BY `at` DESC LIMIT 20";
-
-$loveArray = array();
-$res = mysql_query($sql);
-
-if ($res) {
-    while ($row = mysql_fetch_assoc($res)) {
-        $loveArray[] = $row;
-    }
-} else {
-    echo 'error: query error';
-    return;
-}
-
-echo json_encode($loveArray);
-
-mysql_close($db);
+echo json_encode(array($love, $total_love));
 
 ?>
