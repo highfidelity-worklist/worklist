@@ -82,6 +82,7 @@ switch ($action)
 
     //build payment data array
     $receiversArray = array();
+    $totalFees = 0; //log data
     $i = 0;   //index value
     while ($fees_data = mysql_fetch_array($fees_info_results)) {
         $receiverData = array(  'receiverEmail' => $fees_data["mechanic_paypal_email"],
@@ -89,6 +90,7 @@ switch ($action)
                                 'uniqueID' => $fees_data["fee_id"],
                                 'note' => '#'.$fees_data["worklist_id"].' - '.$fees_data["worklist_item"]);
         $receiversArray[$i] = $receiverData;
+        $totalFees = $totalFees + $fees_data["amount"];
         $i++;
     }
 
@@ -107,7 +109,7 @@ switch ($action)
     $httpParsedResponseAr = PPHttpPost('MassPay', $nvpStr);
 
     if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
-        $pp_message = '<p>MassPay Completed Successfully!</p>';
+        $pp_message = '<p>MassPay Completed Successfully! - $'.$totalFees.' Paid.</p>';
         if (isset($_GET["debug"])) { $pp_message .= '<p><pre>'.print_r($httpParsedResponseAr, true).'</pre></p>'; }
         //$fee_sql_update = "UPDATE ".FEES." SET paid=1, paid_date='".date("Y-m-d H:i:s")."' WHERE id in (".$fees_csv.")";
         //$update_fees_paid = mysql_query($fee_sql_update);
@@ -247,6 +249,7 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
 <?php
 } else {
     echo urldecode($pp_message);
+    error_log(date("Y-m-d H:i:s")." ".$pp_message);
     echo '<p><a href="view-payments.php">Process More Payments.</a></p>';
 }
 ?>
