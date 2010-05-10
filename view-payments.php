@@ -249,7 +249,7 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
 <?php
 } else {
     echo urldecode($pp_message);
-    error_log(date("Y-m-d H:i:s")." ".$pp_message);
+    error_log(date('Y-m-d H:i:s').' '.$pp_message.'<p><pre>'.print_r($httpParsedResponseAr, true).'</pre></p>');
     echo '<p><a href="view-payments.php">Process More Payments.</a></p>';
 }
 ?>
