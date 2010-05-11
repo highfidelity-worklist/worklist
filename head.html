@@ -34,7 +34,34 @@
 		$('#payway').watermark('Contract services, check, etc.', {useNative: false});
 		$('#skills').watermark('Your skills', {useNative: false});
 		$('#findus').watermark('Google, Yahoo, others..', {useNative: false});
-
+		if($('#fees-week').length > 0){
+			$('#fees-week').click(function(){
+				$('#wFees').dialog({ autoOpen: false });
+				$('#wFees').html('<img src="images/loader.gif" />');
+				$('#wFees').dialog('open');
+				$.getJSON('getfeesums.php?weekly=1', function(json){
+					if(json.error == 1){
+						$('#wFees').html('Some error occured or you are not logged in.');
+          } else {
+              $('#wFees').html(json.output);
+          }
+				});
+			});
+		}
+		if($('#fees-month').length > 0){
+			$('#fees-month').click(function(){
+	      $('#wFees').dialog({ autoOpen: false });
+	      $('#wFees').html('<img src="images/loader.gif" />');
+	      $('#wFees').dialog('open');
+	      $.getJSON('getfeesums.php?monthly=1', function(json){
+	        if(json.error == 1){
+	        	$('#wFees').html('Some error occured or you are not logged in.');
+	        } else {
+	        	$('#wFees').html(json.output);
+	        }
+	      });
+		  });
+		}
 	});
 
         var updateFeeSumsTimes = setInterval (function () {
@@ -46,7 +73,6 @@
 			$('#fees-month').html ('$'+sum.month);
 		    });
 	    }, <?php echo AJAX_REFRESH*1000 ?>);
-
 </script>
 <!--  tooltip plugin and dictionary -->
 	<script type="text/javascript" src="js/jquery.tooltip.js"></script>

@@ -505,3 +505,9 @@
 	background-color:#D98D4B;
 	color: #54371D;
 }
+#wFees {
+  display: none;
+}
+.feesum {
+	cursor: pointer;
+}

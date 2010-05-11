@@ -207,3 +207,9 @@ z-index: 1;
 #job_id {
     width:69px;
 }
+#wFees {
+	display: none;
+}
+.feesum {
+  cursor: pointer;
+}

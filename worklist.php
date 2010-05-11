@@ -1042,6 +1042,9 @@ include("head.html"); ?>
 <!-- Popup for adding fee-->
 <?php require_once('popup-addfee.inc') ?>
 
+<!-- Popup for breakdown of fees-->
+<?php require_once('popup-fees.inc') ?>
+
 <!-- Div for moving items accross the pages -->
 <div id="pages-dialog" title="Select page to move item" style="display: none;">
 	<input type="submit" id="page-go" value="Go" /><br />

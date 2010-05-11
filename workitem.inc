@@ -891,4 +891,6 @@ if ($action =="edit"):  ?>
 	<?php require_once('popup-multiple-bid-info.inc') ?>
 	<!-- Popup for confirmation info-->
 	<?php require_once('popup-confirmation.inc') ?>
+	<!-- Popup for breakdown of fees-->
+  <?php require_once('popup-fees.inc') ?>
 	<?php include("footer.php"); ?>
