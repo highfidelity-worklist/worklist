@@ -15,3 +15,8 @@ This account can be used for accessing the server using SFTP or SSH.
 
 -- Information on payment and other details can be found at http://www.lovemachineinc.com/development-process/.  For any other questions, ask in the Live Workroom chat or by email.  We value transparency and open discussion, so don't hesitate to ask questions or make suggestions.  Have fun!
 
+See you in the Workroom!
+
+Love,
+
+Eliza @ the LoveMachine

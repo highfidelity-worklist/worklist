@@ -501,10 +501,12 @@ function sendMailToDiscardedBids($worklist_id)	{
     $item = $workitem->getWorkItem($worklist_id);
 
     foreach( $bids as $bid )	{
-        $subject = "Job Filled: ".$item['summary'];
-        $body = "<p>Hey ".$bid['nickname'].",</p>";
+        $subject = "LoveMachine Job Filled: ".$item['summary'];
+        $body = "<p>Hello ".$bid['nickname'].",</p>";
         $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$item['id']."'>#".$item['id']."</a> '".$item['summary']."'. This job has just been filled by another mechanic.</br></p>";
-        $body .= "There are lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bidding!</br></p><p>Thanks!</p>LoveMachine</p>";
+        $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
+        $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
+        $body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
 
         sl_send_email($bid['email'], $subject, $body);
     }
@@ -545,7 +547,7 @@ function workitemNotify($options, $data = null){
 
 	    case 'comment':
 
-		  $subject = 'New comment: ' . $itemTitle;
+		  $subject = 'LoveMachine New comment: ' . $itemTitle;
 		  $body = 'New comment was added to the item ' . $itemLink . '.<br>';
 		  $body .= $data['who'] . ' says:<br />'
 			    . $data['comment'];
@@ -554,7 +556,7 @@ function workitemNotify($options, $data = null){
 
 	    case 'fee_added':
 
-		  $subject = 'Fee added: ' . $itemTitle;
+		  $subject = 'LoveMachine Fee added: ' . $itemTitle;
 		  $body = 'New fee was added to the item ' . $itemLink . '.<br>'
 			. 'Who: ' . $data['fee_adder'] . '<br>'
 			. 'Amount: ' . $data['fee_amount'];
@@ -563,7 +565,7 @@ function workitemNotify($options, $data = null){
 
 	    case 'bid_accepted':
 
-		  $subject = 'Bid accepted: ' . $itemTitle;
+		  $subject = 'LoveMachine Bid accepted: ' . $itemTitle;
 		  $body = 'Cha-ching! Your bid was accepted for ' . $itemLink . '<br>'
 			. 'Promised by: ' . $_SESSION['nickname'];
 
@@ -571,7 +573,7 @@ function workitemNotify($options, $data = null){
 
 	    case 'bid_placed':
 
-		  $subject = 'New bid: ' . $itemTitle;
+		  $subject = 'LoveMachine New bid: ' . $itemTitle;
 		  $body =  'New bid was placed for ' . $itemLink . '<br>'
 			 . 'Details of the bid:<br>'
 			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
@@ -586,7 +588,7 @@ function workitemNotify($options, $data = null){
 	    break;
 	    case 'bid_updated':
 
-		  $subject = 'Bid Updated: ' . $itemTitle;
+		  $subject = 'LoveMachine Bid Updated: ' . $itemTitle;
 		  $body =  'Bid Updated for ' . $itemLink . '<br>'
 			 . 'Details of the bid:<br>'
 			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
@@ -601,7 +603,7 @@ function workitemNotify($options, $data = null){
 	    break;
 	    case 'modified':
 
-		  $subject = "Item modified: ".$itemTitle;
+		  $subject = "LoveMachine Item modified: ".$itemTitle;
 		  $body =  $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
 			 . $data['changes'];
 
@@ -609,7 +611,7 @@ function workitemNotify($options, $data = null){
 
 	}
 
-	$body .= '<p>Love,<br/>The LoveMachine</p>';
+	$body .= '<p>Love,<br/><br/>Eliza @ the LoveMachine</p>';
 
 	$emails = array();
 	foreach($recipients as $recipient){

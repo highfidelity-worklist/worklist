@@ -51,6 +51,7 @@ if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
    
         $summary =  getWorkItemSummary($fee_pay['worklist_id']);
 
+// Email user
         $mail = 'SELECT `username`,`rewarder_points` FROM '.USERS.' WHERE `id` = '.$fee_pay['user_id'].'';
         $userData = mysql_fetch_array(mysql_query($mail));
 
@@ -60,7 +61,7 @@ if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
         $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
         $body .= "You also earned ".intval($total_fee_pay)." rewarder points.  You currently have ".$userData['rewarder_points']." points available to reward to your fellow LoveMachinists. ";
 	    $body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."worklist/rewarder.php<br/><br/>";
-        $body .= "Thank you!<br/><br/>Love,<br/>The LoveMachine<br/>";
+        $body .= "See you in the Workroom!<br/><br/>Love,<br/><br/>Eliza @ the LoveMachine<br/>";
 
         sl_send_email($userData['username'], $subject, $body);
     }

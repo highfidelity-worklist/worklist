@@ -30,7 +30,7 @@ if (isset($_REQUEST['str']) && isset($_REQUEST['cs'])) {
 		AND forgot_expire > NOW();");
 	// Check if row returned info, if so set $row to it, then process the else.
 	if (!($row = mysql_fetch_assoc($q))) {
-		die('No reason to be here Señor!');
+		die('Oh! This is no place for you!');
 	} else {
 		$id = $row['id'];
 		if (isset($_POST['submit'])) {
@@ -40,9 +40,10 @@ if (isset($_REQUEST['str']) && isset($_REQUEST['cs'])) {
 				// SEND EMAIL TO CHANGEE
 				$to = $row['username'];
 				$subject = "LoveMachine Password Changed";
-				$body = "<p>Congratulations!</p>";
+				$body = "<p>Sometimes change is good!</p>";
 				$body .= "<p>You have successfully changed your password with ".APP_NAME."<br/>";
-				$body .= "<p>Love,<br/>The LoveMachine</p>";
+				$body .= "<p>See you in the Workroom!</p>";
+				$body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
 				sl_send_email($to, $subject, $body);
 				$msg = "Password has been changed!";
 				header('Location: index.php');

@@ -100,6 +100,7 @@ if(isset($minimal_POST['sign_up'])){
 	  $res = mysql_query($sql);
 	  $user_id = mysql_insert_id();
 	  $to = $username;
+	  // Email user
 	  $subject = "LoveMachine Worklist Registration Confirmation";
 	  $link = SECURE_SERVER_URL."confirmation.php?cs=${values_for_db['confirm_string']}&str=".base64_encode($username);
 	  $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";

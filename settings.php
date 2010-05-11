@@ -114,7 +114,7 @@ if (!empty($saveArgs)) {
     if ($rs) {
         $userInfo = mysql_fetch_array($rs);
     }
-
+// Email user
     if (!empty($messages)) {
         $to = $_SESSION['username'];
         $subject = "LoveMachine Account Edit Successful.";
@@ -123,7 +123,7 @@ if (!empty($saveArgs)) {
         foreach ($messages as $msg) {
             $body .= "&nbsp;&nbsp;$msg<br/>";
         }
-        $body .= "</p><p>Love,<br/>The LoveMachine</p>";
+        $body .= "</p><p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
         sl_send_email($to, $subject, $body);
 
         $msg="Account updated successfully!";

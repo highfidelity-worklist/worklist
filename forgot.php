@@ -20,16 +20,16 @@ if(!empty($_POST['username'])) {
 		// insert token into db table if successful, send email
 		if (mysql_query("UPDATE ".USERS." SET forgot_hash = '{$token}', forgot_expire = ADDDATE(NOW(), INTERVAL 1 HOUR) WHERE username = '".mysql_real_escape_string($_POST['username'])."'")) {
 			$subject = "LoveMachine Password Recovery";
-			$body  = "<p>Hi!</p><P> Forgot your password?  No worries, it will be ok. :)";
+			$body  = "<p>Hello you!</p><p> Forgot your password?  Don't worry, it will be ok. :)</p>";
 			$body .= "<p>Just click on the link below or copy and paste the url in browser to reset your password. <br/>";
 			$body .= "&nbsp;&nbsp;&nbsp;&nbsp;".SECURE_SERVER_URL."resetpass.php?cs=".base64_encode($row['id'])."&str={$token}</p>";
-			$body .= "<p>Love,<br/>The LoveMachine</p>";			
+			$body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";			
 			sl_send_email($row['username'], $subject, $body);
 			$msg = "<p class='LV_valid'>Login information will be sent if the email address ".$row['username']." is registered.</p>";
 		}
-		else $msg = "<p class='LV_invalid'>Rut Roh! I was unable to send password reset information! Try again or contact an administrator! ".mysql_error()."</p>";
+		else $msg = "<p class='LV_invalid'>That's odd... I was unable to send password reset information. Try again or contact an administrator. ".mysql_error()."</p>";
 	}
-	else $msg = "<p class='LV_invalid'>Failed to send password reset information! Please try again or contact an administrator!</p>";
+	else $msg = "<p class='LV_invalid'>Failed to send password reset information! Please try again or contact an administrator.</p>";
 	// END Edits
 }
 

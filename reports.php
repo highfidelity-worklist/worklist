@@ -58,7 +58,7 @@ if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_p
             $body  = "LoveMachine paid you $".$data[0]." and you earned ".$data[1]." rewarder points.";
             $body .= "You currently have ".$userData['rewarder_points']." points available to reward other LoveMachiners with. ";
             $body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."worklist/rewarder.php<br/><br/>";
-            $body .= "Thank you!<br/><br/>Love,<br/>The LoveMachine<br/>";
+            $body .= "See you in the Workroom!<br/><br/>Love,<br/><br/>Eliza@ the LoveMachine<br/>";
 
             sl_send_email($userData['username'], $subject, $body);
         }
