@@ -45,7 +45,7 @@ if(isset($_GET["weekly"])){
         $output .= '
         <tr>
           <td><a href="workitem.php?job_id='.$row->task.'">'.$row->task.'</a></td>
-          <td>$'.$row->amount.'</td>
+          <td style="color: #6F6F6F; font-weight:bold;">$'.$row->amount.'</td>
         </tr>
         ';
     }
@@ -90,7 +90,7 @@ if(isset($_GET["weekly"])){
         $output .= '
         <tr>
           <td><a href="workitem.php?job_id='.$row->task.'">'.$row->task.'</a></td>
-          <td>$'.$row->amount.'</td>
+          <td style="color: #6F6F6F; font-weight:bold;">$'.$row->amount.'</td>
         </tr>
         ';
     }

@@ -12,11 +12,11 @@
 		<?php if ( isset($_SESSION['username'])) {
 			$return_from_getfeesums = true;
 			include 'getfeesums.php';
-			$feeinfo = ' | Your fees: <span class="feesum" id="fees-week">$'.$sum['week'].'</span> this week, <span class="feesum" id="fees-month">$'.$sum['month'].'</span> this month';
+			$feeinfo = ' | Your fees: <a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].'</a> this week, <a href="#feesToolTip" class="feesum" id="fees-month">$'.$sum['month'].'</a> this month';
 			if (empty($_SESSION['nickname'])){ ?>
-				Welcome, <?php echo $_SESSION['username']; ?><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
+				Welcome, <span id="user"><?php echo $_SESSION['username']; ?></span><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
 			<?php }else{ ?>
-				Welcome, <?php echo $_SESSION['nickname']; ?><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
+				Welcome, <span id="user"><?php echo $_SESSION['nickname']; ?></span><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
 			<?php } ?>
 			<?php }else{?>
 				<a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>

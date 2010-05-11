@@ -511,3 +511,6 @@
 .feesum {
 	cursor: pointer;
 }
+#feesToolTip {
+  display: none;
+}

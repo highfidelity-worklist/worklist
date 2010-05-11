@@ -213,3 +213,6 @@ z-index: 1;
 .feesum {
   cursor: pointer;
 }
+#feesToolTip {
+  display: none;
+}
