@@ -43,9 +43,10 @@ Content-Transfer-Encoding: 7bit
         $body = $plain;
     }
 
-	mail($to,$subject,$body,$headers);
-
-    return true;
+	if (mail($to,$subject,$body,$headers)) {
+	    return true;
+	}
+	return false;
 }
 
 /* sl_notify_sms functions

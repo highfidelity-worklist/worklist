@@ -89,6 +89,18 @@ if (isset($_POST['save_account'])) {
     $messages[] = "Your payment information has been updated.";
 }
 
+if (!empty($_POST['username']) && ($_POST['username'] != $_SESSION['username'])) {
+    $to = $_POST['username'];
+    $subject = 'LoveMachine Account Edit - Username verification';
+    $body = '<p>You changed your username successfully!<p>';
+    $body .= '<p>To be sure it is a valid email address and complete this process please verify your new email address by clicking on this link:</p>';
+    $body .= '<p><a href="' . SECURE_SERVER_URL . 'confirmation.php?action=changeUsername&oustr=' . base64_encode($_SESSION['username']) . '&nustr=' . base64_encode($_POST['username']) . '" title="Confirmation URL">' . SECURE_SERVER_URL . 'confirmation.php?action=changeUsername&oustr=' . base64_encode($_SESSION['username']) . '&nustr=' . base64_encode($_POST['username']) . '</a></p>';
+    $body .= '<p>If you are not able to click on the link above, copy it and paste it in your browsers addressbar.</p>';
+    $body .= "<p>Love,<br/>The LoveMachine</p>";
+    sl_send_email($to, $subject, $body);
+    exit('username');
+}
+
 if (!empty($saveArgs)) {
     //updating user info in database
     foreach ($saveArgs as $arg=>$esc){
@@ -204,7 +216,8 @@ include("head.html");
                 bid_alerts: $('#bid_alerts').val(),
                 nickname: $('#nickname').val(),
                 rewarder_limit_day: $('#rewarder_limit_day').val(),
-                save_account: 1
+                save_account: 1,
+                username: $('#username').val()
             };
         } else if (type == 'personal') {
             values = {
@@ -230,7 +243,11 @@ include("head.html");
             data: values,
             dataType: 'html',
             success: function(json) {
-                $('#msg-'+type).text('Account settings saved!');
+                if (json == 'username') {
+                    $('#msg-'+type).text('Username changed, check your emails and verify your new email address.');
+                } else {
+                    $('#msg-'+type).text('Account settings saved!');
+                }
             },
             error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');
@@ -366,6 +383,15 @@ include("head.html");
         <span class="required-bullet">*</span> <span class="required">required fields</span>
 
         <p id="msg-account" class="error"></p>
+
+        <p><label for="username">Username (Email)</label><br />
+            <span class="required-bullet">*</span> <input name="username" type="text" id="username" value="<?php echo $userInfo['username']; ?>" size="35" />
+        </p>
+		<script type="text/javascript">
+			var username = new LiveValidation('username',{ validMessage: "Valid email address." });
+			username.add(SLEmail);
+			username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+		</script>
 
         <p><label for = "nickname">Nickname</label><br />
             <span class="required-bullet">*</span> <input name="nickname" type="text" id="nickname"  value = "<?php echo $userInfo['nickname']; ?>" size="35"/>

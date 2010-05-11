@@ -33,7 +33,14 @@ if(isset($_REQUEST['str'])) {
 		    initSessionData($row); //Optionally can login with confirm URL
 		}
 	 }
-	
+} elseif (!empty($_REQUEST['action']) && ($_REQUEST['action'] == 'changeUsername')) {
+	$old_username = base64_decode($_REQUEST['oustr']);
+	$new_username = base64_decode($_REQUEST['nustr']);
+	$user = new User();
+	$user->findUserByUsername($old_username);
+	$user->setUsername($new_username);
+	$user->save();
+	session::init();
 } else {
 	header("Location:login.php");
 	exit;
@@ -59,7 +66,11 @@ include("head.html"); ?>
 <?php include("format.php"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-
+<?php if (!empty($_REQUEST['action']) && ($_REQUEST['action'] == 'changeUsername')) : ?>
+    <h1>Email Confirmation</h1>
+          
+    <p>Your email address has been changed successfully.</p>
+<?php else : ?>
 <!-- Light Box Code Start -->
 <div id="filter" onClick="closebox()"></div>
 <div id="box" >
@@ -73,7 +84,7 @@ include("head.html"); ?>
     <h1>Email Confirmation</h1>
           
     <p>Registration complete! Welcome to the Worklist. You can now start working.</p>
-
+<?php endif; ?>
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
                     
 <?php include("footer.php"); ?>
