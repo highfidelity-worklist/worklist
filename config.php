@@ -53,6 +53,8 @@ if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
 if (!defined('REQUIRELOGINAFTERCONFIRM')) define('REQUIRELOGINAFTERCONFIRM', 1);
 
+if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "http://dev.sendlove.us/worklist");
+
 if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 
 if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'http://dev.sendlove.us/journal/aj.php');

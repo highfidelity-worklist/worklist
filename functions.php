@@ -705,4 +705,83 @@ function checkLogin(){
     }
 }
 
+    /* linkify function
+     * 
+     * this takes some input and makes links where it thinks they should go
+     * it is duplicated in journal and worklist so if you update one
+     * remember to update the other, thanks very much
+     *
+     */
+    function linkify($url, $author = null)
+    {
+        $original = $url;
+
+        $class = '';
+        if(strpos($url, "get_attachment.php") > 0)
+        {
+            $class='class="attachment noicon"';
+        }
+
+        $decodedUrl = html_entity_decode($url);
+        if (preg_match("/\<a href=\"([^\"]*)\"/i", $decodedUrl) == 0) {
+            // The following regexp doesn't work with URL parameters
+            //    $regexp="/\b(?<!href=(.){1})((https?\:\/\/)|(ftp?\:\/\/)|(https?\:\/\/)?(www\.))\S+(\.)\w+/i";
+            $regexp="/((https?\:\/\/)|(ftp?\:\/\/)|(https?\:\/\/)?(www\.))\S+/i";
+            $url=  preg_replace($regexp,'<a ' . $class . ' href="$0" target="_blank" >$0</a>',$url);
+
+            $regexp="/(href=)(.)?((www\.)\S+(\.)\S+)/i";
+            $url = preg_replace($regexp,'href="http://$3"',$url);
+        }
+
+        // Replace '#<number>' with a link to the worklist item with the same number
+        $regexp = "/\#([1-9][0-9]*)/";
+        $url = preg_replace($regexp,'<a class = "worklist-item" id="worklist-$1" href="'.WORKLIST_URL.'/workitem.php?job_id=$1&action=view" target="_blank">#$1</a>',$url);
+
+        // Replace '#<nick>/<url>' with a link to the author sandbox
+        $regexp="/\#([A-Za-z]+)\/(\S*)/i";
+        if (strpos(SERVER_BASE, '~') === false) {
+            $url = preg_replace(
+                $regexp,
+                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'~$1/$2">$1 : $2</a>',
+                $url
+            );        
+        } else { // link on a sand box :
+            $url = preg_replace(
+                $regexp,
+                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'/../~$1/$2">$1 : $2</a>',
+                $url
+            );            
+        }
+
+        // Replace '#/<url>' with a link to the author sandbox
+        $regexp="/\#\/(\S*)/i";
+        if (strpos(SERVER_BASE, '~') === false) {
+            $url = preg_replace(
+                $regexp,
+                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'~'.$author.'/$1">'.$author.' : $1</a>',
+                $url
+            );
+        } else { // link on a sand box :
+            $url = preg_replace(
+                $regexp,
+                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'/../~'.$author.'/$1">'.$author.' : $1</a>',
+                $url
+            );        
+        }        
+
+        $regexp="/\b(?<=mailto:)([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
+        if(preg_match($regexp,$url)){
+            $regexp="/\b(mailto:)(?=([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))/i";
+            $url=preg_replace($regexp,"",$url);
+        }
+
+        $regexp="/\b([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
+        $url=preg_replace($regexp,'<a href="mailto:$0" target="_blank">$0</a>',$url);
+
+        // find anything that looks like a link and add target=_blank so it will open in a new window
+        $url = preg_replace("/\<a href=\"([^\"]*)\"/i", "<a href=\"$1\" target=\"_blank\"", $url);
+
+        return $url;
+    }
+
 ?>
