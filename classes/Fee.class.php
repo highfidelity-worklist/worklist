@@ -4,6 +4,7 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
+include_once('apifunctions.php');
 
 class Fee
 {
@@ -69,13 +70,15 @@ class Fee
 
                     $points = intval($amount);
 
-                    mysql_unbuffered_query("INSERT INTO `".REWARDER_LOG."` (`user_id`, `worklist_id`, `fee_id`, `rewarder_points`) VALUES ('$user_id', '$worklist_id', '$fee_id', '$points')");
-                    mysql_unbuffered_query("UPDATE `".USERS."` SET `rewarder_points`=`rewarder_points`+$amount WHERE `id`=$user_id");
+                    addRewarderBalance($user_id, $amount);
+
                     if ($runner_id != 0) {
                         mysql_unbuffered_query("UPDATE `".USERS."` SET `budget`=`budget`-$amount WHERE `id`=$runner_id");
                     }
+
 		            //  Auto populate rewarder with team members of this task
-		            PopulateRewarderTeam($user_id, $worklist_id);    
+		             PopulateRewarderTeam($user_id, $worklist_id);
+                    // do it with new Rewarder API
                 }
             } else {
                 return false;

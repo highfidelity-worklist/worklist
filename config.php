@@ -64,6 +64,9 @@ if (!defined('JOURNAL_API_PWD')) define('JOURNAL_API_PWD', 'api_password');
 if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/sendlove/api.php");
 if (!defined("SENDLOVE_API_KEY")) define("SENDLOVE_API_KEY", "uierbycur4yt73467t6trtycff3rt");
 
+if (!defined("REWARDER_API_URL")) define("REWARDER_API_URL", "https://dev.sendlove.us/rewarder/api.php");
+if (!defined("REWARDER_API_KEY")) define("REWARDER_API_KEY", "dhfsfdhgdhsfg7g5fyg73ff23545f32fwd");
+
 // Refresh interval for ajax updates of the history table (in seconds)
 if (!defined('AJAX_REFRESH'))   define('AJAX_REFRESH', 30);
 

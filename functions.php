@@ -102,57 +102,7 @@ function isSuperAdmin() {
     }
 }
 
-/*  Function: GetRewarderAuditList
- *
- *  Purpose: return the complete list of rewardered users and their rewards - EXCEPT the user specified
- *
- *  Parameters: userid - The userid of the user to exclude from the audit list.
- */
-function GetRewarderAuditList($userid) {
-    $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, SUM(`".REWARDER."`.`rewarder_points`) AS `total_points` FROM `".REWARDER."` ".
-           "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
-           "WHERE `receiver_id`!='$userid' AND `".REWARDER."`.`rewarder_points` > 0 GROUP BY `receiver_id` ORDER BY `receiver_nickname` ASC";
-    $rt = mysql_query($sql);
 
-    $rewarderList = array();
-    while ($rt && ($row = mysql_fetch_assoc($rt))) {
-        $rewarderList[] = array($row['receiver_id'], $row['receiver_nickname'], $row['total_points']);
-    }
-
-    return $rewarderList;
-}
-
-/*  Function: GetRewarderUserList
- *
- *  Purpose: return the list of rewarder users for a given user.
- *
- *  Parameters: userid - The userid of the user to retrieve the list for.
- */
-function GetRewarderUserList($userid) {
-	// From user
-	$fromUser = new User();
-	$fromUser->findUserById($userid);
-	$fromUsername = mysql_real_escape_string($fromUser->getUsername());
-
-    $sql = "SELECT `receiver_id`, `".USERS."`.`nickname` as `receiver_nickname`, `".REWARDER."`.`rewarder_points` FROM `".REWARDER."` ".
-           "LEFT JOIN `".USERS."` ON `receiver_id` = ".USERS.".`id` ".
-           "WHERE `giver_id`='$userid' AND `".USERS."`.`confirm`=1 AND `is_active`=1 ORDER BY `rewarder_points` DESC, `receiver_nickname` ASC";
-    $rt = mysql_query($sql);
-
-    $rewarderList = array();
-    while ($rt && ($row = mysql_fetch_assoc($rt))) {
-        // Get the rewardee username
-	    $r_user = new User();
-	    $r_user->findUserById($row['receiver_id']);
-	    $r_username = mysql_real_escape_string($r_user->getUsername());
-	    
-        $lovecount = countLove($r_username, $fromUsername);
-        $totallove = countLove($r_username);
-        $rewarderList[] = array($row['receiver_id'], $row['receiver_nickname'], $row['rewarder_points'], 'loveFrom' => $lovecount, 'totalLove' => $totallove);
-    }
-
-    return $rewarderList;
-}
 
 /*  Function: countLoveToUser
  * 
@@ -221,24 +171,28 @@ function getUserLove($username, $fromUsername="") {
 }
 
 function defineSendLoveAPI() {
-    // Sendlove API status and error codes. Keep in sync with .../sendlove/add.php
-    define ('SL_OK', 'ok');
-    define ('SL_ERROR', 'error');
-    define ('SL_WARNING', 'warning');
-    define ('SL_NO_ERROR', '');
-    define ('SL_NO_RESPONSE', 'no response');
-    define ('SL_BAD_CALL', 'bad call');
-    define ('SL_DB_FAILURE', 'db failure');
-    define ('SL_UNKNOWN_USER', 'unknown user');
-    define ('SL_NOT_COWORKER', 'receiver not co-worker');
-    define ('SL_RATE_LIMIT', 'rate limit');
-    define ('SL_SEND_FAILED', 'send failed');
-    define ('SL_JOURNAL_FAILED', 'journal failed');
-    define ('SL_NO_SSL', 'no ssl call');
-    define ('SL_WRONG_KEY', 'wrong api key');
+    // Sendlove API status and error codes. Keep in sync with .../sendlove/api.php
+    // only define constants once
+    if (!defined('SL_OK')){
+        define ('SL_OK', 'ok');
+        define ('SL_ERROR', 'error');
+        define ('SL_WARNING', 'warning');
+        define ('SL_NO_ERROR', '');
+        define ('SL_NO_RESPONSE', 'no response');
+        define ('SL_BAD_CALL', 'bad call');
+        define ('SL_DB_FAILURE', 'db failure');
+        define ('SL_UNKNOWN_USER', 'unknown user');
+        define ('SL_NOT_COWORKER', 'receiver not co-worker');
+        define ('SL_RATE_LIMIT', 'rate limit');
+        define ('SL_SEND_FAILED', 'send failed');
+        define ('SL_JOURNAL_FAILED', 'journal failed');
+        define ('SL_NO_SSL', 'no ssl call');
+        define ('SL_WRONG_KEY', 'wrong api key');
+    }
 }
 
-/* 
+// This will be handled by Rewarder API 
+/*
 * Populate the rewarder team automatically. It's based on who added a fee to a task you worked on in the last 30 days.
 *
 *
@@ -247,10 +201,10 @@ function defineSendLoveAPI() {
 
    $where = !empty($worklist_id) ?  " f.worklist_id = $worklist_id  " : "  f.worklist_id IN (SELECT DISTINCT  f1.worklist_id FROM " . FEES . " f1 WHERE f1.user_id = $user_id and f1.rewarder = 0) ";
    $rewarder_limit_day = GetPopulateRewarderLimit($user_id);
-   $rewarder_limit_day = $rewarder_limit_day == 0 ? 30 : $rewarder_limit_day; 
+   $rewarder_limit_day = $rewarder_limit_day == 0 ? 30 : $rewarder_limit_day;
    $where .= " AND f.paid_date BETWEEN  (NOW() - INTERVAL $rewarder_limit_day day) AND NOW() " ;
    $sql = "INSERT INTO " . REWARDER . " (giver_id,receiver_id,rewarder_points) SELECT DISTINCT $user_id, u.id, 0 FROM " . USERS . " u INNER JOIN " . FEES . " f ON (f.user_id = u.id) WHERE  $where AND NOT EXISTS (SELECT 1 FROM " . REWARDER . " rd WHERE rd.giver_id = $user_id) AND u.id <> $user_id ";
-   mysql_query($sql); 
+   mysql_query($sql);
  }
 
  function GetPopulateRewarderLimit($user_id) {
@@ -261,6 +215,8 @@ function defineSendLoveAPI() {
     }
     return 0;
  }
+
+
 
 /*  Function: GetUserList
  *

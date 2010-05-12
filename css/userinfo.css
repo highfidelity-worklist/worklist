@@ -49,6 +49,7 @@ p.small-text{
     position: absolute;
     left: 20em;
     top: 2em;
+    width: auto;
 }
 
 #user-stats tbody tr td {

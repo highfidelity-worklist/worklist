@@ -47,22 +47,7 @@ if (!$filter->getEnd()) {
 $page = $filter->getPage();
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
-    $summaryData = Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1);
-
-    foreach ($summaryData as $user_id=>$data) {
-        if ($data[0] > 0) {
-            $mail = 'SELECT `username`,`rewarder_points` FROM '.USERS.' WHERE `id` = '.$user_id;
-            $userData = mysql_fetch_array(mysql_query($mail));
-
-            $subject = "New LoveMachine Rewarder Points";
-            $body  = "LoveMachine paid you $".$data[0]." and you earned ".$data[1]." rewarder points.";
-            $body .= "You currently have ".$userData['rewarder_points']." points available to reward other LoveMachiners with. ";
-            $body .= "Reward them now on the Rewarder page:<br/>&nbsp;&nbsp;&nbsp;&nbsp;".SERVER_BASE."worklist/rewarder.php<br/><br/>";
-            $body .= "See you in the Workroom!<br/><br/>Love,<br/><br/>Eliza@ the LoveMachine<br/>";
-
-            sl_send_email($userData['username'], $subject, $body);
-        }
-    }
+    Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1);
 }
 
 /*********************************** HTML layout begins here  *************************************/

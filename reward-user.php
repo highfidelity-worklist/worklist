@@ -20,7 +20,8 @@ if (empty($_REQUEST["id"])) {
 }
 
 $id = intval($_REQUEST["id"]);
+$points = intval($_REQUEST["points"]);
 
-$data = getRewardedPoints(getSessionUserId(), $id);
+$data = rewardUser(getSessionUserId(), $id, $points);
 $json = json_encode($data);
 echo $json;

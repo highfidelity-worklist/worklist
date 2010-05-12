@@ -22,7 +22,7 @@
 				<a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>
 			<?php } ?>
 		<div id="tagline">Lend a hand.</div>
-	</div id="welcome">
+	</div>
 
 	<div id="container">
 		<div id="left"></div>
@@ -40,11 +40,11 @@
 			<?php if (isset($_SESSION['username'])) { ?>
 
 			<a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
-			<a href="<?php echo SERVER_BASE ?>journal/" class="iToolTip menuJournal">Journal</a> |
-			<a href="<?php echo SERVER_BASE ?>sendlove/" class="iToolTip menuLove" target="_blank">Love</a> |
+			<a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> |
+			<a href="<?php echo SERVER_BASE ?>/sendlove/" class="iToolTip menuLove" target="_blank">Love</a> |
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
-			<a href="rewarder.php" class="iToolTip menuRewarder">Rewarder</a> |
+			<a href="<?php echo SERVER_BASE ?>/rewarder/" class="iToolTip menuRewarder">Rewarder</a> |
 			<a href="settings.php" class="iToolTip menuSettings">Settings</a>
 			<?php } ?>
 		</div>

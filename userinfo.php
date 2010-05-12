@@ -202,18 +202,18 @@
 
 	$('#quick-reward').dialog('close');
   
-	    var toReward = parseInt(rewarded) + parseInt($('#toreward').val());
+	    var toReward = parseInt($('#toreward').val());
 
-            $.ajax({
-                url: 'update-rewarder-user.php',
-                data: 'id=' + userId + '&points=' + toReward,
-                dataType: 'json',
-                type: "POST",
-                cache: false,
-                success: function(json) {
+        $.ajax({
+            url: 'reward-user.php',
+            data: 'id=' + userId + '&points=' + toReward,
+            dataType: 'json',
+            type: "POST",
+            cache: false,
+            success: function(json) {
 
-                }
-            });
+            }
+        });
 	return false;
   });
 
