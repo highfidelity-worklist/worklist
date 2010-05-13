@@ -515,12 +515,18 @@
   display: none;
 }
 
-#for_view li p a, .comment a {
+.notestext {
+    margin:0;
+    margin-top:8px;
+    padding-right:5px;
+    
+}
+#for_view li .notestext a, .comment a {
 	color: rgb(0, 118, 252);
 }
 .reply-lnk a {
 	color: rgb(152, 170, 178);
 }
-#for_view li p a:hover, .comment a:hover {
+#for_view li .notestext a:hover, .comment a:hover {
 	text-decoration:none;
 }

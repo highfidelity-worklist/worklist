@@ -688,7 +688,7 @@ if ($action =="edit"):  ?>
 				<!-- View: Notes textarea -->
 					<li class="last">
 						<span class="info-label">Notes</span>
-                        <p><?php echo linkify($worklist['notes']); ?></p>
+                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
 						<!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
 					</li>
 				</ul>
@@ -710,7 +710,7 @@ if ($action =="edit"):  ?>
 										<span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
 									</span>
 								</div>
-								<div class="comment"><?php echo linkify($comment['comment']->getComment()); ?></div>
+								<div class="comment"><?php echo nl2br(linkify(htmlspecialchars($comment['comment']->getComment()))); ?></div>
 								<?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
 								<div class="reply-lnk">
 									<a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>

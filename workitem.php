@@ -106,7 +106,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
 		      'workitem' => $workitem,
 		      'recipients' => array('creator', 'runner', 'mechanic')),
 		       array('who' => $_SESSION['nickname'],
-			     'comment' => nl2br($_POST['comment'])));
+                // removed nl2br as it's cleaner to be able to choose if this is used on output
+			     'comment' => $_POST['comment']));
 	} catch(Exception $e) {}
 	$redirectToDefaultView = true;
 }

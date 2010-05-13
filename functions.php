@@ -719,36 +719,41 @@ function checkLogin(){
         $class = '';
         if(strpos($url, "get_attachment.php") > 0)
         {
-            $class='class="attachment noicon"';
+            $class=' class="attachment noicon"';
+        } else {
+            $class='';
         }
 
         $decodedUrl = html_entity_decode($url);
         if (preg_match("/\<a href=\"([^\"]*)\"/i", $decodedUrl) == 0) {
-            // The following regexp doesn't work with URL parameters
-            //    $regexp="/\b(?<!href=(.){1})((https?\:\/\/)|(ftp?\:\/\/)|(https?\:\/\/)?(www\.))\S+(\.)\w+/i";
-            $regexp="/((https?\:\/\/)|(ftp?\:\/\/)|(https?\:\/\/)?(www\.))\S+/i";
-            $url=  preg_replace($regexp,'<a ' . $class . ' href="$0" target="_blank" >$0</a>',$url);
+            // modified this so that it will exclude certain characters from the end of the url
+            // add to this as you see fit as I assume the list is not exhaustive
+            $regexp="/((?:(?:ht|f)tps?\:\/\/|www\.)\S+[^\s\.\)\"\'])/i";
+            $url=  preg_replace($regexp,'<a href="$0"' . $class . '>$0</a>',$url);
 
-            $regexp="/(href=)(.)?((www\.)\S+(\.)\S+)/i";
-            $url = preg_replace($regexp,'href="http://$3"',$url);
+            $regexp="/href=\"(www\.\S+?)\"/i";
+            $url = preg_replace($regexp,'href="http://$1"',$url);
         }
+
+        $regexp="/(href=)(.)?((www\.)\S+(\.)\S+)/i";
+        $url = preg_replace($regexp,'href="http://$3"',$url);
 
         // Replace '#<number>' with a link to the worklist item with the same number
         $regexp = "/\#([1-9][0-9]*)/";
-        $url = preg_replace($regexp,'<a class = "worklist-item" id="worklist-$1" href="'.WORKLIST_URL.'/workitem.php?job_id=$1&action=view" target="_blank">#$1</a>',$url);
+        $url = preg_replace($regexp,'<a href="'.WORKLIST_URL.'/workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>',$url);
 
         // Replace '#<nick>/<url>' with a link to the author sandbox
         $regexp="/\#([A-Za-z]+)\/(\S*)/i";
         if (strpos(SERVER_BASE, '~') === false) {
             $url = preg_replace(
                 $regexp,
-                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'~$1/$2">$1 : $2</a>',
+                '<a href="'.SERVER_BASE.'~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>',
                 $url
             );        
         } else { // link on a sand box :
             $url = preg_replace(
                 $regexp,
-                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'/../~$1/$2">$1 : $2</a>',
+                '<a href="'.SERVER_BASE.'/../~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>',
                 $url
             );            
         }
@@ -758,13 +763,13 @@ function checkLogin(){
         if (strpos(SERVER_BASE, '~') === false) {
             $url = preg_replace(
                 $regexp,
-                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'~'.$author.'/$1">'.$author.' : $1</a>',
+                '<a href="'.SERVER_BASE.'~'.$author.'/$1" class="sandbox-item" id="sandbox-$1">'.$author.' : $1</a>',
                 $url
             );
         } else { // link on a sand box :
             $url = preg_replace(
                 $regexp,
-                '<a class="sandbox-item" id="sandbox-$1" href="'.SERVER_BASE.'/../~'.$author.'/$1">'.$author.' : $1</a>',
+                '<a href="'.SERVER_BASE.'/../~'.$author.'/$1" class="sandbox-item" id="sandbox-$1" >'.$author.' : $1</a>',
                 $url
             );        
         }        
@@ -776,10 +781,10 @@ function checkLogin(){
         }
 
         $regexp="/\b([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
-        $url=preg_replace($regexp,'<a href="mailto:$0" target="_blank">$0</a>',$url);
+        $url=preg_replace($regexp,'<a href="mailto:$0">$0</a>',$url);
 
         // find anything that looks like a link and add target=_blank so it will open in a new window
-        $url = preg_replace("/\<a href=\"([^\"]*)\"/i", "<a href=\"$1\" target=\"_blank\"", $url);
+        $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"", $url);
 
         return $url;
     }
