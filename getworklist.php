@@ -73,7 +73,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             }
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
-	$userId = isset($_SESSION['user_id'])? $_SESSION['user_id'] : 0;
+	$userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
         if( $userId == $ufilter )  {
             $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
                         or `bidder_id`='$ufilter')";
@@ -137,6 +137,10 @@ mysql_query($latest);
 mysql_query($emptyLatest);
 mysql_query($fillLatest);
 
+$showLatest = 'AND `bids`.`bid_created` = `tmp_latest`.`latest`';
+if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
+    $showLatest = '';
+}
 $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
          `worklist_id` int(11) NOT NULL,
          `bid_amount` decimal(10,2) NOT NULL,
@@ -145,12 +149,12 @@ $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
 
 $emptyBids = 'TRUNCATE `tmp_bids`';
 
-$fillBids = 'INSERT INTO `tmp_bids`
+$fillBids = "INSERT INTO `tmp_bids`
              SELECT `bids`.`worklist_id`,`bids`.`bid_amount`,`bids`.`bidder_id`
              FROM `bids`, `tmp_latest`
              WHERE `bids`.`worklist_id` = `tmp_latest`.`worklist_id`
-              AND `bids`.`bid_created` = `tmp_latest`.`latest`
-              AND (`bids`.`withdrawn` = 0)';
+              $showLatest
+              AND (`bids`.`withdrawn` = 0)";
 
 mysql_query($bids);
 mysql_query($emptyBids);
