@@ -843,7 +843,23 @@ include("head.html"); ?>
 			orderBy($(this).text().toLowerCase());
 		});
 
-		$('#popup-edit').dialog({ autoOpen: false, maxWidth: 600, width: 400 });
+		$('#popup-edit').dialog({ 
+			autoOpen: false, 
+			maxWidth: 600, 
+			width: 400,
+			hasAutocompleter: false,
+			open: function() {
+				if (this.hasAutocompleter !== true) {
+					$('.invite').autocomplete('getusers.php', {
+						multiple: true,
+						multipleSeparator: ', ',
+						selectFirst: true,
+						extraParams: { nnonly: 1 }
+					});
+					this.hasAutocompleter = true;
+				}
+			}
+		});
 		$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
 		$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
 		$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});

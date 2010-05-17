@@ -62,15 +62,6 @@
 		  </p>
 		<p class="info-label">Invite<br />
 			<input type="text" name="invite" class="invite" />
-			<script type="text/javascript">
-				$(document).ready(function() {
-					$('.invite').autocomplete('getusers.php', {
-						multiple: true,
-						multipleSeparator: ', ',
-						extraParams: { nnonly: 1 }
-					});
-				});
-			</script>
 			<small>Invite someone to do this job. (Comma-separated list of developers.)</small>
 		</p>
 			<p class="info-label">Attached Files <br />
