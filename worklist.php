@@ -133,6 +133,8 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/feedback.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript">
+    // This variable needs to be in sync with the PHP filter name
+    var filterName = '.worklist';
 	var affectedHeader = false;
 	var directions = {"ASC":"images/arrow-up.png","DESC":"images/arrow-down.png"};
     var refresh = <?php echo AJAX_REFRESH ?> * 1000;
@@ -1036,6 +1038,7 @@ include("head.html"); ?>
 		});
 	}
 </script>
+<script type="text/javascript" src="js/utils.js"></script>
 <title>Worklist | Lend a Hand</title>
 </head>
 <body>
@@ -1099,21 +1102,26 @@ include("head.html"); ?>
 
 <?php } ?>
 <div id="search-filter-wrap">
-<div style="float: right">
-<div style="float: left">
-<form method="get" action="" id="searchForm" />
-<div style="padding-top: 5px; float: left; padding-right: 15px;"><?php echo $filter->getUserSelectbox(); ?>
-<?php echo $filter->getStatusSelectbox(); ?></div>
-<div style="float: left;" class="input_box"><input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
-<div class="onlyfloat_right"><a id="search" href=""> <img height="23"
-    width="24" border="0" alt="zoom" src="images/spacer.gif"> </a></div>
+    <div style="float: right">
+        <form method="get" action="" id="searchForm" />
+            <?php echo $filter->getUserSelectbox(1); ?>
+            <div style="padding-top: 19px; float: left; padding-right: 15px;">
+	            <?php echo $filter->getStatusSelectbox(); ?>
+            </div>
+            <div style="float: left;" class="input_box">
+                <input type="text" id="query"
+                    value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
+	            <div class="onlyfloat_right">
+	                <a id="search" href=""> <img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"> </a>
+	            </div>
+            </div>
+            <div style="float: left;  padding-top:14px; margin-top: 3px;">
+                <a id="search_reset" href=""><img src="images/cross.png"> </a>
+            </div>
+        </form>
+    </div>
 </div>
-<div style="float: left; margin-top: 3px;"><a id="search_reset" href="">
-<img src="images/cross.png"> </a></div>
-</form>
-</div>
-</div>
-</div>
+
 <div style="clear: both"></div>
 <table width="100%" class="table-worklist">
     <thead>

@@ -99,8 +99,7 @@ border: none;
 }
 </style>
 <script type="text/javascript">
-
-
+var filterName = ".reports";
 var _fromDate, _toDate;
 var fromDate = '';
 var toDate = '';
@@ -492,6 +491,7 @@ function loadTimelineChart() {
 
     });
 </script>
+<script type="text/javascript" src="js/utils.js"></script>
 
 <title>Worklist Reports | Lend a Hand</title>
 
@@ -513,7 +513,7 @@ function loadTimelineChart() {
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
 	  <tr>
-	    <td>Payee: <?php echo $filter->getUserSelectbox(); ?></td>
+	    <td><div style="float:left;">Payee: </div><?php echo $filter->getUserSelectbox(); ?></td>
 	    <td style="text-align: right;">Paid Status: 
 	      <select id="paid-status" >
 		    <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>

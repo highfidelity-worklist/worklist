@@ -251,15 +251,40 @@ class Agency_Worklist_Filter
         return $this;
     }
 
-    public function getUserSelectbox()
-    {
-        $users = User::getUserlist(getSessionUserId());
-        $box = '<select name="user">';
+    /* 
+     * Function getUserSelectbox Get a combobox containing all the users
+     * 
+     * @param active If true will return users with at least a fee on the last
+     *               45 days.
+     * @return html containg the checkbox for active users and the combobox
+     * 
+     * Notes: A reference to utils.js should be included for the auto refreshing
+     *        behavior to work properly.
+     *        <script type="text/javascript" src="js/utils.js"></script>
+     *        
+     *        Also a global variable named filterName should be set to the
+     *        filter name assigned on the php code. This variable needs to
+     *        be initialized before including the script above.
+     */
+    public function getUserSelectbox($active=1) {
+        $users = User::getUserlist(getSessionUserId(), $active);
+        $checked = "";
+        
+        if ($active) {
+            $checked = 'checked';
+        } else if($active == 0) {
+            $checked = '';
+        }
+        
+        $box = '<div id="userSelection" style="float:left;">';
+        $box .= '<input type="checkbox" name="activeUsers" id="activeUsers" onclick="refreshUsersFilter()"'.$checked.'>Active users only</input>';
+        $box .= '<br/><select name="user">';
         $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '>All Users</option>';
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
         }
-        $box .= '</select>';
+        $box .= '</select></div>';
+        
         return $box;
     }
 

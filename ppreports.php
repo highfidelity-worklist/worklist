@@ -75,14 +75,20 @@ include("head.html"); ?>
 	        To <input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo date("m/d/Y",time()); ?>" title="End Date" size="20" />
         </div>
         <div id="pp-filter-lbox">
-            <h3 style="margin-bottom:3px;">Filter results based on:</h3>
-            User <?php echo $filter->getUserSelectbox(); ?>
+            <div style="float:left; margin-right:15px;">
+                <h3 style="margin-bottom:3px;">Filter results based on:</h3>
+	            <span>User </span>
+            </div>
+            <div style="float:right; margin-top:20px;"><?php echo $filter->getUserSelectbox(); ?></div>
             <br/>
-            Sort by
-            <select id="sort">
-                <option value="Alpha">Alphabetically</option>
-                <option value="Chrono">Chronologically</option>
-            </select>
+            <div style="clear:both;"></div>
+            <div style="float:right;">
+                <span style="float:left; margin-right:15px;">Sort by </span> 
+	            <select style="float:right;" id="sort">
+	                <option value="Alpha">Alphabetically</option>
+	                <option value="Chrono">Chronologically</option>
+	            </select>
+            </div>
         </div>
     </div>
     
@@ -113,6 +119,7 @@ include("head.html"); ?>
 <?php require_once('popup-pp-extended-info.inc') ?>
 
 <script type="text/javascript">
+    var filterName = ".reports";
 	var _fromDate, _toDate;
 	var fromDate = '';
 	var toDate = '';
@@ -394,6 +401,7 @@ include("head.html"); ?>
         });
 	});
 </script>
+<script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
