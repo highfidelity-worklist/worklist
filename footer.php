@@ -17,8 +17,15 @@
 <!-- Close DIV container -->
 	</div>
 	<div id="footer">
+<?php
+# Suppress RSS feed links inside the RSS feed list
+if (!isset($inFeedlist) || ($inFeedlist === false)) {
+?>
 		<div class="lefticon" style="padding-top:10px;"><a href="feedlist.php" title="Rss & Atom Feeds" style="text-decoration:none;"><img src="images/rss20.png" />&nbsp;<img src="images/atom20.png" /></a></div>
-		<?php
+<?php
+} 	
+?>
+<?php
 			$res = preg_split('%/%', $_SERVER['SCRIPT_NAME']);
 			$filename = array_pop($res);
 			$repname = array_pop($res);
