@@ -6,7 +6,7 @@ include_once("class.session_handler.php");
 include_once("functions.php");
 
 
-function addRewarderBalance($userId, $points) {
+function addRewarderBalance($userId, $points, $worklist_id = 0, $fee_id = 0) {
     defineSendLoveAPI();
 
     $reason = "LoveMachine paid you $" . $points;
@@ -15,7 +15,10 @@ function addRewarderBalance($userId, $points) {
             'api_key' => REWARDER_API_KEY,
             'user_id' => $userId,
             'points' => $points,
-            'reason' => $reason);
+            'reason' => $reason,
+            'worklist_id' => $worklist_id,
+            'fee_id' => $fee_id,
+                    );
 
     $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
     $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);

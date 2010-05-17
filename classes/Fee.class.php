@@ -70,7 +70,7 @@ class Fee
 
                     $points = intval($amount);
 
-                    addRewarderBalance($user_id, $amount);
+                    addRewarderBalance($user_id, $amount, $worklist_id, $fee_id);
 
                     if ($runner_id != 0) {
                         mysql_unbuffered_query("UPDATE `".USERS."` SET `budget`=`budget`-$amount WHERE `id`=$runner_id");
