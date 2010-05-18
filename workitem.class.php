@@ -19,8 +19,11 @@ class WorkItem
     protected $id;
     protected $summary;
     protected $creatorId;
+    protected $creator;
     protected $runnerId;
+    protected $runner;
     protected $mechanicId;
+    protected $mechanic;
     protected $status;
     protected $notes;
 
@@ -81,7 +84,7 @@ class WorkItem
              ->setSummary($row['summary'])
              ->setCreatorId($row['creator_id'])
              ->setRunnerId($row['runner_id'])
-	     ->setMechanicId($row['mechanic_id'])
+	     	 ->setMechanicId($row['mechanic_id'])
              ->setStatus($row['status'])
              ->setNotes($row['notes']);
         return true;
@@ -126,6 +129,7 @@ WHERE id = ' . (int)$id;
     public function setCreatorId($creatorId)
     {
         $this->creatorId = (int)$creatorId;
+        $this->setCreator();
         return $this;
     }
 
@@ -137,6 +141,7 @@ WHERE id = ' . (int)$id;
     public function setRunnerId($runnerId)
     {
         $this->runnerId = (int)$runnerId;
+        $this->setRunner();
         return $this;
     }
 
@@ -148,12 +153,49 @@ WHERE id = ' . (int)$id;
     public function setMechanicId($mechanicId)
     {
         $this->mechanicId = (int)$mechanicId;
+        $this->setMechanic();
         return $this;
     }
 
     public function getMechanicId()
     {
         return $this->mechanicId;
+    }
+    
+    protected function setCreator()
+    {
+    	$user = new User();
+    	$this->creator = $user->findUserById($this->getCreatorId());
+    	return $this;
+    }
+    
+    protected function setRunner()
+    {
+    	$user = new User();
+    	$this->runner = $user->findUserById($this->getRunnerId());
+    	return $this;
+    }
+    
+    protected function setMechanic()
+    {
+    	$user = new User();
+    	$this->mechanic = $user->findUserById($this->getMechanicId());
+    	return $this;
+    }
+    
+    public function getCreator()
+    {
+    	return $this->creator;
+    }
+    
+    public function getRunner()
+    {
+    	return $this->runner;
+    }
+    
+    public function getMechanic()
+    {
+    	return $this->mechanic;
     }
 
     public function setStatus($status)

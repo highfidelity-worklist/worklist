@@ -716,6 +716,18 @@ class User
         ksort($userlist);
 	    return ((!empty($userlist)) ? $userlist : false);
 	}
+	
+	public static function getRunnerlist()
+	{
+		$runnerlist = array();
+		$sql = 'SELECT `' . USERS . '`.`id` FROM `' . USERS . '` WHERE `' . USERS . '`.`is_runner` = 1;';
+		$result = mysql_query($sql);
+		while ($result && ($row = mysql_fetch_assoc($result))) {
+			$user = new User();
+			$runnerlist[] = $user->findUserById($row['id']);
+		}
+		return ((!empty($runnerlist)) ? $runnerlist : false);
+	}
 
 	/**
 	 * @param $filter the $filter to set

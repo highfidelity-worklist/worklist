@@ -129,7 +129,7 @@
 }
  
 #creatorBox, #runnerBox, #mechanicBox, .keyPeople{
-	display:inline-block!important;
+	display:inline-block;
 	border:none;
 	margin: 5px 0px 5px 0px;
 	float:none!important;
@@ -137,11 +137,15 @@
 }
 .runnerName, .mechanicName{
 	font-weight:bold;
-	margin:0px 7px 0px 15px!important;
+	margin:0px 7px 0px 15px;
 }
 .creatorName{
 	font-weight:bold;
-	margin:0px 7px 0px 0px!important;
+	margin:0px 7px 0px 0px;
+}
+ 
+.changeRunner {
+	display: none;
 }
  
 #ping-btn{

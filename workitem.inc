@@ -506,6 +506,53 @@ function reply(id) {
             $('#popup-pingtask').dialog('open');
             return false;
         });
+
+        // Reassign runner
+        (function($) {
+            if ($('form span.runnerName') !== null) {
+				$('form span.runnerName').css({
+					'cursor': 'pointer',
+					'text-decoration': 'underline'
+				}).click(function() {
+					var shown = false;
+					$(this).parent().siblings().fadeOut(1000, function() {
+						if (shown != true) {
+							shown = true;
+							$('form span.runnerName').css('margin', '0px 7px 0px 0px');
+							$('form span#ping-r-btn').css('display', 'none');
+							$('form span.changeRunner').fadeIn(1000, function() {
+								$(this).children('input[name=changerunner]').click(function() {
+									$.ajax({
+										type: 'post',
+										url: 'jsonserver.php',
+										data: {
+											action: 'changeRunner',
+											userid: <?php echo($user_id); ?>,
+											runner: $('form span.changeRunner select[name=runner]').val(),
+											workitem: <?php echo($worklist_id); ?>
+										},
+										dataType: 'json',
+										success: function(j) {
+											if (j.success == true) {
+												$('form span#ping-r-btn').text(j.nickname);
+												$('form input[name=cancel]').click();
+											}
+										}
+									});
+								});
+								$(this).children('input[name=cancel]').click(function() {
+									$('form span.changeRunner').fadeOut(1000, function() {
+										$('form span#ping-r-btn').css('display', 'inline');
+										$('form span.runnerName').css('margin', '0px 7px 0px 15px');
+										$('form span.runnerName').parent().siblings().fadeIn(1000);
+									});
+								});
+							});
+						}
+					});
+				});
+            }
+        })(jQuery);
 		
 		// applies the same size as the thinnest to all comments the show'em
 		var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
@@ -592,7 +639,17 @@ if ($action =="edit"):  ?>
 							<div id="runnerBox"><span class="runnerName">Runner</span>
                             <?php
                                 if( $runner_nickname != '' ) echo '<span id="ping-r-btn" title="Ping Runner">'.$runner_nickname.'</span>';
-                                else echo $runner_nickname;?></div>
+                                else echo $runner_nickname;
+                                echo '<span class="changeRunner">';
+                                $runnerslist = User::getRunnerlist();
+                                echo '<select name="runner">';
+                                foreach ($runnerslist as $r) {
+                                	echo '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . $r->getNickname() . '</option>';
+                                }
+                                echo '</select>';
+                              	echo '&nbsp;<input type="button" name="changerunner" value="Change Runner" />&nbsp;<input type="button" name="cancel" value="Cancel" /></span>'  
+                            ?>
+                            </div>
                                 <?php
 								$mech = '';							
 								if( count($fees) >0 ) {
@@ -603,6 +660,8 @@ if ($action =="edit"):  ?>
 								else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
 								echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>'.$mech.'</div>';
 							?>
+						</li>
+						<li>
 					<!-- Edit: Invite People field -->
 							<div>
 								<span style="font-weight:bold; margin-top:-5px;">Invite people to this task</span>

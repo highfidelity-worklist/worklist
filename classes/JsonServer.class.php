@@ -495,5 +495,56 @@ class JsonServer
     		} catch (Sms_Backend_Exception $e) {
     		}
 	}
+	
+	protected function actionChangeRunner()
+	{
+		$workitem = (int)$this->getRequest()->getParam('workitem');
+		$runner = new User();
+		if ($this->getUser()->isRunner()) {
+			if ($runner->findUserById($this->getRequest()->getParam('runner')) && $runner->isRunner()) {
+				require_once(APP_PATH . '/workitem.class.php');
+				$workitem = new Workitem($workitem);
+				$oldRunner = $workitem->getRunner();
+				$workitem->setRunnerId($runner->getId())
+						 ->save();
+				
+				$subject = 'The runner for #' . $workitem->getId() . ' has been changed';
+				$body = "<p>Hi there,</p>";
+				$body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Runner " . $runner->getNickname() . ".</p>";
+				$body .= "<p>See you in the Workroom!</p>";
+				$body .= "<p><br/>Love,<br/>Eliza @ the LoveMachine</p>";
+				
+				if ($oldRunner) {
+					sl_send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body);
+				}
+				if ($workitem->getRunner()) {
+					sl_send_email($workitem->getRunner()->getNickname() . ' <' . $workitem->getRunner()->getUsername() . '>', $subject, $body);
+				}
+				if ($workitem->getCreator()) {
+					sl_send_email($workitem->getCreator()->getNickname() . ' <' . $workitem->getCreator()->getUsername() . '>', $subject, $body);
+				}
+				if ($workitem->getMechanic()) {
+					sl_send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body);
+				}
+				
+				sendJournalNotification($this->getUser()->getNickname() . ' updated Job #' . $workitem->getId() . ': ' . $workitem->getSummary() . '. Runner reassigned to ' . $workitem->getRunner()->getNickname());
+				
+				return $this->setOutput(array(
+					'success' => true,
+					'nickname' => $runner->getNickname()
+				));
+			} else {
+				return $this->setOutput(array(
+					'success' => false,
+					'message' => 'The user specified as new runner is no runner!'
+				));
+			}
+		} else {
+			return $this->setOutput(array(
+				'success' => false,
+				'message' => 'You are not allowed to do that!'
+			));
+		}
+	}
 
 }
