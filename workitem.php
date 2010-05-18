@@ -25,13 +25,12 @@ require_once 'lib/Sms.php';
 				 "DONE" => array("WORKING", "REVIEW"),
 				 "PASS" => array("REVIEW"));
 
-$get_variable = 'job_id';
-
+ $get_variable = 'job_id';
 if (!defined("WORKITEM_URL")) {
     define("WORKITEM_URL",SERVER_URL . "workitem.php?$get_variable=");
 }
-if (!defined("WORKLIST_URL")) {
-    define("WORKLIST_URL",SERVER_URL . "worklist.php?$get_variable=");
+if (!defined("WORKLIST_REDIRECT_URL")) {
+    define("WORKLIST_REDIRECT_URL",SERVER_URL . "worklist.php?$get_variable=");
 }
 $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]) : 0;
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
@@ -432,7 +431,7 @@ if($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id;
 }
 if($redirectToWorklistView) {
-    $postProcessUrl = WORKLIST_URL . $worklist_id;
+    $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;
 }
 // We have a Journal message. Send it to Journal
 if(isset($journal_message)) {
