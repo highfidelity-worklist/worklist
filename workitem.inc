@@ -522,6 +522,7 @@ function reply(id) {
 							$('form span#ping-r-btn').css('display', 'none');
 							$('form span.changeRunner').fadeIn(1000, function() {
 								$(this).children('input[name=changerunner]').click(function() {
+									$(this).unbind('click');
 									$.ajax({
 										type: 'post',
 										url: 'jsonserver.php',
