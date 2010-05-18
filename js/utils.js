@@ -20,11 +20,13 @@ function refreshUsersFilter() {
 		data: 'name='+filterName+'&active='+activeUsersFlag,
 		dataType: 'data',
 		success:function(data) {
-			var box = data;
 			var parent = $('#userSelection').parent();
 			$('#userSelection').remove();
-			parent.prepend(box);
-			//$('#activeUsers').attr('checked','false');
+			parent.prepend(data);
+            // If we are in worklist reattach the autoupdate event
+            if (filterName == ".worklist") {
+                reattachAutoUpdate();
+            }
 		}
 	});
 }

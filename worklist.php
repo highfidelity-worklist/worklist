@@ -830,6 +830,12 @@ include("head.html"); ?>
 //end of code for fees table
 
     $(document).ready(function() {
+        // If the browser is firefox add a few more pixels on the
+        // status box filter padding.
+        if ($.browser.mozilla) {
+            $('#statusbox').css('padding-top', '22px');
+        }
+    
 		dirDiv = $("#direction");
 		dirImg = $("#direction img");
 		hdr = $(".table-hdng");
@@ -886,17 +892,7 @@ include("head.html"); ?>
 		GetWorklist(<?php echo $page?>, false, true);
 		
 		$("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
-		$("select[name=user], select[name=status]").change(function(){
-			if ($("#search-filter").val() == 'UNPAID') {
-				$(".worklist-fees").text('Unpaid');
-			} else {
-				$(".worklist-fees").text('Fees/Bids');
-			}
-
-			page = 1;
-			if (timeoutId) clearTimeout(timeoutId);
-			GetWorklist(page, false);
-		});
+		reattachAutoUpdate();
 
 		$('#add').click(function(){
 			$('#popup-edit').data('title.dialog', 'Add Worklist Item');
@@ -1008,6 +1004,20 @@ include("head.html"); ?>
 		}
 		?>
 	});
+	
+	function reattachAutoUpdate() {
+		$("select[name=user], select[name=status]").change(function(){
+			if ($("#search-filter").val() == 'UNPAID') {
+				$(".worklist-fees").text('Unpaid');
+			} else {
+				$(".worklist-fees").text('Fees/Bids');
+			}
+
+			page = 1;
+			if (timeoutId) clearTimeout(timeoutId);
+			GetWorklist(page, false);
+		});
+	}
 
     function getIdFromPage(npage, worklist_id)	{
 	    $.ajax({
@@ -1105,7 +1115,7 @@ include("head.html"); ?>
     <div style="float: right">
         <form method="get" action="" id="searchForm" />
             <?php echo $filter->getUserSelectbox(1); ?>
-            <div style="padding-top: 19px; float: left; padding-right: 15px;">
+            <div id="statusbox" style="padding-top: 19px; float: left; padding-right: 15px;">
 	            <?php echo $filter->getStatusSelectbox(); ?>
             </div>
             <div style="float: left;" class="input_box">
