@@ -139,8 +139,9 @@ mysql_query($fillLatest);
 
 $showLatest = 'AND `bids`.`bid_created` = `tmp_latest`.`latest`';
 if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-    $showLatest = '';
+    $showLatest = 'AND `bids`.`bidder_id` = ' . $ufilter;
 }
+
 $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
          `worklist_id` int(11) NOT NULL,
          `bid_amount` decimal(10,2) NOT NULL,
@@ -169,7 +170,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 	      `mu`.`nickname` AS `mechanic_nickname`,
 	      TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
 	      `total_fees`,`bid_amount`,`creator_id`,
-	      (SELECT COUNT(`".BIDS."`.id) FROM `".BIDS."`
+	      (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
 	       WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) LIMIT 1) as bid_count,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
            WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
@@ -197,7 +198,6 @@ if ($rtCount) {
 }
 $cPages = ceil($items/$limit);
 $worklist = array(array($items, $page, $cPages));
-
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 echo mysql_error();
