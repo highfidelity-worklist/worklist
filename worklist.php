@@ -830,11 +830,9 @@ include("head.html"); ?>
 //end of code for fees table
 
     $(document).ready(function() {
-        // If the browser is firefox add a few more pixels on the
-        // status box filter padding.
-        if ($.browser.mozilla) {
-            $('#statusbox').css('padding-top', '22px');
-        }
+        // Fix the layout for the User selection box
+        var box_h = $('select[name=user]').height() +1;
+        $('#userbox').css('margin-top', '-'+box_h+'px');
     
 		dirDiv = $("#direction");
 		dirImg = $("#direction img");
@@ -1114,8 +1112,8 @@ include("head.html"); ?>
 <div id="search-filter-wrap">
     <div style="float: right">
         <form method="get" action="" id="searchForm" />
-            <?php echo $filter->getUserSelectbox(1); ?>
-            <div id="statusbox" style="padding-top: 19px; float: left; padding-right: 15px;">
+            <div id="userbox" style="float:left; margin-top:-19px;"><?php echo $filter->getUserSelectbox(1); ?></div>
+            <div style="float: left; padding-right: 15px;">
 	            <?php echo $filter->getStatusSelectbox(); ?>
             </div>
             <div style="float: left;" class="input_box">
@@ -1125,7 +1123,7 @@ include("head.html"); ?>
 	                <a id="search" href=""> <img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"> </a>
 	            </div>
             </div>
-            <div style="float: left;  padding-top:14px; margin-top: 3px;">
+            <div style="float: left; margin-top: 0px;">
                 <a id="search_reset" href=""><img src="images/cross.png"> </a>
             </div>
         </form>

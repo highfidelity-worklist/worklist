@@ -93,7 +93,7 @@ z-index: 1;
     margin:0;
     padding:2px;
     width:163px;
-    margin:17px 0 0;
+    /*margin:2px 0 0;*/
 }
 .input_box input {
     border:0 none;
