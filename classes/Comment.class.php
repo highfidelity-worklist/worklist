@@ -52,6 +52,12 @@ class Comment
 	protected $comment;
 	
 	/**
+	 * Avatar
+	 * @var string
+	 */
+	protected $avatar;
+	
+	/**
 	 * @return the $id
 	 */
 	public function getId() 
@@ -173,6 +179,43 @@ class Comment
 	{
 		$this->comment = trim($comment);
 		return $this;
+	}
+	
+	/**
+	 * @return the $avatar
+	 */
+	public function getAvatar()
+	{
+		if ($this->avatar === null) {
+			$this->setAvatar();
+		}
+		return $this->avatar;
+	}
+	
+	/**
+	 * Retrieves the url to the avatar
+	 */
+	public function setAvatar()
+	{
+		defineSendloveAPI();
+		
+		$params = array(
+			'action' => 'getProfilePicture',
+            'api_key' => SENDLOVE_API_KEY,
+			'username' => $this->getUser()->getUsername(),
+			'width' => 50,
+			'height' => 50
+		);
+		
+		$referer = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
+    	$retval = json_decode(postRequest(SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    	
+    	$this->avatar = false;
+    	if ($retval['success'] == true) {
+    		$this->avatar = $retval['picture'];
+    	}
+    	
+    	return $this;
 	}
 
     /**

@@ -770,7 +770,10 @@ if ($action =="edit"):  ?>
 										<span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
 									</span>
 								</div>
-								<div class="comment"><?php echo nl2br(linkify(htmlspecialchars($comment['comment']->getComment()))); ?></div>
+								<div class="comment">
+									<image class="picture" src="<?php echo($comment['comment']->getAvatar()); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" />
+									<?php echo nl2br(linkify(htmlspecialchars($comment['comment']->getComment()))); ?>
+								</div>
 								<?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
 								<div class="reply-lnk">
 									<a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>

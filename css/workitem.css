@@ -300,11 +300,21 @@
 	font-size:14;
 }
  
- 
-.date{
+.date {
 	font-size:11px;
 	color:#666;
 }
+
+.picture {
+	background: #ffffff;
+	border: 1px solid lightgrey;
+	float: left;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	margin-top: 3px;
+	padding: 5px;
+}
+
 .reply-lnk{
 	font-size:11px;
 	width:100%;
