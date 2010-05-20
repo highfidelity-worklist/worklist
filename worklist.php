@@ -210,7 +210,7 @@ include("head.html"); ?>
 		}
 		// Displays the ID of the task in the first row
 		 // 26-APR-2010 <Yani>
-		row+= '<td width="5%">' + json[0] + '</td>';
+		row+= '<td width="5%">#' + json[0] + '</td>';
 		
         row += '<td width="45%">' + pre + json[1] + post + '</td>';
         if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
