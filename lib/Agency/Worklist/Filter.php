@@ -228,6 +228,11 @@ class Agency_Worklist_Filter
             case 'COMMENTS':
                 $sort = 'comments';
                 break;
+            // Allowing sort by ID
+            // 21-MAY-2010 <Yani>
+            case 'ID':
+                $sort = 'id';
+                break;
             case 'PRIORITY':
             default:
                 $sort = 'priority';
