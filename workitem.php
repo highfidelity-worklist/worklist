@@ -473,6 +473,7 @@ if(!empty($bids) && is_array($bids)) {
             if ($user->getId() != $bid['bidder_id']) {
                 $bid['nickname'] = '*name hidden*';
 				$bid['bid_amount'] = '***';
+				$bid['email'] = '********';
             }
         }
     }
