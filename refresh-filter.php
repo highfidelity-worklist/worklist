@@ -21,7 +21,21 @@ $active = intval($_REQUEST['active']);
 $filter = new Agency_Worklist_Filter();
 $filter->setName($name)
        ->initFilter();
-
-echo $filter->getUserSelectBox($active);
-
+       
+$users = User::getUserlist(getSessionUserId(), $active);
+$json = array(
+	array(
+		'value' => 0,
+		'text' => 'All Users',
+		'selected' => (($filter->getUser() == 0) ? true : false)
+	)
+);
+foreach ($users as $user) {
+	$json[] = array(
+		'value' => $user->getId(),
+		'text' => $user->getNickname(),
+		'selected' => (($filter->getUser() == $user->getId()) ? true : false)
+	);
+}
+echo(json_encode($json));
 ?>

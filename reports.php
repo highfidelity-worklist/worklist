@@ -67,7 +67,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 
 <script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<!-- <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script> -->
 <link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
 <style type="text/css">
 

@@ -119,14 +119,12 @@ include("head.html"); ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <link href="css/feedback.css" rel="stylesheet" type="text/css">
 <link href="css/ui.toaster.css" rel="stylesheet" type="text/css">
-<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
@@ -991,16 +989,70 @@ include("head.html"); ?>
 		/* function commented for remove tooltip */
 		//setTimeout(MapToolTips, 800);
 
-		<?php if(!empty($worklist_id))
-		{
-		?>
+		<?php if(!empty($worklist_id)) : ?>
 		SelectEditedWorkItem();
 		$('#edit').show();
 		$('#view').hide();
+		<?php endif; ?>
 
-		<?php
-		}
-		?>
+		$('select[name=user]').bind({
+			'beforeshow newlist': function(e, o) {				
+				var li = $('<li/>').css({
+					left: 0,
+					position: 'absolute',
+					background: '#AAAAAA',
+					width: '123px',
+					top: '180px'
+				});
+				var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
+				var checkbox = $('<input/>').attr({
+					type: 'checkbox',
+					id: 'onlyActive'
+				}).css({
+						margin: 0,
+						position: 'relative',
+						top: '1px'
+				});
+				
+				if (activeUsersFlag) {
+					activeUsersFlag = 0;
+					checkbox.attr('checked', true);
+				} else {
+					activeUsersFlag = 1;
+					checkbox.attr('checked', false);
+				}
+
+				label.text(' Active only');
+				label.prepend(checkbox);
+				li.append(label);
+				
+				li.click(function(e) {
+					o.list.hide();
+					o.container.removeClass('ui-state-active');
+					$.ajax({
+						type: 'POST',
+						url: 'refresh-filter.php',
+						data: {
+							name: filterName,
+							active: activeUsersFlag
+						},
+						dataType: 'json',
+						success: $.proxy(o.setupNewList, o)
+					});
+					return false;
+				});
+				
+				o.list.scroll(function() {
+					li.css('top', ($(this).scrollTop() + 180) + 'px');
+				});
+
+				o.list.append($('<li>&nbsp</li>'));
+				o.list.append(li);
+				o.list.height(o.list.height + 20 + 'px');
+				
+			}
+		}).comboBox();
+		$('select[name=status]').comboBox();
 	});
 	
 	function reattachAutoUpdate() {
@@ -1098,8 +1150,8 @@ include("head.html"); ?>
 </div>
 <br style="clear: both;" />
 <br/>
-<div id="status-wrap" style="width:380px;">
-	<form action="" id="status-update-form" style="width:380px;"><?php echo $nick?> is <span id="status-lbl"><b><?php echo $current_status?></b></span>
+<div id="status-wrap" style="width:340px;">
+	<form action="" id="status-update-form" style="width:340px;"><?php echo $nick?> is <span id="status-lbl"><b><?php echo $current_status?></b></span>
 		<input style="display: none;" type="text" maxlength="45" id="status-update" name="status-update"
 			value="<?php echo $current_status?>"></input>
 		<div id="status-share" style="display: none; float:right; width:122px;">
@@ -1112,19 +1164,12 @@ include("head.html"); ?>
 <div id="search-filter-wrap">
     <div style="float: right">
         <form method="get" action="" id="searchForm" />
-            <div id="userbox" style="float:left; margin-top:-19px;"><?php echo $filter->getUserSelectbox(1); ?></div>
-            <div style="float: left; padding-right: 15px;">
-	            <?php echo $filter->getStatusSelectbox(); ?>
-            </div>
-            <div style="float: left;" class="input_box">
-                <input type="text" id="query"
-                    value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
-	            <div class="onlyfloat_right">
-	                <a id="search" href=""> <img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"> </a>
-	            </div>
-            </div>
-            <div style="float: left; margin-top: 0px;">
-                <a id="search_reset" href=""><img src="images/cross.png"> </a>
+            <?php echo $filter->getUserSelectbox(1); ?>
+	        <?php echo $filter->getStatusSelectbox(); ?>
+	        <div class="input_box">
+	            <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
+	            <a id="search" href="" class="searchIcon"><img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"></a>
+            	<a id="search_reset" href="" class="searchIcon"><img src="images/cross.png"></a>
             </div>
         </form>
     </div>

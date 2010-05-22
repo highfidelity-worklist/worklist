@@ -273,22 +273,12 @@ class Agency_Worklist_Filter
      */
     public function getUserSelectbox($active=1) {
         $users = User::getUserlist(getSessionUserId(), $active);
-        $checked = "";
-        
-        if ($active) {
-            $checked = 'checked';
-        } else if($active == 0) {
-            $checked = '';
-        }
-        
-        $box = '<div id="userSelection" style="float:left;">';
-        $box .= '<input type="checkbox" name="activeUsers" id="activeUsers" onclick="refreshUsersFilter()"'.$checked.'>Active users only</input>';
-        $box .= '<br/><select name="user">';
+        $box = '<select name="user">';
         $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '>All Users</option>';
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
         }
-        $box .= '</select></div>';
+        $box .= '</select>';
         
         return $box;
     }

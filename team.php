@@ -29,8 +29,8 @@ include("head.html");
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <link href="css/thickbox.css" rel="stylesheet" type="text/css" >
-<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<!-- <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" /> -->
+<!-- <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script> -->
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.easing-1.3.pack.js"></script>
 

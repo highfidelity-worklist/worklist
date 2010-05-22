@@ -88,29 +88,36 @@ z-index: 1;
 
 .input_box {
     background:transparent url(../images/input_bg.gif) no-repeat scroll 0 0;
-    border:0 none;
-    float:right;
-    margin:0;
-    padding:2px;
-    width:163px;
-    /*margin:2px 0 0;*/
+    border: 0 none;
+    display: inline-block;
+    margin: 0 0 0 10px;
+    padding: 2px;
+	position: relative;
+	top: 10px;
+    width: 195px;
 }
 .input_box input {
-    border:0 none;
-    color:#2C3549;
-    float:left;
-    font-size:13px;
-    margin:0;
-    padding:2px;
-    width:130px;
+    border: 0 none;
+    color: #2C3549;
+    font-size: 13px;
+    margin: 0;
+    padding: 4px;
+    width: 130px;
+	position: relative;
+	top: -10px;
+	background: none repeat scroll 0 0 transparent !important;
 }
 .input_box form {
-    display:inline;
-    margin:0;
-    padding:0;
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
 .input_box input[type="text"]:active, .input_box input[type="text"]:hover, .input_box input[type="text"]:focus {
     border:medium none;
+}
+.searchIcon {
+	position: relative; 
+	top: -3px;
 }
 
 
@@ -215,4 +222,11 @@ z-index: 1;
 }
 #feesToolTip {
   display: none;
+}
+
+.ui-state-default.ui-combobox {
+	background: url("../images/dropdown_background.png") no-repeat scroll 0px -3px transparent;	
+}
+.ui-state-hover.ui-combobox {
+	background: url("../images/dropdown_background.png") no-repeat scroll 0px -35px transparent;
 }
