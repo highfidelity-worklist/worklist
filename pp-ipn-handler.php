@@ -135,7 +135,7 @@ if ($fp) {
                     
                     //if a log doesn't exist for this fee, create one, otherwise update.
                     $log_sql = "SELECT * FROM ".PAYPAL_LOG." WHERE fee_id = ".$$fee_id;
-                    $log_exists = mysql_num_rows($log_sql);
+                    $log_exists = mysql_num_rows(mysql_query($log_sql));
                     if ($log_exists == 0) { 
                         $mp_sql = "INSERT INTO ".PAYPAL_LOG." (fee_id, payment_gross, payment_fee, status, masspay_txn_id, txn_verify, masspay_run_status, masspay_status_reason, currency, payee_paypal_email, date_created) VALUES (";
                         $mp_sql .= "'".mysql_real_escape_string($$fee_id)."', "; 
