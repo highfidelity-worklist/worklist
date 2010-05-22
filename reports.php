@@ -97,6 +97,10 @@ margin-bottom:1em;
 #search-filter-section table, #search-filter-section table td #search-filter-section table th{
 border: none;
 }
+
+td.redtext {
+color: red;
+}
 </style>
 <script type="text/javascript">
 var filterName = ".reports";
@@ -195,7 +199,11 @@ var getPaidItems = function() {
 	pre = '', post = '';
         row += '<td>' + pre + json[2] + post + '</td>'; // Summary
         row += '<td>' + pre + json[3] + post + '</td>'; // Description
-        row += '<td>' + pre + formatValueForDisplay(json[4]) + post + '</td>'; // Payee
+        row += '<td';
+        if (json[7] == 0) {
+            row += ' class="redtext"';
+        }
+        row += '>' + pre + formatValueForDisplay(json[4]) + post + '</td>'; // Payee
         row += '<td>' + pre + formatValueForDisplay(json[6]) + post + '</td>'; // Paid Date
         row += '<td>' + pre + '$' + json[5] + post + '</td>'; // Amount
         row += '</tr>';
