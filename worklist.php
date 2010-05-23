@@ -995,8 +995,10 @@ include("head.html"); ?>
 		$('#view').hide();
 		<?php endif; ?>
 
+		// to add a custom stuff we bind on events
 		$('select[name=user]').bind({
-			'beforeshow newlist': function(e, o) {				
+			'beforeshow newlist': function(e, o) {
+				// now we create a new li element with a checkbox in it
 				var li = $('<li/>').css({
 					left: 0,
 					position: 'absolute',
@@ -1013,7 +1015,8 @@ include("head.html"); ?>
 						position: 'relative',
 						top: '1px'
 				});
-				
+
+				// we need to update the global activeUsersFlag
 				if (activeUsersFlag) {
 					activeUsersFlag = 0;
 					checkbox.attr('checked', true);
@@ -1025,10 +1028,13 @@ include("head.html"); ?>
 				label.text(' Active only');
 				label.prepend(checkbox);
 				li.append(label);
-				
+
+				// now we add a function which gets called on click
 				li.click(function(e) {
+					// we hide the list and remove the active state
 					o.list.hide();
 					o.container.removeClass('ui-state-active');
+					// we send an ajax request to get the updated list
 					$.ajax({
 						type: 'POST',
 						url: 'refresh-filter.php',
@@ -1037,22 +1043,24 @@ include("head.html"); ?>
 							active: activeUsersFlag
 						},
 						dataType: 'json',
+						// on success we update the list
 						success: $.proxy(o.setupNewList, o)
 					});
+					// just to be shure nothing else gets called we return false
 					return false;
 				});
-				
+
+				// the scroll handler so our new listelement will stay on the bottom
 				o.list.scroll(function() {
 					li.css('top', ($(this).scrollTop() + 180) + 'px');
 				});
 
+				// now we append the list element to the list
 				o.list.append($('<li>&nbsp</li>'));
 				o.list.append(li);
-				o.list.height(o.list.height + 20 + 'px');
-				
 			}
 		}).comboBox();
-		$('select[name=status]').comboBox();
+		$('#search-filter-wrap select[name=status]').comboBox();
 	});
 	
 	function reattachAutoUpdate() {
