@@ -69,22 +69,22 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             if( $val == 'BIDDING' ) {
                 $where .= "( mechanic_id='$ufilter' or `bidder_id`='$ufilter' or `runner_id` = '$ufilter')";
             } else  {
-                $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+                $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or `".FEES."`.user_id='$ufilter')";
             }
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
 	$userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
         if( $userId == $ufilter )  {
-            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter'
+            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or `".FEES."`.user_id='$ufilter'
                         or `bidder_id`='$ufilter')";
         }   else    {
-            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or user_id='$ufilter')";
+            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or `".FEES."`.user_id='$ufilter')";
         }
     }
 }
 
 $query = $filter->getQuery();
-
+$commentsjoin ="";
 if($query!='' && $query!='Search...') {
     $searchById = false;
      if(is_numeric(trim($query))) {
@@ -98,12 +98,13 @@ if($query!='' && $query!='Search...') {
         }
     }
     if(!$searchById) {
-        $array=explode(" ",rawurldecode($query));
+        $array=explode(",",rawurldecode($query));
 
         foreach ($array as $item) {
             $item = mysql_escape_string($item);
-            $where.=" AND ( summary LIKE '%$item%' OR `".WORKLIST."`.`notes` LIKE '%$item%' OR `".FEES."`.notes LIKE '%$item%') ";
+            $where.=" AND ( MATCH (summary, `".WORKLIST."`.`notes`) AGAINST ('$item')OR MATCH (`".FEES."`.notes) AGAINST ('$item') OR MATCH (`ru`.`nickname`) AGAINST ('$item') OR MATCH (`cu`.`nickname`) AGAINST ('$item') OR MATCH (`mu`.`nickname`) AGAINST ('$item') OR MATCH (`com`.`comment`) AGAINST ('$item')) ";
         }
+		$commentsjoin = " LEFT OUTER JOIN `comments` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
     }
 }
 
@@ -181,7 +182,8 @@ $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
           LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
           LEFT JOIN `".FEES."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
-          LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
+		  $commentsjoin
+		  LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
           LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
@@ -198,8 +200,11 @@ if ($rtCount) {
 }
 $cPages = ceil($items/$limit);
 $worklist = array(array($items, $page, $cPages));
+/*echo(json_encode(array("qry" => $qsel.$qbody.$qorder)));*/
+
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
+$qry =$qsel.$qbody.$qorder;
 echo mysql_error();
 while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
 
