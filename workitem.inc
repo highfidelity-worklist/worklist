@@ -345,7 +345,7 @@ function reply(id) {
             $('#popup-bid-info #info-bid-done-by').text(bidData.done_by);
             $('#popup-bid-info #info-notes').text(bidData.notes);
 
-<?php if ($is_runner || $user_id == $runner_id) { ?>
+<?php if ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id)) { ?>
                 if($('#accept_bid').length == 0) {
                     $('#popup-bid-info form').append('<input id="accept_bid" type="submit" name="accept_bid" value="Accept">');
                 }
@@ -831,6 +831,8 @@ if ($action =="edit"):  ?>
                                         if($is_runner || $user_id == $bid['bidder_id']){
                                             $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
                                         }
+                                    //undefined notes causing warnings
+                                    if (empty($notes)) {$notes='';}
                                     ?>">
                                         <script type="data"><?php echo "{id: {$bid['id']}, email: '{$bid['email']}', amount: '{$bid['bid_amount']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
 									<td><?php echo $bid['nickname'];?></td>

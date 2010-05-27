@@ -65,8 +65,6 @@ if (isset($_POST['save_account'])) {
         }
     }
 
-    $rewarder_limit_day = intval($_POST['rewarder_limit_day']);
-    $saveArgs['rewarder_limit_day'] = 0;
 } else if (isset($_POST['save_personal'])) {
     $about = isset($_POST['about']) ? strip_tags(substr($_POST['about'], 0, 150)) : "";
     $skills = isset($_POST['skills']) ? strip_tags($_POST['skills']) : "";
@@ -141,7 +139,8 @@ if (!empty($saveArgs)) {
         $msg="Account updated successfully!";
     }
 
-    return 'ok';
+    //Wired off, why is this here, causing settings page to exit
+    //return 'ok';
 }
 
 /*********************************** HTML layout begins here  *************************************/
@@ -151,6 +150,8 @@ include("head.html");
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 
+<!--Added worklist.css to solve stylesheet issues for settings.php-->
+<link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 
 <script type="text/javascript" src="js/skills.js"></script>
@@ -158,6 +159,7 @@ include("head.html");
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/sendlove.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
+<script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript">
 <!--//
     var nclass;
@@ -215,7 +217,6 @@ include("head.html");
                 journal_alerts: $('#journal_alerts').val(),
                 bid_alerts: $('#bid_alerts').val(),
                 nickname: $('#nickname').val(),
-                rewarder_limit_day: $('#rewarder_limit_day').val(),
                 save_account: 1,
                 username: $('#username').val()
             };
@@ -424,11 +425,6 @@ include("head.html");
         $settingsPage = true;
         include("sms-inc.php");
          ?>
-
-        <p><label for="rewarder_limit_day">Auto-populate Rewarder with people you've worked with in the last 
-            <input type="text" id="rewarder_limit_day" name="rewarder_limit_day" class="text-field" size="5" value="<?php echo $userInfo['rewarder_limit_day']; ?>" />
-            days </label> <br />
-        </p>
 
         <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
 

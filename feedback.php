@@ -8,6 +8,7 @@
     $email = isValidEmail(trim($_POST['email'])) ? trim($_POST['email']) : FEEDBACK_EMAIL; 
     $headers = "From: ".APP_NAME." Feedback <".$email.">\n"."X-Mailer: php";;
 
+	//This is not using the mail mechanism and may not work in all cases
     if(mail(FEEDBACK_EMAIL,$subject,$body,$headers)){
       echo "Feedback sent!";
     }

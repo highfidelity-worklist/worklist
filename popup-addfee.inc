@@ -20,7 +20,7 @@
 ?>
             <div style="float:left;width:33%">
                 <p class="info-label">Or<br />Rewarder?<br />
-                <input type="checkbox" name="is_rewarder" id="is_rewarder" value="1" />
+                <input type="checkbox" name="is_rewarder" id="is_rewarder" value="1" disabled/>
                 </p>
             </div>
 <?php

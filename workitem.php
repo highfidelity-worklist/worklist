@@ -300,7 +300,11 @@ if ($action =="edit_bid"){
 if ($action == "add_fee") {
     $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
+        if (isset($_POST[$arg]))  {
+           $$arg = mysql_real_escape_string($_POST[$arg]);
+        } 
+	else { $$arg = '';
+        }
     }
     $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
 

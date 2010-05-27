@@ -27,7 +27,6 @@ class User
 	protected $has_w9approval;
 	protected $is_runner;
 	protected $is_payer;
-	protected $is_auditor;
 	protected $is_active;
 	protected $journal_nick;
 	protected $is_guest;
@@ -36,7 +35,6 @@ class User
 	protected $smsaddr;
 	protected $country;
 	protected $provider;
-	protected $rewarder_points;
 	protected $has_sandbox;
 	protected $unixusername;
 	protected $projects_checkedout;
@@ -453,21 +451,6 @@ class User
 	}
 
 	/**
-	 * @return the $is_auditor
-	 */
-	public function getIs_auditor() {
-		return $this->is_auditor;
-	}
-
-	/**
-	 * @param $is_auditor the $is_auditor to set
-	 */
-	public function setIs_auditor($is_auditor) {
-		$this->is_auditor = $is_auditor;
-		return $this;
-	}
-
-	/**
 	 * @return the $is_active
 	 */
 	public function getIs_active() {
@@ -475,7 +458,7 @@ class User
 	}
 
 	/**
-	 * @param $is_auditor the $is_auditor to set
+	 * @param $is_active the $is_active to set
 	 */
 	public function setIs_active($is_active) {
 		$this->is_active = $is_active;
@@ -617,21 +600,6 @@ class User
 		return $this;
 	}
 
-	/**
-	 * @return the $rewarderPoints
-	 */
-	public function getRewarder_points() {
-		return $this->rewarder_points;
-	}
-
-	/**
-	 * @param $points: the number rewarder points to set
-	 */
-	public function setRewarder_points($points) {
-		$this->rewarder_points = $points;
-		return $this;
-	}
-////////////
 	/**
 	 * @return the $has_sandbox
 	 */

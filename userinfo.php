@@ -184,6 +184,8 @@
 
   $('a#reward-link').click(function(){
 	$('#quick-reward form input[type="text"]').val('');
+        //Wire off rewarder functions for now - GJ 5/24
+       return false;
 
 	$.getJSON('get-rewarder-user.php', {'id': userId}, function(json){
 
@@ -201,6 +203,8 @@
   $('#quick-reward form input[type="submit"]').click(function(){
 
 	$('#quick-reward').dialog('close');
+        //Wire off rewarder functions for now - GJ 5/24
+       return false;
   
 	    var toReward = parseInt($('#toreward').val());
 

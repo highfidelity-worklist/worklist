@@ -19,7 +19,8 @@ require_once 'lib/Sms/Numberlist.php';
                         <span class="required-bullet">*</span> <select id="country" name="country" style="width:274px">
                             <?php
                             if (empty($country) || $country == '--') {
-                                echo '<option value="" '.$selected.'>Where do you live?</option>';
+                                //$selected not set by this point, we want to default so do that
+                                echo '<option value="">Where do you live?</option>';
                             }
                             foreach ($countrylist as $code=>$cname) {
                                 $selected = ($country == $code) ? "selected=\"selected\"" : "";
@@ -52,9 +53,9 @@ require_once 'lib/Sms/Numberlist.php';
                         <input name="stored-provider" type="hidden" id="stored-provider" value="<?php echo $provider; ?>" />
                         <select id="provider" name="provider" style="width:274px">
                             <?php if (empty($country) || $country == '--') { ?>
-                            <option value="Select Country" selected>Please select a Country</option>
+                            <option value="Select Country">Please select a Country</option>
                             <?php } else { ?>
-                            <option value="Wireless Provider" <?php echo ((!empty($provider) && $provider{0} == '+') ? "selected" : "") ?>>(Other)</option>
+                            <option value="Wireless Provider">(Other)</option>
                             <?php } ?>
                         </select>
                         </label><br/>

@@ -43,9 +43,7 @@ if (!defined('BIDS'))		    define('BIDS', 'bids');
 if (!defined('FEES'))		    define('FEES', 'fees');
 if (!defined('FILES'))		    define('FILES', 'files');
 if (!defined('COMMENTS'))	    define('COMMENTS', 'comments');
-if (!defined('REWARDER'))	    define('REWARDER', 'rewarder_distribution');
 if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
-if (!defined('REWARDER_LOG'))	define('REWARDER_LOG', 'rewarder_log');
 if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 
@@ -63,7 +61,7 @@ if (!defined('JOURNAL_API_URL')) define('JOURNAL_API_URL', 'https://dev.sendlove
 if (!defined('JOURNAL_API_USER')) define('JOURNAL_API_USER', 'api_username');
 if (!defined('JOURNAL_API_PWD')) define('JOURNAL_API_PWD', 'api_password');
 
-if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/sendlove/api.php");
+if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/love/api.php");
 if (!defined("SENDLOVE_API_KEY")) define("SENDLOVE_API_KEY", "uierbycur4yt73467t6trtycff3rt");
 
 if (!defined("REWARDER_API_URL")) define("REWARDER_API_URL", "https://dev.sendlove.us/rewarder/api.php");

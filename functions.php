@@ -83,7 +83,6 @@ function initSessionData($user) {
     $_SESSION['timezone']           = $user_row['timezone'];
     $_SESSION['is_runner']          = intval($user_row['is_runner']);
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
-    $_SESSION['is_auditor']         = intval($user_row['is_auditor']);
 }
 
 function isEnabled($features) {
@@ -113,6 +112,8 @@ function isSuperAdmin() {
  */
 function countLove($username, $fromUsername="") {
     defineSendLoveAPI();
+    //Wires off countLove to 0, ignores API (api working 5/24)
+    //return array('status'=>SL_OK,'error'=>SL_NO_ERROR,array('count'=>0));
     
     if($fromUsername != "") {
         $params = array (
@@ -145,6 +146,8 @@ function countLove($username, $fromUsername="") {
  */
 function getUserLove($username, $fromUsername="") {
     defineSendLoveAPI();
+    //Wires off getUserLove to 0, ignores API (api working 5/24)
+    //return array('status'=>SL_OK,'error'=>SL_NO_ERROR,array('count'=>0));
 	
     if($fromUsername != "") {
 		$params = array (
@@ -188,6 +191,7 @@ function defineSendLoveAPI() {
         define ('SL_JOURNAL_FAILED', 'journal failed');
         define ('SL_NO_SSL', 'no ssl call');
         define ('SL_WRONG_KEY', 'wrong api key');
+        define ('SL_LOVE_DISABLED', 'sendlove disabled');
     }
 }
 
@@ -198,16 +202,24 @@ function defineSendLoveAPI() {
 *
 */
  function PopulateRewarderTeam($user_id, $worklist_id = '') {
+    //Wire off rewarder interface for the time being - gj 5/21/10
+    // returns results of mysql update operation (success=true)
+    return true;
 
    $where = !empty($worklist_id) ?  " f.worklist_id = $worklist_id  " : "  f.worklist_id IN (SELECT DISTINCT  f1.worklist_id FROM " . FEES . " f1 WHERE f1.user_id = $user_id and f1.rewarder = 0) ";
    $rewarder_limit_day = GetPopulateRewarderLimit($user_id);
    $rewarder_limit_day = $rewarder_limit_day == 0 ? 30 : $rewarder_limit_day;
    $where .= " AND f.paid_date BETWEEN  (NOW() - INTERVAL $rewarder_limit_day day) AND NOW() " ;
-   $sql = "INSERT INTO " . REWARDER . " (giver_id,receiver_id,rewarder_points) SELECT DISTINCT $user_id, u.id, 0 FROM " . USERS . " u INNER JOIN " . FEES . " f ON (f.user_id = u.id) WHERE  $where AND NOT EXISTS (SELECT 1 FROM " . REWARDER . " rd WHERE rd.giver_id = $user_id) AND u.id <> $user_id ";
-   mysql_query($sql);
+// This will be replaced with an API call
+//   $sql = "INSERT INTO " . REWARDER . " (giver_id,receiver_id,rewarder_points) SELECT DISTINCT $user_id, u.id, 0 FROM " . USERS . " u INNER JOIN " . FEES . " f ON (f.user_id = u.id) WHERE  $where AND NOT EXISTS (SELECT 1 FROM " . REWARDER . " rd WHERE rd.giver_id = $user_id) AND u.id <> $user_id ";
+//   mysql_query($sql);
  }
 
  function GetPopulateRewarderLimit($user_id) {
+    //Wire off rewarder, will use API - gj 5/24/10
+    //Rewarder limit/day just return 0
+    return 0;
+
     $sql = "SELECT rewarder_limit_day FROM ". USERS . " WHERE id= $user_id ";
     $rt = mysql_query($sql);
     if($row = mysql_fetch_assoc($rt)) {
@@ -344,12 +356,17 @@ function postRequest($url, $post_data) {
 
 //converts unix timestamp to user's time according to his timezone settings
 function getUserTime($timestamp){
-    $tz_correction = $_SESSION['timezone'];
-    if(strpos($_SESSION['timezone'], "+") === 0){
-        $tz_correction = "-".substr($_SESSION['timezone'],1);
-    }elseif(strpos($_SESSION['timezone'], "-") === 0){
-        $tz_correction = "+".substr($_SESSION['timezone'],1);
-    }
+    //need a default to not spew errors when browser is not logged in
+    //We should probably change logic to always has a SESSION defined (from default)
+    //Determine login status by SESSION['userid'] etc
+    if (!empty($_SESSION['timezone'])) {
+        $tz_correction = $_SESSION['timezone'];
+        if(strpos($_SESSION['timezone'], "+") === 0){
+            $tz_correction = "-".substr($_SESSION['timezone'],1);
+        }elseif(strpos($_SESSION['timezone'], "-") === 0){
+            $tz_correction = "+".substr($_SESSION['timezone'],1);
+        }
+    } else { $tz_correction=0; }
 
     $server_tz = date_default_timezone_get();
     date_default_timezone_set  ("Europe/London");
@@ -380,8 +397,8 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
         $summary = $row['summary'];
     }
 
-    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`, `rewarder`) ".
-        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string($fee_desc)."', NOW(), '0', '".mysql_real_escape_string($is_expense)."', '".mysql_real_escape_string($is_rewarder)."' )";
+    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`) ".
+        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string($fee_desc)."', NOW(), '0', '".mysql_real_escape_string($is_expense)."' )";
     $result = mysql_unbuffered_query($query);
 
     // Journal notification

@@ -58,13 +58,13 @@ $type = mysql_real_escape_string($_REQUEST['type']);
 
 // Fee
 if($type == 'Fee')
-  $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0";
+  $where .= " AND `".FEES."`.expense = 0 ";
 // Expense
 else if($type == 'Expense')
-  $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0";
+  $where .= " AND `".FEES."`.expense = 1 ";
 // Rewarder
 else if($type == 'Rewarder')
-  $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 1";
+  $where .= " AND `".FEES."`.expense = 0 ";
 
 // Add option for order results
 $orderby = "ORDER BY ";

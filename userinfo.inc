@@ -127,23 +127,6 @@
         </form>
     </div><!-- end of give budget div-->
 
-    <div id="quick-reward" title = "Reward User">
-        <p>
-            <span class = "labelo">Available points: </span><span id = "available" class = "points"></span>
-        </p>
-        <p>
-            <span class = "labelo">Rewarded to this user: </span><span id = "already" class = "points"></span>
-        </p>
-
-        <form method="post" action = "">
-        <p>
-                <input type = "text" id = "toreward" />
-                <input type = "submit" value = "Reward" />
-        </p>
-        </form>
-
-    </div><!-- end of quick-reward div -->
-
     <div id="loading" style="display:none">
         <img src="images/loader.gif" alt = "" /><span>Please wait..</span>
     </div>  

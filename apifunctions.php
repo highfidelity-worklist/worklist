@@ -7,6 +7,9 @@ include_once("functions.php");
 
 
 function addRewarderBalance($userId, $points, $worklist_id = 0, $fee_id = 0) {
+    //Wire off rewarder interface for the time being - gj 5/21/10
+    if(true) return 1;
+
     defineSendLoveAPI();
 
     $reason = "LoveMachine paid you $" . $points;

@@ -41,7 +41,7 @@
 
 			<a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
 			<a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> |
-			<a href="<?php echo SERVER_BASE ?>/sendlove/" class="iToolTip menuLove" target="_blank">Love</a> |
+			<a href="<?php echo SERVER_BASE ?>/love/" class="iToolTip menuLove" target="_blank">Love</a> |
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
 			<a href="<?php echo SERVER_BASE ?>/rewarder/" class="iToolTip menuRewarder">Rewarder</a> |
@@ -406,7 +406,15 @@
 		</script>
 
 		<!-- Popup for showing stats-->
-		<?php require_once('popup-stats.inc') ?>
+		<?php
+		$showStats=true;
+		//These pages don't display stats so skip the hidden popup
+		foreach(array('signup.php','login.php','settings.php') as $hideStats) {
+		  if (strpos($_SERVER['PHP_SELF'],$hideStats)) { $showStats=false; }
+		}
+		if ($showStats) { require_once('popup-stats.inc'); }
+	
+ 		?>
 
 <!-- END Navigation placeholder -->
 

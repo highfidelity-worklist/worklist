@@ -305,7 +305,7 @@ class Agency_Worklist_Filter
 
     public function __construct(array $options = array())
     {
-        if (!empty($options) && ($options['reload'] == 'false')) {
+        if (!empty($options) && (empty($options['reload']) || $options['reload'] == 'false')) {
             $this->setOptions($options);
         } elseif (isset($options['name'])) {
         	$this->setName($options['name'])

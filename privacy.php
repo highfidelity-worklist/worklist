@@ -19,6 +19,7 @@ include("head.html");
 ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<link href="css/worklist.css" rel="stylesheet" type="text/css">
 <link href="css/feedback.css" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>

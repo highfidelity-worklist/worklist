@@ -36,11 +36,12 @@
 
   <?php
   $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-  if (!$is_runner) {
+  //Using undefined SESSION['userid'] causes a warning
+  if (!$is_runner && !empty($_SESSION['userid'])) {
 	$budgetUser = new User();
 	$budgetUser->findUserById($_SESSION['userid']);
 	$has_budget = $budgetUser->getBudget() > 0 ? 1 : 0;
-  }
+  } else { $has_budget=0; }
   if ($is_runner || $has_budget) {//if user is a runner - allow to change status
   ?>
 		  <p class="info-label">Status<br />
@@ -130,7 +131,7 @@
 ?>
             <div style="float:left;width:33%">
                 <p class="info-label">Or<br />Rewarder?<br />
-                <input type="checkbox" name="is_rewarder" id="is_rewarder" value="1" />
+                <input type="checkbox" name="is_rewarder" id="is_rewarder" value="1" disabled />
                 </p>
             </div>
 <?php

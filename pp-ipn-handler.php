@@ -186,6 +186,7 @@ if ($fp) {
             $message .= 'Payment Status: '.$payment_status."\r\n";
             $message .= "\r\n Invalid IPN.";    
             $message .= $debug_msg;
+            //This is not using the mail mechanism and may not work in all installations
             mail($to, $subject, $message, $email_headers);
         }
     }
@@ -203,6 +204,7 @@ if ($fp) {
     $message .= 'Masspay Verify: '.$verify_sign."\r\n";
     $message .= 'Payment Status: '.$payment_status."\r\n";
     $message .= $debug_msg;
+            //This is not using the mail mechanism and may not work in all installations
     mail($to, $subject, $message, $email_headers);
 }
 

@@ -9,6 +9,7 @@ require_once('authmail.php');
 require_once('html2text.inc');
 require_once('smslist.php');
 
+//This is not using akismet any longer and defaults to php built in mechanism that will not work everywhere
 /*  sl_send_email
  * 
  *  Check using Akismet if mail is probably spam, otherwise send an email 

@@ -58,7 +58,8 @@ $minimal_POST = @array_intersect_key($_POST, $fields_to_not_escape + $fields_to_
 
 // TODO: Code repeated from settings.php. Must be put in a library
 // compute smsaddr from phone and provider
-$prov_address = isset($minimal_POST['country']) ? $smslist[$minimal_POST['country']][$minimal_POST['provider']] : '';
+//error_log("signup: ".$minimal_POST['country'].';'.$smslist[$minimal_POST['country']][$minimal_POST['provider']]) ;
+$prov_address = (isset($minimal_POST['country']) && isset($smslist[$minimal_POST['country']][$minimal_POST['provider']]))? $smslist[$minimal_POST['country']][$minimal_POST['provider']] : '';
 $country = '';
 $provider = '';
 $int_code = '';
@@ -69,7 +70,7 @@ $minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
 
 if(isset($minimal_POST['sign_up'])){
-  if(empty($username)||(($_GET['authtype'] != 'openid') && empty($minimal_POST['password']))||(($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword'])))
+  if(empty($username)||(!empty($_GET['authtype'])&&($_GET['authtype'] != 'openid') && empty($minimal_POST['password']))||(!empty($_GET['authtype'])&&($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword'])))
   {
     $msg = "Please fill all required fields.<br />";
   }
@@ -121,7 +122,8 @@ if(isset($minimal_POST['sign_up'])){
 }
 
 // if we have openid authentication there are a few prefilled values
-if ($_GET['authtype'] == 'openid') {
+//Add test for GET:authtype to reduce warnings
+if (!empty($_GET['authtype']) && $_GET['authtype'] == 'openid') {
 	$_POST['nickname'] = rawurldecode($_GET['nickname']);
 	$_POST['username'] = rawurldecode($_GET['email']);
 	$country = rawurldecode($_GET['country']);
@@ -135,6 +137,8 @@ include("head.html");
 ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+
+<link href="css/worklist.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userinfo.js"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -180,7 +184,7 @@ include("head.html");
 	      username.add( Validate.Email );
 	      username.add(Validate.Length, { minimum: 10, maximum: 50 } );
 	    </script>
-            <?php if ($_GET['authtype'] != 'openid' ) :?>
+            <?php if (empty($_GET['authtype']) || $_GET['authtype'] != 'openid' ) :?>
             <div class="LVspace"><p>
             <label>Password *<br />
             <input type="password" id="password" name="password" class="text-field" size="35" />
