@@ -132,17 +132,24 @@ $emptyLatest = 'TRUNCATE `tmp_latest`';
 $fillLatest = 'INSERT INTO `tmp_latest`
                (SELECT `worklist_id`,
                 MAX(`bid_created`) AS `latest`
-                FROM `bids` GROUP BY `worklist_id`)';
+                FROM `bids` WHERE `withdrawn` = 0 GROUP BY `worklist_id`)';
 
 mysql_query($latest);
 mysql_query($emptyLatest);
 mysql_query($fillLatest);
 
-$showLatest = 'AND `bids`.`bid_created` = `tmp_latest`.`latest`';
-if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-    $showLatest = 'AND `bids`.`bidder_id` = ' . $ufilter;
+if($is_runner){
+	$showLatest = 'AND `bids`.`bid_created` = `tmp_latest`.`latest`';
+	if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
+		$showLatest = 'AND (`bids`.`bid_created` = `tmp_latest`.`latest` OR `bids`.`bidder_id` = '.$ufilter.')';
+	}
 }
-
+else{
+	$showLatest = 'AND `bids`.`bid_created` = `tmp_latest`.`latest`';
+	if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
+		$showLatest = 'AND `bids`.`bidder_id` = ' . $ufilter;
+	}
+}
 $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
          `worklist_id` int(11) NOT NULL,
          `bid_amount` decimal(10,2) NOT NULL,
