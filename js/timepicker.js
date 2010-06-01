@@ -185,7 +185,7 @@ Timepicker.prototype = {
         this._orgMinute = null;
         this._colonPos  = -1;
         this._visible   = false;
-        this.tpDiv      = $('<div id="' + this._mainDivId + '" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all ui-helper-hidden-accessible" style="width: 100px; display: none; position: absolute;"></div>');
+        this.tpDiv      = $('<div id="' + this._mainDivId + '" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all ui-helper-hidden-accessible" style="width: 100px; display: none; position: absolute; z-index: 1003;"></div>');
         this._generateHtml();
     },
 
@@ -228,6 +228,8 @@ Timepicker.prototype = {
         var viewWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) + $(document).scrollLeft();
         var tpRight   = this.tpDiv.offset().left + this.tpDiv.outerWidth();
 
+        // adjust the timepicker z-index to datepicker z-index
+        this.tpDiv.css('z-index', dpDiv.css('z-index')) ;
         if (tpRight > viewWidth) {
             dpDiv.css('left', dpDivPos.left - (tpRight - viewWidth) - 5);
             this.tpDiv.css('left', dpDiv.offset().left + dpDiv.outerWidth() + 'px');
