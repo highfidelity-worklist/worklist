@@ -88,9 +88,12 @@
         <link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
-        <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+
+        <link media="all" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+
         <script type="text/javascript" src="js/userstats.js"></script>
         <title>User info</title>
     </head>
@@ -115,7 +118,7 @@
         .addClass("ui-corner-bottom");
     } 
 
-    $('#popup-pingtask').dialog({ autoOpen: false, width: 400});
+    $('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
 
     $('#send-ping-btn').click(function()    {
         var msg = $('#ping-msg').val();
@@ -156,7 +159,7 @@
 		});
 	});
 
-  $('#give-budget').dialog({ autoOpen: false });
+  $('#give-budget').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
   $('#give').click(function(){
 	$('#give-budget form input[type="text"]').val('');
 	$('#give-budget').dialog('open');
@@ -180,7 +183,7 @@
   });
 
 
-  $('#quick-reward').dialog({ autoOpen: false });
+  $('#quick-reward').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
 
   $('a#reward-link').click(function(){
 	$('#quick-reward form input[type="text"]').val('');

@@ -2,10 +2,11 @@ var statsPage = 1;
 
 $(function(){
 
-    $('#done-jobs-popup').dialog({autoOpen: false, width: 'auto'});
-    $('#active-jobs-popup').dialog({autoOpen: false, width: 'auto'});
-    $('#lovelist-popup').dialog({autoOpen: false, width: 'auto'});
-    $('#latest-earnings-popup').dialog({autoOpen: false, width: 'auto'});
+    var dialog_options = {autoOpen: false, width: 'auto', show: 'fade', hide: 'fade'};
+    $('#done-jobs-popup').dialog(dialog_options);
+    $('#active-jobs-popup').dialog(dialog_options);
+    $('#lovelist-popup').dialog(dialog_options);
+    $('#latest-earnings-popup').dialog(dialog_options);
 
     $('#total-jobs').click(function(){
         statsPage = 1;
