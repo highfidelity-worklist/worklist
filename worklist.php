@@ -153,6 +153,7 @@ include("head.html"); ?>
 	var dir = '<?php echo $filter->getDir(); ?>';
 	var sort = '<?php echo $filter->getSort(); ?>';
 	var resetOrder = false;
+
     function AppendPagination(page, cPages, table)    {
 	// support for moving rows between pages
 	if(table == 'worklist')	{
@@ -777,7 +778,9 @@ include("head.html"); ?>
 		});
 
 		$('#popup-edit').dialog({ 
-			autoOpen: false, 
+			autoOpen: false,
+            show: 'fade',
+            hide: 'fade',
 			maxWidth: 600, 
 			width: 400,
 			hasAutocompleter: false,
@@ -793,10 +796,10 @@ include("head.html"); ?>
 				}
 			}
 		});
-		$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
-		$('#popup-bid-info').dialog({ autoOpen: false, modal: true});
-		$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
-		$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
+		$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade'});
+		$('#popup-bid-info').dialog({ autoOpen: false, modal: true, show: 'fade', hide: 'fade'});
+		$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade'});
+		$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade'});
 		$('#pages-dialog').dialog({ autoOpen: false });
 
 		$('#done_by').datepicker({

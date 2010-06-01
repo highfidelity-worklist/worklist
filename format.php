@@ -52,7 +52,7 @@
 		<script type="text/javascript">
 		// Code for stats
         $(function() {
-		$('#popup-user-info').dialog({ autoOpen: false});
+		$('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
 
 		$.ajax({
 			type: "POST",
@@ -316,7 +316,7 @@
 				}
 			});
 
-			$('#popup-stats').dialog({ autoOpen: false, maxWidth: 1000, width: 800, maxHeight: 1000, height: 600 });
+			$('#popup-stats').dialog({ autoOpen: false, maxWidth: 1000, width: 800, maxHeight: 1000, height: 600, show: 'fade', hide: 'fade'});
 			$('#popup-stats').data('title.dialog', 'Task Statistics');
 			$('#popup-stats').dialog('open');
 		}

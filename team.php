@@ -107,6 +107,8 @@ include("head.html");
    $('#user-info').dialog({
            autoOpen: false,
            modal: true,
+           show: 'fade',
+           hide: 'fade',
            height: 500,
            width: 800
        });

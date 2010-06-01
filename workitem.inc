@@ -149,17 +149,18 @@ function reply(id) {
 	  time24h: false
 	});
 
-	$('#popup-bid').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
-	$('#popup-edit-bid-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
-	$('#popup-confirmation').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450 });
+    var dialog_options = { autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' };
+	$('#popup-bid').dialog(dialog_options);
+	$('#popup-edit-bid-info').dialog(dialog_options);
+	$('#popup-confirmation').dialog(dialog_options);
 	
 	// If the bid info popup is set to modal clipboard won't work!
-	$('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400});
-	$('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: false,width: 500});
-	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400});
-	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450 });
-	$('#message').dialog({ autoOpen: true});
-	$('#popup-pingtask').dialog({ autoOpen: false, width: 400});
+	$('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
+	$('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: false,width: 500, show: 'fade', hide: 'fade' });
+	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
+	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
+	$('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
+	$('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade' });
 
 
 	// JS Variables initialized from host PHP page
