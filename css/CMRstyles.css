@@ -372,7 +372,7 @@ table thead tr:hover{
 .rowodd {
 	background-color: #fff;
 }
-.roweven {
+.roweven{
 	background: url(../images/evenrow2.jpg) #fff repeat-x top left;
 }
 

@@ -212,43 +212,58 @@ jQuery.fn.DefaultValue = function(text){
 };
 
 $(function() {
+	var hideInputField = function() {
+		// if the status is not empty - hide input field, otherwise do not hide input
+		if( $('#status-lbl').find('b').html() != "" ) {
+			$('#status-update').hide();
+			$("#status-share").hide();
+			$('#status-lbl').show();
+		}
+	};
 	$("#status-share").hide();
 	$('#share-this').hide();
 	$("#status-update").DefaultValue("What are you working on?");
 	$('#status-update').hide();
 	$("#query").DefaultValue("Search...");
 	
+
 	// if the status is empty, show input field - allow user to enter the status
-	if ($('#status-lbl').find('b').html()=="") {
+	if( $.trim($('#status-lbl').find('b').html()) == "" ) {
 		$('#status-lbl').hide();
 		$('#status-update').show();
 		$("#status-share").show();
+	} else {
+		$('#status-lbl').show();
 	}
 	
 	// When status-update gets focus enlarge and show the share button
 	$("#status-update").focus(function() {		
+		$("#status-update").data("focus",true);		
 		$("#status-share").show();
+	});
+
+	//When status-update lost the focus, hide input field ... 
+	$("#status-update").blur(function() {
+	// if the blur event is coming due to a click on button "Share", we need to delay the hidding process.
+	// if not the click event on the hidden button is not triggered.
+		setTimeout(function() { 
+			hideInputField();
+			$("#status-update").data("focus",false);		
+		},500);
 	});
 	
 	$("#status-lbl").mouseenter(function() {
-		//document.getElementById('status-wrap').style.marginTop = "0px";
 		$('#status-lbl').hide();
 		$('#status-update').show();
 		$('#status-share').show();
 	});
 	
-	//When status-update loses focus hide the share button and shrink the field
+	//When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
 	$("#status-wrap").mouseleave(function(){
-		//document.getElementById('status-wrap').style.marginTop = "5px";
-		// if the status is not empty - hide input field, otherwise do not hide input
-		if ($('#status-lbl').find('b').html()!="") {
-			$('#status-update').hide();
-			$("#status-share").hide();
-			$('#status-lbl').show();
+		if ($("#status-update").data("focus") !== true) {
+			hideInputField();
 		}
 	});
-	
-		
 	//Submit the form using AJAX to the database
 	$("#status-share-btn").click(function() {
 		if($("#status-update").val() == "")	{
@@ -257,7 +272,6 @@ $(function() {
 		if($("#status-update").val() ==  "What are you working on?"){
 			$("#status-update").val("");
 		}
-		
 		$.ajax({
 			url: "update_status.php",
 			type: "POST",

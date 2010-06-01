@@ -177,7 +177,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 	      `ru`.`nickname` AS `runner_nickname`,
 	      `mu`.`nickname` AS `mechanic_nickname`,
 	      TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
-	      `total_fees`,`bid_amount`,`creator_id`,
+	      `total_fees`,`bid_amount`,`creator_id`,`runner_id`,`mechanic_id`,
 	      (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
 	       WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) LIMIT 1) as bid_count,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
@@ -228,7 +228,9 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
          9 => $row['creator_id'],
         10 => $row['bid_count'],
         11 => $row['bid_done'],
-        12 => $row['comments']
+        12 => $row['comments'],
+        13 => $row['runner_id'],
+        14 => $row['mechanic_id']
 	);
 }
 

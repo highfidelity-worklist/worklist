@@ -142,7 +142,7 @@ include("head.html"); ?>
     var timeoutId;
     var addedRows = 0;
     var workitem = 0;
-    var cur_user = false;
+//    var cur_user = false;
     var workitems;
 	var dirDiv;
 	var dirImg;
@@ -208,9 +208,9 @@ include("head.html"); ?>
 		}
 		// Displays the ID of the task in the first row
 		 // 26-APR-2010 <Yani>
-		row+= '<td width="5%">#' + json[0] + '</td>';
+		row+= '<td width="5%" class="taskID">#' + json[0] + '</td>';
 		
-        row += '<td width="45%">' + pre + json[1] + post + '</td>';
+        row += '<td width="45%" class="taskSummary">' + pre + json[1] + post + '</td>';
         if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
             post = ' (' + json[10] + ')';
         }
@@ -231,22 +231,26 @@ include("head.html"); ?>
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
 */
-	var who = '';
+
+	var who = '',
+		createTagWho = function(id,nickname,type) {
+			return '<span class="'+type+'" title="' + id + '">'+nickname+'</span>';
+		};
 	if(json[3] == json[4]){
 	
 		// creator nickname can't be null, so not checking here
-		who += json[3];
+		who += createTagWho(json[9],json[3],"creator");
 	}else{
 
-		var runnerNickname = json[4] != null ? ', ' + json[4] : '';
-		who += json[3] + runnerNickname;
+		var runnerNickname = json[4] != null ? ', ' + createTagWho(json[13],json[4],"runner") : '';
+		who += createTagWho(json[9],json[3],"creator") + runnerNickname;
 	}
 	if(json[5] != null){
 
-		who += ', ' + json[5];
+		who += ', ' + createTagWho(json[14],json[5],"mechanic");
 	}
 
-	row += '<td width="15%">' + pre + who + post + '</td>';
+	row += '<td width="15%" class="who">' + pre + who + post + '</td>';
 
         if (json[2] == 'WORKING' && json[11] != null) {
             row += '<td width="15%">' + pre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
@@ -279,9 +283,9 @@ include("head.html"); ?>
 			row += '<td width="7.5%">' + pre + feebids + post + '</td>';
         }
 		row += '</tr>';
-
         if (prepend) {
-            $(row).prependTo('.table-worklist tbody').find('td div.slideDown').fadeIn(500);
+            $(row).prependTo('.table-worklist tbody')
+				.find('td div.slideDown').fadeIn(500);
             setTimeout(function(){
                 $(this).removeClass('slideDown');
                 if (moreJson && idx-- > 1) {
@@ -307,45 +311,16 @@ include("head.html"); ?>
         else if (window.getSelection)
             window.getSelection().removeAllRanges();
     }
-
-    function SelectWorkItem(item) {
-	    if (workitem > 0) $('#workitem-'+workitem).removeClass('workitem-selected');
+	
+    function SetWorkItem(item) {
         var match = item.attr('id').match(/workitem-\d+/);
         if (match) {
             workitem = match[0].substr(9);
-            $('#workitem-'+workitem).addClass('workitem-selected');
         } else {
             workitem = 0;
         }
-        if (workitem != 0) {
-            $("#edit, #view").attr('disabled', '');
-        } else {
-            $("#edit, #view").attr('disabled', 'disabled');
-        }
     }
-    function SelectEditedWorkItem() {
-	    if (workitem > 0) $('#workitem-'+workitem).removeClass('workitem-selected');
-		<?php if(!empty($worklist_id))
-		{
-		?>
-        workitem = <?php echo $worklist_id;?>;
-		$('#workitem-'+workitem).addClass('workitem-selected');
-		
-		<?php
-		}
-		else
-		{
-		?>
-		workitem = 0;
-		<?php
-		}
-		?>
-        if (workitem != 0) {
-            $("#edit, #view").attr('disabled', '');
-        } else {
-            $("#edit, #view").attr('disabled', 'disabled');
-        }
-    }
+
 	function orderBy(option) {
 		if (option == sort) dir = ((dir == 'asc')? 'desc':'asc');
 		else {
@@ -420,12 +395,36 @@ include("head.html"); ?>
 				
 				/*commented for remove tooltip */
 				//MapToolTips();
-
-				$('.row-worklist-live').bind('contextmenu', function(e) {
-					$('#pages-dialog').dialog('open');
-					$('#pages-dialog select').val(page);
-					$('#pages-dialog #worklist-id').val($(this).attr('id').substr(9));
-					e.preventDefault();
+				var showTask = function(row) {
+						var edit = false;
+						if(row.hasClass('rowown') || is_runner == 1){
+							edit = true;
+						}
+						SetWorkItem(row);
+						PopulatePopup(workitem, edit);
+					},
+					showUserInfo = function(userId) {
+						$('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />')
+							.dialog('open');
+						$('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+						return false;
+ 					};
+				$('tr.row-worklist-live').hover(
+					function() {
+						var selfRow=this;
+						$(".taskID,.taskSummary",this).toggleClass("linkTaskWho").click(
+							function() {
+								showTask($(selfRow));
+							}
+						);
+						$(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").click(
+							function() {
+								showUserInfo($(this).attr("title"));
+							}
+						);
+					},function() {
+						$(".taskID,.taskSummary",this).toggleClass("linkTaskWho").unbind("click");
+						$(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").unbind("click");;
 				});
 
 				$('.worklist-pagination-row a').click(function(e){
@@ -436,76 +435,6 @@ include("head.html"); ?>
 					return false;
 				});
 
-
-
-	<?php if (isset($_SESSION['userid'])) {?>
-
-				$('tr.row-worklist-live').click(function()	{
-					if($(this).hasClass('rowown') || is_runner == 1){
-						cur_user = true;
-						$('#edit').show();
-						$('#view').hide();
-					}else{
-						cur_user = false;
-						$('#edit').hide();
-						$('#view').show();
-					}
-					SelectWorkItem($(this));
-					return false;
-				});
-
-				$('tr.row-worklist-live').dblclick(function(){
-					$('#popup-edit form input[name="itemid"]').val(workitem);
-					ClearSelection();
-					var edit = false;
-					if(cur_user || is_runner ==1)	{
-						edit = true;
-					}
-					PopulatePopup(workitem, edit);
-					// 	$('#popup-edit').dialog('open');
-				});
-
-			if(is_runner == 1)	{ // only runners can change priorities. I guess :)
-				var startIdx;
-				$('.table-worklist').tableDnD({
-					onDragStart: function(table, row) {
-						$('.page-switch').show();
-						row = $(row);
-						startIdx = row.parent().children().index(row);
-						SelectWorkItem(row);
-					},
-					onDrop: function(table, row)	{
-						row = $(row);
-						$('.page-switch').hide();
-						var worklist_id = row.attr('id').substr(9);
-						var prev_id = 0;
-						if (row.prev().attr('id')) prev_id = row.prev().attr('id').substr(9);
-							var bump = (startIdx - row.parent().children().index(row));
-						if (bump != 0) {
-							updatePriority(worklist_id, prev_id, bump);
-						}
-					}
-				});
-			}
-
-	<?php 	}else{ //for guests - bring pop-up on a single click ?>
-				$('tr.row-worklist-live').click(function(e){
-					e.stopPropagation();
-					SelectWorkItem($(this));
-					PopulatePopup(workitem, false);
-					//	$('#popup-edit').dialog('open');
-					return false;
-				});
-	<?php } ?>
-
-				if (workitem > 0) {
-					var el = $('#workitem-'+workitem);
-					if (el.length > 0) {
-						el.addClass('workitem-selected');
-					} else {
-						workitem = 0;
-					}
-				}
 			},
 			error: function(xhdr, status, err) {
 				$('.row-worklist-live').remove();
@@ -884,6 +813,13 @@ include("head.html"); ?>
 			$('#ui-datepicker-div').hide();
 			$('#ui-timepicker-div').hide();
 		});
+		
+		$('#user-info').dialog({
+           autoOpen: false,
+           modal: true,
+           height: 500,
+           width: 800
+		});
 
 		GetWorklist(<?php echo $page?>, false, true);
 		
@@ -913,17 +849,6 @@ include("head.html"); ?>
 			$('#fees_block').hide();
 			$('#fees_single_block').show();
 			$('#popup-edit').dialog('open');
-		});
-	
-		$('#edit').click(function(){
-			$('#popup-edit form input[name="itemid"]').val(workitem);
-			PopulatePopup(workitem, true);
-			$('#popup-edit').data('title.dialog', 'Edit Worklist Item');
-		});
-
-		$('#view').click(function(){
-			$('#popup-edit form input[name="id"]').val(workitem);
-			PopulatePopup(workitem, false);
 		});
 
 		$('.popup-body form input[type="submit"]').click(function(){
@@ -988,12 +913,6 @@ include("head.html"); ?>
 		//-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
 		/* function commented for remove tooltip */
 		//setTimeout(MapToolTips, 800);
-
-		<?php if(!empty($worklist_id)) : ?>
-		SelectEditedWorkItem();
-		$('#edit').show();
-		$('#view').hide();
-		<?php endif; ?>
 
 		// to add a custom stuff we bind on events
 		$('select[name=user]').bind({
@@ -1149,11 +1068,8 @@ include("head.html"); ?>
 <div style="float: right; margin-top: 3px; font-weight:bold; font-size:16px;">Remaining Budget: $<?php echo $budget; ?></div>
 <?php }?>
 <div id="buttons">
-<p><input type="submit" id="add" name="add" value="Add" class="iToolTip addButton" /> <input
-    type="submit" id="edit" name="edit" value="Edit"
-    <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?> />
-<?php if (empty($_SESSION['is_runner'])) { ?> <input type="submit"
-    id="view" name="view" value="View" disabled="disabled" /> <?php } ?>
+<p><input type="submit" id="add" name="add" value="Add" class="iToolTip addButton" /> 
+
 </p>
 </div>
 <br style="clear: both;" />
@@ -1200,4 +1116,6 @@ include("head.html"); ?>
     </tbody>
 </table>
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
+<div id="user-info" title="User Info"></div>
+
 <?php include("footer.php"); ?>

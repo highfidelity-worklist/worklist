@@ -51,8 +51,17 @@
     cursor: default;
 }
 
+.linkTaskWho {
+text-decoration: underline;
+cursor: pointer;
+}
+
 .rowown {
     background: #FFCC99;
+}
+.roweven {
+	background-color: #eeeeee;
+	background-image: none;
 }
 .workitem-selected {
     background: #FFD;
