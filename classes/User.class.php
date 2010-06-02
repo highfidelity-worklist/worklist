@@ -665,7 +665,7 @@ class User
 	{
 	    $where = 'WHERE `confirm`= 1 AND `is_active` = 1';
 	    if ($active) {
-	       $where .= ' AND `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) ';
+	       $where .= ' AND (`date` > DATE_SUB(NOW(), INTERVAL 45 DAY) OR `added` > DATE_SUB(NOW(), INTERVAL 30 DAY))';
 	    }
         $sql = 'SELECT `'.USERS.'`.`id` FROM `'.USERS.'` 
                 LEFT JOIN (SELECT `user_id`,MAX(`date`) AS `date` FROM `'.FEES.'` GROUP BY `user_id`)
