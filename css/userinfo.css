@@ -51,7 +51,21 @@ p.small-text{
     top: 2em;
     width: auto;
 }
-
+#user-avatar {
+    position: absolute;
+    left: 53em;
+    top: 2em;
+    width: auto;
+}
+#avatar {
+	background: #ffffff;
+	border: 1px solid lightgrey;
+	float: left;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	margin-top: 3px;
+	padding: 5px;
+}
 #user-stats tbody tr td {
     text-align: center;
     font-weight: bold;

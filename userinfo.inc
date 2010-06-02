@@ -1,7 +1,5 @@
 ﻿<div class = "user-info" title = "User Info">
-    <?php if($user -> getId() != $reqUser -> getId()){ ?>
-        <a href="#" class = "big-text" id="reward-link">Reward</a>
-    <?php } ?>
+        <span id = "user-avatar" ><image id="avatar" src="<?php echo($user -> getAvatar()); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
 	<div class = "common-info">
 
         <?php include("userstats-table.inc"); ?>

@@ -39,7 +39,7 @@ class User
 	protected $unixusername;
 	protected $projects_checkedout;
 	protected $filter;
-
+	protected $avatar;
     /**
      * With this constructor you can create a user by passing an array.
      *
@@ -786,5 +786,40 @@ class User
 		}
 		return false;
 	}
-
+	/**
+	 * @return the $avatar
+	 */
+	public function getAvatar()
+	{
+		if ($this->avatar === null) {
+			$this->setAvatar();
+		}
+		return $this->avatar;
+	}
+	
+	/**
+	 * Retrieves the url to the avatar
+	 */
+	public function setAvatar()
+	{
+		defineSendloveAPI();
+		
+		$params = array(
+			'action' => 'getProfilePicture',
+            'api_key' => SENDLOVE_API_KEY,
+			'username' =>$this->getUsername(),
+			'width' => 80,
+			'height' => 80
+		);
+		
+		$referer = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
+    	$retval = json_decode(postRequest(SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    	
+    	$this->avatar = false;
+    	if ($retval['success'] == true) {
+    		$this->avatar = $retval['picture'];
+    	}
+    	
+    	return $this;
+	}
 }
