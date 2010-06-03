@@ -98,7 +98,16 @@ if($query!='' && $query!='Search...') {
         }
     }
     if(!$searchById) {
-        $array=explode(",",rawurldecode($query));
+		// #11500
+		// INPUT: 'one OR    two   three' ;
+		// RESULT: 'one two,three' ;
+		// split the query into an array using space as delimiter 
+		// remove empty elements
+		// convert spaces into commas
+		// change ',OR,' into  space
+		$query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
+    
+    	$array=explode(",",rawurldecode($query));
 
         foreach ($array as $item) {
             $item = mysql_escape_string($item);
@@ -230,7 +239,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         11 => $row['bid_done'],
         12 => $row['comments'],
         13 => $row['runner_id'],
-        14 => $row['mechanic_id']
+        14 => $row['mechanic_id'],
 	);
 }
 
