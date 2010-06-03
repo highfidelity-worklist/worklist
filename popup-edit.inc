@@ -29,7 +29,11 @@
 		  <input type="text" name="summary" id="summary" class="text-field" size="48" />
 		  </p>
                   <script type="text/javascript">
-                    var summary = new LiveValidation('summary',{ onlyOnSubmit: true });
+                    var summary = new LiveValidation('summary',{ onlyOnSubmit: true ,
+						onInvalid : function() {
+							loaderImg.hide("saveRunning");
+							this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
+						}});
                         summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                   </script>
 

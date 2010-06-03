@@ -331,7 +331,7 @@ include("head.html"); ?>
 		GetWorklist(1,false);
 	}
     function GetWorklist(npage, update, reload) {
-		$("#loader_img").css("display","block");
+		loaderImg.show("loadRunning","Loading, please wait ...");
 		$.ajax({
 			type: "POST",
 			url: 'getworklist.php',
@@ -354,7 +354,7 @@ include("head.html"); ?>
 					return false;
 				}
 				
-				$("#loader_img").css("display","none");
+				loaderImg.hide("loadRunning");
 				if (affectedHeader) {
 					affectedHeader.append(dirDiv);
 					dirImg.attr('src',directions[dir.toUpperCase()]);
@@ -441,7 +441,7 @@ include("head.html"); ?>
 				$('.row-worklist-live').remove();
 				$('.table-worklist').append('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
 				$('#again').click(function(){
-					$("#loader_img").css("display","none");
+					loaderImg.hide("loadRunning");
 					if (timeoutId) clearTimeout(timeoutId);
 					GetWorklist(page, false);
 					e.stopPropagation();
@@ -628,8 +628,8 @@ include("head.html"); ?>
 				$('.row-feelist-live').remove();
 				feeitems = json;
 				if (!json[1])	{
-				  var row = '<tr bgcolor="#FFFFFF" class="row-feelist-live feelist-total-row" >\
-							  <td colspan="5" style="text-align:center;">No fees yet.</td></tr>';
+				  var row = '<tr bgcolor="#FFFFFF" class="row-feelist-live feelist-total-row" >'+
+							'<td colspan="5" style="text-align:center;">No fees yet.</td></tr>';
 				  $('.table-feelist tbody').append(row);
 				  return;
 				}
@@ -642,8 +642,8 @@ include("head.html"); ?>
 				}
 
 				//will row with total here
-				var row = '<tr bgcolor="#FFFFFF" class="row-feelist-live feelist-total-row" >\
-							<td colspan="5" style="text-align:center;">Total Fees $' + json[0][0] + '</td></tr>';
+				var row = '<tr bgcolor="#FFFFFF" class="row-feelist-live feelist-total-row" >'+
+							'<td colspan="5" style="text-align:center;">Total Fees $' + json[0][0] + '</td></tr>';
 				$('.table-feelist tbody').append(row);
 
 				$('.paid-link').click(function(e){
@@ -757,6 +757,56 @@ include("head.html"); ?>
 
 //end of code for fees table
 
+	jQuery.fn.center = function () {
+	  this.css("position","absolute");
+	  this.css("top", (( $(window).height() - this.outerHeight() ) / 2 ) + "px");
+	  this.css("left", (( $(window).width() - this.outerWidth() ) / 2 ) + "px");
+	  return this;
+	}
+	/*
+	show a message with a wait image
+	several asynchronus calls can be made with different messages 
+	*/
+	var loaderImg = function($)
+	{
+		var aLoading = new Array(),
+			_removeLoading = function(id) {
+				for (var j=0; j < aLoading.length; j++) {
+					if (aLoading[j].id == id) {
+						if (aLoading[j].onHide) {
+							aLoading[j].onHide();
+						}
+						aLoading.splice(j,1);
+					}
+				}
+			},
+			_show = function(id,title,callback) {
+				aLoading.push({ id : id, title : title, onHide : callback});
+				$("#loader_img_title").append("<div class='"+id+"'>"+title+"</div>");
+				if (aLoading.length == 1) {
+					$("#loader_img").css("display","block");
+				}
+				$("#loader_img_title").center();
+			},
+			_hide = function(id) {
+				_removeLoading(id);
+				if (aLoading.length == 0) {
+					$("#loader_img").css("display","none");		
+					$("#loader_img_title div").remove();
+				} else {
+					$("#loader_img_title ."+id).remove();
+					$("#loader_img_title").center();
+				}
+			};
+		
+	return {
+		show : _show,
+		hide : _hide
+	};
+
+	}(jQuery); // end of function loaderImg
+
+
     $(document).ready(function() {
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
@@ -833,19 +883,34 @@ include("head.html"); ?>
 			$('#popup-edit').data('title.dialog', 'Add Worklist Item');
 			$('#popup-edit form input[name="itemid"]').val('');
 			ResetPopup();
-			$('#save_item').click(function(){
+			$('#save_item').click(function(event){
+				if ($('#save_item').data("submitIsRunning") === true) {
+					event.preventDefault();
+					return false;
+				}
+				$('#save_item').data( "submitIsRunning",true );
+				loaderImg.show( "saveRunning","Saving, please wait ...",function() {
+					$('#save_item').data( "submitIsRunning",false );
+				});
 				if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val()) {
 					// see http://regexlib.com/REDetails.aspx?regexp_id=318
 					var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-					var bid_fee_amount = new LiveValidation('bid_fee_amount',{ onlyOnSubmit: true });
-					var bid_fee_desc = new LiveValidation('bid_fee_desc',{ onlyOnSubmit: true });
+					var optionsLiveValidation = { onlyOnSubmit: true,
+						onInvalid : function() {
+							loaderImg.hide("saveRunning");
+							this.insertMessage( this.createMessageSpan() ); 
+							this.addFieldClass();
+						}
+					};
+					var bid_fee_amount = new LiveValidation('bid_fee_amount',optionsLiveValidation);
+					var bid_fee_desc = new LiveValidation('bid_fee_desc',optionsLiveValidation);
 
 					bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 					bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
 					bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 				} else {
-					bid_fee_amount.destroy();
-					bid_fee_desc.destroy();
+					if (bid_fee_amount) bid_fee_amount.destroy();
+					if (bid_fee_desc) bid_fee_desc.destroy();
 				}
 				return true;
 			});
@@ -1033,8 +1098,8 @@ include("head.html"); ?>
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
-     id="loader_img"><img src="images/final_loading_big.gif"
-     style="z-index: 9999"></div>
+     id="loader_img"><div id="loader_img_title"><img src="images/loading_big.gif"
+     style="z-index: 9999"></div></div>
 
 <!-- Popup for editing/adding  a work item -->
 <?php require_once('popup-edit.inc') ?>
