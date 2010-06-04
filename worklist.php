@@ -209,9 +209,9 @@ include("head.html"); ?>
 		}
 		// Displays the ID of the task in the first row
 		 // 26-APR-2010 <Yani>
-		row+= '<td width="5%" class="taskID">#' + json[0] + '</td>';
+		row+= '<td width="5%"><span class="taskID">#' + json[0] + '</span></td>';
 		
-        row += '<td width="45%" class="taskSummary">' + pre + json[1] + post + '</td>';
+        row += '<td width="45%"><span class="taskSummary">' + pre + json[1] + post + '</span></td>';
         if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
             post = ' (' + json[10] + ')';
         }
@@ -320,6 +320,7 @@ include("head.html"); ?>
         } else {
             workitem = 0;
         }
+		return workitem;
     }
 
 	function orderBy(option) {
@@ -349,8 +350,7 @@ include("head.html"); ?>
 			success: function(json) {
 				if (json[0] == "redirect") {
 					$("#query").val('');
-					workitem = json[1];
-					PopulatePopup(100);
+					window.location.href = buildHref(json[1], false);
 					return false;
 				}
 				
@@ -396,15 +396,7 @@ include("head.html"); ?>
 				
 				/*commented for remove tooltip */
 				//MapToolTips();
-				var showTask = function(row) {
-						var edit = false;
-						if(row.hasClass('rowown') || is_runner == 1){
-							edit = true;
-						}
-						SetWorkItem(row);
-						PopulatePopup(workitem, edit);
-					},
-					showUserInfo = function(userId) {
+				var showUserInfo = function(userId) {
 						$('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />')
 							.dialog('open');
 						$('#modalIframeId').attr('src','userinfo.php?id=' + userId);
@@ -412,19 +404,17 @@ include("head.html"); ?>
  					};
 				$('tr.row-worklist-live').hover(
 					function() {
-						var selfRow=this;
-						$(".taskID,.taskSummary",this).toggleClass("linkTaskWho").click(
-							function() {
-								showTask($(selfRow));
-							}
-						);
+						var selfRow=$(this);
+						$(".taskID,.taskSummary",this).wrap("<a href='" + 
+							buildHref( SetWorkItem(selfRow), (selfRow.hasClass('rowown') || is_runner == 1) ) + 
+							"'></a>");
 						$(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").click(
 							function() {
 								showUserInfo($(this).attr("title"));
 							}
 						);
 					},function() {
-						$(".taskID,.taskSummary",this).toggleClass("linkTaskWho").unbind("click");
+						$(".taskID,.taskSummary",this).unwrap();
 						$(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").unbind("click");;
 				});
 
@@ -485,12 +475,12 @@ include("head.html"); ?>
         });
     }
 
-    function PopulatePopup(item, edit) {
+    function buildHref(item, edit) {
 		var action = "view";
 		if(edit) {
 			action = "edit";
 		}
-		window.location.href = "<?php echo SERVER_URL ; ?>workitem.php?job_id="+workitem+"&action="+action;
+		return "<?php echo SERVER_URL ; ?>workitem.php?job_id="+item+"&action="+action;
     }
 
     function ResetPopup() {
@@ -947,6 +937,13 @@ include("head.html"); ?>
 			return false;
 		});
 		
+		$('#query').keypress(function(event) {
+			if (event.keyCode == '13') {
+				event.preventDefault();
+				$("#search").click();
+			}
+		});
+
 		$("#search_reset").click(function(e){
 			e.preventDefault();
 			$("#query").val('');
