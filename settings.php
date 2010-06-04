@@ -34,9 +34,9 @@ $errors = 0;
 
 if (isset($_POST['save_account'])) {
     // check if phone was updated
-    if (isset($_POST['phone_edit']) || isset($_POST['int_code']))
+    if (isset($_POST['phone_edit']) || isset($_POST['int_code']) ||isset($_POST['timezone']))
     {
-        $saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
+		$saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
 
         foreach ($saveArgs as $arg=>$esc) {
             $$arg = ($esc ? $_POST[$arg] : intval($_POST[$arg]));
@@ -51,7 +51,8 @@ if (isset($_POST['save_account'])) {
         if (!empty($_POST['journal_alerts'])) $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
         if (!empty($_POST['bid_alerts'])) $sms_flags |= SMS_FLAG_BID_ALERTS;
         $saveArgs['sms_flags'] = 0;
-
+        $timezone = mysql_real_escape_string(trim($_POST['timezone']));
+		$saveArgs['timezone'] = 0;
         $messages[] = "Your country/phone settings have been updated.";
     }
 
@@ -79,7 +80,7 @@ if (isset($_POST['save_account'])) {
     if ($_POST['paytype'] == 'paypal') {
         $paypal = 1;
         $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
-    } else if ($_POST['paytype'] == 'other') {
+	} else if ($_POST['paytype'] == 'other') {
         $payway = isset($_POST['payway']) ? $_POST['payway'] : '';
     }
 
@@ -116,7 +117,6 @@ if (!empty($saveArgs)) {
     }
     $sql = rtrim($sql, ',');
     $sql .= " WHERE id = '${_SESSION['userid']}'";
-
     mysql_query($sql);
 
     $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
@@ -214,6 +214,7 @@ include("head.html");
                 country: $('#country').val(),
                 smsaddr: $('#smsaddr').val(),
                 provider: $('#provider').val(),
+				timezone: $('#timezone').val(),
                 journal_alerts: $('#journal_alerts').val(),
                 bid_alerts: $('#bid_alerts').val(),
                 nickname: $('#nickname').val(),
@@ -275,17 +276,23 @@ include("head.html");
         }
         return false;
     }
-
+	function ChangePaymentMethod(){
+		var paytype = $('#paytype').val();
+		paypal.enable();
+		payway.enable();
+		if (paytype == 'paypal') {
+			$('#paytype-paypal').show();
+			$('#paytype-other').hide();
+		} else if (paytype == 'other') {
+			$('#paytype-paypal').hide();
+			$('#paytype-other').show();
+		} else {
+			$('#paytype-paypal').hide();
+			$('#paytype-other').hide();
+		}
+	}
     $(document).ready(function () {
         var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
-
-        var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
-        paypal.add(Validate.Email);
-        paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-
-        var payway = new LiveValidation('payway');
-        payway.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-        payway.add(Validate.Format, { pattern: /^((?!Contract services, check, etc.).)*$/, failureMessage: "Can't be empty!" });
 
         new AjaxUpload('formupload', {
             action: 'jsonserver.php',
@@ -321,7 +328,6 @@ include("head.html");
                 }
             }
         });
-
         $("#send-test").click(smsSendTestMessage);
         $("#save_account").click(function(){
             saveSettings('account');
@@ -335,24 +341,6 @@ include("head.html");
             saveSettings('payment');
             return false;
         });
-
-        $('#paytype').change(function(){
-            var paytype = $(this).val();
-
-            paypal.enable();
-            payway.enable();
-            if (paytype == 'paypal') {
-                $('#paytype-paypal').show();
-                $('#paytype-other').hide();
-            } else if (paytype == 'other') {
-                $('#paytype-paypal').hide();
-                $('#paytype-other').show();
-            } else {
-                $('#paytype-paypal').hide();
-                $('#paytype-other').hide();
-            }
-        });
-        $('#paytype').change();
     });
 //-->
 </script>
@@ -471,12 +459,12 @@ include("head.html");
     <form method="post" action="settings.php" name="frmsetting">
 
         <p>
-            <span class="required-bullet">*</span> <select id="paytype" name="paytype">
+            <span class="required-bullet">*</span> <select id="paytype" name="paytype" onChange="ChangePaymentMethod();">
                 <?php if (empty($userInfo['paypal_email']) && empty($userInfo['payway'])) { ?>
                 <option value="how" selected>How shall we pay you?</option>
                 <?php } ?>
-                <option value="paypal" <?php echo !empty($userInfo['paypal_email']) ? 'selected' : ''?>>Please pay me via Paypal</option>
-                <option value="other" <?php echo empty($userInfo['paypal_email']) && !empty($userInfo['payway']) ? 'selected' : ''?>>I would prefer another method</option>
+                <option value="paypal" <?php if($userInfo['paypal']==1) echo 'selected'; else echo  ''?>>Please pay me via Paypal</option>
+                <option value="other" <?php if($userInfo['paypal']==0) echo 'selected'; else echo  ''?>>I would prefer another method</option>
             </select>
         </p>
 
@@ -485,11 +473,19 @@ include("head.html");
             <p id="paytype-paypal"><label>Paypal Email</label><br />
                 <span class="required-bullet">*</span> <input type="text" id="paypal_email" name="paypal_email" class="text-field" value="<?php echo $userInfo['paypal_email']; ?>" style="width:95%" />
             </p>
-
-            <p id="paytype-other"><label>Please explain your preferred payment method</label><br />
+			<script type="text/javascript">
+				var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
+				paypal.add(Validate.Email);
+				paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+         	 </script> 
+		   <p id="paytype-other"><label>If another payment method chosen, please enter preference info</label><br />
                 <span class="required-bullet">*</span> <input type="text" id="payway" name="payway" class="text-field" value="<?php echo $userInfo['payway']; ?>" style="width:95%" />
             </p>
-
+		<script type="text/javascript">
+			var payway = new LiveValidation('payway');
+			payway.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+			payway.add(Validate.Format, { pattern: /^((?!Contract services, check, etc.).)*$/, failureMessage: "Can't be empty!" });
+		</script>
         </blockquote>
 
         <p><label>All US Citizens must submit a W-9 to be paid by LoveMachine </label>
@@ -516,6 +512,8 @@ COLOR="Blue">Download W-9 Here</FONT></a>
 
 </div>
 
-
+<script type="text/javascript">
+setTimeout('ChangePaymentMethod()', 2000);
+</script>
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php"); ?>
