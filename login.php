@@ -10,7 +10,7 @@ if (!empty($_SESSION['username'])) {
      header("Location:worklist.php");
      exit;
 }
-include_once("functions.php");
+require_once("functions.php");
 
 // Database Connection Establishment String
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
@@ -22,13 +22,40 @@ if (!empty($_REQUEST['reauth'])) { $msg = 'This transaction is not authorized!';
 $expired = !empty($_REQUEST['expired']) ? 1 : 0;
 
 if($_POST) {
-    if($username != "") {
-        $res=mysql_query("select * from ".USERS." where username = '".mysql_real_escape_string($_POST['username'])."' and password = '".sha1(mysql_real_escape_string($_POST['password']))."'");
-        if($res && mysql_num_rows($res) > 0) {
-            $row=mysql_fetch_array($res);
-            if($row['confirm']==1) {
-                initSessionData($row);
-    
+        require_once ("class/Error.class.php");
+        require_once ("class/Login.class.php");
+        require_once ("class/Response.class.php");
+        $error = new Error();
+        $username = isset($_REQUEST["username"]) ? trim($_REQUEST["username"]) : "";
+        $password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
+        if(empty($username)){
+            $error->setError("Username cannot be empty.");
+        }else if(empty($password)){
+            $error->setError("Password cannot be empty.");
+        }else{
+            $params = array("username" => $username, "password" => $password, "action" => "login");
+            ob_start();
+            // send the request
+            CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
+            $result = ob_get_contents();
+            ob_end_clean();
+            $ret = json_decode($result);
+            if($ret->error == 1){
+                $error->setError($ret->message);
+            }else{
+                $id = $ret->userid;
+                $username = $ret->username;
+                $nickname = $ret->nickname;
+                $_SESSION["userid"] = $id;
+                $_SESSION["username"] = $username;
+                $_SESSION["nickname"] = $nickname;
+                initUserById($id);
+                
+                // notifying other applications
+                $response = new Response();
+                $login = new Login();
+                $login->setResponse($response);
+                $login->notify($id, session_id());
                 if ($_POST['redir']) {
                     header("Location:".urldecode($_POST['redir']));
                 } else { 
@@ -39,16 +66,9 @@ if($_POST) {
                       }
                 }
                 exit;
-            } else {
-                $msg ="Your email is not verified yet. Check your inbox for an email to verify your account first.<br />OR<br /><a href=\"resend.php\">Re-Send Email Confirmation</a>";
             }
-        } else {
-            $msg ="Invalid username or password";
-            $msg = "Enter username or password";
         }
-    }
 }
-
 include('openid.php');
 
 if(isset($_SESSION['username']) and isset($_SESSION['confirm_string']) and $_SESSION['username']!="") {
@@ -108,9 +128,11 @@ include("head.html"); ?>
     </div> 
 
     <div id="in-lt">
-        <? if(!empty($msg)) { ?>
-            <p class="LV_invalid"><?=$msg?></p>
-        <? } ?>
+        <? if(isset($error)): ?>
+            <?php foreach($error->getErrorMessage() as $msg):?>
+              <p class="LV_invalid"><?php echo $msg; ?></p>
+            <?php endforeach;?>
+        <? endif; ?>
 	<div class="login_left">
 		<form id="login" action="" method="post">
 			<input type="hidden" name="redir" value="<?php echo $redir ?>" />

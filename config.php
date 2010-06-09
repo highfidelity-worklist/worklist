@@ -12,6 +12,12 @@ if (file_exists('server.local.php')) {
     include_once('server.local.php');
 }
 
+// this is the name of the app that will be used when
+// authenticating with login service.
+// change it per app.
+if (!defined("SERVICE_NAME"))   define("SERVICE_NAME", 'worklistmachine');
+if (!defined("APP_LOGIN"))      define("APP_LOGIN", '/login/index.php/');
+
 if (!defined('APP_NAME'))       define('APP_NAME','Worklist');
 if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], '/')));
 if (!defined('APP_BASE'))       define('APP_BASE',substr(APP_LOCATION, 0, strrpos(APP_LOCATION, '/', -2)));
@@ -28,14 +34,17 @@ if (!defined('SERVER_BASE'))    define('SERVER_BASE','http://'.SERVER_NAME.'/'.A
 //define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 //So clone the standard URL
 if (!defined('SECURE_SERVER_URL')) define('SECURE_SERVER_URL',SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
+if (!defined("LOGIN_APP_URL"))  define("LOGIN_APP_URL",'https://'.SERVER_NAME.APP_LOGIN);
 
 if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
 if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
 
 if (!defined('DB_SERVER'))      define('DB_SERVER', 'localhost');
-if (!defined('DB_USER'))        define('DB_USER', 'project_tofor');
+if (!defined('DB_USER'))        define('DB_USER', 'project_stage');
 if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', 'test30');
-if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_dev');
+if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
+
+if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
 
 if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('USERS'))          define('USERS', 'users');
@@ -67,8 +76,11 @@ if (!defined("SENDLOVE_API_KEY")) define("SENDLOVE_API_KEY", "uierbycur4yt73467t
 if (!defined("REWARDER_API_URL")) define("REWARDER_API_URL", "https://dev.sendlove.us/rewarder/api.php");
 if (!defined("REWARDER_API_KEY")) define("REWARDER_API_KEY", "dhfsfdhgdhsfg7g5fyg73ff23545f32fwd");
 
+// key to identificate api users
+if (!defined("API_KEY"))    define("API_KEY", "08aaa337ac04179120f8dc88c55dd1ad");
+
 // Refresh interval for ajax updates of the history table (in seconds)
-if (!defined('AJAX_REFRESH'))   define('AJAX_REFRESH', 30);
+if (!defined('AJAX_REFRESH'))   define('AJAX_REFRESH', 120);
 
 //pagination vars
 if (!defined('QS_VAR'))         define('QS_VAR', 'page');
@@ -157,3 +169,7 @@ $config = array(
 );
 // New config object, allows additional merging
 Zend_Registry::set('config', new Zend_Config($config, true));
+// Database Connection Establishment String
+mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
+// Database Selection String
+mysql_select_db(DB_NAME);

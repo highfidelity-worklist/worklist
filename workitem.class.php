@@ -308,8 +308,12 @@ WHERE id = ' . (int)$id;
 
     public function save()
     {
-        if ($this->idExists($this->getId())) {
-            return $this->update();
+        if(isset($this->id)){
+            if ($this->idExists($this->getId())) {
+                return $this->update();
+            } else {
+                return $this->insert();
+            }
         } else {
             return $this->insert();
         }

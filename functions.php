@@ -85,6 +85,21 @@ function initSessionData($user) {
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
 }
 
+function initUserById($userid) {
+    $res = mysql_query("select * from ".USERS." where id='".mysql_real_escape_string($userid)."'");
+    $user_row = (($res) ? mysql_fetch_assoc($res) : null);
+    if (empty($user_row)) return;
+
+    $_SESSION['username']           = $user_row['username'];
+    $_SESSION['userid']             = $user_row['id'];
+    $_SESSION['confirm_string']     = $user_row['confirm_string'];
+    $_SESSION['nickname']           = $user_row['nickname'];
+    $_SESSION['timezone']           = $user_row['timezone'];
+    $_SESSION['is_runner']          = intval($user_row['is_runner']);
+    $_SESSION['is_payer']           = intval($user_row['is_payer']);
+    $_SESSION['is_auditor']         = intval($user_row['is_auditor']);
+}
+
 function isEnabled($features) {
     if (empty($_SESSION['features']) || ($_SESSION['features'] & $features) != $features) {
         return false;
