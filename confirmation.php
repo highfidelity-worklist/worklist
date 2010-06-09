@@ -10,6 +10,7 @@ include("config.php");
 include("class.session_handler.php");
 include_once("send_email.php");
 include_once("functions.php");
+require 'class/CURLHandler.php';
 
 $msg="";
 $to=1;
@@ -19,14 +20,22 @@ mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME);
 
 if(isset($_REQUEST['str'])) {
-	$res=mysql_query("select * from ".USERS." where username ='".mysql_real_escape_string(base64_decode($_REQUEST['str']))."' and confirm_string='".mysql_real_escape_string($_REQUEST['cs'])."'");
+	$res=mysql_query("select * from ".USERS." where username ='".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'");
 	if(mysql_num_rows($res) == 0) {
 		header("Location:login.php");
 		exit;
 	} else {
-		$row=mysql_fetch_array($res);
-		mysql_query("UPDATE ".USERS." SET confirm = 1 WHERE id = ".$row['id'].";");
-
+	    $data = array("username" => base64_decode($_REQUEST['str']), "token" => $_REQUEST['cs']);
+      ob_start();
+      CURLHandler::doRequest("POST", LOGIN_APP_URL . "confirm", $data);
+      $result = ob_get_contents();
+      ob_end_clean();
+      $result = json_decode($result);
+      if($result->error == 1){
+          die($result->message);
+      }
+      $sql = "UPDATE ".USERS." SET added = 'NOW()', confirm = 1, is_active = 1 WHERE username = '".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'";
+      mysql_query($sql);
 		if (REQUIRELOGINAFTERCONFIRM) {
 		    session::init(); // User must log in AFTER confirming (they're not allowed to before)
 		} else {

@@ -74,7 +74,6 @@ if(isset($minimal_POST['sign_up'])){
     require_once ("class/Utils.class.php");
     require_once ("class/CURLHandler.php");
     $error = new Error();
-    die(var_dump($error));
     if(empty($username) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword']))){
         $error->setError("Please fill all required fields.");
     }
@@ -108,15 +107,19 @@ if(isset($minimal_POST['sign_up'])){
         $result = ob_get_contents();
         ob_end_clean();
         $ret = json_decode($result);
+        
         if($ret->error == 1){
             $error->setError($ret->message);
         }else{
-            $newUser = array("id" => $ret->id);
-            foreach($minimal_POST as $key => $value){
+            $newUser = array();
+            foreach($_POST as $key => $value){
                 if(Utils::registerKey($key)){
                     $newUser[$key] = $value;
                 }
             }
+            $newUser["id"] = $ret->id;
+            $newUser["username"] = $ret->username;
+            $newUser["nickname"] = $ret->nickname;
             $sql = "INSERT INTO ".USERS." ";
             $columns = "(";
             $values = "VALUES(";
@@ -129,21 +132,19 @@ if(isset($minimal_POST['sign_up'])){
             $values = substr($values,0,(strlen($values)-1));
             $values .= ")";
             $sql .= $columns." ".$values;
-            die(var_dump($sql));
             $res = mysql_query($sql);
             $user_id = mysql_insert_id();
-            $to = $username;
             // Email user
             $subject = "LoveMachine Worklist Registration Confirmation";
-            $link = SECURE_SERVER_URL . "confirmation.php?cs=${values_for_db['confirm_string']}&str=" . base64_encode($username);
+            $link = SECURE_SERVER_URL . "confirmation.php?cs=".$ret->confirm_string."&str=" . base64_encode($ret->username);
             $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
-            $body .= "<p><a href=\"$link\">Click here to verify your email address and activate your account.</a></p>";
+            $body .= "<p><a href=\"".$link."\">Click here to verify your email address and activate your account.</a></p>";
             $body .= "<p>Love,<br/>The LoveMachine</p>";
             $plain = "You are only one click away from completing your registration!\n\n";
             $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
-            $plain .= "    ${link}\n\n";
+            $plain .= ${link}."\n\n";
             $plain .= "Love,\n\nThe LoveMachine</p>";
-            sl_send_email($to, $subject, $body, $plain);
+            sl_send_email($ret->username, $subject, $body, $plain);
             
             $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
         }
@@ -176,8 +177,15 @@ include("head.html");
 <title>Worklist | Sign Up to the Worklist</title>
 </head>
 
-<body
-	<?php if(!empty($username)) { if($to == $username) echo "onload=\"openbox('Signup Confirmation', 1)\"";} ?>>
+<?php if(isset($error)){?>
+<?php if($error->getErrorFlag() == 1){?>
+<body>
+<?php } else {?>
+<body onload="openbox('Signup Confirmation', 1)">
+<?php }?>
+<?php } else {?>
+<body>
+<?php }?>
 
 <?php include("format.php"); ?>
 
@@ -194,11 +202,11 @@ include("head.html");
 <!-- Light Box Code End -->
 
 <h1>Create a New Account</h1>
-            
-    <?php if(!empty($msg)) { ?>
-            <p class="LV_invalid"><?php echo $msg; ?></p>
-    <?php } ?>
-            
+     <?php if(isset($error)): ?>
+            <?php foreach($error->getErrorMessage() as $msg):?>
+              <p class="LV_invalid"><?php echo $msg; ?></p>
+            <?php endforeach;?>
+        <?php endif; ?>       
         <form action="" name="signup" method="post">
         <?php echo(($authtype === 'openid') ? '<input type="hidden" name="openid" value="' . rawurldecode($_GET['id']) . '" />' : '');?>
      <!-- Column containing left part of the fields -->

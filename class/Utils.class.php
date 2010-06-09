@@ -1,7 +1,7 @@
 <?php
 
 class Utils{
-    static $keys = array(
+    public static $keys = array(
         "about",
         "contactway",
         "payway",
@@ -18,7 +18,7 @@ class Utils{
         "findus",
         "int_code"
     );
-    static function registerKey($key){
-        return in_array($key, Utils::keys);
+    public static function registerKey($key){
+        return in_array($key, self::$keys);
     }
 }
