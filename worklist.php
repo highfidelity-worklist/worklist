@@ -1036,9 +1036,18 @@ include("head.html"); ?>
 
 				// the scroll handler so our new listelement will stay on the bottom
 				o.list.scroll(function() {
-					li.css('top', ($(this).scrollTop() + 180) + 'px');
+					/**
+					 * With a move of 180, the position is too far, and the scroll never ends.
+					 * The calculation has been made using heights of the elements but it doesn't work on MAC/Firefox (still some px too far, border size ??)
+					 * The value has been fixed to 178 under MAC and calculated on other platforms (coder with a MAC could investigate this)
+					 * 8-JUNE-2010 <vincent> - Ticket #11458		
+					 */
+					if (navigator.platform.indexOf("Mac") == 0) {
+						li.css('top', ($(this).scrollTop() + 178) + 'px');
+					} else {
+						li.css('top', ($(this).scrollTop() + $(this).height() - li.outerHeight(true)) + 'px');
+					}
 				});
-
 				// now we append the list element to the list
 				o.list.append($('<li>&nbsp</li>'));
 				o.list.append(li);
