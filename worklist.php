@@ -332,7 +332,7 @@ include("head.html"); ?>
 		GetWorklist(1,false);
 	}
     function GetWorklist(npage, update, reload) {
-		loaderImg.show("loadRunning","Loading, please wait ...");
+		//loaderImg.show("loadRunning","Loading, please wait ...");
 		$.ajax({
 			type: "POST",
 			url: 'getworklist.php',
