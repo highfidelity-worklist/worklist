@@ -10,7 +10,6 @@
 ob_start();
 include("config.php");
 include("class.session_handler.php");
-include("check_session.php");
 include("functions.php");
 include("timezones.php");
 include("countrylist.php");
@@ -24,7 +23,6 @@ if (!$rs || !($userInfo = mysql_fetch_array($rs))) {
     session::init();
     header("Location:login.php");
 }
-
 $msg="";
 $company="";
 

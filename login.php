@@ -46,11 +46,11 @@ if($_POST) {
                 $id = $ret->userid;
                 $username = $ret->username;
                 $nickname = $ret->nickname;
+                initUserById($id);
                 $_SESSION["userid"] = $id;
                 $_SESSION["username"] = $username;
                 $_SESSION["nickname"] = $nickname;
-                initUserById($id);
-                
+                $_SESSION["confirm_string"] = $ret->confirm_string;
                 // notifying other applications
                 $response = new Response();
                 $login = new Login();
