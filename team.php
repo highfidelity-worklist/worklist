@@ -206,6 +206,7 @@ include("head.html");
         if (odd) { row += 'rowodd' } else { row += 'roweven' }
         row += ' useritem-' + json.id + '">';
         row += '<td class = "name-col">' + json.nickname + '</td>';
+		row += '<td>' + json.joined + '</td>';
 	var is_runner = '';
 	if(json.is_runner == "1"){
 	    is_runner = 'Yes';
@@ -255,7 +256,7 @@ include("head.html");
             <div>
                 <h1 style="float:left;margin-left:24px">Team Members</h1>
                 <div style="float:right;line-height:29px;margin-right:24px">
-					<input type="checkbox" name="filter_last45" onclick="javascript:ShowActive()" checked="true">Active users only</input>
+					<input type="checkbox" name="filter_last45" onClick="javascript:ShowActive()" checked="true">Active users only</input>
                     <select style="margin-left:20px;" id="sfilter" name="sfilter">
                         <option value="TOTAL">TOTAL</option>
                         <option value="PAID" selected>PAID</option>
@@ -273,6 +274,7 @@ include("head.html");
         <thead>
         <tr class="table-hdng">
             <th class = "sort {sortkey: 'nickname'}">Nickname<div class = "arrow"><div/></th>
+			<th class = "sort {sortkey: 'added'}">Joined<div class = "arrow"><div/></th>
             <th class = "sort {sortkey: 'is_runner'}">Runner<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'mechanic_count'}">Mechanic<div class = "arrow"><div/></th>
