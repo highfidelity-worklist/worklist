@@ -5,56 +5,38 @@
 //  http://www.lovemachineinc.com
 //
 include("config.php");
-//include("class.session_handler.php");
+require_once("class/CURLHandler.php");
 include_once("send_email.php");
 include_once("functions.php");
 
 $msg="";
-// Database Connection Establishment String
-mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
-// Database Selection String
-mysql_select_db(DB_NAME);
-///Connect Via facebook and already Registered
+if (!empty($_POST['submit'])) {
+  if (!empty($_POST['password'])) {
+    $vars = array(
+      'username' => $_POST['username'],
+      'token' => $_POST['token'], 
+      'password' => $_POST['password']
+    );
+      ob_start();
+      // send the request
+      CURLHandler::Post(LOGIN_APP_URL . 'changepassword', $vars);
+      $result = json_decode(ob_get_contents());
+      ob_end_clean();
+      
+      if ($result->success == true) {
+        sendTemplateEmail($_POST['username'], 'changed_pass', array('app_name' => APP_NAME));
+      header('Location: login.php');
+      } else {
+        $msg = 'The link to reset your password has expired or is invalid. <a href="forgot.php">Please try again.</a>';
+      }
+  } else {
+    $msg = "Please enter a password!";
+  }
+}
 
-//////////new user//////////////
-// Edits By RussellReal:
-// 'CS' = Base64 Encoded USER ID 'STR' = Token
-if (isset($_REQUEST['str']) && isset($_REQUEST['cs'])) {
-	$str = stripslashes($_REQUEST['str']);
-	$cs = stripslashes($_REQUEST['cs']);
-	// if they're both set, go into the query.
-	$q = mysql_query($query = "SELECT id, username
-		FROM ".USERS."
-		WHERE forgot_hash = '".mysql_real_escape_string($str)."'
-		AND id = '".mysql_real_escape_string(base64_decode($cs))."'
-		AND forgot_expire > NOW();");
-	// Check if row returned info, if so set $row to it, then process the else.
-	if (!($row = mysql_fetch_assoc($q))) {
-		die('Oh! This is no place for you!');
-	} else {
-		$id = $row['id'];
-		if (isset($_POST['submit'])) {
-			//using the same query as was already on here
-			if (strlen($_POST['password'])) {
-				mysql_query("UPDATE ".USERS." SET password = '".sha1(mysql_real_escape_string($_POST['password']))."', forgot_hash = 'NULL', forgot_expire = '00/00/00 00:00:00' WHERE id = '$id'");
-				// SEND EMAIL TO CHANGEE
-				$to = $row['username'];
-				$subject = "LoveMachine Password Changed";
-				$body = "<p>Sometimes change is good!</p>";
-				$body .= "<p>You have successfully changed your password with ".APP_NAME."<br/>";
-				$body .= "<p>See you in the Workroom!</p>";
-				$body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
-				sl_send_email($to, $subject, $body);
-				$msg = "Password has been changed!";
-				header('Location: index.php');
-			} else {
-				$msg = "Please give a password!";
-			}
-		}
-	}
-} else {
-	// no required information specified, redirect user
-	header('Location: index.php');
+if (empty($_REQUEST['token'])) {
+  // no required information specified, redirect user
+  header('Location: login.php');
 }
 // END EDITS By RussellReal
 /*********************************** HTML layout begins here  *************************************/
@@ -110,9 +92,8 @@ include("head.html"); ?>
 
   <? if($msg =="") { ?>
 <p><label>Email<br />
-<input type="text" name="username" size="30" value="<?=$row['username']?>" readonly=""></label></p>
-<input type="hidden" name="cs" value="<?=$cs;?>" />
-<input type="hidden" name="str" value="<?=$str;?>" />
+<input type="text" name="username" size="30" value="<?php echo(base64_decode($_REQUEST['un'])); ?>" readonly=""></label></p>
+<input type="hidden" name="token" value="<?php echo($_REQUEST['token']); ?>" />
 <div class="LVspace">
   <p><label>New Password<br />
 <input type="password" name="password" id="password" size="30">

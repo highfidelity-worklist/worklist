@@ -9,6 +9,9 @@ require_once('authmail.php');
 require_once('html2text.inc');
 require_once('smslist.php');
 
+// email templates
+require_once(dirname(__FILE__) . "/email/en.php");
+
 //This is not using akismet any longer and defaults to php built in mechanism that will not work everywhere
 /*  sl_send_email
  * 
@@ -90,5 +93,55 @@ function sl_notify_sms_by_object($user_obj, $smssubject, $smsbody)
 
     send_authmail(array('sender'=>'smsuser', 'server'=>'gmail-ssl-smsuser'),
     					$smsaddr, strip_tags($smssubject), strip_tags($smsbody), '');
+}
+
+/*  sendTemplateEmail - send email using email template
+ *  $template - name of the template to use, for example 'confirmation'
+ *  $data - array of key-value replacements for template
+ */ 
+
+function sendTemplateEmail($to, $template, $data){
+
+    $recipients = is_array($to) ? $to : array($to);
+    global $emailTemplates;
+
+    $replacedTemplate = !empty($data) ?
+                        templateReplace($emailTemplates[$template], $data) :
+                        $emailTemplates[$template];
+
+    $subject = $replacedTemplate['subject'];
+    $html = $replacedTemplate['body'];
+    $plain = isset($replacedTemplate['plain']) ?
+                $replacedTemplate['plain'] :
+                null;
+
+    $result = null;
+    foreach($recipients as $recipient){
+        $result = sl_send_email($recipient, $subject, $html, $plain);
+    }
+
+    return $result;
+}
+
+/* templateReplace - function to replace all occurencies of 
+ * {key} with value from $replacements array
+ * for example: if $replacements is array('nickname' => 'John')
+ * function will replace {nickname} in $templateData array with 'John'
+ */
+
+function templateReplace($templateData, $replacements){
+
+    foreach($templateData as &$templateIndice){
+        foreach($replacements as $find => $replacement){
+
+            $pattern = array(
+                        '/\{' . preg_quote($find) . '\}/',
+                        '/\{' . preg_quote(strtoupper($find)) . '\}/',
+                            );
+            $templateIndice = preg_replace($pattern, $replacement, $templateIndice);
+        }
+    }
+
+    return $templateData;
 }
 
