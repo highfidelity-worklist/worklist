@@ -42,7 +42,7 @@ if( $active == 'FALSE' )	{
 	$rt = mysql_query("
 	SELECT COUNT(*) FROM `users` 
 	LEFT JOIN (SELECT `user_id`,MAX(`date`) AS `date` FROM `".FEES."` GROUP BY `user_id`) AS `dates` ON `".USERS."`.id = `dates`.user_id
-	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `is_active` = 1 AND `nickname` REGEXP '^$letter'");
+	WHERE (`date` > DATE_SUB(NOW(), INTERVAL 45 DAY) OR `added` > DATE_SUB(NOW(), INTERVAL 30 DAY)) AND `is_active` = 1 AND `nickname` REGEXP '^$letter'");
 	
 	$row = mysql_fetch_row($rt);
 	$users = intval($row[0]);
@@ -88,7 +88,7 @@ if( $active == 'FALSE' ) {
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 AND `rewarder`=1 GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`  
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 AND `expense`=0 AND `rewarder`=0 GROUP BY `user_id`) AS `earnings` ON `".USERS."`.`id` = `earnings`.`user_id`  
 	LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 and `expense`=1 GROUP BY `user_id`) AS `expenses_billed` ON `".USERS."`.`id` = `expenses_billed`.`user_id`  
-	WHERE `date` > DATE_SUB(NOW(), INTERVAL 45 DAY) AND `nickname` REGEXP '^$letter' AND `is_active` = 1  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
+	WHERE (`date` > DATE_SUB(NOW(), INTERVAL 45 DAY) OR `added` > DATE_SUB(NOW(), INTERVAL 30 DAY)) AND `nickname` REGEXP '^$letter' AND `is_active` = 1  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }
 
 $rt = mysql_query($query);
