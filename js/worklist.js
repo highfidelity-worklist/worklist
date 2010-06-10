@@ -314,3 +314,82 @@ $(function() {
         });
     }
 });
+
+$(function() {
+		// to add a custom stuff we bind on events
+		$('select[name=user]').bind({
+			'beforeshow newlist': function(e, o) {
+				// now we create a new li element with a checkbox in it
+				var li = $('<li/>').css({
+					left: 0,
+					position: 'absolute',
+					background: '#AAAAAA',
+					width: '123px',
+					top: '180px'
+				});
+				var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
+				var checkbox = $('<input/>').attr({
+					type: 'checkbox',
+					id: 'onlyActive'
+				}).css({
+						margin: 0,
+						position: 'relative',
+						top: '1px'
+				});
+
+				// we need to update the global activeUsersFlag
+				if (activeUsersFlag) {
+					activeUsersFlag = 0;
+					checkbox.attr('checked', true);
+				} else {
+					activeUsersFlag = 1;
+					checkbox.attr('checked', false);
+				}
+
+				label.text(' Active only');
+				label.prepend(checkbox);
+				li.append(label);
+
+				// now we add a function which gets called on click
+				li.click(function(e) {
+					// we hide the list and remove the active state
+					o.list.hide();
+					o.container.removeClass('ui-state-active');
+					// we send an ajax request to get the updated list
+					$.ajax({
+						type: 'POST',
+						url: 'refresh-filter.php',
+						data: {
+							name: filterName,
+							active: activeUsersFlag
+						},
+						dataType: 'json',
+						// on success we update the list
+						success: $.proxy(o.setupNewList, o)
+					});
+					// just to be shure nothing else gets called we return false
+					return false;
+				});
+
+				// the scroll handler so our new listelement will stay on the bottom
+				o.list.scroll(function() {
+					/**
+					 * With a move of 180, the position is too far, and the scroll never ends.
+					 * The calculation has been made using heights of the elements but it doesn't work on MAC/Firefox (still some px too far, border size ??)
+					 * The value has been fixed to 178 under MAC and calculated on other platforms (coder with a MAC could investigate this)
+					 * 8-JUNE-2010 <vincent> - Ticket #11458		
+					 */
+					if (navigator.platform.indexOf("Mac") == 0) {
+						li.css('top', ($(this).scrollTop() + 178) + 'px');
+					} else {
+						li.css('top', ($(this).scrollTop() + $(this).height() - li.outerHeight(true)) + 'px');
+					}
+				});
+				// now we append the list element to the list
+				o.list.append($('<li>&nbsp</li>'));
+				o.list.append(li);
+				o.list.css("z-index","100"); // to be over other elements
+			}
+		}).comboBox();
+
+});

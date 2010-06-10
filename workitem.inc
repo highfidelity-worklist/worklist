@@ -529,7 +529,9 @@ function reply(id) {
 										url: 'jsonserver.php',
 										data: {
 											action: 'changeRunner',
-											userid: <?php echo($user_id); ?>,
+//	to avoid script loading error when not logged
+//											userid: <?php echo($user_id); ?>,
+											userid: <?php echo(!empty($user_id) ? $user_id : "''"); ?>,
 											runner: $('form span.changeRunner select[name=runner]').val(),
 											workitem: <?php echo($worklist_id); ?>
 										},

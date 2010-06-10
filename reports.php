@@ -93,9 +93,16 @@ width:8em;
 #search-filter-section {
 list-style:none;
 margin-bottom:1em;
+background-color: #FFFFDD;
+border: 2px solid #DCD998;
+-moz-box-sizing:none;
 }
 #search-filter-section table, #search-filter-section table td #search-filter-section table th{
 border: none;
+}
+
+#search-filter-section td, #search-filter-section th {
+	border: none;
 }
 
 td.redtext {
@@ -467,37 +474,41 @@ function loadTimelineChart() {
             return false;
         });
 
-	$('.text-field-sm').datepicker({
-		changeMonth: true,
-		changeYear: true,
-		maxDate: 0,
-		showOn: 'button',
-		dateFormat: 'mm/dd/yy',
-		buttonImage: 'images/Calendar.gif',
-		buttonImageOnly: true
-	});
+		$('.text-field-sm').datepicker({
+			changeMonth: true,
+			changeYear: true,
+			maxDate: 0,
+			showOn: 'button',
+			dateFormat: 'mm/dd/yy',
+			buttonImage: 'images/Calendar.gif',
+			buttonImageOnly: true
+		});
 
-	$('#refreshReport').click(function() {
-        paid_list = [];
-	    if (timeoutId) clearTimeout(timeoutId);
-	    _fromDate = $("#start-date").datepicker('getDate');
-	    _toDate = $("#end-date").datepicker('getDate');
-	    if(_fromDate != null) {
-		    fromDate = fmtDate(_fromDate);
-	    }
-	    if(_toDate != null) {
-		    toDate = fmtDate(_toDate);
-	    }
-	    if(currentTab == 0) {
-	      location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
-	    } else {
-	      location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
-	    }
-	});
+		$('#refreshReport').click(function() {
+			paid_list = [];
+			if (timeoutId) clearTimeout(timeoutId);
+			_fromDate = $("#start-date").datepicker('getDate');
+			_toDate = $("#end-date").datepicker('getDate');
+			if(_fromDate != null) {
+				fromDate = fmtDate(_fromDate);
+			}
+			if(_toDate != null) {
+				toDate = fmtDate(_toDate);
+			}
+			if(currentTab == 0) {
+			  location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+			} else {
+			  location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+			}
+		});
 
-    $('#tabs').tabs('select', currentTab);
+		$('#tabs').tabs('select', currentTab);
 
-    });
+ 		$('#type-status,#paid-status,#sort-by,select[name=status]').bind({
+			'beforeshow newlist': function(e, o) {
+				o.list.css("z-index","100")
+			}}).comboBox();
+   });
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 
@@ -523,27 +534,38 @@ function loadTimelineChart() {
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
 	  <tr>
-	    <td><div style="float:left;">Payee: </div><?php echo $filter->getUserSelectbox(); ?></td>
-	    <td style="text-align: right;">Paid Status: 
+	    <td><div >Payee: </div>
+			<div class="second-line">
+			<?php echo $filter->getUserSelectbox(); ?>
+			</div>
+			</td>
+	    <td style="text-align: right;">
+			<div>Paid Status: 
 	      <select id="paid-status" >
 		    <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
 		    <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
 		    <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
 	      </select>
-	      <br />
-        Type:
-        <select id="type-status">
-            <option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
-            <option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
-            <option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
-            <option value="Rewarder"<?php echo(($filter->getType() == 'Rewarder') ? ' selected="selected"' : ''); ?>>Rewarder</option>
-        </select>
+	      </div>
+		  <div class="second-line">
+			Type:
+			<select id="type-status">
+				<option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
+				<option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
+				<option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
+				<option value="Rewarder"<?php echo(($filter->getType() == 'Rewarder') ? ' selected="selected"' : ''); ?>>Rewarder</option>
+			</select>
+			</div>
 	    </td>
-	    <td style="text-align: right;">Item status: <?php echo $filter->getStatusSelectbox(); ?><br/>Order:
+	    <td style="text-align: right;">
+			<div>Item status: <?php echo $filter->getStatusSelectbox(); ?>
+			</div>
+			<div class="second-line">Order:
             <select id="sort-by">
                 <option value="name"<?php echo(($filter->getOrder() == 'name') ? ' selected="selected"' : ''); ?>>Alphabetically</option>
                 <option value="date"<?php echo(($filter->getOrder() == 'date') ? ' selected="selected"' : ''); ?>>Chronologically</option>
             </select>
+			</div>
         </td>
 	   </tr>
 	  <tr>

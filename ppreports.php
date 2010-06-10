@@ -55,8 +55,10 @@ include("head.html"); ?>
     </div>
     <div id="pp-filter-box">
         <div id="pp-filter-rrbox">
+			<div>
             Job ID # <input type="textbox" name="job_id" id="job_id"></input>
-            <br/>
+            </div>
+			<div style="margin-top:5px;">
             Status
             <select id="filter_status">
                 <option value="ALL">ALL</option>
@@ -65,26 +67,29 @@ include("head.html"); ?>
                 <option value="Reversed">Reversed</option>
                 <option value="Unclaimed">Unclaimed</option>
             </select>
-            <br/>
+            </div>
             <input style="margin-top:12px;" type="submit" value="Refresh" id="refreshReport"></input>
         </div>
         <div id="pp-filter-rbox">
-            Date period
+ 			<div>
+           Date period
 	        From <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="<?php echo date("m/d/Y",strtotime('-2 weeks', time())); ?>" title="Start Date" size="20" />
-	        <br/>
+			</div>
+			<div style="margin-top:4px;">
 	        To <input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo date("m/d/Y",time()); ?>" title="End Date" size="20" />
-        </div>
+ 			</div>
+       </div>
         <div id="pp-filter-lbox">
-            <div style="float:left; margin-right:15px;">
+            <div style=" margin-right:15px;">
                 <h3 style="margin-bottom:3px;">Filter results based on:</h3>
-	            <span>User </span>
+	            
             </div>
-            <div style="float:right; margin-top:20px;"><?php echo $filter->getUserSelectbox(); ?></div>
-            <br/>
-            <div style="clear:both;"></div>
-            <div style="float:right;">
-                <span style="float:left; margin-right:15px;">Sort by </span> 
-	            <select style="float:right;" id="sort">
+			<div style="float:right;">
+			User <?php echo $filter->getUserSelectbox(); ?>
+            </div>
+
+            <div style="clear:both;float:right;margin-top:10px;">
+                Sort by <select style="" id="sort">
 	                <option value="Alpha">Alphabetically</option>
 	                <option value="Chrono">Chronologically</option>
 	            </select>
@@ -399,7 +404,9 @@ include("head.html"); ?>
             if (timeoutId) clearTimeout(timeoutId);
             GetReport(page);
         });
-	});
+		$('#sort, #filter_status').comboBox();
+
+		});
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
