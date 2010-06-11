@@ -24,9 +24,36 @@ if(! isset($_REQUEST["api_key"])){
         case 'pushVerifyUser':
             pushVerifyUser();
             break;
+        case 'login':
+            loginUserIntoSession();
+            break;
         default:
             die("Invalid action.");
     }
+}
+
+/*
+* Setting session variables for the user so he is logged in
+*/
+function loginUserIntoSession(){
+
+    $user_id = intval($_REQUEST['user_id']);
+    $session_id = $_REQUEST['session_id'];
+
+    // getting user data from database
+    $sql = "SELECT `username`, `nickname` FROM " . USERS . " WHERE `id`=" . $user_id;
+    $result = mysql_query($sql);
+    if($result && $user = mysql_fetch_object($result)){
+        $username = $user->username;
+        $nickname = $user->nickname;
+    }
+
+    session_id($session_id);
+    session::init();
+    $_SESSION["userid"] = $user_id;
+
+    $_SESSION["username"] = $username;
+    $_SESSION["nickname"] = $nickname;
 }
 
 function updateuser(){
