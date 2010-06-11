@@ -1,5 +1,6 @@
 <?php
 require_once ('config.php');
+require('class/Session.class.php');
 
 if(! isset($_REQUEST["api_key"])){
     die("No api key defined.");
