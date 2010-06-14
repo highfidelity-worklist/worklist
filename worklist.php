@@ -202,7 +202,7 @@ include("head.html"); ?>
 		if(user_id == json[9]){ //is the same person who created the work item
 		  row += ' rowown';
 		}
-        
+
         // highlight jobs I bid on in a different color
         if (json[15] == 1) { //user bid on this task
             row += ' rowbidon';
@@ -338,7 +338,7 @@ include("head.html"); ?>
 		GetWorklist(1,false);
 	}
     function GetWorklist(npage, update, reload) {
-		//loaderImg.show("loadRunning","Loading, please wait ...");
+		loaderImg.show("loadRunning","Loading, please wait ...");
 		$.ajax({
 			type: "POST",
 			url: 'getworklist.php',
@@ -436,8 +436,10 @@ include("head.html"); ?>
 			error: function(xhdr, status, err) {
 				$('.row-worklist-live').remove();
 				$('.table-worklist').append('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
+// 				Ticket #11560, hide the waiting message as soon as there is an error
+				loaderImg.hide("loadRunning");
 				$('#again').click(function(){
-					loaderImg.hide("loadRunning");
+//					loaderImg.hide("loadRunning");
 					if (timeoutId) clearTimeout(timeoutId);
 					GetWorklist(page, false);
 					e.stopPropagation();
