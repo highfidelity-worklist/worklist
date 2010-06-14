@@ -202,6 +202,12 @@ include("head.html"); ?>
 		if(user_id == json[9]){ //is the same person who created the work item
 		  row += ' rowown';
 		}
+        
+        // highlight jobs I bid on in a different color
+        if (json[15] == 1) { //user bid on this task
+            row += ' rowbidon';
+        }
+
         row += '">';
         if (prepend) {
 			pre = '<div class="slideDown" style="display:none">';

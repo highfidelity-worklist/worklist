@@ -194,6 +194,12 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
            (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
            WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
 
+// Highlight jobs I bid on in a different color
+// 14-JUN-2010 <Tom>
+if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && ($_SESSION['userid'] != 0)) {
+    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid'].") AS `bid_on`";
+}
+
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
           LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
@@ -240,6 +246,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         12 => $row['comments'],
         13 => $row['runner_id'],
         14 => $row['mechanic_id'],
+        15 => (!empty($row['bid_on']) ? $row['bid_on'] : 0)
 	);
 }
 
