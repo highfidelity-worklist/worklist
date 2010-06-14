@@ -146,7 +146,9 @@ include("head.html"); ?>
     var workitems;
 	var dirDiv;
 	var dirImg;
-    var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
+// Ticket #11517, replace all the "isset($_SESSION['userid']) ..."  by a call to "getSessionUserId"
+//   var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
+    var user_id = <?php echo getSessionUserId(); ?>;
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
     var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
@@ -438,7 +440,9 @@ include("head.html"); ?>
 				$('.table-worklist').append('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
 // 				Ticket #11560, hide the waiting message as soon as there is an error
 				loaderImg.hide("loadRunning");
-				$('#again').click(function(){
+// 				Ticket #11596, fix done with 11517
+//				$('#again').click(function(){
+				$('#again').click(function(e){
 //					loaderImg.hide("loadRunning");
 					if (timeoutId) clearTimeout(timeoutId);
 					GetWorklist(page, false);
@@ -524,8 +528,9 @@ include("head.html"); ?>
 
 				/* Output the bidlist rows. */
 				var odd = topIsOdd;
-				for (var i = 1; i < json.length; i++) {
-					if (json[i].bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"){
+				for (var i = 1; i < json.length; i++) {		
+//					if (json[i].bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"){
+					if (json[i].bidder_id == "<?php echo getSessionUserId(); ?>"){
 						already_bid = true;
 					}
 					AppendBidRow(json[i], odd);
@@ -558,9 +563,11 @@ include("head.html"); ?>
 							  ['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 							  ['span', '#info-notes', 'json.notes', 'eval'] ],
 							function(json) {
-								if (is_runner==1 || runner_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>")
+//								if (is_runner==1 || runner_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>")
+								if (is_runner==1 || runner_id == "<?php echo getSessionUserId(); ?>")
 									$('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
-								if (is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
+//								if (is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
+								if (is_runner==1 || (json.bidder_id == "<?php echo getSessionUserId(); ?>"))
 									$('#popup-bid-info form').append('<input type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
 							});
 
