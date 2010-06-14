@@ -90,7 +90,7 @@ $qcnt  = "SELECT count(*)";
 $qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,  `worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` as paypal";
 $qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
 $qbody = " FROM `".FEES."`
-           INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
+           INNER JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
            LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
            WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
 $qorder = "$orderby, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";

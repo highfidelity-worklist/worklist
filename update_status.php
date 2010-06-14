@@ -42,7 +42,7 @@ function update_status($status = ""){
 	mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 	mysql_select_db(DB_NAME);
 	// Insert new status to the database
-	$insert = "INSERT INTO user_status(id, status, timeplaced) VALUES(" . $_SESSION['userid'] . ", '" .  mysql_real_escape_string($status) . "', NOW())";
+	$insert = "INSERT INTO ".USER_STATUS."(id, status, timeplaced) VALUES(" . $_SESSION['userid'] . ", '" .  mysql_real_escape_string($status) . "', NOW())";
 	
 	mysql_query($insert);
 	
@@ -65,7 +65,7 @@ function get_status($as_string = true){
 	$connection = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 	mysql_select_db(DB_NAME,$connection);	
 	
-	$select = "SELECT status, timeplaced FROM user_status WHERE id=" . $_SESSION['userid'] . " ORDER BY timeplaced DESC LIMIT 1";
+	$select = "SELECT status, timeplaced FROM ".USER_STATUS." WHERE id=" . $_SESSION['userid'] . " ORDER BY timeplaced DESC LIMIT 1";
 	
 
 	$res = mysql_query($select, $connection);

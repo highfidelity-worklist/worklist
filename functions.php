@@ -261,7 +261,7 @@ function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
         $extra = "";
     }
 
-    $rt = mysql_query("SELECT `id`, `nickname` $extra  FROM `users` WHERE `id`!='{$userid}' AND `confirm`='1' AND `is_active` = 1 ORDER BY `nickname`");
+    $rt = mysql_query("SELECT `id`, `nickname` $extra  FROM `".USERS."` WHERE `id`!='{$userid}' AND `confirm`='1' AND `is_active` = 1 ORDER BY `nickname`");
 
     $userList = array();
     if (!$skipUser && !empty($userid) && !empty($nickname)) {

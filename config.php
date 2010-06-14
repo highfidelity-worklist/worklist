@@ -52,6 +52,7 @@ if (!defined('BIDS'))		    define('BIDS', 'bids');
 if (!defined('FEES'))		    define('FEES', 'fees');
 if (!defined('FILES'))		    define('FILES', 'files');
 if (!defined('COMMENTS'))	    define('COMMENTS', 'comments');
+if (!defined('USER_STATUS'))	    define('USER_STATUS', 'user_status');
 if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
 if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');

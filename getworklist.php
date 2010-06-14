@@ -113,7 +113,7 @@ if($query!='' && $query!='Search...') {
             $item = mysql_escape_string($item);
             $where.=" AND ( MATCH (summary, `".WORKLIST."`.`notes`) AGAINST ('$item')OR MATCH (`".FEES."`.notes) AGAINST ('$item') OR MATCH (`ru`.`nickname`) AGAINST ('$item') OR MATCH (`cu`.`nickname`) AGAINST ('$item') OR MATCH (`mu`.`nickname`) AGAINST ('$item') OR MATCH (`com`.`comment`) AGAINST ('$item')) ";
         }
-		$commentsjoin = " LEFT OUTER JOIN `comments` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
+		$commentsjoin = " LEFT OUTER JOIN `".COMMENTS."` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
     }
 }
 
@@ -125,7 +125,7 @@ $totals = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_totals` (
 $emptyTotals = 'TRUNCATE `tmp_totals`';
 
 $fillTotals = 'INSERT INTO `tmp_totals`
-               SELECT `worklist_id`, SUM(amount) FROM `fees` WHERE `withdrawn` = 0 GROUP BY `worklist_id`';
+               SELECT `worklist_id`, SUM(amount) FROM `'.FEES.'` WHERE `withdrawn` = 0 GROUP BY `worklist_id`';
 
 mysql_query($totals);
 mysql_query($emptyTotals);
@@ -141,22 +141,22 @@ $emptyLatest = 'TRUNCATE `tmp_latest`';
 $fillLatest = 'INSERT INTO `tmp_latest`
                (SELECT `worklist_id`,
                 MAX(`bid_created`) AS `latest`
-                FROM `bids` WHERE `withdrawn` = 0 GROUP BY `worklist_id`)';
+                FROM `'.BIDS.'` WHERE `withdrawn` = 0 GROUP BY `worklist_id`)';
 
 mysql_query($latest);
 mysql_query($emptyLatest);
 mysql_query($fillLatest);
 
 if($is_runner){
-	$showLatest = 'AND `bids`.`bid_created` = `tmp_latest`.`latest`';
+	$showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
 	if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-		$showLatest = 'AND (`bids`.`bid_created` = `tmp_latest`.`latest` OR `bids`.`bidder_id` = '.$ufilter.')';
+		$showLatest = 'AND (`'.BIDS.'`.`bid_created` = `tmp_latest`.`latest` OR `'.BIDS.'`.`bidder_id` = '.$ufilter.')';
 	}
 }
 else{
-	$showLatest = 'AND `bids`.`bid_created` = `tmp_latest`.`latest`';
+	$showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
 	if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-		$showLatest = 'AND `bids`.`bidder_id` = ' . $ufilter;
+		$showLatest = 'AND `'.BIDS.'`.`bidder_id` = ' . $ufilter;
 	}
 }
 $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
@@ -168,11 +168,11 @@ $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
 $emptyBids = 'TRUNCATE `tmp_bids`';
 
 $fillBids = "INSERT INTO `tmp_bids`
-             SELECT `bids`.`worklist_id`,`bids`.`bid_amount`,`bids`.`bidder_id`
-             FROM `bids`, `tmp_latest`
-             WHERE `bids`.`worklist_id` = `tmp_latest`.`worklist_id`
+             SELECT `".BIDS."`.`worklist_id`,`".BIDS."`.`bid_amount`,`".BIDS."`.`bidder_id`
+             FROM `".BIDS."`, `tmp_latest`
+             WHERE `".BIDS."`.`worklist_id` = `tmp_latest`.`worklist_id`
               $showLatest
-              AND (`bids`.`withdrawn` = 0)";
+              AND (`".BIDS."`.`withdrawn` = 0)";
 
 mysql_query($bids);
 mysql_query($emptyBids);
@@ -203,7 +203,7 @@ if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && ($_SESSION['userid'] !=
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
           LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
-          LEFT JOIN `".FEES."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
+          LEFT JOIN `".FEES."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
 		  $commentsjoin
 		  LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
           LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`

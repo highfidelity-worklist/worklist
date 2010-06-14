@@ -56,7 +56,7 @@ switch ($action)
     case 'confirm':
     $fees_csv = implode(',', $_POST["payfee"]);
     //pull list of payees from db based on the time span
-        $group_payees_sql = "SELECT sum(f.amount) as total_amount, u.id AS mechanic_id, u.nickname AS mechanic_nick, u.paypal_email AS mechanic_paypal_email, wl.summary AS worklist_item FROM (fees f LEFT JOIN users u ON f.user_id = u.id) LEFT JOIN worklist wl ON f.worklist_id = wl.id WHERE wl.status = 'DONE' AND f.paid = '0' AND f.withdrawn = '0' AND f.amount > 0 AND u.paypal = '1' GROUP BY f.user_id ORDER BY u.id";
+        $group_payees_sql = "SELECT sum(f.amount) as total_amount, u.id AS mechanic_id, u.nickname AS mechanic_nick, u.paypal_email AS mechanic_paypal_email, wl.summary AS worklist_item FROM (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id) LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id WHERE wl.status = 'DONE' AND f.paid = '0' AND f.withdrawn = '0' AND f.amount > 0 AND u.paypal = '1' GROUP BY f.user_id ORDER BY u.id";
         $payee_group_query = mysql_query($group_payees_sql);
     break; 
     
@@ -69,7 +69,7 @@ switch ($action)
     //Get fee information for paypal transaction 
     $num_fees = count($_POST["payfee"]);
     $fees_csv = implode(',', $_POST["payfee"]);
-    $fees_info_sql = 'SELECT f.id AS fee_id, f.amount AS amount, f.worklist_id AS worklist_id, u.id AS mechanic_id, u.nickname AS mechanic_nick, u.paypal_email AS mechanic_paypal_email, wl.summary AS worklist_item FROM (fees f LEFT JOIN users u ON f.user_id = u.id) LEFT JOIN worklist wl ON f.worklist_id = wl.id WHERE f.id in ('.$fees_csv.')';
+    $fees_info_sql = 'SELECT f.id AS fee_id, f.amount AS amount, f.worklist_id AS worklist_id, u.id AS mechanic_id, u.nickname AS mechanic_nick, u.paypal_email AS mechanic_paypal_email, wl.summary AS worklist_item FROM ('.FEES.' f LEFT JOIN '.USERS.' u ON f.user_id = u.id) LEFT JOIN '.WORKLIST.' wl ON f.worklist_id = wl.id WHERE f.id in ('.$fees_csv.')';
     $fees_info_results = mysql_query($fees_info_sql);
 
     // Set request-specific fields.
@@ -126,7 +126,7 @@ switch ($action)
     
     default:
     //pull list of payees from db based on the time span
-        $group_payees_sql = "SELECT sum(f.amount) as total_amount, u.id AS mechanic_id, u.nickname AS mechanic_nick, u.paypal_email AS mechanic_paypal_email FROM (fees f LEFT JOIN users u ON f.user_id = u.id)  LEFT JOIN worklist wl ON f.worklist_id = wl.id WHERE wl.status = 'DONE' AND f.paid = '0' AND f.withdrawn = '0' AND f.amount > 0 AND u.paypal = '1' GROUP BY f.user_id"; 
+        $group_payees_sql = "SELECT sum(f.amount) as total_amount, u.id AS mechanic_id, u.nickname AS mechanic_nick, u.paypal_email AS mechanic_paypal_email FROM (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id)  LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id WHERE wl.status = 'DONE' AND f.paid = '0' AND f.withdrawn = '0' AND f.amount > 0 AND u.paypal = '1' GROUP BY f.user_id"; 
         $payee_group_query = mysql_query($group_payees_sql);
     break;
 }
@@ -193,7 +193,7 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
     echo '<td align="right" onclick="toggleBox(\'payfee'.$payees["mechanic_id"].'\')">'.$payees["total_amount"].'</td>';
     echo '<td>&nbsp;</td></tr></tbody>'; 
     echo "\r\n"; //added \r\n to make output code modestly presentable
-    $ind_sql = "SELECT f.* FROM (fees f LEFT JOIN users u ON f.user_id = u.id)  LEFT JOIN worklist wl ON f.worklist_id = wl.id WHERE wl.status = 'DONE' AND f.paid = '0' AND f.withdrawn = '0' AND u.paypal = '1' AND f.amount > 0 AND f.user_id = '".$payees["mechanic_id"]."'";
+    $ind_sql = "SELECT f.* FROM (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id)  LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id WHERE wl.status = 'DONE' AND f.paid = '0' AND f.withdrawn = '0' AND u.paypal = '1' AND f.amount > 0 AND f.user_id = '".$payees["mechanic_id"]."'";
     $ind_query = mysql_query($ind_sql);
     if (mysql_num_rows($ind_query) > 0) {
         $fee_rows = '';

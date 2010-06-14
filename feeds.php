@@ -59,8 +59,8 @@ switch ($name) {
 		$description = 'dev.sendlove.us Worklist, highest priority jobs Bidding';
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
-					FROM worklist w
-					JOIN users u1 ON u1.id = w.creator_id AND w.status = 'BIDDING'
+					FROM ".WORKLIST." w
+					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'BIDDING'
 					ORDER BY priority LIMIT 20";
 		break;
 	case 'completed' : 
@@ -70,8 +70,8 @@ switch ($name) {
 		$description = 'dev.sendlove.us Worklist, Most recent completed Jobs';
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
-					FROM worklist w
-					JOIN users u1 ON u1.id = w.creator_id AND w.status = 'DONE'
+					FROM ".WORKLIST." w
+					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'DONE'
 					ORDER BY created DESC LIMIT 20";
 }
 
