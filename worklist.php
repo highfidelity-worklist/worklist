@@ -4,12 +4,12 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-include("config.php");
-include("class.session_handler.php");
-include_once("functions.php");
-include_once("send_email.php");
-include_once("update_status.php");
-include_once("workitem.class.php");
+require_once("config.php");
+require_once("class.session_handler.php");
+require_once("functions.php");
+require_once("send_email.php");
+require_once("update_status.php");
+require_once("workitem.class.php");
 require_once('lib/Agency/Worklist/Filter.php');
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1

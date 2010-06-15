@@ -1,13 +1,12 @@
 <?php
 require_once ('config.php');
-require('class/Session.class.php');
 
 if(! isset($_REQUEST["api_key"])){
     die("No api key defined.");
 } else if(strcmp($_REQUEST["api_key"],API_KEY) != 0)
 {
     die("Wrong api key provided.");
-} else if($_SERVER["https"] != "on"){
+} else if(!isset($_SERVER['HTTPS'])){
     die("Only HTTPS connection is accepted.");
 } else if($_SERVER["REQUEST_METHOD"] != "POST"){
     die("Only POST method is allowed.");
@@ -37,24 +36,18 @@ if(! isset($_REQUEST["api_key"])){
 * Setting session variables for the user so he is logged in
 */
 function loginUserIntoSession(){
-
-    $user_id = intval($_REQUEST['user_id']);
-    $session_id = $_REQUEST['session_id'];
-
-    // getting user data from database
-    $sql = "SELECT `username`, `nickname` FROM " . USERS . " WHERE `id`=" . $user_id;
-    $result = mysql_query($sql);
-    if($result && $user = mysql_fetch_object($result)){
-        $username = $user->username;
-        $nickname = $user->nickname;
-    }
-
-    session_id($session_id);
-    session::init();
-    $_SESSION["userid"] = $user_id;
-
-    $_SESSION["username"] = $username;
-    $_SESSION["nickname"] = $nickname;
+    require_once("class/Database.class.php");
+    $db = new Database();
+    $uid = (int) $_REQUEST['user_id'];
+    $sid = $_REQUEST['session_id'];
+    $expires = time() + SESSION_EXPIRE;
+    $session_data = "userid|s:".strlen($uid).":\"".$uid."\"";
+    $db->insert(WS_SESSIONS, 
+                array("session_id" => $sid, 
+                      "session_expires" => $expires,
+                      "session_data" => $session_data),
+                array("%s","%d","%s")
+                );
 }
 
 function updateuser(){

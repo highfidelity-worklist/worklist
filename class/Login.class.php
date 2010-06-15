@@ -96,7 +96,7 @@ class Login {
             }
         }
     }
-    public function login(){
+    public function loginrequest(){
         if(! isset($_REQUEST["username"])){
             $this->getResponse()->getError()->setError("Username field is missing.");
         }else if(! isset($_REQUEST["password"])){

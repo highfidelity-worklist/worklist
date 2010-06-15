@@ -196,7 +196,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
-if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && ($_SESSION['userid'] != 0)) {
+if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && (isset($_SESSION['userid']))) {
     $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid'].") AS `bid_on`";
 }
 

@@ -8,7 +8,7 @@ if(isset($_REQUEST["action"])){
     $action = $_REQUEST["action"];
     switch($action){
         case "login":
-            $login->login();
+            $login->loginrequest();
             break;
         case "signup":
             $login->signup();

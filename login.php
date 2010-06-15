@@ -10,6 +10,10 @@ if (!empty($_SESSION['username'])) {
      header("Location:worklist.php");
      exit;
 }
+if (!empty($_SESSION['userid'])) {
+     header("Location:worklist.php");
+     exit;
+}
 require_once("functions.php");
 
 // Database Connection Establishment String

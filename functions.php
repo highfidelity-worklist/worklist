@@ -97,7 +97,6 @@ function initUserById($userid) {
     $_SESSION['timezone']           = $user_row['timezone'];
     $_SESSION['is_runner']          = intval($user_row['is_runner']);
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
-    $_SESSION['is_auditor']         = intval($user_row['is_auditor']);
 }
 
 function isEnabled($features) {
