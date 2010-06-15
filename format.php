@@ -44,7 +44,7 @@
 			<a href="<?php echo SERVER_BASE ?>/love/" class="iToolTip menuLove" target="_blank">Love</a> |
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
-			<a href="<?php echo SERVER_BASE ?>/review/" class="iToolTip menuRewarder" target="_blank">Rewarder</a> |
+			<a href="<?php echo SERVER_BASE ?>/love/tofor.php?tab=1" class="iToolTip menuRewarder" target="_blank">Review</a> |
 			<a href="settings.php" class="iToolTip menuSettings">Settings</a>
 			<?php } ?>
 		</div>
