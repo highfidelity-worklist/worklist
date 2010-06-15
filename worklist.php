@@ -22,6 +22,7 @@ $workitem = new WorkItem();
 
 $userId = getSessionUserId();
 if( $userId > 0 )	{
+  initUserById($userId);
 	$user = new User();
 	$user->findUserById( $userId );
 	$nick = $user->getNickname();
