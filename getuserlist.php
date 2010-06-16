@@ -52,7 +52,7 @@ $cPages = ceil($users/$limit);
 
 if( $active == 'FALSE' ) {
 	$query = "
-	SELECT `id`, `nickname`,DATE_FORMAT(`added`, '%m/%d/%Y') AS `joined`, `is_runner`, `budget`,
+	SELECT `id`, `nickname`,DATE_FORMAT(`added`, '%m/%d/%Y') AS `joined`, `annual_salary`, `is_runner`, `budget`,
 	IFNULL(`creators`.`count`,0) AS `created_count`, 
 	IFNULL(`mechanics`.`count`,0) AS `mechanic_count`, 
 	IFNULL(`bids_placed`.`count`,0) AS `bids_placed`, 
@@ -71,7 +71,7 @@ if( $active == 'FALSE' ) {
 	WHERE `nickname` REGEXP '^$letter' AND `is_active` = 1  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }	else if( $active == 'TRUE' )	{
 	$query = "
-	SELECT `id`, `nickname`,DATE_FORMAT(`added`, '%m/%d/%Y') AS `joined`, `is_runner`, `budget`,
+	SELECT `id`, `nickname`,DATE_FORMAT(`added`, '%m/%d/%Y') AS `joined`,`annual_salary`, `is_runner`, `budget`,
 	IFNULL(`creators`.`count`,0) AS `created_count`, 
 	IFNULL(`mechanics`.`count`,0) AS `mechanic_count`, 
 	IFNULL(`bids_placed`.`count`,0) AS `bids_placed`, 

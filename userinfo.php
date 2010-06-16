@@ -19,7 +19,7 @@
         die("You have to be logged in to access user info!");
     }
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-
+	$is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
 
     if (isset($_POST['save_roles']) && $is_runner) { //only runners can change other user's roles info
         $is_runnerSave = isset($_POST['isrunner']) ? 1 : 0;
@@ -34,6 +34,14 @@
         $saveUser->setIs_payer($is_payerSave);
         $saveUser->save();
     }
+    if (isset($_POST['save_salary']) && $is_payer) { //only payers can change other user's roles info
+		$annual_salarySave = mysql_real_escape_string($_POST['annual_salary']);
+        $user_idSaveSalary = intval($_POST['userid']);
+        $saveUserSalary = new User();
+        $saveUserSalary->findUserById($user_idSaveSalary);
+		$saveUserSalary->setAnnual_salary($annual_salarySave);
+        $saveUserSalary->save();
+    }
 
     if (isset($_REQUEST['id'])) {
         $userId = (int)$_REQUEST['id'];
@@ -46,7 +54,10 @@
 
     $user = new User();
     $user->findUserById($userId);
-
+	$Annual_Salary = "";
+	if($user->getAnnual_salary() >0){
+		$Annual_Salary = $user->getAnnual_salary();
+	}
     $userStats = new UserStats($userId);
 
     if($action =='create-sandbox') {

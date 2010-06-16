@@ -4,7 +4,8 @@
         <table id = "user-stats">
             <thead>
                 <tr class = "table-hdng">
-                    <th>Total Jobs</th><th>Active Jobs</th><th>Total $</th><th>Fees (30 days)</th><th>Love</th>
+                    <th>Total Jobs</th><th>Active Jobs</th><th>Total $</th><th>Fees (30 days)</th>
+					<?php if(!empty($Annual_Salary)){?> <th>Salary</th><?php }?><th>Love</th>
                 </tr>
             </thead>
             <tbody>
@@ -13,6 +14,7 @@
                     <td><a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a></td>
                     <td>$<?php echo $userStats->getTotalEarnings(); ?></td>
                     <td><a href = "#" id = "latest-earnings">$<?php echo $userStats->getLatestEarnings(30); ?></a></td>
+					<?php if(!empty($Annual_Salary)){?><td>$<?php echo $Annual_Salary; ?></td><?php }?>
                     <td><a href = "#" id = "love"><?php echo $userStats->getLoveCount(); ?>(<?php echo $userStats->getUniqueLoveCount(); ?>)</a></td>
                 </tr>
             </tbody>

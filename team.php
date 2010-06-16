@@ -213,8 +213,9 @@ include("head.html");
 	}else{
 	    is_runner = 'No';
 	}
-    row += '<td >' + is_runner + '</td>';
-	row += '<td >' + json.created_count + '</td>';
+    row += '<td >$' + json.annual_salary + '</td>';
+	row += '<td >' + is_runner +'</td>';
+	row += '<td >' + json.created_count  +'</td>';
 	row += '<td >' + json.mechanic_count + '</td>';
 	row += '<td >$' + json.budget + '</td>';
 	row += '<td >' + json.bids_accepted + '/' + json.bids_placed + '</td>';
@@ -275,8 +276,9 @@ include("head.html");
         <tr class="table-hdng">
             <th class = "sort {sortkey: 'nickname'}">Nickname<div class = "arrow"><div/></th>
 			<th class = "sort {sortkey: 'added'}">Joined<div class = "arrow"><div/></th>
-            <th class = "sort {sortkey: 'is_runner'}">Runner<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
+            <th class = "sort {sortkey: 'annual_salary'}">Salary<div class = "arrow"><div/></th>
+	    <th class = "sort {sortkey: 'is_runner'}">Runner<div class = "arrow"><div/></th>
+		<th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'mechanic_count'}">Mechanic<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'budget'}">Budget<div class = "arrow"><div/></th>
 	    <th class = "sort {sortkey: 'bids_accepted'}">Bids<div class = "arrow"><div/></th>

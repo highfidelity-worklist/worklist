@@ -40,6 +40,7 @@ class User
 	protected $projects_checkedout;
 	protected $filter;
 	protected $avatar;
+	protected $annual_salary;
     /**
      * With this constructor you can create a user by passing an array.
      *
@@ -491,7 +492,20 @@ class User
 		$this->is_payer = $is_payer;
 		return $this;
 	}
+	/**
+	 * @return the $unixusername
+	 */
+	public function getAnnual_salary() {
+		return $this->annual_salary;
+	}
 
+	/**
+	 * @param $unixusername: unix username to set
+	 */
+	public function setAnnual_salary($annual_salary) {
+		$this->annual_salary = $annual_salary;
+		return $this;
+	}
 	/**
 	 * @return the $journal_nick
 	 */
