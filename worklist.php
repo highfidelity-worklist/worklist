@@ -359,7 +359,7 @@ include("head.html"); ?>
 			success: function(json) {
 				if (json[0] == "redirect") {
 					$("#query").val('');
-					window.location.href = buildHref(json[1], false);
+					window.location.href = buildHref( json[1] );
 					return false;
 				}
 				
@@ -415,7 +415,7 @@ include("head.html"); ?>
 					function() {
 						var selfRow=$(this);
 						$(".taskID,.taskSummary",this).wrap("<a href='" + 
-							buildHref( SetWorkItem(selfRow), (selfRow.hasClass('rowown') || is_runner == 1) ) + 
+							buildHref( SetWorkItem(selfRow) ) + 
 							"'></a>");
 						$(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").click(
 							function() {
@@ -488,12 +488,8 @@ include("head.html"); ?>
         });
     }
 
-    function buildHref(item, edit) {
-		var action = "view";
-		if(edit) {
-			action = "edit";
-		}
-		return "<?php echo SERVER_URL ; ?>workitem.php?job_id="+item+"&action="+action;
+    function buildHref(item ) {
+		return "<?php echo SERVER_URL ; ?>workitem.php?job_id="+item+"&action=view";
     }
 
     function ResetPopup() {

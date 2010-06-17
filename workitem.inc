@@ -25,8 +25,12 @@
     $workitem = WorkItem::getById($worklist['id']);
 
     $allowEdit = false;
+    $classEditable = "";
     if ($is_runner || $creator_id == $user_id || $has_budget) {
         $allowEdit = true;
+        if ($action !="edit") {
+            $classEditable = " editable";
+        }
     }
 
 /*********************************** HTML layout begins here  *************************************/
@@ -475,7 +479,10 @@ function reply(id) {
   }
 
 	$(function()	{
-			   
+		
+        $(".editable").attr("title","Switch to Edit Mode").click( function(){
+            window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
+        });
 		$('#commentZone').css({'opacity':'0'});
 		// Call via Ajax to ping the user in the journal
 		// and in email.
@@ -591,7 +598,7 @@ function reply(id) {
 				<div class="info-ID">
 					<span class="info-label">#</span><?php echo $worklist['id'];?>
 				</div>
-				<span class="info-summ-big-text"><?php echo $worklist['summary'];?></span>
+				<span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
 			</div>
 			<div style="clear:both; width:100%; float:none;"> </div>
 			<div id="left-panel">
@@ -751,7 +758,7 @@ if ($action =="edit"):  ?>
 				<!-- View: Notes textarea -->
 					<li class="last">
 						<span class="info-label">Notes</span>
-                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
+                        <p class="notestext<?php echo $classEditable;?>"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
 						<!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
 					</li>
 				</ul>

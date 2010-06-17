@@ -148,6 +148,14 @@
 	display: none;
 }
  
+.editable:hover{
+    cursor:pointer;
+}
+.editable {
+    color: #375D81;
+
+}
+
 #ping-btn{
 	text-decoration:underline;
 	cursor:pointer;
