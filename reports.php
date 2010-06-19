@@ -8,7 +8,8 @@ ob_start();
 
 include("config.php");
 include("class.session_handler.php");
-#include("check_session.php");
+include("check_session.php");
+include_once("check_new_user.php"); 
 include_once("functions.php");
 include_once("send_email.php");
 include_once("classes/Fee.class.php");

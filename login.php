@@ -6,15 +6,13 @@
 ob_start();
 include("config.php");
 include("class.session_handler.php");
-if (!empty($_SESSION['username'])) {
-     header("Location:worklist.php");
-     exit;
-}
+
 if (!empty($_SESSION['userid'])) {
      header("Location:worklist.php");
      exit;
 }
 require_once("functions.php");
+require_once('class/Utils.class.php');
 
 // Database Connection Establishment String
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
@@ -50,11 +48,8 @@ if($_POST) {
                 $id = $ret->userid;
                 $username = $ret->username;
                 $nickname = $ret->nickname;
-                initUserById($id);
-                $_SESSION["userid"] = $id;
-                $_SESSION["username"] = $username;
-                $_SESSION["nickname"] = $nickname;
-                $_SESSION["confirm_string"] = $ret->confirm_string;
+                $admin = $ret->admin; 
+                Utils::setUserSession($id, $username, $nickname, $admin);
                 // notifying other applications
                 $response = new Response();
                 $login = new Login();
@@ -132,11 +127,11 @@ include("head.html"); ?>
     </div> 
 
     <div id="in-lt">
-        <? if(isset($error)): ?>
-            <?php foreach($error->getErrorMessage() as $msg):?>
+        <?php if(isset($error)){ ?>
+            <?php foreach($error->getErrorMessage() as $msg){ ?>
               <p class="LV_invalid"><?php echo $msg; ?></p>
-            <?php endforeach;?>
-        <? endif; ?>
+            <?php } ?>
+        <?php } ?>
 	<div class="login_left">
 		<form id="login" action="" method="post">
 			<input type="hidden" name="redir" value="<?php echo $redir ?>" />

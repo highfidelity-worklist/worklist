@@ -10,6 +10,7 @@ ob_start();
 include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
+include("check_new_user.php");
 include("functions.php");
 
 $con=mysql_connect( DB_SERVER,DB_USER,DB_PASSWORD );

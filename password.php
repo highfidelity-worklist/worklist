@@ -13,31 +13,31 @@ include("class.session_handler.php");
 include("check_session.php");
 include("functions.php");
 include_once("send_email.php");
+require_once ("class/Utils.class.php");
 
-if($_POST['oldpassword']!="")
+$msg = array();
+if($_POST['oldpassword'] != "")
 {
-    $qry="select id from ".USERS." where username='".mysql_real_escape_string($_SESSION['username'])."' and password='".sha1(mysql_real_escape_string($_POST['oldpassword']))."'";
-    $rs=mysql_query($qry);
-    if(mysql_num_rows($rs) > 0)
-    {
-        if(($_POST['newpassword']!="")&&($_POST['newpassword']==$_POST['confirmpassword']))
-        {
-            $qry="update ".USERS." SET password='".sha1(mysql_real_escape_string($_POST['newpassword']))."' where id='".$_SESSION['userid']."'";
-            mysql_query($qry);
+    if((!empty($_POST['newpassword'])) && ($_POST['newpassword'] == $_POST['confirmpassword'])){
 
-            $msg="Password updated successfully!";
+        $ret = Utils::updateLoginData(array('oldpassword' => $_POST['oldpassword'], 
+                                            'newpassword' => $_POST['newpassword']), false, true);
+        if($ret->error == 1){
+            $msg = $ret->message;
+        }else{
+            $msg[] = "Password updated successfully!";
             $to = $_SESSION['username'];
             $subject = "Password Change";
             $body  = "<p>Congratulations!</p>";
             $body .= "<p>You have successfully updated your password with ".SERVER_NAME.".";
             $body .= "</p><p>Love,<br/>Philip and Ryan</p>";
             sl_send_email($to, $subject, $body);
-        } else {
-            $msg ="New passwords don't match!";
         }
+
     } else {
-        $msg ="Old password doesn't match!";
+        $msg[] = "New passwords don't match!";
     }
+
 }
 
 /*********************************** HTML layout begins here  *************************************/
@@ -57,7 +57,13 @@ include("head.html");
 
 <h1>Change Password</h1>
 
-<?php if (!empty($msg)) { ?><p class="error"><?php echo $msg ?></p><?php } ?>
+<?php if (!empty($msg)) { ?>
+    <p class="error">
+    <?php foreach($msg as $line){
+        echo $line . "<br />";
+    } ?>
+    </p>
+<?php } ?>
 
 <form method="post" action="password.php" name="form_password" onSubmit="return validate();">
 

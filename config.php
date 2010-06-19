@@ -45,6 +45,7 @@ if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', 'test30');
 if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
 
 if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
+if (!defined('TOKENS'))         define('TOKENS', 'tokens');
 
 if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('USERS'))          define('USERS', 'users');

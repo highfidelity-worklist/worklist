@@ -1,5 +1,7 @@
 <?php
 require_once ('config.php');
+require_once('class/Session.class.php');
+require_once('class/Utils.class.php');
 
 if(! isset($_REQUEST["api_key"])){
     die("No api key defined.");
@@ -17,10 +19,6 @@ if(! isset($_REQUEST["api_key"])){
         case 'updateuser':
             updateuser();
             break;
-        case 'pushCreateUser':
-            pushCreateUser();
-            break;
-          
         case 'pushVerifyUser':
             pushVerifyUser();
             break;
@@ -36,18 +34,15 @@ if(! isset($_REQUEST["api_key"])){
 * Setting session variables for the user so he is logged in
 */
 function loginUserIntoSession(){
-    require_once("class/Database.class.php");
-    $db = new Database();
-    $uid = (int) $_REQUEST['user_id'];
-    $sid = $_REQUEST['session_id'];
-    $expires = time() + SESSION_EXPIRE;
-    $session_data = "userid|s:".strlen($uid).":\"".$uid."\"";
-    $db->insert(WS_SESSIONS, 
-                array("session_id" => $sid, 
-                      "session_expires" => $expires,
-                      "session_data" => $session_data),
-                array("%s","%d","%s")
-                );
+    $user_id = intval($_REQUEST['user_id']);
+    $username = $_REQUEST['username'];
+    $nickname = $_REQUEST['nickname'];
+    $admin = $_REQUEST['admin'];
+
+    $session_id = $_REQUEST['session_id'];
+    session_id($session_id);
+    session::init();
+    Utils::setUserSession($user_id, $username, $nickname, $admin);
 }
 
 function updateuser(){
@@ -61,19 +56,6 @@ function updateuser(){
     $sql .= " ".
             "WHERE id = ".$id;
     mysql_query($sql); 
-}
-
-function pushCreateUser(){
-    if($_REQUEST['calling_app'] != SERVICE_NAME){
-        $user_id = intval($_REQUEST['id']);
-        $username = mysql_real_escape_string($_REQUEST['username']);
-        $nickname = mysql_real_escape_string($_REQUEST['nickname']);
-        
-        $sql = "INSERT INTO " . USERS . " " . "(`id`, `username`, `nickname`) " . "VALUES ('" . $user_id . "', '" . $username . "', '" . $nickname . "')";
-        mysql_unbuffered_query($sql);
-    }
-    
-    respond(array('success' => true, 'message' => 'User has been created!'));
 }
 
 function pushVerifyUser(){

@@ -6,6 +6,7 @@
 //  http://www.lovemachineinc.com
 require_once("config.php");
 require_once("class.session_handler.php");
+include_once("check_new_user.php"); 
 require_once("functions.php");
 require_once("send_email.php");
 require_once("update_status.php");

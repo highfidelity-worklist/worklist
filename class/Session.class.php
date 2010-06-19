@@ -12,7 +12,7 @@ class session {
 
     static $objSession = null;
 
-    static function init() {
+    static function init($sid = null) {
         if (self::$objSession != null) {
             if (isset($_COOKIE[session_name()])) {
                 setcookie(session_name(), '', time()-42000, '/');
@@ -28,8 +28,14 @@ class session {
                                  array(&self::$objSession,"destroy"),
                                  array(&self::$objSession,"gc"));
         session_set_cookie_params(SESSION_EXPIRE);
+        if(isset($sid)){
+            session_id($sid);
+        }
         session_start();
         $_SESSION['running'] = "true";
+    }
+    static function initById($sid){
+        session::init($sid);
     }
     public function establishDbConnection(){
         $link = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die('Could not connect: ' . mysql_error());
@@ -101,6 +107,12 @@ class session {
         if($res && mysql_num_rows($res)) {
             // ...update session-data
 
+            //if $newExp = session_expires then this is part of a complex transaction and there is no need to write the same data
+            //Add 10 second buffer for duplicate writes
+            $row = mysql_fetch_assoc($res);
+            if ($row['session_expires']+10 >= $newExp && $row['session_data'] == $sessData) {
+                return true;
+            }
 
             mysql_query("UPDATE ".WS_SESSIONS."
                          SET session_expires = '$newExp',
@@ -145,4 +157,9 @@ class session {
         // return affected rows
         return mysql_affected_rows($db);
     }
+
+     public function removeUser(){
+     }
+     
+
 }

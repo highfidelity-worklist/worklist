@@ -13,6 +13,18 @@ if(isset($_REQUEST["action"])){
         case "signup":
             $login->signup();
             break;
+        case "getuserdata":
+            $login->getUserData();
+            break;
+        case "setuserdata":
+            $login->setUserData();
+            break;
+        case "resetuserpassword":
+            $login->resetUserPassword();
+            break;
+        case "update":
+            $login->update();
+            break;
         default:
             $response->getError()->setError("Invalid action called.");
             break;

@@ -1,4 +1,4 @@
-<div id="popup-stats" title = "Statistics for last 7 days" class = "popup-body">
+<div id="popup-stats" title = "Statistics for last 7 days" class = "popup-body" style = "display:none;">
 	<form name="popup-form" id="popup-form-edit" action="" method="post">
 		<input type="hidden" name="itemid" value="0" />
 		<input type="hidden" name="page" value="<?php echo isset($page) ? $page : 0 ?>" class="popup-page-value" />

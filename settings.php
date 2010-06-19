@@ -10,6 +10,7 @@
 ob_start();
 include("config.php");
 include("class.session_handler.php");
+include("check_session.php");
 include("functions.php");
 include("timezones.php");
 include("countrylist.php");
@@ -17,20 +18,22 @@ include("smslist.php");
 include_once("send_email.php");
 require_once("lib/Sms.php");
 
-$qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
-$rs = mysql_query($qry);
-if (!$rs || !($userInfo = mysql_fetch_array($rs))) {
-    session::init();
-    header("Location:login.php");
-}
+require_once ("class/Utils.class.php");
+require_once ("class/Error.class.php");
+
 $msg="";
 $company="";
 
 $saveArgs = array();
 $messages = array();
 $errors = 0;
+$error = new Error();
 
 if (isset($_POST['save_account'])) {
+
+    $updateNickname = false;
+    $updatePassword = false;
+
     // check if phone was updated
     if (isset($_POST['phone_edit']) || isset($_POST['int_code']) ||isset($_POST['timezone']))
     {
@@ -51,16 +54,40 @@ if (isset($_POST['save_account'])) {
         $saveArgs['sms_flags'] = 0;
         $timezone = mysql_real_escape_string(trim($_POST['timezone']));
 		$saveArgs['timezone'] = 0;
-        $messages[] = "Your country/phone settings have been updated.";
+
+
+        // if user is new - create an entry for him
+        // clear $saveArgs so it won't be updated for the second time
+        if($_SESSION['new_user']){
+
+            $user_id = intval($_SESSION['userid']);
+            $username = $_SESSION['username'];
+            $nickname = $_SESSION['nickname'];
+
+            $sql = " INSERT INTO " . USERS . " 
+                        (`id`, `username`, `nickname`, `timezone`, `country`, `is_uscitizen`, `provider` ,`phone`, `int_code`, `smsaddr`, `sms_flags`, `is_active`, `confirm`)
+                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$is_uscitizen', '$provider', '$phone', '$int_code', '$smsaddr', '$sms_flags', '1', '1')";
+            mysql_unbuffered_query($sql);
+            $_SESSION['new_user'] = '';
+            $saveArgs = array();
+        }else{
+            $messages[] = "Your country/phone settings have been updated.";
+        }
     }
 
-    if (isset($_POST['nickname']) && $errors == 0) {
-        $nickname = mysql_real_escape_string(trim($_POST['nickname']));
-
-        if ($nickname != $_SESSION['nickname']) {
-            $_SESSION['nickname'] = $_POST['nickname'];
-            $saveArgs['nickname'] = 0;
-            $messages[] = "Your nickname is now '$nickname'.";
+    // if nickname is different - update it through login call
+    $nickname = trim($_POST['nickname']);
+    if($nickname != $_SESSION['nickname']){
+        $ret = Utils::updateLoginData(array('nickname' => $nickname), true, false);
+        if($ret->error == 1){
+            $error->setError($ret->message);
+        }else{
+            if(!$_SESSION['new_user']){
+                $sql = "UPDATE " . USERS . " SET nickname='" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
+                mysql_query($sql);
+                $_SESSION['nickname'] = $nickname;
+                $messages[] = "Your nickname is now '$nickname'.";
+            }
         }
     }
 
@@ -86,18 +113,6 @@ if (isset($_POST['save_account'])) {
     $messages[] = "Your payment information has been updated.";
 }
 
-if (!empty($_POST['username']) && ($_POST['username'] != $_SESSION['username'])) {
-    $to = $_POST['username'];
-    $subject = 'LoveMachine Account Edit - Username verification';
-    $body = '<p>You changed your username successfully!<p>';
-    $body .= '<p>To be sure it is a valid email address and complete this process please verify your new email address by clicking on this link:</p>';
-    $body .= '<p><a href="' . SECURE_SERVER_URL . 'confirmation.php?action=changeUsername&oustr=' . base64_encode($_SESSION['username']) . '&nustr=' . base64_encode($_POST['username']) . '" title="Confirmation URL">' . SECURE_SERVER_URL . 'confirmation.php?action=changeUsername&oustr=' . base64_encode($_SESSION['username']) . '&nustr=' . base64_encode($_POST['username']) . '</a></p>';
-    $body .= '<p>If you are not able to click on the link above, copy it and paste it in your browsers addressbar.</p>';
-    $body .= "<p>Love,<br/>The LoveMachine</p>";
-    sl_send_email($to, $subject, $body);
-    exit('username');
-}
-
 if (!empty($saveArgs)) {
     //updating user info in database
     foreach ($saveArgs as $arg=>$esc){
@@ -117,11 +132,6 @@ if (!empty($saveArgs)) {
     $sql .= " WHERE id = '${_SESSION['userid']}'";
     mysql_query($sql);
 
-    $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
-    $rs = mysql_query($qry);
-    if ($rs) {
-        $userInfo = mysql_fetch_array($rs);
-    }
 // Email user
     if (!empty($messages)) {
         $to = $_SESSION['username'];
@@ -141,6 +151,15 @@ if (!empty($saveArgs)) {
     //return 'ok';
 }
 
+// getting userInfo to prepopulate fields
+
+    if(!$_SESSION['new_user']){
+        $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
+        $rs = mysql_query($qry);
+        if ($rs) {
+            $userInfo = mysql_fetch_array($rs);
+        }
+    }
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html");
@@ -243,11 +262,7 @@ include("head.html");
             data: values,
             dataType: 'html',
             success: function(json) {
-                if (json == 'username') {
-                    $('#msg-'+type).text('Username changed, check your emails and verify your new email address.');
-                } else {
-                    $('#msg-'+type).text('Account settings saved!');
-                }
+                $('#msg-'+type).text('Account settings saved!');
             },
             error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');
@@ -361,7 +376,7 @@ include("head.html");
     <table width="100%">
     <tr>
         <td align="left"><h2 class="subheader">Account Info<span class="heading-links"></h2></td>
-        <td align="right"><a href="password.php">Change my password...</a> | <a href="delete_account.php">Delete my account...</a></td>
+        <td align="right"><a href="password.php">Change my password...</a></td>
     </tr>
     </table>
 
@@ -371,17 +386,8 @@ include("head.html");
 
         <p id="msg-account" class="error"></p>
 
-        <p><label for="username">Username (Email)</label><br />
-            <span class="required-bullet">*</span> <input name="username" type="text" id="username" value="<?php echo $userInfo['username']; ?>" size="35" />
-        </p>
-		<script type="text/javascript">
-			var username = new LiveValidation('username',{ validMessage: "Valid email address." });
-			username.add(SLEmail);
-			username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-		</script>
-
         <p><label for = "nickname">Nickname</label><br />
-            <span class="required-bullet">*</span> <input name="nickname" type="text" id="nickname"  value = "<?php echo $userInfo['nickname']; ?>" size="35"/>
+            <span class="required-bullet">*</span> <input name="nickname" type="text" id="nickname"  value = "<?php echo $_SESSION['nickname']; ?>" size="35"/>
         </p>
         <script type="text/javascript">
             var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});
@@ -393,8 +399,8 @@ include("head.html");
             <?php
             foreach($timezoneTable as $key => $value){
                 $selected = '';
-                if ($key == $userInfo['timezone']){
-                $selected = 'selected = "selected"';
+                if (!$_SESSION['new_user'] && $key == $userInfo['timezone']){
+                    $selected = 'selected = "selected"';
                 }
                 echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
             }
@@ -402,15 +408,16 @@ include("head.html");
             </select>
         </p>
 
-        <?php
-        $country = $userInfo['country'];
-        $int_code = $userInfo['int_code'];
-        $phone = $userInfo['phone'];
-        $provider = $userInfo['provider'];
-        $sms_flags = $userInfo['sms_flags'];
+    <?php
+        $new_user = (bool) $_SESSION['new_user'];
+        $country = !$new_user ? $userInfo['country'] : '';
+        $int_code = !$new_user ? $userInfo['int_code'] : '';
+        $phone = !$new_user ? $userInfo['phone'] : '';
+        $provider = !$new_user ? $userInfo['provider'] : '';
+        $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $settingsPage = true;
         include("sms-inc.php");
-         ?>
+    ?>
 
         <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
 
@@ -418,6 +425,7 @@ include("head.html");
 
 </div>
 
+<?php if(!$_SESSION['new_user']){ ?>
 <div id="personal-info" class="settings">
 
     <h2 class="subheader">Personal Info</h2>
@@ -477,7 +485,8 @@ include("head.html");
 				paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
          	 </script> 
 		   <p id="paytype-other"><label>If another payment method chosen, please enter preference info</label><br />
-                <span class="required-bullet">*</span> <input type="text" id="payway" name="payway" class="text-field" value="<?php echo $userInfo['payway']; ?>" style="width:95%" />
+                <span class="required-bullet">*</span>
+                    <input type="text" id="payway" name="payway" class="text-field" value="<?php echo !empty($userInfo['payway']) ? $userInfo['payway'] : ' '; ?>" style="width:95%" />
             </p>
 		<script type="text/javascript">
 			var payway = new LiveValidation('payway');
@@ -513,5 +522,6 @@ COLOR="Blue">Download W-9 Here</FONT></a>
 <script type="text/javascript">
 setTimeout('ChangePaymentMethod()', 2000);
 </script>
+<?php } ?>
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php"); ?>
