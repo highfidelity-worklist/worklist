@@ -104,7 +104,7 @@ include("head.html"); ?>
             <td width="35%">Summary</td>
             <td width="6%">ID</td>
             <td width="6%">Amount</td>
-            <td width="12%">When</td>
+            <td width="12%">Date of Payment</td>
             <td width="13%">Payee</td>
             <td width="15%">Status</td>
         </tr>
@@ -377,6 +377,23 @@ include("head.html"); ?>
         timeoutId = setTimeout("GetReport("+page+", true)", refresh);
     }
 
+    // Generate a CSV file with all the data in the report
+    function exportReport() {
+        _fromDate = $("#start-date").datepicker('getDate');
+        _toDate = $("#end-date").datepicker('getDate');
+        if (_fromDate != null) {
+            fromDate = fmtDate(_fromDate);
+        }
+        if (_toDate != null) {
+            toDate = fmtDate(_toDate);
+        }
+        
+        var data = 'export=1&page='+<?php echo $page?>+'&status='+$('#filter_status').val()+'&user='+$('select[name=user]').val() +
+                   '&order='+$('#sort').val()+'&start='+fromDate+'&end='+toDate+'&job='+$('#job_id').val()+'&reload=false';
+        
+        window.open('getpaypal.php?'+data, '_blank');
+    }
+
 	$(document).ready(function() {
         $('.text-field-sm').datepicker({
             changeMonth: true,
@@ -407,6 +424,10 @@ include("head.html"); ?>
 		$('#sort, #filter_status').comboBox();
 
 		});
+
+	   $('#exportReport').click(function() {
+	       exportReport();
+	   });
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
