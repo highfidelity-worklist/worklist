@@ -41,6 +41,14 @@ class User
 	protected $filter;
 	protected $avatar;
 	protected $annual_salary;
+	/**
+	 * All about budget
+	 */
+	protected $remainingFunds;
+	protected $allocated;
+	protected $submitted;
+	protected $paid;
+	protected $allFees;
     /**
      * With this constructor you can create a user by passing an array.
      *
@@ -296,6 +304,102 @@ class User
 
 	public function setBudget($budget) {
 		$this->budget = $budget;
+		return $this;
+	}
+
+	public function getRemainingFunds()
+	{
+		if (null === $this->remainingFunds) {
+			$this->setRemainingFunds();
+		}
+		return $this->remainingFunds;
+	}
+
+	public function setRemainingFunds()
+	{
+		$sql = 'SELECT `budget` FROM `' . USERS . '` WHERE `id` = "' . $this->getId() . '";';
+		$result = mysql_query($sql);
+		
+		$this->remainingFunds = 0;
+
+		if ($result && (mysql_num_rows($result) == 1)) {
+			$row = mysql_fetch_assoc($result);
+
+			$allFunds = $row['budget'];
+
+			$allocatedFunds = 0;
+			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "REVIEW", "COMPLETED");';
+			$result = mysql_query($sql);
+			if ($result && (mysql_num_rows($result) == 1)) {
+				$row = mysql_fetch_assoc($result);
+				$allocatedFunds = $row['allocated'];
+			}
+
+			$submittedFunds = 0;
+			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 0;';
+			$result = mysql_query($sql);
+			if ($result && (mysql_num_rows($result) == 1)) {
+				$row = mysql_fetch_assoc($result);
+				$submittedFunds = $row['submitted'];
+			}
+			
+			$paidFunds = 0;
+			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 1;';
+			$result = mysql_query($sql);
+			if ($result && (mysql_num_rows($result) == 1)) {
+				$row = mysql_fetch_assoc($result);
+				$paidFunds = $row['paid'];
+			}
+
+			$this->setAllocated($allocatedFunds);
+			$this->setSubmitted($submittedFunds);
+			$this->setPaid($paidFunds);
+
+			$this->remainingFunds = ($allFunds - $allocatedFunds - $submittedFunds - $paidFunds);
+		}
+
+		return $this;
+	}
+
+	public function getAllocated()
+	{
+		if (null === $this->allocated) {
+			$this->setAllocated(0);
+		}
+		return $this->allocated;
+	}
+
+	public function setAllocated($value)
+	{
+		$this->allocated = $value;
+		return $this;
+	}
+
+	public function getSubmitted()
+	{
+		if (null === $this->submitted) {
+			$this->setSubmitted(0);
+		}
+		return $this->submitted;
+	}
+
+	public function setSubmitted($value)
+	{
+		$this->submitted = $value;
+		return $this;
+	}
+
+	public function getPaid()
+	{
+		if (null === $this->paid) {
+			$this->setPaid(0);
+		}
+		return $this->paid;
+	}
+
+	public function setPaid($value)
+	{
+		$this->paid = $value;
 		return $this;
 	}
 

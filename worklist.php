@@ -28,7 +28,7 @@ if( $userId > 0 )	{
 	$user->findUserById( $userId );
 	$nick = $user->getNickname();
 	$userbudget =$user->getBudget();
-	$budget =number_format($userbudget);
+	$budget = number_format($userbudget);
 }
 
 $filter = new Agency_Worklist_Filter();
@@ -1078,7 +1078,26 @@ include("head.html"); ?>
 
 <?php if (isset($_SESSION['userid'])) { ?>
 <?php if($is_runner){ ?>
-<div style="float: right; margin-top: 3px; font-weight:bold; font-size:16px;">Remaining Budget: $<?php echo $budget; ?></div>
+<div style="float: right; margin-top: 3px; font-size:16px;">
+    <table border="0" style="border: none">
+        <tr>
+            <td style="border: none"><strong>Remaining Funds:</strong></td>
+            <td style="border: none; text-align: right;"><strong><?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
+        </tr>
+        <tr>
+            <td style="border: none">Allocated:</td>
+            <td style="border: none; text-align: right;"><?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
+        </tr>
+        <tr>
+            <td style="border: none">Submitted:</td>
+            <td style="border: none; text-align: right;"><?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
+        </tr>
+        <tr>
+            <td style="border: none">Paid:</td>
+            <td style="border: none; text-align: right;"><?php echo(money_format('$ %i', $user->getPaid())); ?></td>
+        </tr>
+    </table>
+</div>
 <?php }?>
 <div id="buttons">
 <p><input type="submit" id="add" name="add" value="Add" class="iToolTip addButton" /> 
