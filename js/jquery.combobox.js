@@ -41,6 +41,8 @@
 			// bind click events
 			this.container.click($.proxy(this.click, this));
 			$(document).click($.proxy(this._outClick, this));
+			// bind key events
+			$(document).keydown($.proxy(this.keydown, this));
 			
 			// setup the combobox
 			this.el.trigger('beforesetup', this);
@@ -130,8 +132,10 @@
 					listItem.addClass('ui-combobox-list-selected');	
 				}
 				listItem.hover(
-					function() { $(this).addClass('ui-state-hover'); },
-					function() { $(this).removeClass('ui-state-hover'); }
+					function() {
+						$('.ui-state-hover').removeClass('ui-state-hover');
+						$(this).addClass('ui-state-hover');
+					}
 				);
 				listItem.click($.proxy(this._listItemClicked, this));
 				this.list.append(listItem);
@@ -162,6 +166,7 @@
 		_hideList: function() {
 			this.list.hide();
 			this.container.removeClass('ui-state-active');
+			this.container.removeClass('ui-state-hover');
 			this.showList = false;
 		},
 		setupNewList: function(l) {
@@ -184,6 +189,21 @@
 			// we return only one (first) element
 			return el[0];
 		},
+		keydown: function(e) {
+			if (((e.keyCode == 40) || (e.keyCode == 38) || (e.keyCode == 13) || (e.keyCode == 9) || (e.keyCode == 27)) && (this.showList == true)) {
+				e.preventDefault();
+				if ((e.keyCode == 40) && (this.list.find('.ui-state-hover').next().length > 0)) {
+					this.list.find('.ui-state-hover').removeClass('ui-state-hover').next().addClass('ui-state-hover');
+				} else if ((e.keyCode == 38) && (this.list.find('.ui-state-hover').prev().length > 0)) {
+					this.list.find('.ui-state-hover').removeClass('ui-state-hover').prev().addClass('ui-state-hover');
+				} else if ((e.keyCode == 13) || (e.keyCode == 9)) {
+					this.list.find('.ui-state-hover').click();
+				} else if (e.keyCode == 27) {
+					this._hideList();
+				}
+				this.list.scrollTo(this.list.find('.ui-state-hover'));
+			}
+		},
 		click: function(e) {
 			e.preventDefault();
 			if (this.list.is(":visible")) {
@@ -201,8 +221,8 @@
 				// show the list and scroll to the selected item
 				this.list.show();
 				this.list.scrollTo(this.list.find('.ui-combobox-list-selected'));
+				this.list.find('.ui-combobox-list-selected').addClass('ui-state-hover');
 				// add the active state class to the container
-				this.container.removeClass('ui-state-hover');
 				this.container.addClass('ui-state-active');
 			}
 			return false;
