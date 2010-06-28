@@ -34,7 +34,7 @@ if(isset($_REQUEST['str'])) {
       if($result->error == 1){
           die($result->message);
       }
-      $sql = "UPDATE ".USERS." SET added = 'NOW()', confirm = 1, is_active = 1 WHERE username = '".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'";
+      $sql = "UPDATE ".USERS." SET confirm = 1, is_active = 1 WHERE username = '".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'";
       mysql_query($sql);
 		if (REQUIRELOGINAFTERCONFIRM) {
 		    session::init(); // User must log in AFTER confirming (they're not allowed to before)

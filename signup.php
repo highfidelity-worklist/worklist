@@ -120,12 +120,17 @@ if(isset($minimal_POST['sign_up'])){
             $newUser["id"] = $ret->id;
             $newUser["username"] = $ret->username;
             $newUser["nickname"] = $ret->nickname;
+            $newUser["added"] = "NOW()";
             $sql = "INSERT INTO ".USERS." ";
             $columns = "(";
             $values = "VALUES(";
             foreach($newUser as $name => $value){
                 $columns .= "`".$name."`,";
-                $values .= "'".mysql_real_escape_string($value)."',";
+            	if($name == "added"){
+                	$values .= "NOW(),";
+                } else {
+                	$values .= "'".mysql_real_escape_string($value)."',";
+                }
             }
             $columns = substr($columns,0,(strlen($columns)-1));
             $columns .= ")";
