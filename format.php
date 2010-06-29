@@ -32,7 +32,12 @@
 
 <!-- LOGO -->
 			<div id="stats">
-				<span id='stats-text'></span>
+				<span id='stats-text'>
+                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding' ><span id='count_b'></span> jobs</a>
+                    bidding, 
+                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding' ><span id='count_w'></span> jobs</a>
+                    underway
+                </span>
 			</div>
 
 <!-- Navigation placeholder -->
@@ -52,18 +57,20 @@
 		<script type="text/javascript">
 		// Code for stats
         $(function() {
-		$('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
-
-		$.ajax({
-			type: "POST",
-			url: 'getstats.php',
-			data: 'req=currentlink',
-			dataType: 'html',
-			success: function(html) {
-				$('#stats-text').html(html);
-				MapToolTips();
-			}
-		});
+            $('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
+            $.ajax({
+                type: "POST",
+                url: 'getstats.php',
+                data: 'req=currentlink',
+                dataType: 'json',
+                success: function(json) {
+                    if (!json || json === null) return;
+                    $("#count_b").text(json.count_b);
+                    $("#count_w").text(json.count_w);
+                    $('#stats-text').show();
+                    MapToolTips();
+                }
+            });
         });
 		function ShowStats()    {
 			// Clear the tables

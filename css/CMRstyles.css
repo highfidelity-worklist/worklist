@@ -142,14 +142,6 @@ body {
 	z-index:100;
 }
 
-#stats {
-	color:#98AAB2;
-	float:right;
-	font-size:12px;
-	height:15px;
-	text-align:right;
-	width:50%;
-}
 
 #in-rt {width:230px;
 	float:right;
@@ -311,15 +303,28 @@ a:hover {
 	text-decoration:none;
 	}
 
+#stats {
+	color:#98AAB2;
+	float:right;
+	font-size:12px;
+	font-weight: bold;
+	height:15px;
+	text-align:right;
+	width:50%;
+}
+#stats-text {
+    display:none;
+}
 
-#nav a, #welcome a {
+#stats  a{
+	cursor: hand;
+}
+
+#nav a, #welcome a ,#stats  a{
 	color: #6f6f6f;
 	text-decoration: none;
 }
-#nav a:hover, #welcome a:hover {
-	color: #98AAB2;
-}
-#welcome a:hover {
+#nav a:hover, #welcome a:hover ,#stats  a:hover{
 	color: #98AAB2;
 }
 
@@ -558,3 +563,4 @@ div.login_left, div.login_right {float:left;min-width:260px;padding-right:40px;}
 .login_right div.LVspace {margin-top:65px;}
 input.google {padding-left: 20px; background: transparent url("../images/google.gif") no-repeat scroll left center;}
 div.login_left input.text-field, div.login_right input.text-field {width:230px;}
+
