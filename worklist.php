@@ -854,6 +854,7 @@ include("head.html"); ?>
 		$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade'});
 		$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade'});
 		$('#pages-dialog').dialog({ autoOpen: false });
+		$('#budget-expanded').dialog({ autoOpen: false, width:920, show:'fade', hide:'drop' });
 
 		$('#done_by').datepicker({
 			duration: '',
@@ -1037,6 +1038,177 @@ include("head.html"); ?>
 			}
 		});
 	}
+
+	/**
+	 * Show a dialog with expanded info on the selected @section
+	 * Sections:
+     *  - 0: Allocated
+     *  - 1: Submited
+     *  - 2: Paid
+     */
+	function budgetExpand(section) {
+		$('#be-search-field').val('');
+		$('#be-search-field').keyup(function() {
+		    // Search current text in the table by hiding rows
+		    var search = $(this).val().toLowerCase();
+		    
+            $('.data_row').each(function() {
+                var html = $(this).text().toLowerCase();
+                // If the Row doesn't contain the pattern hide it
+                if (!html.match(search)) {
+                    $(this).fadeOut('fast');
+                } else { // If is hidden but matches the pattern, show it
+                    if (!$(this).is(':visible')) {
+                        $(this).fadeIn('fast');
+                    }
+                }
+            });
+		});
+		// If clean search, fade in any hidden items
+		$('#be-search-clean').click(function() {
+			$('#be-search-field').val('');
+		    $('.data_row').each(function() {
+		        $(this).fadeIn('fast');
+		    });
+		});
+	    switch (section) {
+		    case 0:
+			    // Fetch new data via ajax
+			    $('#budget-expanded').dialog('open');
+			    be_getData(section);
+			    break;
+		    case 1:
+		    	// Fetch new data via ajax
+		    	$('#budget-expanded').dialog('open');
+		        be_getData(section);
+			    break;
+		    case 2:
+		    	// Fetch new data via ajax
+		    	$('#budget-expanded').dialog('open');
+		        be_getData(section);
+		    	break;
+	    }
+	}
+
+	function be_attachEvents(section) {
+        $('#be-id').click(function() {
+            be_handleSorting(section, $(this));
+        });
+        $('#be-summary').click(function() {
+            be_handleSorting(section, $(this));
+        });
+        $('#be-who').click(function() {
+            be_handleSorting(section, $(this));
+        });
+        $('#be-amount').click(function() {
+            be_handleSorting(section, $(this));
+        });
+        $('#be-status').click(function() {
+            be_handleSorting(section, $(this));
+        });
+        $('#be-created').click(function() {
+            be_handleSorting(section, $(this));
+        });
+        $('#be-paid').click(function() {
+            be_handleSorting(section, $(this));
+        });
+	}
+
+    function showUserInfo(userId) {
+        $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />')
+            .dialog('open');
+        $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+        return false;
+    }
+	
+	function be_getData(section, item, desc) {
+        // Clear old data
+        var header = $('#table-budget-expanded').children()[0];
+        $('#table-budget-expanded').children().remove();
+        $('#table-budget-expanded').append(header);
+        be_attachEvents(section);
+        
+	    var params = '?section='+section;	
+	    var sortby = '';
+	    // If we've got an item sort by it
+	    if (item) {
+	        sortby = item.attr('id');
+	        params += '&sortby='+sortby+'&desc='+desc;
+	    }
+		
+        $.getJSON('get-budget-expanded.php'+params, function(data) {
+            // Fill the table
+            for (var i = 0; i < data.length; i++) {
+                var link = '<a href="http://dev.sendlove.us/worklist/workitem.php?job_id='+data[i].id+'&action=view" target="_blank">';
+                // Separate "who" names into an array so we can add the userinfo for each one
+                var who = data[i].who.split(", ");
+                var who_link = '';
+                for (var z = 0; z < who.length; z++) {
+                    if (z < who.length-1) {
+                        who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>, ';
+                    } else {
+                    	who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>';
+                    }
+                    who_link += who[z];
+                }
+                
+                var row = '<tr class="data_row"><td>'+link+'#'+data[i].id+'</a></td><td>'+link+data[i].summary+'</a></td><td>'+who_link+
+                          '</td><td>$'+data[i].amount+'</td><td>'+data[i].status+'</td>'+
+                          '<td>'+data[i].created+'</td>';
+                if (data[i].paid != 'Not Paid') {
+                    row += '<td>'+data[i].paid+'</td></tr>';
+                } else {
+                    row += '<td>'+data[i].paid+'</td></tr>';
+                }
+                $('#table-budget-expanded').append(row);
+            }
+        });
+        $('#budget-report-export').click(function() {
+            window.open('get-budget-expanded.php?section='+section+'&action=export', '_blank');
+        });
+	}
+
+	function be_handleSorting(section, item) {
+        var desc = true;
+        if (item.hasClass('desc')) {
+            desc = false;
+        }
+        
+        // Cleanup sorting
+        be_cleaupTableSorting();
+        item.removeClass('asc');
+        item.removeClass('desc');
+        
+        // Add arrow
+        var arrow_up = '<div style="float:right;">'+
+                       '<img src="images/arrow-up.png" height="15" width="15" alt="arrow"/>'+
+                       '</div>';
+
+        var arrow_down = '<div style="float:right;">'+
+                         '<img src="images/arrow-down.png" height="15" width="15" alt="arrow"/>'+
+                         '</div>';
+
+        if (desc) {
+            item.append(arrow_down);
+            item.addClass('desc');
+        } else {
+            item.append(arrow_up);
+            item.addClass('asc');
+        }
+
+        // Update Data
+        be_getData(section, item, desc);
+	}
+
+	function be_cleaupTableSorting() {
+		$('#be-id').children().remove();
+		$('#be-summary').children().remove();
+		$('#be-who').children().remove();
+		$('#be-amount').children().remove();
+		$('#be-status').children().remove();
+		$('#be-created').children().remove();
+		$('#be-paid').children().remove();
+	}
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 <title>Worklist | Lend a Hand</title>
@@ -1064,6 +1236,9 @@ include("head.html"); ?>
 <!-- Popup for breakdown of fees-->
 <?php require_once('popup-fees.inc') ?>
 
+<!-- Popup for budget info -->
+<?php require_once('dialogs/budget-expanded.inc') ?>
+
 <!-- Div for moving items accross the pages -->
 <div id="pages-dialog" title="Select page to move item" style="display: none;">
 	<input type="submit" id="page-go" value="Go" /><br />
@@ -1078,23 +1253,27 @@ include("head.html"); ?>
 
 <?php if (isset($_SESSION['userid'])) { ?>
 <?php if($is_runner){ ?>
-<div style="float: right; margin-top: 3px; font-size:16px;">
-    <table border="0" style="border: none">
+<div id="be-block">
+    <table id="be-table">
         <tr>
-            <td style="border: none"><strong>Remaining Funds:</strong></td>
-            <td style="border: none; text-align: right;"><strong><?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
+            <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
+            <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
+            <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
         </tr>
         <tr>
-            <td style="border: none">Allocated:</td>
-            <td style="border: none; text-align: right;"><?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
+            <td onclick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
+            <td onclick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
+            <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
         </tr>
         <tr>
-            <td style="border: none">Submitted:</td>
-            <td style="border: none; text-align: right;"><?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
+            <td onclick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
+            <td onclick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
+            <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
         </tr>
         <tr>
-            <td style="border: none">Paid:</td>
-            <td style="border: none; text-align: right;"><?php echo(money_format('$ %i', $user->getPaid())); ?></td>
+            <td onclick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
+            <td onclick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
+            <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
         </tr>
     </table>
 </div>

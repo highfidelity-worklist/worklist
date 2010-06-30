@@ -24,7 +24,14 @@ $tooltips = array(
 	/* Item tooltips 				*/ 
 	
 	'addFee'	=> 'Add a fee you would like to be paid for work done on this job.',
-	'addBid'	=> 'Make an offer to do this job.'
+	'addBid'	=> 'Make an offer to do this job.',
+	
+	/* Budget Info tooltips         */
+
+    'budgetRemaining' => 'Total funds I have ever been assigned, less all of the below.',
+    'budgetAllocated' => 'Money total from Jobs I run that are in Working, Review & Completed Statuses.',
+    'budgetSubmitted' => 'Money total From Jobs I set to Done, but have not been paid.',
+    'budgetPaid'      => 'Money Paid out on Done jobs.',
 
 /*---------------------*/
 );// end of tooltip array

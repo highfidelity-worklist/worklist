@@ -261,3 +261,53 @@ z-index: 1;
 	margin-top:10px;
 	margin-bottom:5px;
 }
+
+/* Budget info */
+#be-block {
+	float: right;
+	margin-top: 3px;
+	font-size:14px;
+}
+
+#be-table {
+	border: none;
+	padding:2px;
+}
+
+.be-table_cell1 {
+	border: none;
+	padding:2px;
+}
+
+.be-table_cell2 {
+	border: none;
+	text-align: right;
+	padding:2px;
+}
+
+#be-search {
+	float:right;
+}
+
+#be-search-lbl {
+	float:left;
+	font-size:14px;
+	font-weight:bold;
+	font-style:italic;
+	margin-top:5px;
+	margin-right:8px;
+}
+
+#be-search-field {
+	float:left;
+	width:180px;
+	margin-bottom:5px;
+}
+
+#be-search-clean {
+	float:right;
+	cursor:pointer;
+	background:url('../images/cross.png');
+	width:24px;
+	height:24px;
+}
