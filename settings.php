@@ -178,7 +178,6 @@ include("head.html");
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript">
-<!--//
     var nclass;
 
     function validateLocalUpload(file, extension) {
@@ -355,7 +354,6 @@ include("head.html");
             return false;
         });
     });
-//-->
 </script>
 
 <title>Worklist | Account Settings</title>
