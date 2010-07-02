@@ -239,7 +239,7 @@ function getPaid($sort=NULL, $desc=NULL) {
 function getFees($id) {
     $sql = "SELECT SUM(".FEES.".`amount`) AS `amount` ".
            "FROM ".FEES.
-           " WHERE ".FEES.".`worklist_id`={$id}";
+           " WHERE ".FEES.".`worklist_id`={$id} AND ".FEES.".`withdrawn`!=1";
     $sql_q = mysql_query($sql) or die(mysql_error()); 
     return mysql_fetch_array($sql_q);
 }
@@ -284,7 +284,7 @@ function getDateWorking($id) {
 function getPaymentStatus($id) {
 	$sql = "SELECT ".FEES.".`paid` ".
 	       "FROM ".FEES." LEFT JOIN ".WORKLIST." ON ".WORKLIST.".`id`=".FEES.".`worklist_id` ".
-	       "WHERE ".FEES.".`worklist_id` = {$id} GROUP BY ".FEES.".`paid`";
+	       "WHERE ".FEES.".`worklist_id` = {$id} AND `withdrawn`!=1 GROUP BY ".FEES.".`paid`";
 	$sql_q = mysql_query($sql) or die(mysql_error());
 	return mysql_fetch_array($sql_q);
 }
