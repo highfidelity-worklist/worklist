@@ -419,7 +419,7 @@
 		foreach(array('signup.php','login.php','settings.php') as $hideStats) {
 		  if (strpos($_SERVER['PHP_SELF'],$hideStats)) { $showStats=false; }
 		}
-		if ($showStats) { require_once('popup-stats.inc'); }
+		if ($showStats) { require_once('dialogs/popup-stats.inc'); }
 	
  		?>
 

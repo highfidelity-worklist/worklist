@@ -110,7 +110,8 @@
     </head>
 <body>
 <?php include('userinfo.inc'); ?>
-<?php require_once('popup-pingtask.inc') ?>
+<!-- Popup for ping task  -->
+<?php require_once('dialogs/popup-pingtask.inc') ?>
 
 <script type="text/javascript">
 

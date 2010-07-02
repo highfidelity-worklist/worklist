@@ -21,4 +21,4 @@
         </table>
 
 <!-- file with popups for user statistics-->
-<?php include("popups-userstats.inc"); ?>
+<?php include("dialogs/popups-userstats.inc"); ?>

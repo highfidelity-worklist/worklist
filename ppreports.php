@@ -121,7 +121,7 @@ include("head.html"); ?>
 <!-- --- End of content --- -->
 
 <!-- Popup for showing stats-->
-<?php require_once('popup-pp-extended-info.inc') ?>
+<?php require_once('dialogs/popup-pp-extended-info.inc') ?>
 
 <script type="text/javascript">
     var filterName = ".reports";

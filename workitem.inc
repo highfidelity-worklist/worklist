@@ -950,23 +950,25 @@ if ($action =="edit"):  ?>
 		<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong><?php echo $message; ?></p>
 	</div>
 	<?php endif;?>
-	<?php include('popup-edit-bid-info.inc') ?>
-	
-	<?php include("popup-place-bid.inc"); ?>
+    <!-- Popup for  edit bid info -->
+	<?php include('dialogs/popup-edit-bid-info.inc') ?>
+	<!-- Popup for place bid -->
+	<?php include("dialogs/popup-place-bid.inc"); ?>
 	<!-- Popup HTML for adding a fee -->
-	<?php include("popup-addfee.inc"); ?>
+	<?php include("dialogs/popup-addfee.inc"); ?>
 	<!-- Popup HTML for paying a fee -->
-	<?php require_once('popup-paid-html.inc') ?>
+	<?php require_once('dialogs/popup-paid-html.inc') ?>
 	<!-- Popup for ping user on task-->
-	<?php require_once('popup-pingtask.inc') ?>
+	<?php require_once('dialogs/popup-pingtask.inc') ?>
 	<!-- Popup for bid info-->
-	<?php require_once('popup-bid-info.inc') ?>
+	<?php require_once('dialogs/popup-bid-info.inc') ?>
     <!-- Popups for showing user statistics-->
-    <?php require_once('popups-userstats.inc') ?>
-		<!-- Popup for multipleBid info-->
-	<?php require_once('popup-multiple-bid-info.inc') ?>
+    <?php require_once('dialogs/popups-userstats.inc') ?>
+	<!-- Popup for multipleBid info-->
+	<?php require_once('dialogs/popup-multiple-bid-info.inc') ?>
 	<!-- Popup for confirmation info-->
-	<?php require_once('popup-confirmation.inc') ?>
+	<?php require_once('dialogs/popup-confirmation.inc') ?>
 	<!-- Popup for breakdown of fees-->
-  <?php require_once('popup-fees.inc') ?>
+    <?php require_once('dialogs/popup-fees.inc') ?>
+    <!-- Footer html-->
 	<?php include("footer.php"); ?>

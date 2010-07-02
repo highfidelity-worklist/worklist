@@ -1219,33 +1219,29 @@ include("head.html"); ?>
      style="z-index: 9999"></div></div>
 
 <!-- Popup for editing/adding  a work item -->
-<?php require_once('popup-edit.inc') ?>
+<?php require_once('dialogs/popup-edit.inc'); ?>
 
 <!-- Popup HTML for paying a fee -->
-<?php require_once('popup-paid-html.inc') ?>
+<?php require_once('dialogs/popup-paid-html.inc'); ?>
 
 <!-- Popup for placing a bid -->
-<?php require_once('popup-bid.inc') ?>
+<?php require_once('dialogs/popup-bid.inc'); ?>
 
 <!-- Popup for bid info-->
-<?php require_once('popup-bid-info.inc') ?>
+<?php require_once('dialogs/popup-bid-info.inc'); ?>
 
 <!-- Popup for adding fee-->
-<?php require_once('popup-addfee.inc') ?>
+<?php require_once('dialogs/popup-addfee.inc'); ?>
 
 <!-- Popup for breakdown of fees-->
-<?php require_once('popup-fees.inc') ?>
+<?php require_once('dialogs/popup-fees.inc'); ?>
 
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc') ?>
 
 <!-- Div for moving items accross the pages -->
-<div id="pages-dialog" title="Select page to move item" style="display: none;">
-	<input type="submit" id="page-go" value="Go" /><br />
-	<br />
-	<input type="submit" id="page-go-highest" value="Highest" />
-	<input type="hidden" id="worklist-id" />
-</div>
+<?php require_once('dialogs/pages-dialog.inc'); ?>
+
 <!-- Feedback tab html -->
 <?php require_once('feedback.inc') ?>
 <?php include("format.php"); ?>

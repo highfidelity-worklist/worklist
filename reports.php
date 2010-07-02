@@ -519,7 +519,7 @@ function loadTimelineChart() {
 
 <body>
 <!-- Popup for breakdown of fees-->
-<?php require_once('popup-fees.inc') ?>
+<?php require_once('dialogs/popup-fees.inc') ?>
 
 <?php include("format.php"); ?>
 
