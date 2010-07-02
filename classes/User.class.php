@@ -328,7 +328,7 @@ class User
 			$allFunds = $row['budget'];
 
 			$allocatedFunds = 0;
-			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "REVIEW", "COMPLETED");';
+			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "REVIEW", "COMPLETED") AND `' . FEES . '`.`withdrawn` != 1;';
 			$result = mysql_query($sql);
 			if ($result && (mysql_num_rows($result) == 1)) {
 				$row = mysql_fetch_assoc($result);
@@ -336,7 +336,7 @@ class User
 			}
 
 			$submittedFunds = 0;
-			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 0;';
+			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1;';
 			$result = mysql_query($sql);
 			if ($result && (mysql_num_rows($result) == 1)) {
 				$row = mysql_fetch_assoc($result);
@@ -344,7 +344,7 @@ class User
 			}
 			
 			$paidFunds = 0;
-			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 1;';
+			$sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1;';
 			$result = mysql_query($sql);
 			if ($result && (mysql_num_rows($result) == 1)) {
 				$row = mysql_fetch_assoc($result);
