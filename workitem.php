@@ -59,6 +59,7 @@ $workitem->loadById($worklist_id);
 $mechanic_id = $user->getId();
 $redirectToDefaultView = false;
 $redirectToWorklistView = false;
+$runner_budget = $user->getBudget();
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
 
@@ -344,35 +345,42 @@ if ($action=='accept_bid'){
 		foreach ($bids as $array) {
 			if ($array['id'] == $bid_id) {
 				$exists = true;
+				$bid_amount = $array["bid_amount"];
 				break;
 			}
 		}
 		if ($exists) {
-			$bid_info = $workitem->acceptBid($bid_id);
-
-			// Journal notification
-			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " . $bid_info['summary'] . ". Status set to WORKING.";
-
-			// mail notification
-			workitemNotify(array('type' => 'bid_accepted',
-					     'workitem' => $workitem,
-					     'recipients' => array('mechanic')));
-
-            $bidder = new User();
-            $bidder->findUserById($bid_info['bidder_id']);
-            try {
-                $config = Zend_Registry::get('config')->get('sms', array());
-                if ($config instanceof Zend_Config) {
-                    $config = $config->toArray();
-                }
-                $smsMessage = new Sms_Message($bidder, 'Bid accepted', $journal_message);
-                Sms::send($smsMessage, $config);
-            } catch (Sms_Backend_Exception $e) {
-            }
-			$redirectToDefaultView = true;
-
-			// Send email to not accepted bidders
-			sendMailToDiscardedBids($worklist_id);
+			if($bid_amount < $runner_budget){
+				$bid_info = $workitem->acceptBid($bid_id);
+	
+				// Journal notification
+				$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " . $bid_info['summary'] . ". Status set to WORKING.";
+	
+				// mail notification
+				workitemNotify(array('type' => 'bid_accepted',
+						     'workitem' => $workitem,
+						     'recipients' => array('mechanic')));
+	
+	            $bidder = new User();
+	            $bidder->findUserById($bid_info['bidder_id']);
+	            try {
+	                $config = Zend_Registry::get('config')->get('sms', array());
+	                if ($config instanceof Zend_Config) {
+	                    $config = $config->toArray();
+	                }
+	                $smsMessage = new Sms_Message($bidder, 'Bid accepted', $journal_message);
+	                Sms::send($smsMessage, $config);
+	            } catch (Sms_Backend_Exception $e) {
+	            }
+				$redirectToDefaultView = true;
+	
+				// Send email to not accepted bidders
+				sendMailToDiscardedBids($worklist_id);
+			} else {
+				$overBudget = money_format('%i', $bid_amount - $runner_budget);
+				$_SESSION['workitem_error'] = "Failed to accept bid. Accepting this bid would make you ".$overBudget." over your budget!";
+				$redirectToDefaultView = true;
+			}
 		}
 		else {
 			$_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
