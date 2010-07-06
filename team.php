@@ -41,7 +41,7 @@ include("head.html");
   var runner =  <?php echo !empty($_SESSION['is_runner']) ? 1 : 0; ?>;
   var current_page = <?php echo $cur_page; ?>;
   var current_sortkey = 'nickname';
-  var current_order = false;
+  var current_order = 'ASC';
   var sfilter = 'PAID';
   var show_actives = "TRUE";
   
@@ -91,6 +91,7 @@ include("head.html");
       }
 
       var data = $(this).metadata();
+      if (!data.sortkey) return false;
       current_sortkey = data.sortkey;
       current_order = $(this).data('direction');
       fillUserlist(current_page);
@@ -274,19 +275,19 @@ include("head.html");
   <div id="message">No results</div>
     <table class="table-userlist" style="width:100%">
         <thead>
-        <tr class="table-hdng">
-            <th class = "sort {sortkey: 'nickname'}">Nickname<div class = "arrow"><div/></th>
-			<th class = "sort {sortkey: 'added'}">Joined<div class = "arrow"><div/></th>
-            <th class = "sort {sortkey: 'annual_salary'}">Salary<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'is_runner'}">Runner<div class = "arrow"><div/></th>
-		<th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'mechanic_count'}">Mechanic<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'budget'}">Budget<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'bids_accepted'}">Bids<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'earnings'}">Earnings<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'expenses_billed'}">Expenses<div class = "arrow"><div/></th>
-	    <th class = "sort {sortkey: 'rewarder'}">Rewarder<div class = "arrow"><div/></th>
-        </tr>
+            <tr class="table-hdng">
+                <th class = "sort {sortkey: 'nickname'}">Nickname<div class = "arrow"><div/></th>
+			    <th class = "sort {sortkey: 'added'}">Joined<div class = "arrow"><div/></th>
+                <th class = "sort {sortkey: 'annual_salary'}">Salary<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'is_runner'}">Runner<div class = "arrow"><div/></th>
+		        <th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'mechanic_count'}">Mechanic<div class = "arrow"><div/></th>
+	            <th>Rem. Funds</th>
+	            <th class = "sort {sortkey: 'bids_accepted'}">Bids<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'earnings'}">Earnings<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'expenses_billed'}">Expenses<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'rewarder'}">Rewarder<div class = "arrow"><div/></th>
+            </tr>
         </thead>
         <tbody>
         </tbody>

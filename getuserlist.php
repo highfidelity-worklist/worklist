@@ -6,6 +6,7 @@
 
 include("config.php");
 include("class.session_handler.php");
+require_once('classes/User.class.php');
 
 $limit = 30;
 $page = isset($_REQUEST["page"])?intval($_REQUEST["page"]) : 1;
@@ -103,6 +104,10 @@ while($row = mysql_fetch_assoc($rt)){
     $json_row[] = $user;
   }
 */
+	$user = new User();
+	$user->findUserById($row['id']);
+	#var_dump($row);
+	$row['budget'] = $user->getRemainingFunds();
   $userlist[] = $row;
 }
                       
