@@ -88,7 +88,7 @@ class session {
         $db = $this->getDbHandle();
         // fetch session-data
         $res = mysql_query("SELECT session_data AS d FROM ".WS_SESSIONS."
-                            WHERE session_id = '$sessID'
+                            WHERE session_id = '".mysql_real_escape_string($sessID)."'
                             AND session_expires > ".time(),$db);
         // return data or an empty string at failure
         if($res && $row = mysql_fetch_assoc($res))
@@ -102,7 +102,7 @@ class session {
         
         // is a session with this id in the database?
         $res = mysql_query("SELECT * FROM ".WS_SESSIONS."
-                            WHERE session_id = '$sessID'",$db);
+                            WHERE session_id = '".mysql_real_escape_string($sessID)."'",$db);
         // if yes,
         if($res && mysql_num_rows($res)) {
             // ...update session-data
@@ -130,9 +130,9 @@ class session {
                          session_expires,
                          session_data)
                          VALUES(
-                         '$sessID',
-                         '$newExp',
-                         '$sessData')",$db);
+                         '".mysql_real_escape_string($sessID)."',
+                         '".mysql_real_escape_string($newExp)."',
+                         '".mysql_real_escape_string($sessData)."')",$db);
             // if row was created, return true
             if(mysql_affected_rows($db))
                 return true;
@@ -143,7 +143,7 @@ class session {
     function destroy($sessID) {
         $db = $this->getDbHandle();
         // delete session-data
-        mysql_query("DELETE FROM ".WS_SESSIONS." WHERE session_id = '$sessID'",$db);
+        mysql_query("DELETE FROM ".WS_SESSIONS." WHERE session_id = '".mysql_real_escape_string($sessID)."'",$db);
         // if session was deleted, return true,
         if(mysql_affected_rows($db))
             return true;
