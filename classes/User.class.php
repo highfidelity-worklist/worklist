@@ -355,7 +355,8 @@ class User
 			$this->setSubmitted($submittedFunds);
 			$this->setPaid($paidFunds);
 
-			$this->remainingFunds = ($allFunds - $allocatedFunds - $submittedFunds - $paidFunds);
+			//$this->remainingFunds = $allFunds - ($allocatedFunds + $submittedFunds + $paidFunds);
+			$this->remainingFunds = $this->getBudget();
 		}
 
 		return $this;
