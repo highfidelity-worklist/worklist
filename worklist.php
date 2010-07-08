@@ -261,7 +261,7 @@ include("head.html"); ?>
 		who += ', ' + createTagWho(json[14],json[5],"mechanic");
 	}
 
-	row += '<td width="15%" class="who">' + pre + who + post + '</td>';
+	row += '<td width="9.5%" class="who">' + pre + who + post + '</td>';
 
         if (json[2] == 'WORKING' && json[11] != null) {
             row += '<td width="15%">' + pre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
@@ -291,7 +291,7 @@ include("head.html"); ?>
 			} else {
 				feebids = '$' + feebids;
 			}
-			row += '<td width="7.5%">' + pre + feebids + post + '</td>';
+			row += '<td width="11%">' + pre + feebids + post + '</td>';
         }
 		row += '</tr>';
         if (prepend) {

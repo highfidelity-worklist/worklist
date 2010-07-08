@@ -183,9 +183,11 @@ function getSubmitted($sort=NULL, $desc=NULL) {
         $paid = getPaymentStatus($row['id']);     
         
         if ($paid['paid'] != 1) {
-            $paid_date = array('paid_date'=>"Not Paid");
-            $items[] = array('id'=>$row['id'], 'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
-                             'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
+            if ($fees['amount'] > 0) {
+                $paid_date = array('paid_date'=>"Not Paid");
+                $items[] = array('id'=>$row['id'], 'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
+                                 'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
+            }
         }
     }
     // If required sort the result
@@ -284,7 +286,7 @@ function getDateWorking($id) {
 function getPaymentStatus($id) {
 	$sql = "SELECT ".FEES.".`paid` ".
 	       "FROM ".FEES." LEFT JOIN ".WORKLIST." ON ".WORKLIST.".`id`=".FEES.".`worklist_id` ".
-	       "WHERE ".FEES.".`worklist_id` = {$id} AND `withdrawn`!=1 GROUP BY ".FEES.".`paid`";
+	       "WHERE ".FEES.".`worklist_id` = {$id} AND `withdrawn`!=1 AND `amount`>0 GROUP BY ".FEES.".`paid`";
 	$sql_q = mysql_query($sql) or die(mysql_error());
 	return mysql_fetch_array($sql_q);
 }
