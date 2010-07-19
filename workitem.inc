@@ -362,11 +362,11 @@ function reply(id) {
 <?php } ?>
             }
 
-
+<?php if($worklist['status'] != 'DONE'){?>
             if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid').length == 0){
                   $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
             }
-
+<?php } ?>
             // we need this userId for user stats popups functions
             userId = bidData.bidder_id;
 
@@ -613,7 +613,7 @@ if ($action =="edit"):  ?>
 					<ul style="margin:0; padding:0;">
 				<!-- Edit: Summary info -->
 						<li><span class="info-label">Summary</span><span class="info-data">
-							<?php if($is_runner || $creator_id == $user_id){ ?>
+							<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')){ ?>
 							<input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
 							<?php }else{?>
 							<span class="info-summ"><?php echo $worklist['summary'];?>
@@ -673,6 +673,7 @@ if ($action =="edit"):  ?>
 							?>
 						</li>
 						<li>
+						<?php if($worklist['status'] != 'DONE'):?>	
 					<!-- Edit: Invite People field -->
 							<div>
 								<span style="font-weight:bold; margin-top:-5px;">Invite people to this task</span>
@@ -687,11 +688,12 @@ if ($action =="edit"):  ?>
 								});
 								</script>
 							</div>
+							<?php endif;?>
 						</li>
 				<!-- Edit: Notes textarea -->
 						<li class="last">
 							<span class="info-label">Notes</span>
-							<?php if($is_runner || $creator_id == $user_id): ?>
+							<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
 								<span id="info-notes">
 									<textarea name="notes" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
 								</span>
