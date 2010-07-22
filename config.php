@@ -16,7 +16,7 @@ if (file_exists('server.local.php')) {
 // authenticating with login service.
 // change it per app.
 if (!defined("SERVICE_NAME"))   define("SERVICE_NAME", 'worklistmachine');
-if (!defined("APP_LOGIN"))      define("APP_LOGIN", '/login/index.php/');
+if (!defined("APP_LOGIN"))      define("APP_LOGIN", '/logon/index.php/');
 
 if (!defined('APP_NAME'))       define('APP_NAME','Worklist');
 if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], '/')));
