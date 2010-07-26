@@ -13,7 +13,7 @@ define('CMD_SEPARATOR',' ');
 define('SANDBOX_CREATION_EMAIL_TEMPATE','./sb-developer-mail.inc');
 class SandBoxUtil
 {
-    private $projectList = array('journal','love','worklist','review','loveviewer','candp','tools');
+    private $projectList = array('journal','love','worklist','review','loveviewer','candp','tools','trial','admin','login');
     private $chat ;
 
     public function __construct()
