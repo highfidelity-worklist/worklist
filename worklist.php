@@ -1246,41 +1246,13 @@ include("head.html"); ?>
 <?php require_once('feedback.inc') ?>
 <?php include("format.php"); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-
+<div id="search-head" <?php echo isset($_SESSION['userid']) ? 'style="height:100px"' : 'style="height:50px"'; ?>>
+  <div style="width:340px;">
 <?php if (isset($_SESSION['userid'])) { ?>
-<?php if($is_runner){ ?>
-<div id="be-block">
-    <table id="be-table">
-        <tr>
-            <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
-            <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
-            <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
-        </tr>
-        <tr>
-            <td onclick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
-            <td onclick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
-            <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
-        </tr>
-        <tr>
-            <td onclick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
-            <td onclick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
-            <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
-        </tr>
-        <tr>
-            <td onclick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
-            <td onclick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
-            <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
-        </tr>
-    </table>
-</div>
-<?php }?>
-<div id="buttons">
+<div id="buttons" style="padding-top:10px;">
 <p><input type="submit" id="add" name="add" value="Add" class="iToolTip addButton" /> 
-
 </p>
 </div>
-<br style="clear: both;" />
-<br/>
 <div id="status-wrap" style="width:340px;">
 	<form action="" id="status-update-form" style="width:340px;"><?php echo $nick?> is <span id="status-lbl"><b><?php echo $current_status?></b></span>
 		<input style="display: none;" type="text" maxlength="45" id="status-update" name="status-update"
@@ -1289,21 +1261,49 @@ include("head.html"); ?>
 			<input type="submit" value="Share" id="status-share-btn"></input>
 		</div>
 	</form>
-</div>
-
-<?php } ?>
-<div id="search-filter-wrap">
-    <div style="float: right">
+    </div>
+	<?php } ?>
+        <div style="clear:both"></div>
+  </div>
+<div id="search-filter-wrap"<?php echo (isset($_SESSION['userid'])&& $is_runner) ? 'style="right:200px"' : 'style="right:20px"'; ?>>
+    <div >
         <form method="get" action="" id="searchForm" />
             <?php echo $filter->getUserSelectbox(1); ?>
 	        <?php echo $filter->getStatusSelectbox(); ?>
 	        <div class="input_box">
 	            <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
 	            <a id="search" href="" class="searchIcon"><img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"></a>
-            	<a id="search_reset" href="" class="searchIcon"><img src="images/cross.png"></a>
-            </div>
+            	<a id="search_reset" href="" class="searchIcon"><img src="images/cross.png"></a>            </div>
         </form>
     </div>
+  </div>
+<?php if(isset($_SESSION['userid']) && $is_runner){ ?>
+<div id="be-block" >
+    <table id="be-table">
+        <tr>
+            <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
+            <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
+            <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
+        </tr>
+        <tr>
+            <td onClick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
+            <td onClick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
+            <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
+        </tr>
+        <tr>
+            <td onClick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
+            <td onClick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
+            <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
+        </tr>
+        <tr>
+            <td onClick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
+            <td onClick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
+            <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
+        </tr>
+    </table>
+</div>
+
+<?php } ?>
 </div>
 
 <div style="clear: both"></div>

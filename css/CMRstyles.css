@@ -37,9 +37,10 @@ body {
     float: left;
 }
 #search-filter-wrap {
-    float: right;
+    float: left;
     padding-bottom:10px;
-    width:510px! important
+	position:absolute;
+	top:0px;
 }
 
 #search-filter-wrap-reports {

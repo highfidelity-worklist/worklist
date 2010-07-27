@@ -140,16 +140,18 @@ z-index: 1;
 
 /* Status Update Fields */
 #status-wrap {
-    position:absolute;
-    width: 50%;
     line-height: 30px;
     z-index:1;
+	float:left;
+	padding-left:10px;
 }
 
 #status-update {
     width: 40%;
 }
-    
+#search-head{
+	position:relative;
+}
 #sharethis_0    {
     position:absolute;
     margin-top: 3px;
@@ -264,9 +266,11 @@ z-index: 1;
 
 /* Budget info */
 #be-block {
-	float: right;
-	margin-top: 3px;
 	font-size:14px;
+	position:absolute;
+	z-index:99;
+	top:5px;
+	right:10px;
 }
 
 #be-table {
