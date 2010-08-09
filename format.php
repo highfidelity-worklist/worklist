@@ -49,9 +49,7 @@
 			<a href="<?php echo SENDLOVE_URL ?>" class="iToolTip menuLove" target="_blank">Love & Review</a> |
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
-                     <!--<joanne> 09-Aug-2010 combined love and review links
-			<!--<a href="<?php echo SENDLOVE_URL ?>tofor.php" class="iToolTip menuRewarder" target="_blank">Review</a> |-->
-			<a href="settings.php" class="iToolTip menuSettings">Settings</a>
+                     <a href="settings.php" class="iToolTip menuSettings">Settings</a>
 			<?php } ?>
 		</div>
 
