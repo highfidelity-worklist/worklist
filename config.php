@@ -64,6 +64,10 @@ if (!defined('REQUIRELOGINAFTERCONFIRM')) define('REQUIRELOGINAFTERCONFIRM', 1);
 
 if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "http://dev.sendlove.us/worklist");
 
+//<joanne>
+if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "http://lovemachine.sendlove.us/love");
+
+
 if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 
 if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'http://dev.sendlove.us/journal/aj.php');
