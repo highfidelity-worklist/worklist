@@ -64,11 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div><label for="password">New Password:</label><br /><input type="password" name="password" value="" /></div>
     <div><input type="submit" name="submit" value="Update Password" />
 </form>
+<?php if ($_get['action']== 'checkpass') { ?>
 <form action="paypal-password.php" method="POST">
     <input type="hidden" name="action" value="check" />
     <div><label for="password">New Password:</label><br /><input type="password" name="password" value="" /></div>
     <div><input type="submit" name="submit" value="Check Password" />
 </form>
+ <?php } ?>
 </body>
 </html>
 
