@@ -1,5 +1,7 @@
 <?php
-require_once ("config.php");
+$app_root_path = dirname(__FILE__);
+$app_root_path = str_replace('class','',$app_root_path);
+require_once ($app_root_path."config.php");
 
 class Database {
     /**
@@ -19,6 +21,9 @@ class Database {
         }
         mysql_select_db(DB_NAME, $link);
         $this->setLink($link);
+    }
+    public function getError(){
+         return mysql_error($this->getLink());
     }
     public function setLink($link){
         $this->link = $link;

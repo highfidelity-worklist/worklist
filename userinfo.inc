@@ -1,5 +1,5 @@
 ﻿<div class = "user-info" title = "User Info">
-        <span id = "user-avatar" ><image id="avatar" src="<?php echo($user -> getAvatar()); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
+        <span id = "user-avatar" ><image id="avatar" src="<?php echo($user -> getAvatar(80,80)); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
 	<div class = "common-info">
 
         <?php include("userstats-table.inc"); ?>

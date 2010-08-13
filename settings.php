@@ -177,9 +177,30 @@ include("head.html");
 <script type="text/javascript" src="js/sendlove.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
+<script type="text/javascript" src="js/ajaxupload-3.6.js"></script>
 <script type="text/javascript">
     var nclass;
 
+    function validateUploadImage(file, extension) {
+        if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))){
+            // extension is not allowed
+            $('span.LV_validation_message.upload').css('display', 'none').empty();
+            var html = 'This filetype is not allowed!';
+            $('span.LV_validation_message.upload').css('display', 'inline').append(html);
+            // cancel upload
+            return false;
+        }
+    }
+    
+    function completeUploadImage(file, data) {
+        $('span.LV_validation_message.upload').css('display', 'none').empty();
+        if (!data.success) {
+            $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
+        } else {
+        	window.location.reload();
+        }
+    }
+    
     function validateLocalUpload(file, extension) {
         nclass = '.uploadnotice-local';
         return validateUpload(file, extension);
@@ -304,6 +325,16 @@ include("head.html");
 		}
 	}
     $(document).ready(function () {
+    	var pictureUpload = new AjaxUpload('profilepicture', {
+            action: 'api.php',
+            name: 'profile',
+            data: { action: 'uploadProfilePicture', api_key: '<?php echo API_KEY; ?>', userid: '<?php echo $_SESSION['userid']; ?>' },
+            autoSubmit: true,
+            hoverClass: 'imageHover',
+            responseType: 'json',
+            onSubmit: validateUploadImage,
+            onComplete: completeUploadImage
+        });
         var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
 
         new AjaxUpload('formupload', {
@@ -377,7 +408,9 @@ include("head.html");
         <td align="right"><a href="password.php">Change my password...</a></td>
     </tr>
     </table>
-
+	<div id="formHolder">
+     	<div id="formLeft">
+	
     <form method="post" action="settings.php" name="frmsetting">
 
         <span class="required-bullet">*</span> <span class="required">required fields</span>
@@ -413,6 +446,7 @@ include("head.html");
         $phone = !$new_user ? $userInfo['phone'] : '';
         $provider = !$new_user ? $userInfo['provider'] : '';
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
+        $picture = !$new_user ? $userInfo['picture'] : '';
         $settingsPage = true;
         include("sms-inc.php");
     ?>
@@ -420,7 +454,19 @@ include("head.html");
         <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
 
     </form>
-
+	</div>
+	<div id="formRight">
+	<p style="text-align: center; cursor: pointer;">
+	<label style="text-align: left; display: block;">Photo<br></label> 
+	<img style="border: 2px solid rgb(209, 207, 207); padding: 10px;"
+    id="profilepicture"
+    src="thumb.php?src=<?php echo((empty($picture) ? '/images/no_picture.png' : '/uploads/' . $picture));?>&w=100&h=90&zc=0" />
+    <span class="picture_info">Click here to change it</span>
+    <span style="display: none;"
+    class="LV_validation_message LV_invalid upload"></span></p>
+	</div>
+	</div>
+	<div style="clear: both;"></div>
 </div>
 
 <?php if(!$_SESSION['new_user']){ ?>

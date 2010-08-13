@@ -41,6 +41,7 @@ class User
 	protected $filter;
 	protected $avatar;
 	protected $annual_salary;
+	protected $picture;
 	/**
 	 * All about budget
 	 */
@@ -244,6 +245,14 @@ class User
 	 */
 	public function getId() {
 		return $this->id;
+	}
+	
+	public function getPicture() {
+	     return $this->picture;
+	}
+	
+	public function setPicture($picture){
+	     $this->picture = $picture;
 	}
 
 	/**
@@ -908,12 +917,9 @@ class User
 	/**
 	 * @return the $avatar
 	 */
-	public function getAvatar()
+	public function getAvatar($w = 50, $h = 50)
 	{
-		if ($this->avatar === null) {
-			$this->setAvatar();
-		}
-		return $this->avatar;
+		return SERVER_URL."thumb.php?src=".$this->picture."&h=".$h."&w=".$w."&zc=0";
 	}
 	
 	/**
@@ -921,24 +927,7 @@ class User
 	 */
 	public function setAvatar()
 	{
-		defineSendloveAPI();
-		
-		$params = array(
-			'action' => 'getProfilePicture',
-            'api_key' => SENDLOVE_API_KEY,
-			'username' =>$this->getUsername(),
-			'width' => 80,
-			'height' => 80
-		);
-		
-		$referer = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
-    	$retval = json_decode(postRequest(SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
-    	
-    	$this->avatar = false;
-    	if ($retval['success'] == true) {
-    		$this->avatar = $retval['picture'];
-    	}
-    	
+    	$this->avatar = SERVER_URL."thumb.php?src=".$this->picture."&h=80&w=80&zc=0";
     	return $this;
 	}
 }

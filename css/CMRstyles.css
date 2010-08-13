@@ -564,4 +564,15 @@ div.login_left, div.login_right {float:left;min-width:260px;padding-right:40px;}
 .login_right div.LVspace {margin-top:65px;}
 input.google {padding-left: 20px; background: transparent url("../images/google.gif") no-repeat scroll left center;}
 div.login_left input.text-field, div.login_right input.text-field {width:230px;}
-
+#formHolder {
+	width: 800px;
+	float: left;
+}
+#formLeft {
+	width: 680px;
+	float: left;
+}
+#formRight{
+	width: 120px;
+	float: left;
+}
