@@ -62,7 +62,8 @@ switch ($action)
     
     case 'pay':
     //collect confirmed payees and run paypal transaction
-    
+    include_once("paypal-admin.php");
+    if (checkAdmin($_POST['password'] == '1') { 
     include_once("paypal-functions.php");
     include_once("classes/Fee.class.php");   
 
@@ -121,7 +122,9 @@ switch ($action)
         //TODO: add a email send here to alert someone?
     }
 
-
+    } else {
+        alert("Invalid Authentication"); 
+    }
     break; 
     
     default:
@@ -227,6 +230,9 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
 ?>
 </table>
 <div id="submit-btns">
+    <?php if (isset($_POST["action"]) && ($_POST["action"] == 'confirm')) { ?>
+        Password: <input type="password" name="password" id="password" />&nbsp;&nbsp;
+    <?php } ?> 
     <input type="submit" id="commit-btn" name="commit" value="<?php echo isset($_POST["action"])?'Pay Now':'Confirm'; ?>" />
     &nbsp;&nbsp;Total Selected: $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
 </div>
@@ -235,7 +241,7 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
 <?php
 } else {
     echo urldecode($pp_message);
-    error_log(date('Y-m-d H:i:s').' '.$pp_message.'<p><pre>'.print_r($httpParsedResponseAr, true).'</pre></p>');
+    error_log('PayPal Error: '.date('Y-m-d H:i:s').' '.$pp_message.'<p><pre>'.print_r($httpParsedResponseAr, true).'</pre></p>');
     echo '<p><a href="view-payments.php">Process More Payments.</a></p>';
 }
 ?>

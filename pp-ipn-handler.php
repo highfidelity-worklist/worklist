@@ -172,6 +172,14 @@ if ($fp) {
                     $fee_id = 'unique_id_'.$n;
                 }
         break;
+
+        case "web_accept":
+           $ch = curl_init('http://dev.sendlove.us/~jason/lovemachine/html/paypal-function.php?action=compPPTxn');
+           curl_setopt ($ch, CURLOPT_POST, 1);
+           curl_setopt ($ch, CURLOPT_POSTFIELDS, $rqstr);
+           curl_exec ($ch);
+           curl_close ($ch); 
+        break;
     }   
         } else if (strcmp ($res, "INVALID") == 0) {
             // If returns INVALID, log for manual investigation
