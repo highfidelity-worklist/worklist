@@ -481,8 +481,8 @@ if(!empty($bids) && is_array($bids)) {
             $currentUserHasBid = "true";
             //break;
         }
-        if ((!$user->isRunner()) && ($user->getId() != $worklist['creator_id'])) {
-            if ($user->getId() != $bid['bidder_id']) {
+        if ((!$user->isRunner())) {
+            if ($user->getId() != $bid['bidder_id'])  {
                 $bid['nickname'] = '*name hidden*';
 				$bid['bid_amount'] = '***';
 				$bid['email'] = '********';

@@ -26,7 +26,7 @@
 
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || $creator_id == $user_id || $has_budget) {
+    if ($is_runner || $has_budget) {
         $allowEdit = true;
         if ($action !="edit") {
             $classEditable = " editable";
@@ -613,7 +613,7 @@ if ($action =="edit"):  ?>
 					<ul style="margin:0; padding:0;">
 				<!-- Edit: Summary info -->
 						<li><span class="info-label">Summary</span><span class="info-data">
-							<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')){ ?>
+							<?php if(($is_runner == $user_id) && ($worklist['status'] != 'DONE')){ ?>
 							<input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
 							<?php }else{?>
 							<span class="info-summ"><?php echo $worklist['summary'];?>
@@ -717,8 +717,9 @@ if ($action =="edit"):  ?>
 						<span class="info-label">Status</span><span class="info-data" style="margin-left:12px;font-size:16px"><?php echo $worklist['status'];?></span>
 						<input type="hidden" id="status" name="status" value = "BIDDING" />
 						<?php
-							// quick status buttons for creators of items and mechanics working on them
-							if(!$is_runner && ($creator_id == $user_id || $mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) && $worklist['status'] != 'DONE')
+							// quick status buttons for runners of items and mechanics working on them
+                                                 if(!$is_runner && ($mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) && $worklist['status'] != 'DONE')
+							
 							{
 								foreach($statusMapMechanic[$worklist['status']] as $status)
 								{?>
