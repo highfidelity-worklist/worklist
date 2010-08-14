@@ -78,7 +78,7 @@ include("head.html");
 	<p>If we decide to change our privacy policy, we will post those changes on this page, and/or send an email notifying you of any changes.</p>
 	<h3>Contacting Us</h3>
 	<p>If there are any questions regarding this privacy policy you may contact us using the information below.</p>
-	<p><a href="www.lovemachineinc.com" target="_blank">www.lovemachineinc.com</a></p>
+	<p><a href="http://www.lovemachineinc.com" title="LoveMachine Home Page" target="_blank">www.lovemachineinc.com</a></p>
 	<p>San Francisco, CA 94127, USA</p>
 	<p>admin (at) lovemachineinc (dot) com</p>
 </span>
