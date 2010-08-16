@@ -100,10 +100,10 @@
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
 
-        <link media="all" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+        <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.1.min.js"></script>
 
         <script type="text/javascript" src="js/userstats.js"></script>
         <title>User info</title>
