@@ -32,7 +32,7 @@ include_once("send_email.php");
 
 //send non-payers back to the reports page.
 if (empty($_SESSION['is_payer'])) {
-   // header("Location:reports.php");
+   header("Location:reports.php");
 }
 
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -120,6 +120,7 @@ switch ($action)
         $summaryData = Fee::markPaidByList(explode(',', $fees_csv), $user_paid=0, $paid_notes='', $paid=1);
 
     } else  {
+        $alert_msg = "MassPay Failure"; 
         $pp_message = '<p>MassPay failed:</p><p><pre>' . print_r($httpParsedResponseAr, true).'</pre></p>';
         sl_send_email('finance@lovemachineinc.com', 'Masspay Fail', $pp_message);
     }

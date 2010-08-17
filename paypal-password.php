@@ -53,6 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } 
 
+
+if (basename($_SERVER['PHP_SELF'])=='paypal-password.php') {
 ?>
 <html>
 <head><title>LM PayPal Admin Password</title></head>
@@ -69,9 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div><label for="password">New Password:</label><br /><input type="password" name="password" value="" /></div>
     <div><input type="submit" name="submit" value="Check Password" />
 </form>
- <?php } ?>
+<?php } ?>
 </body>
 </html>
-
+<?php } ?>
 
 
