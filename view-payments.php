@@ -32,7 +32,7 @@ include_once("send_email.php");
 
 //send non-payers back to the reports page.
 if (empty($_SESSION['is_payer'])) {
-    header("Location:reports.php");
+   // header("Location:reports.php");
 }
 
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -63,7 +63,9 @@ switch ($action)
     case 'pay':
     //collect confirmed payees and run paypal transaction
     include_once("paypal-password.php");
-    if (checkAdmin($_POST['password'] == '1')) { 
+    error_log("PW: ".$_POST['password']." CA: ".checkAdmin($_POST['password']));
+    if (checkAdmin($_POST['password']) == '1') { 
+    error_log("Made it Admin!");
     include_once("paypal-functions.php");
     include_once("classes/Fee.class.php");   
 
@@ -119,7 +121,7 @@ switch ($action)
 
     } else  {
         $pp_message = '<p>MassPay failed:</p><p><pre>' . print_r($httpParsedResponseAr, true).'</pre></p>';
-        //TODO: add a email send here to alert someone?
+        sl_send_email('finance@lovemachineinc.com', 'Masspay Fail', $pp_message);
     }
 
     } else {
@@ -127,7 +129,8 @@ switch ($action)
         $error_msg .= 'IP: '. $_SERVER['REMOTE_ADDR'].'<br />';
         $error_msg .= 'UserID: '.$userId;
         sl_send_email("finance@lovemachineinc.com", "Masspay Invalid Auth Attempt", $error_msg);
-        alert("Invalid Authentication"); 
+        $alert_msg = "Invalid Authentication"; 
+    
     }
     break; 
     
@@ -170,6 +173,7 @@ include("head.html"); ?>
 <div id="center">
 
 <?php 
+if (isset($alert_msg)) { echo "<h2>".$alert_msg."</h2>"; }
 if (!isset($_POST["action"]) || ($_POST["action"] != 'pay')) {
 ?>
 <div id="select-actions">Actions: [<a href="javascript:void(0);" onclick="toggleCBs('toggle');">Invert Selection</a>] | [<a href="javascript:void(0);" onclick="toggleCBs('select');">Select All</a>] | [<a href="#" onclick="toggleCBs('unselect');">Select None</a>]</div>
@@ -245,7 +249,9 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
 <?php
 } else {
     echo urldecode($pp_message);
-    error_log('PayPal Error: '.date('Y-m-d H:i:s').' '.$pp_message.'<p><pre>'.print_r($httpParsedResponseAr, true).'</pre></p>');
+    $logmsg = 'PayPal Error: '.date('Y-m-d H:i:s').' '.$pp_message.' ParsedResp:'.print_r($httpParsedResponseAr, true);
+    //POST: '.print_r($_POST, true).' -|jk';
+    error_log($logmsg);
     echo '<p><a href="view-payments.php">Process More Payments.</a></p>';
 }
 ?>
