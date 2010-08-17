@@ -63,7 +63,7 @@ switch ($action)
     case 'pay':
     //collect confirmed payees and run paypal transaction
     include_once("paypal-admin.php");
-    if (checkAdmin($_POST['password'] == '1') { 
+    if (checkAdmin($_POST['password'] == '1')) { 
     include_once("paypal-functions.php");
     include_once("classes/Fee.class.php");   
 
