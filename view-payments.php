@@ -123,6 +123,10 @@ switch ($action)
     }
 
     } else {
+        $error_msg = 'Invalid Masspay Authentication<br />';
+        $error_msg .= 'IP: '. $_SERVER['REMOTE_ADDR'].'<br />';
+        $error_msg .= 'UserID: '.$userId;
+        sl_send_email("finance@lovemachineinc.com", "Masspay Invalid Auth Attempt", $error_msg);
         alert("Invalid Authentication"); 
     }
     break; 
