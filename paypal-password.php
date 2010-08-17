@@ -46,12 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     if ($_POST['action'] == 'change') {
 	if (saveAdmin($_POST['password'], $_POST['old_password'])) {
-	    echo '1';
+	    echo 'Password Changed!';
 	} else {
-	    echo '0'; 
+	    echo 'Error - Password NOT Changed.'; 
 	}
     }
-} else {
+} 
 
 ?>
 <html>
@@ -73,5 +73,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </body>
 </html>
 
-<?php } ?>
+
 
