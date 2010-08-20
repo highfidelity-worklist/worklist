@@ -613,7 +613,7 @@ if ($action =="edit"):  ?>
 					<ul style="margin:0; padding:0;">
 				<!-- Edit: Summary info -->
 						<li><span class="info-label">Summary</span><span class="info-data">
-							<?php if(($is_runner == $user_id) && ($worklist['status'] != 'DONE')){ ?>
+							<?php if(($is_runner) && ($worklist['status'] != 'DONE')){ ?>
 							<input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
 							<?php }else{?>
 							<span class="info-summ"><?php echo $worklist['summary'];?>
