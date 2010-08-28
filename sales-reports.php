@@ -195,8 +195,8 @@ var updateFeeSumsTimes = '';
                             Status
                         </th><!-- trial (days left) or subscription or suspended -->
                         <th>
-                            <a href="sales-reports.php?<?php echo encode_array($_GET, array('ordering'=>'current_employee_count', 'sort'=>($sort == 'asc' ? 'desc' : 'asc') )) ?>">
-                            # Users <?php echo $ordering == 'current_employee_count' ? $sortimg : ''; ?>
+                            <a href="sales-reports.php?<?php echo encode_array($_GET, array('ordering'=>'employee_count', 'sort'=>($sort == 'asc' ? 'desc' : 'asc') )) ?>">
+                            # Users <?php echo $ordering == 'employee_count' ? $sortimg : ''; ?>
                         </th>
                         <th>Last payment</th><!--popup-->
                         <th>Payment History</th>
@@ -208,7 +208,7 @@ var updateFeeSumsTimes = '';
                         <td><a href="http://<?php print $row->domain ?>" target="_blank"><?php print $row->domain ?></a></td>
                         <td><?php print $row->created ?></td>
                         <td><?php print $row->mode ?></td>
-                        <td><?php print $row->current_employee_count ?></td>
+                        <td><?php print $row->employee_count ?></td>
                         <td><a href="javascript:void(0)" onClick="javascript:lastPayment(<?php print $row->cid ?>)"><?php print $row->payment_date ?></a></td>
                         <td>
                             <?php if(!empty($row->payment_date)): ?> 
