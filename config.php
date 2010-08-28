@@ -82,6 +82,9 @@ if (!defined("SENDLOVE_API_KEY")) define("SENDLOVE_API_KEY", "uierbycur4yt73467t
 if (!defined("REWARDER_API_URL")) define("REWARDER_API_URL", "https://dev.sendlove.us/review/api.php");
 if (!defined("REWARDER_API_KEY")) define("REWARDER_API_KEY", "dhfsfdhgdhsfg7g5fyg73ff23545f32fwd");
 
+if (!defined("SALES_API_URL")) define("SALES_API_URL", "https://dev.sendlove.us/sales/api.php");
+if (!defined("SALES_API_KEY")) define("SALES_API_KEY", "qxuakwyjhqp4zo7wt2ie");
+
 // key to identificate api users
 if (!defined("API_KEY"))    define("API_KEY", "08aaa337ac04179120f8dc88c55dd1ad");
 
