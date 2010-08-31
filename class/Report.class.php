@@ -7,16 +7,6 @@ require_once('config.php');
 
 class Report{
     
-    /*public function getList(){
-        $res = $this->db->query("SELECT * FROM cupid_conf WHERE config_key = 'ADMIN_NAME' GROUP BY domain");
-        #var_dump($res);
-        while($row = mysql_fetch_object($res)){
-            $ret[] = $row;
-            echo "INSERT INTO customers SET contact_first_name='{$row->data}', created='{$row->created}', domain='{$row->domain}';\n";
-        }
-        return $ret;
-    }*/
-    
     public function getList($page=1, $ordering='created', $sort='DESC', $customer='', $date_from='', $date_to='', $status=''){
         #echo SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomerList&page='.$page.'&ordering='.$ordering.'&sort='.$sort.'&customer='.$customer.'&date_from='.$date_from.'&date_to='.$date_to.'&status='.$status;
         ob_start();

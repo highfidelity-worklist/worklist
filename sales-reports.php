@@ -2,7 +2,8 @@
 //  Copyright (c) 2009-2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-#error_reporting(9);
+
+
 include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
@@ -14,8 +15,11 @@ include_once("functions.php");
 include("class/Report.class.php");
 include("helper.php");
 
+if ( (!empty($_SESSION['is_payer']) || !empty($_SESSION['is_runner'])) === false ) { 
+    header("Location: ".SERVER_URL);
+}
 
-#$filter = new Agency_Worklist_Filter($_REQUEST);
+
 $report = new Report();
 $page = 0;
 
@@ -199,8 +203,7 @@ var updateFeeSumsTimes = '';
                             # Users <?php echo $ordering == 'employee_count' ? $sortimg : ''; ?>
                         </th>
                         <th>Last payment</th><!--popup-->
-                        <th>Payment History</th>
-                        <th>Action</th>
+                        <th>Total Paid</th>
                     </tr>
                     <?php foreach($list->customers as $row): ?>
                     <tr>
@@ -209,13 +212,15 @@ var updateFeeSumsTimes = '';
                         <td><?php print $row->created ?></td>
                         <td><?php print $row->mode ?></td>
                         <td><?php print $row->employee_count ?></td>
-                        <td><a href="javascript:void(0)" onClick="javascript:lastPayment(<?php print $row->cid ?>)"><?php print $row->payment_date ?></a></td>
                         <td>
-                            <?php if(!empty($row->payment_date)): ?> 
-                            <a href="javascript:void(0)" onClick="javascript:paymentHistory(<?php print $row->cid ?>)">Payment History</a>
+                            <a href="javascript:void(0)" onClick="javascript:lastPayment(<?php print $row->cid ?>)">
+                            <?php print $row->payment_amount; if($row->payment_amount) print '$'; ?></a>
+                        </td>
+                        <td>
+                            <?php if(!empty($row->total_amount)): ?> 
+                            <a href="javascript:void(0)" onClick="javascript:paymentHistory(<?php print $row->cid ?>)"><?php print $row->total_amount ?>$</a>
                             <?php endif; ?>
                         </td>
-                        <td></td>
                     </tr>
                     <?php endforeach ?>
 
@@ -256,6 +261,7 @@ var updateFeeSumsTimes = '';
 	});
 	
 	function customerDetails(cid){
+	    $('#detail-box').html('');
 	    $.ajax({
 	        type: "GET",
 	        url: 'sales-customer-details.php?cid='+cid,
@@ -268,6 +274,7 @@ var updateFeeSumsTimes = '';
 	    $('#detail-box').dialog('open');
 	}
 	function paymentHistory(cid){
+	    $('#detail-box').html('');
 	    $.ajax({
 	        type: "GET",
 	        url: 'sales-payment-history.php?cid='+cid,
@@ -281,6 +288,7 @@ var updateFeeSumsTimes = '';
 	}
 	
 	function lastPayment(cid){
+	    $('#detail-box').html('');
 	    $.ajax({
 	        type: "GET",
 	        url: 'sales-lastpayment.php?cid='+cid,
