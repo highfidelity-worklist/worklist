@@ -200,6 +200,9 @@ if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && (isset($_SESSION['useri
     $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid'].") AS `bid_on`";
 }
 
+// add where clause to not show status-level if bid was withdrawn.
+$where .= " AND (`withdrawn` = 0)";
+
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
           LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
