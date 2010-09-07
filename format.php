@@ -46,7 +46,7 @@
 
 			<a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
 			<a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> |
-			<a href="<?php echo SENDLOVE_URL ?>" class="iToolTip menuLove" target="_blank">Love & Review</a> |
+			<a href="<?php echo SENDLOVE_URL ?>" class="iToolTip menuLove" target="_blank">LoveMachine</a> |
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
                      <a href="settings.php" class="iToolTip menuSettings">Settings</a>
