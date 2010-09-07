@@ -200,6 +200,13 @@ if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && (isset($_SESSION['useri
     $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid'].") AS `bid_on`";
 }
 
+// add where clause to not show status-level if bid was withdrawn.
+// $where .= " AND (`withdrawn` = 0)";
+// The previous filter has been removed for the follwong reason:
+// with the original fix #11929, some items are not displayed in the list (like 12425)
+// with the fix in #12437,  the missing workitems are available in the list but with a search criteria there was duplicate workitems in the list
+// without the filter added in #11929, the 2 previous issues are fixed 
+
 
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
@@ -209,8 +216,8 @@ $qbody = "FROM `".WORKLIST."`
 		  LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
           LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
           $unpaid_join
-          LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id` AND (`withdrawn` = 0) 
-          $where ";                                                                         // add  to not show status-level if bid was withdrawn.
+          LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
+          $where ";
 
 $qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
 
