@@ -14,14 +14,13 @@
     Date: 2010-04-01 [Happy April Fool's!]
 
 ********************************************************/
-
-    function PPHttpPost($methodName_, $nvpStr_) {
+    
+    function PPHttpPost($methodName_, $nvpStr_, $credentials) {
         $environment = 'live'; // 'sandbox' or 'beta-sandbox' or 'live'
-         
-        $paypal_api = parse_ini_file('/etc/love/worklist/paypal-api-info.ini', true);
-        $pp_user = urlencode($paypal_api["paypal"]["API_Username"]);
-        $pp_pass = urlencode($paypal_api["paypal"]["API_Password"]);
-        $pp_signature = urlencode($paypal_api["paypal"]["API_Signature"]);    
+        $pp_user = $credentials['pp_api_username'];
+        $pp_pass = $credentials['pp_api_password'];
+        $pp_signature = $credentials['pp_api_signature'];
+
         $API_Endpoint = "https://api-3t.paypal.com/nvp";
         if("sandbox" === $environment || "beta-sandbox" === $environment) {
             $API_Endpoint = "https://api-3t.$environment.paypal.com/nvp";

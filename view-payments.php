@@ -66,6 +66,10 @@ switch ($action)
     error_log("PW: ".$_POST['password']." CA: ".checkAdmin($_POST['password']));
     if (checkAdmin($_POST['password']) == '1') { 
     error_log("Made it Admin!");
+        if(empty($_POST['pp_api_username']) || empty($_POST['pp_api_password']) || empty($_POST['pp_api_signature'])){
+            $alert_msg = "You need to provide all credentials!";
+            break;
+        }
     include_once("paypal-functions.php");
     include_once("classes/Fee.class.php");   
 
@@ -109,7 +113,7 @@ switch ($action)
 
 
     // Execute the API operation; see the PPHttpPost function in the paypal-functions.php file.
-    $httpParsedResponseAr = PPHttpPost('MassPay', $nvpStr);
+    $httpParsedResponseAr = PPHttpPost('MassPay', $nvpStr, $_POST);
 
     if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
         $pp_message = '<p>MassPay Completed Successfully! - $'.$totalFees.' Paid.</p>';
@@ -240,7 +244,10 @@ while ($payees = mysql_fetch_array($payee_group_query)) {
 </table>
 <div id="submit-btns">
     <?php if (isset($_POST["action"]) && ($_POST["action"] == 'confirm')) { ?>
-        Password: <input type="password" name="password" id="password" />&nbsp;&nbsp;
+        Password: <input type="password" name="password" id="password" />
+        <br>Paypal API Username: <input type="text" name="pp_api_username" id="pp_api_username" />
+        <br>Paypal API Password: <input type="password" name="pp_api_password" id="pp_api_password" />
+        <br>Paypal API Signature: <input type="password" name="pp_api_signature" id="pp_api_signature" /><br>
     <?php } ?> 
     <input type="submit" id="commit-btn" name="commit" value="<?php echo isset($_POST["action"])?'Pay Now':'Confirm'; ?>" />
     &nbsp;&nbsp;Total Selected: $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
