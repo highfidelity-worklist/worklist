@@ -74,7 +74,7 @@ if(isset($minimal_POST['sign_up'])){
     require_once ("class/Utils.class.php");
     require_once ("class/CURLHandler.php");
     $error = new Error();
-    if(empty($username) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword']))){
+    if(empty($username) || empty($_REQUEST["nickname"]) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword']))){
         $error->setError("Please fill all required fields.");
     }
     $about = isset($minimal_POST['about']) ? $minimal_POST['about'] : "";
@@ -250,7 +250,7 @@ include("head.html");
             </script>
       <?php endif; ?>
             <div class="LVspace">
-<p><label for="nickname">Nickname</label><br />
+<p><label for="nickname">Nickname *</label><br />
 <input type="text" id="nickname" name="nickname" class="text-field"
 	size="35"
 	value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
