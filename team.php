@@ -276,17 +276,17 @@ include("head.html");
     <table class="table-userlist" style="width:100%">
         <thead>
             <tr class="table-hdng">
-                <th class = "sort {sortkey: 'nickname'}">Nickname<div class = "arrow"><div/></th>
-			    <th class = "sort {sortkey: 'added'}">Joined<div class = "arrow"><div/></th>
-                <th class = "sort {sortkey: 'annual_salary'}">Salary<div class = "arrow"><div/></th>
-	            <th class = "sort {sortkey: 'is_runner'}">Runner<div class = "arrow"><div/></th>
-		        <th class = "sort {sortkey: 'created_count'}">Creator<div class = "arrow"><div/></th>
-	            <th class = "sort {sortkey: 'mechanic_count'}">Mechanic<div class = "arrow"><div/></th>
+                <th class = "sort {sortkey: 'nickname'} clickable">Nickname<div class = "arrow"><div/></th>
+			    <th class = "sort {sortkey: 'added'} clickable">Joined<div class = "arrow"><div/></th>
+                <th class = "sort {sortkey: 'annual_salary'} clickable">Salary<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'is_runner'} clickable">Runner<div class = "arrow"><div/></th>
+		        <th class = "sort {sortkey: 'created_count'} clickable">Creator<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'mechanic_count'} clickable">Mechanic<div class = "arrow"><div/></th>
 	            <th>Rem. Funds</th>
-	            <th class = "sort {sortkey: 'bids_accepted'}">Bids<div class = "arrow"><div/></th>
-	            <th class = "sort {sortkey: 'earnings'}">Earnings<div class = "arrow"><div/></th>
-	            <th class = "sort {sortkey: 'expenses_billed'}">Expenses<div class = "arrow"><div/></th>
-	            <th class = "sort {sortkey: 'rewarder'}">Rewarder<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'bids_accepted'} clickable">Bids<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'earnings'} clickable">Earnings<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'expenses_billed'} clickable">Expenses<div class = "arrow"><div/></th>
+	            <th class = "sort {sortkey: 'rewarder'} clickable">Rewarder<div class = "arrow"><div/></th>
             </tr>
         </thead>
         <tbody>

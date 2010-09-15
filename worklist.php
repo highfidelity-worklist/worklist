@@ -1310,13 +1310,13 @@ include("head.html"); ?>
 <table width="100%" class="table-worklist">
     <thead>
         <tr class="table-hdng">
-			 <td>ID</td>
-            <td>Summary</td>
-            <td>Status</td>
-            <td>Who</td>
-            <td>When</td>
-            <td>Comments</td>
-            <td class="worklist-fees"  <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?>>Fees/Bids</td>
+			<td class="clickable">ID</td>
+            <td class="clickable">Summary</td>
+            <td class="clickable">Status</td>
+            <td class="clickable">Who</td>
+            <td class="clickable">When</td>
+            <td class="clickable" style="min-width:80px">Comments</td>
+            <td class="worklist-fees clickable"  <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?>>Fees/Bids</td>
         </tr>
     </thead>
     <tbody>

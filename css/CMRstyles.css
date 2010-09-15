@@ -446,6 +446,7 @@ input[type=submit] {
 	outline: none;
 	border:none;
 	-moz-outline-style: none;
+	cursor:pointer;
 }
 
 input[type=button] {
