@@ -540,8 +540,7 @@ function withdrawBid($bid_id) {
         $user = getUserById($bid->bidder_id);
 
         // Journal message
-        $message  = 'A bid of ' . $bid->bid_amount;
-        $message .= ' was deleted from item #' . $job['id'] . ': ';
+        $message  = 'A bid was deleted from item #' . $job['id'] . ': ';
         $message .= $job['summary'] . '.';
 
         // Journal notification
@@ -577,7 +576,7 @@ function deleteFee($fee_id) {
         $user = getUserById($fee->user_id);
 
         // Journal message
-        $message  = $_SESSION['nickname'] . ' deleting the fee from ';
+        $message  = $_SESSION['nickname'] . ' deleted a fee from ';
         $message .= $user->nickname . ' on item #';
         $message .= $fee->worklist_id . ': ';
         $message .= $summary . '. ';
