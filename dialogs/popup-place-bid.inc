@@ -3,11 +3,14 @@
 		<p><label>Bid Amount<br />
 		  <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
         </label></p>
-		<p><label>Done By<br />
+		<p><label>Done By <small>(If bid accepted now, how long will it take to finish?)</small><br />
            <input type="text" class="text-field date" name="done_by" id="done_by" value="" size="20" />
            <img src="images/Calendar.gif" class="dpButtonCal" /> 
            <img src="images/transparent.gif" width="30px" height="1" id="done_by_button" />
         </label></p>
+		<p><label>Notes <small>(mandatory)</small><br />
+		<textarea name="notes" id="notes" size="48" /></textarea>
+		</label></p>
 
     <script type="text/javascript">
 		// see http://regexlib.com/REDetails.aspx?regexp_id=318
@@ -21,11 +24,18 @@
 		var done_by = new LiveValidation('done_by',{ insertAfterWhatNode: 'done_by_button', onlyOnSubmit: true });
 			done_by.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 			done_by.add( Validate.Format, { pattern: regex_date, failureMessage: "Invalid Input!" });
+		
+		var notes = new LiveValidation('notes', { onlyOnSubmit: true});
+			notes.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+			
+		$('#notes').keyup(function() {
+			if ($(this).val().length > 0) {
+				$('#bid').removeClass('button-disabled').removeAttr('disabled');
+			} else {
+				$('#bid').addClass('button-disabled').attr('disabled', 'disabled');
+			}
+		});
 	</script>
-
-		<p><label>Notes<br />
-		<textarea name="notes" size="48" /></textarea>
-		</label></p>
 
 <?php
        if($is_runner) {
@@ -53,6 +63,6 @@
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
 
 <?php   }  ?>
-             <input type="submit" id="bid" name="place_bid" value="Place Bid" style="position:relative; left:240px;" />
+             <input type="submit" id="bid" disabled="disabled" class="button-disabled" name="place_bid" value="Place Bid" style="position:relative; left:240px;" />
             </form>
     </div><!-- end of popup-bid -->
