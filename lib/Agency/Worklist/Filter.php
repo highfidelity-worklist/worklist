@@ -103,7 +103,11 @@ class Agency_Worklist_Filter
     // @param $job job id number
     // 30-APR-2010 <Andres>
     public function setJob($job) {
-       return $this->job = (int) $job;
+        if ($id = ltrim($job, '#')) {
+            return $this->job = (int) $id;
+        } else {
+           return $this->job = (int) $job;
+        }
     }
 
     /**

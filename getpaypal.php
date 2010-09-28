@@ -95,7 +95,7 @@ function getReport() {
 	}
 	
 	if ($jfilter) {
-	    $where .= "`worklist_id` = $jfilter AND";
+	    $where .= "`worklist_id` = $jfilter AND ";
 	}
 	
 	// Add option for order results
