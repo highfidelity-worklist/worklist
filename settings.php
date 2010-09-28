@@ -114,10 +114,6 @@ if (isset($_POST['save_account'])) {
 }
 
 if (!empty($saveArgs)) {
-    //updating user info in database
-    foreach ($saveArgs as $arg=>$esc){
-        if ($esc) $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
-    }
 
     $sql = "UPDATE `".USERS."` SET ";
     foreach ($saveArgs as $arg=>$esc) {
