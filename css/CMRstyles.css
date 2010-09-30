@@ -577,3 +577,5 @@ div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 	width: 120px;
 	float: left;
 }
+
+#popup-bid-info table td{ border-width:0px;}

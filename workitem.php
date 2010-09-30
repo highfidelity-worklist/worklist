@@ -488,6 +488,23 @@ if(!empty($bids) && is_array($bids)) {
 				$bid['email'] = '********';
             }
         }
+        $bid['bid_created'] = getUserTime($bid['unix_bid_created']);
+		if($bid['unix_bid_accepted']>0)
+        	$bid['bid_accepted'] = getUserTime($bid['unix_bid_accepted']);
+		else
+	        $bid['bid_accepted'] = '';
+
+			
+// calculate Total Time to Complete
+		$timeToComplete=(int)$bid['unix_done_by']-(int)$bid['unix_bid_created'];
+		if($bid['unix_bid_accepted']>0){
+			$timeElapsed=(int)$bid['unix_now']-(int)$bid['unix_bid_accepted'];
+			$timeToComplete-= $timeElapsed;
+		}
+		$fullDays    = floor($timeToComplete/(60*60*24));
+		$fullHours   = floor(($timeToComplete-($fullDays*60*60*24))/(60*60));
+		$fullMinutes = floor(($timeToComplete-($fullDays*60*60*24)-($fullHours*60*60))/60);
+		$bid['time_to_complete']= $fullDays . ($fullDays==1?" day, ":" days, ").$fullHours. ($fullHours==1?" hour and ":" hours and ").$fullMinutes.($fullMinutes==1?" minute.":" minutes.");   
     }
 }
 // break reference to $bid

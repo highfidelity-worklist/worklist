@@ -343,12 +343,18 @@ WHERE id = ' . (int)$id;
     public function getBids($worklist_id)
     {
         $query = "SELECT bids.`id`, bids.`bidder_id`, `email`, u.`nickname`, bids.`bid_amount`,
-		bids.`notes`,TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
+				UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`,
+				bids.`notes`,TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
 				TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
 				DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`,
-                UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`
+                UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`,
+				
+				UNIX_TIMESTAMP(f.`date`) AS `unix_bid_accepted`,
+				UNIX_TIMESTAMP(NOW()) AS `unix_now`
+				
 				FROM `".BIDS. "` as bids
 				INNER JOIN `".USERS."` as u on (u.id = bids.bidder_id)
+				LEFT JOIN ".FEES." as f ON (f.bid_id=bids.id)
 				WHERE bids.worklist_id=".$worklist_id.
 				" and bids.withdrawn = 0 ORDER BY bids.`id` DESC";
         $result_query = mysql_query($query);

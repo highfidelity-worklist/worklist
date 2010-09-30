@@ -346,6 +346,9 @@ function reply(id) {
 
             $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
             $('#popup-bid-info #info-email').text(bidData.email);
+            $('#popup-bid-info #info-bid-created').text(bidData.bid_created);
+            $('#popup-bid-info #info-bid-accepted').text(bidData.bid_accepted);
+            $('#popup-bid-info #info-bid-timetocomplete').text(bidData.time_to_complete);
             $('#popup-bid-info #info-bid-amount').text(bidData.amount);
             $('#popup-bid-info #info-bid-done-by').text(bidData.done_by);
             $('#popup-bid-info #info-notes').text(bidData.notes);
@@ -847,7 +850,7 @@ if ($action =="edit"):  ?>
                                     //undefined notes causing warnings
                                     if (empty($notes)) {$notes='';}
                                     ?>">
-                                        <script type="data"><?php echo "{id: {$bid['id']}, email: '{$bid['email']}', amount: '{$bid['bid_amount']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
+                                        <script type="data"><?php echo "{id: {$bid['id']}, email: '{$bid['email']}', amount: '{$bid['bid_amount']}', bid_accepted: '{$bid['bid_accepted']}', bid_created: '{$bid['bid_created']}', time_to_complete: '{$bid['time_to_complete']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
 									<td><?php echo $bid['nickname'];?></td>
 									<td>$ <?php echo $bid['bid_amount'];?></td>
 									<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>

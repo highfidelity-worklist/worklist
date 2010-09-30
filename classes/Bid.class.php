@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
  * Copyright (c) 2010, LoveMachine Inc.
  * All Rights Reserved. 
@@ -33,7 +33,7 @@ class Bid {
 	
 	private function loadBid($item) {
 		$sql = "SELECT `id`, `bidder_id`, `worklist_id`, `email`, 
-				`bid_amount`, `notes`, UNIX_TIMESTAMP(`bid_done`) AS `done_by`,
+				`bid_amount`, `notes`, UNIX_TIMESTAMP(`bid_done`) AS `done_by`, `accepted`, UNIX_TIMESTAMP(NOW()) as now, `bid_created`,
           		TIMESTAMPDIFF(SECOND, NOW(), `bid_done`) AS `future_delta`
           		FROM `" . BIDS . "` WHERE `id` = '$item'";
 		
