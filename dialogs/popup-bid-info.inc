@@ -1,28 +1,38 @@
     <div id="popup-bid-info" class="popup-body" title = "Bid Info">
          <form name = "popup-form" id = "popup-form" action="" method="post">
-            <div id = "left-column">
-                <input type="hidden" name="bid_id" value="" />
-                <p class = "info-label block">Email<br />
-                <span id="info-email"></span>
-                </p>
-
-                <p class = "info-label block">Bid Amount<br />
-                <span id="info-bid-amount"></span>
-                </p>
-            </div>
-
-            <div id = "right-column">
-                <p class = "info-label block">Done By<br />
-                <span id="info-bid-done-by"></span>
-                </p>
-
-                <p class = "info-label block">Notes<br />
-                <span id="info-notes"></span>
-                </p>
-            </div>
-
-            <div style = "clear: both;"></div>
-
+		 <input type="hidden" name="bid_id" value="" />
+		<table border="0" style="border-width:0px">
+			 <tr>
+				 <td style="width:110px">Email</td>
+				 <td><span id="info-email"></span></td>
+			 </tr>
+			 <tr>
+				 <td>Bid Amount</td>
+				 <td>$<span id="info-bid-amount"></span></td>
+			 </tr>
+			 <tr>
+				 <td>Bid Entered</td>
+				 <td><span id="info-bid-created"></span></td>
+			 </tr>
+			 <tr>
+				 <td>Done By</td>
+				 <td><span id="info-bid-done-by"></span> </td>
+			 </tr>
+			 <tr>
+				 <td>Bid Accepted</td>
+				 <td><span id="info-bid-accepted"></span> </td>
+			 </tr>
+			 <tr>
+				 <td>Time to Complete</td>
+				 <td><span id="info-bid-timetocomplete"></span></td>
+			 </tr>
+			 <tr>
+				 <td>Notes</td>
+				 <td style="text-align:justify;"><span id="info-notes"></span></td>
+			 </tr>
+		</table>		 
+        <div style = "clear: both;"></div>
+		<br/>
         </form>
 <?php if ($is_runner){ ?>
             <div style = "clear: both;" ></div><br />
