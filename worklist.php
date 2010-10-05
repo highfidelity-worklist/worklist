@@ -557,6 +557,7 @@ include("head.html"); ?>
 							[ ['input', 'bid_id', 'keyId', 'eval'],
 							  ['input', 'info-email2', 'json.email', 'eval'],
 							  ['span', '#info-email', 'json.email', 'eval'],
+							  ['span', '#info-bid-created', 'json.bid_created', 'eval'],
 							  ['span', '#info-bid-amount', 'json.bid_amount', 'eval'],
 							  ['span', '#info-bid-done-by', 'json.done_by', 'eval'],
 							  ['span', '#info-notes', 'json.notes', 'eval'] ],
@@ -858,7 +859,7 @@ include("head.html"); ?>
 
 		$('#done_by').datepicker({
 			duration: '',
-			showTime: true,
+			showTime: false,
 			constrainInput: false,
 			stepMinutes: 1,
 			stepHours: 1,
