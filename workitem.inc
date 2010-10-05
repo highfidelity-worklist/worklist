@@ -127,7 +127,9 @@ function reply(id) {
 	var clone = commentForm.clone();
 	commentForm.remove();
 	clone.insertAfter($('#comment-' + id));
-	clone.css({'margin-left':(function(){return $('#comment-' + id).css('margin-left');})()});
+	commentMargin = $('#comment-' + id).css('margin-left');
+	leftMargin= (20 + parseInt(commentMargin)) + "px";
+	clone.css({'margin-left':leftMargin});
 	
 	$('.commentform input[name=comment_id]').val(id);
 	
@@ -141,8 +143,12 @@ function reply(id) {
 	  stepMinutes: 1,
 	  stepHours: 1,
 	  altTimeField: '',
-	  time24h: false
+	  time24h: false,
+	  onSelect: function(dateText, inst) { 
+			 $.timepicker.update($.datepicker._formatDate(inst));
+		}
 	});
+	
 	$('#done_by_edit').datepicker({
 	  duration: '',
 	  showTime: true,
