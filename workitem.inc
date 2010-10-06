@@ -48,6 +48,25 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.tallest.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
+<script type="text/javascript">
+<!-- Start User Info popup code -->
+$(document).ready(function(){
+   $('#user-info').dialog({
+	   autoOpen: false,
+	   modal: true,
+	   show: 'fade',
+	   hide: 'fade',
+	   height: 500,
+	   width: 800
+   });
+});
+function showUserInfo(userId){
+	$('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
+	$('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+	return false;
+}
+<!-- End User Info popup code -->
+</script>
 <script type="text/html" id="uploadedFiles">
 <div id="accordion">
 	<h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
@@ -788,7 +807,7 @@ if ($action =="edit"):  ?>
 						foreach ($comments as $comment) :
 							?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?>">
 								<div class="comment-info">
-									<span class="author"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
+									<span class="author" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
 										<span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
 									</span>
 								</div>
@@ -982,5 +1001,8 @@ if ($action =="edit"):  ?>
 	<?php require_once('dialogs/popup-confirmation.inc') ?>
 	<!-- Popup for breakdown of fees-->
     <?php require_once('dialogs/popup-fees.inc') ?>
+	<!-- Include User Info -->
+		<div id="user-info" title="User Info"></div>
+	<!-- If we are logged in, include User Info Popup -->
     <!-- Footer html-->
 	<?php include("footer.php"); ?>
