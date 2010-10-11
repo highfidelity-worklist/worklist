@@ -768,7 +768,13 @@ if ($action =="edit"):  ?>
 									</form>
 								<?php
 								}
-							}?>
+							} else if($worklist['creator_id']== $user_id && $worklist['status'] == 'SUGGESTED') { ?>
+									<form method="post" action="" style = "display:inline;">
+										<input type="submit" id="status-switch" name="status-switch" value="Set PASS" style="margin-top: -4px; float: right;" />
+										<input type="hidden" name="quick-status" value="PASS" />
+									</form>
+								<?php
+								}?>
 					</li>
 				<!-- View: Key People info -->
 					<li>
