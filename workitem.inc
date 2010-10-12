@@ -874,12 +874,8 @@ if ($action =="edit"):  ?>
 								foreach($bids as $bid){ ?>
 								<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?>
                                     <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?><?php
-                                        // store bid info into jquery metadata so we won't have to fetch it again on user click
-                                        if($is_runner || $user_id == $bid['bidder_id']){
-                                            $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
-                                        }
-                                    //undefined notes causing warnings
-                                    if (empty($notes)) {$notes='';}
+                                        // store bid info into jquery metadata so we won't have to fetch it again on user click 
+                                        $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
                                     ?>">
                                         <script type="data"><?php echo "{id: {$bid['id']}, email: '{$bid['email']}', amount: '{$bid['bid_amount']}', bid_accepted: '{$bid['bid_accepted']}', bid_created: '{$bid['bid_created']}', time_to_complete: '{$bid['time_to_complete']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
 									<td><?php echo $bid['nickname'];?></td>

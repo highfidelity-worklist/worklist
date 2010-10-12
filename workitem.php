@@ -486,6 +486,7 @@ if(!empty($bids) && is_array($bids)) {
                 $bid['nickname'] = '*name hidden*';
 				$bid['bid_amount'] = '***';
 				$bid['email'] = '********';
+				$bid['notes'] = '********';
             }
         }
         $bid['bid_created'] = getUserTime($bid['unix_bid_created']);
