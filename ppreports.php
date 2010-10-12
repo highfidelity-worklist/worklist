@@ -395,7 +395,7 @@ include("head.html"); ?>
     }
 
 	$(document).ready(function() {
-        $('.text-field-sm').datepicker({
+/*        $('.text-field-sm').datepicker({
             changeMonth: true,
             changeYear: true,
             maxDate: 0,
@@ -403,6 +403,14 @@ include("head.html"); ?>
             dateFormat: 'mm/dd/yy',
             buttonImage: 'images/Calendar.gif',
             buttonImageOnly: true
+        });*/
+        $('.text-field-sm').datepicker({
+              changeMonth: true,
+              changeYear: true,
+			  duration: '',
+			  constrainInput: false,
+			  onSelect: function(dateText, inst) { 
+				}
         });
         
 		GetReport(<?php echo $page?>);
