@@ -67,18 +67,18 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     if( $is_runner )    {
         foreach( $sfilter as $val ) {
             if( $val == 'BIDDING' ) {
-                $where .= "( mechanic_id='$ufilter' or `bidder_id`='$ufilter' or `runner_id` = '$ufilter')";
+                $where .= "( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter')";
             } else  {
-                $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or `".FEES."`.user_id='$ufilter')";
+                $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter')";
             }
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
 	$userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
         if( $userId == $ufilter )  {
-            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or `".FEES."`.user_id='$ufilter'
-                        or `bidder_id`='$ufilter')";
+            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0)
+                        OR (`bidder_id`='$ufilter' AND `withdrawn` = 0))";
         }   else    {
-            $where .= "(creator_id='$ufilter' or runner_id='$ufilter' or mechanic_id='$ufilter' or `".FEES."`.user_id='$ufilter')";
+            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0))";
         }
     }
 }
@@ -156,7 +156,7 @@ if($is_runner){
 else{
 	$showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
 	if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-		$showLatest = 'AND `'.BIDS.'`.`bidder_id` = ' . $ufilter;
+		$showLatest = 'AND `'.BIDS.'`.`bidder_id` = ' . $ufilter ;
 	}
 }
 $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
@@ -197,7 +197,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
 if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && (isset($_SESSION['userid']))) {
-    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid'].") AS `bid_on`";
+    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0) AS `bid_on`";
 }
 
 // add where clause to not show status-level if bid was withdrawn.
