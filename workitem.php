@@ -48,6 +48,9 @@ if ($userId > 0) {
 
 if(empty($worklist_id)) {
     return;
+} else {
+    // feed links will be made specific to the workitem
+    $inWorkItem = true;
 }
 
 //Set an empty variable for $journal_message to avoid errors/warnings with .=

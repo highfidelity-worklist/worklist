@@ -25,11 +25,13 @@ if( $userId > 0 )	{
 $current_status = get_status(true);
 
 include('head.html');
+define('RSS_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/rss.png" title="rss feed" />');
+define('ATOM_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/atom.png" title="rss feed" />');
 ?>
-<link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/feedback.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
-<script type="text/javascript" src="js/feedback.js"></script>
+<link href="<?php echo SERVER_URL; ?>css/worklist.css" rel="stylesheet" type="text/css">
+<link href="<?php echo SERVER_URL; ?>css/feedback.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<?php echo SERVER_URL; ?>js/jquery.tabSlideOut.v1.3.js"></script>
+<script type="text/javascript" src="<?php echo SERVER_URL; ?>js/feedback.js"></script>
 <title>Worklist RSS & Atom Feeds | Lend a Hand</title>
 </head>
 <!-- Feedback tab html -->
@@ -46,14 +48,19 @@ include('head.html');
 		</thead>
 		<tr class="rowodd">
 			<td >Worklist Top Priority Bidding Jobs</td>
-			<td><a href="feeds.php?name=priority&format=rss"><img src="images/rss.png"></img></a></td>
-			<td><a href="feeds.php?name=priority&format=atom"><img src="images/atom.png"></img></a></td>
+			<td><a href="<?php echo SERVER_URL; ?>feeds.php?name=priority&format=rss"><?php echo RSS_ICON_HTML; ?></a></td>
+			<td><a href="<?php echo SERVER_URL; ?>feeds.php?name=priority&format=atom"><?php echo ATOM_ICON_HTML; ?></a></td>
 		</tr>
 		<tr class="roweven">
 			<td>Worklist most Recent completed jobs</td>
-			<td><a href="feeds.php?name=completed&format=rss"><img src="images/rss.png"></img></a></td>
-			<td><a href="feeds.php?name=completed&format=atom"><img src="images/atom.png"></img></a></td>
+			<td><a href="<?php echo SERVER_URL; ?>feeds.php?name=completed&format=rss"><?php echo RSS_ICON_HTML; ?></a></td>
+			<td><a href="<?php echo SERVER_URL; ?>feeds.php?name=completed&format=atom"><?php echo ATOM_ICON_HTML; ?></a></td>
 		</tr>				
+		<tr class="roweven">
+			<td>Worklist most recent comments</td>
+			<td><a href="<?php echo SERVER_URL; ?>feeds.php?name=comments&format=rss"><?php echo RSS_ICON_HTML; ?></a></td>
+			<td><a href="<?php echo SERVER_URL; ?>feeds.php?name=comments&format=atom"><?php echo ATOM_ICON_HTML; ?></a></td>
+		</tr>
 	</table>
 <?php 
 include('footer.php');

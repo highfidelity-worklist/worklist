@@ -13,16 +13,26 @@ require_once('db.php');
 require_once('Zend/Feed/Writer/Feed.php');
 
 function addEntry($writer, $entryData, $entryDescription) {
+
+    global $name;
+
 	$entry = $writer->createEntry();
-	$entry->setTitle($entryData['title']); 
 	$entry->setLink(SERVER_URL . 'workitem.php?job_id=' . $entryData['worklist_id'] . '&action=view'); 
 	// must supply a non-empty value for description
 	$content = !empty($entryData['content']) ? $entryData['content'] : "N/A";
 	$entry->setDescription($content);   
 	//$entry->setContent($entryData['content']); 
-	$entry->setDateCreated(time()); 
-	$entry->setDateModified(time()); 
 	$entry->addAuthor($entryData['author'], $entryData['email']); 
+
+    if ($name == 'comments') {
+        $entry->setTitle($entryData['author'] . ' added a comment to workitem ' . $entryData['worklist_id']);
+        $entry->setDateCreated(strtotime($entryData['timestamp'])); 
+        $entry->setDateCreated(strtotime($entryData['timestamp'])); 
+    } else {
+        $entry->setTitle($entryData['title']); 
+        $entry->setDateCreated(time()); 
+        $entry->setDateModified(time()); 
+    }
 	$writer->addEntry($entry); // manual addition post-creation 
 }
 
@@ -37,6 +47,8 @@ function loadFeed($writer, $query, $entryDescription) {
 }
 
 $format = isset($_REQUEST['format']) ? $_REQUEST['format'] : 'rss';
+$job_id = isset($_REQUEST['job_id']) ? $_REQUEST['job_id'] : false;
+
 if (!($format == 'atom' || $format == 'rss')) {
 	$format = 'rss';
 } 
@@ -63,6 +75,33 @@ switch ($name) {
 					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'BIDDING'
 					ORDER BY priority LIMIT 20";
 		break;
+    case 'comments' :
+        $name = 'comments';
+        if (isset($job_id) && $job_id) {
+            $where = "WHERE worklist_id = " . $job_id;
+            $title = 'Worklist - Comments for Job #' . $job_id;
+            $description = $_SERVER['SERVER_NAME'] . ' Worklist, latest Comments for Job #' . $job_id;
+            $entryDescription = 'Worklist latest Comments for Job #' . $job_id;
+        } else {
+            $where = "";
+            $title = 'Worklist Latest Comments';
+            $description =  $_SERVER['SERVER_NAME'] . ' Worklist, latest comments';
+            $entryDescription = 'Worklist latest comments';
+        }
+        $query = "
+            SELECT 
+                c.id AS comment_id, 
+                c.worklist_id AS worklist_id,
+                c.date AS timestamp,
+                c.comment AS summary,
+                c.comment AS content,
+                u.nickname as author, 
+                u.username as email
+            FROM ".COMMENTS." c
+            JOIN ".USERS." u on u.id = c.user_id
+            " . $where . "
+            ORDER BY timestamp DESC LIMIT 20";
+        break;
 	case 'completed' : 
 	default :
 		$name = 'completed';
