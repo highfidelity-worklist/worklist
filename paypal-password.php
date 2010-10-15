@@ -72,7 +72,7 @@ if (basename($_SERVER['PHP_SELF'])=='paypal-password.php') {
     <div><label for="password">New Password:</label><br /><input type="password" name="password" value="" /></div>
     <div><input type="submit" name="submit" value="Update Password" />
 </form>
-<?php if (isset($_GET['action'] && $_GET['action']== 'checkpass') { ?>
+<?php if (isset($_GET['action']) && $_GET['action']== 'checkpass') { ?>
 <h2>Check Password</h2>
 <form action="paypal-password.php" method="POST">
     <input type="hidden" name="action" value="check" />
