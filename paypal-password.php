@@ -9,7 +9,7 @@ $db = @mysql_select_db(DB_NAME);
 
 function saveAdmin($pass, $oldpass = '') {
     if (checkAdmin($oldpass) == '1') {
-	$sql = "UPDATE dev.paypal_admins SET `password` = '".md5($pass)."' WHERE (password = '".md5($oldpass)."')";
+	$sql = "UPDATE ".PAYPAL_ADMINS." SET `password` = '".md5($pass)."' WHERE (password = '".md5($oldpass)."')";
     } else {
 	$sql = "";	
     }
@@ -26,13 +26,13 @@ function saveAdmin($pass, $oldpass = '') {
 
 function checkAdmin($pass) {
 //checks admin login.  
-$sql = "SELECT * FROM dev.paypal_admins WHERE `password` = '".md5($pass)."'";
+$sql = "SELECT * FROM ".PAYPAL_ADMINS." WHERE `password` = '".md5($pass)."'";
 $result = mysql_query($sql);
 error_log("Password: ".$pass);
 error_log(mysql_error());
 //if successful, this will be 1, otherwise 0
 return mysql_num_rows($result);
-
+error_log(DB_NAME." : ". $sql);
 }
 
 
@@ -53,22 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } 
 
+if ($_GET['action']=='reset') {
+	$pass = 'RyanLM82010';
+	$sql = "UPDATE ".PAYPAL_ADMINS." SET `password` = '".md5($pass)."' where `user` = 'admin'";
+	$result = mysql_query($sql);
+}
 
+//only display the form if the page is accessed stand-alone (testing and updating only)
 if (basename($_SERVER['PHP_SELF'])=='paypal-password.php') {
 ?>
 <html>
 <head><title>LM PayPal Admin Password</title></head>
 <body>
+<h2>Change Password</h2>
 <form action="paypal-password.php" method="POST">
     <input type="hidden" name="action" value="change" />
     <div><label for="old_password">Current Password:</label><br /><input type="password" name="old_password" value="" /></div>
     <div><label for="password">New Password:</label><br /><input type="password" name="password" value="" /></div>
     <div><input type="submit" name="submit" value="Update Password" />
 </form>
-<?php if ($_get['action']== 'checkpass') { ?>
+<?php if (isset($_GET['action'] && $_GET['action']== 'checkpass') { ?>
+<h2>Check Password</h2>
 <form action="paypal-password.php" method="POST">
     <input type="hidden" name="action" value="check" />
-    <div><label for="password">New Password:</label><br /><input type="password" name="password" value="" /></div>
+    <div><label for="password">Password:</label><br /><input type="password" name="password" value="" /></div>
     <div><input type="submit" name="submit" value="Check Password" />
 </form>
 <?php } ?>

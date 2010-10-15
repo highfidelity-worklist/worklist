@@ -40,7 +40,7 @@ if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachinein
 if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
 
 if (!defined('DB_SERVER'))      define('DB_SERVER', 'mysql.dev.sendlove.us');
-if (!defined('DB_USER'))        define('DB_USER', 'project_stage');
+if (!defined('DB_USER'))        define('DB_USER', 'project_cupid');
 if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', 'test30');
 if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
 
@@ -57,6 +57,7 @@ if (!defined('USER_STATUS'))	    define('USER_STATUS', 'user_status');
 if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
 if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
+if (!defined('PAYPAL_ADMINS'))     define('PAYPAL_ADMINS', 'paypal_admins');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);

@@ -63,7 +63,7 @@ switch ($action)
     case 'pay':
     //collect confirmed payees and run paypal transaction
     include_once("paypal-password.php");
-    error_log("PW: ".$_POST['password']." CA: ".checkAdmin($_POST['password']));
+    //error_log("PW: ".$_POST['password']." CA: ".checkAdmin($_POST['password']));
     if (checkAdmin($_POST['password']) == '1') { 
     error_log("Made it Admin!");
         if(empty($_POST['pp_api_username']) || empty($_POST['pp_api_password']) || empty($_POST['pp_api_signature'])){
