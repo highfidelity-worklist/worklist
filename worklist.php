@@ -119,7 +119,6 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/feedback.css" rel="stylesheet" type="text/css">
 <link href="css/ui.toaster.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
@@ -130,7 +129,6 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
-<script type="text/javascript" src="js/feedback.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript">
     // This variable needs to be in sync with the PHP filter name
@@ -1243,8 +1241,6 @@ include("head.html"); ?>
 <!-- Div for moving items accross the pages -->
 <?php require_once('dialogs/pages-dialog.inc'); ?>
 
-<!-- Feedback tab html -->
-<?php require_once('feedback.inc') ?>
 <?php include("format.php"); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <div id="search-head" <?php echo isset($_SESSION['userid']) ? 'style="height:100px"' : 'style="height:50px"'; ?>>
