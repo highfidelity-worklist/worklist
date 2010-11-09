@@ -29,7 +29,7 @@ include("head.html");
 
 
 
-<title>SendLove | Privacy Statement</title>
+<title>LoveMachine | Privacy Statement</title>
 
 
 </head>
