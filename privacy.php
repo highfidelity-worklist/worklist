@@ -36,7 +36,7 @@ include("head.html");
 
 <body>
 <?php
-	require_once('feedback.inc');
+//	require_once('feedback.inc');
 	include("format.php");
 ?>
 
