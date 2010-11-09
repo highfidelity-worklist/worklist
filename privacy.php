@@ -44,7 +44,7 @@ include("head.html");
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <span id="privacyInfo">   
-	<h1>SendLove Privacy Statement</h1>
+	<h1>LoveMachine Privacy Statement</h1>
 	<h3>What information do we collect?</h3>
 	<p>We collect information from you when you register on our site or fill out a form.</p>
 	<p>When ordering or registering on our site, as appropriate, you may be asked to enter your: e-mail address. You may, however, visit our site anonymously.</p>
