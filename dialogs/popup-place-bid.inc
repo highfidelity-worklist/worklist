@@ -1,7 +1,7 @@
 <div id="popup-bid" class="popup-body" title = "Place Bid">  <form name="popup-form" action="" method="post" >
         <input type="hidden" name="<?php echo $get_variable;?>" value="<?php echo $worklist_id;?>" />
 		<p><label>Bid Amount<br />
-		  <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
+		  <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />&nbsp;USD
         </label></p>
 		<p><label>Done By <small>(If bid accepted now, how long will it take to finish?)</small><br />
            <input type="text" class="text-field date" name="done_by" id="done_by" value="" size="20" />
@@ -14,7 +14,8 @@
 
     <script type="text/javascript">
 		// see http://regexlib.com/REDetails.aspx?regexp_id=318
-		var regex_bid = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                // but without  dollar sign 22-NOV-2010 <krumch>
+		var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
 		var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$|^\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (am|pm)$/;
 
 		var bid_amount = new LiveValidation('bid_amount',{ onlyOnSubmit: true });

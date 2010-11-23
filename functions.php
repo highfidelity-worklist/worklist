@@ -418,7 +418,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     // Journal notification
     if($mechanic_id == $_SESSION['userid'])
     {
-        $journal_message = $_SESSION['nickname'] . " added a fee of $fee_amount to item #$itemid: $summary. ";
+        $journal_message = $_SESSION['nickname'] . " added a fee of \$$fee_amount to item #$itemid: $summary. ";
     }
     else
     {
@@ -433,7 +433,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
             $nickname = "unknown-{$mechanic_id}";
         }
 
-        $journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of $fee_amount to item #$itemid:  $summary. ";
+        $journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of \$$fee_amount to item #$itemid:  $summary. ";
     }
 
     return $journal_message;

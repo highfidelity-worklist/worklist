@@ -120,7 +120,7 @@
 		<div id='fees_single_block'>
 		<div style="float:left;width:33%">
                 <p class="info-label">Fee Amount<br />
-		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money" size="48" />
+		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money" size="48" />&nbsp;USD
                 </p>
 		</div>
 		<div style="float:left;width:33%">

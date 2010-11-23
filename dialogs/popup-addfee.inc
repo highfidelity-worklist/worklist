@@ -4,7 +4,7 @@
 
             <div style="float:left;width:33%">
                 <p class="info-label">Amount<br />
-                <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />
+                <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />&nbsp;USD
                 </p>
             </div>
 
@@ -34,7 +34,8 @@
 
                 <script type="text/javascript">
                     // see http://regexlib.com/REDetails.aspx?regexp_id=318
-                    var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    // but without  dollar sign 22-NOV-2010 <krumch>
+                    var regex = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
 
                     var fee_amount = new LiveValidation('fee_amount',{ onlyOnSubmit: true });
                         fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });

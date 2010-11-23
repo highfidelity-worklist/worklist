@@ -897,7 +897,8 @@ include("head.html"); ?>
 				});
 				if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val()) {
 					// see http://regexlib.com/REDetails.aspx?regexp_id=318
-					var regex = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    // but without  dollar sign 22-NOV-2010 <krumch>
+					var regex = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
 					var optionsLiveValidation = { onlyOnSubmit: true,
 						onInvalid : function() {
 							loaderImg.hide("saveRunning");

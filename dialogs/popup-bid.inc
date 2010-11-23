@@ -15,7 +15,7 @@
                 <input type="hidden" name="itemid" value="" />
     
                 <p class="info-label">Bid Amount<br />
-                <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />
+                <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />&nbsp;USD
                 </p>
     
     			<div class="w9notice"></div>
@@ -28,7 +28,8 @@
 
                 <script type="text/javascript">
                     // see http://regexlib.com/REDetails.aspx?regexp_id=318
-                    var regex_bid = /^\$?(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    // but without  dollar sign 22-NOV-2010 <krumch>
+                    var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
                     var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$|^\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (am|pm)$/;
 
                     var bid_amount = new LiveValidation('bid_amount',{ onlyOnSubmit: true });
