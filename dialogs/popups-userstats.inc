@@ -1,16 +1,4 @@
-        <div id = "done-jobs-popup" style = "display: none;" title = "Done jobs">
-            <table>
-                <thead>
-                    <tr class = "table-hdng">
-                        <th>Job #</th><th>Summary</th><th>Creator</th><th>Runner</th><th>Date</th>
-                    </tr>
-                </thead>
-                <tbody><tr><td></td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id = "active-jobs-popup" style = "display: none;" title = "Active jobs">
+        <div id = "jobs-popup" style = "display: none;" title = "Jobs list">
             <table>
                 <thead>
                     <tr class = "table-hdng">

@@ -115,7 +115,7 @@
 
 <script type="text/javascript">
 
-  var userId = <?php echo $userId; ?>;
+  var user_id = <?php echo $userId; ?>;
   var available = 0;
   var rewarded = 0;
   var showTabs = <?php echo $is_runner; ?>;
@@ -141,7 +141,7 @@
         $.ajax({
             type: "POST",
             url: 'pingtask.php',
-            data: 'userid=' + userId + '&msg=' + msg + '&mail=' + mail,
+            data: 'userid=' + user_id + '&msg=' + msg + '&mail=' + mail,
             dataType: 'json',
             success: function() {}
         });
@@ -202,7 +202,7 @@
         //Wire off rewarder functions for now - GJ 5/24
        return false;
 
-	$.getJSON('get-rewarder-user.php', {'id': userId}, function(json){
+	$.getJSON('get-rewarder-user.php', {'id': user_id}, function(json){
 
 		rewarded = json.rewarded;
 		available = json.available;
@@ -225,7 +225,7 @@
 
         $.ajax({
             url: 'reward-user.php',
-            data: 'id=' + userId + '&points=' + toReward,
+            data: 'id=' + user_id + '&points=' + toReward,
             dataType: 'json',
             type: "POST",
             cache: false,
@@ -244,7 +244,7 @@
 		dataType: 'json',
 		data: {
 		action: "create-sandbox",
-		id: userId,
+		id: user_id,
 		unixusername: $('#unixusername').val(),
 		projects: $('#projects').val()
 	},

@@ -24,12 +24,20 @@ if (isset($_REQUEST['id'])) {
         echo json_encode($userStats->getTotalLove($page));
         break;
 
-    case 'donejobs':
-        echo json_encode($userStats->getDoneJobs($page));
+    case 'doneJobs':
+        echo json_encode($userStats->getUserItems('DONE', $page));
         break;
 
-    case 'activejobs':
-        echo json_encode($userStats->getActiveJobs($page));
+    case 'activeJobs':
+        echo json_encode($userStats->getUserItems('WORKING', $page));
+        break;
+
+    case 'reviewJobs':
+        echo json_encode($userStats->getUserItems('REVIEW', $page));
+        break;
+
+    case 'completedJobs':
+        echo json_encode($userStats->getUserItems('COMPLETED', $page));
         break;
 
     case 'latest_earnings':

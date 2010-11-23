@@ -33,25 +33,9 @@ class UserStats{
         return false;
     }
 
-    // returns array of jobs marked as 'DONE'
-    public function getDoneJobs($page = 1){
-        return $this->getUserItems('DONE', $page);
-    }
-
-    // returns array of jobs marked as 'WORKING'
-    public function getActiveJobs($page = 1){
-        return $this->getUserItems('WORKING', $page);
-    }
-
-    // get only jobs with status "WORKING"
+    // wrapper for getJobsCount to get number of jobs in "WORKING" status
     public function getActiveJobsCount(){
-        $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
-                . "WHERE `mechanic_id` = {$this->userId} AND `status` = 'WORKING'";
-        $res = mysql_query($sql);
-        if($res && $row = mysql_fetch_row($res)){
-            return $row[0];
-        }
-        return false;
+        return $this->getJobsCount('WORKING');
     }
 
     public function getTotalEarnings(){
@@ -192,8 +176,7 @@ class UserStats{
         }
     }
 
-
-    public function getUserItems($status, $page = 1){
+    public function getJobsCount($status){
 
         $count = 0;
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
@@ -203,6 +186,12 @@ class UserStats{
         if($res && $row = mysql_fetch_row($res)){
             $count = $row[0];
         }
+        return $count;
+    }
+
+    public function getUserItems($status, $page = 1){
+
+        $count = $this->getJobsCount($status);
 
         $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `cn`.`nickname` AS `creator_nickname`, 
             `rn`.`nickname` AS `runner_nickname`,

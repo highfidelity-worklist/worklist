@@ -317,3 +317,7 @@ z-index: 1;
 }
 
 .clickable { cursor:pointer; }
+
+div#quick-links{
+  margin-top: 5px;
+}
