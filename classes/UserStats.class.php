@@ -180,7 +180,7 @@ class UserStats{
 
         $count = 0;
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
-                . "WHERE `mechanic_id` = {$this->userId} AND `status` = '$status'";
+                . "WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId}) AND `status` = '$status'";
 
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
@@ -199,7 +199,8 @@ class UserStats{
             FROM `" . WORKLIST . "` 
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
-            WHERE `mechanic_id` = {$this->userId} AND `status` = '$status' ORDER BY `created` DESC "
+            WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId})
+            AND `status` = '$status' ORDER BY `created` DESC "
             . "LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();
