@@ -75,7 +75,7 @@ function getReport() {
 	if (isset($from_date) && isset($to_date)) {
 	    $mysqlFromDate = GetTimeStamp($from_date);
 	    $mysqlToDate = GetTimeStamp($to_date);
-	    $dateRangeFilter = ($from_date && $to_date) ? "DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" : "";
+	    $dateRangeFilter = ($from_date && $to_date) ? "DATE(`date_created`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" : "";
 	}
 	
 	$sfilter = $filter->getStatus();
@@ -126,7 +126,7 @@ function getReport() {
 	           LEFT JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `worklist_id`
 	           LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `user_id`
 	           WHERE $where ";
-	
+
 	$qorder = "$orderby, `".PAYPAL_LOG."`.`status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";
 	
 	
