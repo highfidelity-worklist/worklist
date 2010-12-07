@@ -15,7 +15,7 @@
                     <td>$<?php echo $userStats->getTotalEarnings(); ?></td>
                     <td><a href = "#" id = "latest-earnings">$<?php echo $userStats->getLatestEarnings(30); ?></a></td>
 					<?php if(!empty($Annual_Salary)){?><td>$<?php echo $Annual_Salary; ?></td><?php }?>
-                    <td><a href = "#" id = "love"><?php echo $userStats->getLoveCount(); ?>(<?php echo $userStats->getUniqueLoveCount(); ?>)</a></td>
+                    <td><a href = "#" id = "love"><?php echo $userStats->getLoveCount(); ?>(<?php echo (int) $userStats->getUniqueLoveCount(); ?>)</a></td>
                 </tr>
             </tbody>
         </table>

@@ -158,6 +158,7 @@ include("head.html"); ?>
 	var sort = '<?php echo $filter->getSort(); ?>';
 	var resetOrder = false;
         var worklistUrl = '<?php echo SERVER_URL; ?>';
+    stats.setUserId(user_id);
 
     function AppendPagination(page, cPages, table)    {
 	// support for moving rows between pages

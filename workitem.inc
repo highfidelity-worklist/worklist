@@ -136,9 +136,6 @@ var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
 var documentsArray = new Array();
 var ping_who = '';
-
-// this user Id is used in popup info for user stats
-var userId = 0;
 worklistUrl = '<?php echo SERVER_URL; ?>';
 
 function reply(id) {
@@ -395,8 +392,9 @@ function reply(id) {
                   $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
             }
 <?php } ?>
-            // we need this userId for user stats popups functions
-            userId = bidData.bidder_id;
+
+            // change user id to current bidder id
+            stats.setUserId(bidData.bidder_id);
 
             // filling and appending user stats table
             $('.loader').show();

@@ -119,6 +119,7 @@
   var available = 0;
   var rewarded = 0;
   var showTabs = <?php echo $is_runner; ?>;
+  stats.setUserId(user_id);
 
   $(document).ready(function(){
 

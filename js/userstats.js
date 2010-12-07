@@ -54,10 +54,15 @@ $(function(){
 var stats = {
     
     stats_page: 1,
+    user_id: 0,
+    
+    setUserId: function(id){
+        stats.user_id = id;
+    },
 
     showJobs: function(job_type){
         $.getJSON('getuserstats.php', 
-                    {id: user_id, statstype: job_type, page: stats.stats_page},
+                    {id: stats.user_id, statstype: job_type, page: stats.stats_page},
                     function(json){
                         stats.fillJobs(json, partial(stats.showJobs, job_type));
                         $('#jobs-popup').dialog('open');
@@ -66,7 +71,7 @@ var stats = {
 
     showLatestEarnings: function(){
         $.getJSON('getuserstats.php',
-                    {id: user_id, statstype: 'latest_earnings', page: stats.stats_page},
+                    {id: stats.user_id, statstype: 'latest_earnings', page: stats.stats_page},
                     function(json){
                         stats.fillEarnings(json, stats.showLatestEarnings);
                         $('#latest-earnings-popup').dialog('open');
@@ -75,7 +80,7 @@ var stats = {
 
     showLove: function(){
         $.getJSON('getuserstats.php', 
-                    {id: user_id, statstype: 'love', page: stats.stats_page},
+                    {id: stats.user_id, statstype: 'love', page: stats.stats_page},
                     function(json){
                         stats.fillLove(json, stats.showLove);
                         $('#lovelist-popup').dialog('open');

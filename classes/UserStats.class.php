@@ -44,7 +44,7 @@ class UserStats{
                 . "AND `rewarder`=0 AND `user_id` = {$this->userId}";
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
-            return $row[0];
+            return (int) $row[0];
         }
         return false;
     }
@@ -63,7 +63,7 @@ class UserStats{
 
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
-            return $row[0];
+            return (int) $row[0];
         }
         return false;
     }
@@ -129,7 +129,7 @@ class UserStats{
     public function getLoveCount(){
         $data = $this->sendloveApiRequest('getcount');
         if($data){
-            return $data['count'];
+            return (int) $data['count'];
         }
         return false;
     }
@@ -137,7 +137,7 @@ class UserStats{
     public function getUniqueLoveCount(){
        $data = $this->sendloveApiRequest('getuniquecount');
 	    if($data){
-            return $data['count'];
+            return (int) $data['count'];
         }
         return false;
     }
