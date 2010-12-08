@@ -12,18 +12,31 @@
 		<?php if ( isset($_SESSION['username'])) {
 			$return_from_getfeesums = true;
 			include 'getfeesums.php';
-			$feeinfo = ' | Your fees: <a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].'</a> this week, <a href="#feesToolTip" class="feesum" id="fees-month">$'.$sum['month'].'</a> this month';
-			if (empty($_SESSION['nickname'])){ ?>
-				Welcome, <span id="user"><?php echo $_SESSION['username']; ?></span><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
-			<?php }else{ ?>
-				Welcome, <span id="user"><?php echo $_SESSION['nickname']; ?></span><?php echo $feeinfo; ?> | <a href="logout.php">Logout</a>
-			<?php } ?>
-			<?php }else{?>
-				<a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>
-			<?php } ?>
+			$feeinfo = '<div style="display:none;" id="feesDialog"><table><tr><td><b>Your fees: </b></td></tr><tr><td>this week:</td><td><a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].
+                        '</a></td></tr><tr><td>this month:</td><td><a href="#feesToolTip" class="feesum" id="fees-month">$'.$sum['month'].'</a> </td></tr></table></div>';
+            $earnings = ' | <a href="javascript:;" class="earnings">Earnings</a> ';
+            $budget = '<span class="budget"></span>';
+			if (empty($_SESSION['nickname'])){ 
+                $name = $_SESSION['username'];
+            } else {
+                $name = $_SESSION['nickname'];
+            }
+            $status = '<span id="status-wrap" style="width:340px;">
+                <form action="" style="display:inline" id="status-update-form" style="width:340px;">' . $name .' is <span id="status-lbl"><b>' . $current_status . '</b></span>
+                    <input style="display: none;" type="text" maxlength="45" id="status-update" name="status-update"
+                        value="' . $current_status . '"></input>
+                    <span id="status-share" style="display: none;  width:122px;">
+                        <input type="submit" value="Share" id="status-share-btn"></input>
+                    </span>
+                </form>
+            </span>' ;
+            echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a> | $status";
+            echo $feeinfo;  
+        } else {
+            echo '<a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>';
+		} ?>
 		<div id="tagline">Lend a hand.</div>
 	</div>
-
 	<div id="container">
 		<div id="left"></div>
 

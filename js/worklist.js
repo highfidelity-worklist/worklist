@@ -225,8 +225,32 @@ $(function() {
 	$("#status-update").DefaultValue("What are you working on?");
 	$('#status-update').hide();
 	$("#query").DefaultValue("Search...");
-	
-
+    $("#feesDialog").dialog({
+        title: "Earnings",
+        autoOpen: false,
+        height: 'auto',
+        width: '200px',
+        position: ['center',60],
+        modal: true
+    });
+    //debugger;
+	$("#welcome .earnings").click(function(){
+        $("#feesDialog").dialog("open");
+    });
+    if ($("#budgetPopup").length > 0) {
+        $("#welcome .budget").html('| <a href="javascript:;" class="budget">Budget</a> ');
+        $("#budgetPopup").dialog({
+            title: "Budget",
+            autoOpen: false,
+            height: 'auto',
+            width: '250px',
+            position: ['center',60],
+            modal: true
+        });
+        $("#welcome .budget").click(function(){
+            $("#budgetPopup").dialog("open");
+        });
+    }
 	// if the status is empty, show input field - allow user to enter the status
 	if( $.trim($('#status-lbl').find('b').html()) == "" ) {
 		$('#status-lbl').hide();

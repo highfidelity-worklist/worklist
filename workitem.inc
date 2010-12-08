@@ -392,7 +392,7 @@ function reply(id) {
                   $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
             }
 <?php } ?>
-
+debugger;
             // change user id to current bidder id
             stats.setUserId(bidData.bidder_id);
 

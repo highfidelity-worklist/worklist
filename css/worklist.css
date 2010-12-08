@@ -140,14 +140,16 @@ z-index: 1;
 
 /* Status Update Fields */
 #status-wrap {
-    line-height: 30px;
     z-index:1;
-	float:left;
 	padding-left:10px;
 }
 
+#status-lbl {
+    color: #6F6F6F;
+}
+
 #status-update {
-    width: 40%;
+    width: 200px;
 }
 #search-head{
 	position:relative;
@@ -270,7 +272,6 @@ z-index: 1;
 	position:absolute;
 	z-index:99;
 	top:5px;
-	right:10px;
 }
 
 #be-table {
@@ -320,4 +321,19 @@ z-index: 1;
 
 div#quick-links{
   margin-top: 5px;
+}
+
+#feesDialog , #budgetPopup{
+	font-family: helvetica, arial, sans-serif;
+	color:#333;
+	font-size:12px;
+}
+
+#feesDialog  table{
+	border: none;
+	padding:2px;
+}
+#feesDialog table td {
+	border: none;
+	padding:2px;
 }

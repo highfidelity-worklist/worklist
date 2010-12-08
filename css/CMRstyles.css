@@ -74,9 +74,8 @@ body {
 	
 #tagline {
 	float:right;
-	width: 350px;
-	margin: 0;
-	padding:0;
+	width: 150px;
+	margin-top: 10px;
 	color:#98AAB2;
 	font-size:11px;
 	font-style:italic;
@@ -139,7 +138,7 @@ body {
 	color: #98AAB2;
 	height:15px;
 	font-size:12px;
-	margin-bottom:35px;
+	margin-bottom:5px;
 	z-index:100;
 }
 
@@ -579,3 +578,4 @@ div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 }
 
 #popup-bid-info table td{ border-width:0px;}
+
