@@ -156,6 +156,15 @@
 
 }
 
+.project-label {
+	font-weight:bold;
+	margin:0px 7px 0px 0px;
+}
+
+.project-dropdown {
+    width: 200px;    
+}
+
 #ping-btn{
 	text-decoration:underline;
 	cursor:pointer;

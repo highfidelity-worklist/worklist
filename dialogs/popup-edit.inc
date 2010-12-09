@@ -62,9 +62,18 @@
   <?php }else {?>
 		  <input type="hidden" id="status" name="status" value = "SUGGESTED" />    
   <?php }?>
-		  <p class="info-label">Notes<br />
+        <p class="info-label">Project<br/>
+		  <select name="project" class="resetToFirstOption">
+              <option value="">-- Select --</option>
+                <?php foreach ( Repository::allAvailableRepositories() as $repository ): ?>
+                    <option value="<?php echo $repository;?>"><?php echo $repository; ?></option>
+                <?php endforeach; ?>
+		  </select>
+        </p>
+                      
+		<p class="info-label">Notes<br />
 		  <textarea name="notes" size="48" /></textarea>
-		  </p>
+		</p>
 		<p class="info-label">Invite<br />
 			<input type="text" name="invite" class="invite" />
 			<small>Invite someone to do this job. (Comma-separated list of developers.)</small>

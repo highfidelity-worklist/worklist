@@ -13,6 +13,7 @@ require_once("update_status.php");
 require_once("workitem.class.php");
 require_once('lib/Agency/Worklist/Filter.php');
 require_once('classes/UserStats.class.php');
+require_once('classes/Repository.class.php');
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -37,7 +38,8 @@ $filter->setName('.worklist')
        ->initFilter();
 
 if ($userId > 0 && isset($_POST['save_item'])) {
-    $args = array('itemid', 'summary', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount', 'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder');
+    $args = array( 'itemid', 'summary', 'project','status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
+                   'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
     		// Removed mysql_real_escape_string, because we should 
     		// use it in sql queries, not here. Otherwise it can be applied twice sometimes
@@ -63,6 +65,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     }
 
     $workitem->setRunnerId($runner_id);
+    $workitem->setProject($project);
     $workitem->setStatus($status);
     $workitem->setNotes($notes);
     $workitem->save();
@@ -499,6 +502,7 @@ include("head.html"); ?>
 		$('#for_edit').show();
 		$('#for_view').hide();
 		$('.popup-body form input[type="text"]').val('');
+		$('.popup-body form select.resetToFirstOption option[index=0]').attr('selected', 'selected');        
 		$('.popup-body form select option[value=\'BIDDING\']').attr('selected', 'selected');
 		$('.popup-body form textarea').val('');
     }

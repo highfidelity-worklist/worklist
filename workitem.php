@@ -9,6 +9,7 @@ require_once 'send_email.php';
 require_once 'workitem.class.php';
 require_once 'functions.php';
 require_once 'lib/Sms.php';
+require_once 'classes/Repository.class.php';
 
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
 				 "BIDDING" => array("PASS"),
@@ -119,7 +120,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 $notifyEmpty = true;
 if($action =='save_workitem') {
 
-    $args = array('summary','notes', 'status');
+    $args = array('summary','notes', 'status', 'project');
     foreach ($args as $arg) {
         $$arg = $_POST[$arg];
     }
@@ -149,7 +150,11 @@ if($action =='save_workitem') {
         $workitem->setNotes($notes);
         $new_update_message .= "Notes changed. ";
     }
-
+    // project
+    if ( $workitem->getProject() != $project){
+        $workitem->setProject($project);
+        $new_update_message .= "Project changed. ";
+    }
     // Send invites
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);

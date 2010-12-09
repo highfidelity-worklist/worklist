@@ -175,6 +175,10 @@ $config = array(
     	'twitterUsername'		=> 'cash4code',
     	'twitterPassword'		=> 'martini10'
     	)
+    ),
+    'websvn' => array(
+        'baseUrl'           => 'http://svn.sendlove.us',
+        'repLinkFragment'   => 'listing.php?repname='
     )
 );
 // New config object, allows additional merging

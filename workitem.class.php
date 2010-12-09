@@ -25,6 +25,7 @@ class WorkItem
     protected $mechanicId;
     protected $mechanic;
     protected $status;
+    protected $project;
     protected $notes;
 
     protected $origStatus = null;
@@ -69,6 +70,7 @@ class WorkItem
 					    w.runner_id,
 					    w.mechanic_id,
 					    w.status,
+					    w.project,
 					    w.notes
 					FROM  ".WORKLIST. " as w
 					WHERE w.id = '" . (int)$id . "'";
@@ -86,6 +88,7 @@ class WorkItem
              ->setRunnerId($row['runner_id'])
 	     	 ->setMechanicId($row['mechanic_id'])
              ->setStatus($row['status'])
+             ->setProject($row['project'])
              ->setNotes($row['notes']);
         return true;
     }
@@ -209,6 +212,17 @@ WHERE id = ' . (int)$id;
         return $this->status;
     }
 
+    public function setProject($project)
+    {
+        $this->project = $project;
+        return $this;
+    }
+
+    public function getProject()
+    {
+        return $this->project;
+    }
+
     public function setNotes($notes)
     {
         $this->notes = $notes;
@@ -235,12 +249,13 @@ WHERE id = ' . (int)$id;
 
     protected function insert()
     {
-        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status, notes, created ) ".
+        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status, project, notes, created ) ".
             "VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
             "'".mysql_real_escape_string($this->getRunnerId())."', ".
             "'".mysql_real_escape_string($this->getStatus())."', ".
+            "'".mysql_real_escape_string($this->getProject())."', ".
             "'".mysql_real_escape_string($this->getNotes())."', ".
             "NOW())";
         $rt = mysql_query($query);
@@ -274,6 +289,7 @@ WHERE id = ' . (int)$id;
         $query = 'UPDATE '.WORKLIST.' SET
             summary= "'. mysql_real_escape_string($this->getSummary()).'",
             notes="'.mysql_real_escape_string($this->getNotes()).'",
+            project="'.mysql_real_escape_string($this->getProject()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
 	    runner_id="' .intval($this->getRunnerId()). '"';
 
@@ -326,7 +342,7 @@ WHERE id = ' . (int)$id;
     public function getWorkItem($worklist_id)
     {
         $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname,
-			  uc.nickname AS creator_nickname, w.status, w.notes
+			  uc.nickname AS creator_nickname, w.status, w.notes, w.project
 			  FROM  ".WORKLIST. " as w
 			  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
 			  LEFT JOIN ".USERS." as u ON w.runner_id = u.id

@@ -392,7 +392,6 @@ function reply(id) {
                   $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
             }
 <?php } ?>
-debugger;
             // change user id to current bidder id
             stats.setUserId(bidData.bidder_id);
 
@@ -717,7 +716,7 @@ if ($action =="edit"):  ?>
 							<?php endif;?>
 						</li>
 				<!-- Edit: Notes textarea -->
-						<li class="last">
+						<li>
 							<span class="info-label">Notes</span>
 							<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
 								<span id="info-notes">
@@ -726,6 +725,25 @@ if ($action =="edit"):  ?>
 							<?php else:?>
 								<span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
 							<?php endif;?>
+						</li>
+						<li>
+							<span class="project-label">Project</span>
+							<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
+		                            <select id="project" name="project" class="project-dropdown">
+                                        <option value="">-- Select --</option>
+                                        <?php foreach ( Repository::allAvailableRepositories() as $repository ): ?>
+                                            <option value="<?php echo $repository;?>" <?php echo $repository == $worklist['project'] ? ' selected = "selected"' : ''; ?>>
+                                            <?php echo $repository; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+		                            </select>
+							<?php elseif( !empty($worklist['project'])) :?>
+                                <a href="<?php echo Repository::getRepoUrl($worklist['project']);?>" target="_blank">
+                                    <?php echo htmlspecialchars($worklist['project']);?>
+                                </a>
+                            <?php else :?>
+						        <span>Not assigned</span>
+                            <?php endif;?>
 						</li>
 					</ul>
 					<?php if($allowEdit && $action=="edit"): ?>
@@ -791,10 +809,20 @@ if ($action =="edit"):  ?>
 						
 					</li>
 				<!-- View: Notes textarea -->
-					<li class="last">
+					<li>
 						<span class="info-label">Notes</span>
                         <p class="notestext<?php echo $classEditable;?>"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
 						<!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
+					</li>
+                    <li>
+						<span class="project-label">Project</span>
+                        <?php if ( !empty($worklist['project']) ):?>
+                            <a href="<?php echo Repository::getRepoUrl($worklist['project']);?>" target="_blank">
+                                <?php echo htmlspecialchars($worklist['project']);?>
+                            </a>
+                        <?php else :?>
+						    <span>Not assigned</span>
+                        <?php endif;?>
 					</li>
 				</ul>
 <!-- *** End of Action IF *** -->
