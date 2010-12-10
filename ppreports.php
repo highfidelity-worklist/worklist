@@ -438,11 +438,8 @@ include("head.html"); ?>
 	   });
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <?php include("footer.php"); ?>
 
 

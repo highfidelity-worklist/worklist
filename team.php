@@ -34,6 +34,7 @@ include("head.html");
 <!-- <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script> -->
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.easing-1.3.pack.js"></script>
+<script type="text/javascript" src="js/worklist.js"></script>
 
 <script type="text/javascript">
   var current_letter = '<?php echo $cur_letter; ?>';

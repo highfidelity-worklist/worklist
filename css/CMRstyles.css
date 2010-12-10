@@ -579,3 +579,33 @@ div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 
 #popup-bid-info table td{ border-width:0px;}
 
+
+#feesDialog , #budgetPopup{
+	font-family: helvetica, arial, sans-serif;
+	color:#333;
+	font-size:12px;
+}
+
+#feesDialog  table{
+	border: none;
+	padding:2px;
+}
+#feesDialog table td {
+	border: none;
+	padding:2px;
+}
+
+
+/* Status Update Fields */
+#status-wrap {
+    z-index:1;
+	padding-left:10px;
+}
+
+#status-lbl {
+    color: #6F6F6F;
+}
+
+#status-update {
+    width: 200px;
+}

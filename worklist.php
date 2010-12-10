@@ -111,11 +111,6 @@ if (!empty($_POST)) {
     exit();
 }
 
-/*
- * Retrieve the latest status update from the user
- */
-$current_status = get_status(true);
-
 /*********************************** HTML layout begins here  *************************************/
 $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
