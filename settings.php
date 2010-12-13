@@ -37,7 +37,7 @@ if (isset($_POST['save_account'])) {
     // check if phone was updated
     if (isset($_POST['phone_edit']) || isset($_POST['int_code']) ||isset($_POST['timezone']))
     {
-		$saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
+	$saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
 
         foreach ($saveArgs as $arg=>$esc) {
             $$arg = ($esc ? $_POST[$arg] : intval($_POST[$arg]));
@@ -52,9 +52,15 @@ if (isset($_POST['save_account'])) {
         if (!empty($_POST['journal_alerts'])) $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
         if (!empty($_POST['bid_alerts'])) $sms_flags |= SMS_FLAG_BID_ALERTS;
         $saveArgs['sms_flags'] = 0;
-        $timezone = mysql_real_escape_string(trim($_POST['timezone']));
-		$saveArgs['timezone'] = 0;
 
+        $timezone = mysql_real_escape_string(trim($_POST['timezone']));
+        $saveArgs['timezone'] = 0;
+
+        $notifications = 0;
+        $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
+        $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
+        $notifications = Notification::setFlags($review_notify, $bidding_notify);
+        $saveArgs['notifications'] = 0;
 
         // if user is new - create an entry for him
         // clear $saveArgs so it won't be updated for the second time
@@ -65,8 +71,8 @@ if (isset($_POST['save_account'])) {
             $nickname = $_SESSION['nickname'];
 
             $sql = " INSERT INTO " . USERS . " 
-                        (`id`, `username`, `nickname`, `timezone`, `country`, `is_uscitizen`, `provider` ,`phone`, `int_code`, `smsaddr`, `sms_flags`, `is_active`, `confirm`)
-                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$is_uscitizen', '$provider', '$phone', '$int_code', '$smsaddr', '$sms_flags', '1', '1')";
+                        (`id`, `username`, `nickname`, `timezone`, `country`, `is_uscitizen`, `provider` ,`phone`, `int_code`, `smsaddr`, `sms_flags`, `notifications`, `is_active`, `confirm`)
+                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$is_uscitizen', '$provider', '$phone', '$int_code', '$smsaddr', '$sms_flags', '$notifications', '1', '1')";
             mysql_unbuffered_query($sql);
             $_SESSION['new_user'] = '';
             $saveArgs = array();
@@ -117,7 +123,9 @@ if (!empty($saveArgs)) {
 
     $sql = "UPDATE `".USERS."` SET ";
     foreach ($saveArgs as $arg=>$esc) {
+
         if ($esc) $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+
         if (is_int($$arg)) {
             $sql .= "`$arg`=".$$arg.",";
         } else {
@@ -126,6 +134,7 @@ if (!empty($saveArgs)) {
     }
     $sql = rtrim($sql, ',');
     $sql .= " WHERE id = '${_SESSION['userid']}'";
+
     mysql_query($sql);
 
 // Email user
@@ -166,6 +175,7 @@ include("head.html");
 <!--Added worklist.css to solve stylesheet issues for settings.php-->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/settings.css" rel="stylesheet" />
 
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userinfo.js"></script>
@@ -247,12 +257,14 @@ include("head.html");
                 country: $('#country').val(),
                 smsaddr: $('#smsaddr').val(),
                 provider: $('#provider').val(),
-				timezone: $('#timezone').val(),
-                journal_alerts: $('#journal_alerts').val(),
-                bid_alerts: $('#bid_alerts').val(),
+		timezone: $('#timezone').val(),
+                journal_alerts: $('#journal_alerts').attr('checked') ? 1:0,
+                bid_alerts: $('#bid_alerts').attr('checked') ? 1:0,
                 nickname: $('#nickname').val(),
                 save_account: 1,
-                username: $('#username').val()
+                username: $('#username').val(),
+                review_notify: $('input[name="review_notify"]').attr('checked') ? 1:0,
+                bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1:0
             };
         } else if (type == 'personal') {
             values = {
@@ -400,7 +412,7 @@ include("head.html");
 
     <table width="100%">
     <tr>
-        <td align="left"><h2 class="subheader">Account Info<span class="heading-links"></h2></td>
+        <td align="left"><h2 class="subheader">Account Info<span class="heading-links" /></h2></td>
         <td align="right"><a href="password.php">Change my password...</a></td>
     </tr>
     </table>
@@ -443,10 +455,16 @@ include("head.html");
         $provider = !$new_user ? $userInfo['provider'] : '';
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $picture = !$new_user ? $userInfo['picture'] : '';
+        $notifications = !$new_user ? $userInfo['notifications'] : 0;
         $settingsPage = true;
         include("sms-inc.php");
     ?>
-
+        <input type="checkbox" name="bidding_notify" value="1" <?php
+            echo Notification::isNotified($notifications, Notification::BIDDING_NOTIFICATIONS) ? 'checked="checked"' : '';
+            ?>/>Notify me when any job is set to bidding<br />
+        <input type="checkbox" name="review_notify" value="1" <?php 
+            echo Notification::isNotified($notifications, Notification::REVIEW_NOTIFICATIONS) ? 'checked="checked"' : '';
+            ?>/>Notify me when any job is set to review<br /><br />
         <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
 
     </form>

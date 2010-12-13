@@ -2,6 +2,7 @@
 require_once ("class/CURLHandler.php");
 
 class Utils{
+
     public static $keys = array(
         "about",
         "contactway",
@@ -17,7 +18,8 @@ class Utils{
         "paypal_email",
         "sms_flags",
         "findus",
-        "int_code"
+        "int_code",
+        "notifications"
     );
     public static function registerKey($key){
         return in_array($key, self::$keys);

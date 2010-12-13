@@ -14,6 +14,7 @@ include_once("send_email.php");
 include("timezones.php");
 include("countrylist.php");
 include("smslist.php");
+require_once("classes/Notification.class.php");
 
 $phone = $country = $provider = $authtype = "";
 $msg="";
@@ -89,6 +90,9 @@ if(isset($minimal_POST['sign_up'])){
         unset($minimal_POST['phone_edit']);
         unset($minimal_POST['sign_up']);
         $minimal_POST['sms_flags'] = (! empty($_POST['journal_alerts']) ? SMS_FLAG_JOURNAL_ALERTS : 0) | (! empty($_POST['bid_alerts']) ? SMS_FLAG_BID_ALERTS : 0);
+        $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
+        $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
+        
         if(! isset($minimal_POST['paypal'])){
             $minimal_POST['paypal_email'] = '';
         }
@@ -107,7 +111,7 @@ if(isset($minimal_POST['sign_up'])){
         $result = ob_get_contents();
         ob_end_clean();
         $ret = json_decode($result);
-        
+
         if($ret->error == 1){
             $error->setError($ret->message);
         }else{
@@ -121,6 +125,7 @@ if(isset($minimal_POST['sign_up'])){
             $newUser["username"] = $ret->username;
             $newUser["nickname"] = $ret->nickname;
             $newUser["added"] = "NOW()";
+            $newUser["notifications"] = Notification::setFlags($review_notify, $bidding_notify);
             $sql = "INSERT INTO ".USERS." ";
             $columns = "(";
             $values = "VALUES(";
@@ -139,6 +144,7 @@ if(isset($minimal_POST['sign_up'])){
             $sql .= $columns." ".$values;
             $res = mysql_query($sql);
             $user_id = mysql_insert_id();
+
             // Email user
             $subject = "LoveMachine Worklist Registration Confirmation";
             $link = SECURE_SERVER_URL . "confirmation.php?cs=".$ret->confirm_string."&str=" . base64_encode($ret->username);
@@ -147,7 +153,7 @@ if(isset($minimal_POST['sign_up'])){
             $body .= "<p>Love,<br/>The LoveMachine</p>";
             $plain = "You are only one click away from completing your registration!\n\n";
             $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
-            $plain .= ${link}."\n\n";
+            $plain .= $link."\n\n";
             $plain .= "Love,\n\nThe LoveMachine</p>";
             sl_send_email($ret->username, $subject, $body, $plain);
             
@@ -261,7 +267,8 @@ include("head.html");
         nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
       </script>
 <?php include("sms-inc.php"); ?>
-
+        <input type="checkbox" name="bidding_notify" />Notify me when any job is set to bidding<br />
+        <input type="checkbox" name="review_notify" />Notify me when any job is set to review<br /><br />
             <div class="LVspacelg" style="height: 88px"><input
 	type="checkbox" id="paypal" name="paypal" value="1"
 	<?php echo !empty($_POST['paypal']) ? 'checked':''; ?> /><label>&nbsp;Paypal

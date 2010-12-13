@@ -107,7 +107,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 	try {
 		$comment->save();
 		$journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
-		workitemNotify(array('type' => 'comment',
+		Notification::workitemNotify(array('type' => 'comment',
 		      'workitem' => $workitem,
 		      'recipients' => array('creator', 'runner', 'mechanic')),
 		       array('who' => $_SESSION['nickname'],
@@ -144,6 +144,7 @@ if($action =='save_workitem') {
             if (!empty($new_update_message)){  // add commas where appropriate
                 $new_update_message .= ", ";
             }
+
             $new_update_message .= "Status set to $status. ";
         }
     }
@@ -188,7 +189,7 @@ if($action =='status-switch'){
 }
 
     if(!$notifyEmpty){
-	  workitemNotify(array('type' => 'modified',
+	  Notification::workitemNotify(array('type' => 'modified',
 			      'workitem' => $workitem,
 			      'recipients' => array('runner', 'creator', 'mechanic')),
 			  array('changes' => $new_update_message));
@@ -238,7 +239,7 @@ if ($action =="place_bid"){
     }
 
     // notify runner of new bid
-    workitemNotify(array('type' => 'bid_placed',
+    Notification::workitemNotify(array('type' => 'bid_placed',
 			 'workitem' => $workitem,
 			 'recipients' => array('runner')),
 		    array('done_by' => $done_by,
@@ -246,19 +247,10 @@ if ($action =="place_bid"){
 			  'notes' => $notes,
 			  'bid_id' => $bid_id));
 
+    // sending sms message to the runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    try {
-        $config = Zend_Registry::get('config')->get('sms', array());
-        if ($config instanceof Zend_Config) {
-            $config = $config->toArray();
-        }
-        $smsMessage = new Sms_Message($runner, 'Bid placed', $journal_message);
-        Sms::send($smsMessage, $config);
-    } catch (Sms_Backend_Exception $e) {
-    }
-
-//    sl_notify_sms_by_id($workitem->getOwnerId(), 'Bid placed', $journal_message);
+    Notification::sendSMS($runner, 'Bid placed', $journal_message);
 
     $redirectToDefaultView = true;
 }
@@ -282,7 +274,7 @@ if ($action =="edit_bid"){
         $username = $row['username'];
     }
     // notify runner of new bid
-    workitemNotify(array('type' => 'bid_updated',
+    Notification::workitemNotify(array('type' => 'bid_updated',
 			 'workitem' => $workitem,
 			 'recipients' => array('runner')),
 		    array('done_by' => $done_by_edit,
@@ -290,21 +282,12 @@ if ($action =="edit_bid"){
 			  'notes' => $notes,
 			  'bid_id' => $bid_id));
 
+    // sending sms message to the runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    try {
-        $config = Zend_Registry::get('config')->get('sms', array());
-        if ($config instanceof Zend_Config) {
-            $config = $config->toArray();
-        }
-        $smsMessage = new Sms_Message($runner, 'Bid updated', $journal_message);
-        Sms::send($smsMessage, $config);
-    } catch (Sms_Backend_Exception $e) {
-    }
+    Notification::sendSMS($runner, 'Bid updated', $journal_message);
 
-//    sl_notify_sms_by_id($workitem->getOwnerId(), 'Bid placed', $journal_message);
-
-  $redirectToDefaultView = true;
+    $redirectToDefaultView = true;
 }
 // Request submitted from Add Fee popup
 if ($action == "add_fee") {
@@ -319,24 +302,16 @@ if ($action == "add_fee") {
     $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
 
     // notify runner of new fee
-    workitemNotify(array('type' => 'fee_added',
+    Notification::workitemNotify(array('type' => 'fee_added',
 			 'workitem' => $workitem,
 			 'recipients' => array('runner')),
 		    array('fee_adder' => $user->getNickname(),
 			  'fee_amount' => $fee_amount));
 
-
+    // send sms message to runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    try {
-        $config = Zend_Registry::get('config')->get('sms', array());
-        if ($config instanceof Zend_Config) {
-            $config = $config->toArray();
-        }
-        $smsMessage = new Sms_Message($runner, 'Fee added', $journal_message);
-        Sms::send($smsMessage, $config);
-    } catch (Sms_Backend_Exception $e) {
-    }
+    Notification::sendSMS($runner, 'Fee added', $journal_message);
 
     $redirectToDefaultView = true;
 }
@@ -366,22 +341,17 @@ if ($action=='accept_bid'){
 				$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " . $bid_info['summary'] . ". Status set to WORKING.";
 	
 				// mail notification
-				workitemNotify(array('type' => 'bid_accepted',
+				Notification::workitemNotify(array('type' => 'bid_accepted',
 						     'workitem' => $workitem,
 						     'recipients' => array('mechanic')));
 	
-	            $bidder = new User();
-	            $bidder->findUserById($bid_info['bidder_id']);
-	            try {
-	                $config = Zend_Registry::get('config')->get('sms', array());
-	                if ($config instanceof Zend_Config) {
-	                    $config = $config->toArray();
-	                }
-	                $smsMessage = new Sms_Message($bidder, 'Bid accepted', $journal_message);
-	                Sms::send($smsMessage, $config);
-	            } catch (Sms_Backend_Exception $e) {
-	            }
-				$redirectToDefaultView = true;
+                                $bidder = new User();
+                                $bidder->findUserById($bid_info['bidder_id']);
+
+                                //send sms notification to bidder
+                                Notification::sendSMS($bidder, 'Bid accepted', $journal_message);
+
+                                $redirectToDefaultView = true;
 	
 				// Send email to not accepted bidders
 				sendMailToDiscardedBids($worklist_id);
@@ -417,7 +387,7 @@ if ($action=='accept_multiple_bid'){
 					// Journal notification
 			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . ". Status set to WORKING.<br>";
 					// mail notification
-					workitemNotify(array('type' => 'bid_accepted',
+					Notification::workitemNotify(array('type' => 'bid_accepted',
 								 'workitem' => $workitem,
 								 'recipients' => array('mechanic')));
 				}
@@ -562,116 +532,9 @@ function changeStatus($workitem,$newStatus, $user){
 
 		$workitem->setRunnerId($user->getId());
 	  }
-
-	  $workitem->setStatus($newStatus);
-
-    }else{
-
-	$workitem->setStatus($newStatus);
     }
-}
+    $workitem->setStatus($newStatus);
 
-
-function workitemNotify($options, $data = null){
-
-	$recipients = $options['recipients'];
-	$workitem = $options['workitem'];
-	$itemId = $workitem -> getId();
-	$itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId
-			    . '</a> (' . $workitem -> getSummary() . ')';
-	$itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
-	$body = '';
-	$subject = '';
-
-	switch($options['type']){
-
-	    case 'comment':
-
-		  $subject = 'LoveMachine New comment: ' . $itemTitle;
-		  $body = 'New comment was added to the item ' . $itemLink . '.<br>';
-		  $body .= $data['who'] . ' says:<br />'
-			    . $data['comment'];
-
-	    break;
-
-	    case 'fee_added':
-
-		  $subject = 'LoveMachine Fee added: ' . $itemTitle;
-		  $body = 'New fee was added to the item ' . $itemLink . '.<br>'
-			. 'Who: ' . $data['fee_adder'] . '<br>'
-			. 'Amount: ' . $data['fee_amount'];
-
-	    break;
-
-	    case 'bid_accepted':
-
-		  $subject = 'LoveMachine Bid accepted: ' . $itemTitle;
-		  $body = 'Cha-ching! Your bid was accepted for ' . $itemLink . '<br>'
-			. 'Promised by: ' . $_SESSION['nickname'];
-
-	    break;
-
-	    case 'bid_placed':
-
-		  $subject = 'LoveMachine New bid: ' . $itemTitle;
-		  $body =  'New bid was placed for ' . $itemLink . '<br>'
-			 . 'Details of the bid:<br>'
-			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
-			 . 'Done By: ' . $data['done_by'] . '<br>'
-			 . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
-			 . 'Notes: ' . $data['notes'] . '<br>';
-
-		  $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
-		  $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
-		  $body .=  $urlacceptbid;
-
-	    break;
-	    case 'bid_updated':
-
-		  $subject = 'LoveMachine Bid Updated: ' . $itemTitle;
-		  $body =  'Bid Updated for ' . $itemLink . '<br>'
-			 . 'Details of the bid:<br>'
-			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
-			 . 'Done By: ' . $data['done_by'] . '<br>'
-			 . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
-			 . 'Notes: ' . $data['notes'] . '<br>';
-
-		  $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
-		  $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
-		  $body .=  $urlacceptbid;
-
-	    break;
-	    case 'modified':
-
-		  $subject = "LoveMachine Item modified: ".$itemTitle;
-		  $body =  $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-			 . $data['changes'];
-
-	    break;
-
-	}
-
-	$body .= '<p>Love,<br/><br/>Eliza @ the LoveMachine</p>';
-
-	$emails = array();
-	foreach($recipients as $recipient){
-		$recipientUser = new User();
-		$method = 'get' . ucfirst($recipient) . 'Id';
-		$recipientUser->findUserById($workitem->$method());
-
-		// do not send mail to the same user making changes
-		if(($username = $recipientUser->getUsername()) && $recipientUser->getId() != getSessionUserId()){
-
-			// check if we already sending email to this user
-			if(!in_array($username, $emails)){
-
-				$emails[] = $username;
-			}
-		}
-	}
-
-	foreach($emails as $email){
-
-		sl_send_email($email, $subject, $body);
-	}
+    // notifications for subscribed users
+    Notification::statusNotify($workitem);
 }

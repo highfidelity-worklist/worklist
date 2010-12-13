@@ -70,6 +70,8 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     $workitem->setNotes($notes);
     $workitem->save();
 
+    Notification::statusNotify($workitem);
+
     if(empty($_POST['itemid']))  {
         $bid_fee_itemid = $workitem->getId();
         $journal_message .= " item #$bid_fee_itemid: $summary. ";

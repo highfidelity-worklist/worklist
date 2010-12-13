@@ -18,9 +18,12 @@
     </div>
     <div id="footer">
 <?php
+    if(!isset($inWorkItem)){
+        $inWorkItem = false;
+    }
     // Suppress RSS feed links inside the RSS feed list
     if (!isset($inFeedlist) || ($inFeedlist === false)) {
-        if (isset($inWorkItem) || ($inWorkItem === true)) {
+        if ($inWorkItem === true) {
             $job_id = isset($_GET['job_id']) ? $_GET['job_id'] : false;
             echo '<div class="lefticon" style="padding-top:10px;"><a href="' . SERVER_URL . 'feeds.php?name=comments&job_id=' . $job_id . '" title="Rss & Atom Feeds" style="text-decoration:none;"><img alt="rss feed" title="rss feed" src="' . SERVER_URL .'images/rss20.png" /></a>&nbsp;<a href="' . SERVER_URL .'feeds.php?name=comments&job_id=' . $job_id . '" title="Rss & Atom Feeds" style="text-decoration:none;"><img alt="atom feed" title="atom feed" src="' . SERVER_URL .'images/atom20.png" /></a></div>';
         } else {
