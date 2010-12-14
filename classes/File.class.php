@@ -329,6 +329,24 @@ class File
 		return false;
 	}
 	
+	public function remove()
+	{
+		$flag = false;
+		$sql = 'DELETE FROM `' . FILES . '` ';
+		$sql .= ' WHERE `id` = ' . (int)$this->getId() . ';'; 
+		$result = mysql_query($sql);
+		if ($result) {
+            return array(
+                'success' => true,
+                'message' => "File removed:" . (int)$this->getId()
+            );
+		}
+        return array(
+            'success' => false,
+            'message' => "Error, cannot remove file :" . (int)$this->getId() . " , sql:" . $sql
+        );
+	}
+	
 	public static function uniqueFilename($strExt = 'tmp')
 	{
 		// explode the IP of the remote client into four parts

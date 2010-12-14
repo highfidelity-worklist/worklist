@@ -314,6 +314,7 @@ $(function() {
 		
 		return false;
 	});
+    
 });
 
 /* get analytics info for this page */

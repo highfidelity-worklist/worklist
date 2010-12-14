@@ -197,6 +197,18 @@ class JsonServer
 	}
 	
 	/**
+	 * This method removes a file from a workitem
+	 */
+	protected function actionFileRemove()
+	{
+		$fileid = $this->getRequest()->getParam('fileid');
+		$file = new File();
+		$file->findFileById($fileid);
+		$success = $file->remove();
+        return $this->setOutput($success);
+	}
+    
+	/**
 	 * This method adds a file to a workitem
 	 */
 	protected function actionFileUpload()

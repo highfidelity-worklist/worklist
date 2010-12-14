@@ -563,3 +563,8 @@
 	text-decoration:none;
 }
 .button-disabled { opacity: 0.5; -moz-opacity: 0.5; -webkit-opacity: 0.5; }
+
+.removeAttachment  {
+    cursor: pointer;
+    text-decoration: underline;
+}

@@ -55,6 +55,7 @@
 					}
 					$('input[name=files]').val(images.concat(documents).join(','));
 					editable();
+
 				} else {
 					alert(data.message);
 				}
@@ -93,6 +94,49 @@
 				},
 				method: 'post'
 			});
+            $(".removeAttachment").unbind("click").click(function(){
+                var file_id = this.id.replace('fileRemoveAttachment_', ''),
+                    oThis= this;
+            
+                $.ajax({
+                    url: "jsonserver.php",
+                    type: "POST",
+                    data: "action=fileRemove&fileid=" + file_id +"&userid="+user,
+                    dataType: "text",
+                    success: function(){
+                        var fileDesc = $(oThis).parents(".filesDescription");
+                        header = fileDesc.parent().prev("h3");
+                        var iPos = -1;
+                        if ($("#documentCount",header).length != 0) {                         
+                            for (var i=0; i < documents.length; i++) {
+                                if (documents[i] == file_id) {
+                                    iPos = i;
+                                    break;
+                                }
+                            }
+                            
+                            if (iPos != -1) {
+                                documents.splice(iPos,1);
+                                $("#documentCount",header).text(parseInt($("#documentCount",header).text()) - 1);
+                            }
+                        } else {
+                            for (var i=0; i < images.length; i++) {
+                                if (images[i] == file_id) {
+                                    iPos = i;
+                                    break;
+                                }
+                            }
+                            if (iPos != -1) {
+                                images.splice(iPos,1);
+                                $("#imageCount",header).text(parseInt($("#imageCount",header).text()) - 1);
+                            }
+                         }
+                        fileDesc.prev().remove();
+                        fileDesc.remove();
+                    }
+                });
+            });
+
 		}
 
 		// initial call
