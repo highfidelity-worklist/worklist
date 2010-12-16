@@ -94,7 +94,7 @@
 				<div id="fileUploadButton">
 					Attach new files
 				</div>
-				<div class=".uploadnotice"></div>
+				<div class="uploadnotice"></div>
 				<script type="text/javascript" src="js/uploadFiles.js"></script>
 			</p>
 

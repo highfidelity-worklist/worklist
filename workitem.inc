@@ -114,6 +114,7 @@ function showUserInfo(userId){
 <div id="fileUploadButton">
 	Attach new files
 </div>
+<div class="uploadnotice"></div>
 <?php endif; ?>
 </script>
 <script type="text/html" id="uploadImage">
