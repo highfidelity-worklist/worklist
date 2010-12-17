@@ -19,7 +19,7 @@
 		<div class="clear"></div>
 	</script>
     <div id="popup-edit" title = "Add Worklist Item" class = "popup-body">
-            <form name="popup-form" id="popup-form-edit" action="" method="post">
+            <form name="popup-form" id="popup-form-edit" action="javascript:;" method="post">
                 <input type="hidden" name="itemid" value="0" />
                 <input type="hidden" name="page" value="<?php echo $page ?>" class="popup-page-value" />
                 <input type="hidden" name="files" value="" />
@@ -28,15 +28,6 @@
 		  <p class="info-label">Summary<br />
 		  <input type="text" name="summary" id="summary" class="text-field" size="48" />
 		  </p>
-                  <script type="text/javascript">
-                    var summary = new LiveValidation('summary',{ onlyOnSubmit: true ,
-						onInvalid : function() {
-							loaderImg.hide("saveRunning");
-							this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-						}});
-                        summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                  </script>
-
 
   <?php
   $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;

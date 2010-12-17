@@ -350,7 +350,7 @@ function DisplayFilter($filter_name, $reports = null)
  * Function for performing a CURL request given an url and post data.
  * Returns the results.
  */
-function postRequest($url, $post_data) {
+function postRequest($url, $post_data, $curlopt_timeout = 30) {
     if (!function_exists('curl_init')) {
         error_log('Curl is not enabled.');
         return 'error: curl is not enabled.';
@@ -358,7 +358,7 @@ function postRequest($url, $post_data) {
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $curlopt_timeout);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

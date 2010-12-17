@@ -33,7 +33,7 @@
     <?php } ?>
   </div>
 <?php if(isset($_SESSION['userid']) && $is_runner){ ?>
-<div id="budgetPopup">
+<div id="budgetPopup" style="display:none;">
     <div id="be-block" >
         <table id="be-table">
             <tr>

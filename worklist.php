@@ -886,12 +886,12 @@ include("head.html"); ?>
 		
 		$("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
 		reattachAutoUpdate();
-
 		$('#add').click(function(){
 			$('#popup-edit').data('title.dialog', 'Add Worklist Item');
 			$('#popup-edit form input[name="itemid"]').val('');
 			ResetPopup();
 			$('#save_item').click(function(event){
+                var massValidation;
 				if ($('#save_item').data("submitIsRunning") === true) {
 					event.preventDefault();
 					return false;
@@ -917,11 +917,63 @@ include("head.html"); ?>
 					bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 					bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
 					bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    massValidation = LiveValidation.massValidate( [ bid_fee_amount, bid_fee_desc]);   
+                    if (!massValidation) {
+                        loaderImg.hide("saveRunning");
+                        event.preventDefault();
+                        return false;
+                     }
 				} else {
 					if (bid_fee_amount) bid_fee_amount.destroy();
 					if (bid_fee_desc) bid_fee_desc.destroy();
 				}
-				return true;
+                var summary = new LiveValidation('summary',{ onlyOnSubmit: true ,
+                    onInvalid : function() {
+                        loaderImg.hide("saveRunning");
+                        this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
+                    }});
+                summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                massValidation = LiveValidation.massValidate( [ summary ]);   
+                if (!massValidation) {
+                    loaderImg.hide("saveRunning");
+                    event.preventDefault();
+                    return false;
+                 }
+                addForm = $("#popup-edit");
+                $.ajax({
+                    url: 'addworkitem.php',
+                    dataType: 'json',
+                    data: {
+                        bid_fee_amount:$(":input[name='bid_fee_amount']",addForm).val(),
+                        bid_fee_mechanic_id:$(":input[name='bid_fee_mechanic_id']",addForm).val(),
+                        itemid:$(":input[name='itemid']",addForm).val(),
+                        summary:$(":input[name='summary']",addForm).val(),
+                        files:$(":input[name='files']",addForm).val(),
+                        invite:$(":input[name='invite']",addForm).val(),
+                        notes:$(":input[name='notes']",addForm).val(),
+                        page:$(":input[name='page']",addForm).val(),
+                        project:$(":input[name='project']",addForm).val(),
+                        status:$("select[name='status'] option:selected",addForm).val()
+                    },
+                    type: 'POST',
+                    success: function(json){
+                        if ( !json || json === null ) {
+                            alert("json null in addworkitem");
+                            loaderImg.hide("saveRunning");
+                            return;
+                        }
+                        if ( json.error ) {
+                            alert(json.error);
+                        } else {
+                            $('#popup-edit').dialog('close');
+                        }
+                        loaderImg.hide("saveRunning");
+                        if (timeoutId) clearTimeout(timeoutId);
+                        timeoutId = setTimeout("GetWorklist("+page+", true, true)", refresh);
+                        GetWorklist("+page+", true, true);
+                    }
+                });
+				return false;
 			});
 			$('#fees_block').hide();
 			$('#fees_single_block').show();
