@@ -222,10 +222,10 @@ function reply(id) {
 			    if(!$.journalChat) {
     			    $.ajax({
                         // use journal's aj.php to query results on worklist id
-    			        type: 'get',
+    			        type: 'post',
     			        url: '<?php echo JOURNAL_QUERY_URL;?>',
                         data: {
-                            what: 'latest', count: 50, query: <?php echo $worklist['id'];?>, filter: 'all',
+                            action: 'getLatestPosts', count: 50, query: <?php echo $worklist['id'];?>, filter: 'all',api_key:'<?php echo  JOURNAL_API_KEY; ?>'
                         },
     			        dataType: 'json',
     			        success: function(json)
