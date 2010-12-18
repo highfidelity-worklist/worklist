@@ -299,6 +299,7 @@ WHERE id = ' . (int)$id;
 
     protected function tweetNewJob()
     {
+        /*** 
     	//Get the Twitter config
     	$config = Zend_Registry::get('config')->get('twitter', array());
     	if ($config instanceof Zend_Config) {
@@ -320,6 +321,7 @@ WHERE id = ' . (int)$id;
     	//Set the twitter status for a new job
     	$twitter = new Twitter();
     	$twitter->setStatus('New job: ' . $summary . ' ' . $link, $config);
+        **/
     }
 
     public function save()
