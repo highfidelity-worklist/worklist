@@ -953,7 +953,7 @@ include("head.html"); ?>
                         notes:$(":input[name='notes']",addForm).val(),
                         page:$(":input[name='page']",addForm).val(),
                         project:$(":input[name='project']",addForm).val(),
-                        status:$("select[name='status'] option:selected",addForm).val()
+                        status:$(":input[name='status']",addForm).val()
                     },
                     type: 'POST',
                     success: function(json){
