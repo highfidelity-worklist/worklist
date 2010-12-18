@@ -48,12 +48,7 @@ class Notification{
     public static function getNotificationEmails($flag = self::REVIEW_NOTIFICATIONS){
 
         $result = array();
-        $sql = "SELECT u.username FROM `" . USERS . "` u
-                    LEFT JOIN (SELECT `user_id`, MAX(`date`) AS `date`
-                    FROM `" . FEES . "` GROUP BY `user_id`) AS `dates` ON u.id = dates.user_id
-                    WHERE (`date` > DATE_SUB(NOW(), INTERVAL 45 DAY)
-                            OR `added` > DATE_SUB(NOW(), INTERVAL 30 DAY)) AND `is_active` = 1
-                            AND u.notifications & $flag != 0";
+        $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0";
 
         $res = mysql_query($sql);
         if($res){
@@ -214,13 +209,19 @@ class Notification{
             }
         }
 
-	foreach($emails as $email){
+        if(count($emails) > 0){
+            $to = '';
+            foreach($emails as $email){
 
-            // do not send mail to the same user making changes
-            if($email != $current_user->getUsername()){
-             	sl_send_email($email, $subject, $body);
+                // do not send mail to the same user making changes
+                if($email != $current_user->getUsername()){
+                    $to .= $email . ', ';
+                }
             }
-	}
+
+            $to = substr_replace($to, "", -2);
+            sl_send_email($to, $subject, $body);
+        }
     }
 
     /**
