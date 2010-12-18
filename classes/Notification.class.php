@@ -258,7 +258,7 @@ class Notification{
 
                 $sms_user = new User();
                 $sms_user->findUserByUsername($email);
-             	self::sendSMS($sms_user, $subject, $message);
+            // 	self::sendSMS($sms_user, $subject, $message);
             }
 	}
 
