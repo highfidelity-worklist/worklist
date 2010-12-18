@@ -251,6 +251,7 @@ class Notification{
 
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
+        $sms_recipients = array();
         foreach($emails as $email){
 
             // do not send sms to the same user making changes
@@ -258,28 +259,22 @@ class Notification{
 
                 $sms_user = new User();
                 $sms_user->findUserByUsername($email);
-            // 	self::sendSMS($sms_user, $subject, $message);
+                $sms_recipients[] = $sms_user->getId();
             }
 	}
 
-    }
+        if(count($sms_recipients) > 0){
 
-    /**
-     * Function to send an sms message to given user
-     *
-     * @param User $recipient - user object to send message to
-     * @param String $subject - subject of the message
-     * @param String $message - actual message content
-     */
-    public static function sendSMS($recipient, $subject, $message){
-          try {
-            $config = Zend_Registry::get('config')->get('sms', array());
-            if ($config instanceof Zend_Config) {
-                $config = $config->toArray();
+            setlocale(LC_CTYPE, "en_US.UTF-8");
+            $esc_subject = escapeshellarg($subject);
+            $esc_message = escapeshellarg($message);
+            $args = '"'.$subject . '" "' . $message . '" ';
+            foreach($sms_recipients as $recipient){
+                $args .= $recipient . ' ';
             }
-            $smsMessage = new Sms_Message($recipient, $subject, $message);
-            Sms::send($smsMessage, $config);
-        } catch (Sms_Backend_Exception $e) {
+            $application_path = dirname(dirname(__FILE__)) . '/';
+            exec('php ' . $application_path . 'tools/smsnotifications.php '
+                    . $args . ' > /dev/null 2>/dev/null &');
         }
     }
 } 
