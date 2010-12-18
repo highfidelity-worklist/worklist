@@ -8,6 +8,7 @@ $application_path = dirname(dirname(__FILE__)) . '/';
 
 require_once($application_path . 'config.php');
 require_once($application_path . 'lib/Sms.php');
+require_once($application_path . 'classes/Notification.class.php');
 
 // we should have at least 3 scrit arguments - subject, message and at least one
 // receiver
@@ -28,26 +29,7 @@ for($i = 3; $i < $count; $i++){
 foreach($receivers as $receiver){
     $sms_user = new User();
     $sms_user->findUserById($receiver);
-    sendSMS($sms_user, $subject, $message);
-}
-
-/**
- * Function to send an sms message to given user
- *
- * @param User $recipient - user object to send message to
- * @param String $subject - subject of the message
- * @param String $message - actual message content
- */
-function sendSMS($recipient, $subject, $message){
-      try {
-        $config = Zend_Registry::get('config')->get('sms', array());
-        if ($config instanceof Zend_Config) {
-            $config = $config->toArray();
-        }
-        $smsMessage = new Sms_Message($recipient, $subject, $message);
-        Sms::send($smsMessage, $config);
-    } catch (Sms_Backend_Exception $e) {
-    }
+    Notification::sendSMS($sms_user, $subject, $message);
 }
 
 

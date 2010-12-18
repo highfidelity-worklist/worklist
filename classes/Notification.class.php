@@ -277,4 +277,23 @@ class Notification{
                     . $args . ' > /dev/null 2>/dev/null &');
         }
     }
+
+    /**
+    * Function to send an sms message to given user
+    *
+    * @param User $recipient - user object to send message to
+    * @param String $subject - subject of the message
+    * @param String $message - actual message content
+    */
+    public static function sendSMS($recipient, $subject, $message){
+        try {
+            $config = Zend_Registry::get('config')->get('sms', array());
+            if ($config instanceof Zend_Config) {
+                $config = $config->toArray();
+            }
+            $smsMessage = new Sms_Message($recipient, $subject, $message);
+            Sms::send($smsMessage, $config);
+        } catch (Sms_Backend_Exception $e) {
+        }
+    }
 } 
