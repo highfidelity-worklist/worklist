@@ -220,7 +220,8 @@ class Notification{
             }
 
             $to = substr_replace($to, "", -2);
-            sl_send_email($to, $subject, $body);
+            $headers = 'BCC: ' . $to . PHP_EOL;
+            sl_send_email('love@sendlove.us', $subject, $body, null, $headers);
         }
     }
 

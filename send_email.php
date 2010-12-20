@@ -17,11 +17,11 @@ require_once(dirname(__FILE__) . "/email/en.php");
  * 
  *  Check using Akismet if mail is probably spam, otherwise send an email 
  */
-function sl_send_email($to, $subject, $html, $plain=null) {
+function sl_send_email($to, $subject, $html, $plain=null, $headers = '') {
     if (empty($to)) return false;
 
     $hash = md5(date('r', time()));
-    $headers = "From: SendLove <love@sendlove.us>\n";
+    $headers .= "From: SendLove <love@sendlove.us>\n";
     if (!empty($html)) {
         if (empty($plain)) {
             $h2t = new html2text($html, 75);
