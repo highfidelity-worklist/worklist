@@ -1,14 +1,14 @@
 <?php
 //  vim:ts=4:et
 
-/**
+/** 
  * Workitem
  *
- * @package Workitem
+ * @package Workitem  
  * @version $Id$
  */
-require_once 'lib/Workitem/Exception.php';
-require_once 'twitter.class.php';
+require_once('lib/Workitem/Exception.php');
+require_once('lib/twitteroauth/twitteroauth.php');
 /**
  * Workitem
  *
@@ -267,7 +267,7 @@ WHERE id = ' . (int)$id;
         $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
         mysql_unbuffered_query($query);
 
-        if($this->getStatus() == 'BIDDING') {
+        if($this->status == 'BIDDING') {
         	$this->tweetNewJob();
         }
 
@@ -299,12 +299,7 @@ WHERE id = ' . (int)$id;
 
     protected function tweetNewJob()
     {
-        /*** 
-    	//Get the Twitter config
-    	$config = Zend_Registry::get('config')->get('twitter', array());
-    	if ($config instanceof Zend_Config) {
-    		$config = $config->toArray();
-    	}
+         
     	if (empty($_SERVER['HTTPS']))
     	{
     		$prefix	= 'http://';
@@ -318,11 +313,14 @@ WHERE id = ' . (int)$id;
     	$link = $prefix . $_SERVER['HTTP_HOST'] . $port . '/rw/?' . $this->id;
     	$summary_max_length = 140-strlen('New job: ')-strlen($link)-1;
     	$summary = substr($this->summary, 0, $summary_max_length);
-    	//Set the twitter status for a new job
-    	$twitter = new Twitter();
-    	$twitter->setStatus('New job: ' . $summary . ' ' . $link, $config);
-        **/
-    }
+        
+		$connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET);
+		$content = $connection->get('account/verify_credentials');
+		 
+		$message='New job: ' . $summary . ' ' . $link;
+		$connection->post('statuses/update', array('status' => $message));    
+	}
+
 
     public function save()
     {
