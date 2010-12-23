@@ -15,6 +15,7 @@ require_once('lib/Agency/Worklist/Filter.php');
 require_once('classes/UserStats.class.php');
 require_once('classes/Repository.class.php');
 
+
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -946,6 +947,7 @@ include("head.html"); ?>
                     data: {
                         bid_fee_amount:$(":input[name='bid_fee_amount']",addForm).val(),
                         bid_fee_mechanic_id:$(":input[name='bid_fee_mechanic_id']",addForm).val(),
+                        bid_fee_desc:$(":input[name='bid_fee_desc']",addForm).val(),
                         itemid:$(":input[name='itemid']",addForm).val(),
                         summary:$(":input[name='summary']",addForm).val(),
                         files:$(":input[name='files']",addForm).val(),
