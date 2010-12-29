@@ -1270,7 +1270,7 @@ include("head.html"); ?>
 	}
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
-<title>Worklist | Fast pay for your work, <a href="<?php echo $viewSourceLink;?>" target="_blank">open codebase</a>, great community.</title>
+<title>Worklist | Fast pay for your work, open codebase, great community.</title>
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
