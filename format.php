@@ -34,10 +34,9 @@
             </span>' ;
             echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a> | $status";
             echo $feeinfo;  
-        } else {
-            echo '<a href="login.php">Login</a> | <a href="signup.php">Sign Up</a>';
-		} ?>
-		<div id="tagline">Lend a hand.</div>
+        } ?>
+        
+		<div id="tagline">Fast pay for your work, <a href="http://svn.sendlove.us/" target="_blank">open codebase</a>, great community.</div>
 	</div>
 	<div id="container">
 		<div id="left"></div>
@@ -65,7 +64,12 @@
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
                      <a href="settings.php" class="iToolTip menuSettings">Settings</a>
-			<?php } ?>
+			<?php } else {
+            echo '<a href="login.php">Login</a>
+            <br/>
+            <div type="button" class="buttonbig" id="signupBtn" onclick="window.location=\'signup.php\'">Sign Up As a Developer</div>';
+		} 
+			?>
 		</div>
 
 		<script type="text/javascript">

@@ -108,10 +108,10 @@ include("head.html"); ?>
 
 <body>
 
-<?php include("format.php"); ?>
+<?php include("format_signup.php"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-           
+    <br>     
     <h1>Login to the Worklist</h1>
                        
     <?php if ($expired) { ?>

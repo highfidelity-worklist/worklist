@@ -198,7 +198,7 @@ include("head.html");
 <body>
 <?php }?>
 
-<?php include("format.php"); ?>
+<?php include("format_signup.php"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
@@ -213,6 +213,7 @@ include("head.html");
 <!-- Light Box Code End -->
 
 <h1>Create a New Account</h1>
+<p><i>Signing up for worklist will let you make bids on jobs.<br> We use an <a href="http://svn.sendlove.us/" target="_blank">open codebase </a>allowing you to quickly evaluate jobs, and pay on job completion.</i></p>
      <?php if(isset($error)): ?>
             <?php foreach($error->getErrorMessage() as $msg):?>
               <p class="LV_invalid"><?php echo $msg; ?></p>

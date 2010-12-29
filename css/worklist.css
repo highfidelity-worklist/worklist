@@ -145,6 +145,8 @@ z-index: 1;
 
 #search-head{
 	position:relative;
+	float:right;
+	width:600px;
 }
 #sharethis_0    {
     position:absolute;

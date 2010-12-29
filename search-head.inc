@@ -1,10 +1,12 @@
-<div id="search-head" <?php echo isset($_SESSION['userid']) ? 'style="height:50px"' : 'style="height:50px"'; ?>>
-  <div style="width:340px;">
 <?php if (isset($_SESSION['userid'])) { ?>
 <div id="buttons" style="padding-top:10px;">
-<p><input type="submit" id="add" name="add" value="Add" class="iToolTip addButton" /> 
-</p>
+<p><input type="submit" id="add" name="add" value="Add" class="iTooltip addButton" /></p>
 </div>
+<?php } ?>
+
+<div id="search-head" <?php echo isset($_SESSION['userid']) ? 'style="height:50px;"' : 'style="height:50px;"'; ?>>
+  <div style="width:340px;">
+<?php if (isset($_SESSION['userid'])) { ?>
     <?php } ?>
         <div style="clear:both"></div>
   </div>
