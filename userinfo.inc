@@ -1,4 +1,4 @@
-﻿<div class = "user-info" title = "User Info">
+<div class = "user-info" title = "User Info">
         <span id = "user-avatar" ><image id="avatar" src="<?php echo($user -> getAvatar(80,80)); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
 	<div class = "common-info">
 
@@ -24,7 +24,14 @@
         <ul>
             <li><a href="#tabs-1">User Info</a></li>
             <li><a href="#tabs-2">Admin</a></li>
+            <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
         </ul>
+    <?php } else {?>
+        <ul>
+            <li><a href="#tabs-1">User Info</a></li>
+            <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
+        </ul>
+		<input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
     <?php } ?>
         <div id="tabs-1">
             <div class = "left-column">

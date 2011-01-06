@@ -99,6 +99,7 @@
         <link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
+        <link type="text/css" href="css/userNotes.css" rel="stylesheet" />
 
         <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
@@ -106,6 +107,7 @@
         <script type="text/javascript" src="js/jquery-ui-1.8.4.min.js"></script>
 
         <script type="text/javascript" src="js/userstats.js"></script>
+        <script type="text/javascript" src="js/userNotes.js"></script>
         <title>User info</title>
     </head>
 <body>
@@ -118,18 +120,30 @@
   var user_id = <?php echo $userId; ?>;
   var available = 0;
   var rewarded = 0;
-  var showTabs = <?php echo $is_runner; ?>;
+//  var showTabs = <?php echo $is_runner; ?>;
   stats.setUserId(user_id);
 
   $(document).ready(function(){
 
+    userNotes.init();
 
-    if(showTabs){
-        $("#tabs").tabs();
+//    if(showTabs){
+        $("#tabs").tabs({
+            cache : true,
+            ajaxOptions: {
+                cache : true,
+                success: function() {
+                },                
+				error: function( xhr, status, index, anchor ) {
+					$( anchor.hash ).html(
+						"Couldn't load this tab." );
+				}
+			}
+        });
         $(".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *")
         .removeClass("ui-corner-all ui-corner-top")
         .addClass("ui-corner-bottom");
-    } 
+//    } 
 
     $('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
 
