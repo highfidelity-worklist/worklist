@@ -616,12 +616,12 @@ function reply(id) {
 	});
   
 </script>
-<title>Workitem | Lend a Hand</title>
 </head>
 <body>
 	<?php include("format.php"); ?>
+	<br/>
 	<?php if ($erroneous) echo "<div style='color: red; text-align: center;'>{$the_errors}</div>"; ?>
-		<div><a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
+	    <div><br/><a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
 		<?php if(($allowEdit && $action!="edit")): ?>
 			&nbsp;|&nbsp;&nbsp;<a class="workitem-back" title="Switch to Edit Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit">Switch to Edit Mode</a>
 		<?php endif;?>
