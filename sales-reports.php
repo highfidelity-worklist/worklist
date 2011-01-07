@@ -181,7 +181,7 @@ var updateFeeSumsTimes = '';
                 
                 <div style="clear:both"></div>
                 <div id="tab-details">
-                <table border="0" cellspacing="5" cellpadding="5">
+                <table border="0" cellspacing="2" cellpadding="5" class="sales-report">
                     <tr class="table-hdng">
                         <th>
                             <a href="sales-reports.php?<?php echo encode_array($_GET, array('ordering'=>'contact_first_name', 'sort'=>($sort == 'asc' ? 'desc' : 'asc') )) ?>">
