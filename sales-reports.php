@@ -15,9 +15,9 @@ include_once("functions.php");
 include("class/Report.class.php");
 include("helper.php");
 
-//if ( (!empty($_SESSION['is_payer']) || !empty($_SESSION['is_runner'])) === false  ) { 
-//    header("Location: ".SERVER_URL);
-//}
+if ( (!empty($_SESSION['is_payer']) || !empty($_SESSION['is_runner'])) === false  ) { 
+    header("Location: ".SERVER_URL);
+}
 
 
 $report = new Report();
