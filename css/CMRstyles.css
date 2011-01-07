@@ -74,13 +74,13 @@ body {
 	
 #tagline {
 	float:right;
-	width: 950px;
+	width: 150px;
 	margin-top: 10px;
 	color:#98AAB2;
 	font-size:11px;
 	font-style:italic;
 	text-align:right;
-	padding-bottom:5px;
+
 }	
 
 #logo {
@@ -350,7 +350,7 @@ table th {
 }
 table td, table th {
 	border-width: 1px;
-	padding: 5px;
+	padding: 1px;
 	border-style: solid;
 	border-color: #aaa;
 }
@@ -455,22 +455,6 @@ input[type=button] {
     font: normal 12px;
     height: 26px;
 	width:121px;
-    line-height: 26px;
-	text-align:center;
-	outline: none;
-	border:none;
-	-moz-outline-style: none;
-}
-
-.buttonbig {
-    margin-top:7px;
-    background:  url(../images/button160_01.gif) no-repeat 1px 2px;
-    display:inline-block;
-    color: #444;
-    font: normal 1px;
-    cursor:pointer;
-    height: 26px;
-	width:170px;
     line-height: 26px;
 	text-align:center;
 	outline: none;

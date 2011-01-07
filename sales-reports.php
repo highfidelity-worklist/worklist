@@ -15,9 +15,9 @@ include_once("functions.php");
 include("class/Report.class.php");
 include("helper.php");
 
-if ( (!empty($_SESSION['is_payer']) || !empty($_SESSION['is_runner'])) === false ) { 
-    header("Location: ".SERVER_URL);
-}
+//if ( (!empty($_SESSION['is_payer']) || !empty($_SESSION['is_runner'])) === false  ) { 
+//    header("Location: ".SERVER_URL);
+//}
 
 
 $report = new Report();
@@ -204,6 +204,14 @@ var updateFeeSumsTimes = '';
                         </th>
                         <th>Last payment</th><!--popup-->
                         <th>Total Paid</th>
+                        <th>
+                            <a href="sales-reports.php?<?php echo encode_array($_GET, array('ordering'=>'source', 'sort'=>($sort == 'asc' ? 'desc' : 'asc') )) ?>">
+                            Source <?php echo $ordering == 'employee_count' ? $sortimg : ''; ?>
+						</th>
+						<th>
+                            <a href="sales-reports.php?<?php echo encode_array($_GET, array('ordering'=>'keywords', 'sort'=>($sort == 'asc' ? 'desc' : 'asc') )) ?>">
+                            Keywords <?php echo $ordering == 'employee_count' ? $sortimg : ''; ?>
+                        </th>
                     </tr>
                     <?php foreach($list->customers as $row): ?>
                     <tr>
@@ -221,6 +229,8 @@ var updateFeeSumsTimes = '';
                             <a href="javascript:void(0)" onClick="javascript:paymentHistory(<?php print $row->cid ?>)"><?php print $row->total_amount ?>$</a>
                             <?php endif; ?>
                         </td>
+                        <td><?php print $row->source ?></td>
+                        <td><?php print $row->keywords ?></td>
                     </tr>
                     <?php endforeach ?>
 
