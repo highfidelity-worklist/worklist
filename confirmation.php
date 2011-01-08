@@ -73,7 +73,7 @@ include("head.html"); ?>
 
 <body <?php echo $lightbox ?> >
 
-<?php include("format.php"); ?>
+<?php include("format_signup.php"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <?php if (!empty($_REQUEST['action']) && ($_REQUEST['action'] == 'changeUsername')) : ?>
