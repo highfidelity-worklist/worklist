@@ -42,6 +42,7 @@ class User
 	protected $avatar;
 	protected $annual_salary;
 	protected $picture;
+    protected $manager;
 	/**
 	 * All about budget
 	 */
@@ -727,6 +728,21 @@ class User
 		$this->provider = $provider;
 		return $this;
 	}
+    
+    /**
+     * @return the $manager
+     */
+    public function getManager() {
+        return $this->manager;
+    }
+    
+    /**
+     * @param $manager the $manager to set
+     */
+    public function setManager($manager) {
+        $this->manager = $manager;
+        return $this;
+    }
 
 	/**
 	 * @return the $has_sandbox

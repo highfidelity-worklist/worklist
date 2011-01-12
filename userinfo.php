@@ -8,6 +8,7 @@
     require_once 'functions.php';
     require_once 'timezones.php';
     require_once 'sandbox-util-class.php';
+    require_once 'lib/Agency/Worklist/Filter.php';
 
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 
@@ -20,6 +21,8 @@
     }
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 	$is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
+    
+    $filter = new Agency_Worklist_Filter($_REQUEST);
 
     if (isset($_POST['save_roles']) && $is_runner) { //only runners can change other user's roles info
         $is_runnerSave = isset($_POST['isrunner']) ? 1 : 0;
@@ -37,10 +40,32 @@
     if (isset($_POST['save_salary']) && $is_payer) { //only payers can change other user's roles info
 		$annual_salarySave = mysql_real_escape_string($_POST['annual_salary']);
         $user_idSaveSalary = intval($_POST['userid']);
+        $manager_id = intval($_POST['manager']);
         $saveUserSalary = new User();
         $saveUserSalary->findUserById($user_idSaveSalary);
 		$saveUserSalary->setAnnual_salary($annual_salarySave);
+        $saveUserSalary->setManager($manager_id);
         $saveUserSalary->save();
+        
+        $manager = new User();
+        $manager->findUserById($manager_id);
+        
+        // Send journal notification
+        sendJournalNotification("Salary and manager for ".$saveUserSalary->getNickname() . " new manager is ".$manager->getNickname());
+    }
+    if (isset($_POST['save_manager']) && $is_runner) {
+        $user_id = intval($_POST['userid']);
+        $manager_id = intval($_POST['manager']);
+        $user = new User();
+        $user->findUserById($user_id);
+        $user->setManager($manager_id);
+        $user->save();
+        
+        $manager = new User();
+        $manager->findUserById($manager_id);
+        
+        // Send journal notification
+        sendJournalNotification("Manager changed for ".$user->getNickname() . " to ".$manager->getNickname());
     }
 
     if (isset($_REQUEST['id'])) {
@@ -59,6 +84,8 @@
 		$Annual_Salary = $user->getAnnual_salary();
 	}
     $userStats = new UserStats($userId);
+
+    $manager = $user->getManager();
 
     if($action =='create-sandbox') {
           $result = array();
@@ -126,6 +153,8 @@
   $(document).ready(function(){
 
     userNotes.init();
+    
+    $('#select_manager').val('<?php echo $manager; ?>');
 
 //    if(showTabs){
         $("#tabs").tabs({
@@ -277,6 +306,26 @@
 	return false;
   });
 
+  });
+  
+  $('#salary').submit(function(e) {
+      // Get the specified salary
+      var salary = $('#annual_salary').val();
+      
+      // Get the manager
+      var manager = $('#select_manager :selected').text();
+      
+      if (salary === '' || salary < 0) {
+          return true;
+      } else {
+          if (manager !== 'None') {
+              return true;
+          } else {
+              // Show an alert window
+              alert('Users with salary must have a manager.');
+              return false;
+          }
+      }
   });
 
     $("#loading").ajaxStart(function(){                                                                                                                             

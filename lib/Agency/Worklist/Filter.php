@@ -286,6 +286,21 @@ class Agency_Worklist_Filter
         
         return $box;
     }
+    
+    /**
+     * Gets the manager user selection box with style
+     */
+    public function getManagerUserSelectboxS($style="", $active=1) {
+        $users = User::getUserlist(getSessionUserId(), $active);
+        $box = '<select style="'.$style.'" id="select_manager" name="manager">';
+        $box .= '<option value="0" selected="selected">None</option>';
+        foreach ($users as $user) {
+            $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
+        }
+        $box .= '</select>';
+        
+        return $box;
+    }
 
     public function getStatusSelectbox()
     {

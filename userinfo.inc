@@ -108,21 +108,32 @@
             <div id = "admin-right">
                 <p class = "info-label">Budget<br />
                     <span id="info-budget"><?php echo $user->getBudget(); ?></span>
-                </p><br />
-                <p >
                     <input type="submit" id="give" value="Give Budget..." />
-                </p><br /> 
+                </p><br />
 				<?php if($is_payer){ ?>
-				<p class="">Annual Salary<br />
+				<p class="info-label">Annual Salary<br />
 				<form method="post" action = "" name="salary" id="salary">
 				<input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>"  style="width:120px;"/>
+                </p>
+                <p class="info-label">Manager<br/>
+                <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
                 </p>
                 <p  class="bottom">
 					<input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
                     <input type="submit" id="save_salary" value="Save salary"  name="save_salary"/>
                 </p>
 				</form>
-				<?php } ?>
+				<?php } else { ?>
+				<form method="post" action="" name="manager" id="manager">
+                    <p class="info-label">Manager<br/>
+                    <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
+                    </p>
+                    <p  class="bottom">
+                        <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
+                        <input type="submit" id="save_manager" value="Save manager" name="save_manager"/>
+                    </p>
+                </form>
+				<? } ?>
             </div><!-- end of admin-right-->
         </div><!-- end of tab 2 -->
         <div style = "clear: both;"></div>
