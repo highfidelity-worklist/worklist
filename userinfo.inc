@@ -120,6 +120,8 @@
                 </p>
                 <p  class="bottom">
 					<input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
+					<input type="hidden" name="salary_changed" id="salary_changed" value="0" />
+					<input type="hidden" name="manager_changed" id="manager_changed" value="0" />
                     <input type="submit" id="save_salary" value="Save salary"  name="save_salary"/>
                 </p>
 				</form>

@@ -38,6 +38,10 @@
         $saveUser->save();
     }
     if (isset($_POST['save_salary']) && $is_payer) { //only payers can change other user's roles info
+        // Detect what's been changed
+        $salary_changed = intval($_POST['salary_changed']);
+        $manager_changed = intval($_POST['manager_changed']);
+    
 		$annual_salarySave = mysql_real_escape_string($_POST['annual_salary']);
         $user_idSaveSalary = intval($_POST['userid']);
         $manager_id = intval($_POST['manager']);
@@ -49,9 +53,14 @@
         
         $manager = new User();
         $manager->findUserById($manager_id);
-        
-        // Send journal notification
-        sendJournalNotification("Salary and manager for ".$saveUserSalary->getNickname() . " new manager is ".$manager->getNickname());
+
+        // Send journal notification depending on what's been changed
+        if ($salary_changed) {
+            sendJournalNotification("A new salary has been set for ".$saveUserSalary->getNickname());
+        }
+        if ($manager_changed) {
+            sendJournalNotification("The manager for ".$saveUserSalary->getNickname() . " is now set to ".$manager->getNickname());
+        }
     }
     if (isset($_POST['save_manager']) && $is_runner) {
         $user_id = intval($_POST['userid']);
@@ -65,7 +74,7 @@
         $manager->findUserById($manager_id);
         
         // Send journal notification
-        sendJournalNotification("Manager changed for ".$user->getNickname() . " to ".$manager->getNickname());
+        sendJournalNotification("The manager for ".$user->getNickname() . " is now set to ".$manager->getNickname());
     }
 
     if (isset($_REQUEST['id'])) {
@@ -155,6 +164,12 @@
     userNotes.init();
     
     $('#select_manager').val('<?php echo $manager; ?>');
+    $('#annual_salary').change(function() {
+        $('#salary_changed').val('1');
+    });
+    $('#select_manager').change(function() {
+        $('#manager_changed').val('1');
+    });
 
 //    if(showTabs){
         $("#tabs").tabs({
