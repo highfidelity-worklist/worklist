@@ -54,9 +54,11 @@ function Series(chart, attrs) {
         generatePath:function () {
             var dx = this.chart.chartWidth / (this.interpolated.length - 1), px = -dx, py = 0;
             var path = '';
+            if (isNaN(dx)) return null;
 
             for (var i = 0; i < this.interpolated.length; i++) {
                 var x = this.chart.chartLeft + this.chart.chartWidth * i / (this.interpolated.length - 1);
+                if (isNaN(x)) return null;
                 if (typeof this.interpolated[i] !== 'undefined') {
                     var y = this.y(this.interpolated[i]);
                     path += i ? 'C' + [ x - (x - px) / 2, py, x - (x - px) / 2, y, x, y ] : 'M' + [ x, y ];
@@ -143,6 +145,7 @@ function Series(chart, attrs) {
                 }
 
                 var x = this.chart.chartLeft + this.chart.chartWidth * i / (this.interpolated.length - 1), y = this.y(this.interpolated[i]);
+                if (isNaN(x) ) return;
                 if (!this.verticals[o]) {
                     this.verticals[o] = this.chart.r.path('M' + this.chart.width + ',' + this.chart.chartTop + ' L' + this.chart.width + ',' + (this.chart.chartTop + this.chart.chartHeight)).attr(this.attrs);
                 }

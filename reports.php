@@ -35,10 +35,10 @@ if (!empty($_REQUEST['view'])) {
 }
 
 $_REQUEST['name'] = '.reports';
-$filter = new Agency_Worklist_Filter($_REQUEST);
+$filter = new Agency_Worklist_Filter($_REQUEST,true);
 
 if (!$filter->getStart()) {
-    $filter->setStart(date("m/d/Y",strtotime('-2 weeks', time())));
+    $filter->setStart(date("m/d/Y",strtotime('-90 days', time())));
 }
 
 if (!$filter->getEnd()) {
@@ -86,7 +86,8 @@ margin-top:20px;
   width:80px;
 }
 .report-left-label {
-width:8em;
+    text-align: right;
+    width:8em;
 }
 .start-date-label {
 width:8em;
@@ -272,6 +273,7 @@ var getPaidItems = function() {
                 page: npage,
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
+                project: $('select[name=project]').val(),
                 order: $('#sort-by').val(),
                 // adding type field to the request
                 // 28-APR-2010 <Yani>
@@ -346,19 +348,20 @@ var getPaidItems = function() {
 function initializeTabs()                                                                                                                                               
 {                                                                                                                                                                       
         $("#tabs").tabs({selected: 0,
-                select: function(event, ui) {
-                    if(ui.index == 0)
-                    {
-                            currentTab = 0;
-			    timeoutId = setTimeout("GetReport("+page+", true)", 50);
-                    }
-                    else
-                    {
-                            currentTab = 1;
-                            timeoutId = setTimeout("setupTimelineChart(true)", 50);
-                    }
-                }                                                                                                                                                       
+            select: function(event, ui) {
+                if(ui.index == 0)
+                {
+                    currentTab = 0;
+                    timeoutId = setTimeout("GetReport("+page+", true)", 50);
+                }
+                else
+                {
+                    currentTab = 1;
+                    timeoutId = setTimeout("setupTimelineChart(false)", 50);
+                }
+            }                                                                                                                                                       
         });
+        $( "#tabs" ).tabs( "option", "selected", 1 );
 
 }
 
@@ -377,13 +380,14 @@ function setupTimelineChart(reload)
 
 	    var fromDate = fmtDate(from), toDate = fmtDate(to);
 	    var paidStatus = $('#paid-status').val();
-$.ajax({
+        $.ajax({
             type: "POST",
             url: 'getreport.php',
             data: {
                 qType: 'chart',
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
+                project: $('select[name=project]').val(),
                 order: $('#sort-by').val(),
                 start: fromDate,
                 end: toDate,
@@ -395,8 +399,10 @@ $.ajax({
             },
             dataType: 'json',
             success: function(data) {
-	        callback(data.fees, data.uniquePeople, data.feeCount, data.labels);
-	    } ,
+                if (data && data.fees && data.fees !== null  ) {
+                    callback(data.fees, data.uniquePeople, data.feeCount, data.labels);
+                }
+            } ,
             error: function(xhdr, status, err) {
                  $('#again').click(function(e){
                     $("#loader_img").css("display","none");
@@ -424,6 +430,7 @@ function loadTimelineChart() {
 }
     $(document).ready(function(){
         GetReport(<?php echo $page; ?>, true);
+        
         initializeTabs();
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#report-check-all").live('change', function(){
@@ -502,15 +509,15 @@ function loadTimelineChart() {
 				toDate = fmtDate(_toDate);
 			}
 			if(currentTab == 0) {
-			  location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+			  location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 			} else {
-			  location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+			  location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 			}
 		});
 
 		$('#tabs').tabs('select', currentTab);
 
- 		$('#type-status,#paid-status,#sort-by,select[name=status]').bind({
+ 		$('#type-status,#paid-status,#sort-by,select[name=status],select[name=project]').bind({
 			'beforeshow newlist': function(e, o) {
 				o.list.css("z-index","100")
 			}}).comboBox();
@@ -536,17 +543,20 @@ function loadTimelineChart() {
         <?php if (!empty($_SESSION['is_payer'])) { ?>
             <input type="submit" value="Run MassPay" id="pp-masspay-button" /><br />
         <?php } ?>
-        <input type="submit" value="Sales Reports" id="sales-reports-button"></input>
+        <?php if (!empty($_SESSION['is_runner'])) { ?>
+            <input type="submit" value="Sales Reports" id="sales-reports-button"></input>
+        <?php } ?>
     </div>
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
 	  <tr>
-	    <td><div >Payee: </div>
+	    <td class="textAlignReport">
+            <div >Payee: <?php echo $filter->getUserSelectbox(1,true); ?></div>
 			<div class="second-line">
-			<?php echo $filter->getUserSelectbox(); ?>
+                Project:  <?php echo $filter->getProjectSelectbox(true); ?>
 			</div>
 			</td>
-	    <td style="text-align: right;">
+	    <td class="textAlignReport">
 			<div>Paid Status: 
 	      <select id="paid-status" >
 		    <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
@@ -564,8 +574,8 @@ function loadTimelineChart() {
 			</select>
 			</div>
 	    </td>
-	    <td style="text-align: right;">
-			<div>Item status: <?php echo $filter->getStatusSelectbox(); ?>
+	    <td class="textAlignReport">
+			<div>Item status: <?php echo $filter->getStatusSelectbox(true); ?>
 			</div>
 			<div class="second-line">Order:
             <select id="sort-by">

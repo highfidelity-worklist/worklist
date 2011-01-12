@@ -18,6 +18,7 @@ class Agency_Worklist_Filter
     protected $sort = 'priority';
     protected $dir = 'ASC';
     protected $page = 1;
+    protected $project = "";
     
     // Additional filter for reports
     protected $paidstatus = 'ALL';
@@ -26,7 +27,7 @@ class Agency_Worklist_Filter
     protected $end = '';
     // Additional filter for type for reports page
     // 30-APR-2010 <Yani>
-    protected $type = 0;
+    protected $type = "ALL";
     
     // Additional filter for job in PayPal reports
     // 30-APR-2010 <Andres>
@@ -111,6 +112,13 @@ class Agency_Worklist_Filter
     }
 
     /**
+     * @return the $project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+    /**
      * @return the $user
      */
     public function getUser()
@@ -166,6 +174,14 @@ class Agency_Worklist_Filter
         return $this->name;	
     }
 
+    /**
+     * @param $project the $project to set
+     */
+    public function setProject($project)
+    {
+        $this->project =  $project;
+        return $this;
+    }
     /**
      * @param $user the $user to set
      */
@@ -229,6 +245,9 @@ class Agency_Worklist_Filter
             case 'STATUS':
                 $sort = 'status';
                 break;
+            case 'PROJECT':
+                $sort = 'project';
+                break;
             case 'COMMENTS':
                 $sort = 'comments';
                 break;
@@ -260,6 +279,18 @@ class Agency_Worklist_Filter
         return $this;
     }
 
+    public function getProjectSelectbox($fromReport=false) {
+        $allDisplay = ($fromReport) ? "ALL" : "All Projects";
+        $box = '<select id="project" name="project" class="project-dropdown">';
+        $box .= '<option value=""' . (($this->getProject() == "") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+        foreach ( Repository::allAvailableRepositories() as $repository ) {
+            $box .= '<option value="' . $repository . '"' . (($this->getProject() == $repository) ? ' selected="selected"' : '') . '>' . $repository . '</option>';
+        }
+        $box .= '</select>';
+        
+        return $box;
+    }
+
     /* 
      * Function getUserSelectbox Get a combobox containing all the users
      * 
@@ -275,10 +306,11 @@ class Agency_Worklist_Filter
      *        filter name assigned on the php code. This variable needs to
      *        be initialized before including the script above.
      */
-    public function getUserSelectbox($active=1) {
+    public function getUserSelectbox($active=1,$fromReport=false) {
+        $allDisplay = ($fromReport) ? "ALL" : "All Users";
         $users = User::getUserlist(getSessionUserId(), $active);
-        $box = '<select name="user">';
-        $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '>All Users</option>';
+        $box = '<select name="user" >';
+        $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
         }
@@ -302,28 +334,26 @@ class Agency_Worklist_Filter
         return $box;
     }
 
-    public function getStatusSelectbox()
+    public function getStatusSelectbox($fromReport=false)
     {
-        $status_array = array_merge(
-        array('ALL'
-        ), WorkItem::getStates());
+        $allDisplay = ($fromReport) ? "ALL" : "All Status";
+        $status_array = WorkItem::getStates();
         $box = '<select name="status">';
+        $box .= '<option value="ALL"' . (($this->getStatus() == "ALL") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach ($status_array as $status) {
             $selected = '';
-            if ($this->getStatus() ==
-             $status) {
+            if ($this->getStatus() == $status) {
                 $selected = ' selected="selected"';
             }
-            $box .= '<option value="' .
-             $status . '"' . $selected .
-             '>' . $status . '</option>';
+            $box .= '<option value="' . $status . '"' . $selected . '>' . $status . '</option>';
         }
         $box .= '</select>';
         return $box;
     }
 
-    public function __construct(array $options = array())
+    public function __construct(array $options = array(), $fromReport=false)
     {
+        $this->setStatus( ($fromReport) ? "DONE" : "BIDDING");
         if (!empty($options) && (empty($options['reload']) || $options['reload'] == 'false')) {
             $this->setOptions($options);
         } elseif (isset($options['name'])) {

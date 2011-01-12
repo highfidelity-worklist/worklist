@@ -13,8 +13,11 @@
 <div id="search-filter-wrap"<?php echo (isset($_SESSION['userid'])&& $is_runner) ? 'style="right:-6px"' : 'style="right:-6px"'; ?>>
     <div >
         <form method="get" action="" id="searchForm" >
-            <?php echo $filter->getUserSelectbox(1); ?>
-                <?php echo $filter->getStatusSelectbox(); ?>
+            <?php 
+                echo $filter->getProjectSelectbox() . " ";  
+                echo $filter->getUserSelectbox(1) . " "; 
+                echo $filter->getStatusSelectbox(); 
+            ?>
                 <div class="input_box">
                     <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
                     <a id="search" href="" class="searchIcon"><img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"></a>

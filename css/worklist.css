@@ -146,7 +146,7 @@ z-index: 1;
 #search-head{
 	position:relative;
 	float:right;
-	width:600px;
+	width:700px;
 }
 #sharethis_0    {
     position:absolute;
@@ -200,10 +200,10 @@ z-index: 1;
 }
 
 .ui-state-default.ui-combobox {
-	background: url("../images/dropdown_background.png") no-repeat scroll 0px -3px transparent;	
+	background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent;	
 }
 .ui-state-hover.ui-combobox {
-	background: url("../images/dropdown_background.png") no-repeat scroll 0px -35px transparent;
+	background: url("../images/dropdown_background.png") repeat scroll 0px -35px transparent;
 }
 
 #loader_img_title {
@@ -277,3 +277,25 @@ div#quick-links{
   margin-top: 5px;
 }
 
+#search-head select[name=user] {
+    width:100px;
+}
+
+#search-head select[name=status] {
+    width:100px;
+}
+#search-filter-section select {
+    text-align: left;
+    width:100px;
+}
+#search-filter-section  td.textAlignReport div div{
+    text-align: left;
+}
+
+
+td.textAlignReport {
+    text-align: right;
+    padding-top:4px;
+    margin:1px;
+    width:210px;:
+}

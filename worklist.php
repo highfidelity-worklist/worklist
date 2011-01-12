@@ -222,9 +222,9 @@ include("head.html"); ?>
 		}
 		// Displays the ID of the task in the first row
 		 // 26-APR-2010 <Yani>
-		row+= '<td width="5%"><span class="taskID">#' + json[0] + '</span></td>';
+		row+= '<td width="9%"><span class="taskProject">' + json[16] + '</span></td>';
 		
-        row += '<td width="45%"><span class="taskSummary">' + pre + json[1] + post + '</span></td>';
+        row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' + json[0] + '</span> - ' + pre + json[1] + post + '</span></td>';
         if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
             post = ' (' + json[10] + ')';
         }
@@ -352,6 +352,7 @@ include("head.html"); ?>
 			cache: false,
 			data: {
 				page: npage,
+				project: $('select[name=project]').val(),
 				status: $('select[name=status]').val(),
 				sort: sort,
 				dir: dir,
@@ -824,13 +825,13 @@ include("head.html"); ?>
 		dirImg = $("#direction img");
 		hdr = $(".table-hdng");
 		if (sort != 'priority') {
-			hdr.children().each(function() {
+			hdr.find(".clickable").each(function() {
 				if ($(this).text().toLowerCase() == unescape(sort.toLowerCase())) {
 					affectedHeader = $(this);
 				}
 			});
 		}
-		hdr.children().click(function() {
+		hdr.find(".clickable").click(function() {
 			affectedHeader = $(this);
 			orderBy($(this).text().toLowerCase());
 		});
@@ -1053,10 +1054,11 @@ include("head.html"); ?>
 		//setTimeout(MapToolTips, 800);
 
 		$('#search-filter-wrap select[name=status]').comboBox();
+		$('#search-filter-wrap select[name=project]').comboBox();
 	});
 	
 	function reattachAutoUpdate() {
-		$("select[name=user], select[name=status]").change(function(){
+		$("select[name=user], select[name=status], select[name=project]").change(function(){
 			if ($("#search-filter").val() == 'UNPAID') {
 				$(".worklist-fees").text('Unpaid');
 			} else {
@@ -1312,8 +1314,8 @@ include("head.html"); ?>
 <table width="100%" class="table-worklist">
     <thead>
         <tr class="table-hdng">
-			<td class="clickable">ID</td>
-            <td class="clickable">Summary</td>
+			<td class="clickable">Project</td>
+            <td><span class="clickable">ID</span> - <span class="clickable">Summary</span></td>
             <td class="clickable">Status</td>
             <td class="clickable">Who</td>
             <td class="clickable">When</td>

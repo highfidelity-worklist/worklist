@@ -36,6 +36,7 @@ $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
 
 $sfilter = explode('/', $filter->getStatus());
 $ufilter = $filter->getUser();
+$pfilter = $filter->getProject();
 $ofilter = $filter->getSort();
 $dfilter = $filter->getDir();
 $page = $filter->getPage();
@@ -81,6 +82,14 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0))";
         }
     }
+}
+if (!empty($pfilter) && $pfilter != 'ALL') {
+    if (empty($where)) {
+        $where = "where ";
+    } else {
+        $where .= " and ";
+    }
+    $where .= " `project` = '{$pfilter}' ";
 }
 
 $query = $filter->getQuery();
@@ -192,7 +201,8 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
            WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
            (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
-           WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
+           WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`,
+           IFNULL(`project`,'') AS `project`";
 
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
@@ -254,7 +264,8 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         12 => $row['comments'],
         13 => $row['runner_id'],
         14 => $row['mechanic_id'],
-        15 => (!empty($row['bid_on']) ? $row['bid_on'] : 0)
+        15 => (!empty($row['bid_on']) ? $row['bid_on'] : 0),
+        16 => $row['project']
 	);
 }
 

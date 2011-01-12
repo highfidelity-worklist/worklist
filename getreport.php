@@ -37,6 +37,7 @@ if(isset($paidStatus) && ($paidStatus)!="ALL")
 }
 
 $sfilter = $filter->getStatus();
+$pfilter = $filter->getProject();
 $ufilter = $filter->getUser();
 $order = $filter->getOrder();
 $queryType = isset( $_REQUEST['qType'] ) ? $_REQUEST['qType'] :'detail';
@@ -49,6 +50,11 @@ if ($ufilter) {
 if ($sfilter){
     if($sfilter != 'ALL'){
       $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
+    }
+}
+if ($pfilter){
+    if($pfilter != 'ALL'){
+      $where .= " AND `" . WORKLIST . "`.project = '$pfilter' "; 
     }
 }
 
@@ -101,10 +107,12 @@ if ($rtCount) {
     $items = intval($row[0]);
 } else {
     $items = 0;
+    die(json_encode(array()));
 }
 $cPages = ceil($items/$limit);
 
 $qPageSumClose = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit ) fee_sum ";
+
 $sumResult = mysql_query("$qsum $qbody $qPageSumClose");
 if ($sumResult) {
     $get_row = mysql_fetch_row($sumResult);
@@ -167,7 +175,12 @@ echo $json;
            }
         }
     }
-    $json_data = array('fees' => fillAndRollupSeries($fromDate, $toDate, $fees, false, $dateRangeType), 'uniquePeople' => fillAndRollupSeries($fromDate, $toDate, $uniquePeople, false, $dateRangeType), 'feeCount' => fillAndRollupSeries($fromDate, $toDate, $feeCount, false, $dateRangeType), 'labels' => fillAndRollupSeries($fromDate, $toDate, null, true, $dateRangeType), 'fromDate' => $fromDate, 'toDate' => $toDate);
+    $json_data = array('fees' => fillAndRollupSeries($fromDate, $toDate, $fees, false, $dateRangeType), 
+        'uniquePeople' => fillAndRollupSeries($fromDate, $toDate, $uniquePeople, false, $dateRangeType), 
+        'feeCount' => fillAndRollupSeries($fromDate, $toDate, $feeCount, false, $dateRangeType), 
+        'labels' => fillAndRollupSeries($fromDate, $toDate, null, true, $dateRangeType), 
+        'fromDate' => $fromDate, 'toDate' => $toDate,
+        'debugSQL' => "$qcols $qbody $qgroup");
     $json = json_encode($json_data);
     echo $json;
 }
