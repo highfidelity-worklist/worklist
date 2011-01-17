@@ -38,6 +38,7 @@ $sfilter = explode('/', $filter->getStatus());
 $ufilter = $filter->getUser();
 $pfilter = $filter->getProject();
 $ofilter = $filter->getSort();
+$subofilter = $filter->getSubSort();
 $dfilter = $filter->getDir();
 $page = $filter->getPage();
 
@@ -229,7 +230,11 @@ $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           $where ";
 
-$qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
+if($ofilter == "delta"){
+	$qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
+}else{
+	$qorder = "ORDER BY {$ofilter} {$dfilter},{$subofilter} {$dfilter}  LIMIT " . ($page-1)*$limit . ",{$limit}";
+}
 
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {

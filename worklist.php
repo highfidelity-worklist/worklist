@@ -824,12 +824,15 @@ include("head.html"); ?>
 		dirDiv = $("#direction");
 		dirImg = $("#direction img");
 		hdr = $(".table-hdng");
-		if (sort != 'priority') {
+		if (sort != 'delta') {
 			hdr.find(".clickable").each(function() {
 				if ($(this).text().toLowerCase() == unescape(sort.toLowerCase())) {
 					affectedHeader = $(this);
 				}
 			});
+		}
+		else {
+			affectedHeader = $('#defaultsort');
 		}
 		hdr.find(".clickable").click(function() {
 			affectedHeader = $(this);
@@ -1317,7 +1320,7 @@ include("head.html"); ?>
             <td><span class="clickable">ID</span> - <span class="clickable">Summary</span></td>
             <td class="clickable">Status</td>
             <td class="clickable">Who</td>
-            <td class="clickable">When</td>
+            <td class="clickable" id="defaultsort">When</td>
             <td class="clickable" style="min-width:80px">Comments</td>
             <td class="worklist-fees clickable"  <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?>>Fees/Bids</td>
         </tr>

@@ -15,7 +15,7 @@ class Agency_Worklist_Filter
     protected $user = 0;
     protected $status = 'BIDDING';
     protected $query = '';
-    protected $sort = 'priority';
+    protected $sort = 'delta';
     protected $dir = 'ASC';
     protected $page = 1;
     protected $project = "";
@@ -32,7 +32,10 @@ class Agency_Worklist_Filter
     // Additional filter for job in PayPal reports
     // 30-APR-2010 <Andres>
     protected $job = 0;
-    
+	
+    // Additional filter for worklist
+    // 15-JAN-2011 <Reji>
+    protected $subsort = "delta";
     
     public function getPaidstatus()
     {
@@ -250,9 +253,6 @@ class Agency_Worklist_Filter
             case 'SUMMARY':
                 $sort = 'summary';
                 break;
-            case 'WHEN':
-                $sort = 'delta';
-                break;
             case 'STATUS':
                 $sort = 'status';
                 break;
@@ -268,8 +268,11 @@ class Agency_Worklist_Filter
                 $sort = 'id';
                 break;
             case 'PRIORITY':
-            default:
                 $sort = 'priority';
+                break;
+            case 'WHEN':
+            default:
+                $sort = 'delta';
                 break;
         }
         $this->sort = $sort;
@@ -289,7 +292,18 @@ class Agency_Worklist_Filter
         }
         return $this;
     }
-
+	
+	// getter for $subsort
+	// 15-JAN-2011 <Reji>
+	public function getSubSort() {
+	   return $this->subsort;
+	}
+    // setter for $subsort
+    // 15-JAN-2011 <Reji>
+    public function setSubSort($subsort) {
+        $this->subsort = $subsort;
+        return $this;
+    }
     public function getProjectSelectbox($fromReport=false) {
         $allDisplay = ($fromReport) ? "ALL" : "All Projects";
         $box = '<select id="project" name="project" class="project-dropdown">';
