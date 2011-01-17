@@ -48,9 +48,9 @@
 <!-- LOGO -->
 			<div id="stats">
 				<span id='stats-text'>
-                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding' ><span id='count_b'></span> jobs</a>
+                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
                     bidding, 
-                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding' ><span id='count_w'></span> jobs</a>
+                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
                     underway
                 </span>
 			</div>

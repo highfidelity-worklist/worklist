@@ -353,7 +353,7 @@ include("head.html"); ?>
 			data: {
 				page: npage,
 				project: $('select[name=project]').val(),
-				status: $('select[name=status]').val(),
+				status: ($("select[name=status]").val() || []).join("/"),
 				sort: sort,
 				dir: dir,
 				user: $('select[name=user]').val(),
@@ -1053,7 +1053,6 @@ include("head.html"); ?>
 		/* function commented for remove tooltip */
 		//setTimeout(MapToolTips, 800);
 
-		$('#search-filter-wrap select[name=status]').comboBox();
 		$('#search-filter-wrap select[name=project]').comboBox();
 	});
 	

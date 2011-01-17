@@ -133,6 +133,18 @@ class Agency_Worklist_Filter
     {
         return $this->status;
     }
+    /**
+     * @return the true if status is in the list
+     */
+    public function inStatus($status)
+    {
+        error_log($status . "**" . $this->status);
+        if (strpos( "/".$this->status."/","/".$status."/") === false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     /**
      * @return the $query

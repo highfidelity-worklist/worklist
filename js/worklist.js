@@ -341,6 +341,16 @@ $(function() {
 });
 
 $(function() {
+    $(".actionBidding").attr("href","javascript:;").click(function(){
+        $("#search-filter-wrap select[name=status]").comboBox({action:"val",param: ["BIDDING"]});
+     //   GetWorklist(1,false);       
+        return false;
+    });
+    $(".actionUnderway").attr("href","javascript:;").click(function(){
+        $("#search-filter-wrap select[name=status]").comboBox({action:"val",param: ["WORKING","REVIEW","COMPLETED"]});
+        return false;
+    });
+
 		// to add a custom stuff we bind on events
 		$('select[name=user]').bind({
 			'beforeshow newlist': function(e, o) {
@@ -416,5 +426,6 @@ $(function() {
 				o.list.css("z-index","100"); // to be over other elements
 			}
 		}).comboBox();
+		$('#search-filter-wrap select[name=status]').comboBox();
 
 });

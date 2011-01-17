@@ -52,3 +52,32 @@
 	background: #66CC66;
 	border: none;
 }
+
+
+li[val=ALL] input[type=checkbox] {
+    visibility:hidden;
+}
+li[val=CheckDone] input[type=checkbox] {
+    visibility:hidden;
+}
+
+li[val=CheckDone].ui-state-hover {
+	background: none;
+	border: none;
+}
+
+#CheckDone {
+    background: none;
+    background-color: buttonface;
+    border: 2px outset buttonface;
+    color: buttontext;
+    cursor: default;
+    color:none;
+    width:50px;
+}
+
+ul.ui-combobox-list-multiple  li.ui-combobox-list-selected {
+	background:none;
+}
+
+

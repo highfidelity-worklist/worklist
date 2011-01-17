@@ -11,8 +11,10 @@
  * @requires jQuery 1.4.2, jQuery UI 1.8.1, Class 0.0.2, jQuery.ScrollTo 1.4.2
  *
  * Date: Fri May 21 04:11:00 2010 +0100
+ * 
+ * Change by LoveMachine multiple options
  */
-;(function($) {
+(function($) {
 	var ComboBox = Class.create({
 		container: null,
 		textbox: null,
@@ -20,11 +22,15 @@
 		list: null,
 		el: null,
 		values: null,
+        settings: {},
 		showList: false,
 		
-		init: function(o) {
+		init: function(o,settings) {
+            var oThis=$(o),
+                cThis = this;
 			// combobox original select box
 			this.el = $(o);
+            this.settings=settings;
 			// combobox container
 			this.container = $('<div/>');
 			// combobox textbox, will become an autocompletebox in a later version
@@ -35,6 +41,26 @@
 			this.list = $('<ul/>');
 			// combobox values array
 			this.values = [];
+            if (this.el.attr("multiple") === true ){
+                this.list.addClass("ui-combobox-list-multiple");
+                this.el.bind({
+                    'beforeshow newlist': function(e, o) {
+                        $("li",o.list).each(function(){
+                            $(this).html("<input type='checkbox' />" + $(this).text() );
+                        });
+                        /** Keep this if we need a button to close the list **/
+                        $("li[val=CheckDone]",o.list).html("<input type='button' value='Done' style='display:none' id='CheckDone'/>")
+                            .unbind("mouseover");
+                            
+                         $("input[type=checkbox]",o.list).click(function(event){
+                            $(event.currentTarget).data("clicked",true);
+                        });
+                        $("#CheckDone",o.list).unbind("click").click(function(){
+                            cThis._hideList();
+                        });
+                    }
+                })
+            }
 			// fire event initialized
 			this.el.trigger('init', this);
 			
@@ -59,9 +85,24 @@
 		},
 		_initSelected: function() {
 			// get initial value of original selectbox
-			var el = this.getItemByValue(this.el.val());
-			// write the text in the textbox
-			this.textbox.val(el.text);
+            if (this.el.attr("multiple") === true ){
+                var ele = this.el.val(),
+                    more="";
+                if (ele && ele !== null) {
+                    if (ele.length > 1) {
+                        more = " +";
+                    }
+                    // write the text in the textbox
+                    eleText = this.getItemByValue(ele[0]).text;
+                    this.textbox.val(eleText+more);
+                }
+            } else {
+                var ele = this.getItemByValue(this.el.val());
+                if (ele && ele !== null) {
+                    // write the text in the textbox
+                    this.textbox.val(ele.text);
+                }
+            }
 		},
 		_addClasses: function() {
 			// add classes for the container and set it to display no
@@ -153,9 +194,43 @@
 			}, this));
 		},
 		_listItemClicked: function(e) {
+            var oThis=this;
 			// list item was clicked now we select the value
 			e.preventDefault();
 			this.select($(e.currentTarget).attr('val'));
+            if (this.el.attr("multiple") === true ){
+                    // remove the selected class from the previous selected item
+                if ($(e.currentTarget).attr('val') == "ALL") {
+                    $("input[type=checkbox]",oThis.list).each(function(){
+                        if ($(this).val() != "ALL") {
+                            $(this).attr('checked', false);
+                        }
+                    });
+                }
+                if ($("input[type=checkbox]",e.currentTarget).data("clicked") ) {
+                    $("input[type=checkbox]",e.currentTarget).data("clicked",false)
+                    if ($("input[type=checkbox]",e.currentTarget).is(':checked') ) {
+                        setTimeout(function(){
+                            $("input[type=checkbox]",e.currentTarget).attr('checked', true);
+                        },50);
+                    } else {
+                        setTimeout(function(){
+                            $("input[type=checkbox]",e.currentTarget).attr('checked', false);
+                        },50);
+                    }
+                } else {
+                    if ($("input[type=checkbox]",e.currentTarget).is(':checked') ) {
+                        $("input[type=checkbox]",e.currentTarget).attr('checked', false);
+                    } else {
+                        $("input[type=checkbox]",e.currentTarget).attr('checked', true);
+                    }
+                }
+                if ($(e.currentTarget).attr('val') == "ALL") {
+                    $("#CheckDone",oThis.list).click();
+                }
+                return false;
+            }
+            return true;
 		},
 		_outClick: function() {
 			// if we click outside the list while open we want it to close
@@ -168,6 +243,8 @@
 			this.container.removeClass('ui-state-active');
 			this.container.removeClass('ui-state-hover');
 			this.showList = false;
+                            // fire the change event of the original element
+                            this.el.change();
 		},
 		setupNewList: function(l) {
 			// before we can setup a new list we have to hide the current one
@@ -220,48 +297,115 @@
 				this.showList = true;
 				// show the list and scroll to the selected item
 				this.list.show();
-				this.list.scrollTo(this.list.find('.ui-combobox-list-selected'));
+                if (this.list.find('.ui-combobox-list-selected').length > 0) {
+                    this.list.scrollTo(this.list.find('.ui-combobox-list-selected').get(0));
+                }
 				this.list.find('.ui-combobox-list-selected').addClass('ui-state-hover');
+                if (this.el.attr("multiple") === true ){
+                    this.list.find('.ui-combobox-list-selected').each(function(){
+                        $("input[type=checkbox]",this).attr('checked', true);
+                    });
+                }
 				// add the active state class to the container
 				this.container.addClass('ui-state-active');
 			}
 			return false;
 		},
 		select: function(val) {
+            var oThis=this;
 			// get the complete element (text, value, selected state)
 			val = this.getItemByValue(val);
 			// if the value is not currently selected we have to select it
-			if (!val.selected) {
-				// find the element in our own list and select it, deselect the old value
-				$.each(this.values, function(i, v){
-					if (v.selected == true) {
-						v.selected = false;
-					}
-					if (v.value == val.value) {
-						v.selected = true;
-					}
-				});
-				// remove the selected class from the previous selected item
-				this.list.find('.ui-combobox-list-selected').removeClass('ui-combobox-list-selected');
-				// and add it to the currently selected
-				this.list.find('li[val=' + val.value + ']').addClass('ui-combobox-list-selected');
-				// update the textbox with the correct text
-				this.textbox.val(val.text);
-				// change the value of the original element
-				this.el.val(val.value);
-				// fire the change event of the original element
-				this.el.change();
+            if (this.el.attr("multiple") === true ){
+                var currentSelectedVal = [],
+                    firstValue="",
+                    more="";
+                if (val.value == "CheckDone") {
+                    return;
+                }
+                $.each(this.values, function(i, v){
+                // find the element in our own list and select it
+                    if (v.value == val.value && val.value != "ALL") {
+                        if (v.selected == true) {
+                            oThis.list.find('li[val=' + v.value + ']').removeClass('ui-combobox-list-selected');
+                            v.selected = false;
+                        } else {
+                            // and add it to the currently selected
+                            oThis.list.find('li[val=' + v.value + ']').addClass('ui-combobox-list-selected');
+                            v.selected = true;
+                        }
+                    } else if (v.value == val.value && val.value == "ALL") {
+                        v.selected = true;
+                        oThis.list.find('.ui-combobox-list-selected').removeClass('ui-combobox-list-selected');
+                            // and add it to the currently selected
+                        oThis.list.find('li[val=' + v.value + ']').addClass('ui-combobox-list-selected');
+                    } else if (val.value == "ALL") {
+                        oThis.list.find('li[val=' + v.value + ']').removeClass('ui-combobox-list-selected');
+                        v.selected = false;
+                    } else if (v.value == "ALL" && val.value != "ALL") {
+                        oThis.list.find('li[val=' + v.value + ']').removeClass('ui-combobox-list-selected');
+                        v.selected = false;
+                    }
+                    if (v.selected == true) {
+                        currentSelectedVal.push(v.value);
+                        if (firstValue=="") {
+                            eleText = oThis.getItemByValue(v.value).text;
+                            firstValue = eleText;
+                        } else {
+                            more = " +";
+                        }
+                    }                        
+                });
+                this.el.val(currentSelectedVal);
+                // update the textbox with the correct text
+                this.textbox.val(firstValue + more);
+            } else {
+                if (!val.selected) {
+                    // find the element in our own list and select it, deselect the old value
+                    $.each(this.values, function(i, v){
+                        if (v.selected == true) {
+                            v.selected = false;
+                        }
+                        if (v.value == val.value) {
+                            v.selected = true;
+                        }
+                    });
+                    // remove the selected class from the previous selected item
+                    this.list.find('.ui-combobox-list-selected').removeClass('ui-combobox-list-selected');
+                    // and add it to the currently selected
+                    this.list.find('li[val=' + val.value + ']').addClass('ui-combobox-list-selected');
+                    // update the textbox with the correct text
+                    this.textbox.val(val.text);
+                    // change the value of the original element
+                    this.el.val(val.value);
+                    // fire the change event of the original element
+                    this.el.change();
+                }
 			}
 		},
 		show: function() {
 			// show the new combobox
 			this.container.css('display', 'inline');
-		}
+		},
+        val: function(param) {
+            var oThis=this;
+            this.container.click();
+            this.list.find('.ui-combobox-list-selected[val!=ALL]').click().removeClass('ui-state-hover');
+            $.each(param, function(i, v){
+                oThis.list.find('li[val=' +v + ']').click();
+            });
+            this._outClick();
+        }
 	});
 	
 	$.fn.comboBox = function(settings) {
+        if (settings && settings.action && settings.action == "val") {
+            $(this).data("comboBox").val(settings.param);
+            return $(this);
+        }
 		return this.each(function() {
-			new ComboBox(this);
+            var oC = new ComboBox(this,settings);
+            $(this).data("comboBox",oC);
 		});
 	}
 })(jQuery);

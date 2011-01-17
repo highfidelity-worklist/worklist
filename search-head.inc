@@ -15,9 +15,23 @@
         <form method="get" action="" id="searchForm" >
             <?php 
                 echo $filter->getProjectSelectbox() . " ";  
-                echo $filter->getUserSelectbox(1) . " "; 
-                echo $filter->getStatusSelectbox(); 
+                echo $filter->getUserSelectbox(1) . " ";
+                $allDisplay = "All Status";                
+                $status_array = array("SUGGESTED", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");
+                $box = '<select name="status" multiple="multiple">';
+                $box .= '<option value="ALL"' . (($filter->inStatus("ALL") ) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+                foreach ($status_array as $status) {
+                    $selected = '';
+                    if ($filter->inStatus($status) ) {
+                        $selected = ' selected="selected"';
+                    }
+                    $box .= '<option value="' . $status . '"' . $selected . '>' . $status . '</option>';
+                }
+                $box .= '<option value="CheckDone">Done</option>';
+                $box .= '</select>';
+                echo $box;
             ?>
+            
                 <div class="input_box">
                     <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
                     <a id="search" href="" class="searchIcon"><img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"></a>

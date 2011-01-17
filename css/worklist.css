@@ -299,3 +299,7 @@ td.textAlignReport {
     margin:1px;
     width:210px;:
 }
+
+#searchForm .ui-combobox-list {
+    max-height: 250px;
+}
