@@ -44,6 +44,7 @@ $page = $filter->getPage();
 
 $where = '';
 $unpaid_join = '';
+$bFilterStatusContainBidding=false;
 if (!empty($sfilter)) {
     $where = "where (";
     foreach ($sfilter as $val) {
@@ -54,9 +55,13 @@ if (!empty($sfilter)) {
         } else {
             $where .= "status='$val' or ";
         }
+        if( $val == 'BIDDING' ) {
+            $bFilterStatusContainBidding=true;
+        }
     }
     $where .= "0)";
 }
+
 if (!empty($ufilter) && $ufilter != 'ALL') {
     if (empty($where)) {
         $where = "where ";
@@ -67,15 +72,17 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
     // Runner and query is User->Bidding we only show the items the user
     // is currently bidding on.
     if( $is_runner )    {
+        $severalStatus = "";
         foreach( $sfilter as $val ) {
             if( $val == 'BIDDING' ) {
-                $where .= "( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter')";
+                $where .= $severalStatus . "( status='$val' AND ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
             } else  {
-                $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter')";
+                $where .= $severalStatus . "( status='$val' AND ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
             }
+            $severalStatus = " OR ";
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
-	$userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
+        $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
         if( $userId == $ufilter )  {
             $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0)
                         OR (`bidder_id`='$ufilter' AND `withdrawn` = 0))";
@@ -207,7 +214,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
-if (($ufilter == 'ALL') && ($sfilter[0] == 'BIDDING') && (isset($_SESSION['userid']))) {
+if (($ufilter == 'ALL') && ($bFilterStatusContainBidding) && (isset($_SESSION['userid']))) {
     $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0) AS `bid_on`";
 }
 
