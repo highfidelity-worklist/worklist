@@ -14,7 +14,8 @@ define('SANDBOX_CREATION_EMAIL_TEMPATE','./sb-developer-mail.inc');
 class SandBoxUtil
 {
     //This needs to be synced with the matching file in journal - garth 12/15/2010
-    private $projectList = array('journal','love','worklist','review','loveviewer','candp','tools','trial','admin','login','lovemachine','candpweb','sales');
+    private $projectList = array('journal','love','worklist','review','loveviewer','candp','tools','trial','admin','login','candpweb','lovemachine','sales','candpmobi');
+
     private $chat ;
 
     public function __construct()
