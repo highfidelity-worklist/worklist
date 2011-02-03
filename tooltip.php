@@ -32,6 +32,10 @@ $tooltips = array(
     'budgetAllocated' => 'Money total from Jobs I run that are in Working, Review & Completed Statuses.',
     'budgetSubmitted' => 'Money total From Jobs I set to Done, but have not been paid.',
     'budgetPaid'      => 'Money Paid out on Done jobs.',
+	
+	/* Add Job tooltips 			*/
+    'enterAmount'      => 'Enter the amount you want to be paid if this job is accepted and done.',
+	
 
 /*---------------------*/
 );// end of tooltip array

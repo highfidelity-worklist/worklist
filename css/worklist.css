@@ -23,6 +23,10 @@
     width: 370px;
 }
 
+.popup-body #bid_fee_desc {
+	width:280px;
+}
+
 .popup-body select {
     font-size: 14px;
     font-family: helvetica, arial, sans-serif;
@@ -302,4 +306,14 @@ td.textAlignReport {
 
 #searchForm .ui-combobox-list {
     max-height: 250px;
+}
+
+.bid_action_button{
+	text-align:right;
+}
+
+#add {
+	font-weight:bold;
+	color:#6F6F6F;
+	font-size:12px;
 }

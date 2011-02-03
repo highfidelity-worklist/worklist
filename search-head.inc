@@ -1,6 +1,6 @@
 <?php if (isset($_SESSION['userid'])) { ?>
 <div id="buttons" style="padding-top:10px;">
-<p><input type="submit" id="add" name="add" value="Add" class="iTooltip addButton" /></p>
+<p><input type="submit" id="add" name="add" value="Add Job" class="iTooltip addButton" /></p>
 </div>
 <?php } ?>
 

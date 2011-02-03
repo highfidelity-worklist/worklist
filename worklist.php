@@ -844,8 +844,9 @@ include("head.html"); ?>
             show: 'fade',
             hide: 'fade',
 			maxWidth: 600, 
-			width: 400,
+			width: 415,
 			hasAutocompleter: false,
+            resizable:false,
 			open: function() {
 				if (this.hasAutocompleter !== true) {
 					$('.invite').autocomplete('getusers.php', {
