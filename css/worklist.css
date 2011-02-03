@@ -317,3 +317,15 @@ td.textAlignReport {
 	color:#6F6F6F;
 	font-size:12px;
 }
+
+.floatLeft{
+	float:left;
+}
+
+.floatRight {
+	float:right;
+}
+
+.clear{
+	clear:both;
+}

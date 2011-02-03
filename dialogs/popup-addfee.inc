@@ -2,35 +2,18 @@
         <form name="popup-form" id="popup-form-addfee" action="" method="post">
             <input type="hidden" name="itemid" value="" />
 
-            <div style="float:left;width:33%">
-                <p class="info-label">Amount<br />
-                <input type="text" name="fee_amount" id="fee_amount" class="text-field money" size="48" />&nbsp;USD
-                </p>
+            <div class="floatLeft">
+                    <p class="info-label iToolTip enterAmount">Fee ($USD)<br />
+              <input type="text" name="fee_amount" id="fee_amount" class="text-field money iToolTip enterAmount" size="48" />
+                    </p>
             </div>
-
-            <div style="float:left;width:33%">
-                <p class="info-label">Reimbursable Expense?<br />
-                <input type="checkbox" name="is_expense" id="is_expense" value="1" />
-                </p>
+    
+            <div class="floatRight">
+    
+                     <p class="info-label iToolTip enterAmount">Description<br />
+              <input type="text" name="fee_desc" id="fee_desc" class="text-field iToolTip enterAmount" size="48" />
+                    </p>
             </div>
-<?php
-         $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
-		if ($is_payer)
-            {
-?>
-            <div style="float:left;width:33%">
-                <p class="info-label">Or<br />Rewarder?<br />
-                <input type="checkbox" name="is_rewarder" id="is_rewarder" value="1" disabled/>
-                </p>
-            </div>
-<?php
-            }
-?>
-            <div style="clear:both"></div>
-
-                <p class="info-label">Description<br />
-                <input type="text" name="fee_desc" id="fee_desc" class="text-field" size="48" />
-                </p>
 
                 <script type="text/javascript">
                     // see http://regexlib.com/REDetails.aspx?regexp_id=318

@@ -103,19 +103,19 @@
 		</div><!-- end of fees_block -->
 
 		<div id='fees_single_block'>
-		<div style="float:left;">
+		<div class="floatLeft">
                 <p class="info-label iToolTip enterAmount">Fee ($USD)<br />
 		  <input type="text" name="bid_fee_amount" id="bid_fee_amount" class="text-field money iToolTip enterAmount" size="48" />
                 </p>
 		</div>
 
-		<div style="float:right">
+		<div class="floatRight">
 
                  <p class="info-label iToolTip enterAmount">Description<br />
 		  <input type="text" name="bid_fee_desc" id="bid_fee_desc" class="text-field iToolTip enterAmount" size="48" />
                 </p>
         </div>
-        	<div style="clear:both"></div>
+       	<div class="clear"></div>
 
 <?php
    if ($is_runner || $has_budget) {//if user is a runner - allow to change status

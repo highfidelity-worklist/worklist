@@ -200,6 +200,9 @@
 	margin:10px 0 10px;
 }
  
+#fee_desc {
+	width:280px;
+} 
 #edit_workitem_form ul li {
 	float:left;
 	list-style: none!important;
@@ -567,4 +570,16 @@
 .removeAttachment  {
     cursor: pointer;
     text-decoration: underline;
+}
+
+.floatLeft{
+	float:left;
+}
+
+.floatRight {
+	float:right;
+}
+
+.clear{
+	clear:both;
 }
