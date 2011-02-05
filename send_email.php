@@ -21,7 +21,7 @@ function sl_send_email($to, $subject, $html, $plain=null, $headers = '') {
     if (empty($to)) return false;
 
     $hash = md5(date('r', time()));
-    $headers .= "From: SendLove <love@sendlove.us>\n";
+    $headers .= "From: Worklist <worklist@sendlove.us>\n";
     if (!empty($html)) {
         if (empty($plain)) {
             $h2t = new html2text($html, 75);

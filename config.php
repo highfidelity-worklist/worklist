@@ -133,12 +133,12 @@ define('SMS_FLAG_BID_ALERTS',       0x0002);
 if (empty($mail_user) || !is_array($mail_user)) {
 $mail_user = array (
   'authuser' => array (
-    'from' => 'SendLove <love@sendlove.us>',
-    'replyto' => 'SendLove <love@sendlove.us>',
+    'from' => 'Worklist <worklist@sendlove.us>',
+    'replyto' => 'Worklist <worklist@sendlove.us>',
     ),
   'smsuser' => array (
-    'from' =>  'SendLove SMSReply <sms@sendlove.us>',
-    'replyto' => 'SendLove SMSReply <sms@sendlove.us>'
+    'from' =>  'Worklist SMSReply <sms@sendlove.us>',
+    'replyto' => 'Worklist SMSReply <sms@sendlove.us>'
     )
   );
 }

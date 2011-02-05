@@ -116,7 +116,7 @@ class Notification{
 
 	    case 'comment':
 
-		  $subject = 'LoveMachine New comment: ' . $itemTitle;
+		  $subject = 'Comment: ' . $itemTitle;
 		  $body = 'New comment was added to the item ' . $itemLink . '.<br>';
 		  $body .= $data['who'] . ' says:<br />'
 			    . $data['comment'];
@@ -124,7 +124,7 @@ class Notification{
 
 	    case 'fee_added':
 
-		  $subject = 'LoveMachine Fee added: ' . $itemTitle;
+		  $subject = 'Fee: ' . $itemTitle;
 		  $body = 'New fee was added to the item ' . $itemLink . '.<br>'
 			. 'Who: ' . $data['fee_adder'] . '<br>'
 			. 'Amount: ' . $data['fee_amount'];
@@ -132,14 +132,14 @@ class Notification{
 
 	    case 'bid_accepted':
 
-		  $subject = 'LoveMachine Bid accepted: ' . $itemTitle;
+		  $subject = 'Accepted: ' . $itemTitle;
 		  $body = 'Cha-ching! Your bid was accepted for ' . $itemLink . '<br>'
 			. 'Promised by: ' . $_SESSION['nickname'];
 	    break;
 
 	    case 'bid_placed':
 
-		  $subject = 'LoveMachine New bid: ' . $itemTitle;
+		  $subject = 'Bid: ' . $itemTitle;
 		  $body =  'New bid was placed for ' . $itemLink . '<br>'
 			 . 'Details of the bid:<br>'
 			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
@@ -154,7 +154,7 @@ class Notification{
 
 	    case 'bid_updated':
 
-		  $subject = 'LoveMachine Bid Updated: ' . $itemTitle;
+		  $subject = 'Bid: ' . $itemTitle;
 		  $body =  'Bid Updated for ' . $itemLink . '<br>'
 			 . 'Details of the bid:<br>'
 			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
@@ -169,14 +169,14 @@ class Notification{
 
 	    case 'modified':
 
-		  $subject = "LoveMachine Item modified: ".$itemTitle;
+		  $subject = "Modified: ".$itemTitle;
 		  $body =  $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
 			 . $data['changes'];
 	    break;
 
             case 'new_bidding':
 
-                  $subject = "New job for bid in LoveMachine Worklist: ".$itemTitle;
+                  $subject = "Bidding: ".$itemTitle;
                   $body =  "Summary:<br>".$workitem -> getSummary() . '<br><br>Notes:<br>'.$workitem->getNotes();
                   $body .= '<br><br>You are welcome to bid <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.';
 
@@ -184,13 +184,12 @@ class Notification{
 
             case 'new_review':
 
-		  $subject = "New LoveMachine Item in review: ".$itemTitle;
+		  $subject = "Review: ".$itemTitle;
 		  $body =  'New item is available for review: ' . $itemLink . '<br>';
 	    break;
 	}
 
-	$body .= '<p>Love,<br/><br/>Eliza @ the LoveMachine</p>';
-
+	
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
         if($recipients){
@@ -221,7 +220,7 @@ class Notification{
 
             $to = substr_replace($to, "", -2);
             $headers = 'BCC: ' . $to . PHP_EOL;
-            sl_send_email('love@sendlove.us', $subject, $body, null, $headers);
+            sl_send_email('worklist@sendlove.us', $subject, $body, null, $headers);
         }
     }
 
@@ -240,12 +239,12 @@ class Notification{
         switch($options['type']){
 
             case 'new_bidding':
-                $subject = 'New bidding';
+                $subject = 'Bidding';
                 $message = 'Workitem #' . $workitem->getId() . ' is available for bidding';
             break;
 
             case 'new_review':
-                $subject = 'New review';
+                $subject = 'Review';
                 $message = 'Workitem #' . $workitem->getId() . ' is available for review';
             break;
         }

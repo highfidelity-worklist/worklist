@@ -146,15 +146,13 @@ if(isset($minimal_POST['sign_up'])){
             $user_id = mysql_insert_id();
 
             // Email user
-            $subject = "LoveMachine Worklist Registration Confirmation";
+            $subject = "Registration";
             $link = SECURE_SERVER_URL . "confirmation.php?cs=".$ret->confirm_string."&str=" . base64_encode($ret->username);
             $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
             $body .= "<p><a href=\"".$link."\">Click here to verify your email address and activate your account.</a></p>";
-            $body .= "<p>Love,<br/>The LoveMachine</p>";
             $plain = "You are only one click away from completing your registration!\n\n";
             $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
             $plain .= $link."\n\n";
-            $plain .= "Love,\n\nThe LoveMachine</p>";
             sl_send_email($ret->username, $subject, $body, $plain);
             
             $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";

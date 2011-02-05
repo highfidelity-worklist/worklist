@@ -373,8 +373,7 @@ class JsonServer
 			$body = "<p>Hi there,</p>";
 			$body .= "<p>" . $user->getNickname() . " just uploaded his/her Local Tax Form you can download and approve it from this URL:</p>";
 			$body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_Local.pdf\">Click here</a></p>";
-			$body .= "<p>Love,<br/>Worklist</p>";
-			
+				
 			sl_send_email(FINANCE_EMAIL, $subject, $body);
 			
 			return $this->setOutput(array(
@@ -412,7 +411,6 @@ class JsonServer
 			$body = "<p>Hi there,</p>";
 			$body .= "<p>" . $user->getNickname() . " just uploaded his/her W-9 Form you can download and approve it from this URL:</p>";
 			$body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_W9.pdf\">Click here</a></p>";
-			$body .= "<p>Love,<br/>Worklist</p>";
 			
 			sl_send_email(FINANCE_EMAIL, $subject, $body);
 			
@@ -520,12 +518,11 @@ class JsonServer
 				$workitem->setRunnerId($runner->getId())
 						 ->save();
 				
-				$subject = 'The runner for #' . $workitem->getId() . ' has been changed';
+				$subject = 'Runner #' . $workitem->getId() . ' has been changed';
 				$body = "<p>Hi there,</p>";
 				$body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Runner " . $runner->getNickname() . ".</p>";
 				$body .= "<p>See you in the Workroom!</p>";
-				$body .= "<p><br/>Love,<br/>Eliza @ the LoveMachine</p>";
-				
+								
 				if ($oldRunner) {
 					sl_send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body);
 				}

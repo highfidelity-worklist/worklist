@@ -13,7 +13,7 @@ require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
-				 "BIDDING" => array("PASS"),
+                 "BIDDING" => array("PASS"),
 				 "WORKING" => array("REVIEW"),
 				 "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
 				 "COMPLETED" => array("REVIEW", "DONE"),
@@ -21,7 +21,7 @@ require_once 'classes/Repository.class.php';
 				 "PASS" => array("REVIEW"));
 
     $statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
-				 "WORKING" => array("REVIEW"),
+                 "WORKING" => array("REVIEW"),
 				 "REVIEW" => array("PASS", "COMPLETED", "WORKING"),
 				 "COMPLETED" => array("REVIEW"),
 				 "DONE" => array("WORKING", "REVIEW"),
@@ -250,7 +250,7 @@ if ($action =="place_bid"){
     // sending sms message to the runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    Notification::sendSMS($runner, 'Bid placed', $journal_message);
+    Notification::sendSMS($runner, 'Bid', $journal_message);
 
     $redirectToDefaultView = true;
 }
@@ -285,7 +285,7 @@ if ($action =="edit_bid"){
     // sending sms message to the runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    Notification::sendSMS($runner, 'Bid updated', $journal_message);
+    Notification::sendSMS($runner, 'Updated', $journal_message);
 
     $redirectToDefaultView = true;
 }
@@ -311,7 +311,7 @@ if ($action == "add_fee") {
     // send sms message to runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    Notification::sendSMS($runner, 'Fee added', $journal_message);
+    Notification::sendSMS($runner, 'Fee', $journal_message);
 
     $redirectToDefaultView = true;
 }
@@ -349,7 +349,7 @@ if ($action=='accept_bid'){
                                 $bidder->findUserById($bid_info['bidder_id']);
 
                                 //send sms notification to bidder
-                                Notification::sendSMS($bidder, 'Bid accepted', $journal_message);
+                                Notification::sendSMS($bidder, 'Accepted', $journal_message);
 
                                 $redirectToDefaultView = true;
 	
@@ -511,13 +511,12 @@ function sendMailToDiscardedBids($worklist_id)	{
     $item = $workitem->getWorkItem($worklist_id);
 
     foreach( $bids as $bid )	{
-        $subject = "LoveMachine Job Filled: ".$item['summary'];
+        $subject = "Job: ".$item['summary'];
         $body = "<p>Hello ".$bid['nickname'].",</p>";
         $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$item['id']."'>#".$item['id']."</a> '".$item['summary']."'. This job has just been filled by another mechanic.</br></p>";
         $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
         $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
-        $body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
-
+        
         sl_send_email($bid['email'], $subject, $body);
     }
 }

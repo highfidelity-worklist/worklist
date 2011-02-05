@@ -547,12 +547,11 @@ function withdrawBid($bid_id) {
         sendJournalNotification($message);
 
         //sending email to the bidder
-        $subject = "LoveMachine bid withdrawn: " . $summary;
+        $subject = "Bid: " . $summary;
         $txtbody = $body = "Your bid has been deleted by: ".$_SESSION['nickname']."</p>";
         $item_link = SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view";
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        $body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
         sl_send_email($user->username, $subject, $body);
         sl_notify_sms_by_object($user, $subject, "${txtbody}\n${item_link}");
     }
@@ -585,11 +584,10 @@ function deleteFee($fee_id) {
         sendJournalNotification($message);
 
         //sending email to the bidder
-        $subject = "LoveMachine fee deleted: " . $summary;
+        $subject = "Fee: " . $summary;
         $body = "Your fee has been deleted by: ".$_SESSION['nickname']."</p>";
         $body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$fee->worklist_id}&action=view>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        $body .= "<p>Love,<br/><br/> Eliza @ the LoveMachine</p>";
         sl_send_email($user->username, $subject, $body);
         sl_notify_sms_by_object($user, $subject, $body);
     }
@@ -630,18 +628,17 @@ function invitePeople(array $people, $item, $summary = null, $description = null
 
             if ($user !== false) {
                 //sending email to the invited developer
-                $subject = "LoveMachine Invitation to bid on " . $summary;
+                $subject = "Invitation " . $summary;
                 $body = "<p>Hello you!</p>";
-                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the LoveMachine to bid on " . $summary . ".";
+                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on " . $summary . ".";
                 $body .= "<p>Interested in knowing more info? Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
                 $body .= "<p>Hope to see you soon.</p>";
-                $body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
                 sl_send_email($user->username, $subject, $body);
             } else if (validEmail($invite)) {
                 //sending email to the NEW invited developer
-                $subject = "LoveMachine Invitation for " . $summary;
+                $subject = "Invitation:" . $summary;
                 $body = "<p>Well, hello there!</p>";
-                $body .= "<p>" . $_SESSION['nickname'] . " from the LoveMachine thought you might be interested in bidding on this job:</p>";
+                $body .= "<p>" . $_SESSION['nickname'] . " from the Worklist thought you might be interested in bidding on this job:</p>";
                 $body .= "<p>Summary of the job: " . $summary . "</p>";
                 $body .= "<p>Description:</p>";
                 $body .= "<p>------------------------------</p>";
@@ -657,7 +654,6 @@ function invitePeople(array $people, $item, $summary = null, $description = null
                 $body .= "[<a href=\"http://dev.sendlove.us/worklist/\">dev.sendlove.us/worklist</a> | Look over all our open work items]<br />";
                 $body .= "[<a href=\"http://dev.sendlove.us/journal/\">dev.sendlove.us/journal</a> | Talk with us in our Journal]<br />";
                 $body .= "<p>Hope to see you soon.</p>";
-                $body .= "<p>Love,<br/><br/>Eliza @ the LoveMachine</p>";
                 sl_send_email($invite, $subject, $body);
             }
         }

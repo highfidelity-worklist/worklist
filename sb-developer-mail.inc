@@ -1,4 +1,4 @@
-Welcome to the LoveMachine, Inc. development team!  Ready to get started?
+Welcome to the Worklist development team!  Ready to get started?
 
 Your sandbox account details:
 Server: dev.sendlove.us
@@ -17,6 +17,3 @@ This account can be used for accessing the server using SFTP or SSH.
 
 See you in the Workroom!
 
-Love,
-
-Eliza @ the LoveMachine
