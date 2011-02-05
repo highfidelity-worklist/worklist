@@ -3,7 +3,7 @@
 		 <input type="hidden" name="bid_id" value="" />
 		<table border="0" style="border-width:0px">
 			 <tr>
-				 <td style="width:110px">Email</td>
+				 <td style="width:110px">Bidder</td>
 				 <td><span id="info-email"></span></td>
 			 </tr>
 			 <tr>

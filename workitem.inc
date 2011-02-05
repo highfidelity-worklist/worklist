@@ -368,7 +368,7 @@ function reply(id) {
 	    $('#withdraw').submit();
 	});
 
-	  $('tr.row-bidlist-live').click(function(){
+	  $('tr.row-bidlist-live ').click(function(){
 
         $.metadata.setType("elem", "script")
         var bidData = $(this).metadata();
@@ -380,7 +380,7 @@ function reply(id) {
             $('#popup-bid-info form input[type="button"]').remove();
 
             $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
-            $('#popup-bid-info #info-email').text(bidData.email);
+            $('#popup-bid-info #info-email').html('<a href="#" onClick="javascript:showUserInfo(' + bidData.bidder_id +');">' + bidData.nickname + '</a>');
             $('#popup-bid-info #info-bid-created').text(bidData.bid_created);
             $('#popup-bid-info #info-bid-accepted').text(bidData.bid_accepted);
             $('#popup-bid-info #info-bid-timetocomplete').text(bidData.time_to_complete);
@@ -541,17 +541,33 @@ function reply(id) {
 			
 		});
 
-		$('#ping-btn').click(function()	{
+		$('#pingMechanic').click(function()	{
             ping_who = 'mechanic';
+	        $('#popup-pingtask form h5').html('Ping the Mechanic about the task');
 			$('#popup-pingtask').dialog('open');
 			return false;
 		});
 
-        $('#ping-r-btn').click(function() {
+        $('#pingRunner').click(function() {
             ping_who = 'runner';
+	        $('#popup-pingtask form h5').html('Ping the Runner about the task');
             $('#popup-pingtask').dialog('open');
             return false;
         });
+
+        $('#pingCreator').click(function() {
+            ping_who = 'creator';
+	        $('#popup-pingtask form h5').html('Ping the Creator about the task');
+            $('#popup-pingtask').dialog('open');
+            return false;
+        });
+		
+		$('.CreatorPopup').click(function(event) {
+			var bidderId=$(this).attr("bidderId");
+			
+			showUserInfo(bidderId);
+			event.stopPropagation();
+		});
 
         // Reassign runner
         (function($) {
@@ -685,7 +701,7 @@ if ($action =="edit"):  ?>
 						</li>
 				<!-- Edit: Key People info box -->
 						<li>
-							<div id="creatorBox"><span class="creatorName">Creator</span><?php echo $worklist['creator_nickname'];?></div>
+							<div id="creatorBox"><span id="pingCreator" class="creatorName" title="Ping Creator"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>
 							<div id="runnerBox"><span class="runnerName">Runner</span>
                             <?php
                                 if( $runner_nickname != '' ) echo '<span id="ping-r-btn" title="Ping Runner">'.$runner_nickname.'</span>';
@@ -808,17 +824,30 @@ if ($action =="edit"):  ?>
 					</li>
 				<!-- View: Key People info -->
 					<li>
-							<div id="creatorBox"><span class="creatorName">Creator</span><?php echo $worklist['creator_nickname'];?></div>
-							<div id="runnerBox"><span class="runnerName">Runner</span>
+							<div id="creatorBox"><span id="pingCreator" class="creatorName" title="Ping Creator"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>
+							<div id="runnerBox">
                             <?php
-                                if( $runner_nickname != '' ) echo '<span id="ping-r-btn" title="Ping Runner">'.$runner_nickname.'</span>';
-                                else echo $runner_nickname; ?></div>
+                                if( $runner_nickname != 'Not funded' ) {
+							?>
+                            		<span id="pingRunner" class="runnerName" title="Ping Runner"><a href="#">Runner</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo $worklist['runner_nickname'];?></a>
+                            <?php
+								}
+                                else {
+							?>
+                            <span class="runnerName" title="Ping Runner">Runner</span> Not funded
+                            <?php
+								}
+							?>
+							</div>
 							<?php								
 								$mech = '';							
 								if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
-								if($mech==''){$mech='Not assigned';}
-								else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}							
-								echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>'.$mech.'</div>';
+								if($mech==''){
+									echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>Not Assigned</div>';
+								}
+								else{							
+									echo'<div id="mechanicBox"><span id="pingMechanic" class="mechanicName" title="Ping Mechanic"><a href="#">Mechanic</a></span><a href="#" onClick="javascript:showUserInfo('. $worklist['mechanic_id'].');"><span id="ping-btn" title="Ping Mechanic">'.$mech.'</span></a></div>';
+								}
 							?>
 						
 					</li>
@@ -917,10 +946,20 @@ if ($action =="edit"):  ?>
                                         // store bid info into jquery metadata so we won't have to fetch it again on user click 
                                         $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
                                     ?>">
-                                        <script type="data"><?php echo "{id: {$bid['id']}, email: '{$bid['email']}', amount: '{$bid['bid_amount']}', bid_accepted: '{$bid['bid_accepted']}', bid_created: '{$bid['bid_created']}', time_to_complete: '{$bid['time_to_complete']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
-									<td><?php echo $bid['nickname'];?></td>
-									<td>$ <?php echo $bid['bid_amount'];?></td>
-									<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; }?>><?php echo relativeTime($bid['future_delta']);?></td>
+                                        <script type="data"><?php echo "{id: {$bid['id']},nickname: '{$bid['nickname']}', email: '{$bid['email']}', amount: '{$bid['bid_amount']}', bid_accepted: '{$bid['bid_accepted']}', bid_created: '{$bid['bid_created']}', time_to_complete: '{$bid['time_to_complete']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
+									<td>
+                                    <?php 
+										if ($is_runner || $user->getId() == $bid['bidder_id']) {
+									?>
+                                    		<a href="#" bidderId="<?php echo $bid['bidder_id'];?>" class="CreatorPopup"><?php echo $bid['nickname'];?></a>
+                                    <?php
+										} else {
+											echo $bid['nickname'];	
+										}
+									?>
+</td>
+									<td >$ <?php echo $bid['bid_amount'];?></td>
+									<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; } ?>><?php echo relativeTime($bid['future_delta']);?></td>
 										</tr>
 								<?php } ?>
 							<?php } ?>
@@ -961,7 +1000,7 @@ if ($action =="edit"):  ?>
 							<?php else:	$row = 1; 
 								foreach($fees as $fee): ?>
 								<tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-									<td><?php echo $fee['nickname'];?></td>
+									<td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo $fee['nickname'];?></a></td>
 									<td>$ <?php echo $fee['amount'];?></td>
 									<td><?php echo $fee['desc'];?></td>
 									<td><?php echo $fee['date'];?></td>

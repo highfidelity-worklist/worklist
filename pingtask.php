@@ -42,7 +42,13 @@ if(isset($_REQUEST['id'])){
         $receiver = getUserById( $receiver_id );
         $receiver_nick = $receiver->nickname;
         $receiver_email = $receiver->username;
-    }
+    } else if($who == 'creator' ) {
+        // Get runner Nickname & email
+        $receiver_id = $item['creator_id'];
+        $receiver = getUserById( $receiver_id );
+        $receiver_nick = $receiver->nickname;
+        $receiver_email = $receiver->username;
+	}
 
     // Compose journal message
     $out_msg = $nickname." sent a ping to ".$receiver_nick." about item #".$item_id;

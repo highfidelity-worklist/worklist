@@ -341,7 +341,7 @@ WHERE id = ' . (int)$id;
      */
     public function getWorkItem($worklist_id)
     {
-        $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname,
+        $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname, u.id AS runner_id,
 			  uc.nickname AS creator_nickname, w.status, w.notes, w.project
 			  FROM  ".WORKLIST. " as w
 			  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
