@@ -123,6 +123,7 @@
 		  <p class="info-label">Status<br />
 		  <select name="status">
 		      <option value="SUGGESTED">SUGGESTED</option>
+		      <option value="BUG">BUG</option>
 		      <option value="BIDDING" selected="selected">BIDDING</option>
 		      <option value="WORKING">WORKING</option>
                       <?php if ($is_runner) { ?>

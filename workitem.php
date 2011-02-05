@@ -13,6 +13,7 @@ require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
+                 "BUG" => array("BIDDING","PASS"),
                  "BIDDING" => array("PASS"),
 				 "WORKING" => array("REVIEW"),
 				 "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
@@ -21,6 +22,7 @@ require_once 'classes/Repository.class.php';
 				 "PASS" => array("REVIEW"));
 
     $statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
+                 "BUG" => array("PASS", "REVIEW"),
                  "WORKING" => array("REVIEW"),
 				 "REVIEW" => array("PASS", "COMPLETED", "WORKING"),
 				 "COMPLETED" => array("REVIEW"),
