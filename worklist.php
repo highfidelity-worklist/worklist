@@ -1309,6 +1309,9 @@ include("head.html"); ?>
 <!-- Popups for tables with jobs from quick links -->
 <?php require_once('dialogs/popups-userstats.inc'); ?>
 
+<!-- Popup for bid info-->
+<?php require_once('dialogs/popup-addproject.inc'); ?>
+
 <?php include("format.php"); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 

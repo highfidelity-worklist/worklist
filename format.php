@@ -57,23 +57,33 @@
 
 <!-- Navigation placeholder -->
 		<div id="nav">
-			<?php if (isset($_SESSION['username'])) { ?>
+		<?php if (isset($_SESSION['username'])) { ?>
 
 			<a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
 			<a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> |
-			<a href="<?php echo SENDLOVE_URL ?>" class="iToolTip menuLove" target="_blank">LoveMachine</a> |
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
-                     <a href="settings.php" class="iToolTip menuSettings">Settings</a>
+            <a href="settings.php" class="iToolTip menuSettings">Settings</a> |
+            <a href="#" name="addproj" class="iToolTip addproj">New Project</a>
 			<?php } else {
             echo '<a href="login.php">Login</a>
-            <br/>
-            <div type="button" class="buttonbig" id="signupBtn" onclick="window.location=\'signup.php\'">Sign Up As a Developer</div>';
+            <p><input type="submit" id="signup" name="signup" onclick="window.location=\'signup.php\'" value="Sign Up Now" />
+               <input type="submit" class="addproj" class="iToolTip addProj" name="addproj" value="Add Project" />';
+            
 		} 
 			?>
 		</div>
 
 		<script type="text/javascript">
+		//Code for Add Project
+		$(document).ready(function() {
+			$('.addproj').click(function() {
+				$('#popup-addproject').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
+				$('#popup-addproject').data('title.dialog', 'Add Project');
+				$('#popup-addproject').dialog('open');
+		   	});
+		});
+		
 		// Code for stats
         $(function() {
             $('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
@@ -439,7 +449,9 @@
 		  if (strpos($_SERVER['PHP_SELF'],$hideStats)) { $showStats=false; }
 		}
 		if ($showStats) { require_once('dialogs/popup-stats.inc'); }
-	
+		
+		if ($AddProject) { require_once('dialogs/popup-addproject.inc'); }
+			 	
  		?>
 
 <!-- END Navigation placeholder -->
