@@ -1,3 +1,3 @@
 #sync user accounts in worklist into sendlove
-#*/5 * * * * /usr/bin/php /worklist/crons/dbsync_2.php  >> /tmp/dbsync_cron.out 2>&1
+#*/5 * * * * /usr/bin/php /mnt/ebsvol/dev-www/sendlove/public_html/worklist/crons/dbsync_2.php  >> /tmp/dbsync_cron.out 2>&1
 
