@@ -27,6 +27,7 @@ class WorkItem
     protected $status;
     protected $project;
     protected $notes;
+    protected $sandbox;
 
     protected $origStatus = null;
 
@@ -71,7 +72,8 @@ class WorkItem
 					    w.mechanic_id,
 					    w.status,
 					    w.project,
-					    w.notes
+					    w.notes,
+					    w.sandbox
 					FROM  ".WORKLIST. " as w
 					WHERE w.id = '" . (int)$id . "'";
         $res = mysql_query($query);
@@ -89,7 +91,8 @@ class WorkItem
 	     	 ->setMechanicId($row['mechanic_id'])
              ->setStatus($row['status'])
              ->setProject($row['project'])
-             ->setNotes($row['notes']);
+             ->setNotes($row['notes'])
+	      ->setSandbox($row['sandbox']);
         return true;
     }
 
@@ -233,7 +236,18 @@ WHERE id = ' . (int)$id;
     {
         return $this->notes;
     }
-    
+    public function setSandbox($sandbox)
+    {
+        $this->sandbox = $sandbox;
+        return $this;
+    }
+
+    public function getSandbox()
+    {
+        return $this->sandbox;
+    }
+
+	
     public static function getStates()
     {
         $states = array();
@@ -291,7 +305,8 @@ WHERE id = ' . (int)$id;
             notes="'.mysql_real_escape_string($this->getNotes()).'",
             project="'.mysql_real_escape_string($this->getProject()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
-	    runner_id="' .intval($this->getRunnerId()). '"';
+	    runner_id="' .intval($this->getRunnerId()). '",
+	    sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
 
         $query .= ' WHERE id='.$this->getId();
         return mysql_query($query) ? 1 : 0;
@@ -342,7 +357,7 @@ WHERE id = ' . (int)$id;
     public function getWorkItem($worklist_id)
     {
         $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname, u.id AS runner_id,
-			  uc.nickname AS creator_nickname, w.status, w.notes, w.project
+			  uc.nickname AS creator_nickname, w.status, w.notes, w.project,w.sandbox 
 			  FROM  ".WORKLIST. " as w
 			  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
 			  LEFT JOIN ".USERS." as u ON w.runner_id = u.id
@@ -511,13 +526,15 @@ WHERE id = ' . (int)$id;
         }*/
         $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
         $bid_info = mysql_fetch_assoc($res);
-
+	 $workitem_info = $this -> getWorkItem($bid_info['worklist_id']);
         // Get bidder nickname
-        $res = mysql_query("select nickname from ".USERS." where id='{$bid_info['bidder_id']}'");
+        $res = mysql_query("select nickname,unixusername,has_sandbox from ".USERS." where id='{$bid_info['bidder_id']}'");
         if ($res && ($row = mysql_fetch_assoc($res))) {
-            $bidder_nickname = $row['nickname'];
+			$bidder_nickname = $row['nickname'];
+			$bidder_unixusername = ($row['has_sandbox']==1) ? $row['unixusername'] : $bidder_nickname;
         }
         $bid_info['nickname']=$bidder_nickname;
+	 $bid_info['sandbox'] = "http://".SERVER_NAME."/~".$bidder_unixusername."/".$workitem_info['project']."/";
         
         //adjust bid_done date/time
         $prev_start = strtotime($bid_info['bid_created']);
@@ -527,7 +544,7 @@ WHERE id = ' . (int)$id;
         $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
             
         // changing mechanic of the job
-        mysql_unbuffered_query("UPDATE `".WORKLIST."` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
+        mysql_unbuffered_query("UPDATE `".WORKLIST."` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING',`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
         // marking bid as "accepted"
         mysql_unbuffered_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id);
         // adding bid amount to list of fees

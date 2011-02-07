@@ -200,7 +200,7 @@ function reply(id) {
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
 	$('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
 	$('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade' });
-
+	$('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
 
 	// JS Variables initialized from host PHP page
 	var workitem_id = <?php echo $worklist['id'];?>;
@@ -437,7 +437,23 @@ function reply(id) {
                 return false;
             }
         });
+<?php if($worklist['status'] == 'WORKING' && $mechanic_id == $user_id && $promptForReviewUrl){?>
+  		$('#status-switch').click(function(e){
+			if($('#quick-status').val() == 'REVIEW'){
+				$('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
+				$('#popup-reviewurl').dialog('open');
+				return false;
+			}
+  		});
+<?php } ?>
+<?php if(($is_runner) || ($mechanic_id == $user_id)){?>
+  		$('#edit_review_url').click(function(e){
+				$('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
+				$('#popup-reviewurl').dialog('open');
+  		});
+<?php } ?>
   });
+
 
     function ResetPopup() {
 		$('#for_edit').show();
@@ -798,8 +814,8 @@ if ($action =="edit"):  ?>
 								foreach($statusMapMechanic[$worklist['status']] as $status)
 								{?>
 									<form method="post" action="" style = "display:inline;">
-										<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
-										<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+									<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
+									<input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
 									</form>
 								<?php 
 								}
@@ -810,7 +826,7 @@ if ($action =="edit"):  ?>
 								{?>
 									<form method="post" action="" style = "display:inline;">
 										<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
-										<input type="hidden" name="quick-status" value="<?php echo $status; ?>" />
+										<input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
 									</form>
 								<?php
 								}
@@ -867,6 +883,20 @@ if ($action =="edit"):  ?>
 						    <span>Not assigned</span>
                         <?php endif;?>
 					</li>
+					<!-- View: Sandbox textarea -->
+					<?php if ($mechanic_id > 0):?>
+                    <li>
+						<span class="project-label" id="edit_review_url" style="cursor:pointer;">Review URL</span>
+                        <?php if ( !empty($worklist['sandbox']) ):?>
+                            <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
+                                <?php echo htmlspecialchars($worklist['sandbox']);?>
+                            </a>
+                        <?php else :?>
+						    <span>Not assigned</span>
+                        <?php endif;?>
+					</li>
+					<?php endif;?>
+
 				</ul>
 <!-- *** End of Action IF *** -->
 <?php endif;?>
@@ -1082,6 +1112,8 @@ if ($action =="edit"):  ?>
 	<?php require_once('dialogs/popup-confirmation.inc') ?>
 	<!-- Popup for breakdown of fees-->
     <?php require_once('dialogs/popup-fees.inc') ?>
+	<!-- Popup for Add Review Url-->
+    <?php require_once('dialogs/review-url-dialog.inc') ?>
 	<!-- Include User Info -->
 		<div id="user-info" title="User Info"></div>
 	<!-- If we are logged in, include User Info Popup -->

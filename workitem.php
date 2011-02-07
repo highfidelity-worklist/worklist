@@ -66,6 +66,7 @@ $workitem->loadById($worklist_id);
 $mechanic_id = $user->getId();
 $redirectToDefaultView = false;
 $redirectToWorklistView = false;
+$promptForReviewUrl = true;
 $runner_budget = $user->getBudget();
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
@@ -91,6 +92,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "accept_multiple_bid";
 }else if(isset($_POST['status-switch'])) {
     $action = "status-switch";
+}else if(isset($_POST['save-review-url'])) {
+    $action = "save-review-url";
 }else if (isset($_POST['newcomment'])) {
 	$comment = new Comment();
 	if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
@@ -178,7 +181,22 @@ if($action =='save_workitem') {
     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . $new_update_message;
 }
 
+if($action =='save-review-url'){
 
+    $sandbox = (!empty($_POST['sandbox-url']))?$_POST['sandbox-url']:$workitem->getSandbox();
+    $workitem->setSandbox($sandbox);
+    $workitem->save();
+    $new_update_message_review_url = " sandbox url : $sandbox ";
+    $notifyEmpty = false;
+    $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message_review_url";
+		if(!$notifyEmpty){
+		  Notification::workitemNotify(array('type' => 'modified',
+					  'workitem' => $workitem,
+					  'recipients' => array('runner', 'creator', 'mechanic')),
+				  array('changes' => $new_update_message_review_url));
+	}
+    $promptForReviewUrl = false;
+}
 
 if($action =='status-switch'){
 
