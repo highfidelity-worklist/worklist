@@ -47,6 +47,8 @@ include("head.html"); ?>
 
 <body>
 <?php include("format.php"); ?>
+<!-- Popup for add project info-->
+<?php require_once('dialogs/popup-addproject.inc'); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 

@@ -11,6 +11,7 @@ require_once 'workitem.class.php';
 require_once 'functions.php';
 require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
+require_once 'dialogs/popup-addproject.inc';
 
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
                  "BUG" => array("BIDDING","PASS"),
