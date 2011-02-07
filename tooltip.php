@@ -35,6 +35,9 @@ $tooltips = array(
 	
 	/* Add Job tooltips 			*/
     'enterAmount'      => 'Enter the amount you want to be paid if this job is accepted and done.',
+
+    /* Add Project tooltips 			*/
+    'addProj' => 'Add a new project to the Worklist.',
 	
 
 /*---------------------*/

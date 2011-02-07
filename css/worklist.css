@@ -8,6 +8,10 @@
     display: none;
 }
 
+.popup-body, #addproject{
+    display: none;
+}
+
 .popup-body, .user-info
 {
     padding: 0 8px;
@@ -150,7 +154,7 @@ z-index: 1;
 #search-head{
 	position:relative;
 	float:right;
-	width:700px;
+	width:620px;
 }
 #sharethis_0    {
     position:absolute;
