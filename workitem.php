@@ -126,7 +126,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 $notifyEmpty = true;
 if($action =='save_workitem') {
 
-    $args = array('summary','notes', 'status', 'project');
+    $args = array('summary','notes', 'status', 'project', 'sandbox');
     foreach ($args as $arg) {
         $$arg = $_POST[$arg];
     }
@@ -162,6 +162,11 @@ if($action =='save_workitem') {
         $workitem->setProject($project);
         $new_update_message .= "Project changed. ";
     }
+    // Sandbox
+    if ( $workitem->getSandbox() != $sandbox){
+        $workitem->setSandbox($sandbox);
+        $new_update_message .= "Sandbox changed. ";
+    }
     // Send invites
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
@@ -184,17 +189,18 @@ if($action =='save_workitem') {
 if($action =='save-review-url'){
 
     $sandbox = (!empty($_POST['sandbox-url']))?$_POST['sandbox-url']:$workitem->getSandbox();
+    $status_review = $_POST['quick-status-review'];
+    if(!empty($status_review)){
+	   changeStatus($workitem, $status_review, $user);
+    }
     $workitem->setSandbox($sandbox);
     $workitem->save();
-    $new_update_message_review_url = " sandbox url : $sandbox ";
+    $new_update_message = " sandbox url : $sandbox ";
+    if(!empty($status_review)){
+       $new_update_message .= " Status set to $status_review. ";
+    }
     $notifyEmpty = false;
-    $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message_review_url";
-		if(!$notifyEmpty){
-		  Notification::workitemNotify(array('type' => 'modified',
-					  'workitem' => $workitem,
-					  'recipients' => array('runner', 'creator', 'mechanic')),
-				  array('changes' => $new_update_message_review_url));
-	}
+    $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
     $promptForReviewUrl = false;
 }
 

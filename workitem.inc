@@ -439,14 +439,15 @@ function reply(id) {
         });
 <?php if($worklist['status'] == 'WORKING' && $mechanic_id == $user_id && $promptForReviewUrl){?>
   		$('#status-switch').click(function(e){
-			if($('#quick-status').val() == 'REVIEW'){
-				$('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
-				$('#popup-reviewurl').dialog('open');
-				return false;
-			}
+		    if($('#quick-status').val() == 'REVIEW'){
+			    $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
+			    $('#quick-status-review').val($('#quick-status').val());
+                           $('#popup-reviewurl').dialog('open');
+			    return false;
+		}
   		});
 <?php } ?>
-<?php if(($is_runner) || ($mechanic_id == $user_id)){?>
+<?php if(($is_runner) || ($mechanic_id == $user_id) && ($worklist['status'] != 'DONE')){?>
   		$('#edit_review_url').click(function(e){
 				$('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
 				$('#popup-reviewurl').dialog('open');
@@ -791,6 +792,22 @@ if ($action =="edit"):  ?>
 						        <span>Not assigned</span>
                             <?php endif;?>
 						</li>
+					<!-- Edit: Sandbox textarea -->
+					<?php if ($mechanic_id > 0):?>
+                    <li>
+						<span class="project-label" >Review URL</span>
+						<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
+						<input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo htmlspecialchars($worklist['sandbox']);?>" />
+						 <?php elseif ( !empty($worklist['sandbox']) ):?>
+                            <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
+                                <?php echo htmlspecialchars($worklist['sandbox']);?>
+                            </a>
+                        <?php else :?>
+						    <span>Not assigned</span>
+                        <?php endif;?>
+					</li>
+					<?php endif;?>
+
 					</ul>
 					<?php if($allowEdit && $action=="edit"): ?>
 						<div class="buttonContainer-save">
@@ -886,7 +903,7 @@ if ($action =="edit"):  ?>
 					<!-- View: Sandbox textarea -->
 					<?php if ($mechanic_id > 0):?>
                     <li>
-						<span class="project-label" id="edit_review_url" style="cursor:pointer;">Review URL</span>
+						<span class="project-label" id="edit_review_url">Review URL</span>
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
                                 <?php echo htmlspecialchars($worklist['sandbox']);?>
