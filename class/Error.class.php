@@ -32,7 +32,7 @@ class Error {
     public function getErrorMessage(){
         return $this->errorMessage;
     }
-    public function __isset() {
+    public function __isset($a=null) { // $a=null is an override to fix breakage on 08-FEB-2011 @ 10:12 EST <danbrown>
         return getErrorFlag();
     }
 }
