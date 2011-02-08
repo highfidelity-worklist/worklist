@@ -146,7 +146,7 @@ if (!empty($saveArgs)) {
         foreach ($messages as $msg) {
             $body .= "&nbsp;&nbsp;$msg<br/>";
         }
-        sl_send_email($to, $subject, $body);
+        if(!sl_send_email($to, $subject, $body)) { error_log("settings.php: sl_send_email failed"); }
 
         $msg="Account updated successfully!";
     }

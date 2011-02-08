@@ -64,7 +64,7 @@ if(isset($_REQUEST['id'])){
         $mail_msg .= "<a href='http://dev.sendlove.us/worklist/workitem.php?job_id=".$item_id."&action=view'>#".$item_id."</a>";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-        sl_send_email( $receiver_email, $mail_subject, $mail_msg);
+        if (!sl_send_email( $receiver_email, $mail_subject, $mail_msg)) { error_log("pingtask.php:id: sl_send_email failed"); }
 
         // sms
         try {
@@ -100,7 +100,7 @@ if(isset($_REQUEST['id'])){
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-        sl_send_email( $receiver_email, $mail_subject, $mail_msg);
+        if(!sl_send_email( $receiver_email, $mail_subject, $mail_msg)) { error_log("pingtask.php:!id: sl_send_email failed"); }
 
         // sms
         try {

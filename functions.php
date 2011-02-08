@@ -552,7 +552,7 @@ function withdrawBid($bid_id) {
         $item_link = SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view";
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        sl_send_email($user->username, $subject, $body);
+        if (!sl_send_email($user->username, $subject, $body)) { error_log("functions.php:withdrawlFee: sl_send_email failed"); }
         sl_notify_sms_by_object($user, $subject, "${txtbody}\n${item_link}");
     }
 }
@@ -588,7 +588,7 @@ function deleteFee($fee_id) {
         $body = "Your fee has been deleted by: ".$_SESSION['nickname']."</p>";
         $body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$fee->worklist_id}&action=view>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        sl_send_email($user->username, $subject, $body);
+        if (!sl_send_email($user->username, $subject, $body)) { error_log("sl_send_email failed"); }
         sl_notify_sms_by_object($user, $subject, $body);
     }
 }
@@ -633,7 +633,7 @@ function invitePeople(array $people, $item, $summary = null, $description = null
                 $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on " . $summary . ".";
                 $body .= "<p>Interested in knowing more info? Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
                 $body .= "<p>Hope to see you soon.</p>";
-                sl_send_email($user->username, $subject, $body);
+                if(!sl_send_email($user->username, $subject, $body)) { error_log("functions.php:invite: sl_send_email failed"); }
             } else if (validEmail($invite)) {
                 //sending email to the NEW invited developer
                 $subject = "Invitation:" . $summary;
@@ -654,7 +654,7 @@ function invitePeople(array $people, $item, $summary = null, $description = null
                 $body .= "[<a href=\"http://dev.sendlove.us/worklist/\">dev.sendlove.us/worklist</a> | Look over all our open work items]<br />";
                 $body .= "[<a href=\"http://dev.sendlove.us/journal/\">dev.sendlove.us/journal</a> | Talk with us in our Journal]<br />";
                 $body .= "<p>Hope to see you soon.</p>";
-                sl_send_email($invite, $subject, $body);
+                if(!sl_send_email($invite, $subject, $body)) { error_log("functions.php:inviteNew: sl_send_email failed"); }
             }
         }
     }

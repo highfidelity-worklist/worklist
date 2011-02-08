@@ -209,18 +209,21 @@ class Notification{
         }
 
         if(count($emails) > 0){
-            $to = '';
+            $to = array();
             foreach($emails as $email){
 
                 // do not send mail to the same user making changes
                 if($email != $current_user->getUsername()){
-                    $to .= $email . ', ';
+                    $to[] = $email;
+                } else {
+                    //If user making changes in the only receipient. nothing to do here.
+                    if (count($emails)==1) { return true; }
                 }
             }
 
-            $to = substr_replace($to, "", -2);
-            $headers = 'BCC: ' . $to . PHP_EOL;
-            sl_send_email('worklist@sendlove.us', $subject, $body, null, $headers);
+            $headers['To']= 'worklist@sendlove.us';
+error_log("Notification:workitemtest: ".json_encode($to));
+            if(!sl_send_email($to, $subject, $body, null, $headers)) { error_log("Notification:workitem: sl_send_email failed"); }
         }
     }
 

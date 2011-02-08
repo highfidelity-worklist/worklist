@@ -32,4 +32,7 @@ class Error {
     public function getErrorMessage(){
         return $this->errorMessage;
     }
+    public function __isset() {
+        return getErrorFlag();
+    }
 }

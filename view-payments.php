@@ -126,14 +126,14 @@ switch ($action)
     } else  {
         $alert_msg = "MassPay Failure"; 
         $pp_message = '<p>MassPay failed:</p><p><pre>' . print_r($httpParsedResponseAr, true).'</pre></p>';
-        sl_send_email('finance@lovemachineinc.com', 'Masspay Fail', $pp_message);
+        if(!sl_send_email('finance@lovemachineinc.com', 'Masspay Fail', $pp_message)) { error_log("view-payments:MassPayFailure: sl_send_email failed"); }
     }
 
     } else {
         $error_msg = 'Invalid Masspay Authentication<br />';
         $error_msg .= 'IP: '. $_SERVER['REMOTE_ADDR'].'<br />';
         $error_msg .= 'UserID: '.$userId;
-        sl_send_email("finance@lovemachineinc.com", "Masspay Invalid Auth Attempt", $error_msg);
+        if(!sl_send_email("finance@lovemachineinc.com", "Masspay Invalid Auth Attempt", $error_msg)) { error_log("view-payments:MassPayAuth: sl_send_email failed"); }
         $alert_msg = "Invalid Authentication"; 
     
     }

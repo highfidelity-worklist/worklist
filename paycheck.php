@@ -60,7 +60,7 @@ if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
         $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
         $body .= "See you in the Workroom!<br/><br/>Love,<br/><br/>Eliza @ the LoveMachine<br/>";
 
-        sl_send_email($userData['username'], $subject, $body);
+        if(!sl_send_email($userData['username'], $subject, $body)) { error_log("paycheck: sl_send_email failed"); }
     }
     die('{"success": true, "message": "Payment has been saved!" }');
 } else {

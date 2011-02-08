@@ -17,18 +17,18 @@ require_once(dirname(__FILE__) . "/email/en.php");
  * 
  *  Check using Akismet if mail is probably spam, otherwise send an email 
  */
-function sl_send_email($to, $subject, $html, $plain=null, $headers = '') {
+function sl_send_email($to, $subject, $html, $plain=null, $headers = array()) {
     if (empty($to)) return false;
 
     $hash = md5(date('r', time()));
-    $headers .= "From: Worklist <worklist@sendlove.us>\n";
+    $headers['From'] = "Worklist <worklist@sendlove.us>";
     if (!empty($html)) {
         if (empty($plain)) {
             $h2t = new html2text($html, 75);
             $plain = $h2t->convert();
         }
 
-        $headers .= "Content-Type: multipart/alternative; boundary=\"PHP-alt-$hash\"\n";
+        $headers["Content-Type"]="multipart/alternative; boundary=\"PHP-alt-$hash\"";
         $body = "
 --PHP-alt-$hash
 Content-Type: text/plain; charset=\"iso-8859-1\"
@@ -47,10 +47,7 @@ Content-Transfer-Encoding: 7bit
         $body = $plain;
     }
 
-	if (mail($to,$subject,$body,$headers)) {
-	    return true;
-	}
-	return false;
+        return send_authmail(array('sender'=>'authuser','server'=>'gmail-ssl'),$to,$subject,$body,$headers);
 }
 
 /* sl_notify_sms functions
@@ -66,7 +63,9 @@ function sl_notify_sms_by_id($user_id, $smssubject, $smsbody)
     $phone_info = mysql_fetch_object($res);
     if (is_object($phone_info))
     {
-	sl_notify_sms_by_object($phone_info, $smssubject, $smsbody);
+	if (! sl_notify_sms_by_object($phone_info, $smssubject, $smsbody) ) {
+	    error_log("sl_notify_sms_by_id: sl_notify_sms_by_object failed. Not sending SMS. ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
+        }
     } else {
 	error_log("sl_notify_sms_by_id: Query '$sql' failed. Not sending SMS. ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
     }
@@ -87,12 +86,12 @@ function sl_notify_sms_by_object($user_obj, $smssubject, $smsbody)
 				$smsaddr = substr($user_obj->provider, 1);
 			}
 		}	else	{
-			return;
+			return false;
 		}
     }
 
-    send_authmail(array('sender'=>'smsuser', 'server'=>'gmail-ssl-smsuser'),
-    					$smsaddr, strip_tags($smssubject), strip_tags($smsbody), '');
+    return send_authmail(array('sender'=>'smsuser', 'server'=>'gmail-ssl-smsuser'),
+    					$smsaddr, strip_tags($smssubject), strip_tags($smsbody), array());
 }
 
 /*  sendTemplateEmail - send email using email template
@@ -117,7 +116,7 @@ function sendTemplateEmail($to, $template, $data){
 
     $result = null;
     foreach($recipients as $recipient){
-        $result = sl_send_email($recipient, $subject, $html, $plain);
+        if (! $result = sl_send_email($recipient, $subject, $html, $plain,array('To'=>"<$recipient>"))) { error_log("send_email:Template: sl_send_email failed"); }
     }
 
     return $result;
