@@ -1114,6 +1114,8 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/popup-fees.inc') ?>
 	<!-- Popup for Add Review Url-->
     <?php require_once('dialogs/review-url-dialog.inc') ?>
+    <!-- Include Add Project -->	
+	<?php require_once 'dialogs/popup-addproject.inc'; ?>
 	<!-- Include User Info -->
 		<div id="user-info" title="User Info"></div>
 	<!-- If we are logged in, include User Info Popup -->
