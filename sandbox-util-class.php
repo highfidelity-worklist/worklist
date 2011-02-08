@@ -41,7 +41,7 @@ class SandBoxUtil
 	$password = $this->generatePassword(8);
 	// Create the user and checkout all the folders. if something went wrong, throw an exception
 	$userCreationStatus = $this->createUserAndCheckoutProjects($unixusername, $password, $projects);
-
+error_log("creating Developer from worklist");
 	// Send a mail to the developer
 	$this->notifyDeveloper($username, $nickname, $unixusername, $password, $projects);
 
@@ -98,7 +98,7 @@ class SandBoxUtil
       $encryptedPassword = crypt($password,"password");
       #$command = '/usr/bin/sudo '.SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
       $command = SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
-	error_log($command);
+	//error_log($command); //This debug commands puts the new devs password in the logs
       $scriptStatus  = exec($command . "; echo $?");
       if($scriptStatus != "0") {
             throw new Exception('Sandbox create script failed:'.$scriptStatus);
