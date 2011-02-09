@@ -71,13 +71,18 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
 
     // Runner and query is User->Bidding we only show the items the user
     // is currently bidding on.
-    if( $is_runner )    {
+    if ($is_runner) {
         $severalStatus = "";
-        foreach( $sfilter as $val ) {
-            if( $val == 'BIDDING' ) {
-                $where .= $severalStatus . "( status='$val' AND ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
+        foreach ($sfilter as $val) {
+            if ($val == 'ALL') {
+                $status_cond = "";
+            } else {
+                $status_cond = "status='$val' AND";
+            }
+            if ($val == 'BIDDING') {
+                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
             } else  {
-                $where .= $severalStatus . "( status='$val' AND ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
+                $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
             }
             $severalStatus = " OR ";
         }
