@@ -46,11 +46,30 @@
                 this.el.bind({
                     'beforeshow newlist': function(e, o) {
                         $("li",o.list).each(function(){
-                            $(this).html("<input type='checkbox' />" + $(this).text() );
+                            $(this).html("<input type='checkbox' /><span class='checkboxLabel'>" + $(this).text() + "</span>");
                         });
                         /** Keep this if we need a button to close the list **/
                         $("li[val=CheckDone]",o.list).html("<input type='button' value='Done' style='display:none' id='CheckDone'/>")
                             .unbind("mouseover");
+                            
+                         $(".checkboxLabel",o.list).click(function(event){
+                            event.preventDefault();
+                            event.stopPropagation();
+                           $("input[type=checkbox]",o.list).each(function(){
+                                if ($(this).parent().attr('val') == "ALL") {return;}
+                                var oThis=this;
+                                if ($(oThis).is(':checked') ) {
+                                    if ($(this).val() != "ALL") {
+                                        $(oThis).parent().click();                                        
+                                    }
+                                }
+                            });
+                            setTimeout(function() {
+                                $(event.currentTarget).prev().parent().click();
+                                cThis._hideList();
+                            },500);
+                            return true;
+                        });
                             
                          $("input[type=checkbox]",o.list).click(function(event){
                             $(event.currentTarget).data("clicked",true);
