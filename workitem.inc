@@ -216,7 +216,7 @@ function reply(id) {
 	    $('.accordion').accordion({
 			clearStyle: true,
 			collapsible: true,
-			active: false,
+			active: true,
 			change: function() {
                 // we only need to get this once
 			    if(!$.journalChat) {
@@ -225,7 +225,7 @@ function reply(id) {
     			        type: 'post',
     			        url: '<?php echo JOURNAL_QUERY_URL;?>',
                         data: {
-                            action: 'getLatestPosts', count: 50, query: <?php echo $worklist['id'];?>, filter: 'all',api_key:'<?php echo  JOURNAL_API_KEY; ?>'
+                            action: 'getTaskPosts', count: 50, query: <?php echo $worklist['id'];?>, filter: 'all',api_key:'<?php echo  JOURNAL_API_KEY; ?>'
                         },
     			        dataType: 'json',
     			        success: function(json)
@@ -238,7 +238,7 @@ function reply(id) {
 			    }
 			},
 		});
-		
+		$('.accordion').accordion( "activate" , 0 );
 		$.ajax({
 			type: 'post',
 			url: 'jsonserver.php',
