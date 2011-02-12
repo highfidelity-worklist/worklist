@@ -112,3 +112,4 @@ p.bottom {
 .tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
 .ui-tabs-selected { margin-top: -3px !important; }
 
+#btn-bonus { float: right; margin: -10px 145px 0 0; }

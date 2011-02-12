@@ -418,4 +418,20 @@ replacement data:
 	<br />The LoveMachine</p>',
 ),
 
-            ); 
+/*
+bonus
+    inform user they have received a bonus
+    used in: pay-bonus.php
+
+replacement data:
+    amount - the amount of bonus received
+    reason - the reason the bonus was given
+*/
+'bonus_received' => array(
+    'subject' => 'Bonus payment of ${amount}',
+    'body' => '
+        <p>You received a bonus of ${amount}, and note:</p>
+        <p>{reason}</p>'
+)
+
+); 

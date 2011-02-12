@@ -439,6 +439,18 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     return $journal_message;
 }
 
+function payBonusToUser($user_id, $amount, $notes) {
+
+    $query = "INSERT INTO `".BONUS_PAYMENTS."` (`payer_id`, `receiver_id`, `amount`, `notes`, `date`) VALUES ('" . (int)$_SESSION['userid'] . "', '" . (int)$user_id . "', '" . (float)$amount . "', '" . mysql_real_escape_string($notes) . "', NOW())";
+    $result = mysql_unbuffered_query($query);
+
+    if (mysql_insert_id()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function relativeTime($time) {
     $secs = abs($time);
     $mins = 60;
@@ -496,7 +508,7 @@ function is_runner() {
 function sendJournalNotification($message) {
     $data = array(
     		'user' 		=> JOURNAL_API_USER,
-    		'pwd'  		=> sha1(JOURNAL_API_PWD),
+    		'pwd'  		=> JOURNAL_API_PWD,
     		'message'	=> stripslashes($message)
     );
 

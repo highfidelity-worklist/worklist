@@ -14,10 +14,11 @@
 
         <p class = "info-label small-text">Time zone<br />
         <span id="info-timezone"><?php echo $timezoneTable[$user -> getTimezone()]; ?></span>
+        <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'adisabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
         </p>
     </div><!-- end of common info div-->
 
-    <?php if(!$is_runner){ ?><hr /><?php } ?>
+    <?php if(! $is_runner){ ?><hr /><?php } ?>
 
     <div id="tabs" class="tabs-bottom">
     <?php if($is_runner){ ?>
@@ -154,6 +155,17 @@
             <input type="submit" value="Give" />
         </form>
     </div><!-- end of give budget div-->
+
+    <div id="pay-bonus" title="Pay Bonus" style="text-align: left; display: none">
+        <form method="post" action = "">
+            <label for="bonus-amount" class="info-label">Amount: </label><br/>
+                <input type="text" id="bonus-amount" name="amount" /><br/>
+            <label for="bonus-reason" class="info-label">Reason: </label><br/>
+                <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/><br/>
+                <input type = "hidden" id = "bonus-receiver" name="receiver_id" value = "<?php echo $user-> getId(); ?>" />
+            <input type="submit" value="Pay Bonus" />
+        </form>
+    </div><!-- end of pay bonus div -->
 
     <div id="loading" style="display:none">
         <img src="images/loader.gif" alt = "" /><span>Please wait..</span>

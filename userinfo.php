@@ -16,6 +16,7 @@
     $reqUser = new User();
     if ($reqUserId > 0) {
         $reqUser->findUserById($reqUserId);
+        $budget = $reqUser->getBudget();
     } else {
         die("You have to be logged in to access user info!");
     }
@@ -96,7 +97,7 @@
 
     $manager = $user->getManager();
 
-    if($action =='create-sandbox') {
+    if ($action =='create-sandbox') {
           $result = array();
           try {
             if(!$is_runner) {
@@ -136,12 +137,12 @@
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
         <link type="text/css" href="css/userNotes.css" rel="stylesheet" />
-
+        <link href="css/LVstyles.css" rel="stylesheet" type="text/css">
         <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
         <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.8.4.min.js"></script>
-
+        <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
         <script type="text/javascript" src="js/userstats.js"></script>
         <script type="text/javascript" src="js/userNotes.js"></script>
         <title>User info</title>
@@ -152,7 +153,6 @@
 <?php require_once('dialogs/popup-pingtask.inc') ?>
 
 <script type="text/javascript">
-
   var user_id = <?php echo $userId; ?>;
   var available = 0;
   var rewarded = 0;
@@ -320,9 +320,56 @@
 
 	return false;
   });
+  
 
   });
+
+  $('#pay-bonus').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
   
+  var bonus_amount;
+
+  $('#pay_bonus').click(function(e) {
+      // clear form input fields
+      $('#pay-bonus form input[type="text"]').val('');
+      $('#pay-bonus').dialog('open');
+      
+      var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+
+      bonus_amount = new LiveValidation('bonus-amount');
+      bonus_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+      bonus_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
+  });
+  
+
+  $('#pay-bonus form').submit(function() {
+
+      if (bonus_amount.validate()) {
+          if (confirm('Are you sure you want to pay $' + $('#bonus-amount').val() + ' to <?php echo $user->getNickName(); ?>?')) {
+              $('#pay-bonus').dialog('close');
+              $.ajax({
+                  url: 'pay-bonus.php',
+                  data: $('#pay-bonus form').serialize(),
+                  dataType: 'json',
+                  type: "POST",
+                  cache: false,
+                  success: function(json) {
+                      if (json.success) {
+                          alert(json.message);
+                      } else {
+                          alert(json.message);
+                      }
+                  },
+                  error: function(json) {
+                      alert('error');
+                  }
+              });
+          }
+      } 
+          
+      return false;
+  });
+  
+
   $('#salary').submit(function(e) {
       // Get the specified salary
       var salary = $('#annual_salary').val();
