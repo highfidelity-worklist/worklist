@@ -51,6 +51,7 @@ if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('USERS'))          define('USERS', 'users');
 if (!defined('BIDS'))		    define('BIDS', 'bids');
 if (!defined('FEES'))		    define('FEES', 'fees');
+if (!defined('BONUS_PAYMENTS')) define('BONUS_PAYMENTS', 'bonus_payments');
 if (!defined('FILES'))		    define('FILES', 'files');
 if (!defined('COMMENTS'))	    define('COMMENTS', 'comments');
 if (!defined('USER_STATUS'))	    define('USER_STATUS', 'user_status');
