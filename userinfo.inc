@@ -14,7 +14,7 @@
 
         <p class = "info-label small-text">Time zone<br />
         <span id="info-timezone"><?php echo $timezoneTable[$user -> getTimezone()]; ?></span>
-        <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'adisabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
+        <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
         </p>
     </div><!-- end of common info div-->
 

@@ -26,8 +26,7 @@ if (! isset($_SESSION['userid'])) {
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
 
-    // remove the not from $is_runner for go live
-    if( $userId > 0 && ( !$is_runner || $is_payer ) ) {
+    if( $userId > 0 && ( $is_runner || $is_payer ) ) {
         $giver = new User();
         $giver->findUserById($_SESSION['user_id']);
         $budget = $giver->getBudget();
