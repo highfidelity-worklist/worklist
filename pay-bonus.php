@@ -38,6 +38,8 @@ if (! isset($_SESSION['userid'])) {
         }
 
         $amount = floatval($_REQUEST['amount']);
+        $stringAmount = number_format($amount, 2, '.', '');
+
         $receiver_id = intval($_REQUEST['receiver_id']);
         $reason = $_REQUEST['reason'];
 
@@ -58,13 +60,13 @@ if (! $error) {
             $receiver = getUserById($receiver_id);
             $receiver_email = $receiver->username;
 
-            sendTemplateEmail( $receiver_email, 'bonus_received', array('amount' => $amount, 'reason' => $reason));
-            if (sendJournalNotification($receiver->nickname . ' received a bonus of $' . $amount) == 'ok') {
+            sendTemplateEmail( $receiver_email, 'bonus_received', array('amount' => $stringAmount, 'reason' => $reason));
+            if (sendJournalNotification($receiver->nickname . ' received a bonus of $' . $stringAmount) == 'ok') {
             } else {
                 // journal notification failed
             }
             $error = false;
-            $message =  'Paid ' . $receiver->nickname . ' a bonus of $' . $amount;
+            $message =  'Paid ' . $receiver->nickname . ' a bonus of $' . $stringAmount;
         } else {
             $error = true;
             $message = 'DB error';
