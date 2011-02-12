@@ -28,7 +28,7 @@ if (! isset($_SESSION['userid'])) {
 
     if( $userId > 0 && ( $is_runner || $is_payer ) ) {
         $giver = new User();
-        $giver->findUserById($_SESSION['user_id']);
+        $giver->findUserById($userId);
         $budget = $giver->getBudget();
 
         // validate required fields
@@ -38,7 +38,7 @@ if (! isset($_SESSION['userid'])) {
         }
 
         $amount = floatval($_REQUEST['amount']);
-        $stringAmount = number_format($amount, 2, '.', '');
+        $stringAmount = number_format($amount, 2);
 
         $receiver_id = intval($_REQUEST['receiver_id']);
         $reason = $_REQUEST['reason'];
@@ -52,7 +52,7 @@ if (! isset($_SESSION['userid'])) {
 
 if (! $error) {
 
-    if ($amount >= $budget) {
+    if ($amount <= $budget) {
         if (payBonusToUser($receiver_id, $amount, $reason)) {
             // deduct amount from balance
             $giver->setBudget($budget - $amount)->save();
@@ -71,10 +71,10 @@ if (! $error) {
             $error = true;
             $message = 'DB error';
         }
-        
+
     } else {
         $error = true;
-        $message = 'Not enough budget available to pay bonus';
+        $message = 'You do not have enough budget available to pay this bonus.';
     }
 
 }
