@@ -508,7 +508,7 @@ function is_runner() {
 function sendJournalNotification($message) {
     $data = array(
     		'user' 		=> JOURNAL_API_USER,
-    		'pwd'  		=> JOURNAL_API_PWD,
+    		'pwd'  		=> sha1(JOURNAL_API_PWD),
     		'message'	=> stripslashes($message)
     );
 
