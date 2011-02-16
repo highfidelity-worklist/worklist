@@ -533,30 +533,35 @@ function reply(id) {
 	$('#popup-multiple-bid-info').dialog('open');
   }
 
-	$(function()	{
-		
+    $(function()    {
+        
         $(".editable").attr("title","Switch to Edit Mode").click( function(){
             window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
         });
-		$('#commentZone').css({'opacity':'0'});
-		// Call via Ajax to ping the user in the journal
-		// and in email.
-		$('#send-ping-btn').click(function()	{
-			var msg = $('#ping-msg').val();
-			var mail = 0;
-			if( $('#send-mail:checked').val() ) mail = 1;
-			
-			$.ajax({
-				type: "POST",
-				url: 'pingtask.php',
-				data: 'id=' + <?php echo $worklist_id; ?> + '&who=' + ping_who  + '&msg=' + msg + '&mail=' + mail,
-				dataType: 'json',
-				success: function() {}
-			});
-			$('#popup-pingtask').dialog('close');
-			return false;
-			
-		});
+        $('#commentZone').css({'opacity':'0'});
+        // Call via Ajax to ping the user in the journal
+        // and in email.
+        $('#send-ping-btn').click(function()    {
+            var msg = $('#ping-msg').val();
+            // if( $('#send-mail:checked').val() ) mail = 1;
+            // always send email
+            var mail = 1;
+            var journal = 0;
+            if ($('#echo-journal').val() ) {
+                journal = 1
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: 'pingtask.php',
+                data: 'id=' + <?php echo $worklist_id; ?> + '&who=' + ping_who  + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal,
+                dataType: 'json',
+                success: function() {}
+            });
+            $('#popup-pingtask').dialog('close');
+            return false;
+            
+        });
 
 		$('#pingMechanic').click(function()	{
             ping_who = 'mechanic';

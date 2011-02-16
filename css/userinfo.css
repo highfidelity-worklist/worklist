@@ -54,17 +54,13 @@ p.small-text{
 #user-avatar {
     position: absolute;
     left: 53em;
-    top: 2em;
     width: auto;
 }
 #avatar {
 	background: #ffffff;
 	border: 1px solid lightgrey;
-	float: left;
-	margin-bottom: 5px;
-	margin-right: 5px;
-	margin-top: 3px;
-	padding: 5px;
+    padding: 5px;
+    margin: auto auto 3px;
 }
 #user-stats tbody tr td {
     text-align: center;
@@ -112,4 +108,9 @@ p.bottom {
 .tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
 .ui-tabs-selected { margin-top: -3px !important; }
 
-#btn-bonus { float: right; margin: -10px 145px 0 0; }
+.button-row {
+    float: right;
+    padding: 20px 5px 10px    
+}
+.button-row span {
+    margin: 5px; }

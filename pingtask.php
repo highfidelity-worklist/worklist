@@ -17,13 +17,19 @@ $user = getUserById( $id );
 $nickname = $user->nickname;
 $email = $user->username;
 $msg = $_REQUEST['msg'];
-$send_mail = false;
-if( isset( $_REQUEST['mail'] ) ){
+
+// send mail defaults to on
+$send_mail = true;
+if ( isset( $_REQUEST['mail'] ) ){
     $send_mail = intval( $_REQUEST['mail'] );
 }
+$send_chat = 0;
+if ( isset( $_REQUEST['journal'] ) ){
+    $send_chat = intval($_REQUEST['journal']);
+} 
 
 // ping about concrete task
-if(isset($_REQUEST['id'])){
+if(isset($_REQUEST['id'])) {
     $item_id = intval($_REQUEST['id']);
     $who = $_REQUEST['who'];
 
@@ -51,11 +57,13 @@ if(isset($_REQUEST['id'])){
 	}
 
     // Compose journal message
-    $out_msg = $nickname." sent a ping to ".$receiver_nick." about item #".$item_id;
-    $out_msg .= ": ".$msg;
+    if ($send_chat) {
+        $out_msg = $nickname." sent a ping to ".$receiver_nick." about item #".$item_id;
+        $out_msg .= ": ".$msg;
 
-    // Send to journal
-    sendJournalNotification( $out_msg );
+        // Send to journal
+        sendJournalNotification( $out_msg );
+    }
 
     // Send mail
     if( $send_mail )	{
@@ -80,7 +88,7 @@ if(isset($_REQUEST['id'])){
         }
     }
 
-}else{
+} else {
 
     // just send general ping to user
 
@@ -88,12 +96,14 @@ if(isset($_REQUEST['id'])){
     $receiver_nick = $receiver->nickname;
     $receiver_email = $receiver->username;
 
-    // Compose journal message
-    $out_msg = $nickname." sent a ping to " . $receiver_nick;
-    $out_msg .= ": ".$msg;
+    if ($send_chat) {
+        // Compose journal message
+        $out_msg = $nickname." sent a ping to " . $receiver_nick;
+        $out_msg .= ": ".$msg;
 
-    // Send to journal
-    sendJournalNotification( $out_msg );
+        // Send to journal
+        echo sendJournalNotification( $out_msg );
+    }
 
     if( $send_mail )    {
         $mail_subject = $nickname." sent you a ping.";

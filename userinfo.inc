@@ -1,24 +1,24 @@
-<div class = "user-info" title = "User Info">
-        <span id = "user-avatar" ><image id="avatar" src="<?php echo($user -> getAvatar(80,80)); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
-	<div class = "common-info">
-
+    <div class = "user-info" title = "User Info">
+        <span id="user-avatar"><img id="avatar" src="<?php echo($user -> getAvatar(80,80)); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
+        <div class = "common-info">
         <?php include("userstats-table.inc"); ?>
-
         <p class = "info-label big-text">Nickname<br />
-        <span id="info-nickname"><a href="#" id = "nickname-ping"><?php echo $user -> getNickname(); ?></a></span>
+        <span id="info-nickname"><a href="#" id="nickname-ping"><?php echo $user->getNickname(); ?></a></span>
         </p>
 
         <p class = "info-label">Current Local Time<br />
-        <span id="info-currenttime"><?php echo convertTimeZoneToLocalTime($user -> getTimezone()); ?></span>
+        <span id="info-currenttime"><?php echo convertTimeZoneToLocalTime($user->getTimezone()); ?></span>
         </p>
-
+        <div class="button-row">
+            <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
+            <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
+        </div>
         <p class = "info-label small-text">Time zone<br />
-        <span id="info-timezone"><?php echo $timezoneTable[$user -> getTimezone()]; ?></span>
-        <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
+            <span id="info-timezone"><?php echo $timezoneTable[$user -> getTimezone()]; ?></span>
         </p>
     </div><!-- end of common info div-->
 
-    <?php if(! $is_runner){ ?><hr /><?php } ?>
+    <?php if(! $is_runner){ ?><hr style="clear: both;" /><?php } ?>
 
     <div id="tabs" class="tabs-bottom">
     <?php if($is_runner){ ?>

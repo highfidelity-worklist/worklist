@@ -191,16 +191,19 @@
 
     $('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
 
-    $('#send-ping-btn').click(function()    {
+    $('#send-ping-btn').click(function() {
         var msg = $('#ping-msg').val();
-        var mail = 0;
-
-        if( $('#send-mail:checked').val() ) mail = 1;
+        // always send email
+        var mail = 1;
+        var journal = 0;
+        if ($('#echo-journal:checked').val() ) {
+            journal = 1
+        }
         
         $.ajax({
             type: "POST",
             url: 'pingtask.php',
-            data: 'userid=' + user_id + '&msg=' + msg + '&mail=' + mail,
+            data: 'userid=' + user_id + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal,
             dataType: 'json',
             success: function() {}
         });
@@ -209,8 +212,8 @@
         
     });
 
-    $('#nickname-ping').click(function() {
-        $('#popup-pingtask').dialog('option', 'title', 'Ping user');
+    $('#nickname-ping, .nickname-ping').click(function() {
+        $('#popup-pingtask').dialog('option', 'title', 'Message user: ' + $(this).text());
         $('#popup-pingtask form h5').html('Ping message:');
         $('#popup-pingtask').dialog('open');
         return false;
