@@ -430,13 +430,13 @@ if ($action=='accept_multiple_bid'){
 //Withdraw a bid
 if ($action == "withdraw_bid") {
     if (isset($_REQUEST['bid_id'])) {
-        withdrawBid(intval($_REQUEST['bid_id']));
+        withdrawBid(intval($_REQUEST['bid_id']), $_POST['withdraw_bid_reason']);
     } else {
         $fee_id = intval($_REQUEST['fee_id']);
         $res = mysql_query('SELECT bid_id FROM `' . FEES . '` WHERE `id`=' . $fee_id);
         $fee = mysql_fetch_object($res);
         if ((int)$fee->bid_id !== 0) {
-            withdrawBid($fee->bid_id);
+            withdrawBid($fee->bid_id, $_POST['withdraw_bid_reason']);
         } else {
             deleteFee($fee_id);
         }

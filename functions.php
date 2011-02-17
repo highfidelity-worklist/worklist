@@ -515,7 +515,7 @@ function sendJournalNotification($message) {
     return postRequest(JOURNAL_API_URL, $data);
 }
 
-function withdrawBid($bid_id) {
+function withdrawBid($bid_id, $withdraw_reason) {
     $res = mysql_query('SELECT * FROM `' . BIDS . '` WHERE `id`='.$bid_id);
     $bid = mysql_fetch_object($res);
 
@@ -528,7 +528,6 @@ function withdrawBid($bid_id) {
         // additional changes if status is WORKING
         if ($job['status'] == 'WORKING') {
             // change status of worklist item
-
             mysql_unbuffered_query("UPDATE `" . WORKLIST . "`
 	            						SET `mechanic_id` = '0',
 										`status` = 'BIDDING'
@@ -558,14 +557,46 @@ function withdrawBid($bid_id) {
         // Journal notification
         sendJournalNotification($message);
 
-        //sending email to the bidder
-        $subject = "Bid: " . $summary;
-        $txtbody = $body = "Your bid has been deleted by: ".$_SESSION['nickname']."</p>";
+        // Sending email to the bidder or runner
+        $subject = "Bid: " . $job['id'] . " (" . $job['summary']. ")";
+        
+        if(is_runner()){
+        	// Send to bidder        	
+        	$recipient=$user;
+        	$body = "<p>Your bid has been deleted from item #" . $job['id'] . " by: ".$_SESSION['nickname']."</p>";
+        } else {    
+        	// Send to runner
+        	$recipient=getUserById($job['runner_id']);   
+        	$body = "<p>A bid has been deleted from item #" . $job['id'] . " by: ".$_SESSION['nickname']."</p>";
+        }
+        	
+        if(strlen($withdraw_reason)>0) { 
+        	$body .= "<p>Reason: " .$withdraw_reason."</p>";
+        }
+        
+        // Copy text for sms notification
+        $txtbody = $body;
+        
+        // Continue adding text to email body
         $item_link = SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view";
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        if (!sl_send_email($user->username, $subject, $body)) { error_log("functions.php:withdrawlFee: sl_send_email failed"); }
-        sl_notify_sms_by_object($user, $subject, "${txtbody}\n${item_link}");
+        if (!sl_send_email($recipient->username, $subject, $body)) { error_log("functions.php:withdrawlFee: sl_send_email failed"); }
+        sl_notify_sms_by_object($recipient, $subject, "${txtbody}\n${item_link}");
+        
+        // Check if there are any active bids remaining
+        $res = mysql_query('SELECT count(*) AS active_bids FROM `' . BIDS . '` WHERE `worklist_id` = ' . $job['id'] . ' AND `withdrawn` = 0');
+        $bids = mysql_fetch_assoc($res);
+
+        
+        if ($bids['active_bids'] < 1) {
+        	// There are no active bids, so resend notifications
+        	$workitem = new WorkItem();
+        	$workitem->loadById($job['id']);
+        	
+        	Notification::statusNotify($workitem);
+        }
+        
     }
 }
 

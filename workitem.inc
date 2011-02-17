@@ -201,7 +201,8 @@ function reply(id) {
 	$('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
 	$('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade' });
 	$('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
-
+	$('#popup-withdraw-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
+	
 	// JS Variables initialized from host PHP page
 	var workitem_id = <?php echo $worklist['id'];?>;
 	var already_bid = <?php echo $currentUserHasBid ;?>;
@@ -401,8 +402,8 @@ function reply(id) {
             }
 
 <?php if($worklist['status'] != 'DONE'){?>
-            if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid').length == 0){
-                  $('#popup-bid-info form').append('<input id="withdraw_bid" type="submit" name="withdraw_bid" value="Withdraw" style="float:right;">');
+            if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid_accept').length == 0){
+                  $('#popup-bid-info form').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" style="float:right;">');
             }
 <?php } ?>
             // change user id to current bidder id
@@ -497,13 +498,21 @@ function reply(id) {
   
   function showPlaceBidForm() {
       $('#popup-bid').dialog('open');
-
-
-
-
-
-
       return false;
+  }
+
+  function showWithdrawBidReason() {
+	  var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
+	  $('#popup-bid-info').dialog('close');
+	  
+	  SimplePopup('#popup-withdraw-bid',
+			    'Withdraw Bid',
+			     bid_id,
+			     [['input', 'bid_id', 'keyId', 'eval']]);
+
+		
+		$('#popup-withdraw-bid').dialog('open');
+		return false;
   }
 
   function showFeeForm() {
@@ -589,7 +598,7 @@ function reply(id) {
 			
 			showUserInfo(bidderId);
 			event.stopPropagation();
-		});
+		});				  
 
         // Reassign runner
         (function($) {
@@ -1134,6 +1143,8 @@ if ($action =="edit"):  ?>
 	<?php require_once('dialogs/popup-confirmation.inc') ?>
 	<!-- Popup for breakdown of fees-->
     <?php require_once('dialogs/popup-fees.inc') ?>
+	<!-- Popups for entering bid withdraw reason-->
+    <?php require_once('dialogs/popup-withdraw-bid.inc') ?>    
 	<!-- Popup for Add Review Url-->
     <?php require_once('dialogs/review-url-dialog.inc') ?>
     <!-- Include Add Project -->	
