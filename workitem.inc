@@ -556,7 +556,7 @@ function reply(id) {
             // always send email
             var mail = 1;
             var journal = 0;
-            if ($('#echo-journal').val() ) {
+            if ($('#echo-journal:checked').val() ) {
                 journal = 1
             }
             
