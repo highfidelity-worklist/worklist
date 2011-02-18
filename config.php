@@ -59,7 +59,6 @@ if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
 if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 if (!defined('PAYPAL_ADMINS'))     define('PAYPAL_ADMINS', 'paypal_admins');
-if (!defined('PROJECTS'))     define('PROJECTS', 'projects');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
@@ -121,17 +120,6 @@ if (!defined('CLICKATELL_LOCATION')) define('CLICKATELL_LOCATION', null);
 if (!defined('CLICKATELL_API_ID'))   define('CLICKATELL_API_ID', null);
 if (!defined('CLICKATELL_USERNAME')) define('CLICKATELL_USERNAME', null);
 if (!defined('CLICKATELL_PASSWORD')) define('CLICKATELL_PASSWORD', null);
-
-/*
- * Twitter OAuth constants
- */
-
-if (!defined('TWITTER_CONSUMER_KEY'))		define("TWITTER_CONSUMER_KEY", "hnSh63Zc9dRtpv1H3dcGfw");
-if (!defined('TWITTER_CONSUMER_SECRET'))	define("TWITTER_CONSUMER_SECRET", "phrtYXwTrrCo8Udwh76Cz1fHI7Tdl5H9hFkdAQrk");
-if (!defined('TWITTER_OAUTH_TOKEN'))		define("TWITTER_OAUTH_TOKEN", "84202881-h00fpon5DsQ6ansgdoLIzLVX8PNZHkbniAwyGraBp");
-if (!defined('TWITTER_OAUTH_SECRET'))		define("TWITTER_OAUTH_SECRET", "eGy00CuLsKs1iOK7V7zOHFAO9OTIpFGlb9EQbAzL8c");
-
-
 /*
  * Non-configuration values (CONSTANTS)
  */
