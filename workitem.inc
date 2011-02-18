@@ -59,6 +59,18 @@ $(document).ready(function(){
 	   height: 500,
 	   width: 800
    });
+   $("#sent-notify").dialog({
+		modal:false,
+		autoOpen:false,
+		width:250,
+		height:60,
+		position: ['middle'],
+		resizable: false,
+		open: function() {
+			$("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
+			setTimeout(function() { $("#sent-notify").dialog("close"); }, 3000);
+		},
+	});
 });
 function showUserInfo(userId){
 	$('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
@@ -845,7 +857,7 @@ if ($action =="edit"):  ?>
 								foreach($statusMapMechanic[$worklist['status']] as $status)
 								{?>
 									<form method="post" action="" style = "display:inline;">
-									<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
+									<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight" />
 									<input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
 									</form>
 								<?php 
@@ -856,14 +868,14 @@ if ($action =="edit"):  ?>
 								foreach($statusMapRunner[$worklist['status']] as $status)
 								{?>
 									<form method="post" action="" style = "display:inline;">
-										<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" style="margin-top: -4px; float: right;" />
+										<input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight" />
 										<input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
 									</form>
 								<?php
 								}
 							} else if($worklist['creator_id']== $user_id && $worklist['status'] == 'SUGGESTED') { ?>
 									<form method="post" action="" style = "display:inline;">
-										<input type="submit" id="status-switch" name="status-switch" value="Set PASS" style="margin-top: -4px; float: right;" />
+										<input type="submit" id="status-switch" name="status-switch" value="Set PASS" class="bottonAtRight" />
 										<input type="hidden" name="quick-status" value="PASS" />
 									</form>
 								<?php
@@ -925,6 +937,23 @@ if ($action =="edit"):  ?>
                         <?php else :?>
 						    <span>Not assigned</span>
                         <?php endif;?>
+					</li>
+					<?php endif;?>
+					<?php if ($user_id > 0):?>
+					<li>
+					  <form action="" method="post" name="invite-form" onsubmit="return sendInviteForm();">
+					    <span class="project-label" id="invite-label">Invite</span>
+					    <input type="text" class="invite ac_input" name="invite" autocomplete="on" style="width: 210px" />
+						<script type="text/javascript">
+							$(document).ready(function() {
+							  $('.invite').autocomplete('getusers.php', {
+							    multiple: false,
+							    extraParams: { nnonly: 1 }
+							  });
+						    });
+						</script>
+					    <input type="submit" id="invite-people" name="invite-people" value="Invite" class="bottonAtRight" />
+					  </form>
 					</li>
 					<?php endif;?>
 
@@ -1123,6 +1152,7 @@ if ($action =="edit"):  ?>
 		<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong><?php echo $message; ?></p>
 	</div>
 	<?php endif;?>
+	<div id="sent-notify"></div>
     <!-- Popup for  edit bid info -->
 	<?php include('dialogs/popup-edit-bid-info.inc') ?>
 	<!-- Popup for place bid -->

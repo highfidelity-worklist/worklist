@@ -94,6 +94,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "status-switch";
 }else if(isset($_POST['save-review-url'])) {
     $action = "save-review-url";
+}else if(isset($_POST['invite-people'])) {
+    $action = "invite-people";
 }else if (isset($_POST['newcomment'])) {
 	$comment = new Comment();
 	if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
@@ -184,6 +186,22 @@ if($action =='save_workitem') {
 
  	$redirectToWorklistView = true;
     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . $new_update_message;
+}
+
+if($action =='invite-people') {
+    // Send invitation
+    if (invitePerson($_POST['invite'], $worklist_id, $workitem->getSummary(), $workitem->getNotes())) {
+		$result = array('sent'=>'yes','person'=> htmlentities($_POST['invite']));
+    }else{
+		$result = array('sent'=>'no','person'=> htmlentities($_POST['invite']));
+	}
+	if($_POST['json'] =='y'){
+	  ob_start();
+	  $json = json_encode($result);
+	  echo $json;
+	  ob_end_flush();
+	  exit;
+	}
 }
 
 if($action =='save-review-url'){

@@ -661,14 +661,13 @@ function getWorklistById($id) {
     return false;
 }
 
-function invitePeople(array $people, $item, $summary = null, $description = null) {
-    foreach ($people as $invite) {
-        // trim the whitespaces
+/* invite one peorson By nickname or by email*/
+function invitePerson( $invite, $item, $summary = null, $description = null) {
+		// trim the whitespaces
         $invite = trim($invite);
         if (!empty($invite)) {
             // get the user by Nickname
             $user = getUserByNickname($invite);
-
             if ($user !== false) {
                 //sending email to the invited developer
                 $subject = "Invitation " . $summary;
@@ -677,6 +676,7 @@ function invitePeople(array $people, $item, $summary = null, $description = null
                 $body .= "<p>Interested in knowing more info? Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
                 $body .= "<p>Hope to see you soon.</p>";
                 if(!sl_send_email($user->username, $subject, $body)) { error_log("functions.php:invite: sl_send_email failed"); }
+				return true;
             } else if (validEmail($invite)) {
                 //sending email to the NEW invited developer
                 $subject = "Invitation:" . $summary;
@@ -698,11 +698,18 @@ function invitePeople(array $people, $item, $summary = null, $description = null
                 $body .= "[<a href=\"http://dev.sendlove.us/journal/\">dev.sendlove.us/journal</a> | Talk with us in our Journal]<br />";
                 $body .= "<p>Hope to see you soon.</p>";
                 if(!sl_send_email($invite, $subject, $body)) { error_log("functions.php:inviteNew: sl_send_email failed"); }
+				return true;
             }
         }
+	return false;
+}
+/* invite people By nickname or by email*/
+function invitePeople(array $people, $item, $summary = null, $description = null) {
+    foreach ($people as $invite) {
+        // Call the invite person function
+		invitePerson($invite, $item, $summary = null, $description = null);
     }
 }
-
 /**
  Validate an email address.
  Provide email address (raw input)

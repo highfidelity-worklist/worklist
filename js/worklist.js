@@ -429,3 +429,27 @@ $(function() {
 		$('#search-filter-wrap select[name=status]').comboBox();
 
 });
+
+function sendInviteForm(){
+  var name = $('input[name="invite"]').val();
+  var job_id = $('input[name="worklist_id"]').val();
+  $.ajax({
+    type: "POST",
+	url: "workitem.php?job_id="+job_id,
+	data: "json=y&invite="+name+"&invite-people=Invite",
+	dataType: "json",
+	success: function(json) {
+		if(json['sent'] =='yes'){
+			$("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
+			$('input[name="invite"]').val('');
+		}else{
+			$("#sent-notify").html("<span>The user you entered does not exist</span>");
+		}
+		$("#sent-notify").dialog("open");
+	},
+	error: function(xhdr, status, err) {
+	  $("#sent-notify").html("<span>Error sending invitation</span>");
+	}
+  });
+  return false;
+}
