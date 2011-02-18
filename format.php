@@ -4,7 +4,7 @@
 //  http://www.lovemachineinc.com
 ?>
 
-<div id="outside">
+<div id="outside"> 
 
 <!-- Welcome, login/out -->
 
