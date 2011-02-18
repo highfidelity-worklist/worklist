@@ -66,9 +66,7 @@
             <a href="settings.php" class="iToolTip menuSettings">Settings</a> |
             <a href="#" name="addproj" class="iToolTip addProj addproj">New Project</a>
 			<?php } else {
-            echo '<a href="login.php">Login</a>
-            <p><input type="submit" id="signup" name="signup" onclick="window.location=\'signup.php\'" value="Sign Up Now" />
-               <input type="submit" class="iToolTip addProj addproj" name="addproj" value="Add Project" />';
+            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="#" id="addproj" title="Add a new Project"> Add Project</a>';
             
 		} 
 			?>
@@ -77,7 +75,7 @@
 		<script type="text/javascript">
 		//Code for Add Project
 		$(document).ready(function() {
-			$('.addproj').click(function() {
+			$('#addproj').click(function() {
 				$('#popup-addproject').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
 				$('#popup-addproject').data('title.dialog', 'Add Project');
 				$('#popup-addproject').dialog('open');

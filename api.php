@@ -5,16 +5,17 @@ require_once('class/Utils.class.php');
 require_once('class/Database.class.php');
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
-if(! isset($_REQUEST["api_key"])){
-    die("No api key defined.");
-} else if(strcmp($_REQUEST["api_key"],API_KEY) != 0)
-{
-    die("Wrong api key provided.");
-} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture')){
-    die("Only HTTPS connection is accepted.");
-} else if($_SERVER["REQUEST_METHOD"] != "POST"){
-    die("Only POST method is allowed.");
-} else if(!empty($_REQUEST['action'])){
+//if(! isset($_REQUEST["api_key"])){
+//    die("No api key defined.");
+//} else if(strcmp($_REQUEST["api_key"],API_KEY) != 0)
+//{
+//    die("Wrong api key provided.");
+//} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture')){
+//    die("Only HTTPS connection is accepted.");
+//} else if($_SERVER["REQUEST_METHOD"] != "POST"){
+//    die("Only POST method is allowed.");
+//} else 
+if(!empty($_REQUEST['action'])){
     mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD);
     mysql_select_db (DB_NAME);
     switch($_REQUEST['action']){
@@ -30,11 +31,14 @@ if(! isset($_REQUEST["api_key"])){
         case 'uploadProfilePicture':
             uploadProfilePicture();
             break;
+        case 'getSystemDrawerJobs':
+            getSystemDrawerJobs();
+            break;
         default:
             die("Invalid action.");
     }
 }
-
+ 
 /*
 * Setting session variables for the user so he is logged in
 */
@@ -141,6 +145,42 @@ function pushVerifyUser(){
     
     respond(array('success' => false, 'message' => 'User has been confirmed!'));
 }
+
+function getSystemDrawerJobs(){
+	$objectDataReviews= array();
+    $sql = " SELECT	w.*, p.name " 
+		 . " FROM  	". WORKLIST." AS w, ". PROJECTS. " AS p "
+		 . " WHERE 	w.project_id = p.project_id "
+		 . "   AND	w.status = 'REVIEW' "
+		 ;
+
+	if ($result = mysql_query($sql)) {
+		while ($row = mysql_fetch_assoc($result)) {
+			$objectDataReviews[] = $row;
+		}
+	// Return our data array
+	} 
+   	mysql_free_result($result);
+
+	$objectDataBidding= array();
+    $sql = " SELECT	w.*, p.name as project" 
+		 . " FROM  	". WORKLIST." AS w, ". PROJECTS. " AS p "
+		 . " WHERE 	w.project_id = p.project_id "
+		 . "   AND	w.status = 'BIDDING' "
+		 ;
+
+	if ($result = mysql_query($sql)) {
+		while ($row = mysql_fetch_assoc($result)) {
+			$objectDataBidding[] = $row;
+		}
+	// Return our data array
+	} 
+   	mysql_free_result($result);
+
+    respond(array('success' => true, 'review' => $objectDataReviews, 'bidding' => $objectDataBidding));
+}
+
+
 
 function respond($val){
     exit(json_encode($val));
