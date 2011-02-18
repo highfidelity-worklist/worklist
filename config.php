@@ -11,7 +11,7 @@ require_once('Zend/Registry.php');
 if (file_exists('server.local.php')) {
     include_once('server.local.php');
 }
-
+ 
 // this is the name of the app that will be used when
 // authenticating with login service.
 // change it per app.
