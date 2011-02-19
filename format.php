@@ -64,9 +64,9 @@
 			<a href="reports.php" class="iToolTip menuReports">Reports</a> |
 			<a href="team.php">Team</a> |
             <a href="settings.php" class="iToolTip menuSettings">Settings</a> |
-            <a href="#" name="addproj" class="iToolTip addProj addproj">New Project</a>
+            <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
 			<?php } else {
-            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="#" id="addproj" title="Add a new Project"> Add Project</a>';
+            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="#" id="addproj" class="iToolTip addProj addproj" title="Add a new Project"> Add Project</a>';
             
 		} 
 			?>
