@@ -71,6 +71,16 @@
 
 		<script type="text/javascript">
 		// Code for stats
+		
+		$(document).ready(function() {
+			$('#addproj').click(function() {
+				$('#popup-addproject').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
+				$('#popup-addproject').data('title.dialog', 'Add Project');
+				$('#popup-addproject').dialog('open');
+			});
+		});
+		
+		
         $(function() {
             $('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
             $.ajax({
@@ -435,6 +445,8 @@
 		  if (strpos($_SERVER['PHP_SELF'],$hideStats)) { $showStats=false; }
 		}
 		if ($showStats) { require_once('dialogs/popup-stats.inc'); }
+		require_once('dialogs/popup-addproject.inc'); 
+		
 	
  		?>
 
