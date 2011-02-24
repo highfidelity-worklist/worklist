@@ -38,15 +38,16 @@
 	$has_budget = $budgetUser->getBudget() > 0 ? 1 : 0;
   } else { $has_budget=0; }
 ?>
-        <p class="info-label">Project<br/>
-		  <select name="project" class="resetToFirstOption">
-              <option value="">-- Select --</option>
-                <?php foreach ( Repository::allAvailableRepositories() as $repository ): ?>
-                    <option value="<?php echo $repository;?>"><?php echo $repository; ?></option>
+        <p class="info-label" style="margin-bottom: 20px;">Project<br/>
+            <select id="itemProject" name="project" class="resetToFirstOption">
+                <option value="">-- Select --</option>
+                <?php foreach ( $projects as $project): ?>
+                    <option value="<?php echo $project['project_id']; ?>" <?php echo $project['project_id'] == $worklist['project_id'] ? ' selected = "selected"' : ''; ?>>
+                    <?php echo $project['name']; ?>
+                    </option>
                 <?php endforeach; ?>
-		  </select>
+            </select>
         </p>
-                      
 		<p class="info-label">Full Description<br />
 		  <textarea name="notes" size="48" /></textarea>
 		</p>

@@ -21,7 +21,7 @@ if (!defined("APP_LOGIN"))      define("APP_LOGIN", '/logon/index.php/');
 if (!defined('APP_NAME'))       define('APP_NAME','Worklist');
 if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], '/')));
 if (!defined('APP_BASE'))       define('APP_BASE',substr(APP_LOCATION, 0, strrpos(APP_LOCATION, '/', -2)));
-if (!defined('APP_PATH'))	    define('APP_PATH', realpath(dirname(__FILE__)));
+if (!defined('APP_PATH'))	define('APP_PATH', realpath(dirname(__FILE__)));
 if (!defined('UPLOAD_PATH'))	define('UPLOAD_PATH', realpath(APP_PATH . '/uploads'));
 
 if (!defined('APP_ENV'))	    define('APP_ENV', 'production');
@@ -35,7 +35,7 @@ if (!defined('SERVER_BASE'))    define('SERVER_BASE','http://'.SERVER_NAME.'/'.A
 //So clone the standard URL
 if (!defined('SECURE_SERVER_URL')) define('SECURE_SERVER_URL',SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 if (!defined("LOGIN_APP_URL"))  define("LOGIN_APP_URL",'https://'.SERVER_NAME.APP_LOGIN);
-
+if (!defined('SVN_BASE_URL'))   define('SVN_BASE_URL', 'http://svn.sendlove.us/listing.php?repname=');
 if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
 if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
 
@@ -59,6 +59,8 @@ if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
 if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 if (!defined('PAYPAL_ADMINS'))     define('PAYPAL_ADMINS', 'paypal_admins');
+if (!defined('PROJECTS'))       define('PROJECTS', 'projects');
+if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);

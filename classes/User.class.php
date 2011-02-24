@@ -37,7 +37,8 @@ class User
 	protected $provider;
 	protected $has_sandbox;
 	protected $unixusername;
-	protected $projects_checkedout;
+	protected $projects;
+    protected $projects_checkedout;
 	protected $filter;
 	protected $avatar;
 	protected $annual_salary;
@@ -778,8 +779,24 @@ class User
 	 * @return the $projects_checkedout
 	 */
 	public function getProjects_checkedout() {
-		return $this->projects_checkedout;
+        $query = mysql_query("SELECT `project_id`, `checked_out` FROM `".PROJECT_USERS."`
+            WHERE `user_id`=" . $this->getId() . "
+            AND `checked_out` = 1");
+            
+        if (mysql_num_rows($query)) {
+            while ($row = mysql_fetch_assoc($query)) {
+                $this->projects[] = $row;
+            }
+        
+        } else {
+            return null;
+        }
+        return $this->projects;
 	}
+    
+    public function getProjects() {
+        return $this->projects ;
+    }
 
 	/**
 	 * @param $projects_checkedout: projects checked out for user
@@ -788,6 +805,29 @@ class User
 		$this->projects_checkedout = $projects_checkedout;
 		return $this;
 	}
+
+    public function isProjectCheckedOut($project_id) {
+        foreach ($this->projects as $project) {
+            if ($project['project_id'] == $project_id) {
+                if ($project['checked_out'] == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    public function checkoutProject($project_id) {
+    
+        $query = mysql_query("INSERT INTO `".PROJECT_USERS."` VALUES ('', ".$this->getId().", ".$project_id.", 1)");
+        if ($query) {
+            return mysql_insert_id();
+        } else {
+            return false;
+        }
+    
+    }
 
 	/**
 	 * @return the $filter

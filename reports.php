@@ -273,7 +273,7 @@ var getPaidItems = function() {
                 page: npage,
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
-                project: $('select[name=project]').val(),
+                project_id: $('select[name=project]').val(),
                 order: $('#sort-by').val(),
                 // adding type field to the request
                 // 28-APR-2010 <Yani>
@@ -387,7 +387,7 @@ function setupTimelineChart(reload)
                 qType: 'chart',
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
-                project: $('select[name=project]').val(),
+                project_id: $('select[name=project]').val(),
                 order: $('#sort-by').val(),
                 start: fromDate,
                 end: toDate,
@@ -509,9 +509,9 @@ function loadTimelineChart() {
 				toDate = fmtDate(_toDate);
 			}
 			if(currentTab == 0) {
-			  location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+			  location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 			} else {
-			  location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+			  location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 			}
 		});
 

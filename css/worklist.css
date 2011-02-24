@@ -333,3 +333,25 @@ td.textAlignReport {
 .clear{
 	clear:both;
 }
+
+.taskProject {
+    cursor: pointer;
+}
+
+.taskProject:hover {
+    text-decoration: underline;
+}
+
+.ui-state-default .ui-combobox {
+    background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important; 
+}
+.ui-state-hover .ui-combobox !important {
+    background: url("../images/dropdown_background.png") repeat scroll 0px -35px transparent;
+}
+.ui-icon-carat-1-s {
+    background-position: -64px 0 !important;
+}
+
+#itemProject {
+    width: 350px;
+}

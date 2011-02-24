@@ -5,21 +5,21 @@
 
 require_once dirname(__FILE__) . '/config.php';
 include_once "send_email.php";
-
+require_once('classes/Project.class.php');
 
 define('SANDBOX_BASE_DIR','/mnt/ebsvol/dev-www');
 define('SANDBOX_CREATE_SCRIPT','/usr/local/bin/addnewdev-util.sh');
 define('CMD_SEPARATOR',' ');
 define('SANDBOX_CREATION_EMAIL_TEMPATE','./sb-developer-mail.inc');
-class SandBoxUtil
-{
-    //This needs to be synced with the matching file in journal - garth 12/15/2010
-    private $projectList = array('journal','love','worklist','review','loveviewer','candp','tools','trial','admin','login','candpweb','lovemachine','sales','candpmobi');
 
+class SandBoxUtil {
+    //This needs to be synced with the matching file in journal - garth 12/15/2010
+    private $projectList = array();
     private $chat ;
 
-    public function __construct()
-    {
+    public function __construct() {
+        // get a list of repositories to match with requested projects
+        $this->projectList = Project::getRepositoryList();
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
             throw new Exception('Error: ' . mysql_error());
         }
@@ -28,36 +28,31 @@ class SandBoxUtil
         }
     }
 
-    public function createSandbox($username, $nickname, $unixusername,  $projects)
-    {
-	// Validate inputs
-	$this->validateUsername($unixusername);
-	$this->validateProjects($projects);
+    public function createSandbox($username, $nickname, $unixusername, $projects) {
+        // Validate inputs
+        $this->validateUsername($unixusername);
+        $this->validateProjects($projects);
 
-	// Ensure that sandbox doesn't already exist. if so, throw an exception
-	$this->ensureNonExistentSandbox($unixusername);
+        // Ensure that sandbox doesn't already exist. if so, throw an exception
+        $this->ensureNonExistentSandbox($unixusername);
 
-	// Generate a random password.
-	$password = $this->generatePassword(8);
-	// Create the user and checkout all the folders. if something went wrong, throw an exception
-	$userCreationStatus = $this->createUserAndCheckoutProjects($unixusername, $password, $projects);
-error_log("creating Developer from worklist");
-	// Send a mail to the developer
-	$this->notifyDeveloper($username, $nickname, $unixusername, $password, $projects);
+        // Generate a random password.
+        $password = $this->generatePassword(8);
+        // Create the user and checkout all the folders. if something went wrong, throw an exception
+        $userCreationStatus = $this->createUserAndCheckoutProjects($unixusername, $password, $projects);
+        error_log("creating Developer from worklist");
+        // Send a mail to the developer
+        $this->notifyDeveloper($username, $nickname, $unixusername, $password, $projects);
 
-	// Notify Journal
-	$this->notifyJournal($nickname, $projects);
-
-    	//	$this->sendMail($username,$password);                                                // todo.......
-
+        // Notify Journal
+        $this->notifyJournal($nickname, $projects);
     }
 
     /**
     * Check if a user's sandbox already exists.Throws an exception if Sandbox already exists
     *
     */
-    private function ensureNonExistentSandbox($username)
-    {
+    private function ensureNonExistentSandbox($username) {
       $userSandboxHome = SANDBOX_BASE_DIR ."/" .$username;
       if(file_exists($userSandboxHome)) {
             throw new Exception('Sandbox already exists');
@@ -68,41 +63,38 @@ error_log("creating Developer from worklist");
     * Check if Username is valid
     *
     */
-    private function validateUsername($username)
-    {
+    private function validateUsername($username) {
       if(!preg_match('/^[\w\d\_\.]{3,}$/',$username)) {
             throw new Exception('Invalid username');
       }
     }
 
     /**
-    * Check if Username is valid
+    * Check if projects are valid
     *
     */
-    private function validateProjects($projects)
-    {
-      foreach($projects as $project) {
-	if(!in_array($project, $this->projectList, true)) {
-	      throw new Exception('The project ' . $project . ' is invalid');
-	}
-      }
+    private function validateProjects($projects) {
+        foreach ($projects as $project) {
+            if (!in_array($project, $this->projectList, true)) {
+                throw new Exception('The project ' . $project . ' is invalid');
+            }
+        }
     }
 
     /**
     * Create the user and checkout the project(s).Throws an exception if something went wrong
     *
     */
-    private function createUserAndCheckoutProjects($nickname, $password, $projects)
-    {
-      $projectList = implode(' -r ',$projects);
-      $encryptedPassword = crypt($password,"password");
-      #$command = '/usr/bin/sudo '.SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
-      $command = SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
-	//error_log($command); //This debug commands puts the new devs password in the logs
-      $scriptStatus  = exec($command . "; echo $?");
-      if($scriptStatus != "0") {
+    private function createUserAndCheckoutProjects($nickname, $password, $projects) {
+        $projectList = implode(' -r ',$projects);
+        $encryptedPassword = crypt($password,"password");
+        #$command = '/usr/bin/sudo '.SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
+        $command = SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
+        //error_log($command); //This debug commands puts the new devs password in the logs
+        $scriptStatus  = exec($command . "; echo $?");
+        if($scriptStatus != "0") {
             throw new Exception('Sandbox create script failed:'.$scriptStatus);
-      }
+        }
     }
 
     /**

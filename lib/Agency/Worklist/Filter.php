@@ -7,8 +7,7 @@ require_once ('functions.php');
 require_once ('classes/User.class.php');
 require_once ('workitem.class.php');
 
-class Agency_Worklist_Filter
-{
+class Agency_Worklist_Filter {
     protected $name = '.worklist';
 
 	// Filter for worklist
@@ -18,6 +17,7 @@ class Agency_Worklist_Filter
     protected $sort = 'delta';
     protected $dir = 'ASC';
     protected $page = 1;
+    protected $project_id = 0;
     protected $project = "";
     
     // Additional filter for reports
@@ -117,10 +117,14 @@ class Agency_Worklist_Filter
     /**
      * @return the $project
      */
-    public function getProject()
-    {
+    public function getProject() {
         return $this->project;
     }
+    
+    public function getProjectId() {
+        return $this->project_id;
+    }
+    
     /**
      * @return the $user
      */
@@ -196,6 +200,12 @@ class Agency_Worklist_Filter
         $this->project =  $project;
         return $this;
     }
+    
+    public function setProjectId($project_id) {
+        $this->project_id = $project_id;
+        return $this;
+    }
+
     /**
      * @param $user the $user to set
      */
@@ -304,12 +314,12 @@ class Agency_Worklist_Filter
         $this->subsort = $subsort;
         return $this;
     }
-    public function getProjectSelectbox($fromReport=false) {
+    public function getProjectSelectbox($fromReport=false,$display=true) {
         $allDisplay = ($fromReport) ? "ALL" : "All Projects";
-        $box = '<select id="project" name="project" class="project-dropdown">';
-        $box .= '<option value=""' . (($this->getProject() == "") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
-        foreach ( Repository::allAvailableRepositories() as $repository ) {
-            $box .= '<option value="' . $repository . '"' . (($this->getProject() == $repository) ? ' selected="selected"' : '') . '>' . $repository . '</option>';
+        $box = '<select id="project" name="project" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
+        $box .= '<option value=""' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+        foreach ( Project::getProjects() as $project) {
+            $box .= '<option value="' . $project['project_id'] . '"' . (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project['name']. '</option>';
         }
         $box .= '</select>';
         
@@ -412,6 +422,9 @@ class Agency_Worklist_Filter
                 if ($key != 'name') {
                 	$cleanOptions[$key] = $value;
                 }
+            } elseif ($method == 'setProject_id') {
+                $this->setProjectId($value);
+                $cleanOptions['project_id'] = $value;
             }
         }
         $this->save($cleanOptions);

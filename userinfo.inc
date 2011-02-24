@@ -17,7 +17,6 @@
             <span id="info-timezone"><?php echo $timezoneTable[$user -> getTimezone()]; ?></span>
         </p>
     </div><!-- end of common info div-->
-
     <?php if(! $is_runner){ ?><hr style="clear: both;" /><?php } ?>
 
     <div id="tabs" class="tabs-bottom">
@@ -25,6 +24,7 @@
         <ul>
             <li><a href="#tabs-1">User Info</a></li>
             <li><a href="#tabs-2">Admin</a></li>
+            <li><a href="#tabs-3">Sandbox</a><li>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
         </ul>
     <?php } else {?>
@@ -93,21 +93,7 @@
                 </form>
             </div><!-- end of admin-left -->
             <div id = "admin-middle">
-                <form method="post" action = "">
-                <p id="unixusername-field" class = "info-label">UNIX Username: <br />
-                    <input name="unixusername" id="unixusername" type="text" size="15" value = "<?php echo $user -> getUnixusername(); ?>" /><br />
-                    </p>
-
-                <p id="projects-field" class = "info-label">Projects to check-out : <br />
-                    <input id="projects" type="text" name="projects" size="20" value = "<?php echo $user -> getProjects_checkedout(); ?>" /><br />
-                </p>
-                <p class = "bottom">
-                    <input id="create_sandbox" type="submit" name="create_sandbox" value="Create SB" />
-                </p>
-                </form>
-            </div><!-- end of admin-middle -->
-            <div id = "admin-right">
-                <p class = "info-label">Budget<br />
+               <p class = "info-label">Budget<br />
                     <span id="info-budget"><?php echo $user->getBudget(); ?></span>
                     <input type="submit" id="give" value="Give Budget..." />
                 </p><br />
@@ -137,8 +123,48 @@
                     </p>
                 </form>
 				<? } ?>
+            </div><!-- end of admin-middle -->
+            <div id = "admin-right">
+ 
             </div><!-- end of admin-right-->
         </div><!-- end of tab 2 -->
+<?php
+function getProjectList() {
+    $query = "SELECT * FROM `projects` WHERE active=1";
+    $query = mysql_query($query);
+    $projects = array();
+    $i = 0;
+    while ($project = mysql_fetch_array($query)) {
+        
+        $projects[$i]['name'] = $project['name'];
+        $projects[$i]['id']   = $project['project_id'];
+        $projects[$i]['repo'] = $project['repository'];
+        $i++;
+    }
+    return $projects;
+
+}
+
+$projects = getProjectList();
+$user_projects = $user->getProjects_checkedout();
+if (count($user_projects) > 0) {
+    $has_sandbox = true;
+}
+?>        
+        <div id="tabs-3" style="clear: both;">
+            <form method="post" action = "" id="sandboxForm">
+                <div style="clear: both; float: right;">
+                    <input id="create_sandbox" type="submit" name="create_sandbox" value="Create SB" <?php if ($has_sandbox) { echo 'style="display: none;"'; } ?> />
+                </div>
+                <p id="unixusername-field" class = "info-label">UNIX Username: <br />
+                    <input name="unixusername" id="unixusername" type="text" size="15" value = "<?php echo $user -> getUnixusername(); ?>" /><br />
+                </p>
+                <p id="projects-field" class="info-label">Projects to check-out :</p>
+<?php foreach ($projects as $project) : ?>
+                <div class="quarter-column"><input <?php if ($user->isProjectCheckedOut( $project['id'] )) { echo 'checked="checked"  disabled="disabled" '; } ?> type="checkbox" id="<?php echo $project['id']; ?>" /><input type="hidden" class="repo" value="<?php echo $project['repo']; ?>" /><?php echo $project['name']; ?></div>
+<?php endforeach; ?>
+            </form>
+        </div><!-- end of tab 3 -->
         <div style = "clear: both;"></div>
     <?php } ?>
     </div><!--end of div "tabs" -->

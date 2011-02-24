@@ -114,11 +114,16 @@
             $sandboxUtil->createSandbox($user -> getUsername(), $user -> getNickname(), $unixusername, $projectList);
 
             // If sb creation was successful, update users table
-	    $user -> setHas_sandbox(1);
-	    $user -> setUnixusername($unixusername);
-	    $user -> setProjects_checkedout($projects);
-	    $user -> save();
-
+            $user->setHas_sandbox(1);
+            $user->setUnixusername($unixusername);
+            $user->setProjects_checkedout($projects);
+            $user->save();
+            // add to project_users table
+            foreach ($projectList as $project) {
+                $project_id = Project::getIdFromRepo($project);
+                $user->checkoutProject($project_id);
+            }
+        
           }catch(Exception $e) {
             $result["error"] = $e->getMessage();
           }
@@ -298,30 +303,44 @@
 	return false;
   });
 
-  $('#create_sandbox').click(function(){
+    $('#create_sandbox').click(function(){
+        var projects = '';
 
-	$.ajax({
-		type: "POST",
-		url: 'userinfo.php',
-		dataType: 'json',
-		data: {
-		action: "create-sandbox",
-		id: user_id,
-		unixusername: $('#unixusername').val(),
-		projects: $('#projects').val()
-	},
-	success: function(json) {
+        // get project ids that are newly checked - setup to allow adding
+        // projects to sandbox that is already created, sandbox bash
+        // script needs updating to support this
+        $('#sandboxForm input[type=checkbox]:checked').not(':disabled').each(function() {
+            if ($(this).attr('checked') && !$(this).attr('disabled')) {
+                projects += $(this).next('.repo').val() + ',';
+            } 
+        });
 
-		if(json.error) {
-			alert("Sandbox Creation failed:"+json.error);
-		} else {
-			alert("Sandbox created successfully");
-			$('#popup-user-info').dialog('close');
-		}
-	}
-	});
-
-	return false;
+        if (projects != '') {
+            // remove the last comma
+            projects = projects.slice(0, -1)        
+            $.ajax({
+                type: "POST",
+                url: 'userinfo.php',
+                dataType: 'json',
+                data: {
+                    action: "create-sandbox",
+                    id: user_id,
+                    unixusername: $('#unixusername').val(),
+                    projects: projects
+                },
+                success: function(json) {
+                    if(json.error) {
+                        alert("Sandbox Creation failed:"+json.error);
+                    } else {
+                        alert("Sandbox created successfully");
+                        $('#popup-user-info').dialog('close');
+                    }
+                }
+            });
+        } else {
+            alert('You did not choose any projects to check out.');
+        }
+    	return false;
   });
   
 

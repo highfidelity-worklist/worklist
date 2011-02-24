@@ -114,3 +114,8 @@ p.bottom {
 }
 .button-row span {
     margin: 5px; }
+
+.quarter-column {
+    float: left; 
+    width: 23%;
+}

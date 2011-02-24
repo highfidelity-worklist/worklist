@@ -23,6 +23,7 @@
     }
 
     $workitem = WorkItem::getById($worklist['id']);
+    $projects = Project::getProjects();
 
     $allowEdit = false;
     $classEditable = "";
@@ -802,17 +803,17 @@ if ($action =="edit"):  ?>
 						<li>
 							<span class="project-label">Project</span>
 							<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
-		                            <select id="project" name="project" class="project-dropdown">
+		                            <select id="project_id" name="project_id" class="project-dropdown">
                                         <option value="">-- Select --</option>
-                                        <?php foreach ( Repository::allAvailableRepositories() as $repository ): ?>
-                                            <option value="<?php echo $repository;?>" <?php echo $repository == $worklist['project'] ? ' selected = "selected"' : ''; ?>>
-                                            <?php echo $repository; ?>
+                                        <?php foreach ( $projects as $project): ?>
+                                            <option value="<?php echo $project['project_id']; ?>" <?php echo $project['project_id'] == $worklist['project_id'] ? ' selected = "selected"' : ''; ?>>
+                                            <?php echo $project['name']; ?>
                                             </option>
                                         <?php endforeach; ?>
 		                            </select>
-							<?php elseif( !empty($worklist['project'])) :?>
-                                <a href="<?php echo Repository::getRepoUrl($worklist['project']);?>" target="_blank">
-                                    <?php echo htmlspecialchars($worklist['project']);?>
+							<?php elseif( !empty($worklist['project_id'])) :?>
+                                <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>">
+                                    <?php echo htmlspecialchars($worklist['project_name']);?>
                                 </a>
                             <?php else :?>
 						        <span>Not assigned</span>
@@ -918,9 +919,9 @@ if ($action =="edit"):  ?>
 					</li>
                     <li>
 						<span class="project-label">Project</span>
-                        <?php if ( !empty($worklist['project']) ):?>
-                            <a href="<?php echo Repository::getRepoUrl($worklist['project']);?>" target="_blank">
-                                <?php echo htmlspecialchars($worklist['project']);?>
+                        <?php if ( !empty($worklist['project_id']) ):?>
+                            <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>" target="_blank">
+                                <?php echo htmlspecialchars($worklist['project_name']);?>
                             </a>
                         <?php else :?>
 						    <span>Not assigned</span>

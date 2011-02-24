@@ -36,7 +36,7 @@ $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
 
 $sfilter = explode('/', $filter->getStatus());
 $ufilter = $filter->getUser();
-$pfilter = $filter->getProject();
+$pfilter = $filter->getProjectId();
 $ofilter = $filter->getSort();
 $subofilter = $filter->getSubSort();
 $dfilter = $filter->getDir();
@@ -102,7 +102,7 @@ if (!empty($pfilter) && $pfilter != 'ALL') {
     } else {
         $where .= " and ";
     }
-    $where .= " `project` = '{$pfilter}' ";
+    $where .= " `".WORKLIST."`.`project_id` = '{$pfilter}' ";
 }
 
 $query = $filter->getQuery();
@@ -207,6 +207,8 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 	      `cu`.`nickname` AS `creator_nickname`,
 	      `ru`.`nickname` AS `runner_nickname`,
 	      `mu`.`nickname` AS `mechanic_nickname`,
+          `proj`.`name` AS `project_name`,
+          `worklist`.`project_id` AS `project_id`,
 	      TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
 	      `total_fees`,`bid_amount`,`creator_id`,`runner_id`,`mechanic_id`,
 	      (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
@@ -214,8 +216,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
            WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
            (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
-           WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`,
-           IFNULL(`project`,'') AS `project`";
+           WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
 
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
@@ -240,6 +241,7 @@ $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
+          LEFT JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id`
           $where ";
 
 if($ofilter == "delta"){
@@ -282,7 +284,8 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         13 => $row['runner_id'],
         14 => $row['mechanic_id'],
         15 => (!empty($row['bid_on']) ? $row['bid_on'] : 0),
-        16 => $row['project']
+        16 => $row['project_id'],
+        17 => $row['project_name']
 	);
 }
 

@@ -13,8 +13,8 @@
 <div id="search-filter-wrap"<?php echo (isset($_SESSION['userid'])&& $is_runner) ? 'style="right:-6px"' : 'style="right:-6px"'; ?>>
     <div >
         <form method="get" action="" id="searchForm" >
-            <?php 
-                echo $filter->getProjectSelectbox() . " ";  
+<?php 
+                echo $filter->getProjectSelectbox(false, !$hide_project_column) . " ";
                 echo $filter->getUserSelectbox(1) . " ";
                 $allDisplay = "All Status";                
                 $status_array = array("SUGGESTED", "BUG", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");

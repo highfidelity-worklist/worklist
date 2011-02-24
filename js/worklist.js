@@ -396,7 +396,8 @@ $(function() {
 						url: 'refresh-filter.php',
 						data: {
 							name: filterName,
-							active: activeUsersFlag
+							active: activeUsersFlag,
+                            filter: 'users'
 						},
 						dataType: 'json',
 						// on success we update the list

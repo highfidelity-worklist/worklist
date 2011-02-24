@@ -25,9 +25,10 @@ class WorkItem
     protected $mechanicId;
     protected $mechanic;
     protected $status;
-    protected $project;
     protected $notes;
     protected $sandbox;
+    protected $project_id;
+    protected $project_name;
 
     protected $origStatus = null;
 
@@ -71,10 +72,12 @@ class WorkItem
 					    w.runner_id,
 					    w.mechanic_id,
 					    w.status,
-					    w.project,
+					    w.project_id,
 					    w.notes,
-					    w.sandbox
+					    w.sandbox,
+                        p.name AS project_name
 					FROM  ".WORKLIST. " as w
+                    LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
 					WHERE w.id = '" . (int)$id . "'";
         $res = mysql_query($query);
         if (!$res) {
@@ -90,9 +93,10 @@ class WorkItem
              ->setRunnerId($row['runner_id'])
 	     	 ->setMechanicId($row['mechanic_id'])
              ->setStatus($row['status'])
-             ->setProject($row['project'])
+             ->setProjectId($row['project_id'])
              ->setNotes($row['notes'])
-	      ->setSandbox($row['sandbox']);
+	         ->setSandbox($row['sandbox']);
+        $this->project_name = $row['project_name'];
         return true;
     }
 
@@ -215,15 +219,15 @@ WHERE id = ' . (int)$id;
         return $this->status;
     }
 
-    public function setProject($project)
+    public function setProjectId($project_id)
     {
-        $this->project = $project;
+        $this->project_id = $project_id;
         return $this;
     }
 
-    public function getProject()
+    public function getProjectId()
     {
-        return $this->project;
+        return $this->project_id;
     }
 
     public function setNotes($notes)
@@ -261,15 +265,27 @@ WHERE id = ' . (int)$id;
         return $states;
     }
 
+    public static function getRepository() {
+        $query = "SELECT `repository` FROM `projects` WHERE `project_id` = " . $this->getProjectId();
+        $rt = mysql_query($query);
+        if (mysql_num_rows($rt)) {
+            $row = mysql_fetch_array($query);
+            $repository = $row['repository'];
+            return $repository;
+        } else {
+            return false;
+        }
+    }
+    
     protected function insert()
     {
-        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status, project, notes, created ) ".
+        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status, project_id, notes, created ) ".
             "VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
             "'".mysql_real_escape_string($this->getRunnerId())."', ".
             "'".mysql_real_escape_string($this->getStatus())."', ".
-            "'".mysql_real_escape_string($this->getProject())."', ".
+            "'".mysql_real_escape_string($this->getProjectId())."', ".
             "'".mysql_real_escape_string($this->getNotes())."', ".
             "NOW())";
         $rt = mysql_query($query);
@@ -303,7 +319,7 @@ WHERE id = ' . (int)$id;
         $query = 'UPDATE '.WORKLIST.' SET
             summary= "'. mysql_real_escape_string($this->getSummary()).'",
             notes="'.mysql_real_escape_string($this->getNotes()).'",
-            project="'.mysql_real_escape_string($this->getProject()).'",
+            project_id="'.mysql_real_escape_string($this->getProjectId()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
 	    runner_id="' .intval($this->getRunnerId()). '",
 	    sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
@@ -357,10 +373,11 @@ WHERE id = ' . (int)$id;
     public function getWorkItem($worklist_id)
     {
         $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname, u.id AS runner_id,
-			  uc.nickname AS creator_nickname, w.status, w.notes, w.project,w.sandbox 
+			  uc.nickname AS creator_nickname, w.status, w.notes, w.project_id, p.name AS project_name, p.repository AS repository, w.sandbox 
 			  FROM  ".WORKLIST. " as w
 			  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
 			  LEFT JOIN ".USERS." as u ON w.runner_id = u.id
+              LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
 			  WHERE w.id = '$worklist_id'";
         $result_query = mysql_query($query);
         $row =  $result_query ? mysql_fetch_assoc($result_query) : null;
@@ -526,7 +543,7 @@ WHERE id = ' . (int)$id;
         }*/
         $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
         $bid_info = mysql_fetch_assoc($res);
-	 $workitem_info = $this -> getWorkItem($bid_info['worklist_id']);
+        $workitem_info = $this -> getWorkItem($bid_info['worklist_id']);
         // Get bidder nickname
         $res = mysql_query("select nickname,unixusername,has_sandbox from ".USERS." where id='{$bid_info['bidder_id']}'");
         if ($res && ($row = mysql_fetch_assoc($res))) {
@@ -534,7 +551,7 @@ WHERE id = ' . (int)$id;
 			$bidder_unixusername = ($row['has_sandbox']==1) ? $row['unixusername'] : $bidder_nickname;
         }
         $bid_info['nickname']=$bidder_nickname;
-	 $bid_info['sandbox'] = "http://".SERVER_NAME."/~".$bidder_unixusername."/".$workitem_info['project']."/";
+        $bid_info['sandbox'] = "http://".SERVER_NAME."/~".$bidder_unixusername."/".$this->getRepository()."/";
         
         //adjust bid_done date/time
         $prev_start = strtotime($bid_info['bid_created']);

@@ -8,6 +8,7 @@ require_once 'class.session_handler.php';
 require_once 'send_email.php';
 require_once 'update_status.php';
 require_once 'workitem.class.php';
+require_once 'classes/Project.class.php';
 require_once 'functions.php';
 require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
@@ -128,7 +129,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 $notifyEmpty = true;
 if($action =='save_workitem') {
 
-    $args = array('summary','notes', 'status', 'project', 'sandbox');
+    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox');
     foreach ($args as $arg) {
         $$arg = $_POST[$arg];
     }
@@ -160,8 +161,8 @@ if($action =='save_workitem') {
         $new_update_message .= "Notes changed. ";
     }
     // project
-    if ( $workitem->getProject() != $project){
-        $workitem->setProject($project);
+    if ( $workitem->getProjectId() != $project_id){
+        $workitem->setProjectId($project_id);
         $new_update_message .= "Project changed. ";
     }
     // Sandbox
@@ -538,7 +539,7 @@ $fees = $workitem->getFees($worklist_id);
 
 //total fee
 $total_fee = $workitem->getSumOfFee($worklist_id);
-include "workitem.inc";
+require_once "workitem.inc";
 
 function sendMailToDiscardedBids($worklist_id)	{
     // Get all bids marked as not accepted

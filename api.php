@@ -3,6 +3,8 @@ require_once ('config.php');
 require_once('class/Session.class.php');
 require_once('class/Utils.class.php');
 require_once('class/Database.class.php');
+require_once("class.session_handler.php");
+require_once("classes/Project.class.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 if(! isset($_REQUEST["api_key"])){
@@ -29,6 +31,9 @@ if(! isset($_REQUEST["api_key"])){
             break;
         case 'uploadProfilePicture':
             uploadProfilePicture();
+            break;
+        case 'updateProjectList':
+            updateProjectList();
             break;
         default:
             die("Invalid action.");
@@ -140,6 +145,17 @@ function pushVerifyUser(){
     mysql_unbuffered_query($sql);
     
     respond(array('success' => false, 'message' => 'User has been confirmed!'));
+}
+
+function updateProjectList(){
+$repo = basename($_REQUEST['repo']);
+
+$project = new Project();
+$project->loadByRepo($repo);
+$commit_date = date('Y-m-d H:i:s');
+$project->setLastCommit($commit_date);
+$project->save();
+
 }
 
 function respond($val){

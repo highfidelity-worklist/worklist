@@ -37,7 +37,7 @@ if(isset($paidStatus) && ($paidStatus)!="ALL")
 }
 
 $sfilter = $filter->getStatus();
-$pfilter = $filter->getProject();
+$pfilter = $filter->getProjectId();
 $ufilter = $filter->getUser();
 $order = $filter->getOrder();
 $queryType = isset( $_REQUEST['qType'] ) ? $_REQUEST['qType'] :'detail';
@@ -54,7 +54,7 @@ if ($sfilter){
 }
 if ($pfilter){
     if($pfilter != 'ALL'){
-      $where .= " AND `" . WORKLIST . "`.project = '$pfilter' "; 
+      $where .= " AND `" . WORKLIST . "`.project_id = '$pfilter' "; 
     }
 }
 

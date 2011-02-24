@@ -38,7 +38,7 @@ $filter->setName('.worklist')
        ->initFilter();
 
 if ($userId > 0 ) {
-    $args = array( 'itemid', 'summary', 'project','status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
+    $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
                    'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
     		// Removed mysql_real_escape_string, because we should 
@@ -65,7 +65,7 @@ if ($userId > 0 ) {
     }
 
     $workitem->setRunnerId($runner_id);
-    $workitem->setProject($project);
+    $workitem->setProjectId($project_id);
     $workitem->setStatus($status);
     $workitem->setNotes($notes);
     $workitem->save();
