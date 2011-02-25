@@ -265,7 +265,7 @@ WHERE id = ' . (int)$id;
         return $states;
     }
 
-    public static function getRepository() {
+    public function getRepository() {
         $query = "SELECT `repository` FROM `projects` WHERE `project_id` = " . $this->getProjectId();
         $rt = mysql_query($query);
         if (mysql_num_rows($rt)) {
