@@ -4,18 +4,24 @@
         <table id = "user-stats">
             <thead>
                 <tr class = "table-hdng">
-                    <th>Total Jobs</th><th>Active Jobs</th><th>Total $</th><th>Fees (30 days)</th>
-					<?php if(!empty($Annual_Salary)){?> <th>Salary</th><?php }?><th>Love</th>
+                    <th>Total Jobs</th><th>Active Jobs</th><th>Total Earnings $</th>
+		    <?php if(!empty($Annual_Salary)){?> <th>Salary</th><?php }?><th>Bonus $ / %</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a></td>
                     <td><a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a></td>
-                    <td>$<?php echo $userStats->getTotalEarnings(); ?></td>
-                    <td><a href = "#" id = "latest-earnings">$<?php echo $userStats->getLatestEarnings(30); ?></a></td>
-					<?php if(!empty($Annual_Salary)){?><td>$<?php echo $Annual_Salary; ?></td><?php }?>
-                    <td><a href = "#" id = "love"><?php echo $userStats->getLoveCount(); ?>(<?php echo (int) $userStats->getUniqueLoveCount(); ?>)</a></td>
+                    <td><?php
+			setlocale(LC_MONETARY,'en_US');
+			$_totalEarnings = $userStats->getTotalEarnings();
+			echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
+		    ?></td>
+		    <?php if(!empty($Annual_Salary)){?><td><?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$Annual_Salary)); ?></td><?php }?>
+		    <td><?php
+			$_bonusPayments = $userStats->getBonusPaymentsTotal();
+			echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_bonusPayments)).' / '.round((($_bonusPayments + 0.000001) / ($_totalEarnings + 0.000001)) * 100).'%';
+		    ?></td>
                 </tr>
             </tbody>
         </table>

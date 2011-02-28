@@ -217,4 +217,15 @@ class UserStats{
         }
         return false;
     }
+
+    public function getBonusPaymentsTotal() {
+        $sql = "SELECT SUM(amount) FROM `fees` "
+                . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 "
+                . "AND `rewarder`=1 AND `user_id` = {$this->userId}";
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            return (int) $row[0];
+        }
+        return false;
+    }
 } 

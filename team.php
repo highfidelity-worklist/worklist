@@ -240,7 +240,7 @@ function AppendUserRow(json, odd) {
     row += '<td class="jobs">' + json.jobs_count + '</td>';
     row += '<td class="money">$' + json.budget + '</td>';
     row += '<td class="money">$' + addCommas(parseFloat(json.earnings)) + '</td>';
-    row += '<td class="money">$' + addCommas(parseFloat(json.rewarder)) + '</td>';
+    row += '<td class="money">$' + addCommas(parseFloat(json.rewarder)) + ' / ' + Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100) + '%</td>';
     $('.table-userlist tbody').append(row);
 }
 
@@ -291,7 +291,7 @@ function addCommas(str) {
             <th class="sort {sortkey: 'jobs_count'} clickable jobs">Jobs<div class = "arrow"><div/></th>
             <th class="sort {sortkey: 'budget'} clickable money">Budget<div class = "arrow"><div/></th>
             <th class="sort {sortkey: 'earnings'} clickable money">Earnings<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'rewarder'} clickable money">Bonus<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'rewarder'} clickable money">Bonus $ / %<div class = "arrow"><div/></th>
         </tr>
     </thead>
     <tbody>

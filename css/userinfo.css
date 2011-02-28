@@ -48,7 +48,7 @@ p.small-text{
 #user-stats {
     position: absolute;
     left: 17em;
-    top: 2em;
+    top: 0em;
     width: auto;
 }
 #user-avatar {
@@ -110,7 +110,7 @@ p.bottom {
 
 .button-row {
     float: right;
-    padding: 20px 5px 10px    
+    padding: 20px 130px 10px 20px
 }
 .button-row span {
     margin: 5px; }
