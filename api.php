@@ -9,37 +9,41 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 if(! isset($_REQUEST["api_key"])){
     die("No api key defined.");
-} else if(strcmp($_REQUEST["api_key"],API_KEY) != 0)
-{
+} else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 && $_REQUEST['action'] != 'getSystemDrawerJobs') {
     die("Wrong api key provided.");
-} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture')){
+} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs')){
     die("Only HTTPS connection is accepted.");
 } else if($_SERVER["REQUEST_METHOD"] != "POST"){
     die("Only POST method is allowed.");
-} else if(!empty($_REQUEST['action'])){
-    mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD);
-    mysql_select_db (DB_NAME);
-    switch($_REQUEST['action']){
-        case 'updateuser':
-            updateuser();
-            break;
-        case 'pushVerifyUser':
-            pushVerifyUser();
-            break;
-        case 'login':
-            loginUserIntoSession();
-            break;
-        case 'uploadProfilePicture':
-            uploadProfilePicture();
-            break;
-        case 'updateProjectList':
-            updateProjectList();
-            break;
-        default:
-            die("Invalid action.");
-    }
+} else {
+	if(!empty($_REQUEST['action'])){
+		mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD);
+		mysql_select_db (DB_NAME);
+		switch($_REQUEST['action']){
+			case 'updateuser':
+				updateuser();
+				break;
+			case 'pushVerifyUser':
+				pushVerifyUser();
+				break;
+			case 'login':
+				loginUserIntoSession();
+				break;
+			case 'uploadProfilePicture':
+				uploadProfilePicture();
+				break;
+			case 'updateProjectList':
+				updateProjectList();
+				break;
+			case 'getSystemDrawerJobs':
+				getSystemDrawerJobs();
+				break;
+			default:
+				die("Invalid action.");
+		}
+	}
 }
-
+ 
 /*
 * Setting session variables for the user so he is logged in
 */
@@ -156,6 +160,40 @@ $commit_date = date('Y-m-d H:i:s');
 $project->setLastCommit($commit_date);
 $project->save();
 
+}
+
+function getSystemDrawerJobs(){
+	$objectDataReviews= array();
+    $sql = " SELECT	w.*, p.name as project " 
+		 . " FROM  	". WORKLIST." AS w, ". PROJECTS. " AS p "
+		 . " WHERE 	w.project_id = p.project_id "
+		 . "   AND	w.status = 'REVIEW' "
+		 ;
+
+	if ($result = mysql_query($sql)) {
+		while ($row = mysql_fetch_assoc($result)) {
+			$objectDataReviews[] = $row;
+		}
+	// Return our data array
+	} 
+   	mysql_free_result($result);
+
+	$objectDataBidding= array();
+    $sql = " SELECT	w.*, p.name as project" 
+		 . " FROM  	". WORKLIST." AS w, ". PROJECTS. " AS p "
+		 . " WHERE 	w.project_id = p.project_id "
+		 . "   AND	w.status = 'BIDDING' "
+		 ;
+
+	if ($result = mysql_query($sql)) {
+		while ($row = mysql_fetch_assoc($result)) {
+			$objectDataBidding[] = $row;
+		}
+	// Return our data array
+	} 
+   	mysql_free_result($result);
+
+    respond(array('success' => true, 'review' => $objectDataReviews, 'bidding' => $objectDataBidding));
 }
 
 function respond($val){
