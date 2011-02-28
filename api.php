@@ -165,9 +165,9 @@ $project->save();
 function getSystemDrawerJobs(){
 	$objectDataReviews= array();
     $sql = " SELECT	w.*, p.name as project " 
-		 . " FROM  	". WORKLIST." AS w, ". PROJECTS. " AS p "
-		 . " WHERE 	w.project_id = p.project_id "
-		 . "   AND	w.status = 'REVIEW' "
+		 . " FROM  	". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
+		 . " ON 	(w.project_id = p.project_id) "
+		 . " WHERE	w.status = 'REVIEW' "
 		 ;
 
 	if ($result = mysql_query($sql)) {
@@ -179,9 +179,9 @@ function getSystemDrawerJobs(){
    	mysql_free_result($result);
 
 	$objectDataBidding= array();
-    $sql = " SELECT	w.*, p.name as project" 
-		 . " FROM  	". WORKLIST." AS w, ". PROJECTS. " AS p "
-		 . " WHERE 	w.project_id = p.project_id "
+    $sql = " SELECT	w.*, p.name as project " 
+		 . " FROM  	". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
+		 . " ON 	(w.project_id = p.project_id) "
 		 . "   AND	w.status = 'BIDDING' "
 		 ;
 

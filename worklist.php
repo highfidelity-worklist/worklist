@@ -1388,6 +1388,16 @@ include("head.html"); ?>
 		$('#be-created').children().remove();
 		$('#be-paid').children().remove();
 	}
+	
+	<?php
+	if(isset($_REQUEST['addFromJournal'])) {
+	?>
+	$(function() {
+		$('#add').click();
+	});
+	<?php
+	}
+	?>
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 <title>Worklist | Fast pay for your work, open codebase, great community.</title>
