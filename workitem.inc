@@ -794,7 +794,7 @@ if ($action =="edit"):  ?>
 							<span class="info-label">Notes</span>
 							<?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
 								<span id="info-notes">
-									<textarea name="notes" id="edit-notes"><?php echo $worklist['notes'];?></textarea>
+									<textarea name="notes" id="edit-notes" <?php if(count($bids)>0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
 								</span>
 							<?php else:?>
 								<span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
@@ -942,7 +942,7 @@ if ($action =="edit"):  ?>
 					<?php endif;?>
 					<?php if ($user_id > 0):?>
 					<li>
-					  <form action="" method="post" name="invite-form" onsubmit="return sendInviteForm();">
+					  <form action="" method="post" name="invite-form" onSubmit="return sendInviteForm();">
 					    <span class="project-label" id="invite-label">Invite</span>
 					    <input type="text" class="invite ac_input" name="invite" autocomplete="on" style="width: 210px" />
 						<script type="text/javascript">
