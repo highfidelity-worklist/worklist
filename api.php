@@ -9,7 +9,7 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 if(! isset($_REQUEST["api_key"])&& $_REQUEST['action'] != 'getSystemDrawerJobs'){
     die("No api key defined.");
-} else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 && $_REQUEST['action'] != 'getSystemDrawerJobs') { 
+} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {  
     die("Wrong api key provided.");
 } else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs')){
     die("Only HTTPS connection is accepted.");
@@ -182,7 +182,7 @@ function getSystemDrawerJobs(){
     $sql = " SELECT	w.*, p.name as project " 
 		 . " FROM  	". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
 		 . " ON 	(w.project_id = p.project_id) "
-		 . "   AND	w.status = 'BIDDING' "
+		 . " WHERE	w.status = 'BIDDING' "
 		 ;
 
 	if ($result = mysql_query($sql)) {
