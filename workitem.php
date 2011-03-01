@@ -156,7 +156,7 @@ if($action =='save_workitem') {
             $new_update_message .= "Status set to $status. ";
         }
     }
-    if ($workitem->getNotes() != $notes) {
+    if ($workitem->getNotes() != $notes && isset($_POST['notes'])) {
         $workitem->setNotes($notes);
         $new_update_message .= "Notes changed. ";
     }
