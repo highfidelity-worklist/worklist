@@ -14,10 +14,11 @@ class Utils{
         "phone",
         "smsaddr",
         "country",
+		"city",
         "provider",
         "paypal_email",
         "sms_flags",
-        "findus",
+        "findus", 
         "int_code",
         "notifications"
     );

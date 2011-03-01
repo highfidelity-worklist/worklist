@@ -43,6 +43,11 @@ if (isset($_POST['save_account'])) {
             $$arg = ($esc ? $_POST[$arg] : intval($_POST[$arg]));
         }
 
+		if(isset($_POST['city'])){
+        	$city = mysql_real_escape_string($_POST['city']);
+        	$saveArgs['city'] = 0;
+		} 
+		
         $provider = mysql_real_escape_string($_POST['provider']);
         $saveArgs['provider'] = 0;
         $is_uscitizen = ($_POST['country'] == 'US' ? 1 : 0);
@@ -247,16 +252,16 @@ include("head.html");
 
     function saveSettings(type) {
         var values;
-
         if (type == 'account') {
             values = { 
                 int_code: $('#int_code').val(),
                 phone: $('#phone').val(),
                 phone_edit: $('#phone_edit').val(),
                 country: $('#country').val(),
+                city: $('#city').val(),
                 smsaddr: $('#smsaddr').val(),
                 provider: $('#provider').val(),
-		timezone: $('#timezone').val(),
+				timezone: $('#timezone').val(),
                 journal_alerts: $('#journal_alerts').attr('checked') ? 1:0,
                 bid_alerts: $('#bid_alerts').attr('checked') ? 1:0,
                 nickname: $('#nickname').val(),
@@ -451,6 +456,7 @@ include("head.html");
     <?php
         $new_user = (bool) $_SESSION['new_user'];
         $country = !$new_user ? $userInfo['country'] : '';
+        $city = !$new_user ? $userInfo['city'] : '';
         $int_code = !$new_user ? $userInfo['int_code'] : '';
         $phone = !$new_user ? $userInfo['phone'] : '';
         $provider = !$new_user ? $userInfo['provider'] : '';

@@ -31,6 +31,13 @@ require_once 'lib/Sms/Numberlist.php';
                         </label><br/>
                         </p>
                     </div>
+                    <div id="cityDiv">
+                        <p><label for="City">City</label><br />
+                        <input type="text" id="city" name="city" class="text-field"
+                            size="35"
+                            value="<?php echo $city ?>" />
+                        </p>
+                    </div>
                     <div id="sms-number">
                         <label>Mobile device number<br /></label>
                             <select id="int_code" name="int_code">

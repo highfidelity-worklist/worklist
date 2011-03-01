@@ -43,12 +43,12 @@ body {
 }
 p.small-text{
     font-size: 1.1em;
+	height:20px;
 }
 
 #user-stats {
     position: absolute;
-    left: 17em;
-    top: 0em;
+    right: 12em;
     width: auto;
 }
 #user-avatar {
@@ -110,7 +110,8 @@ p.bottom {
 
 .button-row {
     float: right;
-    padding: 20px 130px 10px 20px
+    padding: 10px 135px 10px ;
+	margin-top:-25px;   
 }
 .button-row span {
     margin: 5px; }

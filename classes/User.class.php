@@ -34,6 +34,7 @@ class User
 	protected $phone;
 	protected $smsaddr;
 	protected $country;
+	protected $city;
 	protected $provider;
 	protected $has_sandbox;
 	protected $unixusername;
@@ -427,6 +428,21 @@ class User
 	 */
 	public function setNickname($nickname) {
 		$this->nickname = $nickname;
+		return $this;
+	}
+
+	/**
+	 * @return the $nickname
+	 */
+	public function getCity() {
+		return $this->city;
+	}
+
+	/**
+	 * @param $nickname the $nickname to set
+	 */
+	public function setCity($city) {
+		$this->city = $city;
 		return $this;
 	}
 

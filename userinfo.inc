@@ -1,21 +1,20 @@
-    <script>
-        parent.$('#user-info').dialog('option','title','User Info for <?php echo $user->getNickname(); ?>');
-    </script>
-
-    <div class="user-info" title="">
+    <div class = "user-info" title = "User Info">
         <span id="user-avatar"><img id="avatar" src="<?php echo($user -> getAvatar(80,80)); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
         <div class = "common-info">
         <?php include("userstats-table.inc"); ?>
+        <p class = "info-label big-text">Nickname<br />
+        <span id="info-nickname"><a href="#" id="nickname-ping"><?php echo $user->getNickname(); ?></a></span>
+        </p>
 
-        <p class = "info-label">Current Local Time<br />
-        <span id="info-currenttime"><?php echo convertTimeZoneToLocalTime($user->getTimezone()); ?></span>
+        <p class = "info-label">City, Local Time<br />
+        <span id="info-currenttime" title="<?php echo $timezoneTable[$user -> getTimezone()]; ?>"><?php echo $user ->getCity().", ";echo convertTimeZoneToLocalTime($user->getTimezone()); ?></span>
         </p>
         <div class="button-row">
             <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
             <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
         </div>
-        <p class = "info-label small-text">Time zone<br />
-            <span id="info-timezone"><?php echo $timezoneTable[$user -> getTimezone()]; ?></span>
+        <p class = "info-label small-text"><br />
+            <span id="info-timezone">&nbsp;</span>
         </p>
     </div><!-- end of common info div-->
     <?php if(! $is_runner){ ?><hr style="clear: both;" /><?php } ?>
@@ -37,6 +36,10 @@
     <?php } ?>
         <div id="tabs-1">
             <div class = "left-column">
+                <p class = "info-label">Email<br />
+                    <span id="info-email"><a href="mailto:<?php echo $user -> getUsername(); ?>">
+                    <?php echo $user -> getUsername(); ?></a></span>
+                </p>
 
                 <p class = "info-label">Strongest Skills<br />
                     <span id="info-skills"><?php echo $user -> getSkills(); ?></span>
@@ -65,10 +68,6 @@
     <?php if($is_runner){ ?>
         <div id="tabs-2" style = "clear: both;">
             <div id = "admin-left">
-                <p class = "info-label">Email<br />
-                    <span id="info-email"><a href="mailto:<?php echo $user -> getUsername(); ?>">
-                    <?php echo $user -> getUsername(); ?></a></span>
-                </p>
                 <form id = "roles" method="post" action = "">
                 <p class = "info-label">Roles<br />
 
@@ -196,4 +195,4 @@ if (count($user_projects) > 0) {
 
     <div id="loading" style="display:none">
         <img src="images/loader.gif" alt = "" /><span>Please wait..</span>
-    </div>
+    </div>  
