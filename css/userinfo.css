@@ -99,7 +99,7 @@ p.bottom {
 }
 
 #tabs {
-    margin-top: 1em;
+    margin-top: 3em;
 }
 #tabs { height: 250px; }
 .tabs-bottom { position: relative; } 
@@ -110,8 +110,8 @@ p.bottom {
 
 .button-row {
     float: right;
-    padding: 10px 135px 10px ;
-	margin-top:-25px;   
+    padding: 10px 130px 10px ;
+	margin-top:15px;   
 }
 .button-row span {
     margin: 5px; }
