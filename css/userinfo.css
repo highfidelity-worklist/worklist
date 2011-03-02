@@ -65,6 +65,7 @@ p.small-text{
 #user-stats tbody tr td {
     text-align: center;
     font-weight: bold;
+	border-width:1px;
 }
 #user-stats tbody tr:hover{
     background-color: white;

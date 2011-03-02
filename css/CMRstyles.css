@@ -591,7 +591,9 @@ div.login_left, div.login_right {float:left;min-width:260px;padding-right:40px;}
 input.google {padding-left: 20px; background: transparent url("../images/google.gif") no-repeat scroll left center;}
 div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 
-#popup-bid-info table td{ border-width:0px;}
+#popup-bid-info table td{ 
+	border-width:0px;
+}
 
 
 #feesDialog , #budgetPopup{

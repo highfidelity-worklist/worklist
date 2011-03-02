@@ -480,6 +480,7 @@
 }
 #popup-bid-info #user-stats td{
     text-align: center;
+	border-width:1px;
 }
 .loader{
     display: none;
@@ -594,3 +595,11 @@
 	height:20px !important;
 	line-height:20px;
 }
+
+#total-jobs,
+#active-jobs {
+	color:#98AAB2;
+	font-family:helvetica,arial,sans-serif;
+	font-size:12px;
+}
+

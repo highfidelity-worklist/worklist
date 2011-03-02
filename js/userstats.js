@@ -2,7 +2,7 @@
 
 $(function(){
 
-    var dialog_options = {autoOpen: false, width: 'auto', show: 'fade', hide: 'fade'};
+    var dialog_options = {autoOpen: false, width: '685px', show: 'fade', hide: 'fade'};
     $('#jobs-popup').dialog(dialog_options);
     $('#lovelist-popup').dialog(dialog_options);
     $('#latest-earnings-popup').dialog(dialog_options);
@@ -165,6 +165,9 @@ var stats = {
                 paginationTD.append(stats.getA(i, i));
                 paginationTD.append('&nbsp;');
             }
+			if(i%30==0) {
+				paginationTD.append('<br/>');
+			}
         }
         if (page < cPages) {
             paginationTD.append(stats.getA(parseInt(page) + 1, 'Next'));
