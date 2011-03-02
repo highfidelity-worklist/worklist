@@ -119,6 +119,15 @@ class UserStats{
         return false;
     }
 
+	public function getLatestEarningsValue($daysCount){
+        $earnings= $this->getEarningsForPeriod(strtotime("- $daysCount days"), time());
+		$total=0;
+		
+		foreach($earnings['joblist'] as $fee){
+			$total += $fee['amount'];
+		}
+		return $total;
+    }
     // gets list of fees and jobs associated with them for a number of days back
     // works similar to getLatestEarnings(30) - will give earnings with jobs (paid) for last 30 days
     public function getLatestEarningsJobs($daysCount, $page = 1){

@@ -427,11 +427,12 @@ function reply(id) {
             $.getJSON('getuserstats.php', {id: bidData.bidder_id, statstype: 'counts'}, function(json) {
 
                 // filling the table from json stats
-                $('#total-jobs').html(json.total_jobs);
+                $('#total-jobs').html(json.total_jobs );
                 $('#active-jobs').html(json.active_jobs);
                 $('#total-earnings').html(json.total_earnings);
-                $('#latest-earnings').html(json.latest_earnings);
-                $('#love').html(json.love);
+                $('#latest_earnings').html(json.latest_earnings);
+                $('#total-bonus').html(json.bonus_total);
+                $('#percent_bonus').html(json.bonus_percent);
                 $('.loader').hide();
             });
 

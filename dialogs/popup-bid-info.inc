@@ -44,16 +44,14 @@
             <table id = "user-stats">
                 <thead>
                     <tr class = "table-hdng">
-                        <th>Total Jobs</th><th>Active Jobs</th><th>Total $</th><th>Fees (30 days)</th><th>Love</th>
+                        <th>Total / Active Jobs</th><th>Total / 30 day $</th><th>Bonus $ / %</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><a href = "#" id = "total-jobs"></a></td>
-                        <td><a href = "#" id = "active-jobs"></a></td>
-                        <td id = "total-earnings"></td>
-                        <td><a href = "#" id = "latest-earnings"></a></td>
-                        <td><a href = "#" id = "love"></a></td>
+                        <td><a href = "#" id = "total-jobs"></a> / <a href = "#" id = "active-jobs"></a></td>
+                        <td ><span id = "total-earnings"></span> / <span id = "latest_earnings"></span></td>
+                        <td><span id = "total-bonus"></span> / <span id = "percent_bonus"></span></td>
                     </tr>
                 </tbody>
             </table>

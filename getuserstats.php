@@ -45,12 +45,21 @@ if (isset($_REQUEST['id'])) {
         break;
 
     case 'counts':
+			setlocale(LC_MONETARY,'en_US');
+			$_totalEarnings = $userStats->getTotalEarnings();
+			$_bonusPayments = $userStats->getBonusPaymentsTotal();
+			$ajaxTotalEarnings=  preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
+		    $ajaxLatestEarnings= preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarningsValue(30)));
+			$bonus= preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_bonusPayments));
+			$bonusPercent=round((($_bonusPayments + 0.000001) / ($_totalEarnings + 0.000001)) * 100).'%';
+
         echo json_encode(array(
                             'total_jobs' => $userStats->getTotalJobsCount(),
                             'active_jobs' => $userStats->getActiveJobsCount(),
-                            'total_earnings' => $userStats->getTotalEarnings(),
-                            'latest_earnings' => $userStats->getLatestEarnings(30),
-                            'love' => $userStats->getLoveCount(),
+                            'total_earnings' => $ajaxTotalEarnings,
+                            'latest_earnings' => $ajaxLatestEarnings,
+							'bonus_total' => $bonus,
+							'bonus_percent' => $bonusPercent
                               ));
         break;
     }

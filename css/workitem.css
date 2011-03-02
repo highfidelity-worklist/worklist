@@ -478,6 +478,8 @@
     margin-top: 10px;
     width: 370px;
 }
+
+#popup-bid-info #user-stats th,
 #popup-bid-info #user-stats td{
     text-align: center;
 	border-width:1px;
@@ -599,7 +601,12 @@
 #total-jobs,
 #active-jobs {
 	color:#98AAB2;
+}
+
+#total-jobs,
+#active-jobs,
+#user-stats span {
+	font-weight:bold;
 	font-family:helvetica,arial,sans-serif;
 	font-size:12px;
 }
-
