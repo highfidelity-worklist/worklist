@@ -49,7 +49,7 @@ if (isset($_REQUEST['id'])) {
 			$_totalEarnings = $userStats->getTotalEarnings();
 			$_bonusPayments = $userStats->getBonusPaymentsTotal();
 			$ajaxTotalEarnings=  preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
-		    $ajaxLatestEarnings= preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarningsValue(30)));
+		    $ajaxLatestEarnings= preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30)));
 			$bonus= preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_bonusPayments));
 			$bonusPercent=round((($_bonusPayments + 0.000001) / ($_totalEarnings + 0.000001)) * 100).'%';
 
