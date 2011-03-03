@@ -2,6 +2,8 @@
 //  All Rights Reserved.  
 //  http://www.lovemachineinc.com
 
+var activeUsersFlag=1;
+
 function RelativeTime(x){
     var plural = '';
  
@@ -374,10 +376,8 @@ $(function() {
 
 				// we need to update the global activeUsersFlag
 				if (activeUsersFlag) {
-					activeUsersFlag = 0;
 					checkbox.attr('checked', true);
 				} else {
-					activeUsersFlag = 1;
 					checkbox.attr('checked', false);
 				}
 
@@ -388,6 +388,7 @@ $(function() {
 				// now we add a function which gets called on click
 				li.click(function(e) {
 					// we hide the list and remove the active state
+					activeUsersFlag = 1- activeUsersFlag ;
 					o.list.hide();
 					o.container.removeClass('ui-state-active');
 					// we send an ajax request to get the updated list
@@ -401,7 +402,7 @@ $(function() {
 						},
 						dataType: 'json',
 						// on success we update the list
-						success: $.proxy(o.setupNewList, o)
+						success: $.proxy(o.setupNewList, null,o)
 					});
 					// just to be shure nothing else gets called we return false
 					return false;

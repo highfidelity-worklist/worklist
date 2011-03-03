@@ -4,7 +4,6 @@
  * Copyright (c) 2010 LoveMachine, LLc.
  * All rights reserved.
  */
-var activeUsersFlag = 1;
 
 function refreshUsersFilter() {
 	if (activeUsersFlag) {
