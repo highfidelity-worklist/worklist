@@ -45,6 +45,8 @@ class User
 	protected $annual_salary;
 	protected $picture;
     protected $manager;
+	protected $paypal;
+	protected $paypal_email;
 	/**
 	 * All about budget
 	 */
@@ -609,6 +611,26 @@ class User
 		$this->is_runner = $is_runner;
 		return $this;
 	}
+
+
+	public function getPaypal() {
+		return $this->paypal;
+	}
+
+	public function setPaypal($paypal) {
+		$this->paypal = $paypal;
+		return $this;
+	}
+
+    public function getPaypal_email() {
+        return $this->paypal_email;
+    }
+
+    public function setPaypal_email($paypal_email) {
+        $this->paypal_email = $paypal_email;
+        return $this;
+    }
+
 
 	/**
 	 * @return the $is_payer

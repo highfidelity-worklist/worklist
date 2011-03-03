@@ -115,6 +115,7 @@ if (isset($_POST['save_account'])) {
     $payway = '';
     if ($_POST['paytype'] == 'paypal') {
         $paypal = 1;
+        $payway = "paypal";
         $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
 	} else if ($_POST['paytype'] == 'other') {
         $payway = isset($_POST['payway']) ? $_POST['payway'] : '';

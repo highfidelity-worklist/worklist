@@ -53,9 +53,22 @@
                     <span id="info-contactway"><?php echo $user -> getContactway(); ?></span>
                 </p>
 
-                <p class = "info-label">Preferred Method of Payment<br />
+		<p class = "info-label">Preferred Method of Payment<br />
                     <span id="info-payway"><?php echo $user -> getPayway(); ?></span>
                 </p>
+
+		<?php if($is_payer){ ?>
+                    <p class = "info-label">Paypal address<br />
+                        <span id="info-payway">
+                            <?php if(strlen($user -> getPaypal_email()) == 0){
+                                echo "No address on file";
+                            }else{
+                                echo $user -> getPaypal_email();} 
+                            ?>
+                        </span>
+                    </p>
+		<?php } ?>
+
             </div><!-- end of right-column -->
         </div><!-- end of tabs-1 -->
         <div style = "clear: both;"></div>
