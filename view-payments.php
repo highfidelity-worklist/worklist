@@ -22,8 +22,8 @@
 *    Date: 2010-04-01 [Happy April Fool's!]
 */
 
-//ini_set('display_errors', 1);
-//error_reporting(E_ALL);
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 include("config.php");
 include("class.session_handler.php");
@@ -395,7 +395,19 @@ foreach ($payee_totals as $payee) {
     }
 
     // Display bonuses for each user
-    $bonus_sql = "SELECT * FROM bonus_payments WHERE receiver_id = ".$payee['mechanic_id']." and paid=0";
+    $bonus_sql = "
+        SELECT
+            b.id AS id,
+            b.amount AS amount,
+            b.notes AS notes,
+            b.date AS date,
+            u.nickname AS payer_name
+        FROM
+            bonus_payments b
+            LEFT JOIN users u ON u.id = b.payer_id
+        WHERE
+            b.receiver_id = ".$payee['mechanic_id']."
+            AND b.paid=0";
     $bonus_query = mysql_query($bonus_sql);
     if (mysql_num_rows($bonus_query) > 0) {
         while ($ind_bonus = mysql_fetch_array($bonus_query)) {
@@ -413,7 +425,8 @@ foreach ($payee_totals as $payee) {
             $fee_rows .= '<td onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["id"].'</td>';
             $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">BONUS</td>';
             $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["amount"].'</td>';
-            $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["notes"].'</td>';
+            $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.
+                         '(FROM: '.$ind_bonus['payer_name'].') '.$ind_bonus["notes"].'</td>';
             $fee_rows .= '</tr>';
             $fee_rows .=  "\r\n"; //added \r\n to make output code modestly presentable
             $rowclass=='rowodd'?$rowclass='roweven':$rowclass='rowodd';
