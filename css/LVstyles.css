@@ -9,7 +9,7 @@
 
 .LV_valid {
 	color:#6aa368;
-	background-image: url(../images/checkedG.gif);
+	/* background-image: url(../images/checkedG.gif); */
 	background-repeat: no-repeat;
 	background-position: left top;
 	padding: 0 0 3px 20px;

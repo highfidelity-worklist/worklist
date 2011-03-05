@@ -94,11 +94,32 @@
 .info-label span{
 font-weight:normal;
 }
+.info-label textarea {
+    width: 370px;
+    height: 110px;
+}
+fieldset {
+    width: 380px;
+    border: 0;
+}
 #bid-signup{
 text-align: center;
 }
 #bid-signup a{
 color:#98AAB2;
+}
+.right-button, .right-note {
+    float: right;
+    margin-right: 5px;
+}
+.left-button {
+    float: left;
+    margin-left: 5px;
+}
+.required-field {
+    color: #ff0000;
+    font-weight: bold;
+    font-size: larger;
 }
 .left-col{
 float: left;
@@ -154,7 +175,7 @@ z-index: 1;
 #search-head{
 	position:relative;
 	float:right;
-	width:620px;
+	width:720px;
 }
 #sharethis_0    {
     position:absolute;
@@ -354,4 +375,7 @@ td.textAlignReport {
 
 #itemProject {
     width: 350px;
+}
+#for_edit .ui-combobox-textbox {
+    font-size: 1.2em !important;
 }

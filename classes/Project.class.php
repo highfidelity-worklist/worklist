@@ -54,7 +54,7 @@ class Project {
             $project_id = $row['project_id'];
             $this->load($project_id);
         } else {
-            throw new Project_Exception('There is no project by that name.');
+            throw new Project_Exception('There is no project by that name (' . $name . ')');
         }
     }
     
@@ -201,7 +201,7 @@ class Project {
     
 
     protected function insert() {
-        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id ) ".
+        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, last_commit ) ".
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -326,6 +326,17 @@ class Project {
         } else {
             return false;
         }
+    }
+
+/**
+  Determine if the given user_id owns the project
+*/
+    public function isOwner($user_id = false) {
+        if ($user_id == $this->getOwnerId()) {
+            return true;
+        }
+        
+        return false;
     }
 
 }// end of the class

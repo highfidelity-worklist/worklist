@@ -42,9 +42,15 @@
             <select id="itemProject" name="project" class="resetToFirstOption">
                 <option value="">-- Select --</option>
                 <?php foreach ( $projects as $project): ?>
-                    <option value="<?php echo $project['project_id']; ?>" <?php echo $project['project_id'] == $worklist['project_id'] ? ' selected = "selected"' : ''; ?>>
-                    <?php echo $project['name']; ?>
-                    </option>
+<?php 
+    // if a project is active (we are on a project page), select it
+    if (isset($worklist) && isset($worklist['project_id']) && $project['project_id'] == $worklist['project_id']) { 
+        $selected = 'selected="selected"';
+    } else {
+        $selected = '';
+    }
+?>
+                    <option value="<?php echo $project['project_id']; ?>" <?php echo $selected; ?>><?php echo $project['name']; ?></option>
                 <?php endforeach; ?>
             </select>
         </p>

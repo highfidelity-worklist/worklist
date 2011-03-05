@@ -319,7 +319,12 @@ class Agency_Worklist_Filter {
         $box = '<select id="project" name="project" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
         $box .= '<option value=""' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach ( Project::getProjects() as $project) {
-            $box .= '<option value="' . $project['project_id'] . '"' . (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project['name']. '</option>';
+            // handle long project names
+            $project_name = $project['name'];
+            if (strlen($project_name) > 25) {
+                $project_name = substr($project_name, 0, 25) . '...';
+            }
+            $box .= '<option value="' . $project['project_id'] . '"' . (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project_name . '</option>';
         }
         $box .= '</select>';
         

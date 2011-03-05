@@ -16,9 +16,9 @@
 }
 
 .ui-combobox .ui-icon {
-	background-color: transparent;
-	border-style: none none none solid;
-	border-width: medium medium medium 1px;
+	background-color: transparent !important;
+	border-style: none none none solid !important;
+	border-width: medium medium medium 1px !important;
 	display: inline-block;
 	position: relative;
 	top: 5px;

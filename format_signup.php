@@ -64,23 +64,14 @@
 			<a href="team.php">Team</a> |
                      <a href="settings.php" class="iToolTip menuSettings">Settings</a>
 			<?php } else {
-            	echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="#" id="addproj" title="Add a new Project"> Add Project</a>';  
+            	echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a>';  
 			} 
 			?>
 		</div>
 
 		<script type="text/javascript">
 		// Code for stats
-		
-		$(document).ready(function() {
-			$('#addproj').click(function() {
-				$('#popup-addproject').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
-				$('#popup-addproject').data('title.dialog', 'Add Project');
-				$('#popup-addproject').dialog('open');
-			});
-		});
-		
-		
+
         $(function() {
             $('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
             $.ajax({

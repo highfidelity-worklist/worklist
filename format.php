@@ -66,7 +66,7 @@
             <a href="settings.php" class="iToolTip menuSettings">Settings</a> |
             <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
 			<?php } else {
-            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="#" id="addproj" class="iToolTip addProj addproj" title="Add a new Project"> Add Project</a>';
+            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a>';
             
 		} 
 			?>
@@ -75,14 +75,81 @@
 		<script type="text/javascript">
 		//Code for Add Project
 		$(document).ready(function() {
-			$('#addproj').click(function() {
-				$('#popup-addproject').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
-				$('#popup-addproject').data('title.dialog', 'Add Project');
-				$('#popup-addproject').dialog('open');
-			});
-		});
-		
-		// Code for stats
+            $('#addproj').click(function() {
+                $('#popup-addproject').dialog({ 
+                    autoOpen: false, 
+                    show: 'fade', 
+                    hide: 'fade',
+                    maxWidth: 600, 
+                    width: 415,
+                    resizable: false
+                });
+                $('#popup-addproject').data('title.dialog', 'Add Project');
+                $('#popup-addproject').dialog('open');
+
+                // clear the form
+                $('input[type="text"]', '#popup-addproject').val('');
+                $('textarea', '#popup-addproject').val('');
+                $('.LV_validation_message', '#popup-addproject').hide();
+
+                // focus the submit button
+                $('#save_project').focus();
+
+                var optionsLiveValidation = { onlyOnSubmit: true };
+
+                var project_name = new LiveValidation('name', optionsLiveValidation);
+                var project_description = new LiveValidation('description', optionsLiveValidation);
+                var project_repository = new LiveValidation('repository', optionsLiveValidation);
+                project_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                project_description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+
+                project_name.add(Validate.Format, { failureMessage: 'Alphanumeric, - or _ characters only', pattern: new RegExp(/^[A-Za-z0-9 _-]*$/) });
+                project_name.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
+                project_name.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
+
+                project_repository.add(Validate.Format, { failureMessage: 'Alphanumeric, - or _ characters only. No spaces', pattern: new RegExp(/^[A-Za-z0-9_-]*$/) });
+                project_repository.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
+                project_repository.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
+
+                $('#cancel').click(function() {
+                    $('#popup-addproject').dialog('close');
+                });
+
+                $('#save_project').click(function() {
+                    massValidation = LiveValidation.massValidate( [ project_name, project_description, project_repository ]);   
+                    if (!massValidation) {
+                        return false;
+                    }
+                    addForm = $("#popup-addproject");
+                    $.ajax({
+                        url: 'addproject.php',
+                        dataType: 'json',
+                        data: {
+                            name: $(':input[name="name"]', addForm).val(),
+                            description: $(':input[name="description"]', addForm).val(),
+                            repository: $(':input[name="repository"]', addForm).val()
+                        },
+                        type: 'POST',
+                        success: function(json){
+                            if ( !json || json === null ) {
+                                alert("json null in addproject");
+                                return;
+                            }
+                            if ( json.error ) {
+                                alert(json.error);
+                            } else {
+                                $('#popup-addproject').dialog('close');
+                                window.location.href = '<?php echo SERVER_URL ; ?>' + $(':input[name="name"]', addForm).val();
+                            }
+                        }
+                    });
+                
+                    return false;
+                });
+            });
+        });
+
+        // Code for stats
         $(function() {
             $('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
             $.ajax({
@@ -448,8 +515,9 @@
 		}
 		if ($showStats) { require_once('dialogs/popup-stats.inc'); }
 		
-		if ($AddProject) { require_once('dialogs/popup-addproject.inc'); }
-			 	
+        // addproject always available
+        require_once('dialogs/popup-addproject.inc');
+
  		?>
 
 <!-- END Navigation placeholder -->

@@ -26,6 +26,14 @@ $projectName = !empty($_REQUEST['project']) ? mysql_real_escape_string($_REQUEST
 if ($projectName) {
     $inProject = new Project();
     $inProject->loadByName($projectName);
+
+    // save changes to project
+    if ($_REQUEST['save_project'] && $inProject->isOwner($userId)) {
+        $inProject->setDescription($_REQUEST['description']);
+        $inProject->save();
+        // we clear post to prevent the page from redirecting
+        $_POST = array();
+    }
 } else {
     $inProject = false;
 }
@@ -884,7 +892,6 @@ include("head.html"); ?>
 					this.hasAutocompleter = true;
 				}
                 if (this.hasCombobox !== true) {
-                
                     // to add a custom stuff we bind on events
                     $('#popup-edit select[name=project]').bind({
                         'beforeshow newlist': function(e, o) {
@@ -965,6 +972,7 @@ include("head.html"); ?>
                             o.list.css("z-index","100"); // to be over other elements
                         }
                     }).comboBox();
+
                     
                     this.hasCombobox = true;
                 }
@@ -1444,13 +1452,45 @@ include("head.html"); ?>
 <?php include("search-head.inc"); ?>
 <?php 
 // show project information header
-if (is_object($inProject)) { ?>
-    <h2>Project: <?php echo $inProject->getName(); ?></h2>
+if (is_object($inProject)) {
+    $edit_mode = false;
+    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && $inProject->isOwner($userId)) {
+        $edit_mode = true;
+    }
+?>
+<?php if ($inProject->isOwner($userId)) : ?>
+<?php if ($edit_mode) : ?>
+        <span style="width: 150px; float: right;"><a href="?action=view">Switch to View Mode</a></span>
+<?php else: ?>        
+        <span style="width: 150px; float: right;"><a href="?action=edit">Switch to Edit Mode</a></span>
+<?php endif; ?>
+<?php endif; ?>
+    <h2>Project:  [#<?php echo $inProject->getProjectId(); ?>] <?php echo $inProject->getName(); ?></h2>
+<?php if ($edit_mode) : ?>
+    <form name="project-form" id="project-form" action="<?php echo SERVER_URL . $inProject->getName(); ?>" method="post">
+        <fieldset>
+            <p class="info-label">Edit Description:<br />
+                <textarea name="description" id="description" size="48" /><?php echo $inProject->getDescription(); ?></textarea>
+            </p>
+            <div>
+                <input class="left-button" type="submit" id="cancel" name="cancel" value="Cancel">
+                <input class="right-button" type="submit" id="save_project" name="save_project" value="Save">
+            </div>
+            <input type="hidden" name="project" value="<?php echo $inProject->getName(); ?>" />
+        </fieldset>
+    </form>
+<?php endif; ?>
     <ul>
+<?php if (! $edit_mode) : ?>
         <li><strong>Description:</strong> <?php echo $inProject->getDescription(); ?></li>
+<?php endif; ?>
         <li><strong>Budget:</strong> $<?php echo $inProject->getBudget(); ?></li>
         <li><strong>Contact Info:</strong> <?php echo $inProject->getContactInfo(); ?></li>
+<?php if ($inProject->getRepository() != '') : ?>
         <li><strong>Repository:</strong> <a href="<?php echo $inProject->getRepoUrl(); ?>"><?php echo $inProject->getRepoUrl(); ?></a></li>
+<?php else: ?>
+        <li><strong>Repository:</strong> </li>
+<?php endif; ?>
     </ul>
     <h2>Worklist</h2>
 <?php } ?>
