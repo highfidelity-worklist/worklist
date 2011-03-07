@@ -900,9 +900,9 @@ include("head.html"); ?>
                                 left: 0,
                                 position: 'absolute',
                                 background: '#AAAAAA',
-                                width: '350px',
+                                width: '100%',
                                 top: '180px'
-                            });
+                            }).attr('id', 'projectbox');
                             var label = $('<label/>').css('color', '#ffffff').attr('for', 'projectActive');
                             var checkbox = $('<input/>').attr({
                                 type: 'checkbox',
@@ -915,10 +915,8 @@ include("head.html"); ?>
 
                             // we need to update the global activeProjects Flag
                             if (activeProjectsFlag) {
-                                activeProjectsFlag = 0;
                                 checkbox.attr('checked', true);
                             } else {
-                                activeProjectsFlag = 1;
                                 checkbox.attr('checked', false);
                             }
 
@@ -929,6 +927,7 @@ include("head.html"); ?>
                             // now we add a function which gets called on click
                             li.click(function(e) {
                                 // we hide the list and remove the active state
+                                activeProjectsFlag = 1- activeProjectsFlag;
                                 o.list.hide();
                                 o.container.removeClass('ui-state-active');
                                 // we send an ajax request to get the updated list
@@ -942,11 +941,15 @@ include("head.html"); ?>
                                     },
                                     dataType: 'json',
                                     // on success we update the list
-                                    success: $.proxy(o.setupNewList, o),
+                                    success: $.proxy(o.setupNewList, null, o),
                                     error: function() {
                                         alert('error');
+                                    },
+                                    complete: function() {
+                                        // resize the project list
+                                        var box_h = $('.ui-combobox-list', '#popup-edit').height() +1;
+                                        $('#projectbox').css('top', box_h - 26 +'px');
                                     }
-                    
                                 });
                                 // just to be shure nothing else gets called we return false
                                 return false;
@@ -972,8 +975,9 @@ include("head.html"); ?>
                             o.list.css("z-index","100"); // to be over other elements
                         }
                     }).comboBox();
-
-                    
+                    // resize the project list
+                    var box_h = $('.ui-combobox-list', '#popup-edit').height() +1;
+                    $('#projectbox').css('top', box_h - 26 +'px');
                     this.hasCombobox = true;
                 }
                 
