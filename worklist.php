@@ -1008,7 +1008,7 @@ include("head.html"); ?>
 		$('#user-info').dialog({
            autoOpen: false,
            modal: true,
-           height: 500,
+           height: 520,
            width: 800
 		});
 

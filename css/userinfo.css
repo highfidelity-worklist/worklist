@@ -70,11 +70,17 @@ p.small-text{
 #user-stats tbody tr:hover{
     background-color: white;
 }
-div.left-column, div.right-column {
+div.left-column {
     float: left;
     width:45%;
 }
-
+div.right-column {
+    float: left;
+    border-left: solid 1px black;
+    height: 98%;
+    padding-left: 2px;
+    width:54%;
+}
 #admin-left, #admin-middle, #admin-right {
     float: left;
 }
@@ -101,13 +107,35 @@ p.bottom {
 
 #tabs {
     margin-top: 3em;
+    height: 280px;
 }
-#tabs { height: 250px; }
-.tabs-bottom { position: relative; } 
-.tabs-bottom .ui-tabs-panel { height: 190px; overflow: auto; }
-.tabs-bottom .ui-tabs-nav { position: absolute !important; left: 0; bottom: 0; right:0; padding: 0 0.2em 0.2em 0; } 
-.tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
-.ui-tabs-selected { margin-top: -3px !important; }
+
+
+
+.tabs-bottom { 
+    position: relative; 
+} 
+.tabs-bottom .ui-tabs-panel { 
+    height: 260px; 
+    overflow: auto; 
+    padding:4px !important;
+}
+.tabs-bottom .ui-tabs-nav { 
+    position: absolute !important; 
+    left: 0; 
+    bottom: 0; 
+    right:0; 
+    padding: 0 0.2em 0.2em 0; 
+} 
+.tabs-bottom .ui-tabs-nav li { 
+    margin-top: -2px !important; 
+    margin-bottom: 1px !important; 
+    border-top: none; 
+    border-bottom-width: 1px; 
+}
+.ui-tabs-selected { 
+    margin-top: -3px !important; 
+}
 
 .button-row {
     float: right;

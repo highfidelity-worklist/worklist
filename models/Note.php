@@ -1,6 +1,6 @@
 <?php
 /**
- * Coffee And Power
+ * Worklist
  * Copyright (c) 2010 LoveMachine, LLc.
  * All rights reserved.
  */

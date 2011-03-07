@@ -43,9 +43,6 @@
                 <p class = "info-label">Joined<br />
                     <span id="info-joined"><?php echo date('m/d/Y', strtotime($user -> getAdded())); ?></span>
                 </p>
-            </div><!-- end of left-column -->
-
-            <div class = "right-column">
                 <p class = "info-label">About<br />
                     <span id="info-about"><?php echo $user -> getAbout(); ?></span>
                 </p>
@@ -69,6 +66,51 @@
                     </p>
 		<?php } ?>
 
+            </div><!-- end of left-column -->
+
+            <div class = "right-column">
+                <div class='reviewTitle' >
+                    Reviews
+                </div>
+                <div class='reviewAddLink'>
+                    <a href='javascript:;'>Add your review</a>
+                </div>
+                <div class='reviewEditLink'>
+                    <a href='javascript:;'>Edit your review</a>
+                </div>
+                
+    <div class='reviewsList'>
+    <?php
+        $res="<div class='noReview'>No Review available for this user.</div>";
+        if (isset($reviewsList)) {
+
+            $length=count($reviewsList);
+            if ($length > 0) {
+                $res="";
+                for($i=0; $i<$length; $i++){
+                    $review = $reviewsList[$i];
+                    if ($review['me'] == 'y') {
+                        $classColor = " myReview";
+                        $title="My review";
+                        $feeRange = "Me";
+                        $feeRangeTitle ='My review (' . $review['feeRange'] . ')';
+                    } else {
+                        $classColor = " ";
+                        $title="";
+                        $feeRange = $review['feeRange'];
+                        $feeRangeTitle ='Number of jobs the reviewer has worked on';
+                    }
+                    $res .= '<div class="listReviewElement ' . $classColor . '" title="' . $title . '">' .
+                            "<div class='feeRange' title='{$feeRangeTitle}'>" .$feeRange . "</div><div class='reviewText'>" . $review['review'] . "</div>" .
+                            '</div>' ;                
+                }
+            }
+        }
+        echo $res;
+    ?>   
+    </div>
+                
+                
             </div><!-- end of right-column -->
         </div><!-- end of tabs-1 -->
         <div style = "clear: both;"></div>

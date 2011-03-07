@@ -181,7 +181,7 @@ include("head.html");
 
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/skills.js"></script>
-<script type="text/javascript" src="js/userinfo.js"></script>
+<script type="text/javascript" src="js/userSkills.js"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/sendlove.js"></script>
 

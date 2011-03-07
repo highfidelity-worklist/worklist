@@ -146,14 +146,14 @@ class DataObject {
         // Add given values to the query
         foreach ($values as $key => $value) {
             // Add each valid column name to the sql statement
-            if (array_search($key,$columns)) {
+            if (array_search($key,$columns) !== false) {
                 $_columns .= "`". $key ."`,";
                 if ($value == "NOW()"  || !is_string($value)) {
                     $_values .= $value .",";
                     continue;
                 }
                 $_values .= "'" . $this->mysqli_real_escape_string($value)  . "',";
-            }
+            } 
         }
         // If we don't have any valid columns to insert, fail
         if (empty($_columns)) { 
@@ -239,7 +239,7 @@ class DataObject {
      * Remove a row when @condition is true
      */
     public function removeRow($condition) {
-        $sql = "REMOVE FROM `" . $this->table_name . "` WHERE {$condition}";
+        $sql = "DELETE FROM `" . $this->table_name . "` WHERE {$condition}";
         
         // If removed successfully return true
         if ($result = $this->link->query($sql)) {
@@ -267,7 +267,7 @@ class DataObject {
      * Saves all the object contents to the db
      * limited to @limiter row
      */
-    public function save($limiter) {
+    public function save($limiter,$limiter2=null) {
         $sql = "UPDATE `" . $this->table_name . "` SET ";
         
         $columns = $this->getObjectData();
@@ -292,6 +292,12 @@ class DataObject {
         // Limit the query to the current user
         $sql .= " WHERE `{$limiter}` = '{$limiter_value}'";
         
+        if ($limiter !== null) {
+            $limiter_value = $this->$limiter2;
+            
+            // Limit the query to the current user
+            $sql .= " AND `{$limiter2}` = '{$limiter_value}' ";
+        }
         // Execute our query and send the result back
         $result = $this->link->prepare($sql);
         if ($result && $result->execute()) {
