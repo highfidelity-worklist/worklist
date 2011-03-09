@@ -21,6 +21,16 @@ $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page numbe
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 
+$userId = getSessionUserId();
+if( $userId > 0 ) {
+    initUserById($userId);
+    $user = new User();
+    $user->findUserById( $userId );
+    $nick = $user->getNickname();
+    $userbudget =$user->getBudget();
+    $budget = number_format($userbudget);
+}
+
 // are we on a project page? see .htaccess rewrite
 $projectName = !empty($_REQUEST['project']) ? mysql_real_escape_string($_REQUEST['project']) : 0;
 if ($projectName) {
@@ -28,7 +38,7 @@ if ($projectName) {
     $inProject->loadByName($projectName);
 
     // save changes to project
-    if ($_REQUEST['save_project'] && $inProject->isOwner($userId)) {
+    if (isset($_REQUEST['save_project']) && $inProject->isOwner($userId)) {
         $inProject->setDescription($_REQUEST['description']);
         $inProject->save();
         // we clear post to prevent the page from redirecting
@@ -45,27 +55,21 @@ $workitem = new WorkItem();
 // get active projects
 $projects = Project::getProjects(true);
 
-$userId = getSessionUserId();
-if( $userId > 0 )	{
-  initUserById($userId);
-	$user = new User();
-	$user->findUserById( $userId );
-	$nick = $user->getNickname();
-	$userbudget =$user->getBudget();
-	$budget = number_format($userbudget);
-}
-
 // check if we are on a project page, and setup filter
 if (is_object($inProject)) {
     $project_id = $inProject->getProjectId();
-    $filter = new Agency_Worklist_Filter(array('.worklist' => array('project_id' => $project_id) ));
+    $filter = new Agency_Worklist_Filter();
+    $filter->setName('.worklist')
+           ->setProjectId($project_id)
+           ->initFilter();
     $hide_project_column = true;
 } else {
     $hide_project_column = false;
     $filter = new Agency_Worklist_Filter();
+    $filter->setName('.worklist')
+           ->initFilter();
 }
-$filter->setName('.worklist')
-       ->initFilter();
+
 
 if ($userId > 0 && isset($_POST['save_item'])) {
     $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
@@ -186,6 +190,7 @@ include("head.html"); ?>
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
 	var dir = '<?php echo $filter->getDir(); ?>';
 	var sort = '<?php echo $filter->getSort(); ?>';
+    var inProject = '<?php echo is_object($inProject) ?  $project_id  : '';?>';
 	var resetOrder = false;
         var worklistUrl = '<?php echo SERVER_URL; ?>';
     stats.setUserId(user_id);
@@ -385,7 +390,7 @@ include("head.html"); ?>
 			cache: false,
 			data: {
 				page: npage,
-				project_id: $('select[name=project]').val(),
+				project_id: $('select[name=project]').val() || inProject,
 				status: ($("select[name=status]").val() || []).join("/"),
 				sort: sort,
 				dir: dir,
@@ -893,14 +898,14 @@ include("head.html"); ?>
 				}
                 if (this.hasCombobox !== true) {
                     // to add a custom stuff we bind on events
-                    $('#popup-edit select[name=project]').bind({
+                    $('#popup-edit select[name=itemProject]').bind({
                         'beforeshow newlist': function(e, o) {
                             // now we create a new li element with a checkbox in it
                             var li = $('<li/>').css({
                                 left: 0,
                                 position: 'absolute',
                                 background: '#AAAAAA',
-                                width: '100%',
+                                width: '430px',
                                 top: '180px'
                             }).attr('id', 'projectbox');
                             var label = $('<label/>').css('color', '#ffffff').attr('for', 'projectActive');
@@ -941,15 +946,7 @@ include("head.html"); ?>
                                     },
                                     dataType: 'json',
                                     // on success we update the list
-                                    success: $.proxy(o.setupNewList, null, o),
-                                    error: function() {
-                                        alert('error');
-                                    },
-                                    complete: function() {
-                                        // resize the project list
-                                        var box_h = $('.ui-combobox-list', '#popup-edit').height() +1;
-                                        $('#projectbox').css('top', box_h - 26 +'px');
-                                    }
+                                    success: $.proxy(o.setupNewList, null, o)
                                 });
                                 // just to be shure nothing else gets called we return false
                                 return false;
@@ -975,9 +972,7 @@ include("head.html"); ?>
                             o.list.css("z-index","100"); // to be over other elements
                         }
                     }).comboBox();
-                    // resize the project list
-                    var box_h = $('.ui-combobox-list', '#popup-edit').height() +1;
-                    $('#projectbox').css('top', box_h - 26 +'px');
+                    
                     this.hasCombobox = true;
                 }
                 

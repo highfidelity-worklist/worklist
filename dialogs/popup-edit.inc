@@ -39,7 +39,7 @@
   } else { $has_budget=0; }
 ?>
         <p class="info-label" style="margin-bottom: 20px;">Project<br/>
-            <select id="itemProject" name="project" class="resetToFirstOption">
+            <select id="itemProject" name="itemProject" class="resetToFirstOption">
                 <option value="">-- Select --</option>
                 <?php foreach ( $projects as $project): ?>
 <?php 
