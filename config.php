@@ -63,8 +63,6 @@ if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 if (!defined('PAYPAL_ADMINS'))     define('PAYPAL_ADMINS', 'paypal_admins');
 if (!defined('PROJECTS'))       define('PROJECTS', 'projects');
 if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
-if (!defined('SKILL'))  define('SKILL', 'skills');
-if (!defined('WORKITEM_SKILLS'))  define('WORKITEM_SKILLS', 'workitem_skills');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
