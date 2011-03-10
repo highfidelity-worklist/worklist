@@ -73,6 +73,8 @@ p.small-text{
 div.left-column {
     float: left;
     width:45%;
+    height: 240px;
+    overflow-y:auto;
 }
 div.right-column {
     float: left;

@@ -182,12 +182,11 @@ $(document).ready(function(){
   });
   
 
-  });
-
+ 
   $('#pay-bonus').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
   
   var bonus_amount;
-
+    
   $('#pay_bonus').click(function(e) {
       // clear form input fields
       $('#pay-bonus form input[type="text"]').val('');
@@ -257,3 +256,4 @@ $(document).ready(function(){
 	       $(this).hide();                                                                                                                                      
     });
 
+ });
