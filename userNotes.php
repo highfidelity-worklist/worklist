@@ -1,7 +1,7 @@
 <?php
 /**
- * Coffee And Power
- * Copyright (c) 2010 LoveMachine, LLc.
+ * Worklist
+ * Copyright (c) 2010-2011 LoveMachine, LLc.
  * All rights reserved.
  */
 require_once ("config.php");
