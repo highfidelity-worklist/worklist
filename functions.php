@@ -711,7 +711,7 @@ function invitePerson( $invite, $item, $summary = null, $description = null) {
 function invitePeople(array $people, $item, $summary = null, $description = null) {
     foreach ($people as $invite) {
         // Call the invite person function
-		invitePerson($invite, $item, $summary = null, $description = null);
+		invitePerson($invite, $item, $summary, $description);
     }
 }
 /**
