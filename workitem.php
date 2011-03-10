@@ -129,7 +129,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 $notifyEmpty = true;
 if($action =='save_workitem') {
 
-    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox');
+    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills');
     foreach ($args as $arg) {
         $$arg = $_POST[$arg];
     }
@@ -142,6 +142,12 @@ if($action =='save_workitem') {
         $workitem->setSummary($summary);
         $new_update_message .= "Summary changed. ";
     }
+
+    if (isset($_POST['skills'])) {
+        $skillsArr = explode(', ', $skills);
+        $workitem->setWorkitemSkills($skillsArr);
+    }
+
     // status
     if (   $is_runner
 	|| $userId == $workitem->getRunnerId()

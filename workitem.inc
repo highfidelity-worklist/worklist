@@ -72,6 +72,19 @@ $(document).ready(function(){
 			setTimeout(function() { $("#sent-notify").dialog("close"); }, 3000);
 		},
 	});
+
+    $.get('getskills.php', function(data) {
+        var skills = eval(data);
+        $("#skills").autocomplete(skills, {
+            width: 320,
+            max: 10,
+            highlight: false,
+            multiple: true,
+            multipleSeparator: ", ",
+            scroll: true,
+            scrollHeight: 300
+        });
+    });
 });
 function showUserInfo(userId){
 	$('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
@@ -820,6 +833,14 @@ if ($action =="edit"):  ?>
 						        <span>Not assigned</span>
                             <?php endif;?>
 						</li>
+                        <li>
+                            <span class="info-label">Skills</span><br/>
+<?php if (count($workitem->getSkills()) > 0) : ?>
+                            <input type="text" size="60" class="text-field" name="skills" id="skills" value="<?php echo implode(', ', $workitem->getSkills()) . ', '; ?>" /></span>
+<?php else: ?>
+                            <input type="text" size="60" class="text-field" name="skills" id="skills" value="" /></span>
+<?php endif; ?>
+                        </li>
 					<!-- Edit: Sandbox textarea -->
 					<?php if ($mechanic_id > 0):?>
                     <li>
@@ -928,6 +949,14 @@ if ($action =="edit"):  ?>
 						    <span>Not assigned</span>
                         <?php endif;?>
 					</li>
+                    <li>
+                        <span class="info-label">Skills</span>
+<?php if (count($workitem->getSkills()) > 0) : ?>
+                        <span id="skills-list"><?php echo implode(', ', $workitem->getSkills()); ?></span>
+<?php else: ?>
+                        <span id="skills-list">None assigned</span>
+<?php endif; ?>
+                    </li>
 					<!-- View: Sandbox textarea -->
 					<?php if ($mechanic_id > 0):?>
                     <li>

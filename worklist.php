@@ -195,6 +195,7 @@ include("head.html"); ?>
         var worklistUrl = '<?php echo SERVER_URL; ?>';
     stats.setUserId(user_id);
     var activeProjectsFlag = true;
+    var skills = null;
 
     function AppendPagination(page, cPages, table)    {
 	// support for moving rows between pages
@@ -858,7 +859,20 @@ include("head.html"); ?>
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
         $('#userbox').css('margin-top', '-'+box_h+'px');
-    
+
+        $.get('getskills.php', function(data) {
+            var skills = eval(data);
+            $("#skills").autocomplete(skills, {
+                width: 320,
+                max: 10,
+                highlight: false,
+                multiple: true,
+                multipleSeparator: ", ",
+                scroll: true,
+                scrollHeight: 300
+            });
+        });
+
 		dirDiv = $("#direction");
 		dirImg = $("#direction img");
 		hdr = $(".table-hdng");
@@ -1080,7 +1094,8 @@ include("head.html"); ?>
                         notes:$(":input[name='notes']",addForm).val(),
                         page:$(":input[name='page']",addForm).val(),
                         project_id:$(":input[name='itemProject']",addForm).val(),
-                        status:$(":input[name='status']",addForm).val()
+                        status:$(":input[name='status']",addForm).val(),
+                        skills:$(":input[name='skills']",addForm).val()
                     },
                     type: 'POST',
                     success: function(json){

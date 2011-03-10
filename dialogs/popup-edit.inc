@@ -54,6 +54,9 @@
                 <?php endforeach; ?>
             </select>
         </p>
+        <p class="info-label">Skills needed<br/>
+            <input type="text" id="skills" name="skills" class="text-field" size="35" value="" />
+        </p>
 		<p class="info-label">Full Description<br />
 		  <textarea name="notes" size="48" /></textarea>
 		</p>

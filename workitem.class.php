@@ -29,6 +29,7 @@ class WorkItem
     protected $sandbox;
     protected $project_id;
     protected $project_name;
+    var $skills = array();
 
     protected $origStatus = null;
 
@@ -95,7 +96,8 @@ class WorkItem
              ->setStatus($row['status'])
              ->setProjectId($row['project_id'])
              ->setNotes($row['notes'])
-	         ->setSandbox($row['sandbox']);
+	         ->setSandbox($row['sandbox'])
+             ->setWorkitemSkills();
         $this->project_name = $row['project_name'];
         return true;
     }
@@ -251,7 +253,47 @@ WHERE id = ' . (int)$id;
         return $this->sandbox;
     }
 
-	
+    public function setWorkitemSkills($skills = false) {
+        // if no array provided, get skill from db
+        if (! $skills) {
+            $query = "SELECT s.skill
+                      FROM ".SKILLS." AS s, ".WORKITEM_SKILLS." AS ws 
+                      WHERE s.id = ws.skill_id AND ws.workitem_id = " . $this->getId();
+
+            $result = mysql_query($query);
+            if (mysql_num_rows($result)) {
+                while ($row = mysql_fetch_assoc($result)) {
+                    $this->skills[] = $row['skill'];
+                }
+            }
+            
+        } else {
+            $this->skills = $skills;
+        }
+    }
+    
+    public function saveSkills() {
+        // clear current skills
+        if ($this->getId()) {
+            $query = "DELETE FROM ".WORKITEM_SKILLS." WHERE workitem_id=" . $this->getId();
+            $result = mysql_query($query);
+            foreach ($this->skills as $skill) {
+                $query = "INSERT INTO ".WORKITEM_SKILLS." (workitem_id, skill_id) 
+                          SELECT ".$this->getId().", id FROM ".SKILLS." WHERE skill='".$skill."'";
+                mysql_query($query) || die('There was an error ' . mysql_error() . ' QUERY: ' . $query);
+            }
+            
+            return true;
+        } else {
+            return false;
+        }
+    
+    }
+
+    public function getSkills() {
+        return $this->skills;
+    }
+
     public static function getStates()
     {
         $states = array();
@@ -353,17 +395,26 @@ WHERE id = ' . (int)$id;
 	}
 
 
-    public function save()
-    {
+    public function save() {
         if(isset($this->id)){
             if ($this->idExists($this->getId())) {
-                return $this->update();
+                if ($this->update()) {
+                    $this->saveSkills($this->skills);
+                    return true;
+                }
             } else {
-                return $this->insert();
+                if ($this->insert()) {
+                    $this->saveSkills($this->skills);
+                    return true;
+                }
             }
         } else {
-            return $this->insert();
+            if ($this->insert()) {
+                $this->saveSkills($this->skills);
+            }
         }
+
+        return false;
     }
 
     /**

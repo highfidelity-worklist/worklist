@@ -56,6 +56,8 @@ if (!defined('FILES'))		    define('FILES', 'files');
 if (!defined('COMMENTS'))	    define('COMMENTS', 'comments');
 if (!defined('USER_STATUS'))	    define('USER_STATUS', 'user_status');
 if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
+if (!defined('SKILLS'))         define('SKILLS', 'skills');
+if (!defined('WORKITEM_SKILLS')) define('WORKITEM_SKILLS', 'workitem_skills');
 if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 if (!defined('PAYPAL_ADMINS'))     define('PAYPAL_ADMINS', 'paypal_admins');

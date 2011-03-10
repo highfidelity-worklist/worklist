@@ -509,7 +509,7 @@ include("head.html");
         </script>
 
         <p><label for = "skills">Pick three skills you think are your strongest</label><br />
-            <input type="text" id="skills" name="skills" class="text-field" value="<?php echo $userInfo['skills']; ?>" style="width:95%" />
+            <input type="text" id="skills" name="skills" class="text-field skills-watermark" value="<?php echo $userInfo['skills']; ?>" style="width:95%" />
         </p>
 
         <p><label for = "contactway">What is the preferred way to contact you?</label><br />
