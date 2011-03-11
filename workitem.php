@@ -145,6 +145,12 @@ if($action =='save_workitem') {
 
     if (isset($_POST['skills'])) {
         $skillsArr = explode(', ', $skills);
+        $skillsCur = $workitem->getSkills();
+
+        if (is_array(array_diff($skillsArr, $skillsCur))) {
+            $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr) . ' ';
+        }
+
         $workitem->setWorkitemSkills($skillsArr);
     }
 
