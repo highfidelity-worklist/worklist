@@ -151,6 +151,8 @@ if($action =='save_workitem') {
             $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr) . ' ';
         }
 
+        // remove nasty end comma
+        $new_update_message = rtrim($new_update_message, ', ');    
         $workitem->setWorkitemSkills($skillsArr);
     }
 
