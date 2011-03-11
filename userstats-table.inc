@@ -15,7 +15,7 @@
 			setlocale(LC_MONETARY,'en_US');
 			$_totalEarnings = $userStats->getTotalEarnings();
 			echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
-		    ?> / <?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30))); ?></td>
+			?> / <?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30))); ?></td>
 		    <?php if(!empty($Annual_Salary)){?><td><?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$Annual_Salary)); ?></td><?php }?>
 		    <td><?php
 			$_bonusPayments = $userStats->getBonusPaymentsTotal();

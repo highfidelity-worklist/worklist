@@ -29,11 +29,15 @@ if (isset($_REQUEST['id'])) {
         break;
 
     case 'activeJobs':
-        echo json_encode($userStats->getUserItems('WORKING', $page));
+        echo json_encode($userStats->getActiveUserItems(9,$page));
         break;
 
     case 'reviewJobs':
         echo json_encode($userStats->getUserItems('REVIEW', $page));
+        break;
+        
+    case 'workingJobs':
+        echo json_encode($userStats->getUserItems('WORKING', $page));
         break;
 
     case 'completedJobs':
@@ -48,10 +52,10 @@ if (isset($_REQUEST['id'])) {
 			setlocale(LC_MONETARY,'en_US');
 			$_totalEarnings = $userStats->getTotalEarnings();
 			$_bonusPayments = $userStats->getBonusPaymentsTotal();
-			$ajaxTotalEarnings=  preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
-		    $ajaxLatestEarnings= preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30)));
-			$bonus= preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_bonusPayments));
-			$bonusPercent=round((($_bonusPayments + 0.000001) / ($_totalEarnings + 0.000001)) * 100).'%';
+			$ajaxTotalEarnings =  preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_totalEarnings)));
+		    $ajaxLatestEarnings = preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30)));
+			$bonus = preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_bonusPayments)));
+			$bonusPercent = round((($_bonusPayments + 0.000001) / ($_totalEarnings + 0.000001)) * 100).'%';
 
         echo json_encode(array(
                             'total_jobs' => $userStats->getTotalJobsCount(),

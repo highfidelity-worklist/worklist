@@ -17,7 +17,12 @@
 			$feeinfo = '<div style="display:none;" id="feesDialog"><table><tr><td><b>Your fees: </b></td></tr><tr><td>this week:</td><td><a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].
                         '</a></td></tr><tr><td>this month:</td><td><a href="#feesToolTip" class="feesum" id="fees-month">$'.$sum['month'].'</a> </td></tr></table></div>';
             $earnings = ' | <a href="javascript:;" class="earnings">Earnings</a> ';
-            $budget = '<span class="budget"></span>';
+            if ( isset($_SESSION['is_runner'])) {
+                 $budget = ' | <a href="javascript:;" class="budget">Budget</a> ';
+            
+             } else {
+                 $budget = '<span class="budgetPopup"></span>';
+             }
 			if (empty($_SESSION['nickname'])){ 
                 $name = $_SESSION['username'];
             } else {
@@ -486,24 +491,25 @@
 
 			$('#popup-user-info').dialog('open');
 		}
+		// End of user info code
 		
 		function RelativeTime(x){
-			var plural = '';
-		 
-			var mins = 60, hour = mins * 60; day = hour * 24,
-				week = day * 7, month = day * 30, year = day * 365;
+        var plural = '';
+ 
+        var mins = 60, hour = mins * 60; day = hour * 24,
+        week = day * 7, month = week * 4, year = day * 365;
 
-			if (x >= year) { x = (x / year)|0; dformat="yr"; }
-			else if (x >= month) { x = (x / month)|0; dformat="mnth"; }
-			else if (x >= day*4) { x = (x / day)|0; dformat="day"; }
-			else if (x >= hour) { x = (x / hour)|0; dformat="hr"; }
-			else if (x >= mins) { x = (x / mins)|0; dformat="min"; }
-			else { x |= 0; dformat="sec"; }
-			if (x > 1) plural = 's';
-			if (x < 0) x = 0;
-			return x + ' ' + dformat + plural;
-		}
-		// End of user info code
+        if (x >= year){ x = (x / year)|0; dformat="year"; }
+        else if (x >= month) { x = (x / month)|0; dformat="month"; }
+        else if (x >= day*4) { x = (x / day)|0; dformat="day"; }
+        else if (x >= hour) { x = (x / hour)|0; dformat="hour"; }
+        else if (x >= mins) { x = (x / mins)|0; dformat="minute"; }
+        else { x |= 0; dformat="sec"; }
+        if (x > 1) plural = 's';
+        if (x < 0) x = 0;
+        return x + ' ' + dformat + plural;
+       }
+		
 		</script>
 
 		<!-- Popup for showing stats-->

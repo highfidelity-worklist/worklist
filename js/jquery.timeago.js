@@ -28,18 +28,18 @@
       strings: {
         prefixAgo: null,
         prefixFromNow: null,
-        suffixAgo: "ago",
+        suffixAgo: "",
         suffixFromNow: "from now",
         seconds: "less than a minute",
-        minute: "about a minute",
+        minute: "1 minute",
         minutes: "%d minutes",
-        hour: "about an hour",
-        hours: "about %d hours",
-        day: "a day",
+        hour: "1 hour",
+        hours: "%d hours",
+        day: "1 day",
         days: "%d days",
-        month: "about a month",
+        month: "1 month",
         months: "%d months",
-        year: "about a year",
+        year: "1 year, %d months",
         years: "%d years",
         numbers: []
       }
@@ -61,6 +61,7 @@
       var hours = minutes / 60;
       var days = hours / 24;
       var years = days / 365;
+	  var months = days / 30;
 
       function substitute(stringOrFunction, number) {
         var string = $.isFunction(stringOrFunction) ? stringOrFunction(number, distanceMillis) : stringOrFunction;
@@ -77,37 +78,51 @@
         days < 30 && substitute($l.days, Math.floor(days)) ||
         days < 60 && substitute($l.month, 1) ||
         days < 365 && substitute($l.months, Math.floor(days / 30)) ||
-        years < 2 && substitute($l.year, 1) ||
-        substitute($l.years, Math.floor(years));
+		years < 2 && substitute($l.year, 1) ||
+		substitute($l.years, Math.floor(years));
 
       return $.trim([prefix, words, suffix].join(" "));
     },
-    parse: function(iso8601) {
-      var s = $.trim(iso8601);
-      s = s.replace(/\.\d\d\d+/,""); // remove milliseconds
-      s = s.replace(/-/,"/").replace(/-/,"/");
-      s = s.replace(/T/," ").replace(/Z/," UTC");
-      s = s.replace(/([\+-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
-      return new Date(s);
-    },
-    datetime: function(elem) {
-      // jQuery's `is()` doesn't play well with HTML5 in IE
-      var isTime = $(elem).get(0).tagName.toLowerCase() == "time"; // $(elem).is("time");
-      var iso8601 = isTime ? $(elem).attr("datetime") : $(elem).attr("title");
-      return $t.parse(iso8601);
+	parse: function(iso8601) {  
+  if ((iso8601 - 0) == iso8601 && iso8601.length > 0) { // Checks if iso8601 is a unix timestamp  
+    var s = new Date(iso8601);  
+    if (isNaN(s.getTime())) { // Checks if iso8601 is formatted in milliseconds  
+      var s = new Date(iso8601 * 1000); //if not, add milliseconds 
     }
-  });
+    return s;  
+  }  
+
+  var s = $.trim(iso8601);
+  s = s.replace(/-/,"/").replace(/-/,"/");
+  s = s.replace(/T/," ").replace(/Z/," UTC");
+  s = s.replace(/([\+-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
+  return new Date(s);
+},
+    
+  datetime: function(elem) {
+       // jQuery's `is()` doesn't play well with HTML5 in IE
+       var isTime = $(elem).get(0).tagName.toLowerCase() == "time"; // $(elem).is("time");
+       var date_string = isTime ? $(elem).attr("datetime") : $(elem).attr("title");
+       var iso8601 = isTime ? $(elem).attr("datetime") : $(elem).attr("title");
+         // for use with datejs @ http://www.datejs.com/
+       if (typeof(Date.parse) == 'function') {
+         return Date.parse(date_string);
+       } else {
+         return $t.parse(date_string);
+       }
+     }
+   });
 
   $.fn.timeago = function() {
-    var self = this;
-    self.each(refresh);
+       var self = this;
+       self.each(refresh);
 
-    var $s = $t.settings;
-    if ($s.refreshMillis > 0) {
-      setInterval(function() { self.each(refresh); }, $s.refreshMillis);
-    }
-    return self;
-  };
+       var $s = $t.settings;
+       if ($s.refreshMillis > 0) {
+        setInterval(function() { self.each(refresh); }, $s.refreshMillis);
+       }
+        return self;
+      };
 
   function refresh() {
     var data = prepareData(this);

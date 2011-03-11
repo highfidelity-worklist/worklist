@@ -34,13 +34,6 @@ if (!empty($_REQUEST['view'])) {
     }
 }
 
-if (isset($_REQUEST['activeOnly'])) {
-	$activeOnly = (int) $_REQUEST['activeOnly'];
-} else {
-	$activeOnly = 1;
-}
-
-
 $_REQUEST['name'] = '.reports';
 $filter = new Agency_Worklist_Filter($_REQUEST,true);
 
@@ -64,28 +57,17 @@ include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" language="javascript" >
-	activeUsersFlag = <?php echo $activeOnly; ?>;
-	$(function() {
-		var checkbox = $('<input/>').attr({
-						type: 'checkbox',
-						id: 'onlyActive'
-					});
-	
-		if (activeUsersFlag) {
-			checkbox.attr('checked', true);
-		} else {
-			checkbox.attr('checked', false);
-		}
-	});
-</script>
-<script src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/timeline-chart.js" type="text/javascript" charset="utf-8"></script>
+<script
+	src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
+<script
+	src="js/timeline-chart.js" type="text/javascript" charset="utf-8"></script>
+
+
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 
+<script type="text/javascript" src="js/worklist.js"></script>
 <!-- <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script> -->
 <link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
 <style type="text/css">
@@ -137,8 +119,6 @@ var toDate = '';
 var datePickerControl; // Month/Year date picker.
 var dateChangedUsingField = false; // True  if the date was changed using date field rather than picker.
 var currentTab = <?php echo $showTab; ?>; // 0 for details and 1 for chart
-
-
 
     /**
     * 
@@ -528,11 +508,10 @@ function loadTimelineChart() {
 			if(_toDate != null) {
 				toDate = fmtDate(_toDate);
 			}
-            var searched=$('#divUserSelect .ui-combobox-list-selected[val!=ALL]').get(0);
 			if(currentTab == 0) {
-			  location.href = 'reports.php?reload=false&view=details&user=' + $(searched).attr('val') + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val()+ '&activeOnly='+activeUsersFlag;
-			} else {			
-			  location.href = 'reports.php?reload=false&view=chart&user=' + $(searched).attr('val') + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&activeOnly='+activeUsersFlag;
+			  location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+			} else {
+			  location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
 			}
 		});
 
@@ -574,7 +553,7 @@ function loadTimelineChart() {
       <table id="search-filter-section">
 	  <tr>
 	    <td class="textAlignReport">
-            <div id="divUserSelect">Payee: <?php echo $filter->getUserSelectbox($activeOnly,true); ?></div>
+            <div >Payee: <?php echo $filter->getUserSelectbox(1,true); ?></div>
 			<div class="second-line">
                 Project:  <?php echo $filter->getProjectSelectbox(true); ?>
 			</div>
@@ -594,7 +573,7 @@ function loadTimelineChart() {
 				<option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
 				<option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
 				<option value="Rewarder"<?php echo(($filter->getType() == 'Rewarder') ? ' selected="selected"' : ''); ?>>Rewarder</option>
-			</select>
+				</select>
 			</div>
 	    </td>
 	    <td class="textAlignReport">

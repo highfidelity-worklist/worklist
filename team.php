@@ -12,6 +12,8 @@ include("class.session_handler.php");
 include("check_session.php");
 include("check_new_user.php");
 include("functions.php");
+require_once('classes/UserStats.class.php');
+require_once('classes/User.class.php');
 
 $con=mysql_connect( DB_SERVER,DB_USER,DB_PASSWORD );
 mysql_select_db( DB_NAME,$con );
@@ -20,6 +22,15 @@ $cur_letter = isset( $_POST['letter'] ) ? $_POST['letter'] : "all";
 $cur_page = isset( $_POST['page'] ) ? intval($_POST['page'] ) : 1;
 
 $sfilter = !empty( $_POST['sfilter'] ) ? $_POST['sfilter'] : 'PAID';
+$userId = getSessionUserId();
+if( $userId > 0 )	{
+    initUserById($userId);
+    $user = new User();
+    $user->findUserById( $userId );
+    $nick = $user->getNickname();
+    $userbudget =$user->getBudget();
+    $budget = number_format($userbudget);
+}
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -42,14 +53,14 @@ var current_letter = '<?php echo $cur_letter; ?>';
 var logged_id = <?php echo $_SESSION['userid']; ?>;
 var runner =  <?php echo !empty($_SESSION['is_runner']) ? 1 : 0; ?>;
 var current_page = <?php echo $cur_page; ?>;
-var current_sortkey = 'earnings';
+var current_sortkey = 'earnings30';
 var current_order = false;
 var sfilter = '30'; // Default value for the filter
 var show_actives = "FALSE";
   
 $(document).ready(function() {
 
-    // Set the users with fees in X days label
+// Set the users with fees in X days label
     $('.select-days').html(sfilter + ' days');
 
     $('#outside').click(function() { //closing userbox on clicking outside of it
@@ -113,7 +124,21 @@ $(document).ready(function() {
         height: 500,
         width: 800
     });
-    
+    if ($("#budgetPopup").length > 0) {
+		$("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
+		$("#budgetPopup").dialog({
+			title: "Budget",
+			autoOpen: false,
+			height: 'auto',
+			width: '250px',
+			position: ['center', 60],
+			modal: true
+		});
+		$("#welcome .budget").click(function(){
+			$("#budgetPopup").dialog("open");
+		});
+	};
+        
     /**
      * Enable filter for users with fees in the last X days
      */
@@ -227,6 +252,8 @@ function outputPagination(page, cPages) {
 
 function AppendUserRow(json, odd) {
     var row;
+    var pre = '';
+    var post = '';
     row = '<tr class="row-userlist-live ';
     if (odd) {
         row += 'rowodd';
@@ -235,28 +262,27 @@ function AppendUserRow(json, odd) {
     }
     row += ' useritem-' + json.id + '">';
     row += '<td class = "name-col">' + json.nickname + '</td>';
-    row += '<td class="age">' + jQuery.timeago(json.joined) + '</td>';
-    row += '<td class="money">$' + addCommas(parseFloat(json.annual_salary)) + '</td>';
+    row += '<td class="age">'+ RelativeTime(json.joined) + '</td>';
     row += '<td class="jobs">' + json.jobs_count + '</td>';
-    row += '<td class="money">$' + json.budget + '</td>';
-    row += '<td class="money">$' + addCommas(parseFloat(json.earnings)) + '</td>';
-    row += '<td class="money">$' + addCommas(parseFloat(json.rewarder)) + ' / ' + Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100) + '%</td>';
+    row += '<td class="money">' + json.budget + '</td>';
+    row += '<td class="money">$' +addCommas(Math.round(json.earnings)) + '</td>';
+    row += '<td class="money">$' + addCommas(parseFloat(json.earnings30)) + '</td>';
+    row += '<td class="money">$' + addCommas(Math.round(json.rewarder)) + ' / ' + Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100) + '%</td>';
     $('.table-userlist tbody').append(row);
 }
 
-function addCommas(str) {
-    nStr = Math.round(str / 10) * 10;
-
-    nStr += '';
-    x = nStr.split('.');
-    x1 = x[0];
-    x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-        x1 = x1.replace(rgx, '$1' + ',' + '$2');
-    }
-    return x1 + x2;
+function addCommas(nStr) {
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
 }
+
 </script>
 </head>
 
@@ -266,7 +292,8 @@ function addCommas(str) {
 <!-- Popup for add project info-->
 <?php require_once('dialogs/popup-addproject.inc'); ?>
 <?php include("format.php"); ?>
-
+<!-- Popup for budget info -->
+<?php require_once('dialogs/budget-expanded.inc'); ?>
 
 <h1>Team Members</h1>
 <div class="active-users">
@@ -274,6 +301,7 @@ function addCommas(str) {
 	   <select name="days" class="days">
 	       <option value="7">7 days</option>
 	       <option value="30" selected="selected">30 days</option>
+	       <option value="60">60 days</option>
 	       <option value="90">90 days</option>
 	       <option value="360">1 year</option>
 	   </select>
@@ -287,10 +315,10 @@ function addCommas(str) {
         <tr class="table-hdng">
             <th class="sort {sortkey: 'nickname'} clickable">Nickname<div class = "arrow"><div/></th>
             <th class="sort {sortkey: 'added'} clickable age">Age<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'annual_salary'} clickable money">Salary<div class = "arrow"><div/></th>
             <th class="sort {sortkey: 'jobs_count'} clickable jobs">Jobs<div class = "arrow"><div/></th>
             <th class="sort {sortkey: 'budget'} clickable money">Budget<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'earnings'} clickable money">Earnings<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'earnings'} clickable money">Total Earnings<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'earnings30'} clickable money">30 Day Earnings<div class = "arrow"><div/></th>
             <th class="sort {sortkey: 'rewarder'} clickable money">Bonus $ / %<div class = "arrow"><div/></th>
         </tr>
     </thead>
@@ -301,5 +329,33 @@ function addCommas(str) {
 <div class="ln-pages"></div>
 
 <div id="user-info" title="User Info"></div>
+<div id="budgetPopup" >
+    <div id="be-block" >
+        <table id="be-table">
+            <tr>
+                <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
+                <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
+                <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
+            </tr>
+            <tr>
+                <td onclick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
+                <td onclick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
+                <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
+            </tr>
+            <tr>
+                <td onclick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
+                <td onclick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
+                <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
+            </tr>
+            <tr>
+                <td onclick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
+                <td onclick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
+                <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
 
-<?php include("footer.php"); ?>
+
+
+<?php include("footer.php");?>

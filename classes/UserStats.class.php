@@ -25,7 +25,8 @@ class UserStats{
 
     public function getTotalJobsCount(){
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
-                . "WHERE `mechanic_id` = {$this->userId}";
+                ."WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId})"
+                ."AND `status` IN ('WORKING','REVIEW','COMPLETED','DONE')"; 
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return $row[0];
@@ -33,9 +34,15 @@ class UserStats{
         return false;
     }
 
-    // wrapper for getJobsCount to get number of jobs in "WORKING" status
+    // wrapper for getJobsCount to get number of jobs in an active status
     public function getActiveJobsCount(){
-        return $this->getJobsCount('WORKING');
+    $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
+                . "WHERE `mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId} AND `status` IN ('WORKING', 'REVIEW','COMPLETED')";
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            return $row[0];
+        }
+        return false;
     }
 
     public function getTotalEarnings(){
@@ -92,7 +99,7 @@ class UserStats{
             $count = $row[0];
         }
 
-        $sql = "SELECT `worklist_id`, `amount`, `summary`, `paid_date`,
+        $sql = "SELECT DISTINCT `worklist_id`, `amount`, `summary`, `paid_date`,
                     DATE_FORMAT(`paid_date`, '%m/%d/%Y') AS `paid_formatted`,
                     `cn`.`nickname` AS `creator_nickname`, `rn`.`nickname` AS `runner_nickname`
                         FROM `" . FEES . "`
@@ -176,11 +183,13 @@ class UserStats{
         }
     }
 
-    public function getJobsCount($status){
+    public function getJobsCount(){
 
         $count = 0;
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
-                . "WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId}) AND `status` = '$status'";
+                . "WHERE `mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId} "
+                ."AND `status` IN ('WORKING', 'REVIEW', 'COMPLETED','DONE') 
+                AND `creator_id` != `mechanic_id` ";
 
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
@@ -199,8 +208,36 @@ class UserStats{
             FROM `" . WORKLIST . "` 
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
-            WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId})
-            AND `status` = '$status' ORDER BY `created` DESC "
+            WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId})
+            AND `status` IN ('WORKING', 'REVIEW', 'COMPLETED','DONE') ORDER BY `created` DESC 
+            LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
+
+        $itemsArray = array();
+        $res = mysql_query($sql);
+        if($res ){
+            while($row = mysql_fetch_assoc($res)){
+                $itemsArray[] = $row;
+            }
+            return array(
+                        'count' => $count, 
+                        'pages' => ceil($count/$this->itemsPerPage), 
+                        'page' => $page, 
+                        'joblist' => $itemsArray);
+        }
+        return false;
+    }
+    
+public function getActiveUserItems($status, $page = 1){
+
+        $count = $this->getActiveJobsCount($status);
+
+        $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `cn`.`nickname` AS `creator_nickname`, 
+            `rn`.`nickname` AS `runner_nickname`,
+            DATE_FORMAT(`created`, '%m/%d/%Y') AS `created`
+            FROM `" . WORKLIST . "` 
+            LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
+            LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
+            WHERE `mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId} AND `status` IN ('WORKING', 'REVIEW', 'COMPLETED')ORDER BY `created` DESC "
             . "LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();
@@ -217,15 +254,19 @@ class UserStats{
         }
         return false;
     }
-
-    public function getBonusPaymentsTotal() {
-        $sql = "SELECT SUM(amount) FROM `fees` "
-                . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 "
-                . "AND `rewarder`=1 AND `user_id` = {$this->userId}";
-        $res = mysql_query($sql);
+    
+public function getBonusPaymentsTotal() {
+ 
+$sql = "SELECT
+    IFNULL(`rewarder`.`sum`,0) + IFNULL(`bonus`.`sum`,0)AS `bonus_tot`
+    FROM `".USERS."` 
+    LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `withdrawn`=0 AND `paid` = 1 AND `rewarder`=1 AND `user_id` = {$this->userId} GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
+    LEFT JOIN (SELECT `receiver_id`, SUM(amount) AS `sum` FROM `".BONUS_PAYMENTS."` WHERE `paid` = 1 AND `receiver_id` = {$this->userId} GROUP BY `receiver_id`) AS `bonus` ON `".USERS."`.`id` = `bonus`.`receiver_id`
+    WHERE `id` = {$this->userId}";
+$res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return (int) $row[0];
         }
         return false;
     }
-} 
+}

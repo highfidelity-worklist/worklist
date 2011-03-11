@@ -240,7 +240,7 @@ $(function() {
         $("#feesDialog").dialog("open");
     });
     if ($("#budgetPopup").length > 0) {
-        $("#welcome .budget").html('| <a href="javascript:;" class="budget">Budget</a> ');
+        $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
         $("#budgetPopup").dialog({
             title: "Budget",
             autoOpen: false,
