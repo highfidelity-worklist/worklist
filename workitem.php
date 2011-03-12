@@ -160,8 +160,6 @@ if($action =='save_workitem') {
             // remove nasty end comma
             $new_update_message = rtrim($new_update_message, ', ') . '. ';
         }
-        echo $new_update_message;
-        exit;
         $workitem->setWorkitemSkills($skillsArr);
     }
 
