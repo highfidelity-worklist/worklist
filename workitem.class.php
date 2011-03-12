@@ -480,6 +480,10 @@ WHERE id = ' . (int)$id;
         if($result_query){
             $temp_array = array();
             while($row = mysql_fetch_assoc($result_query)) {
+			
+			    // this is to make sure to remove extra slashes 11-MAR-2011 <webdev>
+                $row['desc'] = stripslashes($row['desc']);
+				
                 $temp_array[] = $row;
             }
             return $temp_array;

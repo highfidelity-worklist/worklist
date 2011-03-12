@@ -27,6 +27,10 @@ $feelist = array(array($total));
 while($row = mysql_fetch_assoc($rt)){
   $json_row = array(); 
   foreach($row as $item){
+  
+    // this is to make sure to remove extra slashes 11-MAR-2011 <webdev>
+    $item['desc'] = stripslashes($item['desc']);
+	
     $json_row[] = $item;
   }
   $feelist[] = $json_row;
