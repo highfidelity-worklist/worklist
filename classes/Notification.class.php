@@ -133,7 +133,7 @@ class Notification{
 	    case 'bid_accepted':
 
 		  $subject = 'Accepted: ' . $itemTitle;
-		  $body = 'Cha-ching! Your bid was accepted for ' . $itemLink . '<br>'
+		  $body = 'Your bid was accepted for ' . $itemLink . '<br/>'
 			. 'Promised by: ' . $_SESSION['nickname'];
 	    break;
 

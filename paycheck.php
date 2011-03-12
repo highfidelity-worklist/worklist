@@ -55,7 +55,7 @@ if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
         $userData = mysql_fetch_array(mysql_query($mail));
 
         $subject = "LoveMachine paid you ".$total_fee_pay ." for ". $summary;
-        $body  = "Cha-ching! You've got funds!<br/>";
+        $body  = "You've got funds!<br/>";
         $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
         $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
         $body .= "See you in the Workroom!<br/><br/>Love,<br/><br/>Eliza @ the LoveMachine<br/>";
