@@ -145,14 +145,23 @@ if($action =='save_workitem') {
 
     if (isset($_POST['skills'])) {
         $skillsArr = explode(', ', $skills);
-        $skillsCur = $workitem->getSkills();
-
-        if (is_array(array_diff($skillsArr, $skillsCur))) {
-            $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr) . ' ';
+        // remove empty values
+        foreach ($skillsArr as $key => $value) {
+            if (empty($value)) {
+                unset($skillsArr[$key]);
+            }
         }
-
-        // remove nasty end comma
-        $new_update_message = rtrim($new_update_message, ', ') . '. ';
+        // get current skills
+        $skillsCur = $workitem->getSkills();
+        // have skills been updated?
+        $skillsDiff = array_diff($skillsArr, $skillsCur);
+        if (is_array($skillsDiff) && ! empty($skillsDiff)) {
+            $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
+            // remove nasty end comma
+            $new_update_message = rtrim($new_update_message, ', ') . '. ';
+        }
+        echo $new_update_message;
+        exit;
         $workitem->setWorkitemSkills($skillsArr);
     }
 
