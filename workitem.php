@@ -262,6 +262,12 @@ if($action =='status-switch'){
     }
 
 if ($action =="place_bid"){
+
+    //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>   
+	//a new variable is used to send the unenscaped notes in email alert. 
+	//so it can parse the new line as <BR>   12-Mar-2011 <webdev>
+    $unescaped_notes = nl2br($_POST['notes']);
+	
     $args = array('bid_amount','done_by', 'notes', 'mechanic_id');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -310,7 +316,7 @@ if ($action =="place_bid"){
 			 'recipients' => array('runner')),
 		    array('done_by' => $done_by,
 			  'bid_amount' => $bid_amount,
-			  'notes' => $notes,
+			  'notes' => $unescaped_notes,
 			  'bid_id' => $bid_id));
 
     // sending sms message to the runner
@@ -322,6 +328,12 @@ if ($action =="place_bid"){
 }
 // Edit Bid
 if ($action =="edit_bid"){
+    
+	//Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>   
+	//a new variable is used to send the unenscaped notes in email alert. 
+	//so it can parse the new line as <BR>   12-Mar-2011 <webdev>
+	$unescaped_notes = nl2br($_POST['notes']);
+	
     $args = array('bid_id','bid_amount','done_by_edit', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -345,7 +357,7 @@ if ($action =="edit_bid"){
 			 'recipients' => array('runner')),
 		    array('done_by' => $done_by_edit,
 			  'bid_amount' => $bid_amount,
-			  'notes' => $notes,
+			  'notes' => $unescaped_notes,
 			  'bid_id' => $bid_id));
 
     // sending sms message to the runner

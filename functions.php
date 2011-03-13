@@ -571,7 +571,8 @@ function withdrawBid($bid_id, $withdraw_reason) {
         }
         	
         if(strlen($withdraw_reason)>0) { 
-        	$body .= "<p>Reason: " .$withdraw_reason."</p>";
+		    // nl2br is added for proper formatting in email alert 12-MAR-2011 <webdev>
+        	$body .= "<p>Reason: " .nl2br($withdraw_reason)."</p>";
         }
         
         // Copy text for sms notification
