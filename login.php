@@ -44,7 +44,7 @@ error_log("trace 13");
         $username = isset($_REQUEST["username"]) ? trim($_REQUEST["username"]) : "";
         $password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
         if(empty($username)){
-            $error->setError("Username cannot be empty.");
+	    $error->setError("E-mail cannot be empty.");
         }else if(empty($password)){
             $error->setError("Password cannot be empty.");
         }else{
@@ -145,6 +145,8 @@ error_log("trace 33"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
     <br>     
+
+
     <h1>Login to the Worklist</h1>
                        
     <?php if ($expired) { ?>
@@ -159,48 +161,39 @@ error_log("trace 33"); ?>
         <p><a href="forgot.php">Recover it here</a></p>
     </div> 
 
+
     <div id="in-lt">
         <?php if(isset($error)){ ?>
             <?php foreach($error->getErrorMessage() as $msg){ ?>
               <p class="LV_invalid"><?php echo $msg; ?></p>
             <?php } ?>
         <?php } ?>
+
 	<div class="login_left">
-		<form id="login" action="" method="post">
+
+	    <div id="login-form" class="worklist">
+		<div id="formHolder">
+		    <form id="login" action="" method="post">
 			<input type="hidden" name="redir" value="<?php echo $redir ?>" />
 			<div class="LVspace">
-				<label>Username<br />
-					<input type="text" id="username" name="username" class="text-field" size="40" />
-				</label>
-				<script type="text/javascript">
-					var username = new LiveValidation('username',{ validMessage: "Valid email address.", onlyOnBlur: false });
-						username.add(SLEmail);
-						username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-				</script>
+			    <label>E-mail<br />
+				<input type="text" id="username" name="username" class="text-field" size="40" />
+			    </label>
+			    <script type="text/javascript">
+				var username = new LiveValidation('username',{ validMessage: "Valid email address.", onlyOnBlur: false });
+				    username.add(SLEmail);
+				    username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+			    </script>
 			</div>
 			<div class="LVspace"><label>Password<br />
-				<input type="password" id="password" name="password" class="text-field" size="40"  />
+			    <input type="password" id="password" name="password" class="text-field" size="40"  />
 			</label></div>
 			<p><input type="submit" id="Login" value="Login" name="Login" alt="Login"></p>
-		</form>
+		    </form>
+		</div>
+	    </div>
 	</div>
-	<div class="login_right">
-		<form action="" method="post">
-			<div class="LVspace">
-				<label>Google Login<br />
-					<input type="text" name="google_identifier" class="text-field google" id="google_identifier" value="" size="40" />
-				</label>
-				<script type="text/javascript">
-					var openid = new LiveValidation('openid_identifier', {validMessage: 'Valid url.', onlyOnBlur: false});
-						openid.add(Validate.Format, { pattern: /((http|https)(:\/\/))?([a-zA-Z0-9]+[.]{1}){2}[a-zA-z0-9]+(\/{1}[a-zA-Z0-9]+)*\/?/i, failureMessage: "Must be a valid url!" });
-				</script>
-			</div>
-			<p>
-				<input type="submit" name="openid_action" value="Google Login" />
-			</p>
-		</form>
-	</div>
-</div>
+    </div>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php");

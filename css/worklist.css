@@ -379,3 +379,39 @@ td.textAlignReport {
 #for_edit .ui-combobox-textbox {
     font-size: 1.2em !important;
 }
+
+
+
+#login-form {
+    border: 1px solid black;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 32px;
+}
+
+#login-form {
+    background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;
+}
+
+#login-form h2 {
+    color: #000;
+    margin-top: 8px;
+}
+
+
+#formHolder{
+    position: relative;
+    width: 400px;
+    height: 180px;
+}
+#formRight{
+    width: 120px;
+    position: absolute;
+    right: 10px;
+    top: 0;
+}
+
