@@ -1063,21 +1063,18 @@ if ($action =="edit"):  ?>
 							<?php }else{ $row = 1;
 								foreach($bids as $bid){ ?>
 								<tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?>
-                                    <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem-<?php echo $bid['id'];?><?php
-                                        // store bid info into jquery metadata so we won't have to fetch it again on user click 
+                                    <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem<?php 
+                                        if ($is_runner || $user->getId() == $bid['bidder_id']) echo '-'.$bid['id'];
+                                        // store bid info into jquery metadata so we won't have to fetch it again on user click
+                                        // but only if user is runner or creator 15-MAR-2011 <godka>
                                         $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
-                                    ?>">
+                                    ?>"><?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
                                         <script type="data"><?php echo "{id: {$bid['id']},nickname: '{$bid['nickname']}', email: '{$bid['email']}', amount: '{$bid['bid_amount']}', bid_accepted: '{$bid['bid_accepted']}', bid_created: '{$bid['bid_created']}', time_to_complete: '{$bid['time_to_complete']}', done_by: '{$bid['full_done_by']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
-									<td>
-                                    <?php 
-										if ($is_runner || $user->getId() == $bid['bidder_id']) {
-									?>
+                                        <?php } ?>
+                                    <td>
+                                    <?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
                                     		<a href="#" bidderId="<?php echo $bid['bidder_id'];?>" class="CreatorPopup"><?php echo $bid['nickname'];?></a>
-                                    <?php
-										} else {
-											echo $bid['nickname'];	
-										}
-									?>
+                                    <?php } else echo $bid['nickname'];	?>
 </td>
 									<td >$ <?php echo $bid['bid_amount'];?></td>
 									<td<?php if ($bid['future_delta'] < 0) {echo ' class="warn"'; } ?>><?php echo relativeTime($bid['future_delta']);?></td>
