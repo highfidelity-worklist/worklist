@@ -98,120 +98,108 @@ class Notification{
      * @param Array $data - Array with additional data that needs to be passed on
      * example: 'who' and 'comment' - if we send notification about new comment
      */
-    public static function workitemNotify($options, $data = null){
-
+    public static function workitemNotify($options, $data = null) {
 
         $recipients = isset($options['recipients']) ? $options['recipients'] : null;
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
-	$workitem = $options['workitem'];
-	$itemId = $workitem -> getId();
-	$itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId
-			    . '</a> (' . $workitem -> getSummary() . ')';
-	$itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
-	$body = '';
-	$subject = '';
+        $workitem = $options['workitem'];
+        $itemId = $workitem -> getId();
+        $itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId
+                    . '</a> (' . $workitem -> getSummary() . ')';
+        $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
+        $body = '';
+        $subject = '';
 
-	switch($options['type']){
+        switch ($options['type']) {
+            case 'comment':
+                $subject = 'Comment: ' . $itemTitle;
+                $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
+                $body .= $data['who'] . ' says:<br />'
+                         . $data['comment'];
+            break;
+            
+            case 'fee_added':
+                $subject = 'Fee: ' . $itemTitle;
+                $body = 'New fee was added to the item ' . $itemLink . '.<br>'
+                        . 'Who: ' . $data['fee_adder'] . '<br>'
+                        . 'Amount: ' . $data['fee_amount'];
+            break;
 
-	    case 'comment':
+            case 'bid_accepted':
+                $subject = 'Accepted: ' . $itemTitle;
+                $body = 'Your bid was accepted for ' . $itemLink . '<br/>'
+                        . 'Promised by: ' . $_SESSION['nickname'];
+            break;
 
-		  $subject = 'Comment: ' . $itemTitle;
-		  $body = 'New comment was added to the item ' . $itemLink . '.<br>';
-		  $body .= $data['who'] . ' says:<br />'
-			    . $data['comment'];
-	    break;
+            case 'bid_placed':
+                $subject = 'Bid: ' . $itemTitle;
+                $body =  'New bid was placed for ' . $itemLink . '<br>'
+                        . 'Details of the bid:<br>'
+                        . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
+                        . 'Done By: ' . $data['done_by'] . '<br>'
+                        . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
+                        . 'Notes: ' . $data['notes'] . '<br>';
+                $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
+                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
+                $body .=  $urlacceptbid;
+            break;
 
-	    case 'fee_added':
+            case 'bid_updated':
+                $subject = 'Bid: ' . $itemTitle;
+                $body = 'Bid Updated for ' . $itemLink . '<br>'
+                        . 'Details of the bid:<br>'
+                        . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
+                        . 'Done By: ' . $data['done_by'] . '<br>'
+                        . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
+                        . 'Notes: ' . $data['notes'] . '<br>';
+                $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
+                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] .
+                                 '&action=accept_bid>Click here to accept bid.</a>';
+                $body .=  $urlacceptbid;
+            break;
 
-		  $subject = 'Fee: ' . $itemTitle;
-		  $body = 'New fee was added to the item ' . $itemLink . '.<br>'
-			. 'Who: ' . $data['fee_adder'] . '<br>'
-			. 'Amount: ' . $data['fee_amount'];
-	    break;
-
-	    case 'bid_accepted':
-
-		  $subject = 'Accepted: ' . $itemTitle;
-		  $body = 'Your bid was accepted for ' . $itemLink . '<br/>'
-			. 'Promised by: ' . $_SESSION['nickname'];
-	    break;
-
-	    case 'bid_placed':
-
-		  $subject = 'Bid: ' . $itemTitle;
-		  $body =  'New bid was placed for ' . $itemLink . '<br>'
-			 . 'Details of the bid:<br>'
-			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
-			 . 'Done By: ' . $data['done_by'] . '<br>'
-			 . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
-			 . 'Notes: ' . $data['notes'] . '<br>';
-
-		  $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
-		  $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
-		  $body .=  $urlacceptbid;
-	    break;
-
-	    case 'bid_updated':
-
-		  $subject = 'Bid: ' . $itemTitle;
-		  $body =  'Bid Updated for ' . $itemLink . '<br>'
-			 . 'Details of the bid:<br>'
-			 . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
-			 . 'Done By: ' . $data['done_by'] . '<br>'
-			 . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
-			 . 'Notes: ' . $data['notes'] . '<br>';
-
-		  $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
-		  $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
-		  $body .=  $urlacceptbid;
-	    break;
-
-	    case 'modified':
-
-		  $subject = "Modified: ".$itemTitle;
-		  $body =  $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-			 . $data['changes'];
-	    break;
+            case 'modified':
+                $subject = "Modified: ".$itemTitle;
+                $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
+                        . $data['changes'];
+            break;
 
             case 'new_bidding':
-
-                  $subject = "Bidding: ".$itemTitle;
-                  $body =  "Summary:<br>".$workitem -> getSummary() . '<br><br>Notes:<br>'.$workitem->getNotes();
-                  $body .= '<br><br>You are welcome to bid <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.';
-
-	    break;
+                $subject = "Bidding: ".$itemTitle;
+                $body =  "Summary:<br>".$workitem -> getSummary() .
+                         '<br><br>Notes:<br>'.$workitem->getNotes();
+                $body .= '<br><br>You are welcome to bid <a href='.SERVER_URL.
+                         'workitem.php?job_id=' . $itemId . '>here</a>.';
+            break;
 
             case 'new_review':
+                $subject = "Review: ".$itemTitle;
+                $body =  'New item is available for review: ' . $itemLink . '<br>';
+            break;
+        }
 
-		  $subject = "Review: ".$itemTitle;
-		  $body =  'New item is available for review: ' . $itemLink . '<br>';
-	    break;
-	}
-
-	
+    
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
-        if($recipients){
-            foreach($recipients as $recipient){
-                    $recipientUser = new User();
-                    $method = 'get' . ucfirst($recipient) . 'Id';
-                    $recipientUser->findUserById($workitem->$method());
+        if($recipients) {
+            foreach($recipients as $recipient) {
+                $recipientUser = new User();
+                $method = 'get' . ucfirst($recipient) . 'Id';
+                $recipientUser->findUserById($workitem->$method());
 
-                    if(($username = $recipientUser->getUsername())){
-
-                            // check if we already sending email to this user
-                            if(!in_array($username, $emails)){
-                                    $emails[] = $username;
-                            }
+                if(($username = $recipientUser->getUsername())){
+                    // check if we already sending email to this user
+                    if(!in_array($username, $emails)){
+                        $emails[] = $username;
                     }
+                }
             }
         }
 
-        if(count($emails) > 0){
+        if(count($emails) > 0) {
             $to = array();
-            foreach($emails as $email){
-
+            foreach($emails as $email) {
                 // do not send mail to the same user making changes
                 if($email != $current_user->getUsername()){
                     $to[] = $email;
@@ -222,8 +210,10 @@ class Notification{
             }
 
             $headers['To']= 'worklist@sendlove.us';
-error_log("Notification:workitemtest: ".json_encode($to));
-            if(!sl_send_email($to, $subject, $body, null, $headers)) { error_log("Notification:workitem: sl_send_email failed"); }
+            #error_log("Notification:workitemtest: ".json_encode($to));
+            if(!sl_send_email($to, $subject, $body, null, $headers)) {
+                error_log("Notification:workitem: sl_send_email failed");
+            }
         }
     }
 
@@ -264,7 +254,7 @@ error_log("Notification:workitemtest: ".json_encode($to));
                 $sms_user->findUserByUsername($email);
                 $sms_recipients[] = $sms_user->getId();
             }
-	}
+    }
 
         if(count($sms_recipients) > 0){
 

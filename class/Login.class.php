@@ -92,12 +92,14 @@ error_log("c:Login 16");
             }
             $this->params["token"] = $token;
             $this->params["confirm_string"] = $_REQUEST["confirm_string"];
+            
             ob_start();
             // send the request
             CURLHandler::Post(LOGIN_APP_URL . 'create', $this->params, false, true);
             $result = ob_get_contents();
             ob_end_clean();
             $result = json_decode($result);
+            
             if(!empty($result->error) && $result->error == 1){
                 $this->getResponse()->getError()->setError($result->message);
             }else{

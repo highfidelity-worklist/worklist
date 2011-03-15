@@ -35,7 +35,7 @@ require_once 'lib/Sms/Numberlist.php';
                         <p><label for="City">City</label><br />
                         <input type="text" id="city" name="city" class="text-field"
                             size="35"
-                            value="<?php echo $city ?>" />
+                            value="" />
                         </p>
                     </div>
                     <div id="sms-number">

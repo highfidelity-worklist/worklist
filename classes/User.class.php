@@ -813,6 +813,68 @@ class User
 		return $this;
 	}
 
+    /**
+     * Given a user's chosen nickname, generate their unixusername. 
+     * This is done by:
+     *  - lowercasing their nickname
+     *  - stripping non-alphanumeric
+     *  - verifying uniqueness in passwd file & user table
+     *  - if not unique, append a number :/
+     *      (not the greatest, but it can be changed later)
+     *
+     */
+    public function generateUnixUsername($nickname) {
+        // lowercase
+        $unixname = strtolower($nickname);
+
+        // find alphanumeric-only parts to use as unixname
+        $disallowed_characters = "/[^a-z0-9]/";
+        $unixname = preg_replace($disallowed_characters, "", $unixname);
+
+        // make sure first character is alpha character (can't start w/ a #)
+        if (preg_match("/^[a-z]/", $unixname) == 0) {
+            // lets not be fancy.. just prepend an "a" to their name.
+            $unixname = "a".$unixname;
+        }
+
+        // append numbers to the end of the name if it's not unique
+        // to both the password file AND the user table
+        require_once "sandbox-util-class.php";
+        $attempted_unixname = $unixname;
+        $x = 0;
+        while (SandBoxUtil::inPasswdFile($attempted_unixname) ||
+               User::unixusernameExists($attempted_unixname)) {
+            $x++;
+            $attempted_unixname = $unixname.$x;
+        }
+        $unixname = $attempted_unixname;
+
+        return $unixname;
+    }
+
+	/**
+	 * @return true if the supplied username is in the database
+     *
+	 */
+    public function unixusernameExists($username) {
+        $username = mysql_real_escape_string($username);
+        $query_string = "
+            SELECT
+                id
+            FROM
+                ".USERS."
+            WHERE
+                unixusername='".$username."'";
+        
+        $query = mysql_query($query_string);
+        
+        if (mysql_num_rows($query) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
 	/**
 	 * @return the $projects_checkedout
 	 */

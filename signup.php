@@ -6,8 +6,6 @@
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 //
-
-ob_start();
 include("config.php");
 include("class.session_handler.php");
 include_once("send_email.php");
@@ -50,6 +48,7 @@ $fields_to_not_escape = array(
         'about' => '', 
         'openid' => ''
       );
+
 // Remove html tags from about box
 if (isset($_POST['about'])) {
   $_POST['about'] = strip_tags($_POST['about']);
@@ -96,7 +95,11 @@ if(isset($minimal_POST['sign_up'])){
         if(! isset($minimal_POST['paypal'])){
             $minimal_POST['paypal_email'] = '';
         }
-        $params = array("username" => $minimal_POST["username"], "password" => $minimal_POST["password"], "action" => "signup", "confirm_string" => uniqid());
+        $params = array(
+            "username" => $minimal_POST["username"],
+            "password" => $minimal_POST["password"],
+            "action" => "signup",
+            "confirm_string" => uniqid());
         if(isset($minimal_POST["nickname"])){
             $params["nickname"] = $minimal_POST["nickname"];
         }
@@ -110,8 +113,9 @@ if(isset($minimal_POST['sign_up'])){
         CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
         $result = ob_get_contents();
         ob_end_clean();
+        
         $ret = json_decode($result);
-
+        
         if($ret->error == 1){
             $error->setError($ret->message);
         }else{
@@ -126,6 +130,7 @@ if(isset($minimal_POST['sign_up'])){
             $newUser["nickname"] = $ret->nickname;
             $newUser["added"] = "NOW()";
             $newUser["notifications"] = Notification::setFlags($review_notify, $bidding_notify);
+            $newUser["unixusername"] = User::generateUnixusername($newUser['nickname']);
             $sql = "INSERT INTO ".USERS." ";
             $columns = "(";
             $values = "VALUES(";

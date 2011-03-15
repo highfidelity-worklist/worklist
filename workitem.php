@@ -3,6 +3,7 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 // AJAX request from ourselves to retrieve history
+
 require_once 'config.php';
 require_once 'class.session_handler.php';
 require_once 'send_email.php';
@@ -423,13 +424,13 @@ if ($action=='accept_bid'){
 						     'workitem' => $workitem,
 						     'recipients' => array('mechanic')));
 	
-                                $bidder = new User();
-                                $bidder->findUserById($bid_info['bidder_id']);
+                $bidder = new User();
+                $bidder->findUserById($bid_info['bidder_id']);
 
-                                //send sms notification to bidder
-                                Notification::sendSMS($bidder, 'Accepted', $journal_message);
+                //send sms notification to bidder
+                Notification::sendSMS($bidder, 'Accepted', $journal_message);
 
-                                $redirectToDefaultView = true;
+                $redirectToDefaultView = true;
 	
 				// Send email to not accepted bidders
 				sendMailToDiscardedBids($worklist_id);

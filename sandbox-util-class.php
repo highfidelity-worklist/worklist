@@ -11,6 +11,7 @@ define('SANDBOX_BASE_DIR','/mnt/ebsvol/dev-www');
 define('SANDBOX_CREATE_SCRIPT','/usr/local/bin/addnewdev-util.sh');
 define('CMD_SEPARATOR',' ');
 define('SANDBOX_CREATION_EMAIL_TEMPATE','./sb-developer-mail.inc');
+define('PROJECT_CHECKOUT_EMAIL_TEMPATE','./sb-checkout-mail.inc');
 
 class SandBoxUtil {
     //This needs to be synced with the matching file in journal - garth 12/15/2010
@@ -28,7 +29,27 @@ class SandBoxUtil {
         }
     }
 
-    public function createSandbox($username, $nickname, $unixusername, $projects) {
+    public function createSandbox($username, $nickname, $unixusername, $projects,
+                    $new_user=false) {
+
+         # Ensure $projects is an array.. it could just be 1 project
+        if (!is_array($projects)) {
+            $projects = array($projects);
+        }
+
+        // If it's an existing, just check out the requested projects for them
+        if (!$new_user) {
+            $result = true;
+            foreach ($projects as $project) {
+                try {
+                    $this->checkoutProject($username, $unixusername, $project);
+                } catch (Exception $e) {
+                    $result = false;
+                }
+            }
+            return $result;
+        }
+        
         // Validate inputs
         $this->validateUsername($unixusername);
         $this->validateProjects($projects);
@@ -49,6 +70,18 @@ class SandBoxUtil {
     }
 
     /**
+     * Returns true if the supplied $name is in /etc/passwd
+     *
+    */
+    public function inPasswdFile($name) {
+        if (posix_getpwnam($name)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
     * Check if a user's sandbox already exists.Throws an exception if Sandbox already exists
     *
     */
@@ -57,6 +90,24 @@ class SandBoxUtil {
       if(file_exists($userSandboxHome)) {
             throw new Exception('Sandbox already exists');
       }
+    }
+
+    /**
+     * Check out a project for existing user
+     *
+     */
+    private function checkoutProject($username, $unixusername, $project) {
+        $command = SANDBOX_CREATE_SCRIPT .
+            CMD_SEPARATOR . "-u " . $unixusername .
+            CMD_SEPARATOR . "-r " . $project .
+            CMD_SEPARATOR . "-a";
+        
+        $scriptStatus  = exec($command . "; echo $?");
+        if ($scriptStatus != "0") {
+            throw new Exception('Project checkout failed:'.$scriptStatus);
+        }
+
+        $this->notifyCheckout($username, $unixusername, $project);
     }
 
     /**
@@ -74,6 +125,10 @@ class SandBoxUtil {
     *
     */
     private function validateProjects($projects) {
+        if (!is_array($projects)) {
+            $projects = array($projects);
+        }
+
         foreach ($projects as $project) {
             if (!in_array($project, $this->projectList, true)) {
                 throw new Exception('The project ' . $project . ' is invalid');
@@ -138,38 +193,54 @@ class SandBoxUtil {
     */
     private function notifyDeveloper($username, $nickname, $unixusername, $password, $projects)
     {
-	$subject = "Your Sandbox Account";
-	$body =  file_get_contents(SANDBOX_CREATION_EMAIL_TEMPATE);
+        $subject = "Your Sandbox Account";
+        $body =  file_get_contents(SANDBOX_CREATION_EMAIL_TEMPATE);
 
-	// Make sure we have proper line breaks in HTML
-	$body =  nl2br($body);
+        // Make sure we have proper line breaks in HTML
+        $body =  nl2br($body);
 
-	$body = str_replace("{USERNAME}",$unixusername,$body);
-	$body = str_replace("{PASSWORD}",$password,$body);
-	//$username = "vijay@bambeeq.com";
-        if(!sl_send_email($username , $subject, $body)) { error_log("sandbox-util-class.php: sl_send_email failed"); }
+        $body = str_replace("{USERNAME}",$unixusername,$body);
+        $body = str_replace("{PASSWORD}",$password,$body);
+        //$username = "vijay@bambeeq.com";
+        if (!sl_send_email($username , $subject, $body)) {
+            error_log("sandbox-util-class.php: sl_send_email failed");
+        }
     }
+    
+    /**
+     * Sends a notification email that a project was checked out for a user
+     *
+     */
+    private function notifyCheckout($username, $unixusername, $project)
+    {
+        $subject = "Project Checkout";
+        $sandbox = "http://dev.sendlove.us/~".$unixusername."/".$project;
 
+        $body = file_get_contents(SANDBOX_CREATION_EMAIL_TEMPATE);
+
+        // Make sure we have proper line breaks in HTML
+        $body = nl2br($body);
+
+        $body = str_replace("{PROJECT}",$project,$body);
+        $body = str_replace("{SANDBOX}",$sandbox,$body);
+        
+        if (!sl_send_email($username , $subject, $body)) {
+            error_log("sandbox-util-class.php: sl_send_email failed");
+        }
+    }
     /**
     * Create the user and checkout the project(s).Throws an exception if something went wrong
     *
     */
     private function notifyJournal($nickname, $projects)
     {
-	$journal_message = "Sandbox created for " . $nickname . " , checked out " . implode(", ",$projects);
+        $journal_message = "Sandbox created for " . $nickname . " , checked out " . implode(", ",$projects);
 
-            //sending journal notification
-	$data = array();
-	$data['user'] = JOURNAL_API_USER;
-	$data['pwd'] = sha1(JOURNAL_API_PWD);
-	$data['message'] = stripslashes($journal_message);
-	$prc = postRequest(JOURNAL_API_URL, $data);
+        //sending journal notification
+        $data = array();
+        $data['user'] = JOURNAL_API_USER;
+        $data['pwd'] = sha1(JOURNAL_API_PWD);
+        $data['message'] = stripslashes($journal_message);
+        $prc = postRequest(JOURNAL_API_URL, $data);
     }
 }
-
-static $sandboxUtil = null;
-if (empty($sandboxUtil)) {
-    $sandboxUtil = new SandBoxUtil;
-}
-
-?>

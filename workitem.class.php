@@ -311,7 +311,7 @@ WHERE id = ' . (int)$id;
         $query = "SELECT `repository` FROM `projects` WHERE `project_id` = " . $this->getProjectId();
         $rt = mysql_query($query);
         if (mysql_num_rows($rt)) {
-            $row = mysql_fetch_array($query);
+            $row = mysql_fetch_array($rt);
             $repository = $row['repository'];
             return $repository;
         } else {
@@ -599,15 +599,38 @@ WHERE id = ' . (int)$id;
         $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
         $bid_info = mysql_fetch_assoc($res);
         $workitem_info = $this -> getWorkItem($bid_info['worklist_id']);
-        // Get bidder nickname
-        $res = mysql_query("select nickname,unixusername,has_sandbox from ".USERS." where id='{$bid_info['bidder_id']}'");
-        if ($res && ($row = mysql_fetch_assoc($res))) {
-			$bidder_nickname = $row['nickname'];
-			$bidder_unixusername = ($row['has_sandbox']==1) ? $row['unixusername'] : $bidder_nickname;
-        }
-        $bid_info['nickname']=$bidder_nickname;
-        $bid_info['sandbox'] = "http://".SERVER_NAME."/~".$bidder_unixusername."/".$this->getRepository()."/";
         
+        // Get bidder information
+        $bidder = new User;
+        if (!$bidder->findUserById($bid_info['bidder_id'])) {
+            // If bidder doesn't exist, return false. Don't want to throw an
+            // exception because it would kill multiple bid acceptances
+            return false;
+        }
+
+        // We're expecting every user to have a unixname now, they will be
+        // assigned at signup. -alexi
+        $bid_info['nickname'] = $bidder->getNickname();
+        $bid_info['sandbox'] = "http://".SERVER_NAME."/~" .
+            $bidder->getUnixusername()."/".$this->getRepository()."/";
+        
+        // Provide bidder with sandbox & checkout if they don't already have one
+        // If the sandbox flag is 0, they are a new user and need one setup
+        $new_user = ($bidder->getHas_sandbox() == 0) ? true : false;
+        require_once("sandbox-util-class.php");
+        $sandboxUtil = new SandBoxUtil;
+        $sandboxUtil->createSandbox(
+            $bidder->getUsername(),
+            $bidder->getNickname(),
+            $bidder->getUnixusername(),
+            $this->getRepository(),
+            $new_user);
+
+        if ($new_user) {
+            $bidder->setHas_sandbox(1);
+            $bidder->save();
+        }
+
         //adjust bid_done date/time
         $prev_start = strtotime($bid_info['bid_created']);
         $new_start = strtotime(date('Y-m-d H:i:s O'));
@@ -619,10 +642,11 @@ WHERE id = ' . (int)$id;
         mysql_unbuffered_query("UPDATE `".WORKLIST."` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING',`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
         // marking bid as "accepted"
         mysql_unbuffered_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id);
+        
         // adding bid amount to list of fees
         mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
         $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
-	$this -> setMechanicId($bid_info['bidder_id']);
+	    $this -> setMechanicId($bid_info['bidder_id']);
         return $bid_info;
     }
 

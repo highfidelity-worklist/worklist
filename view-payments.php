@@ -22,8 +22,8 @@
 *    Date: 2010-04-01 [Happy April Fool's!]
 */
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+#ini_set('display_errors', 1);
+#error_reporting(E_ALL);
 
 include("config.php");
 include("class.session_handler.php");

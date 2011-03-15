@@ -113,6 +113,7 @@
             $projectList = explode(",",str_replace(" ","",$projects));
 
             // Create sandbox for user
+            $sandboxUtil = new SandBoxUtil;
             $sandboxUtil->createSandbox($user -> getUsername(), $user -> getNickname(), $unixusername, $projectList);
 
             // If sb creation was successful, update users table
