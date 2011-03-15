@@ -172,7 +172,7 @@ error_log("trace 33"); ?>
 	<div class="login_left">
 
 	    <div id="login-form" class="worklist">
-		<div id="formHolder">
+		<div id="loginFormHolder">
 		    <form id="login" action="" method="post">
 			<input type="hidden" name="redir" value="<?php echo $redir ?>" />
 			<div class="LVspace">

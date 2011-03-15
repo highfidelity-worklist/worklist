@@ -402,16 +402,8 @@ td.textAlignReport {
     margin-top: 8px;
 }
 
-
-#formHolder{
+#loginFormHolder{
     position: relative;
-    width: 400px;
+    width: 420px;
     height: 180px;
 }
-#formRight{
-    width: 120px;
-    position: absolute;
-    right: 10px;
-    top: 0;
-}
-
