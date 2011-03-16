@@ -77,7 +77,7 @@ if ($userId > 0 ) {
 
     if(empty($_POST['itemid']))  {
         $bid_fee_itemid = $workitem->getId();
-        $journal_message .= " item #$bid_fee_itemid: $summary, status: $status. ";
+        $journal_message .= " item #$bid_fee_itemid: $summary: Status set to: $status. ";
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
             foreach ($files as $file) {
@@ -87,7 +87,7 @@ if ($userId > 0 ) {
         }
     } else {
         $bid_fee_itemid = $itemid;
-        $journal_message .=  "item #$itemid: $summary, status: $status. ";
+        $journal_message .=  "item #$itemid: $summary: Status set to: $status. ";
     }
 
     if (!empty($_POST['invite'])) {
