@@ -26,11 +26,13 @@
             <li><a href="#tabs-2">Admin</a></li>
             <li><a href="#tabs-3">Sandbox</a><li>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
+            <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
         </ul>
     <?php } else {?>
         <ul>
             <li><a href="#tabs-1">User Info</a></li>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
+            <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
         </ul>
 		<input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
     <?php } ?>
@@ -219,7 +221,7 @@ if (count($user_projects) > 0) {
 <?php endforeach; ?>
             </form>
         </div><!-- end of tab 3 -->
-        <div style = "clear: both;"></div>
+        <?php/*<div style = "clear: both;"></div>*/?>
     <?php } ?>
     </div><!--end of div "tabs" -->
 </div> <!-- end of div user-info-->
