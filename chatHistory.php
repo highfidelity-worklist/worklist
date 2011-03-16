@@ -164,7 +164,7 @@ h2.extra .entry-date-extra {
 include dirname(__FILE__).'/config.php';
 
 $options = array( 
-	CURLOPT_URL	       => JOURNAL_QUERY_URL,
+	CURLOPT_URL	       => JOURNAL_QUERY_URL_SSL,
        	CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HEADER         => false,
        	CURLOPT_FOLLOWLOCATION => true,
