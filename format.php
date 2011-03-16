@@ -21,7 +21,7 @@
                  $budget = ' | <a href="javascript:;" class="budget">Budget</a> ';
             
              } else {
-                 $budget = '<span class="budgetPopup"></span>';
+                 $budget = '<span class="budget"></span>';
              }
 			if (empty($_SESSION['nickname'])){ 
                 $name = $_SESSION['username'];

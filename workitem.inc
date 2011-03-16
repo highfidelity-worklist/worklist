@@ -1210,5 +1210,35 @@ if ($action =="edit"):  ?>
 	<!-- Include User Info -->
 		<div id="user-info" title="User Info"></div>
 	<!-- If we are logged in, include User Info Popup -->
+	<?php if(isset($_SESSION['userid']) && $is_runner){ ?>
+	</body>
+	<div id="budgetPopup" >
+    <div id="be-block" >
+        <table id="be-table">
+            <tr>
+                <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
+                <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
+                <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
+            </tr>
+            <tr>
+                <td onclick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
+                <td onclick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
+                <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
+            </tr>
+            <tr>
+                <td onclick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
+                <td onclick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
+                <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
+            </tr>
+            <tr>
+                <td onclick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
+                <td onclick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
+                <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
+            </tr>
+        </table>
+    </div>
+        
+<?php } ?>
+</div>
     <!-- Footer html-->
 	<?php include("footer.php"); ?>

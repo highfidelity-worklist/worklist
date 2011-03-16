@@ -37,7 +37,7 @@ class UserStats{
     // wrapper for getJobsCount to get number of jobs in an active status
     public function getActiveJobsCount(){
     $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
-                . "WHERE `mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId} AND `status` IN ('WORKING', 'REVIEW','COMPLETED')";
+                . "WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId}) AND `status` IN ('WORKING', 'REVIEW','COMPLETED')";
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return $row[0];
@@ -237,7 +237,7 @@ public function getActiveUserItems($status, $page = 1){
             FROM `" . WORKLIST . "` 
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
-            WHERE `mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId} AND `status` IN ('WORKING', 'REVIEW', 'COMPLETED')ORDER BY `created` DESC "
+            WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId}) AND `status` IN ('WORKING', 'REVIEW', 'COMPLETED')ORDER BY `created` DESC "
             . "LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();

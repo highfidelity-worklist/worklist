@@ -621,3 +621,27 @@
     width: 410px;
     margin: 5px 0;
 }
+
+/* Budget info */
+#be-block {
+	font-size:14px;
+	position:absolute;
+	z-index:99;
+	top:5px;
+}
+
+#be-table {
+	border: none;
+	padding:2px;
+}
+
+.be-table_cell1 {
+	border: none;
+	padding:2px;
+}
+
+.be-table_cell2 {
+	border: none;
+	text-align: right;
+	padding:2px;
+}
