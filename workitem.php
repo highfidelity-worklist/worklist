@@ -297,33 +297,35 @@ if ($action =="place_bid"){
         $nickname = $_SESSION['nickname'];
     }
 
-    $bid_id = $workitem->placeBid($mechanic_id,$username,$worklist_id,$bid_amount,$done_by,$_SESSION['timezone'],$notes);
+    if ($user->isEligible()) {
+        $bid_id = $workitem->placeBid($mechanic_id,$username,$worklist_id,$bid_amount,$done_by,$_SESSION['timezone'],$notes);
+        // Journal notification
+        $journal_message = "A bid was placed on item #$worklist_id: $summary.";
 
+        //sending email to the runner of worklist item
+        $row = $workitem->getRunnerSummary($worklist_id);
+        if(!empty($row)) {
+    	$id = $row['id'];
+            $summary = $row['summary'];
+            $username = $row['username'];
+        }
 
-    // Journal notification
-    $journal_message = "A bid was placed on item #$worklist_id: $summary.";
+        // notify runner of new bid
+        Notification::workitemNotify(array('type' => 'bid_placed',
+    			 'workitem' => $workitem,
+    			 'recipients' => array('runner')),
+    		    array('done_by' => $done_by,
+    			  'bid_amount' => $bid_amount,
+    			  'notes' => $unescaped_notes,
+    			  'bid_id' => $bid_id));
 
-    //sending email to the runner of worklist item
-    $row = $workitem->getRunnerSummary($worklist_id);
-    if(!empty($row)) {
-	$id = $row['id'];
-        $summary = $row['summary'];
-        $username = $row['username'];
+        // sending sms message to the runner
+        $runner = new User();
+        $runner->findUserById($workitem->getRunnerId());
+        Notification::sendSMS($runner, 'Bid', $journal_message);
+    } else {
+        // we don't return anything. user has tried to circumvent security measures to place a bid
     }
-
-    // notify runner of new bid
-    Notification::workitemNotify(array('type' => 'bid_placed',
-			 'workitem' => $workitem,
-			 'recipients' => array('runner')),
-		    array('done_by' => $done_by,
-			  'bid_amount' => $bid_amount,
-			  'notes' => $unescaped_notes,
-			  'bid_id' => $bid_id));
-
-    // sending sms message to the runner
-    $runner = new User();
-    $runner->findUserById($workitem->getRunnerId());
-    Notification::sendSMS($runner, 'Bid', $journal_message);
 
     $redirectToDefaultView = true;
 }

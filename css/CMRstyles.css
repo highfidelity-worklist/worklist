@@ -586,6 +586,16 @@ span.required-bullet {
 .clear {
     clear: both;
 }
+.hidden {
+    display: none;
+}
+.height50 {
+    height: 50px !important;
+}
+.signupContainer {
+    margin: 30px;
+}
+    
 div.login_left, div.login_right {float:left;min-width:260px;padding-right:40px;}
 .login_right div.LVspace {margin-top:65px;}
 input.google {padding-left: 20px; background: transparent url("../images/google.gif") no-repeat scroll left center;}
@@ -595,6 +605,13 @@ div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 	border-width:0px;
 }
 
+#popup-ineligible #button_settings {
+    float: right;
+}
+
+.closeButton {
+    float: right;
+}
 
 #feesDialog , #budgetPopup{
     font-family: helvetica, arial, sans-serif;

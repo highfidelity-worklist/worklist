@@ -5,7 +5,7 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
-//
+
 include("config.php");
 include("class.session_handler.php");
 include_once("send_email.php");
@@ -31,8 +31,6 @@ $fields_to_htmlescape = array(
         'country' => '', 
         'provider' => '',
         'smsaddr' => '',
-        // adds findus field to the sql query
-        // 26-APR-2010 <Yani>
         'findus' => ''
       );
 
@@ -82,7 +80,7 @@ if(isset($minimal_POST['sign_up'])){
         $error->setError("Text in field can't be more than 150 characters!");
     }
 
-    if(! $error->getErrorFlag()){
+    if(! $error->getErrorFlag()) {
         $send_confirm_email = false;
         $minimal_POST = array_merge($minimal_POST, array_map('htmlspecialchars', array_intersect_key($minimal_POST, $fields_to_htmlescape)));
         unset($minimal_POST['confirmpassword']);
@@ -116,9 +114,9 @@ if(isset($minimal_POST['sign_up'])){
         
         $ret = json_decode($result);
         
-        if($ret->error == 1){
+        if ($ret->error == 1) {
             $error->setError($ret->message);
-        }else{
+        } else {
             $newUser = array();
             foreach($_POST as $key => $value){
                 if(Utils::registerKey($key)){
@@ -136,10 +134,10 @@ if(isset($minimal_POST['sign_up'])){
             $values = "VALUES(";
             foreach($newUser as $name => $value){
                 $columns .= "`".$name."`,";
-            	if($name == "added"){
-                	$values .= "NOW(),";
+                if ($name == "added") {
+                    $values .= "NOW(),";
                 } else {
-                	$values .= "'".mysql_real_escape_string($value)."',";
+                    $values .= "'".mysql_real_escape_string($value)."',";
                 }
             }
             $columns = substr($columns,0,(strlen($columns)-1));
@@ -162,7 +160,27 @@ if(isset($minimal_POST['sign_up'])){
             if(!sl_send_email($ret->username, $subject, $body, $plain)) { error_log("signup.php: sl_send_email failed");
                 $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
             }
+
+            // paypal email
+            if (! empty($newUser['paypal_email'])) {
+                $paypal_hash = md5(date('r', time()));;
             
+                $subject = "Paypal Verification";
+                $link = SECURE_SERVER_URL . "confirmation.php?pp=".$paypal_hash. "&str=" . base64_encode($newUser['paypal_email']);
+                $worklist_link = SERVER_URL . "worklist.php";
+                $body  = "<p>Please confirm your Paypal email address to activate payments on your account and enable you to start placing bids in the <a href='" . $worklist_link . "'>Worklist</a>.</p>";
+                $body .= '<br/><a href="' . $link . '">Click here to verify your Paypal address</a></p>';
+
+                $plain  = 'Please confirm your Paypal email address to activate payments on your account and enable you to start placing bids in the worklist.' . "\n\n";
+                $plain .= $link . "\n\n";
+                
+                $confirm_txt .= "<br/><br/>An email containing a confirmation link was also sent to your Paypal address. Please click on that link to verify your Paypal address and activate payments on your account.";
+                if (! sl_send_email($newUser['paypal_email'], $subject, $body, $plain)) { 
+                    error_log("signup.php: sl_send_email failed");
+                    $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
+                }
+            }
+
         }
     }
 }
@@ -185,10 +203,12 @@ include("head.html");
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
+<link href="css/CMRstyles.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userSkills.js"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/sendlove.js"></script>
+
 
 <title>Worklist | Sign Up to the Worklist</title>
 </head>
@@ -229,10 +249,9 @@ include("head.html");
      <!-- Column containing left part of the fields -->
 <div class="left-col">
 <div class="LVspace">
-<p><label for="username">Email *</label><br />
-<input type="text" id="username" name="username" class="text-field"
-	size="35"
-	value="<?php echo isset($_POST['username']) ? $_POST['username'] : ""; ?>" />
+<p>
+    <label for="username">Email *</label><br />
+    <input type="text" id="username" name="username" class="text-field" size="35" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ""; ?>" />
 </p>
 </div>
 <script type="text/javascript">
@@ -244,7 +263,7 @@ include("head.html");
             <div class="LVspace">
 <p><label>Password *<br />
 <input type="password" id="password" name="password" class="text-field"
-	size="35" /> </label></p>
+    size="35" /> </label></p>
 </div>
 <script type="text/javascript">
                  var password = new LiveValidation('password',{ validMessage: "You have an OK password.", onlyOnBlur: true });
@@ -254,7 +273,7 @@ include("head.html");
 <div class="LVspace">
 <p><label>Confirm Password *<br />
 <input name="confirmpassword" id="confirmpassword" type="password"
-	class="text-field" size="35" /> </label></p>
+    class="text-field" size="35" /> </label></p>
 </div>
 <script type="text/javascript">
                  var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
@@ -262,10 +281,8 @@ include("head.html");
             </script>
       <?php endif; ?>
             <div class="LVspace">
-<p><label for="nickname">Nickname *</label><br />
-<input type="text" id="nickname" name="nickname" class="text-field"
-	size="35"
-	value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
+    <p><label for="nickname">Nickname *</label><br />
+<input type="text" id="nickname" name="nickname" class="text-field" size="35" value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
 </p>
 </div>
 <script type="text/javascript">
@@ -275,17 +292,7 @@ include("head.html");
 <?php include("sms-inc.php"); ?>
         <input type="checkbox" name="bidding_notify" />Notify me when any job is set to bidding<br />
         <input type="checkbox" name="review_notify" />Notify me when any job is set to review<br /><br />
-            <div class="LVspacelg" style="height: 88px"><input
-	type="checkbox" id="paypal" name="paypal" value="1"
-	<?php echo !empty($_POST['paypal']) ? 'checked':''; ?> /><label>&nbsp;Paypal
-is available in my country</label><br />
-<br />
-<label>Paypal Email<br />
-<input type="text" id="paypal_email" name="paypal_email"
-	class="text-field" size="35"
-	value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />
-</label></div>
-<script type="text/javascript">
+    <script type="text/javascript">
             var username = new LiveValidation('username', {validMessage: "Valid email address."});
             username.add( Validate.Email );
             username.add(Validate.Length, { minimum: 10, maximum: 50 } );
@@ -300,64 +307,70 @@ is available in my country</label><br />
 <script type="text/javascript">
         var about = new LiveValidation('about');
         about.add(Validate.Length, { minimum: 0, maximum: 150 } ); 
-      </script>
+</script>
 <div class="LVspace">
 <p><label for="findus">How did you find us?</label><br />
 <input type="text" id="findus" name="findus" class="text-field"
-	size="35"
-	value="<?php echo isset($_POST['findus']) ? strip_tags($_POST['findus']) : ""; ?>" />
+    size="35"
+    value="<?php echo isset($_POST['findus']) ? strip_tags($_POST['findus']) : ""; ?>" />
 </p>
 </div>
 <div class="LVspace">
 <p><label for="contactway">What is the preferred way to contact you?</label><br />
 <input type="text" id="contactway" name="contactway" class="text-field"
-	size="35"
-	value="<?php echo isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : ""; ?>" />
+    size="35"
+    value="<?php echo isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : ""; ?>" />
 </p>
 </div>
 
-<div class="LVspace">
-<p><label for="payway">What is the best way to pay you for the work you
-will do?</label><br />
-<input type="text" id="payway" name="payway" class="text-field"
-	size="35"
-	value="<?php echo isset($_POST['payway']) ? strip_tags($_POST['payway']) : ""; ?>" />
-</p>
-</div>
+
 
 <div class="LVspace">
 <p><label for="skills">Pick three skills you think are your strongest</label><br />
 <input type="text" id="skills" name="skills" class="text-field"
-	size="35"
-	value="<?php echo isset($_POST['skills']) ? strip_tags($_POST['skills']) : ""; ?>" />
+    size="35"
+    value="<?php echo isset($_POST['skills']) ? strip_tags($_POST['skills']) : ""; ?>" />
 </p>
 </div>
 
-<div class="LVspace">
-<p><label for="timezone">What timezone are you in?</label><br />
-<select id="timezone" name="timezone">
+<div class="LVspace height50">
+    <p>
+        <label for="timezone">What timezone are you in?</label><br />
+        <select id="timezone" name="timezone">
 <?php
-  foreach($timezoneTable as $key => $value){
-    $selected = '';
-    $zone = isset($_POST['timezone']) ? $_POST['timezone'] : date("O");
+    foreach ($timezoneTable as $key => $value) {
+        $selected = '';
+        $zone = isset($_POST['timezone']) ? $_POST['timezone'] : date("O");
 
-    if ($key == $zone){
-      $selected = 'selected = "selected"';
+        if ($key == $zone) {
+            $selected = 'selected = "selected"';
+        }
+        echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
     }
-    echo '
-  <option value = "'.$key.'" '.$selected.'>'.$value.'</option>    
-  ';
-}
 ?>
-        </select></p>
+        </select>
+    </p>
 </div>
+<!-- other payment options are currently disabled - left here for future implementation -->
+    <!--<div class="LVspace hidden">
+        <p><label for="payway">What is the best way to pay you for the work you will do?</label><br />
+            <input type="text" id="payway" name="payway" class="text-field" size="35" value="<?php echo isset($_POST['payway']) ? strip_tags($_POST['payway']) : ""; ?>" />
+        </p>
+    </div>
+    <div class="LVspacelg hidden" style="height: 88px">
+        <input class="hidden" type="checkbox" id="paypal" name="paypal" value="1" checked="checked" /><label>&nbsp;Paypal is available in my country</label><br /><br />
+    </div>-->
+    <div class="LVspacelg">
+        <label>Paypal Email<br />
+            <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />
+        </label>
+    </div>
+    <!-- end of right-col div -->
+    <br class="clear" />
 </div>
-<!-- end of right-col div --> <br style="clear: both;" />
-
-<p><input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" /></p>
-
+<div class="signupContainer">
+    <p><input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" /></p>
+</div>
 </form>
-
-
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php"); ?>

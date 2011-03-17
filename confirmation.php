@@ -50,9 +50,23 @@ if(isset($_REQUEST['str'])) {
 	$user->setUsername($new_username);
 	$user->save();
 	session::init();
-} else {
-	header("Location:login.php");
-	exit;
+} elseif (isset($_REQUEST['ppstr'])) {
+    // paypal address confirmation
+    $user = new User();
+    $paypal_email = mysql_real_escape_string(base64_decode($_REQUEST['ppstr']));
+    // echo $paypal_email;
+
+    // verify the email belongs to a user
+    if (! $user->findUserByPPUsername($paypal_email)) {
+        // hacking attempt, or some other error
+        header('Location: login.php');
+    } else {
+        $user->setPaypal_verified(true);
+        $user->setPaypal_hash('');
+        $user->save();
+        header('Location: settings.php?ppconfirmed');
+    }
+    exit;
 }
 
 /*********************************** HTML layout begins here  *************************************/

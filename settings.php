@@ -21,6 +21,12 @@ require_once("lib/Sms.php");
 require_once ("class/Utils.class.php");
 require_once ("class/Error.class.php");
 
+$userId = getSessionUserId();
+if ($userId) {
+    $user = new User();
+    $user->findUserById($userId);
+}
+
 $msg="";
 $company="";
 
@@ -29,25 +35,25 @@ $messages = array();
 $errors = 0;
 $error = new Error();
 
+// process updates to user's settings
 if (isset($_POST['save_account'])) {
 
     $updateNickname = false;
     $updatePassword = false;
 
     // check if phone was updated
-    if (isset($_POST['phone_edit']) || isset($_POST['int_code']) ||isset($_POST['timezone']))
-    {
-	$saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
+    if (isset($_POST['phone_edit']) || isset($_POST['int_code']) ||isset($_POST['timezone'])) {
+        $saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
 
         foreach ($saveArgs as $arg=>$esc) {
             $$arg = ($esc ? $_POST[$arg] : intval($_POST[$arg]));
         }
 
-		if(isset($_POST['city'])){
-        	$city = mysql_real_escape_string($_POST['city']);
-        	$saveArgs['city'] = 0;
-		} 
-		
+        if(isset($_POST['city'])){
+            $city = mysql_real_escape_string($_POST['city']);
+            $saveArgs['city'] = 0;
+        } 
+
         $provider = mysql_real_escape_string($_POST['provider']);
         $saveArgs['provider'] = 0;
         $is_uscitizen = ($_POST['country'] == 'US' ? 1 : 0);
@@ -69,7 +75,7 @@ if (isset($_POST['save_account'])) {
 
         // if user is new - create an entry for him
         // clear $saveArgs so it won't be updated for the second time
-        if($_SESSION['new_user']){
+        if ($_SESSION['new_user']) {
 
             $user_id = intval($_SESSION['userid']);
             $username = $_SESSION['username'];
@@ -81,7 +87,7 @@ if (isset($_POST['save_account'])) {
             mysql_unbuffered_query($sql);
             $_SESSION['new_user'] = '';
             $saveArgs = array();
-        }else{
+        } else {
             $messages[] = "Your country/phone settings have been updated.";
         }
     }
@@ -112,17 +118,55 @@ if (isset($_POST['save_account'])) {
 } else if (isset($_POST['save_payment'])) {
     $paypal = 0;
     $paypal_email = '';
-    $payway = '';
+    // defaulting to paypal at this stage
+    $payway = 'paypal';
     if ($_POST['paytype'] == 'paypal') {
         $paypal = 1;
         $payway = "paypal";
         $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
-	} else if ($_POST['paytype'] == 'other') {
-        $payway = isset($_POST['payway']) ? $_POST['payway'] : '';
+    } else if ($_POST['paytype'] == 'other') {
+        $payway = '';
     }
 
-    $saveArgs = array('paypal'=>0, 'paypal_email'=>0, 'payway'=>1);
+    $saveArgs = array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1);
     $messages[] = "Your payment information has been updated.";
+
+    $paypalPrevious = $user->getPaypal_email();
+
+    // user deleted paypal email, deactivate
+    if (empty($paypal_email)) {
+        $user->setPaypal_verified(false);
+        $user->setPaypal_email('');
+        $user->save();
+    // user changed paypal address
+    } else if ($paypalPrevious != $paypal_email) {    
+        $paypal_hash = md5(date('r', time()));;
+
+        // generate email
+        $subject = "Your Paypal address has changed";
+
+        $link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
+        $worklist_link = SERVER_URL . "worklist.php";
+
+        $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
+        $body .= '<p>Please confirm your Paypal address to activate payments on your account and enable you to start placing bids in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
+        $body .= '<p><a href="' . $link . '">Click here to confirm your Paypal address</a></p>';
+
+        $plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
+        $plain .= 'Please confirm your Paypal address to activate payments on your accounts and enable you to start placing bids in the Worklist.' . "\n\n";
+        $plain .= $link . "\n\n";
+                
+        $confirm_txt = "An email containing a confirmation link was sent to your Paypal address. Please click on that link to verify your Paypal address and activate your account.";
+        if (! sl_send_email($paypal_email, $subject, $body, $plain)) { 
+            error_log("signup.php: sl_send_email failed");
+            $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
+        }
+
+        $user->setPaypal_verified(false);
+        $user->setPaypal_hash($paypal_hash);
+        $user->setPaypal_email($paypal_email);
+        $user->save();
+    }
 }
 
 if (!empty($saveArgs)) {
@@ -140,7 +184,6 @@ if (!empty($saveArgs)) {
     }
     $sql = rtrim($sql, ',');
     $sql .= " WHERE id = '${_SESSION['userid']}'";
-
     mysql_query($sql);
 
 // Email user
@@ -157,8 +200,16 @@ if (!empty($saveArgs)) {
         $msg="Account updated successfully!";
     }
 
-    //Wired off, why is this here, causing settings page to exit
-    //return 'ok';
+
+    if (isset($confirm_txt) && ! empty($confirm_txt)) {
+        echo $confirm_txt;
+    } else {
+        exit;
+    }
+
+    // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions
+    exit;
+
 }
 
 // getting userInfo to prepopulate fields
@@ -208,7 +259,7 @@ include("head.html");
         if (!data.success) {
             $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
         } else {
-        	window.location.reload();
+            window.location.reload();
         }
     }
     
@@ -262,7 +313,7 @@ include("head.html");
                 city: $('#city').val(),
                 smsaddr: $('#smsaddr').val(),
                 provider: $('#provider').val(),
-				timezone: $('#timezone').val(),
+                timezone: $('#timezone').val(),
                 journal_alerts: $('#journal_alerts').attr('checked') ? 1:0,
                 bid_alerts: $('#bid_alerts').attr('checked') ? 1:0,
                 nickname: $('#nickname').val(),
@@ -295,7 +346,11 @@ include("head.html");
             data: values,
             dataType: 'html',
             success: function(json) {
-                $('#msg-'+type).text('Account settings saved!');
+                if (type == 'payment') {
+                    $('#msg-'+type).html('Account settings saved' + '<br/>' + json);
+                } else {
+                    $('#msg-'+type).text('Account settings saved!' );
+                }
             },
             error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');
@@ -322,23 +377,40 @@ include("head.html");
         }
         return false;
     }
-	function ChangePaymentMethod(){
-		var paytype = $('#paytype').val();
-		paypal.enable();
-		payway.enable();
-		if (paytype == 'paypal') {
-			$('#paytype-paypal').show();
-			$('#paytype-other').hide();
-		} else if (paytype == 'other') {
-			$('#paytype-paypal').hide();
-			$('#paytype-other').show();
-		} else {
-			$('#paytype-paypal').hide();
-			$('#paytype-other').hide();
-		}
-	}
+    function ChangePaymentMethod(){
+        var paytype = $('#paytype').val();
+        paypal.enable();
+        // validation disabled: payway.enable();
+        if (paytype == 'paypal') {
+            $('#paytype-paypal').show();
+            $('#paytype-other').hide();
+        } else if (paytype == 'other') {
+            $('#paytype-paypal').hide();
+            $('#paytype-other').show();
+        } else {
+            $('#paytype-paypal').hide();
+            $('#paytype-other').hide();
+        }
+    }
     $(document).ready(function () {
-    	var pictureUpload = new AjaxUpload('profilepicture', {
+<?php if (isset($_REQUEST['ppconfirmed'])) : ?>
+        $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
+        $('#popup-confirmed').dialog({
+            modal: true,
+            title: 'Your Paypal address was confirmed',
+            autoOpen: true,
+            width: 300,
+            position: ['top'],
+            open: function() {
+                $('#popup-confirmed .content').html('Thank you for confirming your Paypal address.<br/><br/>You can now bid on items in the Worklist!<br/><br/><input style="" class="closeButton" type="button" value="Close" />');
+                $('#popup-confirmed .closeButton').click(function() {
+                    $('#popup-confirmed').dialog('close');
+                });
+            }
+        });
+<?php endif; ?>
+
+        var pictureUpload = new AjaxUpload('profilepicture', {
             action: 'api.php',
             name: 'profile',
             data: { action: 'uploadProfilePicture', api_key: '<?php echo API_KEY; ?>', userid: '<?php echo $_SESSION['userid']; ?>' },
@@ -423,9 +495,9 @@ include("head.html");
         <td align="right"><a href="password.php">Change my password...</a></td>
     </tr>
     </table>
-	<div id="formHolder">
-     	<div id="formLeft">
-	
+    <div id="formHolder">
+        <div id="formLeft">
+    
     <form method="post" action="settings.php" name="frmsetting">
 
         <span class="required-bullet">*</span> <span class="required">required fields</span>
@@ -476,19 +548,19 @@ include("head.html");
         <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
 
     </form>
-	</div>
-	<div id="formRight">
-	<p style="text-align: center; cursor: pointer;">
-	<label style="text-align: left; display: block;">Photo<br></label> 
-	<img style="border: 2px solid rgb(209, 207, 207); padding: 10px;"
+    </div>
+    <div id="formRight">
+    <p style="text-align: center; cursor: pointer;">
+    <label style="text-align: left; display: block;">Photo<br></label> 
+    <img style="border: 2px solid rgb(209, 207, 207); padding: 10px;"
     id="profilepicture"
     src="thumb.php?src=<?php echo((empty($picture) ? '/images/no_picture.png' : '/uploads/' . $picture));?>&w=100&h=90&zc=0" />
     <span class="picture_info">Click here to change it</span>
     <span style="display: none;"
     class="LV_validation_message LV_invalid upload"></span></p>
-	</div>
-	</div>
-	<div style="clear: both;"></div>
+    </div>
+    </div>
+    <div style="clear: both;"></div>
 </div>
 
 <?php if(!$_SESSION['new_user']){ ?>
@@ -523,47 +595,25 @@ include("head.html");
 </div>
 
 <div id="payment-info" class="settings">
-
-    <h2 class="subheader">Payment Info</h2>
-
-    <p id="msg-payment" class="error"></p>
-
     <form method="post" action="settings.php" name="frmsetting">
-
-        <p>
-            <span class="required-bullet">*</span> <select id="paytype" name="paytype" onChange="ChangePaymentMethod();">
-                <?php if (empty($userInfo['paypal_email']) && empty($userInfo['payway'])) { ?>
-                <option value="how" selected>How shall we pay you?</option>
-                <?php } ?>
-                <option value="paypal" <?php if($userInfo['paypal']==1) echo 'selected'; else echo  ''?>>Please pay me via Paypal</option>
-                <option value="other" <?php if($userInfo['paypal']==0) echo 'selected'; else echo  ''?>>I would prefer another method</option>
-            </select>
-        </p>
-
+        <h2 class="subheader">Paypal Payment Info</h2>
+        <p id="msg-payment" class="error"></p>
         <blockquote>
-
             <p id="paytype-paypal"><label>Paypal Email</label><br />
                 <span class="required-bullet">*</span> <input type="text" id="paypal_email" name="paypal_email" class="text-field" value="<?php echo $userInfo['paypal_email']; ?>" style="width:95%" />
             </p>
-			<script type="text/javascript">
-				var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
-				paypal.add(Validate.Email);
-				paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-         	 </script> 
-		   <p id="paytype-other"><label>If another payment method chosen, please enter preference info</label><br />
-                <span class="required-bullet">*</span>
-                    <input type="text" id="payway" name="payway" class="text-field" value="<?php echo !empty($userInfo['payway']) ? $userInfo['payway'] : ' '; ?>" style="width:95%" />
-            </p>
-		<script type="text/javascript">
-			var payway = new LiveValidation('payway');
-			payway.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-			payway.add(Validate.Format, { pattern: /^((?!Contract services, check, etc.).)*$/, failureMessage: "Can't be empty!" });
-		</script>
+            <script type="text/javascript">
+                var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
+                paypal.add(Validate.Email);
+                paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+            </script> 
+            <input type="hidden" name="paytype" id="paytype" value="paypal" />
+            <input type="hidden" name="payway" id="payway" value="paypal" />
         </blockquote>
-
-        <p><label>All US Citizens must submit a W-9 to be paid by LoveMachine </label>
-        <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><FONT
-COLOR="Blue">Download W-9 Here</FONT></a>
+        <h2 class="subheader">W-9 Form <small>(US Citizens Only)</small></h2>
+        <p>
+            <label>All US Citizens must submit a W-9 to be paid by LoveMachine </label>
+            <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><span style="color: blue;">Download W-9 Here</span></a>
         </p>
         <blockquote>
           <p><label style="float:left;line-height:26px">Upload W-9</label>

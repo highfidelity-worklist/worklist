@@ -132,7 +132,10 @@
                 </p>
 
                 <p class="info-label">W9 Approved<br />
-                <input type="checkbox" id="approve" name = "w9" <?php if($user->isW9Approved()) echo 'checked = "checked"'; ?> />
+                    <input type="checkbox" id="approve" name = "w9" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> />
+                </p>
+                <p class="info-label">Paypal Verified<br />
+                    <input type="checkbox" id="paypal_verified" name="paypal_verified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> />
                 </p>
                 <p class="info-label">Status<br />
                     <select id="changeUserStatus" style="width:auto; margin-bottom: 3em;">

@@ -7,9 +7,7 @@
 //  But please be as fair as you comment your (at least public) methods - maybe another developer
 //  needs them too.
 
-class User
-{
-
+class User {
 	protected $id;
 	protected $username;
 	protected $password;
@@ -47,6 +45,8 @@ class User
     protected $manager;
 	protected $paypal;
 	protected $paypal_email;
+    protected $paypal_verified;
+    protected $paypal_hash;
 	/**
 	 * All about budget
 	 */
@@ -107,6 +107,27 @@ class User
 		return $this->loadUser($where);
 	}
 
+    public function findUserByPPUsername($paypal_email) {
+        $paypal_email = mysql_real_escape_string((string)$paypal_email);
+        $where = sprintf('`paypal_email` = "%s"', $paypal_email);
+        return $this->loadUser($where);
+    }
+
+    public function isEligible() {
+    
+        if ($this->isUsCitizen()) {
+            if (! $this->isW9Approved()) {
+                return false;
+            }
+        }
+    
+        if ($this->isPaypalVerified()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 	/**
 	 * Use this method to update or insert a user.
 	 *
@@ -144,8 +165,7 @@ class User
 	 *
 	 * @return (boolean)
 	 */
-	public function isW9Approved()
-	{
+	public function isW9Approved() {
 		if ((int)$this->getHas_w9approval() === 1) {
 			return true;
 		}
@@ -631,6 +651,30 @@ class User
         return $this;
     }
 
+    public function getPaypal_hash() {
+        return $this->paypal_hash;
+    }
+
+    public function setPaypal_hash($paypal_hash) {
+        $this->paypal_hash = $paypal_hash;
+        return $this;
+    }
+
+    public function getPaypal_verified() {
+        return $this->paypal_verified;
+    }
+    
+    public function isPaypalVerified() {
+        if ((int)$this->getPaypal_verified() === 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public function setPaypal_verified($paypal_verified) {
+        $this->paypal_verified = $paypal_verified;
+        return $this;
+    }
 
 	/**
 	 * @return the $is_payer

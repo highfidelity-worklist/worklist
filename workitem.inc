@@ -215,10 +215,22 @@ function reply(id) {
 	});
 
     var dialog_options = { autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' };
-	$('#popup-bid').dialog(dialog_options);
-	$('#popup-edit-bid-info').dialog(dialog_options);
-	$('#popup-confirmation').dialog(dialog_options);
-	
+    $('#popup-bid').dialog(dialog_options);
+    $('#popup-edit-bid-info').dialog(dialog_options);
+    $('#popup-confirmation').dialog(dialog_options);
+    $('#popup-ineligible').dialog({
+        modal: true,
+        title: "Your account is ineligible",
+        autoOpen: false,
+        width: 300,
+        position: ['top'],
+        open: function() {
+            $('#button_settings').click(function() {
+                document.location.href = 'settings.php#payment-info';
+            });
+        }
+    });
+
 	// If the bid info popup is set to modal clipboard won't work!
 	$('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
 	$('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: false,width: 500, show: 'fade', hide: 'fade' });
@@ -512,6 +524,10 @@ function reply(id) {
       $('#popup-confirmation').dialog('open');
       return false;
   }
+  function showIneligible(problem) {
+      $('#popup-ineligible').dialog('open');
+  }
+
   function doConfirmForm(i) {
       if (i == 'bid') {
       	  $('#popup-confirmation').dialog('close');
@@ -1083,18 +1099,21 @@ if ($action =="edit"):  ?>
 							<?php } ?>
 							</tbody>
 						</table>
-						<?php if($user_id): ?>
-						<?php 	if ($worklist['status'] == 'BIDDING'): ?>
-						<div class="buttonContainer">
-							<input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');"/>
-					<?php if(!empty($bids)&& ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 &&!$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")):?>
-							<input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
-					<?php endif;?>
-					</div>
-						<?php 	endif; ?>
-						<?php endif;?>
+<?php if ($user_id) : ?>
+<?php if ($worklist['status'] == 'BIDDING') : ?>
+                        <div class="buttonContainer">
+<?php if ($user->isEligible()) : ?>
+                            <input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');" />
+<?php else: ?>
+                            <input type="submit" value="Add Bid" onClick="return showIneligible('bid');" />
+<?php endif; ?>
+<?php if(! empty($bids) && ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")):?>
+                            <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
+<?php endif;?>
+                        </div>
+<?php endif; ?>
+<?php endif;?>
 				<!-- End of div bid-panel -->
-
 					</div>
 					<div id="fee-panel" >
 						<table width="100%" class="table-fees">
@@ -1141,7 +1160,13 @@ if ($action =="edit"):  ?>
 						</table>
 						<?php if($user_id && ($worklist['status'] != 'DONE')): ?>
 						<div class="buttonContainer">
-							<input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+<?php if ($user_id) : ?>
+<?php if ($user->isEligible()) : ?>
+                            <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+<?php else: ?>
+                            <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
+<?php endif; ?>
+<?php endif; ?>
 						</div>
 						<?php endif;?>
 						<form id="withdraw" method="post" action="" >
@@ -1207,6 +1232,11 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/review-url-dialog.inc') ?>
     <!-- Include Add Project -->	
 	<?php require_once 'dialogs/popup-addproject.inc'; ?>
+<?php 
+    if (! $user->isEligible()) {
+        require_once('dialogs/popup-ineligible.inc');
+    }
+?>
 	<!-- Include User Info -->
 		<div id="user-info" title="User Info"></div>
 	<!-- If we are logged in, include User Info Popup -->

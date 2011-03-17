@@ -31,6 +31,7 @@
         $is_runnerSave = isset($_POST['isrunner']) ? 1 : 0;
         $is_payerSave = isset($_POST['ispayer']) ? 1 : 0;
         $hasW9 = isset($_POST['w9']) ? 1 : 0;
+        $isPaypalVerified = isset($_POST['paypal_verified']) ? 1 : 0;
         $user_idSave = intval($_POST['userid']);
 
         $saveUser = new User();
