@@ -608,27 +608,43 @@ WHERE id = ' . (int)$id;
             return false;
         }
 
-        // We're expecting every user to have a unixname now, they will be
-        // assigned at signup. -alexi
         $bid_info['nickname'] = $bidder->getNickname();
-        $bid_info['sandbox'] = "http://".SERVER_NAME."/~" .
-            $bidder->getUnixusername()."/".$this->getRepository()."/";
         
-        // Provide bidder with sandbox & checkout if they don't already have one
-        // If the sandbox flag is 0, they are a new user and need one setup
-        $new_user = ($bidder->getHas_sandbox() == 0) ? true : false;
-        require_once("sandbox-util-class.php");
-        $sandboxUtil = new SandBoxUtil;
-        $sandboxUtil->createSandbox(
-            $bidder->getUsername(),
-            $bidder->getNickname(),
-            $bidder->getUnixusername(),
-            $this->getRepository(),
-            $new_user);
+        // If the project has a repository, give the user a checkout
+        $repository = $this->getRepository();
+        if ($repository) {
+            // We're expecting every user to have a unixname now, they will be
+            // assigned at signup. -alexi
+            $bid_info['sandbox'] = "http://".SERVER_NAME."/~" .
+                $bidder->getUnixusername()."/".$repository."/";
+            
+            // Provide bidder with sandbox & checkout if they don't already have one
+            // If the sandbox flag is 0, they are a new user and need one setup
+            $new_user = ($bidder->getHas_sandbox() == 0) ? true : false;
+            require_once("sandbox-util-class.php");
+            $sandboxUtil = new SandBoxUtil;
+            try {
+                $sandboxUtil->createSandbox(
+                    $bidder->getUsername(),
+                    $bidder->getNickname(),
+                    $bidder->getUnixusername(),
+                    $this->getRepository(),
+                    $new_user);
+            } catch (Exception $e) {
+                $error_email_body = "Error creating sandbox for user: " .
+                    $bidder->getUsername."\n." .
+                    "Script returned error: ".$e->getMessage();
+                sl_send_email("ops@lovemachineinc.com", "Sandbox creation error",
+                              $error_email_body);
+                $bid_info['sandbox'] = "N/A";
+            }
 
-        if ($new_user) {
-            $bidder->setHas_sandbox(1);
-            $bidder->save();
+            if ($new_user) {
+                $bidder->setHas_sandbox(1);
+                $bidder->save();
+            }
+        } else {
+            $bid_info['sandbox'] = "N/A";
         }
 
         //adjust bid_done date/time
