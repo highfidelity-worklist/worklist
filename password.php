@@ -16,15 +16,14 @@ include_once("send_email.php");
 require_once ("class/Utils.class.php");
 
 $msg = array();
-if($_POST['oldpassword'] != "")
-{
+if ($_POST['oldpassword'] != "") {
     if((!empty($_POST['newpassword'])) && ($_POST['newpassword'] == $_POST['confirmpassword'])){
 
         $ret = Utils::updateLoginData(array('oldpassword' => $_POST['oldpassword'], 
                                             'newpassword' => $_POST['newpassword']), false, true);
-        if($ret->error == 1){
+        if ($ret->error == 1) {
             $msg = $ret->message;
-        }else{
+        } else {
             $msg[] = "Password updated successfully!";
             $to = $_SESSION['username'];
             $subject = "Password Change";
@@ -33,24 +32,18 @@ if($_POST['oldpassword'] != "")
             $body .= "</p><p>Love,<br/>Philip and Ryan</p>";
             if (!sl_send_email($to, $subject, $body)) { error_log("password.php: sl_send_email failed"); }
         }
-
     } else {
         $msg[] = "New passwords don't match!";
     }
-
 }
-
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html");
 ?>
-
+<link href="css/worklist.css" rel="stylesheet" type="text/css">
 <title>Worklist | Change Password</title>
-
 </head>
-
 <body>
-
 <?php include("format.php"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->

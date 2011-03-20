@@ -31,7 +31,7 @@ if(!empty($_POST['username'])) {
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>
-
+<link href="css/worklist.css" rel="stylesheet" type="text/css">
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 
 <!-- jquery file is for LiveValidation -->
