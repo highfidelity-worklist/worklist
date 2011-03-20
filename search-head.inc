@@ -18,7 +18,7 @@
                 echo $filter->getUserSelectbox(1) . " ";
                 $allDisplay = "All Status";                
                 $status_array = array("SUGGESTED", "BUG", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");
-                $box = '<select name="status" multiple="multiple">';
+                $box = '<select name="status" multiple="multiple" style="display:none">';
                 $box .= '<option value="ALL"' . (($filter->inStatus("ALL") ) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
                 foreach ($status_array as $status) {
                     $selected = '';
