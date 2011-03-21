@@ -51,14 +51,14 @@
 		<div id="center">
 
 <!-- LOGO -->
-			<div id="stats">
-				<span id='stats-text'>
-                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
+            <div id="stats">
+                <span id='stats-text'>
+                    <a href='./worklist.php?status=bidding' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
                     bidding, 
-                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
+                    <a href='./worklist.php?status=underway' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
                     underway
                 </span>
-			</div>
+            </div>
 
 <!-- Navigation placeholder -->
 		<div id="nav">

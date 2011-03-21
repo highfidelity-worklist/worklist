@@ -4,6 +4,17 @@
 
 var activeUsersFlag=1;
 
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+          return pair[1];
+        }
+    } 
+}
+
 function RelativeTime(x){
     var plural = '';
  
@@ -343,16 +354,6 @@ $(function() {
 });
 
 $(function() {
-    $(".actionBidding").attr("href","javascript:;").click(function(){
-        $("#search-filter-wrap select[name=status]").comboBox({action:"val",param: ["BIDDING"]});
-     //   GetWorklist(1,false);       
-        return false;
-    });
-    $(".actionUnderway").attr("href","javascript:;").click(function(){
-        $("#search-filter-wrap select[name=status]").comboBox({action:"val",param: ["WORKING","REVIEW","COMPLETED"]});
-        return false;
-    });
-
 		// to add a custom stuff we bind on events
 		$('select[name=user]').bind({
 			'beforeshow newlist': function(e, o) {

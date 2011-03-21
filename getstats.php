@@ -11,7 +11,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 
 	if( $req == 'currentlink' )	{
 		$query_b = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'BIDDING'" );
-		$query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'WORKING'" );
+		$query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'WORKING' or status = 'REVIEW' or status = 'COMPLETED'" );
 		$count_b = mysql_num_rows( $query_b );
 		$count_w = mysql_num_rows( $query_w );
         echo json_encode(array(

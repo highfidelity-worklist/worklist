@@ -44,14 +44,14 @@
 		<div id="center">
 
 <!-- LOGO -->
-			<div id="stats">
-				<span id='stats-text'>
-                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding' ><span id='count_b'></span> jobs</a>
+            <div id="stats">
+                <span id='stats-text'>
+                    <a href='./worklist.php?status=bidding' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
                     bidding, 
-                    <a href='javascript:ShowStats()' class='iToolTip jobsBidding' ><span id='count_w'></span> jobs</a>
+                    <a href='./worklist.php?status=underway' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
                     underway
                 </span>
-			</div>
+            </div>
 
 <!-- Navigation placeholder -->
 		<div id="nav">
@@ -64,7 +64,7 @@
 			<a href="team.php">Team</a> |
                      <a href="settings.php" class="iToolTip menuSettings">Settings</a>
 			<?php } else {
-            	echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a>';  
+            	echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="worklist.php" title="Worklist"> Worklist</a>';  
 			} 
 			?>
 		</div>

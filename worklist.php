@@ -264,7 +264,7 @@ include("head.html"); ?>
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
         row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' + json[0] + '</span> - ' + pre + json[1] + post + '</span></td>';
-        if (json[2] == 'BIDDING' && json[10] > 0 && (user_id == json[9] || is_runner == 1)) {
+        if (json[2] == 'BIDDING' && json[10] > 0) {
             post = ' (' + json[10] + ')';
         }
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
@@ -392,7 +392,7 @@ include("head.html"); ?>
 			data: {
 				page: npage,
 				project_id: $('select[name=project]').val() || inProject,
-				status: ($("select[name=status]").val() || []).join("/"),
+				status: ($('select[name=status]').val() || []).join("/"),
 				sort: sort,
 				dir: dir,
 				user: $('select[name=user]').val(),
@@ -1195,6 +1195,11 @@ include("head.html"); ?>
 <?php if (! $hide_project_column) : ?>
         $('#search-filter-wrap select[name=project]').comboBox();
 <?php endif; ?>
+
+        if(getQueryVariable('status') != null) {
+            if (timeoutId) clearTimeout(timeoutId);
+            GetWorklist(page, false);
+        }
 	});
 	
 	function reattachAutoUpdate() {

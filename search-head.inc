@@ -20,13 +20,32 @@
                 $status_array = array("SUGGESTED", "BUG", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");
                 $box = '<select name="status" multiple="multiple" style="display:none">';
                 $box .= '<option value="ALL"' . (($filter->inStatus("ALL") ) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+                
                 foreach ($status_array as $status) {
                     $selected = '';
-                    if ($filter->inStatus($status) ) {
-                        $selected = ' selected="selected"';
+                    if(!isset($_GET['status'])) {
+                        if ($filter->inStatus($status)) {
+                            $selected = ' selected="selected"';
+                        }
+                    } else {
+                        switch ($status) {
+                            case 'BIDDING':
+                                if($_GET['status'] == 'bidding') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                break;
+                            case 'WORKING':
+                            case 'REVIEW':
+                            case 'COMPLETED':
+                                if($_GET['status'] == 'underway') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                break;
+                        }
                     }
                     $box .= '<option value="' . $status . '"' . $selected . '>' . $status . '</option>';
                 }
+                
                 $box .= '<option value="CheckDone">Done</option>';
                 $box .= '</select>';
                 echo $box;
