@@ -48,15 +48,36 @@ if(! isset($_REQUEST["api_key"])&& $_REQUEST['action'] != 'getSystemDrawerJobs')
 * Setting session variables for the user so he is logged in
 */
 function loginUserIntoSession(){
-    $user_id = intval($_REQUEST['user_id']);
-    $username = $_REQUEST['username'];
-    $nickname = $_REQUEST['nickname'];
-    $admin = $_REQUEST['admin'];
-
-    $session_id = $_REQUEST['session_id'];
-    session_id($session_id);
-    session::init();
-    Utils::setUserSession($user_id, $username, $nickname, $admin);
+    require_once("class/Database.class.php");
+    $db = new Database();
+    $uid = (int) $_REQUEST['user_id'];
+    $sid = $_REQUEST['session_id'];
+    $csrf_token = md5(uniqid(rand(), TRUE));
+    
+    $sql = "SELECT * FROM ".WS_SESSIONS." WHERE session_id = '".mysql_real_escape_string($sid, $db->getLink())."'";
+    $res = $db->query($sql); 
+	
+    $session_data  ="running|s:4:\"true\";";
+	$session_data .="userid|s:".strlen($uid).":\"".$uid."\";";
+	$session_data .="username|s:".strlen($_REQUEST['username']).":\"".$_REQUEST['username']."\";";
+	$session_data .="nickname|s:".strlen($_REQUEST['nickname']).":\"".$_REQUEST['nickname']."\";";
+	$session_data .="admin|s:".strlen($_REQUEST['admin']).":\"".$_REQUEST['admin']."\";";
+	$session_data .="csrf_token|s:".strlen($csrf_token).":\"".$csrf_token."\";";
+		
+    if(mysql_num_rows($res) > 0){
+		$sql = "UPDATE ".WS_SESSIONS." SET ".
+			 "session_data = '".mysql_real_escape_string($session_data,$db->getLink())."' ".
+			 "WHERE session_id = '".mysql_real_escape_string($sid, $db->getLink())."';";
+		$db->query($sql);
+    } else {
+		$expires = time() + SESSION_EXPIRE;
+		$db->insert(WS_SESSIONS, 
+			array("session_id" => $sid, 
+				  "session_expires" => $expires,
+				  "session_data" => $session_data),
+			array("%s","%d","%s")
+		);
+    }
 }
 
 function uploadProfilePicture() {

@@ -60,8 +60,7 @@ class session {
     }
     static function check() {
         session_set_cookie_params(SESSION_EXPIRE);
-        if(empty($_SESSION['running']))
-        {
+        if(empty($_SESSION['running'])) {
             // There is no session or session expired
             session::init();
         }
@@ -158,8 +157,7 @@ class session {
         return mysql_affected_rows($db);
     }
 
-     public function removeUser(){
-     }
-     
+     public function removeUser() {
 
+     }
 }
