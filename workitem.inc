@@ -706,6 +706,7 @@ function reply(id) {
 	});
   
 </script>
+<title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
 </head>
 <body>
 	<?php include("format.php"); ?>
