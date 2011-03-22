@@ -224,7 +224,7 @@ if (count($user_projects) > 0) {
 <?php endforeach; ?>
             </form>
         </div><!-- end of tab 3 -->
-        <?php/*<div style = "clear: both;"></div>*/?>
+        <?php /*<div style = "clear: both;"></div>*/ ?>
     <?php } ?>
     </div><!--end of div "tabs" -->
 </div> <!-- end of div user-info-->
