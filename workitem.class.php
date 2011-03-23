@@ -357,17 +357,29 @@ WHERE id = ' . (int)$id;
             $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
             mysql_unbuffered_query($query);
         }
-
-        $query = 'UPDATE '.WORKLIST.' SET
+        if ($this->status == 'BIDDING') {
+            $query = 'UPDATE '.WORKLIST.' SET
             summary= "'. mysql_real_escape_string($this->getSummary()).'",
             notes="'.mysql_real_escape_string($this->getNotes()).'",
             project_id="'.mysql_real_escape_string($this->getProjectId()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
-	    runner_id="' .intval($this->getRunnerId()). '",
-	    sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
+            runner_id="' .$_SESSION['userid'].'",
+            sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
 
-        $query .= ' WHERE id='.$this->getId();
-        return mysql_query($query) ? 1 : 0;
+            $query .= ' WHERE id='.$this->getId();
+            return mysql_query($query) ? 1 : 0;
+        } else {
+            $query = 'UPDATE '.WORKLIST.' SET
+            summary= "'. mysql_real_escape_string($this->getSummary()).'",
+            notes="'.mysql_real_escape_string($this->getNotes()).'",
+            project_id="'.mysql_real_escape_string($this->getProjectId()).'",
+            status="' .mysql_real_escape_string($this->getStatus()).'",
+            runner_id="' .intval($this->getRunnerId()). '",
+            sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
+
+            $query .= ' WHERE id='.$this->getId();
+            return mysql_query($query) ? 1 : 0;
+        }
     }
 
     protected function tweetNewJob()
