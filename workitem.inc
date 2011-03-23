@@ -27,12 +27,15 @@
 
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || $has_budget) {
+    if ($is_runner || $has_budget || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' && is_null($worklist['runner_id']))) {
         $allowEdit = true;
         if ($action !="edit") {
             $classEditable = " editable";
         }
     }
+    //print "<pre>";
+    //print_r($worklist);
+    //print "</pre>";
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -742,9 +745,10 @@ if ($action =="edit"):  ?>
 					<ul style="margin:0; padding:0;">
 				<!-- Edit: Summary info -->
 						<li><span class="info-label">Summary</span><span class="info-data">
-							<?php if(($is_runner) && ($worklist['status'] != 'DONE')){ ?>
+							<?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
+                            if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' && is_null($worklist['runner_id']))) { ?>
 							<input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
-							<?php }else{?>
+							<?php } else { ?>
 							<span class="info-summ"><?php echo $worklist['summary'];?>
 							<?php } ?></span>
 						</li>
@@ -771,7 +775,7 @@ if ($action =="edit"):  ?>
 								<?php } ?>
 							</select>
 							<?php }else{ ?><?php echo $worklist['status'];?>
-							<input type="hidden" id="status" name="status" value = "<?php $worklist['status']; ?>" />
+							<input type="hidden" id="status" name="status" value="<?php $worklist['status']; ?>" />
 							<?php } ?></span>
 						</li>
 				<!-- Edit: Key People info box -->
