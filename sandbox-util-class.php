@@ -30,7 +30,7 @@ class SandBoxUtil {
     }
 
     public function createSandbox($username, $nickname, $unixusername, $projects,
-                    $new_user=false) {
+                    $new_user=true) {
 
          # Ensure $projects is an array.. it could just be 1 project
         if (!is_array($projects)) {
