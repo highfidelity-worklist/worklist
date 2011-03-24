@@ -1246,8 +1246,8 @@ if ($action =="edit"):  ?>
 		<div id="user-info" title="User Info"></div>
 	<!-- If we are logged in, include User Info Popup -->
 	<?php if(isset($_SESSION['userid']) && $is_runner){ ?>
-	</body>
-	<div id="budgetPopup" >
+	
+	<div id="budgetPopup" style="display:none;">
     <div id="be-block" >
         <table id="be-table">
             <tr>

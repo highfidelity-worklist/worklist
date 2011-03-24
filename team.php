@@ -329,7 +329,7 @@ function addCommas(nStr) {
 <div class="ln-pages"></div>
 
 <div id="user-info" title="User Info"></div>
-<div id="budgetPopup" >
+<div id="budgetPopup" style="display:none;">
     <div id="be-block" >
         <table id="be-table">
             <tr>
