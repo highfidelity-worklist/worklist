@@ -644,7 +644,7 @@ WHERE id = ' . (int)$id;
                     $new_user);
             } catch (Exception $e) {
                 $error_email_body = "Error creating sandbox for user: " .
-                    $bidder->getUsername."\n." .
+                    $bidder->getUsername()."\n." .
                     "Script returned error: ".$e->getMessage();
                 sl_send_email("ops@lovemachineinc.com", "Sandbox creation error",
                               $error_email_body);
