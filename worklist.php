@@ -22,6 +22,7 @@ $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 
 $userId = getSessionUserId();
+
 if( $userId > 0 ) {
     initUserById($userId);
     $user = new User();
@@ -241,11 +242,19 @@ include("head.html"); ?>
 		}
 
         if (odd) { row += ' rowodd' } else { row += 'roweven' }
-
-		if(user_id == json[9]){ //is the same person who created the work item
-		  row += ' rowown';
+		
+		// Check if the user is either creator, runner, mechanic and assings the rowown class
+		if(user_id == 0){ // Checks if a user is logged in, as of now it 
+						  // would show to non logged in users, since mechanic 
+						  // aren't checked for session
+		}else if(user_id == json[9]){ // Creator
+		 	row += ' rowown';
+		}else if(user_id == json[13]){
+			row += ' rowown'; // Runner
+		}else if(user_id == json[14]){
+			row += ' rowown'; // Mechanic
 		}
-
+		
         // highlight jobs I bid on in a different color
         if (json[15] == 1) { //user bid on this task
             row += ' rowbidon';
@@ -608,6 +617,7 @@ include("head.html"); ?>
 							function(json) {
 //								if (is_runner==1 || runner_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>")
 								if (is_runner==1 || runner_id == "<?php echo getSessionUserId(); ?>")
+
 									$('#popup-bid-info form').append('<input type="submit" name="accept_bid" value="Accept">');
 //								if (is_runner==1 || (json.bidder_id == "<?php echo (isset($_SESSION['userid'])) ? $_SESSION['userid'] : ''; ?>"))
 								if (is_runner==1 || (json.bidder_id == "<?php echo getSessionUserId(); ?>"))
