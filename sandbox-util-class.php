@@ -216,7 +216,7 @@ class SandBoxUtil {
         $subject = "Project Checkout";
         $sandbox = "http://dev.sendlove.us/~".$unixusername."/".$project;
 
-        $body = file_get_contents(SANDBOX_CREATION_EMAIL_TEMPATE);
+        $body = file_get_contents(PROJECT_CHECKOUT_EMAIL_TEMPATE);
 
         // Make sure we have proper line breaks in HTML
         $body = nl2br($body);
