@@ -236,7 +236,7 @@ function reply(id) {
 
 	// If the bid info popup is set to modal clipboard won't work!
 	$('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
-	$('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: false,width: 500, show: 'fade', hide: 'fade' });
+	$('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
 	$('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
 	$('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
 	$('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
@@ -575,18 +575,60 @@ function reply(id) {
     return false;
   }
   
- function AcceptMultipleBidOpen(){
-		var job_id = workitem_id;
-		$.ajax({
-			type: 'POST',
-			url: 'getmultiplebidlist.php',
-			data: "job_id=" + job_id,
-			success:function(response) {
-			 $('#popup-multiple-bid-info').html(response);
-			}
-			});		
-	$('#popup-multiple-bid-info').dialog('open');
-  }
+    function AcceptMultipleBidOpen(){
+        var job_id = workitem_id;
+        $.ajax({
+            type: 'POST',
+            url: 'getmultiplebidlist.php',
+            data: "job_id=" + job_id,
+            success:function(response) {
+                $('#popup-multiple-bid-info').html(response);
+                $("#popup-multiple-bid-info .chkMechanic").change(function() {
+                    if (this.checked) {
+                        // remove ticks
+                        $('#popup-multiple-bid-info .chkMechanic').removeAttr('checked');
+                        // and add it back
+                        $(this).attr('checked', 'checked');
+                        // and auto accept
+                        $(this).parent().parent().find('.acceptMechanic').attr('checked', 'checked');
+                    } 
+                });
+                
+                $('#popup-multiple-bid-info .acceptMechanic').change(function() {
+                    if (this.checked) {
+                    } else {
+                        if ($(this).parent().parent().find('.chkMechanic').is(':checked')) {
+                            $(this).parent().parent().find('.chkMechanic').removeAttr('checked');
+                        }
+                    }
+                });
+                
+                $('#popup-multiple-bid-form').submit(function() {
+                    if ($(this).find('input.chkMechanic:checked').length > 0) {
+                        return true;
+                    } else {
+                        $('<div id="popup-mechanic-required"><div class="content"></div></div>').appendTo('body');
+                        $('#popup-mechanic-required').dialog({
+                            modal: true,
+                            title: 'Failed to specify mechanic',
+                            autoOpen: true,
+                            width: 300,
+                            position: ['top'],
+                            open: function() {
+                                $('#popup-mechanic-required .content').html('<p>You must pick which user will be the main mechanic for this task.</p><input class="closeButton" type="button" value="Close" />');
+                                $('#popup-mechanic-required .closeButton').click(function() {
+                                    $('#popup-mechanic-required').dialog('close');
+                                });
+                            }
+                        });
+                        
+                        return false;
+                    }
+                });
+            }
+        });
+        $('#popup-multiple-bid-info').dialog('open');
+    }
 
     $(function()    {
         

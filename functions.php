@@ -506,10 +506,11 @@ function is_runner() {
 }
 
 function sendJournalNotification($message) {
+    
     $data = array(
-    		'user' 		=> JOURNAL_API_USER,
-    		'pwd'  		=> sha1(JOURNAL_API_PWD),
-    		'message'	=> stripslashes($message)
+        'user'    => JOURNAL_API_USER,
+        'pwd'     => sha1(JOURNAL_API_PWD),
+        'message' => stripslashes(strip_tags($message))
     );
 
     return postRequest(JOURNAL_API_URL, $data);

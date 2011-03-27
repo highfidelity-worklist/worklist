@@ -451,36 +451,41 @@ if ($action=='accept_bid'){
 // Accept Multiple  bid
 if ($action=='accept_multiple_bid'){
     $bid_id = $_REQUEST['chkMultipleBid'];
-	if(count($bid_id) > 0){
-	//only runners can accept bids
-	if (($is_runner == 1 || $workitem->getRunnerId() == getSessionUserId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
-			foreach($bid_id as $bid){
-				$bids = (array) $workitem->getBids($workitem -> getId());
-				$exists = false;
-				foreach ($bids as $array) {
-					if ($array['id'] == $bid) {
-						$exists = true;
-						break;
-					}
-				}
-				if ($exists) {
-					$bid_info = $workitem->acceptBid($bid);
-					// Journal notification
-			$journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . ". Status set to WORKING.<br>";
-					// mail notification
-					Notification::workitemNotify(array('type' => 'bid_accepted',
-								 'workitem' => $workitem,
-								 'recipients' => array('mechanic')));
-				}
-				else {
-					$_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
-				}
-			}
-			// Send email to not accepted bidders
-			sendMailToDiscardedBids($worklist_id);
-			$redirectToDefaultView = true;
-		}
-	}
+    $mechanic_id = $_REQUEST['mechanic'];
+    if(count($bid_id) > 0){
+    //only runners can accept bids
+        if (($is_runner == 1 || $workitem->getRunnerId() == getSessionUserId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+            foreach($bid_id as $bid){
+                $bids = (array) $workitem->getBids($workitem -> getId());
+                $exists = false;
+                foreach ($bids as $array) {
+                    if ($array['id'] == $bid) {
+                        if ($array['bidder_id'] == $mechanic_id) {
+                            $is_mechanic = true;
+                        } else {
+                            $is_mechanic = false;
+                        }
+                        $exists = true;
+                        break;
+                    }
+                }
+                if ($exists) {
+                    $bid_info = $workitem->acceptBid($bid, $is_mechanic);
+                    // Journal notification
+                    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " " . ($is_mechanic ? ' as MECHANIC ' : '') . "on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . ". Status set to WORKING. ";
+                    // mail notification
+                    Notification::workitemNotify(array('type' => 'bid_accepted',
+                                 'workitem' => $workitem,
+                                 'recipients' => array('mechanic')));
+                } else {
+                    $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
+                }
+            }
+            // Send email to not accepted bidders
+            sendMailToDiscardedBids($worklist_id);
+            $redirectToDefaultView = true;
+        }
+    }
 }
 //Withdraw a bid
 if ($action == "withdraw_bid") {

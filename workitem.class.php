@@ -602,7 +602,7 @@ WHERE id = ' . (int)$id;
     }
 
     // Accept a bid given it's Bid id
-    public function acceptBid($bid_id)
+    public function acceptBid($bid_id, $is_mechanic = true)
     {
         $this->conditionalLoadByBidId($bid_id);
         /*if ($this->hasAcceptedBids()) {
@@ -667,7 +667,7 @@ WHERE id = ' . (int)$id;
         $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
             
         // changing mechanic of the job
-        mysql_unbuffered_query("UPDATE `".WORKLIST."` SET `mechanic_id` =  '".$bid_info['bidder_id']."', `status` = 'WORKING',`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
+        mysql_unbuffered_query("UPDATE `".WORKLIST."` SET " . ($is_mechanic ? "`mechanic_id` =  '".$bid_info['bidder_id']."', " : '') . " `status` = 'WORKING',`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
         // marking bid as "accepted"
         mysql_unbuffered_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id);
         
