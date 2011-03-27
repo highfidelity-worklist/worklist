@@ -25,7 +25,7 @@ if (sizeof($bids) > 0 ) {
                 </caption>
                 <thead>
                     <tr class="table-hdng">
-                        <td>Email</td>
+                        <td>User</td>
                         <td>Bid Amount</td>
                         <td>Done by</td>
                         <td>Notes</td>
@@ -38,7 +38,7 @@ if (sizeof($bids) > 0 ) {
     foreach($bids as $bid) {
         $data .= '
                     <tr>
-                        <td>'.$bid['email'].'</td>
+                        <td><a href="#" onclick="javascript:showUserInfo(' . $bid['bidder_id'] . ');">'.$bid['nickname'].'</a></td>
                         <td>'.$bid['bid_amount'].'</td>
                         <td>'.$bid['bid_done'].'</td>
                         <td>'.$bid['notes'].'</td>
