@@ -4,10 +4,77 @@
     <div class="user-info" title="">
         <span id="user-avatar"><img id="avatar" src="<?php echo($user -> getAvatar(80,80)); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
         <div class = "common-info">
-        <?php include("userstats-table.inc"); ?>
+        <?php
+        
+        include("userstats-table.inc");
+        require_once 'countrylist.php'; // Get country and country url list
+        // Google Maps search Base URL
+        $gMapSearch = "http://maps.google.com/maps?q=";
+        // CIA.gov Base URL
+        $ciaGovBase = "https://www.cia.gov/library/publications/the-world-factbook/geos/";
+        // CCF = Country Code Fetched from user
+        $CCF = $user ->getCountry();
+        
+        /* Array comparising
+         * If country is empty do nothing
+         */
+        if($CCF == ""){
+        	// $countryName = "Country Name Unkown";
+        	// $countryCodeUrl = "Country URL Uknown";
+        	// $countryCode = "Country Code Unkown";
+        }else{
+        /* If country Code (key, array) is the same as
+		 * the country code stored in DB,
+		 * if it's do proceed and store variabels
+		 * with values
+		 */
+                if(array_key_exists($CCF,$countrylist)) {
+        		$countryCode = $CCF;
+        		$countryName = $countrylist[$CCF];
+        /* Proceed by checking (array) if the countries name
+         * is identicel in the one of countriesurllist,
+         * if so proceed and store the country code url
+         * in another variabel
+        */
+                        if(array_key_exists($countryName,$countryurllist)) {
+        				$countryCodeUrl = strtolower($countryurllist[$countryName]); // To prevent URL from not working, case sensitiv.
+        		}
+        	}
+        }        
+        ?>
 
-        <p class = "info-label">City, Local Time<br />
-        <span id="info-currenttime" title="<?php echo $timezoneTable[$user -> getTimezone()]; ?>"><?php echo $user ->getCity().", ";echo convertTimeZoneToLocalTime($user->getTimezone()); ?></span>
+        <p class = "info-label">
+        <?php
+        if($user->getCity() != ""){
+        echo 'City, ';
+        }
+        if($countryCodeUrl != ""){
+        echo 'Country - ';
+        }
+        ?>
+        Local Time<br />
+        <span id="info-currenttime" title="<?php echo $timezoneTable[$user -> getTimezone()]; ?>">
+        
+        <?php
+        
+        /* If city is not present, aka stored in DB
+         * do nothing and proceed to next step
+         */
+        if($user->getCity() != ""){
+        echo '<a class="userInfoLink" href="'.$gMapSearch.''.$user->getCity().',+'.$countryName.'&z=6" target="_blank" title="See location on Google Maps">'.$user->getCity().'</a>, ';
+        }
+        /* If country code url exists is not empty
+         * do proceed with making the url, else nothing
+         */
+        if($countryCodeUrl != ""){
+        echo '<a class="userInfoLink" href="'.$ciaGovBase.''.$countryCodeUrl.'.html" target="_blank" title="'.$countryName.'">'.$CCF.'</a> - ';
+        }
+        
+        echo convertTimeZoneToLocalTime($user->getTimezone());
+        
+        ?>
+        
+        </span>
         </p>
         <div class="button-row">
             <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
