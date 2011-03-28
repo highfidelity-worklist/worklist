@@ -373,36 +373,14 @@ td.textAlignReport {
     background-position: -64px 0 !important;
 }
 
-.ui-notice-div {
-    padding: 0.7em;
-    margin: 0.7em 0;
-    width: 142px;
-}
-
-.ui-icon-success {
-    float: left;
-    margin-right: 0.3em;
-}
-
-.projectLeft {
-    width: 430px;
-    float: left;
-}
-.projectRight {
-    width: 419px;
-    float: right;
-}
-
-.noMargin {
-    margin: 0;
-}
-
 #itemProject {
     width: 350px;
 }
 #for_edit .ui-combobox-textbox {
     font-size: 1.2em !important;
 }
+
+
 
 #login-form {
     border: 1px solid black;

@@ -3,7 +3,6 @@
 		var documents = (typeof(documentsArray) != 'undefined') ? documentsArray : new Array();
 		var user = (typeof(user_id) != 'undefined') ? user_id : '';
 		var workitem = (typeof(workitem_id) != 'undefined') ? workitem_id : null;
-        var project_id = (typeof(inProject) != 'undefined') ? inProject : null;
 
 		// Activate the accordion
 		$("#accordion").accordion({
@@ -19,7 +18,6 @@
 			data: {
 				action: 'fileUpload',
 				userid: user,
-                projectid: project_id,
 				workitem: workitem
 			},
 			autoSubmit: true,
@@ -56,10 +54,6 @@
 						$('#accordion').accordion('activate', 1);
 					}
 					$('input[name=files]').val(images.concat(documents).join(','));
-                    var html='<div class="ui-state-highlight ui-corner-all ui-notice-div">' +
-                        '<p class="noMargin"><span class="ui-icon ui-icon-info ui-icon-success"></span>' +
-                        '<strong>Upload successful.</strong></p></div>';
-					$('.uploadnotice').append(html);
 					editable();
 
 				} else {
