@@ -273,10 +273,12 @@ include("head.html"); ?>
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
         row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' + json[0] + '</span> - ' + pre + json[1] + post + '</span></td>';
+        <?php if (! $hide_project_column) : ?>
         if (json[2] == 'BIDDING' && json[10] > 0) {
             post = ' (' + json[10] + ')';
         }
         row += '<td width="10%">' + pre + json[2] + post + '</td>';
+        <?php endif; ?>
         pre = '';
         post = '';
 /*
@@ -293,7 +295,7 @@ include("head.html"); ?>
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
         }
 */
-
+    <?php if (! $hide_project_column) : ?>
 	var who = '',
 		createTagWho = function(id,nickname,type) {
 			return '<span class="'+type+'" title="' + id + '">'+nickname+'</span>';
@@ -344,6 +346,7 @@ include("head.html"); ?>
 			}
 			row += '<td width="11%">' + pre + feebids + post + '</td>';
         }
+        <?php endif; ?>
 		row += '</tr>';
         if (prepend) {
             $(row).prependTo('.table-worklist tbody')
@@ -1437,6 +1440,119 @@ include("head.html"); ?>
 	?>
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
+<?php
+// !!!
+// !!! This code is duplicated in workitem.inc
+// !!! 
+?>
+<script type="text/html" id="uploadedFiles">
+<div id="accordion">
+	<h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
+	<div id="fileimagecontainer">
+	<# if (images.length > 0) { #>
+		<# for(var i=0; i < images.length; i++) {
+		var image = images[i];
+		#>
+		<div class="filesIcon">
+			<a href="<#= image.url #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
+		</div>
+		<div class="filesDescription">
+			<h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
+			<p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
+            <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Remove attachment</a>
+		</div>
+		<div class="clear"></div>
+		<# } #>
+	<# } #>
+	</div>
+	<h3><a href="#">Documents (<span id="documentCount"><#= documents.length #></span>)</a></h3>
+	<div id="filedocumentcontainer">
+	<# if (documents.length > 0) { #>
+		<# for(var i=0; i < documents.length; i++) {
+		var doc = documents[i];
+		#>
+		<div class="filesIcon">
+			<a href="<#= doc.url #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+		</div>
+		<div class="documents filesDescription">
+			<h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
+			<p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
+            <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Remove attachment</a>
+		</div>
+		<div class="clear"></div>
+		<# } #>
+	<# } #>
+	</div>
+</div>
+<div id="fileUploadButton">
+	Attach new files
+</div>
+<div class="uploadnotice"></div>
+</script>
+<script type="text/html" id="uploadImage">
+	<div class="filesIcon">
+		<a href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
+	</div>
+	<div class="filesDescription">
+		<h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
+		<p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
+        <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
+	</div>
+	<div class="clear"></div>
+</script>
+<script type="text/html" id="uploadDocument">
+	<div class="filesIcon">
+		<a href="<#= url #>" target="_blank"><img width="32px" height="32px" src="<#= icon #>" /></a>
+	</div>
+	<div class="documents filesDescription">
+		<h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
+		<p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
+        <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
+	</div>
+	<div class="clear"></div>
+</script>
+<?php // !!! - END of duplicated code ?>
+<script type="text/javascript">
+var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
+var projectid = <?php echo !empty($project_id) ? $project_id : "''"; ?>;
+var imageArray = new Array();
+var documentsArray = new Array();
+(function($) {
+    // journal info accordian
+    // flag to say we've not loaded anything in there yet
+    
+    $('#accordion').accordion( "activate" , 0 );
+    $.ajax({
+        type: 'post',
+        url: 'jsonserver.php',
+        data: {
+            projectid: projectid,
+            userid: user_id,
+            action: 'getFilesForProject'
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.success) {
+                var images = data.data.images;
+                var documents = data.data.documents;
+                for (var i=0; i < images.length; i++) {
+                    imageArray.push(images[i].fileid);
+                }
+                for (var i=0; i < documents.length; i++) {
+                    documentsArray.push(documents[i].fileid);
+                }
+                var files = $('#uploadedFiles').parseTemplate(data.data);
+                files = files + '<script type="text/javascript" src="js/uploadFiles.js"><\/script>';
+                $('#uploadPanel').append(files);
+                $('#accordion').accordion({
+                    clearStyle: true,
+                    collapsible: true
+                });
+            }
+        }
+    });
+})(jQuery);
+</script>
 <title>Worklist | Fast pay for your work, open codebase, great community.</title>
 </head>
 <body>
@@ -1521,23 +1637,36 @@ if (is_object($inProject)) {
         <li><strong>Repository:</strong> </li>
 <?php endif; ?>
     </ul>
-    <h2>Worklist</h2>
+    <h3>Jobs:</h3>
+<div><div class="projectLeft">
 <?php } ?>
-<table width="100%" class="table-worklist">
+<table class="table-worklist">
     <thead>
         <tr class="table-hdng">
-<?php if (! $hide_project_column) echo '<td class="clickable">Project</td>'; ?>
+            <?php if (! $hide_project_column) echo '<td class="clickable">Project</td>'; ?>
             <td><span class="clickable">ID</span> - <span class="clickable">Summary</span></td>
-            <td class="clickable">Status</td>
-            <td class="clickable">Who</td>
-            <td class="clickable" id="defaultsort">When</td>
-            <td class="clickable" style="min-width:80px">Comments</td>
-            <td class="worklist-fees clickable"  <?php echo empty($_SESSION['is_runner']) ? 'style="display:none"' : ''; ?>>Fees/Bids</td>
+            <?php if (! $hide_project_column) echo '<td class="clickable">Status</td>'; ?>
+            <?php if (! $hide_project_column) echo '<td class="clickable">Who</td>'; ?>
+            <?php if (! $hide_project_column) echo '<td class="clickable" id="defaultsort">When</td>'; ?>
+            <?php if (! $hide_project_column) echo '<td class="clickable" style="min-width:80px">Comments</td>'; ?>
+            <?php if (! $hide_project_column) {
+                echo '<td class="worklist-fees clickable';
+                echo ($is_runner==0) ? 'style="display:none"' : ''; 
+                echo '>Fees/Bids</td>';
+            } ?>
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
+<?php if (is_object($inProject)) { ?>
+</div>
+<div class="projectRight">
+<div id="uploadPanel"> </div>
+</div>
+<div class="clear">&nbsp;</div>
+</div>
+<?php } ?>
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
 <div id="user-info" title="User Info"></div>
 

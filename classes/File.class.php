@@ -12,6 +12,7 @@ class File
 	protected $id;
 	protected $userid;
 	protected $workitem;
+    protected $projectid;
 	protected $mime;
 	protected $title;
 	protected $description;
@@ -90,6 +91,21 @@ class File
 	 */
 	public function setWorkitem($workitem) {
 		$this->workitem = $workitem;
+		return $this;
+	}
+    
+    /**
+	 * @return the $projectid
+	 */
+	public function getProjectId() {
+		return $this->projectid;
+	}
+
+	/**
+	 * @param $projectid to set
+	 */
+	public function setProjectId($projectid) {
+		$this->projectid = $projectid;
 		return $this;
 	}
 
@@ -406,6 +422,28 @@ class File
     		throw new Exception('You have to define a workitem!');
     	}
     	$sql = 'SELECT `id` FROM `' . FILES . '` WHERE `workitem` = ' . (int)$workitem;
+    	$result = mysql_query($sql);
+    	$files = array();
+    	while ($row = mysql_fetch_assoc($result)) {
+    		$file = new File();
+    		$file->findFileById($row['id']);
+    		$files[] = $file;
+    	}
+    	return $files;
+    }
+    
+    /**
+     * This method fetches all files for a project
+     * 
+     * @param int $workitem
+     * @return array $files
+     */
+    public static function fetchAllFilesForProject($projectid = null)
+    {
+    	if (null === $projectid) {
+    		throw new Exception('You have to define a projectid!');
+    	}
+    	$sql = 'SELECT `id` FROM `' . FILES . '` WHERE `workitem` IS NULL and `projectid`='.(int)$projectid;
     	$result = mysql_query($sql);
     	$files = array();
     	while ($row = mysql_fetch_assoc($result)) {
