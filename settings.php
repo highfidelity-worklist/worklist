@@ -2,7 +2,7 @@
 //  vim:ts=4:et
 
 //
-//  Copyright (c) 2010, LoveMachine Inc.
+//  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
@@ -49,10 +49,13 @@ if (isset($_POST['save_account'])) {
             $$arg = ($esc ? $_POST[$arg] : intval($_POST[$arg]));
         }
 
-        if(isset($_POST['city'])){
-            $city = mysql_real_escape_string($_POST['city']);
-            $saveArgs['city'] = 0;
-        } 
+        if (isset($_POST['city'])) {
+            $city = $_POST['city'];
+            $saveArgs['city'] = 1;
+        } else {
+            // TODO: Actually return the error to user, rather than rely on javascript validation
+            $error->setError('You are required to choose a city');
+        }
 
         $provider = mysql_real_escape_string($_POST['provider']);
         $saveArgs['provider'] = 0;
@@ -96,9 +99,10 @@ if (isset($_POST['save_account'])) {
     $nickname = trim($_POST['nickname']);
     if($nickname != $_SESSION['nickname']){
         $ret = Utils::updateLoginData(array('nickname' => $nickname), true, false);
-        if($ret->error == 1){
+        if ($ret->error == 1){
+            // TODO: Actually send error back to browser, if necessary
             $error->setError($ret->message);
-        }else{
+        } else {
             if(!$_SESSION['new_user']){
                 $sql = "UPDATE " . USERS . " SET nickname='" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
                 mysql_query($sql);

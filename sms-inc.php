@@ -1,7 +1,7 @@
 <?php
 //  vim:ts=4:et
 
-//  Copyright (c) 2009-2010, LoveMachine Inc.
+//  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
@@ -33,11 +33,16 @@ require_once 'lib/Sms/Numberlist.php';
                     </div>
                     <div id="cityDiv">
                         <p><label for="City">City</label><br />
-                        <input type="text" id="city" name="city" class="text-field"
+                        <span class="required-bullet">*</span> <input type="text" id="city" name="city" class="text-field"
                             size="35"
-                            value="" />
+                            value="<?php echo isset($userInfo['city']) ? $userInfo['city'] : ''; ?>" />
                         </p>
                     </div>
+                    <script type="text/javascript">
+                        // TODO: Move this inline javascript to header, or external file
+                        var city = new LiveValidation('city', {validMessage: "Valid city."});
+                        city.add(Validate.Presence);
+                    </script>
                     <div id="sms-number">
                         <label>Mobile device number<br /></label>
                             <select id="int_code" name="int_code">
