@@ -415,6 +415,28 @@ class File
     	}
     	return $files;
     }
+    
+    /**
+     * This method fetches all files for a project
+     * 
+     * @param int $projectid
+     * @return array $files
+     */
+    public static function fetchAllFilesForProject($projectid = null)
+    {
+    	if (null === $projectid) {
+    		throw new Exception('You have to define a projectid!');
+    	}
+    	$sql = 'SELECT `id` FROM `' . FILES . '` WHERE `workitem` IS NULL and `projectid`='.(int)$projectid;
+    	$result = mysql_query($sql);
+    	$files = array();
+    	while ($row = mysql_fetch_assoc($result)) {
+    		$file = new File();
+    		$file->findFileById($row['id']);
+    		$files[] = $file;
+    	}
+    	return $files;
+    }
 	
 	public static function fileUploadErrorMessage($error_code) {
 		switch ($error_code) {

@@ -3,6 +3,7 @@
 		var documents = (typeof(documentsArray) != 'undefined') ? documentsArray : new Array();
 		var user = (typeof(user_id) != 'undefined') ? user_id : '';
 		var workitem = (typeof(workitem_id) != 'undefined') ? workitem_id : null;
+                var projectid = (typeof(inProject) != 'undefined') ? inProject : null;
 
 		// Activate the accordion
 		$("#accordion").accordion({
@@ -18,6 +19,7 @@
 			data: {
 				action: 'fileUpload',
 				userid: user,
+                                projectid: projectid,
 				workitem: workitem
 			},
 			autoSubmit: true,
