@@ -309,23 +309,28 @@ include("head.html");
     function saveSettings(type) {
         var values;
         if (type == 'account') {
-            values = { 
-                int_code: $('#int_code').val(),
-                phone: $('#phone').val(),
-                phone_edit: $('#phone_edit').val(),
-                country: $('#country').val(),
-                city: $('#city').val(),
-                smsaddr: $('#smsaddr').val(),
-                provider: $('#provider').val(),
-                timezone: $('#timezone').val(),
-                journal_alerts: $('#journal_alerts').attr('checked') ? 1:0,
-                bid_alerts: $('#bid_alerts').attr('checked') ? 1:0,
-                nickname: $('#nickname').val(),
-                save_account: 1,
-                username: $('#username').val(),
-                review_notify: $('input[name="review_notify"]').attr('checked') ? 1:0,
-                bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1:0
-            };
+            var massValidation = LiveValidation.massValidate( [ nickname, city ]);
+            if (massValidation) {
+                values = { 
+                    int_code: $('#int_code').val(),
+                    phone: $('#phone').val(),
+                    phone_edit: $('#phone_edit').val(),
+                    country: $('#country').val(),
+                    city: $('#city').val(),
+                    smsaddr: $('#smsaddr').val(),
+                    provider: $('#provider').val(),
+                    timezone: $('#timezone').val(),
+                    journal_alerts: $('#journal_alerts').attr('checked') ? 1:0,
+                    bid_alerts: $('#bid_alerts').attr('checked') ? 1:0,
+                    nickname: $('#nickname').val(),
+                    save_account: 1,
+                    username: $('#username').val(),
+                    review_notify: $('input[name="review_notify"]').attr('checked') ? 1:0,
+                    bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1:0
+                };
+            } else {
+                return false;
+            }
         } else if (type == 'personal') {
             values = {
                 about: $("#about").val(),
@@ -334,11 +339,16 @@ include("head.html");
                 save_personal: 1
             }
         } else if (type == 'payment') {
-            values = {
-                paytype: $("#paytype").val(),
-                paypal_email: $("#paypal_email").val(),
-                payway: $("#payway").val(),
-                save_payment: 1
+            var massValidation = LiveValidation.massValidate( [ paypal ]);
+            if (massValidation) {
+                values = {
+                    paytype: $("#paytype").val(),
+                    paypal_email: $("#paypal_email").val(),
+                    payway: $("#payway").val(),
+                    save_payment: 1
+                }
+            } else {
+                return false;
             }
         }
 
@@ -512,8 +522,9 @@ include("head.html");
             <span class="required-bullet">*</span> <input name="nickname" type="text" id="nickname"  value = "<?php echo $_SESSION['nickname']; ?>" size="35"/>
         </p>
         <script type="text/javascript">
-            var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});
+            var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname." });
             nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
+            nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
         </script>
 
         <p><label for = "timezone">What timezone are you in?</label><br />
@@ -609,7 +620,9 @@ include("head.html");
             <script type="text/javascript">
                 var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
                 paypal.add(Validate.Email);
-                paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+                // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal 
+                // email, which removes their paypal verification and prevents them from bidding
+                // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
             </script> 
             <input type="hidden" name="paytype" id="paytype" value="paypal" />
             <input type="hidden" name="payway" id="payway" value="paypal" />
