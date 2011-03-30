@@ -66,20 +66,20 @@ class WorkItem
             $id = $this->id;
         }
         $query = "
-					SELECT
-					    w.id,
-					    w.summary,
-					    w.creator_id,
-					    w.runner_id,
-					    w.mechanic_id,
-					    w.status,
-					    w.project_id,
-					    w.notes,
-					    w.sandbox,
+                    SELECT
+                        w.id,
+                        w.summary,
+                        w.creator_id,
+                        w.runner_id,
+                        w.mechanic_id,
+                        w.status,
+                        w.project_id,
+                        w.notes,
+                        w.sandbox,
                         p.name AS project_name
-					FROM  ".WORKLIST. " as w
+                    FROM  ".WORKLIST. " as w
                     LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
-					WHERE w.id = '" . (int)$id . "'";
+                    WHERE w.id = '" . (int)$id . "'";
         $res = mysql_query($query);
         if (!$res) {
             throw new Workitem_Exception('MySQL error.');
@@ -92,11 +92,11 @@ class WorkItem
              ->setSummary($row['summary'])
              ->setCreatorId($row['creator_id'])
              ->setRunnerId($row['runner_id'])
-	     	 ->setMechanicId($row['mechanic_id'])
+              ->setMechanicId($row['mechanic_id'])
              ->setStatus($row['status'])
              ->setProjectId($row['project_id'])
              ->setNotes($row['notes'])
-	         ->setSandbox($row['sandbox'])
+             ->setSandbox($row['sandbox'])
              ->setWorkitemSkills();
         $this->project_name = $row['project_name'];
         return true;
@@ -176,38 +176,38 @@ WHERE id = ' . (int)$id;
     
     protected function setCreator()
     {
-    	$user = new User();
-    	$this->creator = $user->findUserById($this->getCreatorId());
-    	return $this;
+        $user = new User();
+        $this->creator = $user->findUserById($this->getCreatorId());
+        return $this;
     }
     
     protected function setRunner()
     {
-    	$user = new User();
-    	$this->runner = $user->findUserById($this->getRunnerId());
-    	return $this;
+        $user = new User();
+        $this->runner = $user->findUserById($this->getRunnerId());
+        return $this;
     }
     
     protected function setMechanic()
     {
-    	$user = new User();
-    	$this->mechanic = $user->findUserById($this->getMechanicId());
-    	return $this;
+        $user = new User();
+        $this->mechanic = $user->findUserById($this->getMechanicId());
+        return $this;
     }
     
     public function getCreator()
     {
-    	return $this->creator;
+        return $this->creator;
     }
     
     public function getRunner()
     {
-    	return $this->runner;
+        return $this->runner;
     }
     
     public function getMechanic()
     {
-    	return $this->mechanic;
+        return $this->mechanic;
     }
 
     public function setStatus($status)
@@ -340,7 +340,7 @@ WHERE id = ' . (int)$id;
         mysql_unbuffered_query($query);
 
         if($this->status == 'BIDDING') {
-        	$this->tweetNewJob();
+            $this->tweetNewJob();
         }
 
         return $rt ? 1 : 0;
@@ -385,26 +385,26 @@ WHERE id = ' . (int)$id;
     protected function tweetNewJob()
     {
          
-    	if (empty($_SERVER['HTTPS']))
-    	{
-    		$prefix	= 'http://';
-        	$port	= ((int)$_SERVER['SERVER_PORT'] == 80) ? '' :  ":{$_SERVER['SERVER_PORT']}";
-    	}
-    	else
-    	{
-        	$prefix	= 'https://';
-        	$port	= ((int)$_SERVER['SERVER_PORT'] == 443) ? '' :  ":{$_SERVER['SERVER_PORT']}";
-    	}
-    	$link = $prefix . $_SERVER['HTTP_HOST'] . $port . '/rw/?' . $this->id;
-    	$summary_max_length = 140-strlen('New job: ')-strlen($link)-1;
-    	$summary = substr($this->summary, 0, $summary_max_length);
+        if (empty($_SERVER['HTTPS']))
+        {
+            $prefix    = 'http://';
+            $port    = ((int)$_SERVER['SERVER_PORT'] == 80) ? '' :  ":{$_SERVER['SERVER_PORT']}";
+        }
+        else
+        {
+            $prefix    = 'https://';
+            $port    = ((int)$_SERVER['SERVER_PORT'] == 443) ? '' :  ":{$_SERVER['SERVER_PORT']}";
+        }
+        $link = $prefix . $_SERVER['HTTP_HOST'] . $port . '/rw/?' . $this->id;
+        $summary_max_length = 140-strlen('New job: ')-strlen($link)-1;
+        $summary = substr($this->summary, 0, $summary_max_length);
         
-		$connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET);
-		$content = $connection->get('account/verify_credentials');
-		 
-		$message='New job: ' . $summary . ' ' . $link;
-		$connection->post('statuses/update', array('status' => $message));    
-	}
+        $connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET);
+        $content = $connection->get('account/verify_credentials');
+         
+        $message='New job: ' . $summary . ' ' . $link;
+        $connection->post('statuses/update', array('status' => $message));    
+    }
 
 
     public function save() {
@@ -436,12 +436,12 @@ WHERE id = ' . (int)$id;
     public function getWorkItem($worklist_id)
     {
         $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname, u.id AS runner_id,
-			  uc.nickname AS creator_nickname, w.status, w.notes, w.project_id, p.name AS project_name, p.repository AS repository, w.sandbox 
-			  FROM  ".WORKLIST. " as w
-			  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
-			  LEFT JOIN ".USERS." as u ON w.runner_id = u.id
+              uc.nickname AS creator_nickname, w.status, w.notes, w.project_id, p.name AS project_name, p.repository AS repository, w.sandbox 
+              FROM  ".WORKLIST. " as w
+              LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
+              LEFT JOIN ".USERS." as u ON w.runner_id = u.id
               LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
-			  WHERE w.id = '$worklist_id'";
+              WHERE w.id = '$worklist_id'";
         $result_query = mysql_query($query);
         $row =  $result_query ? mysql_fetch_assoc($result_query) : null;
         return !empty($row) ? $row : null;
@@ -454,20 +454,20 @@ WHERE id = ' . (int)$id;
     public function getBids($worklist_id)
     {
         $query = "SELECT bids.`id`, bids.`bidder_id`, `email`, u.`nickname`, bids.`bid_amount`,
-				UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`,
-				bids.`notes`,TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
-				TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
-				DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`,
+                UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`,
+                bids.`notes`,TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
+                TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
+                DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`,
                 UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`,
-				
-				UNIX_TIMESTAMP(f.`date`) AS `unix_bid_accepted`,
-				UNIX_TIMESTAMP(NOW()) AS `unix_now`
-				
-				FROM `".BIDS. "` as bids
-				INNER JOIN `".USERS."` as u on (u.id = bids.bidder_id)
-				LEFT JOIN ".FEES." as f ON (f.bid_id=bids.id)
-				WHERE bids.worklist_id=".$worklist_id.
-				" and bids.withdrawn = 0 ORDER BY bids.`id` DESC";
+                
+                UNIX_TIMESTAMP(f.`date`) AS `unix_bid_accepted`,
+                UNIX_TIMESTAMP(NOW()) AS `unix_now`
+                
+                FROM `".BIDS. "` as bids
+                INNER JOIN `".USERS."` as u on (u.id = bids.bidder_id)
+                LEFT JOIN ".FEES." as f ON (f.bid_id=bids.id)
+                WHERE bids.worklist_id=".$worklist_id.
+                " and bids.withdrawn = 0 ORDER BY bids.`id` DESC";
         $result_query = mysql_query($query);
         if($result_query) {
             $temp_array = array();
@@ -481,21 +481,35 @@ WHERE id = ' . (int)$id;
         }
     }
 
+    public function getProjectRunners() {
+        $query=" SELECT DISTINCT(runner_id) as runner FROM " .WORKLIST. " AS w WHERE w.project_id=".$this->getProjectId();
+        $result_query = mysql_query($query);
+        if($result_query) {
+            $temp_array = array();
+            while($row = mysql_fetch_assoc($result_query)) {
+                $temp_array[] = $row['runner'];
+            }
+            return $temp_array;
+        } else {
+            return null;
+        }
+    }
+
     public function getFees($worklist_id)
     {
         $query = "SELECT fees.`id`, fees.`amount`, u.`nickname`, fees.`desc`,fees.`user_id`, DATE_FORMAT(fees.`date`, '%m/%d/%Y') as date, fees.`paid`
-			FROM `".FEES. "` as fees LEFT OUTER JOIN `".USERS."` u ON u.`id` = fees.`user_id`
-			WHERE worklist_id = ".$worklist_id."
-			AND fees.withdrawn = 0 ";
+            FROM `".FEES. "` as fees LEFT OUTER JOIN `".USERS."` u ON u.`id` = fees.`user_id`
+            WHERE worklist_id = ".$worklist_id."
+            AND fees.withdrawn = 0 ";
 
         $result_query = mysql_query($query);
         if($result_query){
             $temp_array = array();
             while($row = mysql_fetch_assoc($result_query)) {
-			
-			    // this is to make sure to remove extra slashes 11-MAR-2011 <webdev>
+            
+                // this is to make sure to remove extra slashes 11-MAR-2011 <webdev>
                 $row['desc'] = stripslashes($row['desc']);
-				
+                
                 $temp_array[] = $row;
             }
             return $temp_array;
@@ -507,19 +521,19 @@ WHERE id = ' . (int)$id;
     public function placeBid($mechanic_id, $username, $itemid, $bid_amount, $done_by, $timezone, $notes)
     {
         $query =  "INSERT INTO `".BIDS."`
-				(`id`, `bidder_id`, `email`,`worklist_id`,`bid_amount`,`bid_created`,`bid_done`, `notes`)
-			  VALUES
-				(NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$timezone)."'), '$notes')";
+                (`id`, `bidder_id`, `email`,`worklist_id`,`bid_amount`,`bid_created`,`bid_done`, `notes`)
+              VALUES
+                (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$timezone)."'), '$notes')";
 
         return mysql_query($query) ? mysql_insert_id() : null;
     }
     public function updateBid($bid_id,$bid_amount, $done_by, $timezone, $notes)
     {
        if($bid_id > 0){
-	    $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."',`bid_done` = FROM_UNIXTIME('".strtotime($done_by." ".$timezone)."'),`notes` = '".$notes."' WHERE id = '".$bid_id."'";
+        $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."',`bid_done` = FROM_UNIXTIME('".strtotime($done_by." ".$timezone)."'),`notes` = '".$notes."' WHERE id = '".$bid_id."'";
        mysql_query($query);
-	   }
-	   return $bid_id;
+       }
+       return $bid_id;
     }
     public function getUserDetails($mechanic_id)
     {
@@ -531,8 +545,8 @@ WHERE id = ' . (int)$id;
     public function getRunnerSummary($worklist_id)
     {
         $query = "SELECT `" . USERS . "`.`id` as id, `username`, `summary`"
-		  . " FROM `" . USERS . "`, `" . WORKLIST . "`"
-		  . " WHERE `" . WORKLIST . "`.`runner_id` = `" . USERS . "`.`id` AND `" . WORKLIST . "`.`id` = ".$worklist_id;
+          . " FROM `" . USERS . "`, `" . WORKLIST . "`"
+          . " WHERE `" . WORKLIST . "`.`runner_id` = `" . USERS . "`.`id` AND `" . WORKLIST . "`.`id` = ".$worklist_id;
         $result_query = mysql_query($query);
         return $result_query ? mysql_fetch_assoc($result_query) : null ;
     }
@@ -674,7 +688,7 @@ WHERE id = ' . (int)$id;
         // adding bid amount to list of fees
         mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
         $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
-	    $this -> setMechanicId($bid_info['bidder_id']);
+        $this -> setMechanicId($bid_info['bidder_id']);
         return $bid_info;
     }
 

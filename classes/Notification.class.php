@@ -177,6 +177,12 @@ class Notification{
                 $subject = "Review: ".$itemTitle;
                 $body =  'New item is available for review: ' . $itemLink . '<br>';
             break;
+
+            case 'suggested':
+                $subject = "Suggested: " . $itemId . "(".$workitem -> getSummary().")" ;
+                $body =  'Summary: ' . $workitem -> getSummary() . '<br>';
+                $body.= 'Notes: ' . $data['notes'] . '<br>';
+            break;
         }
 
     
@@ -184,35 +190,37 @@ class Notification{
         $current_user->findUserById(getSessionUserId());
         if($recipients) {
             foreach($recipients as $recipient) {
-                $recipientUser = new User();
-                $method = 'get' . ucfirst($recipient) . 'Id';
-                $recipientUser->findUserById($workitem->$method());
-
-                if(($username = $recipientUser->getUsername())){
-                    // check if we already sending email to this user
-                    if(!in_array($username, $emails)){
-                        $emails[] = $username;
+                if($recipient == 'projectRunners') {
+                    $runners = $workitem->getProjectRunners();
+                    foreach($runners as $runner) {
+                        $recipientUser = new User();
+                        $recipientUser->findUserById($runner);
+                        if($username = $recipientUser->getUsername()) {
+                            // check if we already sending email to this user
+                            if(!in_array($username, $emails)) {
+                                $emails[] = $username;
+                            }
+                        }
+                    }
+                } else {
+                    $recipientUser = new User();
+                    $method = 'get' . ucfirst($recipient) . 'Id';
+                    $recipientUser->findUserById($workitem->$method());
+                    if(($username = $recipientUser->getUsername())) {
+                        // check if we already sending email to this user
+                        if(!in_array($username, $emails)){
+                            $emails[] = $username;
+                        }
                     }
                 }
             }
         }
 
         if(count($emails) > 0) {
-            $to = array();
             foreach($emails as $email) {
-                // do not send mail to the same user making changes
-                if($email != $current_user->getUsername()){
-                    $to[] = $email;
-                } else {
-                    //If user making changes in the only receipient. nothing to do here.
-                    if (count($emails)==1) { return true; }
+                if(!sl_send_email($email, $subject, $body, null, $headers)) {
+                    error_log("Notification:workitem: sl_send_email failed");
                 }
-            }
-
-            $headers['To']= 'worklist@sendlove.us';
-            #error_log("Notification:workitemtest: ".json_encode($to));
-            if(!sl_send_email($to, $subject, $body, null, $headers)) {
-                error_log("Notification:workitem: sl_send_email failed");
             }
         }
     }

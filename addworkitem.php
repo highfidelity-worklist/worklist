@@ -112,4 +112,12 @@ if (!empty($journal_message)) {
     $prc = postRequest(JOURNAL_API_URL, $data,1);
 }
 
+    // Notify Runners of new suggested task
+if($status == 'SUGGESTED' && $project_id != '') {
+    Notification::workitemNotify(array('type' => 'suggested',
+        'workitem' => $workitem,
+        'recipients' => array('projectRunners')),
+        array('notes' => $notes));        
+}
+
 echo json_encode(array( 'return' => "Done!"));
