@@ -105,35 +105,25 @@
     <?php } ?>
         <div id="tabs-1">
             <div class = "left-column">
+                <p class = "info-label">About<br />
+                    <span id="info-about"><?php echo $user -> getAbout(); ?></span>
+                </p>
+                <p class = "info-label">Age<br />
+                    <span id="info-joined">
+                        <?php
+                            $diffseconds = strtotime($user -> getAdded());
+                            echo formatableRelativeTime($diffseconds,2);
+                        ?>
+                    </span>
+                </p>
                 <p class = "info-label">Strongest Skills<br />
                     <span id="info-skills"><?php echo $user -> getSkills(); ?></span>
                 </p>
 
-                <p class = "info-label">Joined<br />
-                    <span id="info-joined"><?php echo date('m/d/Y', strtotime($user -> getAdded())); ?></span>
-                </p>
-                <p class = "info-label">About<br />
-                    <span id="info-about"><?php echo $user -> getAbout(); ?></span>
-                </p>
                 <p class = "info-label">Preferred Method of Contact<br />
                     <span id="info-contactway"><?php echo $user -> getContactway(); ?></span>
                 </p>
 
-		<p class = "info-label">Preferred Method of Payment<br />
-                    <span id="info-payway"><?php echo $user -> getPayway(); ?></span>
-                </p>
-
-		<?php if($is_payer){ ?>
-                    <p class = "info-label">Paypal address<br />
-                        <span id="info-payway">
-                            <?php if(strlen($user -> getPaypal_email()) == 0){
-                                echo "No address on file";
-                            }else{
-                                echo $user -> getPaypal_email();} 
-                            ?>
-                        </span>
-                    </p>
-		<?php } ?>
 
             </div><!-- end of left-column -->
 
@@ -204,6 +194,21 @@
                 <p class="info-label">Paypal Verified<br />
                     <input type="checkbox" id="paypal_verified" name="paypal_verified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> />
                 </p>
+                
+                <p class = "info-label">Preferred Method of Payment<br />
+                    <span id="info-payway"><?php echo $user -> getPayway(); ?></span>
+                </p>
+
+                <p class = "info-label">Paypal address<br />
+                    <span id="info-payway">
+                        <?php if(strlen($user -> getPaypal_email()) == 0){
+                            echo "No address on file";
+                        }else{
+                            echo $user -> getPaypal_email();} 
+                        ?>
+                    </span>
+                </p>
+                
                 <p class="info-label">Status<br />
                     <select id="changeUserStatus" style="width:auto; margin-bottom: 3em;">
                         <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
