@@ -380,7 +380,18 @@ td.textAlignReport {
     font-size: 1.2em !important;
 }
 
+.projectLeft {
+    width:430px;
+    float:left;
+}
+.projectRight {
+    width:419px;
+    float:right;
+}
 
+.noMargin {
+    margin: 0;
+}
 
 #login-form {
     border: 1px solid black;

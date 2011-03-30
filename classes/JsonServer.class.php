@@ -236,11 +236,14 @@ class JsonServer
 			$url = SERVER_URL . 'uploads/' . $fileName;
 			$workitem = $this->getRequest()->getParam('workitem');
 			$workitem = (is_numeric($workitem) ? $workitem : null);
+            $projectid = $this->getRequest()->getParam('projectid');
+			$projectid = (is_numeric($projectid) ? $projectid : null);
 			
 			$file = new File();
 			$file->setMime($mime)
 				 ->setUserid($this->getRequest()->getParam('userid'))
 				 ->setWorkitem($workitem)
+                 ->setProjectId($projectid)
 				 ->setTitle($title)
 				 ->setUrl($url);
 			$success = $file->save();
@@ -314,6 +317,44 @@ class JsonServer
 	{
 		$files = File::fetchAllFilesForWorkitem($this->getRequest()->getParam('workitem'));
 		$user = new User();
+		$user->findUserById($this->getRequest()->getParam('userid'));
+		$data = array(
+			'images' => array(),
+			'documents' => array()
+		);
+		foreach ($files as $file) {
+			if (!File::isAllowed($file->getStatus(), $user)) {
+				continue;
+			}
+			$icon = File::getIconFromMime($file->getMime());
+			if ($icon === false) {
+				array_push($data['images'], array(
+					'fileid'=> $file->getId(),
+					'url'	=> $file->getUrl(),
+					'icon'	=> $file->getUrl(),
+					'title' => $file->getTitle(),
+					'description' => $file->getDescription()
+				));
+			} else {
+				array_push($data['documents'], array(
+					'fileid'=> $file->getId(),
+					'url'	=> $file->getUrl(),
+					'icon'	=> $icon,
+					'title' => $file->getTitle(),
+					'description' => $file->getDescription()
+				));
+			}
+		}
+		
+		return $this->setOutput(array(
+			'success' => true,
+			'data' => $data
+		));
+	}
+
+    protected function actionGetFilesForProject() {
+        $files = File::fetchAllFilesForProject($this->getRequest()->getParam('projectid'));
+        $user = new User();
 		$user->findUserById($this->getRequest()->getParam('userid'));
 		$data = array(
 			'images' => array(),

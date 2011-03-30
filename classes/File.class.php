@@ -12,6 +12,7 @@ class File
 	protected $id;
 	protected $userid;
 	protected $workitem;
+    protected $projectid;
 	protected $mime;
 	protected $title;
 	protected $description;
@@ -92,6 +93,21 @@ class File
 		$this->workitem = $workitem;
 		return $this;
 	}
+
+    /**
+    * @return the $projectid
+    */
+    public function getProjectId() {
+        return $this->projectid;
+    }
+     
+    /**
+    * @param $projectid to set
+    */
+    public function setProjectId($projectid) {
+        $this->projectid = $projectid;
+        return $this;
+    }
 
 	/**
 	 * @return the $mime

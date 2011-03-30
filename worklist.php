@@ -1511,7 +1511,7 @@ include("head.html"); ?>
 	<div class="clear"></div>
 </script>
 <?php 
-// !!! This code is duplicated in workitem.inc
+// !!! The code above is duplicated in workitem.inc
 // !!! [END DUP]
 ?>
 <script type="text/javascript">
