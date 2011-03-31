@@ -9,6 +9,7 @@ require_once 'class.session_handler.php';
 require_once 'functions.php';
 require_once ("models/DataObject.php");
 require_once ("models/Review.php");
+include_once("send_email.php");
 
 $userReview = new UserReview();
 $userReview->validateRequest(array('action'));
@@ -45,7 +46,29 @@ class UserReview {
         }			
     }
 
-
+    public function sendNotification($reviewee_id, $type,$oReview) {
+        $review = $oReview[0]['feeRange']." " .$oReview[0]['review'];
+        $reviewee = new User();
+        $reviewee->findUserById($reviewee_id);
+        
+        $to = $reviewee->getNickname() . ' <' . $reviewee->getUsername() . '>';
+        $nickname = $reviewee->getNickname();
+        if ($type == "new") {
+            $subject = "You have received a new review";
+            $journal = $nickname . " received a new review: ".$review;
+        } else if ($type == "update") {
+            $subject = "A review of you has been updated";
+            $journal = "A review of " .$nickname . " has been updated: ".$review;
+        } else {
+            $subject = "One of your reviews has been deleted";
+            $journal = "One review of " .$nickname . " has been deleted: ".$review;
+        }
+        $body  = "<p>" . $review . "</p>";
+        if (!sl_send_email($to, $subject, $body)) { 
+            error_log("review.php: sl_send_email failed"); 
+        }
+        sendJournalNotification($journal);
+    }
     /**
      * Verify that the code entered by the user is the same in the database
      */
@@ -67,14 +90,18 @@ class UserReview {
         $review = new Review();
         if ($review->loadById($reviewer_id,$reviewee_id) ){
             if ($userReview == "") {
+                $oReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);      
                 if ($review->removeRow(" reviewer_id = ".$reviewer_id . " AND reviewee_id = ".$reviewee_id)) {
-                    $this->respond(true, "Review deleted.",'');
+                    $this->sendNotification($reviewee_id, "delete", $oReview);
+                    $this->respond(true, "Review deleted.", '');
                 } else {
                     $this->respond(false, "Cannot delete review! Please retry later.",''); 
                 }  
             } else {
                 $review->review = $userReview;
-                if ($review->save('reviewer_id','reviewee_id')) {
+                if ($review->save('reviewer_id', 'reviewee_id')) {
+                    $oReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);      
+                    $this->sendNotification($reviewee_id, "update", $oReview);
                     $this->respond(true, "Review updated.",'');
                 } else {
                     $this->respond(false, "Cannot update review! Please retry later.",''); 
@@ -89,17 +116,18 @@ class UserReview {
                 );
                         
                 if ($review->insertNew($values)) {  
-                    $myReview = $review->getReviews($reviewee_id,$reviewer_id,' AND r.reviewer_id=' . $reviewer_id);      
+                    $myReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);      
                     if (count($myReview) == 0) {
                         $review->removeRow(" reviewer_id = ".$reviewer_id . " AND reviewee_id = ".$reviewee_id);
                         $this->respond(true, "Review with no paid fee is not allowed.",'');
                     }
-                    $this->respond(true, "Review saved.",array('myReview' => $myReview));
+                    $this->sendNotification($reviewee_id, "new", $myReview);
+                    $this->respond(true, "Review saved.", array('myReview' => $myReview));
                 } else {
-                    $this->respond(false, "Cannot create new review! Please retry later.",''); 
+                    $this->respond(false, "Cannot create new review! Please retry later.", ''); 
                 }
             } else {
-                $this->respond(true, "New empty review is not saved.",'');
+                $this->respond(true, "New empty review is not saved.", '');
             }
         }
      }
