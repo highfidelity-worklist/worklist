@@ -77,9 +77,4 @@ require_once 'lib/Sms/Numberlist.php';
                             </p>
                         </div>
                     </div>
-
-                        <blockquote>
-                            <input type="checkbox" id="journal_alerts" name="journal_alerts" value="1" <?php if ($sms_flags & SMS_FLAG_JOURNAL_ALERTS) echo 'checked' ?> />Forward Journal alerts as text messages<br />
-                            <input type="checkbox" id="bid_alerts" name="bid_alerts" value="1" <?php if ($sms_flags & SMS_FLAG_BID_ALERTS) echo 'checked' ?> />Forward bid changes alerts as text messages
-                        </blockquote>
                 </div>

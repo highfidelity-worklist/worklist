@@ -13,15 +13,20 @@ class Notification{
 
     const REVIEW_NOTIFICATIONS = 1;
     const BIDDING_NOTIFICATIONS = 2;
-
+    const MY_REVIEW_NOTIFICATIONS = 4;
+    const MY_COMPLETED_NOTIFICATIONS = 8;
+    const PING_NOTIFICATIONS = 16;
+    const MY_BIDS_NOTIFICATIONS = 32;
+    
+ 
     /**
      *  Sets flags using list of integers passed as arguments
      *
      * @return resulting integer with combined flags
      */
-    public static function setFlags(){
+    public static function setFlags() {
             $result = 0;
-            foreach(func_get_args() as $flag){
+            foreach(func_get_args() as $flag) {
                 $result = $result | $flag;
             }
             return $result;
@@ -34,7 +39,7 @@ class Notification{
      * @param $flag flag to check
      * @return boolean returns true if given flag is set for value
      */
-    public static function isNotified($value, $flag = self::REVIEW_NOTIFICATIONS){
+    public static function isNotified($value, $flag = self::REVIEW_NOTIFICATIONS) {
             $result = ($value & $flag) === $flag;
             return $result;
     }
@@ -42,19 +47,36 @@ class Notification{
     /**
      * Get list of users who have given flag set
      * List is returned only for active users!
+     * This flags are for SMS notifications only
      * @param $flag flag to compare with
      * @return list of users with given flag
      */
-    public static function getNotificationEmails($flag = self::REVIEW_NOTIFICATIONS){
-
+    public static function getNotificationEmails($flag = self::REVIEW_NOTIFICATIONS, $workitem = 0) {
+         
         $result = array();
-        $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0";
-
-        $res = mysql_query($sql);
-        if($res){
-            while($row = mysql_fetch_row($res)){
-                $result[] = $row[0];
+        
+        switch($flag) {
+        case self::REVIEW_NOTIFICATIONS :
+        case self::BIDDING_NOTIFICATIONS :
+            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0";
+            $res = mysql_query($sql);
+            if($res) {
+                while($row = mysql_fetch_row($res)) {
+                    $result[] = $row[0];
+                }
             }
+            break; 
+        case self::MY_REVIEW_NOTIFICATIONS :
+        case self::MY_COMPLETED_NOTIFICATIONS :    
+            $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
+            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0 AND u.id!=" .getSessionUserId(). " AND u.id IN({$users})";
+            $res = mysql_query($sql);
+            if($res) {
+                while($row = mysql_fetch_row($res)) {
+                    $result[] = $row[0];
+                }
+            }
+            break;
         }
         return $result;
     }
@@ -64,14 +86,23 @@ class Notification{
      *
      * @param String $status - status of workitem
      */
-    public static function statusNotify($workitem){
-        switch($workitem->getStatus()){
+    public static function statusNotify($workitem) {
+        switch($workitem->getStatus()) {
             case 'REVIEW':
                 $emails = self::getNotificationEmails(self::REVIEW_NOTIFICATIONS);
+                $myEmails= self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
+                $myEmails=array_diff($myEmails,$emails); // Remove already existing emails in $emails list
+                $emails=array_merge($emails,$myEmails);
+                $emails=array_unique($emails);
                 $options = array('type' => 'new_review',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
+                self::workitemSMSNotify($options);
+                // Send SMS to users who have "My jobs set to review" checked
+                $options = array('type' => 'my_review',
+                    'workitem' => $workitem,
+                    'emails' => $myEmails);
                 self::workitemSMSNotify($options);
                 break;
             case 'BIDDING':
@@ -80,6 +111,13 @@ class Notification{
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
+                self::workitemSMSNotify($options);
+                break;
+            case 'COMPLETED':
+                $emails= self::getNotificationEmails(self::MY_COMPLETED_NOTIFICATIONS,$workitem);
+                $options = array('type' => 'my_completed',
+                    'workitem' => $workitem,
+                    'emails' => $emails);
                 self::workitemSMSNotify($options);
                 break;
         }
@@ -110,7 +148,7 @@ class Notification{
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $body = '';
         $subject = '';
-
+        $headers="";
         switch ($options['type']) {
             case 'comment':
                 $subject = 'Comment: ' . $itemTitle;
@@ -208,7 +246,7 @@ class Notification{
                     $recipientUser->findUserById($workitem->$method());
                     if(($username = $recipientUser->getUsername())) {
                         // check if we already sending email to this user
-                        if(!in_array($username, $emails)){
+                        if(!in_array($username, $emails)) {
                             $emails[] = $username;
                         }
                     }
@@ -233,11 +271,11 @@ class Notification{
      * emails - list of emails of users you want to send sms to
      * workitem - current workitem object to send info about
      */
-    public static function workitemSMSNotify($options){
+    public static function workitemSMSNotify($options) {
 
         $emails = isset($options['emails']) ? $options['emails'] : array();
         $workitem = $options['workitem'];
-        switch($options['type']){
+        switch($options['type']) {
 
             case 'new_bidding':
                 $subject = 'Bidding';
@@ -248,15 +286,26 @@ class Notification{
                 $subject = 'Review';
                 $message = 'Workitem #' . $workitem->getId() . ' is available for review';
             break;
+
+            case 'my_review':
+                $subject = 'Review';
+                $message = 'Workitem #' . $workitem->getId() . ' is available for review';
+            break;
+
+            case 'my_completed':
+                $subject = 'Completed';
+                $message = 'Workitem #' . $workitem->getId() . ' is now completed';
+            break;
         }
 
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
         $sms_recipients = array();
-        foreach($emails as $email){
+        foreach($emails as $email) {
+            error_log("SMS email (".$options['type']."):".$email);
 
             // do not send sms to the same user making changes
-            if($email != $current_user->getUsername()){
+            if($email != $current_user->getUsername()) {
 
                 $sms_user = new User();
                 $sms_user->findUserByUsername($email);
@@ -264,13 +313,13 @@ class Notification{
             }
     }
 
-        if(count($sms_recipients) > 0){
+        if(count($sms_recipients) > 0) {
 
             setlocale(LC_CTYPE, "en_US.UTF-8");
             $esc_subject = escapeshellarg($subject);
             $esc_message = escapeshellarg($message);
             $args = '"'.$subject . '" "' . $message . '" ';
-            foreach($sms_recipients as $recipient){
+            foreach($sms_recipients as $recipient) {
                 $args .= $recipient . ' ';
             }
             $application_path = dirname(dirname(__FILE__)) . '/';
@@ -279,6 +328,7 @@ class Notification{
         }
     }
 
+
     /**
     * Function to send an sms message to given user
     *
@@ -286,7 +336,7 @@ class Notification{
     * @param String $subject - subject of the message
     * @param String $message - actual message content
     */
-    public static function sendSMS($recipient, $subject, $message){
+    public static function sendSMS($recipient, $subject, $message) {
         try {
             $config = Zend_Registry::get('config')->get('sms', array());
             if ($config instanceof Zend_Config) {

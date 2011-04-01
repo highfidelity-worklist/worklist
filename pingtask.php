@@ -5,11 +5,14 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
+$application_path = dirname(dirname(__FILE__)) . '/';
+  
 require_once 'config.php';
 require_once 'class.session_handler.php';
 require_once 'send_email.php';
 require_once 'functions.php';
 require_once 'lib/Sms.php';
+require_once 'classes/Notification.class.php';
 
 // Get sender Nickname
 $id = getSessionUserId();
@@ -20,11 +23,11 @@ $msg = $_REQUEST['msg'];
 
 // send mail defaults to on
 $send_mail = true;
-if ( isset( $_REQUEST['mail'] ) ){
+if ( isset( $_REQUEST['mail'] ) ) {
     $send_mail = intval( $_REQUEST['mail'] );
 }
 $send_chat = 0;
-if ( isset( $_REQUEST['journal'] ) ){
+if ( isset( $_REQUEST['journal'] ) ) {
     $send_chat = intval($_REQUEST['journal']);
 } 
 
@@ -54,7 +57,7 @@ if(isset($_REQUEST['id'])) {
         $receiver = getUserById( $receiver_id );
         $receiver_nick = $receiver->nickname;
         $receiver_email = $receiver->username;
-	}
+    }
 
     // Compose journal message
     if ($send_chat) {
@@ -66,7 +69,7 @@ if(isset($_REQUEST['id'])) {
     }
 
     // Send mail
-    if( $send_mail )	{
+    if( $send_mail )    {
         $mail_subject = $nickname." sent you a ping for item #".$item_id;
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
         $mail_msg .= "<a href='http://dev.sendlove.us/worklist/workitem.php?job_id=".$item_id."&action=view'>#".$item_id."</a>";
@@ -78,12 +81,14 @@ if(isset($_REQUEST['id'])) {
         try {
             $user = new User();
             $user->findUserById($receiver->id);
-            $config = Zend_Registry::get('config')->get('sms', array());
-            if ($config instanceof Zend_Config) {
-                $config = $config->toArray();
+            if(Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
+                $config = Zend_Registry::get('config')->get('sms', array());
+                if ($config instanceof Zend_Config) {
+                    $config = $config->toArray();
+                }
+                $sms = new Sms_Message($user, $mail_subject, $msg);
+                Sms::send($sms, $config);
             }
-            $sms = new Sms_Message($user, $mail_subject, $msg);
-            Sms::send($sms, $config);
         } catch (Sms_Backend_Exception $e) {
         }
     }
@@ -116,12 +121,14 @@ if(isset($_REQUEST['id'])) {
         try {
             $user = new User();
             $user->findUserById($receiver->id);
-            $config = Zend_Registry::get('config')->get('sms', array());
-            if ($config instanceof Zend_Config) {
-                $config = $config->toArray();
+            if(Notification::isNotified($user->notifications, Notification::PING_NOTIFICATIONS)) {
+                $config = Zend_Registry::get('config')->get('sms', array());
+                if ($config instanceof Zend_Config) {
+                    $config = $config->toArray();
+                }
+                $sms = new Sms_Message($user, $mail_subject, $msg);
+                Sms::send($sms, $config);
             }
-            $sms = new Sms_Message($user, $mail_subject, $msg);
-            Sms::send($sms, $config);
         } catch (Sms_Backend_Exception $e) {
         }
     }

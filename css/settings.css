@@ -50,3 +50,17 @@
     right: 10px;
     top: 0;
 }
+
+#smsOptions {
+    border: 1px solid #666666;
+    padding: 10px;
+    overflow: hidden;
+}
+
+#smsOptions .floatLeft {
+    padding: 3px 10px;
+}
+
+.floatLeft {
+    float: left;
+}

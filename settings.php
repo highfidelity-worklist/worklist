@@ -71,9 +71,13 @@ if (isset($_POST['save_account'])) {
         $saveArgs['timezone'] = 0;
 
         $notifications = 0;
+        $my_bids_notify = !empty($_POST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
+        $ping_notify = !empty($_POST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
         $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
         $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
-        $notifications = Notification::setFlags($review_notify, $bidding_notify);
+        $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
+        $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
+        $notifications = Notification::setFlags($review_notify, $bidding_notify, $my_review_notify, $my_completed_notify, $my_bids_notify, $ping_notify);
         $saveArgs['notifications'] = 0;
 
         // if user is new - create an entry for him
@@ -97,13 +101,13 @@ if (isset($_POST['save_account'])) {
 
     // if nickname is different - update it through login call
     $nickname = trim($_POST['nickname']);
-    if($nickname != $_SESSION['nickname']){
+    if($nickname != $_SESSION['nickname']) {
         $ret = Utils::updateLoginData(array('nickname' => $nickname), true, false);
-        if ($ret->error == 1){
+        if ($ret->error == 1) {
             // TODO: Actually send error back to browser, if necessary
             $error->setError($ret->message);
         } else {
-            if(!$_SESSION['new_user']){
+            if(!$_SESSION['new_user']) {
                 $sql = "UPDATE " . USERS . " SET nickname='" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
                 mysql_query($sql);
                 $_SESSION['nickname'] = $nickname;
@@ -218,7 +222,7 @@ if (!empty($saveArgs)) {
 
 // getting userInfo to prepopulate fields
 
-    if(!$_SESSION['new_user']){
+    if(!$_SESSION['new_user']) {
         $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
         $rs = mysql_query($qry);
         if ($rs) {
@@ -248,7 +252,7 @@ include("head.html");
     var nclass;
 
     function validateUploadImage(file, extension) {
-        if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))){
+        if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))) {
             // extension is not allowed
             $('span.LV_validation_message.upload').css('display', 'none').empty();
             var html = 'This filetype is not allowed!';
@@ -276,7 +280,7 @@ include("head.html");
         return validateUpload(file, extension);
     }
     function validateUpload(file, extension) {
-        if (! (extension && /^(pdf)$/i.test(extension))){
+        if (! (extension && /^(pdf)$/i.test(extension))) {
             // extension is not allowed
             $(nclass).empty();
             var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
@@ -320,13 +324,17 @@ include("head.html");
                     smsaddr: $('#smsaddr').val(),
                     provider: $('#provider').val(),
                     timezone: $('#timezone').val(),
-                    journal_alerts: $('#journal_alerts').attr('checked') ? 1:0,
-                    bid_alerts: $('#bid_alerts').attr('checked') ? 1:0,
+                    journal_alerts: $('#journal_alerts').attr('checked') ? 1 : 0,
+                    bid_alerts: $('#bid_alerts').attr('checked') ? 1 : 0,
                     nickname: $('#nickname').val(),
                     save_account: 1,
                     username: $('#username').val(),
-                    review_notify: $('input[name="review_notify"]').attr('checked') ? 1:0,
-                    bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1:0
+                    my_bids_notify: $('input[name="my_bids_notify"]').attr('checked') ? 1 : 0,
+                    ping_notify: $('input[name="ping_notify"]').attr('checked') ? 1 : 0,
+                    review_notify: $('input[name="review_notify"]').attr('checked') ? 1 : 0,
+                    bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1 : 0,
+                    my_review_notify: $('input[name="my_review_notify"]').attr('checked') ? 1 : 0,
+                    my_completed_notify: $('input[name="my_completed_notify"]').attr('checked') ? 1 : 0
                 };
             } else {
                 return false;
@@ -391,7 +399,7 @@ include("head.html");
         }
         return false;
     }
-    function ChangePaymentMethod(){
+    function ChangePaymentMethod() {
         var paytype = $('#paytype').val();
         paypal.enable();
         // validation disabled: payway.enable();
@@ -471,15 +479,15 @@ include("head.html");
             }
         });
         $("#send-test").click(smsSendTestMessage);
-        $("#save_account").click(function(){
+        $("#save_account").click(function() {
             saveSettings('account');
             return false;
         });
-        $("#save_personal").click(function(){
+        $("#save_personal").click(function() {
             saveSettings('personal');
             return false;
         });
-        $("#save_payment").click(function(){
+        $("#save_payment").click(function() {
             saveSettings('payment');
             return false;
         });
@@ -530,9 +538,9 @@ include("head.html");
         <p><label for = "timezone">What timezone are you in?</label><br />
             <span class="required-bullet">*</span> <select id="timezone" name="timezone">
             <?php
-            foreach($timezoneTable as $key => $value){
+            foreach($timezoneTable as $key => $value) {
                 $selected = '';
-                if (!$_SESSION['new_user'] && $key == $userInfo['timezone']){
+                if (!$_SESSION['new_user'] && $key == $userInfo['timezone']) {
                     $selected = 'selected = "selected"';
                 }
                 echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
@@ -554,14 +562,38 @@ include("head.html");
         $settingsPage = true;
         include("sms-inc.php");
     ?>
-        <input type="checkbox" name="bidding_notify" value="1" <?php
-            echo Notification::isNotified($notifications, Notification::BIDDING_NOTIFICATIONS) ? 'checked="checked"' : '';
-            ?>/>Notify me when any job is set to bidding<br />
-        <input type="checkbox" name="review_notify" value="1" <?php 
-            echo Notification::isNotified($notifications, Notification::REVIEW_NOTIFICATIONS) ? 'checked="checked"' : '';
-            ?>/>Notify me when any job is set to review<br /><br />
-        <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
+           <br />
+        <div >Send SMS Messages</div>                
+        <div id="smsOptions">    
+            <div class="floatLeft">
 
+            <input type="checkbox" name="my_bids_notify" value="1" <?php 
+                echo Notification::isNotified($notifications, Notification::MY_BIDS_NOTIFICATIONS) ? 'checked="checked"' : '';
+                ?>/>Bids on my jobs<br />
+            <input type="checkbox" name="ping_notify" value="1" <?php 
+                echo Notification::isNotified($notifications, Notification::PING_NOTIFICATIONS) ? 'checked="checked"' : '';
+                ?>/>Pings
+            </div>
+            <div class="floatLeft">
+                <input type="checkbox" name="bidding_notify" value="1" <?php
+                echo Notification::isNotified($notifications, Notification::BIDDING_NOTIFICATIONS) ? 'checked="checked"' : '';
+                ?>/>New Jobs<br />
+            <input type="checkbox" name="review_notify" value="1" <?php 
+                echo Notification::isNotified($notifications, Notification::REVIEW_NOTIFICATIONS) ? 'checked="checked"' : '';
+                ?>/>Any job set to review
+            </div>
+            <div class="floatLeft">
+                <input type="checkbox" name="my_review_notify" value="1" <?php
+                    echo Notification::isNotified($notifications, Notification::MY_REVIEW_NOTIFICATIONS) ? 'checked="checked"' : '';
+                    ?>/>My jobs set to review<br />
+                <input type="checkbox" name="my_completed_notify" value="1" <?php 
+                    echo Notification::isNotified($notifications, Notification::MY_COMPLETED_NOTIFICATIONS) ? 'checked="checked"' : '';
+                    ?>/>My jobs set to completed
+            </div>
+        </div>
+        <div style="clear:both">
+            <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
+        </div>
     </form>
     </div>
     <div id="formRight">
@@ -578,7 +610,7 @@ include("head.html");
     <div style="clear: both;"></div>
 </div>
 
-<?php if(!$_SESSION['new_user']){ ?>
+<?php if(!$_SESSION['new_user']) { ?>
 <div id="personal-info" class="settings">
 
     <h2 class="subheader">Personal Info</h2>
