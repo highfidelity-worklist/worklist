@@ -174,6 +174,7 @@ class thumber {
       * @return bool
       */
      protected function partOf($list) {
+          if (empty($list)) { return false; }
           foreach ( $list as $fControl ) {
                $ipMatch = false;
                $wMatch = false;

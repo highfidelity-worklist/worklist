@@ -5,7 +5,8 @@ $settings_page = "settings.php";
 $exploded_url = Explode('/', $_SERVER['PHP_SELF']);
 $current_page = $exploded_url[count($exploded_url) - 1];
 if(!empty($_SESSION['userid']) && $current_page != $settings_page){
-    if($_SESSION['new_user']){
+    //stop warning when new_user is not an element of SESSION
+    if(!empty($_SESSION['new_user'])){
         header("Location:" . $settings_page);
     }
 }

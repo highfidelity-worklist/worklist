@@ -222,7 +222,7 @@ if (!empty($saveArgs)) {
 
 // getting userInfo to prepopulate fields
 
-    if(!$_SESSION['new_user']) {
+    if(empty($_SESSION['new_user'])) {
         $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
         $rs = mysql_query($qry);
         if ($rs) {
@@ -540,7 +540,7 @@ include("head.html");
             <?php
             foreach($timezoneTable as $key => $value) {
                 $selected = '';
-                if (!$_SESSION['new_user'] && $key == $userInfo['timezone']) {
+                if (empty($_SESSION['new_user']) && $key == $userInfo['timezone']) {
                     $selected = 'selected = "selected"';
                 }
                 echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
@@ -550,7 +550,7 @@ include("head.html");
         </p>
 
     <?php
-        $new_user = (bool) $_SESSION['new_user'];
+        $new_user = (bool) ! empty($_SESSION['new_user']);
         $country = !$new_user ? $userInfo['country'] : '';
         $city = !$new_user ? $userInfo['city'] : '';
         $int_code = !$new_user ? $userInfo['int_code'] : '';
@@ -610,7 +610,7 @@ include("head.html");
     <div style="clear: both;"></div>
 </div>
 
-<?php if(!$_SESSION['new_user']) { ?>
+<?php if(empty($_SESSION['new_user'])) { ?>
 <div id="personal-info" class="settings">
 
     <h2 class="subheader">Personal Info</h2>
