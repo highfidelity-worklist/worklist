@@ -202,8 +202,8 @@ class SandBoxUtil {
         $body = str_replace("{USERNAME}",$unixusername,$body);
         $body = str_replace("{PASSWORD}",$password,$body);
         //$username = "vijay@bambeeq.com";
-        if (!sl_send_email($username , $subject, $body)) {
-            error_log("sandbox-util-class.php: sl_send_email failed");
+        if (!send_email($username , $subject, $body)) {
+            error_log("sandbox-util-class.php: send_email failed");
         }
     }
     
@@ -224,8 +224,8 @@ class SandBoxUtil {
         $body = str_replace("{PROJECT}",$project,$body);
         $body = str_replace("{SANDBOX}",$sandbox,$body);
         
-        if (!sl_send_email($username , $subject, $body)) {
-            error_log("sandbox-util-class.php: sl_send_email failed");
+        if (!send_email($username , $subject, $body)) {
+            error_log("sandbox-util-class.php: send_email failed");
         }
     }
     /**

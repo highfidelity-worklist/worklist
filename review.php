@@ -64,8 +64,8 @@ class UserReview {
             $journal = "One review of " .$nickname . " has been deleted: ".$review;
         }
         $body  = "<p>" . $review . "</p>";
-        if (!sl_send_email($to, $subject, $body)) { 
-            error_log("review.php: sl_send_email failed"); 
+        if (!send_email($to, $subject, $body)) { 
+            error_log("review.php: send_email failed"); 
         }
         sendJournalNotification($journal);
     }

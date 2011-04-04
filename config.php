@@ -10,7 +10,15 @@ require_once('Zend/Registry.php');
 
 if (file_exists('server.local.php')) {
     include_once('server.local.php');
+} else {
+    header("HTTP/1.0 404 Not Found");
+    die("Application configuration not found.");
 }
+
+
+# Add revision (version) information
+if (!defined('APP_REVISION'))   define('APP_REVISION', '$Revision$');
+if (!defined('APP_VERSION'))    define('APP_VERSION', preg_replace('/\D/', '', APP_REVISION));
  
 // this is the name of the app that will be used when
 // authenticating with login service.

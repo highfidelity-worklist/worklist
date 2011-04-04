@@ -82,7 +82,7 @@ if (isset($_POST['save_account'])) {
 
         // if user is new - create an entry for him
         // clear $saveArgs so it won't be updated for the second time
-        if ($_SESSION['new_user']) {
+        if (!empty($_SESSION['new_user'])) {
 
             $user_id = intval($_SESSION['userid']);
             $username = $_SESSION['username'];
@@ -165,8 +165,8 @@ if (isset($_POST['save_account'])) {
         $plain .= $link . "\n\n";
                 
         $confirm_txt = "An email containing a confirmation link was sent to your Paypal address. Please click on that link to verify your Paypal address and activate your account.";
-        if (! sl_send_email($paypal_email, $subject, $body, $plain)) { 
-            error_log("signup.php: sl_send_email failed");
+        if (! send_email($paypal_email, $subject, $body, $plain)) { 
+            error_log("signup.php: send_email failed");
             $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
         }
 
@@ -203,7 +203,7 @@ if (!empty($saveArgs)) {
         foreach ($messages as $msg) {
             $body .= "&nbsp;&nbsp;$msg<br/>";
         }
-        if(!sl_send_email($to, $subject, $body)) { error_log("settings.php: sl_send_email failed"); }
+        if(!send_email($to, $subject, $body)) { error_log("settings.php: send_email failed"); }
 
         $msg="Account updated successfully!";
     }

@@ -157,7 +157,7 @@ if(isset($minimal_POST['sign_up'])){
             $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
             $plain .= $link."\n\n";
             $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
-            if(!sl_send_email($ret->username, $subject, $body, $plain)) { error_log("signup.php: sl_send_email failed");
+            if(!send_email($ret->username, $subject, $body, $plain)) { error_log("signup.php: send_email failed");
                 $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
             }
 
@@ -175,8 +175,8 @@ if(isset($minimal_POST['sign_up'])){
                 $plain .= $link . "\n\n";
                 
                 $confirm_txt .= "<br/><br/>An email containing a confirmation link was also sent to your Paypal address. Please click on that link to verify your Paypal address and activate payments on your account.";
-                if (! sl_send_email($newUser['paypal_email'], $subject, $body, $plain)) { 
-                    error_log("signup.php: sl_send_email failed");
+                if (! send_email($newUser['paypal_email'], $subject, $body, $plain)) { 
+                    error_log("signup.php: send_email failed");
                     $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
                 }
             }

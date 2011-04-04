@@ -258,8 +258,8 @@ class Notification{
 
         if(count($emails) > 0) {
             foreach($emails as $email) {
-                if(!sl_send_email($email, $subject, $body, null, $headers)) {
-                    error_log("Notification:workitem: sl_send_email failed");
+                if(!send_email($email, $subject, $body, null, $headers)) {
+                    error_log("Notification:workitem: send_email failed");
                 }
             }
         }

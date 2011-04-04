@@ -23,7 +23,7 @@ if(!empty($_POST['username']))
         $body = "<p>You are only one click away from completing your registration with Worklist!</p><p>Click the link below or copy into your browser's window to verify your email address and activate your account. <br/>";
         $body .= "&nbsp;&nbsp;&nbsp;&nbsp;".SECURE_SERVER_URL."confirmation.php?cs=".$row['confirm_string']."&str=".base64_encode($_POST['username'])."</p>";
         $body .= "<p>Looking forward to seeing you in the Workroom! :)</p>";
-        if(!sl_send_email($to, $subject, $body)) { error_log("resend.php: sl_send_email failed"); }
+        if(!send_email($to, $subject, $body)) { error_log("resend.php: send_email failed"); }
         $msg= "An email containing a link to confirm your email address is being sent to ".$to;
     }
     else $msg= "Sorry, your email address doesn't match";

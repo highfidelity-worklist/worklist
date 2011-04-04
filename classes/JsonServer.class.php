@@ -415,7 +415,7 @@ class JsonServer
 			$body .= "<p>" . $user->getNickname() . " just uploaded his/her Local Tax Form you can download and approve it from this URL:</p>";
 			$body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_Local.pdf\">Click here</a></p>";
 				
-			if (!sl_send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:LocalUpload: sl_send_email failed"); }
+			if (!send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:LocalUpload: send_email failed"); }
 			
 			return $this->setOutput(array(
 				'success' => true,
@@ -453,7 +453,7 @@ class JsonServer
 			$body .= "<p>" . $user->getNickname() . " just uploaded his/her W-9 Form you can download and approve it from this URL:</p>";
 			$body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_W9.pdf\">Click here</a></p>";
 			
-			if(!sl_send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:w9Upload: sl_send_email failed"); }
+			if(!send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:w9Upload: send_email failed"); }
 			
 			return $this->setOutput(array(
 				'success' => true,
@@ -537,7 +537,7 @@ class JsonServer
 	{
 		$phone = $this->getRequest()->getParam('phone');
     		try {
-        		$config = Zend_Registry::get('config')->get('sms', array());
+        		$config = Zend_Registry::get('config')->get('email', array());
         		if ($config instanceof Zend_Config) {
             			$config = $config->toArray();
         		}
@@ -565,16 +565,16 @@ class JsonServer
 				$body .= "<p>See you in the Workroom!</p>";
 								
 				if ($oldRunner) {
-					if(!sl_send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeOldRunner failed"); }
+					if(!send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeOldRunner failed"); }
 				}
 				if ($workitem->getRunner()) {
-					if(!sl_send_email($workitem->getRunner()->getNickname() . ' <' . $workitem->getRunner()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeGetRunner: sl_send_email failed"); }
+					if(!send_email($workitem->getRunner()->getNickname() . ' <' . $workitem->getRunner()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeGetRunner: send_email failed"); }
 				}
 				if ($workitem->getCreator()) {
-					if(!sl_send_email($workitem->getCreator()->getNickname() . ' <' . $workitem->getCreator()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeCreator: sl_send_email failed"); }
+					if(!send_email($workitem->getCreator()->getNickname() . ' <' . $workitem->getCreator()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeCreator: send_email failed"); }
 				}
 				if ($workitem->getMechanic()) {
-					if(!sl_send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeMechanic: sl_send_email failed"); }
+					if(!send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeMechanic: send_email failed"); }
 				}
 				
 				sendJournalNotification($this->getUser()->getNickname() . ' updated Job #' . $workitem->getId() . ': ' . $workitem->getSummary() . '. Runner reassigned to ' . $workitem->getRunner()->getNickname());

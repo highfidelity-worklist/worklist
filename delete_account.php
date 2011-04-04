@@ -28,7 +28,7 @@ if(!empty($_POST['delete-account']))
         $subject = "Account Deleted";
         $body .= "<p>As you requested, we have deleted your '".$_SESSION['nickname']."' account with ".SERVER_NAME.".";
         $body .= "</p><p>Love,<br/>Philip and Ryan</p>";
-        if (! sl_send_email($to, $subject, $body)) { error_log("delete: sl_send_email failed"); }
+        if (! send_email($to, $subject, $body)) { error_log("delete: send_email failed"); }
 
         header("Location: logout.php");
         exit;

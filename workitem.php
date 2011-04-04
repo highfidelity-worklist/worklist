@@ -608,7 +608,7 @@ function sendMailToDiscardedBids($worklist_id)    {
         $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
         $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
         
-        if(!sl_send_email($bid['email'], $subject, $body)) { error_log("workitem.php: sl_send_email failed"); }
+        if(!send_email($bid['email'], $subject, $body)) { error_log("workitem.php: send_email failed"); }
     }
 }
 

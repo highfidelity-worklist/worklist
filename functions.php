@@ -626,8 +626,8 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $item_link = SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view";
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        if (!sl_send_email($recipient->username, $subject, $body)) { error_log("functions.php:withdrawlFee: sl_send_email failed"); }
-        sl_notify_sms_by_object($recipient, $subject, "${txtbody}\n${item_link}");
+        if (!send_email($recipient->username, $subject, $body)) { error_log("functions.php:withdrawlFee: send_email failed"); }
+        notify_sms_by_object($recipient, $subject, "${txtbody}\n${item_link}");
         
         // Check if there are any active bids remaining
         $res = mysql_query('SELECT count(*) AS active_bids FROM `' . BIDS . '` WHERE `worklist_id` = ' . $job['id'] . ' AND `withdrawn` = 0');
@@ -676,8 +676,8 @@ function deleteFee($fee_id) {
         $body = "Your fee has been deleted by: ".$_SESSION['nickname']."</p>";
         $body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$fee->worklist_id}&action=view>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        if (!sl_send_email($user->username, $subject, $body)) { error_log("sl_send_email failed"); }
-        sl_notify_sms_by_object($user, $subject, $body);
+        if (!send_email($user->username, $subject, $body)) { error_log("send_email failed"); }
+        notify_sms_by_object($user, $subject, $body);
     }
 }
 
@@ -724,7 +724,7 @@ function invitePerson( $invite, $item, $summary = null, $description = null) {
                 $body .= "<p>------------------------------</p>";
 				$body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
                 $body .= "<p>Hope to see you soon.</p>";
-                if(!sl_send_email($user->username, $subject, $body)) { error_log("functions.php:invite: sl_send_email failed"); }
+                if(!send_email($user->username, $subject, $body)) { error_log("functions.php:invite: send_email failed"); }
 				return true;
             } else if (validEmail($invite)) {
                 //sending email to the NEW invited developer
@@ -746,7 +746,7 @@ function invitePerson( $invite, $item, $summary = null, $description = null) {
                 $body .= "[<a href=\"http://dev.sendlove.us/worklist/\">dev.sendlove.us/worklist</a> | Look over all our open work items]<br />";
                 $body .= "[<a href=\"http://dev.sendlove.us/journal/\">dev.sendlove.us/journal</a> | Talk with us in our Journal]<br />";
                 $body .= "<p>Hope to see you soon.</p>";
-                if(!sl_send_email($invite, $subject, $body)) { error_log("functions.php:inviteNew: sl_send_email failed"); }
+                if(!send_email($invite, $subject, $body)) { error_log("functions.php:inviteNew: send_email failed"); }
 				return true;
             }
         }
