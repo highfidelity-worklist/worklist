@@ -18,8 +18,6 @@ require_once('classes/Repository.class.php');
 require_once('classes/Project.class.php');
 
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
-$is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
-$is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 
 $userId = getSessionUserId();
 
@@ -31,6 +29,9 @@ if( $userId > 0 ) {
     $userbudget =$user->getBudget();
     $budget = number_format($userbudget);
 }
+
+$is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
+$is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 
 // are we on a project page? see .htaccess rewrite
 $projectName = !empty($_REQUEST['project']) ? mysql_real_escape_string($_REQUEST['project']) : 0;
