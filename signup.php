@@ -290,7 +290,7 @@ include("head.html");
         nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
       </script>
 <?php include("sms-inc.php"); ?>
-        <input type="checkbox" name="bidding_notify" />Notify me when any job is set to bidding<br />
+        <input type="checkbox" name="bidding_notify" />Notify me when a new job is set to bidding<br />
         <input type="checkbox" name="review_notify" />Notify me when any job is set to review<br /><br />
     <script type="text/javascript">
             var username = new LiveValidation('username', {validMessage: "Valid email address."});

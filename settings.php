@@ -577,7 +577,7 @@ include("head.html");
             <div class="floatLeft">
                 <input type="checkbox" name="bidding_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::BIDDING_NOTIFICATIONS) ? 'checked="checked"' : '';
-                ?>/>New Jobs<br />
+                ?>/>New Jobs set to bidding<br />
             <input type="checkbox" name="review_notify" value="1" <?php 
                 echo Notification::isNotified($notifications, Notification::REVIEW_NOTIFICATIONS) ? 'checked="checked"' : '';
                 ?>/>Any job set to review
