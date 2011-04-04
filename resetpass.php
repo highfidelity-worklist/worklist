@@ -74,8 +74,7 @@ include("head.html"); ?>
 
 <!-- jquery file is for LiveValidation -->
 <script type="text/javascript" src="js/jquery.js"></script>
-
-
+<link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <title>SendLove | Recover Password</title>
 
 </head>
