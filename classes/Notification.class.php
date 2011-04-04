@@ -217,10 +217,12 @@ class Notification{
             break;
 
             case 'suggested':
-                $subject = "Suggested: " . $itemId . "(".$workitem -> getSummary().")" ;
-                $body =  'Summary: ' . $workitem -> getSummary() . '<br>';
-                $body.= 'Notes: ' . $data['notes'] . '<br>';
-            break;
+                $subject = "Suggested: " . $itemTitle;
+                $body =  'Summary:<br/> ' . $workitem -> getSummary() ;
+                $body.= '<br/><br/>Notes: ' . $data['notes'] ;
+                $body .= '<br><br>You can see the task <a href='.SERVER_URL.
+                         'workitem.php?job_id=' . $itemId . '>here</a>.';
+           break;
         }
 
     
