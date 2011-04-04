@@ -266,7 +266,7 @@ class Notification{
     }
 
     /**
-     * This function is similar to woritemNotify but sends messages as sms
+     * This function is similar to workitemNotify but sends messages as sms
      *
      * @param Array $options - array of options:
      * type - type of the message
@@ -281,22 +281,22 @@ class Notification{
 
             case 'new_bidding':
                 $subject = 'Bidding';
-                $message = 'Workitem #' . $workitem->getId() . ' is available for bidding';
+                $message = $workitem->getId() . ' '.$workitem->getSummary();
             break;
 
             case 'new_review':
                 $subject = 'Review';
-                $message = 'Workitem #' . $workitem->getId() . ' is available for review';
+                $message = $workitem->getId() . ' '.$workitem->getSummary();
             break;
 
             case 'my_review':
                 $subject = 'Review';
-                $message = 'Workitem #' . $workitem->getId() . ' is available for review';
+                $message = $workitem->getId() . ' '.$workitem->getSummary();
             break;
 
             case 'my_completed':
                 $subject = 'Completed';
-                $message = 'Workitem #' . $workitem->getId() . ' is now completed';
+                $message = $workitem->getId() . ' '.$workitem->getSummary();
             break;
         }
 
