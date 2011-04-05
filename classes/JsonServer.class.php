@@ -537,14 +537,17 @@ class JsonServer
 	{
 		$phone = $this->getRequest()->getParam('phone');
     		try {
-        		$config = Zend_Registry::get('config')->get('email', array());
-        		if ($config instanceof Zend_Config) {
-            			$config = $config->toArray();
-        		}
-        		$smsMessage = new Sms_Message($phone, 'Test SMS', 'Test from LoveMachine');
-        		Sms::send($smsMessage, $config);
+			notify_sms_by_id($_SESSION['userid'], 'Test SMS', 'Test from LoveMachine') or error_log("failed to create SMS message");
     		} catch (Sms_Backend_Exception $e) {
+				return $this->setOutput(array(
+					'success' => false,
+					'message' => 'Failed to send test message !'
+				));		
     		}
+		return $this->setOutput(array(
+			'success' => true,
+			'message' => 'Test message sent!'
+		));		
 	}
 	
 	protected function actionChangeRunner()

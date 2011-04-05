@@ -18,7 +18,8 @@ function send_email($to, $subject, $html, $plain=null, $headers = array()) {
         empty($subject) ||
         (empty($html) && empty($plain) ||
         !is_array($headers))) {
-         return false;
+        error_log("attempted to send an empty or misconfigured message");
+        return false;
     }
 
     $hash = md5(date('r', time()));
@@ -26,6 +27,11 @@ function send_email($to, $subject, $html, $plain=null, $headers = array()) {
     // If no 'From' address specified, use default
     if (empty($headers['From'])) { 
         $headers['From'] = DEFAULT_SENDER;
+    }
+    if (empty($headers['X-tag'])) {
+        $headers['X-tag']='worklist';
+    } else {
+        $headers['X-tag'] .= ', worklist';
     }
     $headers['From'] = "Worklist <worklist@sendlove.us>";
     if (!empty($html)) {
@@ -62,7 +68,7 @@ Content-Transfer-Encoding: 7bit
     foreach ($headers as $header=>$value) {
         $header_string .= "{$header}: {$value}\r\n";
     }
-    if (mail($to,$subject,$body,$header_string)) {
+    if (mail($to,$subject,$body,$header_string,'-f'.DEFAULT_SENDER)) {
         return true;
     }
     return false;
@@ -88,6 +94,8 @@ function notify_sms_by_id($user_id, $smssubject, $smsbody)
     if (is_object($phone_info)) {
         if (! notify_sms_by_object($phone_info, $smssubject, $smsbody) ) {
             error_log("notify_sms_by_id: notify_sms_by_object failed. Not sending SMS. ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
+        } else {
+            return true;
         }
     } else {
         error_log("notify_sms_by_id: Query '${sql}' failed. Not sending SMS." .
@@ -101,14 +109,15 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
     $smssubject = strip_tags($smssubject);
     $smsbody    = strip_tags($smsbody);
 
-    if ($user_obj->smsaddr) {
-        $smsaddr = $user_obj->smsaddr;
+    if ($user_obj->getSmsaddr()) {
+        $smsaddr = $user_obj->getSmsaddr();
     } else {
-        if ( !empty($user_obj->provider)) {
-            if ($user_obj->provider{0} != '+') {
-                $smsaddr = str_replace('{n}', $user_obj->phone, $smslist[$user_obj->country][$user_obj->provider]);
+        $provider = $user_obj->getProvider();
+        if ( !empty($provider)) {
+            if ($provider{0} != '+') {
+                $smsaddr = str_replace('{n}', $user_obj->getPhone(), $smslist[$user_obj->getCountry()][$provider]);
             } else {
-                $smsaddr = substr($user_obj->provider, 1);
+                $smsaddr = substr($provider, 1);
             }
         } else {
             return false;
@@ -120,7 +129,10 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
         $smssubject,
         '',
         $smsbody,
-        array("From" => SMS_SENDER));
+        array(
+            "From" => SMS_SENDER,
+            "X-tag" => 'sms',
+    ));
 }
 
 /*  sendTemplateEmail - send email using email template
@@ -143,10 +155,19 @@ function sendTemplateEmail($to, $template, $data){
     $plain = !empty($replacedTemplate['plain']) ?
                 $replacedTemplate['plain'] :
                 null;
+    $xtag = !empty($replacedTemplate['X-tag']) ?
+                $replacedTemplate['X-tag'] :
+                null;
+    if (!empty($xtag)) {
+        $headers=array('X-tag',$xtag);
+    } else {
+        $headers=array();
+    }
 
     $result = null;
     foreach($recipients as $recipient){
-        if (! $result = send_email($recipient, $subject, $html, $plain,array('To'=>"<$recipient>"))) { error_log("send_email:Template: send_email failed"); }
+        $headers['To']="<$recipient>";
+        if (! $result = send_email($recipient, $subject, $html, $plain,$headers)) { error_log("send_email:Template: send_email failed"); }
     }
 
     return $result;

@@ -75,19 +75,14 @@ if(isset($_REQUEST['id'])) {
         $mail_msg .= "<a href='http://dev.sendlove.us/worklist/workitem.php?job_id=".$item_id."&action=view'>#".$item_id."</a>";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-        if (!send_email( $receiver_email, $mail_subject, $mail_msg)) { error_log("pingtask.php:id: send_email failed"); }
+        if (!send_email( $receiver_email, $mail_subject, $mail_msg,array('X-tag'=>'ping, task'))) { error_log("pingtask.php:id: send_email failed"); }
 
         // sms
         try {
             $user = new User();
             $user->findUserById($receiver->id);
             if(Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
-                $config = Zend_Registry::get('config')->get('sms', array());
-                if ($config instanceof Zend_Config) {
-                    $config = $config->toArray();
-                }
-                $sms = new Sms_Message($user, $mail_subject, $msg);
-                Sms::send($sms, $config);
+                notify_sms_by_object($user, $mail_subject, $msg);
             }
         } catch (Sms_Backend_Exception $e) {
         }
@@ -115,19 +110,14 @@ if(isset($_REQUEST['id'])) {
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-        if(!send_email( $receiver_email, $mail_subject, $mail_msg)) { error_log("pingtask.php:!id: send_email failed"); }
+        if(!send_email( $receiver_email, $mail_subject, $mail_msg, array('X-tag'=>'ping'))) { error_log("pingtask.php:!id: send_email failed"); }
 
         // sms
         try {
             $user = new User();
             $user->findUserById($receiver->id);
             if(Notification::isNotified($user->notifications, Notification::PING_NOTIFICATIONS)) {
-                $config = Zend_Registry::get('config')->get('sms', array());
-                if ($config instanceof Zend_Config) {
-                    $config = $config->toArray();
-                }
-                $sms = new Sms_Message($user, $mail_subject, $msg);
-                Sms::send($sms, $config);
+                notify_sms_by_object($user, $mail_subject, $msg);
             }
         } catch (Sms_Backend_Exception $e) {
         }

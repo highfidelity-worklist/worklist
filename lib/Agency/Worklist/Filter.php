@@ -396,7 +396,7 @@ class Agency_Worklist_Filter {
         $this->setStatus( ($fromReport) ? "DONE" : "BIDDING");
         if (!empty($options) && (empty($options['reload']) || $options['reload'] == 'false')) {
             $this->setOptions($options);
-        } elseif (isset($options['name'])) {
+        } elseif (!empty($options['name'])) {
         	$this->setName($options['name'])
         		 ->initFilter();
         }
@@ -413,23 +413,27 @@ class Agency_Worklist_Filter {
 
     private function setOptions(array $options)
     {
-    	if (isset($options['name'])) {
+    	if (!empty($options['name'])) {
     		$this->setName($options['name']);
+        } elseif (!empty($options['id'])) {
+            $options='';
     	} else {
     		$options = $options[$this->getName()];
     	}
         $cleanOptions = array();
         $methods = get_class_methods($this);
-        foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
-            if (in_array($method, $methods)) {
-                $this->$method($value);
-                if ($key != 'name') {
-                	$cleanOptions[$key] = $value;
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                $method = 'set' . ucfirst($key);
+                if (in_array($method, $methods)) {
+                    $this->$method($value);
+                    if ($key != 'name') {
+                    	$cleanOptions[$key] = $value;
+                    }
+                } elseif ($method == 'setProject_id') {
+                    $this->setProjectId($value);
+                    $cleanOptions['project_id'] = $value;
                 }
-            } elseif ($method == 'setProject_id') {
-                $this->setProjectId($value);
-                $cleanOptions['project_id'] = $value;
             }
         }
         $this->save($cleanOptions);

@@ -143,19 +143,6 @@ define('FEATURE_USER_MASK',         0x0001);
 define('SMS_FLAG_JOURNAL_ALERTS',   0x0001);
 define('SMS_FLAG_BID_ALERTS',       0x0002);
 
-if (empty($mail_user) || !is_array($mail_user)) {
-$mail_user = array (
-  'authuser' => array (
-    'from' => 'Worklist <worklist@sendlove.us>',
-    'replyto' => 'Worklist <worklist@sendlove.us>',
-    ),
-  'smsuser' => array (
-    'from' =>  'Worklist SMSReply <sms@sendlove.us>',
-    'replyto' => 'Worklist SMSReply <sms@sendlove.us>'
-    )
-  );
-}
-
 // Configuration Array
 // New keys can be added to this array, for configuration of features
 // and retrieved where needed using Zend_Registry::get('config');
@@ -170,9 +157,19 @@ $config = array(
             'dbname'   => DB_NAME,
         )
     ),
+    'email' => array(
+        'mailFrom'              => DEFAULT_SENDER,
+        'mailReplyTo'           => defined('DEFAULT_REPLYTO')?DEFAULT_REPLYTO:DEFAULT_SENDER,
+        'host'                  => GOOGLE_HOST,
+        'port'                  => GOOGLE_PORT,
+        'username'              => GOOGLE_USER,
+        'password'              => GOOGLE_PWD,
+        'auth'                  => GOOGLE_AUTH
+
+    ),
     'sms' => array(
-        'mailFrom'              => $mail_user['smsuser']['from'],
-        'mailReplyTo'           => $mail_user['smsuser']['replyto'],
+        'mailFrom'              => SMS_SENDER,
+        'mailReplyTo'           => defined('SMS_REPLYTO')?SMS_REPLYTO:SMS_SENDER,
         'clickatellApiWSDL'     => CLICKATELL_WSDL,
         'clickatellApiLocation' => CLICKATELL_LOCATION,
         'clickatellApiId'       => CLICKATELL_API_ID,
@@ -181,12 +178,12 @@ $config = array(
     ),
     'twitter' => array(
     	array(
-    	'twitterUsername'		=> 'lovemachineinc',
-    	'twitterPassword'		=> 'martini10'
+    	'twitterUsername'		=> TWITTER_USER,
+    	'twitterPassword'		=> TWITTER_PASS,
     	),
     	array(
-    	'twitterUsername'		=> 'cash4code',
-    	'twitterPassword'		=> 'martini10'
+    	'twitterUsername'		=> TWITTER_2_USER,
+    	'twitterPassword'		=> TWITTER_2_PASS,
     	)
     ),
     'websvn' => array(

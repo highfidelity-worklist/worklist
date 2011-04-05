@@ -132,7 +132,11 @@ if($action =='save_workitem') {
 
     $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills');
     foreach ($args as $arg) {
-        $$arg = $_POST[$arg];
+        if (!empty($_POST[$arg])) {
+            $$arg = $_POST[$arg]; 
+        } else {
+            $$arg = '';
+        }
     }
 
     // code to add specifics to journal update messages

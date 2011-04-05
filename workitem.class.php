@@ -384,6 +384,9 @@ WHERE id = ' . (int)$id;
 
     protected function tweetNewJob()
     {
+        if (!defined(TWITTER_OAUTH_SECRET) || empty(TWITTER_OAUTH_SECRET)) {
+            return false;
+        }
          
         if (empty($_SERVER['HTTPS']))
         {

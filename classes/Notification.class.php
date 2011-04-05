@@ -148,7 +148,7 @@ class Notification{
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $body = '';
         $subject = '';
-        $headers="";
+        $headers=array();
         switch ($options['type']) {
             case 'comment':
                 $subject = 'Comment: ' . $itemTitle;
@@ -259,7 +259,7 @@ class Notification{
         if(count($emails) > 0) {
             foreach($emails as $email) {
                 if(!send_email($email, $subject, $body, null, $headers)) {
-                    error_log("Notification:workitem: send_email failed");
+                    error_log("Notification:workitem: send_email failed ".json_encode(error_get_last()));
                 }
             }
         }
@@ -304,7 +304,7 @@ class Notification{
         $current_user->findUserById(getSessionUserId());
         $sms_recipients = array();
         foreach($emails as $email) {
-            error_log("SMS email (".$options['type']."):".$email);
+            //error_log("SMS email (".$options['type']."):".$email);
 
             // do not send sms to the same user making changes
             if($email != $current_user->getUsername()) {
@@ -340,13 +340,10 @@ class Notification{
     */
     public static function sendSMS($recipient, $subject, $message) {
         try {
-            $config = Zend_Registry::get('config')->get('sms', array());
-            if ($config instanceof Zend_Config) {
-                $config = $config->toArray();
-            }
-            $smsMessage = new Sms_Message($recipient, $subject, $message);
-            Sms::send($smsMessage, $config);
+            notify_sms_by_object( $recipient, $subject, $message);
+            return true;
         } catch (Sms_Backend_Exception $e) {
+		  error_log('ExceptionMessage: ' .$e->getMessage());		
         }
     }
 } 
