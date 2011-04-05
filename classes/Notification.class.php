@@ -339,11 +339,7 @@ class Notification{
     * @param String $message - actual message content
     */
     public static function sendSMS($recipient, $subject, $message) {
-        try {
-            notify_sms_by_object( $recipient, $subject, $message);
-            return true;
-        } catch (Sms_Backend_Exception $e) {
-		  error_log('ExceptionMessage: ' .$e->getMessage());		
-        }
+		notify_sms_by_object( $recipient, $subject, $message);
+		return true;
     }
 } 

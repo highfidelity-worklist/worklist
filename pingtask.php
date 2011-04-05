@@ -78,14 +78,11 @@ if(isset($_REQUEST['id'])) {
         if (!send_email( $receiver_email, $mail_subject, $mail_msg,array('X-tag'=>'ping, task'))) { error_log("pingtask.php:id: send_email failed"); }
 
         // sms
-        try {
-            $user = new User();
-            $user->findUserById($receiver->id);
-            if(Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
-                notify_sms_by_object($user, $mail_subject, $msg);
-            }
-        } catch (Sms_Backend_Exception $e) {
-        }
+		$user = new User();
+		$user->findUserById($receiver->id);
+		if(Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
+			notify_sms_by_object($user, $mail_subject, $msg);
+		}
     }
 
 } else {

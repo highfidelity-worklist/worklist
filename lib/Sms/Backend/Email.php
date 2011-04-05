@@ -190,11 +190,8 @@ class Sms_Backend_Email implements Sms_Backend
         } else {
             $targetEmail = $this->targetEmail;
         }
-        try {
-               notify_sms_by_object($user, $message->getSubject(), $message->getMessage()) or error_log("failed to send SMS message by email");
-        } catch (Exception $e) {
-            return false;
-        }
+
+        notify_sms_by_object($user, $message->getSubject(), $message->getMessage()) or error_log("failed to send SMS message by email");
         return true;
     }
 }
