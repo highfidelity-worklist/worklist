@@ -109,13 +109,13 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
     $smssubject = strip_tags($smssubject);
     $smsbody    = strip_tags($smsbody);
 
-    if ($user_obj->getSmsaddr()) {
-        $smsaddr = $user_obj->getSmsaddr();
+    if ($user_obj->smsaddr) {
+        $smsaddr = $user_obj->smsaddr;
     } else {
-        $provider = $user_obj->getProvider();
+        $provider = $user_obj->provider;
         if ( !empty($provider)) {
             if ($provider{0} != '+') {
-                $smsaddr = str_replace('{n}', $user_obj->getPhone(), $smslist[$user_obj->getCountry()][$provider]);
+                $smsaddr = str_replace('{n}', $user_obj->phone, $smslist[$user_obj->country][$provider]);
             } else {
                 $smsaddr = substr($provider, 1);
             }
