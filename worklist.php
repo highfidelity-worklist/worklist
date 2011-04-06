@@ -463,6 +463,7 @@ include("head.html"); ?>
 				/*commented for remove tooltip */
 				//MapToolTips();
 				var showUserInfo = function(userId) {
+				        $('#user-info').dialog('option', 'height', '440px');
 						$('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />')
 							.dialog('open');
 						$('#modalIframeId').attr('src','userinfo.php?id=' + userId);

@@ -60,7 +60,7 @@ $(document).ready(function(){
 	   modal: true,
 	   show: 'fade',
 	   hide: 'fade',
-	   height: 500,
+	   height: 480,
 	   width: 800
    });
    $("#sent-notify").dialog({
