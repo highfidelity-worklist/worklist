@@ -209,7 +209,7 @@ class UserStats{
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
             WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId})
-            AND `status` IN ('WORKING', 'REVIEW', 'COMPLETED','DONE') ORDER BY `created` DESC 
+            AND `status` IN ('WORKING', 'REVIEW', 'COMPLETED','DONE') ORDER BY `id` DESC 
             LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();
@@ -237,7 +237,7 @@ public function getActiveUserItems($status, $page = 1){
             FROM `" . WORKLIST . "` 
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
-            WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId}) AND `status` IN ('WORKING','REVIEW') ORDER BY `created` DESC "
+            WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId}) AND `status` IN ('WORKING','REVIEW') ORDER BY `id` DESC "
             . "LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();
