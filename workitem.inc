@@ -8,7 +8,7 @@
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    $statusList = array("SUGGESTED","BIDDING","WORKING","REVIEW","COMPLETED","DONE","PASS");
+    $statusList = array("SUGGESTED","BUG","BIDDING","WORKING","REVIEW","COMPLETED","DONE","PASS");
 
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
@@ -567,37 +567,7 @@ function reply(id) {
   }
 
   function saveWorkitem() {
-      var massValidation;
-      if($('#is_bug').is(':checked')) {			
-          var bugJobId = new LiveValidation('bug_job_id',{ 
-                             onlyOnSubmit: true ,
-                             onInvalid : function() {
-                             this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-                         }});
-          bugJobId.add( Validate.Custom, { 
-                        against: function(value,args){
-                            id=$('#bugJobSummary').attr('title');
-                            return (id!=0) 
-                        },
-                        failureMessage: "Invalid item Id"});
-          bugJobId.add( Validate.Presence, { failureMessage: "Can't be empty!"});
-          massValidation = LiveValidation.massValidate([ bugJobId ]);   
-          if (!massValidation) {
-              return false;
-          }
-      }
-      var summary = new LiveValidation('summary',{ onlyOnSubmit: true ,
-                    onInvalid : function() {
-                        this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-                    }
-      });
-      summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-      massValidation = LiveValidation.massValidate( [ summary ]);   
-      if (!massValidation) {
-          return false;
-      }
-
-	  var summary = $('#summary').val();
+      var summary = $('#summary').val();
       var status = $('#status').val();
       var notes = $('#edit-notes').val();
       $('#workitem-form').submit();
@@ -801,14 +771,6 @@ function reply(id) {
 			<div class="info-summ-big">
 				<div class="info-ID">
 					<span class="info-label">#</span><?php echo $worklist['id'];?>
-                    <?php
-                        //Show original item id if displayed item is a bug 
-                        if($workitem->getBugJobId() > 0) {
-                            $originalItemLink = SERVER_URL."workitem.php?job_id=".
-                                                $workitem->getBugJobId()."&action=view";
-                            echo "  [ bug of <a href='".$originalItemLink."'>".$workitem->getBugJobId()."</a> ]";
-                        }
-                    ?>
 				</div>
 				<span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
 			</div>
@@ -824,12 +786,10 @@ if ($action =="edit"):  ?>
 					<input type="hidden" name="action" value="save_workitem" />
 					<ul style="margin:0; padding:0;">
 				<!-- Edit: Summary info -->
-                    <li><span class="info-label">Summary</span>
+						<li><span class="info-label">Summary</span><span class="info-data">
 							<?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
                             if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' && is_null($worklist['runner_id']))) { ?>
-                            <span class="info-summ">
 							<input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
-                            </span>
 							<?php } else { ?>
 							<span class="info-summ"><?php echo $worklist['summary'];?>
 							<?php } ?></span>
@@ -845,6 +805,7 @@ if ($action =="edit"):  ?>
                             <?php } else if ($has_budget && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SKIP')) {?>
                             <select id="status" name="status">
                                 <option value="<?php echo $worklist['status'] ?>" selected="selected"><?php echo $worklist['status'] ?></option>
+                                <option value="BUG" <?php echo 'BUG' == $worklist['status']?' selected = "selected"' : ''; ?> >BUG</option>
                                 <option value="BIDDING" <?php echo 'BIDDING' == $worklist['status']?' selected = "selected"' : ''; ?> >BIDDING</option>
                                 <option value="WORKING" <?php echo 'WORKING' == $worklist['status']?' selected = "selected"' : ''; ?> >WORKING</option>
                             </select>
@@ -942,24 +903,6 @@ if ($action =="edit"):  ?>
 <?php else: ?>
                             <input type="text" size="60" class="text-field" name="skills" id="skills" value="" /></span>
 <?php endif; ?>
-                        </li>
-                        <li>
-                            <span class="info-label">Bug</span><br/>
-                            <div class="floatLeft">
-                                <input type="checkbox" name="is_bug" id="is_bug" value="1" <?php if ($workitem->getBugJobId()>0) echo 'CHECKED';?>/>
-                                Bug in job 
-                                <input type="text" id="bug_job_id" name="bug_job_id" class="text-field bug_job_id" size="48" value="<?php if($workitem->getBugJobId()>0) echo $workitem->getBugJobId();?>" />
-                            </div>
-                            <div class="bugJobSummary" id="bugJobSummary" title="0">
-                            </div>
-                            <div class="clear"></div>
-                            <script type="text/javascript">
-                                $(document).ready(function() {
-                                    if($("#is_bug").is ( ":checked" )) {
-                                        $("#bug_job_id").keyup();
-                                    }
-                                });
-                            </script>
                         </li>
 					<!-- Edit: Sandbox textarea -->
 					<?php if ($mechanic_id > 0):?>

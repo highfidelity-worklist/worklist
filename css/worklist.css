@@ -41,21 +41,6 @@
     height: 110px;
 }
 
-.popup-body #bug_job_id {
-    width: 50px;
-}
-
-.bugJobSummary {
-    display: block;
-    margin: 0;
-    padding: 5px;
-    border-style: none;
-    background-color: white;
-    z-index: 3000;
-    float: right;
-    width: 200px
-}
-
 .popup-body input.date, .user-info input.date {
     width: 130px;
 }

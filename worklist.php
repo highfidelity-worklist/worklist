@@ -17,8 +17,7 @@ require_once('classes/UserStats.class.php');
 require_once('classes/Repository.class.php');
 require_once('classes/Project.class.php');
 
-
-$page=isset($_REQUEST["page"]) ? intval($_REQUEST["page"]) : 1; //Get the page number to show, set default to 1
+$page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 
 $userId = getSessionUserId();
 
@@ -75,9 +74,8 @@ if (is_object($inProject)) {
 
 
 if ($userId > 0 && isset($_POST['save_item'])) {
-    $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes', 
-                    'bid_fee_desc', 'bid_fee_amount','bid_fee_mechanic_id',
-                     'invite', 'is_expense', 'is_rewarder', 'is_bug','bug_job_id');
+    $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
+                   'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
     		// Removed mysql_real_escape_string, because we should 
     		// use it in sql queries, not here. Otherwise it can be applied twice sometimes
@@ -95,7 +93,6 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     }
     $workitem->setSummary($summary);
 
-    $workitem->setBugJobId($bug_job_id);
     // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
     if($status == 'BIDDING' && ($user->getIs_runner() == 1 || $user->getBudget() > 0)){
         $runner_id = $userId;
@@ -110,11 +107,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     $workitem->save();
 
     Notification::statusNotify($workitem);
-    if(is_bug) {
-        $journal_message .= " (bug of job #".$bug_job_id.") ";
-        notifyOriginalUsersBug($bug_job_id, $workitem);
-    }
-    
+
     if(empty($_POST['itemid']))  {
         $bid_fee_itemid = $workitem->getId();
         $journal_message .= " item #$bid_fee_itemid: $summary. ";
@@ -129,7 +122,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
         $bid_fee_itemid = $itemid;
         $journal_message .=  "item #$itemid: $summary. ";
     }
-        
+
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $bid_fee_itemid, $summary, $notes);
@@ -241,6 +234,7 @@ include("head.html"); ?>
     function AppendRow(json, odd, prepend, moreJson, idx)    {
         var pre = '', post = '';
         var row;
+			
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live iToolTip hoverJobRow ';
 
 		// disable dragging for all rows except with "BIDDING" status
@@ -276,18 +270,10 @@ include("head.html"); ?>
 <?php if (! $hide_project_column) : ?>
         row+= '<td width="9%"><span class="taskProject" id="' + json[16] + '"><a href="' + worklistUrl + '' + json[17] + '">' + (json[17] == null ? '' : json[17]) + '</a></span></td>';
 <?php endif; ?>
-        //If job is a bug, add reference to original job
-        if( json[18] > 0) {
-            extraStringBug = '<small> (bug of '+json[18]+ ') </small>';
-        } else {
-            extraStringBug = '';
-        }
-  
+
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
-        row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' + 
-                json[0] + '</span> - ' + pre + json[1] + post + extraStringBug + 
-                '</span></td>';
+        row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' + json[0] + '</span> - ' + pre + json[1] + post + '</span></td>';
         <?php if (! $hide_project_column) : ?>
         if (json[2] == 'BIDDING' && json[10] > 0) {
             post = ' (' + json[10] + ')';
@@ -571,13 +557,6 @@ include("head.html"); ?>
 		$('.popup-body form select.resetToFirstOption option[index=0]').attr('selected', 'selected');        
 		$('.popup-body form select option[value=\'BIDDING\']').attr('selected', 'selected');
 		$('.popup-body form textarea').val('');
-
-        //Reset popup edit form
-        $("#bug_job_id").attr ( "disabled" , true );
-        $("#bug_job_id").val ("");
-        $('#bugJobSummary').html('');
-        $("#bugJobSummary").attr("title" , 0);
-        $("#is_bug").attr('checked',false);
     }
 
 
@@ -1076,32 +1055,6 @@ include("head.html"); ?>
 				loaderImg.show( "saveRunning","Saving, please wait ...",function() {
 					$('#save_item').data( "submitIsRunning",false );
 				});
-				
-                if($('#popup-edit form input[name="is_bug"]').is(':checked')) {
-                    var bugJobId = new LiveValidation('bug_job_id',{ 
-                        onlyOnSubmit: true ,
-                        onInvalid : function() {
-                            loaderImg.hide("saveRunning");
-                            this.insertMessage( this.createMessageSpan() ); 
-                            this.addFieldClass();
-                        }
-                    });
-                    bugJobId.add( Validate.Custom, { 
-                        against: function(value,args){
-                            id=$('#bugJobSummary').attr('title');
-                            return (id!=0) 
-                        },
-                        failureMessage: "Invalid item Id"
-                    });
-
-                    bugJobId.add( Validate.Presence, { failureMessage: "Can't be empty!"});
-                    massValidation = LiveValidation.massValidate( [ bugJobId ]);   
-                    if (!massValidation) {
-                        loaderImg.hide("saveRunning");
-                        event.preventDefault();
-                        return false;
-                    }
-                }
 				if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val()) {
 					// see http://regexlib.com/REDetails.aspx?regexp_id=318
                     // but without  dollar sign 22-NOV-2010 <krumch>
@@ -1157,9 +1110,7 @@ include("head.html"); ?>
                         page:$(":input[name='page']",addForm).val(),
                         project_id:$(":input[name='itemProject']",addForm).val(),
                         status:$(":input[name='status']",addForm).val(),
-                        skills:$(":input[name='skills']",addForm).val(),
-                        is_bug:$(":input[name='is_bug']",addForm).val(),
-                        bug_job_id:$(":input[name='bug_job_id']",addForm).val()
+                        skills:$(":input[name='skills']",addForm).val()
                     },
                     type: 'POST',
                     success: function(json){
@@ -1359,7 +1310,7 @@ include("head.html"); ?>
 		    	break;
 	    }
 	}
-	
+
 	function be_attachEvents(section) {
         $('#be-id').click(function() {
             be_handleSorting(section, $(this));
