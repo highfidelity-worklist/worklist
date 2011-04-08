@@ -1,10 +1,9 @@
 <?php
 //  vim:ts=4:et
 
-//  Copyright (c) 2010, LoveMachine Inc.
+//  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-
 
 /**
 *    Page: view-payments.php
@@ -41,10 +40,46 @@ $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $userId = getSessionUserId();
 
 $payer_id = $userId;
+// set default fund to below92
+$fund_id = 1;
+
+if (isset($_REQUEST['fund_id'])) {
+    $fund_id = mysql_real_escape_string($_REQUEST['fund_id']);
+    unset($_POST);
+}
 
 //open db connection
 $db = @mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD) or die ('I cannot connect to the database because: ' . mysql_error());
 $db = @mysql_select_db(DB_NAME);
+
+// get a list of projects so we can display the project name in table
+$sql_get_fund_projects_array = "
+    SELECT
+        project_id, name
+    FROM
+        ".PROJECTS."
+    WHERE
+        fund_id = " . $fund_id;
+
+// sql sub-query for limiting fees to specific fund
+$sql_get_fund_projects = "
+    SELECT
+        project_id
+    FROM
+        ".PROJECTS."
+    WHERE
+        fund_id = " . $fund_id;
+
+if ($fund_id == 0) {
+    $sql_get_fund_projects = '0';
+}
+
+$fund_projects = array();
+$fund_projects[0] = 'none';
+$fund_projects_query = mysql_query($sql_get_fund_projects_array);
+while ($project = mysql_fetch_array($fund_projects_query)) {
+    $fund_projects[$project['project_id']] = $project['name'];
+}
 
 $sql_get_fee_totals = "
     SELECT
@@ -62,6 +97,7 @@ $sql_get_fee_totals = "
         AND f.withdrawn = '0'
         AND f.amount > 0
         AND u.paypal = '1'
+        AND wl.project_id IN (" . $sql_get_fund_projects . ")
     GROUP BY f.user_id
     ";
 
@@ -94,7 +130,6 @@ function getUserTotalsArray() {
     $bonus_totals_query = mysql_query($sql_get_bonus_totals);
 
     $totals_array = array();
-
     while ($fees_array = mysql_fetch_array($fee_totals_query, MYSQL_ASSOC)) {
         $totals_array[] = $fees_array;
     }
@@ -149,7 +184,6 @@ switch ($action)
     case 'pay':
         //collect confirmed payees and run paypal transaction
         include_once("paypal-password.php");
-        //error_log("PW: ".$_POST['password']." CA: ".checkAdmin($_POST['password']));
         if (checkAdmin($_POST['password']) == '1') { 
             error_log("Made it Admin!");
             if(empty($_POST['pp_api_username']) || empty($_POST['pp_api_password']) || empty($_POST['pp_api_signature'])){
@@ -289,43 +323,49 @@ switch ($action)
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>
-
+<title>PayPal MassPay Run</title>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/payments.css" rel="stylesheet" type="text/css">
 <link href="css/ui.toaster.css" rel="stylesheet" type="text/css">
-<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+
+<link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/payments.js"></script>
 </head>
 <body onload="updateTotalFees('0');">
+<?php include("format.php"); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-<div id="outside">
-<div id="container">
-<div id="welcome"></div>
-<div id="left"></div>
-
-<div id="center">
-
+<div class="floatLeft">
+    <h1>PayPal MassPay Run</h1>
+</div>
+<div class="clear"></div>
 <?php 
     if (isset($alert_msg)) { echo "<h2>".$alert_msg."</h2>"; }
     if (!isset($_POST["action"]) || ($_POST["action"] != 'pay')) {
         // If the action is set & not "pay", generate payment report...
 ?>
+<div id="select-fund">
+    <form id="fundForm" method="POST" action="view-payments.php">
+    <label id="label-fund" for="fund_id">Fund:</label>
+    <select name="fund_id" id="fund_id">
+        <option value="0" <?php echo ($fund_id == 0 ? 'selected="selected"' : '');?>>Not funded</option>
+        <option value="1" <?php echo ($fund_id == 1 ? 'selected="selected"' : ''); ?>>Below92</option>
+        <option value="2" <?php echo ($fund_id == 2 ? 'selected="selected"' : ''); ?>>CandP</option>
+    </select>
+    </form>
+</div>
 <div id="select-actions">
     Actions: [<a href="javascript:void(0);" onclick="toggleCBs('toggle');">Invert Selection</a>]
     | [<a href="javascript:void(0);" onclick="toggleCBs('select');">Select All</a>]
     | [<a href="#" onclick="toggleCBs('unselect');">Select None</a>]
 </div>
-
+<div class="clear"></div>
 <form action="view-payments.php?<?php echo isset($_GET["order"])?'order='.$_GET["order"]:''; ?>" method="POST">
 <table id="payments-table">
     <thead><tr class="table-hdng">
@@ -333,6 +373,7 @@ include("head.html"); ?>
         <th>Mechanic</th>
         <th>Fee/Bonus&nbsp;ID</th>
         <th>Task&nbsp;ID</th>
+        <th>Project</th>
         <th>Amount</th>
         <th width="450">Description</th>
     </tr></thead>
@@ -345,8 +386,8 @@ include("head.html"); ?>
 
 foreach ($payee_totals as $payee) {
     echo "\r\n"; //added \r\n to make output code modestly presentable
-    echo '<tr><td><input type="checkbox" name="'.$payee["mechanic_id"].'fees" onclick="javascript:toggleCBGroup(\'fees'.$payee["mechanic_id"].'\', this);" rel="0" /></td>';    
-    echo '<td colspan="3" align="left"><a href="javascript:void(0);" onclick="toggleVis(\'indfees'.$payee["mechanic_id"].'\')">'.$payee["mechanic_nick"].'</a></td>';
+    echo '<tr><td><input type="checkbox" name="'.$payee["mechanic_id"].'fees" onclick="javascript:toggleCBGroup(\'fees'.$payee["mechanic_id"].'\', this);" rel="0" /></td>';
+    echo '<td colspan="4" align="left"><a href="javascript:void(0);" onclick="toggleVis(\'indfees'.$payee["mechanic_id"].'\')">'.$payee["mechanic_nick"].'</a></td>';
     echo '<td align="right" onclick="toggleBox(\'payfee'.$payee["mechanic_id"].'\')">'.$payee["total_amount"].'</td>';
     echo '<td>&nbsp;</td></tr></tbody>'; 
     echo "\r\n"; //added \r\n to make output code modestly presentable
@@ -356,7 +397,7 @@ foreach ($payee_totals as $payee) {
 
     // Display fees for each user
     $ind_sql = "
-        SELECT f.*
+        SELECT f.*, wl.project_id
         FROM
             (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id)
             LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id
@@ -366,7 +407,8 @@ foreach ($payee_totals as $payee) {
             AND f.withdrawn = '0'
             AND u.paypal = '1'
             AND f.amount > 0
-            AND f.user_id = '".$payee["mechanic_id"]."'";
+            AND f.user_id = '".$payee["mechanic_id"]."'
+            AND wl.project_id IN (" . $sql_get_fund_projects . ")";
     $ind_query = mysql_query($ind_sql);
     if (mysql_num_rows($ind_query) > 0) {
         while ($ind_fees = mysql_fetch_array($ind_query)) {
@@ -386,6 +428,7 @@ foreach ($payee_totals as $payee) {
                 '<a class="worklist-item" id="worklist-"'.$ind_fees["worklist_id"].'" href="workitem.php?job_id='.
                 $ind_fees["worklist_id"].'" target="_blank">#'.$ind_fees["worklist_id"].'</a></td>';
             //$fee_rows .= '<td onclick="toggleBox(\'payfee'.$payee["id"].'\')">'.$payee["mechanic_nick"].'</td>';
+            $fee_rows .= '<td align="left">'.$fund_projects[$ind_fees["project_id"]].'</td>';
             $fee_rows .= '<td align="right" onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["amount"].'</td>';
             $fee_rows .= '<td align="left" onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["desc"].'</td>';
             $fee_rows .= '</tr>';
@@ -423,7 +466,7 @@ foreach ($payee_totals as $payee) {
             $fee_rows .= ' /></td>';
             $fee_rows .= '<td>'.strftime("%m-%d-%Y", strtotime($ind_bonus["date"])).'</td>';
             $fee_rows .= '<td onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["id"].'</td>';
-            $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">BONUS</td>';
+            $fee_rows .= '<td colspan="2" align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">BONUS</td>';
             $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["amount"].'</td>';
             $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.
                          '(FROM: '.$ind_bonus['payer_name'].') '.$ind_bonus["notes"].'</td>';
@@ -463,12 +506,8 @@ foreach ($payee_totals as $payee) {
     echo $message;
     echo urldecode($pp_message);
     $logmsg = 'PayPal Error: '.date('Y-m-d H:i:s').' '.$pp_message.' ParsedResp:'.print_r($httpParsedResponseAr, true);
-    //POST: '.print_r($_POST, true).' -|jk';
-    error_log($logmsg);
     echo '<p><a href="view-payments.php">Process More Payments.</a></p>';
 }
 ?>
-
 <?php include("footer.php"); ?>
-</body>
-</html>
+

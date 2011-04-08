@@ -28,11 +28,8 @@ function checkAdmin($pass) {
 //checks admin login.  
 $sql = "SELECT * FROM ".PAYPAL_ADMINS." WHERE `password` = '".md5($pass)."'";
 $result = mysql_query($sql);
-error_log("Password: ".$pass);
-error_log(mysql_error());
 //if successful, this will be 1, otherwise 0
 return mysql_num_rows($result);
-error_log(DB_NAME." : ". $sql);
 }
 
 

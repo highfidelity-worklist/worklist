@@ -1,4 +1,3 @@
-
 function toggleVis(el) {
     
     var element = document.getElementById(el)
@@ -15,7 +14,7 @@ function toggleCBGroup(classname, check) {
     for (i = 0; i < checklist.length; i++) {
         if ( (checklist[i].getAttribute("type") == 'checkbox') && (checklist[i].className == classname) ) {
            //if (checklist[i].checked) {   
-	    if (!check.checked) {   
+        if (!check.checked) {   
                 checklist[i].checked = false;
             } else {
                 checklist[i].checked = true;
@@ -65,7 +64,7 @@ function toggleBox(box) {
 }
 
 function updateTotalFees(resA) {
-	
+    
     if (resA == '1') {
         resetAction();
     }
@@ -73,9 +72,9 @@ function updateTotalFees(resA) {
     var checklist = document.getElementsByTagName("input");
     for (i = 0; i < checklist.length; i++) {
         if (checklist[i].getAttribute("type") == 'checkbox') {
-	    if (checklist[i].checked) {
-		var fee = parseFloat(checklist[i].getAttribute("rel")); 
-	        totalFees = totalFees + fee;
+        if (checklist[i].checked) {
+        var fee = parseFloat(checklist[i].getAttribute("rel")); 
+            totalFees = totalFees + fee;
             }
         }
     }
@@ -85,10 +84,15 @@ function updateTotalFees(resA) {
 }
 
 function resetAction() {
-
-    //reset action to 'confirm' if it isn't
+    // reset action to 'confirm' if it isn't
     var action = $('#action');
     var btn = $('#commit-btn');
     if (action.val() == 'pay') { action.val('confirm'); }
     if (btn.val() != 'Confirm') { btn.val('Confirm'); }
 }
+
+$(document).ready(function() {
+    $('#fund_id').change(function() {
+        $('#fundForm').submit();
+    });
+});
