@@ -355,7 +355,7 @@ $(function() {
                         alert(json.error);
                     } else {
                         if(json.returnString.length>0) {
-                            $('#bugJobSummary').html('<p><small>'+json.returnStringa+'</small></p>');
+                            $('#bugJobSummary').html('<p><small>'+json.returnString+'</small></p>');
                             $("#bugJobSummary").attr("title" , id);	
                         } else {
                             $('#bugJobSummary').html("<p><small>Item doesn't exist</small></p>");
