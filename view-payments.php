@@ -41,7 +41,7 @@ $userId = getSessionUserId();
 
 $payer_id = $userId;
 // set default fund to below92
-$fund_id = 1;
+$fund_id = 2;
 
 if (isset($_REQUEST['fund_id'])) {
     $fund_id = mysql_real_escape_string($_REQUEST['fund_id']);
