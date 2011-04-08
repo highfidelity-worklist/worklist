@@ -1,5 +1,4 @@
 <?php
-
 require_once 'send_email.php';
 require_once 'workitem.class.php';
 require_once 'functions.php';
@@ -215,7 +214,20 @@ class Notification{
                 $subject = "Review: ".$itemTitle;
                 $body =  'New item is available for review: ' . $itemLink . '<br>';
             break;
+            case 'bug_found':
+                $subject = "New bug of item #".$workitem->getBugJobId().
+                            " has been reported - ".$itemTitle." -";
+                
+                $body = "<p>A bug has been reported related to item #".
+                $workitem->getBugJobId(). 
+                            " : ".$workitem->getBugJobSummary()."</p>";
 
+                $body .= "<p>New item #".$itemId." summary: " . 
+                            $workitem -> getSummary() . ".</p>";				
+                $body .= "<p>" . $workitem->getNotes(). "</p>";
+                $body .= '<br><br><a href='.SERVER_URL.'workitem.php?job_id=' . 
+                            $itemId . '>View new item</a>.';
+            break;
             case 'suggested':
                 $subject = "Suggested: " . $itemTitle;
                 $body =  'Summary:<br/> ' . $workitem -> getSummary() ;
@@ -229,33 +241,35 @@ class Notification{
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
         if($recipients) {
-            foreach($recipients as $recipient) {
-                if($recipient == 'projectRunners') {
-                    $runners = $workitem->getProjectRunners();
-                    foreach($runners as $runner) {
-                        $recipientUser = new User();
-                        $recipientUser->findUserById($runner);
-                        if($username = $recipientUser->getUsername()) {
+            foreach($recipients as $recipient) {              
+                /**
+                 *  If there is need to get a new list of users
+                 *  just add a get[IDENTIFIER]Id function to
+                 *  workitem.class.php that returns a single user id
+                 *  or an array with user ids */
+                $method = 'get' . ucfirst($recipient) . 'Id';
+                $recipientUsers=$workitem->$method();
+                if(!is_array($recipientUsers)) {
+                    $recipientUsers=array($recipientUsers);
+                }                
+                foreach($recipientUsers as $recipientUser) {
+                    if($recipientUser>0) {
+                        //Does the recipient exists
+                        $rUser = new User();
+                        $rUser->findUserById($recipientUser);
+
+                        if(($username = $rUser->getUsername())){
                             // check if we already sending email to this user
-                            if(!in_array($username, $emails)) {
+                            if(!in_array($username, $emails)){
                                 $emails[] = $username;
                             }
-                        }
-                    }
-                } else {
-                    $recipientUser = new User();
-                    $method = 'get' . ucfirst($recipient) . 'Id';
-                    $recipientUser->findUserById($workitem->$method());
-                    if(($username = $recipientUser->getUsername())) {
-                        // check if we already sending email to this user
-                        if(!in_array($username, $emails)) {
-                            $emails[] = $username;
                         }
                     }
                 }
             }
         }
 
+        $headers=null;
         if(count($emails) > 0) {
             foreach($emails as $email) {
                 if(!send_email($email, $subject, $body, null, $headers)) {
@@ -271,10 +285,11 @@ class Notification{
      * @param Array $options - array of options:
      * type - type of the message
      * emails - list of emails of users you want to send sms to
+     * recipients - array of recipients of the message ('creator', 'runner', 'mechanic')
      * workitem - current workitem object to send info about
-     */
+     **/
     public static function workitemSMSNotify($options) {
-
+        $recipients = isset($options['recipients']) ? $options['recipients'] : null;    	
         $emails = isset($options['emails']) ? $options['emails'] : array();
         $workitem = $options['workitem'];
         switch($options['type']) {
@@ -298,11 +313,19 @@ class Notification{
                 $subject = 'Completed';
                 $message = $workitem->getId() . ' '.$workitem->getSummary();
             break;
+
+            case 'bug_found':
+                $subject = "Bug for #".$workitem->getBugJobId();
+                $message = 'New workitem #' . $workitem->getId();
+            break;
+            
         }
 
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
+
         $sms_recipients = array();
+        
         foreach($emails as $email) {
             //error_log("SMS email (".$options['type']."):".$email);
 
@@ -313,10 +336,35 @@ class Notification{
                 $sms_user->findUserByUsername($email);
                 $sms_recipients[] = $sms_user->getId();
             }
-    }
+        }
+    
+        $current_user = new User();
+        $current_user->findUserById(getSessionUserId());
+        if($recipients) {
+            foreach($recipients as $recipient) {
+                /**
+                 * If there is need to get a new list of users
+                 * just add a get[IDENTIFIER]Id function to
+                 * workitem.class.php that returns a single user id
+                 * an array with user ids 
+                 **/
+                $method = 'get' . ucfirst($recipient) . 'Id';
+                $recipientUsers=$workitem->$method();
+                if(!is_array($recipientUsers)) {
+                    $recipientUsers=array($recipientUsers);
+                }
+                foreach($recipientUsers as $recipientUser) {
+                    if($recipientUser>0) {
+                        // check if we already sending email to this user
+                        if(!in_array($recipientUser, $sms_recipients)){
+                            $sms_recipients[] = $recipientUser;
+                        }
+                    }
+                }
+            }
+        }
 
         if(count($sms_recipients) > 0) {
-
             setlocale(LC_CTYPE, "en_US.UTF-8");
             $esc_subject = escapeshellarg($subject);
             $esc_message = escapeshellarg($message);
@@ -326,7 +374,7 @@ class Notification{
             }
             $application_path = dirname(dirname(__FILE__)) . '/';
             exec('php ' . $application_path . 'tools/smsnotifications.php '
-                    . $args . ' > /dev/null 2>/dev/null &');
+            . $args . ' > /dev/null 2>/dev/null &');
         }
     }
 

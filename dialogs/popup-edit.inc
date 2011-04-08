@@ -125,7 +125,17 @@
 		  <input type="text" name="bid_fee_desc" id="bid_fee_desc" class="text-field iToolTip enterAmount" size="48" />
                 </p>
         </div>
-       	<div class="clear"></div>
+        <div class="clear"></div>
+        <div class="floatLeft">
+            <p class="info-label isBug">
+            <input type="checkbox" name="is_bug" id="is_bug" value="1"/>
+            Bug in job 
+            <input type="text" id="bug_job_id" name="bug_job_id" class="text-field bug_job_id" size="48" value="" />                	
+            </p>
+        </div>
+        <div class="bugJobSummary" id="bugJobSummary" title="0"></div>
+
+        <div class="clear"></div>
 
 <?php
    if ($is_runner || $has_budget) {//if user is a runner - allow to change status
@@ -133,7 +143,6 @@
 		  <p class="info-label">Status<br />
 		  <select name="status">
 		      <option value="SUGGESTED">SUGGESTED</option>
-		      <option value="BUG">BUG</option>
 		      <option value="BIDDING" selected="selected">BIDDING</option>
 		      <option value="WORKING">WORKING</option>
                       <?php if ($is_runner) { ?>

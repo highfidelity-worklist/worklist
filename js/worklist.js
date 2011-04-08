@@ -1,3 +1,5 @@
+//  vim:ts=4:et
+//
 //  Copyright (c) 2010, LoveMachine Inc.  
 //  All Rights Reserved.  
 //  http://www.lovemachineinc.com
@@ -301,6 +303,71 @@ $(function() {
 			hideInputField();
 		}
 	});
+
+    //Enable/disable job bug id on is_bug checkbox state
+    $("#bug_job_id").ready(function() {
+        if ( !$("#is_bug").is ( ":checked" ) ) {
+            $("#bug_job_id").attr ( "disabled" , true );
+        } else {
+            $("#bug_job_id").removeAttr ( "disabled" );
+        }
+        //bind paste event to lookup for bug job summary 
+        jQuery(document).bind('paste', function(e){
+            $("#bug_job_id").keyup();
+        });
+    });
+
+    //Checkbox is_bug click event
+    $("#is_bug").click(function(){
+        if ( !$(this).is ( ":checked" ) ) {
+            //Disable and clean bug_job_id
+            $("#bug_job_id").attr ( "disabled" , true );
+            $("#bug_job_id").val ("");
+            $('#bugJobSummary').html('');
+            $("#bugJobSummary").attr("title" , 0);
+        } else {
+            //Enable bug_job_id textbox
+            $("#bug_job_id").removeAttr ( "disabled" );
+        }
+    });
+
+
+
+
+    //lookup and show job summary on bug_job_id change
+    $("#bug_job_id").keyup(function() {
+
+        var id=$("#bug_job_id").val();
+        if(id.length) {
+            $.ajax({
+                url: 'getjobinformation.php',
+                dataType: 'json',
+                data: {
+                    itemid:id
+                },
+                type: 'POST',
+                success: function(json) {
+                    if ( !json || json === null ) {
+                        alert("json null in getjobinformation");
+                        return;
+                    }
+                    if ( json.error ) {
+                        alert(json.error);
+                    } else {
+                        if(json.returnString.length>0) {
+                            $('#bugJobSummary').html('<p><small>'+json.returnStringa+'</small></p>');
+                            $("#bugJobSummary").attr("title" , id);	
+                        } else {
+                            $('#bugJobSummary').html("<p><small>Item doesn't exist</small></p>");
+                            $("#bugJobSummary").attr("title" , 0);
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+	
 	//Submit the form using AJAX to the database
 	$("#status-share-btn").click(function() {
 		if($("#status-update").val() == "")	{
