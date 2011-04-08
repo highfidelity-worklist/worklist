@@ -149,22 +149,21 @@ if (isset($_POST['save_account'])) {
     // user changed paypal address
     } else if ($paypalPrevious != $paypal_email) {    
         $paypal_hash = md5(date('r', time()));;
-
         // generate email
-        $subject = "Your Paypal address has changed";
+        $subject = "Your payment details have changed";
 
         $link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
         $worklist_link = SERVER_URL . "worklist.php";
 
         $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
-        $body .= '<p>Please confirm your Paypal address to activate payments on your account and enable you to start placing bids in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
-        $body .= '<p><a href="' . $link . '">Click here to confirm your Paypal address</a></p>';
+        $body .= '<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
+        $body .= '<p><a href="' . $link . '">Click here to confirm your payment address</a></p>';
 
         $plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
-        $plain .= 'Please confirm your Paypal address to activate payments on your accounts and enable you to start placing bids in the Worklist.' . "\n\n";
+        $plain .= 'Please confirm your payment email address to activate payments on your accounts and enable you to start placing bids in the Worklist.' . "\n\n";
         $plain .= $link . "\n\n";
                 
-        $confirm_txt = "An email containing a confirmation link was sent to your Paypal address. Please click on that link to verify your Paypal address and activate your account.";
+        $confirm_txt = "An email containing a confirmation link was sent to your payment email address. Please click on that link to verify your payment email address and activate your account.";
         if (! send_email($paypal_email, $subject, $body, $plain)) { 
             error_log("signup.php: send_email failed");
             $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";

@@ -19,13 +19,13 @@ $lightbox = "";
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME);
 
-if(isset($_REQUEST['str'])) {
-	$res=mysql_query("select * from ".USERS." where username ='".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'");
-	if(mysql_num_rows($res) == 0) {
-		header("Location:login.php");
-		exit;
-	} else {
-	    $data = array("username" => base64_decode($_REQUEST['str']), "token" => $_REQUEST['cs']);
+if (isset($_REQUEST['str'])) {
+    $res = mysql_query("select * from ".USERS." where username ='".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'");
+    if (mysql_num_rows($res) == 0) {
+        header("Location:login.php");
+        exit;
+    } else {
+        $data = array("username" => base64_decode($_REQUEST['str']), "token" => $_REQUEST['cs']);
       ob_start();
       CURLHandler::doRequest("POST", LOGIN_APP_URL . "confirm", $data);
       $result = ob_get_contents();
@@ -36,20 +36,20 @@ if(isset($_REQUEST['str'])) {
       }
       $sql = "UPDATE ".USERS." SET confirm = 1, is_active = 1 WHERE username = '".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'";
       mysql_query($sql);
-		if (REQUIRELOGINAFTERCONFIRM) {
-		    session::init(); // User must log in AFTER confirming (they're not allowed to before)
-		} else {
-		    initSessionData($row); //Optionally can login with confirm URL
-		}
-	 }
+        if (REQUIRELOGINAFTERCONFIRM) {
+            session::init(); // User must log in AFTER confirming (they're not allowed to before)
+        } else {
+            initSessionData($row); //Optionally can login with confirm URL
+        }
+     }
 } elseif (!empty($_REQUEST['action']) && ($_REQUEST['action'] == 'changeUsername')) {
-	$old_username = base64_decode($_REQUEST['oustr']);
-	$new_username = base64_decode($_REQUEST['nustr']);
-	$user = new User();
-	$user->findUserByUsername($old_username);
-	$user->setUsername($new_username);
-	$user->save();
-	session::init();
+    $old_username = base64_decode($_REQUEST['oustr']);
+    $new_username = base64_decode($_REQUEST['nustr']);
+    $user = new User();
+    $user->findUserByUsername($old_username);
+    $user->setUsername($new_username);
+    $user->save();
+    session::init();
 } elseif (isset($_REQUEST['ppstr'])) {
     // paypal address confirmation
     $user = new User();
@@ -104,7 +104,6 @@ include("head.html"); ?>
 <p align="center"><strong><a href="#" onClick="closebox()">Close</a></strong></p>
 </div>
 <!-- Light Box Code End -->
-       	
     <h1>Email Confirmation</h1>
           
     <p>Registration complete! Welcome to the Worklist. You can now start working.</p>

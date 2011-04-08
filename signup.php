@@ -165,16 +165,16 @@ if(isset($minimal_POST['sign_up'])){
             if (! empty($newUser['paypal_email'])) {
                 $paypal_hash = md5(date('r', time()));;
             
-                $subject = "Paypal Verification";
-                $link = SECURE_SERVER_URL . "confirmation.php?pp=".$paypal_hash. "&str=" . base64_encode($newUser['paypal_email']);
+                $subject = "Payment address verification";
+                $link = SECURE_SERVER_URL . "confirmation.php?pp=".$paypal_hash. "&ppstr=" . base64_encode($newUser['paypal_email']);
                 $worklist_link = SERVER_URL . "worklist.php";
-                $body  = "<p>Please confirm your Paypal email address to activate payments on your account and enable you to start placing bids in the <a href='" . $worklist_link . "'>Worklist</a>.</p>";
-                $body .= '<br/><a href="' . $link . '">Click here to verify your Paypal address</a></p>';
+                $body  = "<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the <a href='" . $worklist_link . "'>Worklist</a>.</p>";
+                $body .= '<br/><a href="' . $link . '">Click here to verify your payment address</a></p>';
 
-                $plain  = 'Please confirm your Paypal email address to activate payments on your account and enable you to start placing bids in the worklist.' . "\n\n";
+                $plain  = 'Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the worklist.' . "\n\n";
                 $plain .= $link . "\n\n";
                 
-                $confirm_txt .= "<br/><br/>An email containing a confirmation link was also sent to your Paypal address. Please click on that link to verify your Paypal address and activate payments on your account.";
+                $confirm_txt .= "<br/><br/>An email containing a confirmation link was also sent to your Paypal email address. Please click on that link to verify your Paypal address and activate payments on your account.";
                 if (! send_email($newUser['paypal_email'], $subject, $body, $plain)) { 
                     error_log("signup.php: send_email failed");
                     $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
