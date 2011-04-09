@@ -1,6 +1,5 @@
 <?php
 //  vim:ts=4:et
-
 /** 
  * Workitem
  *
@@ -29,6 +28,8 @@ class WorkItem
     protected $sandbox;
     protected $project_id;
     protected $project_name;
+    protected $bug_job_id;
+    
     var $skills = array();
 
     protected $origStatus = null;
@@ -76,6 +77,7 @@ class WorkItem
                         w.project_id,
                         w.notes,
                         w.sandbox,
+                        w.bug_job_id,
                         p.name AS project_name
                     FROM  ".WORKLIST. " as w
                     LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
@@ -97,6 +99,7 @@ class WorkItem
              ->setProjectId($row['project_id'])
              ->setNotes($row['notes'])
              ->setSandbox($row['sandbox'])
+             ->setBugJobId($row['bug_job_id'])
              ->setWorkitemSkills();
         $this->project_name = $row['project_name'];
         return true;
@@ -137,6 +140,15 @@ WHERE id = ' . (int)$id;
     {
         return $this->summary;
     }
+    
+    public function setBugJobId($id) {
+        $this->bugJobId = intval($id);
+        return $this;
+    }
+    public function getBugJobId() {
+        return $this->bugJobId;
+    }
+    
 
     public function setCreatorId($creatorId)
     {
@@ -157,6 +169,44 @@ WHERE id = ' . (int)$id;
         return $this;
     }
 
+    /**
+     * 
+     * Get users with fees 
+     * in original bug job
+     * 
+     * @return ARRAY list of users id
+     */
+    public function getUsersWithFeesBugId() {
+    
+        //Read Bug Job workitem
+        $bugItem = new WorkItem();
+        $bugItem->loadById($this->getBugJobId());
+        
+        //return users with fees in original job
+        return ($bugItem->getUsersWithFeesId());
+    }
+    
+    /**
+     * 
+     * Get users with fees in work item
+     * 
+     * @return ARRAY list of users id 
+     */
+    public function getUsersWithFeesId() {
+    
+        $query = "SELECT user_id FROM `" .FEES."` WHERE worklist_id = ".$this->id;
+        $result_query = mysql_query($query);
+        if($result_query) {
+            $temp_array = array();
+            while($row = mysql_fetch_assoc($result_query)) {
+                $temp_array[] = $row['user_id'];
+            }
+            return $temp_array;
+        } else {
+        	return null;
+        }
+    }
+    
     public function getRunnerId()
     {
         return $this->runnerId;
@@ -252,7 +302,24 @@ WHERE id = ' . (int)$id;
     {
         return $this->sandbox;
     }
-
+    
+    /**
+     * 
+     * Lookup original item summary for bug job 
+     * 
+     * @param 
+     * @return STRING	original job summary
+     */
+    public function getBugJobSummary() {
+    
+        $query=sprintf("SELECT w.summary FROM ". WORKLIST .
+                        " w WHERE w.id =%d",$this->getBugJobId());
+        $result = mysql_query($query);
+        $row = mysql_fetch_assoc($result);
+        
+        return $row['summary'];
+    }
+    
     public function setWorkitemSkills($skills = false) {
         // if no array provided, get skill from db
         if (! $skills) {
@@ -321,14 +388,16 @@ WHERE id = ' . (int)$id;
     
     protected function insert()
     {
-        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status, project_id, notes, created ) ".
-            "VALUES (".
+        $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
+                 "project_id, notes, bug_job_id, created ) ".
+            " VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
             "'".mysql_real_escape_string($this->getRunnerId())."', ".
             "'".mysql_real_escape_string($this->getStatus())."', ".
             "'".mysql_real_escape_string($this->getProjectId())."', ".
             "'".mysql_real_escape_string($this->getNotes())."', ".
+            "'".intval($this->getBugJobId())."', ".
             "NOW())";
         $rt = mysql_query($query);
 
@@ -364,6 +433,7 @@ WHERE id = ' . (int)$id;
             project_id="'.mysql_real_escape_string($this->getProjectId()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
             runner_id="' .$_SESSION['userid'].'",
+            bug_job_id="' .intval($this->getBugJobId()).'",
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
 
             $query .= ' WHERE id='.$this->getId();
@@ -375,6 +445,7 @@ WHERE id = ' . (int)$id;
             project_id="'.mysql_real_escape_string($this->getProjectId()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
             runner_id="' .intval($this->getRunnerId()). '",
+            bug_job_id="' .intval($this->getBugJobId()).'",
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
 
             $query .= ' WHERE id='.$this->getId();
@@ -438,13 +509,16 @@ WHERE id = ' . (int)$id;
      */
     public function getWorkItem($worklist_id)
     {
-        $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, u.nickname AS runner_nickname, u.id AS runner_id,
-              uc.nickname AS creator_nickname, w.status, w.notes, w.project_id, p.name AS project_name, p.repository AS repository, w.sandbox 
-              FROM  ".WORKLIST. " as w
-              LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
-              LEFT JOIN ".USERS." as u ON w.runner_id = u.id
-              LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
-              WHERE w.id = '$worklist_id'";
+        $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, ".
+                 " u.nickname AS runner_nickname, u.id AS runner_id,".
+                 " uc.nickname AS creator_nickname, w.status, w.notes, ".
+                 " w.project_id, p.name AS project_name, p.repository AS repository, 
+                  w.sandbox, w.bug_job_id
+                  FROM  ".WORKLIST. " as w
+                  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
+                  LEFT JOIN ".USERS." as u ON w.runner_id = u.id
+                  LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
+                  WHERE w.id = '$worklist_id'";
         $result_query = mysql_query($query);
         $row =  $result_query ? mysql_fetch_assoc($result_query) : null;
         return !empty($row) ? $row : null;
@@ -484,7 +558,7 @@ WHERE id = ' . (int)$id;
         }
     }
 
-    public function getProjectRunners() {
+    public function getProjectRunnersId() {
         $query=" SELECT DISTINCT(runner_id) as runner FROM " .WORKLIST. " AS w WHERE w.project_id=".$this->getProjectId();
         $result_query = mysql_query($query);
         if($result_query) {

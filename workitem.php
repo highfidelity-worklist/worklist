@@ -3,7 +3,6 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 // AJAX request from ourselves to retrieve history
-
 require_once 'config.php';
 require_once 'class.session_handler.php';
 require_once 'send_email.php';
@@ -15,7 +14,6 @@ require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
-                 "BUG" => array("BIDDING","PASS"),
                  "BIDDING" => array("PASS"),
                  "WORKING" => array("REVIEW"),
                  "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
@@ -24,7 +22,6 @@ require_once 'classes/Repository.class.php';
                  "PASS" => array("REVIEW"));
 
     $statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
-                 "BUG" => array("PASS", "REVIEW"),
                  "WORKING" => array("REVIEW"),
                  "REVIEW" => array("PASS", "COMPLETED", "WORKING"),
                  "COMPLETED" => array("REVIEW"),
@@ -130,7 +127,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
 $notifyEmpty = true;
 if($action =='save_workitem') {
 
-    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills');
+    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills', 
+                'is_bug','bug_job_id');
     foreach ($args as $arg) {
         if (!empty($_POST[$arg])) {
             $$arg = $_POST[$arg]; 
@@ -202,17 +200,44 @@ if($action =='save_workitem') {
         invitePeople($people, $worklist_id, $workitem->getSummary(), $workitem->getNotes());
         $new_update_message .= "Invitations sent. ";
     }
-
+    //Check if bug_job_id has changed and send notifications if it has     
+    if($workitem->getBugJobId()!=$bug_job_id) {
+        //Bug job Id changed
+        $workitem->setBugJobId($bug_job_id);
+        $new_update_message .= "Bug job Id changed. ";
+        if($bug_job_id > 0) {
+            //Load information about original job and notify
+            //users with fees and runner
+            Notification::workitemNotify(array('type' => 'bug_found',
+                                            'workitem' => $workitem,
+                                            'recipients' => array('runner', 'usersWithFeesBug')));
+            Notification::workitemSMSNotify(array('type' => 'bug_found',
+                                            'workitem' => $workitem,
+                                            'recipients' => array('runner', 'usersWithFeesBug')));
+        }
+    }
+    //if job is a bug, notify to journal 
+    if($bug_job_id > 0){
+        $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
+    }
+    else
+    {
+        $bugJournalMessage= "";
+    }
+    
+    
     if (empty($new_update_message)) {
         $new_update_message = " No changes.";
     } else {
         $workitem->save();
         $new_update_message = " Changes: $new_update_message";
-    $notifyEmpty = false;
+    	$notifyEmpty = false;
     }
 
      $redirectToWorklistView = true;
-    $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . $new_update_message;
+     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id ".
+                        $bugJournalMessage  .": ". $workitem->getSummary() .
+                        $new_update_message;
 }
 
 if($action =='invite-people') {

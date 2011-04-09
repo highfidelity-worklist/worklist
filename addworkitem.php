@@ -4,6 +4,7 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
+
 require_once("config.php");
 require_once("class.session_handler.php");
 include_once("check_new_user.php"); 
@@ -15,6 +16,7 @@ require_once('lib/Agency/Worklist/Filter.php');
 require_once('classes/UserStats.class.php');
 require_once('classes/Repository.class.php');
 
+  
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -39,7 +41,7 @@ $filter->setName('.worklist')
 
 if ($userId > 0 ) {
     $args = array( 'itemid', 'summary', 'project_id', 'skills', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
-                   'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder');
+                   'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder','is_bug','bug_job_id');
     foreach ($args as $arg) {
     		// Removed mysql_real_escape_string, because we should 
     		// use it in sql queries, not here. Otherwise it can be applied twice sometimes
@@ -57,6 +59,8 @@ if ($userId > 0 ) {
     }
     $workitem->setSummary($summary);
 
+    //If this item is a bug add original item id 
+    $workitem->setBugJobId($bug_job_id);
     // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
     if($status == 'BIDDING' && ($user->getIs_runner() == 1 || $user->getBudget() > 0)){
         $runner_id = $userId;
@@ -75,9 +79,24 @@ if ($userId > 0 ) {
 
     Notification::statusNotify($workitem);
 
+    if($is_bug && $bug_job_id>0) {
+        //Load information about original job and notify
+        //users with fees and runner
+        Notification::workitemNotify(array('type' => 'bug_found',
+                                    'workitem' => $workitem,
+                                    'recipients' => array('runner', 'usersWithFeesBug')));
+        Notification::workitemSMSNotify(array('type' => 'bug_found',
+                                        'workitem' => $workitem,
+                                        'recipients' => array('runner', 'usersWithFeesBug')));
+        $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
+    } else {
+        $bugJournalMessage= "";
+    }
+    
+    
     if(empty($_POST['itemid']))  {
         $bid_fee_itemid = $workitem->getId();
-        $journal_message .= " item #$bid_fee_itemid: $summary: Status set to $status. ";
+        $journal_message .= " item #$bid_fee_itemid$bugJournalMessage: $summary. Status set to $status. ";
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
             foreach ($files as $file) {
@@ -89,7 +108,7 @@ if ($userId > 0 ) {
         $bid_fee_itemid = $itemid;
         $journal_message .=  "item #$itemid: $summary: Status set to $status. ";
     }
-
+    
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $bid_fee_itemid, $summary, $notes);

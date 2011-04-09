@@ -204,6 +204,7 @@ $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
 $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
+          `bug_job_id` AS `bug_job_id`,
 	      `cu`.`nickname` AS `creator_nickname`,
 	      `ru`.`nickname` AS `runner_nickname`,
 	      `mu`.`nickname` AS `mechanic_nickname`,
@@ -285,9 +286,11 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         14 => $row['mechanic_id'],
         15 => (!empty($row['bid_on']) ? $row['bid_on'] : 0),
         16 => $row['project_id'],
-        17 => $row['project_name']
-	);
+        17 => $row['project_name'],
+        18 => $row['bug_job_id']
+    );
 }
+
 
 $json = json_encode($worklist);
 echo $json;

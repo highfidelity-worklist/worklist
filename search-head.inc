@@ -17,7 +17,7 @@
                 echo $filter->getProjectSelectbox(false, !$hide_project_column) . " ";
                 echo $filter->getUserSelectbox(1) . " ";
                 $allDisplay = "All Status";                
-                $status_array = array("SUGGESTED", "BUG", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");
+                $status_array = array("SUGGESTED", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");
                 $box = '<select name="status" multiple="multiple" style="display:none">';
                 $box .= '<option value="ALL"' . (($filter->inStatus("ALL") ) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
                 
