@@ -26,8 +26,9 @@ if (sizeof($bids) > 0 ) {
                 <thead>
                     <tr class="table-hdng">
                         <td>User</td>
-                        <td>Bid Amount</td>
-                        <td>Done by</td>
+                        <td>Amount</td>
+                        <td>Done in</td>
+                        <td>Expires</td>
                         <td>Notes</td>
                         <td>Accept</td>
                         <td>Mechanic</td>
@@ -36,11 +37,16 @@ if (sizeof($bids) > 0 ) {
                 <tbody>
 <?php
     foreach($bids as $bid) {
+        $expire_class = '';
+        if ($bid['expires'] <= BID_EXPIRE_WARNING) {
+            $expire_class = 'class="warn"';
+        }
         $data .= '
                     <tr>
                         <td><a href="#" onclick="javascript:showUserInfo(' . $bid['bidder_id'] . ');">'.$bid['nickname'].'</a></td>
                         <td>'.$bid['bid_amount'].'</td>
-                        <td>'.$bid['bid_done'].'</td>
+                        <td>'.$bid['done_in'].'</td>
+                        <td ' . $expire_class . '>'. relativeTime($bid['expires']) .'</td>
                         <td>'.$bid['notes'].'</td>
                         <td><input type="checkbox" class="acceptMechanic" name="chkMultipleBid[]" value="'.$bid['id'].'" /></td>
                         <td><input type="checkbox" name="mechanic" class="chkMechanic" value="'.$bid['bidder_id'].'" /></td>
@@ -49,7 +55,7 @@ if (sizeof($bids) > 0 ) {
     echo $data;
 ?>
                     <tr>
-                        <td colspan="6" align="right"><input type="submit" name="accept_multiple_bid" value="Accept Selected"></td>
+                        <td colspan="7" align="right"><input type="submit" name="accept_multiple_bid" value="Accept Selected"></td>
                     </tr>
                 </tbody>
             </table>

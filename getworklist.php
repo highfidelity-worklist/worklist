@@ -15,17 +15,17 @@ require_once('lib/Agency/Worklist/Filter.php');
 ob_start();
 // Test for a string containing 0 characters of anything other than 0-9 and #
 // After a quick trim ofcourse! :)
-// I knowww regex is usually the bad first stop, but there would be no back tracking in this
+// I know regex is usually the bad first stop, but there would be no back tracking in this
 // particular regular expression
-if (preg_match("/^\#\d+$/",$query = trim($_REQUEST['query']))) {
-	// if we reach here, include workitem package
-	include_once("workitem.class.php");
-	$workitem = new Workitem();
-	if ($workitem->idExists($id = ltrim($query,"#"))) {
-		$obj = array('redirect',$id);
-		die(JSON_encode($obj));
-	}
-	// if we're not dead continue on!
+if (preg_match("/^\#\d+$/", $query = trim($_REQUEST['query']))) {
+    // if we reach here, include workitem package
+    include_once("workitem.class.php");
+    $workitem = new Workitem();
+    if ($workitem->idExists($id = ltrim($query,"#"))) {
+        $obj = array('redirect',$id);
+        die(JSON_encode($obj));
+    }
+    // if we're not dead continue on!
 }
 $limit = 30;
 
@@ -120,22 +120,22 @@ if($query!='' && $query!='Search...') {
         }
     }
     if(!$searchById) {
-		// #11500
-		// INPUT: 'one OR    two   three' ;
-		// RESULT: 'one two,three' ;
-		// split the query into an array using space as delimiter 
-		// remove empty elements
-		// convert spaces into commas
-		// change ',OR,' into  space
-		$query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
+        // #11500
+        // INPUT: 'one OR    two   three' ;
+        // RESULT: 'one two,three' ;
+        // split the query into an array using space as delimiter 
+        // remove empty elements
+        // convert spaces into commas
+        // change ',OR,' into  space
+        $query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
     
-    	$array=explode(",",rawurldecode($query));
+        $array=explode(",",rawurldecode($query));
 
         foreach ($array as $item) {
             $item = mysql_escape_string($item);
             $where.=" AND ( MATCH (summary, `".WORKLIST."`.`notes`) AGAINST ('$item')OR MATCH (`".FEES."`.notes) AGAINST ('$item') OR MATCH (`ru`.`nickname`) AGAINST ('$item') OR MATCH (`cu`.`nickname`) AGAINST ('$item') OR MATCH (`mu`.`nickname`) AGAINST ('$item') OR MATCH (`com`.`comment`) AGAINST ('$item')) ";
         }
-		$commentsjoin = " LEFT OUTER JOIN `".COMMENTS."` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
+        $commentsjoin = " LEFT OUTER JOIN `".COMMENTS."` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
     }
 }
 
@@ -170,16 +170,16 @@ mysql_query($emptyLatest);
 mysql_query($fillLatest);
 
 if($is_runner){
-	$showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
-	if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-		$showLatest = 'AND (`'.BIDS.'`.`bid_created` = `tmp_latest`.`latest` OR `'.BIDS.'`.`bidder_id` = '.$ufilter.')';
-	}
+    $showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
+    if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
+        $showLatest = 'AND (`'.BIDS.'`.`bid_created` = `tmp_latest`.`latest` OR `'.BIDS.'`.`bidder_id` = '.$ufilter.')';
+    }
 }
 else{
-	$showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
-	if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-		$showLatest = 'AND `'.BIDS.'`.`bidder_id` = ' . $ufilter ;
-	}
+    $showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
+    if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
+        $showLatest = 'AND `'.BIDS.'`.`bidder_id` = ' . $ufilter ;
+    }
 }
 $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
          `worklist_id` int(11) NOT NULL,
@@ -205,15 +205,15 @@ $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 //mega-query with total fees and latest bid for the worklist item
 $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
           `bug_job_id` AS `bug_job_id`,
-	      `cu`.`nickname` AS `creator_nickname`,
-	      `ru`.`nickname` AS `runner_nickname`,
-	      `mu`.`nickname` AS `mechanic_nickname`,
+          `cu`.`nickname` AS `creator_nickname`,
+          `ru`.`nickname` AS `runner_nickname`,
+          `mu`.`nickname` AS `mechanic_nickname`,
           `proj`.`name` AS `project_name`,
           `worklist`.`project_id` AS `project_id`,
-	      TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
-	      `total_fees`,`bid_amount`,`creator_id`,`runner_id`,`mechanic_id`,
-	      (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
-	       WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) LIMIT 1) as bid_count,
+          TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
+          `total_fees`,`bid_amount`,`creator_id`,`runner_id`,`mechanic_id`,
+          (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
+           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) AND (NOW() < `".BIDS."`.`bid_expires`) LIMIT 1) as bid_count,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
            WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
            (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
@@ -237,8 +237,8 @@ $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
           LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
           LEFT JOIN `".FEES."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
-		  $commentsjoin
-		  LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
+          $commentsjoin
+          LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
           LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
@@ -246,9 +246,9 @@ $qbody = "FROM `".WORKLIST."`
           $where ";
 
 if($ofilter == "delta"){
-	$qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
+    $qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
 }else{
-	$qorder = "ORDER BY {$ofilter} {$dfilter},{$subofilter} {$dfilter}  LIMIT " . ($page-1)*$limit . ",{$limit}";
+    $qorder = "ORDER BY {$ofilter} {$dfilter},{$subofilter} {$dfilter}  LIMIT " . ($page-1)*$limit . ",{$limit}";
 }
 
 $rtCount = mysql_query("$qcnt $qbody");

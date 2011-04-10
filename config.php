@@ -197,3 +197,6 @@ Zend_Registry::set('config', new Zend_Config($config, true));
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 // Database Selection String
 mysql_select_db(DB_NAME);
+
+// time constants
+if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);

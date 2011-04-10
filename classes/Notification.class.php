@@ -8,7 +8,7 @@ require_once 'lib/Sms.php';
  * This class is responsible for working with notification
  * subscriptions
  */
-class Notification{
+class Notification {
 
     const REVIEW_NOTIFICATIONS = 1;
     const BIDDING_NOTIFICATIONS = 2;
@@ -170,29 +170,30 @@ class Notification{
             break;
 
             case 'bid_placed':
-                $subject = 'Bid: ' . $itemTitle;
-                $body =  'New bid was placed for ' . $itemLink . '<br>'
-                        . 'Details of the bid:<br>'
-                        . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
-                        . 'Done By: ' . $data['done_by'] . '<br>'
-                        . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
-                        . 'Notes: ' . $data['notes'] . '<br>';
-                $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
-                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid>Click here to accept bid.</a>';
+                $subject = 'Bid: ' . $itemTitle ;
+                $body =  'New bid was placed for ' . $itemLink . '<br /><br />'
+                    . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
+                    . 'Done In: ' . $data['done_in'] . '<br />'
+                    . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
+                    . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
+                    . 'Notes: ' . $data['notes'] . '<br />';
+
+                $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
+                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid">Click here to accept bid.</a>';
                 $body .=  $urlacceptbid;
             break;
 
             case 'bid_updated':
                 $subject = 'Bid: ' . $itemTitle;
-                $body = 'Bid Updated for ' . $itemLink . '<br>'
-                        . 'Details of the bid:<br>'
-                        . 'Bidder Email: ' . $_SESSION['username'] . '<br>'
-                        . 'Done By: ' . $data['done_by'] . '<br>'
-                        . 'Bid Amount: ' . $data['bid_amount'] . '<br>'
-                        . 'Notes: ' . $data['notes'] . '<br>';
-                $urlacceptbid = '<br><a href=' . SERVER_URL . 'workitem.php';
+                $body = 'Bid updated for ' . $itemLink . '<br /><br/>'
+                    . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
+                    . 'Done In: ' . $data['done_in'] . '<br />'
+                    . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
+                    . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
+                    . 'Notes: ' . $data['notes'] . '<br />';
+                $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
                 $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] .
-                                 '&action=accept_bid>Click here to accept bid.</a>';
+                                 '&action=accept_bid">Click here to accept bid.</a>';
                 $body .=  $urlacceptbid;
             break;
 
@@ -269,11 +270,10 @@ class Notification{
             }
         }
 
-        if(count($emails) > 0) {
+        if (count($emails) > 0) {
             foreach($emails as $email) {
-                if(!send_email($email, $subject, $body, null, $headers)) {
-                	
-                    error_log("Notification:workitem: send_email failed ".json_encode(error_get_last()));
+                if (!send_email($email, $subject, $body, null, $headers)) {
+                    error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
                 }
             }
         }

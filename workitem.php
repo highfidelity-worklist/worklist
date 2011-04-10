@@ -1,8 +1,7 @@
 <?php
-//  Copyright (c) 2009-2010, LoveMachine Inc.
+//  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-// AJAX request from ourselves to retrieve history
 require_once 'config.php';
 require_once 'class.session_handler.php';
 require_once 'send_email.php';
@@ -28,13 +27,9 @@ require_once 'classes/Repository.class.php';
                  "DONE" => array("WORKING", "REVIEW"),
                  "PASS" => array("REVIEW"));
 
- $get_variable = 'job_id';
-if (!defined("WORKITEM_URL")) {
-    define("WORKITEM_URL",SERVER_URL . "workitem.php?$get_variable=");
-}
-if (!defined("WORKLIST_REDIRECT_URL")) {
-    define("WORKLIST_REDIRECT_URL",SERVER_URL . "worklist.php?$get_variable=");
-}
+$get_variable = 'job_id';
+if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL . "workitem.php?$get_variable="); }
+if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER_URL . "worklist.php?$get_variable="); }
 $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]) : 0;
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
@@ -47,9 +42,10 @@ if ($userId > 0) {
 } else {
     $user->setId(0);
 }
+
 // TODO: Would be good to take out all the checks for isset($_SESSION['userid'] etc. and have them use $user instead, check $user->getId() > 0.
 
-if(empty($worklist_id)) {
+if (empty($worklist_id)) {
     return;
 } else {
     // feed links will be made specific to the workitem
@@ -71,31 +67,31 @@ $runner_budget = $user->getBudget();
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
 
 // for any other action user has to be logged in
-if($action != 'view') {
+if ($action != 'view') {
     checkLogin();
 }
 
 if (isset($_REQUEST['withdraw_bid'])) {
     $action = "withdraw_bid";
-}else if(isset($_POST['save_workitem'])) {
+} else if(isset($_POST['save_workitem'])) {
     $action = "save_workitem";
-}else if(isset($_POST['place_bid'])) {
+} else if(isset($_POST['place_bid'])) {
     $action = "place_bid";
-}else if(isset($_POST['edit_bid'])) {
+} else if(isset($_POST['edit_bid'])) {
     $action = "edit_bid";
-}else if(isset($_POST['add_fee'])) {
+} else if(isset($_POST['add_fee'])) {
     $action = "add_fee";
-}else if(isset($_POST['accept_bid'])) {
+} else if(isset($_POST['accept_bid'])) {
     $action = "accept_bid";
-}else if(isset($_POST['accept_multiple_bid'])) {
+} else if(isset($_POST['accept_multiple_bid'])) {
     $action = "accept_multiple_bid";
-}else if(isset($_POST['status-switch'])) {
+} else if(isset($_POST['status-switch'])) {
     $action = "status-switch";
-}else if(isset($_POST['save-review-url'])) {
+} else if(isset($_POST['save-review-url'])) {
     $action = "save-review-url";
-}else if(isset($_POST['invite-people'])) {
+} else if(isset($_POST['invite-people'])) {
     $action = "invite-people";
-}else if (isset($_POST['newcomment'])) {
+} else if (isset($_POST['newcomment'])) {
     $comment = new Comment();
     if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
         $comment->setWorklist_id((int) $_POST['worklist_id']);
@@ -109,7 +105,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
     if (isset($_POST['comment']) && !empty($_POST['comment'])) {
         $comment->setComment($_POST['comment']);
     }
-    
+
     try {
         $comment->save();
         $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
@@ -125,8 +121,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 
 // Save WorkItem was requested. We only support Update here
 $notifyEmpty = true;
-if($action =='save_workitem') {
-
+if ($action =='save_workitem') {
     $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills', 
                 'is_bug','bug_job_id');
     foreach ($args as $arg) {
@@ -167,12 +162,13 @@ if($action =='save_workitem') {
     }
 
     // status
-    if (   $is_runner
-    || $userId == $workitem->getRunnerId()
+    if ($is_runner
+        || $userId == $workitem->getRunnerId()
         || (($status == 'BIDDING' || $status == 'WORKING') && $user->getBudget() > 0)
         || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
+
         if ($workitem->getStatus() != $status && !empty($status)) {
-        changeStatus($workitem, $status, $user);
+            changeStatus($workitem, $status, $user);
             if (!empty($new_update_message)) {  // add commas where appropriate
                 $new_update_message .= ", ";
             }
@@ -292,45 +288,37 @@ if($action =='status-switch') {
     }
 
 if ($action =="place_bid") {
-
-    //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>   
-    //a new variable is used to send the unenscaped notes in email alert. 
+    //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
+    //a new variable is used to send the unenscaped notes in email alert.
     //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
     $unescaped_notes = nl2br($_POST['notes']);
-    
-    $args = array('bid_amount','done_by', 'notes', 'mechanic_id');
+
+    $args = array('bid_amount', 'done_in', 'bid_expires', 'notes', 'mechanic_id');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
     if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
     $summary = getWorkItemSummary($worklist_id);
 
-
-    if($mechanic_id != getSessionUserId())
-    {
+    if($mechanic_id != getSessionUserId()) {
         $row = $workitem->getUserDetails($mechanic_id);
-        if(!empty($row)) {
+        if (! empty($row)) {
             $nickname = $row['nickname'];
             $username = $row['username'];
-        }
-        else
-        {
+        } else {
             $username = "unknown-{$username}";
             $nickname = "unknown-{$mechanic_id}";
         }
-    }
-    else
-    {
+    } else {
         $mechanic_id = $_SESSION['userid'];
         $username = $_SESSION['username'];
         $nickname = $_SESSION['nickname'];
     }
 
     if ($user->isEligible()) {
-        $bid_id = $workitem->placeBid($mechanic_id,$username,$worklist_id,$bid_amount,$done_by,$_SESSION['timezone'],$notes);
+        $bid_id = $workitem->placeBid($mechanic_id, $username, $worklist_id, $bid_amount, $done_in, $bid_expires, $notes);
         // Journal notification
         $journal_message = "A bid was placed on item #$worklist_id: $summary.";
-
         //sending email to the runner of worklist item
         $row = $workitem->getRunnerSummary($worklist_id);
         if(!empty($row)) {
@@ -339,45 +327,57 @@ if ($action =="place_bid") {
             $username = $row['username'];
         }
 
+        $sms_message = "(Bid) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in on #$worklist_id $summary";
+
         // notify runner of new bid
-        Notification::workitemNotify(array('type' => 'bid_placed',
-                 'workitem' => $workitem,
-                 'recipients' => array('runner')),
-                array('done_by' => $done_by,
-                  'bid_amount' => $bid_amount,
-                  'notes' => $unescaped_notes,
-                  'bid_id' => $bid_id));
+        Notification::workitemNotify(
+            array(
+                'type' => 'bid_placed',
+                'workitem' => $workitem,
+                'recipients' => array('runner')
+            ),
+            array(
+                 'done_in' => $done_in,
+                 'bid_expires' => $bid_expires,
+                 'bid_amount' => $bid_amount,
+                 'notes' => $unescaped_notes,
+                 'bid_id' => $bid_id
+            )
+        );
 
         // sending sms message to the runner
         $runner = new User();
         $runner->findUserById($workitem->getRunnerId());
-        if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-            Notification::sendSMS($runner, 'Bid', $journal_message);
+        if (Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
+            Notification::sendSMS($runner, 'Bid', $sms_message);
         }
     } else {
         // we don't return anything. user has tried to circumvent security measures to place a bid
     }
 
     $redirectToDefaultView = true;
+    // echo 'redirect is set to true ' . $redirectToDefaultView;
 }
 // Edit Bid
 if ($action =="edit_bid") {
-    
-    //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>   
-    //a new variable is used to send the unenscaped notes in email alert. 
+
+    //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
+    //a new variable is used to send the unenscaped notes in email alert.
     //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
     $unescaped_notes = nl2br($_POST['notes']);
-    
-    $args = array('bid_id','bid_amount','done_by_edit', 'notes');
+
+    $args = array('bid_id', 'bid_amount', 'done_in_edit', 'bid_expires_edit', 'notes');
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
     if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
     $summary = getWorkItemSummary($worklist_id);
-    $bid_id = $workitem->updateBid($bid_id,$bid_amount,$done_by_edit,$_SESSION['timezone'],$notes);
+    $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in_edit, $bid_expires_edit, $_SESSION['timezone'], $notes);
 
     // Journal notification
     $journal_message = "Bid updated on item #$worklist_id: $summary.";
+
+    $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id $summary";    
     //sending email to the runner of worklist item
     $row = $workitem->getRunnerSummary($worklist_id);
     if(!empty($row)) {
@@ -386,13 +386,17 @@ if ($action =="edit_bid") {
         $username = $row['username'];
     }
     // notify runner of new bid
-    Notification::workitemNotify(array('type' => 'bid_updated',
-             'workitem' => $workitem,
-             'recipients' => array('runner')),
-            array('done_by' => $done_by_edit,
-              'bid_amount' => $bid_amount,
-              'notes' => $unescaped_notes,
-              'bid_id' => $bid_id));
+    Notification::workitemNotify(array(
+        'type' => 'bid_updated',
+        'workitem' => $workitem,
+        'recipients' => array('runner')
+    ), array(
+        'done_in' => $done_in_edit,
+        'bid_expires' => $bid_expires_edit,
+        'bid_amount' => $bid_amount,
+        'notes' => $unescaped_notes,
+        'bid_id' => $bid_id
+    ));
 
     // sending sms message to the runner
     $runner = new User();
@@ -409,7 +413,7 @@ if ($action == "add_fee") {
     foreach ($args as $arg) {
         if (isset($_POST[$arg]))  {
            $$arg = mysql_real_escape_string($_POST[$arg]);
-        } 
+        }
     else { $$arg = '';
         }
     }
@@ -432,14 +436,14 @@ if ($action == "add_fee") {
 }
 
 // Accept a bid
-if ($action=='accept_bid') {
+if ($action == 'accept_bid') {
     $bid_id = intval($_REQUEST['bid_id']);
-    //only runners can accept bids
+    // only runners can accept bids
 
-    if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+    if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && ! $workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
         // query to get a list of bids (to use the current class rather than breaking uniformity)
         // I could have done this quite easier with just 1 query and an if statement..
-        $bids = (array) $workitem->getBids($workitem -> getId());
+        $bids = (array) $workitem->getBids($workitem->getId());
         $exists = false;
         foreach ($bids as $array) {
             if ($array['id'] == $bid_id) {
@@ -448,18 +452,21 @@ if ($action=='accept_bid') {
                 break;
             }
         }
+
         if ($exists) {
             if($bid_amount < $runner_budget) {
                 $bid_info = $workitem->acceptBid($bid_id);
-    
+
                 // Journal notification
                 $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " . $bid_info['summary'] . ". Status set to WORKING.";
-    
+
                 // mail notification
-                Notification::workitemNotify(array('type' => 'bid_accepted',
-                             'workitem' => $workitem,
-                             'recipients' => array('mechanic')));
-    
+                Notification::workitemNotify(array(
+                    'type' => 'bid_accepted',
+                    'workitem' => $workitem,
+                    'recipients' => array('mechanic')
+                ));
+
                 $bidder = new User();
                 $bidder->findUserById($bid_info['bidder_id']);
 
@@ -467,12 +474,12 @@ if ($action=='accept_bid') {
                 Notification::sendSMS($bidder, 'Accepted', $journal_message);
 
                 $redirectToDefaultView = true;
-    
+
                 // Send email to not accepted bidders
                 sendMailToDiscardedBids($worklist_id);
             } else {
                 $overBudget = money_format('%i', $bid_amount - $runner_budget);
-                $_SESSION['workitem_error'] = "Failed to accept bid. Accepting this bid would make you ".$overBudget." over your budget!";
+                $_SESSION['workitem_error'] = "Failed to accept bid. Accepting this bid would make you " . $overBudget . " over your budget!";
                 $redirectToDefaultView = true;
             }
         }
@@ -538,10 +545,10 @@ if ($action == "withdraw_bid") {
     $redirectToDefaultView = true;
 }
 
-if($redirectToDefaultView) {
+if ($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id;
 }
-if($redirectToWorklistView) {
+if ($redirectToWorklistView) {
     $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;
 }
 // We have a Journal message. Send it to Journal
@@ -554,6 +561,7 @@ if(isset($postProcessUrl)) {
     header("Location: " . $postProcessUrl);
     die();
 }
+
 // handle the makeshift error I made..
 $erroneous = false;
 if (isset($_SESSION['workitem_error'])) {
@@ -589,22 +597,27 @@ if(!empty($bids) && is_array($bids)) {
             }
         }
         $bid['bid_created'] = getUserTime($bid['unix_bid_created']);
-        if($bid['unix_bid_accepted']>0)
+        if ($bid['unix_bid_accepted'] > 0) {
             $bid['bid_accepted'] = getUserTime($bid['unix_bid_accepted']);
-        else
+        } else {
             $bid['bid_accepted'] = '';
-
-            
-// calculate Total Time to Complete
-        $timeToComplete=(int)$bid['unix_done_by']-(int)$bid['unix_bid_created'];
-        if($bid['unix_bid_accepted']>0) {
-            $timeElapsed=(int)$bid['unix_now']-(int)$bid['unix_bid_accepted'];
-            $timeToComplete-= $timeElapsed;
         }
-        $fullDays    = floor($timeToComplete/(60*60*24));
-        $fullHours   = floor(($timeToComplete-($fullDays*60*60*24))/(60*60));
-        $fullMinutes = floor(($timeToComplete-($fullDays*60*60*24)-($fullHours*60*60))/60);
-        $bid['time_to_complete']= $fullDays . ($fullDays==1?" day, ":" days, ").$fullHours. ($fullHours==1?" hour and ":" hours and ").$fullMinutes.($fullMinutes==1?" minute.":" minutes.");   
+
+
+        // calculate Total Time to Complete
+        if (isset($bid['unix_done_by']) && $bid['unix_done_by'] != 0) {
+            $timeToComplete = (int) $bid['unix_done_by'] - (int) $bid['unix_bid_created'];
+            if ($bid['unix_bid_accepted'] > 0) {
+                $timeElapsed = (int) $bid['unix_now'] - (int) $bid['unix_bid_accepted'];
+                $timeToComplete -= $timeElapsed;
+            }
+            $fullDays    = floor($timeToComplete/(60*60*24));
+            $fullHours   = floor(($timeToComplete-($fullDays*60*60*24))/(60*60));
+            $fullMinutes = floor(($timeToComplete-($fullDays*60*60*24)-($fullHours*60*60))/60);
+            $bid['time_to_complete']= $fullDays . ($fullDays==1?" day, ":" days, ").$fullHours. ($fullHours==1?" hour and ":" hours and ").$fullMinutes.($fullMinutes==1?" minute.":" minutes.");
+        } else {
+            $bid['time_to_complete'] = null;
+        }
     }
 }
 // break reference to $bid
@@ -636,7 +649,7 @@ function sendMailToDiscardedBids($worklist_id)    {
         $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$item['id']."'>#".$item['id']."</a> '".$item['summary']."'. This job has just been filled by another mechanic.</br></p>";
         $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
         $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
-        
+
         if(!send_email($bid['email'], $subject, $body)) { error_log("workitem.php: send_email failed"); }
     }
 }

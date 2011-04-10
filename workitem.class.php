@@ -13,8 +13,7 @@ require_once('lib/twitteroauth/twitteroauth.php');
  *
  * @package Workitem
  */
-class WorkItem
-{
+class WorkItem {
     protected $id;
     protected $summary;
     protected $creatorId;
@@ -526,31 +525,46 @@ WHERE id = ' . (int)$id;
 
     /**
      * @param int $worklist_id
+     * @param bool $expired If true, return expired bids
      * @return array|null
      */
-    public function getBids($worklist_id)
-    {
-        $query = "SELECT bids.`id`, bids.`bidder_id`, `email`, u.`nickname`, bids.`bid_amount`,
-                UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`,
-                bids.`notes`,TIMESTAMPDIFF(SECOND, bids.`bid_created`, NOW()) AS `delta`,
+    public function getBids($worklist_id, $expired = true) {
+        $having = '';
+        // code is here in case we want to start including expired bids
+        // default behaviour is to ignore expired bids
+        if ($expired === false) {
+            $where = "AND TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_expires`) > 0";
+            $having = "HAVING `expires` > 0";
+            $having = '';
+        }
+
+        $query = "
+            SELECT bids.`id`, bids.`bidder_id`, u.`email`, u.`nickname`, bids.`bid_amount`,
+                UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`, 
+                TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_expires`) AS `expires`,
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
-                DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`,
-                UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`,
-                
+                bids.`bid_done_in` AS done_in, 
+                bids.`notes`,
                 UNIX_TIMESTAMP(f.`date`) AS `unix_bid_accepted`,
                 UNIX_TIMESTAMP(NOW()) AS `unix_now`
-                
-                FROM `".BIDS. "` as bids
-                INNER JOIN `".USERS."` as u on (u.id = bids.bidder_id)
-                LEFT JOIN ".FEES." as f ON (f.bid_id=bids.id)
-                WHERE bids.worklist_id=".$worklist_id.
-                " and bids.withdrawn = 0 ORDER BY bids.`id` DESC";
+            FROM `".BIDS. "` AS bids
+                INNER JOIN `".USERS."` AS u ON (u.id = bids.bidder_id)
+                LEFT JOIN ".FEES." AS f ON (f.bid_id=bids.id)
+            WHERE bids.worklist_id={$worklist_id}
+                AND bids.withdrawn = 0
+            $having
+            ORDER BY bids.`id` DESC";
         $result_query = mysql_query($query);
-        if($result_query) {
+        if ($result_query) {
             $temp_array = array();
-            while($row = mysql_fetch_assoc($result_query)) {
-                $row['full_done_by'] = getUserTime($row['unix_done_by']);
-                $temp_array[] = $row;
+            while ($row = mysql_fetch_assoc($result_query)) {
+                // skip expired bids if they have not been accepted
+                if (! empty($row['unix_bid_accepted']) ) {
+                    $row['expires'] = -1;
+                } else if ($row['expires'] < 0) {
+                } else {
+                    $temp_array[] = $row;
+                }
             }
             return $temp_array;
         } else {
@@ -595,22 +609,22 @@ WHERE id = ' . (int)$id;
         }
     }
 
-    public function placeBid($mechanic_id, $username, $itemid, $bid_amount, $done_by, $timezone, $notes)
-    {
-        $query =  "INSERT INTO `".BIDS."`
-                (`id`, `bidder_id`, `email`,`worklist_id`,`bid_amount`,`bid_created`,`bid_done`, `notes`)
-              VALUES
-                (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('".strtotime($done_by." ".$timezone)."'), '$notes')";
+    public function placeBid($mechanic_id, $username, $itemid, $bid_amount, $done_in, $expires, $notes) {
 
+        $bid_expires = strtotime($expires);
+        $query =  "INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_expires`, `bid_done_in`, `notes`)
+                   VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('$bid_expires'), '$done_in', '$notes')";
         return mysql_query($query) ? mysql_insert_id() : null;
     }
-    public function updateBid($bid_id,$bid_amount, $done_by, $timezone, $notes)
-    {
-       if($bid_id > 0){
-        $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."',`bid_done` = FROM_UNIXTIME('".strtotime($done_by." ".$timezone)."'),`notes` = '".$notes."' WHERE id = '".$bid_id."'";
-       mysql_query($query);
-       }
-       return $bid_id;
+    public function updateBid($bid_id, $bid_amount, $done_in, $bid_expires, $timezone, $notes) {
+
+        $bid_expires = strtotime($bid_expires);
+
+        if ($bid_id > 0){
+            $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '$done_in', `bid_expires` = FROM_UNIXTIME({$bid_expires}), `notes` = '".$notes."' WHERE id = '".$bid_id."'";
+            mysql_query($query);
+        }
+        return $bid_id;
     }
     public function getUserDetails($mechanic_id)
     {
@@ -619,8 +633,7 @@ WHERE id = ' . (int)$id;
         return  $result_query ?  mysql_fetch_assoc($result_query) : null;
     }
 // look for getOwnerSummary !!!
-    public function getRunnerSummary($worklist_id)
-    {
+    public function getRunnerSummary($worklist_id) {
         $query = "SELECT `" . USERS . "`.`id` as id, `username`, `summary`"
           . " FROM `" . USERS . "`, `" . WORKLIST . "`"
           . " WHERE `" . WORKLIST . "`.`runner_id` = `" . USERS . "`.`id` AND `" . WORKLIST . "`.`id` = ".$worklist_id;
@@ -693,34 +706,34 @@ WHERE id = ' . (int)$id;
     }
 
     // Accept a bid given it's Bid id
-    public function acceptBid($bid_id, $is_mechanic = true)
-    {
+    public function acceptBid($bid_id, $is_mechanic = true) {
         $this->conditionalLoadByBidId($bid_id);
         /*if ($this->hasAcceptedBids()) {
             throw new Exception('Can not accept an already accepted bid.');
         }*/
-        $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`='.$bid_id);
+
+        $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`=' . $bid_id);
         $bid_info = mysql_fetch_assoc($res);
-        $workitem_info = $this -> getWorkItem($bid_info['worklist_id']);
-        
+        $workitem_info = $this->getWorkItem($bid_info['worklist_id']);
+
         // Get bidder information
         $bidder = new User;
-        if (!$bidder->findUserById($bid_info['bidder_id'])) {
+        if (! $bidder->findUserById($bid_info['bidder_id'])) {
             // If bidder doesn't exist, return false. Don't want to throw an
             // exception because it would kill multiple bid acceptances
             return false;
         }
 
         $bid_info['nickname'] = $bidder->getNickname();
-        
+
         // If the project has a repository, give the user a checkout
         $repository = $this->getRepository();
         if ($repository) {
             // We're expecting every user to have a unixname now, they will be
             // assigned at signup. -alexi
             $bid_info['sandbox'] = "http://".SERVER_NAME."/~" .
-                $bidder->getUnixusername()."/".$repository."/";
-            
+               $bidder->getUnixusername()."/".$repository."/";
+
             // Provide bidder with sandbox & checkout if they don't already have one
             // If the sandbox flag is 0, they are a new user and need one setup
             $new_user = ($bidder->getHas_sandbox() == 0) ? true : false;
@@ -753,10 +766,10 @@ WHERE id = ' . (int)$id;
         //adjust bid_done date/time
         $prev_start = strtotime($bid_info['bid_created']);
         $new_start = strtotime(date('Y-m-d H:i:s O'));
-        $end = strtotime($bid_info['bid_done']);
+        $end = strtotime($bid_info['bid_done_in']);
         $diff = $end - $prev_start;
         $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
-            
+
         // changing mechanic of the job
         mysql_unbuffered_query("UPDATE `".WORKLIST."` SET " . ($is_mechanic ? "`mechanic_id` =  '".$bid_info['bidder_id']."', " : '') . " `status` = 'WORKING',`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
         // marking bid as "accepted"
