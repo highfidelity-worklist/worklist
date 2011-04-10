@@ -555,7 +555,6 @@ WHERE id = ' . (int)$id;
             $having
             ORDER BY bids.`id` DESC";
         $result_query = mysql_query($query);
-        error_log($query);
         if ($result_query) {
             $temp_array = array();
             while ($row = mysql_fetch_assoc($result_query)) {
