@@ -555,13 +555,16 @@ WHERE id = ' . (int)$id;
             $having
             ORDER BY bids.`id` DESC";
         $result_query = mysql_query($query);
+        error_log($query);
         if ($result_query) {
             $temp_array = array();
             while ($row = mysql_fetch_assoc($result_query)) {
                 // skip expired bids if they have not been accepted
                 if (! empty($row['unix_bid_accepted']) ) {
-                    $row['expires'] = -1;
-                } else if ($row['expires'] < 0) {
+                    $row['expires'] = null;
+                    $temp_array[] = $row;
+                } else if ($row['expires'] < 0 && empty($row['unix_bid_accepted'])) {
+                    // skip expired bids that are not accepted;
                 } else {
                     $temp_array[] = $row;
                 }
