@@ -1024,8 +1024,18 @@ include("head.html"); ?>
                     }).comboBox();
                     
                     this.hasCombobox = true;
+                } else {
+                    $('#popup-edit select[name=itemProject]').next().hide();
+                    setTimeout(function() {
+                        var val1 = $($('#popup-edit select[name=itemProject] option').get(1)).attr("value");
+                        $('#popup-edit select[name=itemProject]').comboBox({action:"val",param:[val1]});
+                        setTimeout(function() {
+                            $('#popup-edit select[name=itemProject]').next().show();
+                            $('#popup-edit select[name=itemProject]').comboBox({action:"val",param:["select"]});
+                        },50);
+                    },20);
+                    
                 }
-                
 			}
 		});
 		$('#popup-bid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade'});
