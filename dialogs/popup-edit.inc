@@ -40,7 +40,7 @@
 ?>
         <p class="info-label" style="margin-bottom: 20px;">Project<br/>
             <select id="itemProject" name="itemProject" class="resetToFirstOption">
-                <option value="select">-- Select --</option>
+                <option value="select" selected="selected">-- Select --</option>
                 <?php foreach ( $projects as $project): ?>
 <?php 
     // if a project is active (we are on a project page), select it

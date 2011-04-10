@@ -1145,15 +1145,33 @@ include("head.html"); ?>
                 var summary = new LiveValidation('summary',{ onlyOnSubmit: true ,
                     onInvalid : function() {
                         loaderImg.hide("saveRunning");
-                        this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
+                        this.insertMessage( this.createMessageSpan() );
+                        this.addFieldClass();
                     }});
                 summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                massValidation = LiveValidation.massValidate( [ summary ]);   
+                massValidation = LiveValidation.massValidate( [ summary ]);
                 if (!massValidation) {
                     loaderImg.hide("saveRunning");
                     event.preventDefault();
                     return false;
-                 }
+                }
+                var itemProject = new LiveValidation('itemProject',{
+                    onlyOnSubmit: true ,
+                    onInvalid : function() {
+                        loaderImg.hide("saveRunning");
+                        this.insertMessage( this.createMessageSpan() );
+                        this.addFieldClass();
+                    }});
+                itemProject.add( Validate.Exclusion, {
+                    within: [ 'select' ], partialMatch: true,
+                    failureMessage: "You have to choose a project!"
+                });
+                massValidation = LiveValidation.massValidate( [ itemProject ]);
+                if (!massValidation) {
+                    loaderImg.hide("saveRunning");
+                    event.preventDefault();
+                    return false;
+                }
                 addForm = $("#popup-edit");
                 $.ajax({
                     url: 'addworkitem.php',
