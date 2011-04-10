@@ -539,7 +539,7 @@ WHERE id = ' . (int)$id;
         }
 
         $query = "
-            SELECT bids.`id`, bids.`bidder_id`, u.`email`, u.`nickname`, bids.`bid_amount`,
+            SELECT bids.`id`, bids.`bidder_id`, bids.`email`, u.`nickname`, bids.`bid_amount`,
                 UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`, 
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_expires`) AS `expires`,
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
