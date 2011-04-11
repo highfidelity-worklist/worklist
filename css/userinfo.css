@@ -93,16 +93,39 @@ div.right-column {
     float: left;
 }
 
-#admin-left, #admin-middle{
-    border-right: solid 2px #ccc;
+#admin-left {
+    margin-right: 0.5em;
+    border-right: 1px solid #000000;
 }
-#admin-middle, #admin-right{
+
+#admin-right{
     margin-left: 0.5em;
 }
-#admin-middle, #admin-left, #admin-right {
-    width: 220px;
-    height: 180px;
+
+#admin-left, #admin-right {
+    width: 350px;
+    height: 100%;
 }
+
+#admin-left p, 
+#admin-right p {
+    font-size: 1.2em !important;
+    line-height: 1.4em;
+}
+
+.admin-submit {
+    float: right;
+    margin-right: 10px;
+    margin-top: -5px;
+}
+#annual_salary {
+    width: 120px;
+}
+
+#admin-left p.info-label {
+
+}
+
 p.bottom {
     position: absolute;
     bottom: 40px;

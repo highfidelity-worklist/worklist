@@ -1,50 +1,48 @@
-<script>
-  parent.$('#user-info').dialog('option','title','User Info for <?php echo $user->getNickname(); ?>');
+<script type="text/javascript">
+    parent.$('#user-info').dialog('option', 'title', 'User Info for <?php echo $user->getNickname(); ?>');
 </script>
     <div class="user-info" title="">
-        <span id="user-avatar"><img id="avatar" src="<?php echo($user -> getAvatar(80,80)); ?>" title="Profile Picture - <?php echo($user -> getNickname()); ?>" /></span>
-        <div class = "common-info">
-        <?php
-        
-        include("userstats-table.inc");
-        require_once 'countrylist.php'; // Get country and country url list
-        // Google Maps search Base URL
-        $gMapSearch = "http://maps.google.com/maps?q=";
-        // CIA.gov Base URL
-        $ciaGovBase = "https://www.cia.gov/library/publications/the-world-factbook/geos/";
-        // CCF = Country Code Fetched from user
-        $CCF = $user ->getCountry();
-        
-        /* Array comparising
-         * If country is empty do nothing
-         */
-        if($CCF == ""){
-        	// $countryName = "Country Name Unkown";
-        	// $countryCodeUrl = "Country URL Uknown";
-        	// $countryCode = "Country Code Unkown";
-        }else{
-        /* If country Code (key, array) is the same as
-		 * the country code stored in DB,
-		 * if it's do proceed and store variabels
-		 * with values
-		 */
-                if(array_key_exists($CCF,$countrylist)) {
-        		$countryCode = $CCF;
-        		$countryName = $countrylist[$CCF];
-        /* Proceed by checking (array) if the countries name
-         * is identicel in the one of countriesurllist,
-         * if so proceed and store the country code url
-         * in another variabel
-        */
-                        if(array_key_exists($countryName,$countryurllist)) {
-        				$countryCodeUrl = strtolower($countryurllist[$countryName]); // To prevent URL from not working, case sensitiv.
-        		}
-        	}
-        }        
-        ?>
+        <span id="user-avatar"><img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" /></span>
+        <div class="common-info">
+<?php
+    include("userstats-table.inc");
+    require_once 'countrylist.php'; // Get country and country url list
+    // Google Maps search Base URL
+    $gMapSearch = "http://maps.google.com/maps?q=";
+    // CIA.gov Base URL
+    $ciaGovBase = "https://www.cia.gov/library/publications/the-world-factbook/geos/";
+    // CCF = Country Code Fetched from user
+    $CCF = $user ->getCountry();
 
+    /* Array comparising
+     * If country is empty do nothing
+     */
+    if ($CCF == "") {
+        // $countryName = "Country Name Unkown";
+        // $countryCodeUrl = "Country URL Uknown";
+        // $countryCode = "Country Code Unkown";
+    } else {
+    /* If country Code (key, array) is the same as
+     * the country code stored in DB,
+     * if it's do proceed and store variabels
+     * with values
+     */
+        if (array_key_exists($CCF, $countrylist)) {
+            $countryCode = $CCF;
+            $countryName = $countrylist[$CCF];
+            /* Proceed by checking (array) if the countries name
+             * is identicel in the one of countriesurllist,
+             * if so proceed and store the country code url
+             * in another variabel
+             */
+            if (array_key_exists($countryName, $countryurllist)) {
+                $countryCodeUrl = strtolower($countryurllist[$countryName]); // To prevent URL from not working, case sensitiv.
+            }
+        }
+    }
+?>
         <p class = "info-label">
-        <?php
+<?php
         if($user->getCity() != ""){
         echo 'City, ';
         }
@@ -54,9 +52,9 @@
         ?>
         Local Time<br />
         <span id="info-currenttime" title="<?php echo $timezoneTable[$user -> getTimezone()]; ?>">
-        
+
         <?php
-        
+
         /* If city is not present, aka stored in DB
          * do nothing and proceed to next step
          */
@@ -69,11 +67,11 @@
         if($countryCodeUrl != ""){
         echo '<a class="userInfoLink" href="'.$ciaGovBase.''.$countryCodeUrl.'.html" target="_blank" title="'.$countryName.'">'.$CCF.'</a> - ';
         }
-        
+
         echo convertTimeZoneToLocalTime($user->getTimezone());
-        
+
         ?>
-        
+
         </span>
         </p>
         <div class="button-row">
@@ -101,7 +99,7 @@
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
         </ul>
-		<input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
+        <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
     <?php } ?>
         <div id="tabs-1">
             <div class = "left-column">
@@ -137,143 +135,104 @@
                 <div class='reviewEditLink'>
                     <a href='javascript:;'>Edit your review</a>
                 </div>
-                
-    <div class='reviewsList'>
-    <?php
-        $res="<div class='noReview'>No Review available for this user.</div>";
-        if (isset($reviewsList)) {
-
-            $length=count($reviewsList);
-            if ($length > 0) {
-                $res="";
-                for($i=0; $i<$length; $i++){
-                    $review = $reviewsList[$i];
-                    if ($review['me'] == 'y') {
-                        $classColor = " myReview";
-                        $title="My review";
-                        $feeRange = "Me";
-                        $feeRangeTitle ='My review (' . $review['feeRange'] . ')';
-                    } else {
-                        $classColor = " ";
-                        $title="";
-                        $feeRange = $review['feeRange'];
-                        $feeRangeTitle ='Number of jobs the reviewer has worked on';
-                    }
-                    $res .= '<div class="listReviewElement ' . $classColor . '" title="' . $title . '">' .
-                            "<div class='feeRange' title='{$feeRangeTitle}'>" .$feeRange . "</div><div class='reviewText'>" . $review['review'] . "</div>" .
-                            '</div>' ;                
+                <div class='reviewsList'>
+<?php
+    $res="<div class='noReview'>No Review available for this user.</div>";
+    if (isset($reviewsList)) {
+        $length = count($reviewsList);
+        if ($length > 0) {
+            $res = "";
+            for ($i = 0; $i < $length; $i++) {
+                $review = $reviewsList[$i];
+                if ($review['me'] == 'y') {
+                    $classColor = " myReview";
+                    $title = "My review";
+                    $feeRange = "Me";
+                    $feeRangeTitle ='My review (' . $review['feeRange'] . ')';
+                } else {
+                    $classColor = " ";
+                    $title = "";
+                    $feeRange = $review['feeRange'];
+                    $feeRangeTitle ='Number of jobs the reviewer has worked on';
                 }
+                $res .= '<div class="listReviewElement ' . $classColor . '" title="' . $title . '">' .
+                        "<div class='feeRange' title='{$feeRangeTitle}'>" .$feeRange . "</div><div class='reviewText'>" . $review['review'] . "</div>" .
+                        '</div>' ;
             }
         }
-        echo $res;
-    ?>   
-    </div>
-                
-                
+    }
+    echo $res;
+?>
+                </div>
             </div><!-- end of right-column -->
         </div><!-- end of tabs-1 -->
-        <div style = "clear: both;"></div>
-
-    <?php if($is_runner){ ?>
-        <div id="tabs-2" style = "clear: both;">
-            <div id = "admin-left">
+        <div class="clear"></div>
+<?php if($is_runner) { ?>
+        <div id="tabs-2" class="clear">
+            <div id="admin-left">
                 <p class = "info-label">Email<br />
                     <span id="info-email"><a href="mailto:<?php echo $user -> getUsername(); ?>">
                     <?php echo $user -> getUsername(); ?></a></span>
                 </p>
-                <form id = "roles" method="post" action = "">
-                <p class = "info-label">Roles<br />
-
-                <input type="checkbox" name="isrunner" value="isrunner" id="info-isrunner" <?php if($user->isRunner()) echo 'checked = "checked" '; ?> /><span>Runner</span>
-                <input type="checkbox" name="ispayer" value="ispayer" id="info-ispayer" <?php if($user->isPayer()) echo 'checked = "checked" '; ?> /><span>Payer</span>
-                </p>
-
-                <p class="info-label">W9 Approved<br />
-                    <input type="checkbox" id="approve" name = "w9" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> />
-                </p>
-                <p class="info-label">Paypal Verified<br />
-                    <input type="checkbox" id="paypal_verified" name="paypal_verified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> />
-                </p>
-                
-                <p class = "info-label">Preferred Method of Payment<br />
-                    <span id="info-payway"><?php echo $user -> getPayway(); ?></span>
-                </p>
-
-                <p class = "info-label">Paypal address<br />
-                    <span id="info-payway">
-                        <?php if(strlen($user -> getPaypal_email()) == 0){
-                            echo "No address on file";
-                        }else{
-                            echo $user -> getPaypal_email();} 
-                        ?>
-                    </span>
-                </p>
-                
-                <p class="info-label">Status<br />
-                    <select id="changeUserStatus" style="width:auto; margin-bottom: 3em;">
-                        <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
-                        <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
-                        <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
-                    </select>
-                </p>
-
-                <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
-                <p class = "bottom">
-                    <input type="submit" name="save_roles" value="Save Roles" />
-                </p>
+                <form id="roles" method="post" action="">
+                    <p class="info-label">Roles</p>
+                    <input type="checkbox" name="isrunner" value="isrunner" id="info-isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label class="info-label">Runner</label>
+                    <input type="checkbox" name="ispayer" value="ispayer" id="info-ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label class="info-label">Payer</label>
+                    <input class="admin-submit" type="submit" name="save_roles" value="Save Roles" />
+                    <p class="info-label">Payment Information</p>
+                    <input type="checkbox" id="approve" name = "w9" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> /><label class="info-label">W9 Approved</label>
+                    <input type="checkbox" id="paypal_verified" name="paypal_verified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> /><label class="info-label">PayPal Verified</label>
+                    <p class = "info-label">Preferred Payment Method</p>
+                    <span id="info-payway"><?php echo $user->getPayway() == '' ? $user->getPayway() : 'None selected'; ?></span>
+                    <p class = "info-label">PayPal E-Mail</p>
+                    <span id="info-paypal"><?php echo ($user->getPaypal_email() == '') ? 'No address on file' : $user->getPaypal_email(); ?></span>
+                    <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
                 </form>
             </div><!-- end of admin-left -->
-            <div id = "admin-middle">
-               <p class = "info-label">Budget<br />
-                    <span id="info-budget"><?php echo $user->getBudget(); ?></span>
-                    <input type="submit" id="give" value="Give Budget..." />
-                </p><br />
-				<?php if($is_payer){ ?>
-				<p class="info-label">Annual Salary<br />
-				<form method="post" action = "" name="salary" id="salary">
-				<input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>"  style="width:120px;"/>
-                </p>
-                <p class="info-label">Manager<br/>
-                <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
-                </p>
-                <p  class="bottom">
-					<input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
-					<input type="hidden" name="salary_changed" id="salary_changed" value="0" />
-					<input type="hidden" name="manager_changed" id="manager_changed" value="0" />
-                    <input type="submit" id="save_salary" value="Save salary"  name="save_salary"/>
-                </p>
-				</form>
-				<?php } else { ?>
-				<form method="post" action="" name="manager" id="manager">
-                    <p class="info-label">Manager<br/>
+            <div id="admin-right">
+                <p class="info-label">Budget</p>
+                <span id="info-budget">$<?php echo $user->getBudget(); ?></span>
+                <input  class="admin-submit" type="submit" id="give" value="Give Budget..." />
+<?php if ($is_payer): ?>
+                <p class="info-label">Annual Salary</p>
+                <form method="post" action="" name="salary" id="salary">
+                    <input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>" />
+                    <input class="admin-submit"  type="submit" id="save_salary" value="Save salary"  name="save_salary"/>
+                    <p class="info-label">Manager</p>
                     <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
-                    </p>
-                    <p  class="bottom">
-                        <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
-                        <input type="submit" id="save_manager" value="Save manager" name="save_manager"/>
-                    </p>
+                    <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
+                    <input type="hidden" name="salary_changed" id="salary_changed" value="0" />
+                    <input type="hidden" name="manager_changed" id="manager_changed" value="0" />
                 </form>
-				<? } ?>
-            </div><!-- end of admin-middle -->
-            <div id = "admin-right">
- 
-            </div><!-- end of admin-right-->
+<?php else: ?>
+                <form method="post" action="" name="manager" id="manager">
+                    <p class="info-label">Manager</p>
+                    <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
+                    <input type="submit" id="save_manager" value="Save manager" name="save_manager"/>
+                    <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
+                </form>
+<?php endif; ?>
+                <p class="info-label">Status</p>
+                <select id="changeUserStatus" style="width:auto; margin-bottom: 3em;">
+                    <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
+                    <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
+                    <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
+                </select>
+            </div><!-- end of admin-right -->
         </div><!-- end of tab 2 -->
 <?php
 function getProjectList() {
-    $query = "SELECT * FROM `projects` WHERE active=1";
+    $query = "SELECT * FROM `".PROJECTS."` WHERE active=1";
     $query = mysql_query($query);
     $projects = array();
     $i = 0;
     while ($project = mysql_fetch_array($query)) {
-        
         $projects[$i]['name'] = $project['name'];
         $projects[$i]['id']   = $project['project_id'];
         $projects[$i]['repo'] = $project['repository'];
         $i++;
     }
     return $projects;
-
 }
 
 $projects = getProjectList();
@@ -281,7 +240,7 @@ $user_projects = $user->getProjects_checkedout();
 if (count($user_projects) > 0) {
     $has_sandbox = true;
 }
-?>        
+?>
         <div id="tabs-3" style="clear: both;">
             <form method="post" action = "" id="sandboxForm">
                 <div style="clear: both; float: right;">
@@ -326,4 +285,4 @@ if (count($user_projects) > 0) {
 
     <div id="loading" style="display:none">
         <img src="images/loader.gif" alt = "" /><span>Please wait..</span>
-    </div>  
+    </div>
