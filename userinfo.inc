@@ -197,9 +197,10 @@
                 <p class="info-label">Annual Salary</p>
                 <form method="post" action="" name="salary" id="salary">
                     <input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>" />
-                    <input class="admin-submit"  type="submit" id="save_salary" value="Save salary"  name="save_salary"/>
+                    <input class="admin-submit" type="submit" id="save_salary" value="Save salary"  name="save_salary"/>
                     <p class="info-label">Manager</p>
                     <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
+                    <input class="admin-submit" type="submit" id="save_manager" value="Save manager" name="save_manager"/>
                     <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
                     <input type="hidden" name="salary_changed" id="salary_changed" value="0" />
                     <input type="hidden" name="manager_changed" id="manager_changed" value="0" />
@@ -208,7 +209,7 @@
                 <form method="post" action="" name="manager" id="manager">
                     <p class="info-label">Manager</p>
                     <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
-                    <input type="submit" id="save_manager" value="Save manager" name="save_manager"/>
+                    <input class="admin-submit" type="submit" id="save_manager" value="Save manager" name="save_manager"/>
                     <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
                 </form>
 <?php endif; ?>
