@@ -66,11 +66,6 @@ $runner_budget = $user->getBudget();
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
 
-// for any other action user has to be logged in
-if ($action != 'view') {
-    checkLogin();
-}
-
 if (isset($_REQUEST['withdraw_bid'])) {
     $action = "withdraw_bid";
 } else if(isset($_POST['save_workitem'])) {
@@ -92,31 +87,12 @@ if (isset($_REQUEST['withdraw_bid'])) {
 } else if(isset($_POST['invite-people'])) {
     $action = "invite-people";
 } else if (isset($_POST['newcomment'])) {
-    $comment = new Comment();
-    if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
-        $comment->setWorklist_id((int) $_POST['worklist_id']);
-    }
-    if (isset($_POST['user_id']) && !empty($_POST['user_id'])) {
-        $comment->setUser_id((int) $_POST['user_id']);
-    }
-    if (isset($_POST['comment_id']) && !empty($_POST['comment_id'])) {
-        $comment->setComment_id((int) $_POST['comment_id']);
-    }
-    if (isset($_POST['comment']) && !empty($_POST['comment'])) {
-        $comment->setComment($_POST['comment']);
-    }
+    $action = 'new-comment';
+}
 
-    try {
-        $comment->save();
-        $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
-        Notification::workitemNotify(array('type' => 'comment',
-              'workitem' => $workitem,
-              'recipients' => array('creator', 'runner', 'mechanic')),
-               array('who' => $_SESSION['nickname'],
-                // removed nl2br as it's cleaner to be able to choose if this is used on output
-                 'comment' => $_POST['comment']));
-    } catch(Exception $e) {}
-    $redirectToDefaultView = true;
+// for any other action user has to be logged in
+if ($action != 'view') {
+    checkLogin();
 }
 
 // Save WorkItem was requested. We only support Update here
@@ -234,6 +210,34 @@ if ($action =='save_workitem') {
      $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id ".
                         $bugJournalMessage  .": ". $workitem->getSummary() .
                         $new_update_message;
+}
+
+if ($action == 'new-comment') {
+    $comment = new Comment();
+    if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
+        $comment->setWorklist_id((int) $_POST['worklist_id']);
+    }
+    if (isset($_POST['user_id']) && !empty($_POST['user_id'])) {
+        $comment->setUser_id((int) $_POST['user_id']);
+    }
+    if (isset($_POST['comment_id']) && !empty($_POST['comment_id'])) {
+        $comment->setComment_id((int) $_POST['comment_id']);
+    }
+    if (isset($_POST['comment']) && !empty($_POST['comment'])) {
+        $comment->setComment($_POST['comment']);
+    }
+
+    try {
+        $comment->save();
+        $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
+        Notification::workitemNotify(array('type' => 'comment',
+              'workitem' => $workitem,
+              'recipients' => array('creator', 'runner', 'mechanic')),
+               array('who' => $_SESSION['nickname'],
+               // removed nl2br as it's cleaner to be able to choose if this is used on output
+               'comment' => $_POST['comment']));
+    } catch(Exception $e) {}
+    $redirectToDefaultView = true;
 }
 
 if($action =='invite-people') {

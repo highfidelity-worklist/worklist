@@ -1,6 +1,7 @@
 <?php
 if(!isset($_SESSION)) { session_start(); }
-include_once("config.php");
+require_once("config.php");
+require_once('check_session.php');
 
 //open db connection
 $db = @mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD) or die ('I cannot connect to the database because: ' . mysql_error());
@@ -9,19 +10,17 @@ $db = @mysql_select_db(DB_NAME);
 
 function saveAdmin($pass, $oldpass = '') {
     if (checkAdmin($oldpass) == '1') {
-	$sql = "UPDATE ".PAYPAL_ADMINS." SET `password` = '".md5($pass)."' WHERE (password = '".md5($oldpass)."')";
+        $sql = "UPDATE ".PAYPAL_ADMINS." SET `password` = '".md5($pass)."' WHERE (password = '".md5($oldpass)."')";
     } else {
-	$sql = "";	
+        $sql = "";
     }
-    
 
     if ($sql != "") {
-	$result = mysql_query($sql);
+        $result = mysql_query($sql);
         return true;
     } else {
-	return false;
+        return false;
     }
-
 }
 
 function checkAdmin($pass) {

@@ -821,10 +821,23 @@ function  GetTimeStamp($MySqlDate, $i='')
     return($var_timestamp); // return it to the user
 }
 
-function checkLogin(){
+// is user posting data without being logged in
+function handleUnloggedPost() {
+    // get the IP address
+    $request_ip = $_SERVER['REMOTE_ADDR'];
+    $request_uri = $_SERVER['REQUEST_URI'];
+    error_log('Possible hack attempt from ' . $request_ip . ' on: ' . $request_uri);
+    error_log(json_encode($_REQUEST));
+    die('Not authorized.' . "\n");
+}
 
-    if(!getSessionUserId()){
+function checkLogin() {
+    if (! getSessionUserId()) {
         $_SESSION = array();
+        session_destroy();
+        if (isset($_POST)) {
+            handleUnloggedPost();
+        }
         header("location:login.php?expired=1&redir=" . urlencode($_SERVER['REQUEST_URI']));
         exit;
     }

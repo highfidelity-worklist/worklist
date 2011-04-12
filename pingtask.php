@@ -14,9 +14,11 @@ require_once 'functions.php';
 require_once 'lib/Sms.php';
 require_once 'classes/Notification.class.php';
 
+checkLogin();
+
 // Get sender Nickname
 $id = getSessionUserId();
-$user = getUserById( $id );
+$user = getUserById($id);
 $nickname = $user->nickname;
 $email = $user->username;
 $msg = $_REQUEST['msg'];
@@ -32,7 +34,7 @@ if ( isset( $_REQUEST['journal'] ) ) {
 } 
 
 // ping about concrete task
-if(isset($_REQUEST['id'])) {
+if (isset($_REQUEST['id'])) {
     $item_id = intval($_REQUEST['id']);
     $who = $_REQUEST['who'];
 
