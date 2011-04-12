@@ -543,7 +543,9 @@ WHERE id = ' . (int)$id;
                 UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`, 
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_expires`) AS `expires`,
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
-                bids.`bid_done_in` AS done_in, 
+                bids.`bid_done_in` AS done_in,
+                DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`,
+                UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`,
                 bids.`notes`,
                 UNIX_TIMESTAMP(f.`date`) AS `unix_bid_accepted`,
                 UNIX_TIMESTAMP(NOW()) AS `unix_now`
@@ -768,7 +770,12 @@ WHERE id = ' . (int)$id;
         //adjust bid_done date/time
         $prev_start = strtotime($bid_info['bid_created']);
         $new_start = strtotime(date('Y-m-d H:i:s O'));
-        $end = strtotime($bid_info['bid_done_in']);
+        // this is old-style bid, with bid_done date instead of bid_done_in relative time
+        if (isset($bid_info['bid_done'])) {
+            $end = strtotime($bid_info['bid_done']);
+        } else {
+            $end = strtotime($bid_info['bid_done_in']);
+        }
         $diff = $end - $prev_start;
         $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
 
