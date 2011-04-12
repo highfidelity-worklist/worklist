@@ -39,14 +39,16 @@ var pos=4;
                         return;
                     }
                     smsProviderList = new Array();
+					var selectedFound=false;
                     for (var i = 0; i < json.length; i++) {
                         if (smsProvider && smsProvider == json[i]) {
                             el.append('<option value="'+json[i]+'" selected="selected">'+json[i]+'</option>');
+							selectedFound=true;
                         } else {
                             el.append('<option value="'+json[i]+'">'+json[i]+'</option>');
                         }
                     }
-                    if (smsProvider && smsProvider[0] == '+') {
+                    if (smsProvider && smsProvider[0] == '+' || selectedFound==false) {
                         el.append('<option value="--" selected="selected">Another wireless provider</option>');
                         $("#sms-other").show();
                     } else {

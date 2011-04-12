@@ -175,7 +175,6 @@ if (isset($_POST['save_account'])) {
         $user->save();
     }
 }
-
 if (!empty($saveArgs)) {
 
     $sql = "UPDATE `".USERS."` SET ";
@@ -190,7 +189,7 @@ if (!empty($saveArgs)) {
         }
     }
     $sql = rtrim($sql, ',');
-    $sql .= " WHERE id = '${_SESSION['userid']}'";
+    $sql .= " WHERE id = {$_SESSION['userid']}";
     mysql_query($sql);
 
 // Email user
@@ -558,6 +557,7 @@ include("head.html");
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $picture = !$new_user ? $userInfo['picture'] : '';
         $notifications = !$new_user ? $userInfo['notifications'] : 0;
+        $smsaddr = !$new_user ? $userInfo['smsaddr'] : '';
         $settingsPage = true;
         include("sms-inc.php");
     ?>

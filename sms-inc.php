@@ -38,11 +38,6 @@ require_once 'lib/Sms/Numberlist.php';
                             value="<?php echo isset($userInfo['city']) ? $userInfo['city'] : ''; ?>" />
                         </p>
                     </div>
-                    <script type="text/javascript">
-                        // TODO: Move this inline javascript to header, or external file
-                        var city = new LiveValidation('city', {validMessage: "Valid city."});
-                        city.add(Validate.Presence);
-                    </script>
                     <div id="sms-number">
                         <label>Mobile device number<br /></label>
                             <select id="int_code" name="int_code">
@@ -70,11 +65,19 @@ require_once 'lib/Sms/Numberlist.php';
                             <?php } ?>
 
                         <div id="sms-other" <?php echo ((empty($provider) || $provider{0}!='+')?'style="display:none"':'') ?>>
-                            <p><label>SMS Address<br />
-                            <input type="text" id="smsaddr" name="smsaddr" size="35" value="<?php echo (!empty($smsaddr)?$smsaddr:((!empty($provider) && $provider{0} == '+')?substr($provider, 1):'')) ?>" />
-                            </label><br/>
+                            <p><label>SMS Address</label><br />
+                            <input type="text" id="smsaddr" name="smsaddr" size="35" value="<?php echo $smsaddr; ?>" /><br/>
+                            <br/>
                             <em id="sms_helper">Please enter the email address for sending text messages.</em>
                             </p>
                         </div>
                     </div>
+                    <script type="text/javascript">
+                        // TODO: Move this inline javascript to header, or external file
+                        var city = new LiveValidation('city', {validMessage: "Valid city."});
+                        city.add(Validate.Presence);
+						var smsaddr = new LiveValidation('smsaddr', {validMessage: "Valid email address."});
+						smsaddr.add(Validate.Email);
+                    </script>
+
                 </div>
