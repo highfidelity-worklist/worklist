@@ -111,6 +111,11 @@ if ($action =='save_workitem') {
     // code to add specifics to journal update messages
     $new_update_message='';
 
+    // First check to see if this is marked as a bug
+    if ($worklist->is_bug != $is_bug) {
+        $new_update_message .= 'Marked as a bug. ';
+    }
+
     // summary
     if (isset($_POST['summary']) && $workitem->getSummary() != $summary) {
         $workitem->setSummary($summary);
@@ -190,7 +195,12 @@ if ($action =='save_workitem') {
     }
     //if job is a bug, notify to journal 
     if($bug_job_id > 0){
+	$workitem->is_bug = true;
         $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
+    } elseif (isset($_POST['is_bug']) && $_POST['is_bug'] == '1') {
+	$bugJournalMessage = " (which is a bug)";
+    } elseif (isset($is_bug) && $is_bug == true) {
+        $bugJournalMessage = " (which is a bug)";
     }
     else
     {

@@ -720,7 +720,6 @@ $(document).ready(function(){
                             return (id!=0) 
                         },
                         failureMessage: "Invalid item Id"});
-          bugJobId.add( Validate.Presence, { failureMessage: "Can't be empty!"});
           massValidation = LiveValidation.massValidate([ bugJobId ]);   
           if (!massValidation) {
               return false;
@@ -1085,8 +1084,8 @@ if ($action =="edit"):  ?>
                         <li>
                             <span class="info-label">Bug</span><br/>
                             <div class="floatLeft">
-                                <input type="checkbox" name="is_bug" id="is_bug" value="1" <?php if ($workitem->getBugJobId()>0) echo 'CHECKED';?>/>
-                                Bug in job 
+                                <label id="bugLabel"><input type="checkbox" name="is_bug" id="is_bug" value="1" <?php if ($workitem->getBugJobId()>0 || $workitem->is_bug == true) echo 'checked="checked"';?>/> Bug</label>
+                                (If known, linked to Job #)
                                 <input type="text" id="bug_job_id" name="bug_job_id" class="text-field bug_job_id" size="48" value="<?php if($workitem->getBugJobId()>0) echo $workitem->getBugJobId();?>" />
                             </div>
                             <div class="bugJobSummary" id="bugJobSummary" title="0">

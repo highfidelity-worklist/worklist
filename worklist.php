@@ -75,7 +75,7 @@ if (is_object($inProject)) {
 if ($userId > 0 && isset($_POST['save_item'])) {
     $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes', 
                     'bid_fee_desc', 'bid_fee_amount','bid_fee_mechanic_id',
-                     'invite', 'is_expense', 'is_rewarder', 'is_bug','bug_job_id');
+                     'invite', 'is_expense', 'is_rewarder', 'is_bug', 'bug_job_id');
     foreach ($args as $arg) {
             // Removed mysql_real_escape_string, because we should 
             // use it in sql queries, not here. Otherwise it can be applied twice sometimes
@@ -105,6 +105,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     $workitem->setProjectId($project_id);
     $workitem->setStatus($status);
     $workitem->setNotes($notes);
+    $workitem->is_bug = isset($is_bug) ? true : false;
     $workitem->save();
 
     Notification::statusNotify($workitem);
@@ -1107,7 +1108,6 @@ include("head.html"); ?>
                         failureMessage: "Invalid item Id"
                     });
 
-                    bugJobId.add( Validate.Presence, { failureMessage: "Can't be empty!"});
                     massValidation = LiveValidation.massValidate( [ bugJobId ]);   
                     if (!massValidation) {
                         loaderImg.hide("saveRunning");
