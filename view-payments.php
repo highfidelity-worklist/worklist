@@ -45,7 +45,10 @@ $fund_id = 2;
 
 if (isset($_REQUEST['fund_id'])) {
     $fund_id = mysql_real_escape_string($_REQUEST['fund_id']);
-    unset($_POST);
+    // clear POST if this was just a fund change
+    if (! isset($_REQUEST['action'])) {
+        unset($_POST);
+    }
 }
 
 //open db connection
@@ -172,8 +175,7 @@ if (!isset($_POST['paybonus'])) {
 $message = "";
 
 //Check action - should be confirm, pay or not set
-switch ($action)
-{
+switch ($action) {
     case 'confirm':
         //$fees_csv = implode(',', $_POST["payfee"]);
         //pull list of payees from db based on the time span
@@ -352,12 +354,12 @@ include("head.html"); ?>
 ?>
 <div id="select-fund">
     <form id="fundForm" method="POST" action="view-payments.php">
-    <label id="label-fund" for="fund_id">Fund:</label>
-    <select name="fund_id" id="fund_id">
-        <option value="0" <?php echo ($fund_id == 0 ? 'selected="selected"' : '');?>>Not funded</option>
-        <option value="1" <?php echo ($fund_id == 1 ? 'selected="selected"' : ''); ?>>Below92</option>
-        <option value="2" <?php echo ($fund_id == 2 ? 'selected="selected"' : ''); ?>>CandP</option>
-    </select>
+        <label id="label-fund" for="fund_id">Fund:</label>
+        <select name="fund_id" id="fund_id">
+            <option value="0" <?php echo ($fund_id == 0 ? 'selected="selected"' : '');?>>Not funded</option>
+            <option value="1" <?php echo ($fund_id == 1 ? 'selected="selected"' : ''); ?>>Below92</option>
+            <option value="2" <?php echo ($fund_id == 2 ? 'selected="selected"' : ''); ?>>CandP</option>
+        </select>
     </form>
 </div>
 <div id="select-actions">
@@ -498,6 +500,7 @@ foreach ($payee_totals as $payee) {
     <?php } ?> 
     <input type="submit" id="commit-btn" name="commit" value="<?php echo isset($_POST["action"])?'Pay Now':'Confirm'; ?>" />
     &nbsp;&nbsp;Total Selected: $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
+    <input type="hidden" name="fund_id" value="<?php echo $fund_id; ?>" />
 </div>
 </form>
 
@@ -510,4 +513,3 @@ foreach ($payee_totals as $payee) {
 }
 ?>
 <?php include("footer.php"); ?>
-
