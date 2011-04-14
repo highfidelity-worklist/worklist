@@ -733,3 +733,6 @@
     left: -20px;
     width: 60px;
 }
+.profile-link{
+    cursor: pointer;
+}

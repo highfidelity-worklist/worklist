@@ -414,6 +414,11 @@ include("head.html"); ?>
         GetWorklist(1,false);
     }
 
+    function showUserInfo(userId) {
+        $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
+        $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+        return false;
+    };
     function GetWorklist(npage, update, reload) {
         loaderImg.show("loadRunning", "Loading, please wait ...");
         $.ajax({
@@ -480,13 +485,6 @@ include("head.html"); ?>
                 
                 /*commented for remove tooltip */
                 //MapToolTips();
-                var showUserInfo = function(userId) {
-                        $('#user-info').dialog('option', 'height', '440px');
-                        $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />')
-                            .dialog('open');
-                        $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
-                        return false;
-                    };
                 $('tr.row-worklist-live').hover(
                     function() {
                         var selfRow=$(this);
@@ -1063,12 +1061,14 @@ include("head.html"); ?>
             $('#ui-datepicker-div').hide();
             $('#ui-timepicker-div').hide();
         });
-        
         $('#user-info').dialog({
            autoOpen: false,
-           modal: true,
-           height: 520,
-           width: 800
+           resizable: false,
+           modal: false,
+           show: 'fade',
+           hide: 'fade',
+           width: 800,
+           height: 480
         });
 
         GetWorklist(<?php echo $page?>, false, true);
@@ -1115,8 +1115,8 @@ include("head.html"); ?>
                         return false;
                     }
                 }
-				if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val()) {
-					// see http://regexlib.com/REDetails.aspx?regexp_id=318
+                if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val()) {
+                    // see http://regexlib.com/REDetails.aspx?regexp_id=318
                     // but without  dollar sign 22-NOV-2010 <krumch>
                     var regex = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
                     var optionsLiveValidation = { onlyOnSubmit: true,
@@ -1390,7 +1390,7 @@ include("head.html"); ?>
                 break;
         }
     }
-	
+    
     function be_attachEvents(section) {
         $('#be-id').click(function() {
             be_handleSorting(section, $(this));
@@ -1413,13 +1413,6 @@ include("head.html"); ?>
         $('#be-paid').click(function() {
             be_handleSorting(section, $(this));
         });
-    }
-
-    function showUserInfo(userId) {
-        $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />')
-            .dialog('open');
-        $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
-        return false;
     }
     
     function be_getData(section, item, desc) {

@@ -52,13 +52,14 @@ include("head.html"); ?>
 <!-- Start User Info popup code -->
 $(document).ready(function() {
     $('#user-info').dialog({
-       autoOpen: false,
-        modal: true,
+        autoOpen: false,
+        resizable: false,
+        modal: false,
         show: 'fade',
         hide: 'fade',
-        height: 480,
-        width: 800
-    });
+        width: 800,
+        height: 480
+    });    
     $('#sent-notify').dialog({
         modal: false,
         autoOpen: false,
@@ -708,7 +709,7 @@ $(document).ready(function(){
 
   function saveWorkitem() {
       var massValidation;
-      if($('#is_bug').is(':checked')) {			
+      if($('#is_bug').is(':checked')) {            
           var bugJobId = new LiveValidation('bug_job_id',{ 
                              onlyOnSubmit: true ,
                              onInvalid : function() {
@@ -736,7 +737,7 @@ $(document).ready(function(){
           return false;
       }
 
-	  var summary = $('#summary').val();
+      var summary = $('#summary').val();
       var status = $('#status').val();
       var notes = $('#edit-notes').val();
       $('#workitem-form').submit();
@@ -852,7 +853,6 @@ $(document).ready(function(){
 
         $('.CreatorPopup').click(function(event) {
             var bidderId=$(this).attr("bidderId");
-
             showUserInfo(bidderId);
             event.stopPropagation();
         });
@@ -1099,8 +1099,8 @@ if ($action =="edit"):  ?>
                                 });
                             </script>
                         </li>
-					<!-- Edit: Sandbox textarea -->
-					<?php if ($mechanic_id > 0):?>
+                    <!-- Edit: Sandbox textarea -->
+                    <?php if ($mechanic_id > 0):?>
                     <li>
                         <span class="project-label" >Review URL</span>
                         <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
@@ -1261,12 +1261,12 @@ if ($action =="edit"):  ?>
                         foreach ($comments as $comment) :
                             ?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?>">
                                 <div class="comment-info">
-                                    <span class="author" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
+                                    <span class="author profile-link" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
                                         <span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
                                     </span>
                                 </div>
                                 <div class="comment">
-                                    <image class="picture" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" />
+                                    <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')" />
                                     <?php echo nl2br(linkify(htmlspecialchars($comment['comment']->getComment()))); ?>
                                 </div>
                                 <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
@@ -1390,7 +1390,7 @@ if ($action =="edit"):  ?>
                             <?php else: $row = 1;
                                 foreach($fees as $fee): ?>
                                 <tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-                                    <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo $fee['nickname'];?></a></td>
+                                    <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>); return false;"><?php echo $fee['nickname'];?></a></td>
                                     <td>$ <?php echo $fee['amount'];?></td>
                                     <td><?php echo $fee['desc'];?></td>
                                     <td><?php echo $fee['date'];?></td>

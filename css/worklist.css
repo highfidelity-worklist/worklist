@@ -433,3 +433,6 @@ td.textAlignReport {
     width: 420px;
     height: 180px;
 }
+.profile-link{
+    cursor: pointer;
+}
