@@ -286,7 +286,8 @@ include("head.html");
 </p>
 </div>
 <script type="text/javascript">
-        var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});                                    
+        var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});
+        nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );                                    
         nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
       </script>
 <?php include("sms-inc.php"); ?>

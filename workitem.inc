@@ -59,7 +59,7 @@ $(document).ready(function() {
         hide: 'fade',
         width: 800,
         height: 480
-    });    
+    });
     $('#sent-notify').dialog({
         modal: false,
         autoOpen: false,
@@ -1332,7 +1332,7 @@ if ($action =="edit"):  ?>
                                         <?php } ?>
                                     <td>
                                     <?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
-                                        <a href="#" bidderId="<?php echo $bid['bidder_id'];?>" class="CreatorPopup"><?php echo $bid['nickname'];?></a>
+                                        <a href="#" bidderId="<?php echo $bid['bidder_id'];?>" class="CreatorPopup"><?php echo getSubNickname($bid['nickname']);?></a>
                                     <?php } else echo $bid['nickname']; ?>
                                     </td>
                                     <td >$ <?php echo $bid['bid_amount'];?></td>
@@ -1390,7 +1390,7 @@ if ($action =="edit"):  ?>
                             <?php else: $row = 1;
                                 foreach($fees as $fee): ?>
                                 <tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-                                    <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>); return false;"><?php echo $fee['nickname'];?></a></td>
+                                    <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
                                     <td>$ <?php echo $fee['amount'];?></td>
                                     <td><?php echo $fee['desc'];?></td>
                                     <td><?php echo $fee['date'];?></td>

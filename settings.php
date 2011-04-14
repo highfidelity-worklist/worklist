@@ -529,6 +529,7 @@ include("head.html");
         </p>
         <script type="text/javascript">
             var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname." });
+            nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );
             nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
             nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
         </script>

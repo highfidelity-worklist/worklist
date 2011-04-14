@@ -443,7 +443,7 @@ class User {
      * @return the $nickname
      */
     public function getNickname() {
-        return $this->nickname;
+        return $this->getSubNickname($this->nickname);
     }
 
     /**
@@ -1144,5 +1144,16 @@ class User {
     public function setNotifications($notifications) {
         $this->notifications = $notifications;
         return $this;
+    }
+    
+    /**
+     * Return a trimmed version of the nickname
+     */
+    public function getSubNickname($nickname) {
+        if (strlen($nickname) > 13) {
+            return substr($nickname, 0, 13) . '...';
+        } else {
+            return $nickname;
+        }
     }
 }

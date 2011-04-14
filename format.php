@@ -2,6 +2,8 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
+
+require_once('functions.php');
 ?>
 
 <div id="outside"> 
@@ -24,9 +26,9 @@
                  $budget = '<span class="budget"></span>';
              }
             if (empty($_SESSION['nickname'])){ 
-                $name = $_SESSION['username'];
+                $name = getSubNickname($_SESSION['username']);
             } else {
-                $name = $_SESSION['nickname'];
+                $name = getSubNickname($_SESSION['nickname']);
             }
             $status = '<span id="status-wrap" style="width:340px;">
                 <form action="" style="display:inline" id="status-update-form" style="width:340px;">' . $name .' is <span id="status-lbl"><b>' . $current_status . '</b></span>

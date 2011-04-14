@@ -927,4 +927,15 @@ function checkLogin() {
         return $url;
     }
 
+    /**
+     * Return a trimmed version of the nickname
+     */
+    function getSubNickname($nickname) {
+        if (strlen($nickname) > 18) {
+            return substr($nickname, 0, 18) . '...';
+        } else {
+            return $nickname;
+        }
+    }
+
 ?>
