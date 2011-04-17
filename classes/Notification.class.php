@@ -16,6 +16,7 @@ class Notification {
     const MY_COMPLETED_NOTIFICATIONS = 8;
     const PING_NOTIFICATIONS = 16;
     const MY_BIDS_NOTIFICATIONS = 32;
+	const SELF_EMAIL_NOTIFICATIONS = 64;
     
  
     /**
@@ -133,9 +134,10 @@ class Notification {
      * emails - send message directly to list of emails (array) -
      * if 'emails' is passed - 'recipients' option is ignored
      * @param Array $data - Array with additional data that needs to be passed on
+	 * @param boolean $includeSelf - forece user receive email from self generated action
      * example: 'who' and 'comment' - if we send notification about new comment
      */
-    public static function workitemNotify($options, $data = null) {
+    public static function workitemNotify($options, $data = null, $includeSelf = true) {
 
         $recipients = isset($options['recipients']) ? $options['recipients'] : null;
         $emails = isset($options['emails']) ? $options['emails'] : array();
@@ -260,6 +262,16 @@ class Notification {
                         $rUser->findUserById($recipientUser);
 
                         if(($username = $rUser->getUsername())){
+						    // Check to see if user doesn't want to be notified (if user is recipient, doesn't have check on settings and not forced to receive then exclude)
+                            if ( $current_user->getUsername() == $username ) {
+								if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)  
+								  || $includeSelf == false) {
+								  error_log('skipped self');
+									continue;
+								}
+							  error_log('sent to self');
+                            }
+
                             // check if we already sending email to this user
                             if(!in_array($username, $emails)){
                                 $emails[] = $username;

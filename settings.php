@@ -77,8 +77,16 @@ if (isset($_POST['save_account'])) {
         $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
         $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
         $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
-        $notifications = Notification::setFlags($review_notify, $bidding_notify, $my_review_notify, $my_completed_notify, $my_bids_notify, $ping_notify);
-        $saveArgs['notifications'] = 0;
+        $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
+        $notifications = Notification::setFlags($review_notify, 
+												$bidding_notify, 
+												$my_review_notify, 
+												$my_completed_notify, 
+												$my_bids_notify, 
+												$ping_notify, 
+												$self_email_notify);
+        
+		$saveArgs['notifications'] = 0;
 
         // if user is new - create an entry for him
         // clear $saveArgs so it won't be updated for the second time
@@ -332,7 +340,8 @@ include("head.html");
                     review_notify: $('input[name="review_notify"]').attr('checked') ? 1 : 0,
                     bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1 : 0,
                     my_review_notify: $('input[name="my_review_notify"]').attr('checked') ? 1 : 0,
-                    my_completed_notify: $('input[name="my_completed_notify"]').attr('checked') ? 1 : 0
+                    my_completed_notify: $('input[name="my_completed_notify"]').attr('checked') ? 1 : 0,
+					self_email_notify: $('input[name="self_email_notify"]').attr('checked') ? 1 : 0
                 };
             } else {
                 return false;
@@ -591,6 +600,16 @@ include("head.html");
                     ?>/>My jobs set to completed
             </div>
         </div>
+        <br/>
+        <div >Send Email Messages</div>                
+        <div id="emailOptions">    
+            <div class="floatLeft">
+                <input type="checkbox" name="self_email_notify" value="1" <?php 
+                echo Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : ''; 
+			?>/>Receive email notifications from my actions<br />
+            </div>        	
+        </div>
+        
         <div style="clear:both">
             <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
         </div>
