@@ -71,8 +71,6 @@ if (is_object($inProject)) {
 // krumch 20110418 Set to open Worklist from Journal
     if(isset($_REQUEST['journal_query'])) {
         $filter->setName('.worklist')
-               ->setProjectId($_REQUEST['project'])
-               ->setUser($_REQUEST['user'])
                ->setStatus(strtoupper($_REQUEST['status']))
                ->initFilter();
     } else {
@@ -1680,7 +1678,13 @@ var documentsArray = new Array();
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <!-- Head with search filters, user status, runer budget stats and quick links for the jobs-->
-<?php include("search-head.inc"); ?>
+<?php
+// krumch 20110419 Set to open Worklist from Journal
+if(isset($_REQUEST['journal_query'])) {
+   $filter->setProjectId($_REQUEST['project']);
+   $filter->setUser($_REQUEST['user']);
+}
+  include("search-head.inc"); ?>
 <?php 
 // show project information header
 if (is_object($inProject)) {
