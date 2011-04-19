@@ -35,7 +35,15 @@
                                 }
                                 break;
                             case 'WORKING':
+                                if($_GET['status'] == 'working') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                break;
                             case 'REVIEW':
+                                if($_GET['status'] == 'review') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                break;
                             case 'COMPLETED':
                                 if($_GET['status'] == 'underway') { 
                                     $selected = ' selected="selected"';

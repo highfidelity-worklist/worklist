@@ -3,6 +3,7 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //  vim:ts=4:et
+
 if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: http://dev.sendlove.us/worklist/worklist.php'); }
 require_once("config.php");
 require_once("class.session_handler.php");
@@ -67,8 +68,15 @@ if (is_object($inProject)) {
 } else {
     $hide_project_column = false;
     $filter = new Agency_Worklist_Filter();
-    $filter->setName('.worklist')
-           ->initFilter();
+// krumch 20110418 Set to open Worklist from Journal
+    if(isset($_REQUEST['journal_query'])) {
+        $filter->setName('.worklist')
+               ->setStatus(strtoupper($_REQUEST['status']))
+               ->initFilter();
+    } else {
+        $filter->setName('.worklist')
+               ->initFilter();
+    }
 }
 
 
