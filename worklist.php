@@ -71,7 +71,7 @@ if (is_object($inProject)) {
 // krumch 20110418 Set to open Worklist from Journal
     if(isset($_REQUEST['journal_query'])) {
         $filter->setName('.worklist')
-               ->setProject($_REQUEST['project'])
+               ->setProjectId($_REQUEST['project'])
                ->setUser($_REQUEST['user'])
                ->setStatus(strtoupper($_REQUEST['status']))
                ->initFilter();
