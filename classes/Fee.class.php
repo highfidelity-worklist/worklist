@@ -37,7 +37,7 @@ class Fee
         $amount = 0;
         $points = 0;
         //Wired REWARDER out of process while API is being rebuilt (and we are using a different process for determining rewarder now)
-        $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid`, `expense`, '0' as `rewarder` FROM `".FEES."` WHERE `id`=$fee_id";
+        $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid`, `expense`, '0' as `rewarder` FROM `".FEES."` WHERE `id`=$fee_id AND `bonus` = 0";
         $rt = mysql_query($query);
         if ($rt && ($row = mysql_fetch_assoc($rt))) {
             $query = "UPDATE `".FEES."` SET `user_paid`=$user_paid, `notes`='$paid_notes', `paid`=$paid, paid_date = NOW() WHERE `id`=$fee_id";

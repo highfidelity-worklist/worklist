@@ -22,11 +22,11 @@ $paidStatus = $filter->getPaidstatus();
 $page = $filter->getPage();
 
 $dateRangeFilter = '';
-if(isset($from_date) && isset($to_date))
+if(isset($from_date) || isset($to_date))
 {
 	$mysqlFromDate = GetTimeStamp($from_date);
 	$mysqlToDate = GetTimeStamp($to_date);
-	$dateRangeFilter = ($from_date && $to_date) ? " AND DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" : "";
+	$dateRangeFilter = " AND DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" ;
 }
 
 $paidStatusFilter = '';
@@ -48,7 +48,7 @@ if ($ufilter) {
 }
 
 if ($sfilter){
-    if($sfilter != 'ALL'){
+    if($sfilter != 'ALL' && $type != 'Bonus'){
       $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
     }
 }
@@ -64,13 +64,14 @@ $type = mysql_real_escape_string($_REQUEST['type']);
 
 // Fee
 if($type == 'Fee')
-  $where .= " AND `".FEES."`.expense = 0 ";
+  $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
 // Expense
 else if($type == 'Expense')
-  $where .= " AND `".FEES."`.expense = 1 ";
+  $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
 // Rewarder
-else if($type == 'Rewarder')
-  $where .= " AND `".FEES."`.expense = 0 ";
+else if($type == 'Bonus')
+  $where .= " AND (rewarder = 1 OR bonus = 1)";
+   
 
 // Add option for order results
 $orderby = "ORDER BY ";
@@ -93,10 +94,10 @@ if($paidStatusFilter) {
 if($queryType == "detail") {
 
 $qcnt  = "SELECT count(*)";
-$qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,  `worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` as paypal";
+$qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,`worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` as `paypal`, `expense`as `expense`,`rewarder` as `rewarder`,`bonus` as `bonus`";
 $qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
 $qbody = " FROM `".FEES."`
-           INNER JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
+           LEFT JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
            LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
            WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
 $qorder = "$orderby, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";
@@ -135,7 +136,12 @@ $report = array(array($items, $page, $cPages,$pageSum,$grandSum));
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
 {
-    $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal']);
+    $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal'],$row['expense'],$row['rewarder'],$row['bonus']);
+}
+
+$concatR = '';
+if ($row['rewarder'] ==1){
+$concatR = "R";
 }
 
 $json = json_encode($report);
@@ -158,7 +164,7 @@ echo $json;
     $dateRangeType = $rollupColumn['rollupRangeType'];
 
     $qbody = " FROM `".FEES."`
-	      INNER JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
+	      LEFT JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
 	      LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
 	      WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
     $qgroup = " GROUP BY fee_date";

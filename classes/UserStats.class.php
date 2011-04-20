@@ -48,7 +48,7 @@ class UserStats{
     public function getTotalEarnings(){
         $sql = "SELECT SUM(amount) FROM `fees` "
                 . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 "
-                . "AND `rewarder`=0 AND `user_id` = {$this->userId}";
+                . "AND `rewarder`=0 AND `bonus`=0 AND `user_id` = {$this->userId}";
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return (int) $row[0];
@@ -64,7 +64,7 @@ class UserStats{
         $endDate = date("Y-m-d", $endDate);
 
         $sql = "SELECT SUM(amount) FROM `" . FEES . "` "
-                . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 "
+                . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 AND `bonus`=0 "
                 . "AND `rewarder`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'"
                 . "AND `user_id` = {$this->userId}";
 
@@ -91,7 +91,7 @@ class UserStats{
         $count = 0;
         $sql = "SELECT COUNT(*) FROM `" . FEES . "` "
                 . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0
-                        AND `rewarder`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
+                        AND `rewarder`=0 AND `bonus`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
                         AND `user_id` = {$this->userId}";
 
         $res = mysql_query($sql);
@@ -106,8 +106,8 @@ class UserStats{
                         LEFT JOIN `" . WORKLIST . "` ON `worklist_id` = `worklist`.`id`
                         LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
                         LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
-                    WHERE `" . FEES . "`.`paid` = 1 AND `withdrawn`=0 AND `expense`=0
-                        AND `rewarder`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
+                        WHERE `" . FEES . "`.`paid` = 1 AND `withdrawn`=0 AND `expense`=0
+                        AND `rewarder`=0 AND `bonus`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
                         AND `user_id` = {$this->userId} ORDER BY `paid_date` DESC 
                         LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
@@ -258,10 +258,9 @@ public function getActiveUserItems($status, $page = 1){
 public function getBonusPaymentsTotal() {
  
 $sql = "SELECT
-    IFNULL(`rewarder`.`sum`,0) + IFNULL(`bonus`.`sum`,0)AS `bonus_tot`
+    IFNULL(`rewarder`.`sum`,0)AS `bonus_tot`
     FROM `".USERS."` 
-    LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `withdrawn`=0 AND `paid` = 1 AND `rewarder`=1 AND `user_id` = {$this->userId} GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
-    LEFT JOIN (SELECT `receiver_id`, SUM(amount) AS `sum` FROM `".BONUS_PAYMENTS."` WHERE `paid` = 1 AND `receiver_id` = {$this->userId} GROUP BY `receiver_id`) AS `bonus` ON `".USERS."`.`id` = `bonus`.`receiver_id`
+    LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE (`withdrawn`=0 AND `paid` = 1 AND `user_id` = {$this->userId}) AND `rewarder`=1 OR `bonus`=1 GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
     WHERE `id` = {$this->userId}";
 $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){

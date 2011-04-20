@@ -66,8 +66,10 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
-
+<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
 <!-- <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script> -->
 <link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
 <style type="text/css">
@@ -119,6 +121,7 @@ var toDate = '';
 var datePickerControl; // Month/Year date picker.
 var dateChangedUsingField = false; // True  if the date was changed using date field rather than picker.
 var currentTab = <?php echo $showTab; ?>; // 0 for details and 1 for chart
+//var current_order = false;
 
     /**
     * 
@@ -202,18 +205,31 @@ var getPaidItems = function() {
             row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[5] + '" class="workitem-paid" /> </td>';
             row += '<td> <a href="javascript: void();" onclick="withdraw_fee(\'' + json[1] + '\')">Void</a> </td>';
         <?php } ?> 
+        if (json[0] == 0) {
+        row += '<td>' + pre + 'Bonus' + post + '</td>'; // Id
+        }
+        if (json[0] != 0) {    
         pre = '<a href="workitem.php?job_id='+json[0]+'">';
 	    post = '</a>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
-	pre = '', post = '';
+        }
+	    pre = '', post = '';
+	    if (json[0] == 0) {
+	        row += '<td>' + pre + 'Bonus Payment' + post + '</td>'; // Summary
+	        }
+	    if (json[0] != 0) {
         row += '<td>' + pre + json[2] + post + '</td>'; // Summary
+	    }
         row += '<td>' + pre + json[3] + post + '</td>'; // Description
         row += '<td';
         if (json[7] == 0) {
             row += ' class="redtext"';
         }
         row += '>' + pre + formatValueForDisplay(json[4]) + post + '</td>'; // Payee
-        row += '<td>' + pre + formatValueForDisplay(json[6]) + post + '</td>'; // Paid Date
+        row += '<td>' + pre + formatValueForDisplay(json[6]) + post; // Paid Date
+        if (json[9] == 1) {
+            row += ' (r)' + '</td>';
+        }
         row += '<td>' + pre + '$' + json[5] + post + '</td>'; // Amount
         row += '</tr>';
 
@@ -255,7 +271,7 @@ var getPaidItems = function() {
         $('.table-worklist tbody').append(row);
     }
 
-    function GetReport(npage, reload) {
+    function GetReport(npage, reload, sort) {
 	      _fromDate = $("#start-date").datepicker('getDate');
 	     _toDate = $("#end-date").datepicker('getDate');
 	      if(_fromDate != null) {
@@ -264,7 +280,13 @@ var getPaidItems = function() {
 	      if(_toDate != null) {
 		toDate = fmtDate(_toDate);
 	      }
-
+        var order = '';
+        if (typeof sort !== undefined) {
+            order = sort;
+        } else {
+            order = $('#sort-by').val();
+        }
+        
 	      var paidStatus = $('#paid-status').val();
         $.ajax({
             type: "POST",
@@ -274,7 +296,7 @@ var getPaidItems = function() {
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
                 project_id: $('select[name=project]').val(),
-                order: $('#sort-by').val(),
+                order: order,
                 // adding type field to the request
                 // 28-APR-2010 <Yani>
                 type: $('#type-status').val(),
@@ -430,6 +452,55 @@ function loadTimelineChart() {
 }
     $(document).ready(function(){
         GetReport(<?php echo $page; ?>, true);
+
+      //table sorting thing
+        $('.table-worklist thead tr th').hover(function(e){
+            if(!$('div', this).hasClass('show-arrow')){
+                if($(this).data('direction')){
+                    $('div', this).addClass('arrow-up');
+                }else{
+                    $('div', this).addClass('arrow-down');
+                }
+            }
+        }, function(e){
+            if(!$('div', this).hasClass('show-arrow')){
+                $('div', this).removeClass('arrow-up');
+                $('div', this).removeClass('arrow-down');
+            }
+        });
+
+        $('.table-worklist thead tr th').data('direction', false); //false == desc order
+        $('.table-worklist thead tr th').click(function(e){
+            console.log('clicked header');
+            $('.table-worklist thead tr th div').removeClass('show-arrow');
+            $('.table-worklist thead tr th div').removeClass('arrow-up');
+            $('.table-worklist thead tr th div').removeClass('arrow-down');
+            $('div', this).addClass('show-arrow');
+            var direction = $(this).data('direction');
+            
+            if(direction){
+                $('div', this).addClass('arrow-up');
+            }else{
+                $('div', this).addClass('arrow-down');
+            }
+            
+            var data = $(this).metadata();
+            if (!data.sortkey) {
+                alert("no sortkey");
+                return false;
+            }
+            
+            reload = false;
+            current_sortkey = data.sortkey;
+            current_order = $(this).data('direction');
+            console.log('Setting #sort-by ' + current_sortkey);
+            $('#sort-by').val(current_sortkey);
+            console.log('Sort-by is ' + $('#sort-by').val());
+            GetReport(page, false, current_sortkey);
+            console.log('sortkey ' + current_sortkey);
+            $('.table-worklist thead tr th').data('direction', false); //reseting to default other rows
+            $(this).data('direction',!direction); //switching on current
+        }); //end of table sorting
         
         initializeTabs();
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
@@ -571,8 +642,8 @@ function loadTimelineChart() {
 			<select id="type-status">
 				<option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
 				<option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
+				<option value="Bonus"<?php echo(($filter->getType() == 'Bonus') ? ' selected="selected"' : ''); ?>>Bonus</option>
 				<option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
-				<option value="Rewarder"<?php echo(($filter->getType() == 'Rewarder') ? ' selected="selected"' : ''); ?>>Rewarder</option>
 				</select>
 			</div>
 	    </td>
@@ -615,13 +686,13 @@ function loadTimelineChart() {
                 <td width="3%"><input type="checkbox" id="report-check-all" value="1" /></td>
                 <td width="5%">Void Fee</td>
                 <?php } ?>
-                <td width="7%">ID</td>
-                <td width="30%">Summary</td>
-                <td width="25%">Description</td>
-                <td width="12%">Payee</td>
-                <td width="12%">Paid Date</td>
-                <td width="5%">Fee</td>
-            </tr>
+                <th width="7%" class="sort {sortkey: 'id'} clickable">ID<div class = "arrow"><div/></th>
+                <th width="30%" class="sort {sortkey: 'summary'} clickable">Summary<div class = "arrow"><div/></th>
+                <th width="25%" class="sort {sortkey: 'desc'} clickable">Description<div class = "arrow"><div/></th>
+                <th width="12%" class="sort {sortkey: 'payee'} clickable">Payee<div class = "arrow"><div/></th>
+                <th width="15%" class="sort {sortkey: 'paid_date'} clickable">Paid Date<div class = "arrow"><div/></th>
+                <th width="5%" class="sort {sortkey: 'fee'} clickable">Fee<div class = "arrow"><div/></th>
+                </tr>
             </thead>
             <tbody>
             </tbody>

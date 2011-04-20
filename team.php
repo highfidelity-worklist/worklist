@@ -23,7 +23,7 @@ $cur_page = isset( $_POST['page'] ) ? intval($_POST['page'] ) : 1;
 
 $sfilter = !empty( $_POST['sfilter'] ) ? $_POST['sfilter'] : 'PAID';
 $userId = getSessionUserId();
-if( $userId > 0 )    {
+if( $userId > 0 )	{
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );
@@ -118,27 +118,26 @@ $(document).ready(function() {
 
     $('#user-info').dialog({
         autoOpen: false,
-        resizable: false,
-        modal: false,
+        modal: true,
         show: 'fade',
         hide: 'fade',
-        width: 800,
-        height: 480
+        height: 480,
+        width: 800
     });
     if ($("#budgetPopup").length > 0) {
-        $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
-        $("#budgetPopup").dialog({
-            title: "Budget",
-            autoOpen: false,
-            height: 'auto',
-            width: '250px',
-            position: ['center', 60],
-            modal: true
-        });
-        $("#welcome .budget").click(function(){
-            $("#budgetPopup").dialog("open");
-        });
-    };
+		$("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
+		$("#budgetPopup").dialog({
+			title: "Budget",
+			autoOpen: false,
+			height: 'auto',
+			width: '250px',
+			position: ['center', 60],
+			modal: true
+		});
+		$("#welcome .budget").click(function(){
+			$("#budgetPopup").dialog("open");
+		});
+	};
         
     /**
      * Enable filter for users with fees in the last X days
@@ -185,7 +184,7 @@ function fillUserlist(npage) {
         
             $('.ln-letters a').removeClass('ln-selected');
             $('.ln-letters a.' + current_letter).addClass('ln-selected');
-                    
+            		
             var page = json[0][1]|0;
             var cPages = json[0][2]|0;
             
@@ -214,7 +213,7 @@ function fillUserlist(npage) {
             
             if(cPages > 1){ //showing pagination only if we have more than one page
             $('.ln-pages').html('<span>'+outputPagination(page,cPages)+'</span>');
-                        
+            			
             $('.ln-pages a').click(function(){
                 page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                 fillUserlist(page);
@@ -273,15 +272,15 @@ function AppendUserRow(json, odd) {
 }
 
 function addCommas(nStr) {
-    nStr += '';
-    x = nStr.split('.');
-    x1 = x[0];
-    x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-        x1 = x1.replace(rgx, '$1' + ',' + '$2');
-    }
-    return x1 + x2;
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
 }
 
 </script>
@@ -298,15 +297,15 @@ function addCommas(nStr) {
 
 <h1>Team Members</h1>
 <div class="active-users">
-    <input type="checkbox" id="filter-by-fees">Has fees in the last
-       <select name="days" class="days">
-           <option value="7">7 days</option>
-           <option value="30" selected="selected">30 days</option>
-           <option value="60">60 days</option>
-           <option value="90">90 days</option>
-           <option value="360">1 year</option>
-       </select>
-    </input>
+	<input type="checkbox" id="filter-by-fees">Has fees in the last
+	   <select name="days" class="days">
+	       <option value="7">7 days</option>
+	       <option value="30" selected="selected">30 days</option>
+	       <option value="60">60 days</option>
+	       <option value="90">90 days</option>
+	       <option value="360">1 year</option>
+	   </select>
+	</input>
 </div>
 <div class="clear"></div>
 

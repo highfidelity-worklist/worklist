@@ -90,7 +90,7 @@ $sql_get_fee_totals = "
         u.id AS mechanic_id,
         u.nickname AS mechanic_nick,
         u.paypal_email AS mechanic_paypal_email,
-        wl.summary AS worklist_item
+        wl.summary AS worklist_item, f.bonus AS bonus, 'BONUS' AS bonus_desc
     FROM
         (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id)
         LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id
@@ -107,17 +107,17 @@ $sql_get_fee_totals = "
 $sql_get_bonus_totals = "
     SELECT
         sum(b.amount) AS total_amount,
-        b.receiver_id AS mechanic_id,
-        b.notes AS worklist_item,
+        b.user_id AS mechanic_id,
+        b.desc AS worklist_item,
         u.nickname AS mechanic_nick,
         u.paypal_email AS mechanic_paypal_email
     FROM
-        ".BONUS_PAYMENTS." b
-        LEFT JOIN ".USERS." u on u.id = b.receiver_id
+        ".FEES." b
+        LEFT JOIN ".USERS." u on u.id = b.user_id
     WHERE
         b.paid = 0
-        AND u.paypal = '1'
-    GROUP BY b.receiver_id
+        AND u.paypal = '1' and b.bonus = 1
+   GROUP BY b.user_id
     ";
 
 
@@ -128,6 +128,7 @@ function getUserTotalsArray() {
     // Creating 1 SQL statement to combine FEES and BONUS_PAYMENTS blew my mind
     // so I'm combining it in PHP. -Alexi 2011-03-03
     global $sql_get_fee_totals, $sql_get_bonus_totals;
+    
 
     $fee_totals_query   = mysql_query($sql_get_fee_totals);
     $bonus_totals_query = mysql_query($sql_get_bonus_totals);
@@ -205,7 +206,7 @@ switch ($action) {
                     u.id AS mechanic_id,
                     u.nickname AS mechanic_nick,
                     u.paypal_email AS mechanic_paypal_email,
-                    wl.summary AS worklist_item
+                    wl.summary AS worklist_item  
                 FROM
                     ('.FEES.' f LEFT JOIN '.USERS.' u ON f.user_id = u.id)
                     LEFT JOIN '.WORKLIST.' wl ON f.worklist_id = wl.id
@@ -220,15 +221,15 @@ switch ($action) {
                     b.id AS fee_id,
                     b.amount AS amount,
                     "BONUS" AS worklist_id,
-                    b.receiver_id AS mechanic_id,
+                    b.user_id AS mechanic_id,
                     u.nickname AS mechanic_nick,
                     u.paypal_email AS mechanic_paypal_email,
-                    b.notes AS worklist_item
+                    b.desc AS worklist_item
                 FROM
-                    '.BONUS_PAYMENTS.' b
-                    LEFT JOIN '.USERS.' u on u.id = b.receiver_id
+                    '.FEES.' b
+                    LEFT JOIN '.USERS.' u on u.id = b.user_id
                 WHERE
-                    b.id in ('.$bonus_id_csv.')
+                    b.id in ('.$bonus_id_csv.') and b.bonus = 1
                 ';
             $bonus_info_results = mysql_query($bonus_info_sql);
 
@@ -444,15 +445,15 @@ foreach ($payee_totals as $payee) {
         SELECT
             b.id AS id,
             b.amount AS amount,
-            b.notes AS notes,
+            b.desc AS notes,
             b.date AS date,
             u.nickname AS payer_name
         FROM
-            bonus_payments b
+            fees b
             LEFT JOIN users u ON u.id = b.payer_id
         WHERE
-            b.receiver_id = ".$payee['mechanic_id']."
-            AND b.paid=0";
+            b.user_id = ".$payee['mechanic_id']."
+            AND b.paid=0 and b.bonus=1";
     $bonus_query = mysql_query($bonus_sql);
     if (mysql_num_rows($bonus_query) > 0) {
         while ($ind_bonus = mysql_fetch_array($bonus_query)) {

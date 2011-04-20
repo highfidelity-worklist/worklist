@@ -29,7 +29,7 @@ if (!defined("APP_LOGIN"))      define("APP_LOGIN", '/logon/index.php/');
 if (!defined('APP_NAME'))       define('APP_NAME','Worklist');
 if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], '/')));
 if (!defined('APP_BASE'))       define('APP_BASE',substr(APP_LOCATION, 0, strrpos(APP_LOCATION, '/', -2)));
-if (!defined('APP_PATH'))	define('APP_PATH', realpath(dirname(__FILE__)));
+if (!defined('APP_PATH'))	    define('APP_PATH', realpath(dirname(__FILE__)));
 if (!defined('UPLOAD_PATH'))	define('UPLOAD_PATH', realpath(APP_PATH . '/uploads'));
 
 if (!defined('APP_ENV'))	    define('APP_ENV', 'production');
@@ -59,16 +59,15 @@ if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('USERS'))          define('USERS', 'users');
 if (!defined('BIDS'))		    define('BIDS', 'bids');
 if (!defined('FEES'))		    define('FEES', 'fees');
-if (!defined('BONUS_PAYMENTS')) define('BONUS_PAYMENTS', 'bonus_payments');
 if (!defined('FILES'))		    define('FILES', 'files');
 if (!defined('COMMENTS'))	    define('COMMENTS', 'comments');
-if (!defined('USER_STATUS'))	    define('USER_STATUS', 'user_status');
+if (!defined('USER_STATUS'))	define('USER_STATUS', 'user_status');
 if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
 if (!defined('SKILLS'))         define('SKILLS', 'skills');
 if (!defined('WORKITEM_SKILLS')) define('WORKITEM_SKILLS', 'workitem_skills');
 if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
-if (!defined('PAYPAL_ADMINS'))     define('PAYPAL_ADMINS', 'paypal_admins');
+if (!defined('PAYPAL_ADMINS'))  define('PAYPAL_ADMINS', 'paypal_admins');
 if (!defined('PROJECTS'))       define('PROJECTS', 'projects');
 if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
 

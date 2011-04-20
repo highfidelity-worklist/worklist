@@ -34,29 +34,29 @@ class Bonus
             SELECT
                 *
             FROM
-                '.BONUS_PAYMENTS.'
+                '.FEES.'
             WHERE
-                id = '.$id.'
+                id = '.$id.' AND bonus = 1
             ';
         $select_query = mysql_fetch_array(mysql_query($select_query));
         
-        $receiver_id = $select_query['receiver_id'];
+        $receiver_id = $select_query['user_id'];
         $amount      = $select_query['amount'];
 
         $update_query = '
             UPDATE
-                '.BONUS_PAYMENTS.'
+                '.FEES.'
             SET
                 paid = '.$paid.'
             WHERE
-                id = '.$id.'
+                id = '.$id.' and bonus = 1
             LIMIT 1
             ';
 
         $result = mysql_unbuffered_query($update_query);
 
         if (!$result) {
-            error_log("ERORR: bonus_payments table update failed! (id # ".$id);
+            error_log("ERORR: fees table update failed! (id # ".$id);
             return false;
         }
 

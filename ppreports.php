@@ -238,13 +238,21 @@ include("head.html"); ?>
         if (is_runner != '' || is_payer != '') {
         	pre = '<a href="#">';
             post = '</a>';
-            row += '<td onclick="javascript:showExtendedInfo('+parseInt(json[6])+')">' + pre + json[0] + post + '</td>'; // Summary
-        } else {
-        	row += '<td>' + pre + json[0] + post + '</td>'; // Summary
-        }
-        pre = '<a target="_blank" href="workitem.php?job_id='+json[1]+'">';
-        post = '</a>';
-        row += '<td>' + pre + json[1] + post + '</td>'; // Id
+            if (json[1] == 0) { 
+            	row += '<td>' + pre + 'Bonus Payment' + post + '</td>'; // Summary
+            }
+            if (json[1] != 0) {
+              row += '<td onclick="javascript:showExtendedInfo('+parseInt(json[6])+')">' + pre + json[0] + post + '</td>'; // Summary    
+          	    }
+            }        
+        if (json[1] == 0) {  
+            row += '<td>' + 'Bonus' + '</td>'; // Id        
+        } 
+        if (json[1] != 0) {
+         pre = '<a target="_blank" href="workitem.php?job_id='+json[1]+'">';
+         post = '</a>';
+         row += '<td>' + pre + json[1] + post + '</td>'; // Id
+        }    
         pre = '', post = '';
         row += '<td>' + pre + '$' + json[2] + post + '</td>'; // Amount
         row += '<td>' + pre + formatValueForDisplay(json[3]) + post + '</td>'; // Paid Date

@@ -441,7 +441,9 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
 
 function payBonusToUser($user_id, $amount, $notes) {
 
-    $query = "INSERT INTO `".BONUS_PAYMENTS."` (`payer_id`, `receiver_id`, `amount`, `notes`, `date`) VALUES ('" . (int)$_SESSION['userid'] . "', '" . (int)$user_id . "', '" . (float)$amount . "', '" . mysql_real_escape_string($notes) . "', NOW())";
+    $query = "INSERT INTO `".FEES."` (`id`,`worklist_id`,`payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".
+             "VALUES ".
+             "(NULL,0,'" . (int)$_SESSION['userid'] . "', '" . (int)$user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string($notes) . "', NOW(), 1, 0,0)";
     $result = mysql_unbuffered_query($query);
 
     if (mysql_insert_id()) {
