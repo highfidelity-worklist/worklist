@@ -55,58 +55,58 @@ function RelativeTime(x){
  *
  */
 function AjaxPopup(popupId,
-		   titleString,
-		   urlString,
-		   keyId,
-		   fieldArray,
-		   successFunc)
+           titleString,
+           urlString,
+           keyId,
+           fieldArray,
+           successFunc)
 {
   $(popupId).data('title.dialog', titleString);
 
   $.ajax({type: "POST",
-	  url: urlString,
-	  data: 'item='+keyId,
-	  dataType: 'json',
-	  success: function(json) {
+      url: urlString,
+      data: 'item='+keyId,
+      dataType: 'json',
+      success: function(json) {
 
-	    $.each(fieldArray, 
-		   function(key,value){
-		     if(value[0] == 'input') {
-		       if(value[3] != undefined && value[3] == 'eval')  {
-			 $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
-		       } else {
-			 $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
-		       }
-		     }
-		     
-		     if(value[0] == 'textarea') {
-		       if(value[3] != undefined && value[3] == 'eval')  {
-			 $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
-		       } else {
-			 $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
-		       }
-		     }
-		     
-		     if(value[0] == 'checkbox') {
-		       if(value[3] != undefined && value[3] == 'eval')  {
-			 $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');	     
-		       } else {
-			 $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');	     
-		       }
-		     }
-		     
-		     if(value[0] == 'span')  {
-		       if(value[3] != undefined && value[3] == 'eval')  {
-			 $('.popup-body form ' + value[1]).text( eval(value[2]) );
-		       } else {
-			 $('.popup-body form ' + value[1]).text( value[2] );
-		       }
-		     }
-		   });
+        $.each(fieldArray, 
+           function(key,value){
+             if(value[0] == 'input') {
+               if(value[3] != undefined && value[3] == 'eval')  {
+             $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
+               } else {
+             $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
+               }
+             }
+             
+             if(value[0] == 'textarea') {
+               if(value[3] != undefined && value[3] == 'eval')  {
+             $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
+               } else {
+             $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
+               }
+             }
+             
+             if(value[0] == 'checkbox') {
+               if(value[3] != undefined && value[3] == 'eval')  {
+             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');         
+               } else {
+             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');         
+               }
+             }
+             
+             if(value[0] == 'span')  {
+               if(value[3] != undefined && value[3] == 'eval')  {
+             $('.popup-body form ' + value[1]).text( eval(value[2]) );
+               } else {
+             $('.popup-body form ' + value[1]).text( value[2] );
+               }
+             }
+           });
 
-	    if(successFunc !== undefined) {
-	      successFunc(json);
-	    }
+        if(successFunc !== undefined) {
+          successFunc(json);
+        }
             }
     });
 
@@ -133,48 +133,48 @@ function AjaxPopup(popupId,
  *
  */
 function SimplePopup(popupId,
-		     titleString,
-		     keyId,
-		     fieldArray,
-		     successFunc)
+             titleString,
+             keyId,
+             fieldArray,
+             successFunc)
 {
   $(popupId).data('title.dialog', titleString);
 
   $.each(fieldArray, 
-	 function(key,value){
-	   if(value[0] == 'input') {
-	     if(value[3] != undefined && value[3] == 'eval')  {
-	       $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
-	     } else {
-	       $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
-	     }
-	   }
-	   
-	   if(value[0] == 'textarea') {
-	     if(value[3] != undefined && value[3] == 'eval')  {
-	       $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
-	     } else {
-	       $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
-	     }
-	   }
-	   
-	   if(value[0] == 'checkbox') {
-	     if(value[3] != undefined && value[3] == 'eval')  {
-	       $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');	     
-	     } else {
-	       $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');	     
-	     }
-	   }
-	   
-	   if(value[0] == 'span')  {
-	     if(value[3] != undefined && value[3] == 'eval')  {
-	       $('.popup-body form ' + value[1]).text( eval(value[2]) );
-	     } else {
-	       $('.popup-body form ' + value[1]).text( value[2] );
-	     }
-	   }
-	   
-	 });
+     function(key,value){
+       if(value[0] == 'input') {
+         if(value[3] != undefined && value[3] == 'eval')  {
+           $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
+         } else {
+           $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
+         }
+       }
+       
+       if(value[0] == 'textarea') {
+         if(value[3] != undefined && value[3] == 'eval')  {
+           $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
+         } else {
+           $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
+         }
+       }
+       
+       if(value[0] == 'checkbox') {
+         if(value[3] != undefined && value[3] == 'eval')  {
+           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');         
+         } else {
+           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');         
+         }
+       }
+       
+       if(value[0] == 'span')  {
+         if(value[3] != undefined && value[3] == 'eval')  {
+           $('.popup-body form ' + value[1]).text( eval(value[2]) );
+         } else {
+           $('.popup-body form ' + value[1]).text( value[2] );
+         }
+       }
+       
+     });
 
   if(successFunc !== undefined) {
     successFunc(json);
@@ -227,19 +227,19 @@ jQuery.fn.DefaultValue = function(text){
 };
 
 $(function() {
-	var hideInputField = function() {
-		// if the status is not empty - hide input field, otherwise do not hide input
-		if( $('#status-lbl').find('b').html() != "" ) {
-			$('#status-update').hide();
-			$("#status-share").hide();
-			$('#status-lbl').show();
-		}
-	};
-	$("#status-share").hide();
-	$('#share-this').hide();
-	$("#status-update").DefaultValue("What are you working on?");
-	$('#status-update').hide();
-	$("#query").DefaultValue("Search...");
+    var hideInputField = function() {
+        // if the status is not empty - hide input field, otherwise do not hide input
+        if( $('#status-lbl').find('b').html() != "" ) {
+            $('#status-update').hide();
+            $("#status-share").hide();
+            $('#status-lbl').show();
+        }
+    };
+    $("#status-share").hide();
+    $('#share-this').hide();
+    $("#status-update").DefaultValue("What are you working on?");
+    $('#status-update').hide();
+    $("#query").DefaultValue("Search...");
     $("#feesDialog").dialog({
         title: "Earnings",
         autoOpen: false,
@@ -249,7 +249,7 @@ $(function() {
         modal: true
     });
     //debugger;
-	$("#welcome .earnings").click(function(){
+    $("#welcome .earnings").click(function(){
         $("#feesDialog").dialog("open");
     });
     if ($("#budgetPopup").length > 0) {
@@ -266,43 +266,43 @@ $(function() {
             $("#budgetPopup").dialog("open");
         });
     }
-	// if the status is empty, show input field - allow user to enter the status
-	if( $.trim($('#status-lbl').find('b').html()) == "" ) {
-		$('#status-lbl').hide();
-		$('#status-update').show();
-		$("#status-share").show();
-	} else {
-		$('#status-lbl').show();
-	}
-	
-	// When status-update gets focus enlarge and show the share button
-	$("#status-update").focus(function() {		
-		$("#status-update").data("focus",true);		
-		$("#status-share").show();
-	});
+    // if the status is empty, show input field - allow user to enter the status
+    if( $.trim($('#status-lbl').find('b').html()) == "" ) {
+        $('#status-lbl').hide();
+        $('#status-update').show();
+        $("#status-share").show();
+    } else {
+        $('#status-lbl').show();
+    }
+    
+    // When status-update gets focus enlarge and show the share button
+    $("#status-update").focus(function() {        
+        $("#status-update").data("focus",true);        
+        $("#status-share").show();
+    });
 
-	//When status-update lost the focus, hide input field ... 
-	$("#status-update").blur(function() {
-	// if the blur event is coming due to a click on button "Share", we need to delay the hidding process.
-	// if not the click event on the hidden button is not triggered.
-		setTimeout(function() { 
-			hideInputField();
-			$("#status-update").data("focus",false);		
-		},500);
-	});
-	
-	$("#status-lbl").mouseenter(function() {
-		$('#status-lbl').hide();
-		$('#status-update').show();
-		$('#status-share').show();
-	});
-	
-	//When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
-	$("#status-wrap").mouseleave(function(){
-		if ($("#status-update").data("focus") !== true) {
-			hideInputField();
-		}
-	});
+    //When status-update lost the focus, hide input field ... 
+    $("#status-update").blur(function() {
+    // if the blur event is coming due to a click on button "Share", we need to delay the hidding process.
+    // if not the click event on the hidden button is not triggered.
+        setTimeout(function() { 
+            hideInputField();
+            $("#status-update").data("focus",false);        
+        },500);
+    });
+    
+    $("#status-lbl").mouseenter(function() {
+        $('#status-lbl').hide();
+        $('#status-update').show();
+        $('#status-share').show();
+    });
+    
+    //When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
+    $("#status-wrap").mouseleave(function(){
+        if ($("#status-update").data("focus") !== true) {
+            hideInputField();
+        }
+    });
 
     //Enable/disable job bug id on is_bug checkbox state
     $("#bug_job_id").ready(function() {
@@ -358,7 +358,7 @@ $(function() {
                     } else {
                         if(json.returnString.length>0) {
                             $('#bugJobSummary').html('<p><small>'+json.returnString+'</small></p>');
-                            $("#bugJobSummary").attr("title" , id);	
+                            $("#bugJobSummary").attr("title" , id);    
                         } else {
                             $('#bugJobSummary').html("<p><small>Item doesn't exist</small></p>");
                             $("#bugJobSummary").attr("title" , 0);
@@ -369,33 +369,33 @@ $(function() {
         }
     });
 
-	
-	//Submit the form using AJAX to the database
-	$("#status-share-btn").click(function() {
-		if($("#status-update").val() == "")	{
-			//return false;
-		}
-		if($("#status-update").val() ==  "What are you working on?"){
-			$("#status-update").val("");
-		}
-		$.ajax({
-			url: "update_status.php",
-			type: "POST",
-			data: "action=update&status=" + $("#status-update").val(),
-			dataType: "text",
-			success: function(){
-				// if entered blank status - do not hide input
-				if ($("#status-update").val()!="") {
-					$('#status-update').hide();$('#status-lbl').show();
-					$("#status-share").hide();
-					$('#share-this').hide();
-				} 
-				$('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
-			}
-		});
-		
-		return false;
-	});
+    
+    //Submit the form using AJAX to the database
+    $("#status-share-btn").click(function() {
+        if($("#status-update").val() == "")    {
+            //return false;
+        }
+        if($("#status-update").val() ==  "What are you working on?"){
+            $("#status-update").val("");
+        }
+        $.ajax({
+            url: "update_status.php",
+            type: "POST",
+            data: "action=update&status=" + $("#status-update").val(),
+            dataType: "text",
+            success: function(){
+                // if entered blank status - do not hide input
+                if ($("#status-update").val()!="") {
+                    $('#status-update').hide();$('#status-lbl').show();
+                    $("#status-share").hide();
+                    $('#share-this').hide();
+                } 
+                $('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
+            }
+        });
+        
+        return false;
+    });
     
 });
 
@@ -423,82 +423,82 @@ $(function() {
 });
 
 $(function() {
-		// to add a custom stuff we bind on events
-		$('select[name=user]').bind({
-			'beforeshow newlist': function(e, o) {
-				// now we create a new li element with a checkbox in it
-				var li = $('<li/>').css({
-					left: 0,
-					position: 'absolute',
-					background: '#AAAAAA',
-					width: '123px',
-					top: '180px'
-				});
-				var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
-				var checkbox = $('<input/>').attr({
-					type: 'checkbox',
-					id: 'onlyActive'
-				}).css({
-						margin: 0,
-						position: 'relative',
-						top: '1px'
-				});
+        // to add a custom stuff we bind on events
+        $('select[name=user]').bind({
+            'beforeshow newlist': function(e, o) {
+                // now we create a new li element with a checkbox in it
+                var li = $('<li/>').css({
+                    left: 0,
+                    position: 'absolute',
+                    background: '#AAAAAA',
+                    width: '123px',
+                    top: '180px'
+                });
+                var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
+                var checkbox = $('<input/>').attr({
+                    type: 'checkbox',
+                    id: 'onlyActive'
+                }).css({
+                        margin: 0,
+                        position: 'relative',
+                        top: '1px'
+                });
 
-				// we need to update the global activeUsersFlag
-				if (activeUsersFlag) {
-					checkbox.attr('checked', true);
-				} else {
-					checkbox.attr('checked', false);
-				}
+                // we need to update the global activeUsersFlag
+                if (activeUsersFlag) {
+                    checkbox.attr('checked', true);
+                } else {
+                    checkbox.attr('checked', false);
+                }
 
-				label.text(' Active only');
-				label.prepend(checkbox);
-				li.append(label);
+                label.text(' Active only');
+                label.prepend(checkbox);
+                li.append(label);
 
-				// now we add a function which gets called on click
-				li.click(function(e) {
-					// we hide the list and remove the active state
-					activeUsersFlag = 1- activeUsersFlag ;
-					o.list.hide();
-					o.container.removeClass('ui-state-active');
-					// we send an ajax request to get the updated list
-					$.ajax({
-						type: 'POST',
-						url: 'refresh-filter.php',
-						data: {
-							name: filterName,
-							active: activeUsersFlag,
+                // now we add a function which gets called on click
+                li.click(function(e) {
+                    // we hide the list and remove the active state
+                    activeUsersFlag = 1- activeUsersFlag ;
+                    o.list.hide();
+                    o.container.removeClass('ui-state-active');
+                    // we send an ajax request to get the updated list
+                    $.ajax({
+                        type: 'POST',
+                        url: 'refresh-filter.php',
+                        data: {
+                            name: filterName,
+                            active: activeUsersFlag,
                             filter: 'users'
-						},
-						dataType: 'json',
-						// on success we update the list
-						success: $.proxy(o.setupNewList, null,o)
-					});
-					// just to be shure nothing else gets called we return false
-					return false;
-				});
+                        },
+                        dataType: 'json',
+                        // on success we update the list
+                        success: $.proxy(o.setupNewList, null,o)
+                    });
+                    // just to be shure nothing else gets called we return false
+                    return false;
+                });
 
-				// the scroll handler so our new listelement will stay on the bottom
-				o.list.scroll(function() {
-					/**
-					 * With a move of 180, the position is too far, and the scroll never ends.
-					 * The calculation has been made using heights of the elements but it doesn't work on MAC/Firefox (still some px too far, border size ??)
-					 * The value has been fixed to 178 under MAC and calculated on other platforms (coder with a MAC could investigate this)
-					 * 8-JUNE-2010 <vincent> - Ticket #11458		
-					 */
-					if (navigator.platform.indexOf("Mac") == 0) {
-						li.css('top', ($(this).scrollTop() + 178) + 'px');
-					} else {
-						li.css('top', ($(this).scrollTop() + $(this).height() - li.outerHeight(true)) + 'px');
-					}
-				});
-				// now we append the list element to the list
-				o.list.append($('<li>&nbsp</li>'));
-				o.list.append(li);
-				o.list.css("z-index","100"); // to be over other elements
-			}
-		}).comboBox();
-		$('#search-filter-wrap select[name=status]').comboBox();
+                // the scroll handler so our new listelement will stay on the bottom
+                o.list.scroll(function() {
+                    /**
+                     * With a move of 180, the position is too far, and the scroll never ends.
+                     * The calculation has been made using heights of the elements but it doesn't work on MAC/Firefox (still some px too far, border size ??)
+                     * The value has been fixed to 178 under MAC and calculated on other platforms (coder with a MAC could investigate this)
+                     * 8-JUNE-2010 <vincent> - Ticket #11458        
+                     */
+                    if (navigator.platform.indexOf("Mac") == 0) {
+                        li.css('top', ($(this).scrollTop() + 178) + 'px');
+                    } else {
+                        li.css('top', ($(this).scrollTop() + $(this).height() - li.outerHeight(true)) + 'px');
+                    }
+                });
+                // now we append the list element to the list
+                o.list.append($('<li>&nbsp</li>'));
+                o.list.append(li);
+                o.list.css("z-index","100"); // to be over other elements
+            }
+        }).comboBox();
+        $('#search-filter-wrap select[name=status]').comboBox();
 
 });
 
@@ -507,21 +507,104 @@ function sendInviteForm(){
   var job_id = $('input[name="worklist_id"]').val();
   $.ajax({
     type: "POST",
-	url: "workitem.php?job_id="+job_id,
-	data: "json=y&invite="+name+"&invite-people=Invite",
-	dataType: "json",
-	success: function(json) {
-		if(json['sent'] =='yes'){
-			$("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
-			$('input[name="invite"]').val('');
-		}else{
-			$("#sent-notify").html("<span>The user you entered does not exist</span>");
-		}
-		$("#sent-notify").dialog("open");
-	},
-	error: function(xhdr, status, err) {
-	  $("#sent-notify").html("<span>Error sending invitation</span>");
-	}
+    url: "workitem.php?job_id="+job_id,
+    data: "json=y&invite="+name+"&invite-people=Invite",
+    dataType: "json",
+    success: function(json) {
+        if(json['sent'] =='yes'){
+            $("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
+            $('input[name="invite"]').val('');
+        }else{
+            $("#sent-notify").html("<span>The user you entered does not exist</span>");
+        }
+        $("#sent-notify").dialog("open");
+    },
+    error: function(xhdr, status, err) {
+      $("#sent-notify").html("<span>Error sending invitation</span>");
+    }
   });
   return false;
+}
+function applyPopupBehavior() {
+    $('a.attachment').live('click', function() {
+        var dialogUrl = $(this).attr('href');  
+        $('<img src="'+dialogUrl+'" title="Preview">').dialog({
+                modal: true,
+                hide: 'drop', 
+                resizable: false,
+                width: 'auto',
+                height: 'auto',                
+                open:function(evt){
+                    $(this).parent().css('opacity','0');
+                    storeCursorStatus = new Array();
+                    $('*').each(function(){
+                        if($(this).css('cursor')!='auto')
+                            storeCursorStatus.push([$(this), $(this).css('cursor')]); });
+                    $('*:visible').css('cursor','wait');
+                    window.imageFiredDialogRedim = [false, evt.target];  
+                    
+                    $(evt.target).load(function(){
+                            var image = $(this);
+                            // get image size
+                            var origWidt = parseInt(image.naturalWidth);  
+                            var origHeig = parseInt(image.naturalHeight);
+                            if(!origWidt||!origHeig){
+                                var origWidt = parseInt(image.width());
+                                var origHeig = parseInt(image.height()); 
+                            }
+                            var padding = 20;
+                            var imageMargin = 12;
+                            ratio = Math.min(($(window).width()-(imageMargin+padding)*2) / origWidt,
+                                            ($(window).height()-(imageMargin+padding)*2) / origHeig);
+                            var zoom='';
+                            //alert(($(window).width()-padding*2)+' , ' +($(window).height()-padding*2)+' ==  '+origWidt+','+origHeig+ ' === '+ratio);
+							//alert('width'+(origWidt*ratio)+', height'+(origHeig*ratio));
+                            if(ratio<1){
+                                image.css({'width':origWidt*ratio,'height':origHeig*ratio});
+                            }
+                            var dialog = image.parent()
+                            var top = ($(window).height() - image.height())/2 - imageMargin + $(window).scrollTop();
+                            var left = ($(window).width() - image.width())/2 - imageMargin;
+                            dialog.css({
+                                'top': top,
+                                'left': left 
+                            });
+                            $('*').css('cursor','auto');
+                            $.each(storeCursorStatus,function(i,v){
+                                v[0].css('cursor',v[1]); });
+                            if(ratio<1){
+                                zoom='('+Math.round(ratio*100)+'%)';
+                                image.prev('div').append(
+                                '<span class="dialogZoom" style="margin-left:10px;">'+zoom+'</span>');
+                            }
+                            if (ratio!='Infinity'){
+                                image.css({'margin':imageMargin+'px','padding':'0','border':'1px solid #ccc'});
+                                if($.browser.msie){
+                                    image.css({'border':'2px solid #000'});
+                                }else if($.browser.mozilla){
+                                    image.css({'-moz-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
+                                }else{
+                                    image.css({'-webkit-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
+                                }
+                                image.parent().hide();
+                                image.parent().css('opacity','1').fadeIn();
+                                clearInterval(window.imageFiredDialogRedim[3]);
+                            }
+                    })
+                    window.imageFiredDialogRedim[3] =
+                        setInterval(function(){
+                            if(!window.imageFiredDialogRedim[0]){
+                                $(window.imageFiredDialogRedim[1]).trigger('load');
+                            }
+                        },1500);
+                },
+                resizeStart:function(){
+                    $(this).parent().find('.dialogZoom').html(''); },               // hide srink percentage on resize
+                dragStop:function(evt){
+                    var dialog = $(evt.target);                                     // check if not out of screen
+
+                } 
+            }); 
+        return false;
+    });
 }

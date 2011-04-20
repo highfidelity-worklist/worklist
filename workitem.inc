@@ -51,6 +51,7 @@ include("head.html"); ?>
 <script type="text/javascript">
 <!-- Start User Info popup code -->
 $(document).ready(function() {
+    applyPopupBehavior();
     $('#user-info').dialog({
         autoOpen: false,
         resizable: false,
@@ -105,7 +106,7 @@ function showUserInfo(userId){
         var image = images[i];
         #>
         <div class="filesIcon">
-            <a href="<#= image.url #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
+            <a class="attachment" href="<#= image.url #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
         </div>
         <div class="filesDescription">
             <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
@@ -148,7 +149,7 @@ function showUserInfo(userId){
 </script>
 <script type="text/html" id="uploadImage">
     <div class="filesIcon">
-        <a href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
+        <a class="attachment" href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
     </div>
     <div class="filesDescription">
         <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>

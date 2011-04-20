@@ -232,7 +232,9 @@ class JsonServer
 		$title = basename($_FILES['file']['name']);
 		$path = UPLOAD_PATH . '/' . $fileName;
 		
-		if (move_uploaded_file($tempFile, $path)) {
+		
+		
+		if (copy($tempFile, $path)) {
 			$url = SERVER_URL . 'uploads/' . $fileName;
 			$workitem = $this->getRequest()->getParam('workitem');
 			$workitem = (is_numeric($workitem) ? $workitem : null);
@@ -266,7 +268,7 @@ class JsonServer
 		} else {
 			return $this->setOutput(array(
 				'success' => false,
-				'message' => 'An error occured while uploading the file, please try again!'
+				'message' => 'An error occured while uploading the  '.$tempFile.','. $path.' please try again!'
 			));
 		}
 		
