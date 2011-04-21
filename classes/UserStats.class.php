@@ -48,7 +48,7 @@ class UserStats{
     public function getTotalEarnings(){
         $sql = "SELECT SUM(amount) FROM `fees` "
                 . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 "
-                . "AND `rewarder`=0 AND `bonus`=0 AND `user_id` = {$this->userId}";
+                . "AND `user_id` = {$this->userId}";
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return (int) $row[0];
@@ -64,8 +64,8 @@ class UserStats{
         $endDate = date("Y-m-d", $endDate);
 
         $sql = "SELECT SUM(amount) FROM `" . FEES . "` "
-                . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 AND `bonus`=0 "
-                . "AND `rewarder`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'"
+                . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0 "
+                . "AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'"
                 . "AND `user_id` = {$this->userId}";
 
         $res = mysql_query($sql);
@@ -91,7 +91,7 @@ class UserStats{
         $count = 0;
         $sql = "SELECT COUNT(*) FROM `" . FEES . "` "
                 . "WHERE `paid` = 1 AND `withdrawn`=0 AND `expense`=0
-                        AND `rewarder`=0 AND `bonus`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
+                        AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
                         AND `user_id` = {$this->userId}";
 
         $res = mysql_query($sql);
@@ -107,7 +107,7 @@ class UserStats{
                         LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
                         LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
                         WHERE `" . FEES . "`.`paid` = 1 AND `withdrawn`=0 AND `expense`=0
-                        AND `rewarder`=0 AND `bonus`=0 AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
+                        AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
                         AND `user_id` = {$this->userId} ORDER BY `paid_date` DESC 
                         LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
