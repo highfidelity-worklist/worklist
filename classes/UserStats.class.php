@@ -260,7 +260,7 @@ public function getBonusPaymentsTotal() {
 $sql = "SELECT
     IFNULL(`rewarder`.`sum`,0)AS `bonus_tot`
     FROM `".USERS."` 
-    LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE (`withdrawn`=0 AND `paid` = 1 AND `user_id` = {$this->userId}) AND `rewarder`=1 OR `bonus`=1 GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
+    LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE (`withdrawn`=0 AND `paid` = 1 AND `user_id` = {$this->userId}) AND (`rewarder`=1 OR `bonus`=1) GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
     WHERE `id` = {$this->userId}";
 $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
