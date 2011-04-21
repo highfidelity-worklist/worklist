@@ -19,7 +19,7 @@
 		    <?php if(!empty($Annual_Salary)){?><td><?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$Annual_Salary)); ?></td><?php }?>
 		    <td><?php
 			$_bonusPayments = $userStats->getBonusPaymentsTotal();
-			$_bonusPercent = round((($_bonusPayments + 0.00000001) / ($_totalEarnings + 0.000001)) * 100);
+			$_bonusPercent = round((($_bonusPayments + 0.00000001) / ($_totalEarnings + 0.000001)) * 100,2);
 			
 			echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_bonusPayments))).' / '.$_bonusPercent.'%';
 		    ?></td>

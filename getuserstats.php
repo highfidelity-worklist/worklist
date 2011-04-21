@@ -55,7 +55,7 @@ if (isset($_REQUEST['id'])) {
 			$ajaxTotalEarnings =  preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_totalEarnings)));
 		    $ajaxLatestEarnings = preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30)));
 			$bonus = preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_bonusPayments)));
-			$_bonusPercent = round((($_bonusPayments + 0.00000001) / ($_totalEarnings + 0.000001)) * 100);
+			$_bonusPercent = round((($_bonusPayments + 0.00000001) / ($_totalEarnings + 0.000001)) * 100,2);
 
         echo json_encode(array(
                             'total_jobs' => $userStats->getTotalJobsCount(),
