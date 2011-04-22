@@ -14,25 +14,21 @@ $limit = 30;
 
 $_REQUEST['name'] = '.reports';
 $filter = new Agency_Worklist_Filter($_REQUEST);
-
 $from_date = mysql_real_escape_string($filter->getStart());
 $to_date = mysql_real_escape_string($filter->getEnd());
 $paidStatus = $filter->getPaidstatus();
-
 $page = $filter->getPage();
-
 $dateRangeFilter = '';
-if(isset($from_date) || isset($to_date))
-{
-	$mysqlFromDate = GetTimeStamp($from_date);
-	$mysqlToDate = GetTimeStamp($to_date);
-	$dateRangeFilter = " AND DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" ;
+
+if (isset($from_date) || isset($to_date)) {
+    $mysqlFromDate = GetTimeStamp($from_date);
+    $mysqlToDate = GetTimeStamp($to_date);
+    $dateRangeFilter = " AND DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" ;
 }
 
 $paidStatusFilter = '';
-if(isset($paidStatus) && ($paidStatus)!="ALL")
-{
-	$paidStatus= mysql_real_escape_string($paidStatus);
+if (isset($paidStatus) && ($paidStatus) !="ALL") {
+    $paidStatus= mysql_real_escape_string($paidStatus);
     $paidStatusFilter = " AND `".FEES."`.`paid` = ".$paidStatus."";
 }
 
@@ -40,6 +36,9 @@ $sfilter = $filter->getStatus();
 $pfilter = $filter->getProjectId();
 $ufilter = $filter->getUser();
 $order = $filter->getOrder();
+$dir = $filter->getDir();
+$type = $filter->getType();
+
 $queryType = isset( $_REQUEST['qType'] ) ? $_REQUEST['qType'] :'detail';
 
 $where = '';
@@ -48,59 +47,77 @@ if ($ufilter) {
 }
 
 if ($sfilter){
-    if($sfilter != 'ALL' && $type != 'Bonus'){
-      $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
+    if($sfilter != 'ALL' && $type != 'Bonus') {
+        $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
     }
 }
 if ($pfilter){
-    if($pfilter != 'ALL'){
+    if($pfilter != 'ALL') {
       $where .= " AND `" . WORKLIST . "`.project_id = '$pfilter' "; 
     }
 }
 
-// adding type to the where clause
-// 28-APR-2010 <Yani
-$type = mysql_real_escape_string($_REQUEST['type']);
 
-// Fee
-if($type == 'Fee')
-  $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
-// Expense
-else if($type == 'Expense')
-  $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
-// Rewarder
-else if($type == 'Bonus')
-  $where .= " AND (rewarder = 1 OR bonus = 1)";
-   
+
+if ($type == 'Fee') {
+    $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
+} else if ($type == 'Expense') {
+    $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
+} else if ($type == 'Bonus') {
+    $where .= " AND (rewarder = 1 OR bonus = 1)";
+}
 
 // Add option for order results
 $orderby = "ORDER BY ";
-if( $order )    {
-    if( $order == 'date' )  {
-        $orderby .= "`".FEES."`.`date` DESC";
-    } else if( $order == 'name' ) {
-        $orderby .= "`".USERS."`.`nickname` ASC";
-    }
+switch ($order) {
+    case 'date':
+        $orderby .= "`".FEES."`.`date`";
+        break;
+
+    case 'name':
+    case 'payee':
+        $orderby .= "`".USERS."`.`nickname`";
+        break;
+
+    case 'desc':
+        $orderby .= "`".FEES."`.`desc`";
+        break;
+        
+    case 'summary':
+        $orderby .= "`".WORKLIST."`.`summary`";
+        break;
+
+    case 'paid_date':
+        $orderby .= "`".FEES."`.`paid_date`";
+        break;
+
+    case 'id':
+        $orderby .= "`".FEES."`.`worklist_id`";
+        break;
+
+    case 'fee':
+        $orderby .= "`".FEES."`.`amount`";
+        break;
 }
 
-if($dateRangeFilter) {
-  $where = $where . $dateRangeFilter;
+if ($dateRangeFilter) {
+    $where .= $dateRangeFilter;
 }
 
-if($paidStatusFilter) {
-
-  $where = $where . $paidStatusFilter;
+if ($paidStatusFilter) {
+  $where .= $paidStatusFilter;
 }
+
 if($queryType == "detail") {
 
-$qcnt  = "SELECT count(*)";
-$qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,`worklist_id`,`summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` as `paypal`, `expense`as `expense`,`rewarder` as `rewarder`,`bonus` as `bonus`";
-$qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
-$qbody = " FROM `".FEES."`
-           LEFT JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
-           LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
-           WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
-$qorder = "$orderby, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit";
+    $qcnt = "SELECT count(*)";
+    $qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,`worklist_id`,`".WORKLIST."`.`summary` AS `summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` as `paypal`, `expense` as `expense`,`rewarder` as `rewarder`,`bonus` as `bonus`";
+    $qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
+    $qbody = " FROM `".FEES."`
+               LEFT JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
+               LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
+               WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
+    $qorder = "$orderby $dir, `status` ASC, `worklist_id` ASC LIMIT " . ($page - 1) * $limit . ",$limit";
 
 $rtCount = mysql_query("$qcnt $qbody");
 if ($rtCount) {
@@ -112,7 +129,7 @@ if ($rtCount) {
 }
 $cPages = ceil($items/$limit);
 
-$qPageSumClose = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC LIMIT " . ($page-1)*$limit . ",$limit ) fee_sum ";
+$qPageSumClose = "$orderby $dir, `status` ASC, `worklist_id` ASC LIMIT " . ($page - 1) * $limit . ", $limit ) fee_sum ";
 
 $sumResult = mysql_query("$qsum $qbody $qPageSumClose");
 if ($sumResult) {
@@ -129,19 +146,18 @@ if ($grandSumResult) {
 } else {
     $grandSum = 0;
 }
-$report = array(array($items, $page, $cPages,$pageSum,$grandSum));
+$report = array(array($items, $page, $cPages, $pageSum, $grandSum));
 
 
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
-for ($i = 1; $rtQuery && $row=mysql_fetch_assoc($rtQuery); $i++)
-{
+for ($i = 1; $rtQuery && $row = mysql_fetch_assoc($rtQuery); $i++) {
     $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal'],$row['expense'],$row['rewarder'],$row['bonus']);
 }
 
 $concatR = '';
-if ($row['rewarder'] ==1){
-$concatR = "R";
+if ($row['rewarder'] ==1) {
+    $concatR = "R";
 }
 
 $json = json_encode($report);
@@ -191,28 +207,26 @@ echo $json;
     echo $json;
 }
 
-function  getRollupColumn($columnName, $daysInRange)
-{
+function  getRollupColumn($columnName, $daysInRange) {
     $dateRangeType = 'd';
     $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y-%m-%d') ";
     if($daysInRange > 31 && $daysInRange <= 180) {
-      $dateRangeType = 'w';
-      $dateRangeQuery = "yearweek(" .$columnName . ", 3) ";
+        $dateRangeType = 'w';
+        $dateRangeQuery = "yearweek(" .$columnName . ", 3) ";
     } else if($daysInRange > 180 && $daysInRange <= 365) {
-      $dateRangeType = 'm';
-      $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y-%m') ";
+        $dateRangeType = 'm';
+        $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y-%m') ";
     } else if($daysInRange > 365 && $daysInRange <= 730) {
-      $dateRangeType = 'q';
-      $dateRangeQuery = "concat(year(" .$columnName . "),QUARTER(" .$columnName . ")) ";
+        $dateRangeType = 'q';
+        $dateRangeQuery = "concat(year(" .$columnName . "),QUARTER(" .$columnName . ")) ";
     } else if($daysInRange > 730) {
-      $dateRangeType = 'y';
-      $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y') ";
+        $dateRangeType = 'y';
+        $dateRangeQuery = "DATE_FORMAT(" .$columnName . ",'%Y') ";
     }
     return array('rollupRangeType' => $dateRangeType, 'rollupQuery' => $dateRangeQuery);
 }
 
-function  getMySQLDate($sourceDate)
-{
+function  getMySQLDate($sourceDate) {
     if (empty($sourceDate)) $sourceDate = date('Y/m/d');
     $date_array = explode("/",$sourceDate); // split the array
 
@@ -229,16 +243,13 @@ function  getMySQLDate($sourceDate)
  * @param mixed $date
  * @return integer
  */
-function quarterByDate($date)
-{
+function quarterByDate($date) {
     return (int)floor(date('m', strtotime($date)) / 3.1) + 1;
 }
 
 /** 
 * Fills a series with linear data, filling any gaps with null values. 
 * The resulting array can directly be used in a chart assuming the labels use same data set.
-*
-*
 */
 function fillAndRollupSeries($strDateFrom, $strDateTo, $arySeries, $fillWithDate, $dateType = 'd') {
   $arySeriesData = array();

@@ -53,23 +53,27 @@ h1 {
 #userlist{
     list-style: none;
 }
-.table-userlist{
+.table-userlist, 
+.table-worklist {
     margin-left: auto;
     margin-right: auto;
 }
 .table-userlist .name-col{
     text-align: left;
 }
-.table-userlist .arrow{
+.table-userlist .arrow,
+.table-worklist .arrow {
     float:right;
     height: 15px;
     width: 15px;
     margin-left: 2px;
 }
-.table-userlist .arrow-down{
+.table-userlist .arrow-down,
+.table-worklist .arrow-down {
     background-image: url(../images/arrow-down.png);
 }
-.table-userlist .arrow-up{
+.table-userlist .arrow-up,
+.table-worklist .arrow-up {
     background-image: url(../images/arrow-up.png)
 }
 #message{
@@ -77,4 +81,3 @@ h1 {
     display:none;
     font-size: 1.3em;
 }
-

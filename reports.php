@@ -35,8 +35,7 @@ if (!empty($_REQUEST['view'])) {
 }
 
 $_REQUEST['name'] = '.reports';
-$filter = new Agency_Worklist_Filter($_REQUEST,true);
-
+$filter = new Agency_Worklist_Filter($_REQUEST, true);
 if (!$filter->getStart()) {
     $filter->setStart(date("m/d/Y",strtotime('-90 days', time())));
 }
@@ -56,13 +55,10 @@ if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_p
 include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<link href="css/teamnav.css" rel="stylesheet" type="text/css">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
-<script
-	src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
-<script
-	src="js/timeline-chart.js" type="text/javascript" charset="utf-8"></script>
-
-
+<script src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/timeline-chart.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
@@ -70,7 +66,6 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
-<!-- <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script> -->
 <link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
 <style type="text/css">
 
@@ -106,7 +101,7 @@ border: none;
 }
 
 #search-filter-section td, #search-filter-section th {
-	border: none;
+    border: none;
 }
 
 td.redtext {
@@ -121,8 +116,8 @@ var toDate = '';
 var datePickerControl; // Month/Year date picker.
 var dateChangedUsingField = false; // True  if the date was changed using date field rather than picker.
 var currentTab = <?php echo $showTab; ?>; // 0 for details and 1 for chart
-//var current_order = false;
-
+var current_order = <?php echo $filter->getDir() == 'ASC' ? 'true' : 'false'; ?>;
+var current_sortkey = '<?php echo $filter->getOrder(); ?>';
     /**
     * 
     */
@@ -166,13 +161,12 @@ var getPaidItems = function() {
     return paidItems;
 };
 
-    function AppendPagination(page, cPages, table)
-    {
-        <?php if (!empty($_SESSION['is_payer'])) { ?>
+    function AppendPagination(page, cPages, table) {
+<?php if (!empty($_SESSION['is_payer'])) { ?>
             cspan = '8'
-        <?php } else { ?> 
+<?php } else { ?> 
             cspan = '6'
-        <?php } ?> 
+<?php } ?> 
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="'+cspan+'" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;';
@@ -193,8 +187,7 @@ var getPaidItems = function() {
     
 
     // json row fields: id, summary, status, payee, fee
-    function AppendRow(json, odd)
-    {
+    function AppendRow(json, odd) {
         var pre = '', post = '';
         var row;
 
@@ -210,16 +203,16 @@ var getPaidItems = function() {
         }
         if (json[0] != 0) {    
         pre = '<a href="workitem.php?job_id='+json[0]+'">';
-	    post = '</a>';
+        post = '</a>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
         }
-	    pre = '', post = '';
-	    if (json[0] == 0) {
-	        row += '<td>' + pre + 'Bonus Payment' + post + '</td>'; // Summary
-	        }
-	    if (json[0] != 0) {
+        pre = '', post = '';
+        if (json[0] == 0) {
+            row += '<td>' + pre + 'Bonus Payment' + post + '</td>'; // Summary
+            }
+        if (json[0] != 0) {
         row += '<td>' + pre + json[2] + post + '</td>'; // Summary
-	    }
+        }
         row += '<td>' + pre + json[3] + post + '</td>'; // Description
         row += '<td';
         if (json[7] == 0) {
@@ -241,11 +234,11 @@ var getPaidItems = function() {
      *
     */
     function formatValueForDisplay(valueToFormat) {
-	var formattedValue = '--';
-	if(valueToFormat != null) {
-	    formattedValue = valueToFormat;
-	}
-	return formattedValue;
+        var formattedValue = '--';
+        if (valueToFormat != null) {
+            formattedValue = valueToFormat;
+        }
+        return formattedValue;
     }
 
     /**
@@ -272,22 +265,19 @@ var getPaidItems = function() {
     }
 
     function GetReport(npage, reload, sort) {
-	      _fromDate = $("#start-date").datepicker('getDate');
-	     _toDate = $("#end-date").datepicker('getDate');
-	      if(_fromDate != null) {
-		fromDate = fmtDate(_fromDate);
-	      }
-	      if(_toDate != null) {
-		toDate = fmtDate(_toDate);
-	      }
-        var order = '';
-        if (typeof sort !== undefined) {
-            order = sort;
-        } else {
-            order = $('#sort-by').val();
+        _fromDate = $("#start-date").datepicker('getDate');
+        _toDate = $("#end-date").datepicker('getDate');
+        if (_fromDate != null) {
+            fromDate = fmtDate(_fromDate);
         }
-        
-	      var paidStatus = $('#paid-status').val();
+        if(_toDate != null) {
+        toDate = fmtDate(_toDate);
+        }
+        var order = '';
+        sort_key= current_sortkey;
+        var order = current_order ? 'ASC' : 'DESC';
+        var paidStatus = $('#paid-status').val();
+
         $.ajax({
             type: "POST",
             url: 'getreport.php',
@@ -296,9 +286,8 @@ var getPaidItems = function() {
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
                 project_id: $('select[name=project]').val(),
-                order: order,
-                // adding type field to the request
-                // 28-APR-2010 <Yani>
+                order: sort_key,
+                dir: order,
                 type: $('#type-status').val(),
                 start: fromDate,
                 end: toDate,
@@ -314,13 +303,13 @@ var getPaidItems = function() {
                 $('.row-worklist-live').remove();
                 workitems = json;
                 if (json[0][0] == 0 ) {
-		  $('.table-worklist').append(
-		      '<tr class="row-worklist-live rowodd">'+
-		      '   <td colspan="8" align="center">Oops! We couldn\'t find any work items.</td>' +
-		      '</tr>');
+                    $('.table-worklist').append(
+                      '<tr class="row-worklist-live rowodd">'+
+                      '   <td colspan="8" align="center">Oops! We couldn\'t find any work items.</td>' +
+                      '</tr>');
 
-		  return;
-		}
+                  return;
+                }
 
                 /* Output the worklist rows. */
                 var odd = true;
@@ -367,41 +356,35 @@ var getPaidItems = function() {
         timeoutId = setTimeout("GetReport("+page+", true)", refresh);
     }
 
-function initializeTabs()                                                                                                                                               
-{                                                                                                                                                                       
+    function initializeTabs() {
         $("#tabs").tabs({selected: 0,
             select: function(event, ui) {
-                if(ui.index == 0)
-                {
+                if(ui.index == 0) {
                     currentTab = 0;
                     timeoutId = setTimeout("GetReport("+page+", true)", 50);
-                }
-                else
-                {
+                } else {
                     currentTab = 1;
                     timeoutId = setTimeout("setupTimelineChart(false)", 50);
                 }
-            }                                                                                                                                                       
+            }
         });
         $( "#tabs" ).tabs( "option", "selected", 1 );
+    }
 
-}
+function setupTimelineChart(reload) {
+    var chartPanelId = 'timeline-chart';
+    $('#'+chartPanelId).empty();
+    LoveChart.initialize(chartPanelId, 780, 300, 30);
+    LoveChart.forceWeeklyLabels(false);
+    LoveChart.fetchData = function (from, to, username, callback) {
+        if (from.getTime() > to.getTime()) {
+            var tmp = from;
+            from = to;
+            to = tmp;
+        }
 
-function setupTimelineChart(reload)
-{
-	var chartPanelId = 'timeline-chart';
-	$('#'+chartPanelId).empty();
-	LoveChart.initialize(chartPanelId, 780, 300, 30);
-	LoveChart.forceWeeklyLabels(false);
-	LoveChart.fetchData = function (from, to, username, callback) {
-	    if (from.getTime() > to.getTime()) {
-	        var tmp = from;
-	        from = to;
-	        to = tmp;
-	    }
-
-	    var fromDate = fmtDate(from), toDate = fmtDate(to);
-	    var paidStatus = $('#paid-status').val();
+        var fromDate = fmtDate(from), toDate = fmtDate(to);
+        var paidStatus = $('#paid-status').val();
         $.ajax({
             type: "POST",
             url: 'getreport.php',
@@ -434,31 +417,32 @@ function setupTimelineChart(reload)
                 });
             }
         });
-	};
+    };
     loadTimelineChart();
 }
 
 function loadTimelineChart() {
-	_fromDate = $("#start-date").datepicker('getDate');
-	_toDate = $("#end-date").datepicker('getDate');
-	if(_fromDate != null) {
-	  fromDate = fmtDate(_fromDate);
-	}
-	if(_toDate != null) {
-	  toDate = fmtDate(_toDate);
-	}
+    _fromDate = $("#start-date").datepicker('getDate');
+    _toDate = $("#end-date").datepicker('getDate');
+    if (_fromDate != null) {
+        fromDate = fmtDate(_fromDate);
+    }
+    if (_toDate != null) {
+        toDate = fmtDate(_toDate);
+    }
 
-	LoveChart.load(_fromDate, _toDate, "");
+    LoveChart.load(_fromDate, _toDate, "");
 }
+
     $(document).ready(function(){
         GetReport(<?php echo $page; ?>, true);
 
-      //table sorting thing
+        // table sorting thing
         $('.table-worklist thead tr th').hover(function(e){
-            if(!$('div', this).hasClass('show-arrow')){
-                if($(this).data('direction')){
+            if(! $('div', this).hasClass('show-arrow')){
+                if ($(this).data('direction')) {
                     $('div', this).addClass('arrow-up');
-                }else{
+                } else {
                     $('div', this).addClass('arrow-down');
                 }
             }
@@ -471,16 +455,15 @@ function loadTimelineChart() {
 
         $('.table-worklist thead tr th').data('direction', false); //false == desc order
         $('.table-worklist thead tr th').click(function(e){
-            console.log('clicked header');
             $('.table-worklist thead tr th div').removeClass('show-arrow');
             $('.table-worklist thead tr th div').removeClass('arrow-up');
             $('.table-worklist thead tr th div').removeClass('arrow-down');
             $('div', this).addClass('show-arrow');
             var direction = $(this).data('direction');
             
-            if(direction){
+            if (direction){
                 $('div', this).addClass('arrow-up');
-            }else{
+            } else {
                 $('div', this).addClass('arrow-down');
             }
             
@@ -493,11 +476,8 @@ function loadTimelineChart() {
             reload = false;
             current_sortkey = data.sortkey;
             current_order = $(this).data('direction');
-            console.log('Setting #sort-by ' + current_sortkey);
             $('#sort-by').val(current_sortkey);
-            console.log('Sort-by is ' + $('#sort-by').val());
             GetReport(page, false, current_sortkey);
-            console.log('sortkey ' + current_sortkey);
             $('.table-worklist thead tr th').data('direction', false); //reseting to default other rows
             $(this).data('direction',!direction); //switching on current
         }); //end of table sorting
@@ -558,40 +538,40 @@ function loadTimelineChart() {
             new_window.focus();
             return false;
         });
-		$('.text-field-sm').datepicker({
-			changeMonth: true,
-			changeYear: true,
-			maxDate: 0,
-			showOn: 'button',
-			dateFormat: 'mm/dd/yy',
-			buttonImage: 'images/Calendar.gif',
-			buttonImageOnly: true
-		});
+        $('.text-field-sm').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            maxDate: 0,
+            showOn: 'button',
+            dateFormat: 'mm/dd/yy',
+            buttonImage: 'images/Calendar.gif',
+            buttonImageOnly: true
+        });
 
-		$('#refreshReport').click(function() {
-			paid_list = [];
-			if (timeoutId) clearTimeout(timeoutId);
-			_fromDate = $("#start-date").datepicker('getDate');
-			_toDate = $("#end-date").datepicker('getDate');
-			if(_fromDate != null) {
-				fromDate = fmtDate(_fromDate);
-			}
-			if(_toDate != null) {
-				toDate = fmtDate(_toDate);
-			}
-			if(currentTab == 0) {
-			  location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
-			} else {
-			  location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
-			}
-		});
+        $('#refreshReport').click(function() {
+            paid_list = [];
+            if (timeoutId) clearTimeout(timeoutId);
+            _fromDate = $("#start-date").datepicker('getDate');
+            _toDate = $("#end-date").datepicker('getDate');
+            if(_fromDate != null) {
+                fromDate = fmtDate(_fromDate);
+            }
+            if(_toDate != null) {
+                toDate = fmtDate(_toDate);
+            }
+            if(currentTab == 0) {
+              location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+            } else {
+              location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+            }
+        });
 
-		$('#tabs').tabs('select', currentTab);
+        $('#tabs').tabs('select', currentTab);
 
- 		$('#type-status,#paid-status,#sort-by,select[name=status],select[name=project]').bind({
-			'beforeshow newlist': function(e, o) {
-				o.list.css("z-index","100")
-			}}).comboBox();
+        $('#type-status,#paid-status,#sort-by,select[name=status],select[name=project]').bind({
+            'beforeshow newlist': function(e, o) {
+                o.list.css("z-index","100")
+            }}).comboBox();
    });
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
@@ -622,52 +602,52 @@ function loadTimelineChart() {
     </div>
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
-	  <tr>
-	    <td class="textAlignReport">
+      <tr>
+        <td class="textAlignReport">
             <div >Payee: <?php echo $filter->getUserSelectbox(1,true); ?></div>
-			<div class="second-line">
+            <div class="second-line">
                 Project:  <?php echo $filter->getProjectSelectbox(true); ?>
-			</div>
-			</td>
-	    <td class="textAlignReport">
-			<div>Paid Status: 
-	      <select id="paid-status" >
-		    <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
-		    <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
-		    <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
-	      </select>
-	      </div>
-		  <div class="second-line">
-			Type:
-			<select id="type-status">
-				<option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
-				<option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
-				<option value="Bonus"<?php echo(($filter->getType() == 'Bonus') ? ' selected="selected"' : ''); ?>>Bonus</option>
-				<option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
-				</select>
-			</div>
-	    </td>
-	    <td class="textAlignReport">
-			<div>Item status: <?php echo $filter->getStatusSelectbox(true); ?>
-			</div>
-			<div class="second-line">Order:
+            </div>
+            </td>
+        <td class="textAlignReport">
+            <div>Paid Status: 
+          <select id="paid-status" >
+            <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
+            <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
+            <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
+          </select>
+          </div>
+          <div class="second-line">
+            Type:
+            <select id="type-status">
+                <option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
+                <option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
+                <option value="Bonus"<?php echo(($filter->getType() == 'Bonus') ? ' selected="selected"' : ''); ?>>Bonus</option>
+                <option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
+                </select>
+            </div>
+        </td>
+        <td class="textAlignReport">
+            <div>Item status: <?php echo $filter->getStatusSelectbox(true); ?>
+            </div>
+            <div class="second-line">Order:
             <select id="sort-by">
                 <option value="name"<?php echo(($filter->getOrder() == 'name') ? ' selected="selected"' : ''); ?>>Alphabetically</option>
                 <option value="date"<?php echo(($filter->getOrder() == 'date') ? ' selected="selected"' : ''); ?>>Chronologically</option>
             </select>
-			</div>
+            </div>
         </td>
-	   </tr>
-	  <tr>
-	      <td class="report-left-label">Fee added between</td>
-	      <td >
-	      <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="<?php echo($filter->getStart()); ?>" title="Start Date" size="20" />
-	      <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo($filter->getEnd()); ?>" title="End Date" size="20" />
-	      </td>
-	      <td style = "text-align: right;">
-		<input type="submit" value="Go" id="refreshReport"></input>
-	      </td>
-	  </tr>
+       </tr>
+      <tr>
+          <td class="report-left-label">Fee added between</td>
+          <td >
+          <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="<?php echo($filter->getStart()); ?>" title="Start Date" size="20" />
+          <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo($filter->getEnd()); ?>" title="End Date" size="20" />
+          </td>
+          <td style = "text-align: right;">
+        <input type="submit" value="Go" id="refreshReport"></input>
+          </td>
+      </tr>
       </table>
     </div>
     <div style="clear:both"></div>

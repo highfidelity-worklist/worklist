@@ -294,9 +294,8 @@ class Agency_Worklist_Filter {
      */
     public function setDir($dir)
     {
-        if ($dir == 'desc') {
-            $this->dir = strtoupper(
-            $dir);
+        if (strtoupper($dir) == 'DESC') {
+            $this->dir = 'DESC';
         } else {
             $this->dir = 'ASC';
         }
