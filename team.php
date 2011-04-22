@@ -266,7 +266,7 @@ function AppendUserRow(json, odd) {
     row += '<td class="jobs">' + json.jobs_count + '</td>';
     row += '<td class="money">' + json.budget + '</td>';
     row += '<td class="money">$' +addCommas(Math.round(json.earnings)) + '</td>';
-    row += '<td class="money">$' + addCommas(parseFloat(json.earnings30)) + '</td>';
+    row += '<td class="money">$' + addCommas(Math.round(json.earnings30)) + '</td>';
     row += '<td class="money">$' + addCommas(Math.round(json.rewarder)) + ' / ' + Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100*100)/100 + '%</td>';
     $('.table-userlist tbody').append(row);
 }
