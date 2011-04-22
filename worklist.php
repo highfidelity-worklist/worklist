@@ -262,25 +262,21 @@ include("head.html"); ?>
         }
 
         // Check if the user is either creator, runner, mechanic and assigns the rowown class
+        // also highlight expired and tasks bidding on
         if (user_id == 0) { // Checks if a user is logged in, as of now it 
                             // would show to non logged in users, since mechanic 
                             // aren't checked for session
+        } else if(user_id == json[13]) {// Runner
+            row += ' rowrunner'; 
+        } else if(user_id == json[14]) {// Mechanic
+            row += ' rowmechanic'; 
+        } else if(json[15] ==1) { //user bid on this task
+        	row += ' rowbidon';
+        } else if(json[19] == 'expired') { // bid expired
+        	row += ' rowbidexpired';
         } else if(user_id == json[9]) { // Creator
             row += ' rowown';
-        } else if(user_id == json[13]) {
-            row += ' rowown'; // Runner
-        } else if(user_id == json[14]) {
-            row += ' rowown'; // Mechanic
         }
-        
-        // highlight jobs I bid on in a different color
-        if (json[15] == 1) { //user bid on this task
-            row += ' rowbidon';
-        }
-
-		if(json[19] == 'expired'){
-			row += ' rowbidexpired';
-		}
 
         row += '">';
         if (prepend) {

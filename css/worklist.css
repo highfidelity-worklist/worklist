@@ -102,7 +102,17 @@
 .rowbidexpired {
 	background: #FF8080;
 }
-.rowbidexpired a { color:#000; }
+.rowrunner {
+	background: #B1E1F3;	
+}
+.rowmechanic {
+	background: #FFFF6C;
+}
+.rowbidexpired a,
+.rowrunner a,
+.rowmechanic a {
+	color:#000;
+}
 .workitem-selected {
     background: #FFD;
 }
