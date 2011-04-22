@@ -26,6 +26,7 @@ class User {
     protected $is_runner;
     protected $is_payer;
     protected $is_active;
+    protected $last_seen;
     protected $journal_nick;
     protected $is_guest;
     protected $int_code;
@@ -620,6 +621,27 @@ class User {
         $this->is_active = $is_active;
         return $this;
     }
+    
+    public function getLast_seen() {
+        return $this->last_seen;
+    }
+    
+    public function setLast_seen($last_seen) {
+        $this->last_seen = $last_seen;
+        return $this;
+    }
+    
+    public function getTimeLastSeen() {
+        $sql = "SELECT TIMESTAMPDIFF(SECOND, NOW(), `last_seen`) AS last_seen FROM " . USERS ." WHERE id = " . $this->getId();
+        $query = mysql_query($sql);
+        
+        if (mysql_num_rows($query) > 0) {
+            $row = mysql_fetch_assoc($query);
+            return $row['last_seen'];
+        } else {
+            return false;
+        }
+    }
 
     public function getIs_runner() {
         return $this->is_runner;
@@ -990,15 +1012,12 @@ class User {
      * @return array Userlist
      *
      */
-    public static function getUserlist($populate = 0, $active = 0, $order = null)
-    {
+    public static function getUserlist($populate = 0, $active = 0, $order = null) {
         $where = 'WHERE `confirm`= 1 AND `is_active` = 1';
         if ($active) {
-           $where .= ' AND (`date` > DATE_SUB(NOW(), INTERVAL 45 DAY) OR `added` > DATE_SUB(NOW(), INTERVAL 30 DAY))';
+           $where .= ' AND (DATE(`last_seen`) > DATE_SUB(NOW(), INTERVAL 30 DAY) OR `added` > DATE_SUB(NOW(), INTERVAL 30 DAY))';
         }
         $sql = 'SELECT `'.USERS.'`.`id` FROM `'.USERS.'` 
-                LEFT JOIN (SELECT `user_id`,MAX(`date`) AS `date` FROM `'.FEES.'` GROUP BY `user_id`)
-                AS `dates` ON `'.USERS.'`.id = `dates`.user_id 
                 '.$where.' ORDER BY `' . (((null !== $order) && (in_array($order, $columns))) ? $order : 'nickname') . '` ASC;';
         $result = mysql_query($sql);
         $i = (((int)$populate > 0) ? (int)1 : 0);

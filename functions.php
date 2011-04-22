@@ -97,6 +97,14 @@ function initUserById($userid) {
     $_SESSION['timezone']           = $user_row['timezone'];
     $_SESSION['is_runner']          = intval($user_row['is_runner']);
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
+
+    $last_seen_db = substr($user_row['last_seen'], 0, 10);
+    $today = date('Y-m-d');
+
+    if ($last_seen_db != $today) {
+        $res = mysql_query("UPDATE ".USERS." SET last_seen = NOW() WHERE id={$userid}");
+    }
+    $_SESSION['last_seen'] = $today;
 }
 
 function isEnabled($features) {
@@ -263,7 +271,7 @@ function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
     $rt = mysql_query("SELECT `id`, `nickname` $extra  FROM `".USERS."` WHERE `id`!='{$userid}' AND `confirm`='1' AND `is_active` = 1 ORDER BY `nickname`");
 
     $userList = array();
-    if (!$skipUser && !empty($userid) && !empty($nickname)) {
+    if (! $skipUser && ! empty($userid) && ! empty($nickname)) {
         $skipUser = true;
         $userList[$userid] = $nickname;
     }
@@ -282,67 +290,6 @@ function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
     }
 
     return $userList;
-}
-
-
-/* DisplayFilter
- *
- *      Purpose:  This function outputs the desired filter with the currently
- *                active filter (session variable) selected.
- *
- *   Parameters:  $filter_name [sfilter,ufilter]
- */
-function DisplayFilter($filter_name, $reports = null)
-{
-    require_once 'lib/Worklist/Filter.php';
-    $WorklistFilter = !$reports ? new Worklist_Filter() : new Worklist_Filter(array(Worklist_Filter::CONFIG_COOKIE_NAME => 'reports',
-										    Worklist_Filter::CONFIG_DEFAULT_SFILTER => 'DONE'));
-//$WorklistFilter = new Worklist_Filter();
-    if($filter_name == 'sfilter')
-    {
-        $status_array = array('ALL', 'SUGGESTED', 'WORKING', 'REVIEW', 'BIDDING', 'SKIP', 'DONE');
-
-        echo "<select name='{$filter_name}' id='search-filter'>\n";
-        foreach($status_array as $key => $status)
-        {
-            echo "  <option value='{$status}'";
-            if($WorklistFilter->getSfilter() == $status)
-            {
-                echo " selected='selected'>";
-            }
-            else
-            {
-                echo ">";
-            }
-            echo "{$status}</option>\n";
-        }
-        echo "</select>";
-    }
-
-    if($filter_name == 'ufilter') {
-        echo "<select name='{$filter_name}' id='user-filter'>\n";
-        if($WorklistFilter->getUfilter() == 'ALL') {
-            echo "  <option value='ALL' selected='selected'>ALL USERS</option>\n";
-        } else {
-            echo "  <option value='ALL'>ALL USERS</option>\n";
-        }
-
-        if (!empty($_SESSION['userid'])) {
-            $user_array = GetUserList($_SESSION['userid'], $_SESSION['nickname']);
-        } else {
-            $user_array = GetUserList();
-        }
-
-        foreach($user_array as $userid=>$nickname) {
-            if($WorklistFilter->getUfilter() == $userid) {
-                echo "<option value='{$userid}' selected='selected'>{$nickname}</option>";
-            } else {
-                echo "<option value='{$userid}'>{$nickname}</option>";
-            }
-        }
-
-        echo "</select>";
-    }
 }
 
 /* postRequest
@@ -495,8 +442,7 @@ function formatableRelativeTime($timestamp, $detailLevel = 1) {
 	return $string . $tense;
 }
 
-
-function relativeTime($time) {
+function relativeTime($time, $withIn = true) {
     $secs = abs($time);
     $mins = 60;
     $hour = $mins * 60;
@@ -540,7 +486,7 @@ function relativeTime($time) {
     }
     $relTime = substr($relTime, 0, -2);
     if (!empty($relTime)) {
-        return ($time < 0) ? "$relTime ago" : "in $relTime";
+        return ($time < 0) ? "$relTime ago" : ($withIn ? "in $relTime" : $relTime);
     } else {
         return "just now";
     }

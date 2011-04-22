@@ -219,6 +219,8 @@
                     <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
                     <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
                 </select>
+                <br/>
+                <span>User last seen: <?php echo relativeTime($user->getTimeLastSeen(), false); ?></span>
             </div><!-- end of admin-right -->
         </div><!-- end of tab 2 -->
 <?php

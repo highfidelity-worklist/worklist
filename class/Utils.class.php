@@ -45,6 +45,9 @@ class Utils{
         $_SESSION["nickname"] = $nickname;
         $_SESSION["admin"]    = $admin;
         $_SESSION["new_user"] = self::checkForNewUser($id);
+        // user just logged  in, let's update the last seen date in session
+        // date will be checked against db in initUserById
+        $_SESSION['last_seen'] = date('Y-m-d');
     }
 
     public static function updateLoginData($data, $update_nickname = true, $update_password = true){
