@@ -313,11 +313,11 @@ class Agency_Worklist_Filter {
         $this->subsort = $subsort;
         return $this;
     }
-    public function getProjectSelectbox($fromReport=false,$display=true) {
+    public function getProjectSelectbox($fromReport=false,$display=true,$active=false) {
         $allDisplay = ($fromReport) ? "ALL" : "All Projects";
-        $box = '<select id="project" name="project" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
+        $box = '<select id="projectCombo" name="project" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
         $box .= '<option value=""' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
-        foreach ( Project::getProjects() as $project) {
+        foreach ( Project::getProjects($active) as $project) {
             // handle long project names
             $project_name = $project['name'];
             if (strlen($project_name) > 25) {
@@ -347,8 +347,8 @@ class Agency_Worklist_Filter {
      */
     public function getUserSelectbox($active=1,$fromReport=false) {
         $allDisplay = ($fromReport) ? "ALL" : "All Users";
-        $users = User::getUserlist(getSessionUserId(), $active);
-        $box = '<select name="user" >';
+        $users = User::getUserList(getSessionUserId(), $active);
+        $box = '<select name="user" id="userCombo" >';
         $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
@@ -362,7 +362,7 @@ class Agency_Worklist_Filter {
      * Gets the manager user selection box with style
      */
     public function getManagerUserSelectboxS($style="", $active=1) {
-        $users = User::getUserlist(getSessionUserId(), $active);
+        $users = User::getUserList(getSessionUserId(), $active);
         $box = '<select style="'.$style.'" id="select_manager" name="manager">';
         $box .= '<option value="0" selected="selected">None</option>';
         foreach ($users as $user) {

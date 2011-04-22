@@ -14,7 +14,7 @@
     <div >
         <form method="get" action="" id="searchForm" >
 <?php 
-                echo $filter->getProjectSelectbox(false, !$hide_project_column) . " ";
+                echo $filter->getProjectSelectbox(false, !$hide_project_column, true) . " ";
                 echo $filter->getUserSelectbox(1) . " ";
                 $allDisplay = "All Status";                
                 $status_array = array("SUGGESTED", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");

@@ -138,6 +138,8 @@
 			this.list.addClass('ui-combobox-list ui-corner-bottom').css({
 				width: (this.el.innerWidth() + 26)
 			});
+			this.container.addClass(this.el.attr('id'));
+			this.list.addClass(this.el.attr('id') + 'List');
 		},
 		_setup: function() {
 			// hide the original element (don't remove it or the handlers will be killed)
@@ -258,12 +260,13 @@
 			}
 		},
 		_hideList: function() {
+		    this.el.trigger('listClose', this);
 			this.list.hide();
 			this.container.removeClass('ui-state-active');
 			this.container.removeClass('ui-state-hover');
 			this.showList = false;
-                            // fire the change event of the original element
-                            this.el.change();
+            // fire the change event of the original element
+            this.el.change();
 		},
 		setupNewList: function(l) {
 			// before we can setup a new list we have to hide the current one
@@ -327,6 +330,7 @@
                 }
 				// add the active state class to the container
 				this.container.addClass('ui-state-active');
+				this.el.trigger('listOpen', this);
 			}
 			return false;
 		},

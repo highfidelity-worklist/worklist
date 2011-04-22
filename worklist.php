@@ -435,11 +435,11 @@ include("head.html"); ?>
             cache: false,
             data: {
                 page: npage,
-                project_id: $('select[name=project]').val() || inProject,
+                project_id: $('.projectComboList .ui-combobox-list-selected').attr('val') || inProject,
                 status: ($('select[name=status]').val() || []).join("/"),
                 sort: sort,
                 dir: dir,
-                user: $('select[name=user]').val(),
+                user: $('.userComboList .ui-combobox-list-selected').attr('val'),
                 query: $("#query").val(),
                 reload: ((reload == undefined) ? false : true)
             },
@@ -960,79 +960,56 @@ include("head.html"); ?>
                     // to add a custom stuff we bind on events
                     $('#popup-edit select[name=itemProject]').bind({
                         'beforeshow newlist': function(e, o) {
-                            // now we create a new li element with a checkbox in it
-                            var li = $('<li/>').css({
-                                left: 0,
-                                position: 'absolute',
-                                background: '#AAAAAA',
-                                width: '430px',
-                                top: '180px'
-                            }).attr('id', 'projectbox');
-                            var label = $('<label/>').css('color', '#ffffff').attr('for', 'projectActive');
+                            // check if the div for the checkbox already exists
+                            if ($('#projectPopupActiveBox').length == 0) {
+                                var div = $('<div/>').attr('id', 'projectPopupActiveBox');
+
+                                // now we add a function which gets called on click
+                                div.click(function(e) {
+                                    // we hide the list and remove the active state
+                                    activeProjectsFlag = 1 - activeProjectsFlag;
+                                    o.list.hide();
+                                    o.container.removeClass('ui-state-active');
+                                    // we send an ajax request to get the updated list
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: 'refresh-filter.php',
+                                        data: {
+                                            name: filterName,
+                                            active: activeProjectsFlag,
+                                            filter: 'projects'
+                                        },
+                                        dataType: 'json',
+                                        // on success we update the list
+                                        success: $.proxy(o.setupNewList, null,o)
+                                    });
+                                });
+                                $('.itemProjectCombo').append(div);
+                            }
+                            // setup the label and checkbox to put in the div
+                            var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
                             var checkbox = $('<input/>').attr({
                                 type: 'checkbox',
-                                id: 'projectActive',
+                                id: 'onlyActive'
                             }).css({
                                     margin: 0,
                                     position: 'relative',
-                                    top: '1px'
+                                    top: '1px',
                             });
 
-                            // we need to update the global activeProjects Flag
+                            // we need to update the checkbox status
                             if (activeProjectsFlag) {
                                 checkbox.attr('checked', true);
                             } else {
                                 checkbox.attr('checked', false);
                             }
 
+                            // put the label + checkbox in the div
                             label.text(' Active only');
                             label.prepend(checkbox);
-                            li.append(label);
-
-                            // now we add a function which gets called on click
-                            li.click(function(e) {
-                                // we hide the list and remove the active state
-                                activeProjectsFlag = 1- activeProjectsFlag;
-                                o.list.hide();
-                                o.container.removeClass('ui-state-active');
-                                // we send an ajax request to get the updated list
-                                $.ajax({
-                                    type: 'POST',
-                                    url: 'refresh-filter.php',
-                                    data: {
-                                        name: filterName,
-                                        active: activeProjectsFlag,
-                                        filter: 'projects'
-                                    },
-                                    dataType: 'json',
-                                    // on success we update the list
-                                    success: $.proxy(o.setupNewList, null, o)
-                                });
-                                // just to be shure nothing else gets called we return false
-                                return false;
-                            });
-
-                            // the scroll handler so our new listelement will stay on the bottom
-                            o.list.scroll(function() {
-                                /**
-                                 * With a move of 180, the position is too far, and the scroll never ends.
-                                 * The calculation has been made using heights of the elements but it doesn't work on MAC/Firefox (still some px too far, border size ??)
-                                 * The value has been fixed to 178 under MAC and calculated on other platforms (coder with a MAC could investigate this)
-                                 * 8-JUNE-2010 <vincent> - Ticket #11458        
-                                 */
-                                if (navigator.platform.indexOf("Mac") == 0) {
-                                    li.css('top', ($(this).scrollTop() + 178) + 'px');
-                                } else {
-                                    li.css('top', ($(this).scrollTop() + $(this).height() - li.outerHeight(true)) + 'px');
-                                }
-                            });
-                            // now we append the list element to the list
-                            o.list.append($('<li>&nbsp</li>'));
-                            o.list.append(li);
-                            o.list.css("z-index","100"); // to be over other elements
+                            $('#projectPopupActiveBox').html(label);
                         }
-                    }).comboBox();
-                    
+                    }).comboBox();                                        
                     this.hasCombobox = true;
                 } else {
                     $('#popup-edit select[name=itemProject]').next().hide();
@@ -1163,7 +1140,7 @@ include("head.html"); ?>
                     event.preventDefault();
                     return false;
                 }
-                var itemProject = new LiveValidation('itemProject',{
+                var itemProject = new LiveValidation('itemProjectCombo',{
                     onlyOnSubmit: true ,
                     onInvalid : function() {
                         loaderImg.hide("saveRunning");
@@ -1194,7 +1171,7 @@ include("head.html"); ?>
                         invite:$(":input[name='invite']",addForm).val(),
                         notes:$(":input[name='notes']",addForm).val(),
                         page:$(":input[name='page']",addForm).val(),
-                        project_id:$(":input[name='itemProject']",addForm).val(),
+                        project_id:$('.projectComboList .ui-combobox-list-selected').attr('val'),
                         status:$(":input[name='status']",addForm).val(),
                         skills:$(":input[name='skills']",addForm).val(),
                         is_bug:$(":input[name='is_bug']",addForm).val(),
@@ -1296,7 +1273,60 @@ include("head.html"); ?>
         //setTimeout(MapToolTips, 800);
 
 <?php if (! $hide_project_column) : ?>
-        $('#search-filter-wrap select[name=project]').comboBox();
+    // bind on creation of newList
+            $('select[name=project]').bind({
+                'beforeshow newlist': function(e, o) {
+                                        
+                    // check if the div for the checkbox already exists
+                    if ($('#projectActiveBox').length == 0) {
+                        var div = $('<div/>').attr('id', 'projectActiveBox');
+                        
+                        // now we add a function which gets called on click
+                        div.click(function(e) {
+                            // we hide the list and remove the active state
+                            activeProjectsFlag = 1 - activeProjectsFlag;
+                            o.list.hide();
+                            o.container.removeClass('ui-state-active');
+                            // we send an ajax request to get the updated list
+                            $.ajax({
+                                type: 'POST',
+                                url: 'refresh-filter.php',
+                                data: {
+                                    name: filterName,
+                                    active: activeProjectsFlag,
+                                    filter: 'projects'
+                                },
+                                dataType: 'json',
+                                // on success we update the list
+                                success: $.proxy(o.setupNewList, null,o)
+                            });
+                        });
+                        $('.projectCombo').append(div);
+                    }
+                    // setup the label and checkbox to put in the div
+                    var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
+                    var checkbox = $('<input/>').attr({
+                        type: 'checkbox',
+                        id: 'onlyActive'
+                    }).css({
+                            margin: 0,
+                            position: 'relative',
+                            top: '1px',
+                    });
+
+                    // we need to update the checkbox status
+                    if (activeProjectsFlag) {
+                        checkbox.attr('checked', true);
+                    } else {
+                        checkbox.attr('checked', false);
+                    }
+                    
+                    // put the label + checkbox in the div
+                    label.text(' Active only');
+                    label.prepend(checkbox);
+                    $('#projectActiveBox').html(label);
+                }
+            }).comboBox();
 <?php endif; ?>
 
         if(getQueryVariable('status') != null) {

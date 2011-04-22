@@ -1006,20 +1006,20 @@ class User {
     /**
      * Get a list of active users.
      * 
-     * @param $attributes array Array containing all columns you would like to fetch
      * @param $active int Show only active users if 1
      * @param $populate int Populate a user by id
      * @return array Userlist
      *
      */
-    public static function getUserlist($populate = 0, $active = 0, $order = null) {
+    public static function getUserList($populate = 0, $active = 0) {
         $where = 'WHERE `confirm`= 1 AND `is_active` = 1';
         if ($active) {
-           $where .= ' AND (DATE(`last_seen`) > DATE_SUB(NOW(), INTERVAL 30 DAY) OR `added` > DATE_SUB(NOW(), INTERVAL 30 DAY))';
+           $where .= ' AND `date` > DATE_SUB(NOW(), INTERVAL 30 DAY)';
         }
-        $sql = 'SELECT `'.USERS.'`.`id` FROM `'.USERS.'` 
-                '.$where.' ORDER BY `' . (((null !== $order) && (in_array($order, $columns))) ? $order : 'nickname') . '` ASC;';
-        $result = mysql_query($sql);
+        $result = mysql_query("
+            SELECT `".USERS."`.`id` FROM `".USERS."` 
+            LEFT JOIN (SELECT `user_id`,MAX(`paid_date`) AS `date` FROM `".FEES."` WHERE `paid_date` IS NOT NULL AND `paid` = 1 AND `withdrawn` != 1 GROUP BY `user_id`) AS `dates` ON `".USERS."`.id = `dates`.user_id
+            $where ORDER BY `nickname` ASC");
         $i = (((int)$populate > 0) ? (int)1 : 0);
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $user = new User();

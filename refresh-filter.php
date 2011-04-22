@@ -32,7 +32,7 @@ switch ($type) {
         
        $json[] = array(
             'value' => 0,
-            'text' => '-- Select --',
+            'text' => 'All Projects',
             'selected' => false
         );
         
@@ -47,7 +47,7 @@ switch ($type) {
         break;
         
     case 'users':
-        $users = User::getUserlist(getSessionUserId(), $active);
+        $users = User::getUserList(getSessionUserId(), $active);
         $json[] = array(
             'value' => 0,
             'text' => 'All Users',

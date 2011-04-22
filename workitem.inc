@@ -1059,7 +1059,7 @@ if ($action =="edit"):  ?>
                             <span class="project-label">Project</span>
                             <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
                                     <select id="project_id" name="project_id" class="project-dropdown">
-                                        <option value="">-- Select --</option>
+                                        <option value="">All Projects</option>
                                         <?php foreach ( $projects as $project): ?>
                                             <option value="<?php echo $project['project_id']; ?>" <?php echo $project['project_id'] == $worklist['project_id'] ? ' selected = "selected"' : ''; ?>>
                                             <?php echo $project['name']; ?>

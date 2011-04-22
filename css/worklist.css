@@ -401,10 +401,6 @@ td.textAlignReport {
 .ui-icon-carat-1-s {
     background-position: -64px 0 !important;
 }
-
-#itemProject {
-    width: 350px;
-}
 #for_edit .ui-combobox-textbox {
     font-size: 1.2em !important;
 }
@@ -449,4 +445,19 @@ td.textAlignReport {
 }
 .profile-link{
     cursor: pointer;
+}
+#userActiveBox, #projectActiveBox, #projectPopupActiveBox {
+    position: absolute;
+    background: #AAAAAA;
+    display: none;
+    height: 20px;
+}
+
+#userActiveBox label, #projectActiveBox label, #projectPopupActiveBox label {
+    line-height: 20px;
+    padding-left: 3px;
+}
+
+#itemProjectCombo {
+    width:350px;
 }
