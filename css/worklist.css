@@ -99,6 +99,10 @@
 .rowbidon {
 	background: #99E566;
 }
+.rowbidexpired {
+	background: #FF8080;
+}
+.rowbidexpired a { color:#000; }
 .workitem-selected {
     background: #FFD;
 }

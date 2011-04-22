@@ -222,7 +222,9 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
 if (($ufilter == 'ALL') && ($bFilterStatusContainBidding) && (isset($_SESSION['userid']))) {
-    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0) AS `bid_on`";
+    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
+    $qsel .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
+    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `bid_expires` > NOW()) AS `bid_on`";
 }
 
 // add where clause to not show status-level if bid was withdrawn.
@@ -262,12 +264,17 @@ $cPages = ceil($items/$limit);
 $worklist = array(array($items, $page, $cPages));
 /*echo(json_encode(array("qry" => $qsel.$qbody.$qorder)));*/
 
+// check for expired bids
+// 21-April-2011 <John>
+if (($ufilter == 'ALL') && ($bFilterStatusContainBidding) && (isset($_SESSION['userid']))) {
+	
+}
+
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 $qry =$qsel.$qbody.$qorder;
 echo mysql_error();
 while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
-
     $worklist[] = array(
          0 => $row['id'],
          1 => $row['summary'],
@@ -287,10 +294,11 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         15 => (!empty($row['bid_on']) ? $row['bid_on'] : 0),
         16 => $row['project_id'],
         17 => $row['project_name'],
-        18 => $row['bug_job_id']
+        18 => $row['bug_job_id'],
+        19 => (!empty($row['current_expire']) && strtotime($row['current_expire'])<time()) ? 'expired' : 0,
+        20 => $row['current_bid']
     );
 }
-
 
 $json = json_encode($worklist);
 echo $json;

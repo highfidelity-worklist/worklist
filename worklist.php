@@ -278,6 +278,10 @@ include("head.html"); ?>
             row += ' rowbidon';
         }
 
+		if(json[19] == 'expired'){
+			row += ' rowbidexpired';
+		}
+
         row += '">';
         if (prepend) {
             pre = '<div class="slideDown" style="display:none">';
