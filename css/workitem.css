@@ -215,7 +215,8 @@
     margin:10px 0 10px;
 }
 
-#fee_desc {
+#fee_desc,
+#tip_desc {
     width:280px;
 }
 #edit_workitem_form ul li {

@@ -386,6 +386,49 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     return $journal_message;
 }
 
+function AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id) {
+    // Get work item summary
+    $query = "SELECT `summary` FROM " . WORKLIST. " WHERE `id` = '{$itemid}'";
+    $rt = mysql_query($query);
+    if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $summary = $row['summary'];
+    }
+
+    // get the tippee's nickname
+    $rt = mysql_query("SELECT nickname FROM " . USERS . " WHERE id = '". (int)$mechanic_id . "'");
+    if ($rt) {
+        $row = mysql_fetch_assoc($rt);
+        $nickname = $row['nickname'];
+    }
+
+    // validate
+    $query = "SELECT * FROM " . FEES . " WHERE `worklist_id` = $itemid AND `user_id` = " . getSessionUserId() . " AND `desc` = 'Accepted Bid'";
+    $rt = mysql_query($query);
+    if ($rt) {
+        if (mysql_num_rows($rt) > 0) {
+            $row = mysql_fetch_assoc($rt);
+
+            // deduct the tip from the mechanic's accepted bid fee
+            if ($tip_amount > 0 && $tip_amount <= $row['amount']) {
+                $adjusted_amount = $row['amount'] - $tip_amount;
+                // reduce the mechanic's accepted bid
+                $query = "UPDATE " . FEES . " SET amount = {$adjusted_amount} WHERE id = {$row['id']}";
+                mysql_query($query);
+            }
+            // add the tip as a fee on the job
+            $tip_desc = 'Tip: ' . $tip_desc;
+            $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) ".
+                     "VALUES (NULL, '".(int)$itemid."', '".(float)$tip_amount."', '".(int)$mechanic_id."', '".mysql_real_escape_string($tip_desc)."', NOW(), '0')";
+
+            $result = mysql_unbuffered_query($query);
+            return true;
+        }
+    }
+    return false;
+}
+
+
 function payBonusToUser($user_id, $amount, $notes) {
 
     $query = "INSERT INTO `".FEES."` (`id`,`worklist_id`,`payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".

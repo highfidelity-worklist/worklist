@@ -76,6 +76,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "edit_bid";
 } else if(isset($_POST['add_fee'])) {
     $action = "add_fee";
+} else if (isset($_POST['add_tip'])) {
+    $action = "add_tip";
 } else if(isset($_POST['accept_bid'])) {
     $action = "accept_bid";
 } else if(isset($_POST['accept_multiple_bid'])) {
@@ -446,6 +448,24 @@ if ($action == "add_fee") {
     if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
         Notification::sendSMS($runner, 'Fee', $journal_message);
     }
+    $redirectToDefaultView = true;
+}
+
+if ($action == "add_tip") {
+    $args = array('itemid', 'tip_amount', 'tip_desc', 'mechanic_id');
+    foreach ($args as $arg) {
+        if (isset($_POST[$arg])) {
+            $$arg = mysql_real_escape_string($_POST[$arg]);
+        } else {
+            $$arg = '';
+        }
+    }
+
+    // is the logged in user the mechanic on the task?
+    if ($workitem->getMechanicId() == getSessionUserId()) {
+        AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id);
+    }
+    
     $redirectToDefaultView = true;
 }
 

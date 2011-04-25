@@ -355,6 +355,12 @@ $(document).ready(function(){
     $('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-withdraw-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
+<?php if ($mechanic_id == $user_id): ?>
+    $('#popup-addtip').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
+    $('.addTip').click(function() {
+        $('#popup-addtip').dialog('open');
+    });
+<?php endif; ?>
 
     // JS Variables initialized from host PHP page
     var workitem_id = <?php echo $worklist['id'];?>;
@@ -1414,7 +1420,10 @@ if ($action =="edit"):  ?>
                         </table>
                         <?php if($user_id && ($worklist['status'] != 'DONE')): ?>
                         <div class="buttonContainer">
-<?php if ($user_id) : ?>
+<?php if ($mechanic_id == $user_id): ?>
+                            <input class="iToolTip addTip" type="submit" value="Tip User" />
+<?php endif; ?>
+<?php if ($user_id): ?>
 <?php if ($user->isEligible()) : ?>
                             <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
 <?php else: ?>
@@ -1486,6 +1495,21 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/review-url-dialog.inc') ?>
     <!-- Include Add Project -->
     <?php require_once 'dialogs/popup-addproject.inc'; ?>
+<?php
+    // if logged in user is the mechanic on the task, get the maximum amount
+    // that they can tip from their Accepted Bid
+    if ($mechanic_id == $user_id) {
+        foreach ($fees as $fee) {
+            if ($fee['desc'] == 'Accepted Bid') {
+                $max_tip = $fee['amount'];
+                break;
+            }
+        }
+        if ($max_tip > 0) {
+            require_once('dialogs/popup-addtip.inc');
+        }
+    }
+?>
 <?php
     if (! $user->isEligible()) {
         require_once('dialogs/popup-ineligible.inc');
