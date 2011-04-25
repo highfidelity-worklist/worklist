@@ -4,8 +4,8 @@
         foreach ($fees as $fee) {
             if ($fee['desc'] == 'Accepted Bid') {
                 $max_tip = $fee['amount'];
+                break;
             }
-            break;
         }
         
         if (! $max_tip) {
