@@ -963,7 +963,7 @@ $(document).ready(function(){
                         if($workitem->getBugJobId() > 0) {
                             $originalItemLink = SERVER_URL."workitem.php?job_id=".
                                                 $workitem->getBugJobId()."&action=view";
-                            echo "  [ bug of <a href='".$originalItemLink."'>".$workitem->getBugJobId()."</a> ]";
+                            echo "  [ bug of <a href='".$originalItemLink."' class='worklist-item' id='workitem-".$workitem->getBugJobId()."' >".$workitem->getBugJobId()."</a> ]";
                         }
                     ?>                    
                 </div>
