@@ -892,7 +892,7 @@ include("head.html"); ?>
                         invite:$(":input[name='invite']",addForm).val(),
                         notes:$(":input[name='notes']",addForm).val(),
                         page:$(":input[name='page']",addForm).val(),
-                        project_id:$('.projectComboList .ui-combobox-list-selected').attr('val'),
+                        project_id:$(":input[name='itemProject']",addForm).val(),
                         status:$(":input[name='status']",addForm).val(),
                         skills:$(":input[name='skills']",addForm).val(),
                         is_bug:$(":input[name='is_bug']",addForm).val(),
