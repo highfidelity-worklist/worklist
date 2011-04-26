@@ -41,7 +41,7 @@
             <p class="info-label">Pay To
                 <select name='mechanic_id' id='mechanic_id'>
 <?php
-    $user_array = User::getUserList(0, true);
+    $user_array = User::getUserList(0, false);
     // print_r($user_array);
     foreach ($user_array as $user) {
             echo "<option value='" . $user->getId() . "'>" . $user->getNickname() . "</option>\n";
