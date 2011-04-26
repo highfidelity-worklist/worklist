@@ -30,21 +30,31 @@ $(document).ready(function(){
         .removeClass("ui-corner-all ui-corner-top")
         .addClass("ui-corner-bottom");
 
-    $('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
+    $('#popup-pingtask').dialog({
+        autoOpen: false, 
+        width: 400, 
+        position: [ 'top' ],
+        show: 'fade', 
+        hide: 'fade',
+        open: function() {
+            $('#ping-msg').TextAreaExpander(80, 150);
+        },
+        close: function() {
+            $('#ping-msg').TextAreaExpander(80, 150);
+            $('#ping-msg').val('');
+        }
+    });
 
     $('#send-ping-btn').click(function() {
         var msg = $('#ping-msg').val();
         // always send email
         var mail = 1;
-        var journal = 0;
-        if ($('#echo-journal:checked').val() ) {
-            journal = 1
-        }
-        
+        var journal = $('#echo-journal').is(':checked') ? 1 : 0;
+        var cc = $('#copy-me').is(':checked') ? 1 : 0;
         $.ajax({
             type: "POST",
             url: 'pingtask.php',
-            data: 'userid=' + userInfo.user_id + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal,
+            data: 'userid=' + userInfo.user_id + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal + '&cc=' + cc,
             dataType: 'json',
             success: function() {}
         });

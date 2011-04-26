@@ -383,7 +383,12 @@ td.textAlignReport {
 .clear {
     clear: both;
 }
-
+.hidden {
+    display: none;
+}
+#ping-msg {
+    height: 65px;
+}
 .taskProject {
     cursor: pointer;
 }

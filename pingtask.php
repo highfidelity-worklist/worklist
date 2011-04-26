@@ -23,15 +23,10 @@ $nickname = $user->nickname;
 $email = $user->username;
 $msg = $_REQUEST['msg'];
 
-// send mail defaults to on
+// send mail is hardcoded to on
 $send_mail = true;
-if ( isset( $_REQUEST['mail'] ) ) {
-    $send_mail = intval( $_REQUEST['mail'] );
-}
-$send_chat = 0;
-if ( isset( $_REQUEST['journal'] ) ) {
-    $send_chat = intval($_REQUEST['journal']);
-} 
+$send_chat = isset($_REQUEST['journal']) ? (int) $_REQUEST['journal'] : false;
+$send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
 
 // ping about concrete task
 if (isset($_REQUEST['id'])) {
@@ -63,28 +58,33 @@ if (isset($_REQUEST['id'])) {
 
     // Compose journal message
     if ($send_chat) {
-        $out_msg = $nickname." sent a ping to ".$receiver_nick." about item #".$item_id;
-        $out_msg .= ": ".$msg;
+        $out_msg = $nickname . " sent a ping to " . $receiver_nick . " about item #" .$item_id;
+        $out_msg .= ": " . $msg;
 
         // Send to journal
-        sendJournalNotification( $out_msg );
+        sendJournalNotification($out_msg);
     }
 
     // Send mail
-    if( $send_mail )    {
+    if ($send_mail) {
         $mail_subject = $nickname." sent you a ping for item #".$item_id;
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
         $mail_msg .= "<a href='http://dev.sendlove.us/worklist/workitem.php?job_id=".$item_id."&action=view'>#".$item_id."</a>";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
-
-        if (!send_email( $receiver_email, $mail_subject, $mail_msg,array('X-tag'=>'ping, task'))) { error_log("pingtask.php:id: send_email failed"); }
+        $headers = array('X-tag' => 'ping, task');
+        if ($send_cc) {
+            $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
+        }
+        if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
+            error_log('pingtask.php:id: send_email failed');
+        }
 
         // sms
-		$user = new User();
-		$user->findUserById($receiver->id);
-		if(Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
-			notify_sms_by_object($user, $mail_subject, $msg);
-		}
+        $user = new User();
+        $user->findUserById($receiver->id);
+        if (Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
+            notify_sms_by_object($user, $mail_subject, $msg);
+        }
     }
 
 } else {
@@ -109,7 +109,13 @@ if (isset($_REQUEST['id'])) {
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-        if(!send_email( $receiver_email, $mail_subject, $mail_msg, array('X-tag'=>'ping'))) { error_log("pingtask.php:!id: send_email failed"); }
+        $headers = array('X-tag' => 'ping');
+        if ($send_cc) {
+            $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
+        }
+        if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
+            error_log("pingtask.php:!id: send_email failed");
+        }
 
         // sms
         try {

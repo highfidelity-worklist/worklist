@@ -428,7 +428,6 @@ function AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id) {
     return false;
 }
 
-
 function payBonusToUser($user_id, $amount, $notes) {
 
     $query = "INSERT INTO `".FEES."` (`id`,`worklist_id`,`payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".
