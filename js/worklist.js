@@ -637,3 +637,44 @@ function applyPopupBehavior() {
         return false;
     });
 }
+
+function makeWorkitemTooltip(className){
+
+    $(className).tooltip({
+        delay: 0,
+        extraClass: "content",
+        showURL: false,
+        bodyHandler: function() {
+        var msg = "Test";
+        var worklist_id = $(this).attr('id').substr(9);
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: 'getworkitem.php',
+            data: {'item' : worklist_id},
+            dataType: 'json',
+            bgcolor:"#ffffff",
+            success: function(json) {
+
+                msg = json[0] ? '<div class = "head">' + json[0] + '</div>' : '';
+
+                msg += json[3] ? json[3] : '';
+                msg += json[1] ? '<div class = "tip-entry">Who: ' + json[1] + '</div>' : '';
+                msg += json[2] ? '<div class = "tip-entry">Status: ' + json[2] + '</div>' : '';
+                if(json[5]){
+                    var funded = json[5] == 1 ? 'Yes' : 'No';
+                    msg += '<div class = "tip-entry">Funded: ' + funded + '</div>';
+                }
+                if(msg == ''){
+                    msg = 'No data available';
+                }
+            },
+            error: function(xhdr, status, err) {
+                msg = 'Data loading error.<br />Please try again.';
+            }
+        });
+
+        return $('<div>').html(msg);
+    }
+    });
+}
