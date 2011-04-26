@@ -1486,8 +1486,6 @@ if ($action =="edit"):  ?>
     <?php include("dialogs/popup-place-bid.inc"); ?>
     <!-- Popup HTML for adding a fee -->
     <?php include("dialogs/popup-addfee.inc"); ?>
-    <!-- Popup HTML for paying a fee -->
-    <?php require_once('dialogs/popup-paid-html.inc') ?>
     <!-- Popup for ping user on task-->
     <?php require_once('dialogs/popup-pingtask.inc') ?>
     <!-- Popup for bid info-->

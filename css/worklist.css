@@ -389,6 +389,9 @@ td.textAlignReport {
 #ping-msg {
     height: 65px;
 }
+#send-ping-btn {
+    margin-top: 8px;
+}
 .taskProject {
     cursor: pointer;
 }

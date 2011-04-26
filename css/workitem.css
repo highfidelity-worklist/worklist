@@ -184,7 +184,9 @@
     text-decoration:underline;
     cursor:pointer;
 }
-
+#send-ping-btn {
+    margin-top: 8px;
+}
 #ping-r-btn{
     text-decoration:underline;
     cursor:pointer;
