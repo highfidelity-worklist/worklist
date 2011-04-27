@@ -55,11 +55,11 @@ class CURLHandler {
         $curlInterface = curl_init();
         
         if($login){
-            curl_setopt_array($curlInterface, array(CURLOPT_URL => $url, CURLOPT_SSLVERSION => 3, CURLOPT_SSL_VERIFYPEER => FALSE, CURLOPT_SSL_VERIFYHOST => 2, CURLOPT_CONNECTTIMEOUT => 2, CURLOPT_RETURNTRANSFER => 0, CURLOPT_FOLLOWLOCATION => 1, CURLOPT_HEADER => 0));
+            curl_setopt_array($curlInterface, array(CURLOPT_URL => $url, CURLOPT_SSLVERSION => 3, CURLOPT_SSL_VERIFYPEER => FALSE, CURLOPT_SSL_VERIFYHOST => 2, CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_RETURNTRANSFER => 1, CURLOPT_FOLLOWLOCATION => 1, CURLOPT_HEADER => 0));
         }else{
-            curl_setopt_array($curlInterface, array(CURLOPT_URL => $url, CURLOPT_CONNECTTIMEOUT => 2, CURLOPT_RETURNTRANSFER => 0, CURLOPT_FOLLOWLOCATION => 1, CURLOPT_HEADER => 0));
+            curl_setopt_array($curlInterface, array(CURLOPT_URL => $url, CURLOPT_SSLVERSION => 3, CURLOPT_SSL_VERIFYPEER => FALSE, CURLOPT_SSL_VERIFYHOST => 2, CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_RETURNTRANSFER => 0, CURLOPT_FOLLOWLOCATION => 1, CURLOPT_HEADER => 0));
         }
-        curl_setopt_array($curlInterface, array(CURLOPT_URL => $url, CURLOPT_SSLVERSION => 3, CURLOPT_SSL_VERIFYPEER => FALSE, CURLOPT_SSL_VERIFYHOST => 2, CURLOPT_CONNECTTIMEOUT => 2, CURLOPT_RETURNTRANSFER => 0, CURLOPT_FOLLOWLOCATION => 1, CURLOPT_HEADER => 0));
+            curl_setopt_array($curlInterface, array(CURLOPT_URL => $url, CURLOPT_SSLVERSION => 3, CURLOPT_SSL_VERIFYPEER => FALSE, CURLOPT_SSL_VERIFYHOST => 2, CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_RETURNTRANSFER => 1, CURLOPT_FOLLOWLOCATION => 1, CURLOPT_HEADER => 0));
         
         if(strtoupper($method) == 'POST'){
             curl_setopt_array($curlInterface, array(CURLOPT_POST => 1, CURLOPT_POSTFIELDS => http_build_query($vars)));
@@ -67,12 +67,15 @@ class CURLHandler {
         if($auth !== false){
             curl_setopt($curlInterface, CURLOPT_USERPWD, $auth['username'] . ":" . $auth['password']);
         }
+        error_log("Curl invoked:".$url);
         $result = curl_exec($curlInterface);
         curl_close($curlInterface);
-        
-        if($result === NULL){
-            throw new Exception('Curl Request Error: ' . curl_errno($curlInterface) . " - " . curl_error($curlInterface));
-        }else{
+		if($result === false ){
+			error_log("Curl failed calling:".$url);
+			$output = array("error" => 1, "message" => 'We seem to be having some trouble with our connection. Please, let us know about it :<a href="mailto: admin@dev.sendlove.us">admin@lovemachineinc.com</a>'  );
+			$output = json_encode($output);
+			return $output;
+        } else {
             return ($result);
         }
     }

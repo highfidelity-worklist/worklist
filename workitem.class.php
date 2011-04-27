@@ -28,8 +28,7 @@ class WorkItem {
     protected $project_id;
     protected $project_name;
     protected $bug_job_id;
-
-    var $is_bug;
+    protected $is_bug;
     
     var $skills = array();
 
@@ -102,9 +101,9 @@ class WorkItem {
              ->setNotes($row['notes'])
              ->setSandbox($row['sandbox'])
              ->setBugJobId($row['bug_job_id'])
+             ->setIs_bug($row['is_bug'])
              ->setWorkitemSkills();
         $this->project_name = $row['project_name'];
-        $this->is_bug = $row['is_bug'];
         return true;
     }
 
@@ -295,6 +294,19 @@ WHERE id = ' . (int)$id;
     {
         return $this->notes;
     }
+	
+    public function setIs_bug($is_bug)
+    {
+        $this->is_bug = $is_bug;
+        return $this;
+    }
+
+    public function getIs_bug()
+    {
+        return $this->is_bug;
+    }
+
+	
     public function setSandbox($sandbox)
     {
         $this->sandbox = $sandbox;
@@ -391,8 +403,6 @@ WHERE id = ' . (int)$id;
     
     protected function insert()
     {
-        $is_bug = isset($this->is_bug) && $this->is_bug == true ? '1' : '0';
-
         $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
                  "project_id, notes, bug_job_id, created, is_bug ) ".
             " VALUES (".
@@ -404,7 +414,7 @@ WHERE id = ' . (int)$id;
             "'".mysql_real_escape_string($this->getNotes())."', ".
             "'".intval($this->getBugJobId())."', ".
             "NOW(), ".
-            "'".$is_bug."')";
+            "'".$this->getIs_bug()."')";
         $rt = mysql_query($query);
 
         $this->id = mysql_insert_id();
@@ -433,7 +443,6 @@ WHERE id = ' . (int)$id;
             mysql_unbuffered_query($query);
         }
         if ($this->status == 'BIDDING') {
-            $is_bug = isset($this->is_bug) && $this->is_bug == true ? '1' : '0';
             $query = 'UPDATE '.WORKLIST.' SET
             summary= "'. mysql_real_escape_string($this->getSummary()).'",
             notes="'.mysql_real_escape_string($this->getNotes()).'",
@@ -441,13 +450,13 @@ WHERE id = ' . (int)$id;
             status="' .mysql_real_escape_string($this->getStatus()).'",
             runner_id="' .$_SESSION['userid'].'",
             bug_job_id="' .intval($this->getBugJobId()).'",
-            is_bug="'.$is_bug.'",
+            is_bug="'.$this->getIs_bug().'",
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
 
             $query .= ' WHERE id='.$this->getId();
+			error_log($query);
             return mysql_query($query) ? 1 : 0;
         } else {
-            $is_bug = isset($this->is_bug) && $this->is_bug == true ? '1' : '0';
             $query = 'UPDATE '.WORKLIST.' SET
             summary= "'. mysql_real_escape_string($this->getSummary()).'",
             notes="'.mysql_real_escape_string($this->getNotes()).'",
@@ -455,10 +464,11 @@ WHERE id = ' . (int)$id;
             status="' .mysql_real_escape_string($this->getStatus()).'",
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
-            is_bug="'.$is_bug.'",
+            is_bug='.$this->getIs_bug().',
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
 
             $query .= ' WHERE id='.$this->getId();
+			error_log($query);
             return mysql_query($query) ? 1 : 0;
         }
     }

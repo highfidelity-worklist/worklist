@@ -108,12 +108,14 @@ if(isset($minimal_POST['sign_up'])){
         }
         ob_start();
         // send the request
-        CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
+        echo CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
         $result = ob_get_contents();
         ob_end_clean();
         
         $ret = json_decode($result);
-        
+		error_log("loginApi Result:".$result);
+
+	
         if ($ret->error == 1) {
             $error->setError($ret->message);
         } else {
@@ -153,8 +155,10 @@ if(isset($minimal_POST['sign_up'])){
             $link = SECURE_SERVER_URL . "confirmation.php?cs=".$ret->confirm_string."&str=" . base64_encode($ret->username);
             $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
             $body .= "<p><a href=\"".$link."\">Click here to verify your email address and activate your account.</a></p>";
+            $body .= "<p>Note: The nickname you choose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later</p>";
             $plain = "You are only one click away from completing your registration!\n\n";
             $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
+            $plain .= "Note: The nickname you choose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later";
             $plain .= $link."\n\n";
             $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
             if(!send_email($ret->username, $subject, $body, $plain)) { error_log("signup.php: send_email failed");
@@ -180,7 +184,9 @@ if(isset($minimal_POST['sign_up'])){
                     $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
                 }
             }
-
+			if ($ret->newNickname == true) { 
+				$confirm_txt .= "<br/><br/>Note: The nickname you choose is already taken. We created a new one for you ( ".strtoupper($newUser["nickname"])." ) which can be changed later.";
+			}
         }
     }
 }
@@ -203,7 +209,6 @@ include("head.html");
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/CMRstyles.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userSkills.js"></script>
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -239,19 +244,19 @@ include("head.html");
 
 <h1>Create a New Account</h1>
 <p><i>Signing up for worklist will let you make bids on jobs.<br> We use an <a href="http://svn.sendlove.us/" target="_blank">open codebase </a>allowing you to quickly evaluate jobs, and pay on job completion.</i></p>
-     <?php if(isset($error)): ?>
+     <?php if(isset($error) && $error->getErrorFlag() == 1): ?>
             <?php foreach($error->getErrorMessage() as $msg):?>
               <p class="LV_invalid"><?php echo $msg; ?></p>
             <?php endforeach;?>
         <?php endif; ?>       
-        <form action="" name="signup" method="post">
+        <form action="" name="signup" id="signupForm" method="post">
         <?php echo(($authtype === 'openid') ? '<input type="hidden" name="openid" value="' . rawurldecode($_GET['id']) . '" />' : '');?>
      <!-- Column containing left part of the fields -->
 <div class="left-col">
 <div class="LVspace">
 <p>
-    <label for="username">Email *</label><br />
-    <input type="text" id="username" name="username" class="text-field" size="35" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ""; ?>" />
+    <label for="username">Email </label><br />
+    <span class="required-bullet">*</span> <input type="text" id="username" name="username" class="text-field" size="35" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ""; ?>" />
 </p>
 </div>
 <script type="text/javascript">
@@ -261,18 +266,18 @@ include("head.html");
       </script>
             <?php if (empty($_GET['authtype']) || $_GET['authtype'] != 'openid' ) :?>
             <div class="LVspace">
-<p><label>Password *<br />
-<input type="password" id="password" name="password" class="text-field"
-    size="35" /> </label></p>
+<p><label for="password">Password </label><br />
+<span class="required-bullet">*</span> <input type="password" id="password" name="password" class="text-field"
+    size="35" /> </p>
 </div>
 <script type="text/javascript">
-                 var password = new LiveValidation('password',{ validMessage: "You have an OK password.", onlyOnBlur: true });
+                 var password = new LiveValidation('password',{ validMessage: "You have an OK password." });
                  password.add(Validate.Length, { minimum: 5, maximum: 255 } ); 
             </script>
 
 <div class="LVspace">
-<p><label>Confirm Password *<br />
-<input name="confirmpassword" id="confirmpassword" type="password"
+<p><label>Confirm Password <br />
+<span class="required-bullet">*</span> <input name="confirmpassword" id="confirmpassword" type="password"
     class="text-field" size="35" /> </label></p>
 </div>
 <script type="text/javascript">
@@ -281,18 +286,17 @@ include("head.html");
             </script>
       <?php endif; ?>
             <div class="LVspace">
-    <p><label for="nickname">Nickname *</label><br />
-<input type="text" id="nickname" name="nickname" class="text-field" size="35" value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
+    <p><label for="nickname">Nickname </label><br />
+<span class="required-bullet">*</span> <input type="text" id="nickname" name="nickname" class="text-field" size="35" value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
 </p>
 </div>
-<script type="text/javascript">
-        var nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname."});
-        nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );                                    
-        nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
-      </script>
-<?php include("sms-inc.php"); ?>
-        <input type="checkbox" name="bidding_notify" />Notify me when a new job is set to bidding<br />
-        <input type="checkbox" name="review_notify" />Notify me when any job is set to review<br /><br />
+<?php 
+	$smsaddr=!empty($_REQUEST['smsaddr'])? $_REQUEST['smsaddr']:'';
+	$country=!empty($_REQUEST['country'])? $_REQUEST['country']:'';
+	$phone=!empty($_REQUEST['phone'])? $_REQUEST['phone']:'';
+	include("sms-inc.php"); ?>
+        <input type="checkbox" name="bidding_notify" id="bidding_notify" <?php echo !empty($_REQUEST['bidding_notify'])? ' checked="checked" ':''; ?> />Notify me when a new job is set to bidding<br />
+        <input type="checkbox" name="review_notify" id="review_notify" <?php echo !empty($_REQUEST['review_notify'])? ' checked="checked" ':''; ?> />Notify me when any job is set to review<br /><br />
     <script type="text/javascript">
             var username = new LiveValidation('username', {validMessage: "Valid email address."});
             username.add( Validate.Email );
@@ -373,5 +377,6 @@ include("head.html");
     <p><input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" /></p>
 </div>
 </form>
+
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php"); ?>

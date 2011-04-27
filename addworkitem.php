@@ -75,7 +75,7 @@ if ($userId > 0 ) {
     $workitem->setStatus($status);
     $workitem->setNotes($notes);
     $workitem->setWorkitemSkills($skillsArr);
-    $workitem->is_bug = isset($is_bug) ? true : false;
+    $workitem->setIs_bug( $is_bug=='true' ? 1 : 0);
     $workitem->save();
 
     Notification::statusNotify($workitem);

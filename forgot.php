@@ -14,7 +14,7 @@ extract($_REQUEST);
 if(!empty($_POST['username'])) { 
     ob_start();
     // send the request
-    CURLHandler::Post(LOGIN_APP_URL . 'resettoken', array('username' => $_POST['username']));
+    echo CURLHandler::Post(LOGIN_APP_URL . 'resettoken', array('username' => $_POST['username']));
     $result = ob_get_contents();
     ob_end_clean();
     $result = json_decode($result);

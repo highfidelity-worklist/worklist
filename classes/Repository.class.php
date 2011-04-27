@@ -34,7 +34,7 @@ class Repository {
         $web_svn_url = self::_webSvnUrl();
         // 2. Retrieve the content of WebSVN front page
         ob_start();
-        CURLHandler::Get($web_svn_url);
+        echo CURLHandler::Get($web_svn_url);
         $html = ob_get_contents();
         ob_end_clean();
         // 3. form the regex pattern. We are searching the html for lines like this:

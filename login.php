@@ -38,7 +38,7 @@ if($_POST) {
             $params = array("username" => $username, "password" => $password, "action" => "login");
             ob_start();
             // send the request
-            CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
+            echo CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
             $result = ob_get_contents();
             ob_end_clean();
             $ret = json_decode($result);

@@ -19,7 +19,7 @@ if (!empty($_POST['submit'])) {
     );
       ob_start();
       // send the request
-      CURLHandler::Post(LOGIN_APP_URL . 'changepassword', $vars);
+      echo CURLHandler::Post(LOGIN_APP_URL . 'changepassword', $vars);
       $result = json_decode(ob_get_contents());
       ob_end_clean();
       

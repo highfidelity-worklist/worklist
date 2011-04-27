@@ -594,6 +594,7 @@ span.required-bullet {
 }
 .signupContainer {
     margin: 30px;
+    clear: both;
 }
     
 div.login_left, div.login_right {float:left;min-width:260px;padding-right:40px;}

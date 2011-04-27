@@ -35,7 +35,7 @@ require_once 'lib/Sms/Numberlist.php';
                         <p><label for="City">City</label><br />
                         <span class="required-bullet">*</span> <input type="text" id="city" name="city" class="text-field"
                             size="35"
-                            value="<?php echo isset($userInfo['city']) ? $userInfo['city'] : ''; ?>" />
+                            value="<?php echo isset($userInfo['city']) ? $userInfo['city'] : (isset($_REQUEST['city'])?$_REQUEST['city']:''); ?>" />
                         </p>
                     </div>
                     <div id="sms-number">

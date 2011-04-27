@@ -151,12 +151,14 @@ color:#98AAB2;
     font-size: larger;
 }
 .left-col{
-float: left;
-margin-left: 60px;
+    float: left;
+    margin-left: 30px;
+    width: 45%;
 }
+
 .right-col{
 float: right;
-margin-right: 60px;
+margin-right: 30px;
 }
 #popup-bid{
 z-index: 1;

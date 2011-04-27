@@ -895,7 +895,7 @@ include("head.html"); ?>
                         project_id:$(":input[name='itemProject']",addForm).val(),
                         status:$(":input[name='status']",addForm).val(),
                         skills:$(":input[name='skills']",addForm).val(),
-                        is_bug:$(":input[name='is_bug']",addForm).val(),
+                        is_bug:$(":input[name='is_bug']",addForm).attr('checked'),
                         bug_job_id:$(":input[name='bug_job_id']",addForm).val()
                     },
                     type: 'POST',

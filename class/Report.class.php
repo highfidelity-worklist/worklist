@@ -10,7 +10,7 @@ class Report{
     public function getList($page=1, $ordering='created', $sort='DESC', $customer='', $date_from='', $date_to='', $status=''){
         #echo SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomerList&page='.$page.'&ordering='.$ordering.'&sort='.$sort.'&customer='.$customer.'&date_from='.$date_from.'&date_to='.$date_to.'&status='.$status;
         ob_start();
-        CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomerList&page='.$page.'&ordering='.$ordering.'&sort='.$sort.'&customer='.$customer.'&date_from='.$date_from.'&date_to='.$date_to.'&status='.$status);
+        echo CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomerList&page='.$page.'&ordering='.$ordering.'&sort='.$sort.'&customer='.$customer.'&date_from='.$date_from.'&date_to='.$date_to.'&status='.$status);
         $request = ob_get_contents();
         ob_end_clean();
         $result = json_decode($request);
@@ -22,7 +22,7 @@ class Report{
         $box = '<select name="customer">';
         $box .= '<option value="">-</option>';
         ob_start();
-        CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomerNames');
+        echo CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomerNames');
         $request = ob_get_contents();
         ob_end_clean();
         $result = json_decode($request);
@@ -46,7 +46,7 @@ class Report{
     public function generateCSVReport($ordering='payment_date', $sort='DESC', $customer='', $start_date='', $end_date='', $status=''){
         $page = 0;
         ob_start();
-        CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getPaymentList&page='.$page.'&ordering='.$ordering.'&sort='.$sort.'&customer='.$customer.'&date_from='.$date_from.'&date_to='.$date_to.'&status='.$status);
+        echo CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getPaymentList&page='.$page.'&ordering='.$ordering.'&sort='.$sort.'&customer='.$customer.'&date_from='.$date_from.'&date_to='.$date_to.'&status='.$status);
         $request = ob_get_contents();
         ob_end_clean();
         $result = json_decode($request);
@@ -74,7 +74,7 @@ class Report{
     
     public function getCustomerInfo($customerId){
         ob_start();
-        CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomer&customer_id='.$customerId);
+        echo CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getCustomer&customer_id='.$customerId);
         $request = ob_get_contents();
         ob_end_clean();
         $result = json_decode($request);
@@ -83,7 +83,7 @@ class Report{
     
     public function getPaymentHistory($customerId){
         ob_start();
-        CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getPaymentHistory&customer_id='.$customerId);
+        echo CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getPaymentHistory&customer_id='.$customerId);
         $request = ob_get_contents();
         ob_end_clean();
         $result = json_decode($request);
@@ -92,7 +92,7 @@ class Report{
     
     public function getLastPaymentInfo($customerId){
         ob_start();
-        CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getLastPayment&customer_id='.$customerId);
+        echo CURLHandler::Get(SALES_API_URL.'?api_key='. SALES_API_KEY .'&action=getLastPayment&customer_id='.$customerId);
         $request = ob_get_contents();
         ob_end_clean();
         $result = json_decode($request);

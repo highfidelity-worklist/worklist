@@ -128,7 +128,7 @@
         <div class="clear"></div>
         <div class="floatLeft">
             <p class="info-label isBug">
-            <label id="bugLabel"><input type="checkbox" name="is_bug" id="is_bug" value="1"/> Bug</label>
+            <label id="bugLabel"><input type="checkbox" name="is_bug" id="is_bug" /> Bug</label>
             (If known, linked to Job #) <input type="text" id="bug_job_id" name="bug_job_id" class="bug_job_id iToolTip enterAmount" size="48" value="" />                	
             </p>
         </div>

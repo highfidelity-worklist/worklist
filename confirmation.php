@@ -27,7 +27,7 @@ if (isset($_REQUEST['str'])) {
     } else {
         $data = array("username" => base64_decode($_REQUEST['str']), "token" => $_REQUEST['cs']);
       ob_start();
-      CURLHandler::doRequest("POST", LOGIN_APP_URL . "confirm", $data);
+      echo CURLHandler::doRequest("POST", LOGIN_APP_URL . "confirm", $data);
       $result = ob_get_contents();
       ob_end_clean();
       $result = json_decode($result);

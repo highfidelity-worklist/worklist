@@ -47,6 +47,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.tallest.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
+<script type="text/javascript" src="js/jquery.autogrow.js"></script>
 <script type="text/javascript">
 <!-- Start User Info popup code -->
 $(document).ready(function() {
@@ -352,20 +353,7 @@ $(document).ready(function(){
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
-    $('#popup-pingtask').dialog({ 
-        autoOpen: false, 
-        width: 400,
-        position: [ 'top' ],
-        show: 'fade', 
-        hide: 'fade',
-        open: function() {
-            $('#ping-msg').TextAreaExpander(80,150);
-        },
-        close: function() {
-            $('#ping-msg').TextAreaExpander(80,150);
-            $('#ping-msg').val('');
-        }
-    });
+    $('#popup-pingtask').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-withdraw-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
 <?php if ($mechanic_id == $user_id): ?>
@@ -833,13 +821,15 @@ $(document).ready(function(){
             // if( $('#send-mail:checked').val() ) mail = 1;
             // always send email
             var mail = 1;
-            var journal = $('#echo-journal').is(':checked') ? 1 : 0;
-            var cc = $('#copy-me').is(':checked') ? 1 : 0;
+            var journal = 0;
+            if ($('#echo-journal:checked').val() ) {
+                journal = 1
+            }
 
             $.ajax({
                 type: "POST",
                 url: 'pingtask.php',
-                data: 'id=' + <?php echo $worklist_id; ?> + '&who=' + ping_who  + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal + '&cc=' + cc,
+                data: 'id=' + <?php echo $worklist_id; ?> + '&who=' + ping_who  + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal,
                 dataType: 'json',
                 success: function() {}
             });
@@ -1102,7 +1092,7 @@ if ($action =="edit"):  ?>
                         <li>
                             <span class="info-label">Bug</span><br/>
                             <div class="floatLeft">
-                                <label id="bugLabel"><input type="checkbox" name="is_bug" id="is_bug" value="1" <?php if ($workitem->getBugJobId()>0 || $workitem->is_bug == true) echo 'checked="checked"';?>/> Bug</label>
+                                <label id="bugLabel"><input type="checkbox" name="is_bug" id="is_bug" <?php if ($workitem->getBugJobId()>0 || $workitem->getIs_bug() == 1) echo 'checked="checked"';?>/> Bug</label>
                                 (If known, linked to Job #)
                                 <input type="text" id="bug_job_id" name="bug_job_id" class="text-field bug_job_id" size="48" value="<?php if($workitem->getBugJobId()>0) echo $workitem->getBugJobId();?>" />
                             </div>

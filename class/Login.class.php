@@ -63,7 +63,7 @@ class Login {
     public function signup(){
         if(! isset($_REQUEST["username"])){
             $this->getResponse()->getError()->setError("Username field is missing.");
-        }else if(! isset($_REQUEST["password"])){
+        }else if(! isset($_REQUEST["password"]) || empty($_REQUEST["password"])){
             $this->getResponse()->getError()->setError("Password field is missing.");
         }else if(! isset($_REQUEST["confirm_string"])){
             $this->getResponse()->getError()->setError("Confirm string is missing.");
@@ -80,11 +80,11 @@ class Login {
             
             ob_start();
             // send the request
-            CURLHandler::Post(LOGIN_APP_URL . 'create', $this->params, false, true);
+            echo  CURLHandler::Post(LOGIN_APP_URL . 'create', $this->params, false, true);
             $result = ob_get_contents();
             ob_end_clean();
+			error_log("logonApi Result:".$result);
             $result = json_decode($result);
-            
             if(!empty($result->error) && $result->error == 1){
                 $this->getResponse()->getError()->setError($result->message);
             }else{
@@ -92,7 +92,7 @@ class Login {
                     $this->updateToken($result->token);
                     $this->getResponse()->addParams($result);
                 }else{
-                    $this->getResponse()->getError()->setError("Invalid Token aka Malicious attempt.");
+                    error_log('Invalid Token aka Malicious attempt on function signup');
                 }
             }
         }
@@ -110,18 +110,18 @@ class Login {
             $this->params["token"] = $token;
             ob_start();
             // send the request
-            CURLHandler::Post(LOGIN_APP_URL . 'login', $this->params, false, true);
+            echo  CURLHandler::Post(LOGIN_APP_URL . 'login', $this->params, false, true);
             $result = ob_get_contents();
             ob_end_clean();
             $result = json_decode($result);
             if($result->error == 1){
                 $this->getResponse()->getError()->setError($result->message);
-            }else{
+            } else {
                 if($this->checkToken($result->token) && $token == $result->token){
                     $this->updateToken($result->token);
                     $this->getResponse()->addParams($result);
-                }else{
-                    $this->getResponse()->getError()->setError("Invalid Token aka Malicious attempt.");
+                } else {
+                    error_log('Invalid Token aka Malicious attempt on function loginrequest');
                 }
             }
         }
@@ -142,7 +142,7 @@ class Login {
             $this->params["token"] = $token;
             ob_start();
             // send the request
-            CURLHandler::Post(LOGIN_APP_URL . 'getuserdata', $this->params, false, true);
+            echo CURLHandler::Post(LOGIN_APP_URL . 'getuserdata', $this->params, false, true);
             $result = ob_get_contents();
             ob_end_clean();
             $result = json_decode($result);
@@ -153,7 +153,7 @@ class Login {
                     $this->updateToken($result->token);
                     $this->getResponse()->addParams($result);
                 }else{
-                    $this->getResponse()->getError()->setError("Invalid Token aka Malicious attempt.");
+                    error_log('Invalid Token aka Malicious attempt on function getUserData');
                 }
             }
         }
@@ -176,7 +176,7 @@ class Login {
             $this->params["token"] = $token;
             ob_start();
             // send the request
-            CURLHandler::Post(LOGIN_APP_URL . 'setuserdata', $this->params, false, true);
+            echo CURLHandler::Post(LOGIN_APP_URL . 'setuserdata', $this->params, false, true);
             $result = ob_get_contents();
             ob_end_clean();
             $result = json_decode($result);
@@ -187,7 +187,7 @@ class Login {
                     $this->updateToken($result->token);
                     $this->getResponse()->addParams($result);
                 }else{
-                    $this->getResponse()->getError()->setError("Invalid Token aka Malicious attempt.");
+                    error_log('Invalid Token aka Malicious attempt on function setUserData');
                 }
             }
         }
@@ -212,7 +212,7 @@ class Login {
                 $this->params["token"] = $token;
                 ob_start();
                 // send the request
-                CURLHandler::Post(LOGIN_APP_URL . 'update', $this->params, false, true);
+                echo CURLHandler::Post(LOGIN_APP_URL . 'update', $this->params, false, true);
                 $result = ob_get_contents();
                 ob_end_clean();
                 $result = json_decode($result);
@@ -223,7 +223,7 @@ class Login {
                         $this->updateToken($result->token);
                         $this->getResponse()->addParams($result);
                     }else{
-                        $this->getResponse()->getError()->setError("Invalid Token aka Malicious attempt.");
+                    error_log('Invalid Token aka Malicious attempt on function update');
                     }
                 }
             }
@@ -245,7 +245,7 @@ class Login {
             $this->params["token"] = $token;
             ob_start();
             // send the request
-            CURLHandler::Post(LOGIN_APP_URL . 'adminresettoken', $this->params, false, true);
+            echo CURLHandler::Post(LOGIN_APP_URL . 'adminresettoken', $this->params, false, true);
             $result = ob_get_contents();
             ob_end_clean();
             $result = json_decode($result);
@@ -259,7 +259,7 @@ class Login {
                     sendTemplateEmail($result->username, 'recovery', array('url' => $resetUrl));
                     $this->getResponse()->addParams($result);
                 }else{
-                    $this->getResponse()->getError()->setError("Invalid Token aka Malicious attempt.");
+                    error_log('Invalid Token aka Malicious attempt on function resetUserPassword');
                 }
             }
         }
@@ -273,7 +273,7 @@ class Login {
         $this->params["token"] = $token;
         ob_start();
         // send the request
-        CURLHandler::Post(LOGIN_APP_URL . 'notify', $this->params, false, true);
+        echo CURLHandler::Post(LOGIN_APP_URL . 'notify', $this->params, false, true);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -285,7 +285,7 @@ class Login {
                 $this->updateToken($result->token);
                 $this->getResponse()->addParams($result);
             }else{
-                $this->getResponse()->getError()->setError("Invalid Token aka Malicious attempt.");
+                error_log('Invalid Token aka Malicious attempt on function notify');
             }
         }
     }

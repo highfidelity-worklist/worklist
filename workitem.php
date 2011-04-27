@@ -112,11 +112,14 @@ if ($action =='save_workitem') {
 
     // code to add specifics to journal update messages
     $new_update_message='';
-
+	$is_bug = !empty($_REQUEST['is_bug'])? 1 : 0;
+	error_log( $workitem->getIs_bug()."is_bug:".$is_bug."--".$_REQUEST['is_bug']);
     // First check to see if this is marked as a bug
-    if ($worklist->is_bug != $is_bug) {
+    if ($workitem->getIs_bug() != $is_bug) {
+		error_log("bug changed it");
         $new_update_message .= 'Marked as a bug. ';
     }
+	$workitem->setIs_bug($is_bug);
 
     // summary
     if (isset($_POST['summary']) && $workitem->getSummary() != $summary) {
@@ -196,20 +199,20 @@ if ($action =='save_workitem') {
         }
     }
     //if job is a bug, notify to journal 
-    if($bug_job_id > 0){
-	$workitem->is_bug = true;
+    if($bug_job_id > 0) {
+		error_log("bug_job_id:".$bug_job_id);
+	    $workitem->setIs_bug(1);
         $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
-    } elseif (isset($_POST['is_bug']) && $_POST['is_bug'] == '1') {
-	$bugJournalMessage = " (which is a bug)";
-    } elseif (isset($is_bug) && $is_bug == true) {
+    } elseif (isset($_POST['is_bug']) && $_POST['is_bug'] == 'on') {
+	    $bugJournalMessage = " (which is a bug)";
+    } elseif (isset($is_bug) && $is_bug == 1) {
         $bugJournalMessage = " (which is a bug)";
     }
     else
     {
         $bugJournalMessage= "";
     }
-    
-    
+	error_log($workitem->getIs_bug());    
     if (empty($new_update_message)) {
         $new_update_message = " No changes.";
     } else {
