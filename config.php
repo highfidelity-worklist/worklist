@@ -17,7 +17,7 @@ if (file_exists('server.local.php')) {
 
 
 # Add revision (version) information
-if (!defined('APP_REVISION'))   define('APP_REVISION', '$Revision$');
+if (!defined('APP_REVISION'))   define('APP_REVISION', '$Rev$');
 if (!defined('APP_VERSION'))    define('APP_VERSION', preg_replace('/\D/', '', APP_REVISION));
  
 // this is the name of the app that will be used when
