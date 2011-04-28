@@ -42,14 +42,6 @@ if (isset($_REQUEST['str'])) {
             initSessionData($row); //Optionally can login with confirm URL
         }
      }
-} elseif (!empty($_REQUEST['action']) && ($_REQUEST['action'] == 'changeUsername')) {
-    $old_username = base64_decode($_REQUEST['oustr']);
-    $new_username = base64_decode($_REQUEST['nustr']);
-    $user = new User();
-    $user->findUserByUsername($old_username);
-    $user->setUsername($new_username);
-    $user->save();
-    session::init();
 } elseif (isset($_REQUEST['ppstr'])) {
     // paypal address confirmation
     $user = new User();
@@ -90,11 +82,7 @@ include("head.html"); ?>
 <?php include("format_signup.php"); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-<?php if (!empty($_REQUEST['action']) && ($_REQUEST['action'] == 'changeUsername')) : ?>
-    <h1>Email Confirmation</h1>
-          
-    <p>Your email address has been changed successfully.</p>
-<?php else : ?>
+
 <!-- Light Box Code Start -->
 <div id="filter" onClick="closebox()"></div>
 <div id="box" >
@@ -104,10 +92,9 @@ include("head.html"); ?>
 <p align="center"><strong><a href="#" onClick="closebox()">Close</a></strong></p>
 </div>
 <!-- Light Box Code End -->
-    <h1>Email Confirmation</h1>
-          
-    <p>Registration complete! Welcome to the Worklist. You can now start working.</p>
-<?php endif; ?>
+<h1>Email Confirmation</h1>
+      
+<p>Registration complete! Welcome to the Worklist. You can now start working.</p>
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
                     
 <?php include("footer.php"); ?>
