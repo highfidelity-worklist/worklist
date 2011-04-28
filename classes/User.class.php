@@ -591,9 +591,6 @@ class User {
     }
 
     /**
-     * @return the $is_runner
-     */
-    /**
      * @return the $has_w9approval
      */
     public function getHas_w9approval() {
@@ -643,6 +640,9 @@ class User {
         }
     }
 
+    /**
+     * @return the $is_runner
+     */
     public function getIs_runner() {
         return $this->is_runner;
     }

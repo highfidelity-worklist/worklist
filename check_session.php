@@ -6,7 +6,7 @@
 if (empty($_SESSION['userid'])) {
     session_destroy();
     // was there an attempt to POST data?
-    if (isset($_POST)) {
+    if (!empty($_POST)) {
         handleUnloggedPost();
     }
     header("location:login.php?redir=".urlencode($_SERVER['REQUEST_URI']));

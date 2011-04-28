@@ -266,10 +266,8 @@ class Notification {
                             if ( $current_user->getUsername() == $username ) {
 								if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)  
 								  || $includeSelf == false) {
-								  error_log('skipped self');
 									continue;
 								}
-							  error_log('sent to self');
                             }
 
                             // check if we already sending email to this user

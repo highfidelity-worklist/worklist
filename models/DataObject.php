@@ -31,7 +31,7 @@ class DataObject {
         
         // Error checking
         if (mysqli_connect_errno()) {
-            echo mysqli_connect_error();
+            error_log("DataObject mysql error: " . mysqli_connect_error());
             exit;
         }
         $this->init($join);
@@ -304,7 +304,7 @@ class DataObject {
             $result->close();    
             return true;
         } else {
-            echo($sql . " * " . $this->link->error);
+            error_log("DataObject:save mysql error: " . $sql . " * " . $this->link->error);
             $result->close();
             return false;
         }

@@ -79,7 +79,7 @@ class Review extends DataObject {
             }
             $result->close();
         }else{
-            echo($sql . " * " . $this->link->error);
+            error_log("Review:getReviews mysql error: " . $sql . " * " . $this->link->error);
             $objectData = null;
         }
         return $objectData;        

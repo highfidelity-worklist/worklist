@@ -264,16 +264,10 @@ $cPages = ceil($items/$limit);
 $worklist = array(array($items, $page, $cPages));
 /*echo(json_encode(array("qry" => $qsel.$qbody.$qorder)));*/
 
-// check for expired bids
-// 21-April-2011 <John>
-if (($ufilter == 'ALL') && ($bFilterStatusContainBidding) && (isset($_SESSION['userid']))) {
-	
-}
-
 // Construct json for history
-$rtQuery = mysql_query("$qsel $qbody $qorder");
-$qry =$qsel.$qbody.$qorder;
-echo mysql_error();
+$qry="$qsel $qbody $qorder";
+//Don't export mysql errors to the browser by default
+$rtQuery = mysql_query($qry) or error_log('getworklist mysql error: '. mysql_error());
 while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
     $worklist[] = array(
          0 => $row['id'],
@@ -296,7 +290,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         17 => $row['project_name'],
         18 => $row['bug_job_id'],
         19 => (!empty($row['current_expire']) && strtotime($row['current_expire'])<time()) ? 'expired' : 0,
-        20 => $row['current_bid']
+        20 => (!empty($row['current_bid']) ? $row['current_bid'] : 0),
     );
 }
 
