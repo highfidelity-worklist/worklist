@@ -156,8 +156,9 @@
         <link href="css/LVstyles.css" rel="stylesheet" type="text/css">
         <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
-        <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui-1.8.4.min.js"></script>
+
+        <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
         <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
         <script type="text/javascript" src="js/jquery.blockUI.js"></script>
         <script type="text/javascript" src="js/jquery.autogrow.js"></script>
@@ -165,7 +166,7 @@
         // This global variable user_id should not be used anymore, replace it by userInfo.user_id .
         // All the variables should be included in the object userInfo
         // To have a smooth migration, the variable is kept for the moment.
-            var user_id = <?php echo $userId; ?>; 
+            var user_id = <?php echo $userId; ?>;
                                                 
             var userInfo = {
                 manager: <?php echo $manager; ?>,

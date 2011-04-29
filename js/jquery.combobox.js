@@ -201,6 +201,14 @@
 				);
 				listItem.click($.proxy(this._listItemClicked, this));
 				this.list.append(listItem);
+				
+				// Update the original select with the new option
+				var sel = '';
+				if (v.selected) {
+				    sel = 'selected="selected"';
+				}
+				var opt = '<option value="' + v.value + '"' + sel + '>' + v.text + '</option>';
+				this.el.append(opt);
 			}, this));
 			this.list.hide();
 		},
@@ -275,6 +283,8 @@
 			this.values = l;
 			// empty current list
 			this.list.empty();
+			// empty the original list
+			this.el.empty();
 			// setup new list
 			this._setupList();
 			// trigger an event
