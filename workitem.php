@@ -221,7 +221,7 @@ if ($action =='save_workitem') {
     	$notifyEmpty = false;
     }
 
-     $redirectToWorklistView = true;
+     $redirectToDefaultView = true;
      $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id ".
                         $bugJournalMessage  .": ". $workitem->getSummary() .
                         $new_update_message;
