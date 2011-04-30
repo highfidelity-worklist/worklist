@@ -164,6 +164,12 @@ $(document).ready(function() {
             fillUserlist(current_page);
         }
     });
+    
+<?php 
+    if( !empty($_REQUEST['showUser'])) {
+        echo "showUserInfo(" . $_REQUEST['showUser'] . ");";
+    }
+?>
 });
 
 function showUserInfo(userId) {
@@ -338,18 +344,18 @@ function addCommas(nStr) {
                 <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
             </tr>
             <tr>
-                <td onclick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
-                <td onclick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
+                <td onClick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
+                <td onClick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
                 <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
             </tr>
             <tr>
-                <td onclick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
-                <td onclick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
+                <td onClick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
+                <td onClick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
                 <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
             </tr>
             <tr>
-                <td onclick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
-                <td onclick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
+                <td onClick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
+                <td onClick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
                 <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
             </tr>
         </table>

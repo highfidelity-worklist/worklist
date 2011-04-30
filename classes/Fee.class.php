@@ -65,17 +65,17 @@ class Fee
                     }
 
                     /* If we're unmarking the fee paid, deduct the points. */
-                    if ($paid == 0) {
-                        $amount = $amount * -1;
-                    }
+//                    if ($paid == 0) {
+//                        $amount = $amount * -1;
+//                    }
 
                     $points = intval($amount);
 
                     addRewarderBalance($user_id, $amount, $worklist_id, $fee_id);
-
-                    if ($runner_id != 0) {
-                        mysql_unbuffered_query("UPDATE `".USERS."` SET `budget`=`budget`-$amount WHERE `id`=$runner_id");
-                    }
+ 
+//                    if ($runner_id != 0) {
+//                        mysql_unbuffered_query("UPDATE `".USERS."` SET `budget`=`budget`-$amount WHERE `id`=$runner_id");
+//                    }
 
 		            //  Auto populate rewarder with team members of this task
 		             PopulateRewarderTeam($user_id, $worklist_id);

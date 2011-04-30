@@ -448,7 +448,9 @@ if ($action == "add_fee") {
     // send sms message to runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
+    $runner->updateBudget(-$fee_amount);    
+
+    if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {		
         Notification::sendSMS($runner, 'Fee', $journal_message);
     }
     $redirectToDefaultView = true;
@@ -491,7 +493,7 @@ if ($action == 'accept_bid') {
         }
 
         if ($exists) {
-            if($bid_amount < $runner_budget) {
+            if($bid_amount <= $runner_budget) {
                 $bid_info = $workitem->acceptBid($bid_id);
 
                 // Journal notification
@@ -506,6 +508,11 @@ if ($action == 'accept_bid') {
 
                 $bidder = new User();
                 $bidder->findUserById($bid_info['bidder_id']);
+                
+                // Update Budget                
+                $runner = new User();
+                $runner->findUserById($workitem->getRunnerId());
+                $runner->updateBudget(-$bid_amount);
 
                 //send sms notification to bidder
                 Notification::sendSMS($bidder, 'Accepted', $journal_message);
@@ -533,35 +540,52 @@ if ($action=='accept_multiple_bid') {
     if(count($bid_id) > 0) {
     //only runners can accept bids
         if (($is_runner == 1 || $workitem->getRunnerId() == getSessionUserId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+            $total = 0;
             foreach($bid_id as $bid) {
-                $bids = (array) $workitem->getBids($workitem -> getId());
-                $exists = false;
-                foreach ($bids as $array) {
-                    if ($array['id'] == $bid) {
-                        if ($array['bidder_id'] == $mechanic_id) {
-                            $is_mechanic = true;
-                        } else {
-                            $is_mechanic = false;
+                $currentBid = new Bid();
+                $currentBid->findBidById($bid);
+                $total = $total + $currentBid->getBid_amount();
+            }
+            
+            if ($total <= $runner_budget) {
+                foreach($bid_id as $bid) {
+                    $bids = (array) $workitem->getBids($workitem -> getId());
+                    $exists = false;
+                    foreach ($bids as $array) {
+                        if ($array['id'] == $bid) {
+                            if ($array['bidder_id'] == $mechanic_id) {
+                                $is_mechanic = true;
+                            } else {
+                                $is_mechanic = false;
+                            }
+                            $exists = true;
+                            break;
                         }
-                        $exists = true;
-                        break;
+                    }
+                    if ($exists) {
+                        $bid_info = $workitem->acceptBid($bid, $is_mechanic);
+                        // Journal notification
+                        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " " . ($is_mechanic ? ' as MECHANIC ' : '') . "on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . ". Status set to WORKING. ";
+                        // mail notification
+                        Notification::workitemNotify(array('type' => 'bid_accepted',
+                                     'workitem' => $workitem,
+                                     'recipients' => array('mechanic')));
+                    } else {
+                        $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
                     }
                 }
-                if ($exists) {
-                    $bid_info = $workitem->acceptBid($bid, $is_mechanic);
-                    // Journal notification
-                    $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " " . ($is_mechanic ? ' as MECHANIC ' : '') . "on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . ". Status set to WORKING. ";
-                    // mail notification
-                    Notification::workitemNotify(array('type' => 'bid_accepted',
-                                 'workitem' => $workitem,
-                                 'recipients' => array('mechanic')));
-                } else {
-                    $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
-                }
+                // Send email to not accepted bidders
+                sendMailToDiscardedBids($worklist_id);
+                $redirectToDefaultView = true;
+
+                $runner = new User();
+                $runner->findUserById($workitem->getRunnerId());
+                $runner->updateBudget(-$total);        
+            } else {
+                $overBudget = money_format('%i', $bid_amount - $runner_budget);
+                $_SESSION['workitem_error'] = "Failed to accept bids. Accepting this bids would make you " . $overBudget . " over your budget!";
+                $redirectToDefaultView = true;
             }
-            // Send email to not accepted bidders
-            sendMailToDiscardedBids($worklist_id);
-            $redirectToDefaultView = true;
         }
     }
 }
@@ -571,13 +595,18 @@ if ($action == "withdraw_bid") {
         withdrawBid(intval($_REQUEST['bid_id']), $_POST['withdraw_bid_reason']);
     } else {
         $fee_id = intval($_REQUEST['fee_id']);
-        $res = mysql_query('SELECT bid_id FROM `' . FEES . '` WHERE `id`=' . $fee_id);
+        $res = mysql_query('SELECT f.bid_id, f.amount, w.runner_id FROM `' . FEES . '` AS f, ' . WORKLIST . ' AS w WHERE f.`id`=' . $fee_id . ' AND f.worklist_id = w.id');
         $fee = mysql_fetch_object($res);
         if ((int)$fee->bid_id !== 0) {
             withdrawBid($fee->bid_id, $_POST['withdraw_bid_reason']);
         } else {
-            deleteFee($fee_id);
+            deleteFee($fee_id);            
         }
+
+        // Update Runner's Budget
+        $runner = new User();
+        $runner->findUserById($fee->runner_id);
+        $runner->updateBudget($fee->amount);
     }
     $redirectToDefaultView = true;
 }

@@ -342,6 +342,39 @@ class User {
         $this->budget = $budget;
         return $this;
     }
+    
+    public function updateBudget($amount) {
+
+        $this->setBudget($this->getBudget() + $amount);
+        $this->save();
+        
+        if($this->getBudget() <= 0 ) {  // Send email
+            $payersList = User::getPayerList();
+            $payersList[] = $this;
+            $runnerNickname = $this->getNickname();
+            
+            foreach ($payersList as $payer) {
+            
+                $subject = $runnerNickname . "'s budget depleted";
+            
+                $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId();;
+            
+                $body  = '<p>Hello,</p>';
+                $body .= '<p>' . $runnerNickname . '\'s current budget is now depleted.</p>';
+                $body .= '<p>To go to the Team Page, click <a href="' . $link . '">here</a></p>';
+            
+                $plain  = 'Hello,\n\n';
+                $plain .= $runnerNickname . '\'s current budget is now depleted.\n\n';
+                $plain .= 'To go to the Team Page, click ' . $link . "\n\n";
+                        
+                if (! send_email($payer->getUsername(), $subject, $body, $plain)) { 
+                    error_log("signup.php: send_email failed on depleted Runner warning");
+                }
+            }
+        
+        }
+        
+    }
 
     public function getRemainingFunds()
     {
@@ -1041,6 +1074,17 @@ class User {
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $user = new User();
             $runnerlist[] = $user->findUserById($row['id']);
+        }
+        return ((!empty($runnerlist)) ? $runnerlist : false);
+    }
+
+    public static function getPayerList() {
+        $payerlist = array();
+        $sql = 'SELECT `' . USERS . '`.`id` FROM `' . USERS . '` WHERE `' . USERS . '`.`is_payer` = 1;';
+        $result = mysql_query($sql);
+        while ($result && ($row = mysql_fetch_assoc($result))) {
+            $user = new User();
+            $payerlist[] = $user->findUserById($row['id']);
         }
         return ((!empty($runnerlist)) ? $runnerlist : false);
     }
