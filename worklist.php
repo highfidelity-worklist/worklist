@@ -421,6 +421,20 @@ include("head.html"); ?>
         GetWorklist(1,false);
     }
 
+    function resizeIframeDlg() {
+        var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
+                      $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
+    
+        var dlg_h = $('#user-info').children()
+                                   .contents()
+                                   .find('html body')
+                                   .height();
+    
+        var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
+    
+        $('#user-info').animate({height: height});
+    }
+
     function showUserInfo(userId) {
         $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
         $('#modalIframeId').attr('src','userinfo.php?id=' + userId);

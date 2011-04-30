@@ -167,6 +167,7 @@
         // All the variables should be included in the object userInfo
         // To have a smooth migration, the variable is kept for the moment.
             var user_id = <?php echo $userId; ?>;
+            var current_id = <?php echo $reqUserId; ?>;
                                                 
             var userInfo = {
                 manager: <?php echo $manager; ?>,

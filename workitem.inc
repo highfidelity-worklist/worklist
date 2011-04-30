@@ -50,6 +50,20 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.autogrow.js"></script>
 <script type="text/javascript">
 <!-- Start User Info popup code -->
+function resizeIframeDlg() {
+    var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
+                  $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
+
+    var dlg_h = $('#user-info').children()
+                               .contents()
+                               .find('html body')
+                               .height();
+
+    var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
+
+    $('#user-info').animate({height: height});
+}
+
 $(document).ready(function() {
     applyPopupBehavior();
     $('#user-info').dialog({

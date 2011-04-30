@@ -41,44 +41,41 @@
         }
     }
 ?>
-        <p class = "info-label">
-<?php
-        if($user->getCity() != ""){
-        echo 'City, ';
-        }
-        if($countryCodeUrl != ""){
-        echo 'Country - ';
-        }
-        ?>
-        Local Time<br />
-        <span id="info-currenttime" title="<?php echo $timezoneTable[$user -> getTimezone()]; ?>">
-
-        <?php
-
-        /* If city is not present, aka stored in DB
-         * do nothing and proceed to next step
-         */
-        if($user->getCity() != ""){
-        echo '<a class="userInfoLink" href="'.$gMapSearch.''.$user->getCity().',+'.$countryName.'&z=6" target="_blank" title="See location on Google Maps">'.$user->getCity().'</a>, ';
-        }
-        /* If country code url exists is not empty
-         * do proceed with making the url, else nothing
-         */
-        if($countryCodeUrl != ""){
-        echo '<a class="userInfoLink" href="'.$ciaGovBase.''.$countryCodeUrl.'.html" target="_blank" title="'.$countryName.'">'.$CCF.'</a> - ';
-        }
-
-        echo convertTimeZoneToLocalTime($user->getTimezone());
-
-        ?>
-
-        </span>
+        <p class="info-label">
+            <?php
+            if($user->getCity() != ""){
+                echo 'City, ';
+            }
+            if($countryCodeUrl != ""){
+                echo 'Country - ';
+            }
+            ?>
+            Local Time<br />
+            <span id="info-currenttime" title="<?php echo $timezoneTable[$user -> getTimezone()]; ?>">
+                <?php
+                /* If city is not present, aka stored in DB
+                 * do nothing and proceed to next step
+                 */
+                if($user->getCity() != ""){
+                    echo '<a class="userInfoLink" href="'.$gMapSearch.''.$user->getCity().',+'.$countryName.'&z=6" target="_blank" title="See location on Google Maps">'.$user->getCity().'</a>, ';
+                }
+                /* If country code url exists is not empty
+                 * do proceed with making the url, else nothing
+                 */
+                if($countryCodeUrl != ""){
+                    echo '<a class="userInfoLink" href="'.$ciaGovBase.''.$countryCodeUrl.'.html" target="_blank" title="'.$countryName.'">'.$CCF.'</a> - ';
+                }
+        
+                echo convertTimeZoneToLocalTime($user->getTimezone());
+                ?>
+            </span>
         </p>
+
         <div class="button-row">
             <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
             <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
         </div>
-        <p class = "info-label small-text"><br />
+        <p class="info-label small-text"><br />
             <span id="info-timezone">&nbsp;</span>
         </p>
     </div><!-- end of common info div-->
@@ -245,11 +242,11 @@ if (count($user_projects) > 0) {
 }
 ?>
         <div id="tabs-3" style="clear: both;">
-            <form method="post" action = "" id="sandboxForm">
+            <form method="post" action="" id="sandboxForm">
                 <div style="clear: both; float: right;">
                     <input id="create_sandbox" type="submit" name="create_sandbox" value="Create SB" <?php if ($has_sandbox) { echo 'style="display: none;"'; } ?> />
                 </div>
-                <p id="unixusername-field" class = "info-label">UNIX Username: <br />
+                <p id="unixusername-field" class="info-label">UNIX Username: <br />
                     <input name="unixusername" id="unixusername" type="text" size="15" value = "<?php echo $user -> getUnixusername(); ?>" /><br />
                 </p>
                 <p id="projects-field" class="info-label">Projects to check-out :</p>
@@ -258,7 +255,6 @@ if (count($user_projects) > 0) {
 <?php endforeach; ?>
             </form>
         </div><!-- end of tab 3 -->
-        <?php /*<div style = "clear: both;"></div>*/ ?>
     <?php } ?>
     </div><!--end of div "tabs" -->
 </div> <!-- end of div user-info-->
@@ -280,10 +276,28 @@ if (count($user_projects) > 0) {
             <label for="bonus-amount" class="info-label">Amount: </label><br/>
                 <input type="text" id="bonus-amount" name="amount" /><br/>
             <label for="bonus-reason" class="info-label">Reason: </label><br/>
-                <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/><br/>
+                <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/>
                 <input type = "hidden" id = "bonus-receiver" name="receiver_id" value = "<?php echo $user-> getId(); ?>" />
             <input type="submit" value="Pay Bonus" />
         </form>
+
+        <!-- Add the bonus history table -->
+        <?php if($is_runner){ ?>
+        <hr/>
+        <table class="bonus-history table-bonus-history">
+        <thead>
+            <tr style="cursor:arrow;" class="table-hdng">
+                <th width="95px">Date</th>
+                <th width="50px">Amount</th>
+                <th width="80px">Receiver</th>
+                <th width="300px">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+        <?php } ?>
+
     </div><!-- end of pay bonus div -->
 
     <div id="loading" style="display:none">
