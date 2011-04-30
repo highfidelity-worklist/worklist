@@ -350,11 +350,11 @@ class User {
         
         if($this->getBudget() <= 0 ) {  // Send email
             $payersList = User::getPayerList();
+			
             $payersList[] = $this;
             $runnerNickname = $this->getNickname();
             
             foreach ($payersList as $payer) {
-            
                 $subject = $runnerNickname . "'s budget depleted";
             
                 $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId();;
@@ -1086,7 +1086,7 @@ class User {
             $user = new User();
             $payerlist[] = $user->findUserById($row['id']);
         }
-        return ((!empty($runnerlist)) ? $runnerlist : false);
+        return ((!empty($payerlist)) ? $payerlist : false);
     }
 
     /**
