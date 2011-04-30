@@ -38,6 +38,9 @@ if(! isset($_REQUEST["api_key"])&& $_REQUEST['action'] != 'getSystemDrawerJobs')
 			case 'getSystemDrawerJobs':
 				getSystemDrawerJobs();
 				break;
+            		case 'bidNotification':
+                		sendBidNotification();
+				break;
 			default:
 				die("Invalid action.");
 		}
@@ -216,6 +219,13 @@ function getSystemDrawerJobs(){
 
     respond(array('success' => true, 'review' => $objectDataReviews, 'bidding' => $objectDataBidding));
 }
+
+function sendBidNotification() {
+        include('./classes/BidNotification.class.php');
+        $notify = new BidNotification();
+        $notify->emailExpiredBids();
+}
+
 
 function respond($val){
     exit(json_encode($val));
