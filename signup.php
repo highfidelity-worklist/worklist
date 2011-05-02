@@ -14,6 +14,7 @@ include("countrylist.php");
 include("smslist.php");
 require_once("classes/Notification.class.php");
 
+$signup=true;
 $phone = $country = $provider = $authtype = "";
 $msg="";
 $to=1;
@@ -184,7 +185,7 @@ if(isset($minimal_POST['sign_up'])){
                     $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
                 }
             }
-			if ($ret->newNickname == true) { 
+			if (!empty($ret->newNickname) && $ret->newNickname == true) { 
 				$confirm_txt .= "<br/><br/>Note: The nickname you choose is already taken. We created a new one for you ( ".strtoupper($newUser["nickname"])." ) which can be changed later.";
 			}
         }
@@ -243,7 +244,11 @@ include("head.html");
 <!-- Light Box Code End -->
 
 <h1>Create a New Account</h1>
-<p><i>Signing up for worklist will let you make bids on jobs.<br> We use an <a href="http://svn.sendlove.us/" target="_blank">open codebase </a>allowing you to quickly evaluate jobs, and pay on job completion.</i></p>
+<p>
+	<i>Signing up for worklist will let you make bids on jobs.
+    <br /> We use an <a href="http://svn.sendlove.us/" target="_blank">open codebase </a>allowing you to quickly evaluate jobs, and we pay via PayPal on job completion.
+    </i>
+</p>
      <?php if(isset($error) && $error->getErrorFlag() == 1): ?>
             <?php foreach($error->getErrorMessage() as $msg):?>
               <p class="LV_invalid"><?php echo $msg; ?></p>
@@ -254,54 +259,103 @@ include("head.html");
      <!-- Column containing left part of the fields -->
 <div class="left-col">
 <div class="LVspace">
-<p>
-    <label for="username">Email </label><br />
-    <span class="required-bullet">*</span> <input type="text" id="username" name="username" class="text-field" size="35" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ""; ?>" />
-</p>
+    <p>
+        <label for="username">Email </label>
+        <br />
+        <span class="required-bullet">*</span>
+        <input type="text" id="username" name="username" class="text-field" size="35" value="<?php echo isset($_POST['username']) ? $_POST['username'] : ""; ?>" />
+    </p>
 </div>
 <script type="text/javascript">
-        var username = new LiveValidation('username', {validMessage: "Valid email address."});
-        username.add( Validate.Email );
-        username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-      </script>
+	var username = new LiveValidation('username', {validMessage: "Valid email address."});
+	username.add( Validate.Email );
+	username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+</script>
             <?php if (empty($_GET['authtype']) || $_GET['authtype'] != 'openid' ) :?>
-            <div class="LVspace">
-<p><label for="password">Password </label><br />
-<span class="required-bullet">*</span> <input type="password" id="password" name="password" class="text-field"
-    size="35" /> </p>
+<div class="LVspace">
+    <p>
+    	<label for="password">Password </label>
+        <br />
+    	<span class="required-bullet">*</span> 
+        <input type="password" id="password" name="password" class="text-field" size="35" /> 
+    </p>
 </div>
 <script type="text/javascript">
-                 var password = new LiveValidation('password',{ validMessage: "You have an OK password." });
-                 password.add(Validate.Length, { minimum: 5, maximum: 255 } ); 
-            </script>
+	var password = new LiveValidation('password',{ validMessage: "You have an OK password." });
+	password.add(Validate.Length, { minimum: 5, maximum: 255 } ); 
+</script>
 
 <div class="LVspace">
-<p><label>Confirm Password <br />
-<span class="required-bullet">*</span> <input name="confirmpassword" id="confirmpassword" type="password"
-    class="text-field" size="35" /> </label></p>
+	<p>
+    	<label>Confirm Password</label> <br />
+		<span class="required-bullet">*</span> 
+        <input name="confirmpassword" id="confirmpassword" type="password" class="text-field" size="35" /> 
+    </p>
 </div>
 <script type="text/javascript">
-                 var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
-                 confirmpassword.add(Validate.Custom1, { match: 'password'} ); 
-            </script>
+	var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
+	confirmpassword.add(Validate.Custom1, { match: 'password'} ); 
+</script>
       <?php endif; ?>
-            <div class="LVspace">
-    <p><label for="nickname">Nickname </label><br />
-<span class="required-bullet">*</span> <input type="text" id="nickname" name="nickname" class="text-field" size="35" value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
-</p>
+<div class="LVspace">
+    <p>
+    	<label for="nickname">Nickname </label>
+        <br />
+		<span class="required-bullet">*</span>
+        <input type="text" id="nickname" name="nickname" class="text-field" size="35" value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
+	</p>
 </div>
 <?php 
 	$smsaddr=!empty($_REQUEST['smsaddr'])? $_REQUEST['smsaddr']:'';
 	$country=!empty($_REQUEST['country'])? $_REQUEST['country']:'';
 	$phone=!empty($_REQUEST['phone'])? $_REQUEST['phone']:'';
-	include("sms-inc.php"); ?>
-        <input type="checkbox" name="bidding_notify" id="bidding_notify" <?php echo !empty($_REQUEST['bidding_notify'])? ' checked="checked" ':''; ?> />Notify me when a new job is set to bidding<br />
-        <input type="checkbox" name="review_notify" id="review_notify" <?php echo !empty($_REQUEST['review_notify'])? ' checked="checked" ':''; ?> />Notify me when any job is set to review<br /><br />
-    <script type="text/javascript">
-            var username = new LiveValidation('username', {validMessage: "Valid email address."});
-            username.add( Validate.Email );
-            username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-            </script></div>
+?>
+<div id="sms-country">
+    <p><label>Country<br />
+    <span class="required-bullet">*</span> <select id="country" name="country" style="width:274px">
+        <?php
+        if (empty($country) || $country == '--') {
+            //$selected not set by this point, we want to default so do that
+            echo '<option value="">Where do you live?</option>';
+        }
+        foreach ($countrylist as $code=>$cname) {
+            $selected = ($country == $code) ? "selected=\"selected\"" : "";
+            echo '<option value="'.$code.'" '.$selected.'>'.$cname.'</option>';
+        }
+        ?>
+    </select>
+    </label><br/>
+    </p>
+</div>
+<div id="cityDiv">
+    <p><label for="City">City</label><br />
+    <span class="required-bullet">*</span> <input type="text" id="city" name="city" class="text-field"
+        size="35"
+        value="<?php echo isset($userInfo['city']) ? $userInfo['city'] : (isset($_REQUEST['city'])?$_REQUEST['city']:''); ?>" />
+    </p>
+</div>
+
+<div class="LVspace height50">
+    <p>
+        <label for="timezone">What timezone are you in?</label><br />
+   		<span class="required-bullet"> &nbsp;</span> 
+		<select id="timezone" name="timezone">
+			<?php
+                foreach ($timezoneTable as $key => $value) {
+                    $selected = '';
+                    $zone = isset($_POST['timezone']) ? $_POST['timezone'] : date("O");
+            
+                    if ($key == $zone) {
+                        $selected = 'selected = "selected"';
+                    }
+                    echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
+                }
+            ?>
+        </select>
+    </p>
+</div>
+
+</div>
 <!-- end of left-col div -->
 <div class="right-col">
 <div class="LVspacehg">
@@ -328,51 +382,20 @@ include("head.html");
 </p>
 </div>
 
-
-
 <div class="LVspace">
-<p><label for="skills">Pick three skills you think are your strongest</label><br />
-<input type="text" id="skills" name="skills" class="text-field"
-    size="35"
-    value="<?php echo isset($_POST['skills']) ? strip_tags($_POST['skills']) : ""; ?>" />
-</p>
-</div>
-
-<div class="LVspace height50">
     <p>
-        <label for="timezone">What timezone are you in?</label><br />
-        <select id="timezone" name="timezone">
-<?php
-    foreach ($timezoneTable as $key => $value) {
-        $selected = '';
-        $zone = isset($_POST['timezone']) ? $_POST['timezone'] : date("O");
-
-        if ($key == $zone) {
-            $selected = 'selected = "selected"';
-        }
-        echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
-    }
-?>
-        </select>
+    	<label for="skills">Pick three skills you think are your strongest</label><br />
+    	<input type="text" id="skills" name="skills" class="text-field" size="35" value="<?php echo isset($_POST['skills']) ? strip_tags($_POST['skills']) : ""; ?>" />
     </p>
 </div>
-<!-- other payment options are currently disabled - left here for future implementation -->
-    <!--<div class="LVspace hidden">
-        <p><label for="payway">What is the best way to pay you for the work you will do?</label><br />
-            <input type="text" id="payway" name="payway" class="text-field" size="35" value="<?php echo isset($_POST['payway']) ? strip_tags($_POST['payway']) : ""; ?>" />
-        </p>
-    </div>
-    <div class="LVspacelg hidden" style="height: 88px">
-        <input class="hidden" type="checkbox" id="paypal" name="paypal" value="1" checked="checked" /><label>&nbsp;Paypal is available in my country</label><br /><br />
-    </div>-->
-    <div class="LVspacelg">
-        <label>Paypal Email<br />
-            <input type="text" id="paypal_email" name="paypal_email" class="text-field" size="35" value="<?php echo isset($_POST['paypal_email']) ? strip_tags($_POST['paypal_email']) : ""; ?>" />
-        </label>
-    </div>
-    <!-- end of right-col div -->
-    <br class="clear" />
-</div>
+
+<?php 
+	include("sms-inc.php"); 
+?>
+    <input type="checkbox" name="bidding_notify" id="bidding_notify" <?php echo !empty($_REQUEST['bidding_notify'])? ' checked="checked" ':''; ?> />Notify me when a new job is set to bidding<br />
+    <input type="checkbox" name="review_notify" id="review_notify" <?php echo !empty($_REQUEST['review_notify'])? ' checked="checked" ':''; ?> />Notify me when any job is set to review<br /><br />
+
+
 <div class="signupContainer">
     <p><input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" /></p>
 </div>

@@ -13,7 +13,9 @@
 require_once 'lib/Sms/Numberlist.php';
 ?>
                 <div id="sms" >
-
+<?php 
+// Already included in signup form don't repeat
+if ( empty($signup)) { ?>
                     <div id="sms-country">
                         <p><label>Country<br />
                         <span class="required-bullet">*</span> <select id="country" name="country" style="width:274px">
@@ -38,6 +40,7 @@ require_once 'lib/Sms/Numberlist.php';
                             value="<?php echo isset($userInfo['city']) ? $userInfo['city'] : (isset($_REQUEST['city'])?$_REQUEST['city']:''); ?>" />
                         </p>
                     </div>
+<?php } ?>                    
                     <div id="sms-number">
                         <label>Mobile device number<br /></label>
                             <select id="int_code" name="int_code">
