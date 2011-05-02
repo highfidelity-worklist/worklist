@@ -349,8 +349,9 @@ class User {
         $this->save();
         
         if($this->getBudget() <= 0 ) {  // Send email
-            $payersList = User::getPayerList();
-			
+//            $payersList = User::getPayerList();
+            $payerList = array();
+
             $payersList[] = $this;
             $runnerNickname = $this->getNickname();
             
