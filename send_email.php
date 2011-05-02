@@ -144,7 +144,6 @@ function sendTemplateEmail($to, $template, $data){
  include (dirname(__FILE__) . "/email/en.php");
 
     $recipients = is_array($to) ? $to : array($to);
-    global $emailTemplates;
 
     $replacedTemplate = !empty($data) ?
                         templateReplace($emailTemplates[$template], $data) :
