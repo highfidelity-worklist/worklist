@@ -19,6 +19,7 @@ class Agency_Worklist_Filter {
     protected $page = 1;
     protected $project_id = 0;
     protected $project = "";
+    protected $fund_id = -1;
     
     // Additional filter for reports
     protected $paidstatus = 'ALL';
@@ -125,6 +126,9 @@ class Agency_Worklist_Filter {
         return $this->project_id;
     }
     
+    public function getFund_id() {
+        return $this->fund_id;
+    }
     /**
      * @return the $user
      */
@@ -203,6 +207,10 @@ class Agency_Worklist_Filter {
     
     public function setProjectId($project_id) {
         $this->project_id = $project_id;
+        return $this;
+    }
+    public function setFund_id($fund_id) {
+        $this->fund_id = $fund_id;
         return $this;
     }
 
@@ -325,6 +333,18 @@ class Agency_Worklist_Filter {
             }
             $box .= '<option value="' . $project['project_id'] . '"' . (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project_name . '</option>';
         }
+        $box .= '</select>';
+        
+        return $box;
+    }
+
+    public function getFundSelectbox($fromReport=false, $display=true, $active=false) {
+        $allDisplay = ($fromReport) ? "ALL" : "All Funds";
+        $box = '<select id="fundCombo" name="fund" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
+        $box .= '<option value="-1" ' . ($this->getFund_id() == -1 ? 'selected="selected"' : '') . '> ' . $allDisplay . '</option>
+                 <option value="1" ' .($this->getFund_id() == 1 ? 'selected="selected"' : '') . '>Below92</option>
+                 <option value="2" ' .($this->getFund_id() == 2 ? 'selected="selected"' : '') . '>CandP</option>
+                 <option value="0" ' .($this->getFund_id() == 0 ? 'selected="selected"' : '') . '>Not funded</option>';
         $box .= '</select>';
         
         return $box;

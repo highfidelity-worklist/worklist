@@ -14,16 +14,23 @@ $limit = 30;
 
 $_REQUEST['name'] = '.reports';
 $filter = new Agency_Worklist_Filter($_REQUEST);
+error_log(json_encode($_REQUEST));
 $from_date = mysql_real_escape_string($filter->getStart());
 $to_date = mysql_real_escape_string($filter->getEnd());
 $paidStatus = $filter->getPaidstatus();
 $page = $filter->getPage();
+$w2_only = (int) $_REQUEST['w2_only'];
 $dateRangeFilter = '';
 
 if (isset($from_date) || isset($to_date)) {
     $mysqlFromDate = GetTimeStamp($from_date);
     $mysqlToDate = GetTimeStamp($to_date);
     $dateRangeFilter = " AND DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" ;
+}
+
+$w2Filter = '';
+if ($w2_only) {
+    $w2Filter = " AND " . USERS . ".`has_w2` = 1";
 }
 
 $paidStatusFilter = '';
@@ -34,6 +41,7 @@ if (isset($paidStatus) && ($paidStatus) !="ALL") {
 
 $sfilter = $filter->getStatus();
 $pfilter = $filter->getProjectId();
+$fundFilter = $filter->getFund_id();
 $ufilter = $filter->getUser();
 $order = $filter->getOrder();
 $dir = $filter->getDir();
@@ -51,10 +59,15 @@ if ($sfilter){
         $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
     }
 }
-if ($pfilter){
+if ($pfilter) {
+    // ignore the fund filter?
     if($pfilter != 'ALL') {
       $where .= " AND `" . WORKLIST . "`.project_id = '$pfilter' "; 
+    } elseif ($fundFilter) {
+        $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
     }
+} elseif (isset($fundFilter) && $fundFilter != -1) {
+    $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
 }
 
 
@@ -104,6 +117,10 @@ if ($dateRangeFilter) {
     $where .= $dateRangeFilter;
 }
 
+if (! empty($w2Filter)) {
+    $where .= $w2Filter;
+}
+
 if ($paidStatusFilter) {
   $where .= $paidStatusFilter;
 }
@@ -116,6 +133,7 @@ if($queryType == "detail") {
     $qbody = " FROM `".FEES."`
                LEFT JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
                LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
+               LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
                WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
     $qorder = "$orderby $dir, `status` ASC, `worklist_id` ASC LIMIT " . ($page - 1) * $limit . ",$limit";
 
@@ -151,6 +169,7 @@ $report = array(array($items, $page, $cPages, $pageSum, $grandSum));
 
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
+error_log("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row = mysql_fetch_assoc($rtQuery); $i++) {
     $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal'],$row['expense'],$row['rewarder'],$row['bonus']);
 }
@@ -182,6 +201,8 @@ echo $json;
     $qbody = " FROM `".FEES."`
 	      LEFT JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
 	      LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
+          LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
+          
 	      WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
     $qgroup = " GROUP BY fee_date";
 

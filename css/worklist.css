@@ -471,3 +471,14 @@ td.textAlignReport {
 #itemProjectCombo {
     width:350px;
 }
+
+#w2label {
+    float: left;
+    width: 112px;
+}
+
+#w2checkbox {
+    float: right;
+    text-align: left;
+    width: 130px;
+}

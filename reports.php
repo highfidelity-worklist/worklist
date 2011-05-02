@@ -34,6 +34,13 @@ if (!empty($_REQUEST['view'])) {
     }
 }
 
+$w2_only = 0;
+if (! empty($_REQUEST['w2_only'])) {
+    if ($_REQUEST['w2_only'] == 1) {
+        $w2_only = 1;
+    }
+}
+
 $_REQUEST['name'] = '.reports';
 $filter = new Agency_Worklist_Filter($_REQUEST, true);
 if (!$filter->getStart()) {
@@ -286,6 +293,8 @@ var getPaidItems = function() {
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
                 project_id: $('select[name=project]').val(),
+                fund_id: $('select[name=fund]').val(),
+                w2_only: $('#w2_only').is(':checked') ? 1 : 0,
                 order: sort_key,
                 dir: order,
                 type: $('#type-status').val(),
@@ -393,6 +402,8 @@ function setupTimelineChart(reload) {
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
                 project_id: $('select[name=project]').val(),
+                fund_id: $('select[name=fund]').val(),
+                w2_only: $('#w2_only').is(':checked') ? 1 : 0,
                 order: $('#sort-by').val(),
                 start: fromDate,
                 end: toDate,
@@ -519,13 +530,6 @@ function loadTimelineChart() {
             return true;
         });
 
-        // Show PayPal reports page
-        $('#pp-reports-button').click(function() {
-            var new_window = window.open('ppreports.php', '_blank');
-            new_window.focus();
-            return false;
-        });
-        
         // Show PayPal Payment Run page
         $('#pp-masspay-button').click(function() {
             var new_window = window.open('view-payments.php', '_blank');
@@ -560,18 +564,18 @@ function loadTimelineChart() {
                 toDate = fmtDate(_toDate);
             }
             if(currentTab == 0) {
-              location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+                location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
             } else {
-              location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val();
+                location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
             }
         });
 
         $('#tabs').tabs('select', currentTab);
 
-        $('#type-status,#paid-status,#sort-by,select[name=status],select[name=project]').bind({
+        $('#type-status, #paid-status, #sort-by, select[name=status], select[name=project], select[name=fund]').bind({
             'beforeshow newlist': function(e, o) {
                 o.list.css("z-index","100")
-            }}).comboBox();
+        }}).comboBox();
    });
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
@@ -592,7 +596,6 @@ function loadTimelineChart() {
 
 <div>
     <div id="pp-reports-box" style="float:left;">
-        <input type="submit" value="PayPal Reports" id="pp-reports-button"></input><br />
         <?php if (!empty($_SESSION['is_payer'])) { ?>
             <input type="submit" value="Run MassPay" id="pp-masspay-button" /><br />
         <?php } ?>
@@ -608,7 +611,7 @@ function loadTimelineChart() {
             <div class="second-line">
                 Project:  <?php echo $filter->getProjectSelectbox(true); ?>
             </div>
-            </td>
+        </td>
         <td class="textAlignReport">
             <div>Paid Status: 
           <select id="paid-status" >
@@ -638,9 +641,19 @@ function loadTimelineChart() {
             </div>
         </td>
        </tr>
+       <tr>
+        <td class="textAlignReport">
+            <div>
+                Fund: <?php echo $filter->getFundSelectbox(true); ?>
+            </div>
+        </td>
+        <td class="textAlignReport">
+            <div id="w2label">W2 Only:</div>
+            <div id="w2checkbox"><input id="w2_only" name="w2_only" type="checkbox" <?php echo ($w2_only ? 'checked="checked"' : ''); ?> /></div>
+        </td>
       <tr>
           <td class="report-left-label">Fee added between</td>
-          <td >
+          <td>
           <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" value="<?php echo($filter->getStart()); ?>" title="Start Date" size="20" />
           <label for="end-date"> and </label><input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" value="<?php echo($filter->getEnd()); ?>" title="End Date" size="20" />
           </td>
