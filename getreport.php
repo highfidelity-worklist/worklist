@@ -14,7 +14,6 @@ $limit = 30;
 
 $_REQUEST['name'] = '.reports';
 $filter = new Agency_Worklist_Filter($_REQUEST);
-error_log(json_encode($_REQUEST));
 $from_date = mysql_real_escape_string($filter->getStart());
 $to_date = mysql_real_escape_string($filter->getEnd());
 $paidStatus = $filter->getPaidstatus();
@@ -169,7 +168,6 @@ $report = array(array($items, $page, $cPages, $pageSum, $grandSum));
 
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
-error_log("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row = mysql_fetch_assoc($rtQuery); $i++) {
     $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal'],$row['expense'],$row['rewarder'],$row['bonus']);
 }
