@@ -294,7 +294,7 @@ if ($action =='status-switch') {
     $status_error = '';
 
     if ($status == 'DONE' && $workitem->getProjectId() == 0) {
-        $status_error = "No project associated with workitem. Could not set to DONE. Project ID:" . $workitem->getProjectId();
+        $status_error = "No project associated with workitem. Could not set to DONE.");
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
