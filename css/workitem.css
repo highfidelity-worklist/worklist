@@ -1,6 +1,11 @@
 .warn {
     color:#F00;
 }
+.status-error {
+    display: block;
+    margin: 5px;
+    font-weight: bold;
+}
 #page-content {
     width:856px;
     clear:none;

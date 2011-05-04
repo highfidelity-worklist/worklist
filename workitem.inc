@@ -102,7 +102,11 @@ $(document).ready(function() {
             scrollHeight: 300
         });
     });
-	makeWorkitemTooltip(".worklist-item");
+    makeWorkitemTooltip(".worklist-item");
+
+    $('#workitem-form').submit(function() {
+        return saveWorkitem();
+    });
 });
 
 function showUserInfo(userId){
@@ -624,16 +628,16 @@ $(document).ready(function(){
                 return false;
             }
         });
-<?php if($worklist['status'] == 'WORKING' && $mechanic_id == $user_id && $promptForReviewUrl){?>
+<?php if ($worklist['status'] == 'WORKING' && $mechanic_id == $user_id && $promptForReviewUrl) : ?>
         $('#status-switch').click(function(e){
-            if($('#quick-status').val() == 'REVIEW'){
+            if ($('#quick-status').val() == 'REVIEW') {
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
                 $('#quick-status-review').val($('#quick-status').val());
-                           $('#popup-reviewurl').dialog('open');
+                $('#popup-reviewurl').dialog('open');
                 return false;
-        }
+            }
         });
-<?php } ?>
+<?php endif; ?>
 <?php if(($is_runner) || ($mechanic_id == $user_id) && ($worklist['status'] != 'DONE')){?>
         $('#edit_review_url').click(function(e){
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
@@ -742,43 +746,57 @@ $(document).ready(function(){
      return false;
   }
 
-  function saveWorkitem() {
-      var massValidation;
-      if($('#is_bug').is(':checked')) {            
-          var bugJobId = new LiveValidation('bug_job_id',{ 
-                             onlyOnSubmit: true ,
-                             onInvalid : function() {
-                             this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-                         }});
-          bugJobId.add( Validate.Custom, { 
-                        against: function(value,args){
-                            id=$('#bugJobSummary').attr('title');
-                            return (id!=0) 
-                        },
-                        failureMessage: "Invalid item Id"});
-          massValidation = LiveValidation.massValidate([ bugJobId ]);   
-          if (!massValidation) {
-              return false;
-          }
-      }
-      var summary = new LiveValidation('summary',{ onlyOnSubmit: true ,
-                    onInvalid : function() {
-                        this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-                    }
-      });
-      summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-      massValidation = LiveValidation.massValidate( [ summary ]);   
-      if (!massValidation) {
+    function saveWorkitem() {
+        var massValidation;
+        if($('#is_bug').is(':checked')) {
+            var bugJobId = new LiveValidation('bug_job_id', { 
+                onlyOnSubmit: true ,
+                onInvalid : function() {
+                    this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
+                }
+            });
+            bugJobId.add( Validate.Custom, { 
+                against: function(value,args){
+                    id = $('#bugJobSummary').attr('title');
+                    return (id!=0) 
+                },
+                failureMessage: "Invalid item Id"
+            });
+            massValidation = LiveValidation.massValidate([ bugJobId ]);   
+            if (! massValidation) {
+                return false;
+            }
+        }
+        var summary = new LiveValidation('summary', {
+            onlyOnSubmit: true ,
+            onInvalid : function() {
+                this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
+            }
+        });
+        summary.add( Validate.Presence, { 
+            failureMessage: "Can't be empty!"
+        });
+        massValidation = LiveValidation.massValidate( [ summary ]);
+        if (!massValidation) {
           return false;
-      }
+        }
 
-      var summary = $('#summary').val();
-      var status = $('#status').val();
-      var notes = $('#edit-notes').val();
-      $('#workitem-form').submit();
-
-    return false;
-  }
+        var editProject = new LiveValidation('project_id', {
+            onInvalid : function() {
+                this.insertMessage( this.createMessageSpan() );
+                this.addFieldClass();
+            }
+        });
+        editProject.add( Validate.Exclusion, {
+            within: [ 'Select project' ], 
+            partialMatch: true,
+            failureMessage: "You have to choose a project!"
+        });
+        massValidation = LiveValidation.massValidate( [ editProject ]);
+        if (! massValidation) {
+            return false;
+        }
+    }
 
     function AcceptMultipleBidOpen(){
         var job_id = workitem_id;
@@ -1091,7 +1109,7 @@ if ($action =="edit"):  ?>
                             <span class="project-label">Project</span>
                             <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
                                     <select id="project_id" name="project_id" class="project-dropdown">
-                                        <option value="">All Projects</option>
+                                        <option value="Select project">Select project</option>
                                         <?php foreach ( $projects as $project): ?>
                                             <option value="<?php echo $project['project_id']; ?>" <?php echo $project['project_id'] == $worklist['project_id'] ? ' selected = "selected"' : ''; ?>>
                                             <?php echo $project['name']; ?>
@@ -1151,7 +1169,7 @@ if ($action =="edit"):  ?>
                     </ul>
                     <?php if($allowEdit && $action=="edit"): ?>
                         <div class="buttonContainer-save">
-                            <input type="submit" value="Save" name="save_workitem" id="save_workitem" onClick="return saveWorkitem();"/>
+                            <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
                         </div>
                     <?php endif;?>
                 </form>
@@ -1195,6 +1213,9 @@ if ($action =="edit"):  ?>
                                 <?php
                                 }?>
                     </li>
+<?php if (! empty($status_error)) : ?>
+                    <li><span class="LV_invalid status-error"><?php echo $status_error; ?></span></li>
+<?php endif; ?>
                 <!-- View: Key People info -->
                     <li>
                             <div id="creatorBox"><span id="pingCreator" class="creatorName" title="Ping Creator"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>

@@ -154,12 +154,12 @@ if ($action =='save_workitem') {
         || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
 
         if ($workitem->getStatus() != $status && !empty($status)) {
-            changeStatus($workitem, $status, $user);
-            if (!empty($new_update_message)) {  // add commas where appropriate
-                $new_update_message .= ", ";
+            if (changeStatus($workitem, $status, $user)) {
+                if (!empty($new_update_message)) {  // add commas where appropriate
+                    $new_update_message .= ", ";
+                }
+                $new_update_message .= "Status set to $status. ";
             }
-
-            $new_update_message .= "Status set to $status. ";
         }
     }
     if ($workitem->getNotes() != $notes && isset($_POST['notes'])) {
@@ -289,14 +289,20 @@ if($action =='save-review-url') {
     $promptForReviewUrl = false;
 }
 
-if($action =='status-switch') {
-
+if ($action =='status-switch') {
     $status = $_POST['quick-status'];
-    changeStatus($workitem, $status, $user);
-    $workitem->save();
-    $new_update_message = "Status set to $status. ";
-    $notifyEmpty = false;
-    $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
+    $status_error = '';
+
+    if ($status == 'DONE' && $workitem->getProjectId == 0) {
+        $status_error = "No project associated with workitem. Could not set to DONE";
+    } else {
+        if (changeStatus($workitem, $status, $user)) {
+            $workitem->save();
+            $new_update_message = "Status set to $status. ";
+            $notifyEmpty = false;
+            $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
+        }
+    }
 }
 
     if(!$notifyEmpty) {
@@ -724,15 +730,17 @@ function changeStatus($workitem,$newStatus, $user) {
 
     $allowable = array("SUGGESTED", "REVIEW", "PASS", "COMPLETED");
 
-    if($user->getIs_runner() == 1 || $user->getBudget() > 0) {
-
-      if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)) {
-
-        $workitem->setRunnerId($user->getId());
-      }
+    if ($user->getIs_runner() == 1 || $user->getBudget() > 0) {
+        if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)) {
+            $workitem->setRunnerId($user->getId());
+        }
+    }
+    
+    if ($newStatus == 'DONE' && $workitem->getProjectId() == 0) {
+        return false;
     }
     $workitem->setStatus($newStatus);
-
     // notifications for subscribed users
     Notification::statusNotify($workitem);
+    return true;
 }
