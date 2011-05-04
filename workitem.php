@@ -293,8 +293,8 @@ if ($action =='status-switch') {
     $status = $_POST['quick-status'];
     $status_error = '';
 
-    if ($status == 'DONE' && $workitem->getProjectId == 0) {
-        $status_error = "No project associated with workitem. Could not set to DONE";
+    if ($status == 'DONE' && $workitem->getProjectId() == 0) {
+        $status_error = "No project associated with workitem. Could not set to DONE. Project ID:" . $workitem->getProjectId();
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
