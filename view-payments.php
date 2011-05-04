@@ -249,25 +249,25 @@ switch ($action) {
             if (mysql_num_rows($fees_info_results)) {
                 $message .= "Fees:\n";
                 while ($fees_data = mysql_fetch_array($fees_info_results)) {
-                            $receiversArray[] = array(
-                                'receiverEmail' => $fees_data["mechanic_paypal_email"],
-                                'amount' => $fees_data["amount"],
-                                'uniqueID' => $fees_data["fee_id"],
-                                'note' => 'Worklist #'.$fees_data["worklist_id"].' - '.$fees_data["worklist_item"]);
-                            $totalFees = $totalFees + $fees_data["amount"];
-                            $message .= "    ".$fees_data['mechanic_paypal_email']." - $".$fees_data['amount']."\n";
+                    $receiversArray[] = array(
+                        'receiverEmail' => $fees_data["mechanic_paypal_email"],
+                        'amount' => $fees_data["amount"],
+                        'uniqueID' => $fees_data["fee_id"],
+                        'note' => 'Worklist #'.$fees_data["worklist_id"].' - '.$fees_data["worklist_item"]);
+                    $totalFees = $totalFees + $fees_data["amount"];
+                    $message .= "    ".$fees_data['mechanic_paypal_email']." - $".$fees_data['amount']."\n";
                 }
             }
             if (mysql_num_rows($bonus_info_results) > 0) {
                 $message .= "Bonuses:\n";
                 while ($fees_data = mysql_fetch_array($bonus_info_results)) {
-                            $receiversArray[] = array(
-                                'receiverEmail' => $fees_data["mechanic_paypal_email"],
-                                'amount' => $fees_data["amount"],
-                                'uniqueID' => "bonus-".$fees_data["fee_id"],
-                                'note' => $fees_data["worklist_id"].' - '.$fees_data["worklist_item"]);
-                            $totalFees = $totalFees + $fees_data["amount"];
-                            $message .= "    ".$fees_data['mechanic_paypal_email']." - $".$fees_data['amount']."\n";
+                    $receiversArray[] = array(
+                        'receiverEmail' => $fees_data["mechanic_paypal_email"],
+                        'amount' => $fees_data["amount"],
+                        'uniqueID' => "bonus-".$fees_data["fee_id"],
+                        'note' => $fees_data["worklist_id"].' - '.$fees_data["worklist_item"]);
+                    $totalFees = $totalFees + $fees_data["amount"];
+                    $message .= "    ".$fees_data['mechanic_paypal_email']." - $".$fees_data['amount']."\n";
                 }
             }
             $message .= "</pre>";

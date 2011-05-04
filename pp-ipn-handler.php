@@ -79,6 +79,7 @@ if ($fp) {
        
  
     fputs($fp, $header . $rqstr);
+    $message = "";
     while (!feof($fp)) {
         $res = fgets ($fp, 1024);
         if (strcmp($res, "VERIFIED") == 0) {
@@ -88,99 +89,98 @@ if ($fp) {
             // check that payment_amount/payment_currency are correct
             // process payment
             $message .= "\r\n Verified.";    
-            switch ($txn_type)
-            {
+            switch ($txn_type) {
                 case 'masspay':
-/**
-*   $payment_status = 'Completed'|'Processed'|'Denied'|'Pending'
-*   Canceled_Reversal: A reversal has been canceled. For example, 
-*       you won a dispute with the customer, and the funds for the 
-*       transaction that was reversed have been returned to you.
-*   Completed: The payment has been completed, and the funds have 
-*       been added successfully to your account balance.
-*   Created: A German ELV payment is made using Express Checkout.
-*   Denied: You denied the payment. This happens only if the payment 
-*       was previously pending because of possible reasons described 
-*       for the pending_reason variable or the Fraud_Management_Filters_x variable.
-*   Expired: This authorization has expired and cannot be captured.
-*   Failed: The payment has failed. This happens only if the payment was made from your customer.s bank account.
-*   Pending: The payment is pending. See pending_reason for more information.
-*   Refunded: You refunded the payment.
-*   Reversed: A payment was reversed due to a chargeback or other type of reversal. 
-*       The funds have been removed from your account balance and returned to the buyer. 
-*       The reason for the reversal is specified in the ReasonCode element.
-*   Processed: A payment has been accepted.
-*   Voided: This auth has been voided and returned to the payer 
-*/
+                    /**
+                    *   $payment_status = 'Completed'|'Processed'|'Denied'|'Pending'
+                    *   Canceled_Reversal: A reversal has been canceled. For example, 
+                    *       you won a dispute with the customer, and the funds for the 
+                    *       transaction that was reversed have been returned to you.
+                    *   Completed: The payment has been completed, and the funds have 
+                    *       been added successfully to your account balance.
+                    *   Created: A German ELV payment is made using Express Checkout.
+                    *   Denied: You denied the payment. This happens only if the payment 
+                    *       was previously pending because of possible reasons described 
+                    *       for the pending_reason variable or the Fraud_Management_Filters_x variable.
+                    *   Expired: This authorization has expired and cannot be captured.
+                    *   Failed: The payment has failed. This happens only if the payment was made from your customer.s bank account.
+                    *   Pending: The payment is pending. See pending_reason for more information.
+                    *   Refunded: You refunded the payment.
+                    *   Reversed: A payment was reversed due to a chargeback or other type of reversal. 
+                    *       The funds have been removed from your account balance and returned to the buyer. 
+                    *       The reason for the reversal is specified in the ReasonCode element.
+                    *   Processed: A payment has been accepted.
+                    *   Voided: This auth has been voided and returned to the payer 
+                    */
 
 
-                // set counter, using dynamic variables to parse POST vars
-                $n = 1;
-                $fee_id = 'unique_id_'.$n;
-                
-                //set status_reason if status is pending.
-                $mp_status_reason = NULL;
-                if (isset($pending_reason)) { $mp_status_reason = $pending_reason; }
-                
-                while (isset($$fee_id)) {
-                // Needed to use the counter as a part of a dynamic var to grab the correct
-                // variable from the IPN POST.  if there is a unique_id set
-                    $receiver_email = 'receiver_email_'.$n;
-                    $mc_currency = 'mc_currency_'.$n;
-                    $masspay_txn_id = 'masspay_txn_id_'.$n;
+                    // set counter, using dynamic variables to parse POST vars
+                    $n = 1;
                     $fee_id = 'unique_id_'.$n;
-                    $status = 'status_'.$n; // 'Completed, Failed, Reversed, or Unclaimed'
-                    $mc_gross = 'mc_gross_'.$n;
-                    $mc_fee = 'mc_fee_'.$n;
                     
-                    //if a log doesn't exist for this fee, create one, otherwise update.
-                    $log_sql = "SELECT * FROM ".PAYPAL_LOG." WHERE fee_id = ".$$fee_id;
-                    $log_exists = mysql_num_rows(mysql_query($log_sql));
-                    if ($log_exists == 0) { 
-                        $mp_sql = "INSERT INTO ".PAYPAL_LOG." (fee_id, payment_gross, payment_fee, status, masspay_txn_id, txn_verify, masspay_run_status, masspay_status_reason, currency, payee_paypal_email, date_created) VALUES (";
-                        $mp_sql .= "'".mysql_real_escape_string($$fee_id)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($$mc_gross)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($$mc_fee)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($$status)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($$masspay_txn_id)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($verify_sign)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($payment_status)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($mp_status_reason)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($$mc_currency)."', "; 
-                        $mp_sql .= "'".mysql_real_escape_string($$receiver_email)."', "; 
-                        $mp_sql .= "'".date("Y-m-d H:i:s")."')"; 
-                    } else {
-                        $mp_sql  = "UPDATE ".PAYPAL_LOG." SET ";
-                        $mp_sql .= "payment_gross ='".mysql_real_escape_string($$mc_gross)."', "; 
-                        $mp_sql .= "payment_fee ='".mysql_real_escape_string($$mc_fee)."', "; 
-                        $mp_sql .= "status ='".mysql_real_escape_string($$status)."', "; 
-                        $mp_sql .= "masspay_txn_id ='".mysql_real_escape_string($$masspay_txn_id)."', "; 
-                        $mp_sql .= "txn_verify ='".mysql_real_escape_string($verify_sign)."', "; 
-                        $mp_sql .= "masspay_run_status ='".mysql_real_escape_string($payment_status)."', "; 
-                        $mp_sql .= "masspay_status_reason = '".mysql_real_escape_string($mp_status_reason)."', "; 
-                        $mp_sql .= "currency ='".mysql_real_escape_string($$mc_currency)."', "; 
-                        $mp_sql .= "payee_paypal_email ='".mysql_real_escape_string($$receiver_email)."', "; 
-                        $mp_sql .= "date_updated = '".date("Y-m-d H:i:s")."' "; 
-                        $mp_sql .= "WHERE fee_id = ".mysql_real_escape_string($$fee_id);
+                    //set status_reason if status is pending.
+                    $mp_status_reason = NULL;
+                    if (isset($pending_reason)) { $mp_status_reason = $pending_reason; }
+                    
+                    while (isset($$fee_id)) {
+                        // Needed to use the counter as a part of a dynamic var to grab the correct
+                        // variable from the IPN POST.  if there is a unique_id set
+                        $receiver_email = 'receiver_email_'.$n;
+                        $mc_currency = 'mc_currency_'.$n;
+                        $masspay_txn_id = 'masspay_txn_id_'.$n;
+                        $fee_id = 'unique_id_'.$n;
+                        $status = 'status_'.$n; // 'Completed, Failed, Reversed, or Unclaimed'
+                        $mc_gross = 'mc_gross_'.$n;
+                        $mc_fee = 'mc_fee_'.$n;
+                        
+                        //if a log doesn't exist for this fee, create one, otherwise update.
+                        $log_sql = "SELECT * FROM ".PAYPAL_LOG." WHERE fee_id = ".$$fee_id;
+                        $log_exists = mysql_num_rows(mysql_query($log_sql));
+                        if ($log_exists == 0) { 
+                            $mp_sql = "INSERT INTO ".PAYPAL_LOG." (fee_id, payment_gross, payment_fee, status, masspay_txn_id, txn_verify, masspay_run_status, masspay_status_reason, currency, payee_paypal_email, date_created) VALUES (";
+                            $mp_sql .= "'".mysql_real_escape_string($$fee_id)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($$mc_gross)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($$mc_fee)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($$status)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($$masspay_txn_id)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($verify_sign)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($payment_status)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($mp_status_reason)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($$mc_currency)."', "; 
+                            $mp_sql .= "'".mysql_real_escape_string($$receiver_email)."', "; 
+                            $mp_sql .= "'".date("Y-m-d H:i:s")."')"; 
+                        } else {
+                            $mp_sql  = "UPDATE ".PAYPAL_LOG." SET ";
+                            $mp_sql .= "payment_gross ='".mysql_real_escape_string($$mc_gross)."', "; 
+                            $mp_sql .= "payment_fee ='".mysql_real_escape_string($$mc_fee)."', "; 
+                            $mp_sql .= "status ='".mysql_real_escape_string($$status)."', "; 
+                            $mp_sql .= "masspay_txn_id ='".mysql_real_escape_string($$masspay_txn_id)."', "; 
+                            $mp_sql .= "txn_verify ='".mysql_real_escape_string($verify_sign)."', "; 
+                            $mp_sql .= "masspay_run_status ='".mysql_real_escape_string($payment_status)."', "; 
+                            $mp_sql .= "masspay_status_reason = '".mysql_real_escape_string($mp_status_reason)."', "; 
+                            $mp_sql .= "currency ='".mysql_real_escape_string($$mc_currency)."', "; 
+                            $mp_sql .= "payee_paypal_email ='".mysql_real_escape_string($$receiver_email)."', "; 
+                            $mp_sql .= "date_updated = '".date("Y-m-d H:i:s")."' "; 
+                            $mp_sql .= "WHERE fee_id = ".mysql_real_escape_string($$fee_id);
+                        }
+                       
+                        //record IPN results in db
+                        $mp_results = mysql_query($mp_sql);
+                        
+                        //get next id to check.
+                        $n++;
+                        $fee_id = 'unique_id_'.$n;
                     }
-                   
-                    //record IPN results in db
-                    $mp_results = mysql_query($mp_sql);
-                    
-                    //get next id to check.
-                    $n++;
-                    $fee_id = 'unique_id_'.$n;
-                }
-        break;
+                    break;
 
-        case "web_accept":
-           $ch = curl_init('http://dev.sendlove.us/~jason/lovemachine/html/paypal-function.php?action=compPPTxn');
-           curl_setopt ($ch, CURLOPT_POST, 1);
-           curl_setopt ($ch, CURLOPT_POSTFIELDS, $rqstr);
-           curl_exec ($ch);
-           curl_close ($ch); 
-        break;
-    }   
+                case "web_accept":
+                    $ch = curl_init('http://dev.sendlove.us/~jason/lovemachine/html/paypal-function.php?action=compPPTxn');
+                    curl_setopt ($ch, CURLOPT_POST, 1);
+                    curl_setopt ($ch, CURLOPT_POSTFIELDS, $rqstr);
+                    curl_exec ($ch);
+                    curl_close ($ch); 
+                    break;
+            }   
         } else if (strcmp ($res, "INVALID") == 0) {
             // If returns INVALID, log for manual investigation
             //set up ERROR email
