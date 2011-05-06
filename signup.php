@@ -156,10 +156,14 @@ if(isset($minimal_POST['sign_up'])){
             $link = SECURE_SERVER_URL . "confirmation.php?cs=".$ret->confirm_string."&str=" . base64_encode($ret->username);
             $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
             $body .= "<p><a href=\"".$link."\">Click here to verify your email address and activate your account.</a></p>";
-            $body .= "<p>Note: The nickname you choose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later</p>";
+            if (!empty($ret->newNickname) && $ret->newNickname == true) { 
+                $body .= "<p>Note: The nickname you chose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later</p>";
+            }
             $plain = "You are only one click away from completing your registration!\n\n";
             $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
-            $plain .= "Note: The nickname you choose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later";
+            if (!empty($ret->newNickname) && $ret->newNickname == true) { 
+                $plain .= "Note: The nickname you chose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later";
+            }
             $plain .= $link."\n\n";
             $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
             if(!send_email($ret->username, $subject, $body, $plain)) { error_log("signup.php: send_email failed");
@@ -186,7 +190,7 @@ if(isset($minimal_POST['sign_up'])){
                 }
             }
 			if (!empty($ret->newNickname) && $ret->newNickname == true) { 
-				$confirm_txt .= "<br/><br/>Note: The nickname you choose is already taken. We created a new one for you ( ".strtoupper($newUser["nickname"])." ) which can be changed later.";
+				$confirm_txt .= "<br/><br/>Note: The nickname you chose is already taken. We created a new one for you ( ".strtoupper($newUser["nickname"])." ) which can be changed later.";
 			}
         }
     }
