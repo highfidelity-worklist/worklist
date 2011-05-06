@@ -116,8 +116,12 @@ if ($action =='save_workitem') {
 	error_log( $workitem->getIs_bug()."is_bug:".$is_bug."--".$_REQUEST['is_bug']);
     // First check to see if this is marked as a bug
     if ($workitem->getIs_bug() != $is_bug) {
-		error_log("bug changed it");
-        $new_update_message .= 'Marked as a bug. ';
+        error_log("bug changed it");
+        if($is_bug) {
+	        $new_update_message .= 'Marked as a bug. ';
+        } else {
+	        $new_update_message .= 'Marked as not being a bug. ';
+        }		
     }
 	$workitem->setIs_bug($is_bug);
 
