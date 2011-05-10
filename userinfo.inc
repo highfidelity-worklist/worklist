@@ -239,6 +239,8 @@ $projects = getProjectList();
 $user_projects = $user->getProjects_checkedout();
 if (count($user_projects) > 0) {
     $has_sandbox = true;
+} else {
+    $has_sandbox = false;
 }
 ?>
         <div id="tabs-3" style="clear: both;">
