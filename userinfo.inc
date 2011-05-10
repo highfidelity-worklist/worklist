@@ -253,7 +253,7 @@ if (count($user_projects) > 0) {
                 </p>
                 <p id="projects-field" class="info-label">Projects to check-out :</p>
 <?php foreach ($projects as $project) : ?>
-                <div class="quarter-column"><input <?php if ($user->isProjectCheckedOut( $project['id'] )) { echo 'checked="checked"  disabled="disabled" '; } ?> type="checkbox" id="<?php echo $project['id']; ?>" /><input type="hidden" class="repo" value="<?php echo $project['repo']; ?>" /><?php echo $project['name']; ?></div>
+                <div class="quarter-column"><input <?php if (($has_sandbox) && $user->isProjectCheckedOut( $project['id'] )) { echo 'checked="checked"  disabled="disabled" '; } ?> type="checkbox" id="<?php echo $project['id']; ?>" /><input type="hidden" class="repo" value="<?php echo $project['repo']; ?>" /><?php echo $project['name']; ?></div>
 <?php endforeach; ?>
             </form>
         </div><!-- end of tab 3 -->
