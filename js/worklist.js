@@ -55,58 +55,58 @@ function RelativeTime(x){
  *
  */
 function AjaxPopup(popupId,
-           titleString,
-           urlString,
-           keyId,
-           fieldArray,
-           successFunc)
+		   titleString,
+		   urlString,
+		   keyId,
+		   fieldArray,
+		   successFunc)
 {
   $(popupId).data('title.dialog', titleString);
 
   $.ajax({type: "POST",
-      url: urlString,
-      data: 'item='+keyId,
-      dataType: 'json',
-      success: function(json) {
+	  url: urlString,
+	  data: 'item='+keyId,
+	  dataType: 'json',
+	  success: function(json) {
 
-        $.each(fieldArray, 
-           function(key,value){
-             if(value[0] == 'input') {
-               if(value[3] != undefined && value[3] == 'eval')  {
-             $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
-               } else {
-             $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
-               }
-             }
-             
-             if(value[0] == 'textarea') {
-               if(value[3] != undefined && value[3] == 'eval')  {
-             $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
-               } else {
-             $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
-               }
-             }
-             
-             if(value[0] == 'checkbox') {
-               if(value[3] != undefined && value[3] == 'eval')  {
-             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');         
-               } else {
-             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');         
-               }
-             }
-             
-             if(value[0] == 'span')  {
-               if(value[3] != undefined && value[3] == 'eval')  {
-             $('.popup-body form ' + value[1]).text( eval(value[2]) );
-               } else {
-             $('.popup-body form ' + value[1]).text( value[2] );
-               }
-             }
-           });
+	    $.each(fieldArray, 
+		   function(key,value){
+		     if(value[0] == 'input') {
+		       if(value[3] != undefined && value[3] == 'eval')  {
+			 $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
+		       } else {
+			 $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
+		       }
+		     }
+		     
+		     if(value[0] == 'textarea') {
+		       if(value[3] != undefined && value[3] == 'eval')  {
+			 $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
+		       } else {
+			 $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
+		       }
+		     }
+		     
+		     if(value[0] == 'checkbox') {
+		       if(value[3] != undefined && value[3] == 'eval')  {
+			 $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');	     
+		       } else {
+			 $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');	     
+		       }
+		     }
+		     
+		     if(value[0] == 'span')  {
+		       if(value[3] != undefined && value[3] == 'eval')  {
+			 $('.popup-body form ' + value[1]).text( eval(value[2]) );
+		       } else {
+			 $('.popup-body form ' + value[1]).text( value[2] );
+		       }
+		     }
+		   });
 
-        if(successFunc !== undefined) {
-          successFunc(json);
-        }
+	    if(successFunc !== undefined) {
+	      successFunc(json);
+	    }
             }
     });
 
@@ -133,48 +133,48 @@ function AjaxPopup(popupId,
  *
  */
 function SimplePopup(popupId,
-             titleString,
-             keyId,
-             fieldArray,
-             successFunc)
+		     titleString,
+		     keyId,
+		     fieldArray,
+		     successFunc)
 {
   $(popupId).data('title.dialog', titleString);
 
   $.each(fieldArray, 
-     function(key,value){
-       if(value[0] == 'input') {
-         if(value[3] != undefined && value[3] == 'eval')  {
-           $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
-         } else {
-           $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
-         }
-       }
-       
-       if(value[0] == 'textarea') {
-         if(value[3] != undefined && value[3] == 'eval')  {
-           $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
-         } else {
-           $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
-         }
-       }
-       
-       if(value[0] == 'checkbox') {
-         if(value[3] != undefined && value[3] == 'eval')  {
-           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');         
-         } else {
-           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');         
-         }
-       }
-       
-       if(value[0] == 'span')  {
-         if(value[3] != undefined && value[3] == 'eval')  {
-           $('.popup-body form ' + value[1]).text( eval(value[2]) );
-         } else {
-           $('.popup-body form ' + value[1]).text( value[2] );
-         }
-       }
-       
-     });
+	 function(key,value){
+	   if(value[0] == 'input') {
+	     if(value[3] != undefined && value[3] == 'eval')  {
+	       $('.popup-body form input[name="' + value[1] +'"]').val( eval(value[2]) );
+	     } else {
+	       $('.popup-body form input[name="' + value[1] +'"]').val( value[2] );
+	     }
+	   }
+	   
+	   if(value[0] == 'textarea') {
+	     if(value[3] != undefined && value[3] == 'eval')  {
+	       $('.popup-body form textarea[name="' + value[1] +'"]').val( eval(value[2]) );
+	     } else {
+	       $('.popup-body form textarea[name="' + value[1] +'"]').val( value[2] );
+	     }
+	   }
+	   
+	   if(value[0] == 'checkbox') {
+	     if(value[3] != undefined && value[3] == 'eval')  {
+	       $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');	     
+	     } else {
+	       $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');	     
+	     }
+	   }
+	   
+	   if(value[0] == 'span')  {
+	     if(value[3] != undefined && value[3] == 'eval')  {
+	       $('.popup-body form ' + value[1]).text( eval(value[2]) );
+	     } else {
+	       $('.popup-body form ' + value[1]).text( value[2] );
+	     }
+	   }
+	   
+	 });
 
   if(successFunc !== undefined) {
     successFunc(json);
@@ -227,19 +227,19 @@ jQuery.fn.DefaultValue = function(text){
 };
 
 $(function() {
-    var hideInputField = function() {
-        // if the status is not empty - hide input field, otherwise do not hide input
-        if( $('#status-lbl').find('b').html() != "" ) {
-            $('#status-update').hide();
-            $("#status-share").hide();
-            $('#status-lbl').show();
-        }
-    };
-    $("#status-share").hide();
-    $('#share-this').hide();
-    $("#status-update").DefaultValue("What are you working on?");
-    $('#status-update').hide();
-    $("#query").DefaultValue("Search...");
+	var hideInputField = function() {
+		// if the status is not empty - hide input field, otherwise do not hide input
+		if( $('#status-lbl').find('b').html() != "" ) {
+			$('#status-update').hide();
+			$("#status-share").hide();
+			$('#status-lbl').show();
+		}
+	};
+	$("#status-share").hide();
+	$('#share-this').hide();
+	$("#status-update").DefaultValue("What are you working on?");
+	$('#status-update').hide();
+	$("#query").DefaultValue("Search...");
     $("#feesDialog").dialog({
         title: "Earnings",
         autoOpen: false,
@@ -249,7 +249,7 @@ $(function() {
         modal: true
     });
     //debugger;
-    $("#welcome .earnings").click(function(){
+	$("#welcome .earnings").click(function(){
         $("#feesDialog").dialog("open");
     });
     if ($("#budgetPopup").length > 0) {
@@ -266,43 +266,47 @@ $(function() {
             $("#budgetPopup").dialog("open");
         });
     }
-    // if the status is empty, show input field - allow user to enter the status
-    if( $.trim($('#status-lbl').find('b').html()) == "" ) {
-        $('#status-lbl').hide();
-        $('#status-update').show();
-        $("#status-share").show();
-    } else {
-        $('#status-lbl').show();
-    }
-    
-    // When status-update gets focus enlarge and show the share button
-    $("#status-update").focus(function() {        
-        $("#status-update").data("focus",true);        
-        $("#status-share").show();
-    });
+	// if the status is empty, show input field - allow user to enter the status
+	if( $.trim($('#status-lbl').find('b').html()) == "" ) {
+		$('#status-lbl').hide();
+		$('#status-update').show();
+		$("#status-share").show();
+	} else {
+		$('#status-lbl').show();
+	}
+	
+	// When status-update gets focus enlarge and show the share button
+	$("#status-update").focus(function() {		
+		$("#status-update").data("focus",true);		
+		$("#status-share").show();
+        if(statusTimeoutId) clearTimeout(statusTimeoutId);
+	});
 
-    //When status-update lost the focus, hide input field ... 
-    $("#status-update").blur(function() {
-    // if the blur event is coming due to a click on button "Share", we need to delay the hidding process.
-    // if not the click event on the hidden button is not triggered.
-        setTimeout(function() { 
-            hideInputField();
-            $("#status-update").data("focus",false);        
-        },500);
-    });
-    
-    $("#status-lbl").mouseenter(function() {
-        $('#status-lbl').hide();
-        $('#status-update').show();
-        $('#status-share').show();
-    });
-    
-    //When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
-    $("#status-wrap").mouseleave(function(){
-        if ($("#status-update").data("focus") !== true) {
-            hideInputField();
-        }
-    });
+	//When status-update lost the focus, hide input field ... 
+	$("#status-update").blur(function() {
+	// if the blur event is coming due to a click on button "Share", we need to delay the hidding process.
+	// if not the click event on the hidden button is not triggered.
+		setTimeout(function() { 
+			hideInputField();
+			$("#status-update").data("focus",false);		
+		},500);
+            statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
+      	});
+	
+	$("#status-lbl").mouseenter(function() {
+		$('#status-lbl').hide();
+		$('#status-update').show();
+		$('#status-share').show();
+        if(statusTimeoutId) clearTimeout(statusTimeoutId);
+	});
+	
+	//When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
+	$("#status-wrap").mouseleave(function(){
+		if ($("#status-update").data("focus") !== true) {
+			hideInputField();
+		}
+        statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
+	});
 
     //Enable/disable job bug id on is_bug checkbox state
     $("#bug_job_id").ready(function() {
@@ -358,7 +362,7 @@ $(function() {
                     } else {
                         if(json.returnString.length>0) {
                             $('#bugJobSummary').html('<p><small>'+json.returnString+'</small></p>');
-                            $("#bugJobSummary").attr("title" , id);    
+                            $("#bugJobSummary").attr("title" , id);	
                         } else {
                             $('#bugJobSummary').html("<p><small>Item doesn't exist</small></p>");
                             $("#bugJobSummary").attr("title" , 0);
@@ -369,33 +373,35 @@ $(function() {
         }
     });
 
-    
-    //Submit the form using AJAX to the database
-    $("#status-share-btn").click(function() {
-        if($("#status-update").val() == "")    {
-            //return false;
-        }
-        if($("#status-update").val() ==  "What are you working on?"){
-            $("#status-update").val("");
-        }
-        $.ajax({
-            url: "update_status.php",
-            type: "POST",
-            data: "action=update&status=" + $("#status-update").val(),
-            dataType: "text",
-            success: function(){
-                // if entered blank status - do not hide input
-                if ($("#status-update").val()!="") {
-                    $('#status-update').hide();$('#status-lbl').show();
-                    $("#status-share").hide();
-                    $('#share-this').hide();
-                } 
-                $('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
-            }
-        });
-        
-        return false;
-    });
+	
+	//Submit the form using AJAX to the database
+	$("#status-share-btn").click(function() {
+		if($("#status-update").val() == "")	{
+			//return false;
+		}
+		if($("#status-update").val() ==  "What are you working on?"){
+			$("#status-update").val("");
+		}
+		$.ajax({
+			url: "update_status.php",
+			type: "POST",
+			data: "action=update&status=" + $("#status-update").val(),
+			dataType: "text",
+			success: function(){
+				// if entered blank status - do not hide input
+				if ($("#status-update").val()!="") {
+					$('#status-update').hide();$('#status-lbl').show();
+					$("#status-share").hide();
+					$('#share-this').hide();
+				} 
+				$('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
+                if(statusTimeoutId) clearTimeout(statusTimeoutId);
+                statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
+			}
+		});
+		
+		return false;
+	});
     
 });
 
@@ -423,112 +429,83 @@ $(function() {
 });
 
 $(function() {
-        // bind on beforeshow newList
-        $('select[name=user]').bind({
-            'beforeshow newlist': function(e, o) {
-                
-                // check if the div for the active only button has already been created
-                // create it if it hasn't
-                if($('#userActiveBox').length == 0) {
-                    var div = $('<div/>').attr('id', 'userActiveBox');                    
-                    // now we add a function which gets called on click
-                    div.click(function(e) {
-                        // we hide the list and remove the active state
-                        activeUsersFlag = 1 - activeUsersFlag;
-                        o.list.hide();
-                        o.container.removeClass('ui-state-active');
-                        // we send an ajax request to get the updated list
-                        $.ajax({
-                            type: 'POST',
-                            url: 'refresh-filter.php',
-                            data: {
-                                name: filterName,
-                                active: activeUsersFlag,
-                                filter: 'users'
-                            },
-                            dataType: 'json',
-                            // on success we update the list
-                            success: $.proxy(o.setupNewList, null,o)
-                        });
-                    });                    
-                    $('.userCombo').append(div);
-                }
-                
-                // set up the label and checkbox to be placed in the div
-                var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
-                var checkbox = $('<input/>').attr({
-                    type: 'checkbox',
-                    id: 'onlyActive'
-                }).css({
-                        margin: 0,
-                        position: 'relative',
-                        top: '1px'
-                });
+		// to add a custom stuff we bind on events
+		$('select[name=user]').bind({
+			'beforeshow newlist': function(e, o) {
+				// now we create a new li element with a checkbox in it
+				var li = $('<li/>').css({
+					left: 0,
+					position: 'absolute',
+					background: '#AAAAAA',
+					width: '123px',
+					top: '180px'
+				});
+				var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
+				var checkbox = $('<input/>').attr({
+					type: 'checkbox',
+					id: 'onlyActive'
+				}).css({
+						margin: 0,
+						position: 'relative',
+						top: '1px'
+				});
 
-                // update the checkbox
-                if (activeUsersFlag) {
-                    checkbox.attr('checked', true);
-                } else {
-                    checkbox.attr('checked', false);
-                }
-                
-                // put the label + checkbox into the div
-                label.text(' Active only');
-                label.prepend(checkbox);
-                $('#userActiveBox').html(label);
-            }
-        }).comboBox();
-        $('#search-filter-wrap select[name=status]').comboBox();
-});
-    
-// function to bind hide and show events for the active only divs 
-// bind to the showing and hiding of project and user lists
-$(function() {
-    $('select[name=user]').bind({
-        'listOpen': function(e,o) {
-            $('#userActiveBox').width($('.userComboList').outerWidth());
-            $('#userActiveBox').css({
-                top: $('.userComboList').height() + 35,
-                left: $('.userComboList').css('left')
-            });
-            $('#userActiveBox').show();
-        } 
-    });
-    $('select[name=user]').bind({
-        'listClose': function(e,o) {
-            $('#userActiveBox').hide();
-        }
-    });
-    $('select[name=project]').bind({
-        'listOpen': function(e,o) {
-            $('#projectActiveBox').width($('.projectComboList').outerWidth());
-            $('#projectActiveBox').css({
-                top: $('.projectComboList').height() + 35,
-                left: $('.projectComboList').css('left')
-            });
-            $('#projectActiveBox').show();
-        } 
-    });
-    $('select[name=project]').bind({
-        'listClose': function(e,o) {
-            $('#projectActiveBox').hide();
-        }
-    });
-    $('select[name=itemProject]').bind({
-        'listOpen': function(e,o) {
-            $('#projectPopupActiveBox').width($('.itemProjectComboList').outerWidth());
-            $('#projectPopupActiveBox').css({
-                top: $('.itemProjectComboList').height() + 100,
-                left: $('.itemProjectComboList').css('left')
-            });
-            $('#projectPopupActiveBox').show();
-        } 
-    });
-    $('select[name=itemProject]').bind({
-        'listClose': function(e,o) {
-            $('#projectPopupActiveBox').hide();
-        }
-    });   
+				// we need to update the global activeUsersFlag
+				if (activeUsersFlag) {
+					checkbox.attr('checked', true);
+				} else {
+					checkbox.attr('checked', false);
+				}
+
+				label.text(' Active only');
+				label.prepend(checkbox);
+				li.append(label);
+
+				// now we add a function which gets called on click
+				li.click(function(e) {
+					// we hide the list and remove the active state
+					activeUsersFlag = 1- activeUsersFlag ;
+					o.list.hide();
+					o.container.removeClass('ui-state-active');
+					// we send an ajax request to get the updated list
+					$.ajax({
+						type: 'POST',
+						url: 'refresh-filter.php',
+						data: {
+							name: filterName,
+							active: activeUsersFlag,
+                            filter: 'users'
+						},
+						dataType: 'json',
+						// on success we update the list
+						success: $.proxy(o.setupNewList, null,o)
+					});
+					// just to be shure nothing else gets called we return false
+					return false;
+				});
+
+				// the scroll handler so our new listelement will stay on the bottom
+				o.list.scroll(function() {
+					/**
+					 * With a move of 180, the position is too far, and the scroll never ends.
+					 * The calculation has been made using heights of the elements but it doesn't work on MAC/Firefox (still some px too far, border size ??)
+					 * The value has been fixed to 178 under MAC and calculated on other platforms (coder with a MAC could investigate this)
+					 * 8-JUNE-2010 <vincent> - Ticket #11458		
+					 */
+					if (navigator.platform.indexOf("Mac") == 0) {
+						li.css('top', ($(this).scrollTop() + 178) + 'px');
+					} else {
+						li.css('top', ($(this).scrollTop() + $(this).height() - li.outerHeight(true)) + 'px');
+					}
+				});
+				// now we append the list element to the list
+				o.list.append($('<li>&nbsp</li>'));
+				o.list.append(li);
+				o.list.css("z-index","100"); // to be over other elements
+			}
+		}).comboBox();
+		$('#search-filter-wrap select[name=status]').comboBox();
+
 });
 
 function sendInviteForm(){
@@ -536,21 +513,21 @@ function sendInviteForm(){
   var job_id = $('input[name="worklist_id"]').val();
   $.ajax({
     type: "POST",
-    url: "workitem.php?job_id="+job_id,
-    data: "json=y&invite="+name+"&invite-people=Invite",
-    dataType: "json",
-    success: function(json) {
-        if(json['sent'] =='yes'){
-            $("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
-            $('input[name="invite"]').val('');
-        }else{
-            $("#sent-notify").html("<span>The user you entered does not exist</span>");
-        }
-        $("#sent-notify").dialog("open");
-    },
-    error: function(xhdr, status, err) {
-      $("#sent-notify").html("<span>Error sending invitation</span>");
-    }
+	url: "workitem.php?job_id="+job_id,
+	data: "json=y&invite="+name+"&invite-people=Invite",
+	dataType: "json",
+	success: function(json) {
+		if(json['sent'] =='yes'){
+			$("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
+			$('input[name="invite"]').val('');
+		}else{
+			$("#sent-notify").html("<span>The user you entered does not exist</span>");
+		}
+		$("#sent-notify").dialog("open");
+	},
+	error: function(xhdr, status, err) {
+	  $("#sent-notify").html("<span>Error sending invitation</span>");
+	}
   });
   return false;
 }

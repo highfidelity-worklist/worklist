@@ -3,34 +3,38 @@ include_once("config.php");
 include_once("functions.php");
 include_once("class.session_handler.php");
 
-// If user isn't logged in then return and do nothing
-if (!isset($_SESSION['userid'])) {
-	return;	
-}
+//Detect if we are being included as a library or invoked to update
+if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 
-/*
- * This is the controller section of to determine what action to perform.
- * Actions:
- * - Update: This will update or add a status to the database
- * - Get: This will retrieve a status from the database and return it.
- */
-$action = "";
+    // If user isn't logged in then return and do nothing
+    if (!isset($_SESSION['userid'])) {
+	    return;	
+    }
+    
+    /*
+     * This is the controller section of to determine what action to perform.
+     * Actions:
+     * - Update: This will update or add a status to the database
+     * - Get: This will retrieve a status from the database and return it.
+     */
+    $action = "";
 
-if(isset($_REQUEST["action"])){
-	$action = $_REQUEST["action"];
-}
+    if(isset($_REQUEST["action"])){
+	    $action = $_REQUEST["action"];
+    }
 
-switch($action){
+    switch($action){
 	case "update":
 		update_status($_REQUEST["status"]);
 		break;
 	case "get":
-		return get_status();
+		print get_status(false);
 		break;
 	default:
 		return;	
 	
-} 
+    } 
+}
 
 
 /* Updates a users status, saves it to the database and sends a message to the journal
@@ -65,7 +69,7 @@ function get_status($as_string = true){
 	$connection = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 	mysql_select_db(DB_NAME,$connection);	
 	
-	$select = "SELECT status, timeplaced FROM ".USER_STATUS." WHERE id=" . $_SESSION['userid'] . " ORDER BY timeplaced DESC LIMIT 1";
+	$select = "SELECT status, UNIX_TIMESTAMP(timeplaced) as timeplaced FROM ".USER_STATUS." WHERE id=" . $_SESSION['userid'] . " ORDER BY timeplaced DESC LIMIT 1";
 	
 
 	$res = mysql_query($select, $connection);

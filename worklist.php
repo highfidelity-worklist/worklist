@@ -182,6 +182,37 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript">
+    var status_refresh = 5 * 1000;
+    var statusTimeoutId = null;
+    var lastStatus = 0;
+    function GetStatus(source) {
+        var url = 'update_status.php';
+        var action = 'get';
+        if(source == 'journal') {
+            url = '<?php echo JOURNAL_QUERY_URL; ?>';
+            action = 'getUserStatus';
+        }
+        $.ajax({
+            type: "POST",
+            url: url,
+            cache: false,
+            data: {
+                action: action
+            },
+            dataType: 'json',
+            success: function(json) {
+                if(lastStatus < json[0]["timeplaced"]) {
+                    lastStatus = json[0]["timeplaced"];
+                    $('#status-update').val(json[0]["status"]);
+                    $('#status-update').hide();
+                    $('#status-lbl').show();
+                    $("#status-share").hide();
+                    $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
+               }
+            }
+        });
+        statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
+    }
     // This variable needs to be in sync with the PHP filter name
     var filterName = '.worklist';
     var affectedHeader = false;
@@ -1467,5 +1498,8 @@ if (is_object($inProject)) {
 <?php } ?>
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
 <div id="user-info" title="User Info"></div>
+<script type="text/javascript">
+GetStatus('worklist');
+</script>
 
 <?php include("footer.php"); ?>
