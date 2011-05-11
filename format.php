@@ -12,8 +12,6 @@ require_once('functions.php');
 
     <div id="welcome">
         <?php if ( isset($_SESSION['username'])) {
-            require_once('update_status.php');
-            $current_status = get_status(true);
             $return_from_getfeesums = true;
             include 'getfeesums.php';
             $feeinfo = '<div style="display:none;" id="feesDialog"><table><tr><td><b>Your fees: </b></td></tr><tr><td>this week:</td><td><a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].
@@ -31,9 +29,9 @@ require_once('functions.php');
                 $name = getSubNickname($_SESSION['nickname']);
             }
             $status = '<span id="status-wrap" style="width:340px;">
-                <form action="" style="display:inline" id="status-update-form" style="width:340px;">' . $name .' is <span id="status-lbl"><b>' . $current_status . '</b></span>
+                <form action="" style="display:inline" id="status-update-form" style="width:340px;">' . $name .' is <span id="status-lbl"></span>
                     <input style="display: none;" type="text" maxlength="45" id="status-update" name="status-update"
-                        value="' . $current_status . '"></input>
+                        value=""></input>
                     <span id="status-share" style="display: none;  width:122px;">
                         <input type="submit" value="Share" id="status-share-btn"></input>
                     </span>

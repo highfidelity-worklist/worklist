@@ -279,6 +279,9 @@ $(function() {
     $("#status-update").focus(function() {        
         $("#status-update").data("focus",true);        
         $("#status-share").show();
+        if(statusTimeoutId) {
+            clearTimeout(statusTimeoutId);
+        }
     });
 
     //When status-update lost the focus, hide input field ... 
@@ -289,12 +292,18 @@ $(function() {
             hideInputField();
             $("#status-update").data("focus",false);        
         },500);
+        if(statusTimeoutId) {
+            clearTimeout(statusTimeoutId);
+        }
     });
     
     $("#status-lbl").mouseenter(function() {
         $('#status-lbl').hide();
         $('#status-update').show();
         $('#status-share').show();
+        if(statusTimeoutId) {
+            clearTimeout(statusTimeoutId);
+        }
     });
     
     //When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
@@ -302,6 +311,7 @@ $(function() {
         if ($("#status-update").data("focus") !== true) {
             hideInputField();
         }
+        statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
     });
 
     //Enable/disable job bug id on is_bug checkbox state
@@ -389,6 +399,10 @@ $(function() {
                     $('#status-update').hide();$('#status-lbl').show();
                     $("#status-share").hide();
                     $('#share-this').hide();
+                    if(statusTimeoutId) {
+                        clearTimeout(statusTimeoutId);
+                    }
+                    statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
                 } 
                 $('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
             }

@@ -25,7 +25,7 @@ switch($action){
 		update_status($_REQUEST["status"]);
 		break;
 	case "get":
-		return get_status();
+		print get_status(false);
 		break;
 	default:
 		return;	
@@ -65,7 +65,7 @@ function get_status($as_string = true){
 	$connection = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 	mysql_select_db(DB_NAME,$connection);	
 	
-	$select = "SELECT status, timeplaced FROM ".USER_STATUS." WHERE id=" . $_SESSION['userid'] . " ORDER BY timeplaced DESC LIMIT 1";
+	$select = "SELECT status, UNIX_TIMESTAMP(timeplaced) as timeplaced FROM ".USER_STATUS." WHERE id=" . $_SESSION['userid'] . " ORDER BY timeplaced DESC LIMIT 1";
 	
 
 	$res = mysql_query($select, $connection);
