@@ -7,12 +7,11 @@ require_once("class.session_handler.php");
 require_once("classes/Project.class.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
-# krumch 20110506 #11576 - add getUserStatus to 'non-API_KEY list'
-if(! isset($_REQUEST["api_key"])&& $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus'){
+if(! isset($_REQUEST["api_key"])&& $_REQUEST['action'] != 'getSystemDrawerJobs'){
     die("No api key defined.");
-} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {  
+} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {  
     die("Wrong api key provided.");
-} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'getSystemDrawerJobs')){
+} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs')){
     die("Only HTTPS connection is accepted.");
 } else if($_SERVER["REQUEST_METHOD"] != "POST"){
     die("Only POST method is allowed.");
@@ -42,17 +41,12 @@ if(! isset($_REQUEST["api_key"])&& $_REQUEST['action'] != 'getSystemDrawerJobs' 
             		case 'bidNotification':
                 		sendBidNotification();
 				break;
-            		case 'getUserStatus':
-				require_once("update_status.php");
-				print get_status(false);
-				break;
 			default:
 				die("Invalid action.");
 		}
 	}
 }
  
-
 /*
 * Setting session variables for the user so he is logged in
 */
