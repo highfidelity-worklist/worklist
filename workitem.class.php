@@ -909,7 +909,7 @@ WHERE id = ' . (int)$id;
                 return $action;
                 break;
 
-            case 'newcomment':
+            case 'new-comment':
                 if ($this->getStatus() == 'DONE') {
                     $action_error = 'Cannot add comment when status is DONE';
                     return false;
