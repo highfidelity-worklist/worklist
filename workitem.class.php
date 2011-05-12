@@ -812,4 +812,120 @@ WHERE id = ' . (int)$id;
         return $bid_info;
     }
 
+    public function validateAction($action, $action_error) {
+        
+        switch ($action) {
+            case 'withdraw_bid':
+                if ($this->getStatus() == 'DONE') {
+                    $action_error = 'Cannot withdraw bid when status is DONE';
+                    return false;
+                }
+                
+                return $action;
+                break;
+
+            case 'save_workitem':
+                if ($this->getStatus() == 'DONE') {
+                    $action_error = 'Cannot change workitem when status is DONE';
+                    return false;
+                }
+                
+                return $action;
+                break;
+
+            case 'place_bid':
+                if ($this->getStatus() != 'BIDDING') {
+                    $action_error = 'Cannot place bid when status is not BIDDING';
+                    return false;
+                }
+                
+                return $action;
+                break;
+            
+            case 'edit_bid':
+                if ($this->getStatus() != 'BIDDING') {
+                    $action_error = 'Cannot edit bid when status is not BIDDING';
+                    return false;
+                }
+                
+                return $action;
+                break;
+            
+            case 'add_fee':
+                if ($this->getStatus() == 'DONE') {
+                    $action_error = 'Cannot add fee when status is DONE';
+                    return false;
+                }
+                
+                return $action;
+                break;
+
+            case 'add_tip':
+                if ($this->getStatus()== 'DONE' || $this->getStatus() == 'PASS' || $this->getStatus() == 'SUGGESTED') {
+                    $action_error = 'Cannot add tip when status is DONE, PASS or SUGGESTED';
+                    return false;
+                }
+                
+                return $action;
+                break;
+                
+            case 'accept_bid':
+                if ($this->getStatus() != 'BIDDING') {
+                    $action_error = 'Cannot accept bid when status is not BIDDING';
+                    return false;
+                }
+                
+                return $action;
+                break;
+
+            case 'accept_multiple_bid':
+                if ($this->getStatus() != 'BIDDING') {
+                    $action_error = 'Cannot accept bid when status is not BIDDING';
+                    return false;
+                }
+                
+                return $action;
+                break;
+
+            case 'status-switch':
+                return $action;
+                break;
+                
+            case 'save-review-url':
+                if ($this->getStatus() == 'DONE' || $this->getStatus() == 'COMPLETED') {
+                    $action_error = 'Cannot change review URL when status is DONE or COMPLETED';
+                    return false;
+                }
+                
+                return $action;
+                break;
+                
+            case 'invite-people':
+                if ($this->getStatus() == 'DONE') {
+                    $action_error = 'Cannot invite people when status is DONE';
+                    return false;
+                }
+                
+                return $action;
+                break;
+
+            case 'newcomment':
+                if ($this->getStatus() == 'DONE') {
+                    $action_error = 'Cannot add comment when status is DONE';
+                    return false;
+                }
+                
+                return $action;
+                break;
+                
+            case 'edit':
+                return $action;
+                break;
+
+            default:
+                $action_error = 'Invalid action';
+                return false;
+        }
+    }
+
 }// end of the class

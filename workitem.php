@@ -95,6 +95,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
 // for any other action user has to be logged in
 if ($action != 'view') {
     checkLogin();
+    $action_error = '';
+    $action = $workitem->validateAction($action, &$action_error);
 }
 
 // Save WorkItem was requested. We only support Update here
@@ -621,6 +623,10 @@ if ($action == "withdraw_bid") {
     $redirectToDefaultView = true;
 }
 
+if ($action == false) {
+    $redirectToDefaultView = $redirectToWorklistView = $postProcessUrl = false;
+}
+
 if ($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id;
 }
@@ -632,8 +638,9 @@ if(isset($journal_message)) {
     sendJournalNotification($journal_message);
     //$postProcessUrl = WORKITEM_URL . $worklist_id . "&msg=" . $journal_message;
 }
+
 // if a post process URL was set, redirect and die
-if(isset($postProcessUrl)) {
+if(isset($postProcessUrl) && ! empty($postProcessUrl)) {
     header("Location: " . $postProcessUrl);
     die();
 }

@@ -984,6 +984,9 @@ $(document).ready(function(){
         <?php if(($action=="edit")): ?>
             &nbsp;|&nbsp;&nbsp;<a class="workitem-back" title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view">Switch to View Mode</a>
         <?php endif;?>
+<?php if (isset($action_error)) : ?>
+        <div id="action-error" class="LV_invalid">Error performing requested action: <?php echo $action_error; ?></div>
+<?php endif; ?>
         <div style="clear:both; float:none;"> </div>
         </div>
         <div id="page-content">

@@ -6,6 +6,13 @@
     margin: 5px;
     font-weight: bold;
 }
+
+#action-error {
+    font-weight: bold;
+    margin: 5px;
+    display: block;
+}
+
 #page-content {
     width:856px;
     clear:none;
