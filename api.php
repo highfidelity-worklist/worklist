@@ -33,21 +33,24 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 			case 'uploadProfilePicture':
 				uploadProfilePicture();
 				break;
-			case 'updateProjectList':
-				updateProjectList();
-				break;
-			case 'getSystemDrawerJobs':
-				getSystemDrawerJobs();
-				break;
-            		case 'bidNotification':
-                		sendBidNotification();
-				break;
-			case 'getUserStatus':
-				require_once("update_status.php");
-				print get_status(false);
-				break;
-			default:
-				die("Invalid action.");
+            case 'updateProjectList':
+                updateProjectList();
+                break;
+            case 'getSystemDrawerJobs':
+                getSystemDrawerJobs();
+                break;
+            case 'bidNotification':
+                sendBidNotification();
+                break;
+            case 'getUserStatus':
+                require_once("update_status.php");
+                print get_status(false);
+                break;
+            case 'processW2Masspay':
+                processW2Masspay();
+                break;
+            default:
+                die("Invalid action.");
 		}
 	}
 }
@@ -231,6 +234,37 @@ function sendBidNotification() {
         $notify->emailExpiredBids();
 }
 
+function processW2Masspay() {
+    if (!defined('COMMAND_API_KEY') 
+        or !array_key_exists('COMMAND_API_KEY',$_POST) 
+        or $_POST['COMMAND_API_KEY'] != COMMAND_API_KEY)
+        { die('Action Not configured'); }
+        
+    $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
+    if (!$con) {
+        die('Could not connect: ' . mysql_error());
+    }
+    mysql_select_db(DB_NAME, $con);
+    
+    $sql = " UPDATE " . FEES . " AS f, " . WORKLIST . " AS w, " . USERS . " AS u " 
+         . " SET f.paid = 1, f.paid_date = NOW() "
+         . " WHERE f.paid = 0 AND f.worklist_id = w.id AND w.status = 'DONE' "
+         . "   AND f.withdrawn = 0 "
+         . "   AND f.user_id = u.id "
+         . "   AND u.has_W2 = 1 "
+         . "   AND f.date <  CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE); ";
+     
+    // Marks all Fees from the past month as paid (for DONEd jobs)
+    $result = mysql_query($sql);
+    $total = mysql_affected_rows();
+    
+    if( $total) {
+        echo "{$total} fees were processed.";
+    } else {
+        echo "No records were found!";
+    }
+    mysql_close($con);
+}
 
 function respond($val){
     exit(json_encode($val));
