@@ -360,26 +360,46 @@ td.textAlignReport {
     width:210px;:
 }
 
+.report-label, #search-filter-section td.textAlignReport div div.report-label {
+    float: left;
+    width: 35%;
+    text-align: right;
+    padding: 5px 5px 0 0;
+}
+
+.report-input-item {
+    float: left;
+}
+
+.report-item-clear {
+    clear: both;
+    height: 1px;
+}
+
+#search-filter-wrap-reports {
+    width: 720px;
+}
+
 #searchForm .ui-combobox-list {
     max-height: 250px;
 }
 
 .bid_action_button{
-	text-align:right;
+	text-align: right;
 }
 
 #add {
-	font-weight:bold;
-	color:#6F6F6F;
-	font-size:12px;
+    font-weight: bold;
+    color: #6F6F6F;
+    font-size: 12px;
 }
 
 .floatLeft{
-	float:left;
+    float: left;
 }
 
 .floatRight {
-	float:right;
+	float: right;
 }
 
 .clear {
@@ -472,15 +492,8 @@ td.textAlignReport {
     width:350px;
 }
 
-#w2label {
-    float: left;
-    width: 112px;
-}
-
 #w2checkbox {
-    float: right;
-    text-align: left;
-    width: 130px;
+    padding-top:5px;
 }
 
 #paypal_email {

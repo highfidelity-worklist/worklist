@@ -9,7 +9,7 @@ ob_start();
 include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
-include_once("check_new_user.php"); 
+include_once("check_new_user.php");
 include_once("functions.php");
 include_once("send_email.php");
 include_once("classes/Fee.class.php");
@@ -130,15 +130,15 @@ var currentTab = <?php echo $showTab; ?>; // 0 for details and 1 for chart
 var current_order = <?php echo $filter->getDir() == 'ASC' ? 'true' : 'false'; ?>;
 var current_sortkey = '<?php echo $filter->getOrder(); ?>';
     /**
-    * 
+    *
     */
     function withdraw_fee(fee_id) {
-        var ajax_connection = $.get('wd_fee.php', { 'wd_fee_id': fee_id  }, 
+        var ajax_connection = $.get('wd_fee.php', { 'wd_fee_id': fee_id  },
             function(data) {
                 if (data = 'Update Successful!') {
                     $('#workitem-'+fee_id).remove();
                 }
-                alert(data); 
+                alert(data);
             }
         );
     }
@@ -175,9 +175,9 @@ var getPaidItems = function() {
     function AppendPagination(page, cPages, table) {
 <?php if (!empty($_SESSION['is_payer'])) { ?>
             cspan = '8'
-<?php } else { ?> 
+<?php } else { ?>
             cspan = '6'
-<?php } ?> 
+<?php } ?>
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="'+cspan+'" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;';
@@ -208,11 +208,11 @@ var getPaidItems = function() {
         <?php  if (!empty($_SESSION['is_payer'])) { ?>
             row += '<td><input type="checkbox" name="fee_id[]" value="' + json[1] + '" data="' + json[5] + '" class="workitem-paid" /> </td>';
             row += '<td> <a href="javascript: void();" onclick="withdraw_fee(\'' + json[1] + '\')">Void</a> </td>';
-        <?php } ?> 
+        <?php } ?>
         if (json[0] == 0) {
         row += '<td>' + pre + 'Bonus' + post + '</td>'; // Id
         }
-        if (json[0] != 0) {    
+        if (json[0] != 0) {
         pre = '<a href="workitem.php?job_id='+json[0]+'">';
         post = '</a>';
         row += '<td>' + pre + json[0] + post + '</td>'; // Id
@@ -263,9 +263,9 @@ var getPaidItems = function() {
     function AppendTotals(pageTotal, grandTotal) {
         <?php if (!empty($_SESSION['is_payer'])) { ?>
             cspan = '7'
-        <?php } else { ?> 
+        <?php } else { ?>
             cspan = '5'
-        <?php } ?> 
+        <?php } ?>
         row =  '<tr class="row-worklist-live rowodd">'+
                 '   <td colspan="'+cspan+'" align="right">Page Total </td>' +
                 '   <td align="center">'+ '$' + pageTotal +'</td>' +
@@ -615,50 +615,77 @@ function loadTimelineChart() {
       <table id="search-filter-section">
       <tr>
         <td class="textAlignReport">
-            <div >Payee: <?php echo $filter->getUserSelectbox(1,true); ?></div>
+            <div><div class="report-label">Payee:</div> <div class="report-input-item"><?php echo $filter->getUserSelectbox(1,true); ?></div><div class="report-item-clear"></div></div>
             <div class="second-line">
-                Project:  <?php echo $filter->getProjectSelectbox(true); ?>
+                <div class="report-label">Project:</div> <div class="report-input-item"><?php echo $filter->getProjectSelectbox(true); ?><div class="report-item-clear"></div></div>
             </div>
         </td>
         <td class="textAlignReport">
-            <div>Paid Status: 
-          <select id="paid-status" >
-            <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
-            <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
-            <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
-          </select>
+            <div>
+            <div class="report-label">Paid Status:</div>
+            <div class="report-input-item">
+              <select id="paid-status" >
+                <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
+                <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
+                <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
+              </select>
+            </div>
+            <div class="report-item-clear"></div>
           </div>
           <div class="second-line">
-            Type:
-            <select id="type-status">
-                <option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
-                <option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
-                <option value="Bonus"<?php echo(($filter->getType() == 'Bonus') ? ' selected="selected"' : ''); ?>>Bonus</option>
-                <option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
+            <div class="report-label">Type:</div>
+            <div class="report-input-item">
+                <select id="type-status">
+                    <option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
+                    <option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
+                    <option value="Bonus"<?php echo(($filter->getType() == 'Bonus') ? ' selected="selected"' : ''); ?>>Bonus</option>
+                    <option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>
                 </select>
             </div>
+            <div class="report-item-clear"></div>
+           </div>
         </td>
         <td class="textAlignReport">
-            <div>Item status: <?php echo $filter->getStatusSelectbox(true); ?>
+            <div>
+                <div class="report-label">Item Status:</div>
+                <div class="report-input-item"><?php echo $filter->getStatusSelectbox(true); ?></div>
+                <div class="report-item-clear"></div>
             </div>
-            <div class="second-line">Order:
-            <select id="sort-by">
-                <option value="name"<?php echo(($filter->getOrder() == 'name') ? ' selected="selected"' : ''); ?>>Alphabetically</option>
-                <option value="date"<?php echo(($filter->getOrder() == 'date') ? ' selected="selected"' : ''); ?>>Chronologically</option>
-            </select>
+            <div class="second-line">
+                <div class="report-label">Order:</div>
+                <div class="report-input-item">
+                    <select id="sort-by">
+                        <option value="name"<?php echo(($filter->getOrder() == 'name') ? ' selected="selected"' : ''); ?>>Alphabetically</option>
+                        <option value="date"<?php echo(($filter->getOrder() == 'date') ? ' selected="selected"' : ''); ?>>Chronologically</option>
+                    </select>
+                </div>
+                <div class="report-item-clear"></div>
             </div>
         </td>
        </tr>
        <tr>
         <td class="textAlignReport">
             <div>
-                Fund: <?php echo $filter->getFundSelectbox(true); ?>
+                <div class="report-label">Fund:</div>
+                <div class="report-input-item"><?php echo $filter->getFundSelectbox(true); ?></div>
+                <div class="report-item-clear"></div>
             </div>
         </td>
         <td class="textAlignReport">
-            <div id="w2label">W2 Only:</div>
-            <div id="w2checkbox"><input id="w2_only" name="w2_only" type="checkbox" <?php echo ($w2_only ? 'checked="checked"' : ''); ?> /></div>
+            <div>
+                <div class="report-label">W2 Only:</div>
+                <div class="report-input-item" id="w2checkbox">
+                    <input id="w2_only" name="w2_only" type="checkbox" <?php echo ($w2_only ? 'checked="checked"' : ''); ?> />
+                </div>
+            <div class="report-item-clear"></div>
+            </div>
         </td>
+          <td class="textAlignReport">
+              <div class="report-label">&nbsp;</div>
+              <div class="report-item">&nbsp;</div>
+              <div class="report-item-clear"></div>
+          </td>
+      </tr>
       <tr>
           <td class="report-left-label">Fee added between</td>
           <td>
