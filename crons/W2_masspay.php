@@ -22,7 +22,7 @@ $sql = " UPDATE " . FEES . " AS f, " . WORKLIST . " AS w, " . USERS . " AS u "
      . "   AND f.withdrawn = 0 "
      . "   AND f.user_id = u.id "
      . "   AND u.has_W2 = 1 "
-     . "   AND EXTRACT(YEAR_MONTH FROM f.date) = EXTRACT(YEAR_MONTH FROM DATE_SUB(NOW(), INTERVAL 1 MONTH)) ";
+     . "   AND f.date <  CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE); ";
  
 // Marks all Fees from the past month as paid (for DONEd jobs)
 $result = mysql_query($sql);
