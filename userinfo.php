@@ -29,16 +29,19 @@
     
     $filter = new Agency_Worklist_Filter($_REQUEST);
 
-    if (isset($_POST['save_roles']) && $is_runner) { //only runners can change other user's roles info
+    if (isset($_POST['save_roles']) && ($is_runner || $is_payer)) { //only runners can change other user's roles info
         $is_runnerSave = isset($_POST['isrunner']) ? 1 : 0;
         $is_payerSave = isset($_POST['ispayer']) ? 1 : 0;
         $hasW9 = isset($_POST['w9']) ? 1 : 0;
+        $has_W2 = isset($_POST['w2_employee']) ? 1 : 0;
         $isPaypalVerified = isset($_POST['paypal_verified']) ? 1 : 0;
         $user_idSave = intval($_POST['userid']);
 
         $saveUser = new User();
         $saveUser->findUserById($user_idSave);
         $saveUser->setHas_w9approval($hasW9);
+        $saveUser->setPaypal_verified($isPaypalVerified);
+        $saveUser->setHas_W2($has_W2);
         $saveUser->setIs_runner($is_runnerSave);
         $saveUser->setIs_payer($is_payerSave);
         $saveUser->save();
@@ -168,6 +171,7 @@
         // To have a smooth migration, the variable is kept for the moment.
             var user_id = <?php echo $userId; ?>;
             var current_id = <?php echo $reqUserId; ?>;
+            var admin = <?php echo $is_payer; ?>;
                                                 
             var userInfo = {
                 manager: <?php echo $manager; ?>,

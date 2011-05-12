@@ -175,10 +175,11 @@
                     <p class="info-label">Roles</p>
                     <input type="checkbox" name="isrunner" value="isrunner" id="info-isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label class="info-label">Runner</label>
                     <input type="checkbox" name="ispayer" value="ispayer" id="info-ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label class="info-label">Payer</label>
-                    <input class="admin-submit" type="submit" name="save_roles" value="Save Roles" />
+                    <input class="admin-submit" type="submit" name="save_roles" value="Save Changes" />
                     <p class="info-label">Payment Information</p>
-                    <input type="checkbox" id="approve" name = "w9" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> /><label class="info-label">W9 Approved</label>
-                    <input type="checkbox" id="paypal_verified" name="paypal_verified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> /><label class="info-label">PayPal Verified</label>
+                    <input type="checkbox" id="approve" name = "w9" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label class="info-label">W9 Approved</label>
+                    <input type="checkbox" id="paypal_verified" name="paypal_verified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label class="info-label">PayPal Verified</label>
+                    <input type="checkbox" id="w2_employee" name="w2_employee" <?php if ($user->getHas_W2()) echo 'checked="checked"'; ?> /><label class="info-label">W2 Employee</label>
                     <p class = "info-label">Preferred Payment Method</p>
                     <span id="info-payway"><?php echo $user->getPayway() == '' ? $user->getPayway() : 'None selected'; ?></span>
                     <p class = "info-label">PayPal E-Mail</p>

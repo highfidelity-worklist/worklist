@@ -49,6 +49,7 @@ class User {
     protected $paypal_verified;
     protected $paypal_hash;
     protected $notifications;
+    protected $has_W2;
     /**
      * All about budget
      */
@@ -117,6 +118,10 @@ class User {
 
     public function isEligible() {
     
+        if ($this->getHas_W2()) {
+            return true;
+        }
+
         if ($this->isUsCitizen()) {
             if (! $this->isW9Approved()) {
                 return false;
@@ -1220,4 +1225,19 @@ class User {
             return $nickname;
         }
     }
+    /**
+     * @return the $has_W2
+     */
+    public function getHas_W2() {
+        return $this->has_W2;
+    }
+
+    /**
+     * @param $has_W2 the $has_W2 to set
+     */
+    public function setHas_W2($has_W2) {
+        $this->has_W2 = $has_W2;
+        return $this;
+    }
+    
 }

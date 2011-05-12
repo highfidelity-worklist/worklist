@@ -112,7 +112,11 @@ border: none;
 }
 
 td.redtext {
-color: red;
+    color: red;
+}
+
+td.greenText {
+    color: #009900;
 }
 </style>
 <script type="text/javascript">
@@ -222,8 +226,12 @@ var getPaidItems = function() {
         }
         row += '<td>' + pre + json[3] + post + '</td>'; // Description
         row += '<td';
-        if (json[7] == 0) {
-            row += ' class="redtext"';
+        if (json[11] == 1) {
+            row += ' class="greenText"';
+        } else {
+            if (json[7] == 0) {
+                row += ' class="redtext"';
+            }
         }
         row += '>' + pre + formatValueForDisplay(json[4]) + post + '</td>'; // Payee
         row += '<td>' + pre + formatValueForDisplay(json[6]) + post; // Paid Date
@@ -596,9 +604,9 @@ function loadTimelineChart() {
 
 <div>
     <div id="pp-reports-box" style="float:left;">
-        <?php if (!empty($_SESSION['is_payer'])) { ?>
+        <?php  if (!empty($_SESSION['is_payer'])) { ?>
             <input type="submit" value="Run MassPay" id="pp-masspay-button" /><br />
-        <?php } ?>
+        <?php  } ?>
         <?php if (!empty($_SESSION['is_runner'])) { ?>
             <input type="submit" value="Sales Reports" id="sales-reports-button"></input>
         <?php } ?>

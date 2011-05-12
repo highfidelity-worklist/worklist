@@ -275,6 +275,24 @@ var UserInfo = {
                 }
             }
         });
+        
+        if(!admin) {
+            $('#paypal_verified').attr('disabled', 'disabled');
+            $('#approve').attr('disabled', 'disabled');
+            $('#w2_employee').attr('disabled', 'disabled');
+        } else {
+            $('#w2_employee').click( function () {
+                if($('#w2_employee').attr('checked') == true ) {
+                    $('#approve').removeAttr('checked');
+                    $('#approve').attr('disabled', 'disabled');
+                    $('#paypal_verified').removeAttr('checked');
+                    $('#paypal_verified').attr('disabled', 'disabled');
+                } else {
+                    $('#approve').removeAttr('disabled');
+                    $('#paypal_verified').removeAttr('disabled');
+                }
+            });
+        }
     },
      
     appendPagination: function(page, cPages, table) {

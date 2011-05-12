@@ -127,7 +127,7 @@ if ($paidStatusFilter) {
 if($queryType == "detail") {
 
     $qcnt = "SELECT count(*)";
-    $qsel = "SELECT `".FEES."`.id as fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') as paid_date,`worklist_id`,`".WORKLIST."`.`summary` AS `summary`,`desc`,`status`,`".USERS."`.`nickname` as `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` as `paypal`, `expense` as `expense`,`rewarder` as `rewarder`,`bonus` as `bonus`";
+    $qsel = "SELECT `".FEES."`.id AS fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') AS paid_date,`worklist_id`,`".WORKLIST."`.`summary` AS `summary`,`desc`,`status`,`".USERS."`.`nickname` AS `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` AS `paypal`, `expense` AS `expense`,`rewarder` AS `rewarder`,`bonus` AS `bonus`, `" . USERS . "`.`has_W2` AS `has_W2`";
     $qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
     $qbody = " FROM `".FEES."`
                LEFT JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
@@ -169,7 +169,7 @@ $report = array(array($items, $page, $cPages, $pageSum, $grandSum));
 // Construct json for history
 $rtQuery = mysql_query("$qsel $qbody $qorder");
 for ($i = 1; $rtQuery && $row = mysql_fetch_assoc($rtQuery); $i++) {
-    $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal'],$row['expense'],$row['rewarder'],$row['bonus']);
+    $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal'],$row['expense'],$row['rewarder'],$row['bonus'],$row['has_W2']);
 }
 
 $concatR = '';
@@ -220,8 +220,7 @@ echo $json;
         'uniquePeople' => fillAndRollupSeries($fromDate, $toDate, $uniquePeople, false, $dateRangeType), 
         'feeCount' => fillAndRollupSeries($fromDate, $toDate, $feeCount, false, $dateRangeType), 
         'labels' => fillAndRollupSeries($fromDate, $toDate, null, true, $dateRangeType), 
-        'fromDate' => $fromDate, 'toDate' => $toDate,
-        'debugSQL' => "$qcols $qbody $qgroup");
+        'fromDate' => $fromDate, 'toDate' => $toDate);
     $json = json_encode($json_data);
     echo $json;
 }

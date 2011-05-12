@@ -36,7 +36,6 @@ if (empty($_SESSION['is_payer'])) {
 
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
-
 $userId = getSessionUserId();
 
 $payer_id = $userId;
@@ -100,6 +99,7 @@ $sql_get_fee_totals = "
         AND f.withdrawn = '0'
         AND f.amount > 0
         AND u.paypal = '1'
+        AND u.has_W2 = 0
         AND wl.project_id IN (" . $sql_get_fund_projects . ")
     GROUP BY f.user_id
     ";
@@ -117,6 +117,7 @@ $sql_get_bonus_totals = "
     WHERE
         b.paid = 0
         AND u.paypal = '1' and b.bonus = 1
+        AND u.has_W2 = 0
    GROUP BY b.user_id
     ";
 
@@ -341,7 +342,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/payments.js"></script>
 </head>
-<body onload="updateTotalFees('0');">
+<body onLoad="updateTotalFees('0');">
 <?php include("format.php"); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <div class="floatLeft">
@@ -364,9 +365,9 @@ include("head.html"); ?>
     </form>
 </div>
 <div id="select-actions">
-    Actions: [<a href="javascript:void(0);" onclick="toggleCBs('toggle');">Invert Selection</a>]
-    | [<a href="javascript:void(0);" onclick="toggleCBs('select');">Select All</a>]
-    | [<a href="#" onclick="toggleCBs('unselect');">Select None</a>]
+    Actions: [<a href="javascript:void(0);" onClick="toggleCBs('toggle');">Invert Selection</a>]
+    | [<a href="javascript:void(0);" onClick="toggleCBs('select');">Select All</a>]
+    | [<a href="#" onClick="toggleCBs('unselect');">Select None</a>]
 </div>
 <div class="clear"></div>
 <form action="view-payments.php?<?php echo isset($_GET["order"])?'order='.$_GET["order"]:''; ?>" method="POST">
