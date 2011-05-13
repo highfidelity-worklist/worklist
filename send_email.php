@@ -103,19 +103,55 @@ function notify_sms_by_id($user_id, $smssubject, $smsbody)
     }
 }
 
+function objectToArray($object) {
+    $dump = '$dump = '.var_export($object, true);
+    $dump = preg_replace('/object\([^\)]+\)#[0-9]+ /', 'array', $dump);
+    $dump = preg_replace('/[a-zA-Z_]+::__set_state/', '', $dump);
+    $dump = str_replace(':protected', '', $dump);
+    $dump = str_replace(':private', '', $dump);
+    $dump .= ';';
+    eval($dump);
+    return $dump;
+}
+
+
 function notify_sms_by_object($user_obj, $smssubject, $smsbody)
 { 
     global $smslist;
     $smssubject = strip_tags($smssubject);
     $smsbody    = strip_tags($smsbody);
 
-    if ($user_obj->getSmsaddr()) {
-        $smsaddr = $user_obj->getSmsaddr();
+    if (is_array($user_obj)) {
+        //error_log("smsbyobject already an array");
+        $user_array=$user_obj;
+    } elseif (is_object($user_obj)) {
+        //error_log("smsbyobject convert to array");
+        $user_array=objectToArray($user_obj);
     } else {
-        $provider = $user_obj->getProvider();
+        error_log("Notify_sms_by_object does not know how to handle \$user_obj:".gettype($user_obj));
+        return false;
+    }
+
+    if (array_key_exists('smsaddr',$user_array) && !empty($user_array['smsaddr'])) {
+        $smsaddr = $user_array['smsaddr'];
+    } else {
+        $provider = $user_array['provider'];
         if ( !empty($provider)) {
             if ($provider{0} != '+') {
-                $smsaddr = str_replace('{n}', $user_obj->getPhone(), $smslist[$user_obj->getCountry()][$provider]);
+                if (   array_key_exists('phone',$user_array)
+                    && !empty($user_array['phone'])
+                    && array_key_exists('country',$user_array)
+                    && !empty($user_array['country'])
+                    && array_key_exists($user_array['country'],$smslist)
+                    && !empty($smslist[$user_array['country']])
+                    && array_key_exists($provider,$smslist[$user_array['country']])
+                    && !empty($smslist[$user_array['country']][$provider]))
+                {
+                    $smsaddr = str_replace('{n}', $user_array['phone'], $smslist[$user_array['country']][$provider]);
+                } else {
+                    error_log("Unable to locate SMS path for userid: ".$user_array['id']);
+                    return false;
+                }
             } else {
                 $smsaddr = substr($provider, 1);
             }

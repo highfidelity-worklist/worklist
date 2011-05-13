@@ -15,6 +15,8 @@ if (file_exists('server.local.php')) {
     die("Application configuration not found.");
 }
 
+if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER','worklist@lovemachineinc.com');
+if (!defined('SMS_SENDER'))     define('SMS_SENDER',DEFAULT_SENDER);
 
 # Add revision (version) information
 if (!defined('APP_REVISION'))   define('APP_REVISION', '$Rev$');
