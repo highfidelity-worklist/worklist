@@ -94,7 +94,7 @@ div.left-column {
 div.right-column {
     float: left;
     border-left: solid 1px black;
-    height: 98%;
+    height: 100%;
     padding-left: 2px;
     width:54%;
 }
@@ -147,7 +147,7 @@ p.bottom {
 
 #tabs {
     margin-top: 3em;
-    height: 280px;
+    height: 300px;
 }
 
 

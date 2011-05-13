@@ -393,6 +393,21 @@ class Agency_Worklist_Filter {
         return $box;
     }
 
+/**
+     * Gets the referrer user selection box with style
+     */
+    public function getReferrerUserSelectboxS($style="", $active=1) {
+        $users = User::getUserList(getSessionUserId(), $active);
+        $box = '<select style="'.$style.'" id="select_referred_by" name="referred_by">';
+        $box .= '<option value="0" selected="selected">None</option>';
+        foreach ($users as $user) {
+            $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
+        }
+        $box .= '</select>';
+        
+        return $box;
+    }   
+    
     public function getStatusSelectbox($fromReport=false)
     {
         $allDisplay = ($fromReport) ? "ALL" : "All Status";

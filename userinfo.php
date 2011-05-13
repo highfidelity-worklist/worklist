@@ -86,6 +86,21 @@
         sendJournalNotification("The manager for ".$user->getNickname() . " is now set to ".$manager->getNickname());
     }
 
+    if (isset($_POST['save_referrer']) && $is_runner || $is_payer) {
+        $user_id = intval($_POST['userid']);
+        $referrer_id = intval($_POST['referred_by']);
+        $user = new User();
+        $user->findUserById($user_id);
+        $user->setReferred_by($referrer_id);
+        $user->save();
+        
+        $referred_by = new User();
+        $referred_by->findUserById($referrer_id);
+        
+        // Send journal notification
+        sendJournalNotification("The referrer for ".$user->getNickname() . " is now set to ".$referred_by->getNickname());
+    }
+    
     if (isset($_REQUEST['id'])) {
         $userId = (int)$_REQUEST['id'];
     } else {
@@ -104,7 +119,9 @@
     $userStats = new UserStats($userId);
 
     $manager = $user->getManager();
-
+    
+    $referred_by = $user->getReferred_by();
+        
     if ($action =='create-sandbox') {
           $result = array();
           try {
@@ -175,6 +192,7 @@
                                                 
             var userInfo = {
                 manager: <?php echo $manager; ?>,
+                referred_by: <?php echo $referred_by; ?>,        
                 user_id: <?php echo $userId; ?>,
                 nickName: '<?php echo $user->getNickName(); ?>'
             };

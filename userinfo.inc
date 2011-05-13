@@ -211,13 +211,20 @@
                     <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
                 </form>
 <?php endif; ?>
-                <p class="info-label">Status</p>
-                <select id="changeUserStatus" style="width:auto; margin-bottom: 3em;">
+                <p class="info-label">Referred By</p>
+                <form method="post" action="" name="referred_by" id="referred_by">                   
+                    <?php echo $filter->getReferrerUserSelectboxS("width:180px;"); ?>
+                    <input class="admin-submit" type="submit" id="save_referrer" value="Save referred by" name="save_referrer"/>
+                    <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
+                    <input type="hidden" name="referred_by_changed" id="referred_by_changed" value="0" />
+                    <p class="info-label">Status</p>
+                    <select id="changeUserStatus" style="width:auto;">
                     <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
                     <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
                     <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
-                </select>
-                <br/>
+                    </select>
+                    <br/>
+                </form>
                 <span>User last seen: <?php echo relativeTime($user->getTimeLastSeen(), false); ?></span>
             </div><!-- end of admin-right -->
         </div><!-- end of tab 2 -->

@@ -17,6 +17,10 @@ var UserInfo = {
         $('#select_manager').change(function() {
             $('#manager_changed').val('1');
         });
+        $('#select_referred_by').val(userInfo.referred_by);
+        $('#referred_by').change(function() {
+            $('#referred_by_changed').val('1');
+        });
        
         $("#tabs").tabs({
             cache: true,
@@ -99,7 +103,7 @@ var UserInfo = {
                 success: function() {}
             });
         });
-       
+	
         $('#give-budget').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
         $('#give').click(function(){
             $('#give-budget form input[type="text"]').val('');

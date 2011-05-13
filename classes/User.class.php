@@ -44,6 +44,7 @@ class User {
     protected $annual_salary;
     protected $picture;
     protected $manager;
+    protected $referred_by;
     protected $paypal;
     protected $paypal_email;
     protected $paypal_verified;
@@ -889,6 +890,20 @@ class User {
         return $this;
     }
 
+    /**
+     * @return the $referrer
+     */
+    public function getReferred_by() {
+        return $this->referred_by;
+    }
+    
+    /**
+     * @param $referred_by the $referred_by to set
+     */
+    public function setReferred_by($referred_by) {
+        $this->referred_by = $referred_by;
+        return $this;
+    }
     /**
      * @return the $has_sandbox
      */
