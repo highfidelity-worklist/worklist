@@ -32,6 +32,9 @@ if (!empty($_REQUEST['view'])) {
     if ($_REQUEST['view'] == 'chart') {
         $showTab = 1;
     }
+    if ($_REQUEST['view'] == 'payee') {
+        $showTab = 2;
+    }
 }
 
 $w2_only = 0;
@@ -172,12 +175,16 @@ var getPaidItems = function() {
     return paidItems;
 };
 
-    function AppendPagination(page, cPages, table) {
-<?php if (!empty($_SESSION['is_payer'])) { ?>
-            cspan = '8'
-<?php } else { ?>
-            cspan = '6'
-<?php } ?>
+function AppendPagination(page, cPages, table) {
+      if(table == 'worklist') {
+          <?php if (!empty($_SESSION['is_payer'])) { ?>
+                    cspan = '8'
+          <?php } else { ?> 
+                    cspan = '6'
+          <?php } ?> 
+
+      } else if(table == 'worklist-payee') { 
+            cspan = '4';
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="'+cspan+'" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;';
@@ -195,6 +202,7 @@ var getPaidItems = function() {
         pagination += '</td></tr>';
         $('.table-' + table).append(pagination);
     }
+}
     
 
     // json row fields: id, summary, status, payee, fee
@@ -242,6 +250,20 @@ var getPaidItems = function() {
         row += '</tr>';
 
         $('.table-worklist tbody').append(row);
+    }
+
+    // json row fields: payeeName, Jobs, Avg/job, Total
+    function AppendPayeeRow(json, odd) {
+        var row;
+        row = '<tr class="row-worklist-payee-live ';
+        row += (odd) ? 'rowodd' : 'roweven';
+        row += '">';
+        row += '<td>' + json[0] +  '</td>'; // payeeName
+        row += '<td>' + json[1] +  '</td>'; // Jobs
+        row += '<td>$' + json[2] +  '</td>'; // Avg/job
+        row += '<td>$' + json[3] +  '</td>'; // Total Fee
+        row += '</tr>';
+        $('.table-worklist-payee tbody').append(row);
     }
 
     /**
@@ -373,15 +395,104 @@ var getPaidItems = function() {
         timeoutId = setTimeout("GetReport("+page+", true)", refresh);
     }
 
+    function GetPayeeReport(npage, reload, sort) {
+        _fromDate = $('#start-date').datepicker('getDate');
+        _toDate = $('#end-date').datepicker('getDate');
+        var defaultSort = 'total_fees'; 
+        if (_fromDate != null) {
+            fromDate = fmtDate(_fromDate);
+        }
+        if(_toDate != null) {
+        toDate = fmtDate(_toDate);
+        }
+        var order = '';
+        sort_key= current_sortkey;
+        order = current_order ? 'ASC' : 'DESC';
+        var paidStatus = $('#paid-status').val();
+
+        if ($('.table-worklist-payee th div').hasClass('show-arrow')) { 
+           defaultSort = '';
+        }
+
+        $.ajax({
+            type: "POST",
+            url: 'getreport.php',
+            data: {
+                qType: 'payee',
+                page: npage,
+                status: $('select[name=status]').val(),
+                user: $('select[name=user]').val(),
+                project_id: $('select[name=project]').val(),
+                fund_id: $('select[name=fund]').val(),
+                w2_only: $('#w2_only').is(':checked') ? 1 : 0,
+                order: sort_key,
+                dir: order,
+                type: $('#type-status').val(),
+                start: fromDate,
+                end: toDate,
+                paidstatus: paidStatus,
+                defaultSort:defaultSort,
+                reload: ((reload == true) ? true : false)
+            },
+            dataType: 'json',
+            success: function(json) {
+
+                $('#loader_img').css('display','none');
+                page = json[0][1]|0;
+                var cPages = json[0][2]|0;
+
+                $('.row-worklist-payee-live').remove();
+    
+                if (json[0][0] == 0 ) {
+                    $('.table-worklist-payee').append(
+                      '<tr class="row-worklist-payee-live rowodd">'+
+                      '   <td colspan="4" align="center">Oops! We couldn\'t find any payee details.</td>' +
+                      '</tr>');
+
+                  return;
+                }
+
+                /* Output the  payee worklist rows. */
+                var odd = true;
+                for (var i = 1; i < json.length; i++) {
+                    AppendPayeeRow(json[i], odd);
+                    odd = !odd;
+                }
+                AppendPagination(page, cPages, 'worklist-payee');
+             
+            },
+            error: function(xhdr, status, err) {
+                $('.row-worklist-live-payee').remove();
+                $('.table-worklist-payee').append(
+                    '<tr class="row-worklist-live-payee rowodd">'+
+                    '   <td colspan="4" align="center">Oops! We couldn\'t find any payee report.  <a id="again-payee" href="#">Please try again.</a></td>' +
+                    '</tr>');
+                $('#again-payee').click(function(e){
+                    $("#loader_img").css("display","none");
+                    if (timeoutId) clearTimeout(timeoutId);
+                    GetPayeeReport(page);
+                    e.stopPropagation();
+                    return false;
+                });
+            }
+        });
+
+        timeoutId = setTimeout("GetPayeeReport("+page+", true)", refresh);
+    }
+
     function initializeTabs() {
         $("#tabs").tabs({selected: 0,
             select: function(event, ui) {
                 if(ui.index == 0) {
                     currentTab = 0;
                     timeoutId = setTimeout("GetReport("+page+", true)", 50);
-                } else {
+                } else if(ui.index == 1) {
                     currentTab = 1;
                     timeoutId = setTimeout("setupTimelineChart(false)", 50);
+                }
+                else if(ui.index == 2) {
+                    currentTab = 2;
+                    timeoutId = setTimeout("GetPayeeReport("+page+", true)", 50);
                 }
             }
         });
@@ -455,6 +566,7 @@ function loadTimelineChart() {
 
     $(document).ready(function(){
         GetReport(<?php echo $page; ?>, true);
+	GetPayeeReport(<?php echo $page; ?>, true);
 
         // table sorting thing
         $('.table-worklist thead tr th').hover(function(e){
@@ -500,6 +612,52 @@ function loadTimelineChart() {
             $('.table-worklist thead tr th').data('direction', false); //reseting to default other rows
             $(this).data('direction',!direction); //switching on current
         }); //end of table sorting
+
+	// Payee tab table sorting handling
+        $('.table-worklist-payee thead tr th').hover(function(e){
+	    
+            if(! $('div', this).hasClass('show-arrow')){
+                if ($(this).data('direction')) {
+                    $('div', this).addClass('arrow-up');
+                } else {
+                    $('div', this).addClass('arrow-down');
+                }
+            }
+        }, function(e){
+            if(!$('div', this).hasClass('show-arrow')){
+                $('div', this).removeClass('arrow-up');
+                $('div', this).removeClass('arrow-down');
+            }
+        });
+
+        $('.table-worklist-payee thead tr th').data('direction', false); //false == desc order
+        $('.table-worklist-payee thead tr th').click(function(e){
+            $('.table-worklist-payee thead tr th div').removeClass('show-arrow');
+            $('.table-worklist-payee thead tr th div').removeClass('arrow-up');
+            $('.table-worklist-payee thead tr th div').removeClass('arrow-down');
+            $('div', this).addClass('show-arrow');
+            var direction = $(this).data('direction');
+            
+            if (direction){
+                $('div', this).addClass('arrow-up');
+            } else {
+                $('div', this).addClass('arrow-down');
+            }
+            
+            var data = $(this).metadata();
+            if (!data.sortkey) {
+                alert("no sortkey");
+                return false;
+            }
+            
+            reload = false;
+            current_sortkey = data.sortkey;
+            current_order = $(this).data('direction');
+            $('#sort-by').val(current_sortkey);
+            GetPayeeReport(page, false, current_sortkey);
+            $('.table-worklist-payee thead tr th').data('direction', false); //reseting to default other rows
+            $(this).data('direction',!direction); //switching on current
+        }); //end of payee table sorting
         
         initializeTabs();
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
@@ -525,6 +683,14 @@ function loadTimelineChart() {
             page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
             if (timeoutId) clearTimeout(timeoutId);
             GetReport(page);
+            e.stopPropagation();
+            return false;
+
+        });
+	$('.worklist-payee-pagination-row a').live('click', function(e){
+            page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
+            if (timeoutId) clearTimeout(timeoutId);
+            GetPayeeReport(page);
             e.stopPropagation();
             return false;
 
@@ -573,8 +739,11 @@ function loadTimelineChart() {
             }
             if(currentTab == 0) {
                 location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
-            } else {
+            } else if(currentTab == 1) {
                 location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
+            }
+	    else if(currentTab == 2) {
+                location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
             }
         });
 
@@ -703,6 +872,7 @@ function loadTimelineChart() {
     <ul>
         <li><a href="#tab-details" >Details</a></li>
         <li><a href="#tab-chart" >Chart</a></li>
+        <li><a href="#tab-payee" >Payee</a></li>
     </ul>
     <div id="tab-details">
             <form id="reportForm" method="post" action="" />
@@ -733,6 +903,22 @@ function loadTimelineChart() {
     <div id="tab-chart">
         <div id="timeline-chart">
 
+        </div>
+    </div>
+    <div id="tab-payee">
+        <div id="payee">
+        <table width="100%" class="table-worklist-payee">
+            <thead>
+             <tr class="table-hdng">
+                <th width="12%" class="sort {sortkey: 'payee'} clickable" >Payee name<div class = "arrow"><div/></th>
+                <th width="30%" class="sort {sortkey: 'jobs'} clickable" >Jobs<div class = "arrow"><div/></th>
+                <th width="25%" class="sort {sortkey: 'avg_job'} clickable" >Avg / Job<div class = "arrow"><div/></th>
+                <th width="12%" class="sort {sortkey: 'total_fees'} clickable" >Total Fees<div class = "arrow"><div/></th>
+             </tr>
+            </thead>
+          <tbody>
+          </tbody>
+        </table>
         </div>
     </div>
     </div>

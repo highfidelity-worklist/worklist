@@ -36,12 +36,17 @@
 	overflow-x: hidden;
 	padding: 0;
 	position: absolute;
+
+}
+
+ul.ui-combobox-list {
+    z-index: 100;
 }
 
 .ui-combobox-list li {
-	font-size: 12px;
-	padding: 3px 5px;
-	margin: 0;
+    font-size: 12px;
+    padding: 3px 5px;
+    margin: 0;
 }
 
 .ui-combobox-list-selected {

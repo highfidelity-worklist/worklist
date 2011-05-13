@@ -54,7 +54,8 @@ h1 {
     list-style: none;
 }
 .table-userlist, 
-.table-worklist {
+.table-worklist, 
+.table-worklist-payee {
     margin-left: auto;
     margin-right: auto;
 }
@@ -62,18 +63,21 @@ h1 {
     text-align: left;
 }
 .table-userlist .arrow,
-.table-worklist .arrow {
+.table-worklist .arrow, 
+.table-worklist-payee .arrow  {
     float:right;
     height: 15px;
     width: 15px;
     margin-left: 2px;
 }
 .table-userlist .arrow-down,
-.table-worklist .arrow-down {
+.table-worklist .arrow-down,
+.table-worklist-payee .arrow-down {
     background-image: url(../images/arrow-down.png);
 }
 .table-userlist .arrow-up,
-.table-worklist .arrow-up {
+.table-worklist .arrow-up, 
+.table-worklist-payee .arrow-up {
     background-image: url(../images/arrow-up.png)
 }
 #message{

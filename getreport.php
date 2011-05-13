@@ -110,6 +110,18 @@ switch ($order) {
     case 'fee':
         $orderby .= "`".FEES."`.`amount`";
         break;
+
+    case 'jobs':
+        $orderby .= "`jobs`";
+        break;
+
+    case 'avg_job':
+        $orderby .= "`average`";
+        break;
+
+    case 'total_fees':
+        $orderby .= "`total`";
+        break;
 }
 
 if ($dateRangeFilter) {
@@ -223,6 +235,42 @@ echo $json;
         'fromDate' => $fromDate, 'toDate' => $toDate);
     $json = json_encode($json_data);
     echo $json;
+} else if($queryType == "payee") {
+    $payee_report = array();
+    $page = $filter->getPage();
+    $count_query = " SELECT count(1) FROM ";
+    $query = " SELECT   `nickname` AS payee_name, count(1) AS jobs, sum(`amount`) / count(1) AS average, sum(`amount`) AS total  FROM `".FEES."` 
+               LEFT JOIN `".USERS."` ON `".FEES."`.`user_id` = `".USERS."`.`id`
+               LEFT JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
+               LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
+               WHERE  `".FEES."`.`paid` = 1  ".$where." GROUP BY  `user_id` ";
+    $result_count = mysql_query($count_query."(".$query.") AS payee_name");
+    if ($result_count) {
+        $count_row = mysql_fetch_row($result_count);
+        $items = intval($count_row[0]);
+    } else {
+        $items = 0;
+        die(json_encode(array()));
+    }
+    $countPages = ceil($items/$limit);
+    $payee_report[] = array($items, $page, $countPages);
+    if(!empty($_REQUEST['defaultSort']) && $_REQUEST['defaultSort'] == 'total_fees') {
+        $query .= " ORDER BY total DESC";
+    } else { 
+        $query .= $orderby." ".$dir;
+    }
+    $query .= "  LIMIT " . ($page - 1) * $limit . ",$limit";
+    $result = mysql_query($query);
+    if($result && mysql_num_rows($result) > 0) {
+      while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+         $payee_name = $row['payee_name']; 
+         $jobs = $row['jobs'];
+         $total = number_format($row['total'], 2, '.', '');
+         $average =  number_format($row['average'], 2, '.', '');
+         $payee_report[] = array($payee_name, $jobs, $average, $total);
+      }
+    }
+    echo json_encode($payee_report);
 }
 
 function  getRollupColumn($columnName, $daysInRange) {
