@@ -125,7 +125,6 @@ $smslist = array(
 		'Verizon PCS'=>'{n}@myvzw.com',
 		'Verizon Pagers'=>'{n}@myairmail.com',
 		'Virgin Mobile'=>'{n}@vmobl.com',
-		'Virgin Mobile'=>'{n}@vxtras.com',
 		'WebLink Wireless'=>'{n}@pagemart.net',
 		'West Central Wireless'=>'{n}@sms.wcc.net',
 		'Western Wireless'=>'{n}@cellularonewest.com',
@@ -381,7 +380,7 @@ $smslist = array(
 		'O2 (M-mail)'=>'44{n}@mmail.co.uk',
 		'Orange'=>'0{n}@orange.net',
 		'T-Mobile'=>'0{n}@t-mobile.uk.net',
-		'Virgin Mobile'=>'0{n}@vxtras.com',
+		'Virgin Mobile'=>'0{n}@vmobl.com',
 		'Vodafone'=>'0{n}@vodafone.net',
 		),
 	);

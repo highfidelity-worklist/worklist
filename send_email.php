@@ -104,18 +104,18 @@ function notify_sms_by_id($user_id, $smssubject, $smsbody)
 }
 
 function notify_sms_by_object($user_obj, $smssubject, $smsbody)
-{
+{ 
     global $smslist;
     $smssubject = strip_tags($smssubject);
     $smsbody    = strip_tags($smsbody);
 
-    if ($user_obj->smsaddr) {
-        $smsaddr = $user_obj->smsaddr;
+    if ($user_obj->getSmsaddr()) {
+        $smsaddr = $user_obj->getSmsaddr();
     } else {
-        $provider = $user_obj->provider;
+        $provider = $user_obj->getProvider();
         if ( !empty($provider)) {
             if ($provider{0} != '+') {
-                $smsaddr = str_replace('{n}', $user_obj->phone, $smslist[$user_obj->country][$provider]);
+                $smsaddr = str_replace('{n}', $user_obj->getPhone(), $smslist[$user_obj->getCountry()][$provider]);
             } else {
                 $smsaddr = substr($provider, 1);
             }
