@@ -182,6 +182,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript">
+    var lockGetWorklist = 0;
     var status_refresh = 5 * 1000;
     var statusTimeoutId = null;
     var lastStatus = 0;
@@ -473,6 +474,13 @@ include("head.html"); ?>
     };
 
     function GetWorklist(npage, update, reload) {
+        while(lockGetWorklist) {
+// count atoms of the Universe untill old instance finished...
+        }
+        lockGetWorklist = 1;
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
         loaderImg.show("loadRunning", "Loading, please wait ...");
         $.ajax({
             type: "POST",
@@ -491,6 +499,7 @@ include("head.html"); ?>
             dataType: 'json',
             success: function(json) {
                 if (json[0] == "redirect") {
+                    lockGetWorklist = 0;
                     $("#query").val('');
                     window.location.href = buildHref( json[1] );
                     return false;
@@ -559,6 +568,7 @@ include("head.html"); ?>
                     if (timeoutId) clearTimeout(timeoutId);
                     GetWorklist(page, false);
                     e.stopPropagation();
+                    lockGetWorklist = 0;
                     return false;
                 });
 
@@ -575,12 +585,14 @@ include("head.html"); ?>
                     if (timeoutId) clearTimeout(timeoutId);
                     GetWorklist(page, false);
                     e.stopPropagation();
+                    lockGetWorklist = 0;
                     return false;
                 });
             }
         });
 
         timeoutId = setTimeout("GetWorklist("+page+", true, true)", refresh);
+        lockGetWorklist = 0;
     }
 
 
