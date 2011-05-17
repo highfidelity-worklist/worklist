@@ -49,6 +49,9 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
             case 'processW2Masspay':
                 processW2Masspay();
                 break;
+            case 'version':
+                exec('svnversion > ver');
+                break;
             default:
                 die("Invalid action.");
 		}
