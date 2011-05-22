@@ -12,7 +12,7 @@ require_once('smslist.php');
  * 
  *  send email using local mail()
  */
-function send_email($to, $subject, $html, $plain=null, $headers = array()) {
+function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     //Validate arguments
     if (empty($to) || 
         empty($subject) ||
@@ -29,11 +29,11 @@ function send_email($to, $subject, $html, $plain=null, $headers = array()) {
         $headers['From'] = DEFAULT_SENDER;
     }
     if (empty($headers['X-tag'])) {
-        $headers['X-tag']='worklist';
+        $headers['X-tag'] = 'worklist';
     } else {
         $headers['X-tag'] .= ', worklist';
     }
-    $headers['From'] = "Worklist <worklist@sendlove.us>";
+
     if (!empty($html)) {
         if (empty($plain)) {
             $h2t = new html2text($html, 75);
@@ -68,7 +68,7 @@ Content-Transfer-Encoding: 7bit
     foreach ($headers as $header=>$value) {
         $header_string .= "{$header}: {$value}\r\n";
     }
-    if (mail($to,$subject,$body,$header_string,'-f'.DEFAULT_SENDER)) {
+    if (mail($to, $subject, $body, $header_string, '-f' . DEFAULT_SENDER)) {
         return true;
     }
     return false;
@@ -176,8 +176,8 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
  *  $data - array of key-value replacements for template
  */ 
 
-function sendTemplateEmail($to, $template, $data){
- include (dirname(__FILE__) . "/email/en.php");
+function sendTemplateEmail($to, $template, $data, $from = false){
+    include (dirname(__FILE__) . "/email/en.php");
 
     $recipients = is_array($to) ? $to : array($to);
 
@@ -190,19 +190,23 @@ function sendTemplateEmail($to, $template, $data){
     $plain = !empty($replacedTemplate['plain']) ?
                 $replacedTemplate['plain'] :
                 null;
-    $xtag = !empty($replacedTemplate['X-tag']) ?
+    $xtag  = !empty($replacedTemplate['X-tag']) ?
                 $replacedTemplate['X-tag'] :
                 null;
+
+    $headers = array();
     if (!empty($xtag)) {
-        $headers=array('X-tag',$xtag);
-    } else {
-        $headers=array();
+        $headers['X-tag'] = $xtag;
+    }
+    if (!empty($from)) {
+        $headers['From'] = $from;
     }
 
     $result = null;
     foreach($recipients as $recipient){
-        $headers['To']="<$recipient>";
-        if (! $result = send_email($recipient, $subject, $html, $plain,$headers)) { error_log("send_email:Template: send_email failed"); }
+        if (! $result = send_email($recipient, $subject, $html, $plain, $headers)) {
+            error_log("send_email:Template: send_email failed"); \
+        }
     }
 
     return $result;

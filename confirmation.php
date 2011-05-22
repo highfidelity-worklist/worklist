@@ -77,11 +77,17 @@ if (isset($_REQUEST['str'])) {
         $result = ob_get_contents();
         ob_end_clean();
         $result = json_decode($result);
-        if($result->error == 1) {
+        if ($result->error == 1) {
             die($result->message);
         }
         $sql = "UPDATE ".USERS." SET confirm = 1, is_active = 1 WHERE username = '".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'";
         mysql_query($sql);
+        // send welcome email
+        $data = array(
+            'nickname' => $user->getNickname()
+        );
+
+        sendTemplateEmail($user->getUsername(), 'welcome', $data, 'Worklist <contact@worklist.net>');
         if (REQUIRELOGINAFTERCONFIRM) {
             session::init(); // User must log in AFTER confirming (they're not allowed to before)
         } else {

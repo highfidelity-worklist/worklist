@@ -432,6 +432,37 @@ replacement data:
     'body' => '
         <p>You received a bonus of ${amount}, and note:</p>
         <p>{reason}</p>'
+),
+
+/*
+welcome
+    send confirmed user a welcome email
+    used in: confirmation.php
+
+replacement date:
+    nickname - nickname of the receiving user
+*/
+'welcome' => array(
+    'subject' => 'Get Started with Worklist',
+    'body' => '
+        Thank you for joining Worklist, {nickname}!<br/><br/>
+        Worklist offers fast pay for your work, an open codebase, 
+        and great community. We\'re excited to have you join us as we 
+        create a new way to get things done.<br/><br/>
+        Three things to help you get started:<br/><br/>
+           - Browse the source code*: <a href="http://svn.sendlove.us">http://svn.sendlove.us</a><br/>
+           - Get in the Journal to chat with us: <a href=" http://dev.sendlove.us/journal">http://dev.sendlove.us/journal</a><br/>
+           - Bid on a project on our Worklist: <a href="http://dev.sendlove.us/worklist">http://dev.sendlove.us/worklist</a><br/>
+        <br/>
+        * Don\'t worry, you\'ll get a custom sandbox and support getting our codebase set up once you\'ve made a bid!<br/>
+        Looking for even more info? Check here: <a href="http://www.below92.com/development-process/">http://www.below92.com/development-process/</a><br/>
+        Thanks for joining and we hope to see you in the Journal soon!<br/><br/>
+        Cheers,<br/><br/>
+        Coffee & Power Inc<br/><br/>
+        p.s. Follow our continuing adventures...<br/>
+        Blog: <a href="http://www.lovemachineinc.com/blog/">http://www.lovemachineinc.com/blog/</a><br/>
+        Twitter: <a href="http://twitter.com/lovemachineinc">http://twitter.com/lovemachineinc</a>
+    '
 )
 
 ); 
