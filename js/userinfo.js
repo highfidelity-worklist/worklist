@@ -316,17 +316,20 @@ var UserInfo = {
         } else {
             $('#isw2employee').click( function () {
                 if ($('#isw2employee').is(':checked')) {
-                    $('#isw9approved').removeAttr('checked')
-                                      .attr('disabled', 'disabled');
-                    $('#ispaypalverified').removeAttr('checked')
-                                          .attr('disabled', 'disabled');
+                    $('#isw9approved, #ispaypalverified')
+                        .removeAttr('checked');
                 } else {
-                    $('#isw9approved, #ispaypalverified').removeAttr('disabled');
+                    $('#isw9approved, #ispaypalverified')
+                        .removeAttr('disabled');
                 }
             });
             $('#ispaypalverified, #isw9approved').click(function() {
                 if ($(this).is(':checked')) {
-                    $('#w2_employee').removeAttr('checked');
+                    $('#isw2employee')
+                        .removeAttr('checked');
+                } else {
+                    $('#isw2employee')
+                        .removeAttr('disabled');
                 }
             });
         }

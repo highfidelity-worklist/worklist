@@ -60,31 +60,49 @@
 
                 case 'isw9approved':
                     $updateUser->setHas_w9approval($value);
+                    if ($value) {
+                        $updateUser->setHas_w2(false);
+                    }
                     break;
 
                 case 'ispaypalverified':
                     $updateUser->setPaypal_verified($value);
+                    if ($value) {
+                        $updateUser->setHas_w2(false);
+                    }
                     break;
 
                 case 'isw2employee':
                     $updateUser->setHas_w2($value);
+                    if ($value) {
+                        $updateUser->setPaypal_verified(false);
+                        $updateUser->setHas_w9approval(false);
+                    }
                     break;
 
                 case 'manager':
                     $updateUser->setManager($value);
-                    $manager = new User();
-                    $manager->findUserById($value);
-                    // Send journal notification
-                    sendJournalNotification("The manager for " . $updateUser->getNickname() . " is now set to " . $manager->getNickname());
+                    if ($value) {
+                        $manager = new User();
+                        $manager->findUserById($value);
+                        // Send journal notification
+                        sendJournalNotification("The manager for " . $updateUser->getNickname() . " is now set to " . $manager->getNickname());
+                    } else {
+                        sendJournalNotification("The manager for " . $updateUser->getNickname() . " has been removed");
+                    }
                     break;
 
                 case 'referrer':
                     $updateUser->setReferred_by($value);
-                    $referrer = new User();
-                    $referrer->findUserById($value);
+                    if ($value) {
+                        $referrer = new User();
+                        $referrer->findUserById($value);
 
-                    // Send journal notification
-                    sendJournalNotification("The referrer for " . $updateUser->getNickname() . " is now set to " . $referrer->getNickname());
+                        // Send journal notification
+                        sendJournalNotification("The referrer for " . $updateUser->getNickname() . " is now set to " . $referrer->getNickname());
+                    } else {
+                        sendJournalNotification("The referrer for " . $updateUser->getNickname() . " has been removed");
+                    }
                     break;
 
                 case 'isactive':
@@ -109,18 +127,12 @@
                 'message' => 'Error: Could not determine the user_id'
             )));
         }
-
-
-        // echo json_encode($_POST);
     }
 
     if (isset($_REQUEST['id'])) {
         $userId = (int)$_REQUEST['id'];
     } else {
         die("No id provided");
-    }
-
-    if (isset($_POST['give_budget']) && $_SESSION['userid'] == $reqUser->getId()) {
     }
 
     $user = new User();

@@ -176,8 +176,8 @@
                     <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label for="isrunner" class="info-label">Runner</label>
                     <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label for="ispayer" class="info-label">Payer</label>
                     <p class="info-label">Payment Information</p>
-                    <input type="checkbox" id="isw9approved" name="isw9approved" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label for="isw9approved" class="info-label">W9 Approved</label>
-                    <input type="checkbox" id="ispaypalverified" name="ispaypalverified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label for="ispaypalverified" class="info-label">PayPal Verified</label>
+                    <input type="checkbox" id="isw9approved" name="isw9approved" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> /><label for="isw9approved" class="info-label">W9 Approved</label>
+                    <input type="checkbox" id="ispaypalverified" name="ispaypalverified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?>/><label for="ispaypalverified" class="info-label">PayPal Verified</label>
                     <input type="checkbox" id="isw2employee" name="isw2employee" <?php if ($user->getHas_W2()) echo 'checked="checked"'; ?> /><label for="isw2employee" class="info-label">W2 Employee</label>
                     <p class="info-label">Preferred Payment Method</p>
                     <span id="info-payway"><?php echo $user->getPayway() == '' ? $user->getPayway() : 'None selected'; ?></span>
