@@ -173,55 +173,39 @@
                 </p>
                 <form id="roles" method="post" action="">
                     <p class="info-label">Roles</p>
-                    <input type="checkbox" name="isrunner" value="isrunner" id="info-isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label class="info-label">Runner</label>
-                    <input type="checkbox" name="ispayer" value="ispayer" id="info-ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label class="info-label">Payer</label>
-                    <input class="admin-submit" type="submit" name="save_roles" value="Save Changes" />
+                    <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label for="isrunner" class="info-label">Runner</label>
+                    <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label for="ispayer" class="info-label">Payer</label>
                     <p class="info-label">Payment Information</p>
-                    <input type="checkbox" id="approve" name = "w9" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label class="info-label">W9 Approved</label>
-                    <input type="checkbox" id="paypal_verified" name="paypal_verified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label class="info-label">PayPal Verified</label>
-                    <input type="checkbox" id="w2_employee" name="w2_employee" <?php if ($user->getHas_W2()) echo 'checked="checked"'; ?> /><label class="info-label">W2 Employee</label>
-                    <p class = "info-label">Preferred Payment Method</p>
+                    <input type="checkbox" id="isw9approved" name="isw9approved" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label for="isw9approved" class="info-label">W9 Approved</label>
+                    <input type="checkbox" id="ispaypalverified" name="ispaypalverified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?> <?php if ($user->getHas_W2()) echo 'disabled="disabled"'; ?>/><label for="ispaypalverified" class="info-label">PayPal Verified</label>
+                    <input type="checkbox" id="isw2employee" name="isw2employee" <?php if ($user->getHas_W2()) echo 'checked="checked"'; ?> /><label for="isw2employee" class="info-label">W2 Employee</label>
+                    <p class="info-label">Preferred Payment Method</p>
                     <span id="info-payway"><?php echo $user->getPayway() == '' ? $user->getPayway() : 'None selected'; ?></span>
-                    <p class = "info-label">PayPal E-Mail</p>
+                    <p class="info-label">PayPal E-Mail</p>
                     <span id="info-paypal"><?php echo ($user->getPaypal_email() == '') ? 'No address on file' : $user->getPaypal_email(); ?></span>
                     <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
                 </form>
             </div><!-- end of admin-left -->
             <div id="admin-right">
-                <p class="info-label">Budget</p>
-                <span id="info-budget">$<?php echo $user->getBudget(); ?></span>
-                <input  class="admin-submit" type="submit" id="give" value="Give Budget..." />
+                <form method="post" action="" name="userDropdownOptions" id="userDropdownOptions">
+                    <p class="info-label">Budget</p>
+                    <span id="info-budget">$<?php echo $user->getBudget(); ?></span>
+                    <input  class="admin-submit" type="submit" id="give" value="Give Budget..." />
 <?php if ($is_payer): ?>
-                <p class="info-label">Annual Salary</p>
-                <form method="post" action="" name="salary" id="salary">
+                    <p class="info-label">Annual Salary</p>
                     <input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>" />
-                    <input class="admin-submit" type="submit" id="save_salary" value="Save salary"  name="save_salary"/>
-                    <p class="info-label">Manager</p>
-                    <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
-                    <input class="admin-submit" type="submit" id="save_manager" value="Save manager" name="save_manager"/>
-                    <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
-                    <input type="hidden" name="salary_changed" id="salary_changed" value="0" />
-                    <input type="hidden" name="manager_changed" id="manager_changed" value="0" />
-                </form>
-<?php else: ?>
-                <form method="post" action="" name="manager" id="manager">
-                    <p class="info-label">Manager</p>
-                    <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
-                    <input class="admin-submit" type="submit" id="save_manager" value="Save manager" name="save_manager"/>
-                    <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
-                </form>
+                    <input class="admin-submit" type="button" id="save_salary" value="Save salary"  name="save_salary"/>
 <?php endif; ?>
-                <p class="info-label">Referred By</p>
-                <form method="post" action="" name="referred_by" id="referred_by">                   
+                    <p class="info-label">Manager</p>
+                    <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
+
+                    <p class="info-label">Referred By</p>
                     <?php echo $filter->getReferrerUserSelectboxS("width:180px;"); ?>
-                    <input class="admin-submit" type="submit" id="save_referrer" value="Save referred by" name="save_referrer"/>
-                    <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
-                    <input type="hidden" name="referred_by_changed" id="referred_by_changed" value="0" />
                     <p class="info-label">Status</p>
-                    <select id="changeUserStatus" style="width:auto;">
-                    <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
-                    <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
-                    <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
+                    <select id="isactive" name="isactive" style="width: auto;">
+                        <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
+                        <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
+                        <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
                     </select>
                     <br/>
                 </form>
@@ -229,27 +213,9 @@
             </div><!-- end of admin-right -->
         </div><!-- end of tab 2 -->
 <?php
-function getProjectList() {
-    $query = "SELECT * FROM `".PROJECTS."` WHERE active=1";
-    $query = mysql_query($query);
-    $projects = array();
-    $i = 0;
-    while ($project = mysql_fetch_array($query)) {
-        $projects[$i]['name'] = $project['name'];
-        $projects[$i]['id']   = $project['project_id'];
-        $projects[$i]['repo'] = $project['repository'];
-        $i++;
-    }
-    return $projects;
-}
 
-$projects = getProjectList();
-$user_projects = $user->getProjects_checkedout();
-if (count($user_projects) > 0) {
-    $has_sandbox = true;
-} else {
-    $has_sandbox = false;
-}
+
+
 ?>
         <div id="tabs-3" style="clear: both;">
             <form method="post" action="" id="sandboxForm">

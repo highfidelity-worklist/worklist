@@ -1,5 +1,5 @@
 <?php
-//  Copyright (c) 2010, LoveMachine Inc.
+//  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
@@ -14,7 +14,7 @@
     require_once 'models/DataObject.php';
     require_once 'models/Review.php';
 
-    $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+    $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
 
     $reqUserId = getSessionUserId();
     $reqUser = new User();
@@ -25,82 +25,95 @@
         die("You have to be logged in to access user info!");
     }
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
-	$is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    
+    $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
     $filter = new Agency_Worklist_Filter($_REQUEST);
 
-    if (isset($_POST['save_roles']) && ($is_runner || $is_payer)) { //only runners can change other user's roles info
-        $is_runnerSave = isset($_POST['isrunner']) ? 1 : 0;
-        $is_payerSave = isset($_POST['ispayer']) ? 1 : 0;
-        $hasW9 = isset($_POST['w9']) ? 1 : 0;
-        $has_W2 = isset($_POST['w2_employee']) ? 1 : 0;
-        $isPaypalVerified = isset($_POST['paypal_verified']) ? 1 : 0;
-        $user_idSave = intval($_POST['userid']);
+    // admin posting data
+    if (isset($_POST) && !empty($_POST) && ($is_runner || $is_payer) && !$action) {
 
-        $saveUser = new User();
-        $saveUser->findUserById($user_idSave);
-        $saveUser->setHas_w9approval($hasW9);
-        $saveUser->setPaypal_verified($isPaypalVerified);
-        $saveUser->setHas_W2($has_W2);
-        $saveUser->setIs_runner($is_runnerSave);
-        $saveUser->setIs_payer($is_payerSave);
-        $saveUser->save();
-    }
-    if (isset($_POST['save_salary']) && $is_payer) { //only payers can change other user's roles info
-        // Detect what's been changed
-        $salary_changed = intval($_POST['salary_changed']);
-        $manager_changed = intval($_POST['manager_changed']);
-    
-		$annual_salarySave = mysql_real_escape_string($_POST['annual_salary']);
-        $user_idSaveSalary = intval($_POST['userid']);
-        $manager_id = intval($_POST['manager']);
-        $saveUserSalary = new User();
-        $saveUserSalary->findUserById($user_idSaveSalary);
-		$saveUserSalary->setAnnual_salary($annual_salarySave);
-        $saveUserSalary->setManager($manager_id);
-        $saveUserSalary->save();
-        
-        $manager = new User();
-        $manager->findUserById($manager_id);
+        $user_id = (int) $_POST['user_id'];
 
-        // Send journal notification depending on what's been changed
-        if ($salary_changed) {
-            sendJournalNotification("A new salary has been set for ".$saveUserSalary->getNickname());
+        if ($_POST['save-salary']) {
+            $field = 'salary';
+            $value = mysql_real_escape_string($_POST['value']);
+        } else {
+            $field = $_POST['field'];
+            $value = (int) $_POST['value'];
         }
-        if ($manager_changed) {
-            sendJournalNotification("The manager for ".$saveUserSalary->getNickname() . " is now set to ".$manager->getNickname());
+
+        $updateUser = new User();
+
+        if ($updateUser->findUserById($user_id)) {
+            switch ($field) {
+                case 'salary':
+                    $updateUser->setAnnual_salary($value);
+                    sendJournalNotification("A new salary has been set for " . $updateUser->getNickname());
+                    break;
+
+                case 'ispayer':
+                    $updateUser->setIs_payer($value);
+                    break;
+
+                case 'isrunner':
+                    $updateUser->setIs_runner($value);
+                    break;
+
+                case 'isw9approved':
+                    $updateUser->setHas_w9approval($value);
+                    break;
+
+                case 'ispaypalverified':
+                    $updateUser->setPaypal_verified($value);
+                    break;
+
+                case 'isw2employee':
+                    $updateUser->setHas_w2($value);
+                    break;
+
+                case 'manager':
+                    $updateUser->setManager($value);
+                    $manager = new User();
+                    $manager->findUserById($value);
+                    // Send journal notification
+                    sendJournalNotification("The manager for " . $updateUser->getNickname() . " is now set to " . $manager->getNickname());
+                    break;
+
+                case 'referrer':
+                    $updateUser->setReferred_by($value);
+                    $referrer = new User();
+                    $referrer->findUserById($value);
+
+                    // Send journal notification
+                    sendJournalNotification("The referrer for " . $updateUser->getNickname() . " is now set to " . $referrer->getNickname());
+                    break;
+
+                case 'isactive':
+                    $updateUser->setIs_active($value);
+                    break;
+
+                default:
+                    break;
+            }
+
+            $updateUser->save();
+            $response = array(
+                'succeeded' => true,
+                'message' => 'User details updated successfully'
+            );
+            echo json_encode($response);
+            exit(0);
+
+        } else {
+            die(json_encode(array(
+                'succeeded' => false,
+                'message' => 'Error: Could not determine the user_id'
+            )));
         }
-    }
-    if (isset($_POST['save_manager']) && $is_runner) {
-        $user_id = intval($_POST['userid']);
-        $manager_id = intval($_POST['manager']);
-        $user = new User();
-        $user->findUserById($user_id);
-        $user->setManager($manager_id);
-        $user->save();
-        
-        $manager = new User();
-        $manager->findUserById($manager_id);
-        
-        // Send journal notification
-        sendJournalNotification("The manager for ".$user->getNickname() . " is now set to ".$manager->getNickname());
+
+
+        // echo json_encode($_POST);
     }
 
-    if (isset($_POST['save_referrer']) && $is_runner || $is_payer) {
-        $user_id = intval($_POST['userid']);
-        $referrer_id = intval($_POST['referred_by']);
-        $user = new User();
-        $user->findUserById($user_id);
-        $user->setReferred_by($referrer_id);
-        $user->save();
-        
-        $referred_by = new User();
-        $referred_by->findUserById($referrer_id);
-        
-        // Send journal notification
-        sendJournalNotification("The referrer for ".$user->getNickname() . " is now set to ".$referred_by->getNickname());
-    }
-    
     if (isset($_REQUEST['id'])) {
         $userId = (int)$_REQUEST['id'];
     } else {
@@ -112,25 +125,23 @@
 
     $user = new User();
     $user->findUserById($userId);
-	$Annual_Salary = "";
-	if($user->getAnnual_salary() >0){
-		$Annual_Salary = $user->getAnnual_salary();
-	}
+    $Annual_Salary = "";
+    if($user->getAnnual_salary() >0){
+        $Annual_Salary = $user->getAnnual_salary();
+    }
     $userStats = new UserStats($userId);
-
     $manager = $user->getManager();
-    
     $referred_by = $user->getReferred_by();
-        
+
     if ($action =='create-sandbox') {
-          $result = array();
-          try {
-            if(!$is_runner) {
+        $result = array();
+        try {
+            if (!$is_runner) {
                 throw new Exception("Access Denied");
             }
-            $args = array('unixusername','projects');
+            $args = array('unixusername', 'projects');
             foreach ($args as $arg) {
-              $$arg = mysql_real_escape_string($_REQUEST[$arg]);
+                $$arg = mysql_real_escape_string($_REQUEST[$arg]);
             }
 
             $projectList = explode(",",str_replace(" ","",$projects));
@@ -149,19 +160,23 @@
                 $project_id = Project::getIdFromRepo($project);
                 $user->checkoutProject($project_id);
             }
-        
-          }catch(Exception $e) {
+        } catch(Exception $e) {
             $result["error"] = $e->getMessage();
-          }
-          echo json_encode($result);
-          die();
+        }
+        echo json_encode($result);
+        die();
     }
 
     $reviewee_id = (int) $userId;
     $review = new Review();
     $reviewsList = $review->getReviews($reviewee_id,$reqUserId);
-
-
+    $projects = getProjectList();
+    $user_projects = $user->getProjects_checkedout();
+    if (count($user_projects) > 0) {
+        $has_sandbox = true;
+    } else {
+        $has_sandbox = false;
+    }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -189,10 +204,9 @@
             var user_id = <?php echo $userId; ?>;
             var current_id = <?php echo $reqUserId; ?>;
             var admin = <?php echo $is_payer; ?>;
-                                                
             var userInfo = {
                 manager: <?php echo $manager; ?>,
-                referred_by: <?php echo $referred_by; ?>,        
+                referred_by: <?php echo $referred_by; ?>,
                 user_id: <?php echo $userId; ?>,
                 nickName: '<?php echo $user->getNickName(); ?>'
             };
@@ -207,6 +221,5 @@
 <?php include('userinfo.inc'); ?>
 <!-- Popup for ping task  -->
 <?php require_once('dialogs/popup-pingtask.inc') ?>
-
 </body>
 </html>

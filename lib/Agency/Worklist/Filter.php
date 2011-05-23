@@ -381,9 +381,9 @@ class Agency_Worklist_Filter {
     /**
      * Gets the manager user selection box with style
      */
-    public function getManagerUserSelectboxS($style="", $active=1) {
+    public function getManagerUserSelectboxS($style = "", $active = 1) {
         $users = User::getUserList(getSessionUserId(), $active);
-        $box = '<select style="'.$style.'" id="select_manager" name="manager">';
+        $box = '<select style="'.$style.'" id="manager" name="manager">';
         $box .= '<option value="0" selected="selected">None</option>';
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
@@ -396,9 +396,9 @@ class Agency_Worklist_Filter {
 /**
      * Gets the referrer user selection box with style
      */
-    public function getReferrerUserSelectboxS($style="", $active=1) {
+    public function getReferrerUserSelectboxS($style = "", $active = 1) {
         $users = User::getUserList(getSessionUserId(), $active);
-        $box = '<select style="'.$style.'" id="select_referred_by" name="referred_by">';
+        $box = '<select style="'.$style.'" id="referrer" name="referrer">';
         $box .= '<option value="0" selected="selected">None</option>';
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
@@ -412,7 +412,7 @@ class Agency_Worklist_Filter {
     {
         $allDisplay = ($fromReport) ? "ALL" : "All Status";
         $status_array = WorkItem::getStates();
-        $box = '<select name="status">';
+        $box = '<select id="status" name="status">';
         $box .= '<option value="ALL"' . (($this->getStatus() == "ALL") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach ($status_array as $status) {
             $selected = '';

@@ -928,4 +928,17 @@ function checkLogin() {
         }
     }
 
-?>
+    function getProjectList() {
+        $query = "SELECT * FROM `".PROJECTS."` WHERE active=1";
+        $query = mysql_query($query);
+        $projects = array();
+        $i = 0;
+        while ($project = mysql_fetch_array($query)) {
+            $projects[$i]['name'] = $project['name'];
+            $projects[$i]['id']   = $project['project_id'];
+            $projects[$i]['repo'] = $project['repository'];
+            $i++;
+        }
+        return $projects;
+    }
+

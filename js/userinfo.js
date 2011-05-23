@@ -9,32 +9,95 @@ $(document).ready(function(){
 var UserInfo = {
     init: function() {
         userNotes.init();
-       
-        $('#select_manager').val(userInfo.manager);
-        $('#annual_salary').change(function() {
-            $('#salary_changed').val('1');
+        // admin settings
+        // checkboxes and dropdowns are handled by master functions below
+        // the dropdown value should always be an integer
+
+        // set the current values
+        $('#manager').val(userInfo.manager);
+        $('#referrer').val(userInfo.referred_by);
+
+        // master function to handle change in dropdowns
+        $('select', '#tabs-2').change(function() {
+            var value = $(this).val();
+            var field = $(this).attr('id');
+
+            $.ajax({
+                type: 'post',
+                url: 'userinfo.php',
+                dataType: 'json',
+                data: {
+                    value: $(this).val(),
+                    field: $(this).attr('id'),
+                    user_id: userInfo.user_id
+                },
+                success: function() {
+                }
+            });
         });
-        $('#select_manager').change(function() {
-            $('#manager_changed').val('1');
+
+        // master function to handle checkbox changes
+        $('input[type=checkbox]', '#tabs-2').click(function() {
+            // get the checkbox value
+            var value = $(this).is(':checked') ? 1 : 0;
+            // and the id of the field being changed
+            var field = $(this).attr('id');
+
+            $.ajax({
+                type: 'post',
+                url: 'userinfo.php',
+                dataType: 'json',
+                data: {
+                    value: value,
+                    field: field,
+                    user_id: userInfo.user_id
+                },
+                success: function(json) {
+                    // if (json
+                }
+            });
+        
         });
-        $('#select_referred_by').val(userInfo.referred_by);
-        $('#referred_by').change(function() {
-            $('#referred_by_changed').val('1');
+
+        // custom function for setting salary
+        $('#save_salary').click(function() {
+            // Get the specified salary
+            var salary = $('#annual_salary').val();
+            // Get the manager
+            var manager = $('#manager :selected').text();
+
+            // if no manager, and a salary larger than 0, reject
+            if (manager === 'None' && salary > 0) {
+                alert('Users with salary must have a manager.');
+                return false;
+            }
+
+            $.ajax({
+                type: 'post',
+                url: 'userinfo.php',
+                dataType: 'json',
+                data: {
+                    value: $('#annual_salary').val(),
+                    'save-salary': true,
+                    user_id: userInfo.user_id
+                },
+                success: function() {
+                }
+            });
         });
-       
+
         $("#tabs").tabs({
             cache: true,
             ajaxOptions: {
-            cache: true,
-            success: function() {
-            },                
-            error: function( xhr, status, index, anchor ) {
-                $( anchor.hash ).html(
-                    "Couldn't load this tab." );
+                cache: true,
+                success: function() {
+                },                
+                error: function( xhr, status, index, anchor ) {
+                    $(anchor.hash).html("Couldn't load this tab." );
                 }
             }
         });
-        
+
         $(".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *")
             .removeClass("ui-corner-all ui-corner-top")
             .addClass("ui-corner-bottom");
@@ -89,21 +152,7 @@ var UserInfo = {
         $('#popup-pingtask').dialog('open');
             return false;
         });
-       
-        $('#changeUserStatus').change(function() {
-            var change = $.ajax({
-                type: 'post',
-                url: 'jsonserver.php',
-                data: {
-                    status: $(this).val(),
-                    userid: userInfo.user_id,
-                    action: 'changeUserStatus'
-                },
-                dataType: 'json',
-                success: function() {}
-            });
-        });
-	
+
         $('#give-budget').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
         $('#give').click(function(){
             $('#give-budget form input[type="text"]').val('');
@@ -260,40 +309,24 @@ var UserInfo = {
             return false;
         });
         
-        $('#salary').submit(function(e) {
-            // Get the specified salary
-            var salary = $('#annual_salary').val();
-            
-            // Get the manager
-            var manager = $('#select_manager :selected').text();
-            
-            if (salary === '' || salary < 0) {
-                return true;
-            } else {
-                if (manager !== 'None') {
-                    return true;
-                } else {
-                    // Show an alert window
-                    alert('Users with salary must have a manager.');
-                    return false;
-                }
-            }
-        });
-        
-        if(!admin) {
-            $('#paypal_verified').attr('disabled', 'disabled');
-            $('#approve').attr('disabled', 'disabled');
-            $('#w2_employee').attr('disabled', 'disabled');
+        if (! admin) {
+            $('#ispaypalverified').attr('disabled', 'disabled');
+            $('#isw9approved').attr('disabled', 'disabled');
+            $('#isw2employee').attr('disabled', 'disabled');
         } else {
-            $('#w2_employee').click( function () {
-                if($('#w2_employee').attr('checked') == true ) {
-                    $('#approve').removeAttr('checked');
-                    $('#approve').attr('disabled', 'disabled');
-                    $('#paypal_verified').removeAttr('checked');
-                    $('#paypal_verified').attr('disabled', 'disabled');
+            $('#isw2employee').click( function () {
+                if ($('#isw2employee').is(':checked')) {
+                    $('#isw9approved').removeAttr('checked')
+                                      .attr('disabled', 'disabled');
+                    $('#ispaypalverified').removeAttr('checked')
+                                          .attr('disabled', 'disabled');
                 } else {
-                    $('#approve').removeAttr('disabled');
-                    $('#paypal_verified').removeAttr('disabled');
+                    $('#isw9approved, #ispaypalverified').removeAttr('disabled');
+                }
+            });
+            $('#ispaypalverified, #isw9approved').click(function() {
+                if ($(this).is(':checked')) {
+                    $('#w2_employee').removeAttr('checked');
                 }
             });
         }
