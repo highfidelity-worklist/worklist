@@ -18,7 +18,7 @@ class Utils{
         "provider",
         "paypal_email",
         "sms_flags",
-        "findus", 
+        "findus",
         "int_code",
         "notifications"
     );
@@ -68,5 +68,15 @@ class Utils{
         $result = ob_get_contents();
         ob_end_clean();
         return json_decode($result);
+    }
+    
+    public static function getVersion() {
+        if (file_exists(dirname(dirname(__FILE__)) . '/version.txt')) {
+            $data = file_get_contents(dirname(dirname(__FILE__)) . '/version.txt');
+            $version = trim($data);
+            return $version;
+        } else {
+            return 0;
+        }
     }
 }

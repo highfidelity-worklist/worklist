@@ -1,17 +1,17 @@
 <?php
 //  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 ?>
-<!-- break contained floats -->        
+<!-- break contained floats -->
             <div style="float:none; clear:both;"></div>
 
 <!-- END MAIN BODY - Close DIV center -->
         </div>
         <div id="right"></div>
 
-<!-- break 3-col float -->        
+<!-- break 3-col float -->
         <div style="float:none; clear:both;"></div>
 
 <!-- Close DIV container -->
@@ -34,10 +34,9 @@
     $filename = array_pop($res);
     $repname = array_pop($res);
     $viewSourceLink = "http://svn.sendlove.us/";
-    
-    $fh = fopen('ver', 'r');
-    $version = fread($fh, 30);
-    fclose($fh);
+    require_once('class/Utils.class.php');
+    $version = Utils::getVersion();
+
 ?>
         <div class="copyText">&copy;&nbsp;<? echo date("Y"); ?> <a href="http://www.lovemachineinc.com" target="_blank">LoveMachine, Inc.</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="privacy.php" target="_blank">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a> | Version: <?php echo $version;?></div>
         <div class="loves"><a href="http://www.lovemachineinc.com" target="_blank"><img src="images/LMLogo3.png" border="0"/></a></div>
