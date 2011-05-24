@@ -130,7 +130,7 @@ function showUserInfo(userId){
         <div class="filesDescription">
             <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
             <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
-            <?php if ($worklist['status'] != 'DONE') : ?>
+            <?php if ($worklist['status'] != 'DONE' && (int) $user_id > 0): ?>
             <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Remove attachment</a>
             <?php endif; ?>
         </div>
@@ -150,7 +150,7 @@ function showUserInfo(userId){
         <div class="documents filesDescription">
             <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
             <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
-            <?php if ($worklist['status'] != 'DONE') : ?>
+            <?php if ($worklist['status'] != 'DONE' && (int) $user_id > 0) : ?>
             <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Remove attachment</a>
             <?php endif; ?>
         </div>
@@ -159,7 +159,7 @@ function showUserInfo(userId){
     <# } #>
     </div>
 </div>
-<?php if ($worklist['status'] != 'DONE') : ?>
+<?php if ($worklist['status'] != 'DONE' && (int) $user_id > 0) : ?>
 <div id="fileUploadButton">
     Attach new files
 </div>
