@@ -231,12 +231,13 @@ public function getActiveUserItems($status, $page = 1){
 
         $count = $this->getActiveJobsCount($status);
 
-        $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `mn`.`nickname` AS `mechanic_nickname`, 
+        $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `mn`.`nickname` AS `mechanic_nickname`, `cn`.`nickname` AS `creator_nickname`,
             `rn`.`nickname` AS `runner_nickname`,
             DATE_FORMAT(`created`, '%m/%d/%Y') AS `created`
             FROM `" . WORKLIST . "` 
             LEFT JOIN `" . USERS . "` AS `mn` ON `mechanic_id` = `mn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
+            LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId}) AND `status` IN ('WORKING','REVIEW') ORDER BY `id` DESC "
             . "LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
