@@ -292,7 +292,7 @@ class DataObject {
         // Limit the query to the current user
         $sql .= " WHERE `{$limiter}` = '{$limiter_value}'";
         
-        if ($limiter !== null) {
+        if ($limiter2 !== null) {
             $limiter_value = $this->$limiter2;
             
             // Limit the query to the current user
