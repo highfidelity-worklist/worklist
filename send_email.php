@@ -205,7 +205,7 @@ function sendTemplateEmail($to, $template, $data, $from = false){
     $result = null;
     foreach($recipients as $recipient){
         if (! $result = send_email($recipient, $subject, $html, $plain, $headers)) {
-            error_log("send_email:Template: send_email failed"); \
+            error_log("send_email:Template: send_email failed"); 
         }
     }
 
