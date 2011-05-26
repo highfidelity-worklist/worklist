@@ -84,12 +84,13 @@ $(document).ready(function() {
         resizable: false,
         open: function() {
             $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
-            setTimeout(function() { 
+            setTimeout(function() {
                 $("#sent-notify").dialog("close");
             }, 3000);
         }
     });
 
+    <?php if ($user_id > 0) { ?>
     $.get('getskills.php', function(data) {
         var skills = eval(data);
         $("#skills").autocomplete(skills, {
@@ -102,6 +103,7 @@ $(document).ready(function() {
             scrollHeight: 300
         });
     });
+    <?php } ?>
     makeWorkitemTooltip(".worklist-item");
 
     $('#workitem-form').submit(function() {
@@ -310,7 +312,7 @@ $(document).ready(function(){
     var getTextFromSliderValue = function(val) {
         var sRet="2 hours";
         switch (val) {
-            case 0: 
+            case 0:
                 sRet  = "1 hour";
                 break;
             case 1:
@@ -372,10 +374,10 @@ $(document).ready(function(){
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
     $('#popup-pingtask').dialog({
-        autoOpen: false, 
-        width: 400, 
+        autoOpen: false,
+        width: 400,
         position: [ 'top' ],
-        show: 'fade', 
+        show: 'fade',
         hide: 'fade',
         open: function() {
             $('#ping-msg').TextAreaExpander(80, 150);
@@ -451,7 +453,9 @@ $(document).ready(function(){
                         documentsArray.push(documents[i].fileid);
                     }
                     var files = $('#uploadedFiles').parseTemplate(data.data);
+                    <?php if ($user_id > 0) { ?>
                     files = files + '<script type="text/javascript" src="js/uploadFiles.js"><\/script>';
+                    <?php } ?>
                     $('#uploadPanel').append(files);
                     $('#accordion').accordion({
                         clearStyle: true,
@@ -663,12 +667,12 @@ $(document).ready(function(){
                 'Edit Bid',
                 'getbiditem.php',
                 bid_id,
-                [ 
+                [
                     ['input', 'bid_id', 'keyId', 'eval'],
                     ['input', 'bid_amount', 'json.bid_amount', 'eval'],
                     ['input', 'bid_expires_edit', 'json.bid_expires', 'eval'],
                     ['input', 'done_in_edit', 'json.bid_done_in', 'eval'],
-                    ['textarea', 'notes', 'json.notes', 'eval'] 
+                    ['textarea', 'notes', 'json.notes', 'eval']
                 ],
                 function(json) {
                     // figure out expires
@@ -749,20 +753,20 @@ $(document).ready(function(){
     function saveWorkitem() {
         var massValidation;
         if($('#is_bug').is(':checked')) {
-            var bugJobId = new LiveValidation('bug_job_id', { 
+            var bugJobId = new LiveValidation('bug_job_id', {
                 onlyOnSubmit: true ,
                 onInvalid : function() {
                     this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
                 }
             });
-            bugJobId.add( Validate.Custom, { 
+            bugJobId.add( Validate.Custom, {
                 against: function(value,args){
                     id = $('#bugJobSummary').attr('title');
-                    return (id!=0) 
+                    return (id!=0)
                 },
                 failureMessage: "Invalid item Id"
             });
-            massValidation = LiveValidation.massValidate([ bugJobId ]);   
+            massValidation = LiveValidation.massValidate([ bugJobId ]);
             if (! massValidation) {
                 return false;
             }
@@ -773,7 +777,7 @@ $(document).ready(function(){
                 this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
             }
         });
-        summary.add( Validate.Presence, { 
+        summary.add( Validate.Presence, {
             failureMessage: "Can't be empty!"
         });
         massValidation = LiveValidation.massValidate( [ summary ]);
@@ -788,7 +792,7 @@ $(document).ready(function(){
             }
         });
         editProject.add( Validate.Exclusion, {
-            within: [ 'Select project' ], 
+            within: [ 'Select project' ],
             partialMatch: true,
             failureMessage: "You have to choose a project!"
         });
@@ -969,7 +973,20 @@ $(document).ready(function(){
 
         return false;
     });
+    <?php if ($user_id > 0) { ?>
+    $(function() {
+        $('#fee-accordion').accordion({
+            clearStyle: true,
+            collapsible: true,
+            active: false
+        });
+    });
 
+    <?php } ?>
+    
+    function sendToLogin(){
+        window.location = '<?php echo SERVER_URL; ?>login.php';
+    }
 </script>
 <title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
 </head>
@@ -995,13 +1012,13 @@ $(document).ready(function(){
                 <div class="info-ID">
                     <span class="info-label">#</span><?php echo $worklist['id'];?>
                     <?php
-                        //Show original item id if displayed item is a bug 
+                        //Show original item id if displayed item is a bug
                         if($workitem->getBugJobId() > 0) {
                             $originalItemLink = SERVER_URL."workitem.php?job_id=".
                                                 $workitem->getBugJobId()."&action=view";
                             echo "  [ bug of <a href='".$originalItemLink."' class='worklist-item' id='workitem-".$workitem->getBugJobId()."' >".$workitem->getBugJobId()."</a> ]";
                         }
-                    ?>                    
+                    ?>
                 </div>
                 <span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
             </div>
@@ -1394,7 +1411,7 @@ if ($action =="edit"):  ?>
                                     </td>
                                     <td >$ <?php echo $bid['bid_amount'];?></td>
                                     <td><?php echo isset($bid['done_in']) ? $bid['done_in'] : '<em>' . relativeTime($bid['future_delta']) . '</em>'; ?></td>
-<?php 
+<?php
     $expire_class = '';
     if (isset($bid['expires']) && $bid['expires'] != -1) {
         if ($bid['expires'] == -1) {
@@ -1425,69 +1442,78 @@ if ($action =="edit"):  ?>
 <?php endif;?>
                 <!-- End of div bid-panel -->
                     </div>
-                    <div id="fee-panel" >
-                        <table width="100%" class="table-fees">
-                            <caption class="table-caption" >
-                                <b>Fees</b>
-                            </caption>
-                            <thead>
-                                <tr class="table-hdng">
-                                    <td>Who</td>
-                                    <td>Amount</td>
-                                    <td>Description</td>
-                                    <td>Date</td>
-                                    <td>Paid</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <?php if(empty($fees)): ?>
-                                <tr>
-                                    <td style="text-align: center;" colspan="5">No fees yet.</td>
-                                </tr>
-                            <?php else: $row = 1;
-                                foreach($fees as $fee): ?>
-                                <tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-                                    <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
-                                    <td>$ <?php echo $fee['amount'];?></td>
-                                    <td><?php echo $fee['desc'];?></td>
-                                    <td><?php echo $fee['date'];?></td>
-                                    <td>
-                                        <?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
-                                        <?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
-                                        <?php endif;?>
-                                        <?php if(($is_runner ||$user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
-                                        <br><a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>DEL</a>
-                                        <?php endif;?>
-                                    </td>
-                                </tr>
-                                <?php endforeach;?>
-                                <tr>
-                                    <td colspan="1" style="text-align:right; font-weight:bold;">Total</td>
-                                    <td colspan="4" style="text-align:left"><span style="line-height:20px; font-weight:bold; font-size:16px">$ <?php echo $total_fee;?></span></td>
-                                </tr>
+                    <?php if ($user_id > 0) { ?>
+                    <div id="fee-accordion">
+                        <h3><a href="#">More</a></h3>
+                        <div id="fee-panel" >
+                            <table width="100%" class="table-fees">
+                                <caption class="table-caption" >
+                                    <b>Fees</b>
+                                </caption>
+                                <thead>
+                                    <tr class="table-hdng">
+                                        <td>Who</td>
+                                        <td>Amount</td>
+                                        <td>Description</td>
+                                        <td>Date</td>
+                                        <td>Paid</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php if(empty($fees)): ?>
+                                    <tr>
+                                        <td style="text-align: center;" colspan="5">No fees yet.</td>
+                                    </tr>
+                                <?php else: $row = 1;
+                                    foreach($fees as $fee): ?>
+                                    <tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
+                                        <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
+                                        <td>$ <?php echo $fee['amount'];?></td>
+                                        <td><?php echo $fee['desc'];?></td>
+                                        <td><?php echo $fee['date'];?></td>
+                                        <td>
+                                            <?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
+                                            <?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
+                                            <?php endif;?>
+                                            <?php if(($is_runner ||$user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
+                                            <br><a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>DEL</a>
+                                            <?php endif;?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                    <tr>
+                                        <td colspan="1" style="text-align:right; font-weight:bold;">Total</td>
+                                        <td colspan="4" style="text-align:left"><span style="line-height:20px; font-weight:bold; font-size:16px">$ <?php echo $total_fee;?></span></td>
+                                    </tr>
+                                <?php endif;?>
+                                </tbody>
+                            </table>
+                            <?php if($user_id && ($worklist['status'] != 'DONE')): ?>
+                            <div class="buttonContainer">
+    <?php if ($mechanic_id == $user_id): ?>
+                                <input class="iToolTip addTip" type="submit" value="Tip User" />
+    <?php endif; ?>
+    <?php if ($user_id): ?>
+    <?php if ($user->isEligible()) : ?>
+                                <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+    <?php else: ?>
+                                <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
+    <?php endif; ?>
+    <?php endif; ?>
+                            </div>
                             <?php endif;?>
-                            </tbody>
-                        </table>
-                        <?php if($user_id && ($worklist['status'] != 'DONE')): ?>
-                        <div class="buttonContainer">
-<?php if ($mechanic_id == $user_id): ?>
-                            <input class="iToolTip addTip" type="submit" value="Tip User" />
-<?php endif; ?>
-<?php if ($user_id): ?>
-<?php if ($user->isEligible()) : ?>
-                            <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
-<?php else: ?>
-                            <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
-<?php endif; ?>
-<?php endif; ?>
+                            <form id="withdraw" method="post" action="" >
+                                <input type="hidden" name="action" value="withdraw_bid" />
+                                <input type="hidden" class="fee_id" name="fee_id" value="" />
+                            </form>
+                    <!-- End of div fee-panel -->
                         </div>
-                        <?php endif;?>
-                        <form id="withdraw" method="post" action="" >
-                            <input type="hidden" name="action" value="withdraw_bid" />
-                            <input type="hidden" class="fee_id" name="fee_id" value="" />
-                        </form>
-                <!-- End of div fee-panel -->
+                    </div><!--  end accordian -->
+                    <?php } else { ?>
+                    <div class="buttonContainer">
+                        <input style="cursor:pointer;" type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
                     </div>
+                    <?php } ?>
             <!-- End of div moneyZone -->
                 </div>
                 <div id="uploadPanel"> </div>
@@ -1596,7 +1622,7 @@ if ($action =="edit"):  ?>
 
 <?php } ?>
 </div>
-<?php if(isset($_SESSION['userid'])){ ?>
+<?php if ( $user_id > 0) { ?>
 <script type="text/javascript">
     var status_refresh = 5 * 1000;
     var statusTimeoutId = null;

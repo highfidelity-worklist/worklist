@@ -213,7 +213,7 @@
 }
 
 .buttonContainer {
-    margin:4px 0px -18px;
+    margin: 4px 0;
     text-align:right;
 }
 
@@ -226,7 +226,7 @@
 }
 
 #fee-panel{
-    margin:10px 0 10px;
+    margin: 0;
 }
 
 #fee_desc,
