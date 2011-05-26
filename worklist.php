@@ -202,13 +202,15 @@ include("head.html"); ?>
             },
             dataType: 'json',
             success: function(json) {
-                if(lastStatus < json[0]["timeplaced"]) {
-                    lastStatus = json[0]["timeplaced"];
-                    $('#status-update').val(json[0]["status"]);
-                    $('#status-update').hide();
-                    $('#status-lbl').show();
-                    $("#status-share").hide();
-                    $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
+                if(json && json[0] && json[0]["timeplaced"]) {
+                    if(lastStatus < json[0]["timeplaced"]) {
+                        lastStatus = json[0]["timeplaced"];
+                        $('#status-update').val(json[0]["status"]);
+                        $('#status-update').hide();
+                        $('#status-lbl').show();
+                        $("#status-share").hide();
+                        $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
+                    }
                }
             }
         });
@@ -302,9 +304,9 @@ include("head.html"); ?>
         } else if(user_id == json[14]) {// Mechanic
             row += ' rowmechanic'; 
         } else if(json[15] ==1) { //user bid on this task
-        	row += ' rowbidon';
+            row += ' rowbidon';
         } else if(json[19] == 'expired') { // bid expired
-        	row += ' rowbidexpired';
+            row += ' rowbidexpired';
         } else if(user_id == json[9]) { // Creator
             row += ' rowown';
         }
