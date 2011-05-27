@@ -1066,15 +1066,21 @@ class User {
      *
      */
     public static function getUserList($populate = 0, $active = 0) {
-        $where = 'WHERE `confirm`= 1 AND `is_active` = 1';
+        $where = 'WHERE `confirm` = 1 AND `is_active` > 0';
         if ($active) {
-           $where .= ' AND `date` > DATE_SUB(NOW(), INTERVAL 30 DAY)';
+           $where .= ' AND (`date` > DATE_SUB(NOW(), INTERVAL 30 DAY) || `'.USERS.'`.`last_seen` > DATE_SUB(NOW(), INTERVAL 30 DAY) )';
         }
-        $result = mysql_query("
+        $sql = "
             SELECT `".USERS."`.`id` FROM `".USERS."` 
-            LEFT JOIN (SELECT `user_id`,MAX(`paid_date`) AS `date` FROM `".FEES."` WHERE `paid_date` IS NOT NULL AND `paid` = 1 AND `withdrawn` != 1 GROUP BY `user_id`) AS `dates` ON `".USERS."`.id = `dates`.user_id
-            $where ORDER BY `nickname` ASC");
-        $i = (((int)$populate > 0) ? (int)1 : 0);
+            LEFT JOIN (
+                SELECT `user_id`, MAX(`paid_date`) AS `date` FROM `".FEES."` 
+                WHERE `paid_date` IS NOT NULL AND `paid` = 1 AND 
+                    `withdrawn` != 1 GROUP BY `user_id`
+            ) AS `dates` ON `".USERS."`.id = `dates`.user_id
+            $where 
+            ORDER BY `nickname` ASC";
+        $result = mysql_query($sql);
+        $i =  (int) $populate > 0 ? (int) 1 : 0;
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $user = new User();
             if ($populate != $row['id']) {
