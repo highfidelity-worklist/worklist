@@ -375,7 +375,42 @@ function addCommas(nStr) {
         </table>
     </div>
 </div>
-
-
-
-<?php include("footer.php");?>
+<?php
+  $user_id = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0 ;
+  if ( $user_id > 0) { ?>
+<script type="text/javascript">
+    var status_refresh = 5 * 1000;
+    var statusTimeoutId = null;
+    var lastStatus = 0;
+    function GetStatus(source) {
+        var url = 'update_status.php';
+        var action = 'get';
+        if(source == 'journal') {
+            url = '<?php echo JOURNAL_QUERY_URL; ?>';
+            action = 'getUserStatus';
+        }
+        $.ajax({
+            type: "POST",
+            url: url,
+            cache: false,
+            data: {
+                action: action
+            },
+            dataType: 'json',
+            success: function(json) {
+                if(lastStatus < json[0]["timeplaced"]) {
+                    lastStatus = json[0]["timeplaced"];
+                    $('#status-update').val(json[0]["status"]);
+                    $('#status-update').hide();
+                    $('#status-lbl').show();
+                    $("#status-share").hide();
+                    $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
+               }
+            }
+        });
+        statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
+    }
+    GetStatus('worklist');
+</script>
+<?php }
+include("footer.php");?>
