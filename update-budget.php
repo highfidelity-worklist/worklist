@@ -43,7 +43,8 @@ if ($amount > 0) {
     $data = array();
     $data['user'] = JOURNAL_API_USER;
     $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " " . number_format($amount, 2) . " for $reason";
+    $data['message'] = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " " . number_format($amount, 2) . 
+    " for " . $_REQUEST['reason'] . ".";
     postRequest(JOURNAL_API_URL, $data);
 }
 

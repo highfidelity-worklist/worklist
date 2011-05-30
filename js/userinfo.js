@@ -166,7 +166,7 @@ var UserInfo = {
             var toReward = parseInt(rewarded) + parseInt($('#toreward').val());
             $.ajax({
                 url: 'update-budget.php',
-                data: 'receiver_id=' + $('#budget-receiver').val() + '&reason=' + $('#budget-reason').val() + '&amount=' + $('#budget-amount').val(),
+                data: 'receiver_id=' + $('#budget-receiver').val() + '&reason=' + encodeURIComponent($('#budget-reason').val()) + '&amount=' + $('#budget-amount').val(),
                 dataType: 'json',
                 type: "POST",
                 cache: false,
