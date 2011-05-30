@@ -226,6 +226,9 @@
 }
 
 #fee-panel{
+    margin: 10px 0;
+}
+#fee-accordion #fee-panel {
     margin: 0;
 }
 #fee-panel.ui-accordion-content {

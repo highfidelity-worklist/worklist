@@ -33,6 +33,10 @@
             $classEditable = " editable";
         }
     }
+    $hideFees = false;
+    if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTED') {
+        $hideFees = true;
+    }
 
 
 /*********************************** HTML layout begins here  *************************************/
@@ -973,7 +977,7 @@ $(document).ready(function(){
 
         return false;
     });
-    <?php if ($user_id > 0) { ?>
+    <?php if ($user_id > 0 && $hideFees) { ?>
     $(function() {
         $('#fee-accordion').accordion({
             clearStyle: true,
@@ -1443,8 +1447,10 @@ if ($action =="edit"):  ?>
                 <!-- End of div bid-panel -->
                     </div>
                     <?php if ($user_id > 0) { ?>
+                    <?php if ($hideFees) {?>
                     <div id="fee-accordion">
                         <h3><a href="#">More</a></h3>
+                    <?php } ?>
                         <div id="fee-panel" >
                             <table width="100%" class="table-fees">
                                 <caption class="table-caption" >
@@ -1508,7 +1514,9 @@ if ($action =="edit"):  ?>
                             </form>
                     <!-- End of div fee-panel -->
                         </div>
+                    <?php if ($hideFees) {?>
                     </div><!--  end accordian -->
+                    <?php } ?>
                     <?php } else { ?>
                     <div class="buttonContainer">
                         <input style="cursor:pointer;" type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
