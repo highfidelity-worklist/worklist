@@ -384,10 +384,10 @@ $(document).ready(function(){
         show: 'fade',
         hide: 'fade',
         open: function() {
-            $('#ping-msg').TextAreaExpander(80, 150);
+            $('#ping-msg').autogrow();
         },
         close: function() {
-            $('#ping-msg').TextAreaExpander(80, 150);
+            $('#ping-msg').autogrow();
             $('#ping-msg').val('');
         }
     });

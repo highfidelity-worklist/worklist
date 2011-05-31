@@ -1,95 +1,109 @@
-/**
- * TextAreaExpander plugin for jQuery
- * v1.0
- * Expands or contracts a textarea height depending on the
- * quatity of content entered by the user in the box.
+/*
+ * jQuery Autogrow Text Area
+ * version 1.0
+ * It automatically adjusts the height on text area.
  *
- * By Craig Buckler, Optimalworks.net
+ * Written by Jerry Luk jerry@presdo.com
  *
- * As featured on SitePoint.com:
- * http://www.sitepoint.com/blogs/2009/07/29/build-auto-expanding-textarea-1/
+ * Based on Chrys Bader's Auto Expanding Text area www.chrysbader.com
+ * and Craig Buckler's TextAreaExpander  http://www.sitepoint.com/blogs/2009/07/29/build-auto-expanding-textarea-1/
  *
- * Please use as you wish at your own risk.
+ * Licensed under MIT license.
  */
-
-/**
- * Usage:
- *
- * From JavaScript, use:
- *     $(<node>).TextAreaExpander(<minHeight>, <maxHeight>);
- *     where:
- *       <node> is the DOM node selector, e.g. "textarea"
- *       <minHeight> is the minimum textarea height in pixels (optional)
- *       <maxHeight> is the maximum textarea height in pixels (optional)
- *
- * Alternatively, in you HTML:
- *     Assign a class of "expand" to any <textarea> tag.
- *     e.g. <textarea name="textarea1" rows="3" cols="40" class="expand"></textarea>
- *
- *     Or assign a class of "expandMIN-MAX" to set the <textarea> minimum and maximum height.
- *     e.g. <textarea name="textarea1" rows="3" cols="40" class="expand50-200"></textarea>
- *     The textarea will use an appropriate height between 50 and 200 pixels.
- */
-
+ 
 (function($) {
+  $.fn.autogrow = function(options) {
+    var defaults = {
+      expandTolerance: 1,
+      enterToSubmit: false,
+      autoCollapse: true /* false to have better performance */
+    };
+    options = $.extend(defaults, options);
+    
+    // IE and Opera should never set a textarea height of 0px
+    var hCheck = !($.browser.msie || $.browser.opera) && options.autoCollapse;
+    
+    function resize(e, opts) {
+      var $e            = $(e.target || e), // event or element
+          contentLength = $e.val().length,
+          elementWidth  = $e.innerWidth();
+      
+      opts = opts || { };
+      
+      if (contentLength != $e.data("autogrow-length") || elementWidth != $e.data("autogrow-width")) {
+        var scrollPos = $(document).scrollTop();
+        
+        // For non-IE and Opera browser, it requires setting the height to 0px to compute the right height
+        if (hCheck && (contentLength < $e.data("autogrow-length") || 
+          elementWidth != $e.data("autogrow-width"))) {
+          $e.css("height", "0px");
+        }
+        
+        var extraLines = opts.extraLines ? opts.extraLines : 0;
+        var height = Math.max($e.data("autogrow-min"), Math.ceil(Math.min(
+          $e.attr("scrollHeight") + (options.expandTolerance + extraLines) * $e.data("autogrow-line-height"), 
+          $e.data("autogrow-max"))));
 
-	// jQuery plugin definition
-	$.fn.TextAreaExpander = function(minHeight, maxHeight) {
-
-		var hCheck = !($.browser.msie || $.browser.opera);
-
-		// resize a textarea
-		function ResizeTextarea(e) {
-
-			// event or initialize element?
-			e = e.target || e;
-
-			// find content length and box width
-			var vlen = e.value.length, ewidth = e.offsetWidth;
-			if (vlen != e.valLength || ewidth != e.boxWidth) {
-
-				if (hCheck && (vlen < e.valLength || ewidth != e.boxWidth)) e.style.height = "0px";
-				var h = Math.max(e.expandMin, Math.min(e.scrollHeight, e.expandMax));
-
-				e.style.overflow = (e.scrollHeight > h ? "auto" : "hidden");
-				e.style.height = h + "px";
-
-				e.valLength = vlen;
-				e.boxWidth = ewidth;
-			}
-
-			return true;
-		};
-
-		// initialize
-		this.each(function() {
-
-			// is a textarea?
-			if (this.nodeName.toLowerCase() != "textarea") return;
-
-			// set height restrictions
-			var p = this.className.match(/expand(\d+)\-*(\d+)*/i);
-			this.expandMin = minHeight || (p ? parseInt('0'+p[1], 10) : 0);
-			this.expandMax = maxHeight || (p ? parseInt('0'+p[2], 10) : 99999);
-
-			// initial resize
-			ResizeTextarea(this);
-
-			// zero vertical padding and add events
-			if (!this.Initialized) {
-				this.Initialized = true;
-				$(this).css("padding-top", 0).css("padding-bottom", 0);
-				$(this).bind("keyup", ResizeTextarea).bind("focus", ResizeTextarea);
-			}
-		});
-
-		return this;
-	};
-
+        $e.css("overflow", ($e.attr("scrollHeight") > height ? "auto" : "hidden"));
+        $e.css("height", height + "px");
+        $(document).scrollTop(scrollPos);
+      }
+      
+      return $e;
+    };
+    
+    function parseNumericValue(v) {
+      var n = parseInt(v, 10);
+      return isNaN(n) ? null : n;
+    };
+    
+    function initElement($e) {
+      $e.data("autogrow-min", options.minHeight || parseNumericValue($e.css('min-height')) || 0);
+      $e.data("autogrow-max", options.maxHeight || parseNumericValue($e.css('max-height')) || 99999);
+      $e.data("autogrow-line-height", options.lineHeight || parseNumericValue($e.css('line-height')));
+      resize($e);
+    };
+    
+    function getSelectedText()
+    {
+      if (window.getSelection) {
+        return window.getSelection().toString();
+      } else if (document.getSelection) {
+        return document.getSelection().toString();
+      } else if (document.selection){
+        return document.selection.createRange().text;
+      }
+      return "";
+    }
+    
+    this.each(function() {
+      var $this = $(this);
+            
+      if (!$this.data("autogrow-initialized")) {
+        $this.css("padding-top", 0).css("padding-bottom", 0);
+        $this.bind("keyup", resize).bind("focus", resize);
+        $this.data("autogrow-initialized", true);
+        $this.keydown(function(event) {
+          if (event.keyCode == 13) {
+            if (options.enterToSubmit) {
+              $($(this).parents('form').get(0)).submit();
+              event.preventDefault();
+            } else if (getSelectedText() == "") {
+              // Prepend an extra line to prevent flickering
+              var $e = $(event.target || event);
+              resize($e, { extraLines: 1 });
+            }
+          }
+        });
+        
+      
+        initElement($this);
+        // Sometimes the CSS attributes are not yet there so the above computation might be wrong
+        // 100ms delay will do the job
+        setTimeout(function() { initElement($this); }, 100);
+      }
+    });
+    
+    return this;
+  };
 })(jQuery);
-
-
-// initialize all expanding textareas
-jQuery(document).ready(function() {
-	jQuery("textarea[class*=expand]").TextAreaExpander();
-});
