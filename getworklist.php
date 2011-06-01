@@ -33,6 +33,7 @@ $_REQUEST['name'] = '.worklist';
 $filter = new Agency_Worklist_Filter($_REQUEST);
 
 $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
+$userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
 
 $sfilter = explode('/', $filter->getStatus());
 $ufilter = $filter->getUser();
@@ -44,7 +45,6 @@ $page = $filter->getPage();
 
 $where = '';
 $unpaid_join = '';
-$bFilterStatusContainBidding=false;
 if (!empty($sfilter)) {
     $where = "where (";
     foreach ($sfilter as $val) {
@@ -54,9 +54,6 @@ if (!empty($sfilter)) {
             $where .= "1 or ";
         } else {
             $where .= "status='$val' or ";
-        }
-        if( $val == 'BIDDING' ) {
-            $bFilterStatusContainBidding=true;
         }
     }
     $where .= "0)";
@@ -87,10 +84,8 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             $severalStatus = " OR ";
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
-        $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
         if( $userId == $ufilter )  {
-            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0)
-                        OR (`bidder_id`='$ufilter' AND `withdrawn` = 0))";
+            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0) OR (`bidder_id`='$ufilter'))";
         }   else    {
             $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0))";
         }
@@ -159,11 +154,14 @@ $latest = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_latest` (
            INDEX worklist_id(worklist_id))';
 
 $emptyLatest = 'TRUNCATE `tmp_latest`';
-
 $fillLatest = 'INSERT INTO `tmp_latest`
                (SELECT `worklist_id`,
                 MAX(`bid_created`) AS `latest`
-                FROM `'.BIDS.'` WHERE `withdrawn` = 0 GROUP BY `worklist_id`)';
+                FROM `'.BIDS.'` WHERE `withdrawn` = 0 ';
+if(!empty($ufilter) && $userId == $ufilter){
+    $fillLatest .='AND  `bidder_id`='.$ufilter.' ';
+}
+$fillLatest .='GROUP BY `worklist_id`)';
 
 mysql_query($latest);
 mysql_query($emptyLatest);
@@ -221,7 +219,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
-if (($ufilter == 'ALL') && ($bFilterStatusContainBidding) && (isset($_SESSION['userid']))) {
+if ((isset($_SESSION['userid']))) {
     $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
     $qsel .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
     $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `bid_expires` > NOW()) AS `bid_on`";
@@ -293,7 +291,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         20 => (!empty($row['current_bid']) ? $row['current_bid'] : 0),
     );
 }
-
+//$json = json_encode($fillTotals . ";".$fillLatest . ";".$fillBids.';'.$qry);
 $json = json_encode($worklist);
 echo $json;
 ob_end_flush();
