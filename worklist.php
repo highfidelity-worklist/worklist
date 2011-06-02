@@ -168,6 +168,9 @@ $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
 include("head.html"); ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<?php if(isset($_REQUEST['addFromJournal'])) { ?>
+<link href="css/addFromJournal.css" rel="stylesheet" type="text/css">
+<?php } ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <link href="css/ui.toaster.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
@@ -237,6 +240,7 @@ include("head.html"); ?>
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
     var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
+    var addFromJournal = '<?php echo isset($_REQUEST['addFromJournal']) ? $_REQUEST['addFromJournal'] : '' ?>';
     var dir = '<?php echo $filter->getDir(); ?>';
     var sort = '<?php echo $filter->getSort(); ?>';
     var inProject = '<?php echo is_object($inProject) ?  $project_id  : '';?>';
@@ -476,6 +480,9 @@ include("head.html"); ?>
     };
 
     function GetWorklist(npage, update, reload) {
+        if(addFromJournal != '') {
+            return true;
+        }
         while(lockGetWorklist) {
 // count atoms of the Universe untill old instance finished...
         }
@@ -736,6 +743,10 @@ include("head.html"); ?>
             affectedHeader = $(this);
             orderBy($(this).text().toLowerCase());
         });
+        if(addFromJournal != '') {
+            var winHandle = window.open('', addFromJournal);
+            var addJobPane = (winHandle.document.getElementById)?winHandle.document.getElementById('addJobPane'):winHandle.document.all['addJobPane'];
+        }
 
         $('#popup-edit').dialog({ 
             autoOpen: false,
@@ -822,6 +833,11 @@ include("head.html"); ?>
                         },50);
                     },20);
                     
+                }
+            },
+            close: function() {
+                if(addFromJournal != '') {
+                    addJobPane.style.display='none';
                 }
             }
         });
@@ -970,9 +986,13 @@ include("head.html"); ?>
                             $('#popup-edit').dialog('close');
                         }
                         loaderImg.hide("saveRunning");
-                        if (timeoutId) clearTimeout(timeoutId);
-                        timeoutId = setTimeout("GetWorklist("+page+", true, true)", refresh);
-                        GetWorklist("+page+", true, true);
+                        if(addFromJournal != '') {
+                            addJobPane.style.display='none';
+                        } else {
+                            if (timeoutId) clearTimeout(timeoutId);
+                            timeoutId = setTimeout("GetWorklist("+page+", true, true)", refresh);
+                            GetWorklist("+page+", true, true);
+                        }
                     }
                 });
                 return false;
@@ -1285,15 +1305,11 @@ include("head.html"); ?>
         $('#be-paid').children().remove();
     }
     
-    <?php
-    if(isset($_REQUEST['addFromJournal'])) {
-    ?>
-    $(function() {
-        $('#add').click();
-    });
-    <?php
+    if(addFromJournal != '') {
+        $(function() {
+            $('#add').click();
+        });
     }
-    ?>
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 <?php
@@ -1427,7 +1443,16 @@ var documentsArray = new Array();
 <?php require_once('dialogs/popups-userstats.inc'); ?>
 <!-- Popup for add project info-->
 <?php require_once('dialogs/popup-addproject.inc'); ?>
-<?php include("format.php"); ?>
+<?php
+if(isset($_REQUEST['addFromJournal'])) {
+?>
+<div class="hidden">
+<input type="submit" id="add" name="add" value="Add Job" />
+</div>
+<?php
+} else {
+    include("format.php");
+?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <!-- Head with search filters, user status, runer budget stats and quick links for the jobs-->
@@ -1437,7 +1462,7 @@ if(isset($_REQUEST['journal_query'])) {
    $filter->setProjectId($_REQUEST['project']);
    $filter->setUser($_REQUEST['user']);
 }
-  include("search-head.inc"); ?>
+   include("search-head.inc"); ?>
 <?php 
 // show project information header
 if (is_object($inProject)) {
@@ -1516,4 +1541,7 @@ if (is_object($inProject)) {
 GetStatus('worklist');
 </script>
 
-<?php include("footer.php"); ?>
+<?php
+    include("footer.php");
+}
+?>
