@@ -85,7 +85,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
         if( $userId == $ufilter )  {
-            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0) OR (`bidder_id`='$ufilter'))";
+            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0) OR (`bidder_id`='$ufilter' AND `".WORKLIST."`.`status`='BIDDING'))";
         }   else    {
             $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0))";
         }
@@ -220,7 +220,7 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
 if ((isset($_SESSION['userid']))) {
-    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 ORDER BY `".BIDS."`.`id` AND `".WORKLIST."`.`status`='BIDDING' DESC LIMIT 1) AS `current_bid`";
+    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `".WORKLIST."`.`status`='BIDDING' ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
     $qsel .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
     $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".WORKLIST."`.`status`='BIDDING' AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `bid_expires` > NOW()) AS `bid_on`";
 }
