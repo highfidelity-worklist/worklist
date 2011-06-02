@@ -404,7 +404,7 @@ WHERE id = ' . (int)$id;
     protected function insert()
     {
         $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
-                 "project_id, notes, bug_job_id, created, is_bug ) ".
+                 "project_id, notes, bug_job_id, created, is_bug, status_changed ) ".
             " VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
@@ -414,7 +414,8 @@ WHERE id = ' . (int)$id;
             "'".mysql_real_escape_string($this->getNotes())."', ".
             "'".intval($this->getBugJobId())."', ".
             "NOW(), ".
-            "'".$this->getIs_bug()."')";
+            "'".$this->getIs_bug()."', ".
+            "NOW())";
         $rt = mysql_query($query);
 
         $this->id = mysql_insert_id();
@@ -448,6 +449,7 @@ WHERE id = ' . (int)$id;
             notes="'.mysql_real_escape_string($this->getNotes()).'",
             project_id="'.mysql_real_escape_string($this->getProjectId()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
+            status_changed=NOW(),
             runner_id="' .$_SESSION['userid'].'",
             bug_job_id="' .intval($this->getBugJobId()).'",
             is_bug="'.$this->getIs_bug().'",
@@ -462,6 +464,7 @@ WHERE id = ' . (int)$id;
             notes="'.mysql_real_escape_string($this->getNotes()).'",
             project_id="'.mysql_real_escape_string($this->getProjectId()).'",
             status="' .mysql_real_escape_string($this->getStatus()).'",
+            status_changed=NOW(),
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
             is_bug='.$this->getIs_bug().',
@@ -801,7 +804,7 @@ WHERE id = ' . (int)$id;
         $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
 
         // changing mechanic of the job
-        mysql_unbuffered_query("UPDATE `".WORKLIST."` SET " . ($is_mechanic ? "`mechanic_id` =  '".$bid_info['bidder_id']."', " : '') . " `status` = 'WORKING',`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
+        mysql_unbuffered_query("UPDATE `".WORKLIST."` SET " . ($is_mechanic ? "`mechanic_id` =  '".$bid_info['bidder_id']."', " : '') . " `status` = 'WORKING',`status_changed`=NOW(),`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
         // marking bid as "accepted"
         mysql_unbuffered_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id);
         

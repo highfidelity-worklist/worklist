@@ -255,17 +255,38 @@ function processW2Masspay() {
          . "   AND f.withdrawn = 0 "
          . "   AND f.user_id = u.id "
          . "   AND u.has_W2 = 1 "
+         . "   AND w.status_changed < CAST(DATE_FORMAT(NOW(),'%Y-%m-01') as DATE) "
          . "   AND f.date <  CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE); ";
      
     // Marks all Fees from the past month as paid (for DONEd jobs)
-    $result = mysql_query($sql);
+    if (!$result = mysql_query($sql)) { error_log("mysql error: ".mysql_error()); die("mysql_error: ".mysql_error()); }
     $total = mysql_affected_rows();
     
     if( $total) {
         echo "{$total} fees were processed.";
     } else {
-        echo "No records were found!";
+        echo "No fees were found!";
     }
+
+    $sql = " UPDATE " . FEES . " AS f, " . USERS . " AS u " 
+         . " SET f.paid = 1, f.paid_date = NOW() "
+         . " WHERE f.paid = 0 "
+         . "   AND f.bonus = 1 "
+         . "   AND f.withdrawn = 0 "
+         . "   AND f.user_id = u.id "
+         . "   AND u.has_W2 = 1 "
+         . "   AND f.date <  CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE); ";
+     
+    // Marks all Fees from the past month as paid (for DONEd jobs)
+    if (!$result = mysql_query($sql)) { error_log("mysql error: ".mysql_error()); die("mysql_error: ".mysql_error()); }
+    $total = mysql_affected_rows();
+    
+    if( $total) {
+        echo "{$total} bonuses were processed.";
+    } else {
+        echo "No bonuses were found!";
+    }
+
     mysql_close($con);
 }
 
