@@ -1542,7 +1542,7 @@ if ($action =="edit"):  ?>
 <!-- End of div pageContent -->
     </div><br>
             <div style="margin:0px 101px 6px 0px;line-height:50px; padding-top:30px;padding-right:10px; float:right;display:inline-block;">
-                <script type="text/javascript" src="http://w.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
+                <script type="text/javascript" src="<?php echo empty($_SERVER['HTTPS'])?'http://':'https://';?>ws.sharethis.com/button/sharethis.js#publisher=4867cd3b-6b43-4c9b-b7a7-57966f818e05&amp;type=website&amp;style=horizontal"></script>
             </div>
             <div style="clear:both"></div>
 
