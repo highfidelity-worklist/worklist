@@ -119,10 +119,10 @@ var UserInfo = {
             show: 'fade',
             hide: 'fade',
             open: function() {
-                $('#ping-msg').TextAreaExpander(80, 150);
+                $('#ping-msg').autogrow(80, 150);
             },
             close: function() {
-                $('#ping-msg').TextAreaExpander(80, 150);
+                $('#ping-msg').autogrow(80, 150);
                 $('#ping-msg').val('');
             }
         });
