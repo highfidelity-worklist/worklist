@@ -1,3 +1,4 @@
+<?php include dirname(__FILE__).'/config.php'; ?>
 <script language="JavaScript" src="js/jquery-1.5.2.min.js"></script>
 <script language="JavaScript" src="js/jquery.scrollTo-min.js"></script>
 
@@ -156,12 +157,11 @@ h2.extra .entry-date-extra {
 </style>
 
 <!--[if IE 6]>
-  <link rel="stylesheet" href="//dev.sendlove.us/journal/css/ie.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="//<?php echo SERVER_NAME ?>/journal/css/ie.css" type="text/css" media="all" />
 <![endif]-->
 
 <div id="journalView" class="chatHistory">
 <?php
-include dirname(__FILE__).'/config.php';
 
 $options = array( 
 	CURLOPT_URL	       => JOURNAL_QUERY_URL_SSL,

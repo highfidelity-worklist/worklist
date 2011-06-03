@@ -759,7 +759,7 @@ WHERE id = ' . (int)$id;
         if ($repository) {
             // We're expecting every user to have a unixname now, they will be
             // assigned at signup. -alexi
-            $bid_info['sandbox'] = "http://".SERVER_NAME."/~" .
+            $bid_info['sandbox'] = "https://".SERVER_NAME."/~" .
                $bidder->getUnixusername()."/".$repository."/";
 
             // Provide bidder with sandbox & checkout if they don't already have one

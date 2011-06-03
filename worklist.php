@@ -4,8 +4,8 @@
 //  http://www.lovemachineinc.com
 //  vim:ts=4:et
 
-if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: http://dev.sendlove.us/worklist/worklist.php'); }
 require_once("config.php");
+if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: https://'.SERVER_NAME.'/worklist/worklist.php'); }
 require_once("class.session_handler.php");
 include_once("check_new_user.php"); 
 require_once("functions.php");
@@ -1234,7 +1234,7 @@ include("head.html"); ?>
         $.getJSON('get-budget-expanded.php'+params, function(data) {
             // Fill the table
             for (var i = 0; i < data.length; i++) {
-                var link = '<a href="http://dev.sendlove.us/worklist/workitem.php?job_id='+data[i].id+'&action=view" target="_blank">';
+                var link = '<a href="https://".SERVER_NAME."/worklist/workitem.php?job_id='+data[i].id+'&action=view" target="_blank">';
                 // Separate "who" names into an array so we can add the userinfo for each one
                 var who = data[i].who.split(", ");
                 var who_link = '';

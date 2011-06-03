@@ -26,8 +26,7 @@ $feeCategories = array(
 function checkReferer() {
     $len = strlen(SERVER_NAME);
     if (   empty($_SERVER['HTTP_REFERER'])
-    || (   substr($_SERVER['HTTP_REFERER'], 0, $len + 7) != 'http://'.SERVER_NAME
-    && substr($_SERVER['HTTP_REFERER'], 0, $len + 8) != 'https://'.SERVER_NAME)) {
+    || (  substr($_SERVER['HTTP_REFERER'], 0, $len + 8) != 'https://'.SERVER_NAME )) {
         return false;
     } else {
         return true;
@@ -860,11 +859,11 @@ function checkLogin() {
             $url=  preg_replace($regexp,'<a href="$0"' . $class . '>$0</a>',$url);
 
             $regexp="/href=\"(www\.\S+?)\"/i";
-            $url = preg_replace($regexp,'href="http://$1"',$url);
+            $url = preg_replace($regexp,'href="https://$1"',$url);
         }
 
         $regexp="/(href=)(.)?((www\.)\S+(\.)\S+)/i";
-        $url = preg_replace($regexp,'href="http://$3"',$url);
+        $url = preg_replace($regexp,'href="https://$3"',$url);
 
         // Replace '#<number>' with a link to the worklist item with the same number
         $regexp = "/\#([1-9][0-9]*)/";

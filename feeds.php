@@ -68,7 +68,7 @@ switch ($name) {
 	case 'priority' :
 		$name = 'priority';
 		$title = 'Worklist Top Priority Bidding Jobs';
-		$description = 'dev.sendlove.us Worklist, highest priority jobs Bidding';
+		$description = SERVER_NAME.' Worklist, highest priority jobs Bidding';
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
 					FROM ".WORKLIST." w
@@ -106,7 +106,7 @@ switch ($name) {
 	default :
 		$name = 'completed';
 		$title = 'Worklist most Recent completed jobs';
-		$description = 'dev.sendlove.us Worklist, Most recent completed Jobs';
+		$description = SERVER_NAME.' Worklist, Most recent completed Jobs';
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
 					FROM ".WORKLIST." w
@@ -114,7 +114,7 @@ switch ($name) {
 					ORDER BY created DESC LIMIT 20";
 }
 
-$url = 'http://dev.sendlove.us/';
+$url = 'https://'.SERVER_NAME.'/';
 $link = $url . "feed.php?name=$name&format=$format";
 $writer = new Zend_Feed_Writer_Feed; 
 $writer->setTitle($title); 
