@@ -692,3 +692,10 @@ function makeWorkitemTooltip(className){
     }
     });
 }
+
+// function to add an inline message above the job listing
+// call with the html you want in the inline message
+function addInlineMessage(html) {
+    $('#inlineMessage').append(html);
+    $('#inlineMessage').show();
+}

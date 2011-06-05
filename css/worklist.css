@@ -509,3 +509,43 @@ td.textAlignReport {
 	float: right;
 	margin-top: 20px;
 }
+
+#inlineMessage {
+    width: 860px;
+    background-color: #dedcf1;
+    margin: 20px auto 10px auto;
+    padding: 10px 20px 10px 20px;
+    display: none;
+}
+
+#inlineMessage p {
+    line-height: 13px;
+    color: #6F6F6F;
+    margin: 0 0 5px 0;
+}
+
+#inlineMessage .inlineWelcome {
+    font-weight: bold;    
+}
+
+#inlineMessage a {
+    font-weight: bold;
+    text-decoration: none;
+    color: #6F6F6F;
+}
+
+#inlineMessage a:hover {
+    color: #98AAB2;
+}
+
+#inlineMessage input {
+    position: relative;
+    left: -3px;
+}
+
+#inlineSource {
+    font-size: 11px;
+    display: inline;
+    position: relative;
+    left: 3px;
+}

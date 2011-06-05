@@ -96,6 +96,13 @@ function initUserById($userid) {
     $_SESSION['timezone']           = $user_row['timezone'];
     $_SESSION['is_runner']          = intval($user_row['is_runner']);
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
+    
+    // set the session variable for the inline message for new users before last seen is updated
+    if ($user_row['last_seen'] === null) {
+        $_SESSION['inlineHide'] = 0;
+    } else {
+        $_SESSION['inlineHide'] = 1;
+    }
 
     $last_seen_db = substr($user_row['last_seen'], 0, 10);
     $today = date('Y-m-d');
