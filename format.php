@@ -41,13 +41,13 @@ require_once('functions.php');
             echo $feeinfo;  
         } ?>
         
-        <div id="tagline">Fast pay for your work, <a href="http://svn.sendlove.us/" target="_blank">open codebase</a>, great community.</div>        
+        <div id="tagline">Fast pay for your work, <a href="http://svn.sendlove.us/" target="_blank">open codebase</a>, great community.</div>       
     </div>
     
     <!-- Inline Message Container -->
     <div id="inlineMessage"></div>
     
-    <?php if ($_SESSION['inlineHide'] == 0) { ?>
+    <?php if ($_SESSION['inlineHide'] == 0 && basename($_SERVER[PHP_SELF]) == 'worklist.php' ) { ?>
     
     <script type="text/javascript">
     
