@@ -294,7 +294,7 @@ $(document).ready(function () {
     </blockquote>
 
         <input type="button" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
-        <input type="button" id="enter_later" value="I will enter this Later" alt="I will enter this Later" name="enter_later" />
+        <input type="button" id="enter_later" value="Enter Info Later" alt="I will enter later" name="enter_later" />
 
     </form>
 
