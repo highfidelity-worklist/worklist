@@ -428,10 +428,10 @@ function AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id) {
                      "VALUES (NULL, '".(int)$itemid."', '".(float)$tip_amount."', '".(int)$mechanic_id."', '".mysql_real_escape_string($tip_desc)."', NOW(), '0')";
 
             $result = mysql_unbuffered_query($query);
-            return true;
+            return $_SESSION['nickname'] . " tipped $nickname on job #$itemid: $summary. ";
         }
     }
-    return false;
+    return '';
 }
 
 function payBonusToUser($user_id, $amount, $notes) {

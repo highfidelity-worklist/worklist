@@ -480,7 +480,19 @@ if ($action == "add_tip") {
 
     // is the logged in user the mechanic on the task?
     if ($workitem->getMechanicId() == getSessionUserId()) {
-        AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id);
+        $journal_message = AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id);
+
+        // notify recipient of new tip
+        $recipient = new User();
+        $recipient->findUserById($mechanic_id);
+        Notification::workitemNotify(array('type' => 'tip_added',
+            'workitem' => $workitem,
+            'emails' => array($recipient->getUsername())),
+            array('tip_adder' => $user->getNickname(),
+              	  'tip_desc' => $tip_desc,
+              	  'tip_amount' => $tip_amount
+	    )
+        );
     }
     
     $redirectToDefaultView = true;

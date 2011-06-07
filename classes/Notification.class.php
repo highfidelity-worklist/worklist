@@ -165,6 +165,11 @@ class Notification {
                         . 'Amount: ' . $data['fee_amount'];
             break;
 
+            case 'tip_added':
+                $subject = 'You\'ve received a tip from ' . $data['tip_adder'] . ' on job #' . $itemId;
+                $body = $data['tip_adder'] . ' tipped you $' . $data['tip_amount'] . ' on job ' . $itemLink . ' for:<br><br>' . $data['tip_desc'] . '<br><br>Yay!';
+            break;
+
             case 'bid_accepted':
                 $subject = 'Accepted: ' . $itemTitle;
                 $body = 'Your bid was accepted for ' . $itemLink . '<br/>'
