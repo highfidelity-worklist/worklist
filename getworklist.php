@@ -47,6 +47,8 @@ $where = '';
 $unpaid_join = '';
 if (!empty($sfilter)) {
     $where = "where (";
+    /* remove duplicate data from list, remove this after #14332*/
+    $sfilter = array_flip(array_flip($sfilter));
     foreach ($sfilter as $val) {
 
         $val = strtoupper(mysql_real_escape_string($val));
@@ -130,7 +132,7 @@ if($query!='' && $query!='Search...') {
             $item = mysql_escape_string($item);
             $where.=" AND ( MATCH (summary, `".WORKLIST."`.`notes`) AGAINST ('$item')OR MATCH (`".FEES."`.notes) AGAINST ('$item') OR MATCH (`ru`.`nickname`) AGAINST ('$item') OR MATCH (`cu`.`nickname`) AGAINST ('$item') OR MATCH (`mu`.`nickname`) AGAINST ('$item') OR MATCH (`com`.`comment`) AGAINST ('$item')) ";
         }
-        $commentsjoin = " LEFT OUTER JOIN `".COMMENTS."` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
+        $commentsjoin = "LEFT OUTER JOIN `".COMMENTS."` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
     }
 }
 
@@ -260,7 +262,6 @@ if ($rtCount) {
 }
 $cPages = ceil($items/$limit);
 $worklist = array(array($items, $page, $cPages));
-/*echo(json_encode(array("qry" => $qsel.$qbody.$qorder)));*/
 
 // Construct json for history
 $qry="$qsel $qbody $qorder";
@@ -291,7 +292,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         20 => (!empty($row['current_bid']) ? $row['current_bid'] : 0),
     );
 }
-//$json = json_encode($fillTotals . ";".$fillLatest . ";".$fillBids.';'.$qry);
+
 $json = json_encode($worklist);
 echo $json;
 ob_end_flush();
