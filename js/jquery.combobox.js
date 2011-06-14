@@ -142,7 +142,7 @@
 			this.list.addClass(this.el.attr('id') + 'List');
 		},
 		_setup: function() {
-			// hide the original element (don't remove it or the handlers will be killed)
+            // hide the original element (don't remove it or the handlers will be killed)
 			this.el.hide();
 			// add all classes
 			this._addClasses();
@@ -158,6 +158,7 @@
 			this.container.append(this.textbox).append(this.trigger).append(this.list);
 			// add the combobox to the dom
 			this.el.after(this.container);
+            
 		},
 		_setupTextbox: function() {
 			// as we don't provide autocomplete at the moment simply deactivate the textbox
@@ -185,7 +186,9 @@
 			);
 		},
 		_setupList: function() {
-			// create the listitems for the new list
+			// empty the list before rebuild it
+            this.el.empty();
+            // create the listitems for the new list
 			$.each(this.values, $.proxy(function(i, v) {
 				var listItem = $('<li />');
 				listItem.text(v.text);

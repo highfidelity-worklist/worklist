@@ -47,8 +47,6 @@ $where = '';
 $unpaid_join = '';
 if (!empty($sfilter)) {
     $where = "where (";
-    /* remove duplicate data from list, remove this after #14332*/
-    $sfilter = array_flip(array_flip($sfilter));
     foreach ($sfilter as $val) {
 
         $val = strtoupper(mysql_real_escape_string($val));
