@@ -63,8 +63,11 @@ var stats = {
     showJobs: function(job_type){
         $.getJSON('getuserstats.php', 
                     {id: stats.user_id, statstype: job_type, page: stats.stats_page},
-                    function(json){
-                        stats.fillJobs(json, partial(stats.showJobs, job_type));
+                    function(json) {
+                        if (job_type != 'activeJobs') {
+                            $('#jobs-popup th.status').hide();
+                        }
+                        stats.fillJobs(json, partial(stats.showJobs, job_type), job_type);
                         $('#jobs-popup').dialog('open');
                     });
     },
@@ -88,7 +91,7 @@ var stats = {
     },
     
     // func is a functin to be called when clicked on pagination link
-    fillJobs: function(json, func){
+    fillJobs: function(json, func, job_type) {
         table = $('#jobs-popup table tbody');
         $('tr', table).remove();
         $.each(json.joblist, function(i, jsonjob){
@@ -100,8 +103,13 @@ var stats = {
                         + '<td>' + jsonjob.summary + '</td>'
                         + '<td>' + jsonjob.creator_nickname + '</td>'
                         + '<td>' + runner_nickname + '</td>'
-                        + '<td>' + jsonjob.created + '</td>'
-                        + '</tr>';
+                        + '<td>' + jsonjob.created + '</td>';
+                        
+            if (job_type == 'activeJobs') {
+                toAppend += '<td>' + jsonjob.status + '</td>';
+            }
+            
+            toAppend += '</tr>';
 
             table.append(toAppend);
         });

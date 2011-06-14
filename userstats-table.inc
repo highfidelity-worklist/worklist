@@ -5,24 +5,24 @@
             <thead>
                 <tr class = "table-hdng">
                     <th>Total/Active Jobs</th><th>Total/30 day $</th>
-		    <?php if(!empty($Annual_Salary)){?> <th>Salary</th><?php }?><th>Bonus $ / %</th>
+            <?php if(!empty($Annual_Salary)){?> <th>Salary</th><?php }?><th>Bonus $ / %</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a> / <a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a></td>
                     <td><?php
-			setlocale(LC_MONETARY,'en_US');
-			$_totalEarnings = $userStats->getTotalEarnings();
-			echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
-			?> / <?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30))); ?></td>
-		    <?php if(!empty($Annual_Salary)){?><td><?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$Annual_Salary)); ?></td><?php }?>
-		    <td><?php
-			$_bonusPayments = $userStats->getBonusPaymentsTotal();
-			$_bonusPercent = round((($_bonusPayments + 0.00000001) / ($_totalEarnings + 0.000001)) * 100,2);
-			
-			echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_bonusPayments))).' / '.$_bonusPercent.'%';
-		    ?></td>
+            setlocale(LC_MONETARY,'en_US');
+            $_totalEarnings = $userStats->getTotalEarnings();
+            echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
+            ?> / <?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30))); ?></td>
+            <?php if(!empty($Annual_Salary)){?><td><?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$Annual_Salary)); ?></td><?php }?>
+            <td><?php
+            $_bonusPayments = $userStats->getBonusPaymentsTotal();
+            $_bonusPercent = round((($_bonusPayments + 0.00000001) / ($_totalEarnings + 0.000001)) * 100,2);
+            
+            echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_bonusPayments))).' / '.$_bonusPercent.'%';
+            ?></td>
                 </tr>
             </tbody>
         </table>

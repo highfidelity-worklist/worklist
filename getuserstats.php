@@ -29,7 +29,7 @@ if (isset($_REQUEST['id'])) {
         break;
 
     case 'activeJobs':
-        echo json_encode($userStats->getActiveUserItems(9,$page));
+        echo json_encode($userStats->getActiveUserItems(9, $page));
         break;
 
     case 'reviewJobs':

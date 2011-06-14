@@ -231,7 +231,7 @@ public function getActiveUserItems($status, $page = 1){
 
         $count = $this->getActiveJobsCount($status);
 
-        $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `mn`.`nickname` AS `mechanic_nickname`, `cn`.`nickname` AS `creator_nickname`,
+        $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `status`, `mn`.`nickname` AS `mechanic_nickname`, `cn`.`nickname` AS `creator_nickname`,
             `rn`.`nickname` AS `runner_nickname`,
             DATE_FORMAT(`created`, '%m/%d/%Y') AS `created`
             FROM `" . WORKLIST . "` 
@@ -243,15 +243,16 @@ public function getActiveUserItems($status, $page = 1){
 
         $itemsArray = array();
         $res = mysql_query($sql);
-        if($res ){
-            while($row = mysql_fetch_assoc($res)){
+        if ($res ) {
+            while($row = mysql_fetch_assoc($res)) {
                 $itemsArray[] = $row;
             }
             return array(
-                        'count' => $count, 
-                        'pages' => ceil($count/$this->itemsPerPage), 
-                        'page' => $page, 
-                        'joblist' => $itemsArray);
+                'count' => $count, 
+                'pages' => ceil($count/$this->itemsPerPage), 
+                'page' => $page, 
+                'joblist' => $itemsArray
+            );
         }
         return false;
     }

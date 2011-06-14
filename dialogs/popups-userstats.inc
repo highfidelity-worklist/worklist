@@ -2,7 +2,12 @@
             <table>
                 <thead>
                     <tr class = "table-hdng">
-                        <th>Job #</th><th>Summary</th><th>Creator</th><th>Runner</th><th>Date</th>
+                        <th>Job #</th>
+                        <th>Summary</th>
+                        <th>Creator</th>
+                        <th>Runner</th>
+                        <th>Date</th>
+                        <th class="status">Status</th>
                     </tr>
                 </thead>
                 <tbody><tr><td></td></tr>
