@@ -379,7 +379,8 @@ include("head.html"); ?>
         <th>Task&nbsp;ID</th>
         <th>Project</th>
         <th>Amount</th>
-        <th width="450">Description</th>
+        <th width="200">Job Summary</th>
+        <th width="350">Description</th>
     </tr></thead>
     <tbody>
     <input type="hidden" id="action" name="action" value="<?php
@@ -393,7 +394,7 @@ foreach ($payee_totals as $payee) {
     echo '<tr><td><input type="checkbox" name="'.$payee["mechanic_id"].'fees" onclick="javascript:toggleCBGroup(\'fees'.$payee["mechanic_id"].'\', this);" rel="0" /></td>';
     echo '<td colspan="4" align="left"><a href="javascript:void(0);" onclick="toggleVis(\'indfees'.$payee["mechanic_id"].'\')">'.$payee["mechanic_nick"].'</a></td>';
     echo '<td align="right" onclick="toggleBox(\'payfee'.$payee["mechanic_id"].'\')">'.$payee["total_amount"].'</td>';
-    echo '<td>&nbsp;</td></tr></tbody>'; 
+    echo '<td>&nbsp;</td><td>&nbsp;</td></tr></tbody>'; 
     echo "\r\n"; //added \r\n to make output code modestly presentable
 
     $fee_rows = '';
@@ -401,7 +402,7 @@ foreach ($payee_totals as $payee) {
 
     // Display fees for each user
     $ind_sql = "
-        SELECT f.*, wl.project_id
+        SELECT f.*, wl.project_id, wl.summary
         FROM
             (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id)
             LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id
@@ -434,6 +435,7 @@ foreach ($payee_totals as $payee) {
             //$fee_rows .= '<td onclick="toggleBox(\'payfee'.$payee["id"].'\')">'.$payee["mechanic_nick"].'</td>';
             $fee_rows .= '<td align="left">'.$fund_projects[$ind_fees["project_id"]].'</td>';
             $fee_rows .= '<td align="right" onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["amount"].'</td>';
+            $fee_rows .= '<td align="left" onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["summary"].'</td>';
             $fee_rows .= '<td align="left" onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["desc"].'</td>';
             $fee_rows .= '</tr>';
             $fee_rows .=  "\r\n"; //added \r\n to make output code modestly presentable
@@ -472,6 +474,7 @@ foreach ($payee_totals as $payee) {
             $fee_rows .= '<td onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["id"].'</td>';
             $fee_rows .= '<td colspan="2" align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">BONUS</td>';
             $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["amount"].'</td>';
+            $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">&nbsp;</td>';
             $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.
                          '(FROM: '.$ind_bonus['payer_name'].') '.$ind_bonus["notes"].'</td>';
             $fee_rows .= '</tr>';
