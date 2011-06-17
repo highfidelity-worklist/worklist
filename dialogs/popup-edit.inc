@@ -1,4 +1,7 @@
-	<script type="text/html" id="uploadImage">
+<script type="text/javascript">
+    applyPopupBehavior();
+</script>
+        <script type="text/html" id="uploadImage">
 		<div class="filesIcon">
 			<img width="75px" height="75px" src="<#= icon #>" />
 		</div>

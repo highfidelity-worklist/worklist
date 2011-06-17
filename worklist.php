@@ -1362,7 +1362,7 @@ include("head.html"); ?>
 </script>
 <script type="text/html" id="uploadImage">
     <div class="filesIcon">
-        <a href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
+        <a class="attachment" href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
     </div>
     <div class="filesDescription">
         <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
