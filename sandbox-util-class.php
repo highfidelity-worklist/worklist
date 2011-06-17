@@ -6,12 +6,7 @@
 require_once dirname(__FILE__) . '/config.php';
 include_once "send_email.php";
 require_once('classes/Project.class.php');
-
-define('SANDBOX_BASE_DIR','/mnt/ebsvol/dev-www');
-define('SANDBOX_CREATE_SCRIPT','/usr/local/bin/addnewdev-util.sh');
-define('CMD_SEPARATOR',' ');
-define('SANDBOX_CREATION_EMAIL_TEMPATE','./sb-developer-mail.inc');
-define('PROJECT_CHECKOUT_EMAIL_TEMPATE','./sb-checkout-mail.inc');
+require_once('functions.php');
 
 class SandBoxUtil {
     //This needs to be synced with the matching file in journal - garth 12/15/2010
@@ -37,7 +32,7 @@ class SandBoxUtil {
             $projects = array($projects);
         }
 
-        // If it's an existing, just check out the requested projects for them
+        // If it's an existing user, just check out the requested projects for them
         if (!$new_user) {
             $result = true;
             foreach ($projects as $project) {
@@ -74,10 +69,18 @@ class SandBoxUtil {
      *
     */
     public function inPasswdFile($name) {
-        if (posix_getpwnam($name)) {
+        //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
+        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined');  }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized');  }
+
+
+        $command ='command=userexists&';
+        $command.='key='.SANDBOX_SERVER_API_KEY.'&';
+        if ($result = postRequest(SANDBOX_SERVER_API,$command.'username='.$name)) {
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Authentication failed')!==false) {throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+            if (strpos($result,'Error')==0) { return false; }
             return true;
-        } else {
-            return false;
         }
     }
 
@@ -86,10 +89,19 @@ class SandBoxUtil {
     *
     */
     private function ensureNonExistentSandbox($username) {
-      $userSandboxHome = SANDBOX_BASE_DIR ."/" .$username;
-      if(file_exists($userSandboxHome)) {
-            throw new Exception('Sandbox already exists');
-      }
+        //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
+        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+
+        $command ='command=sandboxexists&';
+        $command.='key='.SANDBOX_SERVER_API_KEY.'&';
+        if ($result = postRequest(SANDBOX_SERVER_API,$command.'username='.$username)) {
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Authentication failed')!==false) {throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+            if (strpos($result,'Error')!==false) { return true; }
+            //If we don't fail, sandbox already exists
+            throw new Exception('Sandbox already exists'); 
+        }
     }
 
     /**
@@ -97,17 +109,18 @@ class SandBoxUtil {
      *
      */
     private function checkoutProject($username, $unixusername, $project) {
-        $command = SANDBOX_CREATE_SCRIPT .
-            CMD_SEPARATOR . "-u " . $unixusername .
-            CMD_SEPARATOR . "-r " . $project .
-            CMD_SEPARATOR . "-a";
-        
-        $scriptStatus  = exec($command . "; echo $?");
-        if ($scriptStatus != "0") {
-            throw new Exception('Project checkout failed:'.$scriptStatus);
-        }
+        //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
+        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized'); }
 
-        $this->notifyCheckout($username, $unixusername, $project);
+        $command ='command=checkoutrepo&';
+        $command.='key='.SANDBOX_SERVER_API_KEY.'&';
+        if ($result = postRequest(SANDBOX_SERVER_API,$command.'username='.$unixusername.'&repo='.$project)) {
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Authentication failed')!==false) {throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+            if (strpos($result,'Error')===true) { throw new Exception('Project checkout failed:'.$result); }
+            $this->notifyCheckout($username, $unixusername, $project);
+        }
     }
 
     /**
@@ -141,14 +154,21 @@ class SandBoxUtil {
     *
     */
     private function createUserAndCheckoutProjects($nickname, $password, $projects) {
+        //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
+        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+
         $projectList = implode(' -r ',$projects);
         $encryptedPassword = crypt($password,"password");
-        #$command = '/usr/bin/sudo '.SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
-        $command = SANDBOX_CREATE_SCRIPT .CMD_SEPARATOR . "-u " .$nickname . CMD_SEPARATOR . "-p " . $encryptedPassword. CMD_SEPARATOR . "-r " . $projectList;
-        //error_log($command); //This debug commands puts the new devs password in the logs
-        $scriptStatus  = exec($command . "; echo $?");
-        if($scriptStatus != "0") {
-            throw new Exception('Sandbox create script failed:'.$scriptStatus);
+        $transmitTestPassword = escapeshellcmd($encryptedPassword);
+        if($transmitTestPassword!==$encryptedPassword) { throw new Exception('Encrypted password contains unsafe characters'); }
+
+        $command ='command=adduser&';
+        $command.='key='.SANDBOX_SERVER_API_KEY.'&';
+        if ($result = postRequest(SANDBOX_SERVER_API,$command.'username='.$nickname.'&repo='.$projectList.'&password='.$encryptedPassword)) {
+            if (strpos($result,'Authentication failed')!==false) {throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Error')===true) { throw new Exception('Sandbox create script failed: '.$result); }
         }
     }
 

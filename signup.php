@@ -131,7 +131,6 @@ if(isset($minimal_POST['sign_up'])){
             $newUser["nickname"] = $ret->nickname;
             $newUser["added"] = "NOW()";
             $newUser["notifications"] = Notification::setFlags($review_notify, $bidding_notify);
-            $newUser["unixusername"] = User::generateUnixusername($newUser['nickname']);
             $sql = "INSERT INTO ".USERS." ";
             $columns = "(";
             $values = "VALUES(";

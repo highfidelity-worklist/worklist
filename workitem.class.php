@@ -757,14 +757,20 @@ WHERE id = ' . (int)$id;
         // If the project has a repository, give the user a checkout
         $repository = $this->getRepository();
         if ($repository) {
-            // We're expecting every user to have a unixname now, they will be
-            // assigned at signup. -alexi
+            // We don't want to fail user signup if sandboxes are not line
+            // so we will not create unixusername until needed
+            if ($bidder->getHas_sandbox()) {
+                $new_user = false;
+            } else {
+                $bidder->setUnixusername(User::generateUnixusername($bidder->getNickname()));
+                $new_user = true;
+            }
+
             $bid_info['sandbox'] = "https://".SERVER_NAME."/~" .
                $bidder->getUnixusername()."/".$repository."/";
 
             // Provide bidder with sandbox & checkout if they don't already have one
             // If the sandbox flag is 0, they are a new user and need one setup
-            $new_user = ($bidder->getHas_sandbox() == 0) ? true : false;
             require_once("sandbox-util-class.php");
             $sandboxUtil = new SandBoxUtil;
             try {

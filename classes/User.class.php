@@ -960,11 +960,13 @@ class User {
 
         // append numbers to the end of the name if it's not unique
         // to both the password file AND the user table
+        // Test SanboxUtil last since that could be a remote call
         require_once "sandbox-util-class.php";
         $attempted_unixname = $unixname;
         $x = 0;
-        while (SandBoxUtil::inPasswdFile($attempted_unixname) ||
-               User::unixusernameExists($attempted_unixname)) {
+        while (User::unixusernameExists($attempted_unixname) ||
+               SandBoxUtil::inPasswdFile($attempted_unixname)) {
+               
             $x++;
             $attempted_unixname = $unixname.$x;
         }
