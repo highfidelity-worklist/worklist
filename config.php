@@ -71,6 +71,7 @@ if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 if (!defined('PAYPAL_ADMINS'))  define('PAYPAL_ADMINS', 'paypal_admins');
 if (!defined('PROJECTS'))       define('PROJECTS', 'projects');
+if (!defined('ROLES'))          define('ROLES', 'roles');
 if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
