@@ -4,15 +4,18 @@
     http://www.lovemachineinc.com
 */
 * :focus { outline: 0; }
-.popup-body, #confirmation{
+.popup-body,
+#confirmation{
     display: none;
 }
 
-.popup-body, #addproject{
+.popup-body,
+#addproject{
     display: none;
 }
 
-.popup-body, .user-info
+.popup-body,
+.user-info
 {
     padding: 0 8px;
     text-align: left;
@@ -56,10 +59,12 @@
     width: 200px
 }
 
-.popup-body input.date, .user-info input.date {
+.popup-body input.date,
+.user-info input.date {
     width: 130px;
 }
-.popup-body input.money, .user-info input.money {
+.popup-body input.money,
+.user-info input.money {
     width: 50px;
 }
 
@@ -137,7 +142,8 @@ text-align: center;
 #bid-signup a{
 color:#98AAB2;
 }
-.right-button, .right-note {
+.right-button,
+.right-note {
     float: right;
     margin-right: 5px;
 }
@@ -163,7 +169,8 @@ color:#98AAB2;
 #popup-bid{
     z-index: 1;
 }
-#ui-datepicker-div, #ui-timepicker-div
+#ui-datepicker-div,
+#ui-timepicker-div
 {
     z-index: 1100; 
 }
@@ -194,7 +201,9 @@ color:#98AAB2;
     margin: 0;
     padding: 0;
 }
-.input_box input[type="text"]:active, .input_box input[type="text"]:hover, .input_box input[type="text"]:focus {
+.input_box input[type="text"]:active,
+.input_box input[type="text"]:hover,
+.input_box input[type="text"]:focus {
     border:medium none;
 }
 .searchIcon {
@@ -360,7 +369,8 @@ td.textAlignReport {
     width:210px;:
 }
 
-.report-label, #search-filter-section td.textAlignReport div div.report-label {
+.report-label,
+#search-filter-section td.textAlignReport div div.report-label {
     float: left;
     width: 35%;
     text-align: right;
@@ -447,6 +457,58 @@ td.textAlignReport {
 .noMargin {
     margin: 0;
 }
+/*roles section*/
+.table-caption {
+    font-size:14px;
+    font-weight:bold;
+    text-align:left;
+    color: black;
+    padding: 0px 0px 3px 0px;
+}
+
+.buttonContainer {
+    margin: 4px 0;
+    text-align:right;
+}
+
+.buttonContainer-save {
+    margin:15px 0px 20px -8px;
+}
+
+.projectRight .roles {
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    border:2px #DCD998 solid;
+    padding:0px 8px 19px 8px;
+    background-color: #FFFFDD;
+    margin-bottom:10px;
+}
+/*roles popup*/
+#popup-role-info td {
+    border:none;
+}
+#roles-panel{
+    margin:10px 0 0px;
+}
+
+#for_view li .notestext a,
+.comment a {
+    color: rgb(0, 118, 252);
+}
+.reply-lnk a {
+    color: rgb(152, 170, 178);
+}
+#for_view li .notestext a:hover,
+.comment a:hover {
+    text-decoration:none;
+}
+
+.button-disabled {
+    opacity: 0.5;
+    -moz-opacity: 0.5;
+    -webkit-opacity: 0.5;
+}
 
 #login-form {
     border: 1px solid black;
@@ -468,7 +530,7 @@ td.textAlignReport {
     margin-top: 8px;
 }
 
-#loginFormHolder{
+#loginFormHolder {
     position: relative;
     width: 420px;
     height: 180px;
@@ -476,14 +538,18 @@ td.textAlignReport {
 .profile-link{
     cursor: pointer;
 }
-#userActiveBox, #projectActiveBox, #projectPopupActiveBox {
+#userActiveBox,
+#projectActiveBox,
+#projectPopupActiveBox {
     position: absolute;
     background: #AAAAAA;
     display: none;
     height: 20px;
 }
 
-#userActiveBox label, #projectActiveBox label, #projectPopupActiveBox label {
+#userActiveBox label,
+#projectActiveBox label,
+#projectPopupActiveBox label {
     line-height: 20px;
     padding-left: 3px;
 }

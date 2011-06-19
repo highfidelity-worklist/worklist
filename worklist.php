@@ -38,7 +38,6 @@ $projectName = !empty($_REQUEST['project']) ? mysql_real_escape_string($_REQUEST
 if ($projectName) {
     $inProject = new Project();
     $inProject->loadByName($projectName);
-
     // save changes to project
     if (isset($_REQUEST['save_project']) && $inProject->isOwner($userId)) {
         $inProject->setDescription($_REQUEST['description']);
@@ -78,7 +77,29 @@ if (is_object($inProject)) {
                ->initFilter();
     }
 }
+// save,edit,delete roles <mikewasmie 16-jun-2011>
+if (is_object($inProject) && $inProject->isOwner($userId)) {
+    if ( isset($_POST['save_role'])) {
+        $args = array('role_title', 'percentage', 'min_amount');
+        foreach ($args as $arg) {
+            $$arg = mysql_real_escape_string($_POST[$arg]);
+        }
+        $role_id=$inProject->addRole($project_id,$role_title,$percentage,$min_amount);
+    }
 
+    if (isset($_POST['edit_role'])) {
+        $args = array('role_id','role_title_edit', 'percentage_edit', 'min_amount_edit');
+        foreach ($args as $arg) {
+            $$arg = mysql_real_escape_string($_POST[$arg]);
+        }
+        $res=$inProject->editRole($role_id,$role_title_edit,$percentage_edit,$min_amount_edit);
+    }
+
+    if (isset($_POST['delete_role'])) {
+        $role_id = mysql_real_escape_string($_POST['role_id']);
+        $res=$inProject->deleteRole($role_id);
+    }
+}
 
 if ($userId > 0 && isset($_POST['save_item'])) {
     $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes', 
@@ -156,8 +177,13 @@ if (!empty($journal_message)) {
     $prc = postRequest(JOURNAL_API_URL, $data);
 }
 
+// Load roles table id owner <mikewasmike 15-jun 2011>
+if(is_object($inProject) && $inProject->isOwner($userId)){
+    $roles = $inProject->getRoles($inProject->getProjectId());
+}
+
 /* Prevent reposts on refresh */
-if (!empty($_POST)) {
+if (!is_object($inProject) && !empty($_POST)) {
     unset($_POST);
     header("Location:worklist.php");
     exit();
@@ -177,6 +203,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
+<script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
@@ -747,7 +774,11 @@ include("head.html"); ?>
             var winHandle = window.open('', addFromJournal);
             var addJobPane = (winHandle.document.getElementById)?winHandle.document.getElementById('addJobPane'):winHandle.document.all['addJobPane'];
         }
-
+        
+        // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
+        $('#popup-addrole').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
+        $('#popup-role-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
+        $('#popup-edit-role').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-edit').dialog({ 
             autoOpen: false,
             show: 'fade',
@@ -1030,7 +1061,34 @@ include("head.html"); ?>
             GetWorklist(1,false);
             return false;
         });
+        
+        //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
+        $('tr.row-role-list-live ').click(function(){
+            $.metadata.setType("elem", "script")
+            var roleData = $(this).metadata();
 
+            // row has role data attached 
+            if(roleData.id){
+                $('#popup-role-info input[name="role_id"]').val(roleData.id);
+                $('#popup-role-info #info-title').text(roleData.role_title);
+                $('#popup-role-info #info-percentage').text(roleData.percentage);
+                $('#popup-role-info #info-min-amount').text(roleData.min_amount);
+                //future functions to display more information as well as enable disable removal edition      
+                $('#popup-role-info').dialog('open');
+            }
+        });
+        
+        $('#editRole').click(function(){
+            // row has role data attached 
+            $('#popup-role-info').dialog('close');
+                $('#popup-edit-role input[name="role_id"]').val($('#popup-role-info input[name="role_id"]').val());
+                $('#popup-edit-role #role_title_edit').val($('#popup-role-info #info-title').text());
+                $('#popup-edit-role #percentage_edit').val($('#popup-role-info #info-percentage').text());
+                $('#popup-edit-role #min_amount_edit').val($('#popup-role-info #info-min-amount').text());   
+                $('#popup-edit-role').dialog('open');
+        });
+
+        
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         /* function commented for remove tooltip */
         //setTimeout(MapToolTips, 800);
@@ -1098,6 +1156,10 @@ include("head.html"); ?>
         }
     });
     
+    function showAddRoleForm() {
+        $('#popup-addrole').dialog('open');
+        return false;
+    }
     function reattachAutoUpdate() {
         $("select[name=user], select[name=status], select[name=project]").change(function(){
             if ($("#search-filter").val() == 'UNPAID') {
@@ -1443,6 +1505,12 @@ var documentsArray = new Array();
 <?php require_once('dialogs/popups-userstats.inc'); ?>
 <!-- Popup for add project info-->
 <?php require_once('dialogs/popup-addproject.inc'); ?>
+<!-- Popup for  add role -->
+<?php include('dialogs/popup-addrole.inc') ?>
+<!-- Popup for viewing role -->
+<?php include('dialogs/popup-role-info.inc') ?>
+<!-- Popup for  edit role -->
+<?php include('dialogs/popup-edit-role.inc') ?>
 <?php
 if(isset($_REQUEST['addFromJournal'])) {
 ?>
@@ -1530,11 +1598,57 @@ if (is_object($inProject)) {
 <?php if (is_object($inProject)) { ?>
 </div>
 <div class="projectRight">
+<!-- table for roles <mikewasmike 15-ju-2011>  -->
+<?php if ($inProject->isOwner($userId)) : ?>
+            <div id="for_view">
+                <div class="roles">
+                    <div id="roles-panel">
+                        <table width="100%" class="table-bids">
+                            <caption class="table-caption" >
+                                <b>Roles</b>
+                            </caption>
+                            <thead>
+                                <tr class="table-hdng">
+                                    <td>Title</td>
+                                    <td>%</td>
+                                    <td>Min. Amount</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php if(empty($roles)) { ?>
+                                <tr>
+                                    <td style="text-align: center;" colspan="4">No roles added.</td>
+                                </tr>
+                            <?php } else { $row = 1;
+                                foreach($roles as $role) { ?>
+                                <tr class="row-role-list-live
+                                    <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> roleitem<?php
+                                         echo '-'.$role['id'];?>">
+                                        <script type="data"><?php echo "{id: '{$role['id']}', role_title: '{$role['role_title']}', percentage: '{$role['percentage']}', min_amount: '{$role['min_amount']}'}" ?></script>
+                                    <td ><?php echo $role['role_title'];?></td>
+                                    <td ><?php echo $role['percentage'];?></td>
+                                    <td ><?php echo $role['min_amount'];?></td>
+                                </tr>
+                                <?php } ?>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                        <div class="buttonContainer">
+                            <input type="submit" value="Add Role" onClick="return showAddRoleForm('bid');" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+<?php endif; ?>
+<!--End of roles table-->
+
 <div id="uploadPanel"> </div>
 </div>
 <div class="clear">&nbsp;</div>
 </div>
 <?php } ?>
+
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
 <div id="user-info" title="User Info"></div>
 <script type="text/javascript">

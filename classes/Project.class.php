@@ -57,7 +57,7 @@ class Project {
             throw new Project_Exception('There is no project by that name (' . $name . ')');
         }
     }
-    
+
     public function loadByRepo($repo) {
         $query = "SELECT `project_id` FROM `".PROJECTS."` WHERE `repository`='" . $repo . "'";
         $result = mysql_query($query);
@@ -153,7 +153,7 @@ class Project {
     public function getBudget() {
         return $this->budget;
     }
-    
+       
     public function setRepository($repository) {
         $this->repository = $repository;
         return $this;
@@ -339,4 +339,59 @@ class Project {
         return false;
     }
 
+    /**
+     * new function for getting roles for the project <mikewasmike 15-JUN-2011>
+     * @param int $project_id
+     * @return array|null
+    */
+    public function getRoles($project_id){
+        $query = "SELECT * FROM `".ROLES."` WHERE `project_id`={$project_id}";
+        $result_query = mysql_query($query);
+        if ($result_query) {
+            $temp_array = array();
+            while ($row = mysql_fetch_assoc($result_query)) {
+                    $temp_array[] = $row;
+            }
+            return $temp_array;
+        } else {
+            return null;
+        }
+    }
+    
+   /**
+     * new function for adding roles in the project <mikewasmike 15-JUN-2011>
+     * @param int $project_id
+     * @param varchar $role_title
+     * @param decimal $percentage
+     * @param decimal $min_amount
+     * @return int|null
+    */
+    public function addRole($project_id,$role_title,$percentage,$min_amount){
+        $query = "INSERT INTO `".ROLES."` (id,`project_id`,`role_title`,`percentage`,`min_amount`)  VALUES(NULL,'$project_id','$role_title','$percentage','$min_amount')";
+        return mysql_query($query) ? mysql_insert_id() : null;
+    }
+    
+   /**
+     * new function for editing roles in the project <mikewasmike 15-JUN-2011>
+     * @param int $role_id
+     * @param varchar $role_title
+     * @param decimal $percentage
+     * @param decimal $min_amount
+     * @return 1|0
+    */
+    public function editRole($role_id,$role_title,$percentage,$min_amount){
+        $query = "UPDATE `".ROLES."` SET `role_title`='$role_title',`percentage`='$percentage',`min_amount`='$min_amount' WHERE `id`={$role_id}";
+        return mysql_query($query) ? 1 : 0;
+    }
+    
+   /**
+     * new function for deleting roles in the project <mikewasmike 15-JUN-2011>
+     * @param int $role_id
+     * @return 1|0
+    */
+    public function deleteRole($role_id){
+        $query = "DELETE FROM `".ROLES."`  WHERE `id`={$role_id}";
+        return mysql_query($query) ? 1 : 0;
+    }
+    
 }// end of the class
