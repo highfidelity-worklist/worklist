@@ -12,7 +12,6 @@ include("config.php");
 include("class.session_handler.php");
 require_once('lib/Agency/Worklist/Filter.php');
 
-ob_start();
 // Test for a string containing 0 characters of anything other than 0-9 and #
 // After a quick trim ofcourse! :)
 // I know regex is usually the bad first stop, but there would be no back tracking in this
@@ -293,5 +292,5 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
 
 $json = json_encode($worklist);
 echo $json;
-ob_end_flush();
+
 ?>
