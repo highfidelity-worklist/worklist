@@ -243,6 +243,13 @@ class Notification {
                 $body .= '<br><br>You can see the task <a href='.SERVER_URL.
                          'workitem.php?job_id=' . $itemId . '>here</a>.';
            break;
+           case 'suggestedwithbid':
+                $subject = "Suggested With Bid: " . $itemTitle;
+                $body =  'Summary:<br/> ' . $workitem -> getSummary();
+                $body .= '<br/><br/>Notes: ' . $data['notes'];
+                $body .= '<br><br>You can see the task <a href='.SERVER_URL.
+                         'workitem.php?job_id=' . $itemId . '>here</a>.';
+           break;
         }
 
     

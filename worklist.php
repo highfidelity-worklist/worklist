@@ -364,10 +364,10 @@ include("head.html"); ?>
                 json[0] + '</span> - ' + pre + json[1] + post + extraStringBug + 
                 '</span></td>';
 <?php if (! $hide_project_column) : ?>
-        if (json[2] == 'BIDDING' && json[10] > 0) {
+        if ((json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID') &&json[10] > 0) {
             post = ' (' + json[10] + ')';
         }
-        row += '<td width="10%">' + pre + json[2] + post + '</td>';
+        row += '<td width="20%">' + pre + json[2] + post + '</td>';
 <?php endif; ?>
         pre = '';
         post = '';

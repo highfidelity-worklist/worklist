@@ -6,6 +6,14 @@
                 <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />&nbsp;USD
             </label>
         </p>
+        <?php if ($worklist['status'] == 'SUGGESTEDwithBID' || $worklist['status'] == 'SUGGESTED') { ?>
+        <div class="clear"></div>
+        <div id="bidDone" class="">
+            <input type="hidden" name="done_in" id="done_in" value="24 hours" />
+            <input type="hidden" name="bid_expires" id="bid_expires" value="1 years" />
+        </div>
+        
+        <?php } else { ?>
         <div class="clear"></div>
         <div id="bidDone" class="">
             <label>Done In</label>
@@ -51,6 +59,7 @@
             <input type="hidden" name="bid_expires" id="bid_expires" value="7 days" />
             
         </div>
+       <?php } ?>
         <div class="clear"></div>
 
         <p><label>Notes <small>(mandatory)</small></label><br />
@@ -106,5 +115,8 @@
 
 <?php   }  ?>
              <input type="submit" id="bid" disabled="disabled" class="button-disabled" name="place_bid" value="Place Bid" />
+             <?php if ($worklist['status'] == 'SUGGESTED') { ?>
+             <input type="hidden" name="swb" id="swb" value="swb"  />
+             <?php   }  ?>
             </form>
     </div><!-- end of popup-bid -->

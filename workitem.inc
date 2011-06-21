@@ -8,7 +8,7 @@
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    $statusList = array("SUGGESTED","BIDDING","WORKING","REVIEW","COMPLETED","DONE","PASS");
+    $statusList = array("SUGGESTED","SUGGESTEDwithBID","BIDDING","WORKING","REVIEW","COMPLETED","DONE","PASS");
 
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
@@ -27,14 +27,15 @@
 
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || $has_budget || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id']))) {
+    if ($is_runner || $has_budget || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id']))||
+    ($creator_id == $user_id && $worklist['status'] == 'SUGGESTEDwithBID' && is_null($worklist['runner_id']))) {
         $allowEdit = true;
         if ($action !="edit") {
             $classEditable = " editable";
         }
     }
     $hideFees = false;
-    if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTED') {
+    if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SUGGESTEDwithBID') {
         $hideFees = true;
     }
 
@@ -1040,7 +1041,7 @@ if ($action =="edit"):  ?>
                 <!-- Edit: Summary info -->
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
-                            if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' && is_null($worklist['runner_id']))) { ?>
+                            if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
                             <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
@@ -1055,7 +1056,7 @@ if ($action =="edit"):  ?>
                                 <?php }?>
                             </select>
 
-                            <?php } else if ($has_budget && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SKIP')) {?>
+                            <?php } else if ($has_budget && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SUGGESTEDwithBID' || $worklist['status'] == 'SKIP')) {?>
                             <select id="status" name="status">
                                 <option value="<?php echo $worklist['status'] ?>" selected="selected"><?php echo $worklist['status'] ?></option>
                                 <option value="BIDDING" <?php echo 'BIDDING' == $worklist['status']?' selected = "selected"' : ''; ?> >BIDDING</option>
@@ -1431,14 +1432,14 @@ if ($action =="edit"):  ?>
                             </tbody>
                         </table>
 <?php if ($user_id) : ?>
-<?php if ($worklist['status'] == 'BIDDING') : ?>
+<?php if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTEDwithBID' || ($worklist['status'] == 'SUGGESTED' && $worklist['creator_id']== $user_id)) : ?>
                         <div class="buttonContainer">
 <?php if ($user->isEligible()) : ?>
                             <input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');" />
 <?php else: ?>
                             <input type="submit" value="Add Bid" onClick="return showIneligible('bid');" />
 <?php endif; ?>
-<?php if(! empty($bids) && ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")):?>
+<?php if(! empty($bids) && ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids() && (((strtoupper($workitem->getStatus()) == "BIDDING")) || $workitem->getStatus() == "SUGGESTEDwithBID")):?>
                             <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
 <?php endif;?>
                         </div>

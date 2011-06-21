@@ -75,7 +75,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             } else {
                 $status_cond = "status='$val' AND";
             }
-            if ($val == 'BIDDING') {
+            if ($val == 'BIDDING' || 'SUGGESTEDwithBID') {
                 $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
             } else  {
                 $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
@@ -84,7 +84,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         }
     } else { // Else if the current user is looking for his bids, we show, else nothing.
         if( $userId == $ufilter )  {
-            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0) OR (`bidder_id`='$ufilter' AND `".WORKLIST."`.`status`='BIDDING'))";
+            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0) OR (`bidder_id`='$ufilter' AND (`".WORKLIST."`.`status`='BIDDING' || `".WORKLIST."`.`status`='SUGGESTEDwithBID')))";
         }   else    {
             $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0))";
         }

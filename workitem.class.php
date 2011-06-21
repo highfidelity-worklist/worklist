@@ -638,20 +638,34 @@ WHERE id = ' . (int)$id;
     }
 
     public function placeBid($mechanic_id, $username, $itemid, $bid_amount, $done_in, $expires, $notes) {
-
-        $bid_expires = strtotime($expires);
-        $query =  "INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_expires`, `bid_done_in`, `notes`)
-                   VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('$bid_expires'), '$done_in', '$notes')";
+        if($this->status == 'BIDDING') {
+            $bid_expires = strtotime($expires);
+            $query =  "INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_expires`, `bid_done_in`, `notes`)
+                       VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('$bid_expires'), '$done_in', '$notes')";
+        }
+        else if($this->status == 'SUGGESTEDwithBID' || $this->status == 'SUGGESTED') {
+            $query =  "INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_expires`, `bid_done_in`, `notes`)
+                       VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), '1 years', '1 day', '$notes')";
+            }
+        
+        if($this->status == 'SUGGESTED') {
+            mysql_unbuffered_query("UPDATE `".WORKLIST."` SET  `".WORKLIST."`.`status` = 'SUGGESTEDwithBID',`status_changed`=NOW() WHERE  `".WORKLIST."`.`id` = '$itemid'");
+            }
         return mysql_query($query) ? mysql_insert_id() : null;
-    }
+    
+        }
+    
     public function updateBid($bid_id, $bid_amount, $done_in, $bid_expires, $timezone, $notes) {
-
         $bid_expires = strtotime($bid_expires);
-
-        if ($bid_id > 0){
-            $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '$done_in', `bid_expires` = FROM_UNIXTIME({$bid_expires}), `notes` = '".$notes."' WHERE id = '".$bid_id."'";
+        if ($bid_id > 0 && $this->status != 'SUGGESTEDwithBID'){        
+        $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '$done_in', `bid_expires` = FROM_UNIXTIME({$bid_expires}), `notes` = '".$notes."' WHERE id = '".$bid_id."'";
             mysql_query($query);
         }
+        if ($bid_id > 0 && $this->status == 'SUGGESTEDwithBID'){
+        $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '1 day', `bid_expires` = '1 years', `notes` = '".$notes."' WHERE id = '".$bid_id."'";
+        mysql_query($query);
+        }
+        
         return $bid_id;
     }
     public function getUserDetails($mechanic_id)
@@ -844,19 +858,27 @@ WHERE id = ' . (int)$id;
 
             case 'place_bid':
                 if ($this->getStatus() != 'BIDDING') {
-                    $action_error = 'Cannot place bid when status is not BIDDING';
+                    if ($this->getStatus() != 'SUGGESTEDwithBID') {
+                        if ($this->getStatus() != 'SUGGESTED') {
+                    $action_error = 'Cannot place bid when workitem is in this status';
                     return false;
+                        }
+                    }
                 }
-                
+                    
                 return $action;
                 break;
             
             case 'edit_bid':
                 if ($this->getStatus() != 'BIDDING') {
-                    $action_error = 'Cannot edit bid when status is not BIDDING';
+                    if ($this->getStatus() != 'SUGGESTEDwithBID') {
+                        if ($this->getStatus() != 'SUGGESTED') {
+                    $action_error = 'Cannot edit bid for this workitem status';
                     return false;
+                        }
+                    }
                 }
-                
+                    
                 return $action;
                 break;
             
@@ -880,8 +902,12 @@ WHERE id = ' . (int)$id;
                 
             case 'accept_bid':
                 if ($this->getStatus() != 'BIDDING') {
+                    if ($this->getStatus() != 'SUGGESTEDwithBID') {
+                        if ($this->getStatus() != 'SUGGESTED') {
                     $action_error = 'Cannot accept bid when status is not BIDDING';
                     return false;
+                        }
+                    }
                 }
                 
                 return $action;
@@ -889,8 +915,12 @@ WHERE id = ' . (int)$id;
 
             case 'accept_multiple_bid':
                 if ($this->getStatus() != 'BIDDING') {
+                    if ($this->getStatus() != 'SUGGESTEDwithBID') {
+                        if ($this->getStatus() != 'SUGGESTED') {
                     $action_error = 'Cannot accept bid when status is not BIDDING';
                     return false;
+                        }
+                    }
                 }
                 
                 return $action;

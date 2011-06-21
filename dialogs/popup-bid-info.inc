@@ -16,8 +16,12 @@
             </tr>
             <tr>
                 <td>Bid Expires</td>
+                <?php if ($worklist['status'] == 'SUGGESTEDwithBID') { ?>
+                <td>None</td>
+                <?php } else { ?>
                 <td><span id="info-bid-expires"></span></td>
             </tr>
+            <?php } ?>
             <tr>
                 <td>Done In</td>
                 <td><span id="info-bid-done-in"></span> </td>

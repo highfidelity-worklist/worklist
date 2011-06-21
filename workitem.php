@@ -13,6 +13,7 @@ require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
+                 "SUGGESTEDwithBID" => array("WORKING","PASS"),
                  "BIDDING" => array("PASS"),
                  "WORKING" => array("REVIEW"),
                  "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
@@ -21,6 +22,7 @@ require_once 'classes/Repository.class.php';
                  "PASS" => array("REVIEW"));
 
     $statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
+                 "SUGGESTEDwithBID" => array("PASS"),
                  "WORKING" => array("REVIEW"),
                  "REVIEW" => array("PASS", "COMPLETED", "WORKING"),
                  "COMPLETED" => array("REVIEW"),
@@ -72,6 +74,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "save_workitem";
 } else if(isset($_POST['place_bid'])) {
     $action = "place_bid";
+} else if(isset($_POST['swb'])) {
+    $action = "swb";    
 } else if(isset($_POST['edit_bid'])) {
     $action = "edit_bid";
 } else if(isset($_POST['add_fee'])) {
@@ -503,7 +507,7 @@ if ($action == 'accept_bid') {
     $bid_id = intval($_REQUEST['bid_id']);
     // only runners can accept bids
 
-    if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && ! $workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+    if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && ! $workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING" || $workitem->getStatus() == "SUGGESTEDwithBID")) {
         // query to get a list of bids (to use the current class rather than breaking uniformity)
         // I could have done this quite easier with just 1 query and an if statement..
         $bids = (array) $workitem->getBids($workitem->getId());
@@ -563,7 +567,7 @@ if ($action=='accept_multiple_bid') {
     $mechanic_id = $_REQUEST['mechanic'];
     if(count($bid_id) > 0) {
     //only runners can accept bids
-        if (($is_runner == 1 || $workitem->getRunnerId() == getSessionUserId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING")) {
+        if (($is_runner == 1 || $workitem->getRunnerId() == getSessionUserId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING" || $workitem->getStatus() == "SUGGESTEDwithBID")) {
             $total = 0;
             foreach($bid_id as $bid) {
                 $currentBid = new Bid();
