@@ -780,7 +780,7 @@ WHERE id = ' . (int)$id;
                 $new_user = true;
             }
 
-            $bid_info['sandbox'] = "https://".SERVER_NAME."/~" .
+            $bid_info['sandbox'] = "https://" . SANDBOX_SERVER . "/~" .
                $bidder->getUnixusername()."/".$repository."/";
 
             // Provide bidder with sandbox & checkout if they don't already have one
