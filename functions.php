@@ -558,7 +558,7 @@ function sendJournalNotification($message) {
 function withdrawBid($bid_id, $withdraw_reason) {
     $res = mysql_query('SELECT * FROM `' . BIDS . '` WHERE `id`='.$bid_id);
     $bid = mysql_fetch_object($res);
-
+    
     // checking if is bidder or runner
     if (is_runner() || ($bid->bidder_id == $_SESSION['userid'])) {
         // getting the job
@@ -573,6 +573,14 @@ function withdrawBid($bid_id, $withdraw_reason) {
 										`status` = 'BIDDING'
 										WHERE `id` = $bid->worklist_id
 										LIMIT 1 ;");
+        }
+        
+        // set back to suggested if swb and is only bid
+        $res = mysql_query('SELECT count(*) AS count_bids FROM `' . BIDS . '` WHERE `worklist_id` = ' . $job['id'] . ' AND `withdrawn` = 0');
+        $bidCount = mysql_fetch_assoc($res);
+        
+        if ($bidCount['count_bids'] == 1 && $job['status'] == 'SUGGESTEDwithBID') {
+        mysql_unbuffered_query("UPDATE `" . WORKLIST . "` SET `status` = 'SUGGESTED' WHERE `id` = $bid->worklist_id LIMIT 1 ;");
         }
 
         // change bid to withdrawn and set bids.accepted to 0

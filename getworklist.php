@@ -219,9 +219,9 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
 if ((isset($_SESSION['userid']))) {
-    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `".WORKLIST."`.`status`='BIDDING' ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
+    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
     $qsel .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
-    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".WORKLIST."`.`status`='BIDDING' AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `bid_expires` > NOW()) AS `bid_on`";
+    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `bid_expires` > NOW()) AS `bid_on`";
 }
 
 // add where clause to not show status-level if bid was withdrawn.

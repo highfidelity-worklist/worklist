@@ -668,6 +668,7 @@ WHERE id = ' . (int)$id;
         
         return $bid_id;
     }
+    
     public function getUserDetails($mechanic_id)
     {
         $query = "SELECT nickname, username FROM ".USERS." WHERE id='{$mechanic_id}'";
