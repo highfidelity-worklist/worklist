@@ -173,7 +173,7 @@ class UserStats{
             'perpage' => $this->itemsPerPage,
             'username' => $user->getUsername());
         $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-        $sendlove_rsp = postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer));
+        $sendlove_rsp = postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER => $referer));
         $rsp = json_decode ($sendlove_rsp, true);
 
         if($rsp['status'] == SL_OK){

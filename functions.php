@@ -156,7 +156,7 @@ function countLove($username, $fromUsername="") {
                 'username' => $username);
     }
     $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-    $retval = json_decode(postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    $retval = json_decode(postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
 
     if ($retval['status'] == "ok") {
         return $retval['data']['count'];
@@ -192,7 +192,7 @@ function getUserLove($username, $fromUsername="") {
                 'pagination' => 0);
     }
 	$referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-    $retval = json_decode(postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    $retval = json_decode(postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
     
     if ($retval['status'] == "ok") {
         return $retval['data'];
@@ -303,7 +303,7 @@ function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
  * Function for performing a CURL request given an url and post data.
  * Returns the results.
  */
-function postRequest($url, $post_data, $curlopt_timeout = 30) {
+function postRequest($url, $post_data, $options = array(), $curlopt_timeout = 30) {
     if (!function_exists('curl_init')) {
         error_log('Curl is not enabled.');
         return 'error: curl is not enabled.';
@@ -315,6 +315,11 @@ function postRequest($url, $post_data, $curlopt_timeout = 30) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    if (count($options)) { 
+        curl_setopt_array($ch, $options);
+    }
+    
     $result = curl_exec($ch);
     curl_close($ch);
 

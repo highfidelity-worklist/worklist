@@ -129,7 +129,7 @@ if (!empty($journal_message)) {
     $data['user'] = JOURNAL_API_USER;
     $data['pwd'] = sha1(JOURNAL_API_PWD);
     $data['message'] = stripslashes($journal_message);
-    $prc = postRequest(JOURNAL_API_URL, $data,1);
+    $prc = postRequest(JOURNAL_API_URL, $data,array(),10); //increase timeout to 10 seconds
 }
 
     // Notify Runners of new suggested task

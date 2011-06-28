@@ -208,7 +208,7 @@ class Comment
 		);
 		
 		$referer = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'];
-    	$retval = json_decode(postRequest(SENDLOVE_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    	$retval = json_decode(postRequest(SENDLOVE_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
     	
     	$this->avatar = false;
     	if ($retval['success'] == true) {

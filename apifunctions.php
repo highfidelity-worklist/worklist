@@ -24,7 +24,7 @@ function addRewarderBalance($userId, $points, $worklist_id = 0, $fee_id = 0) {
                     );
 
     $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
 
     if ($retval['status'] == "ok") {
         return 1;
@@ -50,7 +50,7 @@ function getRewardedPoints($giverId, $receiverId) {
                     );
 
     $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
 
     if ($retval['status'] == "ok") {
         return $retval['data'];
@@ -76,7 +76,7 @@ function rewardUser($giverId, $receiverId, $points) {
                     );
 
     $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER, $referer)), true);
+    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
 
     if ($retval['status'] == "ok") {
         return $retval['data'];
