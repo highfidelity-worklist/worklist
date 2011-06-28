@@ -681,6 +681,10 @@ include("head.html"); ?>
         $('#bugJobSummary').html('');
         $("#bugJobSummary").attr("title" , 0);
         $("#is_bug").attr('checked',false);
+        $('input[name=files]').val('');
+        $('#fileimagecontainer').text('');
+        $('#imageCount').text('0');
+       
     }
 
 
@@ -1467,44 +1471,8 @@ include("head.html"); ?>
 // !!! [END DUP]
 ?>
 <script type="text/javascript">
-var projectid = <?php echo !empty($project_id) ? $project_id : "''"; ?>;
 var imageArray = new Array();
 var documentsArray = new Array();
-(function($) {
-    // journal info accordian
-    // flag to say we've not loaded anything in there yet
-    
-    $('#accordion').accordion( "activate" , 0 );
-    $.ajax({
-        type: 'post',
-        url: 'jsonserver.php',
-        data: {
-            projectid: projectid,
-            userid: user_id,
-            action: 'getFilesForProject'
-        },
-        dataType: 'json',
-        success: function(data) {
-            if (data.success) {
-                var images = data.data.images;
-                var documents = data.data.documents;
-                for (var i=0; i < images.length; i++) {
-                    imageArray.push(images[i].fileid);
-                }
-                for (var i=0; i < documents.length; i++) {
-                    documentsArray.push(documents[i].fileid);
-                }
-                var files = $('#uploadedFiles').parseTemplate(data.data);
-                files = files + '<script type="text/javascript" src="js/uploadFiles.js"><\/script>';
-                $('#uploadPanel').append(files);
-                $('#accordion').accordion({
-                    clearStyle: true,
-                    collapsible: true
-                });
-            }
-        }
-    });
-})(jQuery);
 </script>
 <title>Worklist | Fast pay for your work, open codebase, great community.</title>
 </head>

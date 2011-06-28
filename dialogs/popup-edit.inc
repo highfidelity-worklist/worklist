@@ -78,8 +78,8 @@
 					</div>
 				</div>
 				<input type="hidden" name="files" value="" />
-
-			
+                
+                
 				<div id="fileUploadButton">
 					Attach new files
 				</div>

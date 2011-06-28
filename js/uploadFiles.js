@@ -4,7 +4,6 @@
         var user = (typeof(user_id) != 'undefined') ? user_id : '';
         var workitem = (typeof(workitem_id) != 'undefined') ? workitem_id : null;
         var projectid = (typeof(inProject) != 'undefined') ? inProject : null;
-
         // Activate the accordion
         $("#accordion").accordion({
             clearStyle: true,
@@ -43,6 +42,10 @@
             onComplete: function(file, data) {
                 this.enable();
                 if (data.success == true) {
+                    if ($('input[name=files]').val() == '') {
+                        images = new Array();
+                        documents = new Array();
+                    }
                     if (data.filetype == 'image') {
                         var newFile = $('#uploadImage').parseTemplate(data);
                         $('#fileimagecontainer').append(newFile);
@@ -105,15 +108,14 @@
 
                 if (!confirm('Are you sure you want to remove attachment ' + $('#fileTitle_' + file_id).text() + '?')) {
                     return;
-                }
-            
+                } 
                 $.ajax({
                     url: "jsonserver.php",
                     type: "POST",
                     data: "action=fileRemove&fileid=" + file_id +"&userid="+user,
                     dataType: "json",
-                    success: function(data){
-            if(data.success == true) {
+                    success: function(json){
+                    if (json.success == true) {
                             var fileDesc = $(oThis).parents(".filesDescription");
                             header = fileDesc.parent().prev("h3");
                             var iPos = -1;
@@ -144,7 +146,7 @@
                             fileDesc.prev().remove();
                             fileDesc.remove();
                         } else {
-                            alert(data.message);
+                            alert(json.message);
                         }
                     }
                 });

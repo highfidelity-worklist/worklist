@@ -208,7 +208,9 @@ class JsonServer
             $file->findFileById($fileid);
             
             require_once(APP_PATH . '/workitem.class.php');
-            $workitem = Workitem::getById($file->getWorkitem());
+            try {
+                $workitem = Workitem::getById($file->getWorkitem());
+            } catch (Exception $e) {}
             if (
               $_SESSION['is_runner'] || 
               $_SESSION['is_payer'] ||
