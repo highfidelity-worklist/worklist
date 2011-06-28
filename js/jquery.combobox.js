@@ -347,7 +347,7 @@
 			}
 			return false;
 		},
-		select: function(val) {
+		select: function(val, fireEvent) {
             var oThis=this;
 			// get the complete element (text, value, selected state)
 			val = this.getItemByValue(val);
@@ -415,7 +415,7 @@
                     // change the value of the original element
                     this.el.val(val.value);
                     // fire the change event of the original element
-                    this.el.change();
+                    if (fireEvent !== false)  this.el.change();
                 }
 			}
 		},

@@ -1057,6 +1057,24 @@ include("head.html"); ?>
         });
 
         $("#searchForm").submit(function(){
+            var query = $('#query').val();
+            var last_query = $(this).data('query') || "";
+            if (query != last_query) {
+
+                //reset projects combo
+                $('#projectCombo').data('comboBox').select(0, false);
+
+                //reset users combo
+                $('#userCombo').data('comboBox').select(0, false);
+
+                //reset status combo
+                $('.statusComboList li input[type=checkbox]').each( function() {
+                    this.checked = false;
+                });
+                $('#statusCombo').data('comboBox').select("ALL", false);
+
+                $(this).data('query', query);
+            }
             //$("#loader_img").css("display","block");
             GetWorklist(1,false);
             return false;
