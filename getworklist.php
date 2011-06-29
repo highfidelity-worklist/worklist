@@ -58,6 +58,9 @@ if (!empty($sfilter)) {
     $where .= "0)";
 }
 
+    // Runner and query is User->Bidding we only show the items the user
+    // is currently bidding on.
+    if ($userId == $ufilter) {
 if (!empty($ufilter) && $ufilter != 'ALL') {
     if (empty($where)) {
         $where = "where ";
@@ -65,9 +68,6 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         $where .= " and ";
     }
 
-    // Runner and query is User->Bidding we only show the items the user
-    // is currently bidding on.
-    if ($is_runner) {
         $severalStatus = "";
         foreach ($sfilter as $val) {
             if ($val == 'ALL') {
@@ -75,21 +75,18 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             } else {
                 $status_cond = "status='$val' AND";
             }
-            if ($val == 'BIDDING' || 'SUGGESTEDwithBID') {
+            if ($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') {
                 $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
+            } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='COMPLETED' ) {
+                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
             } else  {
                 $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
             }
             $severalStatus = " OR ";
         }
-    } else { // Else if the current user is looking for his bids, we show, else nothing.
-        if( $userId == $ufilter )  {
-            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0) OR (`bidder_id`='$ufilter' AND (`".WORKLIST."`.`status`='BIDDING' || `".WORKLIST."`.`status`='SUGGESTEDwithBID')))";
-        }   else    {
-            $where .= "(creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter' OR (`".FEES."`.user_id='$ufilter' AND `".FEES."`.`withdrawn` = 0))";
-        }
-    }
+    } 
 }
+
 if (!empty($pfilter) && $pfilter != 'ALL') {
     if (empty($where)) {
         $where = "where ";
@@ -180,14 +177,13 @@ else{
 }
 $bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
          `worklist_id` int(11) NOT NULL,
-         `bid_amount` decimal(10,2) NOT NULL,
          `bidder_id`  int(11) NOT NULL,
          INDEX worklist_id(worklist_id))';
 
 $emptyBids = 'TRUNCATE `tmp_bids`';
 
 $fillBids = "INSERT INTO `tmp_bids`
-             SELECT `".BIDS."`.`worklist_id`,`".BIDS."`.`bid_amount`,`".BIDS."`.`bidder_id`
+             SELECT `".BIDS."`.`worklist_id`,`".BIDS."`.`bidder_id`
              FROM `".BIDS."`, `tmp_latest`
              WHERE `".BIDS."`.`worklist_id` = `tmp_latest`.`worklist_id`
               $showLatest
@@ -208,9 +204,9 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
           `proj`.`name` AS `project_name`,
           `worklist`.`project_id` AS `project_id`,
           TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
-          `total_fees`,`bid_amount`,`creator_id`,`runner_id`,`mechanic_id`,
+          `total_fees`,`bidAmountTable`.`bid_amount`,`creator_id`,`runner_id`,`mechanic_id`,
           (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
-           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) AND (NOW() < `".BIDS."`.`bid_expires`) LIMIT 1) as bid_count,
+           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) AND (NOW() < `".BIDS."`.`bid_expires` OR `bid_expires`='0000-00-00 00:00:00') LIMIT 1) as bid_count,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
            WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
            (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
@@ -219,18 +215,10 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
 if ((isset($_SESSION['userid']))) {
-    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
+    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0  AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
     $qsel .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
-    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND `bid_expires` > NOW()) AS `bid_on`";
+    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
 }
-
-// add where clause to not show status-level if bid was withdrawn.
-// $where .= " AND (`withdrawn` = 0)";
-// The previous filter has been removed for the follwong reason:
-// with the original fix #11929, some items are not displayed in the list (like 12425)
-// with the fix in #12437,  the missing workitems are available in the list but with a search criteria there was duplicate workitems in the list
-// without the filter added in #11929, the 2 previous issues are fixed 
-
 
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
@@ -242,6 +230,14 @@ $qbody = "FROM `".WORKLIST."`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           LEFT JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id`
+          LEFT JOIN (SELECT MAX(bid_created), 
+                            `worklist_id`, 
+                            `bid_amount`
+                     FROM `".BIDS."`
+                     WHERE `withdrawn` = 0 
+                       AND (`bid_expires` > NOW()  OR `bid_expires` = '0000-00-00 00:00:00')
+                     GROUP BY worklist_id
+                     ORDER BY worklist_id DESC ) AS `bidAmountTable` ON `".WORKLIST."`.`id` = `bidAmountTable`.`worklist_id`
           $where ";
 
 if($ofilter == "delta"){
@@ -262,6 +258,7 @@ $worklist = array(array($items, $page, $cPages));
 
 // Construct json for history
 $qry="$qsel $qbody $qorder";
+
 //Don't export mysql errors to the browser by default
 $rtQuery = mysql_query($qry) or error_log('getworklist mysql error: '. mysql_error());
 while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
@@ -285,7 +282,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
         16 => $row['project_id'],
         17 => $row['project_name'],
         18 => $row['bug_job_id'],
-        19 => (!empty($row['current_expire']) && strtotime($row['current_expire'])<time()) ? 'expired' : 0,
+        19 => (!empty($row['current_expire']) && strtotime($row['current_expire'])<time() && trim($row['current_expire'])!='0000-00-00 00:00:00') ? 'expired' : 0,
         20 => (!empty($row['current_bid']) ? $row['current_bid'] : 0),
     );
 }

@@ -639,7 +639,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         notify_sms_by_object($recipient, $subject, "${txtbody}\n${item_link}");
         
         // Check if there are any active bids remaining
-        $res = mysql_query('SELECT count(*) AS active_bids FROM `' . BIDS . '` WHERE `worklist_id` = ' . $job['id'] . ' AND `withdrawn` = 0');
+        $res = mysql_query("SELECT count(*) AS active_bids FROM `" . BIDS . "` WHERE `worklist_id` = " . $job['id'] . " AND `withdrawn` = 0 AND (NOW() < `bid_expires` OR `bid_expires`='0000-00-00 00:00:00')");
         $bids = mysql_fetch_assoc($res);
 
         

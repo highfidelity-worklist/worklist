@@ -334,7 +334,7 @@ include("head.html"); ?>
             row += ' rowrunner'; 
         } else if(user_id == json[14]) {// Mechanic
             row += ' rowmechanic'; 
-        } else if(json[15] ==1) { //user bid on this task
+        } else if(json[15] >0) { //user bid on this task
             row += ' rowbidon';
         } else if(json[19] == 'expired') { // bid expired
             row += ' rowbidexpired';
@@ -424,7 +424,7 @@ include("head.html"); ?>
             if(json[8]){
                 bid = json[8];
             }
-            if(json[2] == 'BIDDING'){
+            if(json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID'){
                 bid = parseFloat(bid);
                 if (bid == 0) {
                     feebids = '';
