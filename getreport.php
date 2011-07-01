@@ -54,7 +54,7 @@ if ($ufilter) {
 }
 
 if ($sfilter){
-    if($sfilter != 'ALL' && $type != 'Bonus') {
+    if($sfilter != 'ALL') {
         $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
     }
 }
@@ -72,11 +72,13 @@ if ($pfilter) {
 
 
 if ($type == 'Fee') {
-    $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
+    $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0 AND `".FEES. "`.bonus = 0";
 } else if ($type == 'Expense') {
-    $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0 AND `".FEES."`.bonus = 0";
+    $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0 AND `".FEES. "`.bonus = 0";
 } else if ($type == 'Bonus') {
     $where .= " AND (rewarder = 1 OR bonus = 1)";
+} else if ($type == 'ALL') {
+    $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0";
 }
 
 // Add option for order results
