@@ -5,6 +5,7 @@
 //  http://www.lovemachineinc.com
 
 var activeUsersFlag=1;
+var bidNotesHelper="This is where you describe to the Runner your approach on how to get this job done. These notes are one tool the Runners use to compare bidders and decide who is right for the job.";
 
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
@@ -239,6 +240,9 @@ $(function() {
     $('#share-this').hide();
     $("#status-update").DefaultValue("What are you working on?");
     $('#status-update').hide();
+    $("#notes").DefaultValue(bidNotesHelper);
+    $('#notes').css('color','#999999');
+    $('#notes').css('font-style','italic');	
     $("#query").DefaultValue("Search...");
     $("#feesDialog").dialog({
         title: "Earnings",

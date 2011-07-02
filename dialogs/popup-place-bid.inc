@@ -86,6 +86,20 @@
                     $('#bid').addClass('button-disabled').attr('disabled', 'disabled');
                 }
             });
+            $('#notes').focus(function() {
+                $('#notes').css('color', '#000000');
+                $('#notes').css('font-style', 'normal');
+                if($("#notes").val() == bidNotesHelper) {
+                    $("#notes").val("");
+                }
+            });
+
+            $('#notes').blur(function() {
+                if($("#notes").val() == bidNotesHelper) {
+                    $('#notes').css('color', '#999999');
+                    $('#notes').css('font-style', 'italic');
+                }
+            });
         </script>
 
 <?php
