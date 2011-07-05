@@ -36,12 +36,11 @@ $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
 
 $sfilter = explode('/', $filter->getStatus());
 $ufilter = $filter->getUser();
-$pfilter = $filter->getProjectId();
+$pfilter = isset($_POST['project_id']) ? $_POST['project_id'] : $filter->getProjectId();
 $ofilter = $filter->getSort();
 $subofilter = $filter->getSubSort();
 $dfilter = $filter->getDir();
 $page = $filter->getPage();
-
 $where = '';
 $unpaid_join = '';
 if (!empty($sfilter)) {
