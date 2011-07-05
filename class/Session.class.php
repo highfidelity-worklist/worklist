@@ -2,7 +2,7 @@
 //  Copyright (c) 2009-2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-require_once("config.php");
+require_once(dirname(__FILE__)."/../config.php");
 
 class session {
     // session-lifetime

@@ -8,8 +8,8 @@ require_once('Zend/Config.php');
 require_once('Zend/Config/Ini.php');
 require_once('Zend/Registry.php');
 
-if (file_exists('server.local.php')) {
-    include_once('server.local.php');
+if (file_exists(dirname(__FILE__).'/server.local.php')) {
+    include_once(dirname(__FILE__).'/server.local.php');
 } else {
     header("HTTP/1.0 404 Not Found");
     die("Application configuration not found.");
