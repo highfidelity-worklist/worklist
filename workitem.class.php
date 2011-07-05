@@ -443,23 +443,8 @@ WHERE id = ' . (int)$id;
             $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
             mysql_unbuffered_query($query);
         }
-        if ($this->status == 'BIDDING') {
-            $query = 'UPDATE '.WORKLIST.' SET
-            summary= "'. mysql_real_escape_string($this->getSummary()).'",
-            notes="'.mysql_real_escape_string($this->getNotes()).'",
-            project_id="'.mysql_real_escape_string($this->getProjectId()).'",
-            status="' .mysql_real_escape_string($this->getStatus()).'",
-            status_changed=NOW(),
-            runner_id="' .$_SESSION['userid'].'",
-            bug_job_id="' .intval($this->getBugJobId()).'",
-            is_bug="'.$this->getIs_bug().'",
-            sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
 
-            $query .= ' WHERE id='.$this->getId();
-			error_log($query);
-            return mysql_query($query) ? 1 : 0;
-        } else {
-            $query = 'UPDATE '.WORKLIST.' SET
+        $query = 'UPDATE '.WORKLIST.' SET
             summary= "'. mysql_real_escape_string($this->getSummary()).'",
             notes="'.mysql_real_escape_string($this->getNotes()).'",
             project_id="'.mysql_real_escape_string($this->getProjectId()).'",
@@ -469,11 +454,9 @@ WHERE id = ' . (int)$id;
             bug_job_id="' .intval($this->getBugJobId()).'",
             is_bug='.$this->getIs_bug().',
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
+        $query .= ' WHERE id='.$this->getId();
+        return mysql_query($query) ? 1 : 0;
 
-            $query .= ' WHERE id='.$this->getId();
-			error_log($query);
-            return mysql_query($query) ? 1 : 0;
-        }
     }
 
     protected function tweetNewJob()
