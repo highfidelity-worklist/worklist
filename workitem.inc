@@ -1652,14 +1652,16 @@ if ($action =="edit"):  ?>
             },
             dataType: 'json',
             success: function(json) {
-                if(lastStatus < json[0]["timeplaced"]) {
-                    lastStatus = json[0]["timeplaced"];
-                    $('#status-update').val(json[0]["status"]);
-                    $('#status-update').hide();
-                    $('#status-lbl').show();
-                    $("#status-share").hide();
-                    $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
-               }
+                if(json && json[0] && json[0]["timeplaced"]) {
+                    if(lastStatus < json[0]["timeplaced"]) {
+                        lastStatus = json[0]["timeplaced"];
+                        $('#status-update').val(json[0]["status"]);
+                        $('#status-update').hide();
+                        $('#status-lbl').show();
+                        $("#status-share").hide();
+                        $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
+                   }
+                }
             }
         });
         statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);

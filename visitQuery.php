@@ -3,13 +3,13 @@
  * Google Analytics API Token 
  * New tokens can be created by calling auth.php in the subdir resources
  */
-$token = 'CNf28Yi1EhCT5fa8BRiBpfPiBA';
+$token = '1/kTlFYUDNtShl_ejOORk1v8fAKhmj3FmIam1i-NTMyqE';
 
 /* site ids can be obtained from analytics 
  * by logging into the profile, it's currently
  * called Profile ID on screen
  */
-$ids = '30540000';
+$ids = '46390018';
 
 $jobid = (int) $_GET['jobid'];
 if ($jobid > 0) {
