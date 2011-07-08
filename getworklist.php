@@ -57,9 +57,6 @@ if (!empty($sfilter)) {
     $where .= "0)";
 }
 
-    // Runner and query is User->Bidding we only show the items the user
-    // is currently bidding on.
-    if ($userId == $ufilter) {
 if (!empty($ufilter) && $ufilter != 'ALL') {
     if (empty($where)) {
         $where = "where ";
@@ -67,24 +64,23 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         $where .= " and ";
     }
 
-        $severalStatus = "";
-        foreach ($sfilter as $val) {
-            if ($val == 'ALL') {
-                $status_cond = "";
-            } else {
-                $status_cond = "status='$val' AND";
-            }
-            if ($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') {
-                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
-            } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='COMPLETED' ) {
-                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
-            } else  {
-                $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
-            }
-            $severalStatus = " OR ";
+    $severalStatus = "";
+    foreach ($sfilter as $val) {
+        if ($val == 'ALL') {
+            $status_cond = "";
+        } else {
+            $status_cond = "status='$val' AND";
         }
-    } 
-}
+        if ($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') {
+            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
+        } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='COMPLETED' ) {
+            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
+        } else  {
+            $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
+        }
+        $severalStatus = " OR ";
+    }
+} 
 
 if (!empty($pfilter) && $pfilter != 'ALL') {
     if (empty($where)) {
