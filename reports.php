@@ -176,15 +176,16 @@ var getPaidItems = function() {
 };
 
 function AppendPagination(page, cPages, table) {
-      if(table == 'worklist') {
-          <?php if (!empty($_SESSION['is_payer'])) { ?>
-                    cspan = '8'
-          <?php } else { ?> 
-                    cspan = '6'
-          <?php } ?> 
-
-      } else if(table == 'worklist-payee') { 
+    if(table == 'worklist' || table == 'worklist-payee') {
+         if(table == 'worklist') {
+            <?php if (!empty($_SESSION['is_payer'])) { ?>
+                cspan = '8'
+            <?php } else { ?> 
+                cspan = '6'
+            <?php } ?> 
+        } else if(table == 'worklist-payee') { 
             cspan = '4';
+        }
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="'+cspan+'" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '" title="'+(page-1)+'">Prev</a> &nbsp;';
