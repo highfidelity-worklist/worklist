@@ -628,7 +628,7 @@ WHERE id = ' . (int)$id;
         }
         else if($this->status == 'SUGGESTEDwithBID' || $this->status == 'SUGGESTED') {
             $query =  "INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_expires`, `bid_done_in`, `notes`)
-                       VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), '1 years', '1 day', '$notes')";
+                       VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), '1 years', '$done_in', '$notes')";
             }
         
         if($this->status == 'SUGGESTED') {
@@ -645,7 +645,7 @@ WHERE id = ' . (int)$id;
             mysql_query($query);
         }
         if ($bid_id > 0 && $this->status == 'SUGGESTEDwithBID'){
-        $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '1 day', `bid_expires` = '1 years', `notes` = '".$notes."' WHERE id = '".$bid_id."'";
+        $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '$done_in', `bid_expires` = '1 years', `notes` = '".$notes."' WHERE id = '".$bid_id."'";
         mysql_query($query);
         }
         

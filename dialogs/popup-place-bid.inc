@@ -6,14 +6,7 @@
                 <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />&nbsp;USD
             </label>
         </p>
-        <?php if ($worklist['status'] == 'SUGGESTEDwithBID' || $worklist['status'] == 'SUGGESTED') { ?>
-        <div class="clear"></div>
-        <div id="bidDone" class="">
-            <input type="hidden" name="done_in" id="done_in" value="24 hours" />
-            <input type="hidden" name="bid_expires" id="bid_expires" value="1 years" />
-        </div>
         
-        <?php } else { ?>
         <div class="clear"></div>
         <div id="bidDone" class="">
             <label>Done In</label>
@@ -36,6 +29,9 @@
             </div>
             <input type="hidden" name="done_in" id="done_in" value="2 hours" />
         </div>
+        <?php if ($worklist['status'] == 'SUGGESTEDwithBID' || $worklist['status'] == 'SUGGESTED') { ?>
+        <input type="hidden" name="bid_expires" id="bid_expires" value="1 years" />
+        <?php } else { ?>
         <div class="clear"></div>
         <div id="bidExpires" class="">
             <label>Bid Expires</label>
