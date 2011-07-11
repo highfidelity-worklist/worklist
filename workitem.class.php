@@ -599,7 +599,7 @@ WHERE id = ' . (int)$id;
 
     public function getFees($worklist_id)
     {
-        $query = "SELECT fees.`id`, fees.`amount`, u.`nickname`, fees.`desc`,fees.`user_id`, DATE_FORMAT(fees.`date`, '%m/%d/%Y') as date, fees.`paid`
+        $query = "SELECT fees.`id`, fees.`amount`, u.`nickname`, fees.`desc`,fees.`user_id`, DATE_FORMAT(fees.`date`, '%m/%d/%Y') as date, fees.`paid`, fees.`bid_notes`
             FROM `".FEES. "` as fees LEFT OUTER JOIN `".USERS."` u ON u.`id` = fees.`user_id`
             WHERE worklist_id = ".$worklist_id."
             AND fees.withdrawn = 0 ";
@@ -813,7 +813,7 @@ WHERE id = ' . (int)$id;
         mysql_unbuffered_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id);
         
         // adding bid amount to list of fees
-        mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', NOW(), '$bid_id')");
+        mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `bid_notes`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', '".$bid_info['notes']."', NOW(), '$bid_id')");
         $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
         $this -> setMechanicId($bid_info['bidder_id']);
         return $bid_info;

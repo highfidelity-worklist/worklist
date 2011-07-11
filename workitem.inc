@@ -599,7 +599,7 @@ $(document).ready(function(){
 <?php endif; ?>
             }
 
-<?php if($worklist['status'] != 'DONE'){?>
+<?php if($worklist['status'] != 'DONE'  && $worklist['status'] != 'WORKING' && $worklist['status'] != 'REVIEW' && $worklist['status'] != 'COMPLETED'){?>
             if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid_accept').length == 0){
                   $('#popup-bid-info form').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" style="float:right;">');
             }
@@ -1476,7 +1476,11 @@ if ($action =="edit"):  ?>
                                     <tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
                                         <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
                                         <td>$ <?php echo $fee['amount'];?></td>
+                                        <?php if ($worklist['status'] == 'DONE' && $fee['desc'] == 'Accepted Bid') { ?>
+                                        <td>Bid Notes: <?php echo $fee['bid_notes'];?></td>
+                                        <?php } else { ?>                                        
                                         <td><?php echo $fee['desc'];?></td>
+                                        <?php }?>
                                         <td><?php echo $fee['date'];?></td>
                                         <td>
                                             <?php if($is_payer): ?><a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
