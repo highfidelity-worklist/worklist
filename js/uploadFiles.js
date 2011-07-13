@@ -26,12 +26,12 @@
             onSubmit: function(file, extension) {
                 $('#accordion').accordion('activate', false);
                 $('.uploadnotice').empty();
-                if (! (extension && /^(jpg|jpeg|gif|png|pdf|rtf|txt)$/i.test(extension))){
+                if (! (extension && /^(jpg|jpeg|gif|png|pdf|rtf|txt|csv|xls|xlsx|doc|docx|odt)$/i.test(extension))){
                     // extension is not allowed
-                    var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
-
+                    var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;position:relative;" class="ui-state-error ui-corner-all">'+
+                                    '<div title="click here to close the warning message" onclick="$(this).parent().hide();" style="cursor:pointer;position:absolute;right:5px;top:4px;">x</div>' +
                                     '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-                                    '<strong>Error:</strong> This filetype is not allowed. Please upload a pdf, jpg, jpeg, gif, png, rtf or txt file.</p>' +
+                                    '<strong>Error:</strong> This filetype is not allowed. Please upload a pdf, jpg, jpeg, gif, png, rtf, txt, csv, xls, xlsx, doc, docx or odt file.</p>' +
                                 '</div>';
                     $('.uploadnotice').append(html);
                     // cancel upload
