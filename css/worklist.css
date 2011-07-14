@@ -129,9 +129,14 @@
 font-weight:normal;
 }
 .info-label textarea {
-    width: 370px;
     height: 110px;
 }
+
+.info-label textarea,
+.info-label input[type=text] {
+    width: 370px;
+}
+
 fieldset {
     width: 380px;
     border: 0;
@@ -614,4 +619,12 @@ td.textAlignReport {
     display: inline;
     position: relative;
     left: 3px;
+}
+
+.loading {
+    font-style: italic;
+}
+
+#testFlightButton {
+    float: right;
 }
