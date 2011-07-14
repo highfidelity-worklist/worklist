@@ -1086,11 +1086,13 @@ include("head.html"); ?>
             GetWorklist(1,false);
             return false;
         });
-        
+
+        <?php if ($inProject) { ?>
         $("#testFlightButton").click(function() {
             showTestFlightForm(<?php echo $inProject->getProjectId(); ?>);
         });
-        
+        <?php } ?>
+
         //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
         $('tr.row-role-list-live ').click(function(){
             $.metadata.setType("elem", "script")
