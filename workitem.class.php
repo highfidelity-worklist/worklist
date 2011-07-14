@@ -807,16 +807,43 @@ WHERE id = ' . (int)$id;
         $diff = $end - $prev_start;
         $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
 
-        // changing mechanic of the job
-        mysql_unbuffered_query("UPDATE `".WORKLIST."` SET " . ($is_mechanic ? "`mechanic_id` =  '".$bid_info['bidder_id']."', " : '') . " `status` = 'WORKING',`status_changed`=NOW(),`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id']);
-        // marking bid as "accepted"
-        mysql_unbuffered_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id);
+        // Adding transaction wrapper around steps
+        if (mysql_query('BEGIN')) {
+
+            // changing mechanic of the job
+            if (! $myresult = mysql_query("UPDATE `".WORKLIST."` SET " . ($is_mechanic ? "`mechanic_id` =  '".$bid_info['bidder_id']."', " : '') . " `status` = 'WORKING',`status_changed`=NOW(),`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id'])) {
+                error_log("AcceptBid:UpdateMechanic failed: ".mysql_error());
+                mysql_query("ROLLBACK");
+                return false;
+            }
+
+            // marking bid as "accepted"
+            if (! $result = mysql_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id)) {
+                error_log("AcceptBid:MarkBid failed: ".mysql_error());
+                mysql_query("ROLLBACK");
+                return false;
+            }
+
         
-        // adding bid amount to list of fees
-        mysql_unbuffered_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `bid_notes`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', '".$bid_info['notes']."', NOW(), '$bid_id')");
-        $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
-        $this -> setMechanicId($bid_info['bidder_id']);
-        return $bid_info;
+            // adding bid amount to list of fees
+            if (! $result = mysql_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `bid_notes`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', '".$bid_info['notes']."', NOW(), '$bid_id')")) {
+                error_log("AcceptBid:Insert Fee failed: ".mysql_error());
+                mysql_query("ROLLBACK");
+                return false;
+            }
+
+
+            // When we get this far, commit and return bid_info
+            if (mysql_query('COMMIT')) { 
+                $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
+                $this -> setMechanicId($bid_info['bidder_id']);
+                return $bid_info;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public function validateAction($action, $action_error) {
