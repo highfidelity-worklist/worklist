@@ -1558,6 +1558,7 @@ if (is_object($inProject)) {
 <?php else: ?>
         <li><strong>Repository:</strong> </li>
 <?php endif; ?>
+        <li><strong>Fund:</strong> <?php echo $inProject->getFundName(); ?></li>
     </ul>
     <h3>Jobs:</h3>
 <div><div class="projectLeft">

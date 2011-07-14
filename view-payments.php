@@ -39,8 +39,8 @@ $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $userId = getSessionUserId();
 
 $payer_id = $userId;
-// set default fund to below92
-$fund_id = 2;
+// set default fund to worklist
+$fund_id = 3;
 
 if (isset($_REQUEST['fund_id'])) {
     $fund_id = mysql_real_escape_string($_REQUEST['fund_id']);
@@ -104,23 +104,28 @@ $sql_get_fee_totals = "
     GROUP BY f.user_id
     ";
 
-$sql_get_bonus_totals = "
-    SELECT
-        sum(b.amount) AS total_amount,
-        b.user_id AS mechanic_id,
-        b.desc AS worklist_item,
-        u.nickname AS mechanic_nick,
-        u.paypal_email AS mechanic_paypal_email
-    FROM
-        ".FEES." b
-        LEFT JOIN ".USERS." u on u.id = b.user_id
-    WHERE
-        b.paid = 0
-        AND u.paypal = '1' and b.bonus = 1
-        AND u.has_W2 = 0
-   GROUP BY b.user_id
-    ";
+$sql_get_bonus_totals = false;
 
+// only pull bonuses for if worklist fund chosen - temporary hardcoding
+// until we determine further solution
+if ($fund_id == 3) {
+    $sql_get_bonus_totals = "
+        SELECT
+            sum(b.amount) AS total_amount,
+            b.user_id AS mechanic_id,
+            b.desc AS worklist_item,
+            u.nickname AS mechanic_nick,
+            u.paypal_email AS mechanic_paypal_email
+        FROM
+            ".FEES." b
+            LEFT JOIN ".USERS." u on u.id = b.user_id
+        WHERE
+            b.paid = 0
+            AND u.paypal = '1' and b.bonus = 1
+            AND u.has_W2 = 0
+       GROUP BY b.user_id
+        ";
+}
 
 function getUserTotalsArray() {
     // Retuns an array with the total amount owed to each user including
@@ -132,33 +137,37 @@ function getUserTotalsArray() {
     
 
     $fee_totals_query   = mysql_query($sql_get_fee_totals);
-    $bonus_totals_query = mysql_query($sql_get_bonus_totals);
 
     $totals_array = array();
     while ($fees_array = mysql_fetch_array($fee_totals_query, MYSQL_ASSOC)) {
         $totals_array[] = $fees_array;
     }
     
-    if (mysql_num_rows($bonus_totals_query) == 0) {
-        // If there are no bonuses, return now
-        return $totals_array;
-    }
+    if ($sql_get_bonus_totals) {
+        $bonus_totals_query = mysql_query($sql_get_bonus_totals);
 
-    while ($bonus_array = mysql_fetch_array($bonus_totals_query, MYSQL_ASSOC)) {
-        $bonus_applied = false;
-        foreach ($totals_array as $t_id => $fee_payee) {
-            // Loop through payee fees to try to add the bonus total there
-            if ($bonus_array['mechanic_id'] == $fee_payee['mechanic_id']) {
-                $totals_array[$t_id]['total_amount'] = sprintf("%01.2f", 
-                    $totals_array[$t_id]['total_amount'] + $bonus_array['total_amount']);
-                $bonus_applied = true;
+        if (mysql_num_rows($bonus_totals_query) == 0) {
+            // If there are no bonuses, return now
+            return $totals_array;
+        }
+
+        while ($bonus_array = mysql_fetch_array($bonus_totals_query, MYSQL_ASSOC)) {
+            $bonus_applied = false;
+            foreach ($totals_array as $t_id => $fee_payee) {
+                // Loop through payee fees to try to add the bonus total there
+                if ($bonus_array['mechanic_id'] == $fee_payee['mechanic_id']) {
+                    $totals_array[$t_id]['total_amount'] = sprintf("%01.2f", 
+                        $totals_array[$t_id]['total_amount'] + $bonus_array['total_amount']);
+                    $bonus_applied = true;
+                }
+            }
+            if (!$bonus_applied) {
+                // If no existing payments found for the user, append them to the array
+                $totals_array[] = $bonus_array;
             }
         }
-        if (!$bonus_applied) {
-            // If no existing payments found for the user, append them to the array
-            $totals_array[] = $bonus_array;
-        }
     }
+
     return $totals_array;
 }
 
@@ -265,7 +274,7 @@ switch ($action) {
                     $receiversArray[] = array(
                         'receiverEmail' => $fees_data["mechanic_paypal_email"],
                         'amount' => $fees_data["amount"],
-                        'uniqueID' => "bonus-".$fees_data["fee_id"],
+                        'uniqueID' => $fees_data["fee_id"],
                         'note' => $fees_data["worklist_id"].' - '.$fees_data["worklist_item"]);
                     $totalFees = $totalFees + $fees_data["amount"];
                     $message .= "    ".$fees_data['mechanic_paypal_email']." - $".$fees_data['amount']."\n";
@@ -294,8 +303,8 @@ switch ($action) {
                 //$fee_sql_update = "UPDATE ".FEES." SET paid=1, paid_date='".date("Y-m-d H:i:s")."' WHERE id in (".$fees_csv.")";
                 //$update_fees_paid = mysql_query($fee_sql_update);
 
-                $summaryData = Fee::markPaidByList(explode(',', $fee_id_csv), $user_paid=0, $paid_notes='', $paid=1);
-                Bonus::markPaidByList(explode(',', $bonus_id_csv), $paid=1);
+                $summaryData = Fee::markPaidByList(explode(',', $fee_id_csv), $user_paid = 0, $paid_notes='', $paid = 1, $fund_id);
+                Bonus::markPaidByList(explode(',', $bonus_id_csv),  $user_paid = 0, $paid = 1, $fund_id);
 
             } else  {
                 $alert_msg = "MassPay Failure"; 
@@ -321,8 +330,6 @@ switch ($action) {
         $payee_totals = getUserTotalsArray();
     break;
 }
-
-
 
 /*********************************** HTML layout begins here  *************************************/
 
@@ -359,8 +366,13 @@ include("head.html"); ?>
         <label id="label-fund" for="fund_id">Fund:</label>
         <select name="fund_id" id="fund_id">
             <option value="0" <?php echo ($fund_id == 0 ? 'selected="selected"' : '');?>>Not funded</option>
-            <option value="1" <?php echo ($fund_id == 1 ? 'selected="selected"' : ''); ?>>Below92</option>
-            <option value="2" <?php echo ($fund_id == 2 ? 'selected="selected"' : ''); ?>>CandP</option>
+<?php            
+        $options = '';
+        foreach (Fund::getFunds() as $fund) {
+            $options .= '<option value="' . $fund['id'] . '" ' . ($fund_id == $fund['id'] ? 'selected="selected"' : '') . '>' . $fund['name'] . '</option>';
+        }
+        echo $options;
+?>        
         </select>
     </form>
 </div>
@@ -443,47 +455,49 @@ foreach ($payee_totals as $payee) {
         }
     }
 
-    // Display bonuses for each user
-    $bonus_sql = "
-        SELECT
-            b.id AS id,
-            b.amount AS amount,
-            b.desc AS notes,
-            b.date AS date,
-            u.nickname AS payer_name
-        FROM
-            fees b
-            LEFT JOIN users u ON u.id = b.payer_id
-        WHERE
-            b.user_id = ".$payee['mechanic_id']."
-            AND b.paid=0 and b.bonus=1";
-    $bonus_query = mysql_query($bonus_sql);
-    if (mysql_num_rows($bonus_query) > 0) {
-        while ($ind_bonus = mysql_fetch_array($bonus_query)) {
-            $fee_rows .= '<tr class="'.$rowclass.'">';
-            $fee_rows .= '<td class="fee-row"><input type="checkbox" class="fees'.
-                $payee["mechanic_id"].'" name="paybonus[]" id="paybonus'.$ind_bonus["id"].
-                '" value="'.$ind_bonus["id"].'" onclick="updateTotalFees(\'1\');" rel="'.$ind_bonus["amount"].'"';
-            if (isset($_POST["action"]) && ($_POST["action"] == 'confirm') &&
-               in_array($ind_bonus["id"], $_POST["paybonus"])) {
-                $fee_rows .= ' checked="checked"';
-                $display_set = true;
+    if ($fund_id == 3) {
+        // Display bonuses for each user
+        $bonus_sql = "
+            SELECT
+                b.id AS id,
+                b.amount AS amount,
+                b.desc AS notes,
+                b.date AS date,
+                u.nickname AS payer_name
+            FROM
+                fees b
+                LEFT JOIN users u ON u.id = b.payer_id
+            WHERE
+                b.user_id = ".$payee['mechanic_id']."
+                AND b.paid=0 and b.bonus=1";
+        $bonus_query = mysql_query($bonus_sql);
+        if (mysql_num_rows($bonus_query) > 0) {
+            while ($ind_bonus = mysql_fetch_array($bonus_query)) {
+                $fee_rows .= '<tr class="'.$rowclass.'">';
+                $fee_rows .= '<td class="fee-row"><input type="checkbox" class="fees'.
+                    $payee["mechanic_id"].'" name="paybonus[]" id="paybonus'.$ind_bonus["id"].
+                    '" value="'.$ind_bonus["id"].'" onclick="updateTotalFees(\'1\');" rel="'.$ind_bonus["amount"].'"';
+                if (isset($_POST["action"]) && ($_POST["action"] == 'confirm') &&
+                   in_array($ind_bonus["id"], $_POST["paybonus"])) {
+                    $fee_rows .= ' checked="checked"';
+                    $display_set = true;
+                }
+                $fee_rows .= ' /></td>';
+                $fee_rows .= '<td>'.strftime("%m-%d-%Y", strtotime($ind_bonus["date"])).'</td>';
+                $fee_rows .= '<td onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["id"].'</td>';
+                $fee_rows .= '<td colspan="2" align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">BONUS</td>';
+                $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["amount"].'</td>';
+                $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">&nbsp;</td>';
+                $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.
+                             '(FROM: '.$ind_bonus['payer_name'].') '.$ind_bonus["notes"].'</td>';
+                $fee_rows .= '</tr>';
+                $fee_rows .=  "\r\n"; //added \r\n to make output code modestly presentable
+                $rowclass=='rowodd'?$rowclass='roweven':$rowclass='rowodd';
             }
-            $fee_rows .= ' /></td>';
-            $fee_rows .= '<td>'.strftime("%m-%d-%Y", strtotime($ind_bonus["date"])).'</td>';
-            $fee_rows .= '<td onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["id"].'</td>';
-            $fee_rows .= '<td colspan="2" align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">BONUS</td>';
-            $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["amount"].'</td>';
-            $fee_rows .= '<td align="right" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">&nbsp;</td>';
-            $fee_rows .= '<td align="left" onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.
-                         '(FROM: '.$ind_bonus['payer_name'].') '.$ind_bonus["notes"].'</td>';
-            $fee_rows .= '</tr>';
-            $fee_rows .=  "\r\n"; //added \r\n to make output code modestly presentable
-            $rowclass=='rowodd'?$rowclass='roweven':$rowclass='rowodd';
         }
     }
 
-    if (mysql_num_rows($ind_query) > 0 || mysql_num_rows($bonus_query) > 0) {
+    if (mysql_num_rows($ind_query) > 0 || ($fund_id != 3 && mysql_num_rows($bonus_query) > 0)) {
         echo '<tbody id="indfees'.$payee["mechanic_id"].'"';
         if ($display_set == false) {           
             echo ' style="display: none;"';

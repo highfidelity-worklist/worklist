@@ -66,7 +66,11 @@ if ($pfilter) {
         $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
     }
 } elseif (isset($fundFilter) && $fundFilter != -1) {
-    $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
+    if ($fundFilter == 0) {
+        $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter . " || `".PROJECTS."`.`fund_id` IS NULL";
+    } else {
+        $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
+    }
 }
 
 
