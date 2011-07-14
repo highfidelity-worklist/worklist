@@ -13,7 +13,6 @@ require_once('smslist.php');
  *  send email using local mail()
  */
 function send_email($to, $subject, $html, $plain = null, $headers = array()) {
-    $to='garth+sandbox@lovemachineinc.com';
     //Validate arguments
     if (empty($to) || 
         empty($subject) ||
@@ -82,7 +81,6 @@ Content-Transfer-Encoding: 7bit
  */
 function notify_sms_by_id($user_id, $smssubject, $smsbody)
 {
-return true;
     //Fetch phone info using user_id
     $sql = 'SELECT 
              phone, country, provider, smsaddr 
