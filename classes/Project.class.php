@@ -23,6 +23,8 @@ class Project {
     protected $last_commit;
     protected $active;
     protected $owner_id;
+    protected $fund_id;
+    protected $testflight_team_token;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -78,7 +80,7 @@ class Project {
         }
 
         $query = "
-            SELECT p.project_id, p.name, p.description, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id
+            SELECT p.project_id, p.name, p.description, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, p.fund_id, p.testflight_team_token
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -100,7 +102,10 @@ class Project {
              ->setContactInfo($row['contact_info'])
              ->setLastCommit($row['last_commit'])
              ->setActive($row['active'])
-             ->setOwnerId($row['owner_id']);
+             ->setTestFlightTeamToken($row['testflight_team_token'])
+             ->setOwnerId($row['owner_id'])
+             ->setFundId($row['fund_id']);
+             
         return true;
     }
 
@@ -199,9 +204,26 @@ class Project {
         return $this->owner_id;
     }
     
+    public function setFundId($fund_id) {
+        $this->fund_id = $fund_id;
+    }
+
+    public function getFundId() {
+        return $this->fund_id;
+    }
+    
+    public function setTestFlightTeamToken($testflight_team_token) {
+        $this->testflight_team_token = $testflight_team_token;
+        return $this;
+    }
+
+    public function getTestFlightTeamToken() {
+        return $this->testflight_team_token;
+    }
+    
 
     protected function insert() {
-        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, last_commit ) ".
+        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, testflight_team_token, last_commit ) ".
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -210,6 +232,7 @@ class Project {
             "'".mysql_real_escape_string($this->getContactInfo())."', ".
             "'".mysql_real_escape_string($this->getActive())."', ".
             "'".mysql_real_escape_string($this->getOwnerId())."', ".
+            "'".mysql_real_escape_string($this->getTestFlightTeamToken())."', ".
             "NOW())";
         $rt = mysql_query($query);
         $this->id = mysql_insert_id();
@@ -228,6 +251,7 @@ class Project {
                 repository='" .mysql_real_escape_string($this->getRepository())."',
                 contact_info='".mysql_real_escape_string($this->getContactInfo())."',
                 last_commit='".mysql_real_escape_string($this->getLastCommit())."',
+                testflight_team_token='".mysql_real_escape_string($this->getTestFlightTeamToken())."',
                 active='".intval($this->getActive())."',
                 owner_id='".intval($this->getOwnerId())."'
             WHERE project_id=" . $this->getProjectId();
@@ -392,6 +416,16 @@ class Project {
     public function deleteRole($role_id){
         $query = "DELETE FROM `".ROLES."`  WHERE `id`={$role_id}";
         return mysql_query($query) ? 1 : 0;
+    }
+    
+    public function getFundName() {
+        $query = "SELECT `name` FROM `" . FUNDS . "` WHERE `id` = {$this->getFundId()}";
+        if ($result = mysql_query($query)) {
+            $fund = mysql_fetch_assoc($result);
+            return $fund['name'];
+        } else {
+            return false;
+        }
     }
     
 }// end of the class

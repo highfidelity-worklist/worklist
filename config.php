@@ -1,6 +1,6 @@
 <?php
 //
-//  Copyright (c) 2009-2010, LoveMachine Inc.
+//  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
@@ -31,10 +31,10 @@ if (!defined("APP_LOGIN"))      define("APP_LOGIN", '/logon/index.php/');
 if (!defined('APP_NAME'))       define('APP_NAME','Worklist');
 if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], '/')));
 if (!defined('APP_BASE'))       define('APP_BASE',substr(APP_LOCATION, 0, strrpos(APP_LOCATION, '/', -2)));
-if (!defined('APP_PATH'))	    define('APP_PATH', realpath(dirname(__FILE__)));
-if (!defined('UPLOAD_PATH'))	define('UPLOAD_PATH', realpath(APP_PATH . '/uploads'));
+if (!defined('APP_PATH'))       define('APP_PATH', realpath(dirname(__FILE__)));
+if (!defined('UPLOAD_PATH'))    define('UPLOAD_PATH', realpath(APP_PATH . '/uploads'));
 
-if (!defined('APP_ENV'))	    define('APP_ENV', 'production');
+if (!defined('APP_ENV'))        define('APP_ENV', 'production');
 
 //http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
 if (!defined('SERVER_NAME'))    define('SERVER_NAME','dev.sendlove.us');
@@ -55,25 +55,26 @@ if (!defined('DB_USER'))        define('DB_USER', 'project_cupid');
 if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', 'test30');
 if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
 
-if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
-if (!defined('TOKENS'))         define('TOKENS', 'tokens');
 
-if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
-if (!defined('USERS'))          define('USERS', 'users');
-if (!defined('BIDS'))		    define('BIDS', 'bids');
-if (!defined('FEES'))		    define('FEES', 'fees');
-if (!defined('FILES'))		    define('FILES', 'files');
-if (!defined('COMMENTS'))	    define('COMMENTS', 'comments');
-if (!defined('USER_STATUS'))	define('USER_STATUS', 'user_status');
-if (!defined('BUDGET_LOG'))	    define('BUDGET_LOG', 'budget_log');
-if (!defined('SKILLS'))         define('SKILLS', 'skills');
-if (!defined('WORKITEM_SKILLS')) define('WORKITEM_SKILLS', 'workitem_skills');
-if (!defined('STATUS_LOG'))	    define('STATUS_LOG', 'status_log');
-if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
+if (!defined('BIDS'))           define('BIDS', 'bids');
+if (!defined('BUDGET_LOG'))     define('BUDGET_LOG', 'budget_log');
+if (!defined('COMMENTS'))       define('COMMENTS', 'comments');
+if (!defined('FEES'))           define('FEES', 'fees');
+if (!defined('FILES'))          define('FILES', 'files');
+if (!defined('FUNDS'))          define('FUNDS', 'funds');
 if (!defined('PAYPAL_ADMINS'))  define('PAYPAL_ADMINS', 'paypal_admins');
+if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 if (!defined('PROJECTS'))       define('PROJECTS', 'projects');
-if (!defined('ROLES'))          define('ROLES', 'roles');
 if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
+if (!defined('ROLES'))          define('ROLES', 'roles');
+if (!defined('SKILLS'))         define('SKILLS', 'skills');
+if (!defined('STATUS_LOG'))     define('STATUS_LOG', 'status_log');
+if (!defined('TOKENS'))         define('TOKENS', 'tokens');
+if (!defined('WORKITEM_SKILLS')) define('WORKITEM_SKILLS', 'workitem_skills');
+if (!defined('USER_STATUS'))    define('USER_STATUS', 'user_status');
+if (!defined('USERS'))          define('USERS', 'users');
+if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
+if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
 
 if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
@@ -117,6 +118,8 @@ if (!defined('STR_BWD'))        define('STR_BWD', 'Prev&nbsp;&nbsp;');
 if (!defined('IMG_FWD'))        define('IMG_FWD', 'images/left.png');
 if (!defined('IMG_BWD'))        define('IMG_BWD', 'images/right.png');
 
+if (!defined("TESTFLIGHT_API_TOKEN"))    define("TESTFLIGHT_API_TOKEN", "c5ae8c56e6ac6e6d5aefceb711070261_MTA5MzE3");
+
 /**
  * Clickatell sms gateway settings
  */
@@ -152,7 +155,7 @@ define('SMS_FLAG_BID_ALERTS',       0x0002);
 // and retrieved where needed using Zend_Registry::get('config');
 $config = array(
     'database' => array(
-    	'name' 	  => 'Worklist',
+        'name'    => 'Worklist',
         'adapter' => 'mysqli',
         'params'  => array(
             'host'     => DB_SERVER,
@@ -181,14 +184,14 @@ $config = array(
         'clickatellPassword'    => CLICKATELL_PASSWORD
     ),
     'twitter' => array(
-    	array(
-    	'twitterUsername'		=> TWITTER_USER,
-    	'twitterPassword'		=> TWITTER_PASS,
-    	),
-    	array(
-    	'twitterUsername'		=> TWITTER_2_USER,
-    	'twitterPassword'		=> TWITTER_2_PASS,
-    	)
+        array(
+        'twitterUsername'       => TWITTER_USER,
+        'twitterPassword'       => TWITTER_PASS,
+        ),
+        array(
+        'twitterUsername'       => TWITTER_2_USER,
+        'twitterPassword'       => TWITTER_2_PASS,
+        )
     ),
     'websvn' => array(
         'baseUrl'           => 'http://svn.sendlove.us',

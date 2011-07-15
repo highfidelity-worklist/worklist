@@ -7,10 +7,10 @@
 
 class Bonus
 {
-    public static function markPaidByList($ids, $paid=1, $summary=false) {
+    public static function markPaidByList($ids, $user_paid = 0, $paid = 1, $summary = false, $fund_id = false) {
         $summaryData = array();
         foreach ($ids as $id) {
-            $single_summary = self::markPaidById($id, $paid, true);
+            $single_summary = self::markPaidById($id, $user_paid, $paid, true, $fund_id);
             // $summary = [receiver_id, amount]
             if (isset($summaryData[$single_summary[0]])) {
                 $summaryData[$single_summary[0]][0] += $single_summary[1];
@@ -26,30 +26,37 @@ class Bonus
         }
     }
 
-    public static function markPaidById($id, $paid=1, $summary=false) {
-        $id = intval($id);
-        $paid = intval($paid);
+    public static function markPaidById($id, $user_paid = 0, $paid = 1, $summary = false, $fund_id = false) {
+        $id = (int) $id;
+        $paid = (int) $paid;
+        $user_paid = (int) $user_paid;
+        $user_paid = $user_paid == 0 ? $_SESSION['userid'] : $user_paid;
 
-        $select_query = '
+        $select_query = "
             SELECT
                 *
             FROM
-                '.FEES.'
+                " . FEES . "
             WHERE
-                id = '.$id.' AND bonus = 1
-            ';
+                id = {$id} AND
+                AND bonus = 1";
+
         $select_query = mysql_fetch_array(mysql_query($select_query));
-        
+
         $receiver_id = $select_query['user_id'];
         $amount      = $select_query['amount'];
 
-        $update_query = '
+        $update_query = "
             UPDATE
-                '.FEES.'
+                " . FEES . "
             SET
-                paid = '.$paid.'
+                `user_paid` = {$user_paid},
+                `paid` = {$paid},
+                `fund_id` = {$fund_id},
+                `paid_date` = NOW()
             WHERE
-                id = '.$id.' and bonus = 1
+                id = {$id} AND
+                bonus = 1
             LIMIT 1
             ';
 

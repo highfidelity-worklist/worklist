@@ -10,7 +10,7 @@ require_once ('workitem.class.php');
 class Agency_Worklist_Filter {
     protected $name = '.worklist';
 
-	// Filter for worklist
+    // Filter for worklist
     protected $user = 0;
     protected $status = 'BIDDING';
     protected $query = '';
@@ -33,77 +33,77 @@ class Agency_Worklist_Filter {
     // Additional filter for job in PayPal reports
     // 30-APR-2010 <Andres>
     protected $job = 0;
-	
+    
     // Additional filter for worklist
     // 15-JAN-2011 <Reji>
     protected $subsort = "delta";
     
     public function getPaidstatus()
     {
-    	return $this->paidstatus;
+        return $this->paidstatus;
     }
     
     public function setPaidstatus($paidStatus)
     {
-    	$this->paidstatus = $paidStatus;
-    	return $this;
+        $this->paidstatus = $paidStatus;
+        return $this;
     }
     
     public function getOrder()
     {
-    	return $this->order;
+        return $this->order;
     }
     
     public function setOrder($order)
     {
-    	$this->order = $order;
+        $this->order = $order;
     }
     
     public function getStart()
     {
-    	return$this->start;    
-	}
-	
-	public function setStart($start)
-	{
-		$this->start = $start;
-		return $this;
-	}
-	
-	public function getEnd()
-	{
-		return $this->end;
-	}
-	
-	public function setEnd($end)
-	{
-		$this->end = $end;
-		return $end;
-	}
-	
-	// getter for $type
-	// @return type of the fee
-	// 30-APR-2010 <Yani>
-	public function getType()
-	{
-	    return $this->type;
-	}
+        return$this->start;    
+    }
+    
+    public function setStart($start)
+    {
+        $this->start = $start;
+        return $this;
+    }
+    
+    public function getEnd()
+    {
+        return $this->end;
+    }
+    
+    public function setEnd($end)
+    {
+        $this->end = $end;
+        return $end;
+    }
+    
+    // getter for $type
+    // @return type of the fee
+    // 30-APR-2010 <Yani>
+    public function getType()
+    {
+        return $this->type;
+    }
 
     // setter for $type
     // @param $type type to set  
-    // 30-APR-2010 <Yani>	
-	public function setType($type)
-	{
-	    $this->type = $type;
-	}
-	
-	// getter for $job
-	// @return job_id number
-	// 30-APR-2010 <Andres>
-	public function getJob() {
-	   return $this->job;
-	}
-	
+    // 30-APR-2010 <Yani>   
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+    
+    // getter for $job
+    // @return job_id number
+    // 30-APR-2010 <Andres>
+    public function getJob() {
+       return $this->job;
+    }
+    
     // setter for $job
     // @param $job job id number
     // 30-APR-2010 <Andres>
@@ -185,7 +185,7 @@ class Agency_Worklist_Filter {
      */
     public function getPage()
     {
-        return $this->page;	
+        return $this->page; 
     }
     
     /**
@@ -193,7 +193,7 @@ class Agency_Worklist_Filter {
      */
     public function getName()
     {
-        return $this->name;	
+        return $this->name; 
     }
 
     /**
@@ -309,12 +309,12 @@ class Agency_Worklist_Filter {
         }
         return $this;
     }
-	
-	// getter for $subsort
-	// 15-JAN-2011 <Reji>
-	public function getSubSort() {
-	   return $this->subsort;
-	}
+    
+    // getter for $subsort
+    // 15-JAN-2011 <Reji>
+    public function getSubSort() {
+       return $this->subsort;
+    }
     // setter for $subsort
     // 15-JAN-2011 <Reji>
     public function setSubSort($subsort) {
@@ -341,10 +341,12 @@ class Agency_Worklist_Filter {
     public function getFundSelectbox($fromReport=false, $display=true, $active=false) {
         $allDisplay = ($fromReport) ? "ALL" : "All Funds";
         $box = '<select id="fundCombo" name="fund" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
-        $box .= '<option value="-1" ' . ($this->getFund_id() == -1 ? 'selected="selected"' : '') . '> ' . $allDisplay . '</option>
-                 <option value="1" ' .($this->getFund_id() == 1 ? 'selected="selected"' : '') . '>Below92</option>
-                 <option value="2" ' .($this->getFund_id() == 2 ? 'selected="selected"' : '') . '>CandP</option>
-                 <option value="0" ' .($this->getFund_id() == 0 ? 'selected="selected"' : '') . '>Not funded</option>';
+        $box .= '    <option value="-1" ' . ($this->getFund_id() == -1 ? 'selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+        foreach (Fund::getFunds() as $fund) {
+            $box .= '<option value="' . $fund['id'] . '" ' . ($this->getFund_id() == $fund['id'] ? 'selected="selected"' : '') . '>' . $fund['name'] . '</option>';
+        }
+
+        $box .= '<option value="0" ' .($this->getFund_id() == 0 ? 'selected="selected"' : '') . '>Not funded</option>';
         $box .= '</select>';
         
         return $box;
@@ -431,29 +433,29 @@ class Agency_Worklist_Filter {
         if (!empty($options) && (empty($options['reload']) || $options['reload'] == 'false')) {
             $this->setOptions($options);
         } elseif (!empty($options['name'])) {
-        	$this->setName($options['name'])
-        		 ->initFilter();
+            $this->setName($options['name'])
+                 ->initFilter();
         }
     }
     
     public function initFilter()
     {
-    	if (getSessionUserId() > 0) {
-    		$this->initByDatabase();
-    	} else {
-    		$this->initByCookie();
-    	}
+        if (getSessionUserId() > 0) {
+            $this->initByDatabase();
+        } else {
+            $this->initByCookie();
+        }
     }
 
     private function setOptions(array $options)
     {
-    	if (!empty($options['name'])) {
-    		$this->setName($options['name']);
+        if (!empty($options['name'])) {
+            $this->setName($options['name']);
         } elseif (!empty($options['id'])) {
             $options='';
-    	} else {
-    		$options = $options[$this->getName()];
-    	}
+        } else {
+            $options = $options[$this->getName()];
+        }
         $cleanOptions = array();
         $methods = get_class_methods($this);
         if (!empty($options)) {
@@ -462,7 +464,7 @@ class Agency_Worklist_Filter {
                 if (in_array($method, $methods)) {
                     $this->$method($value);
                     if ($key != 'name') {
-                    	$cleanOptions[$key] = $value;
+                        $cleanOptions[$key] = $value;
                     }
                 } elseif ($method == 'setProject_id') {
                     $this->setProjectId($value);
@@ -488,12 +490,12 @@ class Agency_Worklist_Filter {
 
     private function saveToCookie($cleanOptions)
     {
-    	if (isset($_COOKIE['FilterCookie'])) {
-    		$filter = unserialize($_COOKIE['FilterCookie']);
-    	} else {
-    		$filter = array();
-    	}
-    	$filter[$this->getName()] = $cleanOptions;
+        if (isset($_COOKIE['FilterCookie'])) {
+            $filter = unserialize($_COOKIE['FilterCookie']);
+        } else {
+            $filter = array();
+        }
+        $filter[$this->getName()] = $cleanOptions;
         $setcookie = setcookie('FilterCookie', serialize($filter), time() + 3600, '/', SERVER_NAME, false, false);
         if ($setcookie === false) {
             throw new Exception('Cookie could not be set!');

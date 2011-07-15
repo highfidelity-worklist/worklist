@@ -8,10 +8,10 @@ include_once('apifunctions.php');
 
 class Fee
 {
-    public static function markPaidByList($fee_ids, $user_paid=0, $paid_notes='', $paid=1) {
+    public static function markPaidByList($fee_ids, $user_paid = 0, $paid_notes = '', $paid = 1, $fund_id = false) {
         $summaryData = array();
         foreach ($fee_ids as $fee_id) {
-            $summary = self::markPaidById($fee_id, $user_paid, $paid_notes, $paid, true);
+            $summary = self::markPaidById($fee_id, $user_paid, $paid_notes, $paid, true, $fund_id);
             if ($summary[0] != 0) {
                 if (isset($summaryData[$summary[0]])) {
                     $summaryData[$summary[0]][0] += $summary[1];
@@ -26,12 +26,12 @@ class Fee
         return $summaryData;
     }
 
-    public static function markPaidById($fee_id, $user_paid=0, $paid_notes='', $paid=1, $summary=false) {
-        $fee_id = intval($fee_id);
-        $user_paid = intval($user_paid);
+    public static function markPaidById($fee_id, $user_paid = 0, $paid_notes = '', $paid = 1, $summary = false, $fund_id = false) {
+        $fee_id = (int) $fee_id;
+        $user_paid = (int) $user_paid;
         $user_paid = $user_paid == 0 ? $_SESSION['userid'] : $user_paid;
         $paid_notes = mysql_real_escape_string($paid_notes);
-        $paid = intval($paid);
+        $paid = (int) $paid;
     
         $user_id = 0;
         $amount = 0;
@@ -40,7 +40,16 @@ class Fee
         $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid`, `expense`, '0' as `rewarder` FROM `".FEES."` WHERE `id`=$fee_id AND `bonus` = 0";
         $rt = mysql_query($query);
         if ($rt && ($row = mysql_fetch_assoc($rt))) {
-            $query = "UPDATE `".FEES."` SET `user_paid`=$user_paid, `notes`='$paid_notes', `paid`=$paid, paid_date = NOW() WHERE `id`=$fee_id";
+            $query = "
+                UPDATE 
+                    `".FEES."` 
+                SET 
+                    `user_paid` = {$user_paid},
+                    `notes` = '{$paid_notes}',
+                    `paid` = {$paid},
+                    `paid_date` = NOW(),
+                    `fund_id` = {$fund_id},
+                WHERE `id` = {$fee_id}";
             $rt = mysql_query($query);
 
             /* Add rewarder points and log */
