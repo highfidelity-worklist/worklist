@@ -41,7 +41,6 @@ if ($projectName) {
     // save changes to project
     if (isset($_REQUEST['save_project']) && $inProject->isOwner($userId)) {
         $inProject->setDescription($_REQUEST['description']);
-        $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
         $inProject->save();
         // we clear post to prevent the page from redirecting
         $_POST = array();
@@ -887,8 +886,6 @@ include("head.html"); ?>
            width: 800,
            height: 480
         });
-        
-        $('#popup-testflight').dialog({ autoOpen: false, maxWidth: 600, width: 410, show: 'fade', hide: 'fade' });
 
         GetWorklist(<?php echo $page?>, false, true);
         
@@ -1086,13 +1083,7 @@ include("head.html"); ?>
             GetWorklist(1,false);
             return false;
         });
-
-        <?php if ($inProject) { ?>
-        $("#testFlightButton").click(function() {
-            showTestFlightForm(<?php echo $inProject->getProjectId(); ?>);
-        });
-        <?php } ?>
-
+        
         //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
         $('tr.row-role-list-live ').click(function(){
             $.metadata.setType("elem", "script")
@@ -1191,48 +1182,6 @@ include("head.html"); ?>
         $('#popup-addrole').dialog('open');
         return false;
     }
-    
-    function showTestFlightForm(project_id) {
-        $('#popup-testflight').dialog('open');
-        $('#popup-testflight .error').hide();
-        $('#popup-testflight form').hide();
-        $('#popup-testflight form #ipa-select input').remove();
-        
-        $.getJSON('testflight.php?project_id=' + project_id, function(data) {
-            $('#popup-testflight .loading').hide()
-            if (data['error']) {
-                $('#popup-testflight .error')
-                    .text(data['error'])
-                    .show();
-            } else {
-                $('#popup-testflight form #message').val(data['message']);
-                $.each(data['ipaFiles'], function(index, value) {
-                    $('#popup-testflight form #ipa-select').append('<input type="radio" name="ipa" value="' + value + '" /> ' + value + '<br />');
-                });
-                $('#popup-testflight form #ipa-select input:first').attr('checked', 'checked');
-                $('#popup-testflight form').show();
-                $('#popup-testflight .right-note').show();
-                
-                $('#popup-testflight form #submit_testflight').click(function() {
-                    var params = 'project_id=' + project_id + '&message=' + $('#popup-testflight form #message').val();
-                    params += "&ipa_file=" + $('#popup-testflight form #ipa-select input').val();
-                    params += "&notify="
-                    params += $('#popup-testflight form input[type=checkbox]').is(':checked');
-                    $.getJSON('testflight.php?' + params, function(data) {
-                        if (data == null) {
-                            alert("There was an error with publishing to TestFlight. Please try again.");
-                        } else if (data['error']) {
-                            alert(data['error']);
-                        }
-                    });
-                    $('#popup-testflight').dialog('close');
-                });
-                
-            }
-        });
-        return false;
-    }
-    
     function reattachAutoUpdate() {
         $("select[name=user], select[name=status], select[name=project]").change(function(){
             if ($("#search-filter").val() == 'UNPAID') {
@@ -1542,14 +1491,12 @@ var documentsArray = new Array();
 <?php require_once('dialogs/popups-userstats.inc'); ?>
 <!-- Popup for add project info-->
 <?php require_once('dialogs/popup-addproject.inc'); ?>
-<!-- Popup for add role -->
+<!-- Popup for  add role -->
 <?php include('dialogs/popup-addrole.inc') ?>
 <!-- Popup for viewing role -->
 <?php include('dialogs/popup-role-info.inc') ?>
-<!-- Popup for edit role -->
+<!-- Popup for  edit role -->
 <?php include('dialogs/popup-edit-role.inc') ?>
-<!-- Popup for TestFlight -->
-<?php include('dialogs/popup-testflight.inc') ?>
 <?php
 if(isset($_REQUEST['addFromJournal'])) {
 ?>
@@ -1578,9 +1525,6 @@ if (is_object($inProject)) {
         $edit_mode = true;
     }
 ?>
-<?php if ($inProject->isOwner($userId) && $inProject->getTestFlightTeamToken()) : ?>
-        <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
-<?php endif; ?>
 <?php if ($inProject->isOwner($userId)) : ?>
 <?php if ($edit_mode) : ?>
         <span style="width: 150px; float: right;"><a href="?action=view">Switch to View Mode</a></span>
@@ -1594,9 +1538,6 @@ if (is_object($inProject)) {
         <fieldset>
             <p class="info-label">Edit Description:<br />
                 <textarea name="description" id="description" size="48" /><?php echo $inProject->getDescription(); ?></textarea>
-            </p>
-            <p class="info-label">TestFlight Team Token:<br />
-                <input name="testflight_team_token" id="testflight_team_token" type="text" value="<?php echo $inProject->getTestFlightTeamToken(); ?>" />
             </p>
             <div>
                 <input class="left-button" type="submit" id="cancel" name="cancel" value="Cancel">
@@ -1616,10 +1557,6 @@ if (is_object($inProject)) {
         <li><strong>Repository:</strong> <a href="<?php echo $inProject->getRepoUrl(); ?>"><?php echo $inProject->getRepoUrl(); ?></a></li>
 <?php else: ?>
         <li><strong>Repository:</strong> </li>
-<?php endif; ?>
-        <li><strong>Fund:</strong> <?php echo $inProject->getFundName(); ?></li>
-<?php if ($inProject->getTestFlightTeamToken() != '' && ! $edit_mode) : ?>
-        <li><strong>TestFlight Team Token:</strong> <?php echo $inProject->getTestFlightTeamToken(); ?></li>
 <?php endif; ?>
     </ul>
     <h3>Jobs:</h3>

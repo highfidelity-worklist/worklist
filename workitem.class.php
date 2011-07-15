@@ -826,7 +826,7 @@ WHERE id = ' . (int)$id;
 
         
             // adding bid amount to list of fees
-            if (! $result = mysql_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `bid_notes`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', '".mysql_real_escape_string($bid_info['notes'])."', NOW(), '$bid_id')")) {
+            if (! $result = mysql_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `bid_notes`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', '".$bid_info['notes']."', NOW(), '$bid_id')")) {
                 error_log("AcceptBid:Insert Fee failed: ".mysql_error());
                 mysql_query("ROLLBACK");
                 return false;
