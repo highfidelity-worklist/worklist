@@ -1,6 +1,6 @@
-<?php 
+<?php
 //  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 //  This class handles a Json Requests if you need more functionality don't hesitate to add it.
@@ -8,14 +8,14 @@
 
 class JsonServer
 {
-    
+
     protected $output;
     protected $user;
     protected $request;
-    
+
     /**
      * If an action is passed and the method exists it will call this method.
-     * 
+     *
      * @param (string) $action
      * @param (mixed) $arguments
      */
@@ -23,12 +23,12 @@ class JsonServer
     {
 
     }
-    
+
     /**
      * Get the output
      *
      * @return (string) $this->output
-     /*/    
+     /*/
     public function getOutput()
     {
         if (null === $this->output) {
@@ -39,10 +39,10 @@ class JsonServer
         }
         return $this->output;
     }
-    
+
     /**
      * Sets the output property and json_encodes it.
-     * 
+     *
      * @param (array) $output
      * @return JsonServer $this
      */
@@ -50,17 +50,17 @@ class JsonServer
     {
         $this->output = json_encode($output);
     }
-    
+
     public function run()
     {
         $method = 'action' . ucfirst($this->getAction());
         if (!method_exists($this, $method)) {
             throw new Exception('Action does not exit!');
         }
-        
+
         $this->$method();
     }
-    
+
     /**
      * @return the $action
      */
@@ -111,7 +111,7 @@ class JsonServer
 
     /**
      * This method approves a user
-     * 
+     *
      * @param (array) $args
      */
     protected function actionApproveUser($args = null)
@@ -143,7 +143,7 @@ class JsonServer
             ));
         }
     }
-    
+
     /**
      * This method checks the approval status of a user
      */
@@ -154,7 +154,7 @@ class JsonServer
         }
         $user = new User();
         $user->findUserById($this->getRequest()->getParam('userid'));
-        
+
         if ($user->isW9Approved()) {
             return $this->setOutput(array(
                 'success' => true,
@@ -169,7 +169,7 @@ class JsonServer
             ));
         }
     }
-    
+
     /**
      * This method checks the approval status of a user
      */
@@ -180,7 +180,7 @@ class JsonServer
         }
         $user = new User();
         $user->findUserById($this->getRequest()->getParam('userid'));
-        
+
         if ($user->isUsCitizen()) {
             return $this->setOutput(array(
                 'success' => true,
@@ -195,26 +195,26 @@ class JsonServer
             ));
         }
     }
-    
+
     /**
      * This method removes a file from a workitem
      */
     protected function actionFileRemove()
     {
         if(isset($_SESSION['userid']) && $_SESSION['userid'] > 0) {
-            
+
             $fileid = $this->getRequest()->getParam('fileid');
             $file = new File();
             $file->findFileById($fileid);
-            
+
             require_once(APP_PATH . '/workitem.class.php');
             try {
                 $workitem = Workitem::getById($file->getWorkitem());
             } catch (Exception $e) {}
             if (
-              $_SESSION['is_runner'] || 
+              $_SESSION['is_runner'] ||
               $_SESSION['is_payer'] ||
-              $_SESSION['userid'] == $file->getUserid() ||  
+              $_SESSION['userid'] == $file->getUserid() ||
               $_SESSION['userid'] == $workitem->getCreatorId() ||
               $_SESSION['userid'] == $workitem->getMechanicId() ||
               $_SESSION['userid'] == $workitem->getRunnerId()
@@ -234,7 +234,7 @@ class JsonServer
         }
         return $this->setOutput($success);
     }
-    
+
     /**
      * This method adds a file to a workitem
      */
@@ -254,7 +254,7 @@ class JsonServer
                 'message' => File::fileUploadErrorMessage($_FILES['file']['error'])
             ));
         }
-        
+
         if ((isset($_FILES['file']['type']) && !empty($_FILES['file']['type']))) {
             $mime = $_FILES['file']['type'];
         } else {
@@ -265,16 +265,16 @@ class JsonServer
         $tempFile = $_FILES['file']['tmp_name'];
         $title = basename($_FILES['file']['name']);
         $path = UPLOAD_PATH . '/' . $fileName;
-        
-        
-        
+
+
+
         if (copy($tempFile, $path)) {
             $url = SERVER_URL . 'uploads/' . $fileName;
             $workitem = $this->getRequest()->getParam('workitem');
             $workitem = (is_numeric($workitem) ? $workitem : null);
             $projectid = $this->getRequest()->getParam('projectid');
             $projectid = (is_numeric($projectid) ? $projectid : null);
-            
+
             $file = new File();
             $file->setMime($mime)
                  ->setUserid($this->getRequest()->getParam('userid'))
@@ -283,13 +283,13 @@ class JsonServer
                  ->setTitle($title)
                  ->setUrl($url);
             $success = $file->save();
-            
+
             $icon = File::getIconFromMime($file->getMime());
             if ($icon === false) {
                 $filetype = 'image';
                 $icon = $file->getUrl();
             }
-            
+
             return $this->setOutput(array(
                 'success' => true,
                 'fileid'  => $file->getId(),
@@ -305,53 +305,80 @@ class JsonServer
                 'message' => 'An error occured while uploading the  '.$tempFile.','. $path.' please try again!'
             ));
         }
-        
+
     }
-    
+
     protected function actionChangeFileTitle()
     {
         if(isset($_SESSION['userid']) && $_SESSION['userid'] > 0) {
             $fileid = $this->getRequest()->getParam('fileid');
             $title = $this->getRequest()->getParam('value');
-            
+
             $file = new File();
             $file->findFileById($fileid);
 
             require_once(APP_PATH . '/workitem.class.php');
-            $workitem = Workitem::getById($file->getWorkitem());
-            if (
-              $_SESSION['is_runner'] || 
-              $_SESSION['is_payer'] ||
-              $_SESSION['userid'] == $file->getUserid() ||  
-              $_SESSION['userid'] == $workitem->getCreatorId() ||
-              $_SESSION['userid'] == $workitem->getMechanicId() ||
-              $_SESSION['userid'] == $workitem->getRunnerId()
-            ) {
+            if (is_numeric($file->getWorkitem())) {
+                $workitem = Workitem::getById($file->getWorkitem());
+                if (
+                    $_SESSION['is_runner'] ||
+                    $_SESSION['is_payer'] ||
+                    $_SESSION['userid'] == $file->getUserid() ||
+                    $_SESSION['userid'] == $workitem->getCreatorId() ||
+                    $_SESSION['userid'] == $workitem->getMechanicId() ||
+                    $_SESSION['userid'] == $workitem->getRunnerId()
+                ) {
+                    $saveit = true;
+                }
+            } else {
+                if (
+                    $_SESSION['is_runner'] ||
+                    $_SESSION['is_payer'] ||
+                    $_SESSION['userid'] == $file->getUserid()
+                ) {
+                    $saveit = true;
+                }
+            }
+            if ($saveit) {
                 $file->setTitle((string)$title);
                 $success = $file->save();
             }
         }
         die(isset($title) ? $title : '');
     }
-    
+
     protected function actionChangeFileDescription()
     {
         if(isset($_SESSION['userid']) && $_SESSION['userid'] > 0) {
             $fileid = $this->getRequest()->getParam('fileid');
             $description = $this->getRequest()->getParam('value');
-        
+
             $file = new File();
             $file->findFileById($fileid);
             require_once(APP_PATH . '/workitem.class.php');
-            $workitem = Workitem::getById($file->getWorkitem());
-            if (
-              $_SESSION['is_runner'] || 
-              $_SESSION['is_payer'] ||
-              $_SESSION['userid'] == $file->getUserid() ||  
-              $_SESSION['userid'] == $workitem->getCreatorId() ||
-              $_SESSION['userid'] == $workitem->getMechanicId() ||
-              $_SESSION['userid'] == $workitem->getRunnerId()
-            ) {
+            $saveit = false;
+            if (is_numeric($file->getWorkitem())) {
+                $workitem = Workitem::getById($file->getWorkitem());
+                if (
+                    $_SESSION['is_runner'] ||
+                    $_SESSION['is_payer'] ||
+                    $_SESSION['userid'] == $file->getUserid() ||
+                    $_SESSION['userid'] == $workitem->getCreatorId() ||
+                    $_SESSION['userid'] == $workitem->getMechanicId() ||
+                    $_SESSION['userid'] == $workitem->getRunnerId()
+                ) {
+                    $saveit = true;
+                }
+            } else {
+                if (
+                    $_SESSION['is_runner'] ||
+                    $_SESSION['is_payer'] ||
+                    $_SESSION['userid'] == $file->getUserid()
+                ) {
+                    $saveit = true;
+                }
+            }
+            if ($saveit) {
                 $file->setDescription((string)$description);
                 $success = $file->save();
             }
@@ -364,16 +391,16 @@ class JsonServer
         if(isset($_SESSION['userid']) && $_SESSION['userid'] > 0) {
             $fileid = $this->getRequest()->getParam('fileid');
             $status = $this->getRequest()->getParam('status');
-            
+
             $file = new File();
             $file->findFileById($fileid);
-            
+
             require_once(APP_PATH . '/workitem.class.php');
             $workitem = Workitem::getById($file->getWorkitem());
             if (
-              $_SESSION['is_runner'] || 
+              $_SESSION['is_runner'] ||
               $_SESSION['is_payer'] ||
-              $_SESSION['userid'] == $file->getUserid() ||  
+              $_SESSION['userid'] == $file->getUserid() ||
               $_SESSION['userid'] == $workitem->getCreatorId() ||
               $_SESSION['userid'] == $workitem->getMechanicId() ||
               $_SESSION['userid'] == $workitem->getRunnerId()
@@ -388,7 +415,7 @@ class JsonServer
             'success' => $success
         ));
     }
-    
+
     protected function actionGetFilesForWorkitem()
     {
         $files = File::fetchAllFilesForWorkitem($this->getRequest()->getParam('workitem'));
@@ -421,7 +448,7 @@ class JsonServer
                 ));
             }
         }
-        
+
         return $this->setOutput(array(
             'success' => true,
             'data' => $data
@@ -459,7 +486,7 @@ class JsonServer
                 ));
             }
         }
-        
+
         return $this->setOutput(array(
             'success' => true,
             'data' => $data
@@ -479,10 +506,10 @@ class JsonServer
                 'message' => 'No file uploaded!'
             ));
         }
-        
+
         $tempFile = $_FILES['Filedata']['tmp_name'];
         $path = UPLOAD_PATH . '/' . $this->getRequest()->getParam('userid') . '_Local.pdf';
-        
+
         if (move_uploaded_file($tempFile, $path)) {
             $user = new User();
             $user->findUserById($this->getRequest()->getParam('userid'));
@@ -490,9 +517,9 @@ class JsonServer
             $body = "<p>Hi there,</p>";
             $body .= "<p>" . $user->getNickname() . " just uploaded his/her Local Tax Form you can download and approve it from this URL:</p>";
             $body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_Local.pdf\">Click here</a></p>";
-                
+
             if (!send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:LocalUpload: send_email failed"); }
-            
+
             return $this->setOutput(array(
                 'success' => true,
                 'message' => 'The file ' . basename( $_FILES['Filedata']['name']) . ' has been uploaded.'
@@ -517,10 +544,10 @@ class JsonServer
                 'message' => 'No file uploaded!'
             ));
         }
-        
+
         $tempFile = $_FILES['Filedata']['tmp_name'];
         $path = UPLOAD_PATH . '/' . $this->getRequest()->getParam('userid') . '_W9.pdf';
-        
+
         if (move_uploaded_file($tempFile, $path)) {
             $user = new User();
             $user->findUserById($this->getRequest()->getParam('userid'));
@@ -528,9 +555,9 @@ class JsonServer
             $body = "<p>Hi there,</p>";
             $body .= "<p>" . $user->getNickname() . " just uploaded his/her W-9 Form you can download and approve it from this URL:</p>";
             $body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_W9.pdf\">Click here</a></p>";
-            
+
             if(!send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:w9Upload: send_email failed"); }
-            
+
             return $this->setOutput(array(
                 'success' => true,
                 'message' => 'The file ' . basename( $_FILES['Filedata']['name']) . ' has been uploaded.'
@@ -542,7 +569,7 @@ class JsonServer
             ));
         }
     }
-    
+
     protected function actionChangeUserStatus()
     {
         $aUser = $this->getUser();
@@ -558,9 +585,9 @@ class JsonServer
         return $this->setOutput(array(
             'success' => false
         ));
-        
+
     }
-    
+
     /**
      * This method checks if the user is allowed to bid in the W9 context
      */
@@ -568,7 +595,7 @@ class JsonServer
     {
         $user = new User();
         $user->findUserById($this->getRequest()->getParam('userid'));
-        
+
         // If user is no US citizen we don't need the 10099
         if (!$user->isUsCitizen() || $user->isW9Approved()) {
             return $this->setOutput(array(
@@ -618,14 +645,14 @@ class JsonServer
                 return $this->setOutput(array(
                     'success' => false,
                     'message' => 'Failed to send test message !'
-                ));        
+                ));
             }
         return $this->setOutput(array(
             'success' => true,
             'message' => 'Test message sent!'
-        ));        
+        ));
     }
-    
+
     protected function actionChangeRunner()
     {
         $workitem = (int)$this->getRequest()->getParam('workitem');
@@ -637,12 +664,12 @@ class JsonServer
                 $oldRunner = $workitem->getRunner();
                 $workitem->setRunnerId($runner->getId())
                          ->save();
-                
+
                 $subject = 'Runner #' . $workitem->getId() . ' has been changed';
                 $body = "<p>Hi there,</p>";
                 $body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Runner " . $runner->getNickname() . ".</p>";
                 $body .= "<p>See you in the Workroom!</p>";
-                                
+
                 if ($oldRunner) {
                     if(!send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeOldRunner failed"); }
                 }
@@ -655,9 +682,9 @@ class JsonServer
                 if ($workitem->getMechanic()) {
                     if(!send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeMechanic: send_email failed"); }
                 }
-                
+
                 sendJournalNotification($this->getUser()->getNickname() . ' updated Job #' . $workitem->getId() . ': ' . $workitem->getSummary() . '. Runner reassigned to ' . $workitem->getRunner()->getNickname());
-                
+
                 return $this->setOutput(array(
                     'success' => true,
                     'nickname' => $runner->getNickname()

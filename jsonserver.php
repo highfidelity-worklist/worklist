@@ -15,7 +15,7 @@ try {
 } catch(Exception $e) {
 	echo(json_encode(array(
 		'success' => false,
-		'message' => $e
+		'message' => "jsonserver.php: $e"
 	)));
 }
 

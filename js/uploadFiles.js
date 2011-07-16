@@ -73,7 +73,7 @@
             if (user) {
                 $('.edittextarea').editable('jsonserver.php', { 
                     indicator: 'Saving ...',
-                    tooltip: 'Click to change the title ...', 
+                    tooltip: 'Click to add/edit note ...', 
                     placeholder: 'Click to add note',
                     type: 'text',
                     submit: 'OK',
@@ -88,7 +88,7 @@
                 });
                 $('.edittext').editable('jsonserver.php', { 
                     indicator: 'Saving ...',
-                    tooltip: 'Click to change the note ...', 
+                    tooltip: 'Click to change the title ...', 
                     placeholder: 'Add title',
                     type: 'text',
                     submit: 'OK',
