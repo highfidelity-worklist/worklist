@@ -48,9 +48,9 @@ class Fee
                     `notes` = '{$paid_notes}',
                     `paid` = {$paid},
                     `paid_date` = NOW(),
-                    `fund_id` = {$fund_id},
+                    `fund_id` = {$fund_id}
                 WHERE `id` = {$fee_id}";
-            $rt = mysql_query($query);
+            $rt = mysql_query($query) or error_log("failed to mark fee paid: ".mysql_error()."\n$query");
 
             /* Add rewarder points and log */
             if ($rt) {

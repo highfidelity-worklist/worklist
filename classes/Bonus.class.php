@@ -58,7 +58,7 @@ class Bonus
                 id = {$id} AND
                 bonus = 1
             LIMIT 1
-            ';
+            ";
 
         $result = mysql_unbuffered_query($update_query);
 

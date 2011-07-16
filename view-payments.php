@@ -225,7 +225,7 @@ switch ($action) {
             $fees_info_results = mysql_query($fees_info_sql);
 
             $num_bonuses = count($_POST["paybonus"]);
-            $bonus_id_csv = implode(',', $_POST["paybonus"]);
+            $bonus_id_csv = $num_bonuses ? implode(',', $_POST["paybonus"]) : 0 ;
             $bonus_info_sql = '
                 SELECT
                     b.id AS fee_id,
@@ -241,7 +241,7 @@ switch ($action) {
                 WHERE
                     b.id in ('.$bonus_id_csv.') and b.bonus = 1
                 ';
-            $bonus_info_results = mysql_query($bonus_info_sql);
+            $bonus_info_results = mysql_query($bonus_info_sql) or error_log("bonussql failed: ".mysql_error()."\n$bonus_info_sql");
 
             // Set request-specific fields.
             $emailSubject = urlencode('You\'ve got money!');
@@ -304,7 +304,9 @@ switch ($action) {
                 //$update_fees_paid = mysql_query($fee_sql_update);
 
                 $summaryData = Fee::markPaidByList(explode(',', $fee_id_csv), $user_paid = 0, $paid_notes='', $paid = 1, $fund_id);
-                Bonus::markPaidByList(explode(',', $bonus_id_csv),  $user_paid = 0, $paid = 1, $fund_id);
+                if ($bonus_id_csv) {
+                    Bonus::markPaidByList(explode(',', $bonus_id_csv),  $user_paid = 0, $paid = 1, $fund_id);
+                }
 
             } else  {
                 $alert_msg = "MassPay Failure"; 

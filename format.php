@@ -47,7 +47,7 @@ require_once('functions.php');
     <!-- Inline Message Container -->
     <div id="inlineMessage"></div>
     
-    <?php if ($_SESSION['inlineHide'] == 0 && basename($_SERVER['PHP_SELF']) == 'worklist.php' ) { ?>
+    <?php if ( basename($_SERVER['PHP_SELF']) == 'worklist.php' && (array_key_exists('inlineHide',$_SESSION) && $_SESSION['inlineHide'] == 0) ) { ?>
     
     <script type="text/javascript">
     
