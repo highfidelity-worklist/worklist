@@ -217,8 +217,7 @@ function getSystemDrawerJobs(){
     $sql = " SELECT	w.*, p.name as project " 
 		 . " FROM  	". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
 		 . " ON 	(w.project_id = p.project_id) "
-		 . " WHERE	w.status = 'BIDDING' "
-		 ;
+		 . " WHERE	w.status = 'BIDDING' OR w.status = 'SUGGESTEDwithBID' ";
 
 	if ($result = mysql_query($sql)) {
 		while ($row = mysql_fetch_assoc($result)) {

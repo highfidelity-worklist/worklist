@@ -16,7 +16,7 @@ class Notification {
     const MY_COMPLETED_NOTIFICATIONS = 8;
     const PING_NOTIFICATIONS = 16;
     const MY_BIDS_NOTIFICATIONS = 32;
-	const SELF_EMAIL_NOTIFICATIONS = 64;
+    const SELF_EMAIL_NOTIFICATIONS = 64;
     
  
     /**
@@ -67,7 +67,8 @@ class Notification {
             }
             break; 
         case self::MY_REVIEW_NOTIFICATIONS :
-        case self::MY_COMPLETED_NOTIFICATIONS :    
+        case self::MY_COMPLETED_NOTIFICATIONS :
+        case self::MY_BIDS_NOTIFICATIONS:
             $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
             $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0 AND u.id!=" .getSessionUserId(). " AND u.id IN({$users})";
             $res = mysql_query($sql);
@@ -120,6 +121,14 @@ class Notification {
                     'emails' => $emails);
                 self::workitemSMSNotify($options);
                 break;
+            case 'SUGGESTEDwithBID':
+                $emails= self::getNotificationEmails(self::MY_BIDS_NOTIFICATIONS,$workitem);
+                $options = array('type' => 'suggestedwithbid',
+                'workitem' => $workitem,
+                'emails' => $emails);
+                self::workitemNotify($options);
+                self::workitemSMSNotify($options);
+            break;													
         }
     }
 

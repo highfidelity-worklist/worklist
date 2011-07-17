@@ -355,6 +355,7 @@ if ($action =="place_bid") {
         // Journal notification
         $journal_message = "A bid was placed on item #$worklist_id: $summary.";
         //sending email to the runner of worklist item
+
         $row = $workitem->getRunnerSummary($worklist_id);
         if(!empty($row)) {
         $id = $row['id'];
@@ -386,6 +387,20 @@ if ($action =="place_bid") {
         if (Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
             Notification::sendSMS($runner, 'Bid', $sms_message);
         }
+        $status=$workitem->loadStatusByBidId($bid_id);        
+        if ($status == "SUGGESTEDwithBID") {
+            if (changeStatus($workitem, $status, $user)) {
+                $new_update_message = "Status set to $status. ";
+                $notifyEmpty = false;
+                $journal_message .= "$new_update_message";
+            }		
+        }								
+        if(!$notifyEmpty) {
+            Notification::workitemNotify(array('type' => 'suggestedwithbid',
+            'workitem' => $workitem,
+            'recipients' => array('projectRunners')),
+            array('notes' => $unescaped_notes));
+        }												
     } else {
         // we don't return anything. user has tried to circumvent security measures to place a bid
     }

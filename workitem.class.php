@@ -695,6 +695,16 @@ WHERE id = ' . (int)$id;
             $this->load($row[0]);
         }
     }
+				
+    public function loadStatusByBidId($bid_id)
+    {
+        $query = "SELECT `worklist_id`," . WORKLIST . ".status FROM `".BIDS."` LEFT JOIN " . WORKLIST . " ON " . BIDS. ".worklist_id = " . WORKLIST . ".id WHERE " . BIDS . ".`id` = ".(int)$bid_id;
+        $res = mysql_query($query);
+        if (!$res || !($row = mysql_fetch_row($res))) {
+            throw new Exception('Bid not found.');
+        }
+        return $row[1];
+    }				
 
     /**
      * Checks if a workitem has any accepted bids
