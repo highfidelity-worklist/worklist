@@ -20,7 +20,7 @@ if (!$is_payer) {
 
 // Get clean data
 if (isset($_REQUEST['paid_check']) && ($_REQUEST['paid_check'] == '1')) {
-	$paid_check = 1;
+	$paid_check = 0;
 } else {
 	$paid_check = 0;
 }
@@ -69,11 +69,12 @@ if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check, false, $fund_id)
         $mail = 'SELECT `username` FROM '.USERS.' WHERE `id` = '.$fee_pay['user_id'].'';
         $userData = mysql_fetch_array(mysql_query($mail));
 
-        $subject = "LoveMachine paid you ".$total_fee_pay ." for ". $summary;
-        $body  = "You've got funds!<br/>";
+        $subject = "Worklist.net paid you " . $total_fee_pay ." for ". $summary;
+        $body  = "Your Fee was marked paid.<br/>";
+        $body .= "Job <a href='" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . "</a>: <a href='" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "</a><br/>";
         $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
         $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
-        $body .= "See you in the Workroom!<br/><br/>Love,<br/><br/>Eliza @ the LoveMachine<br/>";
+        $body .= "Contact the job Runner with any questions<br/><br/>Worklist.net<br/>";
 
         if(!send_email($userData['username'], $subject, $body)) { error_log("paycheck: send_email failed"); }
     }
