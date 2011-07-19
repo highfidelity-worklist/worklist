@@ -40,8 +40,23 @@ if (isset($_REQUEST['itemid']) && !empty($_REQUEST['itemid'])) {
 // What user is paying
 $user = $_SESSION['userid'];
 
+// get the fund_id from the project that the fee/workitem belongs to
+$fund_query = "
+    SELECT p.fund_id AS fund_id
+    FROM " . FEES . " f
+    LEFT JOIN " . WORKLIST . " w ON  f.worklist_id = w.id
+    LEFT JOIN " . PROJECTS . " p ON w.project_id = p.project_id
+    WHERE f.id = {$fee_id}";
+    
+if ($fund_result = mysql_query($fund_query)) {
+    $fund_row = mysql_fetch_array($fund_result);
+    $fund_id = $fund_row['fund_id'];
+} else {
+    $fund_id = 0;
+}
+
 // Exit of this script
-if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check)) {
+if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check, false, $fund_id)) {
     /* Only send the email when marking as paid. */
     if ($paid_check) {
         $fees_query  =  'SELECT  `amount`,`user_id`,`worklist_id`,`desc` FROM '.FEES.'  WHERE `id` =  '.$fee_id;

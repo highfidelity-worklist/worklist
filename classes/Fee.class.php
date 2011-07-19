@@ -32,6 +32,7 @@ class Fee
         $user_paid = $user_paid == 0 ? $_SESSION['userid'] : $user_paid;
         $paid_notes = mysql_real_escape_string($paid_notes);
         $paid = (int) $paid;
+        $fund_id = (int) $fund_id;
     
         $user_id = 0;
         $amount = 0;

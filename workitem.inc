@@ -1582,6 +1582,8 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/review-url-dialog.inc') ?>
     <!-- Include Add Project -->
     <?php require_once 'dialogs/popup-addproject.inc'; ?>
+    <!-- Include Paid Popup -->
+    <?php require_once 'dialogs/popup-paid.inc'; ?>
 <?php
     // if logged in user is the mechanic on the task, get the maximum amount
     // that they can tip from their Accepted Bid
