@@ -12,7 +12,7 @@ include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
 include("functions.php");
-include("timezones.php");
+include_once("timezones.php");
 include("countrylist.php");
 include("smslist.php");
 include_once("send_email.php");
