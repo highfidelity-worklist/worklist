@@ -272,7 +272,7 @@ include("head.html");
 <script type="text/javascript">
 	var username = new LiveValidation('username', {validMessage: "Valid email address."});
 	username.add( Validate.Email );
-	username.add(Validate.Length, { minimum: 10, maximum: 50 } );
+	username.add(Validate.Length, { minimum: 4, maximum: 50 } );
 </script>
             <?php if (empty($_GET['authtype']) || $_GET['authtype'] != 'openid' ) :?>
 <div class="LVspace">
