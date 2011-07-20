@@ -1389,7 +1389,7 @@ if ($action =="edit"):  ?>
                                 <tr class="table-hdng">
                                     <td>Who</td>
                                     <td>Amount</td>
-                                    <td>Done In</td>
+                                    <td>Done By</td>
                                     <td>Expires</td>
                                 </tr>
                             </thead>
@@ -1400,6 +1400,7 @@ if ($action =="edit"):  ?>
                                 </tr>
                             <?php } else { $row = 1;
                                 foreach($bids as $bid) { ?>
+                                
                                 <tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?>
                                     <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem<?php
                                         if ($is_runner || $user->getId() == $bid['bidder_id']) echo '-'.$bid['id'];
@@ -1415,7 +1416,26 @@ if ($action =="edit"):  ?>
                                     <?php } else echo $bid['nickname']; ?>
                                     </td>
                                     <td >$ <?php echo $bid['bid_amount'];?></td>
-                                    <td><?php echo isset($bid['done_in']) ? $bid['done_in'] : '<em>' . relativeTime($bid['future_delta']) . '</em>'; ?></td>
+                                    <td>
+                                    <?php
+                                        // new bids done by
+                                        $past_due = '';
+                                        $oTz = date_default_timezone_get();
+                                        date_default_timezone_set(getTimeZoneDateTime($_SESSION['timezone']));
+                                        $bid_done_by_stamp = strtotime("+" . $bid['done_in'], $bid['unix_bid_created']);
+                                        if ($bid_done_by_stamp < time() && ($workitem->getStatus() == 'WORKING' || $workitem->getStatus() == 'REVIEW')) {
+                                            $past_due = ' class="past-due overdue"';
+                                        }
+                                        if (empty($past_due) && $workitem->getStatus() == 'DONE' && $workitem->getMechanicId() == $bid['bidder_id']) {
+                                            $past_due = ' class="past-due done"';
+                                        }
+
+                                        echo "<em" . $past_due . ">" . date('m/d/Y h:i a', $bid_done_by_stamp) . "</em>";
+                                        date_default_timezone_set($oTz);
+                                    ?>
+                                    
+                                    
+                                    </td>
 <?php
     $expire_class = '';
     if (isset($bid['expires']) && $bid['expires'] != -1) {
@@ -1478,7 +1498,7 @@ if ($action =="edit"):  ?>
                                         <td>$ <?php echo $fee['amount'];?></td>
                                         <?php if ($worklist['status'] == 'DONE' && $fee['desc'] == 'Accepted Bid') { ?>
                                         <td>Bid Notes: <?php echo $fee['bid_notes'];?></td>
-                                        <?php } else { ?>                                        
+                                        <?php } else { ?>
                                         <td><?php echo $fee['desc'];?></td>
                                         <?php }?>
                                         <td><?php echo $fee['date'];?></td>

@@ -760,3 +760,7 @@
 .profile-link{
     cursor: pointer;
 }
+
+.past-due {
+    color: #FF0000;
+}

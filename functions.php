@@ -5,6 +5,8 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
+include_once('./timezones.php');
+
 // Autoloader
 function __autoload($class)
 {
@@ -132,11 +134,11 @@ function isSuperAdmin() {
 
 
 /*  Function: countLoveToUser
- * 
+ *
  *  Purpose: Gets the count of love sent to a user.
- *  
+ *
  *  Parameters: username - The username of the desired user.
- *              fromUser - If set will get the love sent by this user. 
+ *              fromUser - If set will get the love sent by this user.
  */
 function countLove($username, $fromUsername="") {
     defineSendLoveAPI();
@@ -166,9 +168,9 @@ function countLove($username, $fromUsername="") {
 }
 
 /*  Function: getUserLove
- * 
+ *
  *  Purpose: Get Love sent to the user
- *  
+ *
  *  Parameters: username - The username of the user to get love from.
  *              fromUsername - If set it will filter to the love sent by this username.
  */
@@ -223,7 +225,7 @@ function defineSendLoveAPI() {
     }
 }
 
-// This will be handled by Rewarder API 
+// This will be handled by Rewarder API
 /*
 * Populate the rewarder team automatically. It's based on who added a fee to a task you worked on in the last 30 days.
 *
@@ -269,7 +271,7 @@ function defineSendLoveAPI() {
  */
 function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
     if (!empty($attrs)) {
-        $extra = ", `" . implode("`,`", $attrs) . "`"; 
+        $extra = ", `" . implode("`,`", $attrs) . "`";
     } else {
         $extra = "";
     }
@@ -316,7 +318,7 @@ function postRequest($url, $post_data, $options = array(), $curlopt_timeout = 30
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-    if (count($options)) { 
+    if (count($options)) {
         curl_setopt_array($ch, $options);
     }
     
@@ -345,6 +347,18 @@ function getUserTime($timestamp){
     $userTime = date("m/d/Y h:i a", strtotime(date("Y-m-d H:i", $timestamp)." ".$tz_correction));
     date_default_timezone_set  ($server_tz);
     return $userTime;
+}
+
+// converts server time to users timzone time
+function convertTimezone($timestamp){
+    if (isset($_SESSION['timezone']) && !empty($_SESSION['timezone'])) {
+        $oTz = date_default_timezone_get();
+        date_default_timezone_set(getTimeZoneDateTime($_SESSION['timezone']));
+        $new_time = date('m/d/Y h:i a', $timestamp);
+        date_default_timezone_set($oTz);
+        return $new_time;
+    }
+    return date('m/d/Y h:i a', $timestamp);
 }
 
 /*    Function: AddFee
@@ -614,16 +628,16 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $subject = "Bid: " . $job['id'] . " (" . $job['summary']. ")";
         
         if(is_runner()){
-        	// Send to bidder        	
+        	// Send to bidder
         	$recipient=$user;
         	$body = "<p>Your bid has been deleted from item #" . $job['id'] . " by: ".$_SESSION['nickname']."</p>";
-        } else {    
+        } else {
         	// Send to runner
-        	$recipient=getUserById($job['runner_id']);   
+        	$recipient=getUserById($job['runner_id']);
         	$body = "<p>A bid has been deleted from item #" . $job['id'] . " by: ".$_SESSION['nickname']."</p>";
         }
         	
-        if(strlen($withdraw_reason)>0) { 
+        if(strlen($withdraw_reason)>0) {
 		    // nl2br is added for proper formatting in email alert 12-MAR-2011 <webdev>
         	$body .= "<p>Reason: " .nl2br($withdraw_reason)."</p>";
         }
@@ -853,7 +867,7 @@ function checkLogin() {
 }
 
     /* linkify function
-     * 
+     *
      * this takes some input and makes links where it thinks they should go
      * it is duplicated in journal and worklist so if you update one
      * remember to update the other, thanks very much
@@ -896,13 +910,13 @@ function checkLogin() {
                 $regexp,
                 '<a href="'.SERVER_BASE.'~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>',
                 $url
-            );        
+            );
         } else { // link on a sand box :
             $url = preg_replace(
                 $regexp,
                 '<a href="'.SERVER_BASE.'/../~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>',
                 $url
-            );            
+            );
         }
 
         // Replace '#/<url>' with a link to the author sandbox
@@ -918,8 +932,8 @@ function checkLogin() {
                 $regexp,
                 '<a href="'.SERVER_BASE.'/../~'.$author.'/$1" class="sandbox-item" id="sandbox-$1" >'.$author.' : $1</a>',
                 $url
-            );        
-        }        
+            );
+        }
 
         $regexp="/\b(?<=mailto:)([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
         if(preg_match($regexp,$url)){

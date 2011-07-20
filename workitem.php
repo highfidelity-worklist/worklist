@@ -9,6 +9,7 @@ require_once 'update_status.php';
 require_once 'workitem.class.php';
 require_once 'classes/Project.class.php';
 require_once 'functions.php';
+require_once 'timezones.php';
 require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 
@@ -75,7 +76,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
 } else if(isset($_POST['place_bid'])) {
     $action = "place_bid";
 } else if(isset($_POST['swb'])) {
-    $action = "swb";    
+    $action = "swb";
 } else if(isset($_POST['edit_bid'])) {
     $action = "edit_bid";
 } else if(isset($_POST['add_fee'])) {
@@ -106,11 +107,11 @@ if ($action != 'view') {
 // Save WorkItem was requested. We only support Update here
 $notifyEmpty = true;
 if ($action =='save_workitem') {
-    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills', 
+    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills',
                 'is_bug','bug_job_id');
     foreach ($args as $arg) {
         if (!empty($_POST[$arg])) {
-            $$arg = $_POST[$arg]; 
+            $$arg = $_POST[$arg];
         } else {
             $$arg = '';
         }
@@ -127,7 +128,7 @@ if ($action =='save_workitem') {
 	        $new_update_message .= 'Marked as a bug. ';
         } else {
 	        $new_update_message .= 'Marked as not being a bug. ';
-        }		
+        }
     }
 	$workitem->setIs_bug($is_bug);
 
@@ -192,7 +193,7 @@ if ($action =='save_workitem') {
         invitePeople($people, $worklist_id, $workitem->getSummary(), $workitem->getNotes());
         $new_update_message .= "Invitations sent. ";
     }
-    //Check if bug_job_id has changed and send notifications if it has     
+    //Check if bug_job_id has changed and send notifications if it has
     if($workitem->getBugJobId()!=$bug_job_id) {
         //Bug job Id changed
         $workitem->setBugJobId($bug_job_id);
@@ -208,7 +209,7 @@ if ($action =='save_workitem') {
                                             'recipients' => array('runner', 'usersWithFeesBug')));
         }
     }
-    //if job is a bug, notify to journal 
+    //if job is a bug, notify to journal
     if($bug_job_id > 0) {
 		error_log("bug_job_id:".$bug_job_id);
 	    $workitem->setIs_bug(1);
@@ -222,7 +223,7 @@ if ($action =='save_workitem') {
     {
         $bugJournalMessage= "";
     }
-	error_log($workitem->getIs_bug());    
+	error_log($workitem->getIs_bug());
     if (empty($new_update_message)) {
         $new_update_message = " No changes.";
     } else {
@@ -387,20 +388,20 @@ if ($action =="place_bid") {
         if (Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
             Notification::sendSMS($runner, 'Bid', $sms_message);
         }
-        $status=$workitem->loadStatusByBidId($bid_id);        
+        $status=$workitem->loadStatusByBidId($bid_id);
         if ($status == "SUGGESTEDwithBID") {
             if (changeStatus($workitem, $status, $user)) {
                 $new_update_message = "Status set to $status. ";
                 $notifyEmpty = false;
                 $journal_message .= "$new_update_message";
-            }		
-        }								
+            }
+        }
         if(!$notifyEmpty) {
             Notification::workitemNotify(array('type' => 'suggestedwithbid',
             'workitem' => $workitem,
             'recipients' => array('projectRunners')),
             array('notes' => $unescaped_notes));
-        }												
+        }
     } else {
         // we don't return anything. user has tried to circumvent security measures to place a bid
     }
@@ -427,7 +428,7 @@ if ($action =="edit_bid") {
     // Journal notification
     $journal_message = "Bid updated on item #$worklist_id: $summary.";
 
-    $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id $summary";    
+    $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id $summary";
     //sending email to the runner of worklist item
     $row = $workitem->getRunnerSummary($worklist_id);
     if(!empty($row)) {
@@ -479,9 +480,9 @@ if ($action == "add_fee") {
     // send sms message to runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
-    $runner->updateBudget(-$fee_amount);    
+    $runner->updateBudget(-$fee_amount);
 
-    if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {		
+    if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
         Notification::sendSMS($runner, 'Fee', $journal_message);
     }
     $redirectToDefaultView = true;
@@ -552,7 +553,7 @@ if ($action == 'accept_bid') {
                 $bidder = new User();
                 $bidder->findUserById($bid_info['bidder_id']);
                 
-                // Update Budget                
+                // Update Budget
                 $runner = new User();
                 $runner->findUserById($workitem->getRunnerId());
                 $runner->updateBudget(-$bid_amount);
@@ -623,7 +624,7 @@ if ($action=='accept_multiple_bid') {
 
                 $runner = new User();
                 $runner->findUserById($workitem->getRunnerId());
-                $runner->updateBudget(-$total);        
+                $runner->updateBudget(-$total);
             } else {
                 $overBudget = money_format('%i', $bid_amount - $runner_budget);
                 $_SESSION['workitem_error'] = "Failed to accept bids. Accepting this bids would make you " . $overBudget . " over your budget!";
@@ -643,7 +644,7 @@ if ($action == "withdraw_bid") {
         if ((int)$fee->bid_id !== 0) {
             withdrawBid($fee->bid_id, $_POST['withdraw_bid_reason']);
         } else {
-            deleteFee($fee_id);            
+            deleteFee($fee_id);
         }
 
         // Update Runner's Budget
@@ -710,9 +711,9 @@ if(!empty($bids) && is_array($bids)) {
                 $bid['notes'] = '********';
             }
         }
-        $bid['bid_created'] = getUserTime($bid['unix_bid_created']);
+        $bid['bid_created'] = convertTimezone($bid['unix_bid_created']);
         if ($bid['unix_bid_accepted'] > 0) {
-            $bid['bid_accepted'] = getUserTime($bid['unix_bid_accepted']);
+            $bid['bid_accepted'] = convertTimezone($bid['unix_bid_accepted']);
         } else {
             $bid['bid_accepted'] = '';
         }

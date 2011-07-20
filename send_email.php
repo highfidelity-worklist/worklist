@@ -1,7 +1,7 @@
 <?php
 //
 //  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
 
@@ -9,12 +9,12 @@ require_once('html2text.inc');
 require_once('smslist.php');
 
 /*  send_email
- * 
+ *
  *  send email using local mail()
  */
 function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     //Validate arguments
-    if (empty($to) || 
+    if (empty($to) ||
         empty($subject) ||
         (empty($html) && empty($plain) ||
         !is_array($headers))) {
@@ -25,7 +25,7 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     $hash = md5(date('r', time()));
 
     // If no 'From' address specified, use default
-    if (empty($headers['From'])) { 
+    if (empty($headers['From'])) {
         $headers['From'] = DEFAULT_SENDER;
     }
     if (empty($headers['X-tag'])) {
@@ -82,10 +82,10 @@ Content-Transfer-Encoding: 7bit
 function notify_sms_by_id($user_id, $smssubject, $smsbody)
 {
     //Fetch phone info using user_id
-    $sql = 'SELECT 
-             phone, country, provider, smsaddr 
-            FROM 
-              '.USERS.' 
+    $sql = 'SELECT
+             phone, country, provider, smsaddr
+            FROM
+              '.USERS.'
             WHERE
              id = '. mysql_real_escape_string($user_id);
 
@@ -116,7 +116,7 @@ function objectToArray($object) {
 
 
 function notify_sms_by_object($user_obj, $smssubject, $smsbody)
-{ 
+{
     global $smslist;
     $smssubject = strip_tags($smssubject);
     $smsbody    = strip_tags($smsbody);
@@ -161,7 +161,7 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
     }
 
 
-    return send_email($smsaddr, 
+    return send_email($smsaddr,
         $smssubject,
         '',
         $smsbody,
@@ -174,7 +174,7 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
 /*  sendTemplateEmail - send email using email template
  *  $template - name of the template to use, for example 'confirmation'
  *  $data - array of key-value replacements for template
- */ 
+ */
 
 function sendTemplateEmail($to, $template, $data, $from = false){
     include (dirname(__FILE__) . "/email/en.php");
@@ -205,14 +205,14 @@ function sendTemplateEmail($to, $template, $data, $from = false){
     $result = null;
     foreach($recipients as $recipient){
         if (! $result = send_email($recipient, $subject, $html, $plain, $headers)) {
-            error_log("send_email:Template: send_email failed"); 
+            error_log("send_email:Template: send_email failed");
         }
     }
 
     return $result;
 }
 
-/* templateReplace - function to replace all occurencies of 
+/* templateReplace - function to replace all occurencies of
  * {key} with value from $replacements array
  * for example: if $replacements is array('nickname' => 'John')
  * function will replace {nickname} in $templateData array with 'John'

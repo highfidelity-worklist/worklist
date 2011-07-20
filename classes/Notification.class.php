@@ -65,7 +65,7 @@ class Notification {
                     $result[] = $row[0];
                 }
             }
-            break; 
+            break;
         case self::MY_REVIEW_NOTIFICATIONS :
         case self::MY_COMPLETED_NOTIFICATIONS :
         case self::MY_BIDS_NOTIFICATIONS:
@@ -128,7 +128,7 @@ class Notification {
                 'emails' => $emails);
                 self::workitemNotify($options);
                 self::workitemSMSNotify($options);
-            break;													
+            break;
         }
     }
 
@@ -143,7 +143,7 @@ class Notification {
      * emails - send message directly to list of emails (array) -
      * if 'emails' is passed - 'recipients' option is ignored
      * @param Array $data - Array with additional data that needs to be passed on
-	 * @param boolean $includeSelf - forece user receive email from self generated action
+     * @param boolean $includeSelf - forece user receive email from self generated action
      * example: 'who' and 'comment' - if we send notification about new comment
      */
     public static function workitemNotify($options, $data = null, $includeSelf = true) {
@@ -236,27 +236,27 @@ class Notification {
                             " has been reported - ".$itemTitle." -";
                 
                 $body = "<p>A bug has been reported related to item #".
-                $workitem->getBugJobId(). 
+                $workitem->getBugJobId().
                             " : ".$workitem->getBugJobSummary()."</p>";
 
-                $body .= "<p>New item #".$itemId." summary: " . 
-                            $workitem -> getSummary() . ".</p>";				
+                $body .= "<p>New item #" . $itemId . " summary: " .
+                            $workitem -> getSummary() . ".</p>";
                 $body .= "<p>" . $workitem->getNotes(). "</p>";
-                $body .= '<br><br><a href='.SERVER_URL.'workitem.php?job_id=' . 
+                $body .= '<br><br><a href=' . SERVER_URL . 'workitem.php?job_id=' .
                             $itemId . '>View new item</a>.';
             break;
             case 'suggested':
                 $subject = "Suggested: " . $itemTitle;
                 $body =  'Summary:<br/> ' . $workitem -> getSummary() ;
                 $body.= '<br/><br/>Notes: ' . $data['notes'] ;
-                $body .= '<br><br>You can see the task <a href='.SERVER_URL.
+                $body .= '<br><br>You can see the task <a href=' . SERVER_URL .
                          'workitem.php?job_id=' . $itemId . '>here</a>.';
            break;
            case 'suggestedwithbid':
                 $subject = "Suggested With Bid: " . $itemTitle;
                 $body =  'Summary:<br/> ' . $workitem -> getSummary();
                 $body .= '<br/><br/>Notes: ' . $data['notes'];
-                $body .= '<br><br>You can see the task <a href='.SERVER_URL.
+                $body .= '<br><br>You can see the task <a href=' . SERVER_URL.
                          'workitem.php?job_id=' . $itemId . '>here</a>.';
            break;
         }
@@ -265,7 +265,7 @@ class Notification {
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
         if($recipients) {
-            foreach($recipients as $recipient) {              
+            foreach($recipients as $recipient) {
                 /**
                  *  If there is need to get a new list of users
                  *  just add a get[IDENTIFIER]Id function to
@@ -275,7 +275,7 @@ class Notification {
                 $recipientUsers=$workitem->$method();
                 if(!is_array($recipientUsers)) {
                     $recipientUsers=array($recipientUsers);
-                }                
+                }
                 foreach($recipientUsers as $recipientUser) {
                     if($recipientUser>0) {
                         //Does the recipient exists
@@ -283,12 +283,12 @@ class Notification {
                         $rUser->findUserById($recipientUser);
 
                         if(($username = $rUser->getUsername())){
-						    // Check to see if user doesn't want to be notified (if user is recipient, doesn't have check on settings and not forced to receive then exclude)
+                            // Check to see if user doesn't want to be notified (if user is recipient, doesn't have check on settings and not forced to receive then exclude)
                             if ( $current_user->getUsername() == $username ) {
-								if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)  
-								  || $includeSelf == false) {
-									continue;
-								}
+                                if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)
+                                    || $includeSelf == false) {
+                                    continue;
+                                }
                             }
 
                             // check if we already sending email to this user
@@ -320,7 +320,7 @@ class Notification {
      * workitem - current workitem object to send info about
      **/
     public static function workitemSMSNotify($options) {
-        $recipients = isset($options['recipients']) ? $options['recipients'] : null;    	
+        $recipients = isset($options['recipients']) ? $options['recipients'] : null;
         $emails = isset($options['emails']) ? $options['emails'] : array();
         $workitem = $options['workitem'];
         switch($options['type']) {
@@ -377,7 +377,7 @@ class Notification {
                  * If there is need to get a new list of users
                  * just add a get[IDENTIFIER]Id function to
                  * workitem.class.php that returns a single user id
-                 * an array with user ids 
+                 * an array with user ids
                  **/
                 $method = 'get' . ucfirst($recipient) . 'Id';
                 $recipientUsers=$workitem->$method();
@@ -418,7 +418,44 @@ class Notification {
     * @param String $message - actual message content
     */
     public static function sendSMS($recipient, $subject, $message) {
-		notify_sms_by_object( $recipient, $subject, $message);
-		return true;
+        notify_sms_by_object( $recipient, $subject, $message);
+        return true;
     }
-} 
+    
+    // get list of past due bids
+    public function emailPastDueJobs(){
+        $html_start = "<html><head><title>Worklist</title></head><body>";
+        $html_end = "</body></html>";
+        $html = '';
+        $qry = "SELECT w.*, b.*, b.id as bid_id, u.id as runner_id, u.username as runner_email FROM " . WORKLIST . " w LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id".
+            " LEFT JOIN " . USERS . " u ON w.runner_id = u.id".
+            " WHERE (w.status = 'WORKING' OR w.status = 'REVIEW' OR w.status = 'PRE-FLIGHT' OR w.status = 'COMPLETED')".
+            " AND b.accepted = 1 AND b.past_notified = '0000-00-00 00:00:00' AND b.withdrawn = 0";
+        $worklist = mysql_query($qry) or (error_log("select past due bids error: " . mysql_error()) && die);
+        $wCount = mysql_num_rows($worklist);
+        if($wCount > 0){
+            $counter = 0;
+            while ($row = mysql_fetch_assoc($worklist)) {
+                if (strtotime("+" . $row['bid_done_in'], strtotime($row['bid_done'])) < time()) {
+                    $counter++;
+                    $subject = "Job #" . $row['worklist_id'] . " is now past due!";
+                    $html = $html_start;
+                    $html .= "<p>------------------------------------------</p>";
+                    $html .= "<p>Job <a href='" . SERVER_URL . "workitem.php?job_id=" . $row['worklist_id'] . "&action=view'>#" . $row['id'] . "</a> (" . $row['summary'] . ")</p>";
+                    $html .= "<p>Done by time has now passed.<br />";
+                    $html .= "Job url: " . SERVER_URL . "workitem.php?job_id=" . $row['worklist_id'] . "</p>";
+                    $html .= "<p>- Worklist.net</p>";
+                    $html .= "<p>------------------------------------------</p>";
+                    $html .= $html_end;
+
+                    send_email($row['email'], $subject, $html);
+                    send_email($row['runner_email'], $subject, $html);
+                    // now need to set this notified flag to now date
+                    $bquery = "UPDATE ".BIDS." SET past_notified = NOW() WHERE id = ".$row['bid_id'];
+                    $queryB = mysql_query($bquery)or (error_log("update past due bids error: " . mysql_error()) && die);
+                }
+            }
+        }
+    }
+
+}

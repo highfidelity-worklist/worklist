@@ -7,7 +7,7 @@
 require_once("config.php");
 if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: https://'.SERVER_NAME.'/worklist/worklist.php'); }
 require_once("class.session_handler.php");
-include_once("check_new_user.php"); 
+include_once("check_new_user.php");
 require_once("functions.php");
 require_once("send_email.php");
 require_once("update_status.php");
@@ -103,11 +103,11 @@ if (is_object($inProject) && $inProject->isOwner($userId)) {
 }
 
 if ($userId > 0 && isset($_POST['save_item'])) {
-    $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes', 
+    $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes',
                     'bid_fee_desc', 'bid_fee_amount','bid_fee_mechanic_id',
                      'invite', 'is_expense', 'is_rewarder', 'is_bug', 'bug_job_id');
     foreach ($args as $arg) {
-            // Removed mysql_real_escape_string, because we should 
+            // Removed mysql_real_escape_string, because we should
             // use it in sql queries, not here. Otherwise it can be applied twice sometimes
         $$arg = !empty($_POST[$arg])?$_POST[$arg]:'';
     }
@@ -167,7 +167,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     if ($bid_fee_amount > 0) {
         $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id, $is_expense, $is_rewarder);
     }
-} 
+}
 
 if (!empty($journal_message)) {
     //sending journal notification
@@ -320,21 +320,21 @@ include("head.html"); ?>
             row += ' nodrag ';
         }
 
-        if (odd) { 
+        if (odd) {
             row += ' rowodd';
-        } else { 
+        } else {
             row += 'roweven';
         }
 
         // Check if the user is either creator, runner, mechanic and assigns the rowown class
         // also highlight expired and tasks bidding on
-        if (user_id == 0) { // Checks if a user is logged in, as of now it 
-                            // would show to non logged in users, since mechanic 
+        if (user_id == 0) { // Checks if a user is logged in, as of now it
+                            // would show to non logged in users, since mechanic
                             // aren't checked for session
         } else if(user_id == json[13]) {// Runner
-            row += ' rowrunner'; 
+            row += ' rowrunner';
         } else if(user_id == json[14]) {// Mechanic
-            row += ' rowmechanic'; 
+            row += ' rowmechanic';
         } else if(json[15] >0) { //user bid on this task
             row += ' rowbidon';
         } else if(json[19] == 'expired') { // bid expired
@@ -361,8 +361,8 @@ include("head.html"); ?>
   
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
-        row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' + 
-                json[0] + '</span> - ' + pre + json[1] + post + extraStringBug + 
+        row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' +
+                json[0] + '</span> - ' + pre + json[1] + post + extraStringBug +
                 '</span></td>';
 <?php if (! $hide_project_column) : ?>
         if ((json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID') &&json[10] > 0) {
@@ -408,8 +408,14 @@ include("head.html"); ?>
     row += '<td width="9.5%" class="who">' + pre + who + post + '</td>';
 
         if (json[2] == 'WORKING' && json[11] != null) {
+            pre = "<span class='past-due'>";
+            post = "</span>";
             row += '<td width="15%">' + pre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
-        } else {
+            pre = '';
+            post = '';
+        } else if (json[2] == 'DONE' && json[11] != null) {
+            row += '<td width="15%">' + json[11] + '</td>';
+        }else {
             row += '<td width="15%">' + pre + RelativeTime(json[6]) + ' ago' + post +'</td>';
         }
 
@@ -587,8 +593,8 @@ include("head.html"); ?>
                 $('tr.row-worklist-live').hover(
                     function() {
                         var selfRow=$(this);
-                        $(".taskID,.taskSummary",this).wrap("<a href='" + 
-                            buildHref( SetWorkItem(selfRow) ) + 
+                        $(".taskID,.taskSummary",this).wrap("<a href='" +
+                            buildHref( SetWorkItem(selfRow) ) +
                             "'></a>");
                         $(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").click(
                             function() {
@@ -634,7 +640,7 @@ include("head.html"); ?>
 
 
     /*
-    *    aneu: Added jquery.hovertip.min.js 
+    *    aneu: Added jquery.hovertip.min.js
     *          Is this function below needed or used somewhere?
     */
     function ToolTip() {
@@ -672,7 +678,7 @@ include("head.html"); ?>
         $('#for_edit').show();
         $('#for_view').hide();
         $('.popup-body form input[type="text"]').val('');
-        $('.popup-body form select.resetToFirstOption option[index=0]').attr('selected', 'selected');        
+        $('.popup-body form select.resetToFirstOption option[index=0]').attr('selected', 'selected');
         $('.popup-body form select option[value=\'BIDDING\']').attr('selected', 'selected');
         $('.popup-body form textarea').val('');
 
@@ -698,7 +704,7 @@ include("head.html"); ?>
     }
     /*
     show a message with a wait image
-    several asynchronus calls can be made with different messages 
+    several asynchronus calls can be made with different messages
     */
     var loaderImg = function($)
     {
@@ -724,7 +730,7 @@ include("head.html"); ?>
             _hide = function(id) {
                 _removeLoading(id);
                 if (aLoading.length == 0) {
-                    $("#loader_img").css("display","none");     
+                    $("#loader_img").css("display","none");
                     $("#loader_img_title div").remove();
                 } else {
                     $("#loader_img_title ."+id).remove();
@@ -784,11 +790,11 @@ include("head.html"); ?>
         $('#popup-addrole').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-role-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-edit-role').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
-        $('#popup-edit').dialog({ 
+        $('#popup-edit').dialog({
             autoOpen: false,
             show: 'fade',
             hide: 'fade',
-            maxWidth: 600, 
+            maxWidth: 600,
             width: 415,
             hasAutocompleter: false,
             hasCombobox: false,
@@ -856,7 +862,7 @@ include("head.html"); ?>
                             label.prepend(checkbox);
                             $('#projectPopupActiveBox').html(label);
                         }
-                    }).comboBox();                                        
+                    }).comboBox();
                     this.hasCombobox = true;
                 } else {
                     $('#popup-edit select[name=itemProject]').next().hide();
@@ -911,23 +917,23 @@ include("head.html"); ?>
                 });
 
                 if($('#popup-edit form input[name="is_bug"]').is(':checked')) {
-                    var bugJobId = new LiveValidation('bug_job_id',{ 
+                    var bugJobId = new LiveValidation('bug_job_id',{
                         onlyOnSubmit: true ,
                         onInvalid : function() {
                             loaderImg.hide("saveRunning");
-                            this.insertMessage( this.createMessageSpan() ); 
+                            this.insertMessage( this.createMessageSpan() );
                             this.addFieldClass();
                         }
                     });
-                    bugJobId.add( Validate.Custom, { 
+                    bugJobId.add( Validate.Custom, {
                         against: function(value,args){
                             id=$('#bugJobSummary').attr('title');
-                            return (id!=0) 
+                            return (id!=0)
                         },
                         failureMessage: "Invalid item Id"
                     });
 
-                    massValidation = LiveValidation.massValidate( [ bugJobId ]);   
+                    massValidation = LiveValidation.massValidate([bugJobId]);
                     if (!massValidation) {
                         loaderImg.hide("saveRunning");
                         event.preventDefault();
@@ -941,7 +947,7 @@ include("head.html"); ?>
                     var optionsLiveValidation = { onlyOnSubmit: true,
                         onInvalid : function() {
                             loaderImg.hide("saveRunning");
-                            this.insertMessage( this.createMessageSpan() ); 
+                            this.insertMessage( this.createMessageSpan() );
                             this.addFieldClass();
                         }
                     };
@@ -951,7 +957,7 @@ include("head.html"); ?>
                     bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                     bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
                     bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                    massValidation = LiveValidation.massValidate( [ bid_fee_amount, bid_fee_desc]);   
+                    massValidation = LiveValidation.massValidate([bid_fee_amount, bid_fee_desc]);
                     if (!massValidation) {
                         loaderImg.hide("saveRunning");
                         event.preventDefault();
@@ -1098,24 +1104,24 @@ include("head.html"); ?>
             $.metadata.setType("elem", "script")
             var roleData = $(this).metadata();
 
-            // row has role data attached 
+            // row has role data attached
             if(roleData.id){
                 $('#popup-role-info input[name="role_id"]').val(roleData.id);
                 $('#popup-role-info #info-title').text(roleData.role_title);
                 $('#popup-role-info #info-percentage').text(roleData.percentage);
                 $('#popup-role-info #info-min-amount').text(roleData.min_amount);
-                //future functions to display more information as well as enable disable removal edition      
+                //future functions to display more information as well as enable disable removal edition
                 $('#popup-role-info').dialog('open');
             }
         });
         
         $('#editRole').click(function(){
-            // row has role data attached 
+            // row has role data attached
             $('#popup-role-info').dialog('close');
                 $('#popup-edit-role input[name="role_id"]').val($('#popup-role-info input[name="role_id"]').val());
                 $('#popup-edit-role #role_title_edit').val($('#popup-role-info #info-title').text());
                 $('#popup-edit-role #percentage_edit').val($('#popup-role-info #info-percentage').text());
-                $('#popup-edit-role #min_amount_edit').val($('#popup-role-info #info-min-amount').text());   
+                $('#popup-edit-role #min_amount_edit').val($('#popup-role-info #info-min-amount').text());
                 $('#popup-edit-role').dialog('open');
         });
 
@@ -1358,7 +1364,7 @@ include("head.html"); ?>
         $('#table-budget-expanded').append(header);
         be_attachEvents(section);
         
-        var params = '?section='+section;   
+        var params = '?section='+section;
         var sortby = '';
         // If we've got an item sort by it
         if (item) {
@@ -1517,7 +1523,7 @@ include("head.html"); ?>
     </div>
     <div class="clear"></div>
 </script>
-<?php 
+<?php
 // !!! The code above is duplicated in workitem.inc
 // !!! [END DUP]
 ?>
@@ -1570,7 +1576,7 @@ if(isset($_REQUEST['journal_query'])) {
    $filter->setUser($_REQUEST['user']);
 }
    include("search-head.inc"); ?>
-<?php 
+<?php
 // show project information header
 if (is_object($inProject)) {
     $edit_mode = false;
@@ -1584,7 +1590,7 @@ if (is_object($inProject)) {
 <?php if ($inProject->isOwner($userId)) : ?>
 <?php if ($edit_mode) : ?>
         <span style="width: 150px; float: right;"><a href="?action=view">Switch to View Mode</a></span>
-<?php else: ?>        
+<?php else: ?>
         <span style="width: 150px; float: right;"><a href="?action=edit">Switch to Edit Mode</a></span>
 <?php endif; ?>
 <?php endif; ?>
@@ -1636,7 +1642,7 @@ if (is_object($inProject)) {
             <?php if (! $hide_project_column) echo '<td class="clickable" style="min-width:80px">Comments</td>'; ?>
             <?php if (! $hide_project_column) {
                 echo '<td class="worklist-fees clickable"';
-                echo (empty($_SESSION['is_runner'])) ? ' style="display:none"' : ''; 
+                echo (empty($_SESSION['is_runner'])) ? ' style="display:none"' : '';
                 echo '>Fees/Bids</td>';
             } ?>
         </tr>

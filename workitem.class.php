@@ -1,9 +1,9 @@
 <?php
 //  vim:ts=4:et
-/** 
+/**
  * Workitem
  *
- * @package Workitem  
+ * @package Workitem
  * @version $Id$
  */
 require_once('lib/Workitem/Exception.php');
@@ -29,7 +29,9 @@ class WorkItem {
     protected $project_name;
     protected $bug_job_id;
     protected $is_bug;
-    
+
+    var $status_changed;
+
     var $skills = array();
 
     protected $origStatus = null;
@@ -79,6 +81,7 @@ class WorkItem {
                         w.sandbox,
                         w.bug_job_id,
                         w.is_bug,
+                        w.status_changed,
                         p.name AS project_name
                     FROM  ".WORKLIST. " as w
                     LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
@@ -95,7 +98,7 @@ class WorkItem {
              ->setSummary($row['summary'])
              ->setCreatorId($row['creator_id'])
              ->setRunnerId($row['runner_id'])
-              ->setMechanicId($row['mechanic_id'])
+             ->setMechanicId($row['mechanic_id'])
              ->setStatus($row['status'])
              ->setProjectId($row['project_id'])
              ->setNotes($row['notes'])
@@ -103,6 +106,7 @@ class WorkItem {
              ->setBugJobId($row['bug_job_id'])
              ->setIs_bug($row['is_bug'])
              ->setWorkitemSkills();
+        $this->status_changed = $row['status_changed'];
         $this->project_name = $row['project_name'];
         return true;
     }
@@ -172,10 +176,10 @@ WHERE id = ' . (int)$id;
     }
 
     /**
-     * 
-     * Get users with fees 
+     *
+     * Get users with fees
      * in original bug job
-     * 
+     *
      * @return ARRAY list of users id
      */
     public function getUsersWithFeesBugId() {
@@ -189,10 +193,10 @@ WHERE id = ' . (int)$id;
     }
     
     /**
-     * 
+     *
      * Get users with fees in work item
-     * 
-     * @return ARRAY list of users id 
+     *
+     * @return ARRAY list of users id
      */
     public function getUsersWithFeesId() {
     
@@ -319,10 +323,10 @@ WHERE id = ' . (int)$id;
     }
     
     /**
-     * 
-     * Lookup original item summary for bug job 
-     * 
-     * @param 
+     *
+     * Lookup original item summary for bug job
+     *
+     * @param
      * @return STRING	original job summary
      */
     public function getBugJobSummary() {
@@ -339,7 +343,7 @@ WHERE id = ' . (int)$id;
         // if no array provided, get skill from db
         if (! $skills) {
             $query = "SELECT s.skill
-                      FROM ".SKILLS." AS s, ".WORKITEM_SKILLS." AS ws 
+                      FROM ".SKILLS." AS s, ".WORKITEM_SKILLS." AS ws
                       WHERE s.id = ws.skill_id AND ws.workitem_id = " . $this->getId();
 
             $result = mysql_query($query);
@@ -360,7 +364,7 @@ WHERE id = ' . (int)$id;
             $query = "DELETE FROM ".WORKITEM_SKILLS." WHERE workitem_id=" . $this->getId();
             $result = mysql_query($query);
             foreach ($this->skills as $skill) {
-                $query = "INSERT INTO ".WORKITEM_SKILLS." (workitem_id, skill_id) 
+                $query = "INSERT INTO ".WORKITEM_SKILLS." (workitem_id, skill_id)
                           SELECT ".$this->getId().", id FROM ".SKILLS." WHERE skill='".$skill."'";
                 mysql_query($query) || die('There was an error ' . mysql_error() . ' QUERY: ' . $query);
             }
@@ -483,7 +487,7 @@ WHERE id = ' . (int)$id;
         $content = $connection->get('account/verify_credentials');
          
         $message='New job: ' . $summary . ' ' . $link;
-        $connection->post('statuses/update', array('status' => $message));    
+        $connection->post('statuses/update', array('status' => $message));
     }
 
 
@@ -518,10 +522,10 @@ WHERE id = ' . (int)$id;
         $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, ".
                  " u.nickname AS runner_nickname, u.id AS runner_id,".
                  " uc.nickname AS creator_nickname, w.status, w.notes, ".
-                 " w.project_id, p.name AS project_name, p.repository AS repository, 
+                 " w.project_id, p.name AS project_name, p.repository AS repository,
                   w.sandbox, w.bug_job_id, w.is_bug
                   FROM  ".WORKLIST. " as w
-                  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id 
+                  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id
                   LEFT JOIN ".USERS." as u ON w.runner_id = u.id
                   LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
                   WHERE w.id = '$worklist_id'";
@@ -547,7 +551,7 @@ WHERE id = ' . (int)$id;
 
         $query = "
             SELECT bids.`id`, bids.`bidder_id`, bids.`email`, u.`nickname`, bids.`bid_amount`,
-                UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`, 
+                UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`,
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_expires`) AS `expires`,
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
                 bids.`bid_done_in` AS done_in,
@@ -555,7 +559,8 @@ WHERE id = ' . (int)$id;
                 UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`,
                 bids.`notes`,
                 UNIX_TIMESTAMP(f.`date`) AS `unix_bid_accepted`,
-                UNIX_TIMESTAMP(NOW()) AS `unix_now`
+                UNIX_TIMESTAMP(NOW()) AS `unix_now`,
+                bids.`bid_created` AS `bid_created_full`
             FROM `".BIDS. "` AS bids
                 INNER JOIN `".USERS."` AS u ON (u.id = bids.bidder_id)
                 LEFT JOIN ".FEES." AS f ON (f.bid_id=bids.id)
@@ -640,7 +645,7 @@ WHERE id = ' . (int)$id;
     
     public function updateBid($bid_id, $bid_amount, $done_in, $bid_expires, $timezone, $notes) {
         $bid_expires = strtotime($bid_expires);
-        if ($bid_id > 0 && $this->status != 'SUGGESTEDwithBID'){        
+        if ($bid_id > 0 && $this->status != 'SUGGESTEDwithBID'){
         $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '$done_in', `bid_expires` = FROM_UNIXTIME({$bid_expires}), `notes` = '".$notes."' WHERE id = '".$bid_id."'";
             mysql_query($query);
         }
@@ -704,7 +709,7 @@ WHERE id = ' . (int)$id;
             throw new Exception('Bid not found.');
         }
         return $row[1];
-    }				
+    }
 
     /**
      * Checks if a workitem has any accepted bids
@@ -844,7 +849,7 @@ WHERE id = ' . (int)$id;
 
 
             // When we get this far, commit and return bid_info
-            if (mysql_query('COMMIT')) { 
+            if (mysql_query('COMMIT')) {
                 $bid_info['summary'] = getWorkItemSummary($bid_info['worklist_id']);
                 $this -> setMechanicId($bid_info['bidder_id']);
                 return $bid_info;

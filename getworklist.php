@@ -80,7 +80,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         }
         $severalStatus = " OR ";
     }
-} 
+}
 
 if (!empty($pfilter) && $pfilter != 'ALL') {
     if (empty($where)) {
@@ -109,7 +109,7 @@ if($query!='' && $query!='Search...') {
         // #11500
         // INPUT: 'one OR    two   three' ;
         // RESULT: 'one two,three' ;
-        // split the query into an array using space as delimiter 
+        // split the query into an array using space as delimiter
         // remove empty elements
         // convert spaces into commas
         // change ',OR,' into  space
@@ -225,11 +225,11 @@ $qbody = "FROM `".WORKLIST."`
           $unpaid_join
           LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
           LEFT JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id`
-          LEFT JOIN (SELECT MAX(bid_created), 
-                            `worklist_id`, 
+          LEFT JOIN (SELECT MAX(bid_created),
+                            `worklist_id`,
                             `bid_amount`
                      FROM `".BIDS."`
-                     WHERE `withdrawn` = 0 
+                     WHERE `withdrawn` = 0
                        AND (`bid_expires` > NOW()  OR `bid_expires` = '0000-00-00 00:00:00')
                      GROUP BY worklist_id
                      ORDER BY worklist_id DESC ) AS `bidAmountTable` ON `".WORKLIST."`.`id` = `bidAmountTable`.`worklist_id`
@@ -269,7 +269,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
          8 => $row['bid_amount'],
          9 => $row['creator_id'],
         10 => $row['bid_count'],
-        11 => $row['bid_done'],
+        11 => ($row['status'] == 'DONE') ? date("m/d/Y",time()+$row['bid_done']):$row['bid_done'],
         12 => $row['comments'],
         13 => $row['runner_id'],
         14 => $row['mechanic_id'],

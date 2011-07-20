@@ -628,3 +628,7 @@ td.textAlignReport {
 #testFlightButton {
     float: right;
 }
+
+.past-due {
+    color: #FF0000;
+}

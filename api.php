@@ -10,29 +10,29 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 # krumch 20110506 #11576 - add getUserStatus to 'non-API_KEY list'
  if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus'){
     die("No api key defined.");
-} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {  
+} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
     die("Wrong api key provided.");
 } else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus')){
     die("Only HTTPS connection is accepted.");
-} else if($_SERVER["REQUEST_METHOD"] != "POST"){
-    die("Only POST method is allowed.");
+/*} else if($_SERVER["REQUEST_METHOD"] != "POST"){
+    die("Only POST method is allowed.");*/
 } else {
-	if(!empty($_REQUEST['action'])){
-		mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD);
-		mysql_select_db (DB_NAME);
-		switch($_REQUEST['action']){
-			case 'updateuser':
-				updateuser();
-				break;
-			case 'pushVerifyUser':
-				pushVerifyUser();
-				break;
-			case 'login':
-				loginUserIntoSession();
-				break;
-			case 'uploadProfilePicture':
-				uploadProfilePicture();
-				break;
+    if(!empty($_REQUEST['action'])){
+        mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD);
+        mysql_select_db (DB_NAME);
+        switch($_REQUEST['action']){
+            case 'updateuser':
+                updateuser();
+                break;
+            case 'pushVerifyUser':
+                pushVerifyUser();
+                break;
+            case 'login':
+                loginUserIntoSession();
+                break;
+            case 'uploadProfilePicture':
+                uploadProfilePicture();
+                break;
             case 'updateProjectList':
                 updateProjectList();
                 break;
@@ -52,10 +52,13 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
             case 'version':
                 exec('svnversion > ver');
                 break;
+            case 'jobsPastDue':
+                sendPastDueNotification();
+                break;
             default:
                 die("Invalid action.");
-		}
-	}
+        }
+    }
 }
  
 /*
@@ -69,46 +72,46 @@ function loginUserIntoSession(){
     $csrf_token = md5(uniqid(rand(), TRUE));
     
     $sql = "SELECT * FROM ".WS_SESSIONS." WHERE session_id = '".mysql_real_escape_string($sid, $db->getLink())."'";
-    $res = $db->query($sql); 
-	
+    $res = $db->query($sql);
+    
     $session_data  ="running|s:4:\"true\";";
-	$session_data .="userid|s:".strlen($uid).":\"".$uid."\";";
-	$session_data .="username|s:".strlen($_REQUEST['username']).":\"".$_REQUEST['username']."\";";
-	$session_data .="nickname|s:".strlen($_REQUEST['nickname']).":\"".$_REQUEST['nickname']."\";";
-	$session_data .="admin|s:".strlen($_REQUEST['admin']).":\"".$_REQUEST['admin']."\";";
-	$session_data .="csrf_token|s:".strlen($csrf_token).":\"".$csrf_token."\";";
-		
+    $session_data .="userid|s:".strlen($uid).":\"".$uid."\";";
+    $session_data .="username|s:".strlen($_REQUEST['username']).":\"".$_REQUEST['username']."\";";
+    $session_data .="nickname|s:".strlen($_REQUEST['nickname']).":\"".$_REQUEST['nickname']."\";";
+    $session_data .="admin|s:".strlen($_REQUEST['admin']).":\"".$_REQUEST['admin']."\";";
+    $session_data .="csrf_token|s:".strlen($csrf_token).":\"".$csrf_token."\";";
+        
     if(mysql_num_rows($res) > 0){
-		$sql = "UPDATE ".WS_SESSIONS." SET ".
-			 "session_data = '".mysql_real_escape_string($session_data,$db->getLink())."' ".
-			 "WHERE session_id = '".mysql_real_escape_string($sid, $db->getLink())."';";
-		$db->query($sql);
+        $sql = "UPDATE ".WS_SESSIONS." SET ".
+             "session_data = '".mysql_real_escape_string($session_data,$db->getLink())."' ".
+             "WHERE session_id = '".mysql_real_escape_string($sid, $db->getLink())."';";
+        $db->query($sql);
     } else {
-		$expires = time() + SESSION_EXPIRE;
-		$db->insert(WS_SESSIONS, 
-			array("session_id" => $sid, 
-				  "session_expires" => $expires,
-				  "session_data" => $session_data),
-			array("%s","%d","%s")
-		);
+        $expires = time() + SESSION_EXPIRE;
+        $db->insert(WS_SESSIONS,
+            array("session_id" => $sid,
+                  "session_expires" => $expires,
+                  "session_data" => $session_data),
+            array("%s","%d","%s")
+        );
     }
 }
 
 function uploadProfilePicture() {
-	// check if we have a file
-	if (empty($_FILES)) {
-		respond(array(
-			'success' => false,
-			'message' => 'No file uploaded!'
-		));
-	}
-	
-	if (empty($_REQUEST['userid'])) {
-		respond(array(
-			'success' => false,
-			'message' => 'No user ID set!'
-		));
-	}
+    // check if we have a file
+    if (empty($_FILES)) {
+        respond(array(
+            'success' => false,
+            'message' => 'No file uploaded!'
+        ));
+    }
+    
+    if (empty($_REQUEST['userid'])) {
+        respond(array(
+            'success' => false,
+            'message' => 'No user ID set!'
+        ));
+    }
 
      $ext = end(explode(".", $_FILES['profile']['name']));
      $tempFile = $_FILES['profile']['tmp_name'];
@@ -116,15 +119,15 @@ function uploadProfilePicture() {
 
      if (move_uploaded_file($tempFile, $path)) {
         $imgName = strtolower($_REQUEST['userid'] . '.' . $ext);
-     	$query = 'UPDATE `'.USERS.'` SET `picture` = "' . mysql_real_escape_string($imgName) . '" WHERE `id` = ' . (int)$_REQUEST['userid'] . ' LIMIT 1;';
-     	if (!mysql_query($query)) {
-     		respond(array(
-     			'success' => false,
-     			'message' => SL_DB_FAILURE
-     		));
-     	} else {
-     	       $file = $path;
-     	       $rc = null;
+        $query = 'UPDATE `'.USERS.'` SET `picture` = "' . mysql_real_escape_string($imgName) . '" WHERE `id` = ' . (int)$_REQUEST['userid'] . ' LIMIT 1;';
+        if (!mysql_query($query)) {
+            respond(array(
+                'success' => false,
+                'message' => SL_DB_FAILURE
+            ));
+        } else {
+               $file = $path;
+               $rc = null;
                $type = null;
                if ($ext == "JPG" || $ext == "jpg" || $ext == "JPEG" || $ext == "jpeg") {
                     $rc = imagecreatefromjpeg($file);
@@ -152,16 +155,16 @@ function uploadProfilePicture() {
                } else {
                     unlink($file);
                     respond(array(
-                    	'success' => true, 
-                    	'picture' => $imgName
+                        'success' => true,
+                        'picture' => $imgName
                     ));
                }
-     	}
+        }
      } else {
-     	respond(array(
-     		'success' => false,
-     		'message' => 'An error occured while uploading the file, please try again!'
-     	));
+        respond(array(
+            'success' => false,
+            'message' => 'An error occured while uploading the file, please try again!'
+        ));
      }
 }
 
@@ -175,7 +178,7 @@ function updateuser(){
     $sql = substr($sql,0,(strlen($sql) - 1));
     $sql .= " ".
             "WHERE id = ".$id;
-    mysql_query($sql); 
+    mysql_query($sql);
 }
 
 function pushVerifyUser(){
@@ -198,47 +201,53 @@ $project->save();
 }
 
 function getSystemDrawerJobs(){
-	$objectDataReviews= array();
-    $sql = " SELECT	w.*, p.name as project " 
-		 . " FROM  	". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
-		 . " ON 	(w.project_id = p.project_id) "
-		 . " WHERE	w.status = 'REVIEW' "
-		 ;
+    $objectDataReviews= array();
+    $sql = " SELECT w.*, p.name as project "
+         . " FROM   ". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
+         . " ON     (w.project_id = p.project_id) "
+         . " WHERE  w.status = 'REVIEW' "
+         ;
 
-	if ($result = mysql_query($sql)) {
-		while ($row = mysql_fetch_assoc($result)) {
-			$objectDataReviews[] = $row;
-		}
-	// Return our data array
-	} 
-   	mysql_free_result($result);
+    if ($result = mysql_query($sql)) {
+        while ($row = mysql_fetch_assoc($result)) {
+            $objectDataReviews[] = $row;
+        }
+    // Return our data array
+    }
+    mysql_free_result($result);
 
-	$objectDataBidding= array();
-    $sql = " SELECT	w.*, p.name as project " 
-		 . " FROM  	". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
-		 . " ON 	(w.project_id = p.project_id) "
-		 . " WHERE	w.status = 'BIDDING' OR w.status = 'SUGGESTEDwithBID' ";
+    $objectDataBidding= array();
+    $sql = " SELECT w.*, p.name as project "
+         . " FROM   ". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
+         . " ON     (w.project_id = p.project_id) "
+         . " WHERE  w.status = 'BIDDING' OR w.status = 'SUGGESTEDwithBID' ";
 
-	if ($result = mysql_query($sql)) {
-		while ($row = mysql_fetch_assoc($result)) {
-			$objectDataBidding[] = $row;
-		}
-	// Return our data array
-	} 
-   	mysql_free_result($result);
+    if ($result = mysql_query($sql)) {
+        while ($row = mysql_fetch_assoc($result)) {
+            $objectDataBidding[] = $row;
+        }
+    // Return our data array
+    }
+    mysql_free_result($result);
 
     respond(array('success' => true, 'review' => $objectDataReviews, 'bidding' => $objectDataBidding));
 }
 
 function sendBidNotification() {
-        include('./classes/BidNotification.class.php');
-        $notify = new BidNotification();
-        $notify->emailExpiredBids();
+    require_once('./classes/BidNotification.class.php');
+    $notify = new BidNotification();
+    $notify->emailExpiredBids();
+}
+
+function sendPastDueNotification() {
+    require_once('./classes/Notification.class.php');
+    $notify = new Notification();
+    $notify->emailPastDueJobs();
 }
 
 function processW2Masspay() {
-    if (!defined('COMMAND_API_KEY') 
-        or !array_key_exists('COMMAND_API_KEY',$_POST) 
+    if (!defined('COMMAND_API_KEY')
+        or !array_key_exists('COMMAND_API_KEY',$_POST)
         or $_POST['COMMAND_API_KEY'] != COMMAND_API_KEY)
         { die('Action Not configured'); }
         
@@ -248,7 +257,7 @@ function processW2Masspay() {
     }
     mysql_select_db(DB_NAME, $con);
     
-    $sql = " UPDATE " . FEES . " AS f, " . WORKLIST . " AS w, " . USERS . " AS u " 
+    $sql = " UPDATE " . FEES . " AS f, " . WORKLIST . " AS w, " . USERS . " AS u "
          . " SET f.paid = 1, f.paid_date = NOW() "
          . " WHERE f.paid = 0 AND f.worklist_id = w.id AND w.status = 'DONE' "
          . "   AND f.withdrawn = 0 "
@@ -267,7 +276,7 @@ function processW2Masspay() {
         echo "No fees were found!";
     }
 
-    $sql = " UPDATE " . FEES . " AS f, " . USERS . " AS u " 
+    $sql = " UPDATE " . FEES . " AS f, " . USERS . " AS u "
          . " SET f.paid = 1, f.paid_date = NOW() "
          . " WHERE f.paid = 0 "
          . "   AND f.bonus = 1 "
