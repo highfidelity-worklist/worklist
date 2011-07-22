@@ -550,13 +550,14 @@ WHERE id = ' . (int)$id;
         }
 
         $query = "
-            SELECT bids.`id`, bids.`bidder_id`, bids.`email`, u.`nickname`, bids.`bid_amount`,
+            SELECT bids.`id`, bids.`bidder_id`, bids.`email`, u.`nickname`, bids.`bid_amount`, bids.`accepted`,
                 UNIX_TIMESTAMP(bids.`bid_created`) AS `unix_bid_created`,
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_expires`) AS `expires`,
                 TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_done`) AS `future_delta`,
                 bids.`bid_done_in` AS done_in,
                 DATE_FORMAT(bids.`bid_done`, '%m/%d/%Y') AS `bid_done`,
                 UNIX_TIMESTAMP(`bid_done`) AS `unix_done_by`,
+                UNIX_TIMESTAMP(bids.`bid_done`) AS `unix_done_full`,
                 bids.`notes`,
                 UNIX_TIMESTAMP(f.`date`) AS `unix_bid_accepted`,
                 UNIX_TIMESTAMP(NOW()) AS `unix_now`,
@@ -810,17 +811,7 @@ WHERE id = ' . (int)$id;
             $bid_info['sandbox'] = "N/A";
         }
 
-        //adjust bid_done date/time
-        $prev_start = strtotime($bid_info['bid_created']);
-        $new_start = strtotime(date('Y-m-d H:i:s O'));
-        // this is old-style bid, with bid_done date instead of bid_done_in relative time
-        if (isset($bid_info['bid_done'])) {
-            $end = strtotime($bid_info['bid_done']);
-        } else {
-            $end = strtotime($bid_info['bid_done_in']);
-        }
-        $diff = $end - $prev_start;
-        $bid_info['bid_done'] = strtotime('+'.$diff.'seconds');
+        $bid_info['bid_done'] = strtotime('+' . $bid_info['bid_done_in'], time());
 
         // Adding transaction wrapper around steps
         if (mysql_query('BEGIN')) {

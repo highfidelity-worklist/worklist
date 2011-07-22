@@ -408,8 +408,10 @@ include("head.html"); ?>
     row += '<td width="9.5%" class="who">' + pre + who + post + '</td>';
 
         if (json[2] == 'WORKING' && json[11] != null) {
-            pre = "<span class='past-due'>";
-            post = "</span>";
+            if ((RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') == 'Past due') {
+                pre = "<span class='past-due'>";
+                post = "</span>";
+            }
             row += '<td width="15%">' + pre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
             pre = '';
             post = '';

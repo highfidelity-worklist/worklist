@@ -717,6 +717,11 @@ if(!empty($bids) && is_array($bids)) {
         } else {
             $bid['bid_accepted'] = '';
         }
+        if ($bid['unix_done_full'] > 0 && !empty($bid['unix_done_full'])) {
+            $bid['unix_done_full'] = convertTimezone($bid['unix_done_full']);
+        } else {
+            $bid['unix_done_full'] = '';
+        }
 
 
         // calculate Total Time to Complete
