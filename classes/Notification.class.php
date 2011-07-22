@@ -436,7 +436,7 @@ class Notification {
         if($wCount > 0){
             $counter = 0;
             while ($row = mysql_fetch_assoc($worklist)) {
-                if (strtotime("+" . $row['bid_done_in'], strtotime($row['bid_done'])) < time()) {
+                if (strtotime($row['bid_done']) < time()) {
                     $counter++;
                     $subject = "Job #" . $row['worklist_id'] . " is now past due!";
                     $html = $html_start;
