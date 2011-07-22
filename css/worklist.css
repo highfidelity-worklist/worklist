@@ -31,7 +31,11 @@
 }
 
 .popup-body #bid_fee_desc {
-	width:280px;
+	width:270px;
+}
+
+.popup-body #bid_fee_amount {
+	width:70px;
 }
 
 .popup-body select {
