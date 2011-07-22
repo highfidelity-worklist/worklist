@@ -585,7 +585,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $job = mysql_fetch_assoc($res);
 
         // additional changes if status is WORKING
-        if ($job['status'] == 'WORKING'  && ($job['accepted'] == 1)) {
+        if ($job['status'] == 'WORKING'  && ($bid->accepted == 1) && (is_runner() || ($bid->bidder_id == $_SESSION['userid']))) {
             // change status of worklist item
             mysql_unbuffered_query("UPDATE `" . WORKLIST . "`
 	            						SET `mechanic_id` = '0',
