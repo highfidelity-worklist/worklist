@@ -79,6 +79,7 @@
             <span id="info-timezone">&nbsp;</span>
         </p>
     </div><!-- end of common info div-->
+    <div id="sent-notify"></div>
     <?php if(! $is_runner){ ?><hr style="clear: both;" /><?php } ?>
 
     <div id="tabs" class="tabs-bottom">

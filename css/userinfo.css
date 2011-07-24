@@ -82,7 +82,7 @@ p.small-text{
     font-weight: bold;
 	border-width:1px;
 }
-#user-stats tbody tr:hover{
+#user-stats tbody tr:hover {
     background-color: white;
 }
 div.left-column {
@@ -191,3 +191,11 @@ p.bottom {
     float: left; 
     width: 23%;
 }
+
+#sent-notify {
+    background-color: lightgrey;
+    height: 20px !important;
+    line-height: 20px;
+    text-align: center;
+}
+

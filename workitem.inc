@@ -883,7 +883,10 @@ $(document).ready(function(){
                 url: 'pingtask.php',
                 data: 'id=' + <?php echo $worklist_id; ?> + '&who=' + ping_who  + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal + '&cc=' + cc,
                 dataType: 'json',
-                success: function() {}
+                success: function() {
+                    $("#sent-notify").html("<span>Your ping has been sent.</span>");
+                    $("#sent-notify").dialog("open");
+                }
             });
             $('#popup-pingtask').dialog('close');
             return false;

@@ -4,6 +4,20 @@ stats.setUserId(userInfo.user_id);
 
 $(document).ready(function(){
     UserInfo.init();
+    $('#sent-notify').dialog({
+        modal: false,
+        autoOpen: false,
+        width: 250,
+        height: 60,
+        position: ['middle'],
+        resizable: false,
+        open: function() {
+            $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
+            setTimeout(function() {
+                $("#sent-notify").dialog("close");
+            }, 3000);
+        }
+    });
 });
  
 var UserInfo = {
@@ -138,7 +152,10 @@ var UserInfo = {
                 url: 'pingtask.php',
                 data: 'userid=' + userInfo.user_id + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal + '&cc=' + cc,
                 dataType: 'json',
-                success: function() {}
+                success: function() {
+                    $("#sent-notify").html("<span>Your message has been sent.</span>");
+                    $("#sent-notify").dialog("open");
+                }
             });
             $('#popup-pingtask').dialog('close');
             return false;
