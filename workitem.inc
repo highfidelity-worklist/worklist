@@ -132,7 +132,7 @@ function showUserInfo(userId){
         var image = images[i];
         #>
         <div class="filesIcon">
-            <a class="attachment" href="<#= image.url #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
+            <a class="attachment" href="<#= image.url #>" data-fileid="<#= image.fileid #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
         </div>
         <div class="filesDescription">
             <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
@@ -152,7 +152,7 @@ function showUserInfo(userId){
         var doc = documents[i];
         #>
         <div class="filesIcon">
-            <a href="<#= doc.url #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+            <a class="docs" href="<#= doc.url #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
         </div>
         <div class="documents filesDescription">
             <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
@@ -175,7 +175,7 @@ function showUserInfo(userId){
 </script>
 <script type="text/html" id="uploadImage">
     <div class="filesIcon">
-        <a class="attachment" href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
+        <a class="attachment" href="<#= url #>" data-fileid="<#= fileid #>" ><img width="75px" height="75px" src="<#= icon #>" /></a>
     </div>
     <div class="filesDescription">
         <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
@@ -188,7 +188,7 @@ function showUserInfo(userId){
 </script>
 <script type="text/html" id="uploadDocument">
     <div class="filesIcon">
-        <a href="<#= url #>" target="_blank"><img width="32px" height="32px" src="<#= icon #>" /></a>
+        <a class="docs" href="<#= url #>" data-fileid="<#= fileid #>" target="_blank"><img width="32px" height="32px" src="<#= icon #>" /></a>
     </div>
     <div class="documents filesDescription">
         <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>

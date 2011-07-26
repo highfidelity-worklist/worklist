@@ -18,6 +18,8 @@ class File
 	protected $description;
 	protected $url;
 	protected $status;
+    protected $is_scanned;
+    protected $scan_result;
 	protected $files = array();
 	
     /**
@@ -158,9 +160,24 @@ class File
 	 * @return the $url
 	 */
 	public function getUrl() {
-		return $this->url;
+        return $this->url;
+	}
+    
+    /**
+	 * @return the scan status
+	 */
+	public function getIs_scanned() {
+        return $this->is_scanned;
 	}
 
+    /**
+	 * @param scan status the $is_scanned to set
+	 */
+	public function setIs_scanned($is_scanned) {
+		$this->is_scanned = $is_scanned;
+        return $this;
+	}
+    
 	/**
 	 * @param $url the $url to set
 	 */
@@ -168,6 +185,7 @@ class File
 		$this->url = $url;
 		return $this;
 	}
+    
 
 	/**
 	 * @return the $status
@@ -421,7 +439,7 @@ class File
     	if (null === $workitem) {
     		throw new Exception('You have to define a workitem!');
     	}
-    	$sql = 'SELECT `id` FROM `' . FILES . '` WHERE `workitem` = ' . (int)$workitem;
+    	$sql = 'SELECT `id` FROM `' . FILES . '` WHERE `workitem` = ' . (int)$workitem .' AND `scan_result` = 0';
     	$result = mysql_query($sql);
     	$files = array();
     	while ($row = mysql_fetch_assoc($result)) {

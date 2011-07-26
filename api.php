@@ -49,6 +49,9 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
             case 'processW2Masspay':
                 processW2Masspay();
                 break;
+            case 'doScanAssets':
+                doScanAssets();
+                break;
             case 'version':
                 exec('svnversion > ver');
                 break;
@@ -296,6 +299,12 @@ function processW2Masspay() {
     }
 
     mysql_close($con);
+}
+
+function doScanAssets() {
+    require_once('./scanAssets.php');
+    $scanner = new scanAssets();
+    $scanner->scanAll();
 }
 
 function respond($val){

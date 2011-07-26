@@ -283,13 +283,28 @@ class JsonServer
                  ->setTitle($title)
                  ->setUrl($url);
             $success = $file->save();
-
+            //good palce to set trigger for scanning
             $icon = File::getIconFromMime($file->getMime());
+            // Temporarly wire off new features until scans are finished in live database
+            /*if ($icon === false) {
+                $filetype = 'image';
+                $icon = 'images/icons/default.png';
+            } 
+            return $this->setOutput(array(
+                'success' => true,
+                'fileid'  => $file->getId(),
+                'url'       => 'javascript:;',
+                'icon'      => $icon,
+                'title'      => $file->getTitle(),
+                'description' => '',
+                'filetype'=> (isset($filetype) ? $filetype : '')
+            ));
+            */
             if ($icon === false) {
                 $filetype = 'image';
                 $icon = $file->getUrl();
             }
-
+            
             return $this->setOutput(array(
                 'success' => true,
                 'fileid'  => $file->getId(),
@@ -299,6 +314,7 @@ class JsonServer
                 'description' => '',
                 'filetype'=> (isset($filetype) ? $filetype : '')
             ));
+
         } else {
             return $this->setOutput(array(
                 'success' => false,
@@ -429,19 +445,28 @@ class JsonServer
             if (!File::isAllowed($file->getStatus(), $user)) {
                 continue;
             }
+//Wire off the scan test until we have finished scanning live files
+/*            if ($file->getIs_scanned() == 0) {
+                $fileUrl = 'javascript:;';
+                $iconUrl = 'images/icons/default.png';
+            } else { */
+                $fileUrl = $file->getUrl();
+                $iconUrl = $file->getUrl();
+//            }
+            
             $icon = File::getIconFromMime($file->getMime());
             if ($icon === false) {
                 array_push($data['images'], array(
                     'fileid'=> $file->getId(),
-                    'url'    => $file->getUrl(),
-                    'icon'    => $file->getUrl(),
+                    'url'    => $fileUrl,
+                    'icon'    => $iconUrl,
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
                 ));
             } else {
                 array_push($data['documents'], array(
                     'fileid'=> $file->getId(),
-                    'url'    => $file->getUrl(),
+                    'url'    => $fileUrl,
                     'icon'    => $icon,
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
@@ -455,6 +480,29 @@ class JsonServer
         ));
     }
 
+    protected function actionGetVerificationStatus() {
+    
+        if(isset($_SESSION['userid']) && $_SESSION['userid'] > 0) {
+            $fileid = $this->getRequest()->getParam('fileid');
+            $file = new File();
+            
+            if ($file->findFileById($fileid)) {
+                $data = array(
+                'status' => $file->getIs_scanned(),
+                'url' => $file->getUrl()
+                );
+            } else {
+                $data = array(
+                'status' => -1,
+                'url' => ''
+                );
+            }
+            return $this->setOutput(array(
+                'success' => true,
+                'data' => $data
+            ));
+        }
+    }
     protected function actionGetFilesForProject() {
         $files = File::fetchAllFilesForProject($this->getRequest()->getParam('projectid'));
         $user = new User();
