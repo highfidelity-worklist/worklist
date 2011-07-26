@@ -757,6 +757,9 @@ WHERE id = ' . (int)$id;
         $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`=' . $bid_id);
         $bid_info = mysql_fetch_assoc($res);
         $workitem_info = $this->getWorkItem($bid_info['worklist_id']);
+        
+        $user_id = isset($_SESSION['userid']) ? (int)$_SESSION['userid'] : 0;
+        $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 
         // Get bidder information
         $bidder = new User;
@@ -817,7 +820,10 @@ WHERE id = ' . (int)$id;
         if (mysql_query('BEGIN')) {
 
             // changing mechanic of the job
-            if (! $myresult = mysql_query("UPDATE `".WORKLIST."` SET " . ($is_mechanic ? "`mechanic_id` =  '".$bid_info['bidder_id']."', " : '') . " `status` = 'WORKING',`status_changed`=NOW(),`sandbox` = '".$bid_info['sandbox']."' WHERE `".WORKLIST."`.`id` = ".$bid_info['worklist_id'])) {
+            if (! $myresult = mysql_query("UPDATE `".WORKLIST."` SET " .
+                ($is_mechanic ? "`mechanic_id` =  '" . $bid_info['bidder_id'] . "', " : '') .
+                ($is_runner && $user_id > 0 && $workitem_info['runner_id'] == 0 ? "`runner_id` =  '".$user_id."', " : '') .
+                " `status` = 'WORKING',`status_changed`=NOW(),`sandbox` = '".$bid_info['sandbox']."' WHERE `" . WORKLIST . "`.`id` = " . $bid_info['worklist_id'])) {
                 error_log("AcceptBid:UpdateMechanic failed: ".mysql_error());
                 mysql_query("ROLLBACK");
                 return false;
