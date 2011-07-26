@@ -95,4 +95,11 @@ $(document).ready(function() {
     $('#fund_id').change(function() {
         $('#fundForm').submit();
     });
+
+    $('#commit-btn').click(function(e) {
+        $(this).attr('disabled', 'disabled');
+        e.preventDefault();
+        $(this).unbind('click');
+        $('#paymentForm').submit();
+    });
 });

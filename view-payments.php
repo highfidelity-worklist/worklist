@@ -384,7 +384,7 @@ include("head.html"); ?>
     | [<a href="#" onClick="toggleCBs('unselect');">Select None</a>]
 </div>
 <div class="clear"></div>
-<form action="view-payments.php?<?php echo isset($_GET["order"])?'order='.$_GET["order"]:''; ?>" method="POST">
+<form id="paymentForm" action="view-payments.php?<?php echo isset($_GET["order"])?'order='.$_GET["order"]:''; ?>" method="POST">
 <table id="payments-table">
     <thead><tr class="table-hdng">
         <th>Pay</th>
@@ -520,7 +520,6 @@ foreach ($payee_totals as $payee) {
         <br>Paypal API Signature: <input type="password" name="pp_api_signature" id="pp_api_signature" /><br>
     <?php } ?> 
     <input type="submit" id="commit-btn" name="commit"
-        onclick="document.getElementById('commit-btn').disabled='disabled'"
         value="<?php echo isset($_POST["action"])?'Pay Now':'Confirm'; ?>" />
     &nbsp;&nbsp;Total Selected: $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
     <input type="hidden" name="fund_id" value="<?php echo $fund_id; ?>" />
