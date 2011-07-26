@@ -499,7 +499,7 @@ foreach ($payee_totals as $payee) {
         }
     }
 
-    if ((mysql_num_rows($ind_query) > 0 && $fund_id == 3) || (mysql_num_rows($bonus_query) > 0)) {
+    if ((mysql_num_rows($ind_query) > 0) || ($fund_id == 3 && mysql_num_rows($bonus_query) > 0)) {
         echo '<tbody id="indfees'.$payee["mechanic_id"].'"';
         if ($display_set == false) {           
             echo ' style="display: none;"';
