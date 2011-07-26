@@ -1456,11 +1456,11 @@ include("head.html"); ?>
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 <?php
-// !!! This code is duplicated in workitem.inc
+// !!! This code was duplicated from workitem.inc but it's been slightly changed due to ID clashes
 // !!! [START DUP]
 ?>
-<script type="text/html" id="uploadedFiles">
-<div id="accordion">
+<script type="text/html" id="projectUploadedFiles">
+<div id="projectAccordion">
     <h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
     <div id="fileimagecontainer">
     <# if (images.length > 0) { #>
@@ -1526,14 +1526,48 @@ include("head.html"); ?>
     <div class="clear"></div>
 </script>
 <?php
-// !!! The code above is duplicated in workitem.inc
+// !!! The code above was duplicated from workitem.inc but it's been slightly changed due to ID clashes
 // !!! [END DUP]
 ?>
 <script type="text/javascript">
+var projectid = <?php echo !empty($project_id) ? $project_id : "''"; ?>;
 var imageArray = new Array();
 var documentsArray = new Array();
-</script>
-<title>Worklist | Fast pay for your work, open codebase, great community.</title>
+(function($) {
+    // flag to say we've not loaded anything in there yet
+    
+    $('#projectAccordion').accordion( "activate" , 0 );
+    $.ajax({
+        type: 'post',
+        url: 'jsonserver.php',
+        data: {
+            projectid: projectid,
+            userid: user_id,
+            action: 'getFilesForProject'
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.success) {
+                var images = data.data.images;
+                var documents = data.data.documents;
+                for (var i=0; i < images.length; i++) {
+                    imageArray.push(images[i].fileid);
+                }
+                for (var i=0; i < documents.length; i++) {
+                    documentsArray.push(documents[i].fileid);
+                }
+                var files = $('#projectUploadedFiles').parseTemplate(data.data);
+                files = files + '<script type="text/javascript" src="js/uploadFiles.js"><\/script>';
+                $('#uploadPanel').append(files);
+                $('#projectAccordion').accordion({
+                    clearStyle: true,
+                    collapsible: true
+                });
+            }
+        }
+    });
+})(jQuery);
+</script><title>Worklist | Fast pay for your work, open codebase, great community.</title>
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
