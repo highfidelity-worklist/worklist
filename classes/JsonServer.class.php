@@ -285,8 +285,7 @@ class JsonServer
             $success = $file->save();
             //good palce to set trigger for scanning
             $icon = File::getIconFromMime($file->getMime());
-            // Temporarly wire off new features until scans are finished in live database
-            /*if ($icon === false) {
+            if ($icon === false) {
                 $filetype = 'image';
                 $icon = 'images/icons/default.png';
             } 
@@ -294,21 +293,6 @@ class JsonServer
                 'success' => true,
                 'fileid'  => $file->getId(),
                 'url'       => 'javascript:;',
-                'icon'      => $icon,
-                'title'      => $file->getTitle(),
-                'description' => '',
-                'filetype'=> (isset($filetype) ? $filetype : '')
-            ));
-            */
-            if ($icon === false) {
-                $filetype = 'image';
-                $icon = $file->getUrl();
-            }
-            
-            return $this->setOutput(array(
-                'success' => true,
-                'fileid'  => $file->getId(),
-                'url'       => $file->getUrl(),
                 'icon'      => $icon,
                 'title'      => $file->getTitle(),
                 'description' => '',
@@ -445,14 +429,13 @@ class JsonServer
             if (!File::isAllowed($file->getStatus(), $user)) {
                 continue;
             }
-//Wire off the scan test until we have finished scanning live files
-/*            if ($file->getIs_scanned() == 0) {
+            if ($file->getIs_scanned() == 0) {
                 $fileUrl = 'javascript:;';
                 $iconUrl = 'images/icons/default.png';
-            } else { */
+            } else {
                 $fileUrl = $file->getUrl();
                 $iconUrl = $file->getUrl();
-//            }
+            }
             
             $icon = File::getIconFromMime($file->getMime());
             if ($icon === false) {
