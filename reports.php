@@ -57,7 +57,7 @@ if (!$filter->getEnd()) {
 $page = $filter->getPage();
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
-    Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1);
+    Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1, $fund_id=false);
 }
 
 /*********************************** HTML layout begins here  *************************************/

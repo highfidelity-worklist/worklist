@@ -32,14 +32,17 @@ class Fee
         $user_paid = $user_paid == 0 ? $_SESSION['userid'] : $user_paid;
         $paid_notes = mysql_real_escape_string($paid_notes);
         $paid = (int) $paid;
-        $fund_id = (int) $fund_id;
+        //If no fund passed, do not update fund_id in fee or update budget. (alternate version. bail with failure if fund_id is required
+        if ($fund_id) { $update_fund_id = " , `fund_id` = " . (int) $fund_id; }
     
         $user_id = 0;
         $amount = 0;
         $points = 0;
+
         //Wired REWARDER out of process while API is being rebuilt (and we are using a different process for determining rewarder now)
         $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid`, `expense`, '0' as `rewarder` FROM `".FEES."` WHERE `id`=$fee_id AND `bonus` = 0";
-        $rt = mysql_query($query);
+        $rt = mysql_query($query) or error_log("failed to select fees: $query : " . mysql_error());
+
         if ($rt && ($row = mysql_fetch_assoc($rt))) {
             $query = "
                 UPDATE 
@@ -48,10 +51,10 @@ class Fee
                     `user_paid` = {$user_paid},
                     `notes` = '{$paid_notes}',
                     `paid` = {$paid},
-                    `paid_date` = NOW(),
-                    `fund_id` = {$fund_id}
+                    `paid_date` = NOW()
+                    {$update_fund_id}
                 WHERE `id` = {$fee_id}";
-            $rt = mysql_query($query) or error_log("failed to mark fee paid: ".mysql_error()."\n$query");
+            $rt = mysql_query($query) or error_log("failed to mark fee paid: $query : ".mysql_error());
 
             /* Add rewarder points and log */
             if ($rt) {
@@ -67,7 +70,7 @@ class Fee
 
                     /* Find the runner for this task so we can adjust their budget. */
                     $query = "SELECT `runner_id` FROM `".WORKLIST."` WHERE `id`=$worklist_id";
-                    $rt = mysql_query($query);
+                    $rt = mysql_query($query) or error_log("Unable to select Runner: $query : " . msyql_query());
                     if ($rt && ($row = mysql_fetch_assoc($rt))) {
                         $runner_id = $row['runner_id'];
                     } else {

@@ -10,12 +10,12 @@ class Bonus
     public static function markPaidByList($ids, $user_paid = 0, $paid = 1, $summary = false, $fund_id = false) {
         $summaryData = array();
         foreach ($ids as $id) {
-            $single_summary = self::markPaidById($id, $user_paid, $paid, true, $fund_id);
-            // $summary = [receiver_id, amount]
-            if (isset($summaryData[$single_summary[0]])) {
-                $summaryData[$single_summary[0]][0] += $single_summary[1];
-            } else {
-                $summaryData[$single_summary[0]][0] = $single_summary[1];
+            if ( $single_summary = self::markPaidById($id, $user_paid, $paid, true, $fund_id) ) {
+                if (isset($summaryData[$single_summary[0]])) {
+                    $summaryData[$single_summary[0]][0] += $single_summary[1];
+                } else {
+                    $summaryData[$single_summary[0]][0] = $single_summary[1];
+                }
             }
         }
 
@@ -27,24 +27,37 @@ class Bonus
     }
 
     public static function markPaidById($id, $user_paid = 0, $paid = 1, $summary = false, $fund_id = false) {
+
         $id = (int) $id;
+        // do not proceed if called without an id
+        if (!$id) { 
+            return false;
+        }
+
         $paid = (int) $paid;
         $user_paid = (int) $user_paid;
         $user_paid = $user_paid == 0 ? $_SESSION['userid'] : $user_paid;
+        $update_fund_id = ((int) $fund_id) ? " `fund_id` = " . (int) $fund_id . ", " : '';
 
         $select_query = "
             SELECT
-                *
+                user_id,
+                amount
             FROM
                 " . FEES . "
             WHERE
-                id = {$id} AND
+                id = {$id} 
                 AND bonus = 1";
 
-        $select_query = mysql_fetch_array(mysql_query($select_query));
+        if ( $select_result = mysql_query($select_query) ) {
+            $select_result = mysql_fetch_array($select_result) or error_log("Error fetching bonus: $select_query : " . mysql_error());
+        } else {
+            error_log("Error selecting Bonus: $select_query : " . mysql_error());
+            return false;
+        }
 
-        $receiver_id = $select_query['user_id'];
-        $amount      = $select_query['amount'];
+        $receiver_id = $select_result['user_id'];
+        $amount      = $select_result['amount'];
 
         $update_query = "
             UPDATE
@@ -52,7 +65,7 @@ class Bonus
             SET
                 `user_paid` = {$user_paid},
                 `paid` = {$paid},
-                `fund_id` = {$fund_id},
+                {$update_fund_id}
                 `paid_date` = NOW()
             WHERE
                 id = {$id} AND
@@ -60,7 +73,7 @@ class Bonus
             LIMIT 1
             ";
 
-        $result = mysql_unbuffered_query($update_query);
+        $result = mysql_query($update_query) or error_log("Error updating Bonus: $update_query : " . mysql_error());
 
         if (!$result) {
             error_log("ERORR: fees table update failed! (id # ".$id);
@@ -70,7 +83,7 @@ class Bonus
         if ($summary) {
             return array($receiver_id, $amount);
         } else {
-            return !empty($rt);
+            return !empty($result);
         }
     }
 }

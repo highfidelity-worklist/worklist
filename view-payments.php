@@ -305,7 +305,7 @@ switch ($action) {
 
                 $summaryData = Fee::markPaidByList(explode(',', $fee_id_csv), $user_paid = 0, $paid_notes='', $paid = 1, $fund_id);
                 if ($bonus_id_csv) {
-                    Bonus::markPaidByList(explode(',', $bonus_id_csv),  $user_paid = 0, $paid = 1, $fund_id);
+                    Bonus::markPaidByList(explode(',', $bonus_id_csv),  $user_paid = 0, $paid = 1, false, $fund_id);
                 }
 
             } else  {
