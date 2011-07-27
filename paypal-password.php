@@ -1,7 +1,13 @@
 <?php
-if(!isset($_SESSION)) { session_start(); }
 require_once("config.php");
+require_once('class.session_handler.php');
+if(!isset($_SESSION)) { session_start(); }
 require_once('check_session.php');
+
+if (empty($_SESSION['is_payer'])) {
+   header("Location:reports.php");
+}
+
 
 //open db connection
 $db = @mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD) or die ('I cannot connect to the database because: ' . mysql_error());
