@@ -110,17 +110,39 @@ if (isset($_POST['save_account'])) {
     // if nickname is different - update it through login call
     $nickname = trim($_POST['nickname']);
     if($nickname != $_SESSION['nickname']) {
+        
+        $user = new User();
+        $user->findUserByNickname($_POST['nickname']);
+        
+        if ($user->getId() != null && $user->getId() != intval($_SESSION['userid'])) {
+            die(json_encode(array('error' => 2, 'message' => "Update failed, nickname already exists!")));
+        }
+        
         $ret = Utils::updateLoginData(array('nickname' => $nickname), true, false);
-        if ($ret->error == 1) {
+        if (isset($ret->error) && $ret->error == 1) {
             // TODO: Actually send error back to browser, if necessary
             $error->setError($ret->message);
+
         } else {
             if(!$_SESSION['new_user']) {
                 $sql = "UPDATE " . USERS . " SET nickname='" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
-                mysql_query($sql);
-                $_SESSION['nickname'] = $nickname;
-                $messages[] = "Your nickname is now '$nickname'.";
+                if (mysql_query($sql)) {
+                    $_SESSION['nickname'] = $nickname;
+                    $messages[] = "Your nickname is now '$nickname'.";
+                } else {
+                    $error->setError("Error updating nickname in Worklist");
+                }
             }
+        }
+
+        if ($error->getErrorFlag()) {
+            $errormsg = implode(', ', $error->getErrorMessage());
+            $body = 'Nickname update failed for user with id='. intval($_SESSION['userid']) . ". \n";
+            $body .= "Old nickname: '" . $_SESSION['nickname'] . "'\n" ;
+            $body .= "New nickname: '" . $nickname . "'\n" ;
+            $body .= "Error message: '" . $errormsg;
+            send_email(FEEDBACK_EMAIL, 'Update nickname for user failed!', nl2br($body), $body);
+            die(json_encode(array('error' => 1, 'messsage' => $errormsg)));
         }
     }
 
@@ -373,12 +395,22 @@ include("head.html");
             type: "POST",
             url: 'settings.php',
             data: values,
-            dataType: 'html',
+            dataType: 'json',
             success: function(json) {
+                var message = 'Account settings saved!';
+                if (!!json && !!json.error) {
+                    console.log(json);
+                    if (json.error == 1) {
+                        message = "There was an error updating your information.<br/>Please try again or contact a Runner for assistance.";
+                    } else {
+                        message = json.message;
+                    }
+                }
+                
                 if (type == 'payment') {
-                    $('#msg-'+type).html('Account settings saved' + '<br/>' + json);
+                    $('#msg-'+type).html(message + '<br/>' + json);
                 } else {
-                    $('#msg-'+type).text('Account settings saved!' );
+                    $('#msg-'+type).html(message);
                 }
             },
             error: function(xhdr, status, err) {
