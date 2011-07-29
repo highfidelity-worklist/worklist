@@ -22,7 +22,7 @@ if($letter == "all"){
   $letter = ".*";
 }
 if($letter == "_"){ //numbers
-  $letter = "[0-9]";
+  $letter = "[^A-Za-z]";
 }
 
 if( $active == 'FALSE' )	{
