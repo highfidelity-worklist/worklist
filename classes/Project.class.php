@@ -25,6 +25,7 @@ class Project {
     protected $owner_id;
     protected $fund_id;
     protected $testflight_team_token;
+    protected $logo;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -80,7 +81,7 @@ class Project {
         }
 
         $query = "
-            SELECT p.project_id, p.name, p.description, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, p.fund_id, p.testflight_team_token
+            SELECT p.project_id, p.name, p.description, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, p.fund_id, p.testflight_team_token, p.logo 
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -103,6 +104,7 @@ class Project {
              ->setLastCommit($row['last_commit'])
              ->setActive($row['active'])
              ->setTestFlightTeamToken($row['testflight_team_token'])
+             ->setLogo($row['logo'])
              ->setOwnerId($row['owner_id'])
              ->setFundId($row['fund_id']);
              
@@ -220,10 +222,18 @@ class Project {
     public function getTestFlightTeamToken() {
         return $this->testflight_team_token;
     }
-    
+
+    public function setLogo($logo) {
+        $this->logo = $logo;
+        return $this;
+    }
+
+    public function getLogo() {
+        return $this->logo;
+    }    
 
     protected function insert() {
-        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, testflight_team_token, last_commit ) ".
+        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, testflight_team_token, logo, last_commit ) ".
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -233,6 +243,7 @@ class Project {
             "'".mysql_real_escape_string($this->getActive())."', ".
             "'".mysql_real_escape_string($this->getOwnerId())."', ".
             "'".mysql_real_escape_string($this->getTestFlightTeamToken())."', ".
+            "'".mysql_real_escape_string($this->getLogo())."', ".
             "NOW())";
         $rt = mysql_query($query);
         $this->id = mysql_insert_id();
@@ -252,6 +263,7 @@ class Project {
                 contact_info='".mysql_real_escape_string($this->getContactInfo())."',
                 last_commit='".mysql_real_escape_string($this->getLastCommit())."',
                 testflight_team_token='".mysql_real_escape_string($this->getTestFlightTeamToken())."',
+                logo='".mysql_real_escape_string($this->getLogo())."',
                 active='".intval($this->getActive())."',
                 owner_id='".intval($this->getOwnerId())."'
             WHERE project_id=" . $this->getProjectId();

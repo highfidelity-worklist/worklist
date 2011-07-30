@@ -116,9 +116,9 @@ require_once('functions.php');
                     width: 415,
                     resizable: false
                 });
+
                 $('#popup-addproject').data('title.dialog', 'Add Project');
                 $('#popup-addproject').dialog('open');
-
                 // clear the form
                 $('input[type="text"]', '#popup-addproject').val('');
                 $('textarea', '#popup-addproject').val('');
@@ -159,7 +159,8 @@ require_once('functions.php');
                         data: {
                             name: $(':input[name="name"]', addForm).val(),
                             description: $(':input[name="description"]', addForm).val(),
-                            repository: $(':input[name="repository"]', addForm).val()
+                            repository: $(':input[name="repository"]', addForm).val(),
+                            logo: $(':input[name="logoProject"]', addForm).val()
                         },
                         type: 'POST',
                         success: function(json){

@@ -6,6 +6,14 @@
         <p class="info-label"><span class="required-field">*</span> Description:<br />
             <textarea name="description" id="description" size="48" /></textarea>
         </p>
+        <p class="info-label">
+            <img style="width:48px;height:48px;cursor: pointer; margin-top:5px; border: 2px solid rgb(209, 207, 207);"
+            id="projectLogoAdd"
+            src="images/emptyLogo.png"><br>
+            <span style="display: none;"
+            class="LV_validation_message LV_invalid upload"></span>
+            <input type="hidden" value="" name="logoProject">
+        </p>        
         <p class="info-label">SVN Repsitory:<br />
             <input type="text" name="repository" id="repository" class="text-field" size="48" />
         </p>

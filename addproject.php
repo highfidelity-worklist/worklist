@@ -22,11 +22,10 @@ if ($userId > 0) {
     $nick = $user->getNickname();
 
     $project = new Project();
-    $args = array( 'name', 'description', 'repository' );
+    $args = array( 'name', 'description', 'repository', 'logo' );
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
-    
     // check if repository exists, ignore empty repository
     if (!empty($repository) && $project->getIdFromRepo($repository)) {
         die(json_encode(array('error' => "Project repository already exists!")));
@@ -38,6 +37,7 @@ if ($userId > 0) {
     $project->setContactInfo($user->getUsername());
     $project->setOwnerId($userId);
     $project->setActive(true);
+    $project->setLogo($logo);
     $project->save();
     $journal_message = $nick . ' added project ' . $name;
     

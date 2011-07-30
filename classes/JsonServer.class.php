@@ -234,7 +234,52 @@ class JsonServer
         }
         return $this->setOutput($success);
     }
+    protected function actionLogoUpload() {
+        // check if we have a error
+        if ($_FILES['logoFile']['error'] !== UPLOAD_ERR_OK) {
+            return $this->setOutput(array(
+                'success' => false,
+                'message' => File::fileUploadErrorMessage($_FILES['logoFile']['error'])
+            ));
+        }
+		
+        $ext = end(explode(".", $_FILES['logoFile']['name']));
+        $fileName = File::uniqueFilename($ext);
+        $tempFile = $_FILES['logoFile']['tmp_name'];
+        $title = basename($_FILES['logoFile']['name']);
+        $path = UPLOAD_PATH . '/' . $fileName;
 
+
+
+        if (copy($tempFile, $path)) {
+            $url = SERVER_URL . 'uploads/' . $fileName;
+            $projectid = $this->getRequest()->getParam('projectid');
+            $projectid = (is_numeric($projectid) ? $projectid : null);
+
+            $file = new File();
+            $file->setProjectId($projectid)
+                 ->setTitle($title)
+                 ->setUrl($url);
+            $success = $file->save();
+            //good palce to set trigger for scanning
+			
+            return $this->setOutput(array(
+                'success' => true,
+                'fileid'  => $file->getId(),
+                'url'       => $url,
+                'title'      => $file->getTitle(),
+                'fileName' => $fileName,
+                'description' => '')
+			);
+
+        } else {
+            return $this->setOutput(array(
+                'success' => false,
+                'message' => 'An error occured while uploading the  '.$tempFile.','. $path.' please try again!'
+            ));
+        }
+
+    }
     /**
      * This method adds a file to a workitem
      */

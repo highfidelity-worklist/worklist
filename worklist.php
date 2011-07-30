@@ -42,6 +42,7 @@ if ($projectName) {
     if (isset($_REQUEST['save_project']) && $inProject->isOwner($userId)) {
         $inProject->setDescription($_REQUEST['description']);
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
+        $inProject->setLogo($_REQUEST['logoProject']);
         $inProject->save();
         // we clear post to prevent the page from redirecting
         $_POST = array();
@@ -217,6 +218,17 @@ include("head.html"); ?>
     var status_refresh = 5 * 1000;
     var statusTimeoutId = null;
     var lastStatus = 0;
+    function validateUploadImage(file, extension) {
+        if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))) {
+            // extension is not allowed
+            $('span.LV_validation_message.upload').css('display', 'none').empty();
+            var html = 'This filetype is not allowed!';
+            $('span.LV_validation_message.upload').css('display', 'inline').append(html);
+            // cancel upload
+            return false;
+        }
+    }
+	
     function GetStatus(source) {
         var url = 'update_status.php';
         var action = 'get';
@@ -747,12 +759,59 @@ include("head.html"); ?>
 
     }(jQuery); // end of function loaderImg
 
-
+	
     $(document).ready(function() {
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
         $('#userbox').css('margin-top', '-'+box_h+'px');
+		
+        if (inProject.length > 0) {
+            if ( $("#projectLogoEdit").length > 0) {
+                new AjaxUpload('projectLogoEdit', {
+                    action: 'jsonserver.php',
+                    name: 'logoFile',
+                    data: {
+                        action: 'logoUpload',
+                        projectid: inProject,
+                    },
+                    autoSubmit: true,
+                    responseType: 'json',
+                    onSubmit: validateUploadImage,
+                    onComplete: function(file, data) {
+                        $('span.LV_validation_message.upload').css('display', 'none').empty();
+                        if (!data.success) {
+                            $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
+                        } else if (data.success == true ) {
+                            $("#projectLogoEdit").attr("src",data.url);
+                            $('input[name=logoProject]').val(data.fileName);
+                        }
+                    }
+                });	
+            }
+        } 
 
+        new AjaxUpload('projectLogoAdd', {
+            action: 'jsonserver.php',
+            name: 'logoFile',
+            data: {
+                action: 'logoUpload',
+                projectid: inProject,
+            },
+            autoSubmit: true,
+            responseType: 'json',
+            onSubmit: validateUploadImage,
+            onComplete: function(file, data) {
+                $('span.LV_validation_message.upload').css('display', 'none').empty();
+                if (!data.success) {
+                    $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
+                } else if (data.success == true ) {
+                    $("#projectLogoAdd").attr("src",data.url);
+                    $('input[name=logoProject]').val(data.fileName);
+                }
+            }
+        });	
+
+		
         $.get('getskills.php', function(data) {
             var skills = eval(data);
             $("#skills").autocomplete(skills, {
@@ -1630,8 +1689,14 @@ if (is_object($inProject)) {
         <span style="width: 150px; float: right;"><a href="?action=edit">Switch to Edit Mode</a></span>
 <?php endif; ?>
 <?php endif; ?>
-    <h2>Project:  [#<?php echo $inProject->getProjectId(); ?>] <?php echo $inProject->getName(); ?></h2>
 <?php if ($edit_mode) : ?>
+    <p style="float:left">
+    <img style="cursor: pointer; width:48px; height:48px; margin-right:5px; border: 2px solid rgb(209, 207, 207);"
+    id="projectLogoEdit"
+    src="<?php echo(!$inProject->getLogo() ? 'images/emptyLogo.png' : 'uploads/' . $inProject->getLogo());?>" />
+    <span style="display: none;" class="LV_validation_message LV_invalid upload"></span>
+    </p>
+    <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>]</h2>        
     <form name="project-form" id="project-form" action="<?php echo SERVER_URL . $inProject->getName(); ?>" method="post">
         <fieldset>
             <p class="info-label">Edit Description:<br />
@@ -1643,13 +1708,21 @@ if (is_object($inProject)) {
             <div>
                 <input class="left-button" type="submit" id="cancel" name="cancel" value="Cancel">
                 <input class="right-button" type="submit" id="save_project" name="save_project" value="Save">
+                <input type="hidden" value="" name="logoProject">
             </div>
             <input type="hidden" name="project" value="<?php echo $inProject->getName(); ?>" />
         </fieldset>
     </form>
 <?php endif; ?>
-    <ul>
+
 <?php if (! $edit_mode) : ?>
+    <p style="float:left">
+        <img style="width:48px;height:48px;margin-right:5px;border: 2px solid rgb(209, 207, 207);"
+        id="projectLogo"
+        src="<?php echo(!$inProject->getLogo() ? 'images/emptyLogo.png' : 'uploads/' . $inProject->getLogo());?>" />
+    </p>
+    <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>] </h2>
+    <ul>        
         <li><strong>Description:</strong> <?php echo $inProject->getDescription(); ?></li>
 <?php endif; ?>
         <li><strong>Budget:</strong> $<?php echo $inProject->getBudget(); ?></li>
