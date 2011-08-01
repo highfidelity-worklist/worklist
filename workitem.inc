@@ -1503,7 +1503,7 @@ if ($action =="edit"):  ?>
                                     <tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
                                         <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
                                         <td>$ <?php echo $fee['amount'];?></td>
-                                        <?php if ($worklist['status'] == 'DONE' && $fee['desc'] == 'Accepted Bid') { ?>
+                                        <?php if (($worklist['status'] == 'REVIEW' || $worklist['status'] == 'COMPLETED' || $worklist['status'] == 'DONE')&& ($fee['desc'] == 'Accepted Bid')) { ?>
                                         <td>Bid Notes: <?php echo $fee['bid_notes'];?></td>
                                         <?php } else { ?>
                                         <td><?php echo $fee['desc'];?></td>
