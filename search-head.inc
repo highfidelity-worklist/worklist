@@ -68,7 +68,8 @@
                 <div class="input_box">
                     <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
                     <a id="search" href="" class="searchIcon"><img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"></a>
-                <a id="search_reset" href="" class="searchIcon"><img src="images/cross.png"></a>            </div>
+                <a id="search_reset" href="" class="searchIcon" title ="Clear Search Parameters"><img src="images/cross.png"/></a>
+                </div>
         </form>
     </div>
     <?php if(isset($_SESSION['userid'])){ 
