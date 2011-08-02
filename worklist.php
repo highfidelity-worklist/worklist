@@ -39,7 +39,7 @@ if ($projectName) {
     $inProject = new Project();
     $inProject->loadByName($projectName);
     // save changes to project
-    if (isset($_REQUEST['save_project']) && $inProject->isOwner($userId)) {
+    if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
         $inProject->setDescription($_REQUEST['description']);
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
         $inProject->setLogo($_REQUEST['logoProject']);
@@ -80,7 +80,7 @@ if (is_object($inProject)) {
     }
 }
 // save,edit,delete roles <mikewasmie 16-jun-2011>
-if (is_object($inProject) && $inProject->isOwner($userId)) {
+if (is_object($inProject) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
     if ( isset($_POST['save_role'])) {
         $args = array('role_title', 'percentage', 'min_amount');
         foreach ($args as $arg) {
@@ -180,7 +180,7 @@ if (!empty($journal_message)) {
 }
 
 // Load roles table id owner <mikewasmike 15-jun 2011>
-if(is_object($inProject) && $inProject->isOwner($userId)){
+if(is_object($inProject) && ( $is_runner || $is_payer || $inProject->isOwner($userId))){
     $roles = $inProject->getRoles($inProject->getProjectId());
 }
 
@@ -1642,7 +1642,7 @@ var documentsArray = new Array();
 <!-- Popups for tables with jobs from quick links -->
 <?php require_once('dialogs/popups-userstats.inc'); ?>
 <!-- Popup for add project info-->
-<?php require_once('dialogs/popup-addproject.inc'); ?>
+<?php if ($is_runner || $is_payer) {require_once('dialogs/popup-addproject.inc'); }?>
 <!-- Popup for add role -->
 <?php include('dialogs/popup-addrole.inc') ?>
 <!-- Popup for viewing role -->
@@ -1675,14 +1675,14 @@ if(isset($_REQUEST['journal_query'])) {
 // show project information header
 if (is_object($inProject)) {
     $edit_mode = false;
-    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && $inProject->isOwner($userId)) {
+    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
         $edit_mode = true;
     }
 ?>
-<?php if ($inProject->isOwner($userId) && $inProject->getTestFlightTeamToken()) : ?>
+<?php if (($is_runner || $inProject->isOwner($userId)) && $inProject->getTestFlightTeamToken()) : ?>
         <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
 <?php endif; ?>
-<?php if ($inProject->isOwner($userId)) : ?>
+<?php if ( $is_runner || $is_payer || $inProject->isOwner($userId)) : ?>
 <?php if ($edit_mode) : ?>
         <span style="width: 150px; float: right;"><a href="?action=view">Switch to View Mode</a></span>
 <?php else: ?>
@@ -1763,7 +1763,7 @@ if (is_object($inProject)) {
 </div>
 <div class="projectRight">
 <!-- table for roles <mikewasmike 15-ju-2011>  -->
-<?php if ($inProject->isOwner($userId)) : ?>
+<?php if ($is_runner || $is_payer || $inProject->isOwner($userId)) : ?>
             <div id="for_view">
                 <div class="roles">
                     <div id="roles-panel">

@@ -118,6 +118,7 @@ include("head.html");
             return false;
         });
         
+    <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer']) { ?>
         $('#addproj').click(function() {
             $('#popup-addproject').dialog({ 
                 autoOpen: false, 
@@ -212,6 +213,7 @@ include("head.html");
             });
         
         });
+    <?php } ?>
     })
     function populateProjectListing(pageNumber) {
         selected_page = pageNumber;
@@ -311,7 +313,9 @@ include("head.html");
     <h1>Worklist Projects</h1>
     <p><strong>The Worklist is a marketplace for Product Developers to rapidly prototype or build applications and websites using a global network of developers, designers and testers. Below is a list of the projects currently under development.</strong></p>
     <div id="errorMessage">No projects matched your selection</div>
+   <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer']) { ?>
     <div id="addProjectLink"><input type="submit" id="addproj" name="addproj" value="Add Project" /></div>
+   <?php } ?>
     <table id="projectListing">
         <tbody>
         </tbody>

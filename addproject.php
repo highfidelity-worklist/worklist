@@ -15,7 +15,7 @@ $journal_message = '';
 $nick = '';
 
 $userId = getSessionUserId();
-if ($userId > 0) {
+if ($userId > 0 && ($_SESSION['is_runner'] || $_SESSION['is_payer'])) {
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );

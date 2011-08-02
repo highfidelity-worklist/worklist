@@ -91,12 +91,15 @@ require_once('functions.php');
         <div id="nav">
         <?php if (isset($_SESSION['username'])) { ?>
 
-            <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
-            <a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> |
-            <a href="reports.php" class="iToolTip menuReports">Reports</a> |
-            <a href="team.php">Team</a> |
-            <a href="settings.php" class="iToolTip menuSettings">Settings</a> |
-            <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects">Projects</a>
+              <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a>
+            | <a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a>
+            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
+            | <a href="team.php">Team</a>
+            | <a href="settings.php" class="iToolTip menuSettings">Settings</a>
+            | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects">Projects</a>
+             <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer'] ) { ?>
+            | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
+             <?php } ?>
             <?php } else {
             echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a> | <a href="projects.php">Projects</a>';
             
