@@ -270,8 +270,8 @@ include("head.html");
             image_filename = 'uploads/' + json.logo;
         }
         row = '<tr class="projectDetailsRow projectID_' + json.project_id + '">';
-        row += '<td class="projectLogo"><img src="' + image_filename + '" border="1"></td>';
-        row += '<td class="projectDescription"><h2><a href="' + encodeURIComponent(json.name) +'">' + json.name + '</a></h2>';
+        row += '<td class="projectLogo"><img src="' + image_filename + '" border="1" ></td>';
+        row += '<td class="projectDescription"><h2><a href="' + encodeURIComponent(json.name) +'" width="48" height="48" />' + json.name + '</a></h2>';
         row += '<span class="descriptionText">';
         if (json.description.length > 500) {
             row += json.description.substring(0,500) + '... <a href="' + encodeURIComponent(json.name) + '">[ read more ]</a>';
