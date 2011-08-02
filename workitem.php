@@ -239,6 +239,9 @@ if ($action =='save_workitem') {
 }
 
 if ($action == 'new-comment') {
+    // incase the comment is a reply to another comment,
+    //we'll fetch the origibal comment's email <mikewasmike>
+    $corespondent = NULL;
     $comment = new Comment();
     if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
         $comment->setWorklist_id((int) $_POST['worklist_id']);
@@ -248,6 +251,11 @@ if ($action == 'new-comment') {
     }
     if (isset($_POST['comment_id']) && !empty($_POST['comment_id'])) {
         $comment->setComment_id((int) $_POST['comment_id']);
+        $originalComment = new Comment();
+        $originalComment->findCommentById((int) $_POST['comment_id']);
+        $cuser = new User();
+        $cuser->findUserById($originalComment->getUser_id());
+        $corespondent = array($cuser->getUsername());
     }
     if (isset($_POST['comment']) && !empty($_POST['comment'])) {
         $comment->setComment($_POST['comment']);
@@ -258,7 +266,8 @@ if ($action == 'new-comment') {
         $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
         Notification::workitemNotify(array('type' => 'comment',
               'workitem' => $workitem,
-              'recipients' => array('creator', 'runner', 'mechanic')),
+              'recipients' => array('creator', 'runner', 'mechanic'),
+              'emails' => $corespondent),
                array('who' => $_SESSION['nickname'],
                // removed nl2br as it's cleaner to be able to choose if this is used on output
                'comment' => $_POST['comment']));
