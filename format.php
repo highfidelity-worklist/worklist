@@ -96,9 +96,9 @@ require_once('functions.php');
             <a href="reports.php" class="iToolTip menuReports">Reports</a> |
             <a href="team.php">Team</a> |
             <a href="settings.php" class="iToolTip menuSettings">Settings</a> |
-            <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
+            <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects">Projects</a>
             <?php } else {
-            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a>';
+            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a> | <a href="projects.php">Projects</a>';
             
         } 
             ?>

@@ -52,5 +52,5 @@ if ($userId > 0) {
 
     echo json_encode(array( 'return' => "Done!"));
 } else {
-    echo json_encode(array( 'error' => "Invalid parameters !"));
+    echo json_encode(array( 'error' => "You must be logged in to add a new project!"));
 }
