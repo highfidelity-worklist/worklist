@@ -450,7 +450,7 @@ replacement date:
         and great community. We\'re excited to have you join us as we 
         create a new way to get things done.<br/><br/>
         Three things to help you get started:<br/><br/>
-           - Browse the source code*: <a href="http://svn.sendlove.us">http://svn.sendlove.us</a><br/>
+           - Browse the source code*: <a href="http://svn.worklist.net">http://svn.worklist.net</a><br/>
            - Get in the Journal to chat with us: <a href=" http://dev.sendlove.us/journal">http://dev.sendlove.us/journal</a><br/>
            - Bid on a project on our Worklist: <a href="http://dev.sendlove.us/worklist">http://dev.sendlove.us/worklist</a><br/>
         <br/>

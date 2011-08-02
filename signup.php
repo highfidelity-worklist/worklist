@@ -249,7 +249,7 @@ include("head.html");
 <h1>Create a New Account</h1>
 <p>
 	<i>Signing up for worklist will let you make bids on jobs.
-    <br /> We use an <a href="http://svn.sendlove.us/" target="_blank">open codebase </a>allowing you to quickly evaluate jobs, and we pay via PayPal on job completion.
+    <br /> We use an <a href="http://svn.worklist.net/" target="_blank">open codebase </a>allowing you to quickly evaluate jobs, and we pay via PayPal on job completion.
     </i>
 </p>
      <?php if(isset($error) && $error->getErrorFlag() == 1): ?>

@@ -763,7 +763,7 @@ function invitePerson( $invite, $item, $summary = null, $description = null) {
                 $body .= "<p>This item is part of a larger body of work being done at LoveMachine. You can join our Live Workroom to ask more questions by going <a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>";
                 $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>";
                 $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />";
-                $body .= "[<a href=\"http://svn.sendlove.us/\">svn.sendlove.us</a> | Browse our SVN repositories]<br />";
+                $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
                 $body .= "[<a href=\"http://www.lovemachineinc.com/development-process/\">dev.sendllove.us</a> | Read about our Development Process]<br />";
                 $body .= "[<a href=\"http://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
                 $body .= "[<a href=\"http://dev.sendlove.us/worklist/\">dev.sendlove.us/worklist</a> | Look over all our open work items]<br />";

@@ -33,7 +33,7 @@
     $res = preg_split('%/%', $_SERVER['SCRIPT_NAME']);
     $filename = array_pop($res);
     $repname = array_pop($res);
-    $viewSourceLink = "http://svn.sendlove.us/";
+    $viewSourceLink = "http://svn.worklist.net/";
     require_once('class/Utils.class.php');
     $version = Utils::getVersion();
 

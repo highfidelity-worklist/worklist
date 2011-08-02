@@ -41,7 +41,7 @@ require_once('functions.php');
             echo $feeinfo;  
         } ?>
         
-        <div id="tagline">Fast pay for your work, <a href="http://svn.sendlove.us/" target="_blank">open codebase</a>, great community.</div>       
+        <div id="tagline">Fast pay for your work, <a href="http://svn.worklist.net/" target="_blank">open codebase</a>, great community.</div>       
     </div>
     
     <!-- Inline Message Container -->
@@ -55,7 +55,7 @@ require_once('functions.php');
     var welcomeHTML = '<p><span class="inlineWelcome">Welcome to Worklist!</span></p>'+
     '<p>Browse the list of jobs below or click on <a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> to join our chat.</p>'+
     '<input type="submit" id="hideMessage" name="hideMessage" value="Hide this Message" />'+
-    '<div id="inlineSource"><a href="http://svn.sendlove.us/" target="_blank">Download our source code</a></div>'
+    '<div id="inlineSource"><a href="http://svn.worklist.net/" target="_blank">Download our source code</a></div>'
     
     // call the addInlineMessage function to show the inline message for new users
     addInlineMessage(welcomeHTML);

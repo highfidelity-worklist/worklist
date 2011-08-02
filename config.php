@@ -46,7 +46,7 @@ if (!defined('SERVER_BASE'))    define('SERVER_BASE','http://'.SERVER_NAME.'/'.A
 //So clone the standard URL
 if (!defined('SECURE_SERVER_URL')) define('SECURE_SERVER_URL',SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 if (!defined("LOGIN_APP_URL"))  define("LOGIN_APP_URL",'https://'.SERVER_NAME.APP_LOGIN);
-if (!defined('SVN_BASE_URL'))   define('SVN_BASE_URL', 'http://svn.sendlove.us/listing.php?repname=');
+if (!defined('SVN_BASE_URL'))   define('SVN_BASE_URL', 'http://svn.worklist.net/listing.php?repname=');
 if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
 if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
 
@@ -194,7 +194,7 @@ $config = array(
         )
     ),
     'websvn' => array(
-        'baseUrl'           => 'http://svn.sendlove.us',
+        'baseUrl'           => 'http://svn.worklist.net',
         'repLinkFragment'   => 'listing.php?repname='
     )
 );
