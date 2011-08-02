@@ -39,10 +39,10 @@ if (!defined('APP_ENV'))        define('APP_ENV', 'production');
 //http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
 if (!defined('SERVER_NAME'))    define('SERVER_NAME','dev.sendlove.us');
 if (!defined('SANDBOX_SERVER')) define('SANDBOX_SERVER','dev.sendlove.us');
-if (!defined('SERVER_URL'))     define('SERVER_URL','http://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
-if (!defined('SERVER_BASE'))    define('SERVER_BASE','http://'.SERVER_NAME.'/'.APP_BASE);
+if (!defined('SERVER_URL'))     define('SERVER_URL','https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
+if (!defined('SERVER_BASE'))    define('SERVER_BASE','https://'.SERVER_NAME.'/'.APP_BASE);
 //SSL Not enabled on development
-//define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
+define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 //So clone the standard URL
 if (!defined('SECURE_SERVER_URL')) define('SECURE_SERVER_URL',SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 if (!defined("LOGIN_APP_URL"))  define("LOGIN_APP_URL",'https://'.SERVER_NAME.APP_LOGIN);
@@ -88,7 +88,7 @@ if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "http://lovemachine.sendl
 
 if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 
-if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'http://dev.sendlove.us/journal/aj.php');
+if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'https://dev.sendlove.us/journal/aj.php');
 
 if (!defined('JOURNAL_API_URL')) define('JOURNAL_API_URL', 'https://dev.sendlove.us/journal/add.php');
 if (!defined('JOURNAL_API_USER')) define('JOURNAL_API_USER', 'api_username');
