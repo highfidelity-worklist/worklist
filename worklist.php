@@ -1723,7 +1723,7 @@ if (is_object($inProject)) {
     </p>
     <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>] </h2>
     <ul>        
-        <li><strong>Description:</strong> <?php echo nl2br(linkify(htmlentities($inProject->getDescription()))); ?></li>
+        <li><strong>Description:</strong> <?php echo nl2br(linkify(htmlspecialchars($inProject->getDescription()))); ?></li>
 <?php endif; ?>
         <li><strong>Budget:</strong> $<?php echo $inProject->getBudget(); ?></li>
         <li><strong>Contact Info:</strong> <?php echo $inProject->getContactInfo(); ?></li>
