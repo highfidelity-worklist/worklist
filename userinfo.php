@@ -36,6 +36,9 @@
         if ($_POST['save-salary']) {
             $field = 'salary';
             $value = mysql_real_escape_string($_POST['value']);
+        } elseif ($_POST['field'] == 'w9status') {
+            $field = 'w9status';
+            $value = mysql_real_escape_string($_POST['value']);
         } else {
             $field = $_POST['field'];
             $value = (int) $_POST['value'];
@@ -58,11 +61,30 @@
                     $updateUser->setIs_runner($value);
                     break;
 
-                case 'isw9approved':
-                    $updateUser->setHas_w9approval($value);
+                case 'w9status':
                     if ($value) {
-                        $updateUser->setHas_w2(false);
+                        switch ($value) {
+                            case 'approved':
+                                if (! sendTemplateEmail($updateUser->getUsername(), 'w9-approved')) { 
+                                    error_log("userinfo.php: send_email failed on w9 approved notification");
+                                }
+
+                                break;
+                                
+                            case 'rejected':
+                                $data = array();
+                                $data['reason'] = strip_tags($_POST['reason']);
+                                
+                                if (! sendTemplateEmail($updateUser->getUsername(), 'w9-rejected', $data)) { 
+                                    error_log("userinfo.php: send_email failed on w9 rejected notification");
+                                }
+                                break;
+                            
+                            default:
+                                break;
+                        }
                     }
+                    $updateUser->setW9_status($value);
                     break;
 
                 case 'ispaypalverified':
@@ -76,7 +98,7 @@
                     $updateUser->setHas_w2($value);
                     if ($value) {
                         $updateUser->setPaypal_verified(false);
-                        $updateUser->setHas_w9approval(false);
+                        $updateUser->setw9_status('not-applicable');
                     }
                     break;
 

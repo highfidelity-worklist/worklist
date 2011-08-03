@@ -10,7 +10,6 @@ class Utils{
         "skills",
         "timezone",
         "is_uscitizen",
-        "has_w9approval",
         "phone",
         "smsaddr",
         "country",

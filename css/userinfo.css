@@ -3,10 +3,14 @@ body {
     background-image: none;
 }
 
+.hidden {
+    display: none;
+}
+
 .userInfoLink {
-	color: #000;
-	text-decoration: none;
-	cursor: pointer;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .user-info p{
@@ -58,7 +62,7 @@ body {
 }
 p.small-text{
     font-size: 1.1em;
-	height:20px;
+    height:20px;
 }
 
 #user-stats {
@@ -72,15 +76,15 @@ p.small-text{
     width: auto;
 }
 #avatar {
-	background: #ffffff;
-	border: 1px solid lightgrey;
+    background: #ffffff;
+    border: 1px solid lightgrey;
     padding: 5px;
     margin: auto auto 3px;
 }
 #user-stats tbody tr td {
     text-align: center;
     font-weight: bold;
-	border-width:1px;
+    border-width:1px;
 }
 #user-stats tbody tr:hover {
     background-color: white;
@@ -180,7 +184,7 @@ p.bottom {
 .button-row {
     float: right;
     padding: 10px 16px 0;
-	margin-top:15px;
+    margin-top:15px;
     text-align: right;
     margin-right: 121px;
 }
@@ -199,3 +203,12 @@ p.bottom {
     text-align: center;
 }
 
+#w9status {
+    width: 150px;
+}
+
+#reject-w9 textarea {
+    height: 60px;
+    resize: none;
+    width: 95%;
+}

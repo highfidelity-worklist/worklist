@@ -113,6 +113,8 @@ class JsonServer
      * This method approves a user
      *
      * @param (array) $args
+     * @TODO: It does not appear that this function is in use, perhaps it is called
+     * by an API somewhere but I can't find it    - lithium
      */
     protected function actionApproveUser($args = null)
     {
@@ -123,7 +125,7 @@ class JsonServer
         if ($this->getUser()->isRunner()) {
             $user = new User();
             $user->findUserById($this->getRequest()->getParam('userid'));
-            $user->setHas_w9approval(1);
+            $user->setW9_status('approved');
 
             if ($user->save()) {
                 return $this->setOutput(array(
@@ -146,6 +148,8 @@ class JsonServer
 
     /**
      * This method checks the approval status of a user
+     * @TODO: It does not appear that this function is in use, perhaps it is called
+     * by an API somewhere but I can't find it    - lithium
      */
     protected function actionApprovalStatus()
     {
@@ -633,7 +637,8 @@ class JsonServer
             $body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_W9.pdf\">Click here</a></p>";
 
             if(!send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:w9Upload: send_email failed"); }
-
+            $user->setW9_status('pending-approval');
+            $user->save();
             return $this->setOutput(array(
                 'success' => true,
                 'message' => 'The file ' . basename( $_FILES['Filedata']['name']) . ' has been uploaded.'

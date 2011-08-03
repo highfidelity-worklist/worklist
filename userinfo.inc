@@ -177,9 +177,18 @@
                     <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label for="isrunner" class="info-label">Runner</label>
                     <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label for="ispayer" class="info-label">Payer</label>
                     <p class="info-label">Payment Information</p>
-                    <input type="checkbox" id="isw9approved" name="isw9approved" <?php if($user->isW9Approved()) echo 'checked="checked"'; ?> /><label for="isw9approved" class="info-label">W9 Approved</label>
-                    <input type="checkbox" id="ispaypalverified" name="ispaypalverified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?>/><label for="ispaypalverified" class="info-label">PayPal Verified</label>
+                    <?php $w9_status = $user->getW9_status(); ?>
+                    <label for="isw9approved" class="info-label">W9</label>
+                    <select id="w9status" name="w9status" <?php echo ($user->isUsCitizen() || $user->getCountry() == 'US') ? '' : 'disabled="disabled"'; ?>>
+                        <option value="awaiting-receipt" <?php echo $w9_status == 'awaiting-receipt' ? 'selected="selected"' : ''; ?>>Awaiting Receipt</option>
+                        <option value="pending-approval" <?php echo $w9_status == 'pending-approval' ? 'selected="selected"' : ''; ?>>Pending Approval</option>
+                        <option value="approved" <?php echo $w9_status == 'approved' ? 'selected="selected"' : ''; ?>>Approved</option>
+                        <option value="rejected" <?php echo $w9_status == 'rejected' ? 'selected="selected"' : ''; ?>>Rejected</option>
+                        <option value="not-applicable" <?php echo $w9_status == 'not-applicable' ? 'selected="selected"' : ''; ?>>Not Applicable</option>
+                    </select>
+                    <div style="clear: both;"></div>
                     <input type="checkbox" id="isw2employee" name="isw2employee" <?php if ($user->getHas_W2()) echo 'checked="checked"'; ?> /><label for="isw2employee" class="info-label">W2 Employee</label>
+                    <input type="checkbox" id="ispaypalverified" name="ispaypalverified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?>/><label for="ispaypalverified" class="info-label">PayPal Verified</label>
                     <p class="info-label">Preferred Payment Method</p>
                     <span id="info-payway"><?php echo $user->getPayway() == '' ? $user->getPayway() : 'None selected'; ?></span>
                     <p class="info-label">PayPal E-Mail</p>
@@ -237,7 +246,16 @@
 </div> <!-- end of div user-info-->
 
 <!-- popup div's -->
-    <div id="give-budget" title="Give Budget" style="text-align: left;display: none">
+    <div id="reject-w9" title="Reject W9" class="hidden">
+        <form method="post" action = "">
+            <label for="reject-reason" class="info-label">Reason: </label><br/>
+            <textarea id="reject-reason" name="reason"></textarea><br/>
+            <span style="float: right;"><span id="charCount">100</span> characters remaining</span>
+            <input type = "hidden" id = "budget-receiver" name="receiver_id" value = "<?php echo $user-> getId(); ?>" />
+        </form>
+    </div><!-- end of reject w9 div -->
+    
+    <div id="give-budget" class="hidden" title="Give Budget" style="text-align: left;">
         <form method="post" action = "">
             <label for="budget-amount" class="info-label">Amount: </label><br/>
                 <input type="text" id="budget-amount" name="amount" /><br/>
@@ -248,7 +266,7 @@
         </form>
     </div><!-- end of give budget div-->
 
-    <div id="pay-bonus" title="Pay Bonus" style="text-align: left; display: none">
+    <div id="pay-bonus" class="hidden" title="Pay Bonus" style="text-align: left;">
         <form method="post" action = "">
             <label for="bonus-amount" class="info-label">Amount: </label><br/>
                 <input type="text" id="bonus-amount" name="amount" /><br/>
@@ -277,6 +295,6 @@
 
     </div><!-- end of pay bonus div -->
 
-    <div id="loading" style="display:none">
+    <div class="hidden" id="loading">
         <img src="images/loader.gif" alt = "" /><span>Please wait..</span>
     </div>

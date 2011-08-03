@@ -176,7 +176,7 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
  *  $data - array of key-value replacements for template
  */
 
-function sendTemplateEmail($to, $template, $data, $from = false){
+function sendTemplateEmail($to, $template, $data = array(), $from = false){
     include (dirname(__FILE__) . "/email/en.php");
 
     $recipients = is_array($to) ? $to : array($to);

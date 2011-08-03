@@ -22,7 +22,7 @@ class User {
     protected $skills;
     protected $timezone;
     protected $is_uscitizen;
-    protected $has_w9approval;
+    protected $w9_status;
     protected $is_runner;
     protected $is_payer;
     protected $is_active;
@@ -174,7 +174,7 @@ class User {
      * @return (boolean)
      */
     public function isW9Approved() {
-        if ((int)$this->getHas_w9approval() === 1) {
+        if ($this->getW9_status() === 'approved') {
             return true;
         }
         return false;
@@ -630,18 +630,13 @@ class User {
         return $this;
     }
 
-    /**
-     * @return the $has_w9approval
-     */
-    public function getHas_w9approval() {
-        return $this->has_w9approval;
+    public function getW9_status() {
+        return $this->w9_status;
     }
 
-    /**
-     * @param $has_w9approval the $has_w9approval to set
-     */
-    public function setHas_w9approval($has_w9approval) {
-        $this->has_w9approval = $has_w9approval;
+    public function setW9_status($status) {
+        $this->w9_status = $status;
+        return $this;
     }
 
     /**

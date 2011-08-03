@@ -439,7 +439,7 @@ welcome
     send confirmed user a welcome email
     used in: confirmation.php
 
-replacement date:
+replacement data:
     nickname - nickname of the receiving user
 */
 'welcome' => array(
@@ -463,6 +463,32 @@ replacement date:
         Blog: <a href="http://www.lovemachineinc.com/blog/">http://www.lovemachineinc.com/blog/</a><br/>
         Twitter: <a href="http://twitter.com/lovemachineinc">http://twitter.com/lovemachineinc</a>
     '
+),
+
+/*
+w9-approved
+    send approved user a notification email
+    used in: userinfo.php
+*/
+'w9-approved' => array(
+    'subject' => 'Your W9 has been approved',
+    'body' => '<p>Hello,</p>
+               <p>Your W9 form has been approved.</p>'
+),
+
+/*
+w9-rejected
+    send user a notification email that their w9 was rejected
+    used in: userinfo.php
+
+replacement data:
+    reason - the reason that the w9 was rejected, as entered by the user
+*/
+'w9-rejected' => array(
+    'subject' => 'Your W9 has been rejected',
+    'body' => '<p>Hello,</p>
+               <p>Your W9 form has been rejected because:</p>
+               <p>{reason}'
 )
 
 ); 

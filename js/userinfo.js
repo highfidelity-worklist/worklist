@@ -35,6 +35,14 @@ var UserInfo = {
         $('select', '#tabs-2').change(function() {
             var value = $(this).val();
             var field = $(this).attr('id');
+            if (field == 'w9status') {
+                if (value == 'rejected') {
+                    $('#reject-w9').dialog('open');
+                    // we don't post this here, it's sent along with the reason
+                    // for rejection by the dialog handler
+                    return;
+                }
+            }
 
             $.ajax({
                 type: 'post',
@@ -71,6 +79,40 @@ var UserInfo = {
                 }
             });
         
+        });
+
+        $('#reject-w9').dialog({
+            autoOpen: false,
+            show: 'fade',
+            hide: 'fade',
+            buttons: [{
+                text: 'Send notification',
+                click: function() {
+                    $.ajax({
+                        type: 'post',
+                        url: 'userinfo.php',
+                        dataType: 'json',
+                        data: {
+                            value: 'rejected',
+                            field: 'w9status',
+                            user_id: userInfo.user_id,
+                            reason: $('#reject-reason').val()
+                        },
+                        success: function(json) {
+                            $('#reject-w9').dialog('close');
+                        }
+                    });
+                }
+            }],
+            open: function() {
+                $('#reject-reason').bind('keyup', 'keydown', function() {
+                    if ($(this).val().length > 100) {
+                        $(this).val($(this).val().substring(0, 100));
+                    } else {
+                        $('#charCount').text(100 - $(this).val().length);
+                    }
+                });
+            }
         });
 
         // custom function for setting salary
@@ -331,22 +373,26 @@ var UserInfo = {
             $('#isw9approved').attr('disabled', 'disabled');
             $('#isw2employee').attr('disabled', 'disabled');
         } else {
-            $('#isw2employee').click( function () {
+            $('#isw2employee').click(function () {
                 if ($('#isw2employee').is(':checked')) {
-                    $('#isw9approved, #ispaypalverified')
-                        .removeAttr('checked');
+                    $('#ispaypalverified').removeAttr('checked');
+                    $('#w9status').val('not-applicable');
                 } else {
-                    $('#isw9approved, #ispaypalverified')
-                        .removeAttr('disabled');
+                    $('#ispaypalverified').removeAttr('disabled');
                 }
             });
-            $('#ispaypalverified, #isw9approved').click(function() {
+            $('#ispaypalverified').click(function() {
                 if ($(this).is(':checked')) {
-                    $('#isw2employee')
-                        .removeAttr('checked');
+                    $('#isw2employee').removeAttr('checked');
                 } else {
-                    $('#isw2employee')
-                        .removeAttr('disabled');
+                    $('#isw2employee') .removeAttr('disabled');
+                }
+            });
+            $('#w9status').change(function() {
+                if ($(this).val() == 'not-applicable') {
+                    $('#isw2employee') .removeAttr('disabled');
+                } else {
+                    $('#isw2employee') .removeAttr('checked');
                 }
             });
         }
