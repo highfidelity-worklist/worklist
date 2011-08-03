@@ -266,7 +266,7 @@ include("head.html");
     function addProjectDetails(json) {
         var row;
         var image_filename;
-        if (json.logo === null) {
+        if (json.logo === null || json.logo === "") {
             image_filename = 'images/emptyLogo.png';
         } else {
             image_filename = 'uploads/' + json.logo;
