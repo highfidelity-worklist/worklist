@@ -543,7 +543,7 @@ div.documents.filesDescription {
     background: #f3f3f3;
 }
 
-#fileUploadButton {
+.fileUploadButton {
     background:url("../images/icons/clip.png") no-repeat scroll left top transparent;
     height:32px;
     line-height:32px;

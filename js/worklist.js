@@ -593,6 +593,10 @@ function sendInviteForm(){
   return false;
 }
 function applyPopupBehavior() {
+    $(function() {
+        $('#addaccordion').fileUpload({tracker: $('input[name=files]')});
+    });
+    
     $('a.attachment').live('click', function() {
         var dialogUrl = $(this).attr('href');
         var verified = false;

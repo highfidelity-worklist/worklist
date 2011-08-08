@@ -125,80 +125,22 @@ function showUserInfo(userId){
 </script>
 <script type="text/html" id="uploadedFiles">
 <div id="accordion">
-    <h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
-    <div id="fileimagecontainer">
-    <# if (images.length > 0) { #>
-        <# for(var i=0; i < images.length; i++) {
-        var image = images[i];
-        #>
-        <div class="filesIcon">
-            <a class="attachment" href="<#= image.url #>" data-fileid="<#= image.fileid #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
-        </div>
-        <div class="filesDescription">
-            <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
-            <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
-            <?php if ($worklist['status'] != 'DONE' && (int) $user_id > 0): ?>
-            <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Remove attachment</a>
-            <?php endif; ?>
-        </div>
-        <div class="clear"></div>
-        <# } #>
-    <# } #>
-    </div>
-    <h3><a href="#">Documents (<span id="documentCount"><#= documents.length #></span>)</a></h3>
-    <div id="filedocumentcontainer">
-    <# if (documents.length > 0) { #>
-        <# for(var i=0; i < documents.length; i++) {
-        var doc = documents[i];
-        #>
-        <div class="filesIcon">
-            <a class="docs" href="<#= doc.url #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
-        </div>
-        <div class="documents filesDescription">
-            <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
-            <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
-            <?php if ($worklist['status'] != 'DONE' && (int) $user_id > 0) : ?>
-            <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Remove attachment</a>
-            <?php endif; ?>
-        </div>
-        <div class="clear"></div>
-        <# } #>
-    <# } #>
-    </div>
+<?php require('dialogs/file-accordion.inc'); ?>
 </div>
 <?php if ($worklist['status'] != 'DONE' && (int) $user_id > 0) : ?>
-<div id="fileUploadButton">
+<div class="fileUploadButton">
     Attach new files
 </div>
 <div class="uploadnotice"></div>
 <?php endif; ?>
 </script>
-<script type="text/html" id="uploadImage">
-    <div class="filesIcon">
-        <a class="attachment" href="<#= url #>" data-fileid="<#= fileid #>" ><img width="75px" height="75px" src="<#= icon #>" /></a>
-    </div>
-    <div class="filesDescription">
-        <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
-        <p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
-        <?php if ($worklist['status'] != 'DONE') : ?>
-        <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
-        <?php endif; ?>
-    </div>
-    <div class="clear"></div>
-</script>
-<script type="text/html" id="uploadDocument">
-    <div class="filesIcon">
-        <a class="docs" href="<#= url #>" data-fileid="<#= fileid #>" target="_blank"><img width="32px" height="32px" src="<#= icon #>" /></a>
-    </div>
-    <div class="documents filesDescription">
-        <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
-        <p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
-        <?php if ($worklist['status'] != 'DONE') : ?>
-        <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
-        <?php endif; ?>
-    </div>
-    <div class="clear"></div>
-</script>
+<!-- js template for file uploads -->
+<?php require_once('dialogs/file-templates.inc'); ?>
+
+<?php if ($user_id > 0) { // only logged in users can upload files ?>
+<script type="text/javascript" src="js/uploadFiles.js"></script>
+<?php } ?>
+
 <script type="text/javascript">
 var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
@@ -458,14 +400,8 @@ $(document).ready(function(){
                         documentsArray.push(documents[i].fileid);
                     }
                     var files = $('#uploadedFiles').parseTemplate(data.data);
-                    <?php if ($user_id > 0) { ?>
-                    files = files + '<script type="text/javascript" src="js/uploadFiles.js"><\/script>';
-                    <?php } ?>
                     $('#uploadPanel').append(files);
-                    $('#accordion').accordion({
-                        clearStyle: true,
-                        collapsible: true
-                    });
+                    $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
                 }
             }
         });

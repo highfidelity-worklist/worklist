@@ -1518,71 +1518,14 @@ include("head.html"); ?>
 // !!! This code was duplicated from workitem.inc but it's been slightly changed due to ID clashes
 // !!! [START DUP]
 ?>
-<script type="text/html" id="projectUploadedFiles">
-<div id="projectAccordion">
-    <h3><a href="#">Images (<span id="imageCount"><#= images.length #></span>)</a></h3>
-    <div id="fileimagecontainer">
-    <# if (images.length > 0) { #>
-        <# for(var i=0; i < images.length; i++) {
-        var image = images[i];
-        #>
-        <div class="filesIcon">
-            <a href="<#= image.url #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
-        </div>
-        <div class="filesDescription">
-            <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
-            <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
-            <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Remove attachment</a>
-        </div>
-        <div class="clear"></div>
-        <# } #>
-    <# } #>
-    </div>
-    <h3><a href="#">Documents (<span id="documentCount"><#= documents.length #></span>)</a></h3>
-    <div id="filedocumentcontainer">
-    <# if (documents.length > 0) { #>
-        <# for(var i=0; i < documents.length; i++) {
-        var doc = documents[i];
-        #>
-        <div class="filesIcon">
-            <a href="<#= doc.url #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
-        </div>
-        <div class="documents filesDescription">
-            <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
-            <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
-            <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Remove attachment</a>
-        </div>
-        <div class="clear"></div>
-        <# } #>
-    <# } #>
-    </div>
+<script type="text/html" id="projectuploadedFiles">
+<div id="accordion">
+<?php require('dialogs/file-accordion.inc'); ?>
 </div>
-<div id="fileUploadButton">
+<div class="fileUploadButton">
     Attach new files
 </div>
 <div class="uploadnotice"></div>
-</script>
-<script type="text/html" id="uploadImage">
-    <div class="filesIcon">
-        <a class="attachment" href="<#= url #>"><img width="75px" height="75px" src="<#= icon #>" /></a>
-    </div>
-    <div class="filesDescription">
-        <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
-        <p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
-        <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
-    </div>
-    <div class="clear"></div>
-</script>
-<script type="text/html" id="uploadDocument">
-    <div class="filesIcon">
-        <a href="<#= url #>" target="_blank"><img width="32px" height="32px" src="<#= icon #>" /></a>
-    </div>
-    <div class="documents filesDescription">
-        <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
-        <p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
-        <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
-    </div>
-    <div class="clear"></div>
 </script>
 <?php
 // !!! The code above was duplicated from workitem.inc but it's been slightly changed due to ID clashes
@@ -1593,9 +1536,7 @@ var projectid = <?php echo !empty($project_id) ? $project_id : "''"; ?>;
 var imageArray = new Array();
 var documentsArray = new Array();
 (function($) {
-    // flag to say we've not loaded anything in there yet
-    
-    $('#projectAccordion').accordion( "activate" , 0 );
+    // get the project files
     $.ajax({
         type: 'post',
         url: 'jsonserver.php',
@@ -1615,24 +1556,25 @@ var documentsArray = new Array();
                 for (var i=0; i < documents.length; i++) {
                     documentsArray.push(documents[i].fileid);
                 }
-                var files = $('#projectUploadedFiles').parseTemplate(data.data);
-                files = files + '<script type="text/javascript" src="js/uploadFiles.js"><\/script>';
+                var files = $('#projectuploadedFiles').parseTemplate(data.data);
                 $('#uploadPanel').append(files);
-                $('#projectAccordion').accordion({
-                    clearStyle: true,
-                    collapsible: true
-                });
+                // sort the file upload accordion
+                $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
             }
         }
     });
 })(jQuery);
-</script><title>Worklist | Fast pay for your work, open codebase, great community.</title>
+</script>
+<script type="text/javascript" src="js/uploadFiles.js"></script>
+<title>Worklist | Fast pay for your work, open codebase, great community.</title>
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
      id="loader_img"><div id="loader_img_title"><img src="images/loading_big.gif"
      style="z-index: 9999"></div></div>
 
+<!-- js template for file uploads -->
+<?php require_once('dialogs/file-templates.inc'); ?>
 <!-- Popup for editing/adding  a work item -->
 <?php require_once('dialogs/popup-edit.inc'); ?>
 <!-- Popup for breakdown of fees-->
