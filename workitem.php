@@ -17,6 +17,7 @@ require_once 'classes/Repository.class.php';
                  "SUGGESTEDwithBID" => array("BIDDING","PASS"),
                  "BIDDING" => array("PASS"),
                  "WORKING" => array("REVIEW"),
+                 "FUNCTIONAL" => array("REVIEW", "WORKING"),
                  "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
                  "COMPLETED" => array("REVIEW", "DONE"),
                  "DONE" => array("REVIEW"),
@@ -24,11 +25,12 @@ require_once 'classes/Repository.class.php';
 
     $statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
                  "SUGGESTEDwithBID" => array("PASS"),
-                 "WORKING" => array("REVIEW"),
-                 "REVIEW" => array("PASS", "COMPLETED", "WORKING"),
-                 "COMPLETED" => array("REVIEW"),
-                 "DONE" => array("WORKING", "REVIEW"),
-                 "PASS" => array("REVIEW"));
+                 "WORKING" => array("FUNCTIONAL"),
+                 "FUNCTIONAL" => array("REVIEW", "WORKING"),
+                 "REVIEW" => array("COMPLETED", "WORKING"),
+                 "COMPLETED" => array("WORKING"),
+                 "DONE" => array("WORKING", "FUNCTIONAL"),
+                 "PASS" => array("FUNCTIONAL"));
 
 $get_variable = 'job_id';
 if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL . "workitem.php?$get_variable="); }
@@ -293,7 +295,9 @@ if($action =='invite-people') {
 
 if($action =='save-review-url') {
 
-    $sandbox = (!empty($_POST['sandbox-url']))?$_POST['sandbox-url']:$workitem->getSandbox();
+    $sandbox = (!empty($_POST['sandbox-url'])) ? $_POST['sandbox-url'] : $workitem->getSandbox();
+    $notes = (!empty($_POST['review-notes'])) ? $_POST['review-notes'] : null;
+    
     $status_review = $_POST['quick-status-review'];
     if(!empty($status_review)) {
        changeStatus($workitem, $status_review, $user);
@@ -304,7 +308,24 @@ if($action =='save-review-url') {
     if(!empty($status_review)) {
        $new_update_message .= " Status set to $status_review. ";
     }
+    if ($notes) {
+        //add review notes
+        $fee_amount = 0.00;
+        $fee_desc = 'Review Notes:'. $notes;
+        $mechanic_id = $user->getId();
+        $itemid = $workitem->getId();
+        $is_expense = 1;
+        $fee_category = '';
+        AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
+    }
     $notifyEmpty = false;
+    if ($status_review == 'FUNCTIONAL') {
+      Notification::workitemNotify(array('type' => 'modified-functional',
+          'workitem' => $workitem,
+          'recipients' => array('runner', 'creator', 'mechanic')),
+            array('changes' => $new_update_message));
+      $notifyEmpty = true;
+    }
     $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
     $promptForReviewUrl = false;
 }
@@ -320,17 +341,24 @@ if ($action =='status-switch') {
             $workitem->save();
             $new_update_message = "Status set to $status. ";
             $notifyEmpty = false;
+            if ($status == 'FUNCTIONAL') {
+              Notification::workitemNotify(array('type' => 'modified-functional',
+                  'workitem' => $workitem,
+                  'recipients' => array('runner', 'creator', 'mechanic')),
+                    array('changes' => $new_update_message));
+              $notifyEmpty = true;
+            }
             $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
         }
     }
 }
 
-    if(!$notifyEmpty) {
-      Notification::workitemNotify(array('type' => 'modified',
-                  'workitem' => $workitem,
-                  'recipients' => array('runner', 'creator', 'mechanic')),
+if(!$notifyEmpty) {
+  Notification::workitemNotify(array('type' => 'modified',
+              'workitem' => $workitem,
+              'recipients' => array('runner', 'creator', 'mechanic')),
               array('changes' => $new_update_message));
-    }
+}
 
 if ($action =="place_bid") {
     //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
@@ -785,7 +813,7 @@ function sendMailToDiscardedBids($worklist_id)    {
 
 function changeStatus($workitem,$newStatus, $user) {
 
-    $allowable = array("SUGGESTED", "REVIEW", "PASS", "COMPLETED");
+    $allowable = array("SUGGESTED", "REVIEW", "FUNCTIONAL", "PASS", "COMPLETED");
 
     if ($user->getIs_runner() == 1 || $user->getBudget() > 0) {
         if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)) {

@@ -17,7 +17,7 @@
                 echo $filter->getProjectSelectbox(false, !$hide_project_column, true) . " ";
                 echo $filter->getUserSelectbox(1) . " ";
                 $allDisplay = "All Status";                
-                $status_array = array("SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "REVIEW", "COMPLETED", "DONE", "PASS");
+                $status_array = array("SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
                 
                 $box = '<select id="statusCombo" name="status" multiple="multiple" style="display:none">';
                 $box .= '<option value="ALL"' . (($filter->inStatus("ALL") ) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
@@ -42,6 +42,11 @@
                                 break;    
                             case 'WORKING':
                                 if($_GET['status'] == 'working') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                break;
+                            case 'FUNCTIONAL':
+                                if($_GET['status'] == 'functional') { 
                                     $selected = ' selected="selected"';
                                 }
                                 break;
@@ -73,7 +78,7 @@
         </form>
     </div>
     <?php if(isset($_SESSION['userid'])){ 
-        $statuses = array('WORKING', 'REVIEW', 'COMPLETED'); 
+        $statuses = array('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED'); 
         $userstats = new UserStats($_SESSION['userid']);
         $links = 'My jobs: ';
         foreach($statuses as $status){

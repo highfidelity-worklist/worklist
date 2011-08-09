@@ -8,7 +8,7 @@
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    $statusList = array("SUGGESTED","SUGGESTEDwithBID","BIDDING","WORKING","REVIEW","COMPLETED","DONE","PASS");
+    $statusList = array("SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
 
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
@@ -535,7 +535,7 @@ $(document).ready(function(){
 <?php endif; ?>
             }
 
-<?php if($worklist['status'] != 'DONE'  && $worklist['status'] != 'WORKING' && $worklist['status'] != 'REVIEW' && $worklist['status'] != 'COMPLETED'){?>
+<?php if($worklist['status'] != 'DONE' && $worklist['status'] != 'WORKING' && $worklist['status'] != 'FUNCTIONAL' && $worklist['status'] != 'REVIEW' && $worklist['status'] != 'COMPLETED'){?>
             if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid_accept').length == 0){
                   $('#popup-bid-info form').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" style="float:right;">');
             }
@@ -575,7 +575,7 @@ $(document).ready(function(){
         });
 <?php if ($worklist['status'] == 'WORKING' && $mechanic_id == $user_id && $promptForReviewUrl) : ?>
         $('#status-switch').click(function(e){
-            if ($('#quick-status').val() == 'REVIEW') {
+            if ($('#quick-status').val() == 'FUNCTIONAL') {
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
                 $('#quick-status-review').val($('#quick-status').val());
                 $('#popup-reviewurl').dialog('open');
@@ -1117,7 +1117,7 @@ if ($action =="edit"):  ?>
                     <!-- Edit: Sandbox textarea -->
                     <?php if ($mechanic_id > 0):?>
                     <li>
-                        <span class="project-label" >Review URL</span>
+                        <span class="project-label" >Functional &amp; Review URL</span>
                         <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
                         <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo htmlspecialchars($worklist['sandbox']);?>" />
                          <?php elseif ( !empty($worklist['sandbox']) ):?>
@@ -1147,8 +1147,8 @@ if ($action =="edit"):  ?>
                         <input type="hidden" id="status" name="status" value = "BIDDING" />
                         <?php
                             // quick status buttons for runners of items and mechanics working on them
-                                                 if(!$is_runner && ($mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) && $worklist['status'] != 'DONE')
-
+                            if(!$is_runner && ($mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) &&
+                            $worklist['status'] != 'DONE')
                             {
                                 foreach($statusMapMechanic[$worklist['status']] as $status)
                                 {?>
@@ -1236,7 +1236,7 @@ if ($action =="edit"):  ?>
                     <!-- View: Sandbox textarea -->
                     <?php if ($mechanic_id > 0):?>
                     <li>
-                        <span class="project-label" id="edit_review_url">Review URL</span>
+                        <span class="project-label" id="edit_review_url">Functional &amp; Review URL</span>
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
                                 <?php echo htmlspecialchars($worklist['sandbox']);?>
@@ -1366,7 +1366,7 @@ if ($action =="edit"):  ?>
                                         } else {
                                             $bid_done_by_stamp = strtotime("+" . $bid['done_in'], $bid['unix_bid_created']);
                                         }
-                                        if ($bid_done_by_stamp < time() && ($workitem->getStatus() == 'WORKING' || $workitem->getStatus() == 'REVIEW')) {
+                                        if ($bid_done_by_stamp < time() && ($workitem->getStatus() == 'WORKING' || $workitem->getStatus() == 'REVIEW' || $workitem->getStatus() == 'FUNCTIONAL')) {
                                             $past_due = ' class="past-due overdue"';
                                         }
                                         if (empty($past_due) && $workitem->getStatus() == 'DONE' && $workitem->getMechanicId() == $bid['bidder_id']) {

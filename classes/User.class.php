@@ -404,7 +404,7 @@ class User {
             $allFunds = $row['budget'];
 
             $allocatedFunds = 0;
-            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "REVIEW", "COMPLETED") AND `' . FEES . '`.`withdrawn` != 1;';
+            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED") AND `' . FEES . '`.`withdrawn` != 1;';
             $result = mysql_query($sql);
             if ($result && (mysql_num_rows($result) == 1)) {
                 $row = mysql_fetch_assoc($result);

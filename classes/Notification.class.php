@@ -9,7 +9,6 @@ require_once 'lib/Sms.php';
  * subscriptions
  */
 class Notification {
-
     const REVIEW_NOTIFICATIONS = 1;
     const BIDDING_NOTIFICATIONS = 2;
     const MY_REVIEW_NOTIFICATIONS = 4;
@@ -17,7 +16,7 @@ class Notification {
     const PING_NOTIFICATIONS = 16;
     const MY_BIDS_NOTIFICATIONS = 32;
     const SELF_EMAIL_NOTIFICATIONS = 64;
-    
+    const FUNCTIONAL_NOTIFICATIONS = 128;   
  
     /**
      *  Sets flags using list of integers passed as arguments
@@ -56,6 +55,16 @@ class Notification {
         $result = array();
         
         switch($flag) {
+        case self::FUNCTIONAL_NOTIFICATIONS:
+            $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
+            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0 AND u.id!=" .getSessionUserId(). " AND u.id IN({$users})";
+            $res = mysql_query($sql);
+            if($res) {
+                while($row = mysql_fetch_row($res)) {
+                    $result[] = $row[0];
+                }
+            }
+            break;
         case self::REVIEW_NOTIFICATIONS :
         case self::BIDDING_NOTIFICATIONS :
             $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0";
@@ -89,6 +98,14 @@ class Notification {
      */
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
+            case 'FUNCTIONAL':
+                $emails = self::getNotificationEmails(self::FUNCTIONAL_NOTIFICATIONS, $workitem);
+                $options = array('type' => 'new_functional',
+                    'workitem' => $workitem,
+                    'emails' => $emails);
+                self::workitemNotify($options);
+                self::workitemSMSNotify($options);
+                break;
             case 'REVIEW':
                 $emails = self::getNotificationEmails(self::REVIEW_NOTIFICATIONS);
                 $myEmails= self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
@@ -213,6 +230,12 @@ class Notification {
                 $body .=  $urlacceptbid;
             break;
 
+            case 'modified-functional':
+                $subject = "Functional: ".$itemTitle;
+                $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
+                        . $data['changes'];
+            break;
+            
             case 'modified':
                 $subject = "Modified: ".$itemTitle;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
@@ -221,7 +244,7 @@ class Notification {
 
             case 'new_bidding':
                 $subject = "Bidding: ".$itemTitle;
-                $body =  "Summary:<br>".$workitem -> getSummary() .
+                $body = "Summary:<br>".$workitem -> getSummary() .
                          '<br><br>Notes:<br>'.$workitem->getNotes();
                 $body .= '<br><br>You are welcome to bid <a href='.SERVER_URL.
                          'workitem.php?job_id=' . $itemId . '>here</a>.';
@@ -229,7 +252,11 @@ class Notification {
 
             case 'new_review':
                 $subject = "Review: ".$itemTitle;
-                $body =  'New item is available for review: ' . $itemLink . '<br>';
+                $body = 'New item is available for review: ' . $itemLink . '<br>';
+            break;
+            case 'new_functional':
+                $subject = "Functional: ".$itemTitle;
+                $body =  'New item is available for functional: ' . $itemLink . '<br>';
             break;
             case 'bug_found':
                 $subject = "New bug of item #".$workitem->getBugJobId().
@@ -334,7 +361,12 @@ class Notification {
                 $subject = 'Review';
                 $message = $workitem->getId() . ' '.$workitem->getSummary();
             break;
-
+            
+            case 'new_functional':
+                $subject = 'Functional';
+                $message = $workitem->getId() . ' '.$workitem->getSummary();
+            break;
+            
             case 'my_review':
                 $subject = 'Review';
                 $message = $workitem->getId() . ' '.$workitem->getSummary();
