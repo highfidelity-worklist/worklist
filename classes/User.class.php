@@ -21,7 +21,6 @@ class User {
     protected $payway;
     protected $skills;
     protected $timezone;
-    protected $is_uscitizen;
     protected $w9_status;
     protected $w9_accepted;
     protected $is_runner;
@@ -161,9 +160,8 @@ class User {
      *
      * @return (boolean)
      */
-    public function isUsCitizen()
-    {
-        if ((int)$this->getIs_uscitizen() === 1) {
+    public function isUsCitizen() {
+        if ($this->getCountry() === 'US') {
             return true;
         }
         return false;
@@ -613,21 +611,6 @@ class User {
      */
     public function setTimezone($timezone) {
         $this->timezone = $timezone;
-        return $this;
-    }
-
-    /**
-     * @return the $is_uscitizen
-     */
-    public function getIs_uscitizen() {
-        return $this->is_uscitizen;
-    }
-
-    /**
-     * @param $is_uscitizen the $is_uscitizen to set
-     */
-    public function setIs_uscitizen($is_uscitizen) {
-        $this->is_uscitizen = $is_uscitizen;
         return $this;
     }
 

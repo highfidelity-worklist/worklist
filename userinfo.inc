@@ -179,7 +179,7 @@
                     <p class="info-label">Payment Information</p>
                     <?php $w9_status = $user->getW9_status(); ?>
                     <label for="isw9approved" class="info-label">W9</label>
-                    <select id="w9status" name="w9status" <?php echo ($user->isUsCitizen() || $user->getCountry() == 'US') ? '' : 'disabled="disabled"'; ?>>
+                    <select id="w9status" name="w9status" <?php echo $user->isUsCitizen() ? '' : 'disabled="disabled"'; ?>>
                         <option value="awaiting-receipt" <?php echo $w9_status == 'awaiting-receipt' ? 'selected="selected"' : ''; ?>>Awaiting Receipt</option>
                         <option value="pending-approval" <?php echo $w9_status == 'pending-approval' ? 'selected="selected"' : ''; ?>>Pending Approval</option>
                         <option value="approved" <?php echo $w9_status == 'approved' ? 'selected="selected"' : ''; ?>>Approved</option>

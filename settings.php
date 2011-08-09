@@ -59,8 +59,6 @@ if (isset($_POST['save_account'])) {
 
         $provider = mysql_real_escape_string($_POST['provider']);
         $saveArgs['provider'] = 0;
-        $is_uscitizen = ($_POST['country'] == 'US' ? 1 : 0);
-        $saveArgs['is_uscitizen'] = 0;
 
         $sms_flags = 0;
         if (!empty($_POST['journal_alerts'])) $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
@@ -97,8 +95,8 @@ if (isset($_POST['save_account'])) {
             $nickname = $_SESSION['nickname'];
 
             $sql = " INSERT INTO " . USERS . " 
-                        (`id`, `username`, `nickname`, `timezone`, `country`, `is_uscitizen`, `provider` ,`phone`, `int_code`, `smsaddr`, `sms_flags`, `notifications`, `is_active`, `confirm`)
-                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$is_uscitizen', '$provider', '$phone', '$int_code', '$smsaddr', '$sms_flags', '$notifications', '1', '1')";
+                        (`id`, `username`, `nickname`, `timezone`, `country`, `provider` ,`phone`, `int_code`, `smsaddr`, `sms_flags`, `notifications`, `is_active`, `confirm`)
+                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$provider', '$phone', '$int_code', '$smsaddr', '$sms_flags', '$notifications', '1', '1')";
             mysql_unbuffered_query($sql);
             $_SESSION['new_user'] = '';
             $saveArgs = array();

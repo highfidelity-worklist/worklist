@@ -132,7 +132,6 @@ if(isset($minimal_POST['sign_up'])){
             $newUser["added"] = "NOW()";
             $newUser["notifications"] = Notification::setFlags($review_notify, $bidding_notify);
             $newUser['w9_status'] = $_POST['country'] == 'US' ? 'awaiting-receipt' : 'not-applicable';
-            $newUser['is_uscitizen'] = $_POST['country'] == 'US' ? 1 : 0;
 
             $sql = "INSERT INTO ".USERS." ";
             $columns = "(";

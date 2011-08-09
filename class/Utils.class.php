@@ -9,7 +9,6 @@ class Utils{
         "payway",
         "skills",
         "timezone",
-        "is_uscitizen",
         "phone",
         "smsaddr",
         "country",
