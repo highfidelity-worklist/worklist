@@ -35,6 +35,10 @@ if(!empty($_REQUEST['newPayPalEmail']) && !empty($_REQUEST['userId'])) {
 	    exit(0);
 	}
 	
+	if ($user->getCountry() == 'US') {
+	    $user->setW9_accepted('NOW()');
+	}
+	
 	$subject = "Your payment PayPal account has been set";
 
 	$link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
@@ -172,6 +176,13 @@ function completeUpload(file, data) {
 }
 var user = <?php echo $user->getId(); ?>;
 
+function validateW9Agree(value) {
+    if (! $('#w9_accepted').is(':checked') && '<?php echo $user->getCountry(); ?>' == 'US') {
+        return false;
+    }
+    return true;
+}
+
 $(document).ready(function () {
 	new AjaxUpload('formupload', {
 		action: '<?php echo SERVER_URL; ?>jsonserver.php',
@@ -194,7 +205,7 @@ $(document).ready(function () {
 	});
 	
 	$('#save_payment').click( function () {
-		massValidation = LiveValidation.massValidate( [ paypal ]);   
+		massValidation = LiveValidation.massValidate( [ paypal, w9_accepted ]);   
 		if (!massValidation) {
 		  return false;
 		}
@@ -205,12 +216,10 @@ $(document).ready(function () {
 				newPayPalEmail: $('#paypal_email').val(),
 				userId: user
 			},
-			dataType: 'json',
 			success: function(json) {
-				alert('sss');
+			    $('#savePayPalEmailDialog').dialog('open');
 			}
-		});			 
-		$('#savePayPalEmailDialog').dialog('open');
+		});	
 	});
 
 	$('#enter_later').click( function () { 
@@ -259,7 +268,11 @@ $(document).ready(function () {
 <!-- Light Box Code End -->
     <h1>You are almost ready!</h1>
           
-    <p>In order to place bids and receive work from LoveMachine/Below92, you need to enter your PayPal enabled E-mail address, and if you are a US Citizen we also need a W-9 form, which you can download from <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" >{here}</a></p>
+    <p>In order to place bids and receive work from Worklist, you need to enter your PayPal enabled E-mail address, and if you are a US Citizen we also need a W-9 form, which you can download from <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" >here</a>. Remember, you need a valid US mailing address to receive your 1099 tax documents at the end of the year. If you move, it’s up to you to let us know your new address.</p>
+    <p>
+        <input type="checkbox" name="w9_accepted" id="w9_accepted" />
+        <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you’ll do your part!</label>
+    </p>
 <div id="payment-info" class="settings">
     <form method="post" action="settings.php" name="frmsetting">
         <h2 class="subheader">Paypal Payment Info</h2>
@@ -272,7 +285,11 @@ $(document).ready(function () {
                 var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
                 paypal.add(Validate.Email);
                 paypal.add(Validate.Presence);
-            </script> 
+                
+                var w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
+                w9_accepted.displayMessageWhenEmpty = true;
+                w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
+            </script>
             <input type="hidden" name="paytype" id="paytype" value="paypal" />
             <input type="hidden" name="payway" id="payway" value="paypal" />
         </blockquote>

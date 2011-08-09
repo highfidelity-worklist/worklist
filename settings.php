@@ -168,6 +168,10 @@ if (isset($_POST['save_account'])) {
 
     $saveArgs = array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1);
     $messages[] = "Your payment information has been updated.";
+    
+    if (!$user->getW9_accepted() && $user->getCountry() == 'US') {
+        $saveArgs['w9_accepted'] = 'NOW()';
+    }
 
     $paypalPrevious = $user->getPaypal_email();
 
@@ -337,6 +341,13 @@ include("head.html");
         }
         $(nclass).append(html);
     }
+    
+    function validateW9Agree(value) {
+        if (! $('#w9_accepted').is(':checked') && $('#country').val() == 'US') {
+            return false;
+        }
+        return true;
+    }
 
     function saveSettings(type) {
         var values;
@@ -376,13 +387,14 @@ include("head.html");
                 save_personal: 1
             }
         } else if (type == 'payment') {
-            var massValidation = LiveValidation.massValidate( [ paypal ]);
+            var massValidation = LiveValidation.massValidate( [ paypal, w9_accepted ]);
             if (massValidation) {
                 values = {
                     paytype: $("#paytype").val(),
                     paypal_email: $("#paypal_email").val(),
                     payway: $("#payway").val(),
-                    save_payment: 1
+                    save_payment: 1,
+                    w9_accepted: $('#w9_accepted').is(':checked')
                 }
             } else {
                 return false;
@@ -395,7 +407,6 @@ include("head.html");
             type: "POST",
             url: 'settings.php',
             data: values,
-            dataType: 'json',
             success: function(json) {
                 var message = 'Account settings saved!';
                 if (!!json && !!json.error) {
@@ -407,7 +418,7 @@ include("head.html");
                     }
                 }
                 
-                if (type == 'payment') {
+                if (type == 'payment' && json) {
                     $('#msg-'+type).html(message + '<br/>' + json);
                 } else {
                     $('#msg-'+type).html(message);
@@ -700,21 +711,30 @@ include("head.html");
             <p id="paytype-paypal"><label>Paypal Email</label><br />
                 <span class="required-bullet">*</span> <input type="text" id="paypal_email" name="paypal_email" class="text-field" value="<?php echo $userInfo['paypal_email']; ?>" style="width:95%" />
             </p>
-            <script type="text/javascript">
-                var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
-                paypal.add(Validate.Email);
-                // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal 
-                // email, which removes their paypal verification and prevents them from bidding
-                // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-            </script> 
             <input type="hidden" name="paytype" id="paytype" value="paypal" />
             <input type="hidden" name="payway" id="payway" value="paypal" />
         </blockquote>
         <h2 class="subheader">W-9 Form <small>(US Citizens Only)</small></h2>
         <p>
-            <label>All US Citizens must submit a W-9 to be paid by LoveMachine </label>
-            <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><span style="color: blue;">Download W-9 Here</span></a>
+            All US Citizens must submit a W-9 to be paid by Worklist.
+            <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><span style="color: blue;">Download W-9 Here</span></a>. 
+            Remember, you need a valid US mailing address to receive your 1099 tax documents at the end of the year. 
+            If you move, it’s up to you to let us know your new address.
         </p>
+        <p>
+            <input type="checkbox" name="w9_accepted" id="w9_accepted" <?php if ($user->getW9_accepted()) { ?> checked="checked" disabled="disabled" <?php } ?> />
+            <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you’ll do your part!</label>
+        </p>
+        <script type="text/javascript">
+            var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
+            paypal.add(Validate.Email);
+            // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal 
+            // email, which removes their paypal verification and prevents them from bidding
+            // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+            var w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
+            w9_accepted.displayMessageWhenEmpty = true;
+            w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
+        </script>
         <blockquote>
           <p><label style="float:left;line-height:26px">Upload W-9</label>
                 <input id="formupload" type="button" value="Browse" style="float:left;margin-left: 8px;" />

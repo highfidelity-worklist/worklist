@@ -23,6 +23,7 @@ class User {
     protected $timezone;
     protected $is_uscitizen;
     protected $w9_status;
+    protected $w9_accepted;
     protected $is_runner;
     protected $is_payer;
     protected $is_active;
@@ -636,6 +637,21 @@ class User {
 
     public function setW9_status($status) {
         $this->w9_status = $status;
+        return $this;
+    }
+    
+    /**
+     * @return the $w9_accepted
+     */
+    public function getW9_accepted() {
+        return $this->w9_accepted;
+    }
+
+    /**
+     * @param $w9_accepted the $w9_accepted to set
+     */
+    public function setW9_accepted($w9_accepted) {
+        $this->w9_accepted = $w9_accepted;
         return $this;
     }
 
