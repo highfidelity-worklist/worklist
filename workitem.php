@@ -16,7 +16,7 @@ require_once 'classes/Repository.class.php';
     $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
                  "SUGGESTEDwithBID" => array("BIDDING","PASS"),
                  "BIDDING" => array("PASS"),
-                 "WORKING" => array("REVIEW"),
+                 "WORKING" => array("REVIEW", "FUNCTIONAL"),
                  "FUNCTIONAL" => array("REVIEW", "WORKING"),
                  "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
                  "COMPLETED" => array("REVIEW", "DONE"),

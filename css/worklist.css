@@ -360,7 +360,7 @@ div#quick-links{
 }
 
 #search-head select[name=status] {
-    width:130px;
+    width: 150px;
 }
 #search-filter-section select {
     text-align: left;
