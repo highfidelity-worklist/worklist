@@ -42,7 +42,12 @@ if ($projectName) {
     if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
         $inProject->setDescription($_REQUEST['description']);
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
-        $inProject->setLogo($_REQUEST['logoProject']);
+        if ($_REQUEST['logoProject'] != "") {
+            $inProject->setLogo($_REQUEST['logoProject']);
+        }
+        if ($_REQUEST['noLogo'] == "1") {
+            $inProject->setLogo("");
+        }
         $inProject->save();
         // we clear post to prevent the page from redirecting
         $_POST = array();
@@ -1632,14 +1637,16 @@ if (is_object($inProject)) {
 <?php endif; ?>
 <?php endif; ?>
 <?php if ($edit_mode) : ?>
-    <p style="float:left">
+    <form name="project-form" id="project-form" action="<?php echo SERVER_URL . $inProject->getName(); ?>" method="post">
+    <p class="editProjectLogo">
     <img style="cursor: pointer; width:48px; height:48px; margin-right:5px; border: 2px solid rgb(209, 207, 207);"
     id="projectLogoEdit"
     src="<?php echo(!$inProject->getLogo() ? 'images/emptyLogo.png' : 'uploads/' . $inProject->getLogo());?>" />
+    <input type="checkbox" name="noLogo" value="1" />
+    <br/>Check box to<br/>remove logo
     <span style="display: none;" class="LV_validation_message LV_invalid upload"></span>
     </p>
     <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>]</h2>        
-    <form name="project-form" id="project-form" action="<?php echo SERVER_URL . $inProject->getName(); ?>" method="post">
         <fieldset>
             <p class="info-label">Edit Description:<br />
                 <textarea name="description" id="description" size="48" /><?php echo $inProject->getDescription(); ?></textarea>
