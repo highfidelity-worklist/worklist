@@ -17,6 +17,8 @@ class Notification {
     const MY_BIDS_NOTIFICATIONS = 32;
     const SELF_EMAIL_NOTIFICATIONS = 64;
     const FUNCTIONAL_NOTIFICATIONS = 128;   
+    const BIDDING_EMAIL_NOTIFICATIONS = 256;   
+    const REVIEW_EMAIL_NOTIFICATIONS = 512;   
  
     /**
      *  Sets flags using list of integers passed as arguments
@@ -66,7 +68,9 @@ class Notification {
             }
             break;
         case self::REVIEW_NOTIFICATIONS :
+        case self::REVIEW_EMAIL_NOTIFICATIONS :
         case self::BIDDING_NOTIFICATIONS :
+        case self::BIDDING_EMAIL_NOTIFICATIONS :
             $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0";
             $res = mysql_query($sql);
             if($res) {
@@ -107,7 +111,7 @@ class Notification {
                 self::workitemSMSNotify($options);
                 break;
             case 'REVIEW':
-                $emails = self::getNotificationEmails(self::REVIEW_NOTIFICATIONS);
+                $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
                 $myEmails= self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
                 $myEmails=array_diff($myEmails,$emails); // Remove already existing emails in $emails list
                 $emails=array_merge($emails,$myEmails);
@@ -116,6 +120,14 @@ class Notification {
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
+                $emails = self::getNotificationEmails(self::REVIEW_NOTIFICATIONS);
+                $myEmails= self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
+                $myEmails=array_diff($myEmails,$emails); // Remove already existing emails in $emails list
+                $emails=array_merge($emails,$myEmails);
+                $emails=array_unique($emails);
+                $options = array('type' => 'new_review',
+                    'workitem' => $workitem,
+                    'emails' => $emails);
                 self::workitemSMSNotify($options);
                 // Send SMS to users who have "My jobs set to review" checked
                 $options = array('type' => 'my_review',
@@ -124,11 +136,15 @@ class Notification {
                 self::workitemSMSNotify($options);
                 break;
             case 'BIDDING':
-                $emails = self::getNotificationEmails(self::BIDDING_NOTIFICATIONS);
+                $emails = self::getNotificationEmails(self::BIDDING_EMAIL_NOTIFICATIONS);
                 $options = array('type' => 'new_bidding',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
+                $emails = self::getNotificationEmails(self::BIDDING_NOTIFICATIONS);
+                $options = array('type' => 'new_bidding',
+                    'workitem' => $workitem,
+                    'emails' => $emails);
                 self::workitemSMSNotify($options);
                 break;
             case 'COMPLETED':

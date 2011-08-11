@@ -76,13 +76,17 @@ if (isset($_POST['save_account'])) {
         $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
         $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
         $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
+        $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
+        $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
         $notifications = Notification::setFlags($review_notify, 
 												$bidding_notify, 
 												$my_review_notify, 
 												$my_completed_notify, 
 												$my_bids_notify, 
 												$ping_notify, 
-												$self_email_notify);
+												$self_email_notify, 
+												$bidding_email_notify, 
+												$review_email_notify);
         
 		$saveArgs['notifications'] = 0;
 
@@ -222,7 +226,11 @@ if (!empty($saveArgs)) {
     }
     $sql = rtrim($sql, ',');
     $sql .= " WHERE id = {$_SESSION['userid']}";
-    mysql_query($sql);
+    $res = mysql_query($sql);
+    if (!$res) {
+        error_log("Error in saving settings: " . mysql_error() . ':' . $sql);
+        die("Error in saving settings. " );
+    }
 
 // Email user
     if (!empty($messages)) {
@@ -372,7 +380,9 @@ include("head.html");
                     bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1 : 0,
                     my_review_notify: $('input[name="my_review_notify"]').attr('checked') ? 1 : 0,
                     my_completed_notify: $('input[name="my_completed_notify"]').attr('checked') ? 1 : 0,
-					self_email_notify: $('input[name="self_email_notify"]').attr('checked') ? 1 : 0
+					self_email_notify: $('input[name="self_email_notify"]').attr('checked') ? 1 : 0,
+					bidding_email_notify: $('input[name="bidding_email_notify"]').attr('checked') ? 1 : 0,
+					review_email_notify: $('input[name="review_email_notify"]').attr('checked') ? 1 : 0
                 };
             } else {
                 return false;
@@ -644,6 +654,14 @@ include("head.html");
         <br/>
         <div >Send Email Messages</div>                
         <div id="emailOptions">    
+            <div class="floatLeft">
+                <input type="checkbox" name="bidding_email_notify" value="1" <?php
+                echo Notification::isNotified($notifications, Notification::BIDDING_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : '';
+                ?>/>New Jobs set to bidding<br />
+            <input type="checkbox" name="review_email_notify" value="1" <?php 
+                echo Notification::isNotified($notifications, Notification::REVIEW_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : '';
+                ?>/>Any job set to review
+            </div>
             <div class="floatLeft">
                 <input type="checkbox" name="self_email_notify" value="1" <?php 
                 echo Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : ''; 
