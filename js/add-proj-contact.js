@@ -18,23 +18,25 @@ $(function() {
     });
     
     // live validation
-    var contact_name = new LiveValidation('name', {onlyOnBlur: true});
+    var massValidation;
+
+    var contact_name = new LiveValidation('name', {onlyOnBlur: false});
     contact_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_phone = new LiveValidation('phone', {onlyOnBlur: true});
+    var contact_phone = new LiveValidation('phone', {onlyOnBlur: false});
     contact_phone.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_email = new LiveValidation('email', {validMessage: "Valid email address.", onlyOnBlur: true});
+    var contact_email = new LiveValidation('email', {validMessage: "Valid email address.", onlyOnBlur: false});
     contact_email.add(SLEmail2);
     contact_email.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_project = new LiveValidation('project', {onlyOnBlur: true});
+    var contact_project = new LiveValidation('project', {onlyOnBlur: false});
     contact_project.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_desc = new LiveValidation('proj-desc', {onlyOnBlur: true});
+    var contact_desc = new LiveValidation('proj-desc', {onlyOnBlur: false});
     contact_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    
+
     // setup form submit
     $('#contact-form').submit(function(event) {
         event.preventDefault();
-        massValidation = LiveValidation.massValidate([contact_name], [contact_phone], [contact_email], [contact_project], [contact_desc]);
-        if (!massValidation) {
+        massValidation = LiveValidation.massValidate([contact_name, contact_phone, contact_email, contact_project, contact_desc]);
+        if (! massValidation) {
             return false;
         }
         $.ajax({

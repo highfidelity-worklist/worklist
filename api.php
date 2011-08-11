@@ -320,13 +320,13 @@ function sendContactEmail(){
     $proj_name = isset($_REQUEST['project']) ? $_REQUEST['project'] : '';
     $proj_desc = isset($_REQUEST['proj_desc']) ? $_REQUEST['proj_desc'] : '';
     if (empty($phone) || empty($email) || empty($phone) || empty($proj_name) || empty($proj_desc)) {
-        echo json_encode(array('error' => 'All Fields are required!'));
+        exit(json_encode(array('error' => 'All Fields are required!')));
     }
     require_once('./classes/Notification.class.php');
     $notify = new Notification();
     if ($notify->emailContactForm($name, $email, $phone, $proj_name, $proj_desc)) {
-        echo json_encode(array('success' => true));
+        exit(json_encode(array('success' => true)));
     } else {
-        echo json_encode(array('error' => 'There was an error sending your message, please try again later.'));
+        exit(json_encode(array('error' => 'There was an error sending your message, please try again later.')));
     }
 }// end sendContactEmail
