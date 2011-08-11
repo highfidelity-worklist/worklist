@@ -637,8 +637,140 @@ td.textAlignReport {
     color: #FF0000;
 }
 
+/* Home page styles */
+#outside.home {
+    margin-top: 10px;
+}
+.home #center {
+    margin: 0 auto;
+    float: left;
+    text-align: center;
+    width: 862px;
+}
+#home-header {
+    padding: 5px 20px;
+    margin-bottom: 10px;
+}
+.home-header-logo {
+    float: left;
+    height: 67px;
+    margin: 0;
+    padding: 0;
+}
+.home-header-logo a {
+    border: none;
+    margin-right: 15px;
+}
+.home-header-nav {
+    float: right;
+    margin: 25px 40px 0 0;
+    font-size: 16px;
+    color: #98AAB2;
+}
+.home-header-nav a {
+    color: #98AAB2;
+    padding: 0 10px;
+    font-weight: bold;
+}
+#home-slogan h2 {
+    font-size: 50px;
+    font-weight: normal;
+    padding: 0;
+    color: #333;
+}
+.slogan-text {
+    font-size: 18px;
+    color: #98AAB2;
+}
+#home-nav-btns {
+    margin: 40px 0;
+}
+#home-nav-btns a {
+    color: #333;
+    margin: 0 30px;
+    cursor: pointer;
+    background-image: none;
+    width: auto;
+    text-align: center;
+    text-decoration: none;
+    font: 16px/100% Arial, Helvetica, sans-serif;
+    height: auto;
+    padding: 5px 10px;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    -webkit-border-radius: 1em; 
+    -moz-border-radius: 1em;
+    border-radius: 1em;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    border: solid 1px #999;
+    background: #CCC;
+    background: -webkit-gradient(linear, left top, left bottom, from(#CCCCCC), to(#DEDEDE));
+    background: -moz-linear-gradient(top,  #CCCCCC,  #DEDEDE);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#CCCCCC', endColorstr='#DEDEDE');
+}
+#home-nav-btns a:hover {
+    background: -webkit-gradient(linear, left top, left bottom, from(#DEDEDE), to(#CCCCCC));
+    background: -moz-linear-gradient(top,  #DEDEDE,  #CCCCCC);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#DEDEDE', endColorstr='#CCCCCC');
+}
+#home-videos {
+}
+.main-video {
+    height: 270px;
+    display: none; /* remove once videos are ready */
+}
+.other-videos {
+    margin: 30px 0;
+    font-size: 16px;
+    font-weight: bold;
+    display: none; /* remove once videos are ready */
+}
+.other-videos p {
+    font-size: 16px;
+}
+.other-videos a {
+    padding: 0 20px;
+    color: #98AAB2;
+}
+#videoDiv {
+    display: none;
+}
+#contact-dialog {
+    display: none;
+}
+#contact-dialog .text-field {
+    width: 370px;
+}
+#home-footer {
+    width: 725px;
+    margin: 0 auto;
+    background-color: #CCC;
+    min-height: 50px;
+    padding: 15px 30px;
+    border: #CCC solid 1px;
+}
+.home-footer-nav {
+    float: right;
+    margin: 25px 40px 0 0;
+    font-size: 16px;
+    color: #333;
+}
+.home-footer-nav a {
+    color: #333;
+    padding: 0 20px;
+    font-weight: bold;
+}
+.candp-logo {
+    color: #333;
+    float: left;
+}
+#proj-desc {
+    width: 370px;
+    height: 110px;
+}
 .editProjectLogo {
-    float:left;
+    float: left;
     line-height: 10px;
     font-size: 10px;
 }

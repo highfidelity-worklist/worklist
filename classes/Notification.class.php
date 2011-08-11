@@ -16,7 +16,7 @@ class Notification {
     const PING_NOTIFICATIONS = 16;
     const MY_BIDS_NOTIFICATIONS = 32;
     const SELF_EMAIL_NOTIFICATIONS = 64;
-    const FUNCTIONAL_NOTIFICATIONS = 128;   
+    const FUNCTIONAL_NOTIFICATIONS = 128;
     const BIDDING_EMAIL_NOTIFICATIONS = 256;   
     const REVIEW_EMAIL_NOTIFICATIONS = 512;   
  
@@ -504,6 +504,23 @@ class Notification {
                 }
             }
         }
+    }
+    
+    // HOME PAGE CONTACT/ADD PROJECT FORM EMAIL
+    public function emailContactForm($name, $email, $phone, $proj_name, $proj_desc){
+        $subject = "Worklist - Add Project Contact Form";
+        $html = "<html><head><title>Worklist - Add Project Contact Form</title></head><body>";
+        $html .= "<h2>Project Contact Information:</h2>";
+        $html .= "<p><strong>Name:</strong> " . $name . "</p>";
+        $html .= "<p><strong>Email:</strong> " . $email . "</p>";
+        $html .= "<p><strong>Phone #:</strong> " . $phone . "</p>";
+        $html .= "<p><strong>Project Name:</strong> " . $proj_name . "</p>";
+        $html .= "<p><strong>Project Desctiption:</strong><br />" . nl2br($proj_desc) . "</p>";
+        $html .= "</body></html>";
+        if(send_email("contact@worklist.net", $subject, $html)){
+            return true;
+        }
+        return false;
     }
 
 }

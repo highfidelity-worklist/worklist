@@ -8,9 +8,9 @@ require_once("classes/Project.class.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 # krumch 20110506 #11576 - add getUserStatus to 'non-API_KEY list'
- if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus'){
+if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail'){
     die("No api key defined.");
-} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
+} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
     die("Wrong api key provided.");
 } else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus')){
     die("Only HTTPS connection is accepted.");
@@ -57,6 +57,9 @@ if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
                 break;
             case 'jobsPastDue':
                 sendPastDueNotification();
+                break;
+            case 'sendContactEmail':
+                sendContactEmail();
                 break;
             default:
                 die("Invalid action.");
@@ -297,7 +300,6 @@ function processW2Masspay() {
     } else {
         echo "No bonuses were found!";
     }
-
     mysql_close($con);
 }
 
@@ -310,3 +312,21 @@ function doScanAssets() {
 function respond($val){
     exit(json_encode($val));
 }
+
+function sendContactEmail(){
+    $name = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
+    $email = isset($_REQUEST['email']) ? $_REQUEST['email'] : '';
+    $phone = isset($_REQUEST['phone']) ? $_REQUEST['phone'] : '';
+    $proj_name = isset($_REQUEST['project']) ? $_REQUEST['project'] : '';
+    $proj_desc = isset($_REQUEST['proj_desc']) ? $_REQUEST['proj_desc'] : '';
+    if (empty($phone) || empty($email) || empty($phone) || empty($proj_name) || empty($proj_desc)) {
+        echo json_encode(array('error' => 'All Fields are required!'));
+    }
+    require_once('./classes/Notification.class.php');
+    $notify = new Notification();
+    if ($notify->emailContactForm($name, $email, $phone, $proj_name, $proj_desc)) {
+        echo json_encode(array('success' => true));
+    } else {
+        echo json_encode(array('error' => 'There was an error sending your message, please try again later.'));
+    }
+}// end sendContactEmail
