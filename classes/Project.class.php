@@ -297,7 +297,7 @@ class Project {
             SELECT *
             FROM `".PROJECTS."`" 
             . $where . "
-            ORDER BY `name`";
+            ORDER BY `last_commit` DESC";
         $result = mysql_query($query);
 
         if (mysql_num_rows($result)) {

@@ -25,13 +25,7 @@ if($letter == "all"){
 }
 // Count total number of active projects
 $activeProjectsCount = count($projectListing);
-// Order $projectListing alphabetically by project name
-function alphabeticalSort($a, $b) {
-    $al = strtolower($a["name"]);
-    $bl = strtolower($b["name"]);
-    return strcmp($al,$bl);
-}
-usort($projectListing, "alphabeticalSort");
+
 // Create content for each page
 // Select projects that match the letter chosen and construct the array for
 // the selected page

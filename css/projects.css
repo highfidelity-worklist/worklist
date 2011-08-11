@@ -41,6 +41,33 @@
     text-align: center;
     padding: 20px 5px 20px 5px !important;
 }
+
+.signupLink {
+    font-size: 1.3em;
+    color: #5488D1 !important;
+}
+
+.headerTitle{
+    padding: 10px 20px;
+}
+
+.headerText {
+    font-size: 1.5em;
+    padding: 0px 20px;
+    width: 76%;
+    float: right;
+    color: #666;
+}
+
+.headerButtons {
+    float: left;
+    padding-left: 20px;
+}
+
+.headerButtons  input{
+    font-weight: bold;
+}
+
 /*
  * Pagination and alphabetical selection styles
  */

@@ -31,6 +31,7 @@ include("head.html");
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
+<script type="text/javascript" src="js/add-proj-contact.js"></script>
 
 <script type="text/javascript">
     function validateUploadImage(file, extension) {
@@ -110,7 +111,6 @@ include("head.html");
     var current_page = '<?php echo $currentPage ?>';
     $(document).ready(function() {
         populateProjectListing(current_page);
-
         $('.ln-letters a').click(function() {
             var classes = $(this).attr('class').split(' ');
             current_letter = classes[0];
@@ -272,9 +272,10 @@ include("head.html");
             image_filename = 'uploads/' + json.logo;
         }
         row = '<tr class="projectDetailsRow projectID_' + json.project_id + '">';
-        row += '<td class="projectLogo"><img src="' + image_filename + '" border="1" width="48" height="48" /></td>';
+        row += '<td class="projectLogo"><img src="' + image_filename + '" border="1" width="48" height="48"  title="Last commit: ' +
+                json.last_commit + '" /></td>';
         row += '<td class="projectDescription"><h2><a href="' + encodeURIComponent(json.name) +'">' + json.name + '</a></h2>';
-        row += '<span class="descriptionText">';
+        row += '<span class="descriptionText" title="Last commit: ' + json.last_commit + '" >';
         if (json.description.length > 500) {
             row += json.description.substring(0,500) + '... <a href="' + encodeURIComponent(json.name) + '">[ read more ]</a>';
         } else {
@@ -310,20 +311,24 @@ include("head.html");
 
 <body>
     <?php include("format.php"); ?>
-    <h1>Worklist Projects</h1>
-    <p><strong>The Worklist is a marketplace for Product Developers to rapidly prototype or build applications and websites using a global network of developers, designers and testers. Below is a list of the projects currently under development.</strong></p>
+    <h1 class="headerTitle">Worklist Projects</h1>
+    <div class="headerButtons">
+        <input id="add-projects" type="button" value="Add my project" />
+    </div>
+        <!-- Popup for add project info-->
+        <?php include('dialogs/add-proj-contact.inc'); ?>
+    <div class="headerText">
+            Worklist is a marketplace to rapidly build software and websites using a global network of developers, 
+            designers and testers. Below is a list of our active projects.
+    </div>
+    <div style="clear:both;"></div>
     <div id="errorMessage">No projects matched your selection</div>
-   <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer']) { ?>
-    <div id="addProjectLink"><input type="submit" id="addproj" name="addproj" value="Add Project" /></div>
-   <?php } ?>
     <table id="projectListing">
         <tbody>
         </tbody>
     </table>
     <div class="ln-letters"><a href="#" class="all ln-selected">ALL</a><a href="#" class="_">0-9</a><a href="#" class="a">A</a><a href="#" class="b">B</a><a href="#" class="c">C</a><a href="#" class="d">D</a><a href="#" class="e">E</a><a href="#" class="f">F</a><a href="#" class="g">G</a><a href="#" class="h">H</a><a href="#" class="i">I</a><a href="#" class="j">J</a><a href="#" class="k">K</a><a href="#" class="l">L</a><a href="#" class="m">M</a><a href="#" class="n">N</a><a href="#" class="o">O</a><a href="#" class="p">P</a><a href="#" class="q">Q</a><a href="#" class="r">R</a><a href="#" class="s">S</a><a href="#" class="t">T</a><a href="#" class="u">U</a><a href="#" class="v">V</a><a href="#" class="w">W</a><a href="#" class="x">X</a><a href="#" class="y">Y</a><a href="#" class="z ln-last">Z</a></div>
     <div class="ln-pages"></div>
-    <!-- Popup for add project info-->
-    <?php require_once('dialogs/popup-addproject.inc'); ?>
 <?php
 include("footer.php");
 ?>
