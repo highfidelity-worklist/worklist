@@ -123,7 +123,7 @@ $(document).ready(function() {
         show: 'fade',
         hide: 'fade',
         height: 480,
-        width: 800
+        width: 840
     });
     if ($("#budgetPopup").length > 0) {
         $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');

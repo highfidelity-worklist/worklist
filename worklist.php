@@ -956,7 +956,7 @@ include("head.html"); ?>
            modal: false,
            show: 'fade',
            hide: 'fade',
-           width: 800,
+           width: 840,
            height: 480
         });
         
