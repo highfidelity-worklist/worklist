@@ -100,7 +100,7 @@ class UserStats{
     public function getTimeBidAcceptedAvg() {
         $sql = "
             SELECT ROUND(AVG(diff)) AS average FROM (
-                SELECT TIME_TO_SEC(TIMEDIFF(firstBid, dateWorking)) AS diff FROM (
+                SELECT TIME_TO_SEC(TIMEDIFF(dateWorking, firstBid)) AS diff FROM (
                     SELECT 
                         (SELECT MAX(`date`) FROM " . FEES . " WHERE worklist_id = w.id AND `desc` = 'Accepted Bid') AS dateWorking,
                         (SELECT MIN(bid_created) FROM " . BIDS . " WHERE worklist_id = w.id) AS firstBid
