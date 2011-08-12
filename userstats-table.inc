@@ -20,8 +20,8 @@
             <tbody>
                 <tr>
 <?php if ($user->isRunner() && ! empty($hasRunJobs)) : ?>
-                    <td><?php echo relativeTime($userStats->getTimeBidAcceptedAvg(), false, false); ?></td>
-                    <td><?php echo relativeTime($userStats->getTimeToPayAvg(), false, false); ?></td>
+                    <td><?php echo relativeTime($userStats->getTimeBidAcceptedAvg(), false, false, false); ?></td>
+                    <td><?php echo relativeTime($userStats->getTimeToPayAvg(), false, false, false); ?></td>
 <?php endif; ?>
                     <td><a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a> / <a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a></td>
                     <td><?php
