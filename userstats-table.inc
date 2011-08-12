@@ -4,12 +4,25 @@
         <table id = "user-stats">
             <thead>
                 <tr class = "table-hdng">
-                    <th>Total/Active Jobs</th><th>Total/30 day $</th>
+<?php if ($user->isRunner() && ! empty($hasRunJobs)) : ?>
+                    <th>Bids Accepted Avg</th>
+                    <th>Avg TimeToPay</th>
+<?php endif; ?>
+                    <th>Total/Active Jobs</th>
+                    <th>Total/30 day $</th>
+        
             <?php if(!empty($Annual_Salary)){?> <th>Salary</th><?php }?><th>Bonus $ / %</th>
+<?php if ($hasBeenMechanic) : ?>
+                    <th>Avg +/- Bid Time</th>
+<?php endif; ?>
                 </tr>
             </thead>
             <tbody>
                 <tr>
+<?php if ($user->isRunner() && ! empty($hasRunJobs)) : ?>
+                    <td><?php echo relativeTime($userStats->getTimeBidAcceptedAvg(), false, false); ?></td>
+                    <td><?php echo relativeTime($userStats->getTimeToPayAvg(), false, false); ?></td>
+<?php endif; ?>
                     <td><a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a> / <a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a></td>
                     <td><?php
             setlocale(LC_MONETARY,'en_US');
@@ -23,6 +36,9 @@
             
             echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_bonusPayments))).' / '.$_bonusPercent.'%';
             ?></td>
+<?php if ($hasBeenMechanic) : ?>
+                    <td><?php echo relativeTime($userStats->getTimeCompletedAvg(), false, false, false); ?></td>
+<?php endif; ?>
                 </tr>
             </tbody>
         </table>

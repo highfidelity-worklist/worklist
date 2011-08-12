@@ -509,7 +509,7 @@ function formatableRelativeTime($timestamp, $detailLevel = 1) {
 	return $string . $tense;
 }
 
-function relativeTime($time, $withIn = true) {
+function relativeTime($time, $withIn = true, $justNow = true, $withAgo = true) {
     $secs = abs($time);
     $mins = 60;
     $hour = $mins * 60;
@@ -553,9 +553,9 @@ function relativeTime($time, $withIn = true) {
     }
     $relTime = substr($relTime, 0, -2);
     if (!empty($relTime)) {
-        return ($time < 0) ? "$relTime ago" : ($withIn ? "in $relTime" : $relTime);
+        return ($time < 0) ? ($withAgo ? '' : '-') . ("$relTime " . ($withAgo ? 'ago' : '')) : ($withIn ? "in $relTime" : $relTime);
     } else {
-        return "just now";
+        return $justNow ? 'just now' : '';
     }
 }
 

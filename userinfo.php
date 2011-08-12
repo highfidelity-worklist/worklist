@@ -166,6 +166,8 @@
     $userStats = new UserStats($userId);
     $manager = $user->getManager();
     $referred_by = $user->getReferred_by();
+    $hasRunJobs = $userStats->getRunJobsCount();
+    $hasBeenMechanic = $userStats->getMechanicJobCount();
 
     if ($action =='create-sandbox') {
         $result = array();

@@ -2,7 +2,6 @@
     parent.$('#user-info').dialog('option', 'title', 'User Info for <?php echo $user->getNickname(); ?>');
 </script>
     <div class="user-info" title="">
-        <span id="user-avatar"><img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" /></span>
         <div class="common-info">
 <?php
     include("userstats-table.inc");
@@ -41,7 +40,8 @@
         }
     }
 ?>
-        <p class="info-label">
+        <div id="user-avatar"><img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" /></div>
+        <p class="info-label" id="user-location">
             <?php
             if($user->getCity() != ""){
                 echo 'City, ';

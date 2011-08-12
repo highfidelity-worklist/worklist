@@ -67,19 +67,26 @@ p.small-text{
 
 #user-stats {
     position: absolute;
-    right: 12em;
+    right: 1em;
     width: auto;
 }
+
+#user-location {
+    float: left;
+}
+
 #user-avatar {
-    position: absolute;
-    left: 53em;
+    left: 1em;
     width: auto;
 }
+
 #avatar {
     background: #ffffff;
     border: 1px solid lightgrey;
     padding: 5px;
     margin: auto auto 3px;
+    height: 80px;
+    width: 80px;
 }
 #user-stats tbody tr td {
     text-align: center;
@@ -150,7 +157,7 @@ p.bottom {
 }
 
 #tabs {
-    margin-top: 3em;
+    margin-top: 0.5em;
     height: 300px;
 }
 
@@ -183,10 +190,8 @@ p.bottom {
 
 .button-row {
     float: right;
-    padding: 10px 16px 0;
-    margin-top:15px;
+    padding: 5px 0 10px 5px;
     text-align: right;
-    margin-right: 121px;
 }
 .button-row span {
     margin: 5px; }

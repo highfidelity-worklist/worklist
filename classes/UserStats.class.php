@@ -44,6 +44,105 @@ class UserStats{
         }
         return false;
     }
+    
+    public function getRunJobsCount() {
+        $sql = "
+            SELECT
+                COUNT(*)
+            FROM " . WORKLIST . "
+            WHERE runner_id = {$this->userId}";
+        
+        $res = mysql_query($sql);
+        if ($res && $row = mysql_fetch_row($res)) {
+            return $row[0];
+        }
+        
+        return false;
+    }
+    
+    public function getMechanicJobCount() {
+        $sql = "
+            SELECT
+                COUNT(*)
+            FROM " . WORKLIST . "
+            WHERE mechanic_id = {$this->userId}";
+        
+        $res = mysql_query($sql);
+        if ($res && $row = mysql_fetch_row($res)) {
+            return $row[0];
+        }
+        
+        return false;
+    }
+    
+    public function getTimeToPayAvg() {
+        $sql = "
+            SELECT ROUND(AVG(diff)) AS average FROM (
+                SELECT TIME_TO_SEC(TIMEDIFF(dateDone, dateCompleted)) AS diff FROM (
+                    SELECT 
+                        (SELECT MAX(change_date) FROM " . STATUS_LOG . " WHERE worklist_id = w.id AND status = 'COMPLETED') AS dateCompleted,
+                        (SELECT MAX(change_date) FROM " . STATUS_LOG . " WHERE worklist_id = w.id AND status = 'DONE') AS dateDone
+                    FROM " . STATUS_LOG . " sl 
+                    LEFT JOIN " . WORKLIST . " w ON w.id = sl.worklist_id
+                    WHERE 
+                        w.runner_id = {$this->userId}
+                        AND w.status = 'DONE'
+                    GROUP BY worklist_id) AS dates
+                WHERE dateCompleted IS NOT null) AS diffs";
+
+        $res = mysql_query($sql);
+        if ($res && $row = mysql_fetch_assoc($res)) {
+            return $row['average'];
+        }
+        return false;
+    }
+
+    public function getTimeBidAcceptedAvg() {
+        $sql = "
+            SELECT ROUND(AVG(diff)) AS average FROM (
+                SELECT TIME_TO_SEC(TIMEDIFF(firstBid, dateWorking)) AS diff FROM (
+                    SELECT 
+                        (SELECT MAX(`date`) FROM " . FEES . " WHERE worklist_id = w.id AND `desc` = 'Accepted Bid') AS dateWorking,
+                        (SELECT MIN(bid_created) FROM " . BIDS . " WHERE worklist_id = w.id) AS firstBid
+                    FROM " . STATUS_LOG . " sl 
+                    LEFT JOIN " . WORKLIST . " w ON w.id = sl.worklist_id
+                    WHERE 
+                        w.runner_id = {$this->userId}
+                    GROUP BY worklist_id) AS dates
+                WHERE dateWorking IS NOT null) AS diffs";
+
+        $res = mysql_query($sql);
+        if ($res && $row = mysql_fetch_assoc($res)) {
+            return $row['average'];
+        }
+        return false;
+    }
+
+    public function getTimeCompletedAvg() {
+        $sql = "
+            SELECT ROUND(AVG(bidTime - realTime)) AS average FROM (
+                SELECT 
+                    TIME_TO_SEC(TIMEDIFF(dateCompleted, dateAccepted)) AS realTime, 
+                    TIME_TO_SEC(TIMEDIFF(dateCompleted, dateToBeDone)) AS bidTime
+                FROM (
+                    SELECT 
+                        (SELECT MAX(change_date) FROM status_log WHERE worklist_id = w.id AND status = 'COMPLETED') AS dateCompleted,
+                        (SELECT MAX(`date`) FROM " . FEES . " WHERE worklist_id = w.id AND `desc` = 'Accepted Bid') AS dateAccepted,
+                        (SELECT bid_done FROM " . BIDS . " WHERE worklist_id = w.id AND accepted = 1) AS dateToBeDone
+                    FROM " . STATUS_LOG . " sl 
+                    LEFT JOIN " . WORKLIST . " w ON w.id = sl.worklist_id
+                    WHERE 
+                        w.mechanic_id = {$this->userId}
+                        AND w.status IN ('COMPLETED', 'DONE')
+                        GROUP BY worklist_id) AS dates
+                WHERE dateCompleted IS NOT null) AS diffs";
+
+        $res = mysql_query($sql);
+        if ($res && $row = mysql_fetch_assoc($res)) {
+            return $row['average'];
+        }
+        return false;
+    }
 
     public function getTotalEarnings(){
         $sql = "SELECT SUM(amount) FROM `fees` "
