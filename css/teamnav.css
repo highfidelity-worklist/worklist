@@ -6,8 +6,9 @@ h1 {
 /***** Override global page styles *****/
 
 .active-users {
-    float:right;
-    margin-top:20px;
+    float: right;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 .jobs {
     text-align:right;
@@ -84,4 +85,21 @@ h1 {
     text-align: center;
     display:none;
     font-size: 1.3em;
+}
+
+table#newUserStats {
+    width: 300px;
+    float: right;
+    margin-top: 10px;
+}
+
+#newUserStats caption {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-bottom: 5px;
+    color: #876F6D;
+}
+
+#newUserStats td {
+    text-align: center;
 }

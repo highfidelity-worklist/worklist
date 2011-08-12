@@ -356,17 +356,47 @@ public function getActiveUserItems($status, $page = 1){
         return false;
     }
     
-public function getBonusPaymentsTotal() {
+    public function getBonusPaymentsTotal() {
  
-$sql = "SELECT
-    IFNULL(`rewarder`.`sum`,0)AS `bonus_tot`
-    FROM `".USERS."` 
-    LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE (`withdrawn`=0 AND `paid` = 1 AND `user_id` = {$this->userId}) AND (`rewarder`=1 OR `bonus`=1) GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
-    WHERE `id` = {$this->userId}";
-$res = mysql_query($sql);
-        if($res && $row = mysql_fetch_row($res)){
-            return (int) $row[0];
-        }
+    $sql = "
+        SELECT
+            IFNULL(`rewarder`.`sum`,0) AS `bonus_tot`
+        FROM `".USERS."` 
+        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE (`withdrawn`=0 AND `paid` = 1 AND `user_id` = {$this->userId}) AND (`rewarder`=1 OR `bonus`=1) GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
+        WHERE `id` = {$this->userId}";
+        $res = mysql_query($sql);
+                if($res && $row = mysql_fetch_row($res)){
+                    return (int) $row[0];
+                }
+                return false;
+    }
+
+    public static function getNewUserStats() {
+        $sql = "
+            SELECT ( 
+                SELECT COUNT(DISTINCT(users.id)) 
+                FROM " . USERS . "
+                INNER JOIN " . FEES . " ON users.id = fees.user_id AND users.added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            ) AS newUsersWithFees, (
+                SELECT COUNT(DISTINCT(users.id)) 
+                FROM " . USERS . "
+                INNER JOIN " . BIDS . " ON users.id = bids.bidder_id AND users.added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            ) AS newUsersWithBids, (
+                SELECT COUNT(*)
+                FROM " . USERS . "
+                WHERE added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            ) AS newUsers, (
+                SELECT COUNT(*)
+                FROM " . USERS . "
+                WHERE 
+                    added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+                    AND last_seen > added
+            ) AS newUsersLoggedIn";
+    
+        $res = mysql_query($sql);
+        if ($res && $row = mysql_fetch_assoc($res)) {
+            return $row;
+        } 
         return false;
     }
 }

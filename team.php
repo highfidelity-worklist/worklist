@@ -23,7 +23,7 @@ $cur_page = isset( $_POST['page'] ) ? intval($_POST['page'] ) : 1;
 
 $sfilter = !empty( $_POST['sfilter'] ) ? $_POST['sfilter'] : 'PAID';
 $userId = getSessionUserId();
-if( $userId > 0 )	{
+if( $userId > 0 )   {
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );
@@ -32,6 +32,7 @@ if( $userId > 0 )	{
     $budget = number_format($userbudget);
 }
 
+$newStats = UserStats::getNewUserStats();
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html");
@@ -125,19 +126,19 @@ $(document).ready(function() {
         width: 800
     });
     if ($("#budgetPopup").length > 0) {
-		$("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
-		$("#budgetPopup").dialog({
-			title: "Budget",
-			autoOpen: false,
-			height: 'auto',
-			width: '250px',
-			position: ['center', 60],
-			modal: true
-		});
-		$("#welcome .budget").click(function(){
-			$("#budgetPopup").dialog("open");
-		});
-	};
+        $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
+        $("#budgetPopup").dialog({
+            title: "Budget",
+            autoOpen: false,
+            height: 'auto',
+            width: '250px',
+            position: ['center', 60],
+            modal: true
+        });
+        $("#welcome .budget").click(function(){
+            $("#budgetPopup").dialog("open");
+        });
+    };
         
     /**
      * Enable filter for users with fees in the last X days
@@ -204,7 +205,7 @@ function fillUserlist(npage) {
         
             $('.ln-letters a').removeClass('ln-selected');
             $('.ln-letters a.' + current_letter).addClass('ln-selected');
-            		
+                    
             var page = json[0][1]|0;
             var cPages = json[0][2]|0;
             
@@ -233,7 +234,7 @@ function fillUserlist(npage) {
             
             if(cPages > 1){ //showing pagination only if we have more than one page
             $('.ln-pages').html('<span>'+outputPagination(page,cPages)+'</span>');
-            			
+                        
             $('.ln-pages a').click(function(){
                 page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                 fillUserlist(page);
@@ -292,15 +293,15 @@ function AppendUserRow(json, odd) {
 }
 
 function addCommas(nStr) {
-	nStr += '';
-	x = nStr.split('.');
-	x1 = x[0];
-	x2 = x.length > 1 ? '.' + x[1] : '';
-	var rgx = /(\d+)(\d{3})/;
-	while (rgx.test(x1)) {
-		x1 = x1.replace(rgx, '$1' + ',' + '$2');
-	}
-	return x1 + x2;
+    nStr += '';
+    x = nStr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return x1 + x2;
 }
 
 </script>
@@ -316,19 +317,34 @@ function addCommas(nStr) {
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 
 <h1>Team Members</h1>
+<table id="newUserStats">
+    <caption>New user statistics - past 30 days</caption>
+    <tr class="table-hdng">
+        <th>New users</th>
+        <th>Logged in</th>
+        <th>With fees</th>
+        <th>With bids</th>
+    </tr>
+    <tr>
+        <td><?php echo $newStats['newUsers']; ?></td>
+        <td><?php echo $newStats['newUsersLoggedIn']; ?></td>
+        <td><?php echo $newStats['newUsersWithFees']; ?></td>
+        <td><?php echo $newStats['newUsersWithBids']; ?></td>
+    </tr>
+</table>
+<div class="clear"></div>
 <div class="active-users">
-	<input type="checkbox" id="filter-by-fees">Has fees in the last
-	   <select name="days" class="days">
-	       <option value="7">7 days</option>
-	       <option value="30" selected="selected">30 days</option>
-	       <option value="60">60 days</option>
-	       <option value="90">90 days</option>
-	       <option value="360">1 year</option>
-	   </select>
-	</input>
+    <input type="checkbox" id="filter-by-fees">Has fees in the last
+       <select name="days" class="days">
+           <option value="7">7 days</option>
+           <option value="30" selected="selected">30 days</option>
+           <option value="60">60 days</option>
+           <option value="90">90 days</option>
+           <option value="360">1 year</option>
+       </select>
+    </input>
 </div>
 <div class="clear"></div>
-
 <div id="message">No results</div>
 <table class="table-userlist" style="width:100%">
     <thead>
@@ -347,7 +363,6 @@ function addCommas(nStr) {
 </table>
 <div class="ln-letters"><a href="#" class="all ln-selected">ALL</a><a href="#" class="_">0-9</a><a href="#" class="a">A</a><a href="#" class="b">B</a><a href="#" class="c">C</a><a href="#" class="d">D</a><a href="#" class="e">E</a><a href="#" class="f">F</a><a href="#" class="g">G</a><a href="#" class="h">H</a><a href="#" class="i">I</a><a href="#" class="j">J</a><a href="#" class="k">K</a><a href="#" class="l">L</a><a href="#" class="m">M</a><a href="#" class="n">N</a><a href="#" class="o">O</a><a href="#" class="p">P</a><a href="#" class="q">Q</a><a href="#" class="r">R</a><a href="#" class="s">S</a><a href="#" class="t">T</a><a href="#" class="u">U</a><a href="#" class="v">V</a><a href="#" class="w">W</a><a href="#" class="x">X</a><a href="#" class="y">Y</a><a href="#" class="z ln-last">Z</a></div>
 <div class="ln-pages"></div>
-
 <div id="user-info" title="User Info"></div>
 <div id="budgetPopup" style="display:none;">
     <div id="be-block" >
