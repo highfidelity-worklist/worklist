@@ -129,7 +129,7 @@ function _run(videoID) {
             <div class="candp-logo"><a href="http://www.coffeeandpower.com" title="Coffee and Power"><img src="<?php echo SERVER_URL; ?>images/mugcp.png" border="0" height="54" /></a><br />
             CoffeeandPower Inc., <?php echo date('Y'); ?>
             </div>
-            <div class="home-footer-nav"><a href="http://blog.worklist.net">Worklist blog</a><a href="./journal">Live chat journal</a></div>
+            <div class="home-footer-nav"><a href="http://blog.worklist.net">Worklist blog</a><a href="<?php echo SERVER_BASE; ?>/journal">Live chat journal</a></div>
             <div style="float:none; clear:both;"></div>
         </div>
     </div>
