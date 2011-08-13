@@ -863,7 +863,7 @@ function changeStatus($workitem, $newStatus, $user) {
 
             try {
                 SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
-            } catch Exception($ex) {
+            } catch (Exception $ex) {
                 error_log("Could not paste diff :(\n$ex");
             }
         }
