@@ -100,7 +100,7 @@ class SandBoxUtil {
         $result = postRequest(SANDBOX_SERVER_API, $command);
 
         if (strpos($result, "http") === false) {
-            throw new Exception('Unable to paste sandbox diff to Worklist Pastebin.');
+            throw new Exception('Unable to paste sandbox diff to Worklist Pastebin: '.$result);
         }
 
         return $result;
