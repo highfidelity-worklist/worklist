@@ -85,6 +85,28 @@ class SandBoxUtil {
     }
 
     /**
+     * Dumps a diff of a user's sandbox
+     */
+    public function pasteSandboxDiff($username, $workitem_num, $sandbox_dir) {
+        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+        
+        $command  = "command=paste_diff";
+        $command .= "output=1&";
+        $command .= "username={$username}&";
+        $command .= "sandbox_dir={$sandbox_dir}&";
+        $command .= "key=".SANDBOX_SERVER_API_KEY;
+
+        $result = postRequest(SANDBOX_SERVER_API, $command);
+
+        if (strpos($result, "http") === false) {
+            throw new Exception('Unable to paste sandbox diff to Worklist Pastebin.');
+        }
+
+        return $result;
+    }
+
+    /**
     * Check if a user's sandbox already exists.Throws an exception if Sandbox already exists
     *
     */

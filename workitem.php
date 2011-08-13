@@ -360,7 +360,7 @@ if(!$notifyEmpty) {
               array('changes' => $new_update_message));
 }
 
-if ($action =="place_bid") {
+if ($action == "place_bid") {
     //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
     //a new variable is used to send the unenscaped notes in email alert.
     //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
@@ -560,7 +560,15 @@ if ($action == 'accept_bid') {
     $bid_id = intval($_REQUEST['bid_id']);
     // only runners can accept bids
 
-    if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) && ! $workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING" || $workitem->getStatus() == "SUGGESTEDwithBID")) {
+    if ((
+            $is_runner == 1 ||
+            $workitem->getRunnerId() == $_SESSION['userid']
+        ) &&
+        !$workitem->hasAcceptedBids() &&
+        (
+            strtoupper($workitem->getStatus()) == "BIDDING" ||
+            $workitem->getStatus() == "SUGGESTEDwithBID"
+        )) {
         // query to get a list of bids (to use the current class rather than breaking uniformity)
         // I could have done this quite easier with just 1 query and an if statement..
         $bids = (array) $workitem->getBids($workitem->getId());
@@ -578,7 +586,10 @@ if ($action == 'accept_bid') {
                 $bid_info = $workitem->acceptBid($bid_id);
 
                 // Journal notification
-                $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " . $bid_info['summary'] . ". Status set to WORKING.";
+                $journal_message .= $_SESSION['nickname'] .
+                    " accepted {$bid_info['bid_amount']} from " .
+                    $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " .
+                    $bid_info['summary'] . ". Status set to WORKING.";
 
                 // mail notification
                 Notification::workitemNotify(array(
@@ -614,13 +625,22 @@ if ($action == 'accept_bid') {
         }
     }
 }
+
 // Accept Multiple  bid
 if ($action=='accept_multiple_bid') {
     $bid_id = $_REQUEST['chkMultipleBid'];
     $mechanic_id = $_REQUEST['mechanic'];
     if(count($bid_id) > 0) {
     //only runners can accept bids
-        if (($is_runner == 1 || $workitem->getRunnerId() == getSessionUserId()) && !$workitem->hasAcceptedBids() && (strtoupper($workitem->getStatus()) == "BIDDING" || $workitem->getStatus() == "SUGGESTEDwithBID")) {
+        if ((
+                $is_runner == 1 ||
+                $workitem->getRunnerId() == getSessionUserId()
+            ) &&
+            !$workitem->hasAcceptedBids() &&
+            (
+                strtoupper($workitem->getStatus()) == "BIDDING" ||
+                $workitem->getStatus() == "SUGGESTEDwithBID"
+            )) {
             $total = 0;
             foreach($bid_id as $bid) {
                 $currentBid = new Bid();
@@ -811,7 +831,7 @@ function sendMailToDiscardedBids($worklist_id)    {
     }
 }
 
-function changeStatus($workitem,$newStatus, $user) {
+function changeStatus($workitem, $newStatus, $user) {
 
     $allowable = array("SUGGESTED", "REVIEW", "FUNCTIONAL", "PASS", "COMPLETED");
 
@@ -824,8 +844,29 @@ function changeStatus($workitem,$newStatus, $user) {
     if ($newStatus == 'DONE' && $workitem->getProjectId() == 0) {
         return false;
     }
+
     $workitem->setStatus($newStatus);
+    
+    // Generate diff and send to pastebin if we're in REVIEW
+    if ($newStatus == "REVIEW") {
+        if (substr($workitem->getSandbox(), 0, 3) == "http") {
+            require_once("sandbox-util-class.php");
+            
+            // https://dev.sendlove.us/~johncarlson21/worklist
+            // 0     12               3              4
+            $sandbox_array = explode("/", $workitem->sandbox);
+
+            $username = $sandbox_array[3];
+            $username = substr($username, 1); // eliminate the tilde
+
+            $sandbox = $sandbox_array[4];
+
+            SandBoxUtil::pasteSandboxDiff($username, $workitem->id, $sandbox);
+        }
+    }
+
     // notifications for subscribed users
     Notification::statusNotify($workitem);
+    
     return true;
 }
