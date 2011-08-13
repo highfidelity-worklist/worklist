@@ -40,7 +40,7 @@ require_once("send_email.php");
 $(document).ready(function() {
     // uncomment this once the videos are ready
     // the main videoID needs to be loaded here so that you can load it on page load
-    //google.setOnLoadCallback(_run("_lotxuUzI5Y"));
+    google.setOnLoadCallback(_run("DoFfdyIcVKw"));
 });
 
 </script>
@@ -112,7 +112,7 @@ function _run(videoID) {
                 network of developers, designers and testers</p>
             </div>
             <div class="other-videos">
-                <p><a href="#" onclick="load();">What is Worklist?</a><a href="#" onclick="load();">How does it work?</a><a href="#" onclick="load();">Why is it better?</a></p>
+                <p><a href="#" onclick="loadVideo('DoFfdyIcVKw'); return false;">Intro for developers</a><a href="#" onclick="loadVideo('60-iFFBl4Z4'); return false;">Intro for entrepreneurs</a></p>
             </div>
             <div id="home-videos">
                 <div class="main-video"><div id="videoDiv"></div></div>
