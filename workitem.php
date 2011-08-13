@@ -849,7 +849,7 @@ function changeStatus($workitem, $newStatus, $user) {
     
     // Generate diff and send to pastebin if we're in REVIEW
     if ($newStatus == "REVIEW") {
-        if (substr($workitem->getSandbox(), 0, 3) == "http") {
+        if (substr($workitem->getSandbox(), 0, 4) == "http") {
             require_once("sandbox-util-class.php");
             
             // https://dev.sendlove.us/~johncarlson21/worklist
@@ -861,7 +861,11 @@ function changeStatus($workitem, $newStatus, $user) {
 
             $sandbox = $sandbox_array[4];
 
-            SandBoxUtil::pasteSandboxDiff($username, $workitem->id, $sandbox);
+            try {
+                SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
+            } catch Exception($ex) {
+                error_log("Could not paste diff :(\n$ex");
+            }
         }
     }
 

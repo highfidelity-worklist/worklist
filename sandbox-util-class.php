@@ -91,7 +91,7 @@ class SandBoxUtil {
         if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
         if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized'); }
         
-        $command  = "command=paste_diff";
+        $command  = "command=paste_diff&";
         $command .= "output=1&";
         $command .= "username={$username}&";
         $command .= "sandbox_dir={$sandbox_dir}&";
