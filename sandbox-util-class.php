@@ -85,7 +85,7 @@ class SandBoxUtil {
     }
 
     /**
-     * Dumps a diff of a user's sandbox
+     * Dumps a diff of a user's sandbox to the paste bin
      */
     public function pasteSandboxDiff($username, $workitem_num, $sandbox_dir) {
         if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
@@ -94,13 +94,14 @@ class SandBoxUtil {
         $command  = "command=paste_diff&";
         $command .= "output=1&";
         $command .= "username={$username}&";
+        $command .= "job_num={$workitem_num}&";
         $command .= "sandbox_dir={$sandbox_dir}&";
         $command .= "key=".SANDBOX_SERVER_API_KEY;
 
         $result = postRequest(SANDBOX_SERVER_API, $command);
 
         if (strpos($result, "http") === false) {
-            throw new Exception('Unable to paste sandbox diff to Worklist Pastebin: '.$result);
+            throw new Exception('Unable to paste sandbox diff to Worklist Pastebin: '.$result." -- ".$command);
         }
 
         return $result;
