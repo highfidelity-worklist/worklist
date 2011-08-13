@@ -854,7 +854,7 @@ function changeStatus($workitem, $newStatus, $user) {
             
             // https://dev.sendlove.us/~johncarlson21/worklist
             // 0     12               3              4
-            $sandbox_array = explode("/", $workitem->sandbox);
+            $sandbox_array = explode("/", $workitem->getSandbox());
 
             $username = $sandbox_array[3];
             $username = substr($username, 1); // eliminate the tilde
