@@ -17,8 +17,8 @@ class Notification {
     const MY_BIDS_NOTIFICATIONS = 32;
     const SELF_EMAIL_NOTIFICATIONS = 64;
     const FUNCTIONAL_NOTIFICATIONS = 128;
-    const BIDDING_EMAIL_NOTIFICATIONS = 256;   
-    const REVIEW_EMAIL_NOTIFICATIONS = 512;   
+    const BIDDING_EMAIL_NOTIFICATIONS = 256;
+    const REVIEW_EMAIL_NOTIFICATIONS = 512;
  
     /**
      *  Sets flags using list of integers passed as arguments
@@ -466,7 +466,7 @@ class Notification {
     * @param String $message - actual message content
     */
     public static function sendSMS($recipient, $subject, $message) {
-        notify_sms_by_object( $recipient, $subject, $message);
+        notify_sms_by_object($recipient, $subject, $message);
         return true;
     }
     
@@ -521,6 +521,44 @@ class Notification {
             return true;
         }
         return false;
+    }
+    
+    public function notifyBudget($amount, $reason, $giver, $receiver) {
+        if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
+            return false;
+        }
+
+        $subject = "Worklist - You've Got Budget!";
+        $html = "<html><head><title>Worklist - You've Got Budget!</title></head><body>";
+        $html .= "<h2>You've Got Budget!</h2>";
+        $html .= "<p>Hello " . $receiver->getNickname() . ",<br />" . $giver->getNickname() . " granted you $" . number_format($amount, 2) .
+        " of budget for: " . $reason . "</p>";
+        $html .= "<p>Don't spend it all in one place!</p><p>- Worklist.net</p>";
+        $html .= "</body></html>";
+
+        if (!send_email($receiver->getUsername(), $subject, $html)) {
+            error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
+        }
+    }
+
+    public function notifySMSBudget($amount, $reason, $giver, $receiver) {
+        if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
+            return false;
+        }
+        
+        $message = $giver->getNickname() . ' granted you \$' . number_format($amount, 2) . ' of budget for: ' . $reason;
+        
+        setlocale(LC_CTYPE, "en_US.UTF-8");
+        $esc_subject = escapeshellarg('Budget Granted');
+        $esc_message = escapeshellarg($message);
+        $args = '"'.$esc_subject . '" "' . $esc_message . '" ';
+
+        $args .= $receiver->getId() . ' ';
+        
+        $application_path = dirname(dirname(__FILE__)) . '/';
+        exec('php ' . $application_path . 'tools/smsnotifications.php '
+        . $args . ' > /dev/null 2>/dev/null &');
+        
     }
 
 }

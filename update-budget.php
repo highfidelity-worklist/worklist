@@ -1,8 +1,8 @@
 <?php
 //  vim:ts=4:et
 
-//  Copyright (c) 2009-2010, LoveMachine Inc.  
-//  All Rights Reserved.  
+//  Copyright (c) 2009-2010, LoveMachine Inc.
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 // AJAX request to add/update a rewarder user
@@ -43,9 +43,12 @@ if ($amount > 0) {
     $data = array();
     $data['user'] = JOURNAL_API_USER;
     $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " " . number_format($amount, 2) . 
+    $data['message'] = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " " . number_format($amount, 2) .
     " for " . $_REQUEST['reason'] . ".";
     postRequest(JOURNAL_API_URL, $data);
+    
+    Notification::notifyBudget($amount, $reason, $giver, $receiver);
+    Notification::notifySMSBudget($amount, $reason, $giver, $receiver);
 }
 
 $json = json_encode(number_format($receiver->getBudget(), 2));
