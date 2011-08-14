@@ -283,7 +283,7 @@ function AppendUserRow(json, odd) {
     }
     row += ' useritem-' + json.id + '">';
     row += '<td class = "name-col">' + json.nickname + '</td>';
-    row += '<td class="age">'+ RelativeTime(json.joined) + '</td>';
+    row += '<td class="age">'+ json.joined + '</td>';
     row += '<td class="jobs">' + json.jobs_count + '</td>';
     row += '<td class="money">' + json.budget + '</td>';
     row += '<td class="money">$' +addCommas(Math.round(json.earnings)) + '</td>';

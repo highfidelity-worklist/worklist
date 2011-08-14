@@ -45,7 +45,7 @@ $cPages = ceil($users/$limit);
 
 if( $active == 'FALSE' ) {
     $query = "
-    SELECT `id`, `nickname`,TIMESTAMPDIFF(SECOND,`added`,NOW()) AS `joined`, `budget`,
+    SELECT `id`, `nickname`,`added` AS `joined`, `budget`,
     IFNULL(`creators`.`count`,0) + IFNULL(`mechanics`.`count`,0) AS `jobs_count`, 
     IFNULL(`earnings`.`sum`,0) AS `earnings`,
     IFNULL(`earnings30`.`sum`,0) AS `earnings30`,
@@ -60,7 +60,7 @@ if( $active == 'FALSE' ) {
     WHERE `nickname` REGEXP '^$letter' AND `is_active` = 1  ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
 }    else if( $active == 'TRUE' )    {
     $query = "
-    SELECT `id`, `nickname`,TIMESTAMPDIFF(SECOND,`added`,NOW()) AS `joined`, `budget`,
+    SELECT `id`, `nickname`,`added` AS `joined`, `budget`,
     IFNULL(`creators`.`count`,0) + IFNULL(`mechanics`.`count`,0) AS `jobs_count`,
     IFNULL(`earnings`.`sum`,0) AS `earnings`,
     IFNULL(`earnings30`.`sum`,0) AS `earnings30`,
@@ -87,10 +87,12 @@ while($row = mysql_fetch_assoc($rt)){
 	$user->findUserById($row['id']);
     if ($row['budget'] < 1){
 	    $row['budget'] = 'NONE';
-	    } else {
+    } else {
 	    $row['budget'] = '$'.number_format($user->getRemainingFunds(), 0);	
-	    }
-	    $row['earnings'] = $userStats->getTotalEarnings();
+    }
+    $row['earnings'] = $userStats->getTotalEarnings();
+    $diffseconds = strtotime($row['joined']);    
+    $row['joined'] = formatableRelativeTime($diffseconds,2);        
     $userlist[] = $row;
 }
                       
