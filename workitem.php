@@ -241,39 +241,34 @@ if ($action =='save_workitem') {
 }
 
 if ($action == 'new-comment') {
-    // incase the comment is a reply to another comment,
-    //we'll fetch the origibal comment's email <mikewasmike>
-    $corespondent = NULL;
-    $comment = new Comment();
-    if (isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) {
-        $comment->setWorklist_id((int) $_POST['worklist_id']);
-    }
-    if (isset($_POST['user_id']) && !empty($_POST['user_id'])) {
-        $comment->setUser_id((int) $_POST['user_id']);
-    }
-    if (isset($_POST['comment_id']) && !empty($_POST['comment_id'])) {
-        $comment->setComment_id((int) $_POST['comment_id']);
-        $originalComment = new Comment();
-        $originalComment->findCommentById((int) $_POST['comment_id']);
-        $cuser = new User();
-        $cuser->findUserById($originalComment->getUser_id());
-        $corespondent = array($cuser->getUsername());
-    }
-    if (isset($_POST['comment']) && !empty($_POST['comment'])) {
-        $comment->setComment($_POST['comment']);
+    if ((isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) &&
+        (isset($_POST['user_id'])     && !empty($_POST['user_id']))     &&
+        (isset($_POST['comment'])     && !empty($_POST['comment']))) {
+        
+        if (isset($_POST['comment_id']) && !empty($_POST['comment_id'])) {
+            $parent_comment = $_POST['comment_id'];
+        } else {
+            $parent_comment = NULL;
+        }
+
+        addComment($_POST['worklist_id'],
+                   $_POST['user_id'],
+                   $_POST['comment'],
+                   $parent_comment);
+        
+        // Send journal notification
+        Notification::workitemNotify(array(
+            'type' => 'comment',
+            'workitem' => $workitem,
+            'recipients' => array('creator', 'runner', 'mechanic'),
+            'emails' => $corespondent),
+            array(
+                'who' => $_SESSION['nickname'],
+                // removed nl2br as it's cleaner to be able to choose if this is used on output
+                'comment' => $_POST['comment']
+            ));
     }
 
-    try {
-        $comment->save();
-        $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
-        Notification::workitemNotify(array('type' => 'comment',
-              'workitem' => $workitem,
-              'recipients' => array('creator', 'runner', 'mechanic'),
-              'emails' => $corespondent),
-               array('who' => $_SESSION['nickname'],
-               // removed nl2br as it's cleaner to be able to choose if this is used on output
-               'comment' => $_POST['comment']));
-    } catch(Exception $e) {}
     $redirectToDefaultView = true;
 }
 
@@ -852,6 +847,7 @@ function changeStatus($workitem, $newStatus, $user) {
         if (substr($workitem->getSandbox(), 0, 4) == "http") {
             require_once("sandbox-util-class.php");
             
+            // Sandbox URLs look like:
             // https://dev.sendlove.us/~johncarlson21/worklist
             // 0     12               3              4
             $sandbox_array = explode("/", $workitem->getSandbox());
@@ -863,6 +859,11 @@ function changeStatus($workitem, $newStatus, $user) {
 
             try {
                 $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
+
+                $comment = "Code review available here:\n$result";
+
+                addComment($workitem->getId(), $user->getId(), $comment);
+
             } catch (Exception $ex) {
                 error_log("Could not paste diff: \n$ex");
             }
@@ -873,4 +874,32 @@ function changeStatus($workitem, $newStatus, $user) {
     Notification::statusNotify($workitem);
     
     return true;
+}
+
+function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id=NULL) {
+    // in case the comment is a reply to another comment,
+    // we'll fetch the original comment's email <mikewasmike>
+    $corespondent = NULL; 
+    $comment = new Comment();
+    $comment->setWorklist_id((int) $worklist_id);
+    $comment->setUser_id((int) $user_id);
+
+    if (isset($parent_comment_id)) {
+        $comment->setComment_id((int) $parent_comment_id);
+        $originalComment = new Comment(); 
+        $originalComment->findCommentById((int) $parent_comment_id);
+        $cuser = new User();
+        $cuser->findUserById($originalComment->getUser_id());
+        $corespondent = array($cuser->getUsername());
+    }
+    
+    $comment->setComment($comment_text);
+
+    try {
+        $comment->save();
+    } catch(Exception $e) {
+        error_log("Failure saving comment:\n".$e); 
+    }  
+    $redirectToDefaultView = true;
+
 }
