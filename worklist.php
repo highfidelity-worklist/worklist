@@ -814,7 +814,7 @@ include("head.html"); ?>
                     $('input[name=logoProject]').val(data.fileName);
                 }
             }
-        });	
+        });
 
 		
         $.get('getskills.php', function(data) {
@@ -849,7 +849,9 @@ include("head.html"); ?>
         });
         if(addFromJournal != '') {
             var winHandle = window.open('', addFromJournal);
-            var addJobPane = (winHandle.document.getElementById)?winHandle.document.getElementById('addJobPane'):winHandle.document.all['addJobPane'];
+            var addJobPane = (winHandle.document.getElementById) ?
+                    winHandle.document.getElementById('addJobPane') :
+                    winHandle.document.all['addJobPane'];
         }
         
         // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
@@ -1589,7 +1591,7 @@ var documentsArray = new Array();
 <!-- Popups for tables with jobs from quick links -->
 <?php require_once('dialogs/popups-userstats.inc'); ?>
 <!-- Popup for add project info-->
-<?php if ($is_runner || $is_payer) {require_once('dialogs/popup-addproject.inc'); }?>
+<?php require_once('dialogs/popup-addproject.inc'); ?>
 <!-- Popup for add role -->
 <?php include('dialogs/popup-addrole.inc') ?>
 <!-- Popup for viewing role -->
