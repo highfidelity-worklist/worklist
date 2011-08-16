@@ -5,14 +5,15 @@ require_once('class/Utils.class.php');
 require_once('class/Database.class.php');
 require_once("class.session_handler.php");
 require_once("classes/Project.class.php");
+require_once("classes/User.class.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 # krumch 20110506 #11576 - add getUserStatus to 'non-API_KEY list'
-if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail'){
+if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail' && $_REQUEST['action'] != 'getTimezone'){
     die("No api key defined.");
-} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail' && strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
+} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail' && strcmp($_REQUEST["api_key"],API_KEY) != 0 && $_REQUEST['action'] != 'getTimezone') {
     die("Wrong api key provided.");
-} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus')){
+} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'getTimezone')){
     die("Only HTTPS connection is accepted.");
 /*} else if($_SERVER["REQUEST_METHOD"] != "POST"){
     die("Only POST method is allowed.");*/
@@ -60,6 +61,9 @@ if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs'
                 break;
             case 'sendContactEmail':
                 sendContactEmail();
+                break;
+            case 'getTimezone':
+                getTimezone();
                 break;
             default:
                 die("Invalid action.");
@@ -330,3 +334,18 @@ function sendContactEmail(){
         exit(json_encode(array('error' => 'There was an error sending your message, please try again later.')));
     }
 }// end sendContactEmail
+
+function getTimezone() {
+    if (isset($_REQUEST['username'])) {
+        $username = $_REQUEST['username'];
+    } else {
+        respond(array('succeeded' => false, 'message' => 'Error: Could not determine the user'));
+    }
+
+    $user = new User();
+    if ($user->findUserByUsername($username)) {
+        respond(array('succeeded' => true, 'message' => $user->getTimezone()));
+    } else {
+        respond(array('succeeded' => false, 'message' => 'Error: Could not determine the user'));
+    }
+}
