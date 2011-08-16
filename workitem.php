@@ -257,6 +257,7 @@ if ($action == 'new-comment') {
                    $parent_comment);
         
         // Send journal notification
+        $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
         Notification::workitemNotify(array(
             'type' => 'comment',
             'workitem' => $workitem,
