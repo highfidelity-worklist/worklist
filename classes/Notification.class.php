@@ -160,7 +160,7 @@ class Notification {
                 'workitem' => $workitem,
                 'emails' => $emails);
                 self::workitemNotify($options);
-                self::workitemSMSNotify($options);
+                self::workitemSMSNotify($options);             
             break;
         }
     }
@@ -185,6 +185,9 @@ class Notification {
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
         $workitem = $options['workitem'];
+        $project_name = isset($options['project_name']) ? $options['project_name'] : null;
+        $revision = isset($options['revision']) ? $options['revision'] : null;
+        
         $itemId = $workitem -> getId();
         $itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId
                     . '</a> (' . $workitem -> getSummary() . ')';
@@ -294,14 +297,48 @@ class Notification {
                 $body.= '<br/><br/>Notes: ' . $data['notes'] ;
                 $body .= '<br><br>You can see the task <a href=' . SERVER_URL .
                          'workitem.php?job_id=' . $itemId . '>here</a>.';
-           break;
-           case 'suggestedwithbid':
+            break;
+            case 'suggestedwithbid':
                 $subject = "Suggested With Bid: " . $itemTitle;
                 $body =  'Summary:<br/> ' . $workitem -> getSummary();
                 $body .= '<br/><br/>Notes: ' . $data['notes'];
                 $body .= '<br><br>You can see the task <a href=' . SERVER_URL.
-                         'workitem.php?job_id=' . $itemId . '>here</a>.';
-           break;
+                         'workitem.php?job_id=' . $itemId . '>here</a>.';                         
+            break;
+            case 'autotestsuccess':
+                $reusableString = $project_name . '(v' . $revision . ')';
+                $reusableString .= '#';
+                $reusableString .= $itemId;
+                $reusableString .= ':';
+                $reusableString .= $workitem -> getSummary();
+                $subject = 'Commit Success - ' . $reusableString;
+                $body =  'Congrats!';
+                $body .= '<br/><br/>Your Commit - ' . $reusableString . ' was a success!';
+                $body .= '<br><br>Click <a href="';
+                $body .= 'http://svn.worklist.net/revision.php?repname=';
+                $body .= $project_name;
+                $body .= '&rev=';
+                $body .= $revision;
+                $body .= '">here</a>';
+                $body .= ' to see the webSVN commit notes.';
+                $body .= '<br/><br/>-worklist.net';
+            break; 
+            case 'autotestfailure':
+                $reusableString = $project_name . '(v' . $revision . ')';
+                $reusableString .= '#';
+                $reusableString .= $itemId;
+                $reusableString .= ':';
+                $reusableString .= $workitem -> getSummary();
+                $subject = 'Commit Failure - ' . $reusableString;
+                $body =  'Otto says: No Commit for you!';
+                $body .= '<br/><br/>Your Commit - ';
+                $body .= $reusableString;
+                $body .=" failed the Autotester!";
+                $body .= '<br><br>See test results <a href="http://bit.ly/jGfIkj">here</a> ';
+                $body .= 'Please look at the test results and determine if you need to modify your commit.';
+                $body .= 'You can type "@faq CommitTests" in the Journal for more information.';
+                $body .= '<br/><br/>-worklist.net';
+            break;
         }
 
     
@@ -366,6 +403,8 @@ class Notification {
         $recipients = isset($options['recipients']) ? $options['recipients'] : null;
         $emails = isset($options['emails']) ? $options['emails'] : array();
         $workitem = $options['workitem'];
+        $project_name = isset($options['project_name']) ? $options['project_name'] : null;
+        $revision = isset($options['revision']) ? $options['revision'] : null;        
         switch($options['type']) {
 
             case 'new_bidding':
@@ -397,6 +436,18 @@ class Notification {
                 $subject = "Bug for #".$workitem->getBugJobId();
                 $message = 'New workitem #' . $workitem->getId();
             break;
+
+            case 'autotestsuccess':
+                $subject = "Commit Success";
+                $message = 'Commit Success! ' . $project_name . '(v' . $revision . ')';
+            break; 
+            
+            case 'autotestfailure':
+                $subject = "Commit Failed";
+                $message = 'Commit Failed #' . $project_name . '(v' . $revision . ')';
+                $message .= 'See test results here: http://bit.ly/jGfIkj';
+            break;            
+            
             
         }
 
@@ -522,6 +573,22 @@ class Notification {
         }
         return false;
     }
+    
+    public static function autoTestNofications($workItemId,$result,$revision) {
+        $workItem = new workItem;
+        $workItem->loadById($workItemId);
+        $project = new Project();
+        $project->loadById($workItem->getProjectId());
+        $emails = self::getNotificationEmails(self::MY_BIDS_NOTIFICATIONS,$workItem);
+        $typeOfNotification = ($result=='success') ? 'autotestsuccess' : 'autotestfailure';
+        $options = array('type' => $typeOfNotification,
+        'workitem' => $workItem,
+        'emails' => $emails,
+        'project_name' => $project->getName(),
+        'revision' => $revision);
+        self::workitemNotify($options);
+        self::workitemSMSNotify($options);   
+    }    
     
     public function notifyBudget($amount, $reason, $giver, $receiver) {
         if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {

@@ -8,16 +8,7 @@ require_once("classes/Project.class.php");
 require_once("classes/User.class.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
-# krumch 20110506 #11576 - add getUserStatus to 'non-API_KEY list'
-if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail' && $_REQUEST['action'] != 'getTimezone'){
-    die("No api key defined.");
-} else if($_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'sendContactEmail' && strcmp($_REQUEST["api_key"],API_KEY) != 0 && $_REQUEST['action'] != 'getTimezone') {
-    die("Wrong api key provided.");
-} else if(!isset($_SERVER['HTTPS']) && ($_REQUEST['action'] != 'uploadProfilePicture' && $_REQUEST['action'] != 'getSystemDrawerJobs' && $_REQUEST['action'] != 'getUserStatus' && $_REQUEST['action'] != 'getTimezone')){
-    die("Only HTTPS connection is accepted.");
-/*} else if($_SERVER["REQUEST_METHOD"] != "POST"){
-    die("Only POST method is allowed.");*/
-} else {
+if(validateAction()) {
     if(!empty($_REQUEST['action'])){
         mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD);
         mysql_select_db (DB_NAME);
@@ -65,12 +56,47 @@ if(! isset($_REQUEST["api_key"]) && $_REQUEST['action'] != 'getSystemDrawerJobs'
             case 'getTimezone':
                 getTimezone();
                 break;
+            case 'sendTestNotifications':
+                sendTestNotifications();
+                break;                
             default:
                 die("Invalid action.");
         }
     }
+} else {
+    die();
 }
- 
+function validateAction() {
+    if ( validateAPIKey() && validateRequest()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function validateRequest() {
+    if( ! isset($_SERVER['HTTPS'])) {
+        echo("Only HTTPS connection is accepted.");
+        return false;
+    } else if ( ! isset($_REQUEST['action'])) {
+        echo("API not defined");
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function validateAPIKey() {
+    if( ! isset($_REQUEST["api_key"])) {
+        echo("No api key defined.");
+        return false;
+    } else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
+        echo("Wrong api key provided.");
+        return false;
+    } else {
+        return true;
+    }
+} 
 /*
 * Setting session variables for the user so he is logged in
 */
@@ -334,7 +360,17 @@ function sendContactEmail(){
         exit(json_encode(array('error' => 'There was an error sending your message, please try again later.')));
     }
 }// end sendContactEmail
-
+function sendTestNotifications(){
+    $workItemId = isset($_REQUEST['workItemId']) ? $_REQUEST['workItemId'] : 0 ;
+    $results = isset($_REQUEST['results']) ? $_REQUEST['results'] : '';
+    $revision = isset($_REQUEST['revision']) ? $_REQUEST['revision'] : '';
+    require_once('./classes/Notification.class.php');
+    if($workItemId > 0) {
+        $notify = new Notification();    
+        $notify->autoTestNofications($workItemId,$results,$revision);
+        exit(json_encode(array('success' => true)));
+    }
+}
 function getTimezone() {
     if (isset($_REQUEST['username'])) {
         $username = $_REQUEST['username'];
