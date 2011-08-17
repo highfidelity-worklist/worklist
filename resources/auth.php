@@ -54,7 +54,7 @@ function showIntroPage() {
 
   print '<html>' . "\n";
   print '<head><title>API Access</title>' . "\n";
-  print '<link rel="stylesheet" type="text/css" href="http://code.google.com/css/dev_docs.css">' . "\n";
+  print '<link rel="stylesheet" type="text/css" href="https://code.google.com/css/dev_docs.css">' . "\n";
   print '</head>' . "\n";
   print '<body><center>' . "\n";
   print '<table style="width:50%;">' . "\n";

@@ -46,7 +46,7 @@ $(document).ready(function() {
 </script>
 
 <!-- youtube js -->
-<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script src="https://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
   google.load("swfobject", "2.1");
 </script>
@@ -87,7 +87,7 @@ function loadPlayer(videoID) {
     // The element id of the Flash embed
     var atts = { id: "ytPlayer" };
     // All of the magic handled by SWFObject (http://code.google.com/p/swfobject/)
-    swfobject.embedSWF("http://www.youtube.com/v/" + videoID +
+    swfobject.embedSWF("https://www.youtube.com/v/" + videoID +
                        "&enablejsapi=1",
                        "videoDiv", "450", "270", "8", null, null, params, atts);
 }
