@@ -8,66 +8,81 @@ require_once("classes/Project.class.php");
 require_once("classes/User.class.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
+// TODO: add API keys to these function calls  
+// uploadProfilePicture
+// getSystemDrawerJobs
+// getTimezone
+
 if(validateAction()) {
     if(!empty($_REQUEST['action'])){
         mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD);
         mysql_select_db (DB_NAME);
         switch($_REQUEST['action']){
             case 'updateuser':
+                validateAPIKey();
                 updateuser();
                 break;
             case 'pushVerifyUser':
-                pushVerifyUser();
+                validateAPIKey();
+                pushVerifyUser();         
                 break;
             case 'login':
+                validateAPIKey();    
                 loginUserIntoSession();
                 break;
             case 'uploadProfilePicture':
                 uploadProfilePicture();
                 break;
             case 'updateProjectList':
-                updateProjectList();
+                validateAPIKey();
+                updateProjectList();          
                 break;
             case 'getSystemDrawerJobs':
                 getSystemDrawerJobs();
                 break;
             case 'bidNotification':
-                sendBidNotification();
+                validateAPIKey();
+                sendBidNotification();                
                 break;
             case 'getUserStatus':
                 require_once("update_status.php");
                 print get_status(false);
                 break;
             case 'processW2Masspay':
-                processW2Masspay();
+                validateAPIKey();        
+                processW2Masspay();               
                 break;
             case 'doScanAssets':
-                doScanAssets();
+                validateAPIKey();
+                doScanAssets();                
                 break;
             case 'version':
+                validateAPIKey();              
                 exec('svnversion > ver');
                 break;
             case 'jobsPastDue':
-                sendPastDueNotification();
+                validateAPIKey();            
+                sendPastDueNotification();          
                 break;
             case 'sendContactEmail':
-                sendContactEmail();
+                validateAPIKey();           
+                sendContactEmail();                 
                 break;
-            case 'getTimezone':
+            case 'getTimezone':          
                 getTimezone();
                 break;
             case 'sendTestNotifications':
-                sendTestNotifications();
+                validateAPIKey();          
+                sendTestNotifications();            
                 break;                
             default:
                 die("Invalid action.");
         }
     }
-} else {
-    die();
 }
+
 function validateAction() {
-    if ( validateAPIKey() && validateRequest()) {
+    if (validateRequest()) {
         return true;
     } else {
         return false;
@@ -76,11 +91,11 @@ function validateAction() {
 
 function validateRequest() {
     if( ! isset($_SERVER['HTTPS'])) {
-        echo("Only HTTPS connection is accepted.");
-        return false;
+        error_log("Only HTTPS connection is accepted.");
+        die("Only HTTPS connection is accepted.");        
     } else if ( ! isset($_REQUEST['action'])) {
-        echo("API not defined");
-        return false;
+        error_log("API not defined");
+        die("API not defined");        
     } else {
         return true;
     }
@@ -88,11 +103,11 @@ function validateRequest() {
 
 function validateAPIKey() {
     if( ! isset($_REQUEST["api_key"])) {
-        echo("No api key defined.");
-        return false;
+        error_log("No api key defined.");
+        die("No api key defined.");
     } else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
-        echo("Wrong api key provided.");
-        return false;
+        error_log("Wrong api key provided.");
+        die("Wrong api key provided.");
     } else {
         return true;
     }
