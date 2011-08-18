@@ -204,10 +204,12 @@ class Notification {
             break;
             
             case 'fee_added':
+                if($workitem->getStatus() != 'DRAFT') {
                 $subject = 'Fee: ' . $itemTitle;
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br>'
                         . 'Amount: ' . $data['fee_amount'];
+                }
             break;
 
             case 'tip_added':

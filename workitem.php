@@ -516,22 +516,25 @@ if ($action == "add_fee") {
     else { $$arg = '';
         }
     }
-    $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
-
-    // notify runner of new fee
-    Notification::workitemNotify(array('type' => 'fee_added',
-             'workitem' => $workitem,
-             'recipients' => array('runner')),
-            array('fee_adder' => $user->getNickname(),
-              'fee_amount' => $fee_amount));
+    if($workitem->getStatus() != 'DRAFT') {
+        $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
+    
+        // notify runner of new fee
+        Notification::workitemNotify(array('type' => 'fee_added',
+                 'workitem' => $workitem,
+                 'recipients' => array('runner')),
+                 array('fee_adder' => $user->getNickname(),
+                 'fee_amount' => $fee_amount));
+    
 
     // send sms message to runner
     $runner = new User();
     $runner->findUserById($workitem->getRunnerId());
     $runner->updateBudget(-$fee_amount);
 
-    if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
+        if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
         Notification::sendSMS($runner, 'Fee', $journal_message);
+        }
     }
     $redirectToDefaultView = true;
 }
