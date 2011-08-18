@@ -1573,7 +1573,13 @@ var documentsArray = new Array();
 })(jQuery);
 </script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
-<title>Worklist | Fast pay for your work, open codebase, great community.</title>
+<title><?php
+echo 
+  is_object($inProject)
+  ?  'Project: ' . $inProject->getName()
+  :  'Worklist | Fast pay for your work, open codebase, great community.'
+;
+?></title>
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
