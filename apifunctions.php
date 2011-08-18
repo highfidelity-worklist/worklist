@@ -12,7 +12,7 @@ function addRewarderBalance($userId, $points, $worklist_id = 0, $fee_id = 0) {
 
     defineSendLoveAPI();
 
-    $reason = "LoveMachine paid you $" . $points;
+    $reason = "Worklist paid you $" . $points;
     $params = array (
             'action' => 'change_balance',
             'api_key' => REWARDER_API_KEY,

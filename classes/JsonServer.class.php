@@ -721,7 +721,7 @@ class JsonServer
     {
         $phone = $this->getRequest()->getParam('phone');
             try {
-            notify_sms_by_id($_SESSION['userid'], 'Test SMS', 'Test from LoveMachine') or error_log("failed to create SMS message");
+            notify_sms_by_id($_SESSION['userid'], 'Test SMS', 'Test from Worklist') or error_log("failed to create SMS message");
             } catch (Sms_Backend_Exception $e) {
                 return $this->setOutput(array(
                     'success' => false,

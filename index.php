@@ -15,7 +15,7 @@ require_once("send_email.php");
 <head>
 <title>Worklist | Fast pay for your work, open codebase, great community.</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="copyright" content="Copyright (c) 2009, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com ">
+<meta name="copyright" content="Copyright (c) 2011 Coffee & Power, Inc.  All Rights Reserved. http://www.coffeeandpower.com" />
 <link href="css/CMRstyles.css" rel="stylesheet" type="text/css">
 <!--[if IE 6]>
   <link rel="stylesheet" href="css/ie.css" type="text/css" media="all" />

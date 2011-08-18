@@ -55,8 +55,11 @@
     $version = Utils::getVersion();
 
 ?>
-        <div class="copyText">&copy;&nbsp;<? echo date("Y"); ?> <a href="http://www.lovemachineinc.com" target="_blank">LoveMachine, Inc.</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="privacy.php" target="_blank">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a> | Version: <?php echo $version;?></div>
-        <div class="loves"><a href="http://www.lovemachineinc.com" target="_blank"><img src="images/LMLogo3.png" border="0"/></a></div>
+        <div class="copyText">&copy;&nbsp;<? echo date("Y"); ?>
+            <a href="http://www.coffeeandpower.com" target="_blank">Coffee & Power, Inc.</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="privacy.php" target="_blank">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a> | Version: <?php echo $version;?>
+        </div>
     </div>
 
 <!-- Close DIV outside -->
