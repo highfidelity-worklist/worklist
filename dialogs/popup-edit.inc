@@ -121,6 +121,7 @@
   ?>
           <p class="info-label">Status<br />
           <select name="status">
+              <option value="DRAFT">DRAFT</option>
               <option value="SUGGESTED">SUGGESTED</option>
               <option value="BIDDING" selected="selected">BIDDING</option>
               <option value="WORKING">WORKING</option>

@@ -256,9 +256,11 @@ class Notification {
             break;
             
             case 'modified':
+            if($workitem->getStatus() != 'DRAFT') {
                 $subject = "Modified: ".$itemTitle;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
                         . $data['changes'];
+            }
             break;
 
             case 'new_bidding':

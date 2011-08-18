@@ -120,7 +120,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
 
     $creator_id = $userId;
 
-    if (!empty($_POST['itemid'])) {
+    if (!empty($_POST['itemid']) && ($_POST['status']) != 'DRAFT') {
         $workitem->loadById($_POST['itemid']);
         $journal_message .= $nick . " updated ";
     } else {
@@ -170,7 +170,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
         invitePeople($people, $bid_fee_itemid, $summary, $notes);
     }
 
-    if ($bid_fee_amount > 0) {
+    if ($bid_fee_amount > 0 && $status != 'DRAFT') {
         $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id, $is_expense, $is_rewarder);
     }
 }
@@ -814,7 +814,7 @@ include("head.html"); ?>
                     $('input[name=logoProject]').val(data.fileName);
                 }
             }
-        });
+        });	
 
 		
         $.get('getskills.php', function(data) {

@@ -13,7 +13,8 @@ require_once 'timezones.php';
 require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 
-    $statusMapRunner = array("SUGGESTED" => array("BIDDING","PASS"),
+    $statusMapRunner = array("DRAFT" => array("SUGGESTED","BIDDING"),
+                 "SUGGESTED" => array("BIDDING","PASS"),
                  "SUGGESTEDwithBID" => array("BIDDING","PASS"),
                  "BIDDING" => array("PASS"),
                  "WORKING" => array("REVIEW", "FUNCTIONAL"),
@@ -137,7 +138,9 @@ if ($action =='save_workitem') {
     // summary
     if (isset($_POST['summary']) && $workitem->getSummary() != $summary) {
         $workitem->setSummary($summary);
+        if ($workitem->getStatus() != 'DRAFT') {
         $new_update_message .= "Summary changed. ";
+        }
     }
 
     if (isset($_POST['skills'])) {
@@ -153,7 +156,9 @@ if ($action =='save_workitem') {
         // have skills been updated?
         $skillsDiff = array_diff($skillsArr, $skillsCur);
         if (is_array($skillsDiff) && ! empty($skillsDiff)) {
+            if ($workitem->getStatus() != 'DRAFT') {
             $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
+            }
             // remove nasty end comma
             $new_update_message = rtrim($new_update_message, ', ') . '. ';
         }
@@ -166,7 +171,7 @@ if ($action =='save_workitem') {
         || (($status == 'BIDDING' || $status == 'WORKING') && $user->getBudget() > 0)
         || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
 
-        if ($workitem->getStatus() != $status && !empty($status)) {
+        if ($workitem->getStatus() != $status && !empty($status) && $status != 'DRAFT') {
             if (changeStatus($workitem, $status, $user)) {
                 if (!empty($new_update_message)) {  // add commas where appropriate
                     $new_update_message .= ", ";
@@ -182,7 +187,9 @@ if ($action =='save_workitem') {
     // project
     if ( $workitem->getProjectId() != $project_id) {
         $workitem->setProjectId($project_id);
+        if ($workitem->getStatus() != 'DRAFT') {
         $new_update_message .= "Project changed. ";
+        }
     }
     // Sandbox
     if ( $workitem->getSandbox() != $sandbox) {
@@ -235,9 +242,11 @@ if ($action =='save_workitem') {
     }
 
      $redirectToDefaultView = true;
+     if ($workitem->getStatus() != 'DRAFT') {
      $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id ".
                         $bugJournalMessage  .": ". $workitem->getSummary() .
                         $new_update_message;
+     }
 }
 
 if ($action == 'new-comment') {
@@ -257,6 +266,7 @@ if ($action == 'new-comment') {
                    $parent_comment);
         
         // Send journal notification
+        if ($workitem->getStatus() != 'DRAFT') {
         $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
         Notification::workitemNotify(array(
             'type' => 'comment',
@@ -268,6 +278,7 @@ if ($action == 'new-comment') {
                 // removed nl2br as it's cleaner to be able to choose if this is used on output
                 'comment' => $_POST['comment']
             ));
+        }
     }
 
     $redirectToDefaultView = true;
@@ -335,16 +346,20 @@ if ($action =='status-switch') {
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
-            $new_update_message = "Status set to $status. ";
-            $notifyEmpty = false;
-            if ($status == 'FUNCTIONAL') {
-              Notification::workitemNotify(array('type' => 'modified-functional',
+                if ($status != 'DRAFT') {
+                    $new_update_message = "Status set to $status. ";
+                    $notifyEmpty = false;
+                    if ($status == 'FUNCTIONAL') {
+                        Notification::workitemNotify(array('type' => 'modified-functional',
                   'workitem' => $workitem,
                   'recipients' => array('runner', 'creator', 'mechanic')),
                     array('changes' => $new_update_message));
               $notifyEmpty = true;
             }
-            $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
+                if ($status != 'DRAFT') {
+                $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
+                }
+            }
         }
     }
 }

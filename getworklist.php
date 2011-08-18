@@ -48,11 +48,18 @@ if (!empty($sfilter)) {
     foreach ($sfilter as $val) {
 
         $val = strtoupper(mysql_real_escape_string($val));
-        if ($val == 'ALL') {
-            $where .= "1 or ";
-        } else {
-            $where .= "status='$val' or ";
-        }
+        
+            if ($val == 'ALL' && !$is_runner) {
+                $where .= "1 AND status != 'DRAFT' OR ";
+            }
+            if ($val == 'ALL' && $is_runner == 1 ){
+                $where .= "1 AND status != 'DRAFT' OR (status = 'DRAFT' AND creator_id = $userId) OR  ";
+            }
+            if ($val == 'DRAFT'){
+                $where .= "(status = 'DRAFT' AND creator_id = $userId) OR  ";
+            } else {
+                $where .= "status='$val' OR ";
+            }
     }
     $where .= "0)";
 }

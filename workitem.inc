@@ -8,7 +8,7 @@
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    $statusList = array("SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
+    $statusList = array("DRAFT","SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
 
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
@@ -39,6 +39,14 @@
         $hideFees = true;
     }
 
+    if ($worklist['status'] == 'DRAFT' && $creator_id != $user_id) { ?>
+       <script type="text/javascript"> 
+       alert("Draft jobs are only viewable by their creator.");
+       location = "worklist.php";
+       </script> 
+   <?php  
+    return;
+    }
 
 /*********************************** HTML layout begins here  *************************************/
 include("head.html"); ?>

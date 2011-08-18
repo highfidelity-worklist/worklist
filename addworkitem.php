@@ -50,13 +50,17 @@ if ($userId > 0 ) {
 
     $creator_id = $userId;
 
-    if (!empty($_POST['itemid'])) {
+    if ((!empty($_POST['itemid'])) && ($_POST['status']) != 'DRAFT') {
         $workitem->loadById($_POST['itemid']);
         $journal_message .= $nick . " updated ";
-    } else {
-        $workitem->setCreatorId($creator_id);
-        $journal_message .= $nick . " added ";
     }
+        if ((empty($_POST['itemid']) && $_POST['status']) == 'DRAFT') {
+            $workitem->setCreatorId($creator_id);
+        }    
+            if ((empty($_POST['itemid'])) && ($_POST['status']) != 'DRAFT') {
+                $workitem->setCreatorId($creator_id);
+                $journal_message .= $nick . " added ";
+            }
     $workitem->setSummary($summary);
 
     //If this item is a bug add original item id 
@@ -95,7 +99,7 @@ if ($userId > 0 ) {
     }
     
     
-    if(empty($_POST['itemid']))  {
+    if(empty($_POST['itemid']) && ($_POST['status']) != 'DRAFT')  {
         $bid_fee_itemid = $workitem->getId();
         $journal_message .= " item #$bid_fee_itemid$bugJournalMessage: $summary. Status set to $status. ";
         if (!empty($_POST['files'])) {
@@ -105,7 +109,7 @@ if ($userId > 0 ) {
                 mysql_query($sql);
             }
         }
-    } else {
+    } else if (($_POST['status']) != 'DRAFT') {
         $bid_fee_itemid = $itemid;
         $journal_message .=  "item #$itemid: $summary: Status set to $status. ";
     }
