@@ -464,7 +464,35 @@ class JsonServer
             'success' => $success
         ));
     }
+    
+    protected function actionStartCodeReview() {
+        $workitem_id = $this->getRequest()->getParam('workitem');
+        $user_id = $this->getRequest()->getParam('userid');
+        $workitem = new WorkItem();
+        $workitem->loadById($workitem_id);
+        $user = new User();
+        $user->findUserById($user_id);
+        $workitem->setCRStarted(1);
+        $workitem->save();
+        $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workitem->getSummary();
+        sendJournalNotification($journal_message);
+        return $this->setOutput(array('success' => true,'data' => $journal_message));
+    }
 
+    protected function actionCancelCodeReview() {
+        $workitem_id = $this->getRequest()->getParam('workitem');
+        $user_id = $this->getRequest()->getParam('userid');
+        $workitem = new WorkItem();
+        $workitem->loadById($workitem_id);
+        $user = new User();
+        $user->findUserById($user_id);
+        $workitem->setCRStarted(0);
+        $workitem->save();
+        $journal_message = $user->getNickname() . " has canceled their code review for #$workitem_id: " . $workitem->getSummary();
+        sendJournalNotification($journal_message);
+        return $this->setOutput(array('success' => true,'data' => $journal_message));
+    }
+    
     protected function actionGetFilesForWorkitem()
     {
         $files = File::fetchAllFilesForWorkitem($this->getRequest()->getParam('workitem'));

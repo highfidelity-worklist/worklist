@@ -29,6 +29,8 @@ class WorkItem {
     protected $project_name;
     protected $bug_job_id;
     protected $is_bug;
+    protected $code_review_started;
+    protected $code_review_completed;
 
     var $status_changed;
 
@@ -81,6 +83,8 @@ class WorkItem {
                         w.sandbox,
                         w.bug_job_id,
                         w.is_bug,
+                        w.code_review_started,
+                        w.code_review_completed,
                         w.status_changed,
                         p.name AS project_name
                     FROM  ".WORKLIST. " as w
@@ -105,6 +109,8 @@ class WorkItem {
              ->setSandbox($row['sandbox'])
              ->setBugJobId($row['bug_job_id'])
              ->setIs_bug($row['is_bug'])
+             ->setCRStarted($row['code_review_started'])
+             ->setCRCompleted($row['code_review_completed'])
              ->setWorkitemSkills();
         $this->status_changed = $row['status_changed'];
         $this->project_name = $row['project_name'];
@@ -271,6 +277,12 @@ WHERE id = ' . (int)$id;
         $this->status = $status;
         return $this;
     }
+    
+    public function resetCRFlags($status) {
+        $this->code_review_started = 0;
+        $this->code_review_completed = 0;
+        return $this;
+    }
 
     public function getStatus()
     {
@@ -320,6 +332,24 @@ WHERE id = ' . (int)$id;
     public function getSandbox()
     {
         return $this->sandbox;
+    }
+    
+    public function setCRStarted($cr_status) {
+        $this->code_review_started = $cr_status;
+        return $this;
+    }
+
+    public function getCRStarted() {
+        return $this->code_review_started;
+    }
+
+    public function setCRCompleted($cr_status) {
+        $this->code_review_completed = $cr_status;
+        return $this;
+    }
+
+    public function getCRcompleted() {
+        return $this->code_review_completed;
     }
     
     /**
@@ -457,6 +487,8 @@ WHERE id = ' . (int)$id;
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
             is_bug='.$this->getIs_bug().',
+            code_review_started='.$this->getCRStarted().',
+            code_review_completed='.$this->getCRCompleted().',
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
         $query .= ' WHERE id='.$this->getId();
         return mysql_query($query) ? 1 : 0;
@@ -992,6 +1024,14 @@ WHERE id = ' . (int)$id;
                 break;
                 
             case 'edit':
+                return $action;
+                break;
+
+            case 'cancel_codereview':
+                return $action;
+                break;
+                
+            case 'finish_codereview':
                 return $action;
                 break;
 

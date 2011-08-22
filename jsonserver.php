@@ -5,6 +5,7 @@
 include("config.php");
 include("class.session_handler.php");
 include_once("functions.php");
+include_once("workitem.class.php");
 include_once("send_email.php");
 require_once("lib/Sms.php");
 

@@ -16,15 +16,16 @@ $tooltips = array(
 	
 	
 	/* List's list tooltips 		*/
-	
 	'addButton'		=> 'Create a new job that needs to get done.',
 	'hoverJobRow'	=> 'View, edit, or make a bid on this job.',
 	
 
 	/* Item tooltips 				*/ 
 	
-	'addFee'	=> 'Add a fee you would like to be paid for work done on this job.',
-	'addBid'	=> 'Make an offer to do this job.',
+	'cR'	        => 'Start a code review on this job.',
+    'cRDisallowed'	=> 'You are not authorized to Code Review this job.',
+	'addFee'	    => 'Add a fee you would like to be paid for work done on this job.',
+	'addBid'	    => 'Make an offer to do this job.',
 	
 	/* Budget Info tooltips         */
 
@@ -34,7 +35,9 @@ $tooltips = array(
     'budgetPaid'      => 'Money Paid out on Done jobs.',
 	
 	/* Add Job tooltips 			*/
-    'enterAmount'      => 'Enter the amount you want to be paid if this job is accepted and done.',
+    'enterAmount'     =>  'Enter the amount you want to be paid if this job is accepted and done.',
+    'enterNotes'      =>  'Enter detailed code review info in Comments Section.',
+    'enterCrAmount'	  =>  'Recommended review fee based on project settings.',
 
     /* Add Project tooltips 			*/
     'addProj' => 'Add a new project to the Worklist.',

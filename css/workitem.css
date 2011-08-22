@@ -30,6 +30,15 @@
     margin:0!important;
     padding:0!important;
 }
+
+span.info-whisper {
+    font-weight: normal;
+    font-size: smaller;
+    display: inline-block;
+    margin: 0!important;
+    padding: 0!important;
+}
+
 .info-summ,.info-data,.info-invite {
     margin-left:4px;
     height:25px;

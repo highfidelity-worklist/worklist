@@ -380,8 +380,11 @@ class Project {
      * @param int $project_id
      * @return array|null
     */
-    public function getRoles($project_id){
+    public function getRoles($project_id, $where = ''){
         $query = "SELECT * FROM `".ROLES."` WHERE `project_id`={$project_id}";
+        if (!empty($where)) {
+                $query .= " AND ". $where;
+        }
         $result_query = mysql_query($query);
         if ($result_query) {
             $temp_array = array();

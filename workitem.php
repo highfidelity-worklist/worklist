@@ -98,6 +98,12 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "invite-people";
 } else if (isset($_POST['newcomment'])) {
     $action = 'new-comment';
+} else if (isset($_POST['start_codereview'])) {
+    $action = "start_codereview";
+} else if (isset($_POST['finish_codereview'])) {
+    $action = "finish_codereview";
+} else if (isset($_POST['cancel_codereview'])) {
+    $action = "cancel_codereview";
 }
 
 // for any other action user has to be logged in
@@ -299,6 +305,37 @@ if($action =='invite-people') {
       exit;
     }
 }
+if($action == 'start_codereview') {
+    $workitem->setCRStarted(1);
+    $workitem->save();
+    $journal_message = $_SESSION['nickname'] . " has started a code review for #$worklist_id: " . $workitem->getSummary();
+}
+
+if($action == 'finish_codereview') {
+    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
+    foreach ($args as $arg) {
+        if (isset($_POST[$arg])) {
+               $$arg = mysql_real_escape_string($_POST[$arg]);
+        } else {
+            $$arg = '';
+        }
+    } 
+    if($fee_desc == '') {
+        $fee_desc = 'Code Review';
+    } else {
+        $fee_desc = 'Code Review - '. $fee_desc;
+    }
+    sendJournalNotification(AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder));
+    $workitem->setCRCompleted(1);
+    $workitem->save();
+    $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
+}
+
+if($action == 'cancel_codereview') {
+    $workitem->setCRStarted(0);
+    $workitem->save();
+    $journal_message = $_SESSION['nickname'] . " has canceled their code review for #$worklist_id: " . $workitem->getSummary();
+}
 
 if($action =='save-review-url') {
 
@@ -346,18 +383,18 @@ if ($action =='status-switch') {
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
-                if ($status != 'DRAFT') {
-                    $new_update_message = "Status set to $status. ";
-                    $notifyEmpty = false;
-                    if ($status == 'FUNCTIONAL') {
-                        Notification::workitemNotify(array('type' => 'modified-functional',
-                  'workitem' => $workitem,
-                  'recipients' => array('runner', 'creator', 'mechanic')),
+            if ($status != 'DRAFT') {
+                $new_update_message = "Status set to $status. ";
+                $notifyEmpty = false;
+                if ($status == 'FUNCTIONAL') {
+                    Notification::workitemNotify(array('type' => 'modified-functional',
+                    'workitem' => $workitem,
+                    'recipients' => array('runner', 'creator', 'mechanic')),
                     array('changes' => $new_update_message));
-              $notifyEmpty = true;
-            }
+                    $notifyEmpty = true;
+                }
                 if ($status != 'DRAFT') {
-                $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
+                    $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
                 }
             }
         }
@@ -818,6 +855,30 @@ $fees = $workitem->getFees($worklist_id);
 
 //total fee
 $total_fee = $workitem->getSumOfFee($worklist_id);
+
+//accepted bid amount
+$accepted_bid_amount = 0;
+foreach($fees as $fee){
+    if ($fee['desc'] == 'Accepted Bid') {
+        $accepted_bid_amount = $fee['amount'];  
+    }
+}
+
+//code review fees
+$project = new Project();
+$project_roles = $project->getRoles($workitem->getProjectId(),"role_title ='Code Review'");
+if (count($project_roles) != 0 && $project_roles['percentage'] !== null && $project_roles['min_amount'] !== null) {
+    $crFee = ($project_roles['percentage'] / 100) * $accepted_bid_amount;
+    if ((float) $crFee < $project_roles['min_amount']) {
+       $crFee = $project_roles['min_amount']; 
+    }
+} else {
+    $crFee = (10 / 100 ) * $accepted_bid_amount;
+    if ((float) $crFee < 2.00) {
+       $crFee = 2.00; 
+    }
+}
+
 require_once "workitem.inc";
 
 function sendMailToDiscardedBids($worklist_id)    {
@@ -863,6 +924,8 @@ function changeStatus($workitem, $newStatus, $user) {
     
     // Generate diff and send to pastebin if we're in REVIEW
     if ($newStatus == "REVIEW") {
+        //reset core_review flags
+        $workitem->resetCRFlags();
         if (substr($workitem->getSandbox(), 0, 4) == "http") {
             require_once("sandbox-util-class.php");
             
