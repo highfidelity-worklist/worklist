@@ -22,7 +22,8 @@ if ($userId > 0 && ($_SESSION['is_runner'] || $_SESSION['is_payer'])) {
     $nick = $user->getNickname();
 
     $project = new Project();
-    $args = array( 'name', 'description', 'repository', 'logo' );
+    $cr_3_favorites = $_REQUEST["cr_3_favorites"];
+    $args = array( 'name', 'description', 'repository', 'logo', 'cr_anyone', $cr_3_favorites, 'cr_project_admin', 'cr_job_runner'  );
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
@@ -38,6 +39,10 @@ if ($userId > 0 && ($_SESSION['is_runner'] || $_SESSION['is_payer'])) {
     $project->setOwnerId($userId);
     $project->setActive(true);
     $project->setLogo($logo);
+    $project->setCrAnyone($cr_anyone);
+    $project->setCrFav($cr_3_favorites);
+    $project->setCrAdmin($cr_project_admin);
+    $project->setCrRunner($cr_job_runner);
     $project->save();
     $journal_message = $nick . ' added project ' . $name;
     

@@ -16,6 +16,10 @@ include("class.session_handler.php");
 include("check_new_user.php");
 include("functions.php");
 
+$userId = getSessionUserId();
+$is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
+$is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
+
 $selectedLetter = isset($_REQUEST['letter']) ? $_REQUEST['letter'] : "all";
 $currentPage = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 
@@ -109,6 +113,23 @@ include("head.html");
     }(jQuery);
     var current_letter = '<?php echo $selectedLetter; ?>';
     var current_page = '<?php echo $currentPage ?>';
+
+    function validateCodeReviews() {
+        if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
+    	    $('.cr_anyone_field').attr('checked', true);
+    	    $('#edit_cr_error').html("One selection must be checked");
+    	    $('#edit_cr_error').fadeIn();
+    	    $('#edit_cr_error').delay(2000).fadeOut();
+    	};
+    	if (!$('.cr_anyone_field_ap').is(':checked') && !$('.cr_3_favorites_field_ap').is(':checked') && !$('.cr_project_admin_field_ap').is(':checked') && !$('.cr_job_runner_field_ap').is(':checked')) {
+    	    $('.cr_anyone_field_ap').attr('checked', true);
+    	    $('#edit_cr_error_ap').html("One selection must be checked");
+    	    $('#edit_cr_error_ap').fadeIn();
+    	    $('#edit_cr_error_ap').delay(2000).fadeOut();
+    	}
+    };
+
+    
     $(document).ready(function() {
         populateProjectListing(current_page);
         $('.ln-letters a').click(function() {
@@ -117,6 +138,18 @@ include("head.html");
             populateProjectListing(1);
             return false;
         });
+        
+        $('.accordion').accordion({
+        	clearStyle: true,
+        	collapsible: true,
+        	active: true
+        	});
+        	
+        	// Validate code review input
+        	$(':checkbox').change(function() {
+        	validateCodeReviews();
+        	});
+        	        
         
     <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer']) { ?>
         $('#addproj').click(function() {
@@ -169,7 +202,12 @@ include("head.html");
                         name: $(':input[name="name"]', addForm).val(),
                         description: $(':input[name="description"]', addForm).val(),
                         repository: $(':input[name="repository"]', addForm).val(),
-                        logo: $(':input[name="logoProject"]', addForm).val()
+                        logo: $(':input[name="logoProject"]', addForm).val(),
+                        cr_anyone: $(':input[name="cr_anyone"]', addForm).val(),
+                        cr_3_favorites: $(':input[name="cr_3_favorites"]', addForm).val(),
+                        cr_project_admin: $(':input[name="cr_project_admin"]', addForm).val(),
+                        cr_job_runner: $(':input[name="cr_job_runner"]', addForm).val()
+                                                
                     },
                     type: 'POST',
                     success: function(json) {

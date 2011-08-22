@@ -42,6 +42,14 @@ if ($projectName) {
     if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
         $inProject->setDescription($_REQUEST['description']);
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
+        $cr_anyone = ($_REQUEST['cr_anyone']) ? 1 : 0;
+        $cr_3_favorites = ($_REQUEST['cr_3_favorites']) ? 1 : 0;
+        $cr_project_admin = ($_REQUEST['cr_project_admin']) ? 1 : 0;
+        $cr_job_runner = ($_REQUEST['cr_job_runner']) ? 1 : 0;
+        $inProject->setCrAnyone($cr_anyone);
+        $inProject->setCrFav($cr_3_favorites);
+        $inProject->setCrAdmin($cr_project_admin);
+        $inProject->setCrRunner($cr_job_runner);
         if ($_REQUEST['logoProject'] != "") {
             $inProject->setLogo($_REQUEST['logoProject']);
         }
@@ -764,11 +772,38 @@ include("head.html"); ?>
 
     }(jQuery); // end of function loaderImg
 
+    function validateCodeReviews() {
+        if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
+            $('.cr_anyone_field').attr('checked', true);
+            $('#edit_cr_error').html("One selection must be checked");
+            $('#edit_cr_error').fadeIn();
+            $('#edit_cr_error').delay(2000).fadeOut();
+        };
+        if (!$('.cr_anyone_field_ap').is(':checked') && !$('.cr_3_favorites_field_ap').is(':checked') && !$('.cr_project_admin_field_ap').is(':checked') && !$('.cr_job_runner_field_ap').is(':checked')) {
+            $('.cr_anyone_field_ap').attr('checked', true);
+            $('#edit_cr_error_ap').html("One selection must be checked");
+            $('#edit_cr_error_ap').fadeIn();
+            $('#edit_cr_error_ap').delay(2000).fadeOut();
+        }
+    };
+    
 	
     $(document).ready(function() {
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
         $('#userbox').css('margin-top', '-'+box_h+'px');
+
+        $('.accordion').accordion({
+            clearStyle: true,
+            collapsible: true,
+            active: true
+        });
+
+        // Validate code review input
+        $(':checkbox').change(function() {
+            validateCodeReviews();
+        });
+        
 		
         if (inProject.length > 0) {
             if ( $("#projectLogoEdit").length > 0) {
@@ -1662,6 +1697,18 @@ if (is_object($inProject)) {
             <p class="info-label">TestFlight Team Token:<br />
                 <input name="testflight_team_token" id="testflight_team_token" type="text" value="<?php echo $inProject->getTestFlightTeamToken(); ?>" />
             </p>
+            <div class="accordion">
+                <h3><a href="#">Allow code reviews from:</a></h3>
+                <div id="codeReviewRightsContainer">
+                    <input class="cr_anyone_field" type="checkbox" name="cr_anyone" value="1" <?php echo ($inProject->getCrAnyone()>0) ? 'checked="checked"' : '' ; ?> />Anyone<br/>
+                    <input class="cr_3_favorites_field" type="checkbox" name="cr_3_favorites" value="1" <?php echo ($inProject->getCrFav()>0) ? 'checked="checked"' : '' ; ?> />Anyone who is favorite of more than [3] people<br/>
+                    <input class="cr_project_admin_field" type="checkbox" name="cr_project_admin" value="1" <?php echo ($inProject->getCrAdmin()>0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the project admin<br/>
+                    <input class="cr_job_runner_field" type="checkbox" name="cr_job_runner" value="1" <?php echo ($inProject->getCrRunner()>0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the job manager<br/>
+                </div>
+            </div>
+            <div id="edit_cr_error"></div>
+            <br/>
+            
             <div>
                 <input class="left-button" type="submit" id="cancel" name="cancel" value="Cancel">
                 <input class="right-button" type="submit" id="save_project" name="save_project" value="Save">
@@ -1763,6 +1810,19 @@ if (is_object($inProject)) {
             </div>
 <?php endif; ?>
 <!--End of roles table-->
+
+<?php if (!$edit_mode) { ?>
+            <div class="accordion">
+                <h3><a href="#">Allow code reviews from:</a></h3>
+                <div id="codeReviewRightsContainer">
+                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAnyone() > 0) ? 'checked="checked"' : '' ; ?> />Anyone<br/>
+                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrFav() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is favorite of more than [3] people<br/>
+                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAdmin() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the project admin<br/>
+                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrRunner() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the job manager<br/>
+                </div>
+            </div>
+<?php } ?>
+
 
 <div id="uploadPanel"> </div>
 </div>

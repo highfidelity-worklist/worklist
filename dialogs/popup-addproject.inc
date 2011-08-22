@@ -17,6 +17,17 @@
         <p class="info-label">SVN Repsitory:<br />
             <input type="text" name="repository" id="repository" class="text-field" size="48" />
         </p>
+        <div class="accordion">
+            <h3><a href="#">Allow code reviews from:</a></h3>
+            <div id="codeReviewRightsContainerAP">
+                <input class="cr_anyone_field_ap" type="checkbox" name="cr_anyone" value="1" <?php echo !empty($_REQUEST['cr_anyone'])? 1:0; ?> />Anyone<br/>
+                <input class="cr_3_favorites_field_ap" type="checkbox" name="cr_3_favorites" value="1" <?php echo !empty($_REQUEST['cr_3_favorites'])? 1:0; ?> />Anyone who is favorite of more than [3] people<br/>
+                <input class="cr_project_admin_field_ap" type="checkbox" name="cr_project_admin" value="1" <?php echo !empty($_REQUEST['cr_project_admin'])? 1:0; ?> />Anyone who is a favorite of the project admin<br/>
+                <input class="cr_job_runner_field_ap" type="checkbox" name="cr_job_runner" value="1" <?php echo !empty($_REQUEST['cr_job_runner'])? 1:0; ?> />Anyone who is a favorite of the job manager<br/>
+            </div>
+        </div>
+        <div id="edit_cr_error_ap"></div>
+        
         <div>
             <input type="submit" id="cancel" name="cancel" value="Cancel">
             <input type="submit" id="save_project" name="save_item" value="Save">

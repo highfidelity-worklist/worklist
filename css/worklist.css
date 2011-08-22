@@ -772,3 +772,8 @@ td.textAlignReport {
     line-height: 10px;
     font-size: 10px;
 }
+#edit_cr_error, #edit_cr_error_ap {
+    text-align: left;
+    color: #FF0000;
+}
+

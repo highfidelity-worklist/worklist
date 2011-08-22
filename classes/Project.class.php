@@ -26,6 +26,10 @@ class Project {
     protected $fund_id;
     protected $testflight_team_token;
     protected $logo;
+    protected $cr_anyone;
+    protected $cr_project_admin;
+    protected $cr_3_favorites;
+    protected $cr_job_runner;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -81,7 +85,8 @@ class Project {
         }
 
         $query = "
-            SELECT p.project_id, p.name, p.description, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, p.fund_id, p.testflight_team_token, p.logo 
+            SELECT p.project_id, p.name, p.description, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, 
+            p.fund_id, p.testflight_team_token, p.logo, p.cr_anyone, p.cr_3_favorites, p.cr_project_admin, p.cr_job_runner
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -107,6 +112,10 @@ class Project {
              ->setLogo($row['logo'])
              ->setOwnerId($row['owner_id'])
              ->setFundId($row['fund_id']);
+             $this->setCrAnyone($row['cr_anyone']);
+             $this->setCrFav($row['cr_3_favorites']);
+             $this->setCrAdmin($row['cr_project_admin']);
+             $this->setCrRunner($row['cr_job_runner']);
              
         return true;
     }
@@ -230,10 +239,47 @@ class Project {
 
     public function getLogo() {
         return $this->logo;
-    }    
+    } 
+
+    public function setCrAnyone($cr_anyone) {
+        $this->cr_anyone = $cr_anyone;
+        return $this;
+    }
+
+    public function getCrAnyone() {
+        return $this->cr_anyone;
+    } 
+    
+    public function setCrFav($cr_3_favorites) {
+        $this->cr_3_favorites = $cr_3_favorites;
+        return $this;
+    }
+
+    public function getCrFav() {
+        return $this->cr_3_favorites;
+    }
+
+    public function setCrAdmin($cr_project_admin) {
+        $this->cr_project_admin = $cr_project_admin;
+        return $this;
+    }
+
+    public function getCrAdmin() {
+        return $this->cr_project_admin;
+    }
+    
+    public function setCrRunner($cr_job_runner) {
+        $this->cr_job_runner = $cr_job_runner;
+        return $this;
+    }
+
+    public function getCrRunner() {
+        return $this->cr_job_runner;
+    }
 
     protected function insert() {
-        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, testflight_team_token, logo, last_commit ) ".
+        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, testflight_team_token,
+         logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner) ".
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -244,7 +290,11 @@ class Project {
             "'".mysql_real_escape_string($this->getOwnerId())."', ".
             "'".mysql_real_escape_string($this->getTestFlightTeamToken())."', ".
             "'".mysql_real_escape_string($this->getLogo())."', ".
-            "NOW())";
+            "NOW(), ".
+            "'".intval($this->getCrAnyone())."', ".
+            "'".intval($this->getCrFav())."', ".
+            "'".intval($this->getCrAdmin())."', ".
+            "'".intval($this->getCrRunner())."')";
         $rt = mysql_query($query);
         $this->id = mysql_insert_id();
 
@@ -265,7 +315,11 @@ class Project {
                 testflight_team_token='".mysql_real_escape_string($this->getTestFlightTeamToken())."',
                 logo='".mysql_real_escape_string($this->getLogo())."',
                 active='".intval($this->getActive())."',
-                owner_id='".intval($this->getOwnerId())."'
+                owner_id='".intval($this->getOwnerId())."',
+                cr_anyone='".intval($this->getCrAnyone())."',
+                cr_3_favorites='".intval($this->getCrFav())."',
+                cr_project_admin='".intval($this->getCrAdmin())."',
+                cr_job_runner='".intval($this->getCrRunner())."'
             WHERE project_id=" . $this->getProjectId();
         $result = mysql_query($query);
         return mysql_query($query) ? 1 : 0;
@@ -383,10 +437,10 @@ class Project {
     public function getRoles($project_id, $where = ''){
         $query = "SELECT * FROM `".ROLES."` WHERE `project_id`={$project_id}";
         if (!empty($where)) {
-                $query .= " AND ". $where;
+            $query .= " AND ". $where;
         }
         $result_query = mysql_query($query);
-        if ($result_query) {
+            if ($result_query) {
             $temp_array = array();
             while ($row = mysql_fetch_assoc($result_query)) {
                     $temp_array[] = $row;

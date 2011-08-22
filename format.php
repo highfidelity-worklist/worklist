@@ -163,7 +163,12 @@ require_once('functions.php');
                             name: $(':input[name="name"]', addForm).val(),
                             description: $(':input[name="description"]', addForm).val(),
                             repository: $(':input[name="repository"]', addForm).val(),
-                            logo: $(':input[name="logoProject"]', addForm).val()
+                            logo: $(':input[name="logoProject"]', addForm).val(),
+                            cr_anyone: $(':input[name="cr_anyone"]', addForm).val(),
+                            cr_3_favorites: $(':input[name="cr_3_favorites"]', addForm).val(),
+                            cr_project_admin: $(':input[name="cr_project_admin"]', addForm).val(),
+                            cr_job_runner: $(':input[name="cr_job_runner"]', addForm).val()
+                                                        
                         },
                         type: 'POST',
                         success: function(json){
