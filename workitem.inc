@@ -326,6 +326,7 @@ $(document).ready(function(){
     $('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
+    $('#popup-startreview').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
     $('#popup-pingtask').dialog({
@@ -704,6 +705,27 @@ $(document).ready(function(){
      $('#popup-addfee').dialog('open');
      return false;
   }
+
+    function showReviewForm() {
+        var workitem_id = <?php echo $worklist['id'];?>;
+        var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                workitem: workitem_id,
+                userid: user_id,
+                action:'startCodeReview'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    $('#popup-startreview').dialog('open');
+                }
+            }
+        });
+        return false;
+    }
 
     function saveWorkitem() {
         var massValidation;
@@ -1502,18 +1524,28 @@ if ($action =="edit"):  ?>
                                 </tbody>
                             </table>
                             <?php if($user_id && ($worklist['status'] != 'DONE')): ?>
+                            
                             <div class="buttonContainer">
-    <?php if ($mechanic_id == $user_id): ?>
-                                <input class="iToolTip addTip" type="submit" value="Tip User" />
-    <?php endif; ?>
-    <?php if ($user_id): ?>
-    <?php if ($user->isEligible()) : ?>
-                                <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
-    <?php else: ?>
-                                <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
-    <?php endif; ?>
-    <?php endif; ?>
-                            </div>
+                                <?php if ($mechanic_id == $user_id): ?>
+                                    <input class="iToolTip addTip" type="submit" value="Tip User" />
+                                <?php endif; ?>
+                                
+                                <?php if ($mechanic_id != $user_id && $worklist['status'] == 'REVIEW'): ?>
+                                    <?php if ($user->isEligible() && $workitem->getCRStarted() != 1) : ?>
+                                        <input class="iToolTip cR" type="submit" value="Code Review" onClick="return showReviewForm();"/>
+                                    <?php else: ?>
+                                        <input class="iToolTip cRDisallowed" type="submit" value="Code Review" onClick="return false;"/>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                
+                                <?php if ($user_id): ?>
+                                    <?php if ($user->isEligible()) : ?>
+                                        <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+                                    <?php else: ?>
+                                        <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                </div>
                             <?php endif;?>
                             <form id="withdraw" method="post" action="" >
                                 <input type="hidden" name="action" value="withdraw_bid" />
@@ -1574,6 +1606,8 @@ if ($action =="edit"):  ?>
     <?php include("dialogs/popup-place-bid.inc"); ?>
     <!-- Popup HTML for adding a fee -->
     <?php include("dialogs/popup-addfee.inc"); ?>
+    <!-- Popup HTML for starting a code review -->
+    <?php include("dialogs/popup-startreview.inc"); ?>
     <!-- Popup for ping user on task-->
     <?php require_once('dialogs/popup-pingtask.inc') ?>
     <!-- Popup for bid info-->
