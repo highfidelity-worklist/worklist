@@ -49,11 +49,11 @@ if ($userId > 0) {
 }
 
 while ($row = mysql_fetch_assoc($rt)){
-	if (!$user->isRunner() && ($user->getId() != $row['bidder_id'])) {
-		$row['bidder_id'] = 0;
-		$row['email'] = '*name hidden*';
-	}
-	$bidlist[] = $row;
+    if (!$user->isRunner() && ($user->getId() != $row['bidder_id'])) {
+        $row['bidder_id'] = 0;
+        $row['email'] = '*name hidden*';
+    }
+    $bidlist[] = $row;
 }
                       
 $json = json_encode($bidlist);

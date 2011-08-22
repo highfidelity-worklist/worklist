@@ -773,3 +773,12 @@ span.info-whisper {
 .past-due {
     color: #FF0000;
 }
+
+.expired_warn {
+    background-color: #FF8080;
+    color: #640101;
+}
+
+.expired_warn a {
+    color: #640101;
+}

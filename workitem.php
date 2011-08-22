@@ -506,6 +506,7 @@ if ($action =="edit_bid") {
     foreach ($args as $arg) {
         $$arg = mysql_real_escape_string($_POST[$arg]);
     }
+
     if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
     $summary = getWorkItemSummary($worklist_id);
     $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in_edit, $bid_expires_edit, $_SESSION['timezone'], $notes);

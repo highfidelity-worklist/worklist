@@ -571,15 +571,11 @@ WHERE id = ' . (int)$id;
      * @param bool $expired If true, return expired bids
      * @return array|null
      */
-    public function getBids($worklist_id, $expired = true) {
+    public function getBids($worklist_id) {
         $having = '';
         // code is here in case we want to start including expired bids
         // default behaviour is to ignore expired bids
-        if ($expired === false) {
-            $where = "AND TIMESTAMPDIFF(SECOND, NOW(), bids.`bid_expires`) > 0";
-            $having = "HAVING `expires` > 0";
-            $having = '';
-        }
+        // Demenza 22 of August 2011 - Something needs to be done here, to change the behavior of true/false to the if(true/false) show espired bids.
 
         $query = "
             SELECT bids.`id`, bids.`bidder_id`, bids.`email`, u.`nickname`, bids.`bid_amount`, bids.`accepted`,
@@ -606,11 +602,15 @@ WHERE id = ' . (int)$id;
             $temp_array = array();
             while ($row = mysql_fetch_assoc($result_query)) {
                 // skip expired bids if they have not been accepted
-                if (! empty($row['unix_bid_accepted']) ) {
+                // Doesn't skip expired bids anymore - Demenza 22 of August 2011
+                if (! empty($row['unix_bid_accepted'])) {
                     $row['expires'] = null;
                     $temp_array[] = $row;
-                } else if ($row['expires'] < 0 && empty($row['unix_bid_accepted'])) {
+                } else if (! empty($row['expires']) && empty($row['unix_bid_accepted'])) {
                     // skip expired bids that are not accepted;
+                    // Had to change this, because of oddness of this if() statement
+                    // The true/false in the top doesn't work at all, see note at the top.
+                    $temp_array[] = $row;
                 } else {
                     $temp_array[] = $row;
                 }

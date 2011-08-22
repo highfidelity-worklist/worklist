@@ -326,7 +326,6 @@ $(document).ready(function(){
     $('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
-    $('#popup-startreview').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
     $('#popup-pingtask').dialog({
@@ -624,6 +623,7 @@ $(document).ready(function(){
                     ['input', 'done_in_edit', 'json.bid_done_in', 'eval'],
                     ['textarea', 'notes', 'json.notes', 'eval']
                 ],
+
                 function(json) {
                     // figure out expires
                     var expireSeconds = json.unix_expires - json.now;
@@ -641,6 +641,10 @@ $(document).ready(function(){
                         expireText = '1 hour';
                     }
 
+                    if(expireHours <= 0) {
+                        $('#bid_expires_edit').val('1 hour');
+                    }
+
                     var expireValue = getSliderValueFromText(expireText);
                     var doneInValue = getSliderValueFromText(json.bid_done_in);
 
@@ -649,23 +653,24 @@ $(document).ready(function(){
                     $('.sliderStepValue', '#bidDoneEditSlider').remove();
                     $('.sliderStep', '#bidDoneEditSlider').eq(doneInValue).html('<div class="sliderStepValue">' + json.bid_done_in + '</div>');
 
-                    $('#bidDoneEditSlider').slider('value', doneInValue);
                     $('#bidExpireEditSlider').slider('value', expireValue);
+                    $('#bidDoneEditSlider').slider('value', doneInValue);
+
                 }
             );
             $('#popup-edit-bid-info').dialog('open');
         }
     }
-    function showConfirmForm(i) {
+  function showConfirmForm(i) {
       $('#popup-confirmation-type').val(i);
       $('#popup-confirmation').dialog('open');
       return false;
-    }
-    function showIneligible(problem) {
+  }
+  function showIneligible(problem) {
       $('#popup-ineligible').dialog('open');
-    }
+  }
 
-    function doConfirmForm(i) {
+  function doConfirmForm(i) {
       if (i == 'bid') {
           $('#popup-confirmation').dialog('close');
           showPlaceBidForm();
@@ -674,14 +679,14 @@ $(document).ready(function(){
           showFeeForm();
       }
       return false;
-    }
+  }
 
-    function showPlaceBidForm() {
+  function showPlaceBidForm() {
       $('#popup-bid').dialog('open');
       return false;
-    }
+  }
 
-    function showWithdrawBidReason() {
+  function showWithdrawBidReason() {
       var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
       $('#popup-bid-info').dialog('close');
 
@@ -693,33 +698,12 @@ $(document).ready(function(){
 
         $('#popup-withdraw-bid').dialog('open');
         return false;
-    }
+  }
 
-    function showFeeForm() {
+  function showFeeForm() {
      $('#popup-addfee').dialog('open');
      return false;
-    }
-
-    function showReviewForm() {
-        var workitem_id = <?php echo $worklist['id'];?>;
-        var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action:'startCodeReview'
-            },
-            dataType: 'json',
-            success: function(data) {
-                if (data.success) {
-                    $('#popup-startreview').dialog('open');
-                }
-            }
-        });
-        return false;
-    }
+  }
 
     function saveWorkitem() {
         var massValidation;
@@ -1367,16 +1351,37 @@ if ($action =="edit"):  ?>
                                 <tr>
                                     <td style="text-align: center;" colspan="4">No bids yet.</td>
                                 </tr>
-                            <?php } else { $row = 1;
-                                foreach($bids as $bid) { ?>
+                            <?php 
+
+                                } else { 
+                                $row = 1;
+                                foreach($bids as $bid) {
+                                    if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
+                                        $biddings['0'] = $bid;
+                                    } else if ($bid['expires'] > 0 ){
+                                        $biddings['0'] = $bid;
+                                    } else if ($user->getId() !== $bid['bidder_id'] && $bid['expires'] < 0) {
+                                        $biddings = null;
+                                    }
                                 
+
+                                foreach($biddings as $key=>$bid) { 
+                                    if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
+                                        $expired_class = ' expired_warn';
+                                    } else {
+                                        $expired_class = '';
+                                    }
+                                
+
+                            ?>
+
                                 <tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?>
                                     <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem<?php
                                         if ($is_runner || $user->getId() == $bid['bidder_id']) echo '-'.$bid['id'];
                                         // store bid info into jquery metadata so we won't have to fetch it again on user click
                                         // but only if user is runner or creator 15-MAR-2011 <godka>
                                         $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
-                                    ?>"><?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
+                                    echo $expired_class; ?>"><?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
                                         <script type="data"><?php echo "{id: {$bid['id']}, nickname: '{$bid['nickname']}', email: '{$bid['email']}', amount: '{$bid['bid_amount']}', bid_accepted: '{$bid['bid_accepted']}', bid_created: '{$bid['bid_created']}', bid_expires: '" . relativeTime($bid['expires']) . "', time_to_complete: '{$bid['time_to_complete']}', done_in: '{$bid['done_in']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
                                         <?php } ?>
                                     <td>
@@ -1415,6 +1420,9 @@ if ($action =="edit"):  ?>
         if ($bid['expires'] == -1) {
         } else if ($bid['expires'] <= BID_EXPIRE_WARNING) {
             $expire_class = 'class="warn"';
+            if (isset($bid['expires']) && $bid['expires'] != 0) {
+                $expire_class = '';
+            }
         }
     }
 ?>
@@ -1422,6 +1430,7 @@ if ($action =="edit"):  ?>
                                 </tr>
                                 <?php } ?>
                             <?php } ?>
+                        <?php } ?>
                             </tbody>
                         </table>
 <?php if ($user_id) : ?>
@@ -1493,27 +1502,18 @@ if ($action =="edit"):  ?>
                                 </tbody>
                             </table>
                             <?php if($user_id && ($worklist['status'] != 'DONE')): ?>
-                                <div class="buttonContainer">
-                                <?php if ($mechanic_id == $user_id): ?>
-                                    <input class="iToolTip addTip" type="submit" value="Tip User" />
-                                <?php endif; ?>
-                                
-                                <?php if ($mechanic_id != $user_id && $worklist['status'] == 'REVIEW'): ?>
-                                    <?php if ($user->isEligible() && $workitem->getCRStarted() != 1) : ?>
-                                        <input class="iToolTip cR" type="submit" value="Code Review" onClick="return showReviewForm();"/>
-                                    <?php else: ?>
-                                        <input class="iToolTip cRDisallowed" type="submit" value="Code Review" onClick="return false;"/>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                                
-                                <?php if ($user_id): ?>
-                                    <?php if ($user->isEligible()) : ?>
-                                        <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
-                                    <?php else: ?>
-                                        <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                                </div>
+                            <div class="buttonContainer">
+    <?php if ($mechanic_id == $user_id): ?>
+                                <input class="iToolTip addTip" type="submit" value="Tip User" />
+    <?php endif; ?>
+    <?php if ($user_id): ?>
+    <?php if ($user->isEligible()) : ?>
+                                <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+    <?php else: ?>
+                                <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
+    <?php endif; ?>
+    <?php endif; ?>
+                            </div>
                             <?php endif;?>
                             <form id="withdraw" method="post" action="" >
                                 <input type="hidden" name="action" value="withdraw_bid" />
@@ -1574,8 +1574,6 @@ if ($action =="edit"):  ?>
     <?php include("dialogs/popup-place-bid.inc"); ?>
     <!-- Popup HTML for adding a fee -->
     <?php include("dialogs/popup-addfee.inc"); ?>
-    <!-- Popup HTML for starting a code review -->
-    <?php include("dialogs/popup-startreview.inc"); ?>
     <!-- Popup for ping user on task-->
     <?php require_once('dialogs/popup-pingtask.inc') ?>
     <!-- Popup for bid info-->

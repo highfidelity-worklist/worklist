@@ -29,6 +29,7 @@
             </div>
             <input type="hidden" name="done_in_edit" id="done_in_edit" value="" />
         </div>
+
         <?php if ($worklist['status'] == 'SUGGESTEDwithBID' || $worklist['status'] == 'SUGGESTED') { ?>
         <input type="hidden" name="bid_expires_edit" id="bid_expires_edit" value="1 years" />
         <?php } else { ?>
