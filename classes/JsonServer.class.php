@@ -253,8 +253,6 @@ class JsonServer
         $title = basename($_FILES['logoFile']['name']);
         $path = UPLOAD_PATH . '/' . $fileName;
 
-
-
         if (copy($tempFile, $path)) {
             $url = SERVER_URL . 'uploads/' . $fileName;
             $projectid = $this->getRequest()->getParam('projectid');
@@ -287,8 +285,7 @@ class JsonServer
     /**
      * This method adds a file to a workitem
      */
-    protected function actionFileUpload()
-    {
+    protected function actionFileUpload() {
         if(!isset($_SESSION['userid']) || !($_SESSION['userid'] > 0)) {
             return $this->setOutput(array(
                 'success' => false,
@@ -315,8 +312,6 @@ class JsonServer
         $title = basename($_FILES['file']['name']);
         $path = UPLOAD_PATH . '/' . $fileName;
 
-
-
         if (copy($tempFile, $path)) {
             $url = SERVER_URL . 'uploads/' . $fileName;
             $workitem = $this->getRequest()->getParam('workitem');
@@ -332,21 +327,20 @@ class JsonServer
                  ->setTitle($title)
                  ->setUrl($url);
             $success = $file->save();
-            //good palce to set trigger for scanning
-            $icon = File::getIconFromMime($file->getMime());
-            if ($icon === false) {
-                $filetype = 'image';
-                $icon = 'images/icons/default.png';
-            } 
-            return $this->setOutput(array(
-                'success' => true,
-                'fileid'  => $file->getId(),
-                'url'       => 'javascript:;',
-                'icon'      => $icon,
-                'title'      => $file->getTitle(),
-                'description' => '',
-                'filetype'=> (isset($filetype) ? $filetype : '')
-            ));
+	    	$icon = File::getIconFromMime($file->getMime());
+        	if ($icon === false) {
+	           $filetype = 'image';
+	           $icon = 'images/icons/default.png';
+	        }
+	        return $this->setOutput(array(
+	           'success' => true,
+	           'fileid'  => $file->getId(),
+	           'url'       => $file->getUrl(),
+	           'icon'      => $icon,
+	           'title'      => $file->getTitle(),
+	           'description' => '',
+	           'filetype'=> (isset($filetype) ? $filetype : '')
+	        ));
 
         } else {
             return $this->setOutput(array(
@@ -356,7 +350,31 @@ class JsonServer
         }
 
     }
+	
+    protected function actionScanFile() {
+        require_once('./scanAssets.php');
+        $scanner = new scanAssets();
+        $file = new File();
+        $file->findFileById($this->getRequest()->getParam('fileid'));
+        $success = false;
+        $icon = File::getIconFromMime($file->getMime());
+        if ($scanner->scanFile($file->getId())) {
+            $success = true;
+            $icon = $file->getUrl();
+        }
+        if ($icon === false) {
+            $icon = 'images/icons/default.png';
+        }
 
+        return $this->setOutput(array(
+            'success' => $success,
+            'fileid'  => $file->getId(),
+            'url'     => $file->getUrl(),
+            'icon'    => $icon
+        ));
+    }
+    
+    
     protected function actionChangeFileTitle()
     {
         if(isset($_SESSION['userid']) && $_SESSION['userid'] > 0) {

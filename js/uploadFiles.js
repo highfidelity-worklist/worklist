@@ -41,6 +41,20 @@
                     responseType: 'json',
                     onSubmit: function(file, extension) {
                         var fdata = $this.data('fileUpload');
+                        if ($("#upload-scan-file").length == 0) {
+                            $('<div id="upload-scan-file"><div class="content"></div></div>').appendTo('body');
+                        }
+                        $('#upload-scan-file').dialog({
+                            modal: true,
+                            title: null,
+                            autoOpen: true,
+                            width: 300,
+                            resizable : false,
+                            open: function() {
+                        	    $('#upload-scan-file .content').html('<p>Uploading attachment ...</p>');
+                            }
+                        });
+                        
                         console.log(fdata, $this);
                         if(fdata.trackfiles) {
                             fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
@@ -67,6 +81,25 @@
 
                         this.enable();
                         if (data.success == true) {
+                            $.ajax({
+                                url: "jsonserver.php",
+                                type: "POST",
+                                data: "action=scanFile&fileid=" + data.fileid,
+                                dataType: "json",
+                                async: false,
+                                beforeSend: function( ) {
+                            	    $('#upload-scan-file .content').html('<p>Antivirus scanning attachment ...</p>');
+                                },
+                                success: function(json){
+                                    if (json.success == true) {
+                                        data.url = json.url;
+                                        data.icon = json.icon;
+                                    }
+                                }
+                            });
+                            
+                            $('#upload-scan-file').dialog("close");
+                            
                             if(fdata.trackfiles && fdata.trackfiles.val == '') {
                                 fdata.images = new Array();
                                 fdata.documents = new Array();
@@ -146,7 +179,7 @@
                     $.ajax({
                         url: "jsonserver.php",
                         type: "POST",
-                        data: "action=fileRemove&fileid=" + file_id +"&userid="+user,
+                        data: "action=fileRemove&fileid=" + file_id +"&userid="+fdata.user,
                         dataType: "json",
                         success: function(json){
                             if (json.success == true) {
