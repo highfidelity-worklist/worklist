@@ -21,7 +21,6 @@ if ($userId > 0) {
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );
-    $nick = $user->getNickname();
 
     $favorite_user_id = (int) $_REQUEST['favorite_user_id'];
     $newVal = (int) $_REQUEST['newVal'];
@@ -37,6 +36,7 @@ if ($userId > 0) {
             $resetUrl = '<a href="' . $resetUrl . '" title="Your profile">' . $resetUrl . '</a>';
             $data = array();
             $data['link'] = $resetUrl;
+            $nick = $favorite_user->getNickname();
             if (! sendTemplateEmail($favorite_user->getUsername(), 'favorited', $data)) { 
                 error_log("userinfo.php: send_email failed on favorite notification");
             }
