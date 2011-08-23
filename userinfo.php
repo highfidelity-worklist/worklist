@@ -13,6 +13,7 @@
     require_once 'lib/Agency/Worklist/Filter.php';
     require_once 'models/DataObject.php';
     require_once 'models/Review.php';
+    require_once 'models/Users_Favorite.php';
 
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
 
@@ -213,6 +214,13 @@
     } else {
         $has_sandbox = false;
     }
+    $users_favorite = new Users_Favorite();
+    $favorite_enabled = 1;
+    $favorite = $users_favorite->getMyFavoriteForUser($reqUserId, $userId);
+    if (isset($favorite['favorite'])) {
+        $favorite_enabled = $favorite['favorite'];
+    }
+    $favorite_count = $users_favorite->getUserFavoriteCount($userId);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -224,6 +232,7 @@
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
         <link type="text/css" href="css/userNotes.css" rel="stylesheet" />
         <link type="text/css" href="css/review.css" rel="stylesheet" />
+        <link type="text/css" href="css/favorites.css" rel="stylesheet" />
         <link href="css/LVstyles.css" rel="stylesheet" type="text/css">
         <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
@@ -250,6 +259,7 @@
         <script type="text/javascript" src="js/userstats.js"></script>
         <script type="text/javascript" src="js/userNotes.js"></script>
         <script type="text/javascript" src="js/review.js"></script>
+        <script type="text/javascript" src="js/favorites.js"></script>
         <script type="text/javascript" src="js/userinfo.js"></script>
         <title>User info</title>
     </head>

@@ -247,6 +247,23 @@ jQuery.fn.DefaultValue = function(text){
     });
 };
 
+    var getPosFromHash = function(){
+        var pos, hashString;
+        var vars = [], hash;
+        pos = location.href.indexOf("#");
+        if (pos != -1) {
+            hashString = location.href.substr(pos + 1);
+            var hashes = hashString.split('&');
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = unescape(hash[1]);
+            }            
+        }
+        return vars;
+    };
+
 $(function() {
     var hideInputField = function() {
         // if the status is not empty - hide input field, otherwise do not hide input
@@ -435,7 +452,15 @@ $(function() {
         return false;
     });
     
+    newHash = getPosFromHash();
+    if (newHash['userid'] && newHash['userid'] != -1) {
+        setTimeout(function(){
+            showUserInfo(newHash['userid']);
+        },2000);
+    }
+    
 });
+
 
 /* get analytics info for this page */
 $(function() {

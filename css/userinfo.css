@@ -201,6 +201,90 @@ p.bottom {
     width: 23%;
 }
 
+.profileInfoFavorite {
+    color: #666666;
+    font-size: 12px;
+    line-height: 22px; /*28 in mission infos */
+    vertical-align: top;
+}
+
+.profileInfoFavorite {
+    position: absolute;
+    left: 140px;
+    top: 70px;
+}
+
+.profileInfoFavorite>img {
+    vertical-align: middle;
+}
+
+.favorite_user, .favorite_curr_user {
+    background-image: url('../images/otherSprite.png');
+    background-position: -60px 0;
+    background-repeat: no-repeat;    
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+}
+
+/* styles needed for favorite label sprite in mission info popup */
+
+.favoriteLabel {
+    width: 79px;
+    height: 23px;
+    background-image: url('../images/otherSprite.png');
+    background-position: 0 -110px;
+    display: inline;
+    position: absolute;
+    left: -5px;
+    cursor: pointer;
+    margin-top: 3px;
+}
+
+.favoriteLabel.notfavorited:hover {
+    background-position: 0 -133px;
+}
+
+.favoriteLabel.favorited {
+    background-position: 0 -156px;
+}
+
+.favoriteLabel.favorited:hover {
+    background-position: 0 -179px;
+}
+
+/*styles needed for text beside favorite label in mission info popup */
+
+.favoriteText {
+    font-size: 12px;
+    color: #666666;
+    float: left;
+    position: relative;
+    top: 6px;
+    left: 55px;
+    font-weight: normal;
+    display: inline;
+    margin-right: 10px;
+}
+
+.favoriteText .favBlue,
+.profileFavoriteText .favBlue {
+    color: #0033ff;
+}
+
+.favoriteText .favBlack,
+.profileFavoriteText .favBlack {
+    color: #333;
+}
+
+
+
+#missionInfoFavoriteCount {
+    vertical-align: top;
+    color: #333333;
+}
+
+
 #sent-notify {
     background-color: lightgrey;
     height: 20px !important;

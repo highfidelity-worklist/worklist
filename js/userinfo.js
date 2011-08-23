@@ -31,6 +31,19 @@ var UserInfo = {
         $('#manager').val(userInfo.manager);
         $('#referrer').val(userInfo.referred_by);
 
+        WLFavorites.init( "profileInfoFavorite",userInfo.user_id, userInfo.nickName );
+        // setup the variables needed to call the getFavoriteText function
+        var favCount = $('.profileInfoFavorite span').attr('data-favorite_count');
+        var isMyFav = false;
+        if ($('.profileInfoFavorite .favorite_user').hasClass('myfavorite')) {
+            isMyFav = true;
+        }
+        
+        // set the favText with the getFavoriteText function
+        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'favorite ');
+        
+        $('.profileInfoFavorite span').html(favText);
+
         // master function to handle change in dropdowns
         $('select', '#tabs-2').change(function() {
             var value = $(this).val();

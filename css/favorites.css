@@ -1,0 +1,56 @@
+.favoriteIcon.favorite0 {
+    display: none;
+}
+
+/**
+ * Favorite star inside the mission list
+ */
+.table-missions .favoriteIcon {
+    height: 12px;
+    width: 12px;
+    vertical-align: middle;
+}
+
+.favorite_count.favorited {
+    background-position: 132px 0 !important;
+}
+
+.favorite_count.favorited:hover {
+    background-position: 0 0 !important;
+}
+
+.favorite_count.notfavorited:hover {
+    background-position: 88px  0 !important;
+}
+
+.favorite_user.favorited {
+    background-position: -20px 0;
+}
+
+.favorite_user.myfavorite {
+    background-position: -20px 0;
+}
+
+.favorite_user.favorited:hover {
+    background-position: 0 0;
+}
+
+.favorite_user.myfavorite:hover {
+    background-position: 0 0;
+}
+
+.favorite_user.notfavorited:hover {
+    background-position: -40px 0;
+}
+
+.favorite_user.notmyfavorite:hover {
+    background-position: -40px 0;
+}
+
+.favorite_user.notmyfavorite {
+    background-position: -60px 0;
+}
+
+.favorite_user.notfavorited {
+    background-position: -60px 0;
+}

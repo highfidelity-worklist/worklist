@@ -110,6 +110,22 @@ replacement data:
 ),
 
 /*
+favorited
+    send approved user a notification email
+    used in: userinfo.php
+*/
+'favorited' => array(
+    'subject' => 'You have been Favorited!',
+    'body' => '<p>Congrats!</p>
+               <p>You have been favorited by one of your peers in the Worklist!</p>
+<p></p>
+<p>See your User Profile here:<br/>
+{link} 
+</p>
+<p>- Worklist.net</p>'
+),
+
+/*
 w9-approved
     send approved user a notification email
     used in: userinfo.php

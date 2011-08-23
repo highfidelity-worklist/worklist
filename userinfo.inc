@@ -40,7 +40,30 @@
         }
     }
 ?>
-        <div id="user-avatar"><img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" /></div>
+        <div id="user-avatar">
+            <img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" />
+            <?php
+                if ($reqUser->getId() != $user->getId()) {
+                    if ( !$reqUser->isRunner() && !$_SESSION["admin"] && !$reqUser->isActive() ) {
+                        $favoriteClass = "favorite_curr_user";
+                        $title = "You must have been paid for a job in the last 90 days to select Favorites.";
+                    } else {
+                        $favoriteClass = "favorite_user";
+                        $favoriteClass .= ($favorite_enabled == 1) ? " myfavorite" : " notmyfavorite" ;
+                        $title = ($favorite_enabled == 1) ?
+                            "Remove " . ucwords($user->getNickname()) . " from your favorites. (don't worry it's anonymous)" :
+                            "Add " . ucwords($user->getNickname()) . " as one of your favorite people." ;
+                    }
+                } else {
+                    $favoriteClass = "favorite_curr_user";
+                    $title = "";
+                }
+            ?>
+            <div class="profileInfoFavorite" id="profileInfoFavorite">
+                <div class="<?php echo $favoriteClass; ?>" title="<?php echo $title; ?>">&nbsp;</div>
+                <span class="profileFavoriteText" data-favorite_count="<?php echo $favorite_count; ?>"></span>
+            </div>
+        </div>
         <p class="info-label" id="user-location">
             <?php
             if($user->getCity() != ""){
@@ -78,6 +101,7 @@
         <p class="info-label small-text"><br />
             <span id="info-timezone">&nbsp;</span>
         </p>
+        
     </div><!-- end of common info div-->
     <div id="sent-notify"></div>
     <?php if(! $is_runner){ ?><hr style="clear: both;" /><?php } ?>

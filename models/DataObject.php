@@ -39,6 +39,13 @@ class DataObject {
     /**
      * Destructor
      */
+    public function __destruct() {
+        // Do NOT close the database link; other objects may be using it.
+        // 2011 alexi
+    }
+    /**
+     * Destructor
+     */
     public function __destructor() {
         $this->link->close();
     }
@@ -181,16 +188,35 @@ class DataObject {
             return false;
         }
     }
+    /** Get the join oder.
+     */
+    public function getJoinOrder() {
+
+        $join_cols = "";
+        if (isset($this->notCol) ) {
+            foreach ($this->notCol['join'] as $joinID => $joinInfo) {
+                if ( $joinInfo['useIt'] && isset ($joinInfo['joinOrder'])) {
+                    $join_cols = " ORDER BY " . $joinInfo['joinOrder'] . " ";
+                }
+            }
+        }
+        return $join_cols;
+    }
     
     /**
      * Get associative array for the specified columns
      * where @condition is true
      */
-    public function dbFetchArray($condition) {
+    public function dbFetchArray($condition, $bError = false, $limit = null, $myColumns = null) {
         $sql = "SELECT ";
         $data = array();
-        
-        $columns = $this->getColumns(true);
+
+        if (is_null($myColumns)) {
+            $columns = $this->getColumns(true);
+        } else {
+            $columns = $myColumns;
+        }
+
         // Add each column name to the sql statement
         foreach ($columns as $column) {
             $sql .= " " . $column . " ,";
@@ -202,39 +228,59 @@ class DataObject {
         }
         $sql = substr_replace($sql, "", -1);
         $joinTables = $this->getJoinTables();
-        
-        $sql .= " FROM `" . $this->table_name . "` " . $joinTables . " WHERE " . $condition;
+
+        $joinOrder = $this->getJoinOrder();
+
+        $sql .= " FROM `" . $this->table_name . "` " . $joinTables . " WHERE " . $condition . $joinOrder;
+        if ($limit !== null) {
+            $sql .= $limit;
+        }
+
         if ($result = $this->link->query($sql)) {
-            
+
             while ($row = $result->fetch_assoc()) {
                 $data[] = $row;
             }
             // Close our connection
             $result->close();
-            
+
             // Return our data array
-            return $data;
+            if ($bError) {
+                return array('data' => $data);
+            } else {
+                return $data;
+            }
         } else {
+            //die($sql);
             // Dump the error
-            var_dump($sql . " * " . $this->link->error);
+            if (!$bError) {
+                $this->handleError($this->link->error, $sql);
+            }
         }
         // If we couldn't return our full array, return null
-        return null;
+        if ($bError) {
+            $this->handleError($this->link->error, $sql);
+        } else {
+            return null;
+        }
     }
     
     /**
      * Get the number of rows on this table
      */
-    public function count() {
+    public function count($condition = '') {
         $sql = "SELECT COUNT(*) FROM `" . $this->table_name . "`";
-        
+
+        if ($condition != '') {
+            $sql .= " WHERE " . $condition;
+        }
+
         if ($result = $this->link->query($sql)) {
             $row = $result->fetch_row();
             return $row[0];
         }
         return null;
     }
-    
     /**
      * Remove a row when @condition is true
      */
