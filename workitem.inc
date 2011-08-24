@@ -1378,11 +1378,11 @@ if ($action =="edit"):  ?>
                                 } else { 
                                 $row = 1;
                                 foreach($bids as $bid) {
-                                    if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
+                                    if ($user->getId() == $bid['bidder_id'] && $bid['expires'] <= 0) {
                                         $biddings['0'] = $bid;
                                     } else if ($bid['expires'] > 0 ){
                                         $biddings['0'] = $bid;
-                                    } else if ($user->getId() !== $bid['bidder_id'] && $bid['expires'] < 0) {
+                                    } else if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
                                         $biddings = null;
                                     }
                                 
