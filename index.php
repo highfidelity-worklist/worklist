@@ -8,6 +8,7 @@ require_once("config.php");
 require_once("class.session_handler.php");
 include_once("check_new_user.php");
 require_once("send_email.php");
+require_once("functions.php");
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -101,7 +102,19 @@ function _run(videoID) {
     <div id="outside" class="home">
         <div id="home-header">
             <h1 class="home-header-logo"><a href="<?php echo SERVER_URL; ?>" title="Worklist | Fast pay for your work, open codebase, great community."><img src="<?php echo SERVER_URL; ?>images/worklist_logo.png" border="0" /></a></h1>
-            <div class="home-header-nav"><a href="<?php echo SERVER_URL; ?>login.php">Login</a> | <a href="<?php echo SERVER_URL; ?>signup.php">Signup</a></div>
+            <div class="home-header-nav">
+<?php
+if (getSessionUserId() > 0) {
+    $name = empty($_SESSION['nickname']) ? getSubNickname($_SESSION['username']) : getSubNickname($_SESSION['nickname']);
+    echo "Welcome, <span id='user'> $name </span>  |
+        <a href='../journal' title='Login to our Live Chat Journal'> Journal </a> |
+        <a href='worklist.php' title='Worklist'> Worklist </a> |
+        <a href='logout.php'>Logout</a>";
+} else {
+    echo '<a href="login.php">Login</a> | <a href="signup.php">Signup</a>';
+}
+?>
+            </div>
             <div style="float:none; clear:both;"></div>
         </div>
         <div id="left"></div>
@@ -120,6 +133,7 @@ function _run(videoID) {
             <div id="home-nav-btns">
                 <a id="add-projects" href="#">Create New Project</a>
                 <a id="browse-projects" href="<?php echo SERVER_URL; ?>projects.php">Browse Projects</a>
+                <a href="<?php echo SERVER_URL; ?>worklist.php">See Current Jobs</a>
             </div>
             <?php include('dialogs/add-proj-contact.inc'); ?>
         </div>

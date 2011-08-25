@@ -777,3 +777,6 @@ td.textAlignReport {
     color: #FF0000;
 }
 
+.home-header-nav span {
+    padding-right: 10px;
+}
