@@ -42,9 +42,8 @@ if (!defined('SANDBOX_SERVER')) define('SANDBOX_SERVER','dev.sendlove.us');
 if (!defined('SERVER_URL'))     define('SERVER_URL','https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
 if (!defined('SERVER_BASE'))    define('SERVER_BASE','https://'.SERVER_NAME.'/'.APP_BASE);
 //SSL Not enabled on development
-define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
-//So clone the standard URL
-if (!defined('SECURE_SERVER_URL')) define('SECURE_SERVER_URL',SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
+//Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
+if (!defined('SECURE_SERVER_URL')) define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION);
 if (!defined("LOGIN_APP_URL"))  define("LOGIN_APP_URL",'https://'.SERVER_NAME.APP_LOGIN);
 if (!defined('SVN_BASE_URL'))   define('SVN_BASE_URL', 'http://svn.worklist.net/listing.php?repname=');
 if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
