@@ -1374,18 +1374,17 @@ if ($action =="edit"):  ?>
                                     <td style="text-align: center;" colspan="4">No bids yet.</td>
                                 </tr>
                             <?php 
+                                } else {
 
-                                } else { 
                                 $row = 1;
                                 foreach($bids as $bid) {
                                     if ($user->getId() == $bid['bidder_id'] && $bid['expires'] <= 0) {
                                         $biddings['0'] = $bid;
-                                    } else if ($bid['expires'] > 0 ){
-                                        $biddings['0'] = $bid;
                                     } else if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
                                         $biddings = null;
+                                    } else {
+                                        $biddings['0'] = $bid;
                                     }
-                                
 
                                 foreach($biddings as $key=>$bid) { 
                                     if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
