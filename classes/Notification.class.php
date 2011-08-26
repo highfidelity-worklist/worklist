@@ -3,6 +3,7 @@ require_once 'send_email.php';
 require_once 'workitem.class.php';
 require_once 'functions.php';
 require_once 'lib/Sms.php';
+require_once 'Project.class.php';
 
 /**
  * This class is responsible for working with notification
@@ -185,13 +186,21 @@ class Notification {
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
         $workitem = $options['workitem'];
-        $project_name = isset($options['project_name']) ? $options['project_name'] : null;
+        if (isset($options['project_name'])) {
+            $project_name = $options['project_name'];
+        } else {
+            $project = new Project();
+            $project->loadById($workitem->getProjectId());
+            $project_name = $project->getName();
+        }
+
         $revision = isset($options['revision']) ? $options['revision'] : null;
         
         $itemId = $workitem -> getId();
         $itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId
                     . '</a> (' . $workitem -> getSummary() . ')';
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
+        $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
         $body = '';
         $subject = '';
         $headers=array();
@@ -266,7 +275,7 @@ class Notification {
             break;
 
             case 'new_bidding':
-                $subject = "Bidding: ".$itemTitle;
+                $subject = "Bidding: " . $itemTitleWithProject;
                 $body = "Summary:<br>".$workitem -> getSummary() .
                          '<br><br>Notes:<br>'.$workitem->getNotes();
                 $body .= '<br><br>You are welcome to bid <a href='.SERVER_URL.
