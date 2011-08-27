@@ -71,6 +71,9 @@ if(validateAction()) {
             case 'getTimezone':          
                 getTimezone();
                 break;
+            case 'updateLastSeen':          
+                updateLastSeen();
+                break;
             case 'sendTestNotifications':
                 validateAPIKey();          
                 sendTestNotifications();            
@@ -398,5 +401,19 @@ function getTimezone() {
         respond(array('succeeded' => true, 'message' => $user->getTimezone()));
     } else {
         respond(array('succeeded' => false, 'message' => 'Error: Could not determine the user'));
+    }
+}
+
+function updateLastSeen() {
+    if (isset($_REQUEST['username'])) {
+        $username = $_REQUEST['username'];
+    } else {
+        respond(array('succeeded' => false, 'message' => 'Error: Could not determine the user'));
+    }
+    $qry = "UPDATE ". USERS ." SET last_seen = NOW() WHERE username='". $username ."'";
+    if ($res = mysql_query($qry)) {
+        respond(array('succeeded' => true, 'message' => 'Last seen time updated!'));
+    } else {
+        respond(array('succeeded' => false, 'message' => mysql_error()));
     }
 }
