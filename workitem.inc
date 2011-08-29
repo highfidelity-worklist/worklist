@@ -326,7 +326,7 @@ $(document).ready(function(){
     $('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
-    $('#popup-startreview').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
+    $('#popup-startreview').dialog({ autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
     $('#popup-pingtask').dialog({
@@ -1530,10 +1530,10 @@ if ($action =="edit"):  ?>
                                 <?php endif; ?>
                                 
                                 <?php if ($mechanic_id != $user_id && $worklist['status'] == 'REVIEW'): ?>
-                                    <?php if ($user->isEligible() && $workitem->getCRStarted() != 1) : ?>
-                                        <input class="iToolTip cR" type="submit" value="Code Review" onClick="return showReviewForm();"/>
+                                    <?php if ($user->isEligible() && $workitem->getCRStarted() != 1 && hasRights($workitem,$user_id)) : ?>
+                                        <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return showReviewForm();"/>
                                     <?php else: ?>
-                                        <input class="iToolTip cRDisallowed" type="submit" value="Code Review" onClick="return false;"/>
+                                        <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 

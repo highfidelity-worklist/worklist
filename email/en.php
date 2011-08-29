@@ -149,6 +149,22 @@ replacement data:
     'body' => '<p>Hello,</p>
                <p>Your W9 form has been rejected because:</p>
                <p>{reason}'
+),
+
+
+/*
+code-review-finished
+    send user a notification email that their w9 was rejected
+    used in: workitem.php
+
+replacement data:
+    task - the task number followed by the summary
+    reviewer - the mechanic who undertook the code review
+*/
+'code-review-finished' => array(
+    'subject' => 'Code review completed',
+    'body' => '<p>Hello,</p>
+               <p>Code review on task {task} has been completed by {reviewer}</p>'
 )
 
 ); 

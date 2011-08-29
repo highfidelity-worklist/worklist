@@ -12,6 +12,8 @@ require_once 'functions.php';
 require_once 'timezones.php';
 require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
+require_once 'models/DataObject.php';
+require_once 'models/Users_Favorite.php';
 
     $statusMapRunner = array("DRAFT" => array("SUGGESTED","BIDDING"),
                  "SUGGESTED" => array("BIDDING","PASS"),
@@ -312,7 +314,7 @@ if($action == 'start_codereview') {
 }
 
 if($action == 'finish_codereview') {
-    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
+    $args = array('itemid', 'crfee_amount', 'fee_category', 'crfee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
         if (isset($_POST[$arg])) {
                $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -320,15 +322,27 @@ if($action == 'finish_codereview') {
             $$arg = '';
         }
     } 
-    if($fee_desc == '') {
-        $fee_desc = 'Code Review';
+    if($crfee_desc == '') {
+        $crfee_desc = 'Code Review';
     } else {
-        $fee_desc = 'Code Review - '. $fee_desc;
+        $crfee_desc = 'Code Review - '. $crfee_desc;
     }
-    sendJournalNotification(AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder));
+    sendJournalNotification(AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $mechanic_id, $is_expense, $is_rewarder));
     $workitem->setCRCompleted(1);
     $workitem->save();
     $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
+    $data = array();
+    $data['task'] = "#$worklist_id: " . $workitem->getSummary();
+    $data['reviewer'] = $_SESSION['nickname'];
+    $notifyUser = new User;
+    $notifyUser->findUserById($workitem->getMechanicId());
+    if (! sendTemplateEmail($notifyUser->getUsername(), 'code-review-finished', $data)) {
+        error_log("workitem.php: send_email failed on finish code review notification to mechanic");
+    }
+    $notifyUser->findUserById($workitem->getRunnerId());
+    if (! sendTemplateEmail($notifyUser->getUsername(), 'code-review-finished', $data)) {
+        error_log("workitem.php: send_email failed on finish code review notification to runner");
+    }
 }
 
 if($action == 'cancel_codereview') {
@@ -881,6 +895,28 @@ if (count($project_roles) != 0 && $project_roles['percentage'] !== null && $proj
 }
 
 require_once "workitem.inc";
+
+function hasRights($workitem,$userId) {
+    $project = new Project();
+    $project->loadById($workitem->getProjectId());
+    $users_favorite = new Users_Favorite();
+    if ($project->getCrAnyone()) {
+        return true;
+    } else if ($project->getCrAdmin()) {
+        $admin_fav = $users_favorite->getMyFavoriteForUser($project->getOwnerId(), $userId);
+        if ($admin_fav['favorite']) {
+            return true;
+        }
+    } else if ($project->getCrFav() && $users_favorite->getUserFavoriteCount($userId) >= 3) {
+        return true;
+    } else if ($project->getCrRunner()) {
+        $runner_fav = $users_favorite->getMyFavoriteForUser($workitem->getRunnerId(),$userId);
+        if ($runner_fav['favorite']) {
+            return true;
+        }
+    }
+    return false;
+}
 
 function sendMailToDiscardedBids($worklist_id)    {
     // Get all bids marked as not accepted
