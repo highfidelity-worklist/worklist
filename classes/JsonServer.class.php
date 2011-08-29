@@ -620,44 +620,6 @@ class JsonServer
     }
 
     /**
-     * This method handles the upload of the local tax form
-     *
-     */
-    protected function actionLocalUpload()
-    {
-        // check if we have a file
-        if (empty($_FILES)) {
-            return $this->setOutput(array(
-                'success' => false,
-                'message' => 'No file uploaded!'
-            ));
-        }
-
-        $tempFile = $_FILES['Filedata']['tmp_name'];
-        $path = UPLOAD_PATH . '/' . $this->getRequest()->getParam('userid') . '_Local.pdf';
-
-        if (move_uploaded_file($tempFile, $path)) {
-            $user = new User();
-            $user->findUserById($this->getRequest()->getParam('userid'));
-            $subject = "Local Tax Form from " . $user->getNickname();
-            $body = "<p>Hi there,</p>";
-            $body .= "<p>" . $user->getNickname() . " just uploaded his/her Local Tax Form you can download and approve it from this URL:</p>";
-            $body .= "<p><a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_Local.pdf\">Click here</a></p>";
-
-            if (!send_email(FINANCE_EMAIL, $subject, $body)) { error_log("JsonServer:LocalUpload: send_email failed"); }
-
-            return $this->setOutput(array(
-                'success' => true,
-                'message' => 'The file ' . basename( $_FILES['Filedata']['name']) . ' has been uploaded.'
-            ));
-        } else {
-            return $this->setOutput(array(
-                'success' => false,
-                'message' => 'An error occured while uploading the file, please try again!'
-            ));
-        }
-    }
-    /**
      * This method handles the upload of the W9 form
      *
      */

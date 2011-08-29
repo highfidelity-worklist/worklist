@@ -309,10 +309,6 @@ include("head.html");
         }
     }
     
-    function validateLocalUpload(file, extension) {
-        nclass = '.uploadnotice-local';
-        return validateUpload(file, extension);
-    }
     function validateW9Upload(file, extension) {
         nclass = '.uploadnotice-w9';
         return validateUpload(file, extension);
@@ -509,16 +505,6 @@ include("head.html");
             autoSubmit: true,
             responseType: 'json',
             onSubmit: validateW9Upload,
-            onComplete: completeUpload
-        });
-
-        new AjaxUpload('formupload-local', {
-            action: 'jsonserver.php',
-            name: 'Filedata',
-            data: { action: 'localUpload', userid: user },
-            autoSubmit: true,
-            responseType: 'json',
-            onSubmit: validateLocalUpload,
             onComplete: completeUpload
         });
 
@@ -739,7 +725,7 @@ include("head.html");
         </p>
         <p>
             <input type="checkbox" name="w9_accepted" id="w9_accepted" <?php if ($user->getW9_accepted()) { ?> checked="checked" disabled="disabled" <?php } ?> />
-            <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you’ll do your part!</label>
+            <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you'll do your part!</label>
         </p>
         <script type="text/javascript">
             var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
@@ -757,13 +743,8 @@ include("head.html");
           </p>
             <br style="clear:both" />
             <div class="uploadnotice-w9"></div>
-
-            <p><label style="float:left">Upload local<br/>tax doc</label>
-                <input id="formupload-local" type="button" value="Browse" style="float:left;margin-left: 8px;" />
-            </p>
             <br style="clear:both" />
-            <div class="uploadnotice-local"></div>
-    </blockquote>
+        </blockquote>
 
         <input type="submit" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
 

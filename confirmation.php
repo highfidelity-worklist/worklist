@@ -136,10 +136,6 @@ include("head.html"); ?>
 
 var nclass;
 
-function validateLocalUpload(file, extension) {
-	nclass = '.uploadnotice-local';
-	return validateUpload(file, extension);
-}
 function validateW9Upload(file, extension) {
 	nclass = '.uploadnotice-w9';
 	return validateUpload(file, extension);
@@ -191,16 +187,6 @@ $(document).ready(function () {
 		autoSubmit: true,
 		responseType: 'json',
 		onSubmit: validateW9Upload,
-		onComplete: completeUpload
-	});
-
-	new AjaxUpload('formupload-local', {
-		action: '<?php echo SERVER_URL; ?>jsonserver.php',
-		name: 'Filedata',
-		data: { action: 'localUpload', userid: user },
-		autoSubmit: true,
-		responseType: 'json',
-		onSubmit: validateLocalUpload,
 		onComplete: completeUpload
 	});
 	
@@ -303,12 +289,7 @@ $(document).ready(function () {
             <br style="clear:both" />
             <div class="uploadnotice-w9"></div>
 
-            <p><label style="float:left">Upload local<br/>tax doc</label>
-                <input id="formupload-local" type="button" value="Browse" style="float:left;margin-left: 8px;" />
-            </p>
-            <br style="clear:both" />
-            <div class="uploadnotice-local"></div>
-    </blockquote>
+        </blockquote>
 
         <input type="button" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
         <input type="button" id="enter_later" value="Enter Info Later" alt="I will enter later" name="enter_later" />
