@@ -836,8 +836,37 @@ $(document).ready(function(){
 
     $(function()    {
 
-        $(".editable").attr("title","Switch to Edit Mode").click( function(){
-            window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
+        $(".editable").attr("title","Switch to Edit Mode").click(function() {
+            // don't handle notestext in this function
+            if (! $(this).hasClass('notestext')) {
+                window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
+            }
+        });
+
+        // handling for notes text selecting / click
+        // if the mouseup does not happen within the specified timeout
+        // update some CSS and do not redirect
+        // when mouseup occurs, reset the CSS
+        var notesRedirect = false;
+        $('.notestext').mousedown(function() {
+            // it's a new click - reset to false
+            notesRedirect = false;
+
+            var triggerEdit = setTimeout(function() {
+                if (notesRedirect) {
+                     window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
+                } else {
+                    $('.notestext')
+                        .css('cursor', 'text')
+                        .removeClass('editable');
+                    notesRedirect = false;
+                }
+            }, 125);
+        }).mouseup(function() {
+            notesRedirect = true;
+            $('.notestext')
+                .css('cursor', 'pointer')
+                .addClass('editable');
         });
         $('#commentZone').css({'opacity':'0'});
         // Call via Ajax to ping the user in the journal
