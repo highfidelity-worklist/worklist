@@ -5,5 +5,5 @@
             <li>Uploaded your completed <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf">W-9</a> (US citizens only)</li>
         </ul>
         <br/>
-        <input type="button" id="button_settings" name="button_settings" value="Edit settings" /></div>
+        <input type="button" id="button_settings" name="button_settings" value="Edit settings" />
     </div>

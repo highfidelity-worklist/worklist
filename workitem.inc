@@ -1707,8 +1707,8 @@ if ($action =="edit"):  ?>
         </table>
     </div>
 
-<?php } ?>
 </div>
+	<?php } ?>
 <?php if ( $user_id > 0) { ?>
 <script type="text/javascript">
     var status_refresh = 5 * 1000;
@@ -1746,6 +1746,6 @@ if ($action =="edit"):  ?>
     }
     GetStatus('worklist');
 </script>
-<?php } ?>
+<?php } ?> 
     <!-- Footer html-->
     <?php include("footer.php"); ?>
