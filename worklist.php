@@ -37,7 +37,12 @@ $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $projectName = !empty($_REQUEST['project']) ? mysql_real_escape_string($_REQUEST['project']) : 0;
 if ($projectName) {
     $inProject = new Project();
-    $inProject->loadByName($projectName);
+    try {
+        $inProject->loadByName($projectName);
+	} catch(Exception $e) {
+        $error  = $e->getMessage();
+        die($error);
+    }
     // save changes to project
     if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
         $inProject->setDescription($_REQUEST['description']);

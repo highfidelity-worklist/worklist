@@ -2,6 +2,9 @@ RewriteEngine On
 
 RewriteRule ^([0-9]+)$ /worklist/workitem.php?job_id=$1 [QSA,L]
 
+# remove trailing slash from projects
+RewriteRule ^(.+)/$ /worklist/$1 [L,R=301]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ /worklist/worklist.php?project=$1 [L,QSA]
