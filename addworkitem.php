@@ -16,7 +16,6 @@ require_once('lib/Agency/Worklist/Filter.php');
 require_once('classes/UserStats.class.php');
 require_once('classes/Repository.class.php');
 
-  
 $page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -26,13 +25,13 @@ $nick = '';
 $workitem = new WorkItem();
 
 $userId = getSessionUserId();
-if( $userId > 0 )	{
-  initUserById($userId);
-	$user = new User();
-	$user->findUserById( $userId );
-	$nick = $user->getNickname();
-	$userbudget =$user->getBudget();
-	$budget = number_format($userbudget);
+if ($userId > 0) {
+    initUserById($userId);
+    $user = new User();
+    $user->findUserById( $userId );
+    $nick = $user->getNickname();
+    $userbudget =$user->getBudget();
+    $budget = number_format($userbudget);
 }
 
 $filter = new Agency_Worklist_Filter();
@@ -43,24 +42,20 @@ if ($userId > 0 ) {
     $args = array( 'itemid', 'summary', 'project_id', 'skills', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
                    'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder','is_bug','bug_job_id');
     foreach ($args as $arg) {
-    		// Removed mysql_real_escape_string, because we should 
-    		// use it in sql queries, not here. Otherwise it can be applied twice sometimes
+        // Removed mysql_real_escape_string, because we should 
+        // use it in sql queries, not here. Otherwise it can be applied twice sometimes
         $$arg = !empty($_POST[$arg])?$_POST[$arg]:'';
     }
 
     $creator_id = $userId;
 
-    if ((!empty($_POST['itemid'])) && ($_POST['status']) != 'DRAFT') {
+    if (! empty($_POST['itemid'])) {
         $workitem->loadById($_POST['itemid']);
         $journal_message .= $nick . " updated ";
+    } else {
+        $workitem->setCreatorId($creator_id);
+        $journal_message .= $nick . " added ";
     }
-        if ((empty($_POST['itemid']) && $_POST['status']) == 'DRAFT') {
-            $workitem->setCreatorId($creator_id);
-        }    
-            if ((empty($_POST['itemid'])) && ($_POST['status']) != 'DRAFT') {
-                $workitem->setCreatorId($creator_id);
-                $journal_message .= $nick . " added ";
-            }
     $workitem->setSummary($summary);
 
     //If this item is a bug add original item id 
@@ -99,7 +94,7 @@ if ($userId > 0 ) {
     }
     
     
-    if(empty($_POST['itemid']) && ($_POST['status']) != 'DRAFT')  {
+    if (empty($_POST['itemid'])) {
         $bid_fee_itemid = $workitem->getId();
         $journal_message .= " item #$bid_fee_itemid$bugJournalMessage: $summary. Status set to $status. ";
         if (!empty($_POST['files'])) {
@@ -109,7 +104,7 @@ if ($userId > 0 ) {
                 mysql_query($sql);
             }
         }
-    } else if (($_POST['status']) != 'DRAFT') {
+    } else {
         $bid_fee_itemid = $itemid;
         $journal_message .=  "item #$itemid: $summary: Status set to $status. ";
     }
@@ -126,14 +121,14 @@ if ($userId > 0 ) {
     echo json_encode(array( 'error' => "Invalid parameters !"));
     return;
 }
-
-if (!empty($journal_message)) {
+// don't send any journal notifications for DRAFTS
+if (!empty($journal_message) && $status != 'DRAFT') {
     //sending journal notification
     $data = array();
     $data['user'] = JOURNAL_API_USER;
     $data['pwd'] = sha1(JOURNAL_API_PWD);
     $data['message'] = stripslashes($journal_message);
-    $prc = postRequest(JOURNAL_API_URL, $data,array(),10); //increase timeout to 10 seconds
+    $prc = postRequest(JOURNAL_API_URL, $data, array(), 10); //increase timeout to 10 seconds
 }
 
     // Notify Runners of new suggested task

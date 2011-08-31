@@ -119,7 +119,7 @@ if ($action != 'view') {
 $notifyEmpty = true;
 if ($action =='save_workitem') {
     $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills',
-                'is_bug','bug_job_id');
+                'is_bug', 'bug_job_id');
     foreach ($args as $arg) {
         if (!empty($_POST[$arg])) {
             $$arg = $_POST[$arg];
@@ -147,7 +147,7 @@ if ($action =='save_workitem') {
     if (isset($_POST['summary']) && $workitem->getSummary() != $summary) {
         $workitem->setSummary($summary);
         if ($workitem->getStatus() != 'DRAFT') {
-        $new_update_message .= "Summary changed. ";
+            $new_update_message .= "Summary changed. ";
         }
     }
 
@@ -165,7 +165,7 @@ if ($action =='save_workitem') {
         $skillsDiff = array_diff($skillsArr, $skillsCur);
         if (is_array($skillsDiff) && ! empty($skillsDiff)) {
             if ($workitem->getStatus() != 'DRAFT') {
-            $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
+                $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
             }
             // remove nasty end comma
             $new_update_message = rtrim($new_update_message, ', ') . '. ';
@@ -196,7 +196,7 @@ if ($action =='save_workitem') {
     if ( $workitem->getProjectId() != $project_id) {
         $workitem->setProjectId($project_id);
         if ($workitem->getStatus() != 'DRAFT') {
-        $new_update_message .= "Project changed. ";
+            $new_update_message .= "Project changed. ";
         }
     }
     // Sandbox
@@ -251,9 +251,9 @@ if ($action =='save_workitem') {
 
      $redirectToDefaultView = true;
      if ($workitem->getStatus() != 'DRAFT') {
-     $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id ".
-                        $bugJournalMessage  .": ". $workitem->getSummary() .
-                        $new_update_message;
+         $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id ".
+                            $bugJournalMessage  .": ". $workitem->getSummary() .
+                            $new_update_message;
      }
 }
 
@@ -275,17 +275,17 @@ if ($action == 'new-comment') {
         
         // Send journal notification
         if ($workitem->getStatus() != 'DRAFT') {
-        $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
-        Notification::workitemNotify(array(
-            'type' => 'comment',
-            'workitem' => $workitem,
-            'recipients' => array('creator', 'runner', 'mechanic'),
-            'emails' => $corespondent),
-            array(
-                'who' => $_SESSION['nickname'],
-                // removed nl2br as it's cleaner to be able to choose if this is used on output
-                'comment' => $_POST['comment']
-            ));
+            $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
+            Notification::workitemNotify(array(
+                'type' => 'comment',
+                'workitem' => $workitem,
+                'recipients' => array('creator', 'runner', 'mechanic'),
+                'emails' => $corespondent),
+                array(
+                    'who' => $_SESSION['nickname'],
+                    // removed nl2br as it's cleaner to be able to choose if this is used on output
+                    'comment' => $_POST['comment']
+                ));
         }
     }
 
@@ -568,9 +568,9 @@ if ($action == "add_fee") {
     else { $$arg = '';
         }
     }
-    if($workitem->getStatus() != 'DRAFT') {
         $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
-    
+
+    if($workitem->getStatus() != 'DRAFT') {
         // notify runner of new fee
         Notification::workitemNotify(array('type' => 'fee_added',
                  'workitem' => $workitem,
@@ -788,8 +788,9 @@ if ($redirectToDefaultView) {
 if ($redirectToWorklistView) {
     $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;
 }
-// We have a Journal message. Send it to Journal
-if(isset($journal_message)) {
+
+// we have a Journal message, send it to Journal - except for DRAFTS
+if(isset($journal_message) && $workitem->getStatus() != 'DRAFT') {
     sendJournalNotification($journal_message);
     //$postProcessUrl = WORKITEM_URL . $worklist_id . "&msg=" . $journal_message;
 }
