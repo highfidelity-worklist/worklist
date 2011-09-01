@@ -1,5 +1,5 @@
 <?php include dirname(__FILE__).'/config.php'; ?>
-<script language="JavaScript" src="js/jquery-1.5.2.min.js"></script>
+<script language="JavaScript" src="js/jquery-1.6.2.min.js"></script>
 <script language="JavaScript" src="js/jquery.scrollTo-min.js"></script>
 
 <style>

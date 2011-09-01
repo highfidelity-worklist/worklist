@@ -237,7 +237,7 @@
         <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
 
-        <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
         <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
         <script type="text/javascript" src="js/jquery.blockUI.js"></script>

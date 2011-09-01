@@ -27,7 +27,7 @@ require_once("functions.php");
 <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
 <link rel="stylesheet" type="text/css" href="css/tooltip.css" />
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
 <script type="text/javascript" src="js/jquery.watermark.min.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
