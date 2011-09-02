@@ -782,3 +782,6 @@ span.info-whisper {
 .expired_warn a {
     color: #640101;
 }
+#ping-msg {
+    width: 355px;
+}

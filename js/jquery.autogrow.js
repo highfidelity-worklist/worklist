@@ -18,7 +18,10 @@
     $.fn.autogrow = function(options) {
         var defaults = {
             expandTolerance: 1,
-            heightKeeperFunction: null
+            heightKeeperFunction: null,
+            defaultMinHeight: 50,
+            defaultMaxHeight: 300,
+            defaultLineHeight: 1
         };
         options = $.extend(defaults, options);
         
@@ -26,7 +29,7 @@
         var hCheck = !($.browser.msie || $.browser.opera);
         
         function resize(e) {
-            var $e                        = $(e.target || e), // event or element
+            var $e = $(e.target || e), // event or element
                     contentLength = $e.val().length,
                     elementWidth    = $e.innerWidth();
             if ($e.is(":hidden")) {
@@ -43,6 +46,7 @@
                     }
                     $e.css("height", "0px");
                 }
+                
                 
                 var height = Math.max($e.data("autogrow-min"), Math.ceil(Math.min(
                     $e.prop("scrollHeight") + options.expandTolerance * $e.data("autogrow-line-height"), 
@@ -64,15 +68,16 @@
         };
         
         function initElement($e) {
-            $e.data("autogrow-min", options.minHeight || parseNumericValue($e.css('min-height')) || 0);
-            $e.data("autogrow-max", options.maxHeight || parseNumericValue($e.css('max-height')) || 99999);
-            $e.data("autogrow-line-height", options.lineHeight || parseNumericValue($e.css('line-height')) || 1);
+            $e.data("autogrow-min", options.minHeight || parseNumericValue($e.css('min-height')) || options.defaultMinHeight);
+            $e.data("autogrow-max", options.maxHeight || parseNumericValue($e.css('max-height')) || options.defaultMaxHeight);
+            $e.data("autogrow-line-height", options.lineHeight || parseNumericValue($e.css('line-height')) || options.defaultLineHeight);
             resize($e);
+
         };
         
         this.each(function() {
             var $this = $(this);
-                        
+            
             if (!$this.data("autogrow-initialized")) {
                 $this.css("padding-top", 0).css("padding-bottom", 0);
                 $this.bind("keyup", resize).bind("focus", resize);
