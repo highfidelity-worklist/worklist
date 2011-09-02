@@ -111,9 +111,10 @@ class User {
         return $this->loadUser($where);
     }
 
-    public function findUserByPPUsername($paypal_email) {
-        $paypal_email = mysql_real_escape_string((string)$paypal_email);
-        $where = sprintf('`paypal_email` = "%s"', $paypal_email);
+    public function findUserByPPUsername($paypal_email, $hash) {
+        $paypal_email = mysql_real_escape_string((string) $paypal_email);
+        $hash = mysql_real_escape_string((string) $hash);
+        $where = sprintf('`paypal_email` = "%s" && `paypal_hash` = "%s"', $paypal_email, $hash);
         return $this->loadUser($where);
     }
 
@@ -141,8 +142,7 @@ class User {
      *
      * @return (boolean)
      */
-    public function save()
-    {
+    public function save() {
         if (null === $this->getId()) {
             $id = $this->insert();
             if ($id !== false) {

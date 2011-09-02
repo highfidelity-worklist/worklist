@@ -102,10 +102,11 @@ if (isset($_REQUEST['str'])) {
     // paypal address confirmation
     $user = new User();
     $paypal_email = mysql_real_escape_string(base64_decode($_REQUEST['ppstr']));
+    $hash = mysql_real_escape_string($_REQUEST['pp']);
     // echo $paypal_email;
 
     // verify the email belongs to a user
-    if (! $user->findUserByPPUsername($paypal_email)) {
+    if (! $user->findUserByPPUsername($paypal_email, $hash)) {
         // hacking attempt, or some other error
         header('Location: login.php');
     } else {
