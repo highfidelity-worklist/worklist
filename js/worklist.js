@@ -110,9 +110,9 @@ function AjaxPopup(popupId,
              
              if(value[0] == 'checkbox') {
                if(value[3] != undefined && value[3] == 'eval')  {
-             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');         
+             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').prop('checked', true);         
                } else {
-             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');         
+             $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').prop('checked', true);         
                }
              }
              
@@ -181,9 +181,9 @@ function SimplePopup(popupId,
        
        if(value[0] == 'checkbox') {
          if(value[3] != undefined && value[3] == 'eval')  {
-           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').attr('checked','checked');         
+           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ eval(value[2])+'"]').prop('checked', true);         
          } else {
-           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').attr('checked','checked');         
+           $('.popup-body form checkbox[name="' + value[1] +'"] option[value="'+ value[2] +'"]').prop('checked', true);         
          }
        }
        
@@ -358,7 +358,7 @@ $(function() {
     //Enable/disable job bug id on is_bug checkbox state
     $("#bug_job_id").ready(function() {
         if ( !$("#is_bug").is ( ":checked" ) ) {
-            $("#bug_job_id").attr ( "disabled" , true );
+            $("#bug_job_id").prop ( "disabled" , true );
         } else {
             $("#bug_job_id").removeAttr ( "disabled" );
         }
@@ -372,7 +372,7 @@ $(function() {
     $("#is_bug").click(function(){
         if ( !$(this).is ( ":checked" ) ) {
             //Disable and clean bug_job_id
-            $("#bug_job_id").attr ( "disabled" , true );
+            $("#bug_job_id").prop ( "disabled" , true );
             $("#bug_job_id").val ("");
             $('#bugJobSummary').html('');
             $("#bugJobSummary").attr("title" , 0);
@@ -486,62 +486,65 @@ $(function() {
 });
 
 $(function() {
-        // bind on beforeshow newList
-        $('select[name=user]').bind({
-            'beforeshow newlist': function(e, o) {
-                
-                // check if the div for the active only button has already been created
-                // create it if it hasn't
-                if($('#userActiveBox').length == 0) {
-                    var div = $('<div/>').attr('id', 'userActiveBox');                    
-                    // now we add a function which gets called on click
-                    div.click(function(e) {
-                        // we hide the list and remove the active state
-                        activeUsersFlag = 1 - activeUsersFlag;
-                        o.list.hide();
-                        o.container.removeClass('ui-state-active');
-                        // we send an ajax request to get the updated list
-                        $.ajax({
-                            type: 'POST',
-                            url: 'refresh-filter.php',
-                            data: {
-                                name: filterName,
-                                active: activeUsersFlag,
-                                filter: 'users'
-                            },
-                            dataType: 'json',
-                            // on success we update the list
-                            success: $.proxy(o.setupNewList, null,o)
-                        });
-                    });                    
-                    $('.userCombo').append(div);
-                }
-                
-                // set up the label and checkbox to be placed in the div
-                var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
-                var checkbox = $('<input/>').attr({
-                    type: 'checkbox',
-                    id: 'onlyActive'
-                }).css({
-                        margin: 0,
-                        position: 'relative',
-                        top: '1px'
-                });
-
-                // update the checkbox
-                if (activeUsersFlag) {
-                    checkbox.attr('checked', true);
-                } else {
-                    checkbox.attr('checked', false);
-                }
-                
-                // put the label + checkbox into the div
-                label.text(' Active only');
-                label.prepend(checkbox);
-                $('#userActiveBox').html(label);
+    // bind on beforeshow newList
+    $('select[name=user]').bind({
+        'beforeshow newlist': function(e, o) {
+            
+            // check if the div for the active only button has already been created
+            // create it if it hasn't
+            if($('#userActiveBox').length == 0) {
+                var div = $('<div/>').attr('id', 'userActiveBox');                    
+                // now we add a function which gets called on click
+                div.click(function(e) {
+                    e.stopPropagation();
+                    // we hide the list and remove the active state
+                    activeUsersFlag = 1 - activeUsersFlag;
+                    o.list.hide();
+                    $('#userActiveBox').prop('checked', (activeUsersFlag ? true : false));
+                    $('#userActiveBox').hide();
+                    o.container.removeClass('ui-state-active');
+                    // we send an ajax request to get the updated list
+                    $.ajax({
+                        type: 'POST',
+                        url: 'refresh-filter.php',
+                        data: {
+                            name: filterName,
+                            active: activeUsersFlag,
+                            filter: 'users'
+                        },
+                        dataType: 'json',
+                        // on success we update the list
+                        success: $.proxy(o.setupNewList, o)
+                    });
+                });                    
+                $('.userCombo').append(div);
             }
-        }).comboBox();
-        $('#search-filter-wrap select[name=status]').comboBox();
+            
+            // set up the label and checkbox to be placed in the div
+            var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
+            var checkbox = $('<input/>').attr({
+                type: 'checkbox',
+                id: 'onlyActive'
+            }).css({
+                margin: 0,
+                position: 'relative',
+                top: '1px'
+            });
+
+            // update the checkbox
+            if (activeUsersFlag) {
+                checkbox.prop('checked', true);
+            } else {
+                checkbox.prop('checked', false);
+            }
+            
+            // put the label + checkbox into the div
+            label.text(' Active only');
+            label.prepend(checkbox);
+            $('#userActiveBox').html(label);
+        }
+    }).comboBox();
+    $('#search-filter-wrap select[name=status]').comboBox();
 });
     
 // function to bind hide and show events for the active only divs 

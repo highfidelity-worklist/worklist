@@ -41,7 +41,7 @@
 			this.list = $('<ul/>');
 			// combobox values array
 			this.values = [];
-            if (this.el.attr("multiple") === true ){
+            if (this.el.prop("multiple") === true ){
                 this.list.addClass("ui-combobox-list-multiple");
                 this.el.bind({
                     'beforeshow newlist': function(e, o) {
@@ -56,10 +56,10 @@
                             event.preventDefault();
                             event.stopPropagation();
                            $("input[type=checkbox]",o.list).each(function(){
-                                if ($(this).parent().attr('val') == "ALL") {return;}
+                                if ($(this).parent().attr('val') === "ALL") {return;}
                                 var oThis=this;
                                 if ($(oThis).is(':checked') ) {
-                                    if ($(this).val() != "ALL") {
+                                    if ($(this).val() !== "ALL") {
                                         $(oThis).parent().click();                                        
                                     }
                                 }
@@ -104,7 +104,7 @@
 		},
 		_initSelected: function() {
 			// get initial value of original selectbox
-            if (this.el.attr("multiple") === true ){
+            if (this.el.prop("multiple") === true ){
                 var ele = this.el.val(),
                     more="";
                 if (ele && ele !== null) {
@@ -221,7 +221,7 @@
 				this.values.push({
 					value: $(v).attr('value'),
 					text: $(v).text(),
-					selected: $(v).attr('selected')
+					selected: $(v).prop('selected')
 				});
 			}, this));
 		},
@@ -230,12 +230,12 @@
 			// list item was clicked now we select the value
 			e.preventDefault();
 			this.select($(e.currentTarget).attr('val'));
-            if (this.el.attr("multiple") === true ){
+            if (this.el.prop("multiple") === true ){
                     // remove the selected class from the previous selected item
                 if ($(e.currentTarget).attr('val') == "ALL") {
                     $("input[type=checkbox]",oThis.list).each(function(){
                         if ($(this).val() != "ALL") {
-                            $(this).attr('checked', false);
+                            $(this).prop('checked', false);
                         }
                     });
                 }
@@ -243,21 +243,21 @@
                     $("input[type=checkbox]",e.currentTarget).data("clicked",false)
                     if ($("input[type=checkbox]",e.currentTarget).is(':checked') ) {
                         setTimeout(function(){
-                            $("input[type=checkbox]",e.currentTarget).attr('checked', true);
+                            $("input[type=checkbox]",e.currentTarget).prop('checked', true);
                         },50);
                     } else {
                         setTimeout(function(){
-                            $("input[type=checkbox]",e.currentTarget).attr('checked', false);
+                            $("input[type=checkbox]",e.currentTarget).prop('checked', false);
                         },50);
                     }
                 } else {
                     if ($("input[type=checkbox]",e.currentTarget).is(':checked') ) {
-                        $("input[type=checkbox]",e.currentTarget).attr('checked', false);
+                        $("input[type=checkbox]",e.currentTarget).prop('checked', false);
                     } else {
-                        $("input[type=checkbox]",e.currentTarget).attr('checked', true);
+                        $("input[type=checkbox]",e.currentTarget).prop('checked', true);
                     }
                 }
-                if ($(e.currentTarget).attr('val') == "ALL") {
+                if ($(e.currentTarget).attr('val') === "ALL") {
                     $("#CheckDone",oThis.list).click();
                 }
                 return false;
@@ -336,9 +336,9 @@
                     this.list.scrollTo(this.list.find('.ui-combobox-list-selected').get(0));
                 }
 				this.list.find('.ui-combobox-list-selected').addClass('ui-state-hover');
-                if (this.el.attr("multiple") === true ){
+                if (this.el.prop("multiple") === true ){
                     this.list.find('.ui-combobox-list-selected').each(function(){
-                        $("input[type=checkbox]",this).attr('checked', true);
+                        $("input[type=checkbox]",this).prop('checked', true);
                     });
                 }
 				// add the active state class to the container
@@ -352,7 +352,7 @@
 			// get the complete element (text, value, selected state)
 			val = this.getItemByValue(val);
 			// if the value is not currently selected we have to select it
-            if (this.el.attr("multiple") === true ){
+            if (this.el.prop("multiple") === true ){
                 var currentSelectedVal = [],
                     firstValue="",
                     more="";

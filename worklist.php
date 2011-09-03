@@ -710,16 +710,16 @@ include("head.html"); ?>
         $('#for_edit').show();
         $('#for_view').hide();
         $('.popup-body form input[type="text"]').val('');
-        $('.popup-body form select.resetToFirstOption option[index=0]').attr('selected', 'selected');
-        $('.popup-body form select option[value=\'BIDDING\']').attr('selected', 'selected');
+        $('.popup-body form select.resetToFirstOption option[index=0]').prop('selected', true);
+        $('.popup-body form select option[value=\'BIDDING\']').prop('selected', true);
         $('.popup-body form textarea').val('');
 
         //Reset popup edit form
-        $("#bug_job_id").attr ( "disabled" , true );
+        $("#bug_job_id").prop ( "disabled" , true );
         $("#bug_job_id").val ("");
         $('#bugJobSummary').html('');
         $("#bugJobSummary").attr("title" , 0);
-        $("#is_bug").attr('checked',false);
+        $("#is_bug").prop('checked',false);
         $('input[name=files]').val('');
         $('#fileimagecontainer').text('');
         $('#imageCount').text('0');
@@ -779,13 +779,13 @@ include("head.html"); ?>
 
     function validateCodeReviews() {
         if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
-            $('.cr_anyone_field').attr('checked', true);
+            $('.cr_anyone_field').prop('checked', true);
             $('#edit_cr_error').html("One selection must be checked");
             $('#edit_cr_error').fadeIn();
             $('#edit_cr_error').delay(2000).fadeOut();
         };
         if (!$('.cr_anyone_field_ap').is(':checked') && !$('.cr_3_favorites_field_ap').is(':checked') && !$('.cr_project_admin_field_ap').is(':checked') && !$('.cr_job_runner_field_ap').is(':checked')) {
-            $('.cr_anyone_field_ap').attr('checked', true);
+            $('.cr_anyone_field_ap').prop('checked', true);
             $('#edit_cr_error_ap').html("One selection must be checked");
             $('#edit_cr_error_ap').fadeIn();
             $('#edit_cr_error_ap').delay(2000).fadeOut();
@@ -942,7 +942,7 @@ include("head.html"); ?>
                                         },
                                         dataType: 'json',
                                         // on success we update the list
-                                        success: $.proxy(o.setupNewList, null,o)
+                                        success: $.proxy(o.setupNewList, o)
                                     });
                                 });
                                 $('.itemProjectCombo').append(div);
@@ -960,9 +960,9 @@ include("head.html"); ?>
 
                             // we need to update the checkbox status
                             if (activeProjectsFlag) {
-                                checkbox.attr('checked', true);
+                                checkbox.prop('checked', true);
                             } else {
-                                checkbox.attr('checked', false);
+                                checkbox.prop('checked', false);
                             }
 
                             // put the label + checkbox in the div
@@ -1122,7 +1122,7 @@ include("head.html"); ?>
                         project_id:$(":input[name='itemProject']",addForm).val(),
                         status:$(":input[name='status']",addForm).val(),
                         skills:$(":input[name='skills']",addForm).val(),
-                        is_bug:$(":input[name='is_bug']",addForm).attr('checked'),
+                        is_bug:$(":input[name='is_bug']",addForm).prop('checked'),
                         bug_job_id:$(":input[name='bug_job_id']",addForm).val()
                     },
                     type: 'POST',
@@ -1190,13 +1190,12 @@ include("head.html"); ?>
 
                 //reset status combo
                 $('.statusComboList li input[type=checkbox]').each( function() {
-                    this.checked = false;
+                    $(this).prop('checked', false);
                 });
                 $('#statusCombo').data('comboBox').select("ALL", false);
 
                 $(this).data('query', query);
             }
-            //$("#loader_img").css("display","block");
             GetWorklist(1,false);
             return false;
         });
@@ -1249,9 +1248,12 @@ include("head.html"); ?>
                         
                         // now we add a function which gets called on click
                         div.click(function(e) {
+                            e.stopPropagation();
                             // we hide the list and remove the active state
                             activeProjectsFlag = 1 - activeProjectsFlag;
                             o.list.hide();
+                            $('#projectActiveBox').prop('checked', (activeUsersFlag ? true : false));
+                            $('#projectActiveBox').hide();
                             o.container.removeClass('ui-state-active');
                             // we send an ajax request to get the updated list
                             $.ajax({
@@ -1264,7 +1266,7 @@ include("head.html"); ?>
                                 },
                                 dataType: 'json',
                                 // on success we update the list
-                                success: $.proxy(o.setupNewList, null,o)
+                                success: $.proxy(o.setupNewList, o)
                             });
                         });
                         $('.projectCombo').append(div);
@@ -1282,9 +1284,9 @@ include("head.html"); ?>
 
                     // we need to update the checkbox status
                     if (activeProjectsFlag) {
-                        checkbox.attr('checked', true);
+                        checkbox.prop('checked', true);
                     } else {
-                        checkbox.attr('checked', false);
+                        checkbox.prop('checked', false);
                     }
                     
                     // put the label + checkbox in the div
@@ -1323,7 +1325,7 @@ include("head.html"); ?>
                 $.each(data['ipaFiles'], function(index, value) {
                     $('#popup-testflight form #ipa-select').append('<input type="radio" name="ipa" value="' + value + '" /> ' + value + '<br />');
                 });
-                $('#popup-testflight form #ipa-select input:first').attr('checked', 'checked');
+                $('#popup-testflight form #ipa-select input:first').prop('checked', true);
                 $('#popup-testflight form').show();
                 $('#popup-testflight .right-note').show();
                 

@@ -18,7 +18,7 @@ var pos=4;
             var len = country.length;
 	    $("#int-code option").each(function(){
                 if ($(this).text().trim().substr(0, len) == country) {
-                    $(this).attr('selected', 'selected');
+                    $(this).prop('selected', true);
                     return false;
                 }
             });

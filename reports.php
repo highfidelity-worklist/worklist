@@ -360,7 +360,7 @@ function AppendPagination(page, cPages, table) {
                 AppendTotals(json[0][3]|0.00 ,json[0][4]|0.00);
                 $('.table-worklist .workitem-paid').click(function(e){
                     $('#amtpaid').show();
-                    if ($(this).attr('checked')) {
+                    if ($(this).prop('checked')) {
                         ttlPaid = parseFloat(ttlPaid) + parseFloat($(this).attr('data'));
                         paid_list[$(this).val()] = 1;
                     } else {
@@ -371,9 +371,9 @@ function AppendPagination(page, cPages, table) {
                 });
 
                 /* Reflect the paid list values as pages are reloaded. */
-                $("#report-check-all").attr('checked', '');
+                $("#report-check-all").prop('checked', false);
                 $('.table-worklist .workitem-paid').each(function(){
-                    if (paid_list[$(this).val()]) $(this).attr('checked','checked');
+                    if (paid_list[$(this).val()]) $(this).prop('checked', true);
                 });
             },
             error: function(xhdr, status, err) {
@@ -662,15 +662,15 @@ function loadTimelineChart() {
         initializeTabs();
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#report-check-all").live('change', function(){
-            var isChecked = $("#report-check-all").attr('checked');
+            var isChecked = $("#report-check-all").prop('checked');
 
             $('.table-worklist .workitem-paid').each(function(){
-                if (isChecked && !$(this).attr('checked')) {
-                    $(this).attr('checked', 'checked');
+                if (isChecked && !$(this).prop('checked')) {
+                    $(this).prop('checked', true);
                     ttlPaid = parseFloat(ttlPaid) + parseFloat($(this).attr('data'));
                     paid_list[$(this).val()] = 1;
-                } else if (isChecked == '' && $(this).attr('checked')) {
-                    $(this).attr('checked', '');
+                } else if (isChecked == '' && $(this).prop('checked')) {
+                    $(this).prop('checked', false);
                     ttlPaid = parseFloat(ttlPaid) - parseFloat($(this).attr('data'));
                     paid_list[$(this).val()] = 0;
                 }

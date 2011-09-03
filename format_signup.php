@@ -391,17 +391,17 @@
                     $('#popup-user-info #info-timezone').text(json[7]);
                     $('#popup-user-info #info-joined').text(json[8]);
                     if( json[9] == "1" )    {
-                        $('#popup-user-info #info-isrunner').attr('checked', 'checked');
+                        $('#popup-user-info #info-isrunner').prop('checked', true);
                     } else {
-                        $('#popup-user-info #info-isrunner').attr('checked', '');
+                        $('#popup-user-info #info-isrunner').prop('checked', false);
                     }
                     if( json[10] == "1" )    {
-                        $('#popup-user-info #info-ispayer').attr('checked', 'checked');
+                        $('#popup-user-info #info-ispayer').prop('checked', true);
                     } else {
-                        $('#popup-user-info #info-ispayer').attr('checked', '');
+                        $('#popup-user-info #info-ispayer').prop('checked', false);
                     }
-                    $('#popup-user-info #info-isrunner').attr('disabled', 'disabled');
-                    $('#popup-user-info #info-ispayer').attr('disabled', 'disabled');
+                    $('#popup-user-info #info-isrunner').prop('disabled', true);
+                    $('#popup-user-info #info-ispayer').prop('disabled', true);
                 },
                 error: function( xhdr, status, err )    {}
             });

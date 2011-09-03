@@ -296,7 +296,7 @@ var UserInfo = {
             // projects to sandbox that is already created, sandbox bash
             // script needs updating to support this
             $('#sandboxForm input[type=checkbox]:checked').not(':disabled').each(function() {
-                if ($(this).attr('checked') && !$(this).attr('disabled')) {
+                if ($(this).prop('checked') && !$(this).prop('disabled')) {
                     projects += $(this).next('.repo').val() + ',';
                 } 
             });
@@ -382,9 +382,9 @@ var UserInfo = {
         });
         
         if (! admin) {
-            $('#ispaypalverified').attr('disabled', 'disabled');
-            $('#isw9approved').attr('disabled', 'disabled');
-            $('#isw2employee').attr('disabled', 'disabled');
+            $('#ispaypalverified').prop('disabled', true);
+            $('#isw9approved').prop('disabled', true);
+            $('#isw2employee').prop('disabled', true);
         } else {
             $('#isw2employee').click(function () {
                 if ($('#isw2employee').is(':checked')) {

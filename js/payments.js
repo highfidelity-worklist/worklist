@@ -97,7 +97,7 @@ $(document).ready(function() {
     });
 
     $('#commit-btn').click(function(e) {
-        $(this).attr('disabled', 'disabled');
+        $(this).attr('disabled', true);
         e.preventDefault();
         $(this).unbind('click');
         $('#paymentForm').submit();

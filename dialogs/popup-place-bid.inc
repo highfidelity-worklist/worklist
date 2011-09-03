@@ -79,7 +79,7 @@
                 if ($(this).val().length > 0) {
                     $('#bid').removeClass('button-disabled').removeAttr('disabled');
                 } else {
-                    $('#bid').addClass('button-disabled').attr('disabled', 'disabled');
+                    $('#bid').addClass('button-disabled').prop('disabled', true);
                 }
             });
             $('#notes').focus(function() {

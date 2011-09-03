@@ -365,20 +365,20 @@ include("head.html");
                     smsaddr: $('#smsaddr').val(),
                     provider: $('#provider').val(),
                     timezone: $('#timezone').val(),
-                    journal_alerts: $('#journal_alerts').attr('checked') ? 1 : 0,
-                    bid_alerts: $('#bid_alerts').attr('checked') ? 1 : 0,
+                    journal_alerts: $('#journal_alerts').prop('checked') ? 1 : 0,
+                    bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
                     nickname: $('#nickname').val(),
                     save_account: 1,
                     username: $('#username').val(),
-                    my_bids_notify: $('input[name="my_bids_notify"]').attr('checked') ? 1 : 0,
-                    ping_notify: $('input[name="ping_notify"]').attr('checked') ? 1 : 0,
-                    review_notify: $('input[name="review_notify"]').attr('checked') ? 1 : 0,
-                    bidding_notify: $('input[name="bidding_notify"]').attr('checked') ? 1 : 0,
-                    my_review_notify: $('input[name="my_review_notify"]').attr('checked') ? 1 : 0,
-                    my_completed_notify: $('input[name="my_completed_notify"]').attr('checked') ? 1 : 0,
-					self_email_notify: $('input[name="self_email_notify"]').attr('checked') ? 1 : 0,
-					bidding_email_notify: $('input[name="bidding_email_notify"]').attr('checked') ? 1 : 0,
-					review_email_notify: $('input[name="review_email_notify"]').attr('checked') ? 1 : 0
+                    my_bids_notify: $('input[name="my_bids_notify"]').prop('checked') ? 1 : 0,
+                    ping_notify: $('input[name="ping_notify"]').prop('checked') ? 1 : 0,
+                    review_notify: $('input[name="review_notify"]').prop('checked') ? 1 : 0,
+                    bidding_notify: $('input[name="bidding_notify"]').prop('checked') ? 1 : 0,
+                    my_review_notify: $('input[name="my_review_notify"]').prop('checked') ? 1 : 0,
+                    my_completed_notify: $('input[name="my_completed_notify"]').prop('checked') ? 1 : 0,
+					self_email_notify: $('input[name="self_email_notify"]').prop('checked') ? 1 : 0,
+					bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
+					review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0
                 };
             } else {
                 return false;

@@ -465,7 +465,7 @@ $(document).ready(function(){
                     dataType: 'json',
                     data: {
                         itemid: $('#' + this.id + ' input[name=itemid]').val(),
-                        paid_check: $('#' + this.id + ' input[name=paid_check]').attr('checked') ? 1 : 0,
+                        paid_check: $('#' + this.id + ' input[name=paid_check]').prop('checked') ? 1 : 0,
                         paid_notes: $('#' + this.id + ' textarea[name=paid_notes]').val()
                     },
                     success: function(data) {
@@ -605,7 +605,7 @@ $(document).ready(function(){
         $('#for_edit').show();
         $('#for_view').hide();
         $('.popup-body form input[type="text"]').val('');
-        $('.popup-body form select option[index=0]').attr('selected', 'selected');
+        $('.popup-body form select option[index=0]').prop('selected', true);
         $('.popup-body form textarea').val('');
     }
     function ConfirmEditBid(){
@@ -792,9 +792,9 @@ $(document).ready(function(){
                         // remove ticks
                         $('#popup-multiple-bid-info .chkMechanic').removeAttr('checked');
                         // and add it back
-                        $(this).attr('checked', 'checked');
+                        $(this).prop('checked', true);
                         // and auto accept
-                        $(this).parent().parent().find('.acceptMechanic').attr('checked', 'checked');
+                        $(this).parent().parent().find('.acceptMechanic').prop('checked', true);
                     }
                 });
 
