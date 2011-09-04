@@ -117,6 +117,7 @@ if ($action != 'view') {
 
 // Save WorkItem was requested. We only support Update here
 $notifyEmpty = true;
+$message_title = '';
 if ($action =='save_workitem') {
     $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills',
                 'is_bug', 'bug_job_id');
@@ -140,6 +141,11 @@ if ($action =='save_workitem') {
         } else {
 	        $new_update_message .= 'Marked as not being a bug. ';
         }
+        if ($message_title == '') {
+            $message_title = 'Bug';
+        } else {
+            $message_title .= ' / Bug';
+        }
     }
 	$workitem->setIs_bug($is_bug);
 
@@ -148,6 +154,11 @@ if ($action =='save_workitem') {
         $workitem->setSummary($summary);
         if ($workitem->getStatus() != 'DRAFT') {
             $new_update_message .= "Summary changed. ";
+            if ($message_title == '') {
+                $message_title = 'Summary';
+            } else {
+                $message_title .= ' / Summary';
+            }
         }
     }
 
@@ -169,6 +180,11 @@ if ($action =='save_workitem') {
             }
             // remove nasty end comma
             $new_update_message = rtrim($new_update_message, ', ') . '. ';
+            if ($message_title == '') {
+                $message_title = 'Skills';
+            } else {
+                $message_title .= ' / Skills';
+            }
         }
         $workitem->setWorkitemSkills($skillsArr);
     }
@@ -191,27 +207,47 @@ if ($action =='save_workitem') {
     if ($workitem->getNotes() != $notes && isset($_POST['notes'])) {
         $workitem->setNotes($notes);
         $new_update_message .= "Notes changed. ";
+        if ($message_title == '') {
+            $message_title = 'Notes changed';
+        } else {
+            $message_title .= ' / Notes changed';
+        }
     }
     // project
     if ( $workitem->getProjectId() != $project_id) {
         $workitem->setProjectId($project_id);
         if ($workitem->getStatus() != 'DRAFT') {
             $new_update_message .= "Project changed. ";
+            if ($message_title == '') {
+                $message_title = 'Project changed';
+            } else {
+                $message_title .= ' / Project changed';
+            }
         }
     }
     // Sandbox
     if ( $workitem->getSandbox() != $sandbox) {
         $workitem->setSandbox($sandbox);
         $new_update_message .= "Sandbox changed. ";
+        if ($message_title == '') {
+            $message_title = 'Sandbox URL';
+        } else {
+            $message_title .= ' / Sandbox URL';
+        }
     }
     // Send invites
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $worklist_id, $workitem->getSummary(), $workitem->getNotes());
         $new_update_message .= "Invitations sent. ";
+        if ($message_title == '') {
+            $message_title = 'Invitations';
+        } else {
+            $message_title .= ' / Invitations';
+        }
     }
     //Check if bug_job_id has changed and send notifications if it has
-    if($workitem->getBugJobId()!=$bug_job_id) {
+    if($workitem->getBugJobId() != $bug_job_id) {
         //Bug job Id changed
         $workitem->setBugJobId($bug_job_id);
         $new_update_message .= "Bug job Id changed. ";
@@ -377,6 +413,7 @@ if($action =='save-review-url') {
         AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
     }
     $notifyEmpty = false;
+    $message_title = ucfirst(strtolower($status_review));
     if ($status_review == 'FUNCTIONAL') {
       Notification::workitemNotify(array('type' => 'modified-functional',
           'workitem' => $workitem,
@@ -400,6 +437,7 @@ if ($action =='status-switch') {
             if ($status != 'DRAFT') {
                 $new_update_message = "Status set to $status. ";
                 $notifyEmpty = false;
+                $message_title = ucfirst(strtolower($status));
                 if ($status == 'FUNCTIONAL') {
                     Notification::workitemNotify(array('type' => 'modified-functional',
                     'workitem' => $workitem,
@@ -419,7 +457,7 @@ if(!$notifyEmpty) {
   Notification::workitemNotify(array('type' => 'modified',
               'workitem' => $workitem,
               'recipients' => array('runner', 'creator', 'mechanic')),
-              array('changes' => $new_update_message));
+              array('changes' => $new_update_message, 'title' => $message_title));
 }
 
 if ($action == "place_bid") {
