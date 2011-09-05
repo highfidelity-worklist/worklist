@@ -54,6 +54,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
+<script type="text/javascript" src="js/workitem.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
@@ -156,6 +157,7 @@ var imageArray = new Array();
 var documentsArray = new Array();
 var ping_who = '';
 worklistUrl = '<?php echo SERVER_URL; ?>';
+Workitem.sandbox_url = '<?php echo $worklist['sandbox']; ?>';
 
 function reply(id) {
     var commentForm = $('.commentform');
@@ -1210,7 +1212,7 @@ if ($action =="edit"):  ?>
                     <li>
                         <span class="info-label">Status</span><span class="info-data" style="margin-left:12px;font-size:16px"><?php echo $worklist['status'];?></span>
                         <input type="hidden" id="status" name="status" value = "BIDDING" />
-                        <?php
+                        <?php                      
                             // quick status buttons for runners of items and mechanics working on them
                             if(!$is_runner && ($mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) &&
                             $worklist['status'] != 'DONE')
@@ -1305,7 +1307,11 @@ if ($action =="edit"):  ?>
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
                                 <?php echo htmlspecialchars($worklist['sandbox']);?>
-                            </a>
+                            </a><br />
+                            <?php if (($worklist['status'] == 'FUNCTIONAL' || $worklist['status'] == 'REVIEW')
+                                    && $worklist['sandbox'] != 'N/A') { ?> 
+                                <input type="submit" id="view-sandbox" value="View Sandbox" />
+                            <?php } ?>                         
                         <?php else :?>
                             <span>Not assigned</span>
                         <?php endif;?>
@@ -1557,7 +1563,7 @@ if ($action =="edit"):  ?>
                                 <?php if ($mechanic_id == $user_id): ?>
                                     <input class="iToolTip addTip" type="submit" value="Tip User" />
                                 <?php endif; ?>
-                                
+                              
                                 <?php if ($mechanic_id != $user_id && $worklist['status'] == 'REVIEW'): ?>
                                     <?php if ($user->isEligible() && $workitem->getCRStarted() != 1 && hasRights($workitem,$user_id)) : ?>
                                         <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return showReviewForm();"/>

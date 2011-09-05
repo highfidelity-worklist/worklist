@@ -33,22 +33,31 @@ var Utils = {
     /**
      * Shows a info dialog with @message
      */
-    infoDialog: function(message) {
-        // Add handler for the OK button
-        $('#infoOkBtn').click(function() {
-            Utils.closeDialog('info');
+    infoDialog: function(title, message) {
+        
+        if ($("#dialog-info").length == 0) {
+            $("<div id='dialog-info'><div class='content'></div></div>").appendTo("body");            
+            $('#dialog-info').dialog({ 
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: false,
+                show: 'drop',
+                hide: 'drop',
+                buttons: [
+                    {
+                        text: 'Ok',
+                        click: function() { 
+                            $(this).dialog("close"); 
+                        }
+                    }
+                ]
+            });
+        }        
+
+        $("#dialog-info").dialog({
+            title: title
         });
-        
-        // Set message text
-        $('#infoMsg').html(message);
-        
-        $('#dialog-info').dialog({ 
-                                       autoOpen:false,
-                                       closeOnEscape:true,
-                                       resizable:false,
-                                       show:'drop',
-                                       hide:'drop'
-                                      });
+        $("#dialog-info .content").html(message)
         $('#dialog-info').dialog('open');
     },
     
