@@ -26,6 +26,11 @@
     vertical-align: top;
 }
 
+.projectDescription {
+    width: 70%;
+    text-align: justify;
+}
+
 .projectDescription h2 {
     font-size: 15px;
     font-weight: bold;
@@ -33,6 +38,19 @@
 }
 
 .projectDescription a {
+    text-decoration: none;
+}
+
+.projectStats {
+    color: #98AAB2;
+    font-size: 12px;
+    font-weight: bold;
+    height: 15px;
+    text-align: right;
+    width: 50%;
+}
+.projectStats a {
+    color: #6F6F6F;
     text-decoration: none;
 }
 

@@ -321,6 +321,9 @@ include("head.html");
             row += json.description;
         }
         row += '</span></td>';
+        row += '<td class="projectStats"><a href="./worklist.php?status=bidding&project=' + json.name + '" class="iToolTip jobsBidding actionBidding">'
+                + json.bCount + ' jobs </a>bidding, <a href="./worklist.php?status=underway&project=' + json.name + '" class="iToolTip jobsBidding actionUnderway" >' 
+                + json.uCount + ' jobs </a>underway</td>';         
         row += '</tr>';
         $('#projectListing tbody').append(row);
     }

@@ -356,6 +356,16 @@ class Project {
 
         if (mysql_num_rows($result)) {
             while ($project = mysql_fetch_assoc($result)) {
+                $biddingQuery = "SELECT status FROM " . WORKLIST . " WHERE project_id = " . $project['project_id'] . 
+                                " AND status = 'BIDDING'";
+                $biddingQueryResult = mysql_query($biddingQuery);
+                $underwayQuery = "SELECT status FROM " . WORKLIST . " WHERE project_id = " . $project['project_id'] . 
+                                 " AND status IN ('WORKING', 'REVIEW', 'FUNCTIONAL')";
+                $underwayQueryResult = mysql_query($underwayQuery);
+                $bCount = mysql_num_rows($biddingQueryResult);
+                $uCount = mysql_num_rows($underwayQueryResult);
+                $project['bCount'] = $bCount;
+                $project['uCount'] = $uCount;            
                 $projects[$project['project_id']] = $project;
             }
             return $projects;
@@ -496,5 +506,113 @@ class Project {
             return false;
         }
     }
+    
+    public function getTotalJobs() {
+        $query = "SELECT COUNT(p.project_id) AS jobCount FROM " . WORKLIST . " w 
+                  LEFT JOIN " . PROJECTS . " p ON w.project_id = p.project_id  
+                  WHERE w.status <> 'DRAFT' AND p.project_id = " . $this->getProjectId();
+        if($result = mysql_query($query)) {
+            $count = mysql_fetch_assoc($result);
+            return $count['jobCount'];
+        } else {
+            return 0;
+        }
+    }
+    
+    public function getAvgBidFee() {
+        $query = "SELECT AVG(b.bid_amount) AS avgBidFeePerProject FROM " . BIDS . " b 
+                  LEFT OUTER JOIN " . WORKLIST . " w on b.worklist_id = w.id 
+                  LEFT OUTER JOIN " . PROJECTS . " p on w.project_id = p.project_id 
+                  WHERE p.project_id = " . $this->getProjectId() . " AND b.accepted = 1";
+        if($result = mysql_query($query)) {
+            $count = mysql_fetch_assoc($result);
+            return $count['avgBidFeePerProject'];
+        } else {
+            return 0;
+        }
+    }
+    
+    public function getAvgJobTime() {
+        $jobDiffSum = 0;
+        $doneQuery = "SELECT w.id, s.change_date AS doneDate FROM " . STATUS_LOG . " s 
+                     LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id 
+                     LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
+                     WHERE s.status = 'DONE' AND p.project_id = " . $this->getProjectId();
+        if($doneResult = mysql_query($doneQuery)) {
+            $totalJobsDone = mysql_num_rows($doneResult);
+            while($doneRow = mysql_fetch_assoc($doneResult)) {
+                $doneDate = $doneRow['doneDate'];
+                $workingQuery = "SELECT MAX(`date`) AS workingDate FROM fees 
+                                WHERE worklist_id = " . $doneRow['id'] . " 
+                                AND `desc` = 'Accepted Bid'";
+                if($workingResult = mysql_query($workingQuery)) {
+                    $workingQueryRow = mysql_fetch_assoc($workingResult);
+                    $workingDate = $workingQueryRow['workingDate'];
+                    $w_date = strtotime($workingDate);                      
+                } else {
+                    return false;
+                }
+                $d_date = strtotime($doneDate);
+                $currentJobDiff = abs($d_date - $w_date);
+                $jobDiffSum = $jobDiffSum + $currentJobDiff;
+            }
+        } else {
+            return false;
+        }
+        if($totalJobsDone > 0) {
+            return relativeTime($jobDiffSum/$totalJobsDone,false,true,false);
+        } else {
+            return false;
+        }
+    }
+    
+    public function getDevelopers() {
+        $query = "SELECT DISTINCT u.id, u.nickname, 
+                 (SELECT COUNT(*) FROM " . WORKLIST . " w 
+                 LEFT JOIN " . PROJECTS . " p on w.project_id = p.project_id 
+                 WHERE ( w.mechanic_id = u.id OR w.creator_id = u.id) 
+                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE') 
+                 AND p.project_id = "  . $this->getProjectId() . ") as totalJobCount,
+                 (SELECT SUM(F.amount) FROM " . FEES . " F 
+                 LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
+                 LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
+                 WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id) 
+                 AND p.project_id = " . $this->getProjectId() . ") as totalEarnings
+                 FROM " . BIDS . " b LEFT JOIN " . WORKLIST . " w ON b.worklist_id = w.id 
+                 LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
+                 LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
+                 WHERE b.accepted = 1 AND p.project_id = " . $this->getProjectId() . " ORDER BY totalEarnings DESC";
+        if($result = mysql_query($query)) {
+            while($row = mysql_fetch_assoc($result)) {
+                $developers[$row['id']] = $row;
+            }
+        } else {
+            return false;
+        }
+        return $developers;
+    }
+  
+    public function getDevelopersLastActivity($userId) {
+        $sql = "SELECT MAX(change_date) FROM " . STATUS_LOG . " s 
+                LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id 
+                LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
+                WHERE s.user_id = '$userId' AND p.project_id = " . $this->getProjectId();
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            $lastActivity = strtotime($row[0]);
+            $rightNow = time();
+            if($lastActivity == '') {
+                return false;
+            } else {
+                if(($rightNow - $lastActivity) > 604800) { //if greater than a week i.e. 7*24*60*60 in seconds
+                    return date('d-F-Y', $lastActivity);
+                } else {
+                    return (formatableRelativeTime($lastActivity, 2) . " ago");
+                }
+            }
+        }
+        return false;
+    } 
+    
     
 }// end of the class

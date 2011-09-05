@@ -141,10 +141,19 @@ font-weight:normal;
     width: 370px;
 }
 
-fieldset {
+#editContainer {
     width: 380px;
     border: 0;
+    margin-top: 5px;
 }
+
+#editContainer p,
+#editContainer #buttonHolder,
+#editContainer .accordion {
+    margin-left: -88px !important;
+    width: 100%;
+}
+
 #bid-signup{
 text-align: center;
 }
@@ -484,7 +493,18 @@ td.textAlignReport {
     margin:15px 0px 20px -8px;
 }
 
-.projectRight .roles {
+.detailContainer {
+    width: 50%;
+}
+
+.descriptionHolder,
+.detailContainer {
+    margin-left: -25px;
+}
+
+.projectRight .roles,
+.projectStatistics,
+.projectWorkers {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border-radius: 6px;
@@ -493,11 +513,32 @@ td.textAlignReport {
     background-color: #FFFFDD;
     margin-bottom:10px;
 }
+
+.projectWorkers {
+    width: 398px;
+    margin-left: -29px;
+}
+
+.projectStatistics {
+    width: 399px;
+    float: right;
+    margin-top: -100px;
+}
+
+.table-workers tr {
+    font-weight: normal;
+}
+
+.table-workers tr td a {
+    text-decoration: none;
+    color: #98AAB2;
+}
 /*roles popup*/
 #popup-role-info td {
     border:none;
 }
-#roles-panel{
+#roles-panel,
+#stats-panel{
     margin:10px 0 0px;
 }
 

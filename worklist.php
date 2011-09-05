@@ -49,8 +49,8 @@ if ($projectName) {
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
         $cr_anyone = ($_REQUEST['cr_anyone']) ? 1 : 0;
         $cr_3_favorites = ($_REQUEST['cr_3_favorites']) ? 1 : 0;
-        $cr_project_admin = ($_REQUEST['cr_project_admin']) ? 1 : 0;
-        $cr_job_runner = ($_REQUEST['cr_job_runner']) ? 1 : 0;
+        $cr_project_admin = isset($_REQUEST['cr_project_admin']) ? 1 : 0;
+        $cr_job_runner = isset($_REQUEST['cr_job_runner']) ? 1 : 0;
         $inProject->setCrAnyone($cr_anyone);
         $inProject->setCrFav($cr_3_favorites);
         $inProject->setCrAdmin($cr_project_admin);
@@ -58,7 +58,7 @@ if ($projectName) {
         if ($_REQUEST['logoProject'] != "") {
             $inProject->setLogo($_REQUEST['logoProject']);
         }
-        if ($_REQUEST['noLogo'] == "1") {
+        if (isset($_REQUEST['noLogo']) && $_REQUEST['noLogo'] == "1") {
             $inProject->setLogo("");
         }
         $inProject->save();
@@ -225,6 +225,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
@@ -791,17 +792,21 @@ include("head.html"); ?>
             $('#edit_cr_error_ap').delay(2000).fadeOut();
         }
     };
-    
+ 
 	
     $(document).ready(function() {
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
         $('#userbox').css('margin-top', '-'+box_h+'px');
-
         $('.accordion').accordion({
             clearStyle: true,
             collapsible: true,
-            active: true
+            active: true,
+            create: function(event, ui) { 
+                if(inProject.length > 0) {
+                    $('#workers').paginate(20, 500);
+                }
+            }
         });
 
         // Validate code review input
@@ -810,7 +815,7 @@ include("head.html"); ?>
         });
         
 		
-        if (inProject.length > 0) {
+        if (inProject.length > 0) { 
             if ( $("#projectLogoEdit").length > 0) {
                 new AjaxUpload('projectLogoEdit', {
                     action: 'jsonserver.php',
@@ -1563,23 +1568,6 @@ include("head.html"); ?>
     }
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
-<?php
-// !!! This code was duplicated from workitem.inc but it's been slightly changed due to ID clashes
-// !!! [START DUP]
-?>
-<script type="text/html" id="projectuploadedFiles">
-<div id="accordion">
-<?php require('dialogs/file-accordion.inc'); ?>
-</div>
-<div class="fileUploadButton">
-    Attach new files
-</div>
-<div class="uploadnotice"></div>
-</script>
-<?php
-// !!! The code above was duplicated from workitem.inc but it's been slightly changed due to ID clashes
-// !!! [END DUP]
-?>
 <script type="text/javascript">
 var projectid = <?php echo !empty($project_id) ? $project_id : "''"; ?>;
 var imageArray = new Array();
@@ -1697,7 +1685,7 @@ if (is_object($inProject)) {
     <span style="display: none;" class="LV_validation_message LV_invalid upload"></span>
     </p>
     <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>]</h2>        
-        <fieldset>
+        <fieldset id="editContainer">
             <p class="info-label">Edit Description:<br />
                 <textarea name="description" id="description" size="48" /><?php echo $inProject->getDescription(); ?></textarea>
             </p>
@@ -1716,7 +1704,7 @@ if (is_object($inProject)) {
             <div id="edit_cr_error"></div>
             <br/>
             
-            <div>
+            <div id="buttonHolder">
                 <input class="left-button" type="submit" id="cancel" name="cancel" value="Cancel">
                 <input class="right-button" type="submit" id="save_project" name="save_project" value="Save">
                 <input type="hidden" value="" name="logoProject">
@@ -1733,9 +1721,11 @@ if (is_object($inProject)) {
         src="<?php echo(!$inProject->getLogo() ? 'images/emptyLogo.png' : 'uploads/' . $inProject->getLogo());?>" />
     </p>
     <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>] </h2>
-    <ul>        
+    <ul class="descriptionHolder">        
         <li><strong>Description:</strong> <?php echo nl2br(linkify(htmlspecialchars($inProject->getDescription()))); ?></li>
 <?php endif; ?>
+    </ul>
+    <ul class="detailContainer">
         <li><strong>Budget:</strong> $<?php echo $inProject->getBudget(); ?></li>
         <li><strong>Contact Info:</strong> <?php echo $inProject->getContactInfo(); ?></li>
 <?php if ($inProject->getRepository() != '') : ?>
@@ -1748,6 +1738,29 @@ if (is_object($inProject)) {
         <li><strong>TestFlight Team Token:</strong> <?php echo $inProject->getTestFlightTeamToken(); ?></li>
 <?php endif; ?>
     </ul>
+    <div class="projectStatistics">
+        <div id="stats-panel">
+            <table width="100%" class="table-stats">
+                <caption class="table-caption" >
+                    <b>Stats</b>
+                </caption>
+                <thead>
+                    <tr class="table-hdng">
+                        <td>Total Jobs</td>
+                        <td>Avg. Bid/Job</td>
+                        <td>Avg. Job Time</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-role-list-live">
+                        <td><?php echo $inProject->getTotalJobs()?></td>
+                        <td title="Average amount of accepted Bid per Job">$<?php echo number_format($inProject->getAvgBidFee(), 2);?></td>
+                        <td title="Average time from Bid Accept to being Paid"><?php echo $inProject->getAvgJobTime();?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <h3>Jobs:</h3>
 <div><div class="projectLeft">
 <?php } ?>
@@ -1818,20 +1831,53 @@ if (is_object($inProject)) {
 <?php endif; ?>
 <!--End of roles table-->
 
-<?php if (!$edit_mode) { ?>
-            <div class="accordion">
-                <h3><a href="#">Allow code reviews from:</a></h3>
-                <div id="codeReviewRightsContainer">
-                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAnyone() > 0) ? 'checked="checked"' : '' ; ?> />Anyone<br/>
-                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrFav() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is favorite of more than [3] people<br/>
-                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAdmin() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the project admin<br/>
-                    <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrRunner() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the job manager<br/>
-                </div>
+<div id="uploadPanel"> 
+    <script type="text/html" id="projectuploadedFiles">
+        <div id="accordion">
+            <h3><a href="#">Who has worked on Project</a><h3>  
+        <div class="projectWorkers" >
+            <table width="100%" class="table-workers" id="workers">
+                <caption class="table-caption" >
+                    <br/>
+                </caption>
+                <thead>
+                    <tr class="table-hdng">
+                        <th>Who</th>
+                        <th># of Jobs</th>
+                        <th>Last Activity</th>
+                        <th>Total Earned</th>
+                    </tr>
+                </thead>
+                <tbody class="developerContent">
+                    <?php $developers = $inProject->getDevelopers() ?>
+                    <?php foreach($developers as $developer) { ?>
+                        <tr class="row-developer-list-live">
+                            <td class="developer"><a href="#" onclick="javascript:showUserInfo(<?php echo $developer['id']?>);"><?php echo $developer['nickname']?></a></td>
+                            <td class="jobCount"><?php echo $developer['totalJobCount']?></td>
+                            <td><?php echo $inProject->getDevelopersLastActivity($developer['id'])?></td>
+                            <td><?php echo (($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : "") ?></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>      
+        <?php if (!$edit_mode) { ?>
+            <h3><a href="#">Allow code reviews from:</a></h3>
+            <div id="codeReviewRightsContainer">
+                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAnyone() > 0) ? 'checked="checked"' : '' ; ?> />Anyone<br/>
+                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrFav() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is favorite of more than [3] people<br/>
+                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAdmin() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the project admin<br/>
+                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrRunner() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is a favorite of the job manager<br/>
             </div>
-<?php } ?>
-
-
-<div id="uploadPanel"> </div>
+        <?php } ?>
+        <?php require('dialogs/file-accordion.inc'); ?>
+        </div>
+        <div class="fileUploadButton">
+            Attach new files
+        </div>
+    <div class="uploadnotice"></div>
+    </script>
+</div>
 </div>
 <div class="clear">&nbsp;</div>
 </div>
