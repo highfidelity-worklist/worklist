@@ -421,14 +421,21 @@ function AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id) {
     }
 
     // get the tippee's nickname
-    $rt = mysql_query("SELECT nickname FROM " . USERS . " WHERE id = '". (int)$mechanic_id . "'");
+    $rt = mysql_query("SELECT nickname FROM " . USERS . " WHERE id = '". (int) $mechanic_id . "'");
     if ($rt) {
         $row = mysql_fetch_assoc($rt);
         $nickname = $row['nickname'];
     }
 
     // validate
-    $query = "SELECT * FROM " . FEES . " WHERE `worklist_id` = $itemid AND `user_id` = " . getSessionUserId() . " AND `desc` = 'Accepted Bid'";
+    $query = "
+        SELECT * FROM " . FEES . " 
+        WHERE 
+            `worklist_id` = $itemid 
+            AND `user_id` = " . getSessionUserId() . "
+            AND `desc` = 'Accepted Bid'
+            AND `withdrawn` = 0";
+
     $rt = mysql_query($query);
     if ($rt) {
         if (mysql_num_rows($rt) > 0) {
