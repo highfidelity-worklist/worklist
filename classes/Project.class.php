@@ -543,7 +543,7 @@ class Project {
                     WHERE s.status = 'DONE' AND p.project_id = " . $this->getProjectId() . ") AS x";
         if($result = mysql_query($query)) {
             $row = mysql_fetch_array($result);
-            return relativeTime($row['avgJobTime'], false, true, false);
+            return ($row['avgJobTime'] > 0) ? relativeTime($row['avgJobTime'], false, true, false) : '';
         } else {
             return false;
         } 
@@ -605,17 +605,22 @@ class Project {
     } 
 	
     public function getPaymentStats() {
-        $query = "SELECT U.id, U.nickname, F.worklist_id, F.paid FROM " . FEES . " F
-                  LEFT JOIN " . USERS . " U ON F.user_id = U.id  
-                  WHERE F.worklist_id IN
-                    (SELECT id FROM " . WORKLIST . " WHERE status = 'DONE' AND project_id = " . $this->getProjectId() . ")
-                  ORDER BY F.paid ASC";
+        $query = "SELECT u.id, u.nickname, f.worklist_id, f.paid FROM " . FEES . " f
+                  LEFT JOIN " . WORKLIST . " w ON f.worklist_id = w.id
+                  LEFT JOIN " . USERS . " u ON f.user_id = u.id
+                  WHERE w.status = 'DONE' AND  w. project_id = " . $this->getProjectId() .
+                  "AND f.withdrawn = 0 AND f. expense = 0
+                  ORDER BY f.paid ASC";
         if ($result = mysql_query($query)) {
             $payments = array();
-            while ($row = mysql_fetch_assoc($result)) {
-                    $payments[] = $row;
+            if(mysql_num_rows($result) > 0) {
+                while ($row = mysql_fetch_assoc($result)) {
+                        $payments[] = $row;
+                }
+                return $payments;
+            } else {
+                return false;
             }
-            return $payments;
         } else {
             return false;
         }                

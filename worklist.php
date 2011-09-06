@@ -808,7 +808,7 @@ include("head.html"); ?>
                 if(inProject.length > 0) {
                     var intervalId = setInterval(function() {
                         if($("#workers tr").length) {
-                            $('#workers').paginate(2, 500);
+                            $('#workers').paginate(20, 500);
                             clearInterval(intervalId);
                         }
                     }, 2000);
@@ -1813,8 +1813,7 @@ if (is_object($inProject)) {
                                 </tr>
                             </thead>
                             <tbody>
-                        <?php $payments = $inProject->getPaymentStats();
-                            if(count($payments) > 0) {
+                        <?php if($payments = $inProject->getPaymentStats()) {
                                 foreach ($payments as $payment) { ?>
                                     <tr class="row-payment-list-live">
                                         <td><a href="#" onclick="javascript:showUserInfo(<?php echo $payment['id']?>);"><?php echo $payment['nickname']?></a></td>
