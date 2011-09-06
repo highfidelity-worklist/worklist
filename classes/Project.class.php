@@ -533,37 +533,20 @@ class Project {
     }
     
     public function getAvgJobTime() {
-        $jobDiffSum = 0;
-        $doneQuery = "SELECT w.id, s.change_date AS doneDate FROM " . STATUS_LOG . " s 
-                     LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id 
-                     LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
-                     WHERE s.status = 'DONE' AND p.project_id = " . $this->getProjectId();
-        if($doneResult = mysql_query($doneQuery)) {
-            $totalJobsDone = mysql_num_rows($doneResult);
-            while($doneRow = mysql_fetch_assoc($doneResult)) {
-                $doneDate = $doneRow['doneDate'];
-                $workingQuery = "SELECT MAX(`date`) AS workingDate FROM fees 
-                                WHERE worklist_id = " . $doneRow['id'] . " 
-                                AND `desc` = 'Accepted Bid'";
-                if($workingResult = mysql_query($workingQuery)) {
-                    $workingQueryRow = mysql_fetch_assoc($workingResult);
-                    $workingDate = $workingQueryRow['workingDate'];
-                    $w_date = strtotime($workingDate);                      
-                } else {
-                    return false;
-                }
-                $d_date = strtotime($doneDate);
-                $currentJobDiff = abs($d_date - $w_date);
-                $jobDiffSum = $jobDiffSum + $currentJobDiff;
-            }
+        $query = "SELECT AVG(TIME_TO_SEC(TIMEDIFF(doneDate, workingDate))) as avgJobTime FROM 
+                    (SELECT w.id, s.change_date AS doneDate,
+                        ( SELECT MAX(`date`) AS workingDate FROM fees 
+                          WHERE worklist_id = w.id AND `desc` = 'Accepted Bid') as workingDate 
+                    FROM status_log s 
+                    LEFT JOIN worklist w ON s.worklist_id = w.id 
+                    LEFT JOIN projects p on p.project_id = w.project_id 
+                    WHERE s.status = 'DONE' AND p.project_id = " . $this->getProjectId() . ") AS x";
+        if($result = mysql_query($query)) {
+            $row = mysql_fetch_array($result);
+            return relativeTime($row['avgJobTime'], false, true, false);
         } else {
             return false;
-        }
-        if($totalJobsDone > 0) {
-            return relativeTime($jobDiffSum/$totalJobsDone,false,true,false);
-        } else {
-            return false;
-        }
+        } 
     }
     
     public function getDevelopers() {
@@ -576,15 +559,22 @@ class Project {
                  (SELECT SUM(F.amount) FROM " . FEES . " F 
                  LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
                  LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
-                 WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id) 
+                 WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
+                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')				 
                  AND p.project_id = " . $this->getProjectId() . ") as totalEarnings
                  FROM " . BIDS . " b LEFT JOIN " . WORKLIST . " w ON b.worklist_id = w.id 
                  LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
                  LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
-                 WHERE b.accepted = 1 AND p.project_id = " . $this->getProjectId() . " ORDER BY totalEarnings DESC";
+                 WHERE b.accepted = 1 
+                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')
+                 AND p.project_id = " . $this->getProjectId() . " ORDER BY totalEarnings DESC";
         if($result = mysql_query($query)) {
-            while($row = mysql_fetch_assoc($result)) {
-                $developers[$row['id']] = $row;
+            if(mysql_num_rows($result) > 0) {
+                while($row = mysql_fetch_assoc($result)) {
+                    $developers[$row['id']] = $row;
+                }
+            } else {
+                return false;
             }
         } else {
             return false;
@@ -612,8 +602,8 @@ class Project {
             }
         }
         return false;
-    }
-
+    } 
+	
     public function getPaymentStats() {
         $query = "SELECT U.id, U.nickname, F.worklist_id, F.paid FROM " . FEES . " F
                   LEFT JOIN " . USERS . " U ON F.user_id = U.id  

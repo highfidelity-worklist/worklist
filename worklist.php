@@ -806,7 +806,12 @@ include("head.html"); ?>
             active: true,
             create: function(event, ui) { 
                 if(inProject.length > 0) {
-                    $('#workers').paginate(20, 500);
+                    var intervalId = setInterval(function() {
+                        if($("#workers tr").length) {
+                            $('#workers').paginate(2, 500);
+                            clearInterval(intervalId);
+                        }
+                    }, 2000);
                 }
             }
         });
@@ -1890,15 +1895,16 @@ if (is_object($inProject)) {
                     </tr>
                 </thead>
                 <tbody class="developerContent">
-                    <?php $developers = $inProject->getDevelopers() ?>
-                    <?php foreach($developers as $developer) { ?>
-                        <tr class="row-developer-list-live">
-                            <td class="developer"><a href="#" onclick="javascript:showUserInfo(<?php echo $developer['id']?>);"><?php echo $developer['nickname']?></a></td>
-                            <td class="jobCount"><?php echo $developer['totalJobCount']?></td>
-                            <td><?php echo $inProject->getDevelopersLastActivity($developer['id'])?></td>
-                            <td><?php echo (($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : "") ?></td>
-                        </tr>
-                    <?php } ?>
+                    <?php if($developers = $inProject->getDevelopers()) { ?>
+						<?php foreach($developers as $developer) { ?>
+							<tr class="row-developer-list-live">
+								<td class="developer"><a href="#" onclick="javascript:showUserInfo(<?php echo $developer['id']?>);"><?php echo $developer['nickname']?></a></td>
+								<td class="jobCount"><?php echo $developer['totalJobCount']?></td>
+								<td><?php echo $inProject->getDevelopersLastActivity($developer['id'])?></td>
+								<td><?php echo (($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : "") ?></td>
+							</tr>
+						<?php } ?>
+					<?php } ?>
                 </tbody>
             </table>
         </div>      

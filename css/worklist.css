@@ -545,6 +545,7 @@ table.tablesorter thead tr .headerSortUp {
 
 .table-workers tr {
     font-weight: normal;
+    font-size: 12px !important;
 }
 
 .table-workers tr td a {
