@@ -502,6 +502,7 @@ td.textAlignReport {
     margin-left: -25px;
 }
 
+.projectRight .payments,
 .projectRight .roles,
 .projectStatistics,
 .projectWorkers {
@@ -509,9 +510,26 @@ td.textAlignReport {
     -webkit-border-radius: 6px;
     border-radius: 6px;
     border:2px #DCD998 solid;
-    padding:0px 8px 19px 8px;
+    padding:0px 8px 8px 8px;
     background-color: #FFFFDD;
     margin-bottom:10px;
+}
+
+table.tablesorter thead tr .header {
+    background-image: url(../images/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-position-x: 100%;
+    background-position-y: 50%;
+    cursor: pointer;
+}
+
+table.tablesorter thead tr .headerSortDown {
+    background-image: url(../images/desc.gif);
+}
+
+table.tablesorter thead tr .headerSortUp {
+    background-image: url(../images/asc.gif);
 }
 
 .projectWorkers {
@@ -537,9 +555,11 @@ td.textAlignReport {
 #popup-role-info td {
     border:none;
 }
+
+#payment-panel,
 #roles-panel,
 #stats-panel{
-    margin:10px 0 0px;
+    margin: 10px 0 0px;
 }
 
 #for_view li .notestext a,

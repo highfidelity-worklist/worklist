@@ -612,7 +612,24 @@ class Project {
             }
         }
         return false;
-    } 
+    }
+
+    public function getPaymentStats() {
+        $query = "SELECT U.id, U.nickname, F.worklist_id, F.paid FROM " . FEES . " F
+                  LEFT JOIN " . USERS . " U ON F.user_id = U.id  
+                  WHERE F.worklist_id IN
+                    (SELECT id FROM " . WORKLIST . " WHERE status = 'DONE' AND project_id = " . $this->getProjectId() . ")
+                  ORDER BY F.paid ASC";
+        if ($result = mysql_query($query)) {
+            $payments = array();
+            while ($row = mysql_fetch_assoc($result)) {
+                    $payments[] = $row;
+            }
+            return $payments;
+        } else {
+            return false;
+        }                
+    }    
     
     
 }// end of the class

@@ -232,6 +232,8 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
+<script type="text/javascript" src="js/paginator.js"></script>
+<script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
 <script type="text/javascript">
     var lockGetWorklist = 0;
     var status_refresh = 5 * 1000;
@@ -813,9 +815,12 @@ include("head.html"); ?>
         $(':checkbox').change(function() {
             validateCodeReviews();
         });
-        
-		
+
+
         if (inProject.length > 0) { 
+            $('#tablesorter').paginate(4,100);
+            $('#tablesorter').tablesorter();
+            makeWorkitemTooltip(".payment-worklist-item");            
             if ( $("#projectLogoEdit").length > 0) {
                 new AjaxUpload('projectLogoEdit', {
                     action: 'jsonserver.php',
@@ -1787,7 +1792,43 @@ if (is_object($inProject)) {
 </div>
 <div class="projectRight">
 <!-- table for roles <mikewasmike 15-ju-2011>  -->
-<?php if ($is_runner || $is_payer || $inProject->isOwner($userId)) : ?>
+<?php if ($inProject->isOwner($userId)) : ?>
+            <div id="for_view">
+               <div class="payments">
+                    <div id="payment-panel">
+                        <table width="100%" class="tablesorter" id="tablesorter">
+                            <caption class="table-caption" 
+                                <b>Payment Summary</b>
+                            </caption>
+                            <thead>
+                                <tr class="table-hdng">
+                                    <th>Payee</th>
+                                    <th>Job#</th>
+                                    <th>Payment Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <?php $payments = $inProject->getPaymentStats();
+                            if(count($payments) > 0) {
+                                foreach ($payments as $payment) { ?>
+                                    <tr class="row-payment-list-live">
+                                        <td><a href="#" onclick="javascript:showUserInfo(<?php echo $payment['id']?>);"><?php echo $payment['nickname']?></a></td>
+                                        <td><a class="payment-worklist-item" id="worklist-<?php echo $payment['worklist_id']?>" href="workitem.php?job_id=<?php echo $payment['worklist_id']?>" target="_blank">#<?php echo $payment['worklist_id']?></a></td>
+                                        <td><?php echo (($payment['paid']==1) ? "PAID" : "UNPAID")?></td>
+                                    </tr>
+                        <?php   }
+                            } else { ?>
+                                <tr>
+                                    <td style="text-align: center;" colspan="4">No records found.</td>
+                                </tr>
+                    <?php   }?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>            
+            </div>
+<?php endif; ?>            
+<?php if ($is_runner || $is_payer || $inProject->isOwner($userId)) : ?>            
             <div id="for_view">
                 <div class="roles">
                     <div id="roles-panel">
