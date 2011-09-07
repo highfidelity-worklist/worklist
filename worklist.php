@@ -823,8 +823,10 @@ include("head.html"); ?>
 
 
         if (inProject.length > 0) { 
-            $('#tablesorter').paginate(4,100);
-            $('#tablesorter').tablesorter();
+            if ($("#tablesorter tr").length) {
+                $('#tablesorter').paginate(4, 100);
+                $('#tablesorter').tablesorter();
+            }
             makeWorkitemTooltip(".payment-worklist-item");            
             if ( $("#projectLogoEdit").length > 0) {
                 new AjaxUpload('projectLogoEdit', {

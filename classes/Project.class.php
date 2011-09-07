@@ -608,9 +608,9 @@ class Project {
         $query = "SELECT u.id, u.nickname, f.worklist_id, f.paid FROM " . FEES . " f
                   LEFT JOIN " . WORKLIST . " w ON f.worklist_id = w.id
                   LEFT JOIN " . USERS . " u ON f.user_id = u.id
-                  WHERE w.status = 'DONE' AND  w. project_id = " . $this->getProjectId() .
-                  "AND f.withdrawn = 0 AND f. expense = 0
-                  ORDER BY f.paid ASC";
+                  WHERE w.status = 'DONE' AND  w. project_id = " . $this->getProjectId() . "
+                  AND f.withdrawn = 0 AND f. expense = 0
+                  ORDER BY f.paid, f.worklist_id ASC";
         if ($result = mysql_query($query)) {
             $payments = array();
             if(mysql_num_rows($result) > 0) {
