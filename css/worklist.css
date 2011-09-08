@@ -802,6 +802,10 @@ table.tablesorter thead tr .headerSortUp {
 #contact-dialog .text-field {
     width: 370px;
 }
+#contact-dialog textarea {
+    width: 370px;
+    height: 110px;
+}
 #home-footer {
     width: 725px;
     margin: 0 auto;
@@ -824,10 +828,6 @@ table.tablesorter thead tr .headerSortUp {
 .candp-logo {
     color: #333;
     float: left;
-}
-#proj-desc {
-    width: 370px;
-    height: 110px;
 }
 .editProjectLogo {
     float: left;

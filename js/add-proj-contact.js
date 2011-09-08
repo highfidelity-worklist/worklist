@@ -17,39 +17,66 @@ $(function() {
         hide: 'fade'
     });
     
-    // live validation
-    var massValidation;
 
-    var contact_name = new LiveValidation('name', {onlyOnBlur: false});
-    contact_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_phone = new LiveValidation('phone', {onlyOnBlur: false});
-    contact_phone.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_email = new LiveValidation('email', {validMessage: "Valid email address.", onlyOnBlur: false});
+    var contact_name = new LiveValidation('contactName', {
+        onlyOnBlur: false
+    });
+    contact_name.add(Validate.Presence, { 
+        failureMessage: "Can't be empty!"
+    });
+    var contact_phone = new LiveValidation('contactPhone', {
+        onlyOnBlur: false
+    });
+    contact_phone.add(Validate.Presence, {
+        failureMessage: "Can't be empty!"
+    });
+    var contact_email = new LiveValidation('contactEmail', {
+        validMessage: "Valid email address.", 
+        onlyOnBlur: false
+    });
     contact_email.add(SLEmail2);
-    contact_email.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_project = new LiveValidation('project', {onlyOnBlur: false});
-    contact_project.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-    var contact_desc = new LiveValidation('proj-desc', {onlyOnBlur: false});
-    contact_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+    contact_email.add(Validate.Presence, {
+        failureMessage: "Can't be empty!"
+    });
+    var contact_project = new LiveValidation('contactProject', {
+        onlyOnBlur: false
+    });
+    contact_project.add( Validate.Presence, {
+        failureMessage: "Can't be empty!"
+    });
+    var contact_desc = new LiveValidation('contactProjDesc', {
+        onlyOnBlur: false
+    });
+    contact_desc.add(Validate.Presence, {
+        failureMessage: "Can't be empty!"
+    });
 
     // setup form submit
     $('#contact-form').submit(function(event) {
         event.preventDefault();
-        massValidation = LiveValidation.massValidate([contact_name, contact_phone, contact_email, contact_project, contact_desc]);
+
+        var massValidation = LiveValidation.massValidate([
+            contact_name,
+            contact_phone,
+            contact_email,
+            contact_project,
+            contact_desc
+        ]);
+
         if (! massValidation) {
             return false;
         }
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: 'api.php',
             dataType: 'json',
             data: {
                 action: 'sendContactEmail',
-                name: $('#name').val(),
-                email: $('#email').val(),
-                phone: $('#phone').val(),
-                project: $('#project').val(),
-                proj_desc: $('#proj-desc').val()
+                name: $('#contactName').val(),
+                email: $('#contactEmail').val(),
+                phone: $('#contactPhone').val(),
+                project: $('#contactProject').val(),
+                proj_desc: $('#contactProjDesc').val()
             },
             success: function(json) {
                 if (json === null) {
@@ -94,11 +121,7 @@ $(function() {
                     msg.dialog('open');
                     return false;
                 }
-                $('#name').val('');
-                $('#email').val('');
-                $('#phone').val('');
-                $('#project').val('');
-                $('#proj-desc').val('');
+                $('input.text-field, textarea', '#contact-form').val('');
                 $('#contact-dialog').dialog('close');
             },
             error: function(json){

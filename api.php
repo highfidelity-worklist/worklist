@@ -8,7 +8,7 @@ require_once("classes/Project.class.php");
 require_once("classes/User.class.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
-// TODO: add API keys to these function calls  
+// TODO: add API keys to these function calls
 // uploadProfilePicture
 // getSystemDrawerJobs
 // getTimezone
@@ -24,10 +24,10 @@ if(validateAction()) {
                 break;
             case 'pushVerifyUser':
                 validateAPIKey();
-                pushVerifyUser();         
+                pushVerifyUser();
                 break;
             case 'login':
-                validateAPIKey();    
+                validateAPIKey();
                 loginUserIntoSession();
                 break;
             case 'uploadProfilePicture':
@@ -35,49 +35,52 @@ if(validateAction()) {
                 break;
             case 'updateProjectList':
                 validateAPIKey();
-                updateProjectList();          
+                updateProjectList();
                 break;
             case 'getSystemDrawerJobs':
                 getSystemDrawerJobs();
                 break;
             case 'bidNotification':
                 validateAPIKey();
-                sendBidNotification();                
+                sendBidNotification();
                 break;
             case 'getUserStatus':
                 require_once("update_status.php");
                 print get_status(false);
                 break;
             case 'processW2Masspay':
-                validateAPIKey();        
-                processW2Masspay();               
+                validateAPIKey();
+                processW2Masspay();
                 break;
             case 'doScanAssets':
                 validateAPIKey();
-                doScanAssets();                
+                doScanAssets();
                 break;
             case 'version':
-                validateAPIKey();              
+                validateAPIKey();
                 exec('svnversion > ver');
                 break;
             case 'jobsPastDue':
-                validateAPIKey();            
-                sendPastDueNotification();          
+                validateAPIKey();
+                sendPastDueNotification();
                 break;
             case 'sendContactEmail':
-                validateAPIKey();           
-                sendContactEmail();                 
+                // @TODO: why do we require an API key for this?
+                // I don't get it. The request is sent via JS, so if we included the API key it would
+                // then become visible to all who want to see it, leaving the form open for abuse... - lithium
+                // validateAPIKey();
+                sendContactEmail();
                 break;
-            case 'getTimezone':          
+            case 'getTimezone':
                 getTimezone();
                 break;
-            case 'updateLastSeen':          
+            case 'updateLastSeen':
                 updateLastSeen();
                 break;
             case 'sendTestNotifications':
-                validateAPIKey();          
-                sendTestNotifications();            
-                break;                
+                validateAPIKey();
+                sendTestNotifications();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -95,10 +98,10 @@ function validateAction() {
 function validateRequest() {
     if( ! isset($_SERVER['HTTPS'])) {
         error_log("Only HTTPS connection is accepted.");
-        die("Only HTTPS connection is accepted.");        
+        die("Only HTTPS connection is accepted.");
     } else if ( ! isset($_REQUEST['action'])) {
         error_log("API not defined");
-        die("API not defined");        
+        die("API not defined");
     } else {
         return true;
     }
@@ -114,7 +117,7 @@ function validateAPIKey() {
     } else {
         return true;
     }
-} 
+}
 /*
 * Setting session variables for the user so he is logged in
 */
@@ -124,17 +127,17 @@ function loginUserIntoSession(){
     $uid = (int) $_REQUEST['user_id'];
     $sid = $_REQUEST['session_id'];
     $csrf_token = md5(uniqid(rand(), TRUE));
-    
+
     $sql = "SELECT * FROM ".WS_SESSIONS." WHERE session_id = '".mysql_real_escape_string($sid, $db->getLink())."'";
     $res = $db->query($sql);
-    
+
     $session_data  ="running|s:4:\"true\";";
     $session_data .="userid|s:".strlen($uid).":\"".$uid."\";";
     $session_data .="username|s:".strlen($_REQUEST['username']).":\"".$_REQUEST['username']."\";";
     $session_data .="nickname|s:".strlen($_REQUEST['nickname']).":\"".$_REQUEST['nickname']."\";";
     $session_data .="admin|s:".strlen($_REQUEST['admin']).":\"".$_REQUEST['admin']."\";";
     $session_data .="csrf_token|s:".strlen($csrf_token).":\"".$csrf_token."\";";
-        
+
     if(mysql_num_rows($res) > 0){
         $sql = "UPDATE ".WS_SESSIONS." SET ".
              "session_data = '".mysql_real_escape_string($session_data,$db->getLink())."' ".
@@ -159,7 +162,7 @@ function uploadProfilePicture() {
             'message' => 'No file uploaded!'
         ));
     }
-    
+
     if (empty($_REQUEST['userid'])) {
         respond(array(
             'success' => false,
@@ -193,7 +196,7 @@ function uploadProfilePicture() {
                     $rc = imagecreatefrompng($file);
                     $type = "image/png";
                }
-               
+
                // Get original width and height
                $width = imagesx($rc);
                $height = imagesy($rc);
@@ -201,7 +204,7 @@ function uploadProfilePicture() {
                $size = filesize($file);
                $sql = "INSERT INTO " . ALL_ASSETS . " (`app`, `content_type`, `content`, `size`, `filename`,`created`, `width`, `height`) " . "VALUES('".WORKLIST."','" . $type . "','" . $cont . "','" . $size . "','" . $imgName . "',NOW()," . $width . "," . $height . ") ".
                       "ON DUPLICATE KEY UPDATE content_type = '".$type."', content = '".$cont."', size = '".$size."', updated = NOW(), width = ".$width.", height = ".$height;
-               
+
                $db = new Database();
                if (! $db->query($sql)) {
                     unlink($file);
@@ -239,7 +242,7 @@ function pushVerifyUser(){
     $user_id = intval($_REQUEST['id']);
     $sql = "UPDATE " . USERS . " SET `confirm` = '1', is_active = '1' WHERE `id` = $user_id";
     mysql_unbuffered_query($sql);
-    
+
     respond(array('success' => false, 'message' => 'User has been confirmed!'));
 }
 
@@ -304,13 +307,13 @@ function processW2Masspay() {
         or !array_key_exists('COMMAND_API_KEY',$_POST)
         or $_POST['COMMAND_API_KEY'] != COMMAND_API_KEY)
         { die('Action Not configured'); }
-        
+
     $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
     if (!$con) {
         die('Could not connect: ' . mysql_error());
     }
     mysql_select_db(DB_NAME, $con);
-    
+
     $sql = " UPDATE " . FEES . " AS f, " . WORKLIST . " AS w, " . USERS . " AS u "
          . " SET f.paid = 1, f.paid_date = NOW() "
          . " WHERE f.paid = 0 AND f.worklist_id = w.id AND w.status = 'DONE' "
@@ -319,11 +322,11 @@ function processW2Masspay() {
          . "   AND u.has_W2 = 1 "
          . "   AND w.status_changed < CAST(DATE_FORMAT(NOW(),'%Y-%m-01') as DATE) "
          . "   AND f.date <  CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE); ";
-     
+
     // Marks all Fees from the past month as paid (for DONEd jobs)
     if (!$result = mysql_query($sql)) { error_log("mysql error: ".mysql_error()); die("mysql_error: ".mysql_error()); }
     $total = mysql_affected_rows();
-    
+
     if( $total) {
         echo "{$total} fees were processed.";
     } else {
@@ -338,11 +341,11 @@ function processW2Masspay() {
          . "   AND f.user_id = u.id "
          . "   AND u.has_W2 = 1 "
          . "   AND f.date <  CAST(DATE_FORMAT(NOW() ,'%Y-%m-01') as DATE); ";
-     
+
     // Marks all Fees from the past month as paid (for DONEd jobs)
     if (!$result = mysql_query($sql)) { error_log("mysql error: ".mysql_error()); die("mysql_error: ".mysql_error()); }
     $total = mysql_affected_rows();
-    
+
     if( $total) {
         echo "{$total} bonuses were processed.";
     } else {
@@ -384,7 +387,7 @@ function sendTestNotifications(){
     $revision = isset($_REQUEST['revision']) ? $_REQUEST['revision'] : '';
     require_once('./classes/Notification.class.php');
     if($workItemId > 0) {
-        $notify = new Notification();    
+        $notify = new Notification();
         $notify->autoTestNofications($workItemId,$results,$revision);
         exit(json_encode(array('success' => true)));
     }

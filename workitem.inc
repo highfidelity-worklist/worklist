@@ -1666,6 +1666,7 @@ if ($action =="edit"):  ?>
     // if logged in user is the mechanic on the task, get the maximum amount
     // that they can tip from their Accepted Bid
     if ($mechanic_id == $user_id) {
+        $max_tip = 0;
         foreach ($fees as $fee) {
             if ($fee['desc'] == 'Accepted Bid') {
                 $max_tip = $fee['amount'];

@@ -117,17 +117,17 @@ include("head.html");
 
     function validateCodeReviews() {
         if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
-    	    $('.cr_anyone_field').prop('checked', true);
-    	    $('#edit_cr_error').html("One selection must be checked");
-    	    $('#edit_cr_error').fadeIn();
-    	    $('#edit_cr_error').delay(2000).fadeOut();
-    	};
-    	if (!$('.cr_anyone_field_ap').is(':checked') && !$('.cr_3_favorites_field_ap').is(':checked') && !$('.cr_project_admin_field_ap').is(':checked') && !$('.cr_job_runner_field_ap').is(':checked')) {
-    	    $('.cr_anyone_field_ap').prop('checked', true);
-    	    $('#edit_cr_error_ap').html("One selection must be checked");
-    	    $('#edit_cr_error_ap').fadeIn();
-    	    $('#edit_cr_error_ap').delay(2000).fadeOut();
-    	}
+            $('.cr_anyone_field').prop('checked', true);
+            $('#edit_cr_error').html("One selection must be checked");
+            $('#edit_cr_error').fadeIn();
+            $('#edit_cr_error').delay(2000).fadeOut();
+        };
+        if (!$('.cr_anyone_field_ap').is(':checked') && !$('.cr_3_favorites_field_ap').is(':checked') && !$('.cr_project_admin_field_ap').is(':checked') && !$('.cr_job_runner_field_ap').is(':checked')) {
+            $('.cr_anyone_field_ap').prop('checked', true);
+            $('#edit_cr_error_ap').html("One selection must be checked");
+            $('#edit_cr_error_ap').fadeIn();
+            $('#edit_cr_error_ap').delay(2000).fadeOut();
+        }
     };
 
     
@@ -141,16 +141,18 @@ include("head.html");
         });
         
         $('.accordion').accordion({
-        	clearStyle: true,
-        	collapsible: true,
-        	active: true
-        	});
-        	
-        	// Validate code review input
-        	$(':checkbox').change(function() {
-        	validateCodeReviews();
-        	});
-        	        
+            clearStyle: true,
+            collapsible: true,
+            active: true
+        });
+            
+        // Validate code review input
+        // @TODO: The :checkbox selector is too broad, we might
+        // have additional checkboxes in the future..   - lithium
+        $(':checkbox').change(function() {
+            validateCodeReviews();
+        });
+                    
         
     <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer']) { ?>
         $('#addproj').click(function() {
@@ -286,7 +288,7 @@ include("head.html");
                 
                 if(totalPages > 1) { //showing pagination only if we have more than one page
                     $('.ln-pages').html('<span>'+outputPagination(currentPage,totalPages)+'</span>');
-            			
+
                     $('.ln-pages a').click(function() {
                         page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                         populateProjectListing(page);
