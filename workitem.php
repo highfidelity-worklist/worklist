@@ -199,7 +199,9 @@ if ($action =='save_workitem') {
             if (changeStatus($workitem, $status, $user)) {
                 if (!empty($new_update_message)) {  // add commas where appropriate
                     $new_update_message .= ", ";
+                    $message_title .= "/" . ucfirst(strtolower($status));;
                 }
+                $message_title = ucfirst(strtolower($status));;
                 $new_update_message .= "Status set to $status. ";
             }
         }
@@ -251,6 +253,11 @@ if ($action =='save_workitem') {
         //Bug job Id changed
         $workitem->setBugJobId($bug_job_id);
         $new_update_message .= "Bug job Id changed. ";
+        if ($message_title == '') {
+            $message_title = 'Bug job Id';
+        } else {
+            $message_title .= ' / Bug job Id';
+        }
         if($bug_job_id > 0) {
             //Load information about original job and notify
             //users with fees and runner
