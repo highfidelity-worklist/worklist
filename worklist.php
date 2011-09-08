@@ -1811,6 +1811,7 @@ if (is_object($inProject)) {
                                 <tr class="table-hdng">
                                     <th>Payee</th>
                                     <th>Job#</th>
+                                    <th>Amount</th>
                                     <th>Payment Status</th>
                                 </tr>
                             </thead>
@@ -1820,6 +1821,7 @@ if (is_object($inProject)) {
                                     <tr class="row-payment-list-live">
                                         <td><a href="#" onclick="javascript:showUserInfo(<?php echo $payment['id']?>);"><?php echo $payment['nickname']?></a></td>
                                         <td><a class="payment-worklist-item" id="worklist-<?php echo $payment['worklist_id']?>" href="workitem.php?job_id=<?php echo $payment['worklist_id']?>" target="_blank">#<?php echo $payment['worklist_id']?></a></td>
+                                        <td>$<?php echo $payment['amount']?></td>
                                         <td><?php echo (($payment['paid']==1) ? "PAID" : "UNPAID")?></td>
                                     </tr>
                         <?php   }

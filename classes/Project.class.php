@@ -605,7 +605,7 @@ class Project {
     } 
 	
     public function getPaymentStats() {
-        $query = "SELECT u.id, u.nickname, f.worklist_id, f.paid FROM " . FEES . " f
+        $query = "SELECT u.id, u.nickname, f.worklist_id, f.amount, f.paid FROM " . FEES . " f
                   LEFT JOIN " . WORKLIST . " w ON f.worklist_id = w.id
                   LEFT JOIN " . USERS . " u ON f.user_id = u.id
                   WHERE w.status = 'DONE' AND  w. project_id = " . $this->getProjectId() . "
