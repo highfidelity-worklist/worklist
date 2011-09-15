@@ -407,7 +407,10 @@ if($action =='save-review-url') {
     $workitem->save();
     $new_update_message = " sandbox url : $sandbox ";
     if(!empty($status_review)) {
-       $new_update_message .= " Status set to $status_review. ";
+        $new_update_message .= " Status set to $status_review. ";
+        $message_title = ucfirst(strtolower($status_review));
+    } else {
+        $message_title = "Sandbox URL";
     }
     if ($notes) {
         //add review notes
@@ -420,7 +423,6 @@ if($action =='save-review-url') {
         AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
     }
     $notifyEmpty = false;
-    $message_title = ucfirst(strtolower($status_review));
     if ($status_review == 'FUNCTIONAL') {
       Notification::workitemNotify(array('type' => 'modified-functional',
           'workitem' => $workitem,
