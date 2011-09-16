@@ -360,10 +360,9 @@ class JsonServer
         $icon = File::getIconFromMime($file->getMime());
         if ($scanner->scanFile($file->getId())) {
             $success = true;
-            $icon = $file->getUrl();
         }
         if ($icon === false) {
-            $icon = 'images/icons/default.png';
+            $icon = $file->getUrl();
         }
 
         return $this->setOutput(array(

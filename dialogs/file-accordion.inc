@@ -23,7 +23,7 @@
     var doc = documents[i];
     #>
     <div class="filesIcon">
-        <a class="docs" href="<#= doc.url #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+        <a class="docs" href="<#= doc.url #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
     </div>
     <div class="documents filesDescription">
         <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
