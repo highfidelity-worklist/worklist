@@ -3,6 +3,18 @@
 //  http://www.lovemachineinc.com
 var smsCountry = '';
 var smsProvider = '';
+var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+
+function smsAddressVisibility(e)
+{
+    if ( $("#country option:selected").val() != '' ) {
+	if($("#int_code option:selected").val() == '1'){
+	    $("#sms-other").hide();
+	} else {
+	    $("#sms-other").show();
+	}
+    }
+}
 
 function smsRefreshProvider(init)
 {
@@ -16,6 +28,9 @@ var pos=4;
         } else {
             var country = $("#country option:selected").text();
             var len = country.length;
+	    if ( $("#country option:selected").val() != '' ) {
+	        smsAddressVisibility();
+	    }
 	    $("#int-code option").each(function(){
                 if ($(this).text().trim().substr(0, len) == country) {
                     $(this).prop('selected', true);
@@ -62,12 +77,12 @@ var pos=4;
             });
         }
     }
-
     if ($("#country").val() == '--' || $("#provider").val() == '--') {
         $("#sms-other").show();
     } else {
         $("#sms-other").hide();
     }
+
 }
 
 function smsUpdatePhone(filter)
@@ -83,5 +98,13 @@ $(document).ready(function(){
     $("#phone").blur(function() { smsUpdatePhone(true); });
     $("#phone").keypress(function() { smsUpdatePhone(false); });
     $("#country, #provider, #smsaddr").change(function() { smsRefreshProvider(); });
+    if( is_chrome ) {
+        $("#int_code").change(function() { smsAddressVisibility(); });
+    } else {	
+        $('#int_code').bind('click',function(event) {
+            event.preventDefault(); 
+            smsAddressVisibility(event); 
+        });
+    }
     smsRefreshProvider(true);
 });
