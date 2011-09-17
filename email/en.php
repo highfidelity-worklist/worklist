@@ -115,9 +115,9 @@ favorited
     used in: userinfo.php
 */
 'favorited' => array(
-    'subject' => 'You have been Favorited!',
+    'subject' => 'You have been Trusted!',
     'body' => '<p>Congrats!</p>
-               <p>You have been favorited by one of your peers in the Worklist!</p>
+               <p>You have been trusted by one of your peers in the Worklist!</p>
 <p></p>
 <p>See your User Profile here:<br/>
 {link} 

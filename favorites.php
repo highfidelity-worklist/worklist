@@ -37,7 +37,7 @@ if ($userId > 0) {
             $data = array();
             $data['link'] = $resetUrl;
             $nick = $favorite_user->getNickname();
-            if (! sendTemplateEmail($favorite_user->getUsername(), 'favorited', $data)) { 
+            if (! sendTemplateEmail($favorite_user->getUsername(), 'trusted', $data)) { 
                 error_log("userinfo.php: send_email failed on favorite notification");
             }
         
@@ -49,7 +49,7 @@ if ($userId > 0) {
                 } else {
                     $message = "{$count} people";
                 }
-                $journal_message = "{$nick} is now a favorite of {$message}!";
+                $journal_message = "{$nick} is now trusted by {$message}!";
                 //sending journal notification
                 $data = array();
                 $data['user'] = JOURNAL_API_USER;
@@ -58,7 +58,7 @@ if ($userId > 0) {
                 $prc = postRequest(JOURNAL_API_URL, $data,array(),10); //increase timeout to 10 seconds
             }
         }
-        echo json_encode(array( 'return' => "Favorite saved."));
+        echo json_encode(array( 'return' => "Trusted saved."));
     } else {
         echo json_encode(array( 'error' => $res));
     }

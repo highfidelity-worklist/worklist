@@ -40,7 +40,7 @@ var UserInfo = {
         }
         
         // set the favText with the getFavoriteText function
-        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'favorite ');
+        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'trusted ');
         
         $('.profileInfoFavorite span').html(favText);
 

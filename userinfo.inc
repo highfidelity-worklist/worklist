@@ -46,13 +46,13 @@
                 if ($reqUser->getId() != $user->getId()) {
                     if ( !$reqUser->isRunner() && !$_SESSION["admin"] && !$reqUser->isActive() ) {
                         $favoriteClass = "favorite_curr_user";
-                        $title = "You must have been paid for a job in the last 90 days to select Favorites.";
+                        $title = "You must have been paid for a job in the last 90 days to Trust a person.";
                     } else {
                         $favoriteClass = "favorite_user";
                         $favoriteClass .= ($favorite_enabled == 1) ? " myfavorite" : " notmyfavorite" ;
                         $title = ($favorite_enabled == 1) ?
-                            "Remove " . ucwords($user->getNickname()) . " from your favorites. (don't worry it's anonymous)" :
-                            "Add " . ucwords($user->getNickname()) . " as one of your favorite people." ;
+                            "Remove " . ucwords($user->getNickname()) . " as someone you trust. (don't worry it's anonymous)" :
+                            "Add " . ucwords($user->getNickname()) . " as someone you trust." ;
                     }
                 } else {
                     $favoriteClass = "favorite_curr_user";

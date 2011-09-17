@@ -18,7 +18,7 @@ var WLFavorites = {
             isMyFav = true;
         }
         
-        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'favorite ');
+        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'trusted by ');
         
         $('.profileFavoriteText').html(favText);
     },
@@ -47,20 +47,20 @@ var WLFavorites = {
                 var fav = parseInt($('.profileFavoriteText').attr('data-favorite_count'));
                 if (newVal == 1) {
                     $('.profileFavoriteText').attr('data-favorite_count', fav + 1);
-                    var favText = WLFavorites.getFavoriteText(fav + 1, true, 'favorite ');
+                    var favText = WLFavorites.getFavoriteText(fav + 1, true, 'trusted by ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")
                         .removeClass("notmyfavorite")
                         .addClass("myfavorite")
-                        .attr("title", "Remove " + fav_user_nickname + " from your favorites. (don't worry it's anonymous)");
+                        .attr("title", "Remove " + fav_user_nickname + " from your trusted by. (don't worry it's anonymous)");
                 } else {
                     $('.profileFavoriteText').attr('data-favorite_count', fav - 1);
-                    var favText = WLFavorites.getFavoriteText(fav - 1, false, 'favorite ');
+                    var favText = WLFavorites.getFavoriteText(fav - 1, false, 'trusted by ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")
                         .removeClass("myfavorite")
                         .addClass("notmyfavorite")
-                        .attr("title",  "Add " + fav_user_nickname + " as one of your favorite people.");
+                        .attr("title",  "Add " + fav_user_nickname + " as one of your trusted people.");
                     
                 }
                 if (fAfter) {
@@ -104,20 +104,20 @@ var WLFavorites = {
      
         // if there are no favorites
         if (favCount == 0) {
-            favText += 'of no one... for now!';
+            favText += 'by no one... for now!';
         } else if (isMyFav) {
             if (favCount == 1) {
-                favText += '<span class="favBlue">of you</span>';
+                favText += '<span class="favBlue">by you</span>';
             } else /* if the user is not the only user to favorite */ {
                 if (favCount == 2) {
                     pluralize = 'person';
                 }
                 favCount--;
-                favText += 'of <span class="favBlack">' + favCount 
+                favText += 'by <span class="favBlack">' + favCount 
                 + '</span> ' + pluralize + ' <span class="favBlue">& you</span>';
             }
         } else /*if the user has not favorited the mission */ {
-            favText += 'of <span class="favBlack">' + favCount + '</span> ' + pluralize;
+            favText += 'by <span class="favBlack">' + favCount + '</span> ' + pluralize;
         }
         
         return favText;
