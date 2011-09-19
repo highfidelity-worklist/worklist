@@ -64,7 +64,7 @@
             <a href="team.php">Team</a> |
                      <a href="settings.php" class="iToolTip menuSettings">Settings</a>
             <?php } else {
-                echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="worklist.php" title="Worklist"> Worklist</a> | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a> | <a href="projects.php">Projects</a>';  
+                echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a href="worklist.php" title="Worklist"> Worklist</a> | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a> | <a href="help.php">Help</a> | <a href="projects.php">Projects</a>';  
             } 
             ?>
         </div>

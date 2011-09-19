@@ -3,6 +3,7 @@ $(function() {
     // setup the contact dialog
     $('#add-projects').click(function() {
         $('#contact-dialog').dialog('open');
+        return false;
     });
     $('#contact-close').click(function() {
         $('#contact-dialog').dialog('close');

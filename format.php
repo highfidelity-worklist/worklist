@@ -101,8 +101,10 @@ require_once('functions.php');
              <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer'] ) { ?>
             | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
              <?php } ?>
+            | <a href="help.php" target="_blank">Help</a>
             <?php } else {
-            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a> | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a> | <a href="http://blog.worklist.net" target="_blank"/>Blog</a> | <a href="projects.php" target="_blank">Projects</a>';
+            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
+            | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a> | <a href="http://blog.worklist.net" target="_blank"/>Blog</a> | <a href="projects.php" target="_blank">Projects</a> | <a href="help.php" target="_blank">Help</a>';
             
         } 
             ?>
