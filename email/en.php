@@ -95,8 +95,8 @@ replacement data:
         create a new way to get things done.<br/><br/>
         Three things to help you get started:<br/><br/>
            - Browse the source code*: <a href="http://svn.worklist.net">http://svn.worklist.net</a><br/>
-           - Get in the Journal to chat with us: <a href=" http://dev.sendlove.us/journal">http://dev.sendlove.us/journal</a><br/>
-           - Bid on a project on our Worklist: <a href="http://dev.sendlove.us/worklist">http://dev.sendlove.us/worklist</a><br/>
+           - Get in the Journal to chat with us: <a href=" https://dev.worklist.net/journal">https://dev.worklist.net/journal</a><br/>
+           - Bid on a project on our Worklist: <a href="https://dev.worklist.net/worklist">https://dev.worklist.net/worklist</a><br/>
         <br/>
         * Don\'t worry, you\'ll get a custom sandbox and support getting our codebase set up once you\'ve made a bid!<br/>
         Looking for even more info? Check here: <a href="http://www.below92.com/development-process/">http://www.below92.com/development-process/</a><br/>

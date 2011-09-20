@@ -15,7 +15,7 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
     die("Application configuration not found.");
 }
 
-if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER', 'Worklist <worklist@sendlove.us>');
+if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER', 'Worklist <worklist@worklist.net>');
 if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@lovemachineinc.com');
 
 # Add revision (version) information
@@ -37,8 +37,8 @@ if (!defined('UPLOAD_PATH'))    define('UPLOAD_PATH', realpath(APP_PATH . '/uplo
 if (!defined('APP_ENV'))        define('APP_ENV', 'production');
 
 //http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
-if (!defined('SERVER_NAME'))    define('SERVER_NAME','dev.sendlove.us');
-if (!defined('SANDBOX_SERVER')) define('SANDBOX_SERVER','dev.sendlove.us');
+if (!defined('SERVER_NAME'))    define('SERVER_NAME','dev.worklist.net');
+if (!defined('SANDBOX_SERVER')) define('SANDBOX_SERVER','dev.worklist.net');
 if (!defined('SERVER_URL'))     define('SERVER_URL','https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
 if (!defined('SERVER_BASE'))    define('SERVER_BASE','https://'.SERVER_NAME.'/'.APP_BASE);
 //SSL Not enabled on development
@@ -79,17 +79,17 @@ if (!defined('SALT'))           define('SALT', 'WORKLIST');
 if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
 if (!defined('REQUIRELOGINAFTERCONFIRM')) define('REQUIRELOGINAFTERCONFIRM', 1);
 
-if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "http://dev.sendlove.us/worklist");
+if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/worklist");
 
 //<joanne>
-if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "http://lovemachine.sendlove.us/love");
+if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "https://lovemachine.sendlove.us/love");
 
 
 if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 
-if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'https://dev.sendlove.us/journal/aj.php');
+if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'https://dev.worklist.net/journal/aj.php');
 
-if (!defined('JOURNAL_API_URL')) define('JOURNAL_API_URL', 'https://dev.sendlove.us/journal/add.php');
+if (!defined('JOURNAL_API_URL')) define('JOURNAL_API_URL', 'https://dev.worklist.net/journal/add.php');
 if (!defined('JOURNAL_API_USER')) define('JOURNAL_API_USER', 'api_username');
 if (!defined('JOURNAL_API_PWD')) define('JOURNAL_API_PWD', 'api_password');
 if (!defined('JOURNAL_API_KEY')) define('JOURNAL_API_KEY', 'api_key');

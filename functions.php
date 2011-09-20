@@ -773,8 +773,8 @@ function invitePerson( $invite, $item, $summary = null, $description = null) {
                 $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
                 $body .= "[<a href=\"http://www.lovemachineinc.com/development-process/\">dev.sendllove.us</a> | Read about our Development Process]<br />";
                 $body .= "[<a href=\"http://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
-                $body .= "[<a href=\"http://dev.sendlove.us/worklist/\">dev.sendlove.us/worklist</a> | Look over all our open work items]<br />";
-                $body .= "[<a href=\"http://dev.sendlove.us/journal/\">dev.sendlove.us/journal</a> | Talk with us in our Journal]<br />";
+                $body .= "[<a href=\"https://dev.worklist.net/worklist/\">dev.worklist.net/worklist</a> | Look over all our open work items]<br />";
+                $body .= "[<a href=\"https://dev.worklist.net/journal/\">dev.worklist.net/journal</a> | Talk with us in our Journal]<br />";
                 $body .= "<p>Hope to see you soon.</p>";
                 if(!send_email($invite, $subject, $body)) { error_log("functions.php:inviteNew: send_email failed"); }
 				return true;

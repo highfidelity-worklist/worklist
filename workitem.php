@@ -1015,7 +1015,7 @@ function changeStatus($workitem, $newStatus, $user) {
             require_once("sandbox-util-class.php");
             
             // Sandbox URLs look like:
-            // https://dev.sendlove.us/~johncarlson21/worklist
+            // https://dev.worklist.net/~johncarlson21/worklist
             // 0     12               3              4
             $sandbox_array = explode("/", $workitem->getSandbox());
 

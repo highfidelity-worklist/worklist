@@ -257,7 +257,7 @@ class SandBoxUtil {
     private function notifyCheckout($username, $unixusername, $project)
     {
         $subject = "Project Checkout";
-        $sandbox = "http://dev.sendlove.us/~".$unixusername."/".$project;
+        $sandbox = "https://dev.worklist.net/~".$unixusername."/".$project;
 
         $body = file_get_contents(PROJECT_CHECKOUT_EMAIL_TEMPATE);
 
