@@ -382,7 +382,7 @@ function sendContactEmail(){
     }
 }// end sendContactEmail
 function sendTestNotifications(){
-    $workItemId = isset($_REQUEST['workItemId']) ? $_REQUEST['workItemId'] : 0 ;
+    $workItemId = isset($_REQUEST['workitem_id']) ? $_REQUEST['workitem_id'] : 0 ;
     $results = isset($_REQUEST['results']) ? $_REQUEST['results'] : '';
     $revision = isset($_REQUEST['revision']) ? $_REQUEST['revision'] : '';
     require_once('./classes/Notification.class.php');

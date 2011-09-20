@@ -20,6 +20,7 @@ class Notification {
     const FUNCTIONAL_NOTIFICATIONS = 128;
     const BIDDING_EMAIL_NOTIFICATIONS = 256;
     const REVIEW_EMAIL_NOTIFICATIONS = 512;
+    const MY_AUTOTEST_NOTIFICATIONS = 1024;
  
     /**
      *  Sets flags using list of integers passed as arguments
@@ -92,6 +93,16 @@ class Notification {
                 }
             }
             break;
+        case self::MY_AUTOTEST_NOTIFICATIONS:
+            $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
+            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.id IN({$users})";
+            $res = mysql_query($sql);
+            if($res) {
+                while($row = mysql_fetch_row($res)) {
+                    $result[] = $row[0];
+                }
+            }
+            break;         
         }
         return $result;
     }
@@ -592,7 +603,7 @@ class Notification {
         $workItem->loadById($workItemId);
         $project = new Project();
         $project->loadById($workItem->getProjectId());
-        $emails = self::getNotificationEmails(self::MY_BIDS_NOTIFICATIONS,$workItem);
+        $emails = self::getNotificationEmails(self::MY_AUTOTEST_NOTIFICATIONS,$workItem);
         $typeOfNotification = ($result=='success') ? 'autotestsuccess' : 'autotestfailure';
         $options = array('type' => $typeOfNotification,
         'workitem' => $workItem,
