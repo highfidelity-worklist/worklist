@@ -151,7 +151,7 @@ class SandBoxUtil {
     *
     */
     private function validateUsername($username) {
-      if(!preg_match('/^[\w\d\_\.]{3,}$/',$username)) {
+      if(!preg_match('/^[\w\d\_\.]{2,}$/',$username)) {
             throw new Exception('Invalid username');
       }
     }
