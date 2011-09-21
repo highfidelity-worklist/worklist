@@ -126,7 +126,6 @@
               <option value="BIDDING" selected="selected">BIDDING</option>
               <option value="WORKING">WORKING</option>
                       <?php if ($is_runner) { ?>
-              <option value="SKIP">SKIP</option>
               <option value="DONE">DONE</option>
                       <?php } ?>
           </select>
