@@ -858,14 +858,15 @@ function handleUnloggedPost() {
     $request_uri = $_SERVER['REQUEST_URI'];
     error_log('Possible hack attempt from ' . $request_ip . ' on: ' . $request_uri);
     error_log(json_encode($_REQUEST));
-    die('Not authorized.' . "\n");
+    die('You are not authorized to post to this URL. Click ' .
+        '<a href="' . SERVER_URL . '">here</a> to go to the main page. ' . "\n");
 }
 
 function checkLogin() {
     if (! getSessionUserId()) {
         $_SESSION = array();
         session_destroy();
-        if (isset($_POST)) {
+        if (!empty($_POST)) {
             handleUnloggedPost();
         }
         header("location:login.php?expired=1&redir=" . urlencode($_SERVER['REQUEST_URI']));

@@ -622,7 +622,10 @@ WHERE id = ' . (int)$id;
     }
 
     public function getProjectRunnersId() {
-        $query=" SELECT DISTINCT(runner_id) as runner FROM " .WORKLIST. " AS w WHERE w.project_id=".$this->getProjectId();
+        // Fix for #15353: Only select active runners 20-SEP-2011 <danS>
+        $query = " SELECT DISTINCT(runner_id) as runner
+            FROM " . WORKLIST . " AS w INNER JOIN " . USERS . " u ON u.`id` = w.runner_id
+            WHERE w.project_id = " . $this->getProjectId() . " AND u.is_runner = 1";
         $result_query = mysql_query($query);
         if($result_query) {
             $temp_array = array();

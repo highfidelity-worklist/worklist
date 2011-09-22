@@ -171,8 +171,9 @@ class Notification {
                 $options = array('type' => 'suggestedwithbid',
                 'workitem' => $workitem,
                 'emails' => $emails);
-                self::workitemNotify($options);
-                self::workitemSMSNotify($options);             
+                $data = array('notes' => $workitem->getNotes());
+                self::workitemNotify($options, $data);
+                self::workitemSMSNotify($options, $data);             
             break;
         }
     }
