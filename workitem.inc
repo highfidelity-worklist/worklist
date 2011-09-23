@@ -1210,7 +1210,8 @@ if ($action =="edit"):  ?>
                 <ul>
                 <!-- View: Status info -->
                     <li>
-                        <span class="info-label">Status</span><span class="info-data" style="margin-left:12px;font-size:16px"><?php echo $worklist['status'];?></span>
+                        <span class="info-label"><a href="<?php echo SERVER_URL . "help.php#ff5" ?>" target="_blank">Status</a></span>
+                        <span class="info-data" style="margin-left:12px;font-size:16px"><?php echo $worklist['status'];?></span>
                         <input type="hidden" id="status" name="status" value = "BIDDING" />
                         <?php                      
                             // quick status buttons for runners of items and mechanics working on them
