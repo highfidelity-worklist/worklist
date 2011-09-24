@@ -1054,7 +1054,9 @@ if ($action =="edit"):  ?>
                             <?php } ?></span>
                         </li>
                 <!-- Edit: Status info -->
-                        <li><span class="info-label">Status</span><span class="info-data">
+                        <li>
+                            <span class="info-label"><a href="<?php echo SERVER_URL . "help.php#ff5" ?>" target="_blank">Status</a></span>
+                            <span class="info-data">
                             <?php if ($is_runner || $user_id == $worklist['runner_id']){  ?><span class="info-data">
                             <select id="status" name="status">
                                 <?php foreach($statusList as $status){ ?>
