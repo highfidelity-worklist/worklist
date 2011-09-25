@@ -65,7 +65,13 @@ $journal_message = null;
 
 //initialize the workitem class
 $workitem = new WorkItem();
-$workitem->loadById($worklist_id);
+try {
+    $workitem->loadById($worklist_id);
+} catch(Exception $e) {
+    $error  = $e->getMessage();
+    die($error);
+}
+
 $mechanic_id = $user->getId();
 $redirectToDefaultView = false;
 $redirectToWorklistView = false;
