@@ -140,21 +140,13 @@ class UserStats{
     }   
     
     public function getDevelopersForRunner() {
-        $query = "SELECT DISTINCT u.id, u.nickname, 
-                 (SELECT COUNT(*) FROM " . WORKLIST . " w 
-                 WHERE ( w.mechanic_id = u.id OR w.creator_id = u.id) 
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE') 
-                 AND w.runner_id = "  . $this->userId . ") as totalJobCount,
-                 (SELECT SUM(F.amount) FROM " . FEES . " F 
-                 LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
-                 WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')                
-                 AND w.runner_id = " . $this->userId . ") as totalEarnings
-                 FROM " . BIDS . " b LEFT JOIN " . WORKLIST . " w ON b.worklist_id = w.id 
-                 LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
-                 WHERE b.accepted = 1 
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')
-                 AND u.id != w.runner_id AND w.runner_id = " . $this->userId . " ORDER BY totalEarnings DESC";
+        $query = "SELECT u.id, u.nickname, count(w.id) AS totalJobCount, sum(f.amount) AS totalEarnings FROM users u 
+                  LEFT OUTER JOIN fees f ON f.user_id = u.id
+                  LEFT OUTER JOIN worklist w ON f.worklist_id = w.id
+                  WHERE f.paid =1 AND f.withdrawn = 0 AND f.expense = 0 
+                  AND w.runner_id = {$this->userId} AND u.id <> w.runner_id 
+                  GROUP BY u.id 
+                  ORDER BY totalEarnings DESC";
         if($result = mysql_query($query)) {
             if(mysql_num_rows($result) > 0) {
                 while($row = mysql_fetch_assoc($result)) {
@@ -170,7 +162,7 @@ class UserStats{
     }        
     
     public function getProjectsForRunner() {
-        $query = "SELECT p.project_id, p.name, count(w.id) AS totalJobCount, sum(f.amount) AS totalEarnings FROM " .  PROJECTS . " p
+        $query = "SELECT p.project_id, p.name, count(distinct w.id) AS totalJobCount, sum(f.amount) AS totalEarnings FROM " .  PROJECTS . " p
                   LEFT OUTER JOIN " . WORKLIST . " w ON w.project_id = p.project_id
                   LEFT OUTER JOIN " . FEES . " f ON f.worklist_id = w.id
                   WHERE w.runner_id = {$this->userId} 
