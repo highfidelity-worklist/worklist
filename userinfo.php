@@ -30,7 +30,7 @@
     $filter = new Agency_Worklist_Filter($_REQUEST);
 
     // admin posting data
-    if (isset($_POST) && !empty($_POST) && ($is_runner || $is_payer) && !$action) {
+    if (!empty($_POST) && ($is_runner || $is_payer) && !$action) {
 
         $user_id = (int) $_POST['user_id'];
 
