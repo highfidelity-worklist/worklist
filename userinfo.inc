@@ -111,13 +111,19 @@
         <ul>
             <li><a href="#tabs-1">User Info</a></li>
             <li><a href="#tabs-2">Admin</a></li>
-            <li><a href="#tabs-3">Sandbox</a><li>
+            <?php if ($user->getIs_runner()) { ?>
+                <li><a href="#tabs-3">Runner</a></li>
+            <?php } ?>
+            <li><a href="#tabs-4">Sandbox</a><li>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
         </ul>
     <?php } else {?>
         <ul>
             <li><a href="#tabs-1">User Info</a></li>
+            <?php if ($user->getIs_runner()) { ?>
+                <li><a href="#tabs-3">Runner</a></li>
+            <?php } ?>            
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
         </ul>
@@ -246,12 +252,7 @@
                 <span>User last seen: <?php echo relativeTime($user->getTimeLastSeen(), false); ?></span>
             </div><!-- end of admin-right -->
         </div><!-- end of tab 2 -->
-<?php
-
-
-
-?>
-        <div id="tabs-3" style="clear: both;">
+        <div id="tabs-4" style="clear: both;">
             <form method="post" action="" id="sandboxForm">
                 <div style="clear: both; float: right;">
                     <input id="create_sandbox" type="submit" name="create_sandbox" value="Create SB" <?php if ($has_sandbox) { echo 'style="display: none;"'; } ?> />
@@ -264,8 +265,92 @@
                 <div class="quarter-column"><input <?php if (($has_sandbox) && $user->isProjectCheckedOut( $project['id'] )) { echo 'checked="checked"  disabled="disabled" '; } ?> type="checkbox" id="<?php echo $project['id']; ?>" /><input type="hidden" class="repo" value="<?php echo $project['repo']; ?>" /><?php echo $project['name']; ?></div>
 <?php endforeach; ?>
             </form>
-        </div><!-- end of tab 3 -->
+        </div><!-- end of tab 4 -->
     <?php } ?>
+    <?php if ($user->getIs_runner()) { ?>
+        <div id="tabs-3" style="clear:both">
+            <div id="admin-left">
+                <div class="runnerStatistics">
+                    <div id="stats-panel">
+                        <table width="100%" class="table-runner-stats">
+                            <caption class="table-caption" >
+                                <b>Jobs as Runner</b>
+                            </caption>
+                            <thead>
+                                <tr class="table-hdng">
+                                    <td>Total/Active Jobs</td>
+                                    <td>Avg. Job Run Time</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $userStats = new UserStats($user->getId())?>
+                                <tr class="row-role-list-live">
+                                    <td><a href = "#" id = "runner-total-jobs"><?php echo $userStats->getRunnerTotalJobsCount(); ?></a> / <a href = "#" id = "runner-active-jobs"><?php echo $userStats->getRunnerActiveJobsCount(); ?></a></td>
+                                    <td><?php echo $userStats->getAvgJobRunTime();?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                
+            </div>
+            <div id="admin-right">
+                <div id="runnersAccordion">
+                    <h3><a href="#">Who has worked for Runner</a><h3>  
+                    <div class="runnerWorkers" >
+                        <table width="100%" class="table-runner-workers" id="runner-workers">
+                            <caption class="table-caption" >
+                                <br/>
+                            </caption>
+                            <thead>
+                                <tr class="table-hdng">
+                                    <th>Username</th>
+                                    <th># of Jobs</th>
+                                    <th>Total Earned</th>
+                                </tr>
+                            </thead>
+                            <tbody class="runnerWorkerContent">
+                                <?php if($runnerWorkers = $userStats->getDevelopersForRunner()) { ?>
+                                    <?php foreach($runnerWorkers as $runnerWorker) { ?>
+                                        <tr class="row-runner-developer-list-live">
+                                            <td class="runnerWorker"><?php echo $runnerWorker['nickname']?></td>
+                                            <td class="workerJobCount"><?php echo $runnerWorker['totalJobCount']?></td>
+                                            <td><?php echo (($runnerWorker['totalEarnings'] > 0) ? "$" . $runnerWorker['totalEarnings'] : "") ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h3><a href="#">Projects worked on by Runner</a><h3>  
+                    <div class="runnerProjects" >
+                        <table width="100%" class="table-runner-projects" id="runner-projects">
+                            <caption class="table-caption" >
+                                <br/>
+                            </caption>
+                            <thead>
+                                <tr class="table-hdng">
+                                    <th>Project Name</th>
+                                    <th># of Jobs</th>
+                                    <th>Project Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="runnerProjectContent">
+                                  <?php if($runnerProjects = $userStats->getProjectsForRunner()) { ?>
+                                    <?php foreach($runnerProjects as $runnerProject) { ?>
+                                        <tr class="row-runner-project-list-live">
+                                            <td class="runnerProject"><?php echo $runnerProject['name']?></td>
+                                            <td class="projectJobCount"><?php echo $runnerProject['totalJobCount']?></td>
+                                            <td><?php echo (($runnerProject['totalEarnings'] > 0) ? "$" . $runnerProject['totalEarnings'] : "") ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>                                                          
+                </div>
+            </div>          
+        </div> <!-- end of tabs-3-->
+    <?php } ?>    
     </div><!--end of div "tabs" -->
 </div> <!-- end of div user-info-->
 

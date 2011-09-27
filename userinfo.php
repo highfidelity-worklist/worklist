@@ -242,6 +242,7 @@
         <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
         <script type="text/javascript" src="js/jquery.blockUI.js"></script>
         <script type="text/javascript" src="js/jquery.autogrow.js"></script>
+        <script type="text/javascript" src="js/paginator.js"></script>
         <script type="text/javascript">
         // This global variable user_id should not be used anymore, replace it by userInfo.user_id .
         // All the variables should be included in the object userInfo

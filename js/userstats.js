@@ -12,6 +12,19 @@ $(function(){
         stats.showJobs('doneJobs');
         return false;
     });
+    
+    $('#runner-total-jobs').click(function(){
+        stats.stats_page = 1;
+        stats.showJobs('runnerTotalJobs');
+        return false;
+    }); 
+    
+    $('#runner-active-jobs, #quick-links-working').click(function(){
+        stats.stats_page = 1;
+        $('#jobs-popup').dialog('option', 'title', 'Active jobs');
+        stats.showJobs('runnerActiveJobs');
+        return false;
+    });      
 
     $('#active-jobs, #quick-links-working').click(function(){
         stats.stats_page = 1;
@@ -64,7 +77,9 @@ var stats = {
         $.getJSON('getuserstats.php', 
                     {id: stats.user_id, statstype: job_type, page: stats.stats_page},
                     function(json) {
-                        if (job_type != 'activeJobs') {
+                        if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs') {
+                            $('#jobs-popup th.status').show();
+                        } else {
                             $('#jobs-popup th.status').hide();
                         }
                         stats.fillJobs(json, partial(stats.showJobs, job_type), job_type);
@@ -105,7 +120,7 @@ var stats = {
                         + '<td>' + runner_nickname + '</td>'
                         + '<td>' + jsonjob.created + '</td>';
                         
-            if (job_type == 'activeJobs') {
+            if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs') {
                 toAppend += '<td>' + jsonjob.status + '</td>';
             }
             

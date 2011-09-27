@@ -47,6 +47,14 @@ if (isset($_REQUEST['id'])) {
     case 'latest_earnings':
         echo json_encode($userStats->getLatestEarningsJobs(30, $page));
         break;
+    
+    case 'runnerTotalJobs':
+        echo json_encode($userStats->getTotalRunnerItems($page));        
+        break;
+
+    case 'runnerActiveJobs':
+        echo json_encode($userStats->getActiveRunnerItems($page));
+        break;        
 
     case 'counts':
 			setlocale(LC_MONETARY,'en_US');

@@ -505,7 +505,10 @@ td.textAlignReport {
 .projectRight .payments,
 .projectRight .roles,
 .projectStatistics,
-.projectWorkers {
+.runnerStatistics,
+.projectWorkers,
+.runnerProjects,
+.runnerWorkers {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border-radius: 6px;
@@ -515,6 +518,15 @@ td.textAlignReport {
     margin-bottom:10px;
 }
 
+.runnerStatistics {
+    width: 93%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.table-runner-stats .table-caption {
+    font-size: 12px;
+}
 table.tablesorter thead tr .header {
     background-image: url(../images/bg.gif);
     background-repeat: no-repeat;
@@ -537,6 +549,17 @@ table.tablesorter thead tr .headerSortUp {
     margin-left: -29px;
 }
 
+.runnerProjects,
+.runnerWorkers {
+    width: 340px;
+    margin-left: -29px;
+}
+
+#runner-total-jobs,
+#runner-active-jobs {
+    color: #98AAB2;
+}
+
 .projectStatistics {
     width: 399px;
     float: right;
@@ -548,7 +571,15 @@ table.tablesorter thead tr .headerSortUp {
     font-size: 12px !important;
 }
 
-.table-workers tr td a {
+.table-runner-workers tr,
+.table-runner-projects tr {
+    font-weight: bold;
+    font-size: 12px !important;
+}
+
+.table-workers tr td a,
+.table-runner-workers tr td a
+.table-runner-project tr td a {
     text-decoration: none;
     color: #98AAB2;
 }

@@ -380,6 +380,26 @@ var UserInfo = {
             
             return false;
         });
+
+        $('#runnersAccordion').accordion({
+            clearStyle: true,
+            collapsible: true,
+            active: true,
+            create: function(event, ui) { 
+                var workersIntervalId = setInterval(function() {
+                    if($("#runner-workers tr").length) {
+                        $('#runner-workers').paginate(5, 500);
+                        clearInterval(workersIntervalId);
+                    }
+                }, 2000);
+                var intervalId = setInterval(function() {
+                    if($("#runner-projects tr").length) {
+                        $('#runner-projects').paginate(3, 500);
+                        clearInterval(intervalId);
+                    }
+                }, 2000);
+            }
+        });        
         
         if (! admin) {
             $('#ispaypalverified').prop('disabled', true);
