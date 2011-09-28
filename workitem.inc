@@ -850,7 +850,7 @@ $(document).ready(function(){
         // update some CSS and do not redirect
         // when mouseup occurs, reset the CSS
         var notesRedirect = false;
-        $('.notestext').mousedown(function() {
+        $('.notestext.editable').mousedown(function() {
             // it's a new click - reset to false
             notesRedirect = false;
 
