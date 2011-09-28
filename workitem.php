@@ -868,6 +868,9 @@ $worklist = $workitem->getWorkItem($worklist_id);
 
 //get bids
 $bids = $workitem->getBids($worklist_id);
+// get only those bids that have not expired, used to determine whether
+// runner can edit the job notes
+$activeBids = (array) $workitem->getBids($workitem->getId(), false);
 
 //Findout if the current user already has any bids.
 // Yes, it's a String instead of boolean to make it easy to use in JS.

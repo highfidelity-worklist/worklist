@@ -1132,7 +1132,7 @@ if ($action =="edit"):  ?>
                             <span class="info-label">Notes</span>
                             <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
                                 <span id="info-notes">
-                                    <textarea name="notes" id="edit-notes" <?php if(count($bids)>0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
+                                    <textarea name="notes" id="edit-notes" <?php if(count($activeBids) > 0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
                                 </span>
                             <?php else:?>
                                 <span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>

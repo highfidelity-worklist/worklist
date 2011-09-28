@@ -571,7 +571,7 @@ WHERE id = ' . (int)$id;
      * @param bool $expired If true, return expired bids
      * @return array|null
      */
-    public function getBids($worklist_id) {
+    public function getBids($worklist_id, $expired = true) {
         $having = '';
         // code is here in case we want to start including expired bids
         // default behaviour is to ignore expired bids
@@ -610,7 +610,16 @@ WHERE id = ' . (int)$id;
                     // skip expired bids that are not accepted;
                     // Had to change this, because of oddness of this if() statement
                     // The true/false in the top doesn't work at all, see note at the top.
-                    $temp_array[] = $row;
+                    if ($row['expires'] < 0) {
+                        // the bid has expired, include it only if $expired is true
+                        if ($expired) {
+                            $temp_array[] = $row;
+                        }
+                    } else {
+                        $temp_array[] = $row;
+                    }
+                } else if (! $expired && ($row['future_delta'] < 0 || $row['expires'] < 0)) {
+                    // do not return this bid, it has expired
                 } else {
                     $temp_array[] = $row;
                 }
