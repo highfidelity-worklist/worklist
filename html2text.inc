@@ -120,6 +120,7 @@ class Html2Text {
     }
 
     function getWord() {
+        if (!isset($this->iInText)) { $this->iInText = false; }
         while (true) {
             if ($this->iHtmlParser->iNodeType == NODE_TYPE_TEXT) {
                 if (!$this->iInText) {

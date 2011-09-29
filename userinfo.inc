@@ -39,6 +39,8 @@
             }
         }
     }
+    if (!isset($countryCodeUrl)) { $countryCodeUrl = ""; }
+    if (!isset($countryName)) { $countryName = ""; }
 ?>
         <div id="user-avatar">
             <img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" />
@@ -74,7 +76,7 @@
             }
             ?>
             Local Time<br />
-            <span id="info-currenttime" title="<?php echo $timezoneTable[$user -> getTimezone()]; ?>">
+            <span id="info-currenttime" title="<?php echo $timezoneTable[$user->getTimezone()]; ?>">
                 <?php
                 /* If city is not present, aka stored in DB
                  * do nothing and proceed to next step

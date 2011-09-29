@@ -453,8 +453,10 @@ class Agency_Worklist_Filter {
             $this->setName($options['name']);
         } elseif (!empty($options['id'])) {
             $options='';
-        } else {
+        } elseif (isset($options[$this->getName()])) {
             $options = $options[$this->getName()];
+        } else {
+            $options = array();
         }
         $cleanOptions = array();
         $methods = get_class_methods($this);

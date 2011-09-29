@@ -666,7 +666,7 @@ class User {
         $sql = "SELECT TIMESTAMPDIFF(SECOND, NOW(), `last_seen`) AS last_seen FROM " . USERS ." WHERE id = " . $this->getId();
         $query = mysql_query($sql);
         
-        if (mysql_num_rows($query) > 0) {
+        if ($query && mysql_num_rows($query) > 0) {
             $row = mysql_fetch_assoc($query);
             return $row['last_seen'];
         } else {
@@ -1000,7 +1000,7 @@ class User {
             WHERE `user_id`=" . $this->getId() . "
             AND `checked_out` = 1");
             
-        if (mysql_num_rows($query)) {
+        if ($query && mysql_num_rows($query)) {
             while ($row = mysql_fetch_assoc($query)) {
                 $this->projects[] = $row;
             }
@@ -1191,7 +1191,11 @@ class User {
             if ($flag === true) {
                 $sql .= ', ';
             }
-            $sql .= '`' . $column . '` = "' . $data['values'][$index] . '"';
+            if( $column == "w9_accepted" && $data['values'][$index] == "NOW()" ){
+                $sql .= '`' . $column . '` = ' . $data['values'][$index];
+            } else {
+                $sql .= '`' . $column . '` = "' . $data['values'][$index] . '"';
+            }
             $flag = true;
         }
         $sql .= ' WHERE `id` = ' . (int)$this->getId() . ';';

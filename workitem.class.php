@@ -278,7 +278,7 @@ WHERE id = ' . (int)$id;
         return $this;
     }
     
-    public function resetCRFlags($status) {
+    public function resetCRFlags() {
         $this->code_review_started = 0;
         $this->code_review_completed = 0;
         return $this;

@@ -91,7 +91,8 @@ include("head.html"); ?>
 
   <? if($msg =="") { ?>
 <p><label>Email<br />
-<input type="text" name="username" size="30" value="<?php echo(base64_decode($_REQUEST['un'])); ?>" readonly=""></label></p>
+    <input type="text" name="username" size="30" value="<?php echo(isset($_REQUEST['un']) ? base64_decode($_REQUEST['un']) : ""); ?>" readonly="">
+</label></p>
 <input type="hidden" name="token" value="<?php echo($_REQUEST['token']); ?>" />
 <div class="LVspace">
   <p><label>New Password<br />

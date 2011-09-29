@@ -110,11 +110,11 @@ replacement data:
 ),
 
 /*
-favorited
+trusted
     send approved user a notification email
     used in: userinfo.php
 */
-'favorited' => array(
+'trusted' => array(
     'subject' => 'You have been Trusted!',
     'body' => '<p>Congrats!</p>
                <p>You have been trusted by one of your peers in the Worklist!</p>

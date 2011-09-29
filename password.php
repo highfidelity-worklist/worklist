@@ -16,7 +16,7 @@ include_once("send_email.php");
 require_once ("class/Utils.class.php");
 
 $msg = array();
-if ($_POST['oldpassword'] != "") {
+if (!empty($_POST['oldpassword'])) {
     if((!empty($_POST['newpassword'])) && ($_POST['newpassword'] == $_POST['confirmpassword'])){
 
         $ret = Utils::updateLoginData(array('oldpassword' => $_POST['oldpassword'], 

@@ -1055,7 +1055,7 @@ if ($action =="edit"):  ?>
                         </li>
                 <!-- Edit: Status info -->
                         <li>
-                            <span class="info-label"><a href="<?php echo SERVER_URL . "help.php#ff5" ?>" target="_blank">Status</a></span>
+                            <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
                             <span class="info-data">
                             <?php if ($is_runner || $user_id == $worklist['runner_id']){  ?><span class="info-data">
                             <select id="status" name="status">
@@ -1212,7 +1212,7 @@ if ($action =="edit"):  ?>
                 <ul>
                 <!-- View: Status info -->
                     <li>
-                        <span class="info-label"><a href="<?php echo SERVER_URL . "help.php#ff5" ?>" target="_blank">Status</a></span>
+                        <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
                         <span class="info-data" style="margin-left:12px;font-size:16px"><?php echo $worklist['status'];?></span>
                         <input type="hidden" id="status" name="status" value = "BIDDING" />
                         <?php                      
@@ -1419,7 +1419,7 @@ if ($action =="edit"):  ?>
                                     if ($user->getId() == $bid['bidder_id'] && $bid['expires'] <= 0) {
                                         $biddings['0'] = $bid;
                                     } else if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
-                                        $biddings = null;
+                                        $biddings = array();
                                     } else {
                                         $biddings['0'] = $bid;
                                     }
@@ -1454,7 +1454,9 @@ if ($action =="edit"):  ?>
                                         // new bids done by
                                         $past_due = '';
                                         $oTz = date_default_timezone_get();
-                                        date_default_timezone_set(getTimeZoneDateTime($_SESSION['timezone']));
+                                        if (isset($_SESSION['timezone'])) {
+                                            date_default_timezone_set(getTimeZoneDateTime($_SESSION['timezone']));
+                                        }
                                         if ($bid['accepted'] == 1){
                                             $bid_done_by_stamp = strtotime($bid['unix_done_full']);
                                         } else {

@@ -352,11 +352,14 @@ function getUserTime($timestamp){
 // converts server time to users timzone time
 function convertTimezone($timestamp){
     if (isset($_SESSION['timezone']) && !empty($_SESSION['timezone'])) {
-        $oTz = date_default_timezone_get();
-        date_default_timezone_set(getTimeZoneDateTime($_SESSION['timezone']));
-        $new_time = date('m/d/Y h:i a', $timestamp);
-        date_default_timezone_set($oTz);
-        return $new_time;
+        $time_zone_date_time = getTimeZoneDateTime($_SESSION['timezone']);
+        if ($time_zone_date_time) {
+            $oTz = date_default_timezone_get();
+            date_default_timezone_set($time_zone_date_time);
+            $new_time = date('m/d/Y h:i a', $timestamp);
+            date_default_timezone_set($oTz);
+            return $new_time;
+        }
     }
     return date('m/d/Y h:i a', $timestamp);
 }

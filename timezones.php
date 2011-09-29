@@ -64,29 +64,38 @@ function getTimeZoneDateTime($GMT) {
         '+1100'=>'Asia/Magadan',
         '+1200'=>'Asia/Kamchatka'
     );
-    return $timezones[$GMT]; //ensures that whenever i return this date, i will get central time
+    if(isset($timezones[$GMT])){
+        return $timezones[$GMT];
+    } else {
+        return date_default_timezone_get();
+    }
 }
-	function convertTimeZoneToLocalTime($timeoffset)
-	{
-		$DefZone = getTimeZoneDateTime($timeoffset);
-		date_default_timezone_set($DefZone);
-		$formatedTime = str_split($timeoffset); 
-		$Symbol = $formatedTime[0];
-		$First = $formatedTime[1];
-		$Second= $formatedTime[2];
-		$Third= $formatedTime[3];
-		$Fourth= $formatedTime[4];
-		if($Third=="3"){
-			$Third =5;
-		}
-		$timezone_local = $Symbol.$First.$Second.".".$Third.$Fourth;
-		$time = time();
-		$timezone_offset = date("Z");
-		$timezone_add = round($timezone_local*60*60);
-		$ar = localtime($time,true);
-		if($ar['tm_isdst']){$time += 3600;}
-		$time = round($time-$timezone_offset+$timezone_add);
-		$LocalTime = date("h:i:s A", $time);
-		return $LocalTime;		
-	}
+
+function convertTimeZoneToLocalTime($timeoffset) {
+    $DefZone = getTimeZoneDateTime($timeoffset);
+    date_default_timezone_set($DefZone);
+    if (strlen($timeoffset) == 5) {
+        $formatedTime = str_split($timeoffset);
+        $Symbol = $formatedTime[0];
+        $First = $formatedTime[1];
+        $Second = $formatedTime[2];
+        $Third = $formatedTime[3];
+        $Fourth = $formatedTime[4];
+        if ($Third=="3") {
+            $Third =5;
+        }
+        $timezone_local = $Symbol.$First.$Second.".".$Third.$Fourth;
+    } else {
+        $timezone_local = 0;
+    }
+
+    $time = time();
+    $timezone_offset = date("Z");
+    $timezone_add = round($timezone_local*60*60);
+    $ar = localtime($time,true);
+    if ($ar['tm_isdst']) { $time += 3600; }
+    $time = round($time-$timezone_offset+$timezone_add);
+    $LocalTime = date("h:i:s A", $time);
+    return $LocalTime;		
+}
 ?>

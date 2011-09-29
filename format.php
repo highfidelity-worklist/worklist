@@ -4,6 +4,12 @@
 //  http://www.lovemachineinc.com
 
 require_once('functions.php');
+if (!isset($is_runner)) {
+    $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
+}
+if (!isset($is_payer)) {
+    $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
+}
 ?>
 
 <div id="outside"> 
@@ -98,16 +104,18 @@ require_once('functions.php');
             | <a href="team.php">Team</a>
             | <a href="settings.php" class="iToolTip menuSettings">Settings</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
-             <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer'] ) { ?>
+             <?php if ($is_runner || $is_payer) { ?>
             | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
              <?php } ?>
             | <a href="help.php" target="_blank">Help</a>
-            <?php } else {
-            echo '<a href="login.php" title="Login to our Worklist">Login</a> | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
-            | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a> | <a href="http://blog.worklist.net" target="_blank"/>Blog</a> | <a href="projects.php" target="_blank">Projects</a> | <a href="help.php" target="_blank">Help</a>';
-            
-        } 
-            ?>
+        <?php } else { ?>
+            <a href="login.php" title="Login to our Worklist">Login</a>
+            | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
+            | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a>
+            | <a href="http://blog.worklist.net" target="_blank"/>Blog</a>
+            | <a href="projects.php" target="_blank">Projects</a>
+            | <a href="help.php" target="_blank">Help</a>
+        <?php } ?>
         </div>
 
         <script type="text/javascript">

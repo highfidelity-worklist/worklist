@@ -472,7 +472,11 @@ class Notification {
                 $message = 'Commit Failed #' . $project_name . '(v' . $revision . ')';
                 $message .= 'See test results here: http://bit.ly/jGfIkj';
             break;            
-            
+           
+            default:
+                trigger_error("Invalid SMS type. Options argument: ".var_export($options, true), E_USER_WARNING);
+                return false;
+            break; 
             
         }
 

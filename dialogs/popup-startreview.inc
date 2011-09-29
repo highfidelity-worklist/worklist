@@ -3,7 +3,9 @@
 completed the review. Leave this popup open while doing the code review.</p>
     <form name="popup-form" id="popup-form-startreview" action="" method="post">
             <input type="hidden" name="itemid" value="" />
-            <p class="info-label" style="display:block">Reviewer: <em><?php echo $_SESSION['nickname']; ?></em> </p>
+            <p class="info-label" style="display:block">Reviewer: <em>
+            <?php echo isset($_SESSION['nickname']) ? $_SESSION['nickname'] : ""; ?>
+            </em> </p>
             <p class="info-label iToolTip enterCrAmount" style="display:block">Fee:
             <input type="text" name="crfee_amount" id="crfee_amount" class="text-field money iToolTip enterCrAmount"
             size="48" value="<?php echo number_format($crFee,2); ?>"/>

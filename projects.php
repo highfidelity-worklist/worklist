@@ -154,7 +154,7 @@ include("head.html");
         });
                     
         
-    <?php if ($is_runner || $is_payer || $_SESSION['is_runner'] || $_SESSION['is_payer']) { ?>
+    <?php if ($is_runner || $is_payer) { ?>
         $('#addproj').click(function() {
             $('#popup-addproject').dialog({ 
                 autoOpen: false, 

@@ -1,4 +1,5 @@
 <?php
+//  vim:ts=4:et
 //  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
@@ -137,8 +138,7 @@ if ($action =='save_workitem') {
 
     // code to add specifics to journal update messages
     $new_update_message='';
-	$is_bug = !empty($_REQUEST['is_bug'])? 1 : 0;
-	error_log( $workitem->getIs_bug()."is_bug:".$is_bug."--".$_REQUEST['is_bug']);
+    $is_bug = !empty($_REQUEST['is_bug'])? 1 : 0;
     // First check to see if this is marked as a bug
     if ($workitem->getIs_bug() != $is_bug) {
         error_log("bug changed it");
@@ -802,7 +802,7 @@ if ($action=='accept_multiple_bid') {
                 $runner->findUserById($workitem->getRunnerId());
                 $runner->updateBudget(-$total);
             } else {
-                $overBudget = money_format('%i', $bid_amount - $runner_budget);
+                $overBudget = money_format('%i', $total - $runner_budget);
                 $_SESSION['workitem_error'] = "Failed to accept bids. Accepting this bids would make you " . $overBudget . " over your budget!";
                 $redirectToDefaultView = true;
             }
@@ -1028,18 +1028,15 @@ function changeStatus($workitem, $newStatus, $user) {
             // 0     12               3              4
             $sandbox_array = explode("/", $workitem->getSandbox());
 
-            $username = $sandbox_array[3];
+            $username = isset($sandbox_array[3]) ? $sandbox_array[3] : "~";
             $username = substr($username, 1); // eliminate the tilde
 
-            $sandbox = $sandbox_array[4];
+            $sandbox = isset($sandbox_array[4]) ? $sandbox_array[4] : "";
 
             try {
                 $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
-
                 $comment = "Code review available here:\n$result";
-
                 addComment($workitem->getId(), $user->getId(), $comment);
-
             } catch (Exception $ex) {
                 error_log("Could not paste diff: \n$ex");
             }

@@ -167,7 +167,8 @@ if(isset($minimal_POST['sign_up'])){
             }
             $plain .= $link."\n\n";
             $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
-            if(!send_email($ret->username, $subject, $body, $plain)) { error_log("signup.php: send_email failed");
+            if(!send_email($ret->username, $subject, $body, $plain)) {
+                error_log("signup.php: send_email failed");
                 $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
             }
 

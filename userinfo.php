@@ -34,7 +34,7 @@
 
         $user_id = (int) $_POST['user_id'];
 
-        if ($_POST['save-salary']) {
+        if (!empty($_POST['save-salary'])) {
             $field = 'salary';
             $value = mysql_real_escape_string($_POST['value']);
         } elseif ($_POST['field'] == 'w9status') {

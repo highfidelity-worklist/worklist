@@ -172,7 +172,8 @@ if (isset($_POST['save_account'])) {
     $messages[] = "Your payment information has been updated.";
     
     if (!$user->getW9_accepted() && $user->getCountry() == 'US') {
-        $saveArgs['w9_accepted'] = 'NOW()';
+        $w9_accepted = 'NOW()';
+        $saveArgs['w9_accepted'] = 0;
     }
 
     $paypalPrevious = $user->getPaypal_email();
@@ -218,7 +219,7 @@ if (!empty($saveArgs)) {
 
         if ($esc) $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
 
-        if (is_int($$arg)) {
+        if (is_int($$arg) || ($arg == "w9_accepted" && $$arg == 'NOW()')) {
             $sql .= "`$arg`=".$$arg.",";
         } else {
             $sql .= "`$arg`='".$$arg."',";
