@@ -8,10 +8,10 @@
 // These are the items most likely in need of being changed.
 
 // Where is the SendLove Database?
-define("DB_SERVER", "localhost");
-define("DB_USER", "dbuser");
-define("DB_PASSWORD", "dbpassword");
-define("DB_NAME", "lm_worklist");
+define("DB_SERVER", "mysql.dev.sendlove.us");
+define("DB_USER", "dev_worklist");
+define("DB_PASSWORD", "unsecure");
+define("DB_NAME", "dev_worklist");
 
 // Change this to something private to deter funny business
 define("SALT", "WORKLIST");
