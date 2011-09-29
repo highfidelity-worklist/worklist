@@ -78,12 +78,14 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         } else {
             $status_cond = "status='$val' AND";
         }
-        if ($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') {
-            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
+        if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter == $userId) {
+            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
+        } else if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter != $userId) {
+            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
         } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='FUNCTIONAL' || $val =='COMPLETED' ) {
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
         } else  {
-            $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";
+            $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter' OR `bidder_id`='$ufilter'))";
         }
         $severalStatus = " OR ";
     }
