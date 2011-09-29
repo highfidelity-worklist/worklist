@@ -80,7 +80,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         }
         if ($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') {
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter'))";
-        } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='COMPLETED' ) {
+        } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='FUNCTIONAL' || $val =='COMPLETED' ) {
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
         } else  {
             $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter'))";

@@ -6,12 +6,15 @@
 //
 
 // These are the items most likely in need of being changed.
+// You probably need to uncomment the firest line
+//if (!defined('MYSANDBOS')) define('MYSANDBOX','/~joanne');
+if (!defined('MYSANDBOS')) define('MYSANDBOX','');
 
 // Where is the SendLove Database?
-define("DB_SERVER", "localhost");
-define("DB_USER", "dbuser");
-define("DB_PASSWORD", "dbpassword");
-define("DB_NAME", "lm_worklist");
+define("DB_SERVER", "mysql.dev.sendlove.us");
+define("DB_USER", "dev_worklist");
+define("DB_PASSWORD", "unsecure");
+define("DB_NAME", "dev_worklist");
 
 // Change this to something private to deter funny business
 define("SALT", "WORKLIST");
@@ -27,45 +30,56 @@ define('SMS_SENDER','worklist@lovemachineinc.com');
 //define('SMS_REPLYTO','worklist@lovemachineinc.com');
 
 //Server URL's - If running as http://host.domain.com/ (not using app location), defining SERVER_NAME is all that is needed for non-ssl sites
-//define("SERVER_NAME","dev.worklist.net");
+define("SERVER_NAME","dev.worklist.net");
 //define("APP_LOCATION",substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], "/")));
 //define("SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
 ////define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 ////So clone the standard URL
 //define("SECURE_SERVER_URL",SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 
-//Override Path_Info for sandboxes
-//if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: https://dev.worklist.net/~garth/worklist/worklist.php'); }
-
 //Override Worklist_url for sandboxes
-//if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/~garth/worklist");
+//if (!defined("WORKLIST_URL"))   define('WORKLIST_URL', "https://dev.worklist.net/~joanne/worklist");
+if (!defined('WORKLIST_URL')) define('WORKLIST_URL','https://'.SERVER_NAME.(defined('MYSANDBOX')?MYSANDBOX:'').'/worklist'); 
+
+//Override Path_Info for sandboxes
+//if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: '.WORKLIST_URL.'/worklist.php'); }
+
 
 //define("APP_NAME","Worklist");
 
-//define("JOURNAL_API_URL", "https://dev.worklist.net/journal/add.php");
-//define("JOURNAL_API_USER", "api_work@dev.worklist.net");
-//define("JOURNAL_API_PWD", "journalpwd");
-//define("JOURNAL_API_KEY", "journalkey");
-//define('JOURNAL_QUERY_URL', 'https://dev.worklist.net/journal/api.php');
-//define('JOURNAL_QUERY_URL_SSL', 'https://dev.worklist.net/journal/api.php');
+define("JOURNAL_API_URL", "https://dev.worklist.net/~joanne/journal/add.php");
+define("JOURNAL_API_USER", "api_work@dev.worklist.net");
+define("JOURNAL_API_PWD", "journalpwd");
+define("JOURNAL_API_KEY", "worklist_dev_journal_unsecure");
+define('JOURNAL_QUERY_URL', 'https://dev.worklist.net/journal/api.php');
+define('JOURNAL_QUERY_URL_SSL', 'https://dev.worklist.net/journal/api.php');
+
+define("API_KEY", "worklist_dev_worklist_unsecure");
 
 //define('SMS_INI_FILE', '/etc/love/worklist/sms.ini');
 
-//define('TWITTER_USER','user');
-//define('TWITTER_PASS','pass');
-//define('TWITTER_2_USER',null);
-//define('TWITTER_2_PASS',null);
+define('TWITTER_USER','user');
+define('TWITTER_PASS','pass');
+define('TWITTER_2_USER',null);
+define('TWITTER_2_PASS',null);
 
 /*
 * Twitter OAuth constants
 */
 
-//define("TWITTER_CONSUMER_KEY", "consumer_key");
-//define("TWITTER_CONSUMER_SECRET", "consumer_secret");
-//define("TWITTER_OAUTH_TOKEN", "oauth_token");
-//define("TWITTER_OAUTH_SECRET", "oauth_secret");
+define("TWITTER_CONSUMER_KEY", "consumer_key");
+define("TWITTER_CONSUMER_SECRET", "consumer_secret");
+define("TWITTER_OAUTH_TOKEN", "oauth_token");
+define("TWITTER_OAUTH_SECRET", "oauth_secret");
 
 
+
+////How to use a local mail server
+define('GOOGLE_HOST','localhost');
+define('GOOGLE_USER','');
+define('GOOGLE_PWD','');
+define('GOOGLE_PORT','25');
+define('GOOGLE_AUTH',false);
 
 ////How to use a secure gateway
 //define('GOOGLE_HOST','ssl://smtp.gmail.com');

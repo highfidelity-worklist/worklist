@@ -53,9 +53,17 @@
                                 if($_GET['status'] == 'working') { 
                                     $selected = ' selected="selected"';
                                 }
+                                //must be left in tact for the Jobs Underway link to produce accurate data
+                                //holds true for functional and review below
+                                if($_GET['status'] == 'underway') { 
+                                    $selected = ' selected="selected"';
+                                }
                                 break;
                             case 'FUNCTIONAL':
                                 if($_GET['status'] == 'functional') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                if($_GET['status'] == 'underway') { 
                                     $selected = ' selected="selected"';
                                 }
                                 break;
@@ -63,9 +71,12 @@
                                 if($_GET['status'] == 'review') { 
                                     $selected = ' selected="selected"';
                                 }
+                                if($_GET['status'] == 'underway') { 
+                                    $selected = ' selected="selected"';
+                                }
                                 break;
                             case 'COMPLETED':
-                                if($_GET['status'] == 'underway') { 
+                                if($_GET['status'] == 'completed') { 
                                     $selected = ' selected="selected"';
                                 }
                                 break;
