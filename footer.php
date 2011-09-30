@@ -58,6 +58,7 @@
         <div class="copyText">&copy;&nbsp;<? echo date("Y"); ?>
             <a href="http://www.coffeeandpower.com" target="_blank">Coffee & Power, Inc.</a>&nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="privacy.php" target="_blank">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="mailto:contact@worklist.net" target="_blank">Contact Us</a>&nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a> | Version: <?php echo $version;?>
         </div>
     </div>
