@@ -48,11 +48,7 @@ if ($userId > 0 && ($_SESSION['is_runner'] || $_SESSION['is_payer'])) {
     
     if (!empty($journal_message)) {
         //sending journal notification
-        $data = array();
-        $data['user'] = JOURNAL_API_USER;
-        $data['pwd'] = sha1(JOURNAL_API_PWD);
-        $data['message'] = stripslashes($journal_message);
-        $prc = postRequest(JOURNAL_API_URL, $data,array(),10); //increase timeout to 10 seconds
+        sendJournalNotification(stripslashes($journal_message));
     }
 
     echo json_encode(array( 'return' => "Done!"));

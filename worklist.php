@@ -190,11 +190,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
 
 if (!empty($journal_message)) {
     //sending journal notification
-    $data = array();
-    $data['user'] = JOURNAL_API_USER;
-    $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = stripslashes($journal_message);
-    $prc = postRequest(JOURNAL_API_URL, $data);
+    sendJournalNotification(stripslashes($journal_message));
 }
 
 // Load roles table id owner <mikewasmike 15-jun 2011>

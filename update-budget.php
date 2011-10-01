@@ -40,12 +40,9 @@ if ($amount > 0) {
     $query = "INSERT INTO `".BUDGET_LOG."` (`giver_id`,`receiver_id`,`amount`,`reason`,`transfer_date`) VALUES ('".$_SESSION['userid']."','$receiver_id','$amount','$reason',NOW())";
     mysql_unbuffered_query($query);
 
-    $data = array();
-    $data['user'] = JOURNAL_API_USER;
-    $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " " . number_format($amount, 2) .
+    $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
     " for " . $_REQUEST['reason'] . ".";
-    postRequest(JOURNAL_API_URL, $data);
+    sendJournalNotification($journal_message);
     
     Notification::notifyBudget($amount, $reason, $giver, $receiver);
     Notification::notifySMSBudget($amount, $reason, $giver, $receiver);

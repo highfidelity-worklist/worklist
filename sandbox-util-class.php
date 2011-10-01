@@ -280,10 +280,6 @@ class SandBoxUtil {
         $journal_message = "Sandbox created for " . $nickname . " , checked out " . implode(", ",$projects);
 
         //sending journal notification
-        $data = array();
-        $data['user'] = JOURNAL_API_USER;
-        $data['pwd'] = sha1(JOURNAL_API_PWD);
-        $data['message'] = stripslashes($journal_message);
-        $prc = postRequest(JOURNAL_API_URL, $data);
+        sendJournalNotification($journal_message);
     }
 }

@@ -125,10 +125,7 @@ if ($userId > 0 ) {
 if (!empty($journal_message) && $status != 'DRAFT') {
     //sending journal notification
     $data = array();
-    $data['user'] = JOURNAL_API_USER;
-    $data['pwd'] = sha1(JOURNAL_API_PWD);
-    $data['message'] = stripslashes($journal_message);
-    $prc = postRequest(JOURNAL_API_URL, $data, array(), 10); //increase timeout to 10 seconds
+    sendJournalNotification(stripslashes($journal_message));
 }
 
     // Notify Runners of new suggested task

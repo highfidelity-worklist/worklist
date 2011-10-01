@@ -51,11 +51,7 @@ if ($userId > 0) {
                 }
                 $journal_message = "{$nick} is now trusted by {$message}!";
                 //sending journal notification
-                $data = array();
-                $data['user'] = JOURNAL_API_USER;
-                $data['pwd'] = sha1(JOURNAL_API_PWD);
-                $data['message'] = stripslashes($journal_message);
-                $prc = postRequest(JOURNAL_API_URL, $data,array(),10); //increase timeout to 10 seconds
+                sendJournalNotification(stripslashes($journal_message));
             }
         }
         echo json_encode(array( 'return' => "Trusted saved."));

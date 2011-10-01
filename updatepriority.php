@@ -79,11 +79,8 @@ SELECT *, @rownum := @rownum+1 AS position FROM `".WORKLIST."` WHERE `status` = 
     $newpos = $row['position'];
 
     if($origpos != $newpos){ // they will be the same if position is changed near usual items. not BIDDING
-	$data = array();
-	$data['user'] = JOURNAL_API_USER;
-	$data['pwd'] = sha1(JOURNAL_API_PWD);
-	$data['message'] = $_SESSION['nickname'] . " moved #$id: $summary from position $origpos to position $newpos";
-	$prc = postRequest(JOURNAL_API_URL, $data);
+	$journal_message = $_SESSION['nickname'] . " moved #$id: $summary from position $origpos to position $newpos";
+	sendJournalNotification($journal_message);
     }
 
 } else {
