@@ -14,11 +14,26 @@ $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
 if (empty($item))
     return;
 
-$query = "SELECT ".WORKLIST.".`id`, `summary`, `nickname`, `status`, `notes` FROM ".WORKLIST. 
-         " LEFT JOIN ".USERS." ON ".WORKLIST.".`creator_id` = ".USERS.".`id` WHERE ".WORKLIST.".id = '$item'
-         AND ".WORKLIST.".status != 'DRAFT' OR (" .WORKLIST. ".status = 'DRAFT' AND " .WORKLIST. ".`creator_id` = '$userId')";
+$query = "SELECT
+        w.id,
+        w.summary,
+        c.nickname creator,
+        w.status job_status,
+        w.notes,
+        p.name project,
+        r.nickname runner
+    FROM ".WORKLIST." w
+    LEFT JOIN ".USERS." c ON w.creator_id = c.id
+    LEFT JOIN ".USERS." r ON w.runner_id = r.id
+    LEFT JOIN ".PROJECTS." p ON w.project_id = p.project_id
+    WHERE w.id = '$item'
+        AND w.status != 'DRAFT'
+        OR (w.status = 'DRAFT' AND w.creator_id = '$userId')";
 $rt = mysql_query($query);
-$row = mysql_fetch_assoc($rt);
-
-$json = json_encode(array( $row['summary'], $row['nickname'], $row['status'], $row['notes'], $row['id']));
+if ($rt) {
+    $row = mysql_fetch_assoc($rt);
+    $json = json_encode($row);
+} else {
+    $json = json_encode(array('error' => "No data available"));
+}
 echo $json;     

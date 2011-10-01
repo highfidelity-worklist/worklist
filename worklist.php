@@ -394,8 +394,9 @@ include("head.html"); ?>
   
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
-        row += '<td width="41%"><span class="taskSummary"><span class="taskID">#' +
-                json[0] + '</span> - ' + pre + json[1] + post + extraStringBug +
+        row += '<td width="41%"><span id="workitem-' + json[0] + '" class="taskSummary">' +
+                '<span class="taskID">#' + json[0] + '</span> - ' +
+                pre + json[1] + post + extraStringBug +
                 '</span></td>';
 <?php if (! $hide_project_column) : ?>
         if ((json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID') &&json[10] > 0) {
@@ -622,13 +623,14 @@ include("head.html"); ?>
                     AppendRow(json[lastFirst-1], topIsOdd, true, json, lastFirst-1);
                 }
                 lastId = json[1][0];
+                makeWorkitemTooltip(".taskSummary");
                 
                 /*commented for remove tooltip */
                 //MapToolTips();
                 $('tr.row-worklist-live').hover(
                     function() {
                         var selfRow=$(this);
-                        $(".taskID,.taskSummary",this).wrap("<a href='" +
+                        $(".taskSummary",this).wrap("<a href='" +
                             buildHref( SetWorkItem(selfRow) ) +
                             "'></a>");
                         $(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").click(
@@ -637,7 +639,7 @@ include("head.html"); ?>
                             }
                         );
                     },function() {
-                        $(".taskID,.taskSummary",this).unwrap();
+                        $(".taskSummary",this).unwrap();
                         $(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").unbind("click");;
                 });
 
@@ -827,7 +829,7 @@ include("head.html"); ?>
                 $('#tablesorter').paginate(4, 100);
                 $('#tablesorter').tablesorter();
             }
-            makeWorkitemTooltip(".payment-worklist-item");            
+            makeWorkitemTooltip(".payment-worklist-item");
             if ( $("#projectLogoEdit").length > 0) {
                 new AjaxUpload('projectLogoEdit', {
                     action: 'jsonserver.php',

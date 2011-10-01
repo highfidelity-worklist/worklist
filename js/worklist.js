@@ -776,17 +776,16 @@ function makeWorkitemTooltip(className){
             dataType: 'json',
             bgcolor:"#ffffff",
             success: function(json) {
-
-                msg = json[0] ? '<div class = "head">' + json[0] + '</div>' : '';
-
-                msg += json[3] ? json[3] : '';
-                msg += json[1] ? '<div class = "tip-entry">Who: ' + json[1] + '</div>' : '';
-                msg += json[2] ? '<div class = "tip-entry">Status: ' + json[2] + '</div>' : '';
-                if(json[5]){
-                    var funded = json[5] == 1 ? 'Yes' : 'No';
-                    msg += '<div class = "tip-entry">Funded: ' + funded + '</div>';
+                msg = json.summary ? '<div class = "head">' + json.summary + '</div>' : '';
+                msg += json.notes ? json.notes : '';
+                msg += json.project ? '<div class = "tip-entry">Project: ' + json.project + '</div>' : '';
+                if (json.runner) {
+                    msg += '<div class = "tip-entry">Runner: ' + json.runner + '</div>';
+                } else if (json.creator) {
+                    msg += '<div class = "tip-entry">Creator: ' + json.creator + '</div>';
                 }
-                if(msg == ''){
+                msg += json.job_status ? '<div class = "tip-entry">Status: ' + json.job_status + '</div>' : '';
+                if (msg == '') {
                     msg = 'No data available';
                 }
             },
