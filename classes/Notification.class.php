@@ -228,7 +228,7 @@ class Notification {
                           $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                       }
                       if($workitem->getMechanic() != '') {
-                          $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                          $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                       }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
@@ -247,7 +247,7 @@ class Notification {
                             $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                         }
                         if($workitem->getMechanic() != '') {
-                            $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                            $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
@@ -264,7 +264,7 @@ class Notification {
                            $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                        }
                        if($workitem->getMechanic() != '') {
-                           $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                           $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                        }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
@@ -281,7 +281,7 @@ class Notification {
                             $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                         }
                         if($workitem->getMechanic() != '') {
-                            $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                            $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
@@ -303,7 +303,7 @@ class Notification {
                         $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
                     if($workitem->getMechanic() != '') {
-                        $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
                 $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />';
 
@@ -326,7 +326,7 @@ class Notification {
                         $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
                     if($workitem->getMechanic() != '') {
-                        $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />';
                 $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
@@ -342,7 +342,7 @@ class Notification {
                     . 'Project: ' . $project_name . '<br />'
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
                     . 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />'
-                    . 'Mechanic: ' . $workitem->getRunner()->getNickname() . '<br /><br />'
+                    . 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '<br /><br />'
                     . 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                     . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
                     . '-Worklist.net' ;
@@ -376,7 +376,7 @@ class Notification {
                     $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                   $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                   $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
@@ -392,7 +392,7 @@ class Notification {
                     $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                    $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                    $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
@@ -428,7 +428,7 @@ class Notification {
                     $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . "";
                 }
                 if($workitem->getMechanic() != '') {
-                   $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname() . "</p><br/>";
+                   $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . "</p><br/>";
                 }
                 $body .= '<br><br><a href=' . SERVER_URL . 'workitem.php?job_id=' .
                             $itemId . '>View new item</a>.';
@@ -442,7 +442,7 @@ class Notification {
                     $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                    $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                    $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
@@ -457,7 +457,7 @@ class Notification {
                     $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
