@@ -748,14 +748,14 @@ function invitePerson( $invite, $item, $summary = null, $description = null) {
             $user = getUserByNickname($invite);
             if ($user !== false) {
                 //sending email to the invited developer
-                $subject = "Invitation " . $summary;
+                $subject = "Invitation:  #" . $item . "," . $summary;
                 $body = "<p>Hello you!</p>";
                 $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">" . $summary . "</a>.</p>";
 				$body .= "<p>Description:</p>";
                 $body .= "<p>------------------------------</p>";
                 $body .= "<p>" . $description . "</p>";
                 $body .= "<p>------------------------------</p>";
-				$body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
+                $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
                 $body .= "<p>Hope to see you soon.</p>";
                 if(!send_email($user->username, $subject, $body)) { error_log("functions.php:invite: send_email failed"); }
 				return true;

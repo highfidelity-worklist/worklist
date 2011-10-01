@@ -162,9 +162,18 @@ replacement data:
     reviewer - the mechanic who undertook the code review
 */
 'code-review-finished' => array(
-    'subject' => 'Code review completed',
+    'subject' => 'Review Complete: {subj}',
     'body' => '<p>Hello,</p>
-               <p>Code review on task {task} has been completed by {reviewer}</p>'
+               <p>The code review on task {task} has been completed by {reviewer}</p>
+               <br>
+               <p>Project: '.$project_name . '<br />
+               Creator: {creator}<br />
+               Runner: {runner}<br />
+               Mechanic: {mechanic}</p>
+               <p>Notes: '.$workitem->getNotes() . '<br /></p>
+               <p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /></p>
+               <p> -Worklist.net</p>'
+               '
 )
 
 ); 

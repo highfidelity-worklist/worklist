@@ -21,10 +21,10 @@ define("AJAX_REFRESH", 30);
 
 
 // Default sender and sms sender. config.php has automatic fallback for REPLYTO if not set (will use *_SENDER)
-define('DEFAULT_SENDER','worklist@lovemachineinc.com');
-//define('DEFAULT_REPLYTO','worklist@lovemachineinc.com');
-define('SMS_SENDER','worklist@lovemachineinc.com');
-//define('SMS_REPLYTO','worklist@lovemachineinc.com');
+define('DEFAULT_SENDER','worklist@worklist.net');
+//define('DEFAULT_REPLYTO','worklist@worklist.net');
+define('SMS_SENDER','worklist@worklist.net');
+//define('SMS_REPLYTO','worklist@worklist.net');
 
 //Server URL's - If running as http://host.domain.com/ (not using app location), defining SERVER_NAME is all that is needed for non-ssl sites
 //define("SERVER_NAME","dev.worklist.net");

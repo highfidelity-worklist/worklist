@@ -210,7 +210,7 @@ class Notification {
         
         $itemId = $workitem -> getId();
         $itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId
-                    . '</a> (' . $workitem -> getSummary() . ')';
+                    . '</a>  ' . $workitem -> getSummary() . ' ';
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
         $body = '';
@@ -221,7 +221,18 @@ class Notification {
                 $subject = 'Comment: ' . $itemTitle;
                 $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
                 $body .= $data['who'] . ' says:<br />'
-                         . $data['comment'];
+                      . $data['comment'] . '<br /><br />'
+                      . 'Project: ' . $project_name . '<br />'
+                      . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                      if($workitem->getRunner() != '') {
+                          $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                      }
+                      if($workitem->getMechanic() != '') {
+                          $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                      }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;
             break;
             
             case 'fee_added':
@@ -229,19 +240,52 @@ class Notification {
                 $subject = 'Fee: ' . $itemTitle;
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br>'
-                        . 'Amount: ' . $data['fee_amount'];
+                        . 'Amount: ' . $data['fee_amount'] . '<br /><br />'
+                        . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                        if($workitem->getRunner() != '') {
+                            $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        }
+                        if($workitem->getMechanic() != '') {
+                            $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                        }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;
                 }
             break;
 
             case 'tip_added':
                 $subject = 'You\'ve received a tip from ' . $data['tip_adder'] . ' on job #' . $itemId;
-                $body = $data['tip_adder'] . ' tipped you $' . $data['tip_amount'] . ' on job ' . $itemLink . ' for:<br><br>' . $data['tip_desc'] . '<br><br>Yay!';
-            break;
+                $body = $data['tip_adder'] . ' tipped you $' . $data['tip_amount'] . ' on job ' . $itemLink . ' for:<br><br>' . $data['tip_desc'] . '<br><br>Yay!' . '<br /><br />'
+                . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                       if($workitem->getRunner() != '') {
+                           $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                       }
+                       if($workitem->getMechanic() != '') {
+                           $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                       }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;
+                break;
 
             case 'bid_accepted':
                 $subject = 'Accepted: ' . $itemTitle;
-                $body = 'Your bid was accepted for ' . $itemLink . '<br/>'
-                        . 'Promised by: ' . $_SESSION['nickname'];
+                $body = 'Your bid was accepted for ' . $itemLink . '<br/><br />'
+                        . 'Promised by: ' . $_SESSION['nickname'] . '<br /><br />'
+                . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                        if($workitem->getRunner() != '') {
+                            $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        }
+                        if($workitem->getMechanic() != '') {
+                            $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                        }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;        
             break;
 
             case 'bid_placed':
@@ -250,8 +294,18 @@ class Notification {
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Done In: ' . $data['done_in'] . '<br />'
                     . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
+                    . 'Bidder Name: <a href="mailto:' . $_SESSION['nickname'] . '">' . $_SESSION['nickname'] . '</a><br /><br />'
                     . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
-                    . 'Notes: ' . $data['notes'] . '<br />';
+                    . 'Notes: ' . $data['notes'] . '<br /><br />'
+                    . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                    if($workitem->getRunner() != '') {
+                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    }
+                    if($workitem->getMechanic() != '') {
+                        $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                    }
+                $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />';
 
                 $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
                 $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid">Click here to accept bid.</a>';
@@ -265,7 +319,16 @@ class Notification {
                     . 'Done In: ' . $data['done_in'] . '<br />'
                     . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
                     . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
-                    . 'Notes: ' . $data['notes'] . '<br />';
+                    . 'Notes: ' . $data['notes'] . '<br /><br />'
+                    . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                    if($workitem->getRunner() != '') {
+                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    }
+                    if($workitem->getMechanic() != '') {
+                        $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                        }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />';
                 $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
                 $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] .
                                  '&action=accept_bid">Click here to accept bid.</a>';
@@ -275,32 +338,78 @@ class Notification {
             case 'modified-functional':
                 $subject = "Functional: ".$itemTitle;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-                        . $data['changes'];
+                    . $data['changes'] . '<br /><br />'
+                    . 'Project: ' . $project_name . '<br />'
+                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
+                    . 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />'
+                    . 'Mechanic: ' . $workitem->getRunner()->getNickname() . '<br /><br />'
+                    . 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                    . '-Worklist.net' ;
             break;
             
             case 'modified':
             if($workitem->getStatus() != 'DRAFT') {
-                $subject = $data['title'] . ": " . $itemTitle;
+                $subject = "Job Modified: " . $itemTitleWithProject;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-                        . $data['changes'];
+                    . $data['changes'] . '<br /><br />'
+                    . 'Project: ' . $project_name . '<br />'
+                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                    if($workitem->getRunner() != '') {
+                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    }
+                    if($workitem->getMechanic() != '') {
+                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                    }
+                    $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
+                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                    . '-Worklist.net' ;
             }
             break;
 
             case 'new_bidding':
                 $subject = "Bidding: " . $itemTitleWithProject;
-                $body = "Summary:<br>".$workitem -> getSummary() .
-                         '<br><br>Notes:<br>'.$workitem->getNotes();
-                $body .= '<br><br>You are welcome to bid <a href='.SERVER_URL.
-                         'workitem.php?job_id=' . $itemId . '>here</a>.';
+                $body = "Summary: " . $itemLink . '<br /><br />'
+                . 'Project: ' . $project_name . '<br />'
+                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if($workitem->getRunner() != '') {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                }
+                if($workitem->getMechanic() != '') {
+                   $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;
             break;
 
             case 'new_review':
                 $subject = "Review: ".$itemTitle;
-                $body = 'New item is available for review: ' . $itemLink . '<br>';
+                $body = "New item is available for review: " . $itemLink . '<br /><br />'
+                . 'Project: ' . $project_name . '<br />'
+                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if($workitem->getRunner() != '') {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                }
+                if($workitem->getMechanic() != '') {
+                    $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;
+                
             break;
             case 'new_functional':
                 $subject = "Functional: ".$itemTitle;
-                $body =  'New item is available for functional: ' . $itemLink . '<br>';
+                $body = "New item is available for functional: " . $itemLink ;
+                $body.= '<br/><br/>Project: ' . $project_name;
+                $body.= '<br/>Creator: ' . $workitem->getCreator()->getNickname();
+                $body.= '<br/>Runner: ' . $workitem->getRunner()->getNickname();
+                $body.= '<br/>Mechanic: ' . $workitem->getMechanic()->getNickname();
+                $body.= '<br><br>Notes:<br>' .$workitem->getNotes();
+                $body.= '<br><br>You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />';
+                $body.= '<br><br>-Worklist.net' ;
+                
             break;
             case 'bug_found':
                 $subject = "New bug of item #".$workitem->getBugJobId().
@@ -310,25 +419,49 @@ class Notification {
                 $workitem->getBugJobId().
                             " : ".$workitem->getBugJobSummary()."</p>";
 
-                $body .= "<p>New item #" . $itemId . " summary: " .
+                $body .= "<br/><p>New item #" . $itemId . " summary: " .
                             $workitem -> getSummary() . ".</p>";
-                $body .= "<p>" . $workitem->getNotes(). "</p>";
+                $body .= "<br/><p>Notes:" . $workitem->getNotes(). "</p><br/><br/>";
+                $body .= '<br/><p>Project: ' . $project_name . "";
+                $body .= 'Creator: ' . $workitem->getCreator()->getNickname(). "";
+                if($workitem->getRunner() != '') {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . "";
+                }
+                if($workitem->getMechanic() != '') {
+                   $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname() . "</p><br/>";
+                }
                 $body .= '<br><br><a href=' . SERVER_URL . 'workitem.php?job_id=' .
                             $itemId . '>View new item</a>.';
             break;
             case 'suggested':
-                $subject = "Suggested: " . $itemTitle;
-                $body =  'Summary:<br/> ' . $workitem -> getSummary() ;
-                $body.= '<br/><br/>Notes: ' . $data['notes'] ;
-                $body .= '<br><br>You can see the task <a href=' . SERVER_URL .
-                         'workitem.php?job_id=' . $itemId . '>here</a>.';
+                $subject = "Suggested Job: " . $itemTitle;
+                $body =  'Summary: ' . $itemLink . '<br /><br />'
+                . 'Project: ' . $project_name . '<br />'
+                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if($workitem->getRunner() != '') {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                }
+                if($workitem->getMechanic() != '') {
+                    $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;
             break;
             case 'suggestedwithbid':
                 $subject = "Suggested With Bid: " . $itemTitle;
-                $body =  'Summary:<br/> ' . $workitem -> getSummary();
-                $body .= '<br/><br/>Notes: ' . $data['notes'];
-                $body .= '<br><br>You can see the task <a href=' . SERVER_URL.
-                         'workitem.php?job_id=' . $itemId . '>here</a>.';                         
+                $body =  'Summary: ' . $itemLink . '<br /><br />'
+                . 'Project: ' . $project_name . '<br />'
+                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if($workitem->getRunner() != '') {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                }
+                if($workitem->getMechanic() != '') {
+                $body .= 'Mechanic: ' . $workitem->getRunner()->getNickname()  . '<br /><br />';
+                }
+                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . '-Worklist.net' ;                       
             break;
             case 'autotestsuccess':
                 $reusableString = $project_name . '(v' . $revision . ')';

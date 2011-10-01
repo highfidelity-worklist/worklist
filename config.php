@@ -16,7 +16,7 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
 }
 
 if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER', 'Worklist <worklist@worklist.net>');
-if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@lovemachineinc.com');
+if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@worklist.net');
 
 # Add revision (version) information
 if (!defined('APP_REVISION'))   define('APP_REVISION', '$Rev$');
