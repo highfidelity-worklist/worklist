@@ -1441,7 +1441,19 @@ if ($action =="edit"):  ?>
                                         // but only if user is runner or creator 15-MAR-2011 <godka>
                                         $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
                                     echo $expired_class; ?>"><?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
-                                        <script type="data"><?php echo "{id: {$bid['id']}, nickname: '{$bid['nickname']}', email: '{$bid['email']}', amount: '{$bid['bid_amount']}', bid_accepted: '{$bid['bid_accepted']}', bid_created: '{$bid['bid_created']}', bid_expires: '" . relativeTime($bid['expires']) . "', time_to_complete: '{$bid['time_to_complete']}', done_in: '{$bid['done_in']}', bidder_id: {$bid['bidder_id']}, notes:\"$notes\"}" ?></script>
+                                        <script type="data"><?php echo
+                                                "{id: {$bid['id']}, " .
+                                                "nickname: '{$bid['nickname']}', " .
+                                                "email: '{$bid['email']}', " .
+                                                "amount: '{$bid['bid_amount']}', " .
+                                                "bid_accepted: '{$bid['bid_accepted']}', " .
+                                                "bid_created: '{$bid['bid_created']}', " .
+                                                "bid_expires: '" . ($bid['expires'] ? relativeTime($bid['expires']) : "Never") . "', " .
+                                                "time_to_complete: '{$bid['time_to_complete']}', " .
+                                                "done_in: '{$bid['done_in']}', " .
+                                                "bidder_id: {$bid['bidder_id']}, " .
+                                                "notes:\"$notes\"}";
+                                        ?></script>
                                         <?php } ?>
                                     <td>
                                     <?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>

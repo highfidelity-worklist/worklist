@@ -1007,7 +1007,7 @@ function sendMailToDiscardedBids($worklist_id)    {
 
 function changeStatus($workitem, $newStatus, $user) {
 
-    $allowable = array("SUGGESTED", "REVIEW", "FUNCTIONAL", "PASS", "COMPLETED");
+    $allowable = array("DRAFT", "SUGGESTED", "SUGGESTEDwithBID", "REVIEW", "FUNCTIONAL", "PASS", "COMPLETED");
 
     if ($user->getIs_runner() == 1 || $user->getBudget() > 0) {
         if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)) {
