@@ -691,7 +691,7 @@ class Notification {
         $qry = "SELECT w.*, b.*, b.id as bid_id, u.id as runner_id, u.username as runner_email FROM " . WORKLIST . " w LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id".
             " LEFT JOIN " . USERS . " u ON w.runner_id = u.id".
             " WHERE (w.status = 'WORKING' OR w.status = 'REVIEW' OR w.status = 'PRE-FLIGHT' OR w.status = 'COMPLETED')".
-            " AND b.accepted = 1 AND b.past_notified = '0000-00-00 00:00:00' AND b.withdrawn = 0";
+            " AND b.accepted = 1 AND ( b.past_notified = '0000-00-00 00:00:00' OR b.past_notified IS NULL ) AND b.withdrawn = 0";
         $worklist = mysql_query($qry) or (error_log("select past due bids error: " . mysql_error()) && die);
         $wCount = mysql_num_rows($worklist);
         if($wCount > 0){
