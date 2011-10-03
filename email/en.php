@@ -173,7 +173,6 @@ replacement data:
                <p>Notes: '.$workitem->getNotes() . '<br /></p>
                <p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /></p>
                <p> -Worklist.net</p>'
-               '
 )
 
 ); 
