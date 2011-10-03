@@ -380,14 +380,18 @@ if($action == 'finish_codereview') {
     $workitem->setCRCompleted(1);
     $workitem->save();
     $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
+    $project = new Project();
+    $project->loadById($workitem->getProjectId());
     $data = array();
     $data['subj'] = "#$worklist_id: " . $workitem->getSummary();
+    $data['project_name'] = $project->getName();
     $data['task'] = "<a href='".SERVER_URL."workitem.php?job_id=".$worklist_id."'>#".$worklist_id."</a> ".$workitem->getSummary();
     $data['reviewer'] = $_SESSION['nickname'];
     $data['creator'] = $workitem->getCreator()->getNickname();
     $data['runner'] = $workitem->getRunner()->getNickname();
     $data['mechanic'] = $workitem->getMechanic()->getNickname();
-    
+    $data['notes'] = $workitem->getNotes();
+    $data['worklist_id'] = $worklist_id;
     $notifyUser = new User;
     $notifyUser->findUserById($workitem->getMechanicId());
     if (! sendTemplateEmail($notifyUser->getUsername(), 'code-review-finished', $data)) {

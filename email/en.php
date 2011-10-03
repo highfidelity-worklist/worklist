@@ -166,12 +166,12 @@ replacement data:
     'body' => '<p>Hello,</p>
                <p>The code review on task {task} has been completed by {reviewer}</p>
                <br>
-               <p>Project: '.$project_name . '<br />
+               <p>Project: {project_name}<br />
                Creator: {creator}<br />
                Runner: {runner}<br />
                Mechanic: {mechanic}</p>
-               <p>Notes: '.$workitem->getNotes() . '<br /></p>
-               <p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /></p>
+               <p>Notes: {notes}<br /></p>
+               <p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id={worklist_id}>here</a>.' . '<br /></p>
                <p> -Worklist.net</p>'
 )
 
