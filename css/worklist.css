@@ -873,3 +873,10 @@ table.tablesorter thead tr .headerSortUp {
 .home-header-nav span {
     padding-right: 10px;
 }
+
+div#addFromJournal.ui-dialog,
+.addFromJournal-popup {
+    border: none !important;
+    border-radius: none !important;
+    box-shadow: none !important;
+}

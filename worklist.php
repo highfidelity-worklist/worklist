@@ -230,6 +230,9 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
+<?php if(isset($_REQUEST['addFromJournal'])) { ?>
+<script type="text/javascript" src="js/jquery.ba-resize.min.js"></script>
+<?php } ?>
 <script type="text/javascript">
     var lockGetWorklist = 0;
     var status_refresh = 5 * 1000;
@@ -802,7 +805,7 @@ include("head.html"); ?>
             clearStyle: true,
             collapsible: true,
             active: true,
-            create: function(event, ui) { 
+            create: function(event, ui) {
                 if(inProject.length > 0) {
                     var intervalId = setInterval(function() {
                         if($("#workers tr").length) {
@@ -820,7 +823,7 @@ include("head.html"); ?>
         });
 
 
-        if (inProject.length > 0) { 
+        if (inProject.length > 0) {
             if ($("#tablesorter tr").length) {
                 $('#tablesorter').paginate(4, 100);
                 $('#tablesorter').tablesorter();
@@ -846,9 +849,9 @@ include("head.html"); ?>
                             $('input[name=logoProject]').val(data.fileName);
                         }
                     }
-                });	
+                });
             }
-        } 
+        }
 
         new AjaxUpload('projectLogoAdd', {
             action: 'jsonserver.php',
@@ -869,7 +872,7 @@ include("head.html"); ?>
                     $('input[name=logoProject]').val(data.fileName);
                 }
             }
-        });	
+        });
 
 		
         $.get('getskills.php', function(data) {
@@ -903,10 +906,7 @@ include("head.html"); ?>
             orderBy($(this).text().toLowerCase());
         });
         if(addFromJournal != '') {
-            var winHandle = window.open('', addFromJournal);
-            var addJobPane = (winHandle.document.getElementById) ?
-                    winHandle.document.getElementById('addJobPane') :
-                    winHandle.document.all['addJobPane'];
+            var addJobPane = window.parent;
         }
         
         // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
@@ -1002,10 +1002,13 @@ include("head.html"); ?>
             },
             close: function() {
                 if(addFromJournal != '') {
-                    addJobPane.style.display='none';
+                    setTimeout(function() {
+                        addJobPane.closeAddJobDialog()
+                    }, 1000);
                 }
             }
         });
+
         $('#budget-expanded').dialog({ autoOpen: false, width:920, show:'fade', hide:'drop' });
         $('#user-info').dialog({
            autoOpen: false,
@@ -1154,7 +1157,9 @@ include("head.html"); ?>
                         }
                         loaderImg.hide("saveRunning");
                         if(addFromJournal != '') {
-                            addJobPane.style.display='none';
+                            setTimeout(function() {
+                                addJobPane.closeAddJobDialog()
+                            }, 1000);
                         } else {
                             if (timeoutId) clearTimeout(timeoutId);
                             timeoutId = setTimeout("GetWorklist("+page+", true, true)", refresh);
@@ -1166,7 +1171,20 @@ include("head.html"); ?>
             });
             $('#fees_block').hide();
             $('#fees_single_block').show();
-            $('#popup-edit').dialog('open');
+            if(addFromJournal != '') {
+                $('#popup-edit').dialog('option', 'dialogClass', 'addFromJournal-popup');
+                $('#popup-edit').dialog('option', 'position', ['center', 'top']);
+                $('#popup-edit').dialog('option', 'minHeight', 700);
+                $('#popup-edit').dialog('option', 'autoResize', true);
+                $('.addFromJournal-popup div.ui-dialog-titlebar').hide();
+                $('#popup-edit').parent().attr('id', 'addFromJournal');
+                $('#popup-edit').resize(function() {
+                    addJobPane.resizeJobIframe($('#popup-edit').height()+50);
+                });
+                $('#popup-edit').dialog('open');
+            } else {
+                $('#popup-edit').dialog('open');
+            }
         });
         $("#search").click(function(e){
             e.preventDefault();
@@ -1614,7 +1632,7 @@ var documentsArray = new Array();
 </script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
 <title><?php
-echo 
+echo
   is_object($inProject)
   ?  'Project: ' . $inProject->getName()
   :  'Worklist | Fast pay for your work, open codebase, great community.'
@@ -1694,7 +1712,7 @@ if (is_object($inProject)) {
     <br/>Check box to<br/>remove logo
     <span style="display: none;" class="LV_validation_message LV_invalid upload"></span>
     </p>
-    <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>]</h2>        
+    <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>]</h2>
         <fieldset id="editContainer">
             <p class="info-label">Edit Description:<br />
                 <textarea name="description" id="description" size="48" /><?php echo $inProject->getDescription(); ?></textarea>
@@ -1731,7 +1749,7 @@ if (is_object($inProject)) {
         src="<?php echo(!$inProject->getLogo() ? 'images/emptyLogo.png' : 'uploads/' . $inProject->getLogo());?>" />
     </p>
     <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>] </h2>
-    <ul class="descriptionHolder">        
+    <ul class="descriptionHolder">
         <li><strong>Description:</strong> <?php echo nl2br(linkify(htmlspecialchars($inProject->getDescription()))); ?></li>
 <?php endif; ?>
     </ul>
@@ -1802,7 +1820,7 @@ if (is_object($inProject)) {
                <div class="payments">
                     <div id="payment-panel">
                         <table width="100%" class="tablesorter" id="tablesorter">
-                            <caption class="table-caption" 
+                            <caption class="table-caption"
                                 <b>Payment Summary</b>
                             </caption>
                             <thead>
@@ -1831,10 +1849,10 @@ if (is_object($inProject)) {
                             </tbody>
                         </table>
                     </div>
-                </div>            
+                </div>
             </div>
-<?php endif; ?>            
-<?php if ($is_runner || $is_payer || $inProject->isOwner($userId)) : ?>            
+<?php endif; ?>
+<?php if ($is_runner || $is_payer || $inProject->isOwner($userId)) : ?>
             <div id="for_view">
                 <div class="roles">
                     <div id="roles-panel">
@@ -1878,10 +1896,10 @@ if (is_object($inProject)) {
 <?php endif; ?>
 <!--End of roles table-->
 
-<div id="uploadPanel"> 
+<div id="uploadPanel">
     <script type="text/html" id="projectuploadedFiles">
         <div id="accordion">
-            <h3><a href="#">Who has worked on Project</a><h3>  
+            <h3><a href="#">Who has worked on Project</a><h3>
         <div class="projectWorkers" >
             <table width="100%" class="table-workers" id="workers">
                 <caption class="table-caption" >
@@ -1908,7 +1926,7 @@ if (is_object($inProject)) {
 					<?php } ?>
                 </tbody>
             </table>
-        </div>      
+        </div>
         <?php if (!$edit_mode) { ?>
             <h3><a href="#">Allow code reviews from:</a></h3>
             <div id="codeReviewRightsContainer">
