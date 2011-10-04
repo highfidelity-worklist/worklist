@@ -350,7 +350,7 @@ class Notification {
             
             case 'modified':
             if($workitem->getStatus() != 'DRAFT') {
-                $subject = "Job Modified: " . $itemTitleWithProject;
+                $subject = $data['title'] . ": " . $itemTitle;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
                     . $data['changes'] . '<br /><br />'
                     . 'Project: ' . $project_name . '<br />'
@@ -368,7 +368,7 @@ class Notification {
             break;
 
             case 'new_bidding':
-                $subject = "Bidding: " . $itemTitleWithProject;
+                $subject = "Bidding: " . $itemTitle;
                 $body = "Summary: " . $itemLink . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
