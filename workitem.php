@@ -317,7 +317,7 @@ if ($action == 'new-comment') {
             $parent_comment = NULL;
         }
 
-        addComment($_POST['worklist_id'],
+        $correspondent = addComment($_POST['worklist_id'],
                    $_POST['user_id'],
                    $_POST['comment'],
                    $parent_comment);
@@ -329,7 +329,7 @@ if ($action == 'new-comment') {
                 'type' => 'comment',
                 'workitem' => $workitem,
                 'recipients' => array('creator', 'runner', 'mechanic'),
-                'emails' => $corespondent),
+                'emails' => $correspondent),
                 array(
                     'who' => $_SESSION['nickname'],
                     // removed nl2br as it's cleaner to be able to choose if this is used on output
@@ -1045,7 +1045,7 @@ function changeStatus($workitem, $newStatus, $user) {
             try {
                 $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
                 $comment = "Code review available here:\n$result";
-                addComment($workitem->getId(), $user->getId(), $comment);
+                $correspondent = addComment($workitem->getId(), $user->getId(), $comment);
             } catch (Exception $ex) {
                 error_log("Could not paste diff: \n$ex");
             }
@@ -1058,13 +1058,13 @@ function changeStatus($workitem, $newStatus, $user) {
     return true;
 }
 
-function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id=NULL) {
+function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id) {
     // in case the comment is a reply to another comment,
     // we'll fetch the original comment's email <mikewasmike>
-    $corespondent = NULL; 
     $comment = new Comment();
     $comment->setWorklist_id((int) $worklist_id);
     $comment->setUser_id((int) $user_id);
+    $correspondent = null;
 
     if (isset($parent_comment_id)) {
         $comment->setComment_id((int) $parent_comment_id);
@@ -1072,7 +1072,7 @@ function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id=NU
         $originalComment->findCommentById((int) $parent_comment_id);
         $cuser = new User();
         $cuser->findUserById($originalComment->getUser_id());
-        $corespondent = array($cuser->getUsername());
+        $correspondent = array($cuser->getUsername());
     }
     
     $comment->setComment($comment_text);
@@ -1084,4 +1084,5 @@ function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id=NU
     }  
     $redirectToDefaultView = true;
 
+    return $correspondent;
 }
