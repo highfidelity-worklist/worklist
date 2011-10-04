@@ -211,6 +211,10 @@ if (isset($_POST['save_account'])) {
         $user->setPaypal_email($paypal_email);
         $user->save();
     }
+} else if (isset($_POST['save_w9Name'])) {
+    $first_name = isset($_POST['first_name']) ? mysql_real_escape_string($_POST['first_name']) : "";
+    $last_name = isset($_POST['last_name']) ? mysql_real_escape_string($_POST['last_name']) : "";
+    $saveArgs = array('first_name'=>1, 'last_name'=>1);
 }
 if (!empty($saveArgs)) {
 
@@ -309,6 +313,14 @@ include("head.html");
             window.location.reload();
         }
     }
+
+    function validateNames(file, extension) {
+        if (LiveValidation.massValidate( [ firstname, lastname ] )) {
+            return validateW9Upload(file, extension);
+        } else {
+            return false;   
+        }        
+    }
     
     function validateW9Upload(file, extension) {
         nclass = '.uploadnotice-w9';
@@ -335,6 +347,8 @@ include("head.html");
                             '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
                             '<strong>Info:</strong> ' + data.message + '</p>' +
                         '</div>';
+            saveSettings('w9Name');
+            sendw9NotificationEmail();                                       
         } else {
             var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
                             '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
@@ -404,6 +418,12 @@ include("head.html");
             } else {
                 return false;
             }
+        } else if (type == 'w9Name') {
+            values = {
+                first_name: $("#first_name").val(),
+                last_name: $("#last_name").val(),
+                save_w9Name: 1
+            }
         }
 
         $('.error').text('');
@@ -431,6 +451,22 @@ include("head.html");
             },
             error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');
+            }
+        });
+    }
+    
+    function sendw9NotificationEmail() {
+        var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
+        $.ajax({
+            type: "POST",
+            url: 'jsonserver.php',
+            data: {
+                action: 'sendw9NotificationEmail',
+                userid: user
+            },
+            dataType: 'json',
+            success: function(data) {
+
             }
         });
     }
@@ -505,10 +541,36 @@ include("head.html");
             data: { action: 'w9Upload', userid: user },
             autoSubmit: true,
             responseType: 'json',
-            onSubmit: validateW9Upload,
+            onSubmit: validateNames,
             onComplete: completeUpload
+        });   
+ 
+        $("#w9-dialog").dialog({
+            resizable: false,
+            width: 330,
+            title: 'W9 form upload',
+            autoOpen: false,
+            position: ['top'],
+            open: function() {
+                <?php if (empty($_SESSION['new_user'])) {
+                    $firstName = $userInfo['first_name'];
+                    $lastName = $userInfo['last_name'];
+                } else {
+                    $firstName = "";
+                    $lastName = "";
+                }
+                ?>
+                $("#last_name").val('<?php echo $lastName ?>');
+                $("#first_name").val('<?php echo $firstName ?>');
+                $(".uploadnotice-w9").html('');
+                $(".LV_validation_message").html('');                  
+            }            
         });
-
+        
+        $("#uploadw9").click(function() {
+            $("#w9-dialog").dialog("open");
+         });
+         
         $.ajax({
             type: "POST",
             url: 'jsonserver.php',
@@ -728,24 +790,30 @@ include("head.html");
             <input type="checkbox" name="w9_accepted" id="w9_accepted" <?php if ($user->getW9_accepted()) { ?> checked="checked" disabled="disabled" <?php } ?> />
             <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you'll do your part!</label>
         </p>
+        <blockquote>
+            <input id="uploadw9" type="button" value="Upload W9" style="float:left;margin-left: 8px;" />
+            <?php include("dialogs/popup-w9.inc")?>
+        </blockquote>        
         <script type="text/javascript">
             var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
             paypal.add(Validate.Email);
             // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal 
             // email, which removes their paypal verification and prevents them from bidding
             // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+            
+            var firstname = new LiveValidation('first_name', {validMessage: "First Name looks good", onlyOnBlur: true});
+            firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
+            firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
+            
+            var lastname = new LiveValidation('last_name', {validMessage: "Last Name looks good", onlyOnBlur: true}); 
+            lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
+            lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
+                        
             var w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
             w9_accepted.displayMessageWhenEmpty = true;
             w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
         </script>
-        <blockquote>
-          <p><label style="float:left;line-height:26px">Upload W-9</label>
-                <input id="formupload" type="button" value="Browse" style="float:left;margin-left: 8px;" />
-          </p>
-            <br style="clear:both" />
-            <div class="uploadnotice-w9"></div>
-            <br style="clear:both" />
-        </blockquote>
+
 
         <input type="submit" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
 

@@ -23,6 +23,8 @@ class User {
     protected $timezone;
     protected $w9_status;
     protected $w9_accepted;
+    protected $first_name;
+    protected $last_name;
     protected $is_runner;
     protected $is_payer;
     protected $is_active;
@@ -637,6 +639,36 @@ class User {
         $this->w9_accepted = $w9_accepted;
         return $this;
     }
+    
+    /**
+     * @return the $first_name
+     */
+    public function getFirst_name() {
+        return $this->first_name;
+    }
+
+    /**
+     * @param $first_name the $first_name to set
+     */
+    public function setFirst_name($first_name) {
+        $this->first_name = $first_name;
+        return $this;
+    }    
+
+    /**
+     * @return the $last_name
+     */
+    public function getLast_name() {
+        return $this->last_name;
+    }
+
+    /**
+     * @param $last_name the $last_name to set
+     */
+    public function setLast_name($last_name) {
+        $this->last_name = $last_name;
+        return $this;
+    } 
 
     /**
      * @return the $is_active
