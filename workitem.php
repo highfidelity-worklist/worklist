@@ -23,7 +23,7 @@ require_once 'models/Users_Favorite.php';
                  "WORKING" => array("REVIEW", "FUNCTIONAL"),
                  "FUNCTIONAL" => array("REVIEW", "WORKING"),
                  "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
-                 "COMPLETED" => array("REVIEW", "DONE"),
+                 "COMPLETED" => array("WORKING", "DONE"),
                  "DONE" => array("REVIEW"),
                  "PASS" => array("REVIEW"));
 

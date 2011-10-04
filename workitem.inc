@@ -1309,7 +1309,14 @@ if ($action =="edit"):  ?>
                         <span class="project-label" id="edit_review_url">Functional &amp; Review URL</span>
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
-                                <?php echo htmlspecialchars($worklist['sandbox']);?>
+                                  <?php 
+                                  if (strlen(htmlspecialchars($worklist['sandbox'])) > 64) {
+                                        echo substr(htmlspecialchars($worklist['sandbox']), 0, 64) . "...";
+                                  } else {
+                                      echo htmlspecialchars($worklist['sandbox']);
+                                  }
+                                  
+                                  ?> 
                             </a><br />
                             <?php if (($worklist['status'] == 'FUNCTIONAL' || $worklist['status'] == 'REVIEW')
                                     && $worklist['sandbox'] != 'N/A') { ?> 
