@@ -10,6 +10,8 @@ if (!isset($is_runner)) {
 if (!isset($is_payer)) {
     $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 }
+
+$userId = getSessionUserId();
 ?>
 
 <div id="outside"> 
@@ -104,7 +106,9 @@ if (!isset($is_payer)) {
             | <a href="team.php">Team</a>
             | <a href="settings.php" class="iToolTip menuSettings">Settings</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
-             <?php if ($is_runner || $is_payer) { ?>
+<!--  Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb, your userid must be included below.
+      Just remove when done! -->            
+             <?php if ($userId == 2 ||  $userId == 1020 || $userId == 1918) { ?>
             | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
              <?php } ?>
             | <a href="help.php" target="_blank">Help</a>

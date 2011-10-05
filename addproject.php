@@ -15,7 +15,9 @@ $journal_message = '';
 $nick = '';
 
 $userId = getSessionUserId();
-if ($userId > 0 && ($_SESSION['is_runner'] || $_SESSION['is_payer'])) {
+//Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb, your userid must be included below.
+//Just remove when done!   
+if ($userId == 2 ||  $userId == 1020 || $userId == 1918) {
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );
