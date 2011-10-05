@@ -8,15 +8,15 @@ var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 function smsAddressVisibility(e)
 {
     if ( $("#country option:selected").val() != '' ) {
-	if( $("#int_code option:selected").val() == '1'){
-	    $("#smsaddr").hide();
-	    $("#sms-other p").hide();
-	    $("#sms-other").hide();
-	} else {
-	    $("#sms-other").show();
-	    $("#sms-other p").show();
-	    $("#smsaddr").show();	
-	}
+    if( $("#int_code option:selected").val() == '1'){
+        $("#smsaddr").hide();
+        $("#sms-other p").hide();
+        $("#sms-other").hide();
+    } else {
+        $("#sms-other").show();
+        $("#sms-other p").show();
+        $("#smsaddr").show();    
+    }
     }
 }
 
@@ -32,14 +32,14 @@ var pos=4;
         } else {
             var country = $("#country option:selected").text();
             var len = country.length;
-	    $("#int-code option").each(function(){
+        $("#int-code option").each(function(){
                 if ($(this).text().trim().substr(0, len) == country) {
                     $(this).prop('selected', true);
                     return false;
                 }
             });
 
-	    smsProvider = $("#stored-provider").val();
+        smsProvider = $("#stored-provider").val();
             var el = $("#provider");
             el.empty();
             $("#sms-provider").show();
@@ -55,11 +55,11 @@ var pos=4;
                         return;
                     }
                     smsProviderList = new Array();
-					var selectedFound=false;
+                    var selectedFound=false;
                     for (var i = 0; i < json.length; i++) {
                         if (smsProvider && smsProvider == json[i]) {
                             el.append('<option value="'+json[i]+'" selected="selected">'+json[i]+'</option>');
-							selectedFound=true;
+                            selectedFound=true;
                         } else {
                             el.append('<option value="'+json[i]+'">'+json[i]+'</option>');
                         }
@@ -93,17 +93,40 @@ function smsUpdatePhone(filter)
     }
 }
 
+/*
+ * function sets into a cookie the time zone offset
+ */
+function get_timezone()
+{
+    var d = new Date()
+    var value = -d.getTimezoneOffset()/60;        //gets the time zone
+    //changes the value format to the used one
+    if (value > 9) {
+        value = '+' + value + '00';
+    } else if (value > -1) {
+        value = '+0' + value + '00';
+    } else if (value > -10) {
+        value = '-0' + Math.abs(value) + '00';
+    } else {
+        value += '00';
+    }
+    
+    return value;
+}
+
 $(document).ready(function(){
     $("#phone").blur(function() { smsUpdatePhone(true); });
     $("#phone").keypress(function() { smsUpdatePhone(false); });
-    $("#country, #provider, #smsaddr").change(function() { smsRefreshProvider(); smsAddressVisibility(); });	      
+    $("#country, #provider, #smsaddr").change(function() { smsRefreshProvider(); smsAddressVisibility(); });          
     if( is_chrome ) {
         $("#int_code").change(function() { smsAddressVisibility(); });
-    } else {	
+    } else {    
         $('#int_code').bind('click',function(event) {
             event.preventDefault(); 
             smsAddressVisibility(event); 
         });
     }
     smsRefreshProvider(true);
+    
+    $('option[value = "' + get_timezone() + '"]').attr('selected','selected');
 });
