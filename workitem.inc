@@ -514,7 +514,7 @@ $(document).ready(function(){
         $('#withdraw').submit();
     });
 
-    $('tr.row-bidlist-live ').click(function(){
+    $('tr.row-bidlist-live').click(function() {
 
         $.metadata.setType("elem", "script")
         var bidData = $(this).metadata();
@@ -1417,7 +1417,7 @@ if ($action =="edit"):  ?>
                     <div id="bid-panel">
                         <table width="100%" class="table-bids">
                             <caption class="table-caption" >
-                                <b>Bids</b>
+                                <b>Bids</b> <span class="note">(click bid for detail)</span>
                             </caption>
                             <thead>
                                 <tr class="table-hdng">
@@ -1452,16 +1452,19 @@ if ($action =="edit"):  ?>
                                         $expired_class = '';
                                     }
                                 
-
-                            ?>
-
-                                <tr class="<?php ($user_id) ? print 'row-bidlist-live' :'' ; ?>
-                                    <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> biditem<?php
-                                        if ($is_runner || $user->getId() == $bid['bidder_id']) echo '-'.$bid['id'];
-                                        // store bid info into jquery metadata so we won't have to fetch it again on user click
-                                        // but only if user is runner or creator 15-MAR-2011 <godka>
-                                        $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
-                                    echo $expired_class; ?>"><?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
+                                    $row_class = "";
+                                    $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
+                                    $row_class .= ($row % 2) ? 'rowodd ' : 'roweven ';
+                                    $row_class .= 'biditem';
+                                    $row_class .= ($is_runner || $user->getId() == $bid['bidder_id']) ? "-".$bid['id'].' clickable' : '';
+                                    $row_class .= $expired_class;
+                                    ?>
+                                <tr class="<?php echo $row_class; ?>">
+                                <?php
+                                    // store bid info into jquery metadata so we won't have to fetch it again on user click
+                                    // but only if user is runner or creator 15-MAR-2011 <godka>
+                                    $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
+                                    if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
                                         <script type="data"><?php echo
                                                 "{id: {$bid['id']}, " .
                                                 "nickname: '{$bid['nickname']}', " .
@@ -1475,7 +1478,7 @@ if ($action =="edit"):  ?>
                                                 "bidder_id: {$bid['bidder_id']}, " .
                                                 "notes:\"$notes\"}";
                                         ?></script>
-                                        <?php } ?>
+                                    <?php } ?>
                                     <td>
                                     <?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
                                         <a href="#" bidderId="<?php echo $bid['bidder_id'];?>" class="CreatorPopup"><?php echo getSubNickname($bid['nickname']);?></a>

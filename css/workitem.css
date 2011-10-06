@@ -184,7 +184,8 @@ span.info-whisper {
     display: none;
 }
 
-.editable:hover{
+.editable:hover,
+.clickable {
     cursor:pointer;
 }
 .editable {
@@ -785,3 +786,10 @@ span.info-whisper {
 #ping-msg {
     width: 355px;
 }
+
+.table-caption .note {
+    font-size: 10px;
+    color: #876F6D;
+    font-weight: normal;
+}
+
