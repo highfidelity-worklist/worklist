@@ -1,95 +1,44 @@
-/*
- * jQuery Autogrow Text Area
- * version 1.0
- * It automatically adjusts the height on text area.
+/*!
+ * Autogrow Textarea Plugin Version v2.0
+ * http://www.technoreply.com/autogrow-textarea-plugin-version-2-0
  *
- * Written by Jerry Luk jerry@presdo.com
+ * Copyright 2011, Jevin O. Sewaruth
  *
- * Based on Chrys Bader's Auto Expanding Text area www.chrysbader.com
- * and Craig Buckler's TextAreaExpander    http://www.sitepoint.com/blogs/2009/07/29/build-auto-expanding-textarea-1/
- *
- * Licensed under MIT license.
- * 
- * updated from https://github.com/jerryluk/jquery.autogrow
- * with addition at https://github.com/gdsmith/jquery.autogrow
+ * Date: March 13, 2011
  */
- 
-(function($) {
-    $.fn.autogrow = function(options) {
-        var defaults = {
-            expandTolerance: 1,
-            heightKeeperFunction: null,
-            defaultMinHeight: 50,
-            defaultMaxHeight: 300,
-            defaultLineHeight: 1
-        };
-        options = $.extend(defaults, options);
+jQuery.fn.autogrow = function() {
+    return this.each(function() {
+        // Variables
+        var colsDefault = this.cols;
+        var rowsDefault = 5;
         
-        // IE and Opera should never set a textarea height of 0px
-        var hCheck = !($.browser.msie || $.browser.opera);
+        //Functions
+        var grow = function() {
+            growByRef(this);
+        }
         
-        function resize(e) {
-            var $e = $(e.target || e), // event or element
-                    contentLength = $e.val().length,
-                    elementWidth    = $e.innerWidth();
-            if ($e.is(":hidden")) {
-                // Do not do anything if the element is hidden as we cannot determine the height correctly
-                return $e;
+        var growByRef = function(obj) {
+            var linesCount = 0;
+            var lines = obj.value.split('\n');
+            
+            for (var i=lines.length-1; i>=0; --i)
+            {
+                linesCount += Math.floor((lines[i].length / colsDefault) + 1);
             }
-            if (contentLength != $e.data("autogrow-length") || elementWidth != $e.data("autogrow-width")) {
-                
-                // For non-IE and Opera browser, it requires setting the height to 0px to compute the right height
-                if (hCheck && (contentLength < $e.data("autogrow-length") || 
-                    elementWidth != $e.data("autogrow-width"))) {
-                    if ($.isFunction(options.heightKeeperFunction)) {
-                        (options.heightKeeperFunction($e)).height((options.heightKeeperFunction($e)).height());
-                    }
-                    $e.css("height", "0px");
-                }
-                
-                
-                var height = Math.max($e.data("autogrow-min"), Math.ceil(Math.min(
-                    $e.prop("scrollHeight") + options.expandTolerance * $e.data("autogrow-line-height"), 
-                    $e.data("autogrow-max"))));
 
-                $e.css("overflow", ($e.prop("scrollHeight") > height ? "auto" : "hidden"));
-                $e.css("height", height + "px");
-                if ($.isFunction(options.heightKeeperFunction)) {
-                    (options.heightKeeperFunction($e)).css({ height: 'auto' });
-                }
-            }
-            
-            return $e;
-        };
+            if (linesCount >= rowsDefault)
+                obj.rows = linesCount + 1;
+            else
+                obj.rows = rowsDefault;
+        }
         
-        function parseNumericValue(v) {
-            var n = parseInt(v, 10);
-            return isNaN(n) ? null : n;
-        };
         
-        function initElement($e) {
-            $e.data("autogrow-min", options.minHeight || parseNumericValue($e.css('min-height')) || options.defaultMinHeight);
-            $e.data("autogrow-max", options.maxHeight || parseNumericValue($e.css('max-height')) || options.defaultMaxHeight);
-            $e.data("autogrow-line-height", options.lineHeight || parseNumericValue($e.css('line-height')) || options.defaultLineHeight);
-            resize($e);
-
-        };
-        
-        this.each(function() {
-            var $this = $(this);
-            
-            if (!$this.data("autogrow-initialized")) {
-                $this.css("padding-top", 0).css("padding-bottom", 0);
-                $this.bind("keyup", resize).bind("focus", resize);
-                $this.data("autogrow-initialized", true);
-            }
-            
-            initElement($this);
-            // Sometimes the CSS attributes are not yet there so the above computation might be wrong
-            // 100ms delay will do the job
-            setTimeout(function() { initElement($this); }, 100);
-        });
-        
-        return this;
-    };
-})(jQuery);
+        // Manipulations
+        this.style.overflow = "hidden";
+        this.style.height = "auto";
+        this.onkeyup = grow;
+        this.onfocus = grow;
+        this.onblur = grow;
+        growByRef(this);
+    });
+};
