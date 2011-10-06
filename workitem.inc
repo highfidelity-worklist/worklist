@@ -8,11 +8,11 @@
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-    $statusList = array("DRAFT","SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
+    $statusList = array("SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
 
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
-
+    
     $has_budget = 0;
     if (! empty($user_id)) {
         $user = new User();
@@ -1070,6 +1070,13 @@ if ($action =="edit"):  ?>
                                 <option value="BIDDING" <?php echo 'BIDDING' == $worklist['status']?' selected = "selected"' : ''; ?> >BIDDING</option>
                                 <option value="WORKING" <?php echo 'WORKING' == $worklist['status']?' selected = "selected"' : ''; ?> >WORKING</option>
                             </select>
+                            <?php } elseif ($creator_id == $user_id && $is_runner && array_key_exists($worklist['status'], $statusMapCreator)){ ?><span class="info-data">
+                            <select id="status" name="status">
+                                <option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
+                                <?php foreach($statusMapCreator[$worklist['status']] as $status){ ?>
+                                <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
+                                <?php } ?>
+                            </select>
                             <?php } elseif ($creator_id == $user_id && array_key_exists($worklist['status'], $statusMapMechanic)){ ?><span class="info-data">
                             <select id="status" name="status">
                                 <option value="<?php echo $worklist['status']; ?>" selected="selected"><?php echo $worklist['status']; ?></option>
@@ -1236,6 +1243,13 @@ if ($action =="edit"):  ?>
                                     <form method="post" action="" style = "display:inline;">
                                         <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight" />
                                         <input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
+                                    </form>
+                                <?php
+                                }
+                                if($worklist['creator_id']== $user_id && $is_runner) { ?>
+                                    <form method="post" action="" style = "display:inline;">
+                                        <input type="submit" id="status-switch" name="status-switch" value="Set DRAFT" class="bottonAtRight" />
+                                        <input type="hidden" name="quick-status" value="DRAFT" />
                                     </form>
                                 <?php
                                 }

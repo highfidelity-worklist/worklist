@@ -16,10 +16,21 @@ require_once 'classes/Repository.class.php';
 require_once 'models/DataObject.php';
 require_once 'models/Users_Favorite.php';
 
-    $statusMapRunner = array("DRAFT" => array("SUGGESTED","BIDDING"),
-                 "SUGGESTED" => array("BIDDING","PASS"),
-                 "SUGGESTEDwithBID" => array("BIDDING","PASS"),
+    $statusMapRunner = array("DRAFT" => array("SUGGESTED", "BIDDING"),
+                 "SUGGESTED" => array("BIDDING", "PASS"),
+                 "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
                  "BIDDING" => array("PASS"),
+                 "WORKING" => array("REVIEW", "FUNCTIONAL"),
+                 "FUNCTIONAL" => array("REVIEW", "WORKING"),
+                 "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
+                 "COMPLETED" => array("WORKING", "DONE"),
+                 "DONE" => array("REVIEW"),
+                 "PASS" => array("REVIEW"));
+    
+    $statusMapCreator = array("DRAFT" => array("SUGGESTED", "BIDDING"),
+                 "SUGGESTED" => array("BIDDING", "PASS", "DRAFT"),
+                 "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
+                 "BIDDING" => array("PASS", "DRAFT"),
                  "WORKING" => array("REVIEW", "FUNCTIONAL"),
                  "FUNCTIONAL" => array("REVIEW", "WORKING"),
                  "REVIEW" => array("WORKING", "COMPLETED", "DONE"),

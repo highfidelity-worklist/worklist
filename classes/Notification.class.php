@@ -699,12 +699,17 @@ class Notification {
             while ($row = mysql_fetch_assoc($worklist)) {
                 if (strtotime($row['bid_done']) < time()) {
                     $counter++;
-                    $subject = "Job #" . $row['worklist_id'] . " is now past due!";
+                    $subject = "Job #" . $row['worklist_id'] . " " . $row['worklist_summary'] . " is now past due!";
                     $html = $html_start;
                     $html .= "<p>------------------------------------------</p>";
                     $html .= "<p>Job <a href='" . SERVER_URL . "workitem.php?job_id=" . $row['worklist_id'] . "&action=view'>#" . $row['id'] . "</a> (" . $row['summary'] . ")</p>";
-                    $html .= "<p>Done by time has now passed.<br />";
-                    $html .= "Job url: " . SERVER_URL . "workitem.php?job_id=" . $row['worklist_id'] . "</p>";
+                    $html .= "<p>Done by time has now passed.<br /><br /></p>";
+                    $html .= "<p>Project: ' . $project_name<br /></p>";
+                    $html .= "<p>Creator: ' . $workitem->getCreator()->getNickname()<br /></p>";
+                    $html .= "<p>Runner: ' . $workitem->getRunner()->getNickname()<br /></p>";
+                    $html .= "<p>Mechanic: ' . $workitem->getMechanic()->getNickname()<br /></p>";
+                    $html .= "<p><br>Notes:<br>' .$workitem->getNotes()<br /><br /></p>";
+                    $html .= "<p><br>Job url: " . SERVER_URL . "workitem.php?job_id=" . $row['worklist_id'] . "</p>";
                     $html .= "<p>- Worklist.net</p>";
                     $html .= "<p>------------------------------------------</p>";
                     $html .= $html_end;
