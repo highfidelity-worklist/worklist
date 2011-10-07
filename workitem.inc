@@ -1246,7 +1246,7 @@ if ($action =="edit"):  ?>
                                     </form>
                                 <?php
                                 }
-                                if($worklist['creator_id']== $user_id && $is_runner) { ?>
+                                if($worklist['creator_id']== $user_id && $is_runner && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'BIDDING')) { ?>
                                     <form method="post" action="" style = "display:inline;">
                                         <input type="submit" id="status-switch" name="status-switch" value="Set DRAFT" class="bottonAtRight" />
                                         <input type="hidden" name="quick-status" value="DRAFT" />
@@ -1261,6 +1261,7 @@ if ($action =="edit"):  ?>
                                 <?php
                                 }?>
                     </li>
+                    <br />
 <?php if (! empty($status_error)) : ?>
                     <li><span class="LV_invalid status-error"><?php echo $status_error; ?></span></li>
 <?php endif; ?>
