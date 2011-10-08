@@ -215,7 +215,7 @@ class Notification {
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
         $body = '';
         $subject = '';
-        $headers=array();
+        $headers=array('From' => '"Worklist: ' . $project_name . '" <noreply-' . $project_name . '@worklist.net>');
         switch ($options['type']) {
             case 'comment':
                 $subject = 'Comment: ' . $itemTitle;
