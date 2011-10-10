@@ -200,8 +200,7 @@ $(document).ready(function() {
         return $("<li></li>")
             .data("item.autocomplete", item)
             .append("<a>" + item.nickname + "</font></a>").appendTo(ul);
-    };​
-    
+    }
 <?php 
     if( !empty($_REQUEST['showUser'])) {
         echo "showUserInfo(" . $_REQUEST['showUser'] . ");";
