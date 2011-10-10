@@ -165,6 +165,42 @@ $(document).ready(function() {
             fillUserlist(current_page);
         }
     });
+
+    $("#search_user").autocomplete({
+        minLength: 0,
+        source: function(request, response) {
+            $.ajax({
+                cache: false,
+                url: 'getuserslist.php',                    
+                data: {
+                    startsWith: request.term,
+                },
+                dataType: 'json',
+                success: function(users) {
+                    response($.map(users, function(item) {
+                        return {
+                            id: item.id,
+                            nickname: item.nickname,
+                        }
+                    }));
+                }
+            });
+        },
+        focus:function(event, ui) {
+            return false;
+        },
+        select:function(event, ui) {
+            $("#search_user").val("");
+            $("#search_user-id").val(ui.item.id);
+            showUserInfo(ui.item.id);
+
+            return false;
+        }
+    }).data("autocomplete")._renderItem = function(ul, item) {
+        return $("<li></li>")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.nickname + "</font></a>").appendTo(ul);
+    };​
     
 <?php 
     if( !empty($_REQUEST['showUser'])) {
@@ -343,6 +379,9 @@ function addCommas(nStr) {
            <option value="360">1 year</option>
        </select>
     </input>
+</div>
+<div id="search_user_box">
+    <input id="search_user"/>
 </div>
 <div class="clear"></div>
 <div id="message">No results</div>

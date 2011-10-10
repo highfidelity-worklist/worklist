@@ -51,6 +51,7 @@
 /*********************************** HTML layout begins here  *************************************/
 include("head.html"); ?>
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
