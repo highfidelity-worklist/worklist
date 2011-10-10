@@ -110,7 +110,7 @@ class scanAssets {
         $out = '';
         $message = '';
         $subject = '';
-        $cmd = '/usr/local/bin/clamscan ' . $safe_path; 
+        $cmd = '/usr/bin/clamscan ' . $safe_path; 
         $fct_return = false;
             
         if (!empty($safe_path) && file_exists($real_path) && filesize($real_path) > 0 ) {

@@ -55,7 +55,7 @@
                             }
                         });
                         
-                        console.log(fdata, $this);
+
                         if(fdata.trackfiles) {
                             fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
                             $this.data('fileUpload', fdata);
@@ -81,47 +81,48 @@
 
                         this.enable();
                         if (data.success == true) {
-                            $.ajax({
-                                url: "jsonserver.php",
-                                type: "POST",
-                                data: "action=scanFile&fileid=" + data.fileid,
-                                dataType: "json",
-                                async: false,
-                                beforeSend: function( ) {
-                            	    $('#upload-scan-file .content').html('<p>Antivirus scanning attachment ...</p>');
-                                },
-                                success: function(json){
-                                    if (json.success == true) {
-                                        data.url = json.url;
-                                        data.icon = json.icon;
+                            $('#upload-scan-file .content').html('<p>Antivirus scanning attachment ...</p>');
+                            // we delay the virus scan so that IE9 does proper updating of the dialog above
+                            setTimeout(function() {
+                                $.ajax({
+                                    url: "jsonserver.php",
+                                    type: "POST",
+                                    data: "action=scanFile&fileid=" + data.fileid,
+                                    dataType: "json",
+                                    success: function(json) {
+                                        if (json.success == true) {
+                                            data.url = json.url;
+                                            data.icon = json.icon;
+                                        }
+
+                                        $('#upload-scan-file').dialog("close");
+
+                                        if(fdata.trackfiles && fdata.trackfiles.val == '') {
+                                            fdata.images = new Array();
+                                            fdata.documents = new Array();
+                                        }
+                                        if (data.filetype == 'image') {
+                                            var newFile = $('#uploadImage').parseTemplate(data);
+                                            $('.fileimagecontainer', $this).append(newFile);
+                                            fdata.images.push(data.fileid);
+                                            $('.imageCount', $this).empty().html(fdata.images.length);
+                                            $this.accordion('activate', 0);
+                                        } else {
+                                            var newFile = $('#uploadDocument').parseTemplate(data);
+                                            $('.filedocumentcontainer', $this).append(newFile);
+                                            fdata.documents.push(data.fileid);
+                                            $('.documentCount', $this).empty().html(fdata.documents.length);
+                                            $this.accordion('activate', 1);
+                                        }
+                                        if(fdata.trackfiles) {
+                                            fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
+                                        }
+                                        $this.data('fileUploads', fdata);
+                                        $this.fileUpload('editable');
+
                                     }
-                                }
-                            });
-                            
-                            $('#upload-scan-file').dialog("close");
-                            
-                            if(fdata.trackfiles && fdata.trackfiles.val == '') {
-                                fdata.images = new Array();
-                                fdata.documents = new Array();
-                            }
-                            if (data.filetype == 'image') {
-                                var newFile = $('#uploadImage').parseTemplate(data);
-                                $('.fileimagecontainer', $this).append(newFile);
-                                fdata.images.push(data.fileid);
-                                $('.imageCount', $this).empty().html(fdata.images.length);
-                                $this.accordion('activate', 0);
-                            } else {
-                                var newFile = $('#uploadDocument').parseTemplate(data);
-                                $('.filedocumentcontainer', $this).append(newFile);
-                                fdata.documents.push(data.fileid);
-                                $('.documentCount', $this).empty().html(fdata.documents.length);
-                                $this.accordion('activate', 1);
-                            }
-                            if(fdata.trackfiles) {
-                                fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
-                            }
-                            $this.data('fileUploads', fdata);
-                            $this.fileUpload('editable');
+                                });
+                            }, 100);
 
                         } else {
                             alert(data.message);
