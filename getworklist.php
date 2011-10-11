@@ -78,8 +78,10 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         } else {
             $status_cond = "status='$val' AND";
         }
-        if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter == $userId) {
-            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
+        if (($is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
+            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter' OR creator_id= '$ufilter'))";
+        } else if ((!$is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
+            $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'))";
         } else if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter != $userId) {
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
         } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='FUNCTIONAL' || $val =='COMPLETED' ) {
@@ -170,7 +172,7 @@ mysql_query($fillLatest);
 if($is_runner){
     $showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
     if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-        $showLatest = 'AND (`'.BIDS.'`.`bid_created` = `tmp_latest`.`latest` OR `'.BIDS.'`.`bidder_id` = '.$ufilter.')';
+        $showLatest = 'AND (`'.BIDS.'`.`bid_created` = `tmp_latest`.`latest` OR (`'.BIDS.'`.`bidder_id` = '.$ufilter.' AND `'.BIDS.'`.`expired` = 0)';
     }
 }
 else{
