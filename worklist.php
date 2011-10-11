@@ -180,7 +180,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
         
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
-        invitePeople($people, $bid_fee_itemid, $summary, $notes);
+        invitePeople($people, $workitem);
     }
 
     if ($bid_fee_amount > 0 && $status != 'DRAFT') {

@@ -151,28 +151,4 @@ replacement data:
                <p>{reason}'
 ),
 
-
-/*
-code-review-finished
-    send user a notification email that their w9 was rejected
-    used in: workitem.php
-
-replacement data:
-    task - the task number followed by the summary
-    reviewer - the mechanic who undertook the code review
-*/
-'code-review-finished' => array(
-    'subject' => 'Review Complete: {subj}',
-    'body' => '<p>Hello,</p>
-               <p>The code review on task {task} has been completed by {reviewer}</p>
-               <br>
-               <p>Project: {project_name}<br />
-               Creator: {creator}<br />
-               Runner: {runner}<br />
-               Mechanic: {mechanic}</p>
-               <p>Notes: {notes}<br /></p>
-               <p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id={worklist_id}>here</a>.' . '<br /></p>
-               <p> -Worklist.net</p>'
-)
-
 ); 

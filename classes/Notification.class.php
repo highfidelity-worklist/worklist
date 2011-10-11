@@ -335,6 +335,14 @@ class Notification {
                 $body .=  $urlacceptbid;
             break;
 
+            case 'bid_discarded':
+                $subject = "Job: " . $workitem -> getSummary();
+                $body = "<p>Hello " . $data['who'] . ",</p>";
+                $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$itemId."'>#".$itemId."</a> '" . $workitem -> getSummary() . "'. This job has just been filled by another mechanic.</br></p>";
+                $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
+                $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
+            break;
+
             case 'modified-functional':
                 $subject = "Functional: ".$itemTitle;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
@@ -496,6 +504,52 @@ class Notification {
                 $body .= 'Please look at the test results and determine if you need to modify your commit.';
                 $body .= 'You can type "@faq CommitTests" in the Journal for more information.';
                 $body .= '<br/><br/>-worklist.net';
+            break;
+            
+            case 'invite-user':
+                $subject = "Invitation: " . $itemTitle;
+                $body = "<p>Hello you!</p>";
+                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>";
+				$body .= "<p>Description:</p>";
+                $body .= "<p>------------------------------</p>";
+                $body .= "<p>" . $workitem -> getNotes() . "</p>";
+                $body .= "<p>------------------------------</p>";
+                $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">this link</a>.</p>";
+                $body .= "<p>Hope to see you soon.</p>";
+            break;	
+            case 'invite-email':
+                $subject = "Invitation: " . $workitem -> getSummary();
+                $body = "<p>Well, hello there!</p>";
+                $body .= "<p>" . $_SESSION['nickname'] . " from the Worklist thought you might be interested in bidding on this job:</p>";
+                $body .= "<p>Summary of the job: " . $workitem -> getSummary() . "</p>";
+                $body .= "<p>Description:</p>";
+                $body .= "<p>------------------------------</p>";
+                $body .= "<p>" . $workitem -> getNotes() . "</p>";
+                $body .= "<p>------------------------------</p>";
+                $body .= "<p>To bid on that job, follow the link, create an account (less than a minute) and set the price you want to be paid for completing it!</p>";
+                $body .= "<p>This item is part of a larger body of work being done at Worklist. You can join our Live Workroom to ask more questions by going <a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>";
+                $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>";
+                $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />";
+                $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
+                $body .= "[<a href=\"http://www.lovemachineinc.com/development-process/\">dev.sendllove.us</a> | Read about our Development Process]<br />";
+                $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
+                $body .= "[<a href=\"https://dev.worklist.net/worklist/\">dev.worklist.net/worklist</a> | Look over all our open work items]<br />";
+                $body .= "[<a href=\"https://dev.worklist.net/journal/\">dev.worklist.net/journal</a> | Talk with us in our Journal]<br />";
+                $body .= "<p>Hope to see you soon.</p>";
+            break;
+
+            case 'code-review-completed':
+                $subject = 'Review Complete: #'.$itemId.': '. $workitem -> getSummary();
+                $body = '<p>Hello,</p>';
+                $body .= '<p>The code review on task '.$itemLink.' has been completed by ' . $_SESSION['nickname'] . '</p>';
+                $body .= '<br>';
+                $body .= '<p>Project: '.$project_name.'<br />';
+                $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '</p>';
+                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id='.$itemId.'>here</a>.' . '<br /></p>';
+                $body .= '<p> -Worklist.net</p>';
             break;
         }
 

@@ -740,56 +740,37 @@ function getWorklistById($id) {
 }
 
 /* invite one peorson By nickname or by email*/
-function invitePerson( $invite, $item, $summary = null, $description = null) {
-		// trim the whitespaces
-        $invite = trim($invite);
-        if (!empty($invite)) {
-            // get the user by Nickname
-            $user = getUserByNickname($invite);
-            if ($user !== false) {
-                //sending email to the invited developer
-                $subject = "Invitation:  #" . $item . "," . $summary;
-                $body = "<p>Hello you!</p>";
-                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">" . $summary . "</a>.</p>";
-				$body .= "<p>Description:</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>" . $description . "</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$item\">this link</a>.</p>";
-                $body .= "<p>Hope to see you soon.</p>";
-                if(!send_email($user->username, $subject, $body)) { error_log("functions.php:invite: send_email failed"); }
-				return true;
-            } else if (validEmail($invite)) {
-                //sending email to the NEW invited developer
-                $subject = "Invitation:" . $summary;
-                $body = "<p>Well, hello there!</p>";
-                $body .= "<p>" . $_SESSION['nickname'] . " from the Worklist thought you might be interested in bidding on this job:</p>";
-                $body .= "<p>Summary of the job: " . $summary . "</p>";
-                $body .= "<p>Description:</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>" . $description . "</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>To bid on that job, follow the link, create an account (less than a minute) and set the price you want to be paid for completing it!</p>";
-                $body .= "<p>This item is part of a larger body of work being done at Worklist. You can join our Live Workroom to ask more questions by going <a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>";
-                $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>";
-                $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />";
-                $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
-                $body .= "[<a href=\"http://www.lovemachineinc.com/development-process/\">dev.sendllove.us</a> | Read about our Development Process]<br />";
-                $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
-                $body .= "[<a href=\"https://dev.worklist.net/worklist/\">dev.worklist.net/worklist</a> | Look over all our open work items]<br />";
-                $body .= "[<a href=\"https://dev.worklist.net/journal/\">dev.worklist.net/journal</a> | Talk with us in our Journal]<br />";
-                $body .= "<p>Hope to see you soon.</p>";
-                if(!send_email($invite, $subject, $body)) { error_log("functions.php:inviteNew: send_email failed"); }
-				return true;
-            }
+function invitePerson($invite, $workitem) {
+    // trim the whitespaces
+    $invite = trim($invite);
+    if (!empty($invite)) {
+        // get the user by Nickname
+        $user = getUserByNickname($invite);
+        if ($user !== false) {
+            //sending email to the invited developer
+            Notification::workitemNotify(array(
+	        'type' => 'invite-user',
+	        'workitem' => $workitem,
+	        'emails' => array($user->username)
+                ));
+            return true;
+        } else if (validEmail($invite)) {
+            //sending email to the NEW invited developer
+            Notification::workitemNotify(array(
+	        'type' => 'invite-email',
+	        'workitem' => $workitem,
+	        'emails' => array($invite)
+                ));
+            return true;
         }
-	return false;
+    }
+    return false;
 }
 /* invite people By nickname or by email*/
-function invitePeople(array $people, $item, $summary = null, $description = null) {
+function invitePeople(array $people, $workitem) {
     foreach ($people as $invite) {
         // Call the invite person function
-		invitePerson($invite, $item, $summary, $description);
+        invitePerson($invite, $workitem);
     }
 }
 /**

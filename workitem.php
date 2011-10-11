@@ -257,7 +257,7 @@ if ($action =='save_workitem') {
     // Send invites
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
-        invitePeople($people, $worklist_id, $workitem->getSummary(), $workitem->getNotes());
+        invitePeople($people, $workitem);
         $new_update_message .= "Invitations sent. ";
         if ($message_title == '') {
             $message_title = 'Invitations';
@@ -354,7 +354,7 @@ if ($action == 'new-comment') {
 
 if($action =='invite-people') {
     // Send invitation
-    if (invitePerson($_POST['invite'], $worklist_id, $workitem->getSummary(), $workitem->getNotes())) {
+    if (invitePerson($_POST['invite'], $workitem)) {
         $result = array('sent'=>'yes','person'=> htmlentities($_POST['invite']));
     }else{
         $result = array('sent'=>'no','person'=> htmlentities($_POST['invite']));
@@ -391,27 +391,12 @@ if($action == 'finish_codereview') {
     $workitem->setCRCompleted(1);
     $workitem->save();
     $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
-    $project = new Project();
-    $project->loadById($workitem->getProjectId());
-    $data = array();
-    $data['subj'] = "#$worklist_id: " . $workitem->getSummary();
-    $data['project_name'] = $project->getName();
-    $data['task'] = "<a href='".SERVER_URL."workitem.php?job_id=".$worklist_id."'>#".$worklist_id."</a> ".$workitem->getSummary();
-    $data['reviewer'] = $_SESSION['nickname'];
-    $data['creator'] = $workitem->getCreator()->getNickname();
-    $data['runner'] = $workitem->getRunner()->getNickname();
-    $data['mechanic'] = $workitem->getMechanic()->getNickname();
-    $data['notes'] = $workitem->getNotes();
-    $data['worklist_id'] = $worklist_id;
-    $notifyUser = new User;
-    $notifyUser->findUserById($workitem->getMechanicId());
-    if (! sendTemplateEmail($notifyUser->getUsername(), 'code-review-finished', $data)) {
-        error_log("workitem.php: send_email failed on finish code review notification to mechanic");
-    }
-    $notifyUser->findUserById($workitem->getRunnerId());
-    if (! sendTemplateEmail($notifyUser->getUsername(), 'code-review-finished', $data)) {
-        error_log("workitem.php: send_email failed on finish code review notification to runner");
-    }
+
+    Notification::workitemNotify(array(
+        'type' => 'code-review-completed',
+        'workitem' => $workitem,
+        'recipients' => array('runner', 'mechanic')
+        ));
 }
 
 if($action == 'cancel_codereview') {
@@ -1006,17 +991,18 @@ function sendMailToDiscardedBids($worklist_id)    {
         $bids[] = $row;
     }
 
-    $workitem = new WorkItem();
-    $item = $workitem->getWorkItem($worklist_id);
+    $workitem = new WorkItem($worklist_id);
 
-    foreach( $bids as $bid )    {
-        $subject = "Job: ".$item['summary'];
-        $body = "<p>Hello ".$bid['nickname'].",</p>";
-        $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$item['id']."'>#".$item['id']."</a> '".$item['summary']."'. This job has just been filled by another mechanic.</br></p>";
-        $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
-        $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
-
-        if(!send_email($bid['email'], $subject, $body)) { error_log("workitem.php: send_email failed"); }
+    foreach( $bids as $bid ) {
+        Notification::workitemNotify(
+           array(
+                'type' => 'bid_discarded',
+                'workitem' => $workitem,
+                'emails' => array($bid['email'])
+            ),
+            array(
+                'who' => $bid['nickname']
+            ));
     }
 }
 

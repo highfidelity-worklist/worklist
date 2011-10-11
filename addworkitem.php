@@ -111,7 +111,7 @@ if ($userId > 0 ) {
     
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
-        invitePeople($people, $bid_fee_itemid, $summary, $notes);
+        invitePeople($people, $workitem);
     }
 
     if ($bid_fee_amount > 0) {
