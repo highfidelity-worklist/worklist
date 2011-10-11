@@ -688,7 +688,7 @@ class Notification {
         $html_start = "<html><head><title>Worklist</title></head><body>";
         $html_end = "</body></html>";
         $html = '';
-        $qry = "SELECT w.id worklist_id, b.*, b.id as bid_id, u.id as runner_id, u.username as runner_email " .
+        $qry = "SELECT w.id worklist_id, w.summary, b.*, b.id as bid_id, u.id as runner_id, u.username as runner_email " .
             " FROM " . WORKLIST . " w " .
             " LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id".
             " LEFT JOIN " . USERS . " u ON w.runner_id = u.id".
