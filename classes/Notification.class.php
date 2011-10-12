@@ -214,11 +214,12 @@ class Notification {
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
         $body = '';
-        $subject = '';
-        $headers=array('From' => '"Worklist: ' . $project_name . '" <noreply-' . $project_name . '@worklist.net>');
+        $subject = '#' . $itemId . ' ' . $workitem -> getSummary();
+        $from_address = '<noreply-'.$project_name.'@worklist.net>';
+        $headers=array('From' => '"'.$project_name.'-'.strtolower( $workitem -> getStatus() ).'" '.$from_address);
         switch ($options['type']) {
             case 'comment':
-                $subject = 'Comment: ' . $itemTitle;
+                $headers['From'] = '"' . $project_name . '-comment" ' . $from_address;
                 $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
                 $body .= $data['who'] . ' says:<br />'
                       . $data['comment'] . '<br /><br />'
@@ -237,7 +238,6 @@ class Notification {
             
             case 'fee_added':
                 if($workitem->getStatus() != 'DRAFT') {
-                $subject = 'Fee: ' . $itemTitle;
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br>'
                         . 'Amount: ' . $data['fee_amount'] . '<br /><br />'
@@ -256,7 +256,6 @@ class Notification {
             break;
 
             case 'tip_added':
-                $subject = 'You\'ve received a tip from ' . $data['tip_adder'] . ' on job #' . $itemId;
                 $body = $data['tip_adder'] . ' tipped you $' . $data['tip_amount'] . ' on job ' . $itemLink . ' for:<br><br>' . $data['tip_desc'] . '<br><br>Yay!' . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -272,7 +271,6 @@ class Notification {
                 break;
 
             case 'bid_accepted':
-                $subject = 'Accepted: ' . $itemTitle;
                 $body = 'Your bid was accepted for ' . $itemLink . '<br/><br />'
                         . 'Promised by: ' . $_SESSION['nickname'] . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
@@ -289,7 +287,6 @@ class Notification {
             break;
 
             case 'bid_placed':
-                $subject = 'Bid: ' . $itemTitle ;
                 $body =  'New bid was placed for ' . $itemLink . '<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Done In: ' . $data['done_in'] . '<br />'
@@ -313,7 +310,6 @@ class Notification {
             break;
 
             case 'bid_updated':
-                $subject = 'Bid: ' . $itemTitle;
                 $body = 'Bid updated for ' . $itemLink . '<br /><br/>'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Done In: ' . $data['done_in'] . '<br />'
@@ -336,7 +332,6 @@ class Notification {
             break;
 
             case 'bid_discarded':
-                $subject = "Job: " . $workitem -> getSummary();
                 $body = "<p>Hello " . $data['who'] . ",</p>";
                 $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$itemId."'>#".$itemId."</a> '" . $workitem -> getSummary() . "'. This job has just been filled by another mechanic.</br></p>";
                 $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
@@ -344,7 +339,6 @@ class Notification {
             break;
 
             case 'modified-functional':
-                $subject = "Functional: ".$itemTitle;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
                     . $data['changes'] . '<br /><br />'
                     . 'Project: ' . $project_name . '<br />'
@@ -358,7 +352,6 @@ class Notification {
             
             case 'modified':
             if($workitem->getStatus() != 'DRAFT') {
-                $subject = $data['title'] . ": " . $itemTitle;
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
                     . $data['changes'] . '<br /><br />'
                     . 'Project: ' . $project_name . '<br />'
@@ -376,7 +369,6 @@ class Notification {
             break;
 
             case 'new_bidding':
-                $subject = "Bidding: " . $itemTitle;
                 $body = "Summary: " . $itemLink . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -392,7 +384,6 @@ class Notification {
             break;
 
             case 'new_review':
-                $subject = "Review: ".$itemTitle;
                 $body = "New item is available for review: " . $itemLink . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -408,7 +399,6 @@ class Notification {
                 
             break;
             case 'new_functional':
-                $subject = "Functional: ".$itemTitle;
                 $body = "New item is available for functional: " . $itemLink ;
                 $body.= '<br/><br/>Project: ' . $project_name;
                 $body.= '<br/>Creator: ' . $workitem->getCreator()->getNickname();
@@ -420,8 +410,7 @@ class Notification {
                 
             break;
             case 'bug_found':
-                $subject = "New bug of item #".$workitem->getBugJobId().
-                            " has been reported - ".$itemTitle." -";
+                $headers['From'] = '"' . $project_name . '-bug" ' . $from_address;
                 
                 $body = "<p>A bug has been reported related to item #".
                 $workitem->getBugJobId().
@@ -442,7 +431,6 @@ class Notification {
                             $itemId . '>View new item</a>.';
             break;
             case 'suggested':
-                $subject = "Suggested Job: " . $itemTitle;
                 $body =  'Summary: ' . $itemLink . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -457,7 +445,6 @@ class Notification {
                 . '-Worklist.net' ;
             break;
             case 'suggestedwithbid':
-                $subject = "Suggested With Bid: " . $itemTitle;
                 $body =  'Summary: ' . $itemLink . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -477,7 +464,7 @@ class Notification {
                 $reusableString .= $itemId;
                 $reusableString .= ':';
                 $reusableString .= $workitem -> getSummary();
-                $subject = 'Commit Success - ' . $reusableString;
+                $headers['From'] = '"' . $project_name . '-commited" ' . $from_address;
                 $body =  'Congrats!';
                 $body .= '<br/><br/>Your Commit - ' . $reusableString . ' was a success!';
                 $body .= '<br><br>Click <a href="';
@@ -495,7 +482,7 @@ class Notification {
                 $reusableString .= $itemId;
                 $reusableString .= ':';
                 $reusableString .= $workitem -> getSummary();
-                $subject = 'Commit Failure - ' . $reusableString;
+                $headers['From'] = '"' . $project_name . '-commited" ' . $from_address;
                 $body =  'Otto says: No Commit for you!';
                 $body .= '<br/><br/>Your Commit - ';
                 $body .= $reusableString;
@@ -507,7 +494,6 @@ class Notification {
             break;
             
             case 'invite-user':
-                $subject = "Invitation: " . $itemTitle;
                 $body = "<p>Hello you!</p>";
                 $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>";
 				$body .= "<p>Description:</p>";
@@ -518,7 +504,7 @@ class Notification {
                 $body .= "<p>Hope to see you soon.</p>";
             break;	
             case 'invite-email':
-                $subject = "Invitation: " . $workitem -> getSummary();
+                $headers['From'] = '"' . $project_name . '-invitation" ' . $from_address;
                 $body = "<p>Well, hello there!</p>";
                 $body .= "<p>" . $_SESSION['nickname'] . " from the Worklist thought you might be interested in bidding on this job:</p>";
                 $body .= "<p>Summary of the job: " . $workitem -> getSummary() . "</p>";
@@ -539,7 +525,6 @@ class Notification {
             break;
 
             case 'code-review-completed':
-                $subject = 'Review Complete: #'.$itemId.': '. $workitem -> getSummary();
                 $body = '<p>Hello,</p>';
                 $body .= '<p>The code review on task '.$itemLink.' has been completed by ' . $_SESSION['nickname'] . '</p>';
                 $body .= '<br>';
