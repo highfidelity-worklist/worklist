@@ -27,7 +27,7 @@ require_once 'models/Users_Favorite.php';
                  "DONE" => array("REVIEW"),
                  "PASS" => array("REVIEW"));
     
-    $statusMapCreator = array("DRAFT" => array("SUGGESTED", "BIDDING"),
+    $statusMapCreator = array("DRAFT" => array("DRAFT","SUGGESTED", "BIDDING"),
                  "SUGGESTED" => array("BIDDING", "PASS", "DRAFT"),
                  "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
                  "BIDDING" => array("PASS", "DRAFT"),
