@@ -536,6 +536,19 @@ class Notification {
                 $body .= '<p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id='.$itemId.'>here</a>.' . '<br /></p>';
                 $body .= '<p> -Worklist.net</p>';
             break;
+            
+            case 'job_past_due':
+                $headers['From'] = '"' . $project_name . '-pastdue" ' . $from_address;
+                $body = "<p>Job " . $itemLink . "<br />";
+                $body .= "The done by time has now passed.</p>";
+                $body .= '<p>Project: ' . $project_name . '<br />';
+                $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '</p>';
+                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>You can view the job ';
+                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<p> -Worklist.net</p>';
         }
 
     
@@ -558,7 +571,6 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
-
                         if(($username = $rUser->getUsername())){
                             // Check to see if user doesn't want to be notified (if user is recipient, doesn't have check on settings and not forced to receive then exclude)
                             if ( $current_user->getUsername() == $username ) {
@@ -577,7 +589,6 @@ class Notification {
                 }
             }
         }
-
         if (count($emails) > 0) {
             foreach($emails as $email) {
                 if (!send_email($email, $subject, $body, null, $headers)) {
@@ -724,10 +735,7 @@ class Notification {
     
     // get list of past due bids
     public function emailPastDueJobs(){
-        $html_start = "<html><head><title>Worklist</title></head><body>";
-        $html_end = "</body></html>";
-        $html = '';
-        $qry = "SELECT w.id worklist_id, w.summary, b.*, b.id as bid_id, u.id as runner_id, u.username as runner_email " .
+        $qry = "SELECT w.id worklist_id, b.bid_done, b.id bid_id, b.email bid_email" .
             " FROM " . WORKLIST . " w " .
             " LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id".
             " LEFT JOIN " . USERS . " u ON w.runner_id = u.id".
@@ -736,32 +744,18 @@ class Notification {
         $worklist = mysql_query($qry) or (error_log("select past due bids error: " . mysql_error()) && die);
         $wCount = mysql_num_rows($worklist);
         if($wCount > 0){
-            $counter = 0;
             while ($row = mysql_fetch_assoc($worklist)) {
                 if (strtotime($row['bid_done']) < time()) {
-                    $workitem = new workItem();
-                    $workitem->loadById($row['worklist_id']);
-                    $project = new Project();
-                    $project->loadById($workitem->getProjectId());
-                    $counter++;
-                    $subject = "Job #" . $row['worklist_id'] . " " . $row['summary'] . " is now past due!";
-                    $html = $html_start;
-                    $html .= "<p>------------------------------------------</p>";
-                    $html .= "<p>Job <a href='" . SERVER_URL . "workitem.php?job_id={$row['worklist_id']}&action=view'>#{$row['worklist_id']}</a>";
-                    $html .= "(" . $row['summary'] . ")</p>";
-                    $html .= "<p>Done by time has now passed.<br /><br /></p>";
-                    $html .= "<p>Project: " . $project->getName() . "<br /></p>";
-                    $html .= "<p>Creator: " . $workitem->getCreator()->getNickname() . "<br /></p>";
-                    $html .= "<p>Runner: " . $workitem->getRunner()->getNickname() . "<br /></p>";
-                    $html .= "<p>Mechanic: " . $workitem->getMechanic()->getNickname() . "<br /></p>";
-                    $html .= "<p><br>Notes:<br />" . $workitem->getNotes() . "<br /><br /></p>";
-                    $html .= "<p><br>Job url: " . SERVER_URL . "workitem.php?job_id=" . $row['worklist_id'] . "</p>";
-                    $html .= "<p>- Worklist.net</p>";
-                    $html .= "<p>------------------------------------------</p>";
-                    $html .= $html_end;
-
-                    send_email($row['email'], $subject, $html);
-                    send_email($row['runner_email'], $subject, $html);
+                    
+                    $options = array();
+                    $options['recipients'] = array("runner");
+                    $options['emails'] = array($row['bid_email']);
+                    $options['workitem'] = new workItem();
+                    $options['workitem']->loadById($row['worklist_id']);
+                    $options['type'] = "job_past_due";
+                    
+                    self::workitemNotify($options);
+                    
                     // now need to set this notified flag to now date
                     $bquery = "UPDATE ".BIDS." SET past_notified = NOW() WHERE id = ".$row['bid_id'];
                     $queryB = mysql_query($bquery)or (error_log("update past due bids error: " . mysql_error()) && die);
