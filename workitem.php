@@ -9,6 +9,7 @@ require_once 'send_email.php';
 require_once 'update_status.php';
 require_once 'workitem.class.php';
 require_once 'classes/Project.class.php';
+require_once 'class/Utils.class.php';
 require_once 'functions.php';
 require_once 'timezones.php';
 require_once 'lib/Sms.php';

@@ -837,7 +837,8 @@ $(document).ready(function(){
         $('#popup-multiple-bid-info').dialog('open');
     }
 
-    $(function()    {
+    $(function() {
+        $.loggedin = <?php echo isset($_SESSION['userid']) ? "true" : "false" ?>;
 
         $(".editable").attr("title","Switch to Edit Mode").click(function() {
             // don't handle notestext in this function
@@ -898,6 +899,11 @@ $(document).ready(function(){
         });
 
         $('#pingMechanic').click(function() {
+            if (!$.loggedin) {
+                sendToLogin();
+                return;
+            }
+
             ping_who = 'mechanic';
             $('#popup-pingtask form h5').html('Ping the Mechanic about the task');
             $('#popup-pingtask').dialog('open');
@@ -905,6 +911,11 @@ $(document).ready(function(){
         });
 
         $('#pingRunner').click(function() {
+            if (!$.loggedin) {
+                sendToLogin();
+                return;
+            }
+
             ping_who = 'runner';
             $('#popup-pingtask form h5').html('Ping the Runner about the task');
             $('#popup-pingtask').dialog('open');
@@ -912,6 +923,11 @@ $(document).ready(function(){
         });
 
         $('#pingCreator').click(function() {
+            if (!$.loggedin) {
+                sendToLogin();
+                return;
+            }
+
             ping_who = 'creator';
             $('#popup-pingtask form h5').html('Ping the Creator about the task');
             $('#popup-pingtask').dialog('open');
@@ -997,7 +1013,7 @@ $(document).ready(function(){
     <?php } ?>
     
     function sendToLogin(){
-        window.location = '<?php echo SERVER_URL; ?>login.php';
+        window.location = '<?php echo SERVER_URL; ?>login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>';
     }
 </script>
 <title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
@@ -1091,11 +1107,16 @@ if ($action =="edit"):  ?>
                         </li>
                 <!-- Edit: Key People info box -->
                         <li>
-                            <div id="creatorBox"><span id="pingCreator" class="creatorName" title="Ping Creator"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>
+                            <div id="creatorBox"><span id="pingCreator" class="creatorName" title="<?php echo isset($_SESSION['userid']) ? "Ping Creator" : "Log in to Ping Creator"; ?>"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>
                             <div id="runnerBox"><span class="runnerName">Runner</span>
                             <?php
-                                if( $runner_nickname != '' ) echo '<span id="ping-r-btn" title="Ping Runner">'.$runner_nickname.'</span>';
-                                else echo $runner_nickname;
+                                if( $runner_nickname != '' ) {
+                                    $tooltip = isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner";
+                                    echo '<span id="ping-r-btn" title="'. $tooltip. '">'.$runner_nickname.'</span>';
+                                } else {
+                                    echo $runner_nickname;
+                                }
+
                                 echo '<span class="changeRunner">';
                                 $runnerslist = User::getRunnerlist();
                                 echo '<select name="runner">';
@@ -1112,8 +1133,12 @@ if ($action =="edit"):  ?>
                                     foreach( $fees as $fe )
                                         if( $fe['desc'] == 'Accepted Bid' ) $mech = $fe['nickname'];
                                 }
-                                if($mech==''){$mech='Not assigned';}
-                                else{$mech='<span id="ping-btn" title="Ping Mechanic">'.$mech.'</span>';}
+                                if($mech=='') {
+                                    $mech = 'Not assigned';
+                                } else{
+                                    $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
+                                    $mech='<span id="ping-btn" title="' . $tooltip . '">'.$mech.'</span>';
+                                }
                                 echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>'.$mech.'</div>';
                             ?>
                         </li>
@@ -1268,12 +1293,12 @@ if ($action =="edit"):  ?>
 <?php endif; ?>
                 <!-- View: Key People info -->
                     <li>
-                            <div id="creatorBox"><span id="pingCreator" class="creatorName" title="Ping Creator"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>
+                            <div id="creatorBox"><span id="pingCreator" class="creatorName" title="<?php echo isset($_SESSION['userid']) ? "Ping Creator" : "Log in to Ping Creator"; ?>"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>
                             <div id="runnerBox">
                             <?php
                                 if( $runner_nickname != 'Not funded' ) {
                             ?>
-                                    <span id="pingRunner" class="runnerName" title="Ping Runner"><a href="#">Runner</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo $worklist['runner_nickname'];?></a>
+                                    <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"><a href="#">Runner</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo $worklist['runner_nickname'];?></a>
                             <?php
                                 }
                                 else {
@@ -1290,7 +1315,8 @@ if ($action =="edit"):  ?>
                                     echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>Not Assigned</div>';
                                 }
                                 else{
-                                    echo'<div id="mechanicBox"><span id="pingMechanic" class="mechanicName" title="Ping Mechanic"><a href="#">Mechanic</a></span><a href="#" onClick="javascript:showUserInfo('. $worklist['mechanic_id'].');"><span id="ping-btn" title="Ping Mechanic">'.$mech.'</span></a></div>';
+                                    $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
+                                    echo'<div id="mechanicBox"><span id="pingMechanic" class="mechanicName" title="' . $tooltip . '"><a href="#">Mechanic</a></span><a href="#" onClick="javascript:showUserInfo('. $worklist['mechanic_id'].');"><span id="ping-btn" title="' . $tooltip . '">'.$mech.'</span></a></div>';
                                 }
                             ?>
 

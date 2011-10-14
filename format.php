@@ -4,6 +4,7 @@
 //  http://www.lovemachineinc.com
 
 require_once('functions.php');
+require_once('class/Utils.class.php');
 if (!isset($is_runner)) {
     $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 }
@@ -113,7 +114,7 @@ $userId = getSessionUserId();
              <?php } ?>
             | <a href="help.php" target="_blank">Help</a>
         <?php } else { ?>
-            <a href="login.php" title="Login to our Worklist">Login</a>
+            <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
             | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
             | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a>
             | <a href="http://blog.worklist.net" target="_blank"/>Blog</a>
