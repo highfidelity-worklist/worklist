@@ -388,9 +388,19 @@ if($action == 'finish_codereview') {
     } else {
         $crfee_desc = 'Code Review - '. $crfee_desc;
     }
-    sendJournalNotification(AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $mechanic_id, $is_expense, $is_rewarder));
+    $journal_message = AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $mechanic_id, $is_expense, $is_rewarder);
+    sendJournalNotification($journal_message);
     $workitem->setCRCompleted(1);
     $workitem->save();
+
+    $myRunner = new User();
+    $myRunner->findUserById($workitem->getRunnerId());
+    $myRunner->updateBudget(-$crfee_amount);
+
+    if(Notification::isNotified($myRunner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
+        Notification::sendSMS($myRunner, 'Fee', $journal_message);
+    }
+    
     $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
 
     Notification::workitemNotify(array(
