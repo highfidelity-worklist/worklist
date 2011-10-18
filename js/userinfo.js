@@ -202,10 +202,11 @@ var UserInfo = {
             var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
+            var data = {userid : userInfo.user_id, msg : msg, mail : mail, journal : journal, cc : cc};
             $.ajax({
                 type: "POST",
                 url: 'pingtask.php',
-                data: 'userid=' + userInfo.user_id + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal + '&cc=' + cc,
+                data: data,
                 dataType: 'json',
                 success: function() {
                     $("#sent-notify").html("<span>Your message has been sent.</span>");

@@ -886,11 +886,11 @@ $(document).ready(function(){
             var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
-
+            var data = {id : <?php echo $worklist_id; ?>, who : ping_who, msg : msg, mail : mail, journal : journal, cc : cc};
             $.ajax({
                 type: "POST",
                 url: 'pingtask.php',
-                data: 'id=' + <?php echo $worklist_id; ?> + '&who=' + ping_who  + '&msg=' + msg + '&mail=' + mail + '&journal=' + journal + '&cc=' + cc,
+                data: data,
                 dataType: 'json',
                 success: function() {
                     $("#sent-notify").html("<span>Your ping has been sent.</span>");
@@ -1788,7 +1788,7 @@ if ($action =="edit"):  ?>
     </div>
 
 </div>
-	<?php } ?>
+    <?php } ?>
 <?php if ( $user_id > 0) { ?>
 <script type="text/javascript">
     var status_refresh = 5 * 1000;

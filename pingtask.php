@@ -22,7 +22,6 @@ $user = getUserById($id);
 $nickname = $user->nickname;
 $email = $user->username;
 $msg = $_REQUEST['msg'];
-
 // send mail is hardcoded to on
 $send_mail = true;
 $send_chat = isset($_REQUEST['journal']) ? (int) $_REQUEST['journal'] : false;
