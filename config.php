@@ -206,3 +206,6 @@ mysql_select_db(DB_NAME);
 
 // time constants
 if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);
+
+if (! defined('VIRUS_SCAN_CMD')) define('VIRUS_SCAN_CMD', '/usr/bin/clamscan');
+

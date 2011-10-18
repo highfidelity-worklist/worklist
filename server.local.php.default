@@ -19,6 +19,7 @@ define("SALT", "WORKLIST");
 // Refresh interval for ajax updates of the history table (in seconds)
 define("AJAX_REFRESH", 30);
 
+define("VIRUS_SCAN_CMD", "/usr/bin/clamscan");
 
 // Default sender and sms sender. config.php has automatic fallback for REPLYTO if not set (will use *_SENDER)
 define('DEFAULT_SENDER','worklist@worklist.net');

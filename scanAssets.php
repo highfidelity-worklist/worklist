@@ -38,7 +38,7 @@ class scanAssets {
             $out = '';
             $message = '';
             $subject = '';
-            $cmd = '/usr/local/bin/clamscan ' . $safe_path; 
+            $cmd = VIRUS_SCAN_CMD . ' ' . $safe_path; 
             if (!empty($safe_path) && file_exists($real_path) && filesize($real_path) > 0 ) {
                 // Execute the command.  
                 exec ($cmd, $out, $return);
@@ -110,7 +110,7 @@ class scanAssets {
         $out = '';
         $message = '';
         $subject = '';
-        $cmd = '/usr/bin/clamscan ' . $safe_path; 
+        $cmd = VIRUS_SCAN_CMD . ' ' . $safe_path; 
         $fct_return = false;
             
         if (!empty($safe_path) && file_exists($real_path) && filesize($real_path) > 0 ) {
