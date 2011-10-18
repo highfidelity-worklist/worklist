@@ -26,7 +26,7 @@ $userId = getSessionUserId();
             $feeinfo = '<div style="display:none;" id="feesDialog"><table><tr><td><b>Your fees: </b></td></tr><tr><td>this week:</td><td><a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].
                         '</a></td></tr><tr><td>this month:</td><td><a href="#feesToolTip" class="feesum" id="fees-month">$'.$sum['month'].'</a> </td></tr></table></div>';
             $earnings = ' | <a href="javascript:;" class="earnings">Earnings</a> ';
-            if ( isset($_SESSION['is_runner'])) {
+            if (!empty($_SESSION['is_runner'])) {
                  $budget = ' | <a href="javascript:;" class="budget">Budget</a> ';
             
              } else {

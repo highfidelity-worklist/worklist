@@ -350,6 +350,8 @@ function addCommas(nStr) {
 <?php include("format.php"); ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
+<!-- Popup for Budget -->
+<?php require_once('dialogs/popup-budget.inc'); ?>
 
 <h1>Team Members</h1>
 <table id="newUserStats">
@@ -402,32 +404,6 @@ function addCommas(nStr) {
 <div class="ln-letters"><a href="#" class="all ln-selected">ALL</a><a href="#" class="_">0-9</a><a href="#" class="a">A</a><a href="#" class="b">B</a><a href="#" class="c">C</a><a href="#" class="d">D</a><a href="#" class="e">E</a><a href="#" class="f">F</a><a href="#" class="g">G</a><a href="#" class="h">H</a><a href="#" class="i">I</a><a href="#" class="j">J</a><a href="#" class="k">K</a><a href="#" class="l">L</a><a href="#" class="m">M</a><a href="#" class="n">N</a><a href="#" class="o">O</a><a href="#" class="p">P</a><a href="#" class="q">Q</a><a href="#" class="r">R</a><a href="#" class="s">S</a><a href="#" class="t">T</a><a href="#" class="u">U</a><a href="#" class="v">V</a><a href="#" class="w">W</a><a href="#" class="x">X</a><a href="#" class="y">Y</a><a href="#" class="z ln-last">Z</a></div>
 <div class="ln-pages"></div>
 <div id="user-info" title="User Info"></div>
-<div id="budgetPopup" style="display:none;">
-    <div id="be-block" >
-        <table id="be-table">
-            <tr>
-                <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
-                <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
-                <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
-            </tr>
-            <tr>
-                <td onClick="budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
-                <td onClick="budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated">
-                <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
-            </tr>
-            <tr>
-                <td onClick="budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
-                <td onClick="budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted">
-                <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
-            </tr>
-            <tr>
-                <td onClick="budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
-                <td onClick="budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid">
-                <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
-            </tr>
-        </table>
-    </div>
-</div>
 <?php
   $user_id = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0 ;
   if ( $user_id > 0) { ?>

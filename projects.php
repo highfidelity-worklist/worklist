@@ -362,6 +362,8 @@ include("head.html");
     </div>
         <!-- Popup for add project info-->
         <?php include('dialogs/add-proj-contact.inc'); ?>
+        <!-- Popup for budget info-->
+        <?php require_once('dialogs/popup-budget.inc'); ?>
     <div class="headerText">
             Worklist is a marketplace to rapidly build software and websites using a global network of developers, 
             designers and testers. Below is a list of our active projects.

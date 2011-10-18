@@ -610,6 +610,8 @@ include("head.html");
 <?php include("format.php"); ?>
 <!-- Popup for add project info-->
 <?php require_once('dialogs/popup-addproject.inc'); ?>
+<!-- Popup for budget info-->
+<?php require_once('dialogs/popup-budget.inc'); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
