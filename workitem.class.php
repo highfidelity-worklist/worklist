@@ -843,6 +843,7 @@ WHERE id = ' . (int)$id;
                     $bidder->getNickname(),
                     $bidder->getUnixusername(),
                     $this->getRepository(),
+                    $job_id,
                     $new_user);
             } catch (Exception $e) {
                 $error_email_body = "Error creating sandbox for user: " .
