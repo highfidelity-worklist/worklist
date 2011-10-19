@@ -174,7 +174,7 @@ class SandBoxUtil {
                    'key=' . SANDBOX_SERVER_API_KEY . '&' .
                    'username=' . $unixusername . '&' .
                    'repo=' . $project . '&' .
-                   $job_number);
+                   $job_number;
 
         $result   = postRequest(SANDBOX_SERVER_API, $command);
         
