@@ -817,8 +817,10 @@ WHERE id = ' . (int)$id;
 
         // If the project has a repository, give the user a checkout
         $repository = $this->getRepository();
+        $job_id     = $this->id;
+
         if ($repository) {
-            // We don't want to fail user signup if sandboxes are not line
+            // We don't want to fail user signup if sandboxes are not online
             // so we will not create unixusername until needed
             if ($bidder->getHas_sandbox()) {
                 $new_user = false;
@@ -827,8 +829,9 @@ WHERE id = ' . (int)$id;
                 $new_user = true;
             }
 
-            $bid_info['sandbox'] = "http://" . SANDBOX_SERVER . "/~" .
-               $bidder->getUnixusername()."/".$repository."/";
+            $bid_info['sandbox'] = "http://" . SANDBOX_SERVER .
+                "/~" . $bidder->getUnixusername() . "/" .
+                $repository."_".$job_id."/";
 
             // Provide bidder with sandbox & checkout if they don't already have one
             // If the sandbox flag is 0, they are a new user and need one setup

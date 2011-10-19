@@ -24,12 +24,26 @@ class SandBoxUtil {
         }
     }
 
-    public function createSandbox($username, $nickname, $unixusername, $projects,
+    public function createSandbox(
+                    $username,
+                    $nickname,
+                    $unixusername,
+                    $projects,
+                    $job_number=null,
                     $new_user=true) {
 
-         # Ensure $projects is an array.. it could just be 1 project
+        // Ensure $projects is an array.. it could just be 1 project
         if (!is_array($projects)) {
             $projects = array($projects);
+        }
+
+        // Make sure that we're not trying to check out multiple projects
+        // with a job ID. Job IDs are only applicable on bid-acceptance,
+        // which is a single job checkout.
+        if (count($projects) > 1 &&
+            $job_number != null) {
+
+            throw new Exception("Error: Multiple projects cannot be checked out with a job id.");
         }
 
         // If it's an existing user, just check out the requested projects for them
@@ -37,7 +51,7 @@ class SandBoxUtil {
             $result = true;
             foreach ($projects as $project) {
                 try {
-                    $this->checkoutProject($username, $unixusername, $project);
+                    $this->checkoutProject($username, $unixusername, $project, $job_number);
                 } catch (Exception $e) {
                     $result = false;
                 }
@@ -108,20 +122,32 @@ class SandBoxUtil {
     }
 
     /**
-    * Check if a user's sandbox already exists.Throws an exception if Sandbox already exists
+    * Check if a user's sandbox already exists.
+    * Throws an exception if Sandbox already exists
     *
     */
     private function ensureNonExistentSandbox($username) {
         //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
-        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
-        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+        if (! defined("SANDBOX_SERVER_API")) {
+            throw new Exception('Unable to communicate to sandbox server, not defined');
+        }
+        if (! defined("SANDBOX_SERVER_API_KEY")) {
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
 
-        $command ='command=sandboxexists&';
-        $command.='key='.SANDBOX_SERVER_API_KEY.'&';
-        if ($result = postRequest(SANDBOX_SERVER_API,$command.'username='.$username)) {
+        $command = 'command=sandboxexists&'.
+                   'key='.SANDBOX_SERVER_API_KEY.'&'.
+                   'username='.$username;
+        $result = postRequest(SANDBOX_SERVER_API, $command);
+
+        if ($result) {
             //Only get a result if there was a failure (user doesn't exist or command failed)
-            if (strpos($result,'Authentication failed')!==false) {throw new Exception('Unable to communicate to sandbox server, not authorized'); }
-            if (strpos($result,'Error')!==false) { return true; }
+            if (strpos($result,'Authentication failed') !== false) {
+                throw new Exception('Unable to communicate to sandbox server, not authorized');
+            }
+            if (strpos($result,'Error') !== false) {
+                return true;
+            }
             //If we don't fail, sandbox already exists
             throw new Exception('Sandbox already exists'); 
         }
@@ -131,18 +157,36 @@ class SandBoxUtil {
      * Check out a project for existing user
      *
      */
-    private function checkoutProject($username, $unixusername, $project) {
+    private function checkoutProject($username, $unixusername, $project, $job_number) {
         //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
-        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined'); }
-        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized'); }
+        if (! defined("SANDBOX_SERVER_API")) {
+            throw new Exception('Unable to communicate to sandbox server, not defined');
+        }
+        if (! defined("SANDBOX_SERVER_API_KEY")) {
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
 
-        $command ='command=checkoutrepo&';
-        $command.='key='.SANDBOX_SERVER_API_KEY.'&';
-        if ($result = postRequest(SANDBOX_SERVER_API,$command.'username='.$unixusername.'&repo='.$project)) {
+        if ($job_number != null) {
+            $job_number = "&job_num=".$job_number;
+        }
+
+        $command = 'command=checkoutrepo' . '&' .
+                   'key=' . SANDBOX_SERVER_API_KEY . '&' .
+                   'username=' . $unixusername . '&' .
+                   'repo=' . $project . '&' .
+                   $job_number);
+
+        $result   = postRequest(SANDBOX_SERVER_API, $command);
+        
+        if ($result) {
             //Only get a result if there was a failure (user doesn't exist or command failed)
-            if (strpos($result,'Authentication failed')!==false) {throw new Exception('Unable to communicate to sandbox server, not authorized'); }
-            if (strpos($result,'Error')===true) { throw new Exception('Project checkout failed:'.$result); }
-            $this->notifyCheckout($username, $unixusername, $project);
+            if (strpos($result,'Authentication failed')!==false) {
+                throw new Exception('Unable to communicate to sandbox server, not authorized');
+            }
+            if (strpos($result,'Error')===true) {
+                throw new Exception('Project checkout failed:'.$result);
+            }
+            $this->notifyCheckout($username, $unixusername, $project, $job_number);
         }
     }
 
@@ -254,10 +298,10 @@ class SandBoxUtil {
      * Sends a notification email that a project was checked out for a user
      *
      */
-    private function notifyCheckout($username, $unixusername, $project)
+    private function notifyCheckout($username, $unixusername, $project, $job_number)
     {
         $subject = "Project Checkout";
-        $sandbox = "https://dev.worklist.net/~".$unixusername."/".$project;
+        $sandbox = "https://".SANDBOX_SERVER."/~".$unixusername."/".$project."_".$job_number;
 
         $body = file_get_contents(PROJECT_CHECKOUT_EMAIL_TEMPATE);
 
