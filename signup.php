@@ -348,7 +348,7 @@ include("head.html");
         <select id="timezone" name="timezone">
             <?php
                 foreach ($timezoneTable as $key => $value) {
-                    echo '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
+                    echo '<option value = "'.$key.'">'.$value.'</option>';
                 }
             ?>
         </select>

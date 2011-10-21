@@ -127,6 +127,7 @@ $(document).ready(function(){
         });
     }
     smsRefreshProvider(true);
-    
-    $('option[value = "' + get_timezone() + '"]').attr('selected','selected');
+    if (!$('#timezone option[selected = "selected"]').length) {
+        $('#timezone option[value = "' + get_timezone() + '"]').attr('selected','selected');
+    }
 });
