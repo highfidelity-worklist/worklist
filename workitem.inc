@@ -1528,7 +1528,7 @@ if ($action =="edit"):  ?>
                                         if ($bid['accepted'] == 1){
                                             $bid_done_by_stamp = strtotime($bid['unix_done_full']);
                                         } else {
-                                            $bid_done_by_stamp = strtotime("+" . $bid['done_in'], $bid['unix_bid_created']);
+                                            $bid_done_by_stamp = strtotime("+" . $bid['done_in'], time());
                                         }
                                         if ($bid_done_by_stamp < time() && ($workitem->getStatus() == 'WORKING' || $workitem->getStatus() == 'REVIEW' || $workitem->getStatus() == 'FUNCTIONAL')) {
                                             $past_due = ' class="past-due overdue"';

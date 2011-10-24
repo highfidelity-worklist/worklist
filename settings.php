@@ -251,6 +251,9 @@ if (!empty($saveArgs)) {
         $msg="Account updated successfully!";
     }
 
+    if (isset($_POST['timezone'])) {
+      $_SESSION['timezone'] = trim($_POST['timezone']);
+    }
 
     if (isset($confirm_txt) && ! empty($confirm_txt)) {
         echo $confirm_txt;
