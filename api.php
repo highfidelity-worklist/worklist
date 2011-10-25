@@ -263,6 +263,7 @@ function getSystemDrawerJobs(){
          . " FROM   ". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
          . " ON     (w.project_id = p.project_id) "
          . " WHERE  w.status = 'REVIEW' "
+         . " AND w.code_review_completed = 0"
          ;
 
     if ($result = mysql_query($sql)) {
