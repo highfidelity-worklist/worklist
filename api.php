@@ -264,6 +264,7 @@ function getSystemDrawerJobs(){
          . " ON     (w.project_id = p.project_id) "
          . " WHERE  w.status = 'REVIEW' "
          . " AND w.code_review_completed = 0"
+         . " AND w.code_review_started = 0"
          ;
 
     if ($result = mysql_query($sql)) {
