@@ -23,7 +23,9 @@ $tooltips = array(
 	/* Item tooltips 				*/ 
 	
 	'cR'	        => 'Start a code review on this job.',
+	'endCr'         => 'End a code review on this job.',
     'cRDisallowed'	=> 'You are not authorized to Code Review this job.',
+    'endCrDisallowed' => 'You are not authorized to End Code Review on this job',
 	'addFee'	    => 'Add a fee you would like to be paid for work done on this job.',
 	'addBid'	    => 'Make an offer to do this job.',
 	

@@ -333,7 +333,17 @@ $(document).ready(function(){
     $('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
-    $('#popup-startreview').dialog({ autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade' });
+    $('#popup-startreview').dialog({ 
+        closeOnEscape: false, 
+        autoOpen: false, 
+        modal: false, 
+        width: 400, 
+        show: 'fade', 
+        hide: 'fade',
+        open: function(event, ui) { 
+            $(".ui-dialog-titlebar-close").hide(); 
+        }
+    });
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
     $('#popup-pingtask').dialog({
@@ -732,6 +742,19 @@ $(document).ready(function(){
             }
         });
         return false;
+    }
+    
+    function showEndReviewForm() {
+        $('#popup-endreview').dialog({
+            closeOnEscape: false,
+            autoOpen: false,
+            modal: false,
+            width: 400,
+            open: function(event, ui) {
+                $(".ui-dialog-titlebar-close").hide();
+            }         
+        });                        
+        $('#popup-endreview').dialog('open');
     }
 
     function saveWorkitem() {
@@ -1608,14 +1631,33 @@ if ($action =="edit"):  ?>
                                 <?php if ($mechanic_id == $user_id): ?>
                                     <input class="iToolTip addTip" type="submit" value="Tip User" />
                                 <?php endif; ?>
-                              
-                                <?php if ($mechanic_id != $user_id && $worklist['status'] == 'REVIEW'): ?>
-                                    <?php if ($user->isEligible() && $workitem->getCRStarted() != 1 && hasRights($workitem,$user_id)) : ?>
-                                        <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return showReviewForm();"/>
-                                    <?php else: ?>
+                                
+                                <?php if ($worklist['status'] == 'REVIEW') {
+                                    if ( $workitem->getCRStarted() !=1) {
+                                        if ($mechanic_id != $user_id) {
+                                            if ($user->isEligible()) {
+                                                if(hasRights($workitem, $user_id)) { ?>
+                                                    <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return showReviewForm();"/>
+                                        <?php   } else { ?>
+                                                    <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
+                                        <?php   }
+                                            }
+                                        }
+                                        
+                                    } else if($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
+                                        if ($user->isEligible()) {
+                                            if(hasRights($workitem, $user_id)) {
+                                                if($user_id == $workitem->getCReviewerId() || $is_runner || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) { ?>
+                                                    <input class="iToolTip endCr" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
+                                        <?php   } else { ?>
+                                                    <input class="iToolTip endCrDisallowed" type="submit" value="End Code Review" onClick="return false;"/>
+                                        <?php   }
+                                            }
+                                        } 
+                                    } else if($workitem->getCRCompleted() == 1) { ?>
                                         <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+                            <?php   }                                   
+                                }?>
                                 
                                 <?php if ($user_id): ?>
                                     <?php if ($user->isEligible()) : ?>
@@ -1687,6 +1729,8 @@ if ($action =="edit"):  ?>
     <?php include("dialogs/popup-addfee.inc"); ?>
     <!-- Popup HTML for starting a code review -->
     <?php include("dialogs/popup-startreview.inc"); ?>
+    <!-- Popup HTML for ending a code review -->
+    <?php include("dialogs/popup-endreview.inc"); ?>    
     <!-- Popup for ping user on task-->
     <?php require_once('dialogs/popup-pingtask.inc') ?>
     <!-- Popup for bid info-->

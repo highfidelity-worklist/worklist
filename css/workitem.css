@@ -793,3 +793,13 @@ span.info-whisper {
     font-weight: normal;
 }
 
+#cancelstartcodereview,
+#cancelendreview,
+#startcodereview {
+    cursor: pointer;
+}
+
+#cancelendreview {
+    float: left;
+}
+

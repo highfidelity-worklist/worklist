@@ -29,6 +29,7 @@ class WorkItem {
     protected $project_name;
     protected $bug_job_id;
     protected $is_bug;
+    protected $code_reviewer_id;
     protected $code_review_started;
     protected $code_review_completed;
 
@@ -83,6 +84,7 @@ class WorkItem {
                         w.sandbox,
                         w.bug_job_id,
                         w.is_bug,
+                        w.code_reviewer_id,
                         w.code_review_started,
                         w.code_review_completed,
                         w.status_changed,
@@ -109,6 +111,7 @@ class WorkItem {
              ->setSandbox($row['sandbox'])
              ->setBugJobId($row['bug_job_id'])
              ->setIs_bug($row['is_bug'])
+             ->setCReviewerId($row['code_reviewer_id'] == "" ? 0 : $row['code_reviewer_id'])
              ->setCRStarted($row['code_review_started'])
              ->setCRCompleted($row['code_review_completed'])
              ->setWorkitemSkills();
@@ -279,6 +282,7 @@ WHERE id = ' . (int)$id;
     }
     
     public function resetCRFlags() {
+        $this->code_reviewer_id = 0;
         $this->code_review_started = 0;
         $this->code_review_completed = 0;
         return $this;
@@ -332,6 +336,15 @@ WHERE id = ' . (int)$id;
     public function getSandbox()
     {
         return $this->sandbox;
+    }
+    
+    public function setCReviewerId($code_reviewer_id) {
+        $this->code_reviewer_id = $code_reviewer_id;
+        return $this;
+    }
+    
+    public function getCReviewerId() {
+        return $this->code_reviewer_id;
     }
     
     public function setCRStarted($cr_status) {
@@ -487,6 +500,7 @@ WHERE id = ' . (int)$id;
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
             is_bug='.$this->getIs_bug().',
+            code_reviewer_id=' . $this->getCReviewerId() . ',
             code_review_started='.$this->getCRStarted().',
             code_review_completed='.$this->getCRCompleted().',
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';

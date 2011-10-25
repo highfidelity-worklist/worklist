@@ -490,6 +490,7 @@ class JsonServer
         $user = new User();
         $user->findUserById($user_id);
         $workitem->setCRStarted(1);
+        $workitem->setCReviewerId($user_id);
         $workitem->save();
         $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workitem->getSummary();
         sendJournalNotification($journal_message);
@@ -504,6 +505,7 @@ class JsonServer
         $user = new User();
         $user->findUserById($user_id);
         $workitem->setCRStarted(0);
+        $workitem->setCReviewerId(0);
         $workitem->save();
         $journal_message = $user->getNickname() . " has canceled their code review for #$workitem_id: " . $workitem->getSummary();
         sendJournalNotification($journal_message);
