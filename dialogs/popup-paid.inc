@@ -6,7 +6,9 @@
 <?php } ?>
 
             <p class="popup-paid-summary"></p>
-            <p><label>Are you sure you want to pay/not pay this fee? <input type="checkbox" name="paid_check" id="paid_check" value="1">Yes</input>
+            <p><label>Set Fee Paid Status to
+                <input type="checkbox" name="paid_check" id="paid_check" value="1">Yes</input>
+                <input type="checkbox" name="notpaid_check" id="notpaid_check" value="2">No</input>
             </label></p>
 
             <p><label>Notes<br />

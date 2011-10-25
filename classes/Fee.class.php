@@ -32,6 +32,7 @@ class Fee
         $user_paid = $user_paid == 0 ? $_SESSION['userid'] : $user_paid;
         $paid_notes = mysql_real_escape_string($paid_notes);
         $paid = (int) $paid;
+        $update_fund_id = "";
         //If no fund passed, do not update fund_id in fee or update budget. (alternate version. bail with failure if fund_id is required
         if ($fund_id) { $update_fund_id = " , `fund_id` = " . (int) $fund_id; }
     

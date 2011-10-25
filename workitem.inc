@@ -462,7 +462,20 @@ $(document).ready(function(){
 <?php if (isset($_SESSION['userid'])) {?>
     $('.paid-link').click(function(e){
         var fee_id = $(this).attr('id').substr(8);
-
+        if ($('#feeitem-' + fee_id).html() == "Yes") {
+            $('#paid_check').attr('checked', "1");
+        } else if ($('#feeitem-' + fee_id).html() == "No" ) {
+            $('#notpaid_check').attr('checked', "1");
+        }
+    
+        $('#paid_check').click(function() { 
+               var $checkbox = $('#notpaid_check');
+               $checkbox.attr('checked', !$checkbox.attr('checked'));
+        });
+        $('#notpaid_check').click(function() {
+               var $checkbox = $('#paid_check'); 
+               $checkbox.attr('checked', !$checkbox.attr('checked'));
+        });
         AjaxPopup('#popup-paid',
             'Pay Fee',
             'getfeeitem.php',
@@ -470,7 +483,6 @@ $(document).ready(function(){
             [ ['input', 'itemid', 'keyId', 'eval'],
             ['textarea', 'paid_notes', 'json[2]', 'eval'],
             ['checkbox', 'paid_check', 'json[1]', 'eval'] ]);
-
             $('.paidnotice').empty();
             $('#popup-paid').dialog('open');
 
