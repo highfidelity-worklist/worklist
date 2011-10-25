@@ -845,37 +845,9 @@ $(document).ready(function(){
         $.loggedin = <?php echo isset($_SESSION['userid']) ? "true" : "false" ?>;
 
         $(".editable").attr("title","Switch to Edit Mode").click(function() {
-            // don't handle notestext in this function
-            if (! $(this).hasClass('notestext')) {
-                window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
-            }
+            window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
         });
 
-        // handling for notes text selecting / click
-        // if the mouseup does not happen within the specified timeout
-        // update some CSS and do not redirect
-        // when mouseup occurs, reset the CSS
-        var notesRedirect = false;
-        $('.notestext.editable').mousedown(function() {
-            // it's a new click - reset to false
-            notesRedirect = false;
-
-            var triggerEdit = setTimeout(function() {
-                if (notesRedirect) {
-                     window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
-                } else {
-                    $('.notestext')
-                        .css('cursor', 'text')
-                        .removeClass('editable');
-                    notesRedirect = false;
-                }
-            }, 125);
-        }).mouseup(function() {
-            notesRedirect = true;
-            $('.notestext')
-                .css('cursor', 'pointer')
-                .addClass('editable');
-        });
         $('#commentZone').css({'opacity':'0'});
         // Call via Ajax to ping the user in the journal
         // and in email.
@@ -1328,7 +1300,7 @@ if ($action =="edit"):  ?>
                 <!-- View: Notes textarea -->
                     <li>
                         <span class="info-label">Notes</span>
-                        <p class="notestext<?php echo $classEditable;?>"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
+                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
                         <!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
                     </li>
                     <li>
