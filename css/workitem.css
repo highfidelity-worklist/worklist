@@ -406,7 +406,7 @@ span.info-whisper {
 .reply-lnk{
     font-size:11px;
     width:100%;
-    margin-top:-11px;
+    margin-top:0;
     text-align:right;
 }
 
