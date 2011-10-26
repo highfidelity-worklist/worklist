@@ -6,7 +6,7 @@
     </p>
     <form name="popup-form" id="popup-form-endreview" action="" method="post">
             <input type="hidden" name="itemid" value="" />
-            <p class="info-label" style="display:block">Reviewer: <em>
+            <p class="info-label" id="reviewernick" style="display:block">Reviewer: <em>
             <?php 
             $reviewer = new User();
             $reviewer->findUserById($workitem->getCReviewerId());
@@ -60,7 +60,7 @@
                     crfee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                     crfee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
             </script>
-         <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $workitem->getCReviewerId(); ?>' />
+        
         <div class="buttonContainer">
             <input type="button" name="cancel" id="cancelendreview" value="Cancel" onClick="closeDialog();"/>
             <input type="button" name="cancel_codereview" value="Abort Code Review" onClick="cancelReview();" />

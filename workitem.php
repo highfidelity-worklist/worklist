@@ -375,7 +375,7 @@ if($action == 'start_codereview') {
 }
 
 if($action == 'finish_codereview') {
-    $args = array('itemid', 'crfee_amount', 'fee_category', 'crfee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
+    $args = array('itemid', 'crfee_amount', 'fee_category', 'crfee_desc', 'is_expense', 'is_rewarder');
     foreach ($args as $arg) {
         if (isset($_POST[$arg])) {
                $$arg = mysql_real_escape_string($_POST[$arg]);
@@ -388,7 +388,7 @@ if($action == 'finish_codereview') {
     } else {
         $crfee_desc = 'Code Review - '. $crfee_desc;
     }
-    $journal_message = AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $mechanic_id, $is_expense, $is_rewarder);
+    $journal_message = AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $workitem->getCReviewerId(), $is_expense, $is_rewarder);
     sendJournalNotification($journal_message);
     $workitem->setCRCompleted(1);
     $workitem->save();

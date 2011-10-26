@@ -343,7 +343,7 @@ $(document).ready(function(){
         open: function(event, ui) { 
             $(".ui-dialog-titlebar-close").hide(); 
         }
-    });
+    });    
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
     $('#popup-pingtask').dialog({
@@ -756,7 +756,7 @@ $(document).ready(function(){
         return false;
     }
     
-    function showEndReviewForm() {
+    function showEndReviewForm() {       
         $('#popup-endreview').dialog({
             closeOnEscape: false,
             autoOpen: false,
@@ -765,7 +765,7 @@ $(document).ready(function(){
             open: function(event, ui) {
                 $(".ui-dialog-titlebar-close").hide();
             }         
-        });                        
+        });                                
         $('#popup-endreview').dialog('open');
     }
 
@@ -1659,7 +1659,7 @@ if ($action =="edit"):  ?>
                                     } else if($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
                                         if ($user->isEligible()) {
                                             if(hasRights($workitem, $user_id)) {
-                                                if($user_id == $workitem->getCReviewerId() || $is_runner || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) { ?>
+                                                if($user_id == $workitem->getCReviewerId() || $is_runner || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
                                                     <input class="iToolTip endCr" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
                                         <?php   } else { ?>
                                                     <input class="iToolTip endCrDisallowed" type="submit" value="End Code Review" onClick="return false;"/>
