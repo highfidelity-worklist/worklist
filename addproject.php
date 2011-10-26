@@ -15,9 +15,12 @@ $journal_message = '';
 $nick = '';
 
 $userId = getSessionUserId();
-//Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb, your userid must be included below.
-//Just remove when done!   
-if ($userId == 2 ||  $userId == 1020 || $userId == 1918) {
+/* Only Ryan, Philip & Fred can add projects! In order to work on the add projects
+   page in your sb, your userid must be included below. Just remove when done!
+   - joanne
+   adding alexi and jeska - alexi 2011-10-26
+*/
+if ($userId == 2 || $userId == 1020 || $userId == 1918 || $userId == 2134 || $userId == 1935) {
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );

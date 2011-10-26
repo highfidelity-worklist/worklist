@@ -107,11 +107,15 @@ $userId = getSessionUserId();
             | <a href="team.php">Team</a>
             | <a href="settings.php" class="iToolTip menuSettings">Settings</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
-<!--  Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb, your userid must be included below.
-      Just remove when done! -->            
-             <?php if ($userId == 2 ||  $userId == 1020 || $userId == 1918) { ?>
+            <?php
+                /* Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
+                   your userid must be included below. Just remove when done!
+                   Adding alexi and jeskad - alexi 2011-10-26
+                */
+                if ($userId == 2 || $userId == 1020 || $userId == 1918 || $userId == 2134 || $userId == 1935) {
+            ?>
             | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
-             <?php } ?>
+            <?php } ?>
             | <a href="help.php" target="_blank">Help</a>
         <?php } else { ?>
             <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
