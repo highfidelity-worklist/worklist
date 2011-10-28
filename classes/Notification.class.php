@@ -124,19 +124,17 @@ class Notification {
                 break;
             case 'REVIEW':
                 $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
-                $myEmails= self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
-                $myEmails=array_diff($myEmails,$emails); // Remove already existing emails in $emails list
-                $emails=array_merge($emails,$myEmails);
                 $emails=array_unique($emails);
                 $options = array('type' => 'new_review',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
+
                 $emails = self::getNotificationEmails(self::REVIEW_NOTIFICATIONS);
-                $myEmails= self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
-                $myEmails=array_diff($myEmails,$emails); // Remove already existing emails in $emails list
-                $emails=array_merge($emails,$myEmails);
-                $emails=array_unique($emails);
+                $myEmails = self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
+                $myEmails = array_diff($myEmails, $emails); // Remove already existing emails in $emails list
+                $myEmails = array_unique($myEmails);
+                $emails = array_unique($emails);
                 $options = array('type' => 'new_review',
                     'workitem' => $workitem,
                     'emails' => $emails);

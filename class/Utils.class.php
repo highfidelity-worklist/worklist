@@ -80,7 +80,7 @@ class Utils{
 
     function currentPageUrl() {
         $pageURL = 'http';
-        if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+        if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") { $pageURL .= "s"; }
 
         $pageURL .= "://";
         if ($_SERVER["SERVER_PORT"] != "80") {
