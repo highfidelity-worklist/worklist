@@ -1,18 +1,18 @@
 $(document).ready(function() {
-    $("#map-container").hide();
     sizeWindowObjects();
     //displayMonthsInTimeline();
-    initializeCanvas("drawing-canvas");
+    initializeCanvases("drawing-canvas-1", "drawing-canvas-2", "drawing-canvas-3");
+    initializeMap();
     buildLocationArray();
 });
 $(window).resize(function() {
     sizeWindowObjects();
 });
 function sizeWindowObjects() {
-    var viewportHeight = $(window).height();
+    viewportHeight = $(window).height();
     viewportWidth = $(window).width();
-    var dollarHeight = $("#dollar-amount").outerHeight();
-    var participantHeight = $("#participant-icons").outerHeight();
+    dollarHeight = $("#dollar-amount").outerHeight();
+    participantHeight = $("#participant-icons").outerHeight();
     mapHeight = viewportHeight - dollarHeight - participantHeight;
     $("#map-container").css({
         'width': viewportWidth + 'px',
@@ -20,12 +20,13 @@ function sizeWindowObjects() {
         'top': dollarHeight + 'px',
         'position': 'absolute'
     });
-    $("#drawing-canvas").attr("width", viewportWidth);
-    $("#drawing-canvas").attr("height", mapHeight);
-    $("#drawing-canvas").css({
+    $("#drawing-canvas-1, #drawing-canvas-2, #drawing-canvas-3").attr("width", viewportWidth);
+    $("#drawing-canvas-1, #drawing-canvas-2, #drawing-canvas-3").attr("height", mapHeight);
+    $("#drawing-canvas-1, #drawing-canvas-2, #drawing-canvas-3").css({
         'top': dollarHeight + 'px',
         'position': 'absolute'
     });
+    initializeMap();
 }
 function collectData() {
     $.ajax({
@@ -43,7 +44,7 @@ function collectData() {
                 scrollwheel: false,
                 disableDefaultUI: true,
                 disableDoubleClickZoom: true,
-                zoom: 3,
+                zoom: 2,
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
@@ -72,17 +73,17 @@ function collectData() {
                             var LongFixed = (Long).toFixed(6);
                             var LatLngGoogle = new google.maps.LatLng(LatFixed,LongFixed);
                             if (creatorFee <= 10) {
-                                creatorRadius = 5;
+                                creatorRadius = 20;
                             } else if (creatorFee > 10 && creatorFee <= 100) {
-                                creatorRadius = 10;
+                                creatorRadius = 50;
                             } else if (creatorFee > 100) {
-                                creatorRadius = 25;
+                                creatorRadius = 100;
                             }
                             if (creatorAddress != null && creatorRadius != 0) {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                animateCanvasCircle(markerPixelX,markerPixelY,creatorRadius,"#E61111");
+                                animateCanvasCircle(markerPixelX,markerPixelY,creatorRadius,"#E61111","1");
                             }
                         }
                     }
@@ -101,17 +102,17 @@ function collectData() {
                             var LongFixed = (Long).toFixed(6);
                             var LatLngGoogle = new google.maps.LatLng(LatFixed,LongFixed);
                             if (runnerFee <= 10) {
-                                runnerRadius = 5;
+                                runnerRadius = 20;
                             } else if (runnerFee > 10 && runnerFee <= 100) {
-                                runnerRadius = 10;
+                                runnerRadius = 50;
                             } else if (runnerFee > 100) {
-                                runnerRadius = 25;
+                                runnerRadius = 100;
                             }
                             if (runnerAddress != null && runnerRadius != 0) {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                animateCanvasCircle(markerPixelX,markerPixelY,runnerRadius,"#F8B900");
+                                animateCanvasCircle(markerPixelX,markerPixelY,runnerRadius,"#3AC115","2");
                             }
                         }
                     }
@@ -130,26 +131,25 @@ function collectData() {
                             var LongFixed = (Long).toFixed(6);
                             var LatLngGoogle = new google.maps.LatLng(LatFixed,LongFixed);
                             if (mechanicFee <= 10) {
-                                mechanicRadius = 5;
+                                mechanicRadius = 20;
                             } else if (mechanicFee > 10 && mechanicFee <= 100) {
-                                mechanicRadius = 10;
+                                mechanicRadius = 50;
                             } else if (mechanicFee > 100) {
-                                mechanicRadius = 25;
+                                mechanicRadius = 100;
                             }
                             if (mechanicAddress != null && mechanicRadius != 0) {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                animateCanvasCircle(markerPixelX,markerPixelY,mechanicRadius,"#F79125");
+                                animateCanvasCircle(markerPixelX,markerPixelY,mechanicRadius,"#F79125","3");
                             }
                         }
                     }
                     markerCounter++;
                 } else {
-                    alert("done");
                     clearInterval(markerCreationLoop);
                 }
-            }, delayPerSet);
+            }, 100);
         }
     });
 }
@@ -205,7 +205,6 @@ function buildLocationArray() {
                 counter++;
             }
             $("#loading-indicator").hide();
-            $("#map-container").show();
             collectData();
         }
     })
@@ -262,26 +261,85 @@ function displayMonthsInTimeline() {
         }
     })
 }
-function initializeCanvas(canvas_id) {
-    var drawingCanvas = document.getElementById(canvas_id);
-    context = drawingCanvas.getContext("2d");
+function initializeCanvases(canvas_id1, canvas_id2, canvas_id3) {
+    var drawingCanvas1 = document.getElementById(canvas_id1);
+    context1 = drawingCanvas1.getContext("2d");
+    var drawingCanvas2 = document.getElementById(canvas_id2);
+    context2 = drawingCanvas2.getContext("2d");
+    var drawingCanvas3 = document.getElementById(canvas_id3);
+    context3 = drawingCanvas3.getContext("2d");
 }
-function animateCanvasCircle(positionX, positionY, finalSize, colorCode) {
+function animateCanvasCircle(positionX, positionY, finalSize, colorCode, canvas_id) {
     counter = 1;
+    if (canvas_id == "1") {
     animationInterval = setInterval(function() {
         if (counter < finalSize) {
-            context.clearRect(0,0,viewportWidth,mapHeight);
-            context.strokeStyle = colorCode;
-            context.fillStyle = colorCode;
-            context.beginPath();
-            context.arc(positionX,positionY,counter,0,Math.PI*2,false);
-            context.closePath();
-            context.stroke();
-            context.fill();
+            context1.clearRect(0,0,viewportWidth,mapHeight);
+            context1.strokeStyle = colorCode;
+            context1.fillStyle = colorCode;
+            context1.beginPath();
+            context1.arc(positionX,positionY,counter,0,Math.PI*2,false);
+            context1.closePath();
+            context1.stroke();
+            context1.fill();
             counter++
         }
         else {
             clearInterval(animationInterval);
         }
-    },20);
+    },5000);
+    } else if (canvas_id == "2") {
+        animationInterval = setInterval(function() {
+        if (counter < finalSize) {
+            context2.clearRect(0,0,viewportWidth,mapHeight);
+            context2.strokeStyle = colorCode;
+            context2.fillStyle = colorCode;
+            context2.beginPath();
+            context2.arc(positionX,positionY,counter,0,Math.PI*2,false);
+            context2.closePath();
+            context2.stroke();
+            context2.fill();
+            counter++
+        }
+        else {
+            clearInterval(animationInterval);
+        }
+    },5000);    
+    } else if (canvas_id == "3") {
+        animationInterval = setInterval(function() {
+        if (counter < finalSize) {
+            context3.clearRect(0,0,viewportWidth,mapHeight);
+            context3.strokeStyle = colorCode;
+            context3.fillStyle = colorCode;
+            context3.beginPath();
+            context3.arc(positionX,positionY,counter,0,Math.PI*2,false);
+            context3.closePath();
+            context3.stroke();
+            context3.fill();
+            counter++
+        }
+        else {
+            clearInterval(animationInterval);
+        }
+    },5000);    
+    }
+}
+function initializeMap() {
+    var latlng = new google.maps.LatLng(40, -30);
+    var myOptions = {
+        navigationControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        draggable: false,
+        scrollwheel: false,
+        disableDefaultUI: true,
+        disableDoubleClickZoom: true,
+        zoom: 2,
+        center: latlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById("map-container"), myOptions);
+    overlay = new google.maps.OverlayView();
+    overlay.draw = function() {};
+    overlay.setMap(map);
 }
