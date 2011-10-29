@@ -236,6 +236,7 @@ class Notification {
             
             case 'fee_added':
                 if($workitem->getStatus() != 'DRAFT') {
+                $headers['From'] = '"' . $project_name . '-fee added" ' . $from_address;
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br>'
                         . 'Amount: ' . $data['fee_amount'] . '<br /><br />'
@@ -252,8 +253,28 @@ class Notification {
                 . '-Worklist.net' ;
                 }
             break;
+            
+            case 'fee_deleted':
+                if($workitem->getStatus() != 'DRAFT') {
+                    $headers['From'] = '"' . $project_name . '-fee deleted" ' . $from_address;
+                    $body = "<p>Your fee has been deleted by: ".$_SESSION['nickname']."<br/><br/>";
+                    $body .= "If you think this has been done in error, please contact the job Runner.</p>";
+                    $body .= 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                    if($workitem->getRunner() != '') {
+                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    }
+                    if($workitem->getMechanic() != '') {
+                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                    }
+                    $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                    . '-Worklist.net' ;
+                }
+            break;
 
             case 'tip_added':
+                $headers['From'] = '"' . $project_name . '-tip added" ' . $from_address;
                 $body = $data['tip_adder'] . ' tipped you $' . $data['tip_amount'] . ' on job ' . $itemLink . ' for:<br><br>' . $data['tip_desc'] . '<br><br>Yay!' . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -269,6 +290,7 @@ class Notification {
                 break;
 
             case 'bid_accepted':
+                $headers['From'] = '"' . $project_name . '-bid accepted" ' . $from_address;
                 $body = 'Your bid was accepted for ' . $itemLink . '<br/><br />'
                         . 'Promised by: ' . $_SESSION['nickname'] . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
@@ -285,6 +307,7 @@ class Notification {
             break;
 
             case 'bid_placed':
+                $headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
                 $body =  'New bid was placed for ' . $itemLink . '<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Done In: ' . $data['done_in'] . '<br />'
@@ -308,6 +331,7 @@ class Notification {
             break;
 
             case 'bid_updated':
+                $headers['From'] = '"' . $project_name . '-bid updated" ' . $from_address;
                 $body = 'Bid updated for ' . $itemLink . '<br /><br/>'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Done In: ' . $data['done_in'] . '<br />'
@@ -330,6 +354,7 @@ class Notification {
             break;
 
             case 'bid_discarded':
+                $headers['From'] = '"' . $project_name . '-bid discarded" ' . $from_address;
                 $body = "<p>Hello " . $data['who'] . ",</p>";
                 $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$itemId."'>#".$itemId."</a> '" . $workitem -> getSummary() . "'. This job has just been filled by another mechanic.</br></p>";
                 $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
@@ -337,6 +362,24 @@ class Notification {
             break;
 
             case 'modified-functional':
+                $from_changes = "";
+                if (!empty($options['status_change'])) {
+                    $from_changes = $status_change;
+                }
+                if (isset($options['job_changes'])) {
+                    if (count($options['job_changes']) > 0) {
+                        $from_changes .= $options['job_changes'][0];
+                        if (count($options['job_changes']) > 1) {
+                            $from_changes .= ' +other changes';
+                        }
+                    }
+                }
+
+                if ($from_changes) {
+                    $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
+                } else {
+                    $headers['From'] = '"' . $project_name . '-modified-functional" ' . $from_address;
+                }
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
                     . $data['changes'] . '<br /><br />'
                     . 'Project: ' . $project_name . '<br />'
@@ -349,11 +392,28 @@ class Notification {
             break;
             
             case 'modified':
-            if($workitem->getStatus() != 'DRAFT') {
-                $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-                    . $data['changes'] . '<br /><br />'
-                    . 'Project: ' . $project_name . '<br />'
-                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if($workitem->getStatus() != 'DRAFT') {
+                    $from_changes = "";
+                    if (!empty($options['status_change'])) {
+                        $from_changes = $status_change;
+                    }
+                    if (isset($options['job_changes'])) {
+                        if (count($options['job_changes']) > 0) {
+                            $from_changes .= $options['job_changes'][0];
+                            if (count($options['job_changes']) > 1) {
+                                $from_changes .= ' +other changes';
+                            }
+                        }
+                    }
+                    if (!empty($from_changes)) {
+                        $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
+                    } else {
+                        $headers['From'] = '"' . $project_name . '-modified" ' . $from_address;
+                    }
+                    $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
+                        . $data['changes'] . '<br /><br />'
+                        . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
                         $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
@@ -361,9 +421,9 @@ class Notification {
                         $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
                     $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
-                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                    . '-Worklist.net' ;
-            }
+                        . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                        . '-Worklist.net' ;
+                }
             break;
 
             case 'new_bidding':
@@ -462,7 +522,7 @@ class Notification {
                 $reusableString .= $itemId;
                 $reusableString .= ':';
                 $reusableString .= $workitem -> getSummary();
-                $headers['From'] = '"' . $project_name . '-commited" ' . $from_address;
+                $headers['From'] = '"' . $project_name . '-committed" ' . $from_address;
                 $body =  'Congrats!';
                 $body .= '<br/><br/>Your Commit - ' . $reusableString . ' was a success!';
                 $body .= '<br><br>Click <a href="';
@@ -480,7 +540,7 @@ class Notification {
                 $reusableString .= $itemId;
                 $reusableString .= ':';
                 $reusableString .= $workitem -> getSummary();
-                $headers['From'] = '"' . $project_name . '-commited" ' . $from_address;
+                $headers['From'] = '"' . $project_name . '-commit fail" ' . $from_address;
                 $body =  'Otto says: No Commit for you!';
                 $body .= '<br/><br/>Your Commit - ';
                 $body .= $reusableString;
@@ -492,6 +552,7 @@ class Notification {
             break;
             
             case 'invite-user':
+                $headers['From'] = '"' . $project_name . '-invited" ' . $from_address;
                 $body = "<p>Hello you!</p>";
                 $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>";
 				$body .= "<p>Description:</p>";
@@ -523,6 +584,7 @@ class Notification {
             break;
 
             case 'code-review-completed':
+                $headers['From'] = '"' . $project_name . '-review complete" ' . $from_address;
                 $body = '<p>Hello,</p>';
                 $body .= '<p>The code review on task '.$itemLink.' has been completed by ' . $_SESSION['nickname'] . '</p>';
                 $body .= '<br>';
@@ -547,6 +609,24 @@ class Notification {
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p> -Worklist.net</p>';
+            break;
+            
+            case 'expired_bid':
+                $headers['From'] = '"' . $project_name . '-expired bid" ' . $from_address;
+                $body = "<p>Job " . $itemLink . "<br />";
+                $body .= "Your Bid on #" . $itemId . " has expired and this task is still available for Bidding.</p>";
+                $body .= "<p>Your Bid Info<br />";
+                $body .= "Bid Amount : $" . $data['bid_amount'] . "</p>";
+                $body .= '<p>Project: ' . $project_name . '<br />';
+                $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if ($workitem->getRunnerId()) {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                }
+                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>You can view the job ';
+                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<p> -Worklist.net</p>';
+            break;
         }
 
     
@@ -831,6 +911,34 @@ class Notification {
         exec('php ' . $application_path . 'tools/smsnotifications.php '
         . $args . ' > /dev/null 2>/dev/null &');
         
+    }
+
+    // get list of expired bids
+    public function emailExpiredBids(){
+        $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount
+            FROM " . WORKLIST . " w
+            LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
+            WHERE w.status = 'BIDDING'
+                AND b.expired_notify = 0
+                AND b.bid_expires < NOW()
+            ORDER BY b.worklist_id DESC";
+        $worklist = mysql_query($qry);
+        $wCount = mysql_num_rows($worklist);
+        if($wCount > 0){
+            while ($row = mysql_fetch_assoc($worklist)) {
+                $options = array();
+                $options['emails'] = array($row['bid_email']);
+                $options['workitem'] = new workItem();
+                $options['workitem']->loadById($row['worklist_id']);
+                $options['type'] = "expired_bid";
+                $data = array('bid_amount'=>$row['bid_amount']);
+
+                self::workitemNotify($options, $data);
+                
+                $bquery = "UPDATE " . BIDS . " SET expired_notify = 1 WHERE id = " . $row['bid_id'];
+                mysql_query($bquery);
+            }
+        }
     }
 
 }

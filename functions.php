@@ -705,12 +705,17 @@ function deleteFee($fee_id) {
         sendJournalNotification($message);
 
         //sending email to the bidder
+        $options = array();
+        $options['emails'] = array($user->username);
+        $options['workitem'] = new workItem();
+        $options['workitem']->loadById($fee->worklist_id);
+        $options['type'] = "fee_deleted";
+        Notification::workitemNotify($options);
+       
         $subject = "Fee: " . $summary;
-        $body = "Your fee has been deleted by: ".$_SESSION['nickname']."</p>";
-        $body .= "<p><a href=".SERVER_URL."workitem.php?job_id={$fee->worklist_id}&action=view>View Item</a></p>";
-        $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        if (!send_email($user->username, $subject, $body)) { error_log("send_email failed"); }
-        notify_sms_by_object($user, $subject, $body);
+        $sms_message = "Your fee has been deleted by: " . $_SESSION['nickname'] . " for #{$fee->worklist_id}. ";
+        $sms_message .= "If you think this is an error, please contact the Runner."; 
+        notify_sms_by_object($user, "Fee deleted", $sms_message);
     }
 }
 

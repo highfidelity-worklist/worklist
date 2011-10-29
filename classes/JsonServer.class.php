@@ -762,23 +762,29 @@ class JsonServer
                 $oldRunner = $workitem->getRunner();
                 $workitem->setRunnerId($runner->getId())
                          ->save();
+                $project = new Project();
+                $project->loadById($workitem->getProjectId());
+                $project_name = $project->getName();
+                $from_address = '<noreply-' . $project_name . '@worklist.net>';
+                $headers = array('From' => '"' . $project_name . '-runner changed" ' . $from_address);
 
-                $subject = 'Runner #' . $workitem->getId() . ' has been changed';
+                // This should eventually be moved to Notification->workitemNotify - dans
+                $subject = '#' . $workitem->getId() . ' '. $workitem->getSummary();
                 $body = "<p>Hi there,</p>";
                 $body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Runner " . $runner->getNickname() . ".</p>";
                 $body .= "<p>See you in the Workroom!</p>";
 
                 if ($oldRunner) {
-                    if(!send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeOldRunner failed"); }
+                    if(!send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeOldRunner failed"); }
                 }
                 if ($workitem->getRunner()) {
-                    if(!send_email($workitem->getRunner()->getNickname() . ' <' . $workitem->getRunner()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeGetRunner: send_email failed"); }
+                    if(!send_email($workitem->getRunner()->getNickname() . ' <' . $workitem->getRunner()->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeGetRunner: send_email failed"); }
                 }
                 if ($workitem->getCreator()) {
-                    if(!send_email($workitem->getCreator()->getNickname() . ' <' . $workitem->getCreator()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeCreator: send_email failed"); }
+                    if(!send_email($workitem->getCreator()->getNickname() . ' <' . $workitem->getCreator()->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeCreator: send_email failed"); }
                 }
                 if ($workitem->getMechanic()) {
-                    if(!send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body)) { error_log("JsonServer:changeMechanic: send_email failed"); }
+                    if(!send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeMechanic: send_email failed"); }
                 }
 
                 sendJournalNotification($this->getUser()->getNickname() . ' updated Job #' . $workitem->getId() . ': ' . $workitem->getSummary() . '. Runner reassigned to ' . $workitem->getRunner()->getNickname());

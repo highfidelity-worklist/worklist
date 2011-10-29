@@ -293,8 +293,8 @@ function getSystemDrawerJobs(){
 }
 
 function sendBidNotification() {
-    require_once('./classes/BidNotification.class.php');
-    $notify = new BidNotification();
+    require_once('./classes/Notification.class.php');
+    $notify = new Notification();
     $notify->emailExpiredBids();
 }
 

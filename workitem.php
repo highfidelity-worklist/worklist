@@ -136,7 +136,8 @@ if ($action != 'view') {
 
 // Save WorkItem was requested. We only support Update here
 $notifyEmpty = true;
-$message_title = '';
+$job_changes = array();
+$status_change = '';
 if ($action =='save_workitem') {
     $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills',
                 'is_bug', 'bug_job_id');
@@ -159,11 +160,7 @@ if ($action =='save_workitem') {
         } else {
 	        $new_update_message .= 'Marked as not being a bug. ';
         }
-        if ($message_title == '') {
-            $message_title = 'Bug';
-        } else {
-            $message_title .= ' / Bug';
-        }
+        $job_changes[] = '-bug';
     }
 	$workitem->setIs_bug($is_bug);
 
@@ -172,11 +169,7 @@ if ($action =='save_workitem') {
         $workitem->setSummary($summary);
         if ($workitem->getStatus() != 'DRAFT') {
             $new_update_message .= "Summary changed. ";
-            if ($message_title == '') {
-                $message_title = 'Summary';
-            } else {
-                $message_title .= ' / Summary';
-            }
+            $job_changes[] = '-summary';
         }
     }
 
@@ -198,11 +191,7 @@ if ($action =='save_workitem') {
             }
             // remove nasty end comma
             $new_update_message = rtrim($new_update_message, ', ') . '. ';
-            if ($message_title == '') {
-                $message_title = 'Skills';
-            } else {
-                $message_title .= ' / Skills';
-            }
+            $job_changes[] = '-skills';
         }
         $workitem->setWorkitemSkills($skillsArr);
     }
@@ -217,9 +206,8 @@ if ($action =='save_workitem') {
             if (changeStatus($workitem, $status, $user)) {
                 if (!empty($new_update_message)) {  // add commas where appropriate
                     $new_update_message .= ", ";
-                    $message_title .= "/" . ucfirst(strtolower($status));;
                 }
-                $message_title = ucfirst(strtolower($status));;
+                $status_change = '-' . ucfirst(strtolower($status));
                 $new_update_message .= "Status set to $status. ";
             }
         }
@@ -227,55 +215,35 @@ if ($action =='save_workitem') {
     if ($workitem->getNotes() != $notes && isset($_POST['notes'])) {
         $workitem->setNotes($notes);
         $new_update_message .= "Notes changed. ";
-        if ($message_title == '') {
-            $message_title = 'Notes changed';
-        } else {
-            $message_title .= ' / Notes changed';
-        }
+        $job_changes[] = '-notes';
     }
     // project
     if ( $workitem->getProjectId() != $project_id) {
         $workitem->setProjectId($project_id);
         if ($workitem->getStatus() != 'DRAFT') {
             $new_update_message .= "Project changed. ";
-            if ($message_title == '') {
-                $message_title = 'Project changed';
-            } else {
-                $message_title .= ' / Project changed';
-            }
+            $job_changes[] = '-project';
         }
     }
     // Sandbox
     if ( $workitem->getSandbox() != $sandbox) {
         $workitem->setSandbox($sandbox);
         $new_update_message .= "Sandbox changed. ";
-        if ($message_title == '') {
-            $message_title = 'Sandbox URL';
-        } else {
-            $message_title .= ' / Sandbox URL';
-        }
+        $job_changes[] = '-sandbox';
     }
     // Send invites
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $workitem);
         $new_update_message .= "Invitations sent. ";
-        if ($message_title == '') {
-            $message_title = 'Invitations';
-        } else {
-            $message_title .= ' / Invitations';
-        }
+        $job_changes[] = '-invitation';
     }
     //Check if bug_job_id has changed and send notifications if it has
     if($workitem->getBugJobId() != $bug_job_id) {
         //Bug job Id changed
         $workitem->setBugJobId($bug_job_id);
         $new_update_message .= "Bug job Id changed. ";
-        if ($message_title == '') {
-            $message_title = 'Bug job Id';
-        } else {
-            $message_title .= ' / Bug job Id';
-        }
+        $job_changes[] = '-bug job id';
         if($bug_job_id > 0) {
             //Load information about original job and notify
             //users with fees and runner
@@ -430,9 +398,9 @@ if($action =='save-review-url') {
     $new_update_message = " sandbox url : $sandbox ";
     if(!empty($status_review)) {
         $new_update_message .= " Status set to $status_review. ";
-        $message_title = ucfirst(strtolower($status_review));
+        $status_change = '-' . ucfirst(strtolower($status_review));
     } else {
-        $message_title = "Sandbox URL";
+        $job_changes[] = '-sandbox';
     }
     if ($notes) {
         //add review notes
@@ -446,8 +414,11 @@ if($action =='save-review-url') {
     }
     $notifyEmpty = false;
     if ($status_review == 'FUNCTIONAL') {
-      Notification::workitemNotify(array('type' => 'modified-functional',
+        $status_change = '-functional';
+        Notification::workitemNotify(array('type' => 'modified-functional',
           'workitem' => $workitem,
+          'status_change' => $status_change,
+          'job_changes' => $job_changes,
           'recipients' => array('runner', 'creator', 'mechanic')),
             array('changes' => $new_update_message));
       $notifyEmpty = true;
@@ -468,10 +439,12 @@ if ($action =='status-switch') {
             if ($status != 'DRAFT') {
                 $new_update_message = "Status set to $status. ";
                 $notifyEmpty = false;
-                $message_title = ucfirst(strtolower($status));
+                $status_change = '-' . ucfirst(strtolower($status));
                 if ($status == 'FUNCTIONAL') {
                     Notification::workitemNotify(array('type' => 'modified-functional',
                     'workitem' => $workitem,
+                    'status_change' => $status_change,
+                    'job_changes' => $job_changes,
                     'recipients' => array('runner', 'creator', 'mechanic')),
                     array('changes' => $new_update_message));
                     $notifyEmpty = true;
@@ -485,10 +458,12 @@ if ($action =='status-switch') {
 }
 
 if(!$notifyEmpty) {
-  Notification::workitemNotify(array('type' => 'modified',
+    Notification::workitemNotify(array('type' => 'modified',
               'workitem' => $workitem,
+              'status_change' => $status_change,
+              'job_changes' => $job_changes,
               'recipients' => array('runner', 'creator', 'mechanic')),
-              array('changes' => $new_update_message, 'title' => $message_title));
+              array('changes' => $new_update_message));
 }
 
 if ($action == "place_bid") {
