@@ -378,7 +378,8 @@ class Notification {
                 if ($from_changes) {
                     $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
                 } else {
-                    $headers['From'] = '"' . $project_name . '-modified-functional" ' . $from_address;
+                    $status_change = '-' . strtolower($workitem->getStatus());
+                    $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
                 }
                 $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
                     . $data['changes'] . '<br /><br />'
@@ -408,7 +409,8 @@ class Notification {
                     if (!empty($from_changes)) {
                         $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
                     } else {
-                        $headers['From'] = '"' . $project_name . '-modified" ' . $from_address;
+                        $status_change = '-' . strtolower($workitem->getStatus());
+                        $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
                     }
                     $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
                         . $data['changes'] . '<br /><br />'
