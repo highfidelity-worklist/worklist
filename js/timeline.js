@@ -2,7 +2,7 @@ $(document).ready(function() {
     init(30,"canvas");
     buildLocationArray();
     animationInterval = setInterval(function() {
-            animateCircles();
+        animateCircles();
     }, intervalValue);
 });
 function init(framesPerSecond,canvasId) {
@@ -287,39 +287,40 @@ function initializeMap() {
     overlay.setMap(map);
 }
 function animateCircles() {
-	context.clearRect(0,0,viewportWidth,viewportHeight);
-	for (var i = 0; i < circles.length; i++) {
-		// get current state for circle
-		if (circles[i].currentSize < circles[i].finalSize) {
-			var increaseAmount = circles[i].finalSize / 15;
-			drawCircle(circles[i].centerX,circles[i].centerY,circles[i].currentSize,circles[i].rgbColor,circles[i].currentAlpha);
-			circles[i].currentSize = circles[i].currentSize + increaseAmount;
-		} else {
-			if (circles[i].currentAlpha == 0) {
-				//circles.splice(i);
-                                console.debug(circles.length);
-			} else {
-				drawCircle(circles[i].centerX,circles[i].centerY,circles[i].currentSize,circles[i].rgbColor,circles[i].currentAlpha);
-				circles[i].currentAlpha = (parseFloat(circles[i].currentAlpha - 0.1)).toFixed(1);
-			}
-		}
-	}
+    context.clearRect(0,0,viewportWidth,viewportHeight);
+    for (var i = 0; i < circles.length; i++) {
+        if (circles[i].currentAlpha != 0) {
+            if (circles[i].currentSize < circles[i].finalSize) {
+                var increaseAmount = circles[i].finalSize / 15;
+                drawCircle(circles[i].centerX,circles[i].centerY,circles[i].currentSize,circles[i].rgbColor,circles[i].currentAlpha);
+                circles[i].currentSize = circles[i].currentSize + increaseAmount;
+            } else {
+                if (circles[i].currentAlpha == 0) {
+                    //circles.splice(i);
+                    console.debug(circles.length);
+                } else {
+                    drawCircle(circles[i].centerX,circles[i].centerY,circles[i].currentSize,circles[i].rgbColor,circles[i].currentAlpha);
+                    circles[i].currentAlpha = (parseFloat(circles[i].currentAlpha - 0.1)).toFixed(1);
+                }
+            }
+        }
+    }
 }
 function createCircle(finalSize,centerX,centerY,rgbColor) {
-	var circle = new Object;
-	circle.currentSize = 0;
-	circle.currentAlpha = 1;
-	circle.finalSize = finalSize;
-	circle.centerX = centerX;
-	circle.centerY = centerY;
-	circle.rgbColor = rgbColor;
-	circles.push(circle);
+    var circle = new Object;
+    circle.currentSize = 0;
+    circle.currentAlpha = 1;
+    circle.finalSize = finalSize;
+    circle.centerX = centerX;
+    circle.centerY = centerY;
+    circle.rgbColor = rgbColor;
+    circles.push(circle);
 }
 function drawCircle(centerX,centerY,radius,rgbColor,alpha) {
-	var smallerRadius = radius * 0.8;
-	var grd = context.createRadialGradient(centerX,centerY,smallerRadius,centerX,centerY,radius);
-	grd.addColorStop(0,"rgba(" + rgbColor + "," + alpha + ")");
-	grd.addColorStop(1,"rgba(" + rgbColor + ",0)");
-	context.fillStyle = grd;
-	context.fillRect((centerX - radius),(centerY - radius),(radius * 2),(radius * 2));
+    var smallerRadius = radius * 0.8;
+    var grd = context.createRadialGradient(centerX,centerY,smallerRadius,centerX,centerY,radius);
+    grd.addColorStop(0,"rgba(" + rgbColor + "," + alpha + ")");
+    grd.addColorStop(1,"rgba(" + rgbColor + ",0)");
+    context.fillStyle = grd;
+    context.fillRect((centerX - radius),(centerY - radius),(radius * 2),(radius * 2));
 }
