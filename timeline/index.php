@@ -17,9 +17,7 @@
             </div>
             <div id="timeline-bullet"></div>
             <div id="map-container"></div>
-            <canvas id="drawing-canvas-1"></canvas>
-            <canvas id="drawing-canvas-2"></canvas>
-            <canvas id="drawing-canvas-3"></canvas>
+            <canvas id="canvas"></canvas>
             <div id="animation-control">
             CLICK
             </div>

@@ -1,16 +1,16 @@
 $(document).ready(function() {
-    sizeWindowObjects();
-    //displayMonthsInTimeline();
-    initializeCanvases("drawing-canvas-1", "drawing-canvas-2", "drawing-canvas-3");
-    initializeMap();
+    init(30,"canvas");
     buildLocationArray();
+    animationInterval = setInterval(function() {
+            animateCircles();
+    }, intervalValue);
 });
-$(window).resize(function() {
-    sizeWindowObjects();
-});
-function sizeWindowObjects() {
-    viewportHeight = $(window).height();
+function init(framesPerSecond,canvasId) {
+    circles = new Array;
+    canvas = null;
+    context = null;
     viewportWidth = $(window).width();
+    viewportHeight = $(window).height();
     dollarHeight = $("#dollar-amount").outerHeight();
     participantHeight = $("#participant-icons").outerHeight();
     mapHeight = viewportHeight - dollarHeight - participantHeight;
@@ -20,14 +20,20 @@ function sizeWindowObjects() {
         'top': dollarHeight + 'px',
         'position': 'absolute'
     });
-    $("#drawing-canvas-1, #drawing-canvas-2, #drawing-canvas-3").attr("width", viewportWidth);
-    $("#drawing-canvas-1, #drawing-canvas-2, #drawing-canvas-3").attr("height", mapHeight);
-    $("#drawing-canvas-1, #drawing-canvas-2, #drawing-canvas-3").css({
-        'top': dollarHeight + 'px',
+    $("#" + canvasId).attr({
+        width: viewportWidth,
+        height: mapHeight
+    })
+    $("#" + canvasId).css({
+        'top':  dollarHeight + 'px',
         'position': 'absolute'
-    });
+    })
+    framesPerSecond = framesPerSecond;
+    intervalValue = 1000 / framesPerSecond;
+    canvas = document.getElementById(canvasId);
+    context = canvas.getContext('2d');
     initializeMap();
-}
+};
 function collectData() {
     $.ajax({
         type: "POST",
@@ -56,7 +62,7 @@ function collectData() {
             delayPerSet = 20000 / totalRecords;
             markerCounter = 0;
             markerCreationLoop = setInterval(function() {
-                timeInMotion(markerCounter, totalRecords, "timeline-bullet");
+                //timeInMotion(markerCounter, totalRecords, "timeline-bullet");
                 if (markerCounter < totalRecords) {
                     var creatorFee = data[markerCounter].creator_fee;
                     addToTicker(creatorFee);
@@ -83,7 +89,7 @@ function collectData() {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                animateCanvasCircle(markerPixelX,markerPixelY,creatorRadius,"#E61111","1");
+                                createCircle(creatorRadius,markerPixelX,markerPixelY,"239,149,8");
                             }
                         }
                     }
@@ -112,7 +118,7 @@ function collectData() {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                animateCanvasCircle(markerPixelX,markerPixelY,runnerRadius,"#3AC115","2");
+                                createCircle(runnerRadius,markerPixelX,markerPixelY,"239,180,7");
                             }
                         }
                     }
@@ -141,7 +147,7 @@ function collectData() {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                animateCanvasCircle(markerPixelX,markerPixelY,mechanicRadius,"#F79125","3");
+                                createCircle(mechanicRadius,markerPixelX,markerPixelY,"245,242,8");
                             }
                         }
                     }
@@ -149,7 +155,7 @@ function collectData() {
                 } else {
                     clearInterval(markerCreationLoop);
                 }
-            }, 100);
+            }, 75);
         }
     });
 }
@@ -261,69 +267,6 @@ function displayMonthsInTimeline() {
         }
     })
 }
-function initializeCanvases(canvas_id1, canvas_id2, canvas_id3) {
-    var drawingCanvas1 = document.getElementById(canvas_id1);
-    context1 = drawingCanvas1.getContext("2d");
-    var drawingCanvas2 = document.getElementById(canvas_id2);
-    context2 = drawingCanvas2.getContext("2d");
-    var drawingCanvas3 = document.getElementById(canvas_id3);
-    context3 = drawingCanvas3.getContext("2d");
-}
-function animateCanvasCircle(positionX, positionY, finalSize, colorCode, canvas_id) {
-    counter = 1;
-    if (canvas_id == "1") {
-    animationInterval = setInterval(function() {
-        if (counter < finalSize) {
-            context1.clearRect(0,0,viewportWidth,mapHeight);
-            context1.strokeStyle = colorCode;
-            context1.fillStyle = colorCode;
-            context1.beginPath();
-            context1.arc(positionX,positionY,counter,0,Math.PI*2,false);
-            context1.closePath();
-            context1.stroke();
-            context1.fill();
-            counter++
-        }
-        else {
-            clearInterval(animationInterval);
-        }
-    },5000);
-    } else if (canvas_id == "2") {
-        animationInterval = setInterval(function() {
-        if (counter < finalSize) {
-            context2.clearRect(0,0,viewportWidth,mapHeight);
-            context2.strokeStyle = colorCode;
-            context2.fillStyle = colorCode;
-            context2.beginPath();
-            context2.arc(positionX,positionY,counter,0,Math.PI*2,false);
-            context2.closePath();
-            context2.stroke();
-            context2.fill();
-            counter++
-        }
-        else {
-            clearInterval(animationInterval);
-        }
-    },5000);    
-    } else if (canvas_id == "3") {
-        animationInterval = setInterval(function() {
-        if (counter < finalSize) {
-            context3.clearRect(0,0,viewportWidth,mapHeight);
-            context3.strokeStyle = colorCode;
-            context3.fillStyle = colorCode;
-            context3.beginPath();
-            context3.arc(positionX,positionY,counter,0,Math.PI*2,false);
-            context3.closePath();
-            context3.stroke();
-            context3.fill();
-            counter++
-        }
-        else {
-            clearInterval(animationInterval);
-        }
-    },5000);    
-    }
-}
 function initializeMap() {
     var latlng = new google.maps.LatLng(40, -30);
     var myOptions = {
@@ -342,4 +285,41 @@ function initializeMap() {
     overlay = new google.maps.OverlayView();
     overlay.draw = function() {};
     overlay.setMap(map);
+}
+function animateCircles() {
+	context.clearRect(0,0,viewportWidth,viewportHeight);
+	for (var i = 0; i < circles.length; i++) {
+		// get current state for circle
+		if (circles[i].currentSize < circles[i].finalSize) {
+			var increaseAmount = circles[i].finalSize / 15;
+			drawCircle(circles[i].centerX,circles[i].centerY,circles[i].currentSize,circles[i].rgbColor,circles[i].currentAlpha);
+			circles[i].currentSize = circles[i].currentSize + increaseAmount;
+		} else {
+			if (circles[i].currentAlpha == 0) {
+				//circles.splice(i);
+                                console.debug(circles.length);
+			} else {
+				drawCircle(circles[i].centerX,circles[i].centerY,circles[i].currentSize,circles[i].rgbColor,circles[i].currentAlpha);
+				circles[i].currentAlpha = (parseFloat(circles[i].currentAlpha - 0.1)).toFixed(1);
+			}
+		}
+	}
+}
+function createCircle(finalSize,centerX,centerY,rgbColor) {
+	var circle = new Object;
+	circle.currentSize = 0;
+	circle.currentAlpha = 1;
+	circle.finalSize = finalSize;
+	circle.centerX = centerX;
+	circle.centerY = centerY;
+	circle.rgbColor = rgbColor;
+	circles.push(circle);
+}
+function drawCircle(centerX,centerY,radius,rgbColor,alpha) {
+	var smallerRadius = radius * 0.8;
+	var grd = context.createRadialGradient(centerX,centerY,smallerRadius,centerX,centerY,radius);
+	grd.addColorStop(0,"rgba(" + rgbColor + "," + alpha + ")");
+	grd.addColorStop(1,"rgba(" + rgbColor + ",0)");
+	context.fillStyle = grd;
+	context.fillRect((centerX - radius),(centerY - radius),(radius * 2),(radius * 2));
 }
