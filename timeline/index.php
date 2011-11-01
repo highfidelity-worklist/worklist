@@ -15,12 +15,8 @@
             <div id="dollar-amount">
                 $ <span id="dollar-figure">0</span>
             </div>
-            <div id="timeline-bullet"></div>
             <div id="map-container"></div>
             <canvas id="canvas"></canvas>
-            <div id="animation-control">
-            CLICK
-            </div>
             
             <div id="participant-icons">
 

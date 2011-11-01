@@ -20,7 +20,7 @@ class Timeline extends DataObject {
             WHERE w.status = 'DONE'
         ";
         if ($project) {
-            $sql .= " AND ";
+            $sql .= " AND project_id = (SELECT id FROM " . PROJECTS . " WHERE name = '{$project}')";
         }
         $objectData = array();
         $result = $this->link->query($sql);

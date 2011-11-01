@@ -11,7 +11,7 @@ function init(framesPerSecond,canvasId) {
     context = null;
     viewportWidth = $(window).width();
     viewportHeight = $(window).height();
-    dollarHeight = $("#dollar-amount").outerHeight();
+    dollarHeight = $("#dollar-amount").height();
     participantHeight = $("#participant-icons").outerHeight();
     mapHeight = viewportHeight - dollarHeight - participantHeight;
     $("#map-container").css({
@@ -78,18 +78,18 @@ function collectData() {
                             var LatFixed = (Lat).toFixed(6);
                             var LongFixed = (Long).toFixed(6);
                             var LatLngGoogle = new google.maps.LatLng(LatFixed,LongFixed);
-                            if (creatorFee <= 10) {
+                            if (creatorFee <= 50) {
                                 creatorRadius = 20;
-                            } else if (creatorFee > 10 && creatorFee <= 100) {
+                            } else if (creatorFee > 50 && creatorFee <= 300) {
                                 creatorRadius = 50;
-                            } else if (creatorFee > 100) {
-                                creatorRadius = 100;
+                            } else if (creatorFee > 300) {
+                                creatorRadius = 70;
                             }
                             if (creatorAddress != null && creatorRadius != 0) {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                createCircle(creatorRadius,markerPixelX,markerPixelY,"239,149,8");
+                                createCircle(creatorRadius,markerPixelX,markerPixelY,"197,52,28");
                             }
                         }
                     }
@@ -107,18 +107,18 @@ function collectData() {
                             var LatFixed = (Lat).toFixed(6);
                             var LongFixed = (Long).toFixed(6);
                             var LatLngGoogle = new google.maps.LatLng(LatFixed,LongFixed);
-                            if (runnerFee <= 10) {
+                            if (runnerFee <= 50) {
                                 runnerRadius = 20;
-                            } else if (runnerFee > 10 && runnerFee <= 100) {
+                            } else if (runnerFee > 50 && runnerFee <= 300) {
                                 runnerRadius = 50;
-                            } else if (runnerFee > 100) {
-                                runnerRadius = 100;
+                            } else if (runnerFee > 300) {
+                                runnerRadius = 70;
                             }
                             if (runnerAddress != null && runnerRadius != 0) {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                createCircle(runnerRadius,markerPixelX,markerPixelY,"239,180,7");
+                                createCircle(runnerRadius,markerPixelX,markerPixelY,"243,182,34");
                             }
                         }
                     }
@@ -136,18 +136,18 @@ function collectData() {
                             var LatFixed = (Lat).toFixed(6);
                             var LongFixed = (Long).toFixed(6);
                             var LatLngGoogle = new google.maps.LatLng(LatFixed,LongFixed);
-                            if (mechanicFee <= 10) {
+                            if (mechanicFee <= 50) {
                                 mechanicRadius = 20;
-                            } else if (mechanicFee > 10 && mechanicFee <= 100) {
+                            } else if (mechanicFee > 50 && mechanicFee <= 300) {
                                 mechanicRadius = 50;
-                            } else if (mechanicFee > 100) {
-                                mechanicRadius = 100;
+                            } else if (mechanicFee > 300) {
+                                mechanicRadius = 70;
                             }
                             if (mechanicAddress != null && mechanicRadius != 0) {
                                 var markerPixel = overlay.getProjection().fromLatLngToContainerPixel(LatLngGoogle);
                                 var markerPixelX = (parseFloat(markerPixel.x)).toFixed(0);
                                 var markerPixelY = (parseFloat(markerPixel.y)).toFixed(0);
-                                createCircle(mechanicRadius,markerPixelX,markerPixelY,"245,242,8");
+                                createCircle(mechanicRadius,markerPixelX,markerPixelY,"238,226,34");
                             }
                         }
                     }
