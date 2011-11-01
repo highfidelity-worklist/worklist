@@ -256,6 +256,41 @@ class UserStats{
         return false;
     }
 
+    public function getDoneOnTimePercentage() {
+        $sql = "
+            SELECT
+                b.worklist_id, 
+                b.bid_done, 
+                ( CASE sl.status WHEN  'FUNCTIONAL' THEN MAX(sl.change_date) END) AS endTime
+            FROM bids b, status_log sl
+            WHERE 
+                sl.worklist_id = b.worklist_id
+                AND sl.user_id = {$this->userId}
+                AND b.bidder_id = sl.user_id
+            GROUP BY sl.worklist_id
+            HAVING endTime <= b.bid_done
+            ";
+            
+        $res = mysql_query($sql);
+        $functional_onTime_count = mysql_num_rows($res);
+        $sql = "
+            SELECT 
+                ( CASE sl.status WHEN  'FUNCTIONAL' THEN MAX(sl.change_date) END) AS endTime
+            FROM bids b, status_log sl
+            WHERE 
+                sl.worklist_id = b.worklist_id
+                AND sl.user_id = {$this->userId}
+                AND b.bidder_id = sl.user_id
+            GROUP BY sl.worklist_id
+            HAVING endTime IS NOT NULL
+            ";
+            
+        $res = mysql_query($sql);
+        $functional_all_count = mysql_num_rows($res);
+
+        return $onTimePercentage = round(($functional_onTime_count/$functional_all_count)*100, 2);
+    }
+
     public function getTimeCompletedAvg() {
         $sql = "
             SELECT ROUND(AVG(bidTime - realTime)) AS average FROM (

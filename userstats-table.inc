@@ -13,7 +13,7 @@
         
             <?php if(!empty($Annual_Salary)){?> <th>Salary</th><?php }?><th>Bonus $ / %</th>
 <?php if ($hasBeenMechanic) : ?>
-                    <th>Avg +/- Bid Time</th>
+                    <th>% On Time</th>
 <?php endif; ?>
                 </tr>
             </thead>
@@ -37,7 +37,7 @@
             echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($_bonusPayments))).' / '.$_bonusPercent.'%';
             ?></td>
 <?php if ($hasBeenMechanic) : ?>
-                    <td><?php echo relativeTime($userStats->getTimeCompletedAvg(), false, false, false); ?></td>
+                    <td><?php echo $userStats->getDoneOnTimePercentage() . "%"; ?></td>
 <?php endif; ?>
                 </tr>
             </tbody>
