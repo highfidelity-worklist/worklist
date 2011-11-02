@@ -41,7 +41,7 @@ function collectData() {
         dataType: "json",
         url: "timeline.php",
         success: function(data) {
-            var latlng = new google.maps.LatLng(16, -36);
+            var latlng = new google.maps.LatLng(16, -12);
             var myOptions = {
                 navigationControl: false,
                 mapTypeControl: false,
