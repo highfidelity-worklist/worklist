@@ -19,7 +19,7 @@
             <canvas id="canvas"></canvas>
             
             <div id="participant-icons">
-
+                    <img src="../images/timeline-footer.png" />
             </div>
         </div>
     </body>

@@ -50,7 +50,7 @@ function collectData() {
                 scrollwheel: false,
                 disableDefaultUI: true,
                 disableDoubleClickZoom: true,
-                zoom: 3,
+                zoom: 2,
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
