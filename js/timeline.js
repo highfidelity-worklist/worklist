@@ -41,7 +41,7 @@ function collectData() {
         dataType: "json",
         url: "timeline.php",
         success: function(data) {
-            var latlng = new google.maps.LatLng(40, -30);
+            var latlng = new google.maps.LatLng(16, -36);
             var myOptions = {
                 navigationControl: false,
                 mapTypeControl: false,
@@ -50,7 +50,7 @@ function collectData() {
                 scrollwheel: false,
                 disableDefaultUI: true,
                 disableDoubleClickZoom: true,
-                zoom: 2,
+                zoom: 3,
                 center: latlng,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
