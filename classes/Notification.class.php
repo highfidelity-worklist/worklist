@@ -302,7 +302,7 @@ class Notification {
                             $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'The job can be viewed <a href=' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
                 . '-Worklist.net' ;        
             break;
 
@@ -652,8 +652,10 @@ class Notification {
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
                         if(($username = $rUser->getUsername())){
-                            // Check to see if user doesn't want to be notified (if user is recipient, doesn't have check on settings and not forced to receive then exclude)
-                            if ( $current_user->getUsername() == $username ) {
+                            // Check to see if user doesn't want to be notified 
+                            // If user is recipient, doesn't have check on settings and not forced to receive then exclude), 
+                            // except for followers
+                            if ( $current_user->getUsername() == $username && strcmp(ucfirst($recipient), 'Followers') ) {
                                 if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)
                                     || $includeSelf == false) {
                                     continue;
@@ -669,8 +671,14 @@ class Notification {
                 }
             }
         }
+
+        $emails = array_unique($emails);
         if (count($emails) > 0) {
             foreach($emails as $email) {
+                // Small tweak for mails to followers on bid acceptance
+                if($options['type'] == 'bid_accepted' && strcmp($email, $workitem->getMechanic()->getUsername())) {
+                    $body = str_replace('Your', $workitem->getMechanic()->getNickname() . "'s", $body);
+                }
                 if (!send_email($email, $subject, $body, null, $headers)) {
                     error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
                 }

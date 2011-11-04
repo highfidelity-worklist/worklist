@@ -308,7 +308,7 @@ if ($action == 'new-comment') {
             Notification::workitemNotify(array(
                 'type' => 'comment',
                 'workitem' => $workitem,
-                'recipients' => array('creator', 'runner', 'mechanic'),
+                'recipients' => array('creator', 'runner', 'mechanic', 'followers'),
                 'emails' => $correspondent),
                 array(
                     'who' => $_SESSION['nickname'],
@@ -374,7 +374,7 @@ if($action == 'finish_codereview') {
     Notification::workitemNotify(array(
         'type' => 'code-review-completed',
         'workitem' => $workitem,
-        'recipients' => array('runner', 'mechanic')
+        'recipients' => array('runner', 'mechanic', 'followers')
         ));
 }
 
@@ -419,8 +419,8 @@ if($action =='save-review-url') {
           'workitem' => $workitem,
           'status_change' => $status_change,
           'job_changes' => $job_changes,
-          'recipients' => array('runner', 'creator', 'mechanic')),
-            array('changes' => $new_update_message));
+          'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+          array('changes' => $new_update_message));
       $notifyEmpty = true;
     }
     $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
@@ -445,7 +445,7 @@ if ($action =='status-switch') {
                     'workitem' => $workitem,
                     'status_change' => $status_change,
                     'job_changes' => $job_changes,
-                    'recipients' => array('runner', 'creator', 'mechanic')),
+                    'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
                     array('changes' => $new_update_message));
                     $notifyEmpty = true;
                 }
@@ -462,7 +462,7 @@ if(!$notifyEmpty) {
               'workitem' => $workitem,
               'status_change' => $status_change,
               'job_changes' => $job_changes,
-              'recipients' => array('runner', 'creator', 'mechanic')),
+              'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
               array('changes' => $new_update_message));
 }
 
@@ -705,7 +705,7 @@ if ($action == 'accept_bid') {
                 Notification::workitemNotify(array(
                     'type' => 'bid_accepted',
                     'workitem' => $workitem,
-                    'recipients' => array('mechanic')
+                    'recipients' => array('mechanic', 'followers')
                 ));
 
                 $bidder = new User();
@@ -780,7 +780,7 @@ if ($action=='accept_multiple_bid') {
                         // mail notification
                         Notification::workitemNotify(array('type' => 'bid_accepted',
                                      'workitem' => $workitem,
-                                     'recipients' => array('mechanic')));
+                                     'recipients' => array('mechanic', 'followers')));
                     } else {
                         $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
                     }

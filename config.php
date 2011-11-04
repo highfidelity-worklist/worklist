@@ -68,6 +68,7 @@ if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
 if (!defined('ROLES'))          define('ROLES', 'roles');
 if (!defined('SKILLS'))         define('SKILLS', 'skills');
 if (!defined('STATUS_LOG'))     define('STATUS_LOG', 'status_log');
+if (!defined('TASK_FOLLOWERS')) define('TASK_FOLLOWERS', 'task_followers');
 if (!defined('TOKENS'))         define('TOKENS', 'tokens');
 if (!defined('WORKITEM_SKILLS')) define('WORKITEM_SKILLS', 'workitem_skills');
 if (!defined('USER_STATUS'))    define('USER_STATUS', 'user_status');

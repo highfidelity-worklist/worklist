@@ -375,6 +375,26 @@ $(document).ready(function(){
     var is_runner = <?php echo $is_runner;?>;
     var has_budget = <?php echo $has_budget;?>;
     var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
+    var isFollowing = <?php echo $workitem->isUserFollowing($user_id) ? 'true' : 'false';?>;
+
+    $('#Following').click(function() {
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                workitem: workitem_id,
+                userid: user_id,
+                action: 'ToggleFollowing'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    isFollowing = !isFollowing;
+                    setFollowingText(isFollowing);
+                }
+            }
+        });
+    });
 
     (function($) {
         // journal info accordian
@@ -431,6 +451,11 @@ $(document).ready(function(){
                 }
             }
         });
+    <?php 
+            if (! empty($user_id)) {
+    ?>
+        setFollowingText(isFollowing);
+	<?php   } ?>
     })(jQuery);
 
     SimplePopup('#popup-bid',
@@ -1026,6 +1051,16 @@ $(document).ready(function(){
     function sendToLogin(){
         window.location = '<?php echo SERVER_URL; ?>login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>';
     }
+    
+    function setFollowingText(isFollowing){
+        if(isFollowing == true) {
+            $('#followingText').html('You are following this job - ');
+            $('#following').html('unfollow it');
+        } else {
+            $('#followingText').html('');
+            $('#following').html('Follow this job');
+        }
+    }
 </script>
 <title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
 </head>
@@ -1057,7 +1092,9 @@ $(document).ready(function(){
                                                 $workitem->getBugJobId()."&action=view";
                             echo "  [ bug of <a href='".$originalItemLink."' class='worklist-item' id='workitem-".$workitem->getBugJobId()."' >".$workitem->getBugJobId()."</a> ]";
                         }
-                    ?>
+                        ?>
+                    &nbsp;-&nbsp;<span id="followingText"><a href="login.php">Login</a> to follow this task.</span>
+                 <span id="following"></span>
                 </div>
                 <span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
             </div>

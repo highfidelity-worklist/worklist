@@ -807,4 +807,17 @@ class JsonServer
         }
     }
 
+    protected function actionToggleFollowing() {
+        $workitem_id = (int) $this->getRequest()->getParam('workitem');
+        $user_id     = (int) $this->getRequest()->getParam('userid');
+
+        $workitem = new Workitem($workitem_id);
+
+        $resp = $workitem->toggleUserFollowing($user_id);
+
+        return $this->setOutput(array(
+            'success' => true,
+            'message' => 'Following Toggled' . $resp
+        ));
+    }
 }

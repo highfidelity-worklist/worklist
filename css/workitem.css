@@ -803,3 +803,16 @@ span.info-whisper {
     float: left;
 }
 
+#following{
+    color: #333333;
+    border-bottom: 1px solid #666666;
+}
+
+
+#following:hover {
+    color: #eeeeee;
+    border-bottom: 1px solid #333333;
+    background-color: #333333;
+    cursor: pointer;
+}
+

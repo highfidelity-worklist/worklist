@@ -1071,4 +1071,39 @@ WHERE id = ' . (int)$id;
         }
     }
 
+    function isUserFollowing($id) {
+        $query = 'SELECT COUNT(*) FROM ' . TASK_FOLLOWERS . ' WHERE user_id = ' . (int)$id . ' AND workitem_id=' . $this->id;
+        $res = mysql_query($query);
+        if (!$res) {
+            throw new Workitem_Exception('Could not retrieve result.');
+        }
+        $row = mysql_fetch_row($res);
+        return (boolean)$row[0];
+    }
+
+    function toggleUserFollowing($user_id) {
+        $isFollowing = $this->isUserFollowing($user_id);
+        if($isFollowing == true) {
+            $query = 'DELETE FROM ' . TASK_FOLLOWERS . ' WHERE user_id=' . $user_id . ' AND workitem_id = ' . $this->id;
+        } else {
+            $query = 'INSERT INTO ' . TASK_FOLLOWERS . ' (user_id, workitem_id) VALUES (' . $user_id . ' , ' . $this->id . ')';
+        }
+//		return $query;
+        $res = mysql_query($query);
+        if (!$res) {
+            throw new Workitem_Exception('Could not retrieve result.');
+        }
+        return !isFollowing;
+    }
+
+    function getFollowersId() {
+        $followers = array();
+        $query=' SELECT user_id FROM ' . TASK_FOLLOWERS . ' WHERE workitem_id=' . $this->id;
+        $res = mysql_query($query);
+        while($row = mysql_fetch_row($res)) {
+            $followers[]= $row[0];
+        }
+        
+        return $followers;
+    }
 }// end of the class
