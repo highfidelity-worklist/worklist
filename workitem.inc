@@ -377,7 +377,7 @@ $(document).ready(function(){
     var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
     var isFollowing = <?php echo $workitem->isUserFollowing($user_id) ? 'true' : 'false';?>;
 
-    $('#Following').click(function() {
+    $('#following').click(function() {
         $.ajax({
             type: 'post',
             url: 'jsonserver.php',
