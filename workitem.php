@@ -955,7 +955,7 @@ function hasRights($workitem,$userId) {
         if ($admin_fav['favorite']) {
             return true;
         }
-    } else if ($project->getCrFav() && $users_favorite->getUserFavoriteCount($userId) >= 3) {
+    } else if ($project->getCrFav() || $users_favorite->getUserFavoriteCount($userId) >= 3) {
         return true;
     } else if ($project->getCrRunner()) {
         $runner_fav = $users_favorite->getMyFavoriteForUser($workitem->getRunnerId(),$userId);
