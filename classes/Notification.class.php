@@ -578,7 +578,6 @@ class Notification {
                 $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>";
                 $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />";
                 $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
-                $body .= "[<a href=\"http://www.lovemachineinc.com/development-process/\">dev.sendllove.us</a> | Read about our Development Process]<br />";
                 $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
                 $body .= "[<a href=\"https://dev.worklist.net/worklist/\">dev.worklist.net/worklist</a> | Look over all our open work items]<br />";
                 $body .= "[<a href=\"https://dev.worklist.net/journal/\">dev.worklist.net/journal</a> | Talk with us in our Journal]<br />";

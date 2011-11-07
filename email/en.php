@@ -99,12 +99,10 @@ replacement data:
            - Bid on a project on our Worklist: <a href="https://dev.worklist.net/worklist">https://dev.worklist.net/worklist</a><br/>
         <br/>
         * Don\'t worry, you\'ll get a custom sandbox and support getting our codebase set up once you\'ve made a bid!<br/>
-        Looking for even more info? Check here: <a href="http://www.below92.com/development-process/">http://www.below92.com/development-process/</a><br/>
         Thanks for joining and we hope to see you in the Journal soon!<br/><br/>
         Cheers,<br/><br/>
         Coffee & Power Inc<br/><br/>
         p.s. Follow our continuing adventures...<br/>
-        Blog: <a href="http://www.lovemachineinc.com/blog/">http://www.lovemachineinc.com/blog/</a><br/>
         Twitter: <a href="http://twitter.com/lovemachineinc">http://twitter.com/lovemachineinc</a>
     '
 ),

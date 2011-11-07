@@ -13,7 +13,7 @@ This account can be used for accessing the server using SFTP or SSH.
 
 -- Once you have completed your changes, ask for us to check your code by using the Live Workroom chat or by email.  Once the code has been checked, you can commit your changes to Subversion.  For Subversion help, type "svn ?" in SSH.
 
--- Information on payment and other details can be found at http://www.lovemachineinc.com/development-process/.  For any other questions, ask in the Live Workroom chat or by email.  We value transparency and open discussion, so don't hesitate to ask questions or make suggestions.  Have fun!
+-- For any questions, ask in the Live Workroom chat or by email.  We value transparency and open discussion, so don't hesitate to ask questions or make suggestions.  Have fun!
 
 See you in the Workroom!
 
