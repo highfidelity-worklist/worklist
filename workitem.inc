@@ -455,7 +455,10 @@ $(document).ready(function(){
             if (! empty($user_id)) {
     ?>
         setFollowingText(isFollowing);
-	<?php   } ?>
+    <?php   } else {
+    ?>  $('#followingText').html('<a href="login.php">Login</a> to follow this task.');
+    <?php   }
+    ?>
     })(jQuery);
 
     SimplePopup('#popup-bid',
@@ -1093,7 +1096,7 @@ $(document).ready(function(){
                             echo "  [ bug of <a href='".$originalItemLink."' class='worklist-item' id='workitem-".$workitem->getBugJobId()."' >".$workitem->getBugJobId()."</a> ]";
                         }
                         ?>
-                    &nbsp;-&nbsp;<span id="followingText"><a href="login.php">Login</a> to follow this task.</span>
+                    &nbsp;-&nbsp;<span id="followingText"></span>
                  <span id="following"></span>
                 </div>
                 <span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
