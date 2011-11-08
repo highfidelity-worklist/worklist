@@ -117,7 +117,7 @@ if (isset($_POST['save_account'])) {
         $user->findUserByNickname($_POST['nickname']);
         
         if ($user->getId() != null && $user->getId() != intval($_SESSION['userid'])) {
-            die(json_encode(array('error' => 2, 'message' => "Update failed, nickname already exists!")));
+            die(json_encode(array('error' => 1, 'message' => "Update failed, nickname already exists!")));
         }
         
         $ret = Utils::updateLoginData(array('nickname' => $nickname), true, false);
@@ -369,6 +369,13 @@ include("head.html");
         return true;
     }
 
+    function isJSON(json) {
+        json = json.replace(/\\["\\\/bfnrtu]/g, '@');
+        json = json.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
+        json = json.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
+        return (/^[\],:{}\s]*$/.test(json))
+    }
+    
     function saveSettings(type) {
         var values;
         if (type == 'account') {
@@ -437,10 +444,11 @@ include("head.html");
             data: values,
             success: function(json) {
                 var message = 'Account settings saved!';
-                if (!!json && !!json.error) {
-                    console.log(json);
-                    if (json.error == 1) {
-                        message = "There was an error updating your information.<br/>Please try again or contact a Runner for assistance.";
+                var settings_json = isJSON(json) ? jQuery.parseJSON(json) : null;
+                if (settings_json && settings_json.error) {
+                    console.log(settings_json);
+                    if (settings_json.error == 1) {
+                        message = "There was an error updating your information.<br/>Please try again or contact a Runner for assistance.<br/>Reason for failure: " + settings_json.message;
                     } else {
                         message = json.message;
                     }
