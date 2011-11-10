@@ -27,8 +27,8 @@ $query = "SELECT
     LEFT JOIN ".USERS." r ON w.runner_id = r.id
     LEFT JOIN ".PROJECTS." p ON w.project_id = p.project_id
     WHERE w.id = '$item'
-        AND w.status != 'DRAFT'
-        OR (w.status = 'DRAFT' AND w.creator_id = '$userId')";
+        AND (w.status <> 'DRAFT'
+        OR (w.status = 'DRAFT' AND w.creator_id = '$userId'))";
 $rt = mysql_query($query);
 if ($rt) {
     $row = mysql_fetch_assoc($rt);
