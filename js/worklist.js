@@ -785,6 +785,11 @@ function makeWorkitemTooltip(className){
                     msg += '<div class = "tip-entry">Creator: ' + json.creator + '</div>';
                 }
                 msg += json.job_status ? '<div class = "tip-entry">Status: ' + json.job_status + '</div>' : '';
+                if (json.comment) {
+                    msg += '<div class = "tip-entry">Last Comment by ' + json.commentAuthor + ': ' + json.comment + '</div>';
+                } else {
+                    msg += '<div class = "tip-entry">No comments yet.</div>';
+                }
                 if (msg == '') {
                     msg = 'No data available';
                 }
