@@ -72,7 +72,7 @@ class CURLHandler {
         curl_close($curlInterface);
 		if($result === false ){
 			error_log("Curl failed calling:".$url);
-			$output = array("error" => 1, "message" => 'We seem to be having some trouble with our connection. Please, let us know about it :<a href="mailto: admin@dev.worklist.net">admin@lovemachineinc.com</a>'  );
+			$output = array("error" => 1, "message" => 'We seem to be having some trouble with our connection. Please, let us know about it :<a href="mailto: admin@worklist.net">admin@lovemachineinc.com</a>'  );
 			$output = json_encode($output);
 			return $output;
         } else {

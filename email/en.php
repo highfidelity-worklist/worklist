@@ -95,10 +95,11 @@ replacement data:
         create a new way to get things done.<br/><br/>
         Three things to help you get started:<br/><br/>
            - Browse the source code*: <a href="http://svn.worklist.net">http://svn.worklist.net</a><br/>
-           - Get in the Journal to chat with us: <a href=" https://dev.worklist.net/journal">https://dev.worklist.net/journal</a><br/>
-           - Bid on a project on our Worklist: <a href="https://dev.worklist.net/worklist">https://dev.worklist.net/worklist</a><br/>
+          - Get in the Journal to chat with us: <a href="' . JOURNAL_URL . '">' . JOURNAL_URL . '</a><br/>
+           - Bid on a project on our Worklist: <a href="' . WORKLIST_URL . '">' . WORKLIST_URL . '</a><br/>
         <br/>
-        * Don\'t worry, you\'ll get a custom sandbox and support getting our codebase set up once you\'ve made a bid!<br/>
+        Don\'t worry, you\'ll get a custom sandbox and support getting our codebase set up once your bid is accepted.
+        <br/>
         Thanks for joining and we hope to see you in the Journal soon!<br/><br/>
         Cheers,<br/><br/>
         Coffee & Power Inc<br/><br/>
