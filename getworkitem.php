@@ -33,9 +33,9 @@ $rt = mysql_query($query);
 if ($rt) {
     $row = mysql_fetch_assoc($rt);
     $query1 = ' SELECT c.comment, u.nickname '
-            . ' FROM ' . COMMENTS . ' AS c INNER JOIN '
-                      . USERS . '    AS u ON  c.worklist_id = ' . $row['id']
-            . ' WHERE c.user_id=u.id '
+            . ' FROM ' . COMMENTS . ' AS c '
+            . ' INNER JOIN ' . USERS . ' AS u ON c.user_id=u.id ' 
+            . ' WHERE c.worklist_id = ' . $row['id']
             . ' ORDER BY c.id '
             . ' DESC LIMIT 1';
 
