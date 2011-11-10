@@ -34,10 +34,10 @@ if ($rt) {
     $row = mysql_fetch_assoc($rt);
     $query1 = ' SELECT c.comment, u.nickname '
             . ' FROM ' . COMMENTS . ' AS c '
-            . ' INNER JOIN ' . USERS . ' AS u ON c.user_id=u.id ' 
+            . ' INNER JOIN ' . USERS . ' AS u ON c.user_id = u.id ' 
             . ' WHERE c.worklist_id = ' . $row['id']
-            . ' ORDER BY c.id '
-            . ' DESC LIMIT 1';
+            . ' ORDER BY c.id DESC '
+            . ' LIMIT 1';
 
     $rtc = mysql_query($query1);
     if ($rt) {
