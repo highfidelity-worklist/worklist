@@ -1701,8 +1701,6 @@ if ($action =="edit"):  ?>
                                             if(hasRights($workitem, $user_id)) {
                                                 if($user_id == $workitem->getCReviewerId() || $is_runner || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
                                                     <input class="iToolTip endCr" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
-                                        <?php   } else { ?>
-                                                    <input class="iToolTip endCrDisallowed" type="submit" value="End Code Review" onClick="return false;"/>
                                         <?php   }
                                             }
                                         } 
