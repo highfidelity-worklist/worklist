@@ -14,6 +14,10 @@ if($_SERVER["HTTPS"] != "on") {
 
 // These are the items most likely in need of being changed.
 
+// Uncomment and change 'unixname' to override error logs path
+//ini_set('error_log','/mnt/ebsvol/dev-www/unixname/php.errors');
+
+
 // Where is the SendLove Database?
 define("DB_SERVER", "mysql.dev.sendlove.us");
 define("DB_USER", "dev_worklist");
@@ -35,7 +39,7 @@ define('SMS_SENDER','worklist@worklist.net');
 //define('SMS_REPLYTO','worklist@worklist.net');
 
 //Server URL's - If running as http://host.domain.com/ (not using app location), defining SERVER_NAME is all that is needed for non-ssl sites
-//define("SERVER_NAME","dev.worklist.net");
+define("SERVER_NAME","dev.worklist.net");
 //define("APP_LOCATION",substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], "/")));
 //define("SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
 ////define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
@@ -59,21 +63,28 @@ define('SMS_SENDER','worklist@worklist.net');
 
 //define('SMS_INI_FILE', '/etc/love/worklist/sms.ini');
 
-//define('TWITTER_USER','user');
-//define('TWITTER_PASS','pass');
-//define('TWITTER_2_USER',null);
-//define('TWITTER_2_PASS',null);
+define('TWITTER_USER','user');
+define('TWITTER_PASS','pass');
+define('TWITTER_2_USER',null);
+define('TWITTER_2_PASS',null);
 
 /*
 * Twitter OAuth constants
 */
 
-//define("TWITTER_CONSUMER_KEY", "consumer_key");
-//define("TWITTER_CONSUMER_SECRET", "consumer_secret");
-//define("TWITTER_OAUTH_TOKEN", "oauth_token");
-//define("TWITTER_OAUTH_SECRET", "oauth_secret");
+define("TWITTER_CONSUMER_KEY", "consumer_key");
+define("TWITTER_CONSUMER_SECRET", "consumer_secret");
+define("TWITTER_OAUTH_TOKEN", "oauth_token");
+define("TWITTER_OAUTH_SECRET", "oauth_secret");
 
 
+
+////How to use a local gateway
+define('GOOGLE_HOST','localhost');
+define('GOOGLE_USER','');
+define('GOOGLE_PWD','');
+define('GOOGLE_PORT','25');
+define('GOOGLE_AUTH',false);
 
 ////How to use a secure gateway
 //define('GOOGLE_HOST','ssl://smtp.gmail.com');

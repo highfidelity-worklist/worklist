@@ -105,7 +105,7 @@ if (!defined("SALES_API_URL")) define("SALES_API_URL", "https://dev.sendlove.us/
 if (!defined("SALES_API_KEY")) define("SALES_API_KEY", "qxuakwyjhqp4zo7wt2ie");
 
 // key to identificate api users
-if (!defined("API_KEY"))    define("API_KEY", "unsecure_dev_worklist");
+if (!defined("API_KEY"))    define("API_KEY", "worklist_dev_worklist_unsecure");
 
 // Refresh interval for ajax updates of the history table (in seconds)
 if (!defined('AJAX_REFRESH'))   define('AJAX_REFRESH', 120);
