@@ -249,9 +249,13 @@
                         <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
                         <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
                     </select>
-                    <br/>
+                    <p class = "info-label">Found Us On:
+                    <span><?php echo $user -> getFindus(); ?></span>
+                    </p>
                 </form>
-                <span>User last seen: <?php echo relativeTime($user->getTimeLastSeen(), false); ?></span>
+                    <p class = "info-label">User last seen: 
+                    <span><?php echo relativeTime($user->getTimeLastSeen(), false); ?></span>
+                    </p>
             </div><!-- end of admin-right -->
         </div><!-- end of tab 2 -->
         <div id="tabs-4" style="clear: both;">

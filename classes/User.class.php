@@ -53,6 +53,7 @@ class User {
     protected $paypal_hash;
     protected $notifications;
     protected $has_W2;
+    protected $findus;
     /**
      * All about budget
      */
@@ -551,6 +552,21 @@ class User {
      */
     public function setAbout($about) {
         $this->about = $about;
+        return $this;
+    }
+    
+    /**
+     * @return the $findus
+     */
+    public function getFindus() {
+        return $this->findus;
+    }
+
+    /**
+     * @param $findus to set
+     */
+    public function setFindus($findus) {
+        $this->findus = $findus;
         return $this;
     }
 
