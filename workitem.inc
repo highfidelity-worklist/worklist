@@ -412,7 +412,12 @@ $(document).ready(function(){
                         type: 'post',
                         url: '<?php echo JOURNAL_QUERY_URL;?>',
                         data: {
-                            action: 'getTaskPosts', count: 50, query: <?php echo $worklist['id'];?>, filter: 'all',api_key:'<?php echo  JOURNAL_API_KEY; ?>'
+                            action: 'getTaskPosts',
+                            count: 50,
+                            query: <?php echo $worklist['id'];?>,
+                            filter: 'all',
+                            order: 'ASC',
+                            api_key:'<?php echo  JOURNAL_API_KEY; ?>'
                         },
                         dataType: 'json',
                         success: function(json)
