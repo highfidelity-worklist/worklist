@@ -100,7 +100,7 @@ include("head.html"); ?>
 </label></p>
 <script type="text/javascript">
         var password = new LiveValidation('password',{ validMessage: "You have an OK password.", onlyOnBlur: true });
-        password.add(Validate.Length, { minimum: 5, maximum: 12 } );
+        password.add(Validate.Length, { minimum: 5, maximum: 255 } );
 </script>
   </div>
  
