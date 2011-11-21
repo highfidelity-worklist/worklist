@@ -85,7 +85,6 @@ try {
     die($error);
 }
 
-$mechanic_id = $user->getId();
 $redirectToDefaultView = false;
 $redirectToWorklistView = false;
 $promptForReviewUrl = true;
@@ -337,94 +336,119 @@ if($action =='invite-people') {
     }
 }
 if($action == 'start_codereview') {
-    $workitem->setCRStarted(1);
-    $workitem->save();
-    $journal_message = $_SESSION['nickname'] . " has started a code review for #$worklist_id: " . $workitem->getSummary();
+    if(!($user->isEligible() && $userId == $workitem->getMechanicId())) {
+        error_log("Input forgery detected for user $userId: attempting to $action.");
+    } else {
+        $workitem->setCRStarted(1);
+        $workitem->save();
+        $journal_message = $_SESSION['nickname'] . " has started a code review for #$worklist_id: " . $workitem->getSummary();
+    }
 }
 
 if($action == 'finish_codereview') {
-    $args = array('itemid', 'crfee_amount', 'fee_category', 'crfee_desc', 'is_expense', 'is_rewarder');
-    foreach ($args as $arg) {
-        if (isset($_POST[$arg])) {
-               $$arg = mysql_real_escape_string($_POST[$arg]);
-        } else {
-            $$arg = '';
-        }
-    } 
-    if($crfee_desc == '') {
-        $crfee_desc = 'Code Review';
+    // ensure user is alowed to end review, and review is open
+    if(!($user->isEligible() &&
+    $workitem->getCRStarted() == 1 &&
+    $workitem->getCRCompleted() != 1 &&
+    hasRights($userId, $workitem))) {
+        error_log("Input forgery detected for user $userId: attempting to $action.");
     } else {
-        $crfee_desc = 'Code Review - '. $crfee_desc;
-    }
-    $journal_message = AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $workitem->getCReviewerId(), $is_expense, $is_rewarder);
-    sendJournalNotification($journal_message);
-    $workitem->setCRCompleted(1);
-    $workitem->save();
+        $args = array('itemid', 'crfee_amount', 'fee_category', 'crfee_desc', 'is_expense', 'is_rewarder');
+        foreach ($args as $arg) {
+            if (isset($_POST[$arg])) {
+                   $$arg = mysql_real_escape_string($_POST[$arg]);
+            } else {
+                $$arg = '';
+            }
+        } 
+        if($crfee_desc == '') {
+            $crfee_desc = 'Code Review';
+        } else {
+            $crfee_desc = 'Code Review - '. $crfee_desc;
+        }
+        $journal_message = AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $workitem->getCReviewerId(), $is_expense, $is_rewarder);
+        sendJournalNotification($journal_message);
+        $workitem->setCRCompleted(1);
+        $workitem->save();
 
-    $myRunner = new User();
-    $myRunner->findUserById($workitem->getRunnerId());
-    $myRunner->updateBudget(-$crfee_amount);
+        $myRunner = new User();
+        $myRunner->findUserById($workitem->getRunnerId());
+        $myRunner->updateBudget(-$crfee_amount);
 
-    if(Notification::isNotified($myRunner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-        Notification::sendSMS($myRunner, 'Fee', $journal_message);
-    }
-    
-    $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
+        if(Notification::isNotified($myRunner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
+            Notification::sendSMS($myRunner, 'Fee', $journal_message);
+        }
+        
+        $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
 
-    Notification::workitemNotify(array(
-        'type' => 'code-review-completed',
-        'workitem' => $workitem,
-        'recipients' => array('runner', 'mechanic', 'followers')
+        Notification::workitemNotify(array(
+            'type' => 'code-review-completed',
+            'workitem' => $workitem,
+            'recipients' => array('runner', 'mechanic', 'followers')
         ));
+    }
 }
 
 if($action == 'cancel_codereview') {
-    $workitem->setCRStarted(0);
-    $workitem->save();
-    $journal_message = $_SESSION['nickname'] . " has canceled their code review for #$worklist_id: " . $workitem->getSummary();
+    // ensure user is allowed to cancel review, and review is open
+    if(!($user->isEligible() &&
+    $workitem->getCRStarted() == 1 &&
+    $workitem->getCRCompleted() != 1 &&
+    hasRights($userId, $workitem))) {
+        error_log("Input forgery detected for user $userId: attempting to $action.");
+    } else {
+        $workitem->setCRStarted(0);
+        $workitem->save();
+        $journal_message = $_SESSION['nickname'] . " has canceled their code review for #$worklist_id: " . $workitem->getSummary();
+    }    
 }
 
 if($action =='save-review-url') {
-
-    $sandbox = (!empty($_POST['sandbox-url'])) ? $_POST['sandbox-url'] : $workitem->getSandbox();
-    $notes = (!empty($_POST['review-notes'])) ? $_POST['review-notes'] : null;
-    
-    $status_review = $_POST['quick-status-review'];
-    if(!empty($status_review)) {
-       changeStatus($workitem, $status_review, $user);
-    }
-    $workitem->setSandbox($sandbox);
-    $workitem->save();
-    $new_update_message = " sandbox url : $sandbox ";
-    if(!empty($status_review)) {
-        $new_update_message .= " Status set to $status_review. ";
-        $status_change = '-' . ucfirst(strtolower($status_review));
+    if(!(($is_runner) ||
+    ($mechanic_id == $user_id) &&
+    ($worklist['status'] != 'DONE'))) {
+        error_log("Input forgery detected for user $userId: attempting to $action.");
     } else {
-        $job_changes[] = '-sandbox';
+        $sandbox = (!empty($_POST['sandbox-url'])) ? $_POST['sandbox-url'] : $workitem->getSandbox();
+        $notes = (!empty($_POST['review-notes'])) ? $_POST['review-notes'] : null;
+        
+        $status_review = $_POST['quick-status-review'];
+        if(!empty($status_review)) {
+           changeStatus($workitem, $status_review, $user);
+        }
+        $workitem->setSandbox($sandbox);
+        $workitem->save();
+        $new_update_message = " sandbox url : $sandbox ";
+        if(!empty($status_review)) {
+            $new_update_message .= " Status set to $status_review. ";
+            $status_change = '-' . ucfirst(strtolower($status_review));
+        } else {
+            $job_changes[] = '-sandbox';
+        }
+        if ($notes) {
+            //add review notes
+            $fee_amount = 0.00;
+            $fee_desc = 'Review Notes:'. $notes;
+            $mechanic_id = $user->getId();
+            $itemid = $workitem->getId();
+            $is_expense = 1;
+            $fee_category = '';
+            AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
+        }
+        $notifyEmpty = false;
+        if ($status_review == 'FUNCTIONAL') {
+            $status_change = '-functional';
+            Notification::workitemNotify(array('type' => 'modified-functional',
+              'workitem' => $workitem,
+              'status_change' => $status_change,
+              'job_changes' => $job_changes,
+              'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+              array('changes' => $new_update_message));
+          $notifyEmpty = true;
+        }
+        $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
+        $promptForReviewUrl = false;
     }
-    if ($notes) {
-        //add review notes
-        $fee_amount = 0.00;
-        $fee_desc = 'Review Notes:'. $notes;
-        $mechanic_id = $user->getId();
-        $itemid = $workitem->getId();
-        $is_expense = 1;
-        $fee_category = '';
-        AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
-    }
-    $notifyEmpty = false;
-    if ($status_review == 'FUNCTIONAL') {
-        $status_change = '-functional';
-        Notification::workitemNotify(array('type' => 'modified-functional',
-          'workitem' => $workitem,
-          'status_change' => $status_change,
-          'job_changes' => $job_changes,
-          'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
-          array('changes' => $new_update_message));
-      $notifyEmpty = true;
-    }
-    $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
-    $promptForReviewUrl = false;
 }
 
 if ($action =='status-switch') {
@@ -546,7 +570,7 @@ if ($action == "place_bid") {
             array('notes' => $unescaped_notes));
         }
     } else {
-        // we don't return anything. user has tried to circumvent security measures to place a bid
+        error_log("Input forgery detected for user $userId: attempting to $action.");
     }
 
     $redirectToDefaultView = true;
@@ -554,85 +578,93 @@ if ($action == "place_bid") {
 }
 // Edit Bid
 if ($action =="edit_bid") {
+    if (! $user->isEligible ) {
+        error_log("Input forgery detected for user $userId: attempting to $action.");
+    } else {
+        //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
+        //a new variable is used to send the unenscaped notes in email alert.
+        //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
+        $unescaped_notes = nl2br($_POST['notes']);
 
-    //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
-    //a new variable is used to send the unenscaped notes in email alert.
-    //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
-    $unescaped_notes = nl2br($_POST['notes']);
+        $args = array('bid_id', 'bid_amount', 'done_in_edit', 'bid_expires_edit', 'notes');
+        foreach ($args as $arg) {
+            $$arg = mysql_real_escape_string($_POST[$arg]);
+        }
 
-    $args = array('bid_id', 'bid_amount', 'done_in_edit', 'bid_expires_edit', 'notes');
-    foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
-    }
+        if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
+        $summary = getWorkItemSummary($worklist_id);
+        $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in_edit, $bid_expires_edit, $_SESSION['timezone'], $notes);
 
-    if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
-    $summary = getWorkItemSummary($worklist_id);
-    $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in_edit, $bid_expires_edit, $_SESSION['timezone'], $notes);
+        // Journal notification
+        $journal_message = "Bid updated on item #$worklist_id: $summary.";
 
-    // Journal notification
-    $journal_message = "Bid updated on item #$worklist_id: $summary.";
+        $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id $summary";
+        //sending email to the runner of worklist item
+        $row = $workitem->getRunnerSummary($worklist_id);
+        if(!empty($row)) {
+        $id = $row['id'];
+            $summary = $row['summary'];
+            $username = $row['username'];
+        }
+        // notify runner of new bid
+        Notification::workitemNotify(array(
+            'type' => 'bid_updated',
+            'workitem' => $workitem,
+            'recipients' => array('runner')
+        ), array(
+            'done_in' => $done_in_edit,
+            'bid_expires' => $bid_expires_edit,
+            'bid_amount' => $bid_amount,
+            'notes' => $unescaped_notes,
+            'bid_id' => $bid_id
+        ));
 
-    $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id $summary";
-    //sending email to the runner of worklist item
-    $row = $workitem->getRunnerSummary($worklist_id);
-    if(!empty($row)) {
-    $id = $row['id'];
-        $summary = $row['summary'];
-        $username = $row['username'];
-    }
-    // notify runner of new bid
-    Notification::workitemNotify(array(
-        'type' => 'bid_updated',
-        'workitem' => $workitem,
-        'recipients' => array('runner')
-    ), array(
-        'done_in' => $done_in_edit,
-        'bid_expires' => $bid_expires_edit,
-        'bid_amount' => $bid_amount,
-        'notes' => $unescaped_notes,
-        'bid_id' => $bid_id
-    ));
-
-    // sending sms message to the runner
-    $runner = new User();
-    $runner->findUserById($workitem->getRunnerId());
-    if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-        Notification::sendSMS($runner, 'Updated', $journal_message);
+        // sending sms message to the runner
+        $runner = new User();
+        $runner->findUserById($workitem->getRunnerId());
+        if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
+            Notification::sendSMS($runner, 'Updated', $journal_message);
+        }
     }
 
     $redirectToDefaultView = true;
 }
 // Request submitted from Add Fee popup
 if ($action == "add_fee") {
-    $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
-    foreach ($args as $arg) {
-        if (isset($_POST[$arg]))  {
-           $$arg = mysql_real_escape_string($_POST[$arg]);
+    if(! $user->isEligible()) {
+        error_log("Input forgery detected for user $userId: attempting to $action.");
+    } else {
+        $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
+        foreach ($args as $arg) {
+            if (isset($_POST[$arg]))  {
+               $$arg = mysql_real_escape_string($_POST[$arg]);
+            }
+            else {
+                $$arg = '';
+            }
         }
-    else { $$arg = '';
+            $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
+
+        if($workitem->getStatus() != 'DRAFT') {
+            // notify runner of new fee
+            Notification::workitemNotify(array('type' => 'fee_added',
+                     'workitem' => $workitem,
+                     'recipients' => array('runner')),
+                     array('fee_adder' => $user->getNickname(),
+                     'fee_amount' => $fee_amount));
+        
+
+        // send sms message to runner
+        $runner = new User();
+        $runner->findUserById($workitem->getRunnerId());
+        $runner->updateBudget(-$fee_amount);
+
+            if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
+            Notification::sendSMS($runner, 'Fee', $journal_message);
+            }
         }
+        $redirectToDefaultView = true;
     }
-        $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
-
-    if($workitem->getStatus() != 'DRAFT') {
-        // notify runner of new fee
-        Notification::workitemNotify(array('type' => 'fee_added',
-                 'workitem' => $workitem,
-                 'recipients' => array('runner')),
-                 array('fee_adder' => $user->getNickname(),
-                 'fee_amount' => $fee_amount));
-    
-
-    // send sms message to runner
-    $runner = new User();
-    $runner->findUserById($workitem->getRunnerId());
-    $runner->updateBudget(-$fee_amount);
-
-        if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-        Notification::sendSMS($runner, 'Fee', $journal_message);
-        }
-    }
-    $redirectToDefaultView = true;
 }
 
 if ($action == "add_tip") {
@@ -854,9 +886,8 @@ if (isset($_SESSION['workitem_error'])) {
 }
 // Process the request normally and display the page.
 
-//get worklist
+//get workitem from db
 $worklist = $workitem->getWorkItem($worklist_id);
-
 //get bids
 $bids = $workitem->getBids($worklist_id);
 // get only those bids that have not expired, used to determine whether

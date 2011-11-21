@@ -39,7 +39,7 @@ if ($projectName) {
     $inProject = new Project();
     try {
         $inProject->loadByName($projectName);
-	} catch(Exception $e) {
+    } catch(Exception $e) {
         $error  = $e->getMessage();
         die($error);
     }
@@ -248,7 +248,7 @@ include("head.html"); ?>
             return false;
         }
     }
-	
+    
     function GetStatus(source) {
         var url = 'update_status.php';
         var action = 'get';
@@ -796,7 +796,7 @@ include("head.html"); ?>
         }
     };
  
-	
+    
     $(document).ready(function() {
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
@@ -874,7 +874,7 @@ include("head.html"); ?>
             }
         });
 
-		
+        
         $.get('getskills.php', function(data) {
             var skills = eval(data);
             $("#skills").autocomplete(skills, {
@@ -1915,15 +1915,15 @@ if (is_object($inProject)) {
                 </thead>
                 <tbody class="developerContent">
                     <?php if($developers = $inProject->getDevelopers()) { ?>
-						<?php foreach($developers as $developer) { ?>
-							<tr class="row-developer-list-live">
-								<td class="developer"><a href="#" onclick="javascript:showUserInfo(<?php echo $developer['id']?>);"><?php echo $developer['nickname']?></a></td>
-								<td class="jobCount"><?php echo $developer['totalJobCount']?></td>
-								<td><?php echo $inProject->getDevelopersLastActivity($developer['id'])?></td>
-								<td><?php echo (($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : "") ?></td>
-							</tr>
-						<?php } ?>
-					<?php } ?>
+                        <?php foreach($developers as $developer) { ?>
+                            <tr class="row-developer-list-live">
+                                <td class="developer"><a href="#" onclick="javascript:showUserInfo(<?php echo $developer['id']?>);"><?php echo $developer['nickname']?></a></td>
+                                <td class="jobCount"><?php echo $developer['totalJobCount']?></td>
+                                <td><?php echo $inProject->getDevelopersLastActivity($developer['id'])?></td>
+                                <td><?php echo (($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : "") ?></td>
+                            </tr>
+                        <?php } ?>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
