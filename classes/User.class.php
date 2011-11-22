@@ -121,7 +121,7 @@ class User {
         return $this->loadUser($where);
     }
 
-    public function isEligible() {
+    public function getIsEligible() {
     
         if ($this->getHas_W2()) {
             return true;
@@ -246,6 +246,12 @@ class User {
      * @param string $value Value of the property
      * @throws Exception
      * @return void
+     * 
+     * TODO: Determine if this is worth keeping
+     * What value does this provide? If you try to access a property that
+     * doesn't exist, you'll get an exception anyway. This also adds a layer
+     * of confusion to new developers who don't know that we've overridden
+     * the -> operator. -alexi 2011-11-22
      */
     public function __get($name)
     {
