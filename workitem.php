@@ -975,7 +975,7 @@ if (count($project_roles) != 0 && $project_roles['percentage'] !== null && $proj
 
 require_once "workitem.inc";
 
-function hasRights($workitem,$userId) {
+function hasRights($userId, $workitem) {
     $project = new Project();
     $project->loadById($workitem->getProjectId());
     $users_favorite = new Users_Favorite();
