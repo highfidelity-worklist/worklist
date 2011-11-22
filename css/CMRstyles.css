@@ -52,7 +52,8 @@ body {
 #search-filter-section td {
     white-space:nowrap;
 }
-#welcome {
+/* resets the style for the <p> tag in the status part */
+#welcome, #status-update-form p {
     position:relative;
     padding: 0 40px 10px 40px;
     width:870px;

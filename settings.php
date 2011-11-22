@@ -79,16 +79,16 @@ if (isset($_POST['save_account'])) {
         $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
         $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
         $notifications = Notification::setFlags($review_notify, 
-												$bidding_notify, 
-												$my_review_notify, 
-												$my_completed_notify, 
-												$my_bids_notify, 
-												$ping_notify, 
-												$self_email_notify, 
-												$bidding_email_notify, 
-												$review_email_notify);
+                                                $bidding_notify, 
+                                                $my_review_notify, 
+                                                $my_completed_notify, 
+                                                $my_bids_notify, 
+                                                $ping_notify, 
+                                                $self_email_notify, 
+                                                $bidding_email_notify, 
+                                                $review_email_notify);
         
-		$saveArgs['notifications'] = 0;
+        $saveArgs['notifications'] = 0;
 
         // if user is new - create an entry for him
         // clear $saveArgs so it won't be updated for the second time
@@ -401,9 +401,9 @@ include("head.html");
                     bidding_notify: $('input[name="bidding_notify"]').prop('checked') ? 1 : 0,
                     my_review_notify: $('input[name="my_review_notify"]').prop('checked') ? 1 : 0,
                     my_completed_notify: $('input[name="my_completed_notify"]').prop('checked') ? 1 : 0,
-					self_email_notify: $('input[name="self_email_notify"]').prop('checked') ? 1 : 0,
-					bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
-					review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0
+                    self_email_notify: $('input[name="self_email_notify"]').prop('checked') ? 1 : 0,
+                    bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
+                    review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0
                 };
             } else {
                 return false;
@@ -727,8 +727,8 @@ include("head.html");
             <div class="floatLeft">
                 <input type="checkbox" name="self_email_notify" value="1" <?php 
                 echo Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : ''; 
-			?>/>Receive email notifications from my actions<br />
-            </div>        	
+            ?>/>Receive email notifications from my actions<br />
+            </div>            
         </div>
         
         <div style="clear:both">
@@ -838,5 +838,13 @@ include("head.html");
 setTimeout('ChangePaymentMethod()', 2000);
 </script>
 <?php } ?>
-<!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
-<?php include("footer.php"); ?>
+
+<?php
+  $user_id = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0 ;
+  if ( $user_id > 0) { ?>
+<script type="text/javascript">
+    GetStatus('journal');
+</script>
+<?php }
+//-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
+include("footer.php"); ?>

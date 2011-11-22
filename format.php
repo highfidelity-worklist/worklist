@@ -38,10 +38,10 @@ $userId = getSessionUserId();
                 $name = getSubNickname($_SESSION['nickname']);
             }
             $status = '<span id="status-wrap" style="width:340px;">
-                <form action="" style="display:inline" id="status-update-form" style="width:340px;">' . $name .' is <span id="status-lbl"></span>
-                    <input style="display: none;" type="text" maxlength="45" id="status-update" name="status-update"
-                        value=""></input>
-                    <span id="status-share" style="display: none;  width:122px;">
+                <form action="" style="display:inline" id="status-update-form" style="width:340px;"><p style="padding: 0; display: inline;">' . $name .' is </p><span id="status-lbl"></span>
+                    <input type="text" maxlength="45" id="status-update" name="status-update"
+                        value="" placeholder="What are you working on?"></input>
+                    <span id="status-share" style="width:122px;">
                         <input type="submit" value="Share" id="status-share-btn"></input>
                     </span>
                 </form>
@@ -56,7 +56,7 @@ $userId = getSessionUserId();
     <!-- Inline Message Container -->
     <div id="inlineMessage"></div>
     
-    <?php if ( basename($_SERVER['PHP_SELF']) == 'worklist.php' && (array_key_exists('inlineHide',$_SESSION) && $_SESSION['inlineHide'] == 0) ) { ?>
+    <?php if (basename($_SERVER['PHP_SELF']) == 'worklist.php' && (array_key_exists('inlineHide',$_SESSION) && $_SESSION['inlineHide'] == 0) ) { ?>
     
     <script type="text/javascript">
     
@@ -107,6 +107,48 @@ $userId = getSessionUserId();
             | <a href="team.php">Team</a>
             | <a href="settings.php" class="iToolTip menuSettings">Settings</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
+            
+         
+            <script type="text/javascript">
+               function GetStatus(source) {
+                    var lockGetWorklist = 0;
+                    var status_refresh = 5 * 1000;
+                    var statusTimeoutId = null;
+                    var lastStatus = 0;
+                    var url = 'update_status.php';
+                    var action = 'get';
+                    if(source == 'journal') {
+                        url = '<?php echo JOURNAL_QUERY_URL; ?>';
+                        action = 'getUserStatus';
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        cache: false,
+                        data: {
+                            action: action
+                        },
+                        dataType: 'json',
+                        success: function(json) {
+                            if(json && json[0] && json[0]["timeplaced"]) {
+                                if(lastStatus < json[0]["timeplaced"]) {
+                                    lastStatus = json[0]["timeplaced"];
+                                    if(json[0]["status"] != "") {
+                                        $('#status-update').val(json[0]["status"]);
+                                        $('#status-update').hide();
+                                        $('#status-lbl').show();
+                                        $("#status-share").hide();
+                                        $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
+                                    }
+                                }
+                               }
+                        }
+                    });
+                statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
+            }
+            GetStatus('journal');
+          </script>            
+            
             <?php
                 /* Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
                    your userid must be included below. Just remove when done!

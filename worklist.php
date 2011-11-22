@@ -1952,7 +1952,7 @@ if (is_object($inProject)) {
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
 <div id="user-info" title="User Info"></div>
 <script type="text/javascript">
-GetStatus('worklist');
+GetStatus('journal');
 </script>
 
 <?php

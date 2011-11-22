@@ -43,7 +43,7 @@ if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 function update_status($status = ""){   
     $journal_message =  $_SESSION['nickname'];
     
-    mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
+    mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);		//connect to the journal db
     mysql_select_db(DB_NAME);
     // Insert new status to the database
     $insert = "INSERT INTO ".USER_STATUS."(id, status, timeplaced) VALUES(" . $_SESSION['userid'] . ", '" .  mysql_real_escape_string($status) . "', NOW())";
@@ -66,8 +66,8 @@ function get_status($as_string = true){
     if (empty($_SESSION['userid'])) return "";
 
     // Connect to the database
-    $connection = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
-    mysql_select_db(DB_NAME,$connection);   
+    $connection = mysql_connect('localhost', 'project_stage', DB_PASSWORD);
+    mysql_select_db('journal_mitosis', $connection);   
     
     $select = "SELECT status, UNIX_TIMESTAMP(timeplaced) as timeplaced FROM ".USER_STATUS." WHERE id=" . $_SESSION['userid'] . " ORDER BY timeplaced DESC LIMIT 1";
     

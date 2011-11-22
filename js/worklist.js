@@ -279,7 +279,7 @@ $(function() {
     $('#status-update').hide();
     $("#notes").DefaultValue(bidNotesHelper);
     $('#notes').css('color','#999999');
-    $('#notes').css('font-style','italic');	
+    $('#notes').css('font-style','italic');    
     $("#query").DefaultValue("Search...");
     $("#feesDialog").dialog({
         title: "Earnings",
@@ -317,7 +317,7 @@ $(function() {
     }
     
     // When status-update gets focus enlarge and show the share button
-    $("#status-update").focus(function() {        
+    $("#status-update").focus(function() {
         $("#status-update").data("focus",true);        
         $("#status-share").show();
         if(statusTimeoutId) {
@@ -338,7 +338,7 @@ $(function() {
         }
     });
     
-    $("#status-lbl").mouseenter(function() {
+    $("#status-lbl, #status-update-form p").mouseenter(function() {
         $('#status-lbl').hide();
         $('#status-update').show();
         $('#status-share').show();
@@ -351,8 +351,8 @@ $(function() {
     $("#status-wrap").mouseleave(function(){
         if ($("#status-update").data("focus") !== true) {
             hideInputField();
+            statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
         }
-        statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
     });
 
     //Enable/disable job bug id on is_bug checkbox state
@@ -423,20 +423,17 @@ $(function() {
     
     //Submit the form using AJAX to the database
     $("#status-share-btn").click(function() {
-        if($("#status-update").val() == "")    {
-            //return false;
-        }
         if($("#status-update").val() ==  "What are you working on?"){
             $("#status-update").val("");
         }
         $.ajax({
-            url: "update_status.php",
+            url: "../journal/api.php",        //works only with the journal status, no need to a worklist status
             type: "POST",
-            data: "action=update&status=" + $("#status-update").val(),
+            data: "action=updateStatus&status=" + $("#status-update").val(),
             dataType: "text",
             success: function(){
                 // if entered blank status - do not hide input
-                if ($("#status-update").val()!="") {
+                if ($("#status-update").val() != "") {
                     $('#status-update').hide();$('#status-lbl').show();
                     $("#status-share").hide();
                     $('#share-this').hide();
@@ -461,7 +458,36 @@ $(function() {
     
 });
 
-
+var status_refresh = 5 * 1000;
+var statusTimeoutId = null;
+var lastStatus = 0;
+function GetStatus(source) {
+        url = '../journal/api.php';
+        action = 'getUserStatus';
+    $.ajax({
+        type: "POST",
+        url: url,
+        cache: false,
+        data: {
+            action: action
+        },
+        dataType: 'json',
+        success: function(json) {
+            if(json && json[0] && json[0]["timeplaced"]) {
+                if(lastStatus < json[0]["timeplaced"]) {
+                    lastStatus = json[0]["timeplaced"];
+                    $('#status-update').val(json[0]["status"]);
+                    $('#status-update').hide();
+                    $('#status-lbl').show();
+                    $("#status-share").hide();
+                    $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
+               }
+           }
+        }
+   });
+   statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
+}
+    
 /* get analytics info for this page */
 $(function() {
     $.analytics = $('#analytics');
@@ -686,7 +712,7 @@ function applyPopupBehavior() {
                                             ($(window).height()-(imageMargin+padding)*2) / origHeig);
                             var zoom='';
                             //alert(($(window).width()-padding*2)+' , ' +($(window).height()-padding*2)+' ==  '+origWidt+','+origHeig+ ' === '+ratio);
-							//alert('width'+(origWidt*ratio)+', height'+(origHeig*ratio));
+                            //alert('width'+(origWidt*ratio)+', height'+(origHeig*ratio));
                             if(ratio<1){
                                 image.css({'width':origWidt*ratio,'height':origHeig*ratio});
                             }

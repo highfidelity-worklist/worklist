@@ -566,7 +566,7 @@ function loadTimelineChart() {
 
     $(document).ready(function(){
         GetReport(<?php echo $page; ?>, true);
-	GetPayeeReport(<?php echo $page; ?>, true);
+    GetPayeeReport(<?php echo $page; ?>, true);
 
         // table sorting thing
         $('.table-worklist thead tr th').hover(function(e){
@@ -613,9 +613,9 @@ function loadTimelineChart() {
             $(this).data('direction',!direction); //switching on current
         }); //end of table sorting
 
-	// Payee tab table sorting handling
+    // Payee tab table sorting handling
         $('.table-worklist-payee thead tr th').hover(function(e){
-	    
+        
             if(! $('div', this).hasClass('show-arrow')){
                 if ($(this).data('direction')) {
                     $('div', this).addClass('arrow-up');
@@ -687,7 +687,7 @@ function loadTimelineChart() {
             return false;
 
         });
-	$('.worklist-payee-pagination-row a').live('click', function(e){
+    $('.worklist-payee-pagination-row a').live('click', function(e){
             page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
             if (timeoutId) clearTimeout(timeoutId);
             GetPayeeReport(page);
@@ -742,7 +742,7 @@ function loadTimelineChart() {
             } else if(currentTab == 1) {
                 location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
             }
-	    else if(currentTab == 2) {
+        else if(currentTab == 2) {
                 location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
             }
         });
@@ -929,38 +929,7 @@ function loadTimelineChart() {
   $user_id = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0 ;
   if ( $user_id > 0) { ?>
 <script type="text/javascript">
-    var status_refresh = 5 * 1000;
-    var statusTimeoutId = null;
-    var lastStatus = 0;
-    function GetStatus(source) {
-        var url = 'update_status.php';
-        var action = 'get';
-        if(source == 'journal') {
-            url = '<?php echo JOURNAL_QUERY_URL; ?>';
-            action = 'getUserStatus';
-        }
-        $.ajax({
-            type: "POST",
-            url: url,
-            cache: false,
-            data: {
-                action: action
-            },
-            dataType: 'json',
-            success: function(json) {
-                if(lastStatus < json[0]["timeplaced"]) {
-                    lastStatus = json[0]["timeplaced"];
-                    $('#status-update').val(json[0]["status"]);
-                    $('#status-update').hide();
-                    $('#status-lbl').show();
-                    $("#status-share").hide();
-                    $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
-               }
-            }
-        });
-        statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
-    }
-    GetStatus('worklist');
+    GetStatus('journal');
 </script>
 <?php }
 include("footer.php"); ?>
