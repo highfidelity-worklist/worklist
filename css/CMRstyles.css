@@ -635,7 +635,8 @@ div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 /* Status Update Fields */
 #status-wrap {
     z-index:1;
-    padding-left:10px;
+    width: 550px;
+    display: inline-block;
 }
 
 #status-lbl {
@@ -643,6 +644,6 @@ div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 }
 
 #status-update {
-    width: 200px;
+    width: 150px;
 }
  

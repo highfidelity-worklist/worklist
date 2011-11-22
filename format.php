@@ -37,7 +37,7 @@ $userId = getSessionUserId();
             } else {
                 $name = getSubNickname($_SESSION['nickname']);
             }
-            $status = '<span id="status-wrap" style="width:340px;">
+            $status = '<span id="status-wrap">
                 <form action="" style="display:inline" id="status-update-form" style="width:340px;"><p style="padding: 0; display: inline;">' . $name .' is </p><span id="status-lbl"></span>
                     <input type="text" maxlength="45" id="status-update" name="status-update"
                         value="" placeholder="What are you working on?"></input>
@@ -45,7 +45,7 @@ $userId = getSessionUserId();
                         <input type="submit" value="Share" id="status-share-btn"></input>
                     </span>
                 </form>
-            </span>' ;
+            </span>';
             echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a> | $status";
             echo $feeinfo;  
         } ?>
