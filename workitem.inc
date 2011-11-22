@@ -1693,7 +1693,7 @@ if ($action =="edit"):  ?>
                                     if ( $workitem->getCRStarted() !=1) {
                                         if ($mechanic_id != $user_id) {
                                             if ($user->isEligible()) {
-                                                if(hasRights($workitem, $user_id)) { ?>
+                                                if(hasRights($user_id, $workitem)) { ?>
                                                     <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return showReviewForm();"/>
                                         <?php   } else { ?>
                                                     <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
@@ -1703,7 +1703,7 @@ if ($action =="edit"):  ?>
                                         
                                     } else if($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
                                         if ($user->isEligible()) {
-                                            if(hasRights($workitem, $user_id)) {
+                                            if(hasRights($user_id, $workitem)) {
                                                 if($user_id == $workitem->getCReviewerId() || $is_runner || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
                                                     <input class="iToolTip endCr" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
                                         <?php   }
