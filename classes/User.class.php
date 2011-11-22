@@ -121,8 +121,20 @@ class User {
         return $this->loadUser($where);
     }
 
+    /**
+     * TODO:
+     * I'm not sure why the __get() overload isn't always being applied, but
+     * the error log is showing entries like:
+     * PHP Fatal error:  Call to undefined method User::isEligible() in \
+     *      .../worklist/workitem.inc on line 1718
+     * Determine the cause and fix properly.
+     * -Alexi 2011-11-22
+     */
+    public function isEligible() {
+        return $this->getIsEligible();
+    }
+
     public function getIsEligible() {
-    
         if ($this->getHas_W2()) {
             return true;
         }
@@ -250,8 +262,10 @@ class User {
      * TODO: Determine if this is worth keeping
      * What value does this provide? If you try to access a property that
      * doesn't exist, you'll get an exception anyway. This also adds a layer
-     * of confusion to new developers who don't know that we've overridden
-     * the -> operator. -alexi 2011-11-22
+     * of confusion to developers who don't know that we've overridden
+     * the -> operator and that they need to name their function
+     * getWhatever(), but call it by a different name: $this->whatever().
+     * -alexi 2011-11-22
      */
     public function __get($name)
     {
