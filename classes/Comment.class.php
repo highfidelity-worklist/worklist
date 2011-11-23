@@ -273,7 +273,7 @@ class Comment
     	if (null === $id) {
     		throw new Exception('No workitem defined!');
     	}
-    	$sql = 'SELECT `id` FROM `' . COMMENTS . '` WHERE `comment_id` IS NULL AND `worklist_id` = ' . (int)$id . ' ORDER BY `date` ASC';
+    	$sql = 'SELECT `id` FROM `' . COMMENTS . '` WHERE `comment_id` IS NULL AND `worklist_id` = ' . (int)$id . ' ORDER BY `date` DESC';
     	$result = mysql_query($sql);
     	$list = array();
     	while ($row = mysql_fetch_assoc($result)) {
