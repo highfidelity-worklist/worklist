@@ -35,7 +35,7 @@
             echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a> | $status";
             echo $feeinfo;  
         } ?>
-        <div id="tagline">Fast pay for your work, <a href="http://svn.worklist.net/" target="_blank">open codebase</a>, great community.</div>
+        <div id="tagline">Build software fast, make money, great community.</div>
     </div>
     <div id="container">
         <div id="left"></div>

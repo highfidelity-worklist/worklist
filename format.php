@@ -50,7 +50,7 @@ $userId = getSessionUserId();
             echo $feeinfo;  
         } ?>
         
-        <div id="tagline">Fast pay for your work, <a href="http://svn.worklist.net/" target="_blank">open codebase</a>, great community.</div>       
+        <div id="tagline">Build software fast, make money, great community.</div>       
     </div>
     
     <!-- Inline Message Container -->

@@ -1635,7 +1635,7 @@ var documentsArray = new Array();
 echo
   is_object($inProject)
   ?  'Project: ' . $inProject->getName()
-  :  'Worklist | Fast pay for your work, open codebase, great community.'
+  :  'Worklist | Build software fast, make money, great community.'
 ;
 ?></title>
 </head>
@@ -1835,7 +1835,7 @@ if (is_object($inProject)) {
                         <?php if($payments = $inProject->getPaymentStats()) {
                                 foreach ($payments as $payment) { ?>
                                     <tr class="row-payment-list-live">
-                                        <td><a href="#" onclick="javascript:showUserInfo(<?php echo $payment['id']?>);"><?php echo $payment['nickname']?></a></td>
+                                        <td><a href="#" onClick="javascript:showUserInfo(<?php echo $payment['id']?>);"><?php echo $payment['nickname']?></a></td>
                                         <td><a class="payment-worklist-item" id="worklist-<?php echo $payment['worklist_id']?>" href="workitem.php?job_id=<?php echo $payment['worklist_id']?>" target="_blank">#<?php echo $payment['worklist_id']?></a></td>
                                         <td>$<?php echo $payment['amount']?></td>
                                         <td><?php echo (($payment['paid']==1) ? "PAID" : "UNPAID")?></td>

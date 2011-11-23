@@ -21,7 +21,7 @@ require_once("functions.php");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Worklist | Fast pay for your work, open codebase, great community.</title>
+<title>Worklist | Build software fast, make money, great community.</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="copyright" content="Copyright (c) 2011 Coffee & Power, Inc.  All Rights Reserved. http://www.coffeeandpower.com" />
 <link href="css/CMRstyles.css" rel="stylesheet" type="text/css">
@@ -108,7 +108,7 @@ function _run(videoID) {
 <body>
     <div id="outside" class="home">
         <div id="home-header">
-            <h1 class="home-header-logo"><a href="<?php echo SERVER_URL; ?>" title="Worklist | Fast pay for your work, open codebase, great community."><img src="<?php echo SERVER_URL; ?>images/worklist_logo.png" border="0" /></a></h1>
+            <h1 class="home-header-logo"><a href="<?php echo SERVER_URL; ?>" title="Worklist | Build software fast, make money, great community."><img src="<?php echo SERVER_URL; ?>images/worklist_logo.png" border="0" /></a></h1>
             <div class="home-header-nav">
 <?php
 if (getSessionUserId() > 0) {
