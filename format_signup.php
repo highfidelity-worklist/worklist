@@ -23,16 +23,7 @@
             } else {
                 $name = $_SESSION['nickname'];
             }
-            $status = '<span id="status-wrap" style="width:340px;">
-                <form action="" style="display:inline" id="status-update-form" style="width:340px;">' . $name .' is <span id="status-lbl"><b>' . $current_status . '</b></span>
-                    <input style="display: none;" type="text" maxlength="45" id="status-update" name="status-update"
-                        value="' . $current_status . '"></input>
-                    <span id="status-share" style="display: none;  width:122px;">
-                        <input type="submit" value="Share" id="status-share-btn"></input>
-                    </span>
-                </form>
-            </span>' ;
-            echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a> | $status";
+            echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a>";
             echo $feeinfo;  
         } ?>
         <div id="tagline">Build software fast, make money, great community.</div>
