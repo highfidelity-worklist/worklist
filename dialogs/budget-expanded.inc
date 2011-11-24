@@ -24,5 +24,5 @@
 	    <tbody>
 	    </tbody>
 	</table><br/>
-	<input type="submit" id="budget-report-export" value="Export to CSV"/>
+	<input type="submit" class="disableable" id="budget-report-export" value="Export to CSV"/>
 </div>

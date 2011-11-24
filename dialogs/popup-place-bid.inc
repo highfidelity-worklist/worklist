@@ -124,7 +124,7 @@
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
 
 <?php   }  ?>
-             <input type="submit" id="bid" disabled="disabled" class="button-disabled" name="place_bid" value="Place Bid" />
+             <input type="submit" id="bid" disabled="disabled" class="button-disabled disableable" name="place_bid" value="Place Bid" />
              <?php if ($worklist['status'] == 'SUGGESTED') { ?>
              <input type="hidden" name="swb" id="swb" value="swb"  />
              <?php   }  ?>

@@ -5,6 +5,6 @@
         <p><strong>Phone#:</strong><br /><input class="text-field" type="text" name="phone" id="contactPhone" value="" /></p>
         <p><strong>Project Name:</strong><br /><input class="text-field" type="text" name="project" id="contactProject" value="" /></p>
         <p><strong>Project Description:</strong><br /><textarea name="proj-desc" id="contactProjDesc"></textarea></p>
-        <p><input type="submit" id="contact-submit" value="Send Message" /> &nbsp; <input type="button" id="contact-close" value="Cancel" /></p>
+        <p><input type="submit" class="disableable" id="contact-submit" value="Send Message" /> &nbsp; <input type="button" id="contact-close" value="Cancel" /></p>
     </form>
 </div>

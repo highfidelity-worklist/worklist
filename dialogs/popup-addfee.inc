@@ -26,6 +26,19 @@
 
                     var fee_desc = new LiveValidation('fee_desc',{ onlyOnSubmit: true });
                         fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    $('#popup-form-addfee').submit(function() {
+                        var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);
+                        if (!massValidationFee) {
+                            return false;
+                        }
+                        $('#add_fee').click(function() {
+                            $('#add_fee').attr('disabled', 'disabled');
+                        });
+                        $('#popup-form-addfee').submit(function() {
+                            return false;
+                        });
+                        return true;
+                    });
                 </script>
 
 <?php

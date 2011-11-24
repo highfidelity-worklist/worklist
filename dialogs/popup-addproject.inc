@@ -30,7 +30,7 @@
         
         <div>
             <input type="submit" id="cancel" name="cancel" value="Cancel">
-            <input type="submit" id="save_project" name="save_item" value="Save">
+            <input type="submit" class="disableable" id="save_project" name="save_item" value="Save">
         </div>
     </form>
     <div class="right-note"><span class="required-field">*</span> Required fields</span></div>

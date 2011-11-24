@@ -519,7 +519,7 @@ foreach ($payee_totals as $payee) {
         <br>Paypal API Password: <input type="password" name="pp_api_password" id="pp_api_password" />
         <br>Paypal API Signature: <input type="password" name="pp_api_signature" id="pp_api_signature" /><br>
     <?php } ?> 
-    <input type="submit" id="commit-btn" name="commit"
+    <input class="disableable" type="submit" id="commit-btn" name="commit"
         value="<?php echo isset($_POST["action"])?'Pay Now':'Confirm'; ?>" />
     &nbsp;&nbsp;Total Selected: $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
     <input type="hidden" name="fund_id" value="<?php echo $fund_id; ?>" />

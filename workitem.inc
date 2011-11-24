@@ -173,6 +173,7 @@ function reply(id) {
     leftMargin= (20 + parseInt(commentMargin)) + "px";
     clone.css({'margin-left':leftMargin});
     $('.commentform input[name=comment_id]').val(id);
+    runDisableable();
 }
 
     var getSliderValueFromText = function(val) {
@@ -596,7 +597,8 @@ $(document).ready(function(){
 
 <?php if ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id)) : ?>
             if($('#accept_bid').length == 0) {
-                $('#popup-bid-info form').append('<input id="accept_bid" type="submit" name="accept_bid" value="Accept">');
+                $('#popup-bid-info form').append('<input class="disableable" id="accept_bid" type="submit" name="accept_bid" value="Accept">');
+                runDisableable();
             }
 <?php endif; ?>
 
@@ -1312,7 +1314,7 @@ if ($action =="edit"):  ?>
                                 foreach($statusMapMechanic[$worklist['status']] as $status)
                                 {?>
                                     <form method="post" action="" style = "display:inline;">
-                                    <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight" />
+                                    <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight disableable" />
                                     <input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
                                     </form>
                                 <?php
@@ -1323,21 +1325,21 @@ if ($action =="edit"):  ?>
                                 foreach($statusMapRunner[$worklist['status']] as $status)
                                 {?>
                                     <form method="post" action="" style = "display:inline;">
-                                        <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight" />
+                                        <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight disableable" />
                                         <input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
                                     </form>
                                 <?php
                                 }
                                 if($worklist['creator_id']== $user_id && $is_runner && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'BIDDING')) { ?>
                                     <form method="post" action="" style = "display:inline;">
-                                        <input type="submit" id="status-switch" name="status-switch" value="Set DRAFT" class="bottonAtRight" />
+                                        <input type="submit" id="status-switch" name="status-switch" value="Set DRAFT" class="bottonAtRight disableable" />
                                         <input type="hidden" name="quick-status" value="DRAFT" />
                                     </form>
                                 <?php
                                 }
                             } else if($worklist['creator_id']== $user_id && $worklist['status'] == 'SUGGESTED') { ?>
                                     <form method="post" action="" style = "display:inline;">
-                                        <input type="submit" id="status-switch" name="status-switch" value="Set PASS" class="bottonAtRight" />
+                                        <input type="submit" id="status-switch" name="status-switch" value="Set PASS" class="bottonAtRight disableable" />
                                         <input type="hidden" name="quick-status" value="PASS" />
                                     </form>
                                 <?php
@@ -1485,7 +1487,7 @@ if ($action =="edit"):  ?>
                         <input type="hidden" name="comment_id" value="" />
                         <textarea name="comment" class="expand100-300" cols="20" rows="10" size="33"></textarea>
                         <br>
-                        <input type="submit" name="newcomment" value="Post Comment" />
+                        <input type="submit" name="newcomment" value="Post Comment" class="disableable" />
                     </form>
                 </div>
                 <?php endif; ?>

@@ -37,6 +37,19 @@
 
                 var tip_desc = new LiveValidation('tip_desc',{ onlyOnSubmit: true });
                     tip_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                $('#popup-form-addtip').submit(function() {
+                    var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);
+                    if (!massValidationFee) {
+                        return false;
+                    }
+                    $('#add_tip').click(function() {
+                        $('#add_tip').attr('disabled', 'disabled')
+                    });
+                    $('#popup-form-addtip').submit(function() {
+                        return false;
+                    });
+                    return true;
+                });
             </script>
             <p class="info-label">Pay To
                 <select name='mechanic_id' id='mechanic_id'>
@@ -49,7 +62,7 @@
 ?>
                 </select>
             </p>
-            <input type="submit" name="add_tip" value="Add Tip" style="position:relative; left:240px;" />
+            <input type="submit" id="add_tip" name="add_tip" value="Add Tip" style="position:relative; left:240px;" />
         </form>
     </div>
 <?php

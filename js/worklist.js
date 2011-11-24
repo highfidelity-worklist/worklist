@@ -836,3 +836,17 @@ function addInlineMessage(html) {
     $('#inlineMessage').append(html);
     $('#inlineMessage').show();
 }
+
+
+$(function() {
+    runDisableable();
+});
+
+function runDisableable() {
+    $(".disableable").click(function() {
+        $(this).click(function() {
+            $(this).attr('disabled', 'disabled');
+        });
+        return true;
+    });
+}
