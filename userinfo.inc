@@ -97,8 +97,10 @@
         </p>
 
         <div class="button-row">
+            <?php if ($reqUserId > 0): ?>
             <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
             <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
+            <?php endif; ?>
         </div>
         <p class="info-label small-text"><br />
             <span id="info-timezone">&nbsp;</span>
@@ -126,7 +128,9 @@
             <?php if ($user->getIs_runner()) { ?>
                 <li><a href="#tabs-3">Runner</a></li>
             <?php } ?>            
+            <?php if ($reqUserId > 0): ?>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
+            <?php endif; ?>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
         </ul>
         <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
@@ -159,12 +163,14 @@
                 <div class='reviewTitle' >
                     Reviews
                 </div>
+                <?php if ($reqUserId > 0): ?>
                 <div class='reviewAddLink'>
                     <a href='javascript:;'>Add your review</a>
                 </div>
                 <div class='reviewEditLink'>
                     <a href='javascript:;'>Edit your review</a>
                 </div>
+                <?php endif; ?>
                 <div class='reviewsList'>
 <?php
     $res="<div class='noReview'>No Review available for this user.</div>";
@@ -409,7 +415,6 @@
         <?php } ?>
 
     </div><!-- end of pay bonus div -->
-
     <div class="hidden" id="loading">
         <img src="images/loader.gif" alt = "" /><span>Please wait..</span>
     </div>

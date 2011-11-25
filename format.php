@@ -154,6 +154,8 @@ $userId = getSessionUserId();
             <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
             | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
             | <a href="../journal" title="Login to our Live Chat Journal"> Live Chat Journal</a>
+            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
+            | <a href="team.php">Team</a>
             | <a href="http://blog.worklist.net" target="_blank"/>Blog</a>
             | <a href="projects.php" target="_blank">Projects</a>
             | <a href="help.php" target="_blank">Help</a>

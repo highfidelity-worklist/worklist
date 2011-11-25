@@ -9,7 +9,6 @@
 ob_start();
 include("config.php");
 include("class.session_handler.php");
-include("check_session.php");
 include("check_new_user.php");
 include("functions.php");
 require_once('classes/UserStats.class.php');
@@ -51,7 +50,7 @@ include("head.html");
 
 <script type="text/javascript">
 var current_letter = '<?php echo $cur_letter; ?>';
-var logged_id = <?php echo $_SESSION['userid']; ?>;
+var logged_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
 var runner =  <?php echo !empty($_SESSION['is_runner']) ? 1 : 0; ?>;
 var current_page = <?php echo $cur_page; ?>;
 var current_sortkey = 'earnings30';

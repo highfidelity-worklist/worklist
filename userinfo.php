@@ -22,8 +22,6 @@
     if ($reqUserId > 0) {
         $reqUser->findUserById($reqUserId);
         $budget = $reqUser->getBudget();
-    } else {
-        die("You have to be logged in to access user info!");
     }
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
