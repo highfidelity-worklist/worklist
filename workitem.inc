@@ -1076,14 +1076,62 @@ $(document).ready(function(){
 </head>
 <body>
     <?php include("format.php"); ?>
-    <br/>
+    <div id="info-top">
+      <div id="info-top-left">
+        <span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
+      </div>
+
+      <div id="info-top-right">
+        <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
+        <span class="info-data" style="margin-right:14px;font-size:16px"><?php echo $worklist['status'];?></span>
+        <input type="hidden" id="status" name="status" value = "BIDDING" />
+        <?php
+        // quick status buttons for runners of items and mechanics working on them
+        if(!$is_runner && ($mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) && $worklist['status'] != 'DONE')
+        {
+            foreach($statusMapMechanic[$worklist['status']] as $status)
+            {?>
+                <form method="post" action="" style="display:inline">
+                <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" />
+                <input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
+                </form>
+            <?php
+            }
+        }
+        else if($is_runner && array_key_exists($worklist['status'], $statusMapRunner))
+        {
+            foreach($statusMapRunner[$worklist['status']] as $status)
+            {?>
+                <form method="post" action="" style="display:inline">
+                    <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" />
+                    <input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
+                </form>
+            <?php
+            }
+            if($worklist['creator_id']== $user_id && $is_runner && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'BIDDING')) { ?>
+                <form method="post" action="" style="display:inline">
+                    <input type="submit" id="status-switch" name="status-switch" value="Set DRAFT" />
+                    <input type="hidden" name="quick-status" value="DRAFT" />
+                </form>
+            <?php
+            }
+        } else if($worklist['creator_id']== $user_id && $worklist['status'] == 'SUGGESTED') { ?>
+            <form method="post" action="" style="display:inline">
+                <input type="submit" id="status-switch" name="status-switch" value="Set PASS" />
+                <input type="hidden" name="quick-status" value="PASS" />
+            </form>
+        <?php
+        }?>
+      </div>
+      <div style="clear:both; float:none">&nbsp;</div>
+    </div>
     <?php if ($erroneous) echo "<div style='color: red; text-align: center;'>{$the_errors}</div>"; ?>
-        <div><br/><a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
+        <div>
         <?php if(($allowEdit && $action!="edit")): ?>
-            &nbsp;|&nbsp;&nbsp;<a class="workitem-back" title="Switch to Edit Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit">Switch to Edit Mode</a>
+            <a class="workitem-back" title="Switch to Edit Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit">Switch to Edit Mode</a>
         <?php endif;?>
         <?php if(($action=="edit")): ?>
-            &nbsp;|&nbsp;&nbsp;<a class="workitem-back" title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view">Switch to View Mode</a>
+            <a class="workitem-back" title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view">Switch to View Mode</a>
         <?php endif;?>
 <?php if (isset($action_error) && !empty($action_error)) : ?>
         <div id="action-error" class="LV_invalid">Error performing requested action: <?php echo $action_error; ?></div>
@@ -1106,7 +1154,6 @@ $(document).ready(function(){
                     &nbsp;-&nbsp;<span id="followingText"></span>
                  <span id="following"></span>
                 </div>
-                <span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
             </div>
             <div style="clear:both; width:100%; float:none;"> </div>
             <div id="left-panel">
@@ -1301,62 +1348,17 @@ if ($action =="edit"):  ?>
 <?php else: ?>
 <!-- *** Action is View *** -->
                 <ul>
-                <!-- View: Status info -->
-                    <li>
-                        <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
-                        <span class="info-data" style="margin-left:12px;font-size:16px"><?php echo $worklist['status'];?></span>
-                        <input type="hidden" id="status" name="status" value = "BIDDING" />
-                        <?php                      
-                            // quick status buttons for runners of items and mechanics working on them
-                            if(!$is_runner && ($mechanic_id == $user_id) && array_key_exists($worklist['status'], $statusMapMechanic) &&
-                            $worklist['status'] != 'DONE')
-                            {
-                                foreach($statusMapMechanic[$worklist['status']] as $status)
-                                {?>
-                                    <form method="post" action="" style = "display:inline;">
-                                    <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight disableable" />
-                                    <input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
-                                    </form>
-                                <?php
-                                }
-                            }
-                            else if($is_runner && array_key_exists($worklist['status'], $statusMapRunner))
-                            {
-                                foreach($statusMapRunner[$worklist['status']] as $status)
-                                {?>
-                                    <form method="post" action="" style = "display:inline;">
-                                        <input type="submit" id="status-switch" name="status-switch" value="Set <?php echo $status; ?>" class="bottonAtRight disableable" />
-                                        <input type="hidden" name="quick-status" id="quick-status" value="<?php echo $status; ?>" />
-                                    </form>
-                                <?php
-                                }
-                                if($worklist['creator_id']== $user_id && $is_runner && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'BIDDING')) { ?>
-                                    <form method="post" action="" style = "display:inline;">
-                                        <input type="submit" id="status-switch" name="status-switch" value="Set DRAFT" class="bottonAtRight disableable" />
-                                        <input type="hidden" name="quick-status" value="DRAFT" />
-                                    </form>
-                                <?php
-                                }
-                            } else if($worklist['creator_id']== $user_id && $worklist['status'] == 'SUGGESTED') { ?>
-                                    <form method="post" action="" style = "display:inline;">
-                                        <input type="submit" id="status-switch" name="status-switch" value="Set PASS" class="bottonAtRight disableable" />
-                                        <input type="hidden" name="quick-status" value="PASS" />
-                                    </form>
-                                <?php
-                                }?>
-                    </li>
-                    <br />
 <?php if (! empty($status_error)) : ?>
                     <li><span class="LV_invalid status-error"><?php echo $status_error; ?></span></li>
 <?php endif; ?>
                 <!-- View: Key People info -->
                     <li>
-                            <div id="creatorBox"><span id="pingCreator" class="creatorName" title="<?php echo isset($_SESSION['userid']) ? "Ping Creator" : "Log in to Ping Creator"; ?>"><a href="#">Creator</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo $worklist['creator_nickname'];?></a></div>
+                            <div id="creatorBox"><span id="pingCreator" class="creatorName" title="<?php echo isset($_SESSION['userid']) ? "Ping Creator" : "Log in to Ping Creator"; ?>"> <a href="#">Creator</a></span> <a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);"><?php echo substr($worklist['creator_nickname'], 0, 9) . (strlen($worklist['creator_nickname']) > 9 ? '...' : '');?></a></div>
                             <div id="runnerBox">
                             <?php
                                 if( $runner_nickname != 'Not funded' ) {
                             ?>
-                                    <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"><a href="#">Runner</a></span><a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo $worklist['runner_nickname'];?></a>
+                                    <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"> <a href="#">Runner</a></span> <a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') ;?></a>
                             <?php
                                 }
                                 else {
@@ -1370,20 +1372,14 @@ if ($action =="edit"):  ?>
                                 $mech = '';
                                 if(count($fees)>0){foreach($fees as $fe){if($fe['desc']=='Accepted Bid'){$mech = $fe['nickname'];}}}
                                 if($mech==''){
-                                    echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span>Not Assigned</div>';
+                                    echo'<div id="mechanicBox"><span class="mechanicName">Mechanic</span> Not Assigned</div>';
                                 }
                                 else{
                                     $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
-                                    echo'<div id="mechanicBox"><span id="pingMechanic" class="mechanicName" title="' . $tooltip . '"><a href="#">Mechanic</a></span><a href="#" onClick="javascript:showUserInfo('. $worklist['mechanic_id'].');"><span id="ping-btn" title="' . $tooltip . '">'.$mech.'</span></a></div>';
+                                    echo'<div id="mechanicBox"><span id="pingMechanic" class="mechanicName" title="' . $tooltip . '"><a href="#">Mechanic</a></span> <a href="#" onClick="javascript:showUserInfo('. $worklist['mechanic_id'].');"><span id="ping-btn" title="' . $tooltip . '">'.substr($mech, 0, 9) . (strlen($mech) > 9 ? '...' : '').'</span></a></div>';
                                 }
                             ?>
 
-                    </li>
-                <!-- View: Notes textarea -->
-                    <li>
-                        <span class="info-label">Notes</span>
-                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
-                        <!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
                     </li>
                     <li>
                         <span class="project-label">Project</span>
@@ -1402,6 +1398,12 @@ if ($action =="edit"):  ?>
 <?php else: ?>
                         <span id="skills-list">None assigned</span>
 <?php endif; ?>
+                    </li>
+                    <!-- View: Notes textarea -->
+                    <li>
+                        <span class="info-label">Notes</span>
+                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
+                        <!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
                     </li>
                     <!-- View: Sandbox textarea -->
                     <?php if ($mechanic_id > 0):?>
@@ -1493,6 +1495,7 @@ if ($action =="edit"):  ?>
                 <?php endif; ?>
         <!-- End of div commentZone -->
             </div>
+            <a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
     <!-- End of div for_view -->
             </div>
 <!-- End of div left-panel -->

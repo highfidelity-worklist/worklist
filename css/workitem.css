@@ -173,11 +173,11 @@ span.info-whisper {
 }
 .runnerName, .mechanicName{
     font-weight:bold;
-    margin:0px 7px 0px 15px;
+    margin:0px 1px 0px 3px;
 }
 .creatorName{
     font-weight:bold;
-    margin:0px 7px 0px 0px;
+    margin:0px 1px 0px 0px;
 }
 
 .changeRunner {
@@ -679,7 +679,7 @@ span.info-whisper {
 }
 
 #skills-list {
-    display: block;
+    display: inline-block;
     font-size: 12px;
     margin: 5px 0;
 }
@@ -816,3 +816,16 @@ span.info-whisper {
     cursor: pointer;
 }
 
+#info-top-left, #info-top-right {
+    margin-top: 10px;
+}
+
+#info-top-left {
+    float:left;
+    max-width:300px;
+}
+
+#info-top-right {
+    float:right;
+    text-align:right;
+}
