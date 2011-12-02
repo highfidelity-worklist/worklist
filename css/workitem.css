@@ -69,6 +69,11 @@ span.info-whisper {
     font-size:14px;
     font-weight:bold;
     margin:0 0 10px 0;
+    float:left;
+}
+.info-comments-scroll-entry {
+    float:right;
+    text-align:right;
 }
 .info-ID{
     font-size:10px;

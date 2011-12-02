@@ -1452,6 +1452,10 @@ if ($action =="edit"):  ?>
 <?php endif;?>
             <div class="commentZone">
                 <div class="info-comments">Comments</div>
+                <?php if (!empty($user_id) && ($worklist['status'] != 'DONE')) : ?>
+                <a class="info-comments-scroll-entry" href="#commentform">Scroll to bottom</a>
+                <?php endif ?>
+                <div style="clear:both;height:0px;">&nbsp;</div>
                 <ul>
                 <?php
                     $comments = Comment::findCommentsForWorkitem($worklist['id']);
