@@ -578,8 +578,8 @@ if ($action == "place_bid") {
 }
 // Edit Bid
 if ($action =="edit_bid") {
-    if (! $user->isEligible ) {
-        error_log("Input forgery detected for user $userId: attempting to $action.");
+    if (! $user->isEligible() ) {
+        error_log("Input forgery detected for user $userId: attempting to $action (isEligible in workitem.php)");
     } else {
         //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
         //a new variable is used to send the unenscaped notes in email alert.

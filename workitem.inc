@@ -423,9 +423,11 @@ $(document).ready(function(){
                         dataType: 'json',
                         success: function(json)
                         {
-                            $('#journalChatThrobber').fadeOut();
-                            $.journalChat = true;
-                            $('#journalChat').hide(0).html(json.html).fadeIn();
+                            if (json.html) {
+                                $('#journalChatThrobber').fadeOut();
+                                $.journalChat = true;
+                                $('#journalChat').hide(0).html(json.html).fadeIn();
+                            }
                         }
                     });
                 }
@@ -675,56 +677,54 @@ $(document).ready(function(){
     function ConfirmEditBid(){
         var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
 
-        if (confirm("Do you want to Edit Bid?")) {
-            $('#popup-bid-info').dialog('close');
-            AjaxPopup('#popup-edit-bid-info',
-                'Edit Bid',
-                'getbiditem.php',
-                bid_id,
-                [
-                    ['input', 'bid_id', 'keyId', 'eval'],
-                    ['input', 'bid_amount', 'json.bid_amount', 'eval'],
-                    ['input', 'bid_expires_edit', 'json.bid_expires', 'eval'],
-                    ['input', 'done_in_edit', 'json.bid_done_in', 'eval'],
-                    ['textarea', 'notes', 'json.notes', 'eval']
-                ],
+        $('#popup-bid-info').dialog('close');
+        AjaxPopup('#popup-edit-bid-info',
+            'Edit Bid',
+            'getbiditem.php',
+            bid_id,
+            [
+                ['input', 'bid_id', 'keyId', 'eval'],
+                ['input', 'bid_amount', 'json.bid_amount', 'eval'],
+                ['input', 'bid_expires_edit', 'json.bid_expires', 'eval'],
+                ['input', 'done_in_edit', 'json.bid_done_in', 'eval'],
+                ['textarea', 'notes', 'json.notes', 'eval']
+            ],
 
-                function(json) {
-                    // figure out expires
-                    var expireSeconds = json.unix_expires - json.now;
-                    var expireHours = Math.round(expireSeconds / 3600);
-                    var expireText = '';
-                    if (expireHours > 24 || expireHours > 12) {
-                        expireText = Math.round(expireHours / 24) + ' days';
-                    } else if (expireHours > 6) {
-                        expireText = '8 hours';
-                    } else if (expireHours >= 4) {
-                        expireText = '4 hours';
-                    } else if (expireHours > 1) {
-                        expireText = expireHours + ' hours';
-                    } else {
-                        expireText = '1 hour';
-                    }
-
-                    if(expireHours <= 0) {
-                        $('#bid_expires_edit').val('1 hour');
-                    }
-
-                    var expireValue = getSliderValueFromText(expireText);
-                    var doneInValue = getSliderValueFromText(json.bid_done_in);
-
-                    $('.sliderStepValue', '#bidExpireEditSlider').remove();
-                    $('.sliderStep', '#bidExpireEditSlider').eq(expireValue).html('<div class="sliderStepValue">' + expireText + '</div>');
-                    $('.sliderStepValue', '#bidDoneEditSlider').remove();
-                    $('.sliderStep', '#bidDoneEditSlider').eq(doneInValue).html('<div class="sliderStepValue">' + json.bid_done_in + '</div>');
-
-                    $('#bidExpireEditSlider').slider('value', expireValue);
-                    $('#bidDoneEditSlider').slider('value', doneInValue);
-
+            function(json) {
+                // figure out expires
+                var expireSeconds = json.unix_expires - json.now;
+                var expireHours = Math.round(expireSeconds / 3600);
+                var expireText = '';
+                if (expireHours > 24 || expireHours > 12) {
+                    expireText = Math.round(expireHours / 24) + ' days';
+                } else if (expireHours > 6) {
+                    expireText = '8 hours';
+                } else if (expireHours >= 4) {
+                    expireText = '4 hours';
+                } else if (expireHours > 1) {
+                    expireText = expireHours + ' hours';
+                } else {
+                    expireText = '1 hour';
                 }
-            );
-            $('#popup-edit-bid-info').dialog('open');
-        }
+
+                if(expireHours <= 0) {
+                    $('#bid_expires_edit').val('1 hour');
+                }
+
+                var expireValue = getSliderValueFromText(expireText);
+                var doneInValue = getSliderValueFromText(json.bid_done_in);
+
+                $('.sliderStepValue', '#bidExpireEditSlider').remove();
+                $('.sliderStep', '#bidExpireEditSlider').eq(expireValue).html('<div class="sliderStepValue">' + expireText + '</div>');
+                $('.sliderStepValue', '#bidDoneEditSlider').remove();
+                $('.sliderStep', '#bidDoneEditSlider').eq(doneInValue).html('<div class="sliderStepValue">' + json.bid_done_in + '</div>');
+
+                $('#bidExpireEditSlider').slider('value', expireValue);
+                $('#bidDoneEditSlider').slider('value', doneInValue);
+
+            }
+        );
+        $('#popup-edit-bid-info').dialog('open');
     }
   function showConfirmForm(i) {
       $('#popup-confirmation-type').val(i);
