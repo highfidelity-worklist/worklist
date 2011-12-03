@@ -79,7 +79,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             $status_cond = "status='$val' AND";
         }
         if (($is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
-            $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `bidder_id`='$ufilter' OR `runner_id` = '$ufilter' OR creator_id= '$ufilter'))";
+            $where .= $severalStatus . "( $status_cond ( mechanic_id = '$ufilter' OR `bidder_id` = '$ufilter' OR `runner_id` = '$ufilter' OR creator_id = '$ufilter'))";
         } else if ((!$is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
             $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'))";
         } else if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter != $userId) {
@@ -192,7 +192,6 @@ $fillBids = "INSERT INTO `tmp_bids`
              SELECT `".BIDS."`.`worklist_id`,`".BIDS."`.`bidder_id`
              FROM `".BIDS."`, `tmp_latest`
              WHERE `".BIDS."`.`worklist_id` = `tmp_latest`.`worklist_id`
-              $showLatest
               AND (`".BIDS."`.`withdrawn` = 0)";
 
 mysql_query($bids);

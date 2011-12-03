@@ -71,5 +71,5 @@
         <input type="submit" name="add_fee" value="Add Fee" style="position:relative; left:240px;" />
             </form>
     </div><!-- end of popup-addfee -->
-    <script type="text/javascript">
+    
     
