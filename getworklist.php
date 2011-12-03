@@ -172,7 +172,7 @@ mysql_query($fillLatest);
 if($is_runner){
     $showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
     if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-        $showLatest = 'AND (`'.BIDS.'`.`bid_created` = `tmp_latest`.`latest` OR (`'.BIDS.'`.`bidder_id` = '.$ufilter.' AND `'.BIDS.'`.`expired` = 0)';
+        $showLatest = 'AND (`' . BIDS . '`.`bid_created` = `tmp_latest` . `latest` OR (`' . BIDS . '`.`bidder_id` = ' . $ufilter . ')';
     }
 }
 else{
