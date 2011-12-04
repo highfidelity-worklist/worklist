@@ -1289,7 +1289,7 @@ if ($action =="edit"):  ?>
                                     </select>
                             <?php elseif( !empty($worklist['project_id'])) :?>
                                 <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>">
-                                    <?php echo htmlspecialchars($worklist['project_name']);?>
+                                    <?php echo filter_var($worklist['project_name'], FILTER_SANITIZE_SPECIAL_CHARS);?>
                                 </a>
                             <?php else :?>
                                 <span>Not assigned</span>
@@ -1326,10 +1326,10 @@ if ($action =="edit"):  ?>
                     <li>
                         <span class="project-label" >Functional &amp; Review URL</span>
                         <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
-                        <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo htmlspecialchars($worklist['sandbox']);?>" />
+                        <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS);?>" />
                          <?php elseif ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
-                                <?php echo htmlspecialchars($worklist['sandbox']);?>
+                                <?php echo filter_var($worklist['sandbox'],  FILTER_SANITIZE_SPECIAL_CHARS);?>
                             </a>
                         <?php else :?>
                             <span>Not assigned</span>
@@ -1385,7 +1385,7 @@ if ($action =="edit"):  ?>
                         <span class="project-label">Project</span>
                         <?php if ( !empty($worklist['project_id']) ):?>
                             <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>" target="_blank">
-                                <?php echo htmlspecialchars($worklist['project_name']);?>
+                                <?php echo filter_var($worklist['project_name'],FILTER_SANITIZE_SPECIAL_CHARS);?>
                             </a>
                         <?php else :?>
                             <span>Not assigned</span>
@@ -1402,7 +1402,7 @@ if ($action =="edit"):  ?>
                     <!-- View: Notes textarea -->
                     <li>
                         <span class="info-label">Notes</span>
-                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
+                        <p class="notestext"><?php echo nl2br(linkify($worklist['notes'])); ?></p>
                         <!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
                     </li>
                     <!-- View: Sandbox textarea -->
@@ -1412,10 +1412,10 @@ if ($action =="edit"):  ?>
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
                                   <?php 
-                                  if (strlen(htmlspecialchars($worklist['sandbox'])) > 64) {
-                                        echo substr(htmlspecialchars($worklist['sandbox']), 0, 64) . "...";
+                                  if (strlen(filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS)) > 64) {
+                                        echo substr(filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 64) . "...";
                                   } else {
-                                      echo htmlspecialchars($worklist['sandbox']);
+                                      echo filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS);
                                   }
                                   
                                   ?> 
@@ -1472,7 +1472,7 @@ if ($action =="edit"):  ?>
                                 </div>
                                 <div class="comment">
                                     <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')" />
-                                    <?php echo nl2br(linkify(htmlspecialchars($comment['comment']->getComment()))); ?>
+                                    <?php echo nl2br(linkify($comment['comment']->getComment())); ?>
                                 </div>
                                 <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
                                 <div class="reply-lnk">

@@ -127,7 +127,7 @@ if (isset($_POST['save_account'])) {
 
         } else {
             if(!$_SESSION['new_user']) {
-                $sql = "UPDATE " . USERS . " SET nickname='" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
+                $sql = "UPDATE " . USERS . " SET nickname='" . mysql_real_escape_string(strip_tags($nickname)) . "' WHERE id ='" . $_SESSION['userid'] . "'";
                 if (mysql_query($sql)) {
                     $_SESSION['nickname'] = $nickname;
                     $messages[] = "Your nickname is now '$nickname'.";
@@ -163,7 +163,7 @@ if (isset($_POST['save_account'])) {
     if ($_POST['paytype'] == 'paypal') {
         $paypal = 1;
         $payway = "paypal";
-        $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
+        $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string(strip_tags($_POST['paypal_email'])) : "";
     } else if ($_POST['paytype'] == 'other') {
         $payway = '';
     }
@@ -212,8 +212,8 @@ if (isset($_POST['save_account'])) {
         $user->save();
     }
 } else if (isset($_POST['save_w9Name'])) {
-    $first_name = isset($_POST['first_name']) ? mysql_real_escape_string($_POST['first_name']) : "";
-    $last_name = isset($_POST['last_name']) ? mysql_real_escape_string($_POST['last_name']) : "";
+    $first_name = isset($_POST['first_name']) ? mysql_real_escape_string(strip_tags($_POST['first_name'])) : "";
+    $last_name = isset($_POST['last_name']) ? mysql_real_escape_string(strip_tags($_POST['last_name'])) : "";
     $saveArgs = array('first_name'=>1, 'last_name'=>1);
 }
 if (!empty($saveArgs)) {
@@ -221,7 +221,7 @@ if (!empty($saveArgs)) {
     $sql = "UPDATE `".USERS."` SET ";
     foreach ($saveArgs as $arg=>$esc) {
 
-        if ($esc) $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+        if ($esc) $$arg = mysql_real_escape_string(filter_var($$arg, FILTER_SANITIZE_SPECIAL_CHARS));
 
         if (is_int($$arg) || ($arg == "w9_accepted" && $$arg == 'NOW()')) {
             $sql .= "`$arg`=".$$arg.",";

@@ -56,6 +56,7 @@ if ($userId > 0 ) {
         $workitem->setCreatorId($creator_id);
         $journal_message .= $nick . " added ";
     }
+    $summary = filter_var($summary, FILTER_SANITIZE_SPECIAL_CHARS);
     $workitem->setSummary($summary);
 
     //If this item is a bug add original item id 
@@ -68,7 +69,8 @@ if ($userId > 0 ) {
     }
 
     $skillsArr = explode(', ', $skills);
-
+    $status = filter_var($status, FILTER_SANITIZE_SPECIAL_CHARS);
+    $notes = filter_var($notes, FILTER_SANITIZE_SPECIAL_CHARS);
     $workitem->setRunnerId($runner_id);
     $workitem->setProjectId($project_id);
     $workitem->setStatus($status);

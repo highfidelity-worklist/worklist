@@ -312,7 +312,7 @@ if ($action == 'new-comment') {
                 array(
                     'who' => $_SESSION['nickname'],
                     // removed nl2br as it's cleaner to be able to choose if this is used on output
-                    'comment' => $_POST['comment']
+                    'comment' => filter_var($_POST['comment'], FILTER_SANITIZE_SPECIAL_CHARS)
                 ));
         }
     }
@@ -1089,7 +1089,7 @@ function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id) {
         $correspondent = array($cuser->getUsername());
     }
     
-    $comment->setComment($comment_text);
+    $comment->setComment(filter_var($comment_text, FILTER_SANITIZE_SPECIAL_CHARS));
 
     try {
         $comment->save();
