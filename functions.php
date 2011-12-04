@@ -387,7 +387,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     }
 
     $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`) ".
-        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string(filter_var($fee_desc, FILTER_SANITIZE_SPECIAL_CHARS))."', NOW(), '0', '".mysql_real_escape_string($is_expense)."' )";
+        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string(filter_var($fee_desc, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW))."', NOW(), '0', '".mysql_real_escape_string($is_expense)."' )";
     $result = mysql_unbuffered_query($query);
 
     // Journal notification
@@ -454,7 +454,7 @@ function AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id) {
             // add the tip as a fee on the job
             $tip_desc = 'Tip: ' . $tip_desc;
             $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) ".
-                     "VALUES (NULL, '" . (int) $itemid . "', '" . (float) $tip_amount . "', '" . (int) $mechanic_id . "', '" . mysql_real_escape_string(filter_var($tip_desc, FILTER_SANITIZE_SPECIAL_CHARS))."', NOW(), '0')";
+                     "VALUES (NULL, '" . (int) $itemid . "', '" . (float) $tip_amount . "', '" . (int) $mechanic_id . "', '" . mysql_real_escape_string(filter_var($tip_desc, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW))."', NOW(), '0')";
 
             $result = mysql_unbuffered_query($query);
             return $_SESSION['nickname'] . " tipped $nickname on job #$itemid: $summary. ";
@@ -467,7 +467,7 @@ function payBonusToUser($user_id, $amount, $notes) {
 
     $query = "INSERT INTO `".FEES."` (`id`,`worklist_id`,`payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".
              "VALUES ".
-             "(NULL,0,'" . (int) $_SESSION['userid'] . "', '" . (int) $user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string(filter_var($notes, FILTER_SANITIZE_SPECIAL_CHARS)) . "', NOW(), 1, 0,0)";
+             "(NULL,0,'" . (int) $_SESSION['userid'] . "', '" . (int) $user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string(filter_var($notes, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)) . "', NOW(), 1, 0,0)";
     $result = mysql_unbuffered_query($query);
 
     if (mysql_insert_id()) {

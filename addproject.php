@@ -38,7 +38,7 @@ if ($userId == 2 || $userId == 1020 || $userId == 1918 || $userId == 2134 || $us
     }
 
     $project->setName(strip_tags($name));
-    $project->setDescription(filter_var($description, FILTER_SANITIZE_SPECIAL_CHARS));
+    $project->setDescription(filter_var($description, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW));
     $project->setRepository(strip_tags($repository));
     $project->setContactInfo($user->getUsername());
     $project->setOwnerId($userId);

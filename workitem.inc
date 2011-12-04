@@ -1289,7 +1289,7 @@ if ($action =="edit"):  ?>
                                     </select>
                             <?php elseif( !empty($worklist['project_id'])) :?>
                                 <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>">
-                                    <?php echo filter_var($worklist['project_name'], FILTER_SANITIZE_SPECIAL_CHARS);?>
+                                    <?php echo filter_var($worklist['project_name'], FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);?>
                                 </a>
                             <?php else :?>
                                 <span>Not assigned</span>
@@ -1326,10 +1326,10 @@ if ($action =="edit"):  ?>
                     <li>
                         <span class="project-label" >Functional &amp; Review URL</span>
                         <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
-                        <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS);?>" />
+                        <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);?>" />
                          <?php elseif ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
-                                <?php echo filter_var($worklist['sandbox'],  FILTER_SANITIZE_SPECIAL_CHARS);?>
+                                <?php echo filter_var($worklist['sandbox'],  FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);?>
                             </a>
                         <?php else :?>
                             <span>Not assigned</span>
@@ -1385,7 +1385,7 @@ if ($action =="edit"):  ?>
                         <span class="project-label">Project</span>
                         <?php if ( !empty($worklist['project_id']) ):?>
                             <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>" target="_blank">
-                                <?php echo filter_var($worklist['project_name'],FILTER_SANITIZE_SPECIAL_CHARS);?>
+                                <?php echo filter_var($worklist['project_name'],FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);?>
                             </a>
                         <?php else :?>
                             <span>Not assigned</span>
@@ -1412,10 +1412,10 @@ if ($action =="edit"):  ?>
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
                                   <?php 
-                                  if (strlen(filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS)) > 64) {
-                                        echo substr(filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 64) . "...";
+                                  if (strlen(filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)) > 64) {
+                                        echo substr(filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW), 0, 64) . "...";
                                   } else {
-                                      echo filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS);
+                                      echo filter_var($worklist['sandbox'], FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
                                   }
                                   
                                   ?> 

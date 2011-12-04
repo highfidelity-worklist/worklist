@@ -221,7 +221,7 @@ if (!empty($saveArgs)) {
     $sql = "UPDATE `".USERS."` SET ";
     foreach ($saveArgs as $arg=>$esc) {
 
-        if ($esc) $$arg = mysql_real_escape_string(filter_var($$arg, FILTER_SANITIZE_SPECIAL_CHARS));
+        if ($esc) $$arg = mysql_real_escape_string(filter_var($$arg, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW));
 
         if (is_int($$arg) || ($arg == "w9_accepted" && $$arg == 'NOW()')) {
             $sql .= "`$arg`=".$$arg.",";
