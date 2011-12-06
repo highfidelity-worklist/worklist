@@ -598,7 +598,7 @@ $(document).ready(function(){
             $('#popup-bid-info #info-notes').text(bidData.notes);
 
 <?php if ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id)) : ?>
-            if($('#accept_bid').length == 0) {
+            if($('#accept_bid').length == 0 && !bidData.bid_expires.match(/ago/)) {
                 $('#popup-bid-info form').append('<input class="disableable" id="accept_bid" type="submit" name="accept_bid" value="Accept">');
                 runDisableable();
             }
@@ -1530,7 +1530,7 @@ if ($action =="edit"):  ?>
 
                                 $row = 1;
                                 foreach($bids as $bid) {
-                                    if ($user->getId() == $bid['bidder_id'] && $bid['expires'] <= 0) {
+                                    if (($is_runner || $user->getId() == $bid['bidder_id']) && $bid['expires'] <= 0) {
                                         $biddings['0'] = $bid;
                                     } else if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
                                         $biddings = array();
@@ -1539,7 +1539,7 @@ if ($action =="edit"):  ?>
                                     }
 
                                 foreach($biddings as $key=>$bid) { 
-                                    if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
+                                    if ($bid['expires'] < 0) {
                                         $expired_class = ' expired_warn';
                                     } else {
                                         $expired_class = '';
