@@ -37,9 +37,9 @@ if ($userId == 2 || $userId == 1020 || $userId == 1918 || $userId == 2134 || $us
         die(json_encode(array('error' => "Project repository already exists!")));
     }
 
-    $project->setName(strip_tags($name));
-    $project->setDescription(filter_var($description, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW));
-    $project->setRepository(strip_tags($repository));
+    $project->setName($name);
+    $project->setDescription($description);
+    $project->setRepository($repository);
     $project->setContactInfo($user->getUsername());
     $project->setOwnerId($userId);
     $project->setActive(true);

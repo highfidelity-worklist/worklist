@@ -312,7 +312,7 @@ if ($action == 'new-comment') {
                 array(
                     'who' => $_SESSION['nickname'],
                     // removed nl2br as it's cleaner to be able to choose if this is used on output
-                    'comment' => filter_var($_POST['comment'], FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)
+                    'comment' => $_POST['comment']
                 ));
         }
     }

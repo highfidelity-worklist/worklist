@@ -386,9 +386,8 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
         $summary = $row['summary'];
     }
 
-    $query = "INSERT INTO `" . FEES . "` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`) " . 
-        "VALUES (NULL, '" . (int) $itemid . "', '" . (float) $fee_amount . "', '" . (int) $fee_category . "', '" . (int) $mechanic_id . "', '" . mysql_real_escape_string(filter_var($fee_desc, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)) . "', NOW(), '0', " . (int) $is_expense . " )";
-
+    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `category`, `user_id`, `desc`, `date`, `paid`, `expense`) ".
+        "VALUES (NULL, '".(int)$itemid."', '".(float)$fee_amount."', '".(int)$fee_category."', '".(int)$mechanic_id."', '".mysql_real_escape_string($fee_desc)."', NOW(), '0', '".mysql_real_escape_string($is_expense)."' )";
     $result = mysql_unbuffered_query($query);
 
     // Journal notification
@@ -455,7 +454,7 @@ function AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id) {
             // add the tip as a fee on the job
             $tip_desc = 'Tip: ' . $tip_desc;
             $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `date`, `paid`) ".
-                     "VALUES (NULL, '" . (int) $itemid . "', '" . (float) $tip_amount . "', '" . (int) $mechanic_id . "', '" . mysql_real_escape_string(filter_var($tip_desc, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW))."', NOW(), '0')";
+                     "VALUES (NULL, '".(int)$itemid."', '".(float)$tip_amount."', '".(int)$mechanic_id."', '".mysql_real_escape_string($tip_desc)."', NOW(), '0')";
 
             $result = mysql_unbuffered_query($query);
             return $_SESSION['nickname'] . " tipped $nickname on job #$itemid: $summary. ";
@@ -468,7 +467,7 @@ function payBonusToUser($user_id, $amount, $notes) {
 
     $query = "INSERT INTO `".FEES."` (`id`,`worklist_id`,`payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".
              "VALUES ".
-             "(NULL,0,'" . (int) $_SESSION['userid'] . "', '" . (int) $user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string(filter_var($notes, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)) . "', NOW(), 1, 0,0)";
+             "(NULL,0,'" . (int)$_SESSION['userid'] . "', '" . (int)$user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string($notes) . "', NOW(), 1, 0,0)";
     $result = mysql_unbuffered_query($query);
 
     if (mysql_insert_id()) {
@@ -579,7 +578,7 @@ function sendJournalNotification($message) {
     $data = array(
         'user'    => JOURNAL_API_USER,
         'pwd'     => sha1(JOURNAL_API_PWD),
-        'message' => $message
+        'message' => stripslashes(strip_tags($message))
     );
 
     return postRequest(JOURNAL_API_URL, $data);
@@ -873,8 +872,6 @@ function checkLogin() {
      */
     function linkify($url, $author = null)
     {
-        // the filter_var replaces e.g. < with &#60; so when applying the linkify functions it would assume the #60 part as a task # and create a link so i had to replace all the &# with &XXX   - Marco -- 04-12-11
-        $url = preg_replace('/&#/','&XXX',$url);
         $original = $url;
 
         $class = '';
@@ -947,9 +944,7 @@ function checkLogin() {
         // find anything that looks like a link and add target=_blank so it will open in a new window
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"", $url);
 
-
-        // reset changes done a start of function
-        return preg_replace('/&XXX/','&#',$url);
+        return $url;
     }
 
     /**

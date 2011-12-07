@@ -238,7 +238,6 @@ class Comment
 	 */
 	public function save()
 	{
-		$this->comment = filter_var($this->comment, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
 		if (!$this->validate()) {
 			throw new Exception('Comment is not valid!');
 		}

@@ -306,7 +306,7 @@ WHERE id = ' . (int)$id;
 
     public function setNotes($notes)
     {
-        $this->notes = htmlspecialchars($notes);
+        $this->notes = $notes;
         return $this;
     }
 

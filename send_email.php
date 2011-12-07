@@ -11,9 +11,6 @@ require_once('smslist.php');
 /*  send_email
  *
  *  send email using local mail()
- * 
- * $subject  - email subject -- assumes variable has been previously sanitized with
- *                               filter_var(FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)
  */
 function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     //Validate arguments
@@ -24,9 +21,6 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
         error_log("attempted to send an empty or misconfigured message");
         return false;
     }
-
-    // Fixing messages since they use sanitized fields (filter_var(FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW) has beeen applied to)
-    $subject = html_entity_decode($subject);
 
     $hash = md5(date('r', time()));
 
@@ -121,23 +115,11 @@ function objectToArray($object) {
 }
 
 
-/*  notify_sms_by_object
- *
- *  notify user by sms
- * 
- * $smssubject  - sms subject -- assumes variable has been previously sanitized with
- *                               filter_var(FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)
- * 
- * $smsbody  - sms body       -- assumes variable has been previously sanitized with
- *                               filter_var(FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW)
- */
-
 function notify_sms_by_object($user_obj, $smssubject, $smsbody)
 {
     global $smslist;
-    // Fixing messages since they use sanitized fields (filter_var(FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW) has beeen applied to)
-    $smssubject = strip_tags(html_entity_decode($smssubject));
-    $smsbody = strip_tags(html_entity_decode($smsbody));
+    $smssubject = strip_tags($smssubject);
+    $smsbody    = strip_tags($smsbody);
 
     if (is_array($user_obj)) {
         //error_log("smsbyobject already an array");

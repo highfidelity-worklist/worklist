@@ -59,7 +59,7 @@ if (isset($_GET['openid_mode'])) {
 		}
 	} else {
 	    // the user couldn't be verified
-	    $id = '("' . filter_var($id, FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW) . '")';
+	    $id = '("' . htmlspecialchars($id) . '")';
 		$msg = 'Your ID ' . $id . ' is invalid.<br />';
 		$msg .= $consumer->getError();
 	}
