@@ -324,8 +324,10 @@ include("head.html");
         }
         row += '</span></td>';
         row += '<td class="projectStats"><a href="./worklist.php?status=bidding&project=' + json.name + '" class="iToolTip jobsBidding actionBidding">'
-                + json.bCount + ' jobs </a>bidding, <a href="./worklist.php?status=underway&project=' + json.name + '" class="iToolTip jobsBidding actionUnderway" >' 
-                + json.uCount + ' jobs </a>underway</td>';         
+                + json.bCount + ' jobs </a>bidding <br/><a href="./worklist.php?status=underway&project=' + json.name + '" class="iToolTip jobsBidding actionUnderway" >' 
+                + json.uCount + ' jobs </a>underway<br/><a href="./worklist.php?status=completed&project=' + json.name + '" class="iToolTip jobsBidding actionCompleted" >' 
+                + json.cCount + ' jobs </a>completed<br/><span>$' 
+                + json.feesCount + '</span> Total</td>';
         row += '</tr>';
         $('#projectListing tbody').append(row);
     }

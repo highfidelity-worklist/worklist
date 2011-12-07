@@ -49,7 +49,7 @@
     text-align: right;
     width: 50%;
 }
-.projectStats a {
+.projectStats a, .projectStats span{
     color: #6F6F6F;
     text-decoration: none;
 }

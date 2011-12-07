@@ -362,10 +362,35 @@ class Project {
                 $underwayQuery = "SELECT status FROM " . WORKLIST . " WHERE project_id = " . $project['project_id'] . 
                                  " AND status IN ('WORKING', 'REVIEW', 'FUNCTIONAL')";
                 $underwayQueryResult = mysql_query($underwayQuery);
+                $completedQuery = "SELECT status FROM " . WORKLIST . " WHERE project_id = " . $project['project_id'] . 
+                                 " AND status IN ('COMPLETED','DONE')";
+                $completedQueryResult = mysql_query($completedQuery);
+                
+                $feesCount = 0;
+                
                 $bCount = mysql_num_rows($biddingQueryResult);
                 $uCount = mysql_num_rows($underwayQueryResult);
+                $cCount = mysql_num_rows($completedQueryResult);
+                
+                if($cCount) {
+                    $feesQuery = "SELECT SUM(F.amount) as fees_sum FROM " . FEES . " F,
+                            " . WORKLIST . " W
+                            WHERE F.worklist_id = W.id
+                            AND W.project_id = " . $project['project_id'] . "
+                            AND W.status IN ('COMPLETED', 'DONE')";
+                    $feesQueryResult = mysql_query($feesQuery);
+                    if (mysql_num_rows($feesQueryResult)) {
+                        $feesCountArray = mysql_fetch_array($feesQueryResult);
+                        if($feesCountArray['fees_sum']) {
+                            $feesCount = number_format($feesCountArray['fees_sum'],0,'',',');
+                        }
+                    }
+                }
+                
                 $project['bCount'] = $bCount;
-                $project['uCount'] = $uCount;            
+                $project['uCount'] = $uCount;
+                $project['cCount'] = $cCount;
+                $project['feesCount'] = $feesCount;
                 $projects[$project['project_id']] = $project;
             }
             return $projects;

@@ -80,6 +80,14 @@
                                     $selected = ' selected="selected"';
                                 }
                                 break;
+                            case 'DONE':
+                                if($_GET['status'] == 'done') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                if($_GET['status'] == 'completed') { 
+                                    $selected = ' selected="selected"';
+                                }
+                                break;
                         }
                     }
                     $box .= '<option value="' . $status . '"' . $selected . '>' . $status . '</option>';
