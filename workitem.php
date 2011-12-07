@@ -17,37 +17,41 @@ require_once 'classes/Repository.class.php';
 require_once 'models/DataObject.php';
 require_once 'models/Users_Favorite.php';
 
-    $statusMapRunner = array("DRAFT" => array("SUGGESTED", "BIDDING"),
-                 "SUGGESTED" => array("BIDDING", "PASS"),
-                 "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
-                 "BIDDING" => array("PASS"),
-                 "WORKING" => array("REVIEW", "FUNCTIONAL"),
-                 "FUNCTIONAL" => array("REVIEW", "WORKING"),
-                 "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
-                 "COMPLETED" => array("WORKING", "DONE"),
-                 "DONE" => array("REVIEW"),
-                 "PASS" => array("REVIEW"));
-    
-    $statusMapCreator = array("DRAFT" => array("DRAFT","SUGGESTED", "BIDDING"),
-                 "SUGGESTED" => array("BIDDING", "PASS", "DRAFT"),
-                 "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
-                 "BIDDING" => array("PASS", "DRAFT"),
-                 "WORKING" => array("REVIEW", "FUNCTIONAL"),
-                 "FUNCTIONAL" => array("REVIEW", "WORKING"),
-                 "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
-                 "COMPLETED" => array("WORKING", "DONE"),
-                 "DONE" => array("REVIEW"),
-                 "PASS" => array("REVIEW"));
+$statusMapRunner = array("DRAFT" => array("SUGGESTED", "BIDDING"),
+             "SUGGESTED" => array("BIDDING", "PASS"),
+             "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
+             "BIDDING" => array("PASS"),
+             "WORKING" => array("REVIEW", "FUNCTIONAL"),
+             "FUNCTIONAL" => array("REVIEW", "WORKING"),
+             "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
+             "COMPLETED" => array("WORKING", "DONE"),
+             "DONE" => array("REVIEW"),
+             "PASS" => array("REVIEW"));
 
-    $statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
-                 "SUGGESTEDwithBID" => array("PASS"),
-                 "WORKING" => array("FUNCTIONAL"),
-                 "FUNCTIONAL" => array("REVIEW", "WORKING"),
-                 "REVIEW" => array("COMPLETED", "WORKING"),
-                 "COMPLETED" => array("WORKING"),
-                 "DONE" => array("WORKING", "FUNCTIONAL"),
-                 "PASS" => array("FUNCTIONAL"));
+$statusMapCreator = array("DRAFT" => array("DRAFT","SUGGESTED", "BIDDING"),
+             "SUGGESTED" => array("BIDDING", "PASS", "DRAFT"),
+             "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
+             "BIDDING" => array("PASS", "DRAFT"),
+             "WORKING" => array("REVIEW", "FUNCTIONAL"),
+             "FUNCTIONAL" => array("REVIEW", "WORKING"),
+             "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
+             "COMPLETED" => array("WORKING", "DONE"),
+             "DONE" => array("REVIEW"),
+             "PASS" => array("REVIEW"));
 
+$statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
+             "SUGGESTEDwithBID" => array("PASS"),
+             "WORKING" => array("FUNCTIONAL"),
+             "FUNCTIONAL" => array("REVIEW", "WORKING"),
+             "REVIEW" => array("COMPLETED", "WORKING"),
+             "COMPLETED" => array("WORKING"),
+             "DONE" => array("WORKING", "FUNCTIONAL"),
+             "PASS" => array("FUNCTIONAL"));
+
+$displayDialogAfterDone = isset($_SESSION['displayDialogAfterDone']) ? $_SESSION['displayDialogAfterDone'] : false;
+if (isset($_SESSION['displayDialogAfterDone'])) {
+    $_SESSION['displayDialogAfterDone'] = false;
+}
 $get_variable = 'job_id';
 if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL . "workitem.php?$get_variable="); }
 if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER_URL . "worklist.php?$get_variable="); }
@@ -208,6 +212,9 @@ if ($action =='save_workitem') {
                 }
                 $status_change = '-' . ucfirst(strtolower($status));
                 $new_update_message .= "Status set to $status. ";
+                if ($status == 'DONE') {
+                    $displayDialogAfterDone = true;
+                }
             }
         }
     }
@@ -460,6 +467,9 @@ if ($action =='status-switch') {
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
+            if ($status == 'DONE') {
+                $displayDialogAfterDone = true;
+            }
             if ($status != 'DRAFT') {
                 $new_update_message = "Status set to $status. ";
                 $notifyEmpty = false;
@@ -860,6 +870,9 @@ if ($action == false) {
 
 if ($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id;
+    if ($displayDialogAfterDone) {
+        $_SESSION['displayDialogAfterDone'] = true;
+    }
 }
 if ($redirectToWorklistView) {
     $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;

@@ -54,3 +54,11 @@
 .noReview {
     padding:6px;
 }
+
+.reviewTrustArea {
+    margin-bottom: 6px;
+}
+
+.reviewTrustArea .profileInfoFavorite {
+    position: inherit;
+}

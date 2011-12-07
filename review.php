@@ -10,6 +10,7 @@ require_once 'functions.php';
 require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 include_once("send_email.php");
+require_once 'models/Users_Favorite.php';
 
 $userReview = new UserReview();
 $userReview->validateRequest(array('action'));
@@ -26,7 +27,7 @@ class UserReview {
      * Get the review
      */
     public function getView() {
-        $ret = $this->validateRequest(array('reviewee_id'));
+        $ret = $this->validateRequest(array('reviewee_id', 'withTrust'));
         $reviewer_id = getSessionUserId();
         $reqUser = new User();
         if ($reviewer_id > 0) {
@@ -36,12 +37,50 @@ class UserReview {
         }
 
         $reviewee_id = (int) $_REQUEST['reviewee_id'];
+        $revieweeUser = new User();
+        if ($reviewee_id > 0) {
+            $revieweeUser->findUserById($reviewee_id);
+        } else {
+            echo "Invalid reviewee id!";
+        }
+        $withTrust = (int) $_REQUEST['withTrust'];
+        $withTrustHTML = "";
+        if ($withTrust == 1) {
+                $users_favorite = new Users_Favorite();
+                $favorite_enabled = 1;
+                $favorite = $users_favorite->getMyFavoriteForUser($reviewer_id, $reviewee_id);
+                if (isset($favorite['favorite'])) {
+                    $favorite_enabled = $favorite['favorite'];
+                }
+                $favorite_count = $users_favorite->getUserFavoriteCount($reviewee_id);
+                if ($reqUser->getId() != $revieweeUser->getId()) {
+                    if ( !$reqUser->isRunner() && !$_SESSION["admin"] && !$reqUser->isActive() ) {
+                        $favoriteClass = "favorite_curr_user";
+                        $title = "You must have been paid for a job in the last 90 days to Trust a person.";
+                    } else {
+                        $favoriteClass = "favorite_user";
+                        $favoriteClass .= ($favorite_enabled == 1) ? " myfavorite" : " notmyfavorite" ;
+                        $title = ($favorite_enabled == 1) ?
+                            "Remove " . ucwords($revieweeUser->getNickname()) . " as someone you trust. (don't worry it's anonymous)" :
+                            "Add " . ucwords($revieweeUser->getNickname()) . " as someone you trust." ;
+                    }
+                } else {
+                    $favoriteClass = "favorite_curr_user";
+                    $title = "";
+                }
+            $withTrustHTML = '<div class="reviewTrustArea"><div class="profileInfoFavorite" id="profileInfoFavoriteInReview">
+                <div class="' . $favoriteClass . '" title="' . $title . '">&nbsp;</div>
+                <span class="profileFavoriteText" data-favorite_count="' . $favorite_count . '"></span>
+            </div></div>';
+            $withTrustHTML .= "Your review of <span class='reviewee_nickname'></span> (anonymous)<br/>
+                ";
+        }
         $review = new Review();
         if ($review->loadById($reviewer_id,$reviewee_id) ){
-            echo "<textarea class='userReview'>" . $review->review . "</textarea>";
+            echo $withTrustHTML . "<textarea class='userReview'>" . $review->review . "</textarea>";
             exit(0);
         }else{
-            echo "<textarea class='userReview'></textarea>";
+            echo $withTrustHTML . "<textarea class='userReview'></textarea>";
             exit(0);
         }			
     }

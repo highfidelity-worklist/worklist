@@ -7,7 +7,11 @@
 var WReview = {
     initList : function() {
         $('.reviewAddLink,.reviewEditLink').click(function(){
-            WReview.displayInPopup(userInfo.user_id,userInfo.nickName);
+            WReview.displayInPopup({
+                user_id: userInfo.user_id,
+                nickname: userInfo.nickName,
+                withTrust: false
+            });
         });
         if ($(".myReview").length > 0) {
             $(".reviewAddLink").hide();
@@ -124,11 +128,15 @@ var WReview = {
         });
     },
 
-    displayInPopup: function(reviewee_id,nickName){
+    displayInPopup: function(options){
+        var title = "Edit the review of "+ options.nickname;
+        if (options.withTrust) {
+            title = "Review "+ options.nickname;
+        }
         if ($("#reviewDialog").length == 0) {
             $("<div id='reviewDialog' ><div id='infoMessageReviews'></div><div class='content'></div></div>").appendTo("body");
-            $("#reviewDialog").data("reviewee_id",reviewee_id);
-            $("#reviewDialog").data("nickName",nickName);
+            $("#reviewDialog").data("reviewee_id", options.user_id);
+            $("#reviewDialog").data("nickName", options.nickname);
             $("#reviewDialog").dialog({
                 buttons: {
                     "Save": function() { 
@@ -137,7 +145,7 @@ var WReview = {
                     }
                 },            
                 modal:true,
-                title: "Edit the review of "+nickName,
+                title: title,
                 autoOpen:false,
                 width:650,
                 height:350,
@@ -146,12 +154,30 @@ var WReview = {
                     var oThis=this;
                     $("#reviewDialog .content").load("review.php",{
                         action:"getView",
+                        withTrust: (options.withTrust) ? 1 : 0,
                         reviewee_id: $("#reviewDialog").data("reviewee_id")
                         },function(response, status, xhr){    
                         if (status == "error") {
                             var msg = "Sorry but there was an error: ";
                                 $("#error").html(msg + xhr.status + " " + xhr.statusText);
                         } else {
+                            if (options.withTrust) {                               
+                                $(".userReview").height("80%");
+                                WLFavorites.init( "profileInfoFavoriteInReview", options.user_id, options.nickname);
+                                // setup the variables needed to call the getFavoriteText function
+                                var favCount = $('.profileInfoFavorite span').attr('data-favorite_count');
+                                var isMyFav = false;
+                                if ($('.profileInfoFavorite .favorite_user').hasClass('myfavorite')) {
+                                    isMyFav = true;
+                                }
+                                
+                                // set the favText with the getFavoriteText function
+                                var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'trusted ');
+                                
+                                $('.profileInfoFavorite span').html(favText);
+                            }
+                            $(".reviewee_nickname").text(options.nickname);
+                            
                             WReview.init({
                                 fAfter: function() {
                                     $("#reviewSave").click(function(){
@@ -168,8 +194,8 @@ var WReview = {
             });
             $("#reviewDialog").dialog("open");
         } else {
-            $("#reviewDialog").data("nickName",nickName);
-            $("#reviewDialog").data("reviewee_id",reviewee_id);
+            $("#reviewDialog").data("nickName", options.nickname);
+            $("#reviewDialog").data("reviewee_id", options.user_id);
             $("#reviewDialog .content").html("");
             $("#reviewDialog").dialog("open");
         }    
