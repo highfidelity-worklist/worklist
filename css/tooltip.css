@@ -23,11 +23,11 @@
 }
 #tooltip .body {
     padding:10px;
-    font-size:14px;
+    font-size: 12px;
 }
 
 #tooltip.content { 
-    font-size:14px;
+    font-size: 12px;
     border-radius: 10px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -37,7 +37,7 @@
 }
 
 #tooltip .head {
-    font-size:14px;
+    font-size: 12px;
     font-weight: bold;
     border-bottom: solid 2px;
     padding-bottom: 0.5em;
@@ -45,8 +45,14 @@
 }
 
 #tooltip .tip-entry {
-    font-size:14px;
+    font-size: 12px;
     padding: 0.5em 0 0 0;
     margin: 0.5em 0 0 0;
     border-top: solid 1px;
+}
+
+#tooltip .tip-entry.no-border {
+    border: 0;
+    padding: 0;
+    margin: 0;
 }

@@ -803,7 +803,7 @@ function makeWorkitemTooltip(className){
             bgcolor:"#ffffff",
             success: function(json) {
                 msg = json.summary ? '<div class = "head">' + json.summary + '</div>' : '';
-                msg += json.notes ? json.notes : '';
+                msg += json.notes ? '<div class = "tip-entry no-border">' + json.notes + '</div>' : '';
                 msg += json.project ? '<div class = "tip-entry">Project: ' + json.project + '</div>' : '';
                 if (json.runner) {
                     msg += '<div class = "tip-entry">Runner: ' + json.runner + '</div>';
