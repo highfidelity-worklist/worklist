@@ -44,6 +44,45 @@ class UserStats{
         }
         return false;
     }
+
+    public function getFollowingJobs($page = 1) {
+        $count = $this->getTotalJobsFollowingCount();
+        $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `status`, `mn`.`nickname` AS `mechanic_nickname`,
+                    `cn`.`nickname` AS `creator_nickname`,`rn`.`nickname` AS `runner_nickname`,
+                    DATE_FORMAT(`created`, '%m/%d/%Y') AS `created`
+                FROM `" . WORKLIST . "` 
+                LEFT JOIN `" . USERS . "` AS `mn` ON `mechanic_id` = `mn`.`id`
+                LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
+                LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
+                JOIN `" . TASK_FOLLOWERS . "` AS `tf` ON `tf`.`workitem_id` = `" . WORKLIST . "`.`id` AND `tf`.`user_id` = {$this->userId}
+                ORDER BY `id` DESC 
+                LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
+        $res = mysql_query($sql);
+        $itemsArray = array();
+        if ($res ) {
+            while ($row = mysql_fetch_assoc($res)) {
+                $itemsArray[] = $row;
+            }
+            return array(
+                        'count' => $count,
+                        'pages' => ceil($count/$this->itemsPerPage),
+                        'page' => $page,
+                        'joblist' => $itemsArray
+                        );
+        }
+        return false;
+    }
+
+    public function getTotalJobsFollowingCount(){
+            $sql = "SELECT COUNT(*) FROM `" . TASK_FOLLOWERS . "` "                     
+                    ."WHERE (`user_id` = {$this->userId})";
+            $res = mysql_query($sql);
+            if ($res && $row = mysql_fetch_row($res)) {
+                return $row[0];
+            }
+            return false;
+    }
+
     
     public function getRunnerTotalJobsCount(){
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "

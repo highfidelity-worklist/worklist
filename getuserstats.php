@@ -47,6 +47,9 @@ if (isset($_REQUEST['id'])) {
     case 'latest_earnings':
         echo json_encode($userStats->getLatestEarningsJobs(30, $page));
         break;
+    case 'following':
+        echo json_encode($userStats->getFollowingJobs($page));
+        break;
     
     case 'runnerTotalJobs':
         echo json_encode($userStats->getTotalRunnerItems($page));        

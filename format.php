@@ -37,7 +37,8 @@ $userId = getSessionUserId();
             } else {
                 $name = getSubNickname($_SESSION['nickname']);
             }
-            echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a>";
+            $following = " | <a href='javascript:;' class='following'>My Followed Jobs</a>";
+            echo "Welcome, <span id='user'> $name </span>  $earnings $following $budget | <a href='logout.php'>Logout</a>";
             echo $feeinfo;  
         } ?>
         
@@ -48,9 +49,7 @@ $userId = getSessionUserId();
     <div id="inlineMessage"></div>
     
     <?php if (basename($_SERVER['PHP_SELF']) == 'worklist.php' && (array_key_exists('inlineHide',$_SESSION) && $_SESSION['inlineHide'] == 0) ) { ?>
-    
     <script type="text/javascript">
-    
     // html needed for welcome message
     var welcomeHTML = '<p><span class="inlineWelcome">Welcome to Worklist!</span></p>'+
     '<p>Browse the list of jobs below or click on <a href="<?php echo SERVER_BASE ?>/journal/" class="iToolTip menuJournal">Journal</a> to join our chat.</p>'+
@@ -99,8 +98,11 @@ $userId = getSessionUserId();
             | <a href="settings.php" class="iToolTip menuSettings">Settings</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
             
-         
+            <script type="text/javascript" src="js/userstats.js"></script>
+
             <script type="text/javascript">
+               stats.setUserId(<?php echo $userId?>);
+               var worklistUrl = '<?php echo SERVER_URL; ?>';
                function GetStatus(source) {
                     var lockGetWorklist = 0;
                     var status_refresh = 5 * 1000;
@@ -611,7 +613,9 @@ $userId = getSessionUserId();
           if (strpos($_SERVER['PHP_SELF'],$hideStats)) { $showStats=false; }
         }
         if ($showStats) { require_once('dialogs/popup-stats.inc'); }
-        
+
+        require_once('dialogs/popups-userstats.inc');
+
         // addproject always available
         require_once('dialogs/popup-addproject.inc');
 

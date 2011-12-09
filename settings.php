@@ -284,7 +284,6 @@ include("head.html");
 
 <!--Added worklist.css to solve stylesheet issues for settings.php-->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
-<link type="text/css" href="css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/settings.css" rel="stylesheet" />
 
 <script type="text/javascript" src="js/skills.js"></script>

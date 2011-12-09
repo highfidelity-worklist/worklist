@@ -1,4 +1,4 @@
-
+if (typeof stats == "undefined") {
 
 $(function(){
 
@@ -47,6 +47,13 @@ $(function(){
         return false;
     });
 
+    $("#welcome .following").click(function(){
+        stats.stats_page = 1;
+        $('#jobs-popup').dialog('option', 'title', 'Jobs I am Following');
+        stats.showJobs('following');
+        return false;
+    });
+
     $('#latest-earnings').click(function(){
         stats.stats_page = 1;
         stats.showLatestEarnings();
@@ -77,7 +84,7 @@ var stats = {
         $.getJSON('getuserstats.php', 
                     {id: stats.user_id, statstype: job_type, page: stats.stats_page},
                     function(json) {
-                        if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs') {
+                        if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                             $('#jobs-popup th.status').show();
                         } else {
                             $('#jobs-popup th.status').hide();
@@ -120,7 +127,7 @@ var stats = {
                         + '<td>' + runner_nickname + '</td>'
                         + '<td>' + jsonjob.created + '</td>';
                         
-            if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs') {
+            if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                 toAppend += '<td>' + jsonjob.status + '</td>';
             }
             
@@ -223,4 +230,5 @@ function partial(func /*, 0..n args */) {
     var allArguments = args.concat(Array.prototype.slice.call(arguments));
     return func.apply(this, allArguments);
   };
+}
 }
