@@ -1,12 +1,12 @@
 
 $(function() {
 
-    Workitem.init();
+     Workitem.init();
 
 });
 
 var Workitem = {
-    
+
     sandbox_url: '',
     
     init: function() {
@@ -14,6 +14,27 @@ var Workitem = {
             Workitem.openDiffPopup({
                 sandbox_url: Workitem.sandbox_url,
                 workitem_id: workitem_id
+            });
+        });
+        
+        $('#quick-status select').change(function() {
+            var value = $(this).val();
+            $("#loading").show();
+            $.ajax({
+                type: 'post',
+                url: 'workitem.php',
+                dataType: 'json',
+                data: {
+                    status_switch: '1',
+                    value: value,
+                    workitem_id: workitem_id
+                },
+                success: function(json) {
+                    $("#loading").hide();
+                    if (json.succeeded == false) {
+                        alert (json.message);
+                    }
+                }
             });
         });        
     },

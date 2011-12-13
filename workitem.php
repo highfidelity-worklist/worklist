@@ -17,48 +17,19 @@ require_once 'classes/Repository.class.php';
 require_once 'models/DataObject.php';
 require_once 'models/Users_Favorite.php';
 
-$statusMapRunner = array("DRAFT" => array("SUGGESTED", "BIDDING"),
-             "SUGGESTED" => array("BIDDING", "PASS"),
-             "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
-             "BIDDING" => array("PASS"),
-             "WORKING" => array("REVIEW", "FUNCTIONAL"),
-             "FUNCTIONAL" => array("REVIEW", "WORKING"),
-             "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
-             "COMPLETED" => array("WORKING", "DONE"),
-             "DONE" => array("REVIEW"),
-             "PASS" => array("REVIEW"));
+$statusListRunner = array("DRAFT", "SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
+$statusListMechanic = array("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "PASS");
+$statusListCreator = array("SUGGESTED", "PASS");
 
-$statusMapCreator = array("DRAFT" => array("DRAFT","SUGGESTED", "BIDDING"),
-             "SUGGESTED" => array("BIDDING", "PASS", "DRAFT"),
-             "SUGGESTEDwithBID" => array("BIDDING", "PASS"),
-             "BIDDING" => array("PASS", "DRAFT"),
-             "WORKING" => array("REVIEW", "FUNCTIONAL"),
-             "FUNCTIONAL" => array("REVIEW", "WORKING"),
-             "REVIEW" => array("WORKING", "COMPLETED", "DONE"),
-             "COMPLETED" => array("WORKING", "DONE"),
-             "DONE" => array("REVIEW"),
-             "PASS" => array("REVIEW"));
-
-$statusMapMechanic = array("SUGGESTED" => array("PASS", "REVIEW"),
-             "SUGGESTEDwithBID" => array("PASS"),
-             "WORKING" => array("FUNCTIONAL"),
-             "FUNCTIONAL" => array("REVIEW", "WORKING"),
-             "REVIEW" => array("COMPLETED", "WORKING"),
-             "COMPLETED" => array("WORKING"),
-             "DONE" => array("WORKING", "FUNCTIONAL"),
-             "PASS" => array("FUNCTIONAL"));
-
-$displayDialogAfterDone = isset($_SESSION['displayDialogAfterDone']) ? $_SESSION['displayDialogAfterDone'] : false;
-if (isset($_SESSION['displayDialogAfterDone'])) {
-    $_SESSION['displayDialogAfterDone'] = false;
-}
 $get_variable = 'job_id';
 if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL . "workitem.php?$get_variable="); }
 if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER_URL . "worklist.php?$get_variable="); }
 $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]) : 0;
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
-
+if (isset($_POST['status_switch'])) {
+    $worklist_id = $_POST['workitem_id'];
+}
 //initialize user accessing the page
 $userId = getSessionUserId();
 $user = new User();
@@ -114,7 +85,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "accept_bid";
 } else if(isset($_POST['accept_multiple_bid'])) {
     $action = "accept_multiple_bid";
-} else if(isset($_POST['status-switch'])) {
+} else if(isset($_POST['status_switch'])) {
     $action = "status-switch";
 } else if(isset($_POST['save-review-url'])) {
     $action = "save-review-url";
@@ -203,7 +174,7 @@ if ($action =='save_workitem') {
     if ($is_runner
         || $userId == $workitem->getRunnerId()
         || (($status == 'BIDDING' || $status == 'WORKING') && $user->getBudget() > 0)
-        || (in_array($status, $statusMapMechanic[$workitem->getStatus()]) && array_key_exists($workitem->getStatus(), $statusMapMechanic))) {
+        || (in_array($status, $statusListMechanic))) {
 
         if ($workitem->getStatus() != $status && !empty($status) && $status != 'DRAFT') {
             if (changeStatus($workitem, $status, $user)) {
@@ -212,9 +183,6 @@ if ($action =='save_workitem') {
                 }
                 $status_change = '-' . ucfirst(strtolower($status));
                 $new_update_message .= "Status set to $status. ";
-                if ($status == 'DONE') {
-                    $displayDialogAfterDone = true;
-                }
             }
         }
     }
@@ -427,7 +395,6 @@ if($action =='save-review-url') {
         $workitem->save();
         $new_update_message = " sandbox url : $sandbox ";
         if(!empty($status_review)) {
-            $new_update_message .= " Status set to $status_review. ";
             $status_change = '-' . ucfirst(strtolower($status_review));
         } else {
             $job_changes[] = '-sandbox';
@@ -459,17 +426,18 @@ if($action =='save-review-url') {
 }
 
 if ($action =='status-switch') {
-    $status = $_POST['quick-status'];
+    $status = $_POST['value'];
     $status_error = '';
 
     if ($status == 'DONE' && $workitem->getProjectId() == 0) {
         $status_error = "No project associated with workitem. Could not set to DONE.";
+        die(json_encode(array(
+            'succeeded' => false,
+            'message' => 'Error: '. $status_error
+        )));
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
-            if ($status == 'DONE') {
-                $displayDialogAfterDone = true;
-            }
             if ($status != 'DRAFT') {
                 $new_update_message = "Status set to $status. ";
                 $notifyEmpty = false;
@@ -870,9 +838,6 @@ if ($action == false) {
 
 if ($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id;
-    if ($displayDialogAfterDone) {
-        $_SESSION['displayDialogAfterDone'] = true;
-    }
 }
 if ($redirectToWorklistView) {
     $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;
@@ -882,6 +847,15 @@ if ($redirectToWorklistView) {
 if(isset($journal_message) && $workitem->getStatus() != 'DRAFT') {
     sendJournalNotification($journal_message);
     //$postProcessUrl = WORKITEM_URL . $worklist_id . "&msg=" . $journal_message;
+    //since msg has been sent to journal we can exit for change status ajax request <mika 10 dec 2011> 
+    if (isset($_POST['status_switch'])) {
+        $response = array(
+            'succeeded' => true,
+            'message' => 'Status Updated!'
+        );
+        echo json_encode($response);
+        exit(0); 
+    }
 }
 
 // if a post process URL was set, redirect and die

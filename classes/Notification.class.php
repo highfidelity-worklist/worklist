@@ -364,7 +364,7 @@ class Notification {
             case 'modified-functional':
                 $from_changes = "";
                 if (!empty($options['status_change'])) {
-                    $from_changes = $status_change;
+                    $from_changes = $options['status_change'];
                 }
                 if (isset($options['job_changes'])) {
                     if (count($options['job_changes']) > 0) {

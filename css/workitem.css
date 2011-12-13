@@ -75,9 +75,12 @@ span.info-whisper {
     float:right;
     text-align:right;
 }
+
 .info-ID{
-    font-size:10px;
+    float: left;
+    color: #98AAB2;
 }
+
 #left-panel {
     float:left;
     width:48%;
@@ -94,9 +97,16 @@ span.info-whisper {
     padding:1px 0px 5px 0px;
     border-bottom:1px solid lightgrey;
 }
-#status-switch{
-    margin-right:14px;
+
+#quick-status {
+    margin-top: 15px;
+    float: left
 }
+
+#quick-status  select{
+    margin: 0 8px 0 10px;
+} 
+
 #left-panel li.last {
     border-bottom:none;
     margin-top:10px;
@@ -808,9 +818,9 @@ span.info-whisper {
     float: left;
 }
 
-#following{
-    color: #333333;
-    border-bottom: 1px solid #666666;
+#following {
+    border-bottom: 1px solid #98AAB2;
+    margin-right: 10px;
 }
 
 
@@ -827,10 +837,22 @@ span.info-whisper {
 
 #info-top-left {
     float:left;
-    max-width:300px;
 }
 
 #info-top-right {
     float:right;
     text-align:right;
+}
+
+.switchmode a {
+    margin-left: 10px;
+}
+
+.switchmode {
+    color: #98AAB2;
+}
+
+.hidden {
+    display: none;
+    margin-top: 15px;
 }
