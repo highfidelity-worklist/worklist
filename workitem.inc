@@ -1494,7 +1494,7 @@ if ($action =="edit"):  ?>
                 <?php endif; ?>
         <!-- End of div commentZone -->
             </div>
-            <a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
+            <span class="info-label">&larr;</span> <a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>
     <!-- End of div for_view -->
             </div>
 <!-- End of div left-panel -->

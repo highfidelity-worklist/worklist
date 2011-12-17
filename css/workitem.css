@@ -280,6 +280,7 @@ span.info-whisper {
 }
 
 .workitem-back {
+    font-weight: bold;
     height:26px;
     line-height:26px;
 }
