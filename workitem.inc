@@ -25,8 +25,9 @@
 
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || $has_budget || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id']))||
-    ($creator_id == $user_id && $worklist['status'] == 'SUGGESTEDwithBID' && is_null($worklist['runner_id']))) {
+    if ($is_runner || $has_budget || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id'])) ||
+    ($creator_id == $user_id && $worklist['status'] == 'SUGGESTEDwithBID' && is_null($worklist['runner_id'])) ||
+    ($creator_id == $user_id && $worklist['status'] == 'BIDDING' && empty($bids))) {
         $allowEdit = true;
         if ($action !="edit") {
             $classEditable = " editable";
