@@ -90,8 +90,8 @@ replacement data:
     'subject' => 'Get Started with Worklist',
     'body' => '
         Thank you for joining Worklist, {nickname}!<br/><br/>
-        Worklist offers fast pay for your work, an open codebase, 
-        and great community. We\'re excited to have you join us as we 
+        Worklist offers fast pay for your work, an open codebase,
+        and great community. We\'re excited to have you join us as we
         create a new way to get things done.<br/><br/>
         Three things to help you get started:<br/><br/>
            - Browse the source code*: <a href="http://svn.worklist.net">http://svn.worklist.net</a><br/>
@@ -104,7 +104,7 @@ replacement data:
         Cheers,<br/><br/>
         Coffee & Power Inc<br/><br/>
         p.s. Follow our continuing adventures...<br/>
-        Twitter: <a href="http://twitter.com/lovemachineinc">http://twitter.com/lovemachineinc</a>
+        Twitter: <a href="http://twitter.com/worklistnet">http://twitter.com/worklistnet</a>
     '
 ),
 
@@ -119,7 +119,7 @@ trusted
                <p>You have been trusted by one of your peers in the Worklist!</p>
 <p></p>
 <p>See your User Profile here:<br/>
-{link} 
+{link}
 </p>
 <p>- Worklist.net</p>'
 ),
@@ -150,4 +150,4 @@ replacement data:
                <p>{reason}'
 ),
 
-); 
+);

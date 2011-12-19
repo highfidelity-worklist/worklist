@@ -85,6 +85,8 @@ if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net
 //<joanne>
 if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "https://lovemachine.sendlove.us/love");
 
+//<john>
+if (!defined("JOURNAL_URL")) define('JOURNAL_URL', SERVER_URL."journal");
 
 if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 
