@@ -170,7 +170,6 @@ if ($action =='save_workitem') {
     // status
     if ($is_runner
         || $userId == $workitem->getRunnerId()
-        || (($status == 'BIDDING' || $status == 'WORKING') && $user->getBudget() > 0)
         || (in_array($status, $statusListMechanic))) {
 
         if ($workitem->getStatus() != $status && !empty($status) && $status != 'DRAFT') {
@@ -999,7 +998,7 @@ function changeStatus($workitem, $newStatus, $user) {
 
     $allowable = array("DRAFT", "SUGGESTED", "SUGGESTEDwithBID", "REVIEW", "FUNCTIONAL", "PASS", "COMPLETED");
 
-    if ($user->getIs_runner() == 1 || $user->getBudget() > 0) {
+    if ($user->getIs_runner() == 1) {
         if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)) {
             $workitem->setRunnerId($user->getId());
         }

@@ -117,7 +117,7 @@
         <div class="clear"></div>
 
 <?php
-   if ($is_runner || $has_budget) {//if user is a runner - allow to change status
+   if ($is_runner) {//if user is a runner - allow to change status
   ?>
           <p class="info-label">Status<br />
           <select name="status">

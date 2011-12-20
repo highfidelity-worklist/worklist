@@ -25,7 +25,7 @@
 
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || $has_budget || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id'])) ||
+    if ($is_runner || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id'])) ||
     ($creator_id == $user_id && $worklist['status'] == 'SUGGESTEDwithBID' && is_null($worklist['runner_id']))) {
         $allowEdit = true;
         if ($action !="edit") {
@@ -1185,13 +1185,6 @@ if ($action =="edit"):  ?>
                                 <?php foreach ($statusListRunner as $status) { ?>
                                 <option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected="selected"' : ''; ?> ><?php echo $status; ?></option>
                                 <?php }?>
-                            </select>
-
-                            <?php } else if ($has_budget && ($worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SUGGESTEDwithBID' || $worklist['status'] == 'SKIP')) {?>
-                            <select id="status" name="status">
-                                <option value="<?php echo $worklist['status'] ?>" selected="selected"><?php echo $worklist['status'] ?></option>
-                                <option value="BIDDING" <?php echo 'BIDDING' == $worklist['status']?' selected="selected"' : ''; ?> >BIDDING</option>
-                                <option value="WORKING" <?php echo 'WORKING' == $worklist['status']?' selected="selected"' : ''; ?> >WORKING</option>
                             </select>
                             <?php } else if ($creator_id == $user_id && $mechanic_id == $user_id){ ?><span class="info-data">
                             <select id="status" name="status">
