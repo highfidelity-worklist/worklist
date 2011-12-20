@@ -27,9 +27,6 @@ if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER
 $worklist_id = isset($_REQUEST[$get_variable]) ? intval($_REQUEST[$get_variable]) : 0;
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
-if (isset($_POST['status_switch'])) {
-    $worklist_id = $_POST['workitem_id'];
-}
 //initialize user accessing the page
 $userId = getSessionUserId();
 $user = new User();
@@ -85,7 +82,7 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "accept_bid";
 } else if(isset($_POST['accept_multiple_bid'])) {
     $action = "accept_multiple_bid";
-} else if(isset($_POST['status_switch'])) {
+} else if(isset($_POST['status-switch'])) {
     $action = "status-switch";
 } else if(isset($_POST['save-review-url'])) {
     $action = "save-review-url";
@@ -395,6 +392,7 @@ if($action =='save-review-url') {
         $workitem->save();
         $new_update_message = " sandbox url : $sandbox ";
         if(!empty($status_review)) {
+            $new_update_message .= " Status set to $status_review. ";
             $status_change = '-' . ucfirst(strtolower($status_review));
         } else {
             $job_changes[] = '-sandbox';
@@ -426,15 +424,11 @@ if($action =='save-review-url') {
 }
 
 if ($action =='status-switch') {
-    $status = $_POST['value'];
+    $status = $_POST['quick-status'];
     $status_error = '';
 
     if ($status == 'DONE' && $workitem->getProjectId() == 0) {
         $status_error = "No project associated with workitem. Could not set to DONE.";
-        die(json_encode(array(
-            'succeeded' => false,
-            'message' => 'Error: '. $status_error
-        )));
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
@@ -847,15 +841,6 @@ if ($redirectToWorklistView) {
 if(isset($journal_message) && $workitem->getStatus() != 'DRAFT') {
     sendJournalNotification($journal_message);
     //$postProcessUrl = WORKITEM_URL . $worklist_id . "&msg=" . $journal_message;
-    //since msg has been sent to journal we can exit for change status ajax request <mika 10 dec 2011> 
-    if (isset($_POST['status_switch'])) {
-        $response = array(
-            'succeeded' => true,
-            'message' => 'Status Updated!'
-        );
-        echo json_encode($response);
-        exit(0); 
-    }
 }
 
 // if a post process URL was set, redirect and die

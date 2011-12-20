@@ -26,8 +26,7 @@
     $allowEdit = false;
     $classEditable = "";
     if ($is_runner || $has_budget || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id'])) ||
-    ($creator_id == $user_id && $worklist['status'] == 'SUGGESTEDwithBID' && is_null($worklist['runner_id'])) ||
-    ($creator_id == $user_id && $worklist['status'] == 'BIDDING' && empty($bids))) {
+    ($creator_id == $user_id && $worklist['status'] == 'SUGGESTEDwithBID' && is_null($worklist['runner_id']))) {
         $allowEdit = true;
         if ($action !="edit") {
             $classEditable = " editable";
@@ -643,16 +642,21 @@ $(document).ready(function(){
                 return false;
             }
         });
-<?php if ($mechanic_id == $user_id && $promptForReviewUrl) : ?>
-        $('#quick-status select').change(function() {
-            if ($(this).val() == 'FUNCTIONAL') {
+
+    $('select[name="quick-status"]').change(function() {
+        if ($(this).val() == 'FUNCTIONAL') {
+            <?php if($mechanic_id == $user_id && $promptForReviewUrl) :?>
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
                 $('#quick-status-review').val($(this).val());
                 $('#popup-reviewurl').dialog('open');
-                return false;
-            }
-        });
-<?php endif; ?>
+            <?php else : ?>
+                $('#quick-status form').submit();
+            <?php endif; ?>
+        } else {
+            $('#quick-status form').submit();
+        }
+    });
+
 <?php if(($is_runner) || ($mechanic_id == $user_id) && ($worklist['status'] != 'DONE')){?>
         $('#edit_review_url').click(function(e){
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
@@ -1111,12 +1115,13 @@ $(document).ready(function(){
         <?php if ($action != "edit"): ?>
             <div id="quick-status">
             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
-            <span class="info-data" style="margin-right:4px;font-size:16px"><?php echo $worklist['status'];?></span>
+            <span class="info-data" style="font-size:14px"><?php echo $worklist['status'];?></span>
             <?php
             if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') || $is_runner 
             || ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE')) :
             ?>
-            <div style="display:inline">
+            <form method="post" action="" style="display:inline">
+            <input type="hidden" id="status-switch" name="status-switch" value="1" />
             <select name="quick-status">
             <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>
             <?php
@@ -1147,11 +1152,8 @@ $(document).ready(function(){
             }
             ?>
             </select>
-            </div>
+            </form>
             <?php endif; ?>
-          </div>
-          <div class="hidden" id="loading">
-              <img src="images/loader.gif" alt = "" /><span>Updating..</span>
           </div>
           <div style="clear:both; float:none;"> </div>
       <?php endif;?>

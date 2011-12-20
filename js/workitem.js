@@ -17,27 +17,6 @@ var Workitem = {
             });
         });
         
-        $('#quick-status select').change(function() {
-            var value = $(this).val();
-            $("#loading").show();
-            $.ajax({
-                type: 'post',
-                url: 'workitem.php',
-                dataType: 'json',
-                data: {
-                    status_switch: '1',
-                    value: value,
-                    workitem_id: workitem_id
-                },
-                success: function(json) {
-                    $("#loading").hide();
-                    $("#quick-status .info-data").html(value)
-                    if (json.succeeded == false) {
-                        alert (json.message);
-                    }
-                }
-            });
-        });        
     },
     
     openDiffPopup: function(options) {
