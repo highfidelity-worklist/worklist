@@ -31,6 +31,7 @@ var Workitem = {
                 },
                 success: function(json) {
                     $("#loading").hide();
+                    $("#quick-status .info-data").html(value)
                     if (json.succeeded == false) {
                         alert (json.message);
                     }

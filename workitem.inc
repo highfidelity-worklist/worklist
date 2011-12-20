@@ -1111,12 +1111,16 @@ $(document).ready(function(){
         <?php if ($action != "edit"): ?>
             <div id="quick-status">
             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
+            <span class="info-data" style="margin-right:4px;font-size:16px"><?php echo $worklist['status'];?></span>
+            <?php
+            if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') || $is_runner 
+            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE')) :
+            ?>
             <div style="display:inline">
             <select name="quick-status">
             <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>
             <?php
-            // quick status buttons for runners of items and mechanics working on them
-            if (!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') {
+            if (!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') { //mechanics
                 foreach ($statusListMechanic as $status) {
                     if ($status != $worklist['status']) {?>
                         <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
@@ -1124,7 +1128,7 @@ $(document).ready(function(){
                     }
                 }
             }
-            else if ($is_runner) {
+            else if ($is_runner) { //runners and admins
                 foreach ($statusListRunner as $status) {
                     if ($status != $worklist['status']) {
                 ?>
@@ -1132,7 +1136,7 @@ $(document).ready(function(){
                 <?php
                     }
                 }
-            } else if ($worklist['creator_id']== $user_id) { 
+            } else if ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE') { //creator
                 foreach ($statusListCreator as $status) {
                     if ($status != $worklist['status']) {
                 ?>
@@ -1144,6 +1148,7 @@ $(document).ready(function(){
             ?>
             </select>
             </div>
+            <?php endif; ?>
           </div>
           <div class="hidden" id="loading">
               <img src="images/loader.gif" alt = "" /><span>Updating..</span>
