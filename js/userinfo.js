@@ -226,7 +226,7 @@ var UserInfo = {
             return false;
         });
 
-        $('#give-budget').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
+        $('#give-budget').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
         $('#give').click(function(){
             $('#give-budget form input[type="text"]').val('');
             $('#give-budget').dialog('open');
@@ -244,7 +244,14 @@ var UserInfo = {
                 type: "POST",
                 cache: false,
                 success: function(json) {
-                    $('#info-budget').text(json);
+                    if (json.success) {
+                        alert(json.message);
+                    } else {
+                        alert(json.message);
+				    }
+                },
+                error: function(json) {
+                  alert('error');
                 }
             });
             return false;

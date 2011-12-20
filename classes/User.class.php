@@ -499,6 +499,60 @@ class User {
         $this->paid = $value;
         return $this;
     }
+    
+
+    public function getTotalGiven()
+    {
+        $sql = 'SELECT SUM(`amount`) AS `given`
+                FROM `' . BUDGET_LOG . '`
+                WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . ';';
+
+        $res = mysql_query($sql);
+            if ($res && $row = mysql_fetch_assoc($res)) {
+                return $row['given'];
+            }
+        return false;
+    }
+
+    public function getLastGiven()
+    {
+        $sql = 'SELECT `amount`, DATE_FORMAT(`transfer_date`, "%M %d, %Y") AS `date` 
+                FROM `' . BUDGET_LOG . '` 
+                WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . '
+                ORDER BY `transfer_date` DESC LIMIT 1;';
+        $res = mysql_query($sql);
+            if ($res && $row = mysql_fetch_assoc($res)) {
+                return $row['amount'];
+            }
+       return false;
+    }
+    
+    public function getMaxDate()
+    {
+        $sql = 'SELECT DATE_FORMAT(`transfer_date`, "%M %d, %Y") AS `date` 
+                FROM `' . BUDGET_LOG . '`
+                WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . '
+                ORDER BY `date` DESC LIMIT 1;';
+        $res = mysql_query($sql);
+            if ($res && $row = mysql_fetch_assoc($res)) {
+                return $row['date'];
+            }
+        return false;
+    }
+
+    public function getReason()
+    {
+        $sql = 'SELECT `reason` 
+                FROM `' . BUDGET_LOG . '`
+                WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = '.$_SESSION['userid'].'
+                ORDER BY `transfer_date` DESC LIMIT 1;';
+        $res = mysql_query($sql);
+            if ($res && $row = mysql_fetch_assoc($res)) {
+                return $row['reason'];
+            }
+        return false;
+    }
+   
 
     /**
      * @return the $nickname

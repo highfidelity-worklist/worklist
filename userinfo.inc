@@ -12,8 +12,8 @@
     $ciaGovBase = "https://www.cia.gov/library/publications/the-world-factbook/geos/";
     // CCF = Country Code Fetched from user
     $CCF = $user ->getCountry();
-
-    /* Array comparising
+    
+     /* Array comparing
      * If country is empty do nothing
      */
     if ($CCF == "") {
@@ -98,6 +98,7 @@
 
         <div class="button-row">
             <?php if ($reqUserId > 0): ?>
+            <span id="info-budget"><input type="submit" <?php if ($reqUser->getBudget() <= 0) { echo 'disabled="disabled"'; } ?> id="give" value="Give Budget" /></span>
             <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
             <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
             <?php endif; ?>
@@ -236,9 +237,6 @@
             </div><!-- end of admin-left -->
             <div id="admin-right">
                 <form method="post" action="" name="userDropdownOptions" id="userDropdownOptions">
-                    <p class="info-label">Budget</p>
-                    <span id="info-budget">$<?php echo $user->getBudget(); ?></span>
-                    <input  class="admin-submit" type="submit" id="give" value="Give Budget..." />
 <?php if ($is_payer): ?>
                     <p class="info-label">Annual Salary</p>
                     <input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>" />
@@ -378,12 +376,16 @@
     
     <div id="give-budget" class="hidden" title="Give Budget" style="text-align: left;">
         <form method="post" action = "">
-            <label for="budget-amount" class="info-label">Amount: </label><br/>
-                <input type="text" id="budget-amount" name="amount" /><br/>
-            <label for="budget-reason" class="info-label">Reason: </label><br/>
+            <label for="budget-current" class="info-label">Current Budget: $</label><?php echo $user-> getBudget(); ?><br/> <br/>
+            <label for="budget-tgiven" class="info-label">Total Budget From You: $</label><?php echo $user-> getTotalGiven(); ?><br/> <br/>
+            <label for="budget-lgiven" class="info-label">Last Budget Given By You: $</label><?php echo $user->getLastGiven();?>  on  <?php echo $user->getMaxDate(); ?><br/> 
+            <label for="budget-lreason" class="info-label">for: </label><?php echo $user->getReason(); ?><br/> <br/>
+            <label for="budget-amount" class="info-label">New Budget to Give: </label><br/>
+                $<input type="text" id="budget-amount" name="amount" /><br/>
+            <label for="budget-reason" class="info-label">For: </label><br/>
                 <input type="text" id="budget-reason" name="reason" style="width:95%" /><br/><br/>
                 <input type = "hidden" id = "budget-receiver" name="receiver_id" value = "<?php echo $user-> getId(); ?>" />
-            <input type="submit" value="Give" />
+            <input type="submit" value="Give Budget" />
         </form>
     </div><!-- end of give budget div-->
 

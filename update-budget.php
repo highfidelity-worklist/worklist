@@ -11,12 +11,15 @@ include("config.php");
 include("class.session_handler.php");
 include("functions.php");
 
+$error = false;
+$message = '';
+
 if (!isset($_SESSION['userid'])) {
     echo 'error: unauthorized';
     return;
 }
 
-$receiver_id = isset($_REQUEST['receiver_id']) ? intval($_REQUEST['receiver_id']) : 0;
+$receiver_id = intval($_REQUEST['receiver_id']);
 $amount = isset($_REQUEST['amount']) ? floatval($_REQUEST['amount']) : 0;
 if (empty($receiver_id) || empty($_REQUEST['reason']) || empty($amount)) {
     echo 'error: args';
@@ -32,8 +35,9 @@ if (!$giver->findUserById($_SESSION['userid']) || !$receiver->findUserById($rece
     return;
 }
 
-$amount = min($giver->getBudget(), $amount);
-if ($amount > 0) {
+$stringAmount = number_format($amount, 2);
+
+if ($amount <= $giver->getBudget()) {
     $giver->setBudget($giver->getBudget() - $amount)->save();
     $receiver->setBudget($receiver->getBudget() + $amount)->save();
 
@@ -46,7 +50,15 @@ if ($amount > 0) {
     
     Notification::notifyBudget($amount, $reason, $giver, $receiver);
     Notification::notifySMSBudget($amount, $reason, $giver, $receiver);
+    
+    $receiver = getUserById($receiver_id);
+    $message =  'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname;
+} else {
+    $error = true;
+    $message = 'You do not have enough budget available to give this amount.';
 }
 
-$json = json_encode(number_format($receiver->getBudget(), 2));
+$json = json_encode(array('success' => !$error, 'message' => $message));
 echo $json;
+
+
