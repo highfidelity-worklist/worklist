@@ -10,6 +10,7 @@ include_once("check_new_user.php");
 require_once("functions.php");
 require_once('classes/Repository.class.php');
 require_once('classes/Project.class.php');
+require_once('project-util-class.php');
 
 $journal_message = '';
 $nick = '';
@@ -35,6 +36,10 @@ if ($userId == 2 || $userId == 1020 || $userId == 1918 || $userId == 2134 || $us
     // check if repository exists, ignore empty repository
     if (!empty($repository) && $project->getIdFromRepo($repository)) {
         die(json_encode(array('error' => "Project repository already exists!")));
+    } else if (!empty($repository)) {
+        //Leaving commented out until Alexi sets up remote code execution - Dans
+        /*$project_repo = new ProjectRepoUtil();
+        $project_repo->createRepo($repository, $name);*/
     }
 
     $project->setName($name);
