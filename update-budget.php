@@ -21,12 +21,11 @@ if (!isset($_SESSION['userid'])) {
 
 $receiver_id = intval($_REQUEST['receiver_id']);
 $amount = isset($_REQUEST['amount']) ? floatval($_REQUEST['amount']) : 0;
-if (empty($receiver_id) || empty($_REQUEST['reason']) || empty($amount)) {
+$reason = mysql_real_escape_string($_REQUEST['reason']);
+if (empty($receiver_id) || empty($reason) || empty($amount)) {
     echo 'error: args';
     return;
 }
-
-$reason = mysql_real_escape_string($_REQUEST['reason']);
 
 $giver = new User();
 $receiver = new User();
@@ -43,6 +42,9 @@ if ($amount <= $giver->getBudget()) {
 
     $query = "INSERT INTO `".BUDGET_LOG."` (`giver_id`,`receiver_id`,`amount`,`reason`,`transfer_date`) VALUES ('".$_SESSION['userid']."','$receiver_id','$amount','$reason',NOW())";
     mysql_unbuffered_query($query);
+    
+    $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
+    mysql_unbuffered_query($query2);
 
     $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
     " for " . $_REQUEST['reason'] . ".";

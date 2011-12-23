@@ -97,8 +97,9 @@
         </p>
 
         <div class="button-row">
-            <?php if ($reqUserId > 0): ?>
-            <span id="info-budget"><input type="submit" <?php if ($reqUser->getBudget() <= 0) { echo 'disabled="disabled"'; } ?> id="give" value="Give Budget" /></span>
+            <?php if ($reqUserId > 0): ?> 
+            <span id="info-budget"><input type="submit" <?php if ($reqUser->getBudget() <= 0 || !$reqUser->isRunner() || $reqUserId == $user->getId()) {
+             echo 'disabled="disabled"'; } ?> id="give" value="Give Budget" /></span>
             <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
             <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
             <?php endif; ?>

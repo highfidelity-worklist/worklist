@@ -232,10 +232,10 @@ var UserInfo = {
             $('#give-budget').dialog('open');
             return false;
         });
-        
+		           
         $('#give-budget form input[type="submit"]').click(function() {
             $('#give-budget').dialog('close');
-            
+			
             var toReward = parseInt(rewarded) + parseInt($('#toreward').val());
             $.ajax({
                 url: 'update-budget.php',
@@ -246,12 +246,13 @@ var UserInfo = {
                 success: function(json) {
                     if (json.success) {
                         alert(json.message);
+                        $("#isrunner").prop('checked', true);
                     } else {
                         alert(json.message);
 				    }
                 },
                 error: function(json) {
-                  alert('error');
+                  alert('All fields are required');
                 }
             });
             return false;
