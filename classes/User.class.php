@@ -1187,7 +1187,7 @@ class User {
            $where .= ' AND (`date` > DATE_SUB(NOW(), INTERVAL 30 DAY) || `'.USERS.'`.`last_seen` > DATE_SUB(NOW(), INTERVAL 30 DAY) )';
         }
         $sql = "
-            SELECT `".USERS."`.`id` FROM `".USERS."` 
+            SELECT `" . USERS . "`.* FROM `" . USERS . "` 
             LEFT JOIN (
                 SELECT `user_id`, MAX(`paid_date`) AS `date` FROM `".FEES."` 
                 WHERE `paid_date` IS NOT NULL AND `paid` = 1 AND 
@@ -1200,9 +1200,9 @@ class User {
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $user = new User();
             if ($populate != $row['id']) {
-                $userlist[$i++] = $user->findUserById($row['id']);
+                $userlist[$i++] = $user->setOptions($row);
             } else {
-                $userlist[0] = $user->findUserById($row['id']);
+                $userlist[0] = $user->setOptions($row);
             }
         }
         ksort($userlist);

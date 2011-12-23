@@ -73,8 +73,6 @@ $journal_message = '';
 $nick = '';
 
 $workitem = new WorkItem();
-// get active projects
-$projects = Project::getProjects(true);
 
 // check if we are on a project page, and setup filter
 if (is_object($inProject)) {

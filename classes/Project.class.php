@@ -340,7 +340,7 @@ class Project {
 /**
     Return an array of all projects containing all fields
 **/    
-    public function getProjects($active = false) {
+    public function getProjects($active = false, $selections = array()) {
     
         $where = ' ';
         if ($active) {
@@ -348,30 +348,27 @@ class Project {
         }
     
         $query = "
-            SELECT *
-            FROM `".PROJECTS."`" 
+            SELECT " . ((count($selections)>0) ? implode(",", $selections) : "*")
+            . " FROM `" . PROJECTS . "`" 
             . $where . "
             ORDER BY `last_commit` DESC";
         $result = mysql_query($query);
 
         if (mysql_num_rows($result)) {
             while ($project = mysql_fetch_assoc($result)) {
-                $biddingQuery = "SELECT status FROM " . WORKLIST . " WHERE project_id = " . $project['project_id'] . 
-                                " AND status = 'BIDDING'";
-                $biddingQueryResult = mysql_query($biddingQuery);
-                $underwayQuery = "SELECT status FROM " . WORKLIST . " WHERE project_id = " . $project['project_id'] . 
-                                 " AND status IN ('WORKING', 'REVIEW', 'FUNCTIONAL')";
-                $underwayQueryResult = mysql_query($underwayQuery);
-                $completedQuery = "SELECT status FROM " . WORKLIST . " WHERE project_id = " . $project['project_id'] . 
-                                 " AND status IN ('COMPLETED','DONE')";
-                $completedQueryResult = mysql_query($completedQuery);
-                
+                $query = "SELECT SUM(status IN ('DONE', 'COMPLETE')) AS completed, 
+                    SUM(status IN ('WORKING', 'REVIEW', 'FUNCTIONAL')) AS underway, 
+                    SUM(status='BIDDING') AS bidding 
+                FROM " . WORKLIST . " 
+                WHERE project_id = " . $project['project_id'];
+                $resultCount = mysql_query($query);
+                $resultCount = mysql_fetch_object($resultCount);
+                    
                 $feesCount = 0;
-                
-                $bCount = mysql_num_rows($biddingQueryResult);
-                $uCount = mysql_num_rows($underwayQueryResult);
-                $cCount = mysql_num_rows($completedQueryResult);
-                
+                $bCount = $resultCount->bidding;
+                $uCount = $resultCount->underway;
+                $cCount = $resultCount->completed;
+
                 if($cCount) {
                     $feesQuery = "SELECT SUM(F.amount) as fees_sum FROM " . FEES . " F,
                             " . WORKLIST . " W

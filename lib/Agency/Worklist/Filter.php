@@ -325,7 +325,7 @@ class Agency_Worklist_Filter {
         $allDisplay = ($fromReport) ? "ALL" : "All Projects";
         $box = '<select id="projectCombo" name="project" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
         $box .= '<option value=""' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
-        foreach ( Project::getProjects($active) as $project) {
+        foreach ( Project::getProjects($active, array('name', 'project_id')) as $project) {
             // handle long project names
             $project_name = $project['name'];
             if (strlen($project_name) > 25) {
