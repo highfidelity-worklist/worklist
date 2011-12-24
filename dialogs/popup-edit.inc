@@ -24,7 +24,7 @@
         <p class="info-label" style="margin-bottom: 20px;">Project<br/>
             <select id="itemProjectCombo" name="itemProject" class="resetToFirstOption">
                 <option value="select" selected="selected">Select project</option>
-                <?php $projects = Project::getProjects();?>
+                <?php $projects = Project::getProjects(true);?>
                 <?php foreach ( $projects as $project): ?>
 <?php 
     // if a project is active (we are on a project page), select it
