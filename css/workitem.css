@@ -68,12 +68,17 @@ span.info-whisper {
 .info-comments{
     font-size:14px;
     font-weight:bold;
-    margin:0 0 10px 0;
+    margin:0 10px 10px 0;
     float:left;
+}
+.info-comments-order {
+    color: #000;
+    text-decoration: none;
 }
 .info-comments-scroll-entry {
     float:right;
     text-align:right;
+    padding: 0 8px 0 0;
 }
 
 .info-ID{
@@ -449,6 +454,10 @@ span.info-whisper {
 .depth-6 {
     margin-left:120px;
     margin-top:-10px;
+}
+.desc {
+    margin-top:0px !important;
+    margin-bottom:2px !important;
 }
 .commentform{
     margin-top:20px;

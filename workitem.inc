@@ -914,7 +914,17 @@ $(document).ready(function(){
         $.loggedin = <?php echo isset($_SESSION['userid']) ? "true" : "false" ?>;
 
         $(".editable").attr("title","Switch to Edit Mode").click(function() {
-            window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit";
+            window.location.href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit&order=<?php echo $order_by; ?>";
+        });
+
+        $(".info-comments-order").attr("title", "Reverse Comments Order").click(function() {
+            <?php $new_location = $_SERVER['SCRIPT_NAME'] . "?job_id=" . $worklist['id'] . "&action=" . $action . "&order=";
+            if ($order_by != "DESC") {
+                echo "window.location.href = \"" . $new_location . "DESC\";";
+            } else {
+                echo "window.location.href = \"" . $new_location . "ASC\";";
+            } ?>
+            return false;
         });
 
         $('#commentZone').css({'opacity':'0'});
@@ -1098,17 +1108,23 @@ $(document).ready(function(){
                         //Show original item id if displayed item is a bug
                         if($workitem->getBugJobId() > 0) {
                             $originalItemLink = SERVER_URL."workitem.php?job_id=".
-                                                $workitem->getBugJobId()."&action=view";
+                                                $workitem->getBugJobId()."&action=view&order=" . $order_by;
                             echo "  [ bug of <a href='".$originalItemLink."' class='worklist-item' id='workitem-".$workitem->getBugJobId()."' >".$workitem->getBugJobId()."</a> ]";
                         }
                         ?>
                     &nbsp;-&nbsp;<span id="following"></span><span id="followingLogin"></span>
                 </div>
                 <?php if ($allowEdit && $action != "edit"): ?>
-                    <span class="switchmode">-<a title="Switch to Edit Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit">Switch to Edit Mode</a></span>
+                    <span class="switchmode">-
+                    <a title="Switch to Edit Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit&order=<?php echo $order_by; ?>">
+                    Switch to Edit Mode</a>
+                    </span>
                 <?php endif;?>
                 <?php if ($action == "edit"): ?>
-                    <span class="switchmode">-<a title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view">Switch to View Mode</a></span>
+                    <span class="switchmode">-
+                    <a title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view&order=<?php echo $order_by; ?>">
+                    Switch to View Mode</a>
+                    </span>
                 <?php endif;?>
             </div>
             <div style="clear:both; width:100%; float:none;"> </div>
@@ -1448,10 +1464,32 @@ if ($action =="edit"):  ?>
 <?php endif;?>
             <div class="commentZone">
                 <div class="info-comments">Comments</div>
-                <?php if (!empty($user_id) && ($worklist['status'] != 'DONE')) : ?>
+
+                <?php if ($order_by != "DESC") : ?>
+                    <a class="info-comments-order" href="#">&#9650;&#9660;</a>
+                <?php else : ?>
+                    <a class="info-comments-order" href="#">&#9660;&#9650;</a>
+                <?php endif;
+
+                if (!empty($user_id) && ($worklist['status'] != 'DONE')) : ?>
                 <a class="info-comments-scroll-entry" href="#commentform">Scroll to bottom</a>
                 <?php endif ?>
-                <div style="clear:both;height:0px;">&nbsp;</div>
+                <div style="clear:both;height:0px;">&nbsp;</div>              
+
+                <?php if (!empty($user_id) && ($worklist['status'] != 'DONE') && $order_by == "DESC") : ?>
+                <div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
+                    <form action="" method="post">
+                        <input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
+                        <input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
+                        <input type="hidden" name="order_by" value="DESC" />
+                        <input type="hidden" name="comment_id" value="" />
+                        <textarea name="comment" class="expand100-300" cols="20" rows="10" size="33"></textarea>
+                        <br />
+                        <input type="submit" name="newcomment" value="Post Comment" class="disableable" />
+                    </form>
+                </div> 
+                <?php endif; ?>
+
                 <ul>
                 <?php
                     $comments = Comment::findCommentsForWorkitem($worklist['id']);
@@ -1459,8 +1497,17 @@ if ($action =="edit"):  ?>
                         ?>No comments!<?php
                     else :
                         $it=0;
-                        foreach ($comments as $comment) :
-                            ?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?>">
+                        $comments_list = array();
+
+                        if ($order_by != "DESC") :
+                            $comments_list = $comments;
+                        else :
+                            $comments_list = array_reverse($comments, true);
+                        endif;
+
+                        foreach ($comments_list as $comment) :
+                            $comment[] = $comments[$i];
+                            ?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?> <?php if ($order_by == "DESC" && $comment['depth'] > 0) echo 'desc'; ?>">
                                 <div class="comment-info">
                                     <span class="author profile-link" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
                                         <span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
@@ -1481,18 +1528,21 @@ if ($action =="edit"):  ?>
                     endif;
                 ?>
                 </ul>
-                <?php if (!empty($user_id) && ($worklist['status'] != 'DONE')) : ?>
+
+                <?php if (!empty($user_id) && ($worklist['status'] != 'DONE') && $order_by == "ASC") : ?>
                 <div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
                     <form action="" method="post">
                         <input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
                         <input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
+                        <input type="hidden" name="order_by" value="ASC" />
                         <input type="hidden" name="comment_id" value="" />
                         <textarea name="comment" class="expand100-300" cols="20" rows="10" size="33"></textarea>
-                        <br>
+                        <br />
                         <input type="submit" name="newcomment" value="Post Comment" class="disableable" />
                     </form>
-                </div>
+                </div> 
                 <?php endif; ?>
+
         <!-- End of div commentZone -->
             </div>
             <span class="info-label">&larr;</span> <a class="workitem-back" title="Back to Worklist" href="worklist.php">Back to Worklist</a>

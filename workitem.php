@@ -63,6 +63,10 @@ $promptForReviewUrl = true;
 $runner_budget = $user->getBudget();
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
+$order_by = isset($_REQUEST['order']) ? $_REQUEST['order'] : 'ASC';
+if ($order_by != "DESC") {
+    $order_by = "ASC";
+}
 
 if (isset($_REQUEST['withdraw_bid'])) {
     $action = "withdraw_bid";
@@ -265,6 +269,12 @@ if ($action == 'new-comment') {
             $parent_comment = $_POST['comment_id'];
         } else {
             $parent_comment = NULL;
+        }
+
+        if ($_POST['order_by'] != "DESC") {
+            $order_by = "ASC";
+        } else {
+            $order_by = "DESC";
         }
 
         $correspondent = addComment($_POST['worklist_id'],
@@ -830,7 +840,7 @@ if ($action == false) {
 }
 
 if ($redirectToDefaultView) {
-    $postProcessUrl = WORKITEM_URL . $worklist_id;
+    $postProcessUrl = WORKITEM_URL . $worklist_id . "&order=" . $order_by;
 }
 if ($redirectToWorklistView) {
     $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;
