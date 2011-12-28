@@ -38,12 +38,12 @@
                 var tip_desc = new LiveValidation('tip_desc',{ onlyOnSubmit: true });
                     tip_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 $('#popup-form-addtip').submit(function() {
-                    var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);
+                    var massValidationFee = LiveValidation.massValidate([tip_amount, tip_desc]);
                     if (!massValidationFee) {
                         return false;
                     }
                     $('#add_tip').click(function() {
-                        $('#add_tip').attr('disabled', 'disabled')
+                        $('#add_tip').attr('disabled', 'disabled');
                     });
                     $('#popup-form-addtip').submit(function() {
                         return false;
