@@ -589,7 +589,7 @@ $(document).ready(function(){
             $('#popup-bid-info #info-bid-expires').text(bidData.bid_expires);
             $('#popup-bid-info #info-bid-amount').text(bidData.amount);
             $('#popup-bid-info #info-bid-done-in').text(bidData.done_in);
-            $('#popup-bid-info #info-notes').text(bidData.notes);
+            $('#popup-bid-info #info-notes').html(bidData.notes);
 
 <?php if ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id)) : ?>
             if($('#accept_bid').length == 0) {
@@ -1602,7 +1602,7 @@ if ($action =="edit"):  ?>
                                 <?php
                                     // store bid info into jquery metadata so we won't have to fetch it again on user click
                                     // but only if user is runner or creator 15-MAR-2011 <godka>
-                                    $notes = preg_replace("/\r?\n/", "\\n", addcslashes($bid['notes'],"\\\'\"&\n\r<>"));
+                                    $notes = addcslashes(preg_replace("/\r?\n/", "<br />", $bid['notes']),"\\\'\"&\n\r<>");
                                     if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
                                         <script type="data"><?php echo
                                                 "{id: {$bid['id']}, " .
@@ -1715,7 +1715,7 @@ if ($action =="edit"):  ?>
                                         <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
                                         <td>$ <?php echo $fee['amount'];?></td>
                                         <?php if (($worklist['status'] == 'REVIEW' || $worklist['status'] == 'COMPLETED' || $worklist['status'] == 'DONE')&& ($fee['desc'] == 'Accepted Bid')) { ?>
-                                        <td>Bid Notes: <?php echo $fee['bid_notes'];?></td>
+                                        <td>Bid Notes: <?php echo preg_replace("/\r?\n/", "<br />", $fee['bid_notes']);?></td>
                                         <?php } else { ?>
                                         <td><?php echo $fee['desc'];?></td>
                                         <?php }?>

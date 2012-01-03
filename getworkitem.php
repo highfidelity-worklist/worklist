@@ -32,6 +32,7 @@ $query = "SELECT
 $rt = mysql_query($query);
 if ($rt) {
     $row = mysql_fetch_assoc($rt);
+    $row['notes'] = preg_replace("/\r?\n/", "<br />", $row['notes']);
     $query1 = ' SELECT c.comment, u.nickname '
             . ' FROM ' . COMMENTS . ' AS c '
             . ' INNER JOIN ' . USERS . ' AS u ON c.user_id = u.id ' 
@@ -42,7 +43,7 @@ if ($rt) {
     $rtc = mysql_query($query1);
     if ($rt) {
         $rowc = mysql_fetch_assoc($rtc);
-        $row['comment'] = $rowc['comment'];
+        $row['comment'] = preg_replace("/\r?\n/", "<br />", $rowc['comment']);
         $row['commentAuthor'] = $rowc['nickname'];
     } else {
         $row['comment'] = 'No comments yet.';
