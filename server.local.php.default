@@ -6,97 +6,110 @@
 //
 
 // Force HTTPS 
-if($_SERVER["HTTPS"] != "on") {
-   header("HTTP/1.1 301 Moved Permanently");
-   header('Location: https://' . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"]);
+if($_SERVER['HTTPS'] != 'on') {
+   header('HTTP/1.1 301 Moved Permanently');
+   header('Location: https://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
    exit();
 }
 
-// These are the items most likely in need of being changed.
+//// These are the items most likely in need of being changed.
+//Override developer error logs, keep them in the sandbox so they get cleaned up after the task is done
+//ini_set('error_log', dirname(__FILE__) . '/php.errors');
 
-// Uncomment and change 'unixname' to override error logs path
-//ini_set('error_log','/mnt/ebsvol/dev-www/unixname/php.errors');
+//// Use ONE of the following
+//define('SANDBOX_USER', '~garth/');
+define('SANDBOX_USER', '');
+
+//Sandbox URL
+define('SANDBOX_NAME', 'worklist/');
+
+define('APP_LOCATION', SANDBOX_USER . SANDBOX_NAME);
+
+//Default configuration for sandbox testing
+define('SANDBOX_SERVER_API', 'https://dev.worklist.net/sandbox/update.php');
+define('SANDBOX_SERVER_API_KEY', 'simulation');
 
 
-// Where is the SendLove Database?
-define("DB_SERVER", "mysql.dev.sendlove.us");
-define("DB_USER", "dev_worklist");
-define("DB_PASSWORD", "unsecure");
-define("DB_NAME", "dev_worklist");
+//////////////Shouldn't need to change anything below here////////////////
 
-// Change this to something private to deter funny business
-define("SALT", "WORKLIST");
+// Where is the Database?
+define('DB_SERVER', 'mysql.dev.sendlove.us');
+define('DB_USER', 'dev_worklist');
+define('DB_PASSWORD', 'unsecure');
+define('DB_NAME', 'dev_worklist');
+
+// Change this to something private in production to deter funny business
+define('SALT', 'WORKLIST');
 
 // Refresh interval for ajax updates of the history table (in seconds)
-define("AJAX_REFRESH", 30);
+define('AJAX_REFRESH', 30);
 
-define("VIRUS_SCAN_CMD", "/usr/bin/clamscan");
+define('VIRUS_SCAN_CMD', '/usr/bin/clamscan');
 
 // Default sender and sms sender. config.php has automatic fallback for REPLYTO if not set (will use *_SENDER)
-define('DEFAULT_SENDER','worklist@worklist.net');
-//define('DEFAULT_REPLYTO','worklist@worklist.net');
-define('SMS_SENDER','worklist@worklist.net');
-//define('SMS_REPLYTO','worklist@worklist.net');
+define('DEFAULT_SENDER', 'worklist@worklist.net');
+//define('DEFAULT_REPLYTO', 'worklist@worklist.net');
+define('SMS_SENDER', 'worklist@worklist.net');
+//define('SMS_REPLYTO', 'worklist@worklist.net');
 
 //Server URL's - If running as http://host.domain.com/ (not using app location), defining SERVER_NAME is all that is needed for non-ssl sites
-define("SERVER_NAME","dev.worklist.net");
-//define("APP_LOCATION",substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], "/")));
-//define("SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
-////define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
-////So clone the standard URL
-//define("SECURE_SERVER_URL",SERVER_URL); //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
-
-//Override Path_Info for sandboxes
-//if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: https://dev.worklist.net/~garth/worklist/worklist.php'); }
+define('SERVER_NAME', 'dev.worklist.net');
+define('SERVER_URL', 'https://' . SERVER_NAME . '/' . APP_LOCATION); //Include [:port] for standard http traffic if not :80
+define('SECURE_SERVER_URL', SERVER_URL); //Domain is now secure by default
 
 //Override Worklist_url for sandboxes
-//if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/~garth/worklist");
+if (!defined('WORKLIST_URL'))   define('WORKLIST_URL', SECURE_SERVER_URL);
 
-//define("APP_NAME","Worklist");
+//Override Path_Info for sandboxes
+if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: ' . WORKLIST_URL . '/worklist.php'); }
 
-//define("JOURNAL_API_URL", "https://dev.worklist.net/journal/add.php");
-//define("JOURNAL_API_USER", "api_work@dev.worklist.net");
-//define("JOURNAL_API_PWD", "journalpwd");
-//define("JOURNAL_API_KEY", "journalkey");
-//define('JOURNAL_QUERY_URL', 'https://dev.worklist.net/journal/api.php');
-//define('JOURNAL_QUERY_URL_SSL', 'https://dev.worklist.net/journal/api.php');
+
+//define('APP_NAME','Worklist');
+define('API_KEY','worklist_dev_worklist_unsecure');
+
+define('JOURNAL_API_URL', 'https://' . SERVER_NAME . '/journal/add.php');
+define('JOURNAL_API_USER', 'api_work@dev.worklist.net');
+define('JOURNAL_API_PWD', 'journalpwd');
+define('JOURNAL_API_KEY', 'journalkey');
+define('JOURNAL_QUERY_URL', 'https://' . SERVER_NAME . '/journal/api.php');
+define('JOURNAL_QUERY_URL_SSL', 'https://' . SERVER_NAME . '/journal/api.php');
 
 //define('SMS_INI_FILE', '/etc/love/worklist/sms.ini');
 
-define('TWITTER_USER','user');
-define('TWITTER_PASS','pass');
-define('TWITTER_2_USER',null);
-define('TWITTER_2_PASS',null);
+define('TWITTER_USER', 'user');
+define('TWITTER_PASS', 'pass');
+define('TWITTER_2_USER', null);
+define('TWITTER_2_PASS', null);
 
 /*
 * Twitter OAuth constants
 */
 
-define("TWITTER_CONSUMER_KEY", "consumer_key");
-define("TWITTER_CONSUMER_SECRET", "consumer_secret");
-define("TWITTER_OAUTH_TOKEN", "oauth_token");
-define("TWITTER_OAUTH_SECRET", "oauth_secret");
+define('TWITTER_CONSUMER_KEY', 'consumer_key');
+define('TWITTER_CONSUMER_SECRET', 'consumer_secret');
+define('TWITTER_OAUTH_TOKEN', 'oauth_token');
+define('TWITTER_OAUTH_SECRET', 'oauth_secret');
 
 
 
 ////How to use a local gateway
-define('GOOGLE_HOST','localhost');
-define('GOOGLE_USER','');
-define('GOOGLE_PWD','');
-define('GOOGLE_PORT','25');
-define('GOOGLE_AUTH',false);
+define('GOOGLE_HOST', 'localhost');
+define('GOOGLE_USER', '');
+define('GOOGLE_PWD', '');
+define('GOOGLE_PORT', '25');
+define('GOOGLE_AUTH', false);
 
 ////How to use a secure gateway
-//define('GOOGLE_HOST','ssl://smtp.gmail.com');
-//define('GOOGLE_USER','google@gmail.com');
-//define('GOOGLE_PWD','password');
-//define('GOOGLE_PORT','465');
-//define('GOOGLE_AUTH',true);
+//define('GOOGLE_HOST', 'ssl://smtp.gmail.com');
+//define('GOOGLE_USER', 'google@gmail.com');
+//define('GOOGLE_PWD', 'password');
+//define('GOOGLE_PORT', '465');
+//define('GOOGLE_AUTH', true);
 
 ////How to use a non gateway
-//define('GOOGLE_HOST','fast.critsend.com');
-//define('GOOGLE_LOWHOST','aws-smtp.critsend.com');
-//define('GOOGLE_USER','username');
-//define('GOOGLE_PWD','password');
-//define('GOOGLE_PORT',587);
-//define('GOOGLE_AUTH','login');
+//define('GOOGLE_HOST', 'fast.critsend.com');
+//define('GOOGLE_LOWHOST', 'aws-smtp.critsend.com');
+//define('GOOGLE_USER', 'username');
+//define('GOOGLE_PWD', 'password');
+//define('GOOGLE_PORT', 587);
+//define('GOOGLE_AUTH', 'login');
