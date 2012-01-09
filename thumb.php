@@ -124,6 +124,9 @@ class thumber {
           if (! isset($_REQUEST ["h"])) {
                $this->displayError('Height is not set');
           }
+          if ($_REQUEST["w"] > MAX_THUMB_SIZE || $_REQUEST["h"] > MAX_THUMB_SIZE) {
+               $this->displayError('Dimensions exceed '.MAX_THUMB_SIZE.'px');
+          }
      }
      
      /**
