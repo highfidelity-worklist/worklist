@@ -637,6 +637,10 @@ table.tablesorter thead tr .headerSortUp {
     width: 420px;
     height: 180px;
 }
+#login-form .LV_validation_message {
+    float: left;
+}
+
 .profile-link{
     cursor: pointer;
 }
