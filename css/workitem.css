@@ -660,7 +660,13 @@ span.info-whisper {
 #for_view li .notestext a:hover, .comment a:hover {
     text-decoration:none;
 }
-.button-disabled { opacity: 0.5; -moz-opacity: 0.5; -webkit-opacity: 0.5; }
+input.button-disabled ,
+.button-disabled { 
+    cursor: default;
+    opacity: 0.5; 
+    -moz-opacity: 0.5; 
+    -webkit-opacity: 0.5; 
+}
 
 .removeAttachment  {
     cursor: pointer;

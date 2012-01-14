@@ -606,7 +606,9 @@ table.tablesorter thead tr .headerSortUp {
     text-decoration:none;
 }
 
+input.button-disabled ,
 .button-disabled {
+    cursor: default;
     opacity: 0.5;
     -moz-opacity: 0.5;
     -webkit-opacity: 0.5;

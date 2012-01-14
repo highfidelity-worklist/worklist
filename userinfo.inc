@@ -97,12 +97,23 @@
         </p>
 
         <div class="button-row">
-            <?php if ($reqUserId > 0): ?> 
-            <span id="info-budget"><input type="submit" <?php if ($reqUser->getBudget() <= 0 || !$reqUser->isRunner() || $reqUserId == $user->getId()) {
-             echo 'disabled="disabled"'; } ?> id="give" value="Give Budget" /></span>
-            <span id="btn-bonus"><input type="submit" <?php if ($budget <= 0) { echo 'disabled="disabled"'; } ?> id="pay_bonus" value="Pay Bonus" name="pay_bonus" /></span>
-            <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
-            <?php endif; ?>
+            <?php if ($reqUserId > 0) { ?> 
+            <span id="info-budget"><input type="submit" 
+                <?php if ($reqUser->getBudget() <= 0 || !$reqUser->isRunner() || $reqUserId == $user->getId()) {
+                    echo 'disabled="disabled" class="button-disabled disableable" '; } 
+                ?> id="give" value="Give Budget" />
+            </span>
+            <span id="btn-bonus"><input type="submit" 
+                <?php if ($budget <= 0 || $reqUserId == $user->getId()) { 
+                    echo 'disabled="disabled" class="button-disabled disableable" '; 
+                } ?> 
+                id="pay_bonus" value="Pay Bonus" name="pay_bonus" />
+            </span>
+                <?php if ($reqUserId != $user->getId()) { ?>
+                <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
+            <?php 
+                } 
+            } ?>
         </div>
         <p class="info-label small-text"><br />
             <span id="info-timezone">&nbsp;</span>
