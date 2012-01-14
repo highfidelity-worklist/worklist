@@ -613,7 +613,24 @@ class JsonServer
                 ));
             }
         }
+    }
+    protected function actionGetStatsForProject() {
+        $project = new Project();
+        try {
+            $project->loadById($this->getRequest()->getParam('projectid'));
+        } catch (Exception $e) {
+            $error  = $e->getMessage();
+            return $this->setOutput(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
 
+        $data = array(
+            'total_jobs_stats' => $project->getTotalJobs(),
+            'avg_bid_per_job_stats' => number_format($project->getAvgBidFee(), 2),
+            'avg_job_time_stats' => $project->getAvgJobTime()
+        );
         return $this->setOutput(array(
             'success' => true,
             'data' => $data

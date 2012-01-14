@@ -508,7 +508,10 @@ include("head.html"); ?>
     }
     
     function SetWorkItem(item) {
-        var match = item.attr('id').match(/workitem-\d+/);
+        var match;
+        if (item.attr('id')) {
+            match = item.attr('id').match(/workitem-\d+/);
+        }
         if (match) {
             workitem = match[0].substr(9);
         } else {
@@ -1626,6 +1629,24 @@ var documentsArray = new Array();
             }
         }
     });
+    // get the project stats
+    $.ajax({
+        type: 'post',
+        url: 'jsonserver.php',
+        data: {
+            projectid: projectid,
+            userid: user_id,
+            action: 'getStatsForProject'
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.success) {
+                $("#stats-panel .total_jobs_stats").text(data.data.total_jobs_stats);
+                $("#stats-panel .avg_bid_per_job_stats").text("$" + data.data.avg_bid_per_job_stats);
+                $("#stats-panel .avg_job_time_stats").text(data.data.avg_job_time_stats);
+            }
+        }
+    });
 })(jQuery);
 </script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
@@ -1779,9 +1800,9 @@ if (is_object($inProject)) {
                 </thead>
                 <tbody>
                     <tr class="row-role-list-live">
-                        <td><?php echo $inProject->getTotalJobs()?></td>
-                        <td title="Average amount of accepted Bid per Job">$<?php echo number_format($inProject->getAvgBidFee(), 2);?></td>
-                        <td title="Average time from Bid Accept to being Paid"><?php echo $inProject->getAvgJobTime();?></td>
+                        <td class="total_jobs_stats">Loading ...</td>
+                        <td class="avg_bid_per_job_stats" title="Average amount of accepted Bid per Job"></td>
+                        <td class="avg_job_time_stats" title="Average time from Bid Accept to being Paid"></td>
                     </tr>
                 </tbody>
             </table>
