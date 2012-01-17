@@ -588,7 +588,8 @@ class JsonServer
         $user->findUserById($this->getRequest()->getParam('userid'));
         $data = array(
             'images' => array(),
-            'documents' => array()
+            'documents' => array(),
+            'developers' => array()
         );
         foreach ($files as $file) {
             if (!File::isAllowed($file->getStatus(), $user)) {
@@ -597,22 +598,49 @@ class JsonServer
             $icon = File::getIconFromMime($file->getMime());
             if ($icon === false) {
                 array_push($data['images'], array(
-                    'fileid'=> $file->getId(),
-                    'url'    => $file->getUrl(),
-                    'icon'    => $file->getUrl(),
+                    'fileid' => $file->getId(),
+                    'url' => $file->getUrl(),
+                    'icon' => $file->getUrl(),
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
                 ));
             } else {
                 array_push($data['documents'], array(
-                    'fileid'=> $file->getId(),
-                    'url'    => $file->getUrl(),
-                    'icon'    => $icon,
+                    'fileid' => $file->getId(),
+                    'url' => $file->getUrl(),
+                    'icon' => $icon,
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
                 ));
             }
         }
+
+        $project = new Project();
+        try {
+            $project->loadById($this->getRequest()->getParam('projectid'));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            return $this->setOutput(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+        if($developers = $project->getDevelopers()) { 
+            foreach($developers as $developer) {
+                array_push($data['developers'], array(
+                    'id'=> $developer['id'],
+                    'nickname' => $developer['nickname'],
+                    'totalJobCount' => $developer['totalJobCount'],
+                    'lastActivity' => $project->getDevelopersLastActivity($developer['id']),
+                    'totalEarnings' => ($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : ""
+                ));
+            }
+        }
+
+        return $this->setOutput(array(
+            'success' => true,
+            'data' => $data
+        ));
     }
     protected function actionGetStatsForProject() {
         $project = new Project();

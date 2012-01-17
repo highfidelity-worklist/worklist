@@ -1932,17 +1932,19 @@ if (is_object($inProject)) {
                         <th>Total Earned</th>
                     </tr>
                 </thead>
-                <tbody class="developerContent">
-                    <?php if($developers = $inProject->getDevelopers()) { ?>
-                        <?php foreach($developers as $developer) { ?>
-                            <tr class="row-developer-list-live">
-                                <td class="developer"><a href="#" onclick="javascript:showUserInfo(<?php echo $developer['id']?>);"><?php echo $developer['nickname']?></a></td>
-                                <td class="jobCount"><?php echo $developer['totalJobCount']?></td>
-                                <td><?php echo $inProject->getDevelopersLastActivity($developer['id'])?></td>
-                                <td><?php echo (($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : "") ?></td>
-                            </tr>
-                        <?php } ?>
-                    <?php } ?>
+                <tbody class="developerContent">              
+                <# if (developers.length > 0) { 
+                    for(var i=0; i < developers.length; i++) {
+                    var developer = developers[i];
+                    #>
+                    <tr class="row-developer-list-live">
+                        <td class="developer"><a href="#" onclick="javascript:showUserInfo(<#= developer.id #>);"><#= developer.nickname #></a></td>
+                        <td class="jobCount"><#= developer.totalJobCount #></td>
+                        <td><#= developer.lastActivity #></td>
+                        <td><#= developer.totalEarnings #></td>
+                    </tr>
+                    <# } 
+                } #>
                 </tbody>
             </table>
         </div>
