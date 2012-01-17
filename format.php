@@ -77,7 +77,7 @@ $userId = getSessionUserId();
         <div id="center">
 
 <!-- LOGO -->
-            <div id="stats">
+            <div id="stats-area">
                 <span id='stats-text'>
                     <a href='./worklist.php?status=bidding' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
                     bidding, 

@@ -117,7 +117,7 @@ var updateFeeSumsTimes = '';
     		<div id="center">
 
     <!-- LOGO -->
-    			<div id="stats">
+    			<div id="stats-area">
     				<span id='stats-text'>
                         <a href='javascript:ShowStats()' class='iToolTip jobsBidding' ><span id='count_b'></span> jobs</a>
                         bidding, 

@@ -275,7 +275,7 @@ a:hover {
     text-decoration:none;
 }
 
-#stats {
+#stats-area {
     color:#98AAB2;
     float:right;
     font-size:12px;
@@ -288,15 +288,15 @@ a:hover {
     display:none;
 }
 
-#stats a{
+#stats-area a{
     cursor: hand;
 }
 
-#nav a, #welcome a ,#stats  a{
+#nav a, #welcome a ,#stats-area  a{
     color: #6f6f6f;
     text-decoration: none;
 }
-#nav a:hover, #welcome a:hover ,#stats  a:hover{
+#nav a:hover, #welcome a:hover ,#stats-area  a:hover{
     color: #98AAB2;
 }
 
