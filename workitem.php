@@ -70,35 +70,35 @@ if ($order_by != "DESC") {
 
 if (isset($_REQUEST['withdraw_bid'])) {
     $action = "withdraw_bid";
-} else if(isset($_POST['save_workitem'])) {
+} else if(isset($_REQUEST['save_workitem'])) {
     $action = "save_workitem";
-} else if(isset($_POST['place_bid'])) {
+} else if(isset($_REQUEST['place_bid'])) {
     $action = "place_bid";
-} else if(isset($_POST['swb'])) {
+} else if(isset($_REQUEST['swb'])) {
     $action = "swb";
-} else if(isset($_POST['edit_bid'])) {
+} else if(isset($_REQUEST['edit_bid'])) {
     $action = "edit_bid";
-} else if(isset($_POST['add_fee'])) {
+} else if(isset($_REQUEST['add_fee'])) {
     $action = "add_fee";
-} else if (isset($_POST['add_tip'])) {
+} else if (isset($_REQUEST['add_tip'])) {
     $action = "add_tip";
-} else if(isset($_POST['accept_bid'])) {
+} else if(isset($_REQUEST['accept_bid'])) {
     $action = "accept_bid";
-} else if(isset($_POST['accept_multiple_bid'])) {
+} else if(isset($_REQUEST['accept_multiple_bid'])) {
     $action = "accept_multiple_bid";
-} else if(isset($_POST['status-switch'])) {
+} else if(isset($_REQUEST['status-switch'])) {
     $action = "status-switch";
-} else if(isset($_POST['save-review-url'])) {
+} else if(isset($_REQUEST['save-review-url'])) {
     $action = "save-review-url";
-} else if(isset($_POST['invite-people'])) {
+} else if(isset($_REQUEST['invite-people'])) {
     $action = "invite-people";
-} else if (isset($_POST['newcomment'])) {
+} else if (isset($_REQUEST['newcomment'])) {
     $action = 'new-comment';
-} else if (isset($_POST['start_codereview'])) {
+} else if (isset($_REQUEST['start_codereview'])) {
     $action = "start_codereview";
-} else if (isset($_POST['finish_codereview'])) {
+} else if (isset($_REQUEST['finish_codereview'])) {
     $action = "finish_codereview";
-} else if (isset($_POST['cancel_codereview'])) {
+} else if (isset($_REQUEST['cancel_codereview'])) {
     $action = "cancel_codereview";
 }
 
@@ -117,8 +117,8 @@ if ($action =='save_workitem') {
     $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills',
                 'is_bug', 'bug_job_id');
     foreach ($args as $arg) {
-        if (!empty($_POST[$arg])) {
-            $$arg = $_POST[$arg];
+        if (!empty($_REQUEST[$arg])) {
+            $$arg = $_REQUEST[$arg];
         } else {
             $$arg = '';
         }
@@ -140,7 +140,7 @@ if ($action =='save_workitem') {
 	$workitem->setIs_bug($is_bug);
 
     // summary
-    if (isset($_POST['summary']) && $workitem->getSummary() != $summary) {
+    if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
         $workitem->setSummary($summary);
         if ($workitem->getStatus() != 'DRAFT') {
             $new_update_message .= "Summary changed. ";
@@ -148,7 +148,7 @@ if ($action =='save_workitem') {
         }
     }
 
-    if (isset($_POST['skills'])) {
+    if (isset($_REQUEST['skills'])) {
         $skillsArr = explode(', ', $skills);
         // remove empty values
         foreach ($skillsArr as $key => $value) {
@@ -186,7 +186,7 @@ if ($action =='save_workitem') {
             }
         }
     }
-    if ($workitem->getNotes() != $notes && isset($_POST['notes'])) {
+    if ($workitem->getNotes() != $notes && isset($_REQUEST['notes'])) {
         $workitem->setNotes($notes);
         $new_update_message .= "Notes changed. ";
         $job_changes[] = '-notes';
@@ -206,8 +206,8 @@ if ($action =='save_workitem') {
         $job_changes[] = '-sandbox';
     }
     // Send invites
-    if (!empty($_POST['invite'])) {
-        $people = explode(',', $_POST['invite']);
+    if (!empty($_REQUEST['invite'])) {
+        $people = explode(',', $_REQUEST['invite']);
         invitePeople($people, $workitem);
         $new_update_message .= "Invitations sent. ";
         $job_changes[] = '-invitation';
@@ -234,7 +234,7 @@ if ($action =='save_workitem') {
 		error_log("bug_job_id:".$bug_job_id);
 	    $workitem->setIs_bug(1);
         $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
-    } elseif (isset($_POST['is_bug']) && $_POST['is_bug'] == 'on') {
+    } elseif (isset($_REQUEST['is_bug']) && $_REQUEST['is_bug'] == 'on') {
 	    $bugJournalMessage = " (which is a bug)";
     } elseif (isset($is_bug) && $is_bug == 1) {
         $bugJournalMessage = " (which is a bug)";
@@ -261,15 +261,22 @@ if ($action =='save_workitem') {
 }
 
 if ($action == 'new-comment') {
-    if ((isset($_POST['worklist_id']) && !empty($_POST['worklist_id'])) &&
-        (isset($_POST['user_id'])     && !empty($_POST['user_id']))     &&
-        (isset($_POST['comment'])     && !empty($_POST['comment']))) {
+    if ((isset($_REQUEST['worklist_id']) && !empty($_REQUEST['worklist_id'])) &&
+        (isset($_REQUEST['user_id'])     && !empty($_REQUEST['user_id']))     &&
+        (isset($_REQUEST['comment'])     && !empty($_REQUEST['comment']))) {
         
-        if (isset($_POST['comment_id']) && !empty($_POST['comment_id'])) {
-            $parent_comment = $_POST['comment_id'];
+        if (isset($_REQUEST['comment_id']) && !empty($_REQUEST['comment_id'])) {
+            $parent_comment = (int) $_REQUEST['comment_id'];
         } else {
             $parent_comment = NULL;
         }
+        $worklist_id = (int) $_REQUEST['worklist_id'];
+        $user_id = (int) $_REQUEST['user_id'];
+        $comment = $_REQUEST['comment'];
+        $correspondent = addComment($worklist_id,
+            $user_id,
+            $comment,
+            $parent_comment);
 
         if ($_POST['order_by'] != "DESC") {
             $order_by = "ASC";
@@ -277,10 +284,6 @@ if ($action == 'new-comment') {
             $order_by = "DESC";
         }
 
-        $correspondent = addComment($_POST['worklist_id'],
-                   $_POST['user_id'],
-                   $_POST['comment'],
-                   $parent_comment);
         
         // Send journal notification
         if ($workitem->getStatus() != 'DRAFT') {
@@ -293,7 +296,7 @@ if ($action == 'new-comment') {
                 array(
                     'who' => $_SESSION['nickname'],
                     // removed nl2br as it's cleaner to be able to choose if this is used on output
-                    'comment' => $_POST['comment']
+                    'comment' => $comment
                 ));
         }
     }
@@ -303,12 +306,12 @@ if ($action == 'new-comment') {
 
 if($action =='invite-people') {
     // Send invitation
-    if (invitePerson($_POST['invite'], $workitem)) {
-        $result = array('sent'=>'yes','person'=> htmlentities($_POST['invite']));
-    }else{
-        $result = array('sent'=>'no','person'=> htmlentities($_POST['invite']));
+    if (invitePerson($invite, $workitem)) {
+        $result = array('sent'=>'yes','person'=> $invite);
+    } else {
+        $result = array('sent'=>'no','person'=> $invite);
     }
-    if($_POST['json'] =='y') {
+    if($_REQUEST['json'] =='y') {
       ob_start();
       $json = json_encode($result);
       echo $json;
@@ -336,8 +339,8 @@ if($action == 'finish_codereview') {
     } else {
         $args = array('itemid', 'crfee_amount', 'fee_category', 'crfee_desc', 'is_expense', 'is_rewarder');
         foreach ($args as $arg) {
-            if (isset($_POST[$arg])) {
-                   $$arg = mysql_real_escape_string($_POST[$arg]);
+            if (isset($_REQUEST[$arg])) {
+                   $$arg = mysql_real_escape_string($_REQUEST[$arg]);
             } else {
                 $$arg = '';
             }
@@ -390,10 +393,10 @@ if($action =='save-review-url') {
     ($worklist['status'] != 'DONE'))) {
         error_log("Input forgery detected for user $userId: attempting to $action.");
     } else {
-        $sandbox = (!empty($_POST['sandbox-url'])) ? $_POST['sandbox-url'] : $workitem->getSandbox();
-        $notes = (!empty($_POST['review-notes'])) ? $_POST['review-notes'] : null;
+        $sandbox = (!empty($_REQUEST['sandbox-url'])) ? $_REQUEST['sandbox-url'] : $workitem->getSandbox();
+        $notes = (!empty($_REQUEST['review-notes'])) ? $_REQUEST['review-notes'] : null;
         
-        $status_review = $_POST['quick-status-review'];
+        $status_review = $_REQUEST['quick-status-review'];
         if(!empty($status_review)) {
            changeStatus($workitem, $status_review, $user);
         }
@@ -433,7 +436,7 @@ if($action =='save-review-url') {
 }
 
 if ($action =='status-switch') {
-    $status = $_POST['quick-status'];
+    $status = $_REQUEST['quick-status'];
     $status_error = '';
 
     if ($status == 'DONE' && $workitem->getProjectId() == 0) {
@@ -475,12 +478,14 @@ if ($action == "place_bid") {
     //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
     //a new variable is used to send the unenscaped notes in email alert.
     //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
-    $unescaped_notes = nl2br($_POST['notes']);
 
     $args = array('bid_amount', 'done_in', 'bid_expires', 'notes', 'mechanic_id');
     foreach ($args as $arg) {
-        $$arg = mysql_real_escape_string($_POST[$arg]);
+        $$arg = mysql_real_escape_string($_REQUEST[$arg]);
     }
+    $bid_amount = (int) $bid_amount;
+    $mechanic_id = (int) $mechanic_id;
+
     if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
     $summary = getWorkItemSummary($worklist_id);
 
@@ -525,7 +530,7 @@ if ($action == "place_bid") {
                  'done_in' => $done_in,
                  'bid_expires' => $bid_expires,
                  'bid_amount' => $bid_amount,
-                 'notes' => $unescaped_notes,
+                 'notes' => replaceEncodedNewLinesWithBr($notes),
                  'bid_id' => $bid_id
             )
         );
@@ -548,7 +553,7 @@ if ($action == "place_bid") {
             Notification::workitemNotify(array('type' => 'suggestedwithbid',
             'workitem' => $workitem,
             'recipients' => array('projectRunners')),
-            array('notes' => $unescaped_notes));
+            array('notes' => $notes));
         }
     } else {
         error_log("Input forgery detected for user $userId: attempting to $action.");
@@ -565,12 +570,14 @@ if ($action =="edit_bid") {
         //Escaping $notes with mysql_real_escape_string is generating \n\r instead of <br>
         //a new variable is used to send the unenscaped notes in email alert.
         //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
-        $unescaped_notes = nl2br($_POST['notes']);
 
         $args = array('bid_id', 'bid_amount', 'done_in_edit', 'bid_expires_edit', 'notes');
         foreach ($args as $arg) {
-            $$arg = mysql_real_escape_string($_POST[$arg]);
+            $$arg = mysql_real_escape_string($_REQUEST[$arg]);
         }
+
+        $bid_amount = (int) $bid_amount;
+        $mechanic_id = (int) $mechanic_id;
 
         if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
         $summary = getWorkItemSummary($worklist_id);
@@ -596,7 +603,7 @@ if ($action =="edit_bid") {
             'done_in' => $done_in_edit,
             'bid_expires' => $bid_expires_edit,
             'bid_amount' => $bid_amount,
-            'notes' => $unescaped_notes,
+            'notes' => replaceEncodedNewLinesWithBr($notes),
             'bid_id' => $bid_id
         ));
 
@@ -615,16 +622,20 @@ if ($action == "add_fee") {
     if(! $user->isEligible()) {
         error_log("Input forgery detected for user $userId: attempting to $action.");
     } else {
-        $args = array('itemid', 'fee_amount', 'fee_category', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
+        $args = array('itemid', 'fee_amount', 'fee_desc', 'mechanic_id', 'is_expense', 'is_rewarder');
         foreach ($args as $arg) {
-            if (isset($_POST[$arg]))  {
-               $$arg = mysql_real_escape_string($_POST[$arg]);
+            if (isset($_REQUEST[$arg]))  {
+               $$arg = mysql_real_escape_string($_REQUEST[$arg]);
             }
             else {
                 $$arg = '';
             }
         }
-            $journal_message = AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder);
+        $itemid = (int) $itemid;
+        $fee_amount = (float) $fee_amount;
+        $mechanic_id = (int) $mechanic_id;
+
+        $journal_message = AddFee($itemid, $fee_amount, '', $fee_desc, $mechanic_id, '', '');
 
         if($workitem->getStatus() != 'DRAFT') {
             // notify runner of new fee
@@ -651,12 +662,16 @@ if ($action == "add_fee") {
 if ($action == "add_tip") {
     $args = array('itemid', 'tip_amount', 'tip_desc', 'mechanic_id');
     foreach ($args as $arg) {
-        if (isset($_POST[$arg])) {
-            $$arg = mysql_real_escape_string($_POST[$arg]);
+        if (isset($_REQUEST[$arg])) {
+            $$arg = mysql_real_escape_string($_REQUEST[$arg]);
         } else {
             $$arg = '';
         }
     }
+
+    $itemid = (int) $itemid;
+    $fee_amount = (float) $tip_amount;
+    $mechanic_id = (int) $mechanic_id;
 
     // is the logged in user the mechanic on the task?
     if ($workitem->getMechanicId() == getSessionUserId()) {
@@ -816,13 +831,13 @@ if ($action=='accept_multiple_bid') {
 //Withdraw a bid
 if ($action == "withdraw_bid") {
     if (isset($_REQUEST['bid_id'])) {
-        withdrawBid(intval($_REQUEST['bid_id']), $_POST['withdraw_bid_reason']);
+        withdrawBid(intval($_REQUEST['bid_id']), $_REQUEST['withdraw_bid_reason']);
     } else {
         $fee_id = intval($_REQUEST['fee_id']);
         $res = mysql_query('SELECT f.bid_id, f.amount, w.runner_id FROM `' . FEES . '` AS f, ' . WORKLIST . ' AS w WHERE f.`id`=' . $fee_id . ' AND f.worklist_id = w.id');
         $fee = mysql_fetch_object($res);
         if ((int)$fee->bid_id !== 0) {
-            withdrawBid($fee->bid_id, $_POST['withdraw_bid_reason']);
+            withdrawBid($fee->bid_id, $_REQUEST['withdraw_bid_reason']);
         } else {
             deleteFee($fee_id);
         }

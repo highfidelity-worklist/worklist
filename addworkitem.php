@@ -44,8 +44,9 @@ if ($userId > 0 ) {
     foreach ($args as $arg) {
         // Removed mysql_real_escape_string, because we should 
         // use it in sql queries, not here. Otherwise it can be applied twice sometimes
-        $$arg = !empty($_POST[$arg])?$_POST[$arg]:'';
+        $$arg = !empty($_REQUEST[$arg])?$_REQUEST[$arg]:'';
     }
+
 
     $creator_id = $userId;
 

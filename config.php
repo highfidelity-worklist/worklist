@@ -215,3 +215,4 @@ if (! defined('VIRUS_SCAN_CMD')) define('VIRUS_SCAN_CMD', '/usr/bin/clamscan');
 // max thumbnail size
 if (!defined('MAX_THUMB_SIZE')) define('MAX_THUMB_SIZE', 500);
 
+require_once('sanitization.php');
