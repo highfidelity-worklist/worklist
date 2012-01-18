@@ -1134,7 +1134,7 @@ $(document).ready(function(){
             <span class="info-data" style="font-size:14px"><?php echo $worklist['status'];?></span>
             <?php
             if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') || $is_runner 
-            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE')) :
+            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE' && $worklist['runner_id'] == 0)) :
             ?>
             <form method="post" action="" style="display:inline">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
