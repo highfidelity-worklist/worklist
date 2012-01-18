@@ -872,7 +872,6 @@ function checkLogin() {
      */
     function linkify($url, $author = null)
     {
-        $url = preg_replace('/&#/','&XXX',$url);
         $original = $url;
 
         $class = '';
@@ -945,7 +944,7 @@ function checkLogin() {
         // find anything that looks like a link and add target=_blank so it will open in a new window
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"", $url);
 
-        return preg_replace('/&XXX/','&#',$url);
+        return $url;
     }
 
     /**
@@ -973,8 +972,3 @@ function checkLogin() {
         return $projects;
     }
 
-/* This function is used to add <br/> to encoded strings
- */
-    function replaceEncodedNewLinesWithBr($string) {
-        return str_replace('&#10;', '<br/>', $string);
-    }

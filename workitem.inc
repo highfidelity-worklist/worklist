@@ -1187,7 +1187,7 @@ if ($action =="edit"):  ?>
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
                             if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
-                            <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo html_entity_decode($worklist['summary']);?>"/>
+                            <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
                             <?php } ?></span>
@@ -1285,7 +1285,7 @@ if ($action =="edit"):  ?>
                                     <textarea name="notes" id="edit-notes" <?php if(count($activeBids) > 0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
                                 </span>
                             <?php else:?>
-                                <span id="info-notes"><?php echo replaceEncodedNewLinesWithBr($worklist['notes']);?></span>
+                                <span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
                             <?php endif;?>
                         </li>
                         <li>
@@ -1414,7 +1414,7 @@ if ($action =="edit"):  ?>
                     <!-- View: Notes textarea -->
                     <li>
                         <span class="info-label">Notes</span>
-                        <p class="notestext"><?php echo replaceEncodedNewLinesWithBr(linkify($worklist['notes'])); ?></p>
+                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
                         <!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
                     </li>
                     <!-- View: Sandbox textarea -->
@@ -1515,7 +1515,7 @@ if ($action =="edit"):  ?>
                                 </div>
                                 <div class="comment">
                                     <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')" />
-                                    <?php echo replaceEncodedNewLinesWithBr(linkify($comment['comment']->getComment())); ?>
+                                    <?php echo nl2br(linkify(htmlspecialchars($comment['comment']->getComment()))); ?>
                                 </div>
                                 <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
                                 <div class="reply-lnk">

@@ -46,9 +46,7 @@ if ($bid->id) {
     // Runner, item creator, or bidder can see item.
     if ($user->isRunner() || ($user->getId() == $workItem->getCreatorId()) || ($user->getId() == $bid->bidder_id)) {
         $bid->setAnyAccepted($workItem->hasAcceptedBids());
-        $row = $bid->toArray();
-        $row['notes'] = html_entity_decode($row['notes']);
-        $json = json_encode($row);
+        $json = json_encode($bid->toArray());
         echo $json;
     } else {
         echo $blankjson;
