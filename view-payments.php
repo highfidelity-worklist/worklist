@@ -98,7 +98,7 @@ $sql_get_fee_totals = "
         AND f.paid = '0'
         AND f.withdrawn = '0'
         AND f.amount > 0
-        AND u.paypal = '1'
+        AND u.paypal_verified = '1'
         AND u.has_W2 = 0
         AND wl.project_id IN (" . $sql_get_fund_projects . ")
     GROUP BY f.user_id
@@ -121,7 +121,7 @@ if ($fund_id == 3) {
             LEFT JOIN ".USERS." u on u.id = b.user_id
         WHERE
             b.paid = 0
-            AND u.paypal = '1' and b.bonus = 1
+            AND u.paypal_verified = '1' and b.bonus = 1
             AND u.has_W2 = 0
        GROUP BY b.user_id
         ";
@@ -424,7 +424,7 @@ foreach ($payee_totals as $payee) {
             wl.status = 'DONE'
             AND f.paid = '0'
             AND f.withdrawn = '0'
-            AND u.paypal = '1'
+            AND u.paypal_verified = '1'
             AND f.amount > 0
             AND f.user_id = '".$payee["mechanic_id"]."'
             AND wl.project_id IN (" . $sql_get_fund_projects . ")";
