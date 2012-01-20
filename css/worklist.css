@@ -640,7 +640,11 @@ input.button-disabled ,
     height: 180px;
 }
 #login-form .LV_validation_message {
-    float: left;
+    text-align: left;
+}
+
+#login-form .LV_valid {
+    padding-left: 0px;
 }
 
 .profile-link{
