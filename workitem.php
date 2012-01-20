@@ -183,6 +183,9 @@ if ($action =='save_workitem') {
                 }
                 $status_change = '-' . ucfirst(strtolower($status));
                 $new_update_message .= "Status set to $status. ";
+                if ($status == 'DONE') {
+                    $displayDialogAfterDone = true;
+                }
             }
         }
     }
@@ -441,6 +444,9 @@ if ($action =='status-switch') {
     } else {
         if (changeStatus($workitem, $status, $user)) {
             $workitem->save();
+            if ($status == 'DONE') {
+                $displayDialogAfterDone = true;
+            }
             if ($status != 'DRAFT') {
                 $new_update_message = "Status set to $status. ";
                 $notifyEmpty = false;
@@ -841,6 +847,9 @@ if ($action == false) {
 
 if ($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id . "&order=" . $order_by;
+    if ($status == 'DONE') {
+        $displayDialogAfterDone = true;
+    }
 }
 if ($redirectToWorklistView) {
     $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;

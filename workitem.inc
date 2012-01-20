@@ -49,6 +49,9 @@
 /*********************************** HTML layout begins here  *************************************/
 include("head.html"); ?>
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
+<link type="text/css" href="css/review.css" rel="stylesheet" />
+<link type="text/css" href="css/favorites.css" rel="stylesheet" />
+<link type="text/css" href="css/userinfo.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
@@ -61,6 +64,9 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.autogrow.js"></script>
+<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="js/review.js"></script>
+<script type="text/javascript" src="js/favorites.js"></script>
 <script type="text/javascript">
 <!-- Start User Info popup code -->
 function resizeIframeDlg() {
@@ -102,6 +108,17 @@ $(document).ready(function() {
             }, 3000);
         }
     });
+
+    <?php
+    if ($displayDialogAfterDone == true && $worklist['mechanic_id'] > 0) {
+        $_SESSION['displayDialogAfterDone'] = false;
+        $row = $workitem->getUserDetails($worklist['mechanic_id']);
+        if (! empty($row)) {
+            $nickname = $row['nickname'];
+            echo "WReview.displayInPopup({user_id: " . $worklist['mechanic_id'] . ", nickname:'" . $row['nickname'] . "', withTrust: true});";
+        }
+    }
+    ?>
 
     <?php if ($user_id > 0) { ?>
     $.get('getskills.php', function(data) {
