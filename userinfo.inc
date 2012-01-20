@@ -134,6 +134,7 @@
             <li><a href="#tabs-4">Sandbox</a><li>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
+            <li><a href="budgetHistory.php?id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>">Budget History</a></li>
         </ul>
     <?php } else {?>
         <ul>
@@ -145,6 +146,7 @@
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <?php endif; ?>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
+            <li><a href="budgetHistory.php?id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>">Budget History</a></li>
         </ul>
         <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
     <?php } ?>

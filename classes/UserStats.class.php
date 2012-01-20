@@ -327,7 +327,8 @@ class UserStats{
         $res = mysql_query($sql);
         $functional_all_count = mysql_num_rows($res);
 
-        return $onTimePercentage = round(($functional_onTime_count/$functional_all_count)*100, 2);
+        $onTimePercentage = $functional_all_count <> 0 ? round(($functional_onTime_count / $functional_all_count) * 100, 2) : 0;
+        return $onTimePercentage;
     }
 
     public function getTimeCompletedAvg() {
