@@ -834,9 +834,6 @@ input.button-disabled ,
     padding: 0 20px;
     color: #98AAB2;
 }
-#videoDiv {
-    display: none;
-}
 #contact-dialog {
     display: none;
 }

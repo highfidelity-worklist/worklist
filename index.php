@@ -43,66 +43,14 @@ require_once("functions.php");
 <script type="text/javascript" src="js/class.js"></script>
 <script type="text/javascript" src="js/add-proj-contact.js"></script>
 
-<script type="text/javascript">
-
-$(document).ready(function() {
-    // uncomment this once the videos are ready
-    // the main videoID needs to be loaded here so that you can load it on page load
-    google.setOnLoadCallback(_run("DoFfdyIcVKw"));
-});
-
-</script>
-
-<!-- youtube js -->
 <script src="https://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
-  google.load("swfobject", "2.1");
-</script>
-<script type="text/javascript">
-/*
-* Change out the video that is playing
-*/
-
-// Update a particular HTML element with a new value
-function updateHTML(elmId, value) {
-    document.getElementById(elmId).innerHTML = value;
-}
-
-// Loads the selected video into the player.
-function loadVideo(videoID) {
-    if(ytplayer) {
-      ytplayer.loadVideoById(videoID);
-    }
-}
-
-// This function is called when an error is thrown by the player
-function onPlayerError(errorCode) {
-    alert("An error occured of type:" + errorCode);
-}
-
-// This function is automatically called by the player once it loads
-function onYouTubePlayerReady(playerId) {
-    ytplayer = document.getElementById("ytPlayer");
-    ytplayer.addEventListener("onError", "onPlayerError");
-}
-
-// The "main method" of this sample. Called when someone clicks "Run".
-function loadPlayer(videoID) {
-    // The video to load
-    //var videoID = "ylLzyHk54Z0"
-    // Lets Flash from another domain call JavaScript
-    var params = { allowScriptAccess: "always", wmode: "transparent" };
-    // The element id of the Flash embed
-    var atts = { id: "ytPlayer" };
-    // All of the magic handled by SWFObject (http://code.google.com/p/swfobject/)
-    swfobject.embedSWF("https://www.youtube.com/v/" + videoID +
-                       "&enablejsapi=1",
-                       "videoDiv", "450", "270", "8", null, null, params, atts);
-}
-function _run(videoID) {
-    loadPlayer(videoID);
-}
-
+$(document).ready(function(){
+    $(".other-videos a").click(function(){
+        var url = "https://www.youtube.com/embed/";
+        $("iframe").attr("src", url + $(this).attr("v") + "?version=3");
+    });
+});
 </script>
 </head>
 <body>
@@ -132,10 +80,12 @@ if (getSessionUserId() > 0) {
                 network of developers, designers and testers</p>
             </div>
             <div class="other-videos">
-                <p><a href="#" onclick="loadVideo('DoFfdyIcVKw'); return false;">Intro for developers</a><a href="#" onclick="loadVideo('60-iFFBl4Z4'); return false;">Intro for entrepreneurs</a></p>
+                <p><a href="#" v='DoFfdyIcVKw'>Intro for developers</a><a href="#" v='60-iFFBl4Z4'>Intro for entrepreneurs</a></p>
             </div>
             <div id="home-videos">
-                <div class="main-video"><div id="videoDiv"></div></div>
+                <div class="main-video"><div id="videoDiv">
+                    <iframe width="450" height="270" src="https://www.youtube.com/embed/DoFfdyIcVKw?version=3" frameborder="0" hd allowfullscreen></iframe>
+                </div></div>
             </div>
             <div id="home-nav-btns">
                 <a id="add-projects" href="#">Create New Project</a>
