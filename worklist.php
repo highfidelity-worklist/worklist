@@ -560,7 +560,11 @@ include("head.html"); ?>
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
-        loaderImg.show("loadRunning", "Loading, please wait ...");
+        if (inProject.length > 0) {
+            $('.table-worklist tbody').html('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Loading ...</td></tr>');        
+        } else {
+            loaderImg.show("loadRunning", "Loading, please wait ...");
+        }
         $.ajax({
             type: "POST",
             url: 'getworklist.php',
