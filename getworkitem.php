@@ -32,7 +32,7 @@ $query = "SELECT
 $rt = mysql_query($query);
 if ($rt) {
     $row = mysql_fetch_assoc($rt);
-    $row['notes'] = preg_replace("/\r?\n/", "<br />", $row['notes']);
+    $row['notes'] = truncateText($row['notes']);
     $query1 = ' SELECT c.comment, u.nickname '
             . ' FROM ' . COMMENTS . ' AS c '
             . ' INNER JOIN ' . USERS . ' AS u ON c.user_id = u.id ' 
@@ -43,7 +43,7 @@ if ($rt) {
     $rtc = mysql_query($query1);
     if ($rt) {
         $rowc = mysql_fetch_assoc($rtc);
-        $row['comment'] = preg_replace("/\r?\n/", "<br />", $rowc['comment']);
+        $row['comment'] = truncateText($rowc['comment']);
         $row['commentAuthor'] = $rowc['nickname'];
     } else {
         $row['comment'] = 'No comments yet.';
@@ -53,3 +53,27 @@ if ($rt) {
     $json = json_encode(array('error' => "No data available"));
 }
 echo $json;
+
+function truncateText($text, $chars = 200, $lines = 5) {
+    $total = strlen($text);
+    if ($total > $chars) {
+        $text = substr($text, 0, $chars);
+    }
+    $text = nl2br($text);
+    $textArray = explode('<br/>', $text);
+    $textArraySize = count($textArray);
+
+    // Remove extra lines
+    if ($textArraySize > $lines) {
+        $count = $textArraySize - $lines;
+        for ($i = 0; $i < $count; $i++) {
+            array_pop($textArray);
+        }
+    }
+    
+    $text = implode('<br/>', $textArray);
+    if ($total > $chars) {
+        $text = $text . " (...)";
+    }
+    return $text;
+}
