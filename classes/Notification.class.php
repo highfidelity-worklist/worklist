@@ -212,7 +212,7 @@ class Notification {
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
         $body = '';
-        $subject = '#' . $itemId . ' ' . $workitem -> getSummary();
+        $subject = '#' . $itemId . ' ' . html_entity_decode($workitem -> getSummary());
         $from_address = '<noreply-'.$project_name.'@worklist.net>';
         $headers=array('From' => '"'.$project_name.'-'.strtolower( $workitem -> getStatus() ).'" '.$from_address);
         switch ($options['type']) {

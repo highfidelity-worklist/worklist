@@ -342,7 +342,7 @@ $(document).ready(function(){
     });
 
     // If the bid info popup is set to modal clipboard won't work!
-    $('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 405, show: 'fade', hide: 'fade' });
+    $('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({ 
@@ -620,9 +620,7 @@ $(document).ready(function(){
                 $('#popup-bid-info form').append('<input type="button" name="edit" id="edit" value="Edit" onClick="return ConfirmEditBid()"  style="padding-left:20px;padding-right:20px;">');
 <?php endif; ?>
             }
-<?php if ($worklist['status'] == 'BIDDING' && ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id))) {?>
-    $('#popup-bid-info form').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" style="margin-left:4px;cursor:pointer;">');
-<?php } ?>
+
 <?php if($worklist['status'] != 'DONE' && $worklist['status'] != 'WORKING' && $worklist['status'] != 'FUNCTIONAL' && $worklist['status'] != 'REVIEW' && $worklist['status'] != 'COMPLETED'){?>
             if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid_accept').length == 0){
                   $('#popup-bid-info form').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" style="float:right;">');
@@ -782,16 +780,7 @@ $(document).ready(function(){
         $('#popup-withdraw-bid').dialog('open');
         return false;
   }
-    function pingBidder(id) {
-        ping_who = 'bidder';
-        $('#popup-pingtask form p #echo-journal').parent('p').remove();
-        $('#popup-pingtask form h5').html('Ping about Bid');
-        $('#popup-pingtask form input[name="bidder"]').val(id);
-        $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping about Bid');
-        return false;
-    }
-    
+
   function showFeeForm() {
      $('#popup-addfee').dialog('open');
      return false;
@@ -937,7 +926,7 @@ $(document).ready(function(){
         });
         $('#popup-multiple-bid-info').dialog('open');
     }
-    
+
     $(function() {
         $.loggedin = <?php echo isset($_SESSION['userid']) ? "true" : "false" ?>;
 
@@ -965,8 +954,7 @@ $(document).ready(function(){
             var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
-            var bid_id = $('#popup-pingtask form input[name="bidder"]').val();
-            var data = {id : <?php echo $worklist_id; ?>, who : ping_who, msg : msg, mail : mail, journal : journal, cc : cc, bid_id : bid_id};
+            var data = {id : <?php echo $worklist_id; ?>, who : ping_who, msg : msg, mail : mail, journal : journal, cc : cc};
             $.ajax({
                 type: "POST",
                 url: 'pingtask.php',
@@ -991,7 +979,6 @@ $(document).ready(function(){
             ping_who = 'mechanic';
             $('#popup-pingtask form h5').html('Ping the Mechanic about the task');
             $('#popup-pingtask').dialog('open');
-            $('#popup-pingtask').dialog('option', 'title', 'Ping the Mechanic about the task');
             return false;
         });
 
@@ -1004,7 +991,6 @@ $(document).ready(function(){
             ping_who = 'runner';
             $('#popup-pingtask form h5').html('Ping the Runner about the task');
             $('#popup-pingtask').dialog('open');
-            $('#popup-pingtask').dialog('option', 'title', 'Ping the Runner about the task');
             return false;
         });
 
@@ -1017,7 +1003,6 @@ $(document).ready(function(){
             ping_who = 'creator';
             $('#popup-pingtask form h5').html('Ping the Creator about the task');
             $('#popup-pingtask').dialog('open');
-            $('#popup-pingtask').dialog('option', 'title', 'Ping the Creator about the task');
             return false;
         });
 
@@ -1166,7 +1151,7 @@ $(document).ready(function(){
             <span class="info-data" style="font-size:14px"><?php echo $worklist['status'];?></span>
             <?php
             if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') || $is_runner 
-            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE' && $worklist['runner_id'] == 0)) :
+            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE')) :
             ?>
             <form method="post" action="" style="display:inline">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
@@ -1219,7 +1204,7 @@ if ($action =="edit"):  ?>
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
                             if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
-                            <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo htmlentities($worklist['summary']);?>"/>
+                            <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo html_entity_decode($worklist['summary']);?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
                             <?php } ?></span>
@@ -1317,7 +1302,7 @@ if ($action =="edit"):  ?>
                                     <textarea name="notes" id="edit-notes" <?php if(count($activeBids) > 0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
                                 </span>
                             <?php else:?>
-                                <span id="info-notes"><?php echo nl2br($worklist['notes']);?></span>
+                                <span id="info-notes"><?php echo replaceEncodedNewLinesWithBr($worklist['notes']);?></span>
                             <?php endif;?>
                         </li>
                         <li>
@@ -1446,7 +1431,7 @@ if ($action =="edit"):  ?>
                     <!-- View: Notes textarea -->
                     <li>
                         <span class="info-label">Notes</span>
-                        <p class="notestext"><?php echo nl2br(linkify(htmlspecialchars($worklist['notes']))); ?></p>
+                        <p class="notestext"><?php echo replaceEncodedNewLinesWithBr(linkify($worklist['notes'])); ?></p>
                         <!--<textarea size="33" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; width:418px;  height:164px; margin-top:8px;" name="notes" rows="25" cols="20" readonly="readonly" id="edit-notes"><?php //echo $worklist['notes'];?></textarea> -->
                     </li>
                     <!-- View: Sandbox textarea -->
@@ -1547,7 +1532,7 @@ if ($action =="edit"):  ?>
                                 </div>
                                 <div class="comment">
                                     <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')" />
-                                    <?php echo nl2br(linkify(htmlspecialchars($comment['comment']->getComment()))); ?>
+                                    <?php echo replaceEncodedNewLinesWithBr(linkify($comment['comment']->getComment())); ?>
                                 </div>
                                 <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
                                 <div class="reply-lnk">

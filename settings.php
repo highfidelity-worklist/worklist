@@ -36,48 +36,48 @@ $errors = 0;
 $error = new Error();
 
 // process updates to user's settings
-if (isset($_POST['save_account'])) {
+if (isset($_REQUEST['save_account'])) {
 
     $updateNickname = false;
     $updatePassword = false;
 
     // check if phone was updated
-    if (isset($_POST['phone_edit']) || isset($_POST['int_code']) ||isset($_POST['timezone'])) {
+    if (isset($_REQUEST['phone_edit']) || isset($_REQUEST['int_code']) || isset($_REQUEST['timezone'])) {
         $saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
 
         foreach ($saveArgs as $arg=>$esc) {
-            $$arg = ($esc ? $_POST[$arg] : intval($_POST[$arg]));
+            $$arg = ($esc ? $_REQUEST[$arg] : intval($_REQUEST[$arg]));
         }
 
-        if (isset($_POST['city'])) {
-            $city = $_POST['city'];
+        if (isset($_REQUEST['city'])) {
+            $city = $_REQUEST['city'];
             $saveArgs['city'] = 1;
         } else {
             // TODO: Actually return the error to user, rather than rely on javascript validation
             $error->setError('You are required to choose a city');
         }
 
-        $provider = mysql_real_escape_string($_POST['provider']);
+        $provider = mysql_real_escape_string($_REQUEST['provider']);
         $saveArgs['provider'] = 0;
 
         $sms_flags = 0;
-        if (!empty($_POST['journal_alerts'])) $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
-        if (!empty($_POST['bid_alerts'])) $sms_flags |= SMS_FLAG_BID_ALERTS;
+        if (!empty($_REQUEST['journal_alerts'])) $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
+        if (!empty($_REQUEST['bid_alerts'])) $sms_flags |= SMS_FLAG_BID_ALERTS;
         $saveArgs['sms_flags'] = 0;
 
-        $timezone = mysql_real_escape_string(trim($_POST['timezone']));
+        $timezone = mysql_real_escape_string(trim($_REQUEST['timezone']));
         $saveArgs['timezone'] = 0;
 
         $notifications = 0;
-        $my_bids_notify = !empty($_POST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
-        $ping_notify = !empty($_POST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
-        $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
-        $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
-        $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
-        $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
-        $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
-        $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
-        $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
+        $my_bids_notify = !empty($_REQUEST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
+        $ping_notify = !empty($_REQUEST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
+        $review_notify = !empty($_REQUEST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
+        $bidding_notify = !empty($_REQUEST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
+        $my_review_notify = !empty($_REQUEST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
+        $my_completed_notify = !empty($_REQUEST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
+        $self_email_notify = !empty($_REQUEST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
+        $bidding_email_notify = !empty($_REQUEST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
+        $review_email_notify = !empty($_REQUEST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
         $notifications = Notification::setFlags($review_notify, 
                                                 $bidding_notify, 
                                                 $my_review_notify, 
@@ -110,11 +110,11 @@ if (isset($_POST['save_account'])) {
     }
 
     // if nickname is different - update it through login call
-    $nickname = trim($_POST['nickname']);
+    $nickname = trim($_REQUEST['nickname']);
     if($nickname != $_SESSION['nickname']) {
         
         $user = new User();
-        $user->findUserByNickname($_POST['nickname']);
+        $user->findUserByNickname($nickname);
         
         if ($user->getId() != null && $user->getId() != intval($_SESSION['userid'])) {
             die(json_encode(array('error' => 1, 'message' => "Update failed, nickname already exists!")));
@@ -148,23 +148,23 @@ if (isset($_POST['save_account'])) {
         }
     }
 
-} else if (isset($_POST['save_personal'])) {
-    $about = isset($_POST['about']) ? strip_tags(substr($_POST['about'], 0, 150)) : "";
-    $skills = isset($_POST['skills']) ? strip_tags($_POST['skills']) : "";
-    $contactway = isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : "";
+} else if (isset($_REQUEST['save_personal'])) {
+    $about = isset($_REQUEST['about']) ? strip_tags(substr($_REQUEST['about'], 0, 150)) : "";
+    $skills = isset($_REQUEST['skills']) ? strip_tags($_REQUEST['skills']) : "";
+    $contactway = isset($_REQUEST['contactway']) ? strip_tags($_REQUEST['contactway']) : "";
 
     $saveArgs = array('about'=>1, 'skills'=>1, 'contactway'=>1);
     $messages[] = "Your personal information has been updated.";
-} else if (isset($_POST['save_payment'])) {
+} else if (isset($_REQUEST['save_payment'])) {
     $paypal = 0;
     $paypal_email = '';
     // defaulting to paypal at this stage
     $payway = 'paypal';
-    if ($_POST['paytype'] == 'paypal') {
+    if ($_REQUEST['paytype'] == 'paypal') {
         $paypal = 1;
         $payway = "paypal";
-        $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
-    } else if ($_POST['paytype'] == 'other') {
+        $paypal_email = isset($_REQUEST['paypal_email']) ? mysql_real_escape_string($_REQUEST['paypal_email']) : "";
+    } else if ($_REQUEST['paytype'] == 'other') {
         $payway = '';
     }
 
@@ -211,9 +211,9 @@ if (isset($_POST['save_account'])) {
         $user->setPaypal_email($paypal_email);
         $user->save();
     }
-} else if (isset($_POST['save_w9Name'])) {
-    $first_name = isset($_POST['first_name']) ? mysql_real_escape_string($_POST['first_name']) : "";
-    $last_name = isset($_POST['last_name']) ? mysql_real_escape_string($_POST['last_name']) : "";
+} else if (isset($_REQUEST['save_w9Name'])) {
+    $first_name = isset($_REQUEST['first_name']) ? mysql_real_escape_string($_REQUEST['first_name']) : "";
+    $last_name = isset($_REQUEST['last_name']) ? mysql_real_escape_string($_REQUEST['last_name']) : "";
     $saveArgs = array('first_name'=>1, 'last_name'=>1);
 }
 if (!empty($saveArgs)) {
@@ -251,8 +251,8 @@ if (!empty($saveArgs)) {
         $msg="Account updated successfully!";
     }
 
-    if (isset($_POST['timezone'])) {
-      $_SESSION['timezone'] = trim($_POST['timezone']);
+    if (isset($_REQUEST['timezone'])) {
+      $_SESSION['timezone'] = trim($_REQUEST['timezone']);
     }
 
     if (isset($confirm_txt) && ! empty($confirm_txt)) {
