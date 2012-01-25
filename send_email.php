@@ -36,7 +36,7 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
 
     if (!empty($html)) {
         if (empty($plain)) {
-            $h2t = new html2text($html, 75);
+            $h2t = new html2text(html_entity_decode($html, ENT_QUOTES), 75);
             $plain = $h2t->convert();
         }
 
@@ -118,7 +118,6 @@ function objectToArray($object) {
 function notify_sms_by_object($user_obj, $smssubject, $smsbody)
 {
     global $smslist;
-    $smssubject = strip_tags($smssubject);
     $smsbody    = strip_tags($smsbody);
 
     if (is_array($user_obj)) {
