@@ -628,6 +628,16 @@ class Notification {
                 $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p> -Worklist.net</p>';
             break;
+            case 'auto-pass':
+                $headers['From'] = '"' . $project_name . "- Auto PASSED" . '" ' . $from_address;    
+                $body = "Otto has triggered an auto-PASS for your suggested job. You may reactivate this job by updating the status." . '<br/><br/>'
+                        . "Summary: " . $itemLink . ": " . $workitem->getSummary() . '<br/>'
+                        . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
+                        . 'Notes: '. $workitem->getNotes() . '<br /><br />'
+                        . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                        . '-Worklist.net' ; 
+            break;            
         }
 
     

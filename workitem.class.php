@@ -487,7 +487,13 @@ WHERE id = ' . (int)$id;
                 $this->tweetNewJob();
             }
             $status = mysql_real_escape_string($this->status);
-            $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$_SESSION['userid'].", NOW())";
+            if(isset($_SESSION['userid']) && !empty($_SESSION['userid'])) {
+                $user_id = $_SESSION['userid'];
+            } else {
+                $user_id = 0 ; // this means auto pass script has changed the status to PASS
+            }
+            
+            $query = "INSERT INTO ".STATUS_LOG." (worklist_id, status, user_id, change_date) VALUES (".$this->getId().", '$status', ".$user_id.", NOW())";
             mysql_unbuffered_query($query);
         }
 
