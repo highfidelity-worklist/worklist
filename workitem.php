@@ -309,6 +309,7 @@ if ($action == 'new-comment') {
 
 if($action =='invite-people') {
     // Send invitation
+    $invite = $_REQUEST['invite'];
     if (invitePerson($invite, $workitem)) {
         $result = array('sent'=>'yes','person'=> $invite);
     } else {
