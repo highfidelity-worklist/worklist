@@ -66,3 +66,8 @@ table thead tr{
         #E0E0E0
     );
 }
+
+.pages{
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 13 px;
+}
