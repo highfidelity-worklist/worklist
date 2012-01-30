@@ -20,13 +20,8 @@ function sanitizeInput() {
 }
 
 function sanitizeRequestInput($fieldName, $option=0, $flags=0) {
-		error_log('requested sanitize:'.$fieldName . ':' . (isset($_REQUEST["$fieldName"])?$_REQUEST["$fieldName"]:''));
     if(isset($_REQUEST["$fieldName"])) {
-		error_log('sanitize:'.$fieldName . ':' . $option .  ':' . $flags);
         $_REQUEST[$fieldName] = filter_var($_REQUEST[$fieldName], $option, $flags);
-    } else {
-//		error_log('not sanitize:'.$fieldName. ':' . $option .  ':' . $flags);
-    }
+    } 
 }
-error_log('calling sanitization2');
 sanitizeInput();
