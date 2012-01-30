@@ -99,48 +99,6 @@ $userId = getSessionUserId();
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
             
             <script type="text/javascript" src="js/userstats.js"></script>
-
-            <script type="text/javascript">
-               stats.setUserId(<?php echo $userId?>);
-               var worklistUrl = '<?php echo SERVER_URL; ?>';
-               function GetStatus(source) {
-                    var lockGetWorklist = 0;
-                    var status_refresh = 5 * 1000;
-                    var statusTimeoutId = null;
-                    var lastStatus = 0;
-                    var url = 'update_status.php';
-                    var action = 'get';
-                    if(source == 'journal') {
-                        url = '<?php echo JOURNAL_QUERY_URL; ?>';
-                        action = 'getUserStatus';
-                    }
-                    $.ajax({
-                        type: "POST",
-                        url: url,
-                        cache: false,
-                        data: {
-                            action: action
-                        },
-                        dataType: 'json',
-                        success: function(json) {
-                            if(json && json[0] && json[0]["timeplaced"]) {
-                                if(lastStatus < json[0]["timeplaced"]) {
-                                    lastStatus = json[0]["timeplaced"];
-                                    if(json[0]["status"] != "") {
-                                        $('#status-update').val(json[0]["status"]);
-                                        $('#status-update').hide();
-                                        $('#status-lbl').show();
-                                        $("#status-share").hide();
-                                        $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
-                                    }
-                                }
-                               }
-                        }
-                    });
-                statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
-            }
-            GetStatus('journal');
-          </script>            
             
             <?php
                 /* Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,

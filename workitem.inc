@@ -1903,10 +1903,5 @@ if ($action =="edit"):  ?>
 ?>
     <!-- Include User Info -->
         <div id="user-info" title="User Info"></div>
-<?php if ( $user_id > 0) { ?>
-<script type="text/javascript">
-    GetStatus('journal');
-</script>
-<?php } ?> 
     <!-- Footer html-->
     <?php include("footer.php"); ?>

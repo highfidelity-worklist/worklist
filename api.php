@@ -44,10 +44,6 @@ if(validateAction()) {
                 validateAPIKey();
                 sendBidNotification();
                 break;
-            case 'getUserStatus':
-                require_once("update_status.php");
-                print get_status(false);
-                break;
             case 'processW2Masspay':
                 validateAPIKey();
                 processW2Masspay();

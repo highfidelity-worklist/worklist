@@ -10,7 +10,6 @@ require_once("class.session_handler.php");
 include_once("check_new_user.php"); 
 require_once("functions.php");
 require_once("send_email.php");
-require_once("update_status.php");
 require_once("workitem.class.php");
 require_once('lib/Agency/Worklist/Filter.php');
 require_once('classes/UserStats.class.php');

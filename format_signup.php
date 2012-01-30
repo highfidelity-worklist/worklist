@@ -10,8 +10,6 @@
 
     <div id="welcome">
         <?php if ( isset($_SESSION['username'])) {
-            require_once('update_status.php');
-            $current_status = get_status(true);
             $return_from_getfeesums = true;
             include 'getfeesums.php';
             $feeinfo = '<div style="display:none;" id="feesDialog"><table><tr><td><b>Your fees: </b></td></tr><tr><td>this week:</td><td><a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].

@@ -11,7 +11,6 @@ include("config.php");
 include("class.session_handler.php");
 include("check_new_user.php");
 include("functions.php");
-require_once("update_status.php");
 require_once('classes/Project.class.php');
 /*********************************** HTML layout begins here  *************************************/
 
@@ -264,12 +263,6 @@ include("head.html");
 </div>
    
 <?php
-  $user_id = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0 ;
-  if ( $user_id > 0) { ?>
-<script type="text/javascript">
-    GetStatus('journal');
-</script>
-<?php }
 //-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 include("footer.php");
 ?>

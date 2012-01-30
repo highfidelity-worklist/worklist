@@ -925,10 +925,4 @@ function loadTimelineChart() {
     </div>
 </div>
 <?php
-  $user_id = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0 ;
-  if ( $user_id > 0) { ?>
-<script type="text/javascript">
-    GetStatus('journal');
-</script>
-<?php }
 include("footer.php"); ?>

@@ -11,7 +11,6 @@ include("class.session_handler.php");
 include("check_session.php");
 require_once('functions.php');
 include_once("send_email.php");
-require_once('update_status.php');
 $inFeedlist = true;
 $userId = getSessionUserId();
 if( $userId > 0 )   {
@@ -21,8 +20,6 @@ if( $userId > 0 )   {
     $userbudget =$user->getBudget();
     $budget =number_format($userbudget);
  }
-
-$current_status = get_status(true);
 
 include('head.html');
 define('RSS_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/rss.png" title="rss feed" />');

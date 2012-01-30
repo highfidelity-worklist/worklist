@@ -265,18 +265,7 @@ jQuery.fn.DefaultValue = function(text){
     };
 
 $(function() {
-    var hideInputField = function() {
-        // if the status is not empty - hide input field, otherwise do not hide input
-        if( $('#status-lbl').find('b').html() != "" ) {
-            $('#status-update').hide();
-            $("#status-share").hide();
-            $('#status-lbl').show();
-        }
-    };
-    $("#status-share").hide();
     $('#share-this').hide();
-    $("#status-update").DefaultValue("What are you working on?");
-    $('#status-update').hide();
     $("#notes").DefaultValue(bidNotesHelper);
     $('#notes').css('color','#999999');
     $('#notes').css('font-style','italic');    
@@ -307,53 +296,6 @@ $(function() {
             $("#budgetPopup").dialog("open");
         });
     }
-    // if the status is empty, show input field - allow user to enter the status
-    if( $.trim($('#status-lbl').find('b').html()) == "" ) {
-        $('#status-lbl').hide();
-        $('#status-update').show();
-        $("#status-share").show();
-    } else {
-        $('#status-lbl').show();
-    }
-    
-    // When status-update gets focus enlarge and show the share button
-    $("#status-update").focus(function() {
-        $("#status-update").data("focus",true);        
-        $("#status-share").show();
-        if(statusTimeoutId) {
-            clearTimeout(statusTimeoutId);
-        }
-    });
-
-    //When status-update lost the focus, hide input field ... 
-    $("#status-update").blur(function() {
-    // if the blur event is coming due to a click on button "Share", we need to delay the hidding process.
-    // if not the click event on the hidden button is not triggered.
-        setTimeout(function() { 
-            hideInputField();
-            $("#status-update").data("focus",false);        
-        },500);
-        if(statusTimeoutId) {
-            clearTimeout(statusTimeoutId);
-        }
-    });
-    
-    $("#status-lbl, #status-update-form p").mouseenter(function() {
-        $('#status-lbl').hide();
-        $('#status-update').show();
-        $('#status-share').show();
-        if(statusTimeoutId) {
-            clearTimeout(statusTimeoutId);
-        }
-    });
-    
-    //When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
-    $("#status-wrap").mouseleave(function(){
-        if ($("#status-update").data("focus") !== true) {
-            hideInputField();
-            statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
-        }
-    });
 
     //Enable/disable job bug id on is_bug checkbox state
     $("#bug_job_id").ready(function() {
@@ -420,35 +362,6 @@ $(function() {
         }
     });
 
-    
-    //Submit the form using AJAX to the database
-    $("#status-share-btn").click(function() {
-        if($("#status-update").val() ==  "What are you working on?"){
-            $("#status-update").val("");
-        }
-        $.ajax({
-            url: "../journal/api.php",        //works only with the journal status, no need to a worklist status
-            type: "POST",
-            data: "action=updateStatus&status=" + $("#status-update").val(),
-            dataType: "text",
-            success: function(){
-                // if entered blank status - do not hide input
-                if ($("#status-update").val() != "") {
-                    $('#status-update').hide();$('#status-lbl').show();
-                    $("#status-share").hide();
-                    $('#share-this').hide();
-                    if(statusTimeoutId) {
-                        clearTimeout(statusTimeoutId);
-                    }
-                    statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
-                } 
-                $('#status-lbl').html( '<b>' + $("#status-update").val() + '</b>' );
-            }
-        });
-        
-        return false;
-    });
-    
     newHash = getPosFromHash();
     if (newHash['userid'] && newHash['userid'] != -1) {
         setTimeout(function(){
@@ -458,36 +371,6 @@ $(function() {
     
 });
 
-var status_refresh = 5 * 1000;
-var statusTimeoutId = null;
-var lastStatus = 0;
-function GetStatus(source) {
-        url = '../journal/api.php';
-        action = 'getUserStatus';
-    $.ajax({
-        type: "POST",
-        url: url,
-        cache: false,
-        data: {
-            action: action
-        },
-        dataType: 'json',
-        success: function(json) {
-            if(json && json[0] && json[0]["timeplaced"]) {
-                if(lastStatus < json[0]["timeplaced"]) {
-                    lastStatus = json[0]["timeplaced"];
-                    $('#status-update').val(json[0]["status"]);
-                    $('#status-update').hide();
-                    $('#status-lbl').show();
-                    $("#status-share").hide();
-                    $('#status-lbl').html( '<b>' + json[0]["status"] + '</b>' );
-               }
-           }
-        }
-   });
-   statusTimeoutId = setTimeout("GetStatus('journal')", status_refresh);
-}
-    
 /* get analytics info for this page */
 $(function() {
     $.analytics = $('#analytics');

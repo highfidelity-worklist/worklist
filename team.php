@@ -404,10 +404,4 @@ function addCommas(nStr) {
 <div class="ln-pages"></div>
 <div id="user-info" title="User Info"></div>
 <?php
-  $user_id = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0 ;
-  if ( $user_id > 0) { ?>
-<script type="text/javascript">
-    GetStatus('journal');
-</script>
-<?php }
 include("footer.php");?>
