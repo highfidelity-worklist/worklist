@@ -81,6 +81,10 @@ if(validateAction()) {
                 validateAPIKey();
                 sendTestNotifications();
                 break;
+            case 'autoPass':
+                validateAPIKey();
+                autoPassSuggestedJobs();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -394,6 +398,12 @@ function sendTestNotifications(){
         exit(json_encode(array('success' => true)));
     }
 }
+
+function autoPassSuggestedJobs() {
+    require_once('./autoPass.php');
+    autoPassJobs();
+}
+
 function getTimezone() {
     if (isset($_REQUEST['username'])) {
         $username = $_REQUEST['username'];

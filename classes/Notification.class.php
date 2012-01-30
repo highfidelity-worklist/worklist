@@ -199,9 +199,15 @@ class Notification {
         if (isset($options['project_name'])) {
             $project_name = $options['project_name'];
         } else {
-            $project = new Project();
-            $project->loadById($workitem->getProjectId());
-            $project_name = $project->getName();
+            try {
+                $project = new Project();
+                $project->loadById($workitem->getProjectId());
+                $project_name = $project->getName();
+            } catch (Exception $e) {
+                error_log($e->getMessage() . " Workitem: #" . $workitem->getId() . " " . " has an invalid project id:" . $workitem->getProjectId());
+                $project_name = "";
+            }
+            
         }
 
         $revision = isset($options['revision']) ? $options['revision'] : null;
