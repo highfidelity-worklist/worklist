@@ -770,7 +770,6 @@ include("head.html"); ?>
         }
     };
  
-    
     $(document).ready(function() {
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
@@ -1575,7 +1574,30 @@ var projectid = <?php echo !empty($project_id) ? $project_id : "''"; ?>;
 var imageArray = new Array();
 var documentsArray = new Array();
 (function($) {
+
+    var workerUpdate = function() {
+        $('#workers tbody').html("Loading ...");
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                projectid: projectid,
+                userid: user_id,
+                action: 'getDevelopersForProject'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    var files = $('#projectWorkersBody').parseTemplate(data.data);
+                    $('#workers tbody').html(files);
+                    // sort the file upload accordion
+
+                }
+            }
+        });
+    };
     // get the project files
+    
     $.ajax({
         type: 'post',
         url: 'jsonserver.php',
@@ -1599,9 +1621,16 @@ var documentsArray = new Array();
                 $('#uploadPanel').append(files);
                 // sort the file upload accordion
                 $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
+                $('#accordion').bind( "accordionchange", function(event, ui) { 
+                    if (ui.options.active == 0) {
+                        workerUpdate();
+                    }
+                });
+
             }
         }
     });
+    
     // get the project stats
     $.ajax({
         type: 'post',
@@ -1889,6 +1918,20 @@ if (is_object($inProject)) {
 <!--End of roles table-->
 
 <div id="uploadPanel">
+    <script type="text/html" id="projectWorkersBody">
+                <# if (developers.length > 0) { 
+                    for(var i=0; i < developers.length; i++) {
+                    var developer = developers[i];
+                    #>
+                    <tr class="row-developer-list-live">
+                        <td class="developer"><a href="#" onclick="javascript:showUserInfo(<#= developer.id #>);"><#= developer.nickname #></a></td>
+                        <td class="jobCount"><#= developer.totalJobCount #></td>
+                        <td><#= developer.lastActivity #></td>
+                        <td><#= developer.totalEarnings #></td>
+                    </tr>
+                    <# } 
+                } #>
+    </script>
     <script type="text/html" id="projectuploadedFiles">
         <div id="accordion">
             <h3><a href="#">Who has worked on Project</a><h3>
@@ -1906,18 +1949,6 @@ if (is_object($inProject)) {
                     </tr>
                 </thead>
                 <tbody class="developerContent">              
-                <# if (developers.length > 0) { 
-                    for(var i=0; i < developers.length; i++) {
-                    var developer = developers[i];
-                    #>
-                    <tr class="row-developer-list-live">
-                        <td class="developer"><a href="#" onclick="javascript:showUserInfo(<#= developer.id #>);"><#= developer.nickname #></a></td>
-                        <td class="jobCount"><#= developer.totalJobCount #></td>
-                        <td><#= developer.lastActivity #></td>
-                        <td><#= developer.totalEarnings #></td>
-                    </tr>
-                    <# } 
-                } #>
                 </tbody>
             </table>
         </div>

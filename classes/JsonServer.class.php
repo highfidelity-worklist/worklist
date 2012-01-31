@@ -588,8 +588,7 @@ class JsonServer
         $user->findUserById($this->getRequest()->getParam('userid'));
         $data = array(
             'images' => array(),
-            'documents' => array(),
-            'developers' => array()
+            'documents' => array()
         );
         foreach ($files as $file) {
             if (!File::isAllowed($file->getStatus(), $user)) {
@@ -614,6 +613,17 @@ class JsonServer
                 ));
             }
         }
+
+
+        return $this->setOutput(array(
+            'success' => true,
+            'data' => $data
+        ));
+    }
+    protected function actionGetDevelopersForProject() {
+        $data = array(
+            'developers' => array()
+        );
 
         $project = new Project();
         try {

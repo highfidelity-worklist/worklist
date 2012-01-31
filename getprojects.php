@@ -31,9 +31,12 @@ $activeProjectsCount = count($projectListing);
 // the selected page
 $pageFinish = $page * $limit;
 $pageStart = $pageFinish - ($limit - 1);
-foreach ($projectListing as $key => $value) {
-    if (preg_match("/^$letter/i", $value["name"])) {
-        $selectedProjects[] = $value;
+$selectedProjects = array();
+if ($projectListing != null) {
+    foreach ($projectListing as $key => $value) {
+        if (preg_match("/^$letter/i", $value["name"])) {
+            $selectedProjects[] = $value;
+        }
     }
 }
 // Count number of projects to display

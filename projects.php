@@ -300,7 +300,7 @@ include("head.html");
                 }
             },
             error: function() {
-                alert("error");
+                alert("error in populateProjectListing");
             }
         })
     }
