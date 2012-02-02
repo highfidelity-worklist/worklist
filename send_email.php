@@ -14,6 +14,7 @@ require_once('smslist.php');
  */
 function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     //Validate arguments
+    $html= replaceEncodedNewLinesWithBr($html);
     if (empty($to) ||
         empty($subject) ||
         (empty($html) && empty($plain) ||

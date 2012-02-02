@@ -976,5 +976,6 @@ function checkLogin() {
 /* This function is used to add <br/> to encoded strings
  */
     function replaceEncodedNewLinesWithBr($string) {
+        $string =  str_replace('&#13;&#10;', '<br/>', $string);
         return str_replace('&#10;', '<br/>', $string);
     }

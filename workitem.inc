@@ -1632,7 +1632,7 @@ if ($action =="edit"):  ?>
                                                 "time_to_complete: '{$bid['time_to_complete']}', " .
                                                 "done_in: '{$bid['done_in']}', " .
                                                 "bidder_id: {$bid['bidder_id']}, " .
-                                                "notes:\"$notes\"}";
+                                                "notes:\"" .  replaceEncodedNewLinesWithBr($notes) . "\"}";
                                         ?></script>
                                     <?php } ?>
                                     <td>
