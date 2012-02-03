@@ -81,8 +81,10 @@ var stats = {
     },
 
     showJobs: function(job_type){
+        var user_id = (stats.user_id == 0) ? window.user_id : stats.user_id;
+        
         $.getJSON('getuserstats.php', 
-                    {id: stats.user_id, statstype: job_type, page: stats.stats_page},
+                    {id: user_id, statstype: job_type, page: stats.stats_page},
                     function(json) {
                         if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                             $('#jobs-popup th.status').show();

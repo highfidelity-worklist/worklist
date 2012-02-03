@@ -1099,7 +1099,7 @@ WHERE id = ' . (int)$id;
         if (!$res) {
             throw new Workitem_Exception('Could not retrieve result.');
         }
-        return !isFollowing;
+        return !$isFollowing;
     }
 
     function getFollowersId() {
