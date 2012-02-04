@@ -1612,7 +1612,9 @@ if ($action =="edit"):  ?>
                                     $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
                                     $row_class .= ($row % 2) ? 'rowodd ' : 'roweven ';
                                     $row_class .= 'biditem';
-                                    $row_class .= ($is_runner || $user->getId() == $bid['bidder_id']) ? "-".$bid['id'].' clickable' : '';
+                                    $row_class .= ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $bid['bidder_id']) 
+                                                ? "-" . $bid['id'] . ' clickable' 
+                                                : '';
                                     $row_class .= $expired_class;
                                     ?>
                                 <tr class="<?php echo $row_class; ?>">
@@ -1620,7 +1622,7 @@ if ($action =="edit"):  ?>
                                     // store bid info into jquery metadata so we won't have to fetch it again on user click
                                     // but only if user is runner or creator 15-MAR-2011 <godka>
                                     $notes = addcslashes(preg_replace("/\r?\n/", "<br />", $bid['notes']),"\\\'\"&\n\r<>");
-                                    if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
+                                    if ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $bid['bidder_id']) { ?>
                                         <script type="data"><?php echo
                                                 "{id: {$bid['id']}, " .
                                                 "nickname: '{$bid['nickname']}', " .
@@ -1636,7 +1638,7 @@ if ($action =="edit"):  ?>
                                         ?></script>
                                     <?php } ?>
                                     <td>
-                                    <?php if ($is_runner || $user->getId() == $bid['bidder_id']) { ?>
+                                    <?php if ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $bid['bidder_id']) { ?>
                                         <a href="#" bidderId="<?php echo $bid['bidder_id'];?>" class="CreatorPopup"><?php echo getSubNickname($bid['nickname']);?></a>
                                     <?php } else echo $bid['nickname']; ?>
                                     </td>

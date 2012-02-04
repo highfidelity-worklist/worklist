@@ -910,13 +910,13 @@ if(!empty($bids) && is_array($bids)) {
             $currentUserHasBid = "true";
             //break;
         }
-        if ((!$user->isRunner())) {
-            if ($user->getId() != $bid['bidder_id'])  {
-                $bid['nickname'] = '*name hidden*';
-                $bid['bid_amount'] = '***';
-                $bid['email'] = '********';
-                $bid['notes'] = '********';
-            }
+
+        if (!($user->getId() == $bid['bidder_id'] 
+         || $user->isRunnerOfWorkitem($workitem)))  {
+            $bid['nickname'] = '*name hidden*';
+            $bid['bid_amount'] = '***';
+            $bid['email'] = '********';
+            $bid['notes'] = '********';
         }
         $bid['bid_created'] = convertTimezone($bid['unix_bid_created']);
         if ($bid['unix_bid_accepted'] > 0) {

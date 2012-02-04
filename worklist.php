@@ -425,25 +425,29 @@ include("head.html"); ?>
         row += '<td width="7.5%">' + json[12] + '</td>';
 
         if (is_runner == 1) {
-             var feebids = 0;
-            if(json[7]){
-                feebids = json[7];
-            }
-            var bid = 0;
-            if(json[8]){
-                bid = json[8];
-            }
-            if(json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID'){
-                bid = parseFloat(bid);
-                if (bid == 0) {
-                    feebids = '';
-                } else {
-                    feebids = '$' + parseFloat(bid);
+            if (user_id == json[13]) {
+                var feebids = 0;
+                if(json[7]){
+                    feebids = json[7];
                 }
+                var bid = 0;
+                if(json[8]){
+                    bid = json[8];
+                }
+                if(json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID'){
+                    bid = parseFloat(bid);
+                    if (bid == 0) {
+                        feebids = '';
+                    } else {
+                        feebids = '$' + parseFloat(bid);
+                    }
+                } else {
+                    feebids = '$' + feebids;
+                }
+                row += '<td width="11%">' + pre + feebids + post + '</td>';
             } else {
-                feebids = '$' + feebids;
+                row += '<td width="11%">&nbsp;</td>';
             }
-            row += '<td width="11%">' + pre + feebids + post + '</td>';
         }
         <?php endif; ?>
         row += '</tr>';

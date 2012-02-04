@@ -1380,5 +1380,14 @@ class User {
         $this->has_W2 = $has_W2;
         return $this;
     }
-    
+
+    public function isRunnerOfWorkitem($workitem) {
+        if ($workitem->getRunner() === null ) {
+            return false;
+        }
+        if ($this->id == 0 || $this->id != $workitem->getRunner()->getId()) {
+            return false;
+        }
+        return true;
+    }
 }
