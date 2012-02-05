@@ -1382,7 +1382,7 @@ class User {
     }
 
     public function isRunnerOfWorkitem($workitem) {
-        if ($workitem->getRunner() === null ) {
+        if (!is_object($workitem->getRunner())) {
             return false;
         }
         if ($this->id == 0 || $this->id != $workitem->getRunner()->getId()) {
