@@ -342,7 +342,7 @@ $(document).ready(function(){
     });
 
     // If the bid info popup is set to modal clipboard won't work!
-    $('#popup-bid-info').dialog({ autoOpen: false, modal: false,width: 400, show: 'fade', hide: 'fade' });
+    $('#popup-bid-info').dialog({ autoOpen: false, modal: false, width: 400, height: 500, show: 'fade', hide: 'fade' });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({ 
@@ -621,9 +621,15 @@ $(document).ready(function(){
 <?php endif; ?>
             }
 
+<?php if ($worklist['status'] == 'BIDDING' && ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id))) {?>
+ 
+    $('#popup-bid-info form').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" >');
+ 
+<?php } ?>
+
 <?php if($worklist['status'] != 'DONE' && $worklist['status'] != 'WORKING' && $worklist['status'] != 'FUNCTIONAL' && $worklist['status'] != 'REVIEW' && $worklist['status'] != 'COMPLETED'){?>
             if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid_accept').length == 0){
-                  $('#popup-bid-info form').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" style="float:right;">');
+                $('#popup-bid-info form').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" >');
             }
 <?php } ?>
             // change user id to current bidder id
@@ -780,6 +786,16 @@ $(document).ready(function(){
         $('#popup-withdraw-bid').dialog('open');
         return false;
   }
+
+    function pingBidder(id) {
+        ping_who = 'bidder';
+        $('#popup-pingtask form p #echo-journal').parent('p').remove();
+        $('#popup-pingtask form h5').html('Ping about Bid');
+        $('#popup-pingtask form input[name="bidder"]').val(id);
+        $('#popup-pingtask').dialog('open');
+        $('#popup-pingtask').dialog('option', 'title', 'Ping about Bid');
+        return false;
+    }
 
   function showFeeForm() {
      $('#popup-addfee').dialog('open');
@@ -979,6 +995,7 @@ $(document).ready(function(){
             ping_who = 'mechanic';
             $('#popup-pingtask form h5').html('Ping the Mechanic about the task');
             $('#popup-pingtask').dialog('open');
+            $('#popup-pingtask').dialog('option', 'title', 'Ping the Mechanic about the task');
             return false;
         });
 
@@ -991,6 +1008,7 @@ $(document).ready(function(){
             ping_who = 'runner';
             $('#popup-pingtask form h5').html('Ping the Runner about the task');
             $('#popup-pingtask').dialog('open');
+            $('#popup-pingtask').dialog('option', 'title', 'Ping the Runner about the task');
             return false;
         });
 
@@ -1003,6 +1021,7 @@ $(document).ready(function(){
             ping_who = 'creator';
             $('#popup-pingtask form h5').html('Ping the Creator about the task');
             $('#popup-pingtask').dialog('open');
+            $('#popup-pingtask').dialog('option', 'title', 'Ping the Creator about the task');
             return false;
         });
 
