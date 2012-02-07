@@ -379,6 +379,8 @@
 </div> <!-- end of div user-info-->
 
 <!-- popup div's -->
+    <div id="budget-dialog" title="Budget details" class="hidden" data-userid = "<?php echo $user-> getId(); ?>">
+    </div>
     <div id="reject-w9" title="Reject W9" class="hidden">
         <form method="post" action = "">
             <label for="reject-reason" class="info-label">Reason: </label><br/>
@@ -388,21 +390,6 @@
         </form>
     </div><!-- end of reject w9 div -->
     
-    <div id="give-budget" class="hidden" title="Give Budget" style="text-align: left;">
-        <form method="post" action = "">
-            <label for="budget-current" class="info-label">Current Budget: $</label><?php echo $user-> getBudget(); ?><br/> <br/>
-            <label for="budget-tgiven" class="info-label">Total Budget From You: $</label><?php echo $user-> getTotalGiven(); ?><br/> <br/>
-            <label for="budget-lgiven" class="info-label">Last Budget Given By You: $</label><?php echo $user->getLastGiven();?>  on  <?php echo $user->getMaxDate(); ?><br/> 
-            <label for="budget-lreason" class="info-label">for: </label><?php echo $user->getReason(); ?><br/> <br/>
-            <label for="budget-amount" class="info-label">New Budget to Give: </label><br/>
-                $<input type="text" id="budget-amount" name="amount" /><br/>
-            <label for="budget-reason" class="info-label">For: </label><br/>
-                <input type="text" id="budget-reason" name="reason" style="width:95%" /><br/><br/>
-                <input type = "hidden" id = "budget-receiver" name="receiver_id" value = "<?php echo $user-> getId(); ?>" />
-            <input type="submit" value="Give Budget" />
-        </form>
-    </div><!-- end of give budget div-->
-
     <div id="pay-bonus" class="hidden" title="Pay Bonus" style="text-align: left;">
         <form method="post" action = "">
             <label for="bonus-amount" class="info-label">Amount: </label><br/>

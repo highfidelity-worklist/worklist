@@ -1,0 +1,73 @@
+
+#give-budget .ui-combobox-list {
+    max-height: 150px;
+}
+
+#give-budget select[name="budget-source-combo"] {
+    width: 340px;
+    margin: 10px;
+}
+#give-budget .ui-combobox-list li {
+    height: 16px;
+}
+#give-budget .ui-icon-carat-1-s {
+    background-position: -64px 0 !important;
+}
+
+#budget-reason,
+#budget-source,
+#budget-note {
+    width: 95%;
+}
+
+#budget-note {
+    height: 80px;
+}
+
+#budget-source {
+    display: none;
+}
+
+#budget-source-combo {
+    display: none;
+}
+
+.budget-source  span{
+    margin-top: 6px;
+}
+
+.lgivenBudgetArea,
+.givenBudgetArea,
+.currentBudgetArea {
+    margin-bottom: 6px;
+}
+
+.redBudget,
+.comboListClear.redBudget.ui-state-hover {
+    color: red;
+}
+
+.comboListID {
+    float: left;
+    width: 50px;
+    text-align: right;
+    padding-right: 4px;
+}
+
+.comboListTitle {
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 218px;
+    height: 18px;
+}
+
+.comboListAmount {
+    float: left;
+    width: 60px;
+    text-align: right;
+}
+
+.comboListClear {
+    clear: both;
+}

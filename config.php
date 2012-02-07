@@ -56,7 +56,7 @@ if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
 
 
 if (!defined('BIDS'))           define('BIDS', 'bids');
-if (!defined('BUDGET_LOG'))     define('BUDGET_LOG', 'budget_log');
+if (!defined('BUDGET'))     define('BUDGET', 'budget');
 if (!defined('COMMENTS'))       define('COMMENTS', 'comments');
 if (!defined('FEES'))           define('FEES', 'fees');
 if (!defined('FILES'))          define('FILES', 'files');
@@ -214,5 +214,12 @@ if (! defined('VIRUS_SCAN_CMD')) define('VIRUS_SCAN_CMD', '/usr/bin/clamscan');
 
 // max thumbnail size
 if (!defined('MAX_THUMB_SIZE')) define('MAX_THUMB_SIZE', 500);
+
+/*  budget authorized users
+    Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
+    your userid must be included below. Just remove when done!
+    Adding alexi and jeskad - alexi 2011-10-26
+*/
+if (!defined('BUDGET_AUTHORIZED_USERS')) define('BUDGET_AUTHORIZED_USERS', ",2,1020,1918,2134,1935,");
 
 require_once('sanitization.php');

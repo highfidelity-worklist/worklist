@@ -15,46 +15,85 @@ $error = false;
 $message = '';
 
 if (!isset($_SESSION['userid'])) {
-    echo 'error: unauthorized';
+    echo json_encode(array('success' => false, 'message' => 'error: unauthorized'));
     return;
+}
+
+if (!isset($_REQUEST['budget_seed']) || !isset($_REQUEST['budget_source']) 
+    || !isset($_REQUEST['budget_source_combo']) || !isset($_REQUEST['budget_note'])) {
+    echo json_encode(array('success' => false, 'message' => 'error: args'));
+    return;
+}
+$budget_seed = (int) $_REQUEST['budget_seed'];
+$budget_source = mysql_real_escape_string($_REQUEST['budget_source']);
+$budget_source_combo = (int) $_REQUEST['budget_source_combo'];
+$budget_note = mysql_real_escape_string($_REQUEST['budget_note']);
+if ($budget_seed == 1) {
+    $budget_source_combo = 0;
+    $source = $budget_source;
+    if (empty($source)) {
+        echo json_encode(array('success' => false, 'message' => 'Source field is mandatory'));
+        return;
+    }
+} else {
+    $source = "Amount from budget id: " . $budget_source_combo;
+    if ($budget_source_combo == 0) {
+        echo json_encode(array('success' => false, 'message' => 'Source field is mandatory'));
+        return;
+    }
 }
 
 $receiver_id = intval($_REQUEST['receiver_id']);
 $amount = isset($_REQUEST['amount']) ? floatval($_REQUEST['amount']) : 0;
 $reason = mysql_real_escape_string($_REQUEST['reason']);
 if (empty($receiver_id) || empty($reason) || empty($amount)) {
-    echo 'error: args';
+    echo json_encode(array('success' => false, 'message' => 'For and amount fields are mandatory'));
     return;
 }
 
 $giver = new User();
 $receiver = new User();
 if (!$giver->findUserById($_SESSION['userid']) || !$receiver->findUserById($receiver_id)) {
-    echo 'error: invalid user';
+    echo json_encode(array('success' => false, 'message' => 'error: invalid user'));
     return;
 }
 
 $stringAmount = number_format($amount, 2);
 
-if ($amount <= $giver->getBudget()) {
-    $giver->setBudget($giver->getBudget() - $amount)->save();
+if ($budget_seed == 1 || $amount <= $giver->getBudget()) {
+    if ($budget_seed != 1) {
+        $giver->setBudget($giver->getBudget() - $amount)->save();
+    }
     $receiver->setBudget($receiver->getBudget() + $amount)->save();
 
-    $query = "INSERT INTO `".BUDGET_LOG."` (`giver_id`,`receiver_id`,`amount`,`reason`,`transfer_date`) VALUES ('".$_SESSION['userid']."','$receiver_id','$amount','$reason',NOW())";
-    mysql_unbuffered_query($query);
-    
-    $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
-    mysql_unbuffered_query($query2);
-
-    $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
-    " for " . $_REQUEST['reason'] . ".";
-    sendJournalNotification($journal_message);
-    
-    Notification::notifyBudget($amount, $reason, $giver, $receiver);
-    Notification::notifySMSBudget($amount, $reason, $giver, $receiver);
-    
-    $receiver = getUserById($receiver_id);
-    $message =  'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname;
+    $query = "INSERT INTO `" . BUDGET . 
+            "` (`giver_id`, `receiver_id`, `amount`, `reason`, `transfer_date`, `seed`, `source_data`, `source_budget_id`, `notes`, `active`) VALUES ('" .
+            $_SESSION['userid'] . 
+            "', '$receiver_id', '$amount', '$reason', NOW(), '$budget_seed', '$source', '$budget_source_combo', '$budget_note', 1)";
+    if (mysql_unbuffered_query($query)){    
+        $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
+        if (mysql_unbuffered_query($query2)) {
+            $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
+            " for " . $_REQUEST['reason'] . ".";
+            sendJournalNotification($journal_message);            
+            Notification::notifyBudget($amount, $reason, $giver, $receiver);
+            Notification::notifySMSBudget($amount, $reason, $giver, $receiver);
+            if ($budget_seed == 1) {
+                Notification::notifySeedBudget($amount, $reason, $source, $giver, $receiver);
+                Notification::notifySMSSeedBudget($amount, $reason, $source, $giver, $receiver);
+            }
+            $receiver = getUserById($receiver_id);
+            $message =  'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname;
+        } else {
+            $error = true;
+            $message = 'Error in query.';
+            error_log("update-budget.php error in sql:" . $query2 . mysql_error());
+        }
+    } else {
+        $error = true;
+        $message = 'Error in query.';
+        error_log("update-budget.php error in sql:" . $query . mysql_error());
+    }
 } else {
     $error = true;
     $message = 'You do not have enough budget available to give this amount.';

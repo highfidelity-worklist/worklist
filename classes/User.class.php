@@ -504,7 +504,7 @@ class User {
     public function getTotalGiven()
     {
         $sql = 'SELECT SUM(`amount`) AS `given`
-                FROM `' . BUDGET_LOG . '`
+                FROM `' . BUDGET . '`
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . ';';
 
         $res = mysql_query($sql);
@@ -517,7 +517,7 @@ class User {
     public function getLastGiven()
     {
         $sql = 'SELECT `amount`, DATE_FORMAT(`transfer_date`, "%M %d, %Y") AS `date` 
-                FROM `' . BUDGET_LOG . '` 
+                FROM `' . BUDGET . '` 
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . '
                 ORDER BY `transfer_date` DESC LIMIT 1;';
         $res = mysql_query($sql);
@@ -530,7 +530,7 @@ class User {
     public function getMaxDate()
     {
         $sql = 'SELECT DATE_FORMAT(`transfer_date`, "%M %d, %Y") AS `date` 
-                FROM `' . BUDGET_LOG . '`
+                FROM `' . BUDGET . '`
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . '
                 ORDER BY `date` DESC LIMIT 1;';
         $res = mysql_query($sql);
@@ -543,7 +543,7 @@ class User {
     public function getReason()
     {
         $sql = 'SELECT `reason` 
-                FROM `' . BUDGET_LOG . '`
+                FROM `' . BUDGET . '`
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = '.$_SESSION['userid'].'
                 ORDER BY `transfer_date` DESC LIMIT 1;';
         $res = mysql_query($sql);
@@ -551,6 +551,25 @@ class User {
                 return $row['reason'];
             }
         return false;
+    }
+
+    public function getBudgetCombo()
+    {
+// Query to get User's Budget entries
+        $query =  ' SELECT amount, reason, id '
+                . ' FROM ' . BUDGET 
+                . ' WHERE receiver_id = ' . $_SESSION['userid']
+                . ' AND active = 1 '
+                . ' ORDER BY id DESC ';
+        $result = mysql_query($query);
+        $ret = "";
+        if ($result) {
+            while ($row = mysql_fetch_assoc($result)) {
+                $ret .= '<option value="' . $row['id'] . '" data-amount="' . $row['amount'] . '">' . 
+                        $row['id'] . "|" . $row['reason'] . "|" . $row['amount'] . '</option>\n';
+            }
+        }
+        return $ret;
     }
    
 

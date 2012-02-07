@@ -33,8 +33,12 @@
             this.settings=settings;
 			// combobox container
 			this.container = $('<div/>');
-			// combobox textbox, will become an autocompletebox in a later version
-			this.textbox = $('<input type="text"/>');
+            if (this.el.hasClass("divComboBox")) {
+                this.textbox = $('<div style="float: left; position: relative; top: 10px; height: 0px;"></div><input type="text"/>');
+            } else {
+                // combobox textbox, will become an autocompletebox in a later version
+                this.textbox = $('<input type="text"/>');
+            }
 			// combobox trigger (icon)
 			this.trigger = $('<span/>');
 			// combobox list
@@ -49,7 +53,7 @@
                             $(this).html("<input type='checkbox' /><span class='checkboxLabel'>" + $(this).text() + "</span>");
                         });
                         /** Keep this if we need a button to close the list **/
-                        $("li[val=CheckDone]",o.list).html("<input type='button' value='Done' style='display:none' id='CheckDone'/>")
+                        $("li[val=CheckDone]",o.list).html("<input type='button' value='Done' style='display:none;' id='CheckDone'/>")
                             .unbind("mouseover");
                             
                          $(".checkboxLabel",o.list).click(function(event){
@@ -118,8 +122,13 @@
             } else {
                 var ele = this.getItemByValue(this.el.val());
                 if (ele && ele !== null) {
-                    // write the text in the textbox
-                    this.textbox.val(ele.text);
+                    if (this.el.hasClass("divComboBox")) {
+                        // write the text in the textbox
+                        this.textbox.html($(ele).html());
+                    } else {
+                        // write the text in the textbox
+                        this.textbox.val(ele.text);
+                    }
                 }
             }
 		},
@@ -218,11 +227,13 @@
 		_getListValues: function() {
 			// get the list values of the original element
 			$.each(this.el.children(), $.proxy(function(i, v) {
-				this.values.push({
-					value: $(v).attr('value'),
-					text: $(v).text(),
-					selected: $(v).prop('selected')
-				});
+                if ($(v).attr('value') != "") {
+                    this.values.push({
+                        value: $(v).attr('value'),
+                        text: $(v).text(),
+                        selected: $(v).prop('selected')
+                    });
+                }
 			}, this));
 		},
 		_listItemClicked: function(e) {
@@ -354,8 +365,9 @@
 			// if the value is not currently selected we have to select it
             if (this.el.prop("multiple") === true ){
                 var currentSelectedVal = [],
-                    firstValue="",
-                    more="";
+                    firstValue = "",
+                    firstValueHtml = "",
+                    more = "";
                 if (val.value == "CheckDone") {
                     return;
                 }
@@ -387,6 +399,7 @@
                         if (firstValue=="") {
                             eleText = oThis.getItemByValue(v.value).text;
                             firstValue = eleText;
+                            firstValueHtml = $(oThis.getItemByValue(v.value)).html();
                         } else {
                             more = " +";
                         }
@@ -394,7 +407,13 @@
                 });
                 this.el.val(currentSelectedVal);
                 // update the textbox with the correct text
-                this.textbox.val(firstValue + more);
+                if (this.el.hasClass("divComboBox")) {
+                    // write the text in the textbox
+                    this.textbox.html(firstValueHtml + more);
+                } else {
+                    // write the text in the textbox
+                    this.textbox.val(firstValue + more);
+                }
             } else {
                 if (!val.selected) {
                     // find the element in our own list and select it, deselect the old value
@@ -410,8 +429,13 @@
                     this.list.find('.ui-combobox-list-selected').removeClass('ui-combobox-list-selected');
                     // and add it to the currently selected
                     this.list.find('li[val=' + val.value + ']').addClass('ui-combobox-list-selected');
+                    if (this.el.hasClass("divComboBox")) {
+                        // write the text in the textbox
+                        this.textbox.html(this.list.find('li[val=' + val.value + ']').html());
+                    } else {
                     // update the textbox with the correct text
-                    this.textbox.val(val.text);
+                        this.textbox.val(val.text);
+                    }
                     // change the value of the original element
                     this.el.val(val.value);
                     // fire the change event of the original element

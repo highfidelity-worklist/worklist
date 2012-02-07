@@ -21,7 +21,7 @@ $userId = getSessionUserId();
    - joanne
    adding alexi and jeska - alexi 2011-10-26
 */
-if ($userId == 2 || $userId == 1020 || $userId == 1918 || $userId == 2134 || $userId == 1935) {
+if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );

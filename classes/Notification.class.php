@@ -938,6 +938,67 @@ class Notification {
         
     }
 
+    
+    public function notifySeedBudget($amount, $reason, $source, $giver, $receiver) {
+        if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
+            return false;
+        }
+
+        $subject = "Seed Budget Granted";
+        $html = "<html><head><title>Seed Budget Granted</title></head><body>";
+        $html .= "<h2>Seed Budget Granted by " . $giver->getNickname() . "</h2>";
+        $html .= "<p>To: " . $receiver->getNickname() . 
+                "<br />From: " . $giver->getNickname() . 
+                "<br />Amount: $" . number_format($amount, 2) .
+                "<br />For: " . $reason  .
+                "<br />Source: " . $source . "</p>";
+        $html .= "</body></html>";
+
+        $emailReceiver = new User();
+        $emailReceiverArray = explode(",", BUDGET_AUTHORIZED_USERS);
+        for ($i = 1 ; $i < sizeof($emailReceiverArray) - 1 ; $i++) { 
+            if ($emailReceiver->findUserById($emailReceiverArray[$i])) {
+                if (!send_email($emailReceiver->getUsername(), $subject, $html)) {
+                    error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
+                }
+            } else {
+                error_log("Notification:workitem: send_email failed, invalid receiver id " . 
+                    $emailReceiverArray[$i]);
+            }
+        }
+    }
+
+    public function notifySMSSeedBudget($amount, $reason, $source, $giver, $receiver) {
+        if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
+            return false;
+        }
+        
+        $message = 'To: ' . $receiver->getNickname() . ' AMT: \$' . number_format($amount, 2) . 
+                    ' RE: ' . $reason;
+        
+        setlocale(LC_CTYPE, "en_US.UTF-8");
+        $esc_subject = escapeshellarg('Seed Budget Granted by ' . $giver->getNickname());
+        $esc_message = escapeshellarg($message);
+        $args = '"'.$esc_subject . '" "' . $esc_message . '" ';
+
+        $application_path = dirname(dirname(__FILE__)) . '/';
+
+        $emailReceiver = new User();
+        $emailReceiverArray = explode(",", BUDGET_AUTHORIZED_USERS);
+        for ($i = 1 ; $i < sizeof($emailReceiverArray) - 1 ; $i++) { 
+            if ($emailReceiver->findUserById($emailReceiverArray[$i])) {
+                $argsSent = $args . $emailReceiver->getId() . ' ';
+                
+                $application_path = dirname(dirname(__FILE__)) . '/';
+                exec('php ' . $application_path . 'tools/smsnotifications.php '
+                    . $args . ' > /dev/null 2>/dev/null &');
+            } else {
+                error_log("Notification:workitem: send_sms failed, invalid receiver id " . 
+                    $emailReceiverArray[$i]);
+            }
+        }
+        
+    }
     // get list of expired bids
     public function emailExpiredBids(){
         $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount

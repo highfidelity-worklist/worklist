@@ -226,37 +226,26 @@ var UserInfo = {
             return false;
         });
 
-        $('#give-budget').dialog({ autoOpen: false, width: 400, show: 'fade', hide: 'fade'});
         $('#give').click(function(){
-            $('#give-budget form input[type="text"]').val('');
-            $('#give-budget').dialog('open');
-            return false;
-        });
-		           
-        $('#give-budget form input[type="submit"]').click(function() {
-            $('#give-budget').dialog('close');
-			
-            var toReward = parseInt(rewarded) + parseInt($('#toreward').val());
-            $.ajax({
-                url: 'update-budget.php',
-                data: 'receiver_id=' + $('#budget-receiver').val() + '&reason=' + encodeURIComponent($('#budget-reason').val()) + '&amount=' + $('#budget-amount').val(),
-                dataType: 'json',
-                type: "POST",
-                cache: false,
-                success: function(json) {
-                    if (json.success) {
-                        alert(json.message);
-                        $("#isrunner").prop('checked', true);
-                    } else {
-                        alert(json.message);
-				    }
-                },
-                error: function(json) {
-                  alert('All fields are required');
+            $('#give-budget').dialog("destroy").remove();
+            $('#budget-area').remove();
+            $("body").append("<div id='budget-area'></div>");
+            $("#budget-area").load('budget.php',{
+                action: "getView"
+                }, function() {
+                    $('#give-budget').dialog({ 
+                        autoOpen: true, 
+                        width: 400, 
+                        show: 'fade', 
+                        hide: 'fade',
+                        open: function() {
+                            Budget.init();
+                        }
+                    });
                 }
-            });
+            );
             return false;
-        });
+        });           
        
         $('#quick-reward').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
         

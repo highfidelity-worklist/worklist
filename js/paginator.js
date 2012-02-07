@@ -7,7 +7,7 @@
 
 function TablePaginator(tableid, numberofrowstodisplayperpage, animationspeed) {
     this.pagenum = 1;
-    this.sizeoftable = $("#" + tableid + " tr").length;
+    this.sizeoftable = $("#" + tableid + " tr").length - 1;
     this.count = 1;
     var self = this;
 
@@ -17,30 +17,30 @@ function TablePaginator(tableid, numberofrowstodisplayperpage, animationspeed) {
     }
 
     this.displayRows = function(start, end) {
-        if(start == end || start == this.sizeoftable) {
-            start = end;
-            $("#" + tableid + "pagenumholder").show();
-        }
         if(start <= end) {
             $("#" + tableid + start).fadeIn(animationspeed);
-            start++;
-            self.displayRows(start,end);
+            if (start == end || start == this.sizeoftable) {
+                $("#" + tableid + "pagenumholder").show();
+            } else {
+                start++;
+                self.displayRows(start,end);
+            }
         }
     }
 
     this.createPagesandPageholder = function() {
-        var beginning;
-        var ending;
-        var current; 
+        var beginning,
+            ending,
+            current; 
         
         if(this.sizeoftable <= numberofrowstodisplayperpage) {
             beginning = 1;
             end = this.sizeoftable;
         } else {
-            $("#" + tableid).after('<div style="margin-top:5px;text-align:center" id="'
+            $("#" + tableid).after('<div style="margin-top:5px; text-align: center;" id="'
                                   + tableid + 'pagenumholder" ><span id="'
                                   + tableid + 'beginning" title="First"> <<&nbsp  </span><span id="'
-                                  + tableid + 'rewind" title="Prev">  &nbsp<&nbsp  </span><input style="width:15px;border:none" id="'
+                                  + tableid + 'rewind" title="Prev">  &nbsp<&nbsp  </span><input style="width: 15px; border: none;" id="'
                                   + tableid + 'currentPage" value="1"/> of <div style="display: inline-block; margin: 3px; width: inherit;" id="'
                                   + tableid + 'numOfPage"></div><span id="'+tableid+'forward" title="Next">  &nbsp>&nbsp  </span><span id="'
                                   + tableid + 'end" title="Last">  &nbsp>>&nbsp  </span></div>');

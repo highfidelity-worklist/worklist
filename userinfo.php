@@ -234,6 +234,8 @@
         <link type="text/css" href="css/userNotes.css" rel="stylesheet" />
         <link type="text/css" href="css/review.css" rel="stylesheet" />
         <link type="text/css" href="css/favorites.css" rel="stylesheet" />
+        <link type="text/css" href="css/budget.css" rel="stylesheet" />
+        <link type="text/css" href="css/jquery.combobox.css" rel="stylesheet" />
         <link href="css/LVstyles.css" rel="stylesheet" type="text/css">
         <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
@@ -243,6 +245,9 @@
         <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
         <script type="text/javascript" src="js/jquery.blockUI.js"></script>
         <script type="text/javascript" src="js/jquery.autogrow.js"></script>
+        <script type="text/javascript" src="js/class.js"></script>
+        <script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
+        <script type="text/javascript" src="js/jquery.combobox.js"></script>
         <script type="text/javascript" src="js/paginator.js"></script>
         <script type="text/javascript">
         // This global variable user_id should not be used anymore, replace it by userInfo.user_id .
@@ -263,6 +268,7 @@
         <script type="text/javascript" src="js/review.js"></script>
         <script type="text/javascript" src="js/favorites.js"></script>
         <script type="text/javascript" src="js/userinfo.js"></script>
+        <script type="text/javascript" src="js/budget.js"></script>
         <title>User info</title>
     </head>
 <body>

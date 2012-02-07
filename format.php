@@ -105,7 +105,7 @@ $userId = getSessionUserId();
                    your userid must be included below. Just remove when done!
                    Adding alexi and jeskad - alexi 2011-10-26
                 */
-                if ($userId == 2 || $userId == 1020 || $userId == 1918 || $userId == 2134 || $userId == 1935) {
+                if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
             ?>
             | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
             <?php } ?>
