@@ -425,7 +425,7 @@ include("head.html"); ?>
         row += '<td width="7.5%">' + json[12] + '</td>';
 
         if (is_runner == 1) {
-            if (user_id == json[13]) {
+            if (user_id == json[13] || json[2] == 'SUGGESTEDwithBID') {
                 var feebids = 0;
                 if(json[7]){
                     feebids = json[7];

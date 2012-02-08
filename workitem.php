@@ -912,7 +912,7 @@ if(!empty($bids) && is_array($bids)) {
         }
 
         if (!($user->getId() == $bid['bidder_id'] 
-         || $user->isRunnerOfWorkitem($workitem)))  {
+         || $user->isRunnerOfWorkitem($workitem) || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner) ))  {
             $bid['nickname'] = '*name hidden*';
             $bid['bid_amount'] = '***';
             $bid['email'] = '********';
