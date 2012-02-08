@@ -130,13 +130,13 @@ if ($action =='save_workitem') {
     if ($workitem->getIs_bug() != $is_bug) {
         error_log("bug changed it");
         if($is_bug) {
-	        $new_update_message .= 'Marked as a bug. ';
+            $new_update_message .= 'Marked as a bug. ';
         } else {
-	        $new_update_message .= 'Marked as not being a bug. ';
+            $new_update_message .= 'Marked as not being a bug. ';
         }
         $job_changes[] = '-bug';
     }
-	$workitem->setIs_bug($is_bug);
+    $workitem->setIs_bug($is_bug);
 
     // summary
     if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
@@ -233,11 +233,10 @@ if ($action =='save_workitem') {
     }
     //if job is a bug, notify to journal
     if($bug_job_id > 0) {
-		error_log("bug_job_id:".$bug_job_id);
-	    $workitem->setIs_bug(1);
+        $workitem->setIs_bug(1);
         $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
     } elseif (isset($_REQUEST['is_bug']) && $_REQUEST['is_bug'] == 'on') {
-	    $bugJournalMessage = " (which is a bug)";
+        $bugJournalMessage = " (which is a bug)";
     } elseif (isset($is_bug) && $is_bug == 1) {
         $bugJournalMessage = " (which is a bug)";
     }
@@ -245,13 +244,12 @@ if ($action =='save_workitem') {
     {
         $bugJournalMessage= "";
     }
-	error_log($workitem->getIs_bug());
     if (empty($new_update_message)) {
         $new_update_message = " No changes.";
     } else {
         $workitem->save();
         $new_update_message = " Changes: $new_update_message";
-    	$notifyEmpty = false;
+        $notifyEmpty = false;
     }
 
      $redirectToDefaultView = true;
@@ -290,16 +288,18 @@ if ($action == 'new-comment') {
         // Send journal notification
         if ($workitem->getStatus() != 'DRAFT') {
             $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
-            Notification::workitemNotify(array(
-                'type' => 'comment',
-                'workitem' => $workitem,
-                'recipients' => array('creator', 'runner', 'mechanic', 'followers'),
-                'emails' => $correspondent),
+            Notification::workitemNotify(
                 array(
-                    'who' => $_SESSION['nickname'],
-                    // removed nl2br as it's cleaner to be able to choose if this is used on output
-                    'comment' => $comment
-                ));
+                    'type' => 'comment',
+                    'workitem' => $workitem,
+                    'recipients' => array('creator', 'runner', 'mechanic', 'followers'),
+                    'emails' => $correspondent),
+                    array(
+                        'who' => $_SESSION['nickname'],
+                        // removed nl2br as it's cleaner to be able to choose if this is used on output
+                        'comment' => $comment
+                    )
+                );
         }
     }
 
@@ -690,9 +690,9 @@ if ($action == "add_tip") {
             'workitem' => $workitem,
             'emails' => array($recipient->getUsername())),
             array('tip_adder' => $user->getNickname(),
-              	  'tip_desc' => $tip_desc,
-              	  'tip_amount' => $tip_amount
-	    )
+                    'tip_desc' => $tip_desc,
+                    'tip_amount' => $tip_amount
+        )
         );
     }
     
@@ -1006,7 +1006,7 @@ function sendMailToDiscardedBids($worklist_id)    {
     // Get all bids marked as not accepted
     $query = "SELECT bids.email, u.nickname FROM ".BIDS." as bids
                     INNER JOIN ".USERS." as u on (u.id = bids.bidder_id)
-                    WHERE bids.worklist_id=$worklist_id and bids.withdrawn = 0 AND bids.accepted = 0";
+                    WHERE bids.worklist_id=$worklist_id AND bids.withdrawn = 0 AND bids.accepted = 0";
     $result_query = mysql_query($query);
     $bids = array();
     while($row = mysql_fetch_assoc($result_query)) {
@@ -1014,17 +1014,20 @@ function sendMailToDiscardedBids($worklist_id)    {
     }
 
     $workitem = new WorkItem($worklist_id);
-
+    $mechanic = $workitem->getMechanic()->getUsername();
     foreach( $bids as $bid ) {
-        Notification::workitemNotify(
-           array(
-                'type' => 'bid_discarded',
-                'workitem' => $workitem,
-                'emails' => array($bid['email'])
-            ),
-            array(
-                'who' => $bid['nickname']
-            ));
+        // Make sure the mechanic is not sent a discarded email
+        if ($mechanic != $bid['email']){
+            Notification::workitemNotify(
+                array(
+                    'type' => 'bid_discarded',
+                    'workitem' => $workitem,
+                    'emails' => array($bid['email'])
+                ),
+                array(
+                    'who' => $bid['nickname']
+                ));
+        }
     }
 }
 

@@ -360,7 +360,7 @@ class Notification {
             break;
 
             case 'bid_discarded':
-                $headers['From'] = '"' . $project_name . '-bid discarded" ' . $from_address;
+                $headers['From'] = '"' . $project_name . '-bid not accepted" ' . $from_address;
                 $body = "<p>Hello " . $data['who'] . ",</p>";
                 $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$itemId."'>#".$itemId."</a> '" . $workitem -> getSummary() . "'. This job has just been filled by another mechanic.</br></p>";
                 $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
@@ -563,13 +563,13 @@ class Notification {
                 $headers['From'] = '"' . $project_name . '-invited" ' . $from_address;
                 $body = "<p>Hello you!</p>";
                 $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>";
-				$body .= "<p>Description:</p>";
+                $body .= "<p>Description:</p>";
                 $body .= "<p>------------------------------</p>";
                 $body .= "<p>" . $workitem -> getNotes() . "</p>";
                 $body .= "<p>------------------------------</p>";
                 $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">this link</a>.</p>";
                 $body .= "<p>Hope to see you soon.</p>";
-            break;	
+            break;
             case 'invite-email':
                 $headers['From'] = '"' . $project_name . '-invitation" ' . $from_address;
                 $body = "<p>Well, hello there!</p>";
@@ -679,7 +679,7 @@ class Notification {
 
                             // check if we already sending email to this user
                             if(!in_array($username, $emails)){
-                                $emails[] = $username;
+                                array_push($emails, $username);
                             }
                         }
                     }
