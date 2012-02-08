@@ -1,6 +1,6 @@
 <script type="text/html" id="uploadImage">
     <div class="filesIcon">
-        <a class="attachment" href="<#= url #>" data-fileid="<#= fileid #>" ><img width="75px" height="75px" src="<#= icon #>" /></a>
+        <a class="attachment" href="<#= url #>" data-fileid="<#= fileid #>" ><img width="75px" height="75px" src="<#= url #>" /></a>
     </div>
     <div class="filesDescription">
         <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>

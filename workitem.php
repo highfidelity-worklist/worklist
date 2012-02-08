@@ -862,7 +862,7 @@ if ($action == false) {
 
 if ($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id . "&order=" . $order_by;
-    if ($status == 'DONE') {
+    if ($workitem->getStatus() == 'DONE') {
         $displayDialogAfterDone = true;
     }
 }

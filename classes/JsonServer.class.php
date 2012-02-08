@@ -350,12 +350,14 @@ class JsonServer
         }
 
     }
-	
+
     protected function actionScanFile() {
         require_once('./scanAssets.php');
         $scanner = new scanAssets();
+        $file_id = $this->getRequest()->getParam('fileid');
+
         $file = new File();
-        $file->findFileById($this->getRequest()->getParam('fileid'));
+        $file->findFileById($file_id);
         $success = false;
         $icon = File::getIconFromMime($file->getMime());
         if ($scanner->scanFile($file->getId())) {
@@ -364,9 +366,30 @@ class JsonServer
         if ($icon === false) {
             $icon = $file->getUrl();
         }
+        
+        if ($success) {
+            // we need to reload the file because scanner might have updated fields
+            // and our object is out of date
+            $file->findFileById($file_id);
 
+            // move file to S3
+            try {
+                File::s3Upload($file->getRealPath(), APP_ATTACHMENT_PATH . $file->getFileName());
+                $file->setUrl(APP_ATTACHMENT_URL . $file->getFileName());
+                $file->save();
+                // delete the physical file now it is in S3
+                unlink($file->getRealPath());
+            } catch (Exception $e) {
+                $success = false;
+                $error = 'There was a problem uploading your file';
+                error_log(__FILE__.": Error uploading images to S3:\n$e");
+            }
+        }
+
+    
         return $this->setOutput(array(
             'success' => $success,
+            'error'   => isset($error) ? $error : '',
             'fileid'  => $file->getId(),
             'url'     => $file->getUrl(),
             'icon'    => $icon
@@ -512,8 +535,7 @@ class JsonServer
         return $this->setOutput(array('success' => true,'data' => $journal_message));
     }
     
-    protected function actionGetFilesForWorkitem()
-    {
+    protected function actionGetFilesForWorkitem() {
         $files = File::fetchAllFilesForWorkitem($this->getRequest()->getParam('workitem'));
         $user = new User();
         $user->findUserById($this->getRequest()->getParam('userid'));
@@ -679,8 +701,7 @@ class JsonServer
      * This method handles the upload of the W9 form
      *
      */
-    protected function actionW9Upload()
-    {
+    protected function actionW9Upload() {
         // check if we have a file
         if (empty($_FILES)) {
             return $this->setOutput(array(
@@ -689,24 +710,51 @@ class JsonServer
             ));
         }
 
+//TODO:REVIEW - garth: is there ever a time that we would need to trust $_GET['userid'] here?
+//This is a partial step resolving a code conflict and I don't want to break/loose these changes
+//$userid = $this->getUser()->getId();
+        $user = new User();
+        $user->findUserById($this->getRequest()->getParam('userid'));
         $tempFile = $_FILES['Filedata']['tmp_name'];
-        $path = UPLOAD_PATH . '/' . $this->getRequest()->getParam('userid') . '_W9.pdf';
+        //Garth -- Make these files easy to organize
+        $newFile = sprintf("%s_%s_%s_%s_%s_W9.pdf",$user->getNickname(),$user->getId(),$user->getLast_name(),$user->getFirst_name(),date("Ymd"));
+        $path = APP_INTERNAL_PATH . $newFile;
+        $url = APP_INTERNAL_URL . $newFile;
 
-        if (move_uploaded_file($tempFile, $path)) {
-            $user = new User();
-            $user->findUserById($this->getRequest()->getParam('userid'));            
+//TODO:REVIEW - I think this file still needs to be scanned, check context - garth
+
+        // move file to S3
+        try {
+            File::s3Upload($tempFile, $path, false);
+            $url = File::s3AuthenticatedURL($path);
+            $subject = "W-9 Form from " . $user->getNickname();
+            $body = "<p>Hi there,</p>";
+            $body .= "<p>" . $user->getNickname() . " just uploaded his/her W-9 Form, you can download and approve it from this URL:</p>";
+            $body .= "<p><a href=\"{$url}\">Click here</a></p>";
+            
+            if(! send_email(FINANCE_EMAIL, $subject, $body)) { 
+                error_log("JsonServer:w9Upload: send_email failed");
+            }
+
             $user->setW9_status('pending-approval');
             $user->save();
             return $this->setOutput(array(
                 'success' => true,
                 'message' => 'The file ' . basename( $_FILES['Filedata']['name']) . ' has been uploaded.'
-            ));
-        } else {
+            ));            
+            
+        } catch (Exception $e) {
+            $success = false;
+            $error = 'There was a problem uploading your file';
+            error_log(__FILE__.": Error uploading W9 form to S3:\n$e");
+            
             return $this->setOutput(array(
                 'success' => false,
                 'message' => 'An error occured while uploading the file, please try again!'
-            ));
+            ));            
         }
+
+
     }
 
     protected function actionsendw9NotificationEmail() {

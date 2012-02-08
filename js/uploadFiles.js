@@ -54,7 +54,6 @@
                         	    $('#upload-scan-file .content').html('<p>Uploading attachment ...</p>');
                             }
                         });
-                        
 
                         if(fdata.trackfiles) {
                             fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));

@@ -743,9 +743,8 @@ include("head.html");
     <div id="formRight">
     <p style="text-align: center; cursor: pointer;">
     <label style="text-align: left; display: block;">Photo<br></label> 
-    <img style="border: 2px solid rgb(209, 207, 207); padding: 10px;"
-    id="profilepicture"
-    src="thumb.php?src=<?php echo((empty($picture) ? '/images/no_picture.png' : '/uploads/' . $picture));?>&w=100&h=90&zc=0" />
+    <img id="profilepicture"
+    src="<?php echo (empty($picture) ? 'thumb.php?src=images/no_picture.png&w=100&h=100&zc=0' : APP_IMAGE_URL . $picture); ?>" />
     <span class="picture_info">Click here to change it</span>
     <span style="display: none;"
     class="LV_validation_message LV_invalid upload"></span></p>

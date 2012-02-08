@@ -79,6 +79,29 @@ class scanAssets {
         }
     } //End of method
     
+    //This method gets passed a filename directly
+    public function _scanFile($file_name) {
+        set_time_limit(15*60);
+        date_default_timezone_set('UTC');
+        
+        // Get the full path and prepare it for the command line. 
+        $safe_path = escapeshellarg($file_name); 
+        // Reset the values. 
+        $return = -1; 
+        $out = '';
+        $cmd = VIRUS_SCAN_CMD . ' ' . $safe_path; 
+        $fct_return = false;
+            
+        if (!empty($safe_path) && file_exists($file_name) && filesize($file_name) > 0 ) {
+            // Execute the command.  
+            //error_log("scanning with $cmd");
+            exec ($cmd, $out, $return);
+        }
+        //error_log( "results: $return " . print_r($out, true) );
+        return $return;
+    } //End of method
+
+    //This method finds the filename by id in the database
     public function scanFile($id) {
         set_time_limit(15*60);
         date_default_timezone_set('UTC');
@@ -136,6 +159,7 @@ class scanAssets {
 		        // send mail if there's a problem
 	            if (!empty($message)) {
 		            if(!send_email($row['title'], $subject, $message)) {
+                        //Don't fail silently if we can't send the message also
 		                error_log("cron scanAssets.php: send_email failed, msg: " . $message);
                     }
                 }

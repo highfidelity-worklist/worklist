@@ -110,6 +110,9 @@ $(document).ready(function() {
     });
 
     <?php
+    
+    global $displayDialogAfterDone;
+
     if ($displayDialogAfterDone == true && $worklist['mechanic_id'] > 0) {
         $_SESSION['displayDialogAfterDone'] = false;
         $row = $workitem->getUserDetails($worklist['mechanic_id']);
@@ -1542,7 +1545,7 @@ if ($action =="edit"):  ?>
                         endif;
 
                         foreach ($comments_list as $comment) :
-                            $comment[] = $comments[$i];
+                            $comment[] = $comments[$it];
                             ?><li id="comment-<?php echo $comment['id']; ?>" class="comment depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?> <?php if ($order_by == "DESC" && $comment['depth'] > 0) echo 'desc'; ?>">
                                 <div class="comment-info">
                                     <span class="author profile-link" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;

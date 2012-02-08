@@ -66,3 +66,10 @@
 .floatLeft {
     float: left;
 }
+
+#profilepicture {
+    border: 2px solid rgb(209, 207, 207);
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+}

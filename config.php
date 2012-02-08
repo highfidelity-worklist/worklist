@@ -8,6 +8,15 @@ require_once('Zend/Config.php');
 require_once('Zend/Config/Ini.php');
 require_once('Zend/Registry.php');
 
+// Use this function to not overwrite values that were previously
+// specified in server.local.php
+// @TODO: Migrate all constants to use this handy function :)
+function defineOnce($key, $value) {
+    if (!defined($key)) {
+        define($key, $value);
+    }
+}
+
 if (file_exists(dirname(__FILE__).'/server.local.php')) {
     include_once(dirname(__FILE__).'/server.local.php');
 } else {
@@ -59,6 +68,7 @@ if (!defined('BIDS'))           define('BIDS', 'bids');
 if (!defined('BUDGET'))     define('BUDGET', 'budget');
 if (!defined('COMMENTS'))       define('COMMENTS', 'comments');
 if (!defined('FEES'))           define('FEES', 'fees');
+defineOnce('USERS_FAVORITES', 'rel_users_favorites');
 if (!defined('FILES'))          define('FILES', 'files');
 if (!defined('FUNDS'))          define('FUNDS', 'funds');
 if (!defined('PAYPAL_ADMINS'))  define('PAYPAL_ADMINS', 'paypal_admins');
@@ -209,6 +219,18 @@ mysql_select_db(DB_NAME);
 
 // time constants
 if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);
+
+/** File uploads / S3 settings **/
+defineOnce('S3_ACCESS_KEY', 'S3_ACCESS_KEY');
+defineOnce('S3_SECRET_KEY', 'S3_SECRET_KEY');
+defineOnce('S3_BUCKET', 'worklist-dev');
+defineOnce('S3_URL_BASE', 'http://' . S3_BUCKET . '.s3.amazonaws.com/');
+defineOnce('APP_IMAGE_PATH', 'image/');
+defineOnce('APP_ATTACHMENT_PATH', 'attachment/');
+defineOnce('APP_INTERNAL_PATH', 'internal/');
+defineOnce('APP_IMAGE_URL', S3_URL_BASE . APP_IMAGE_PATH);
+defineOnce('APP_ATTACHMENT_URL', S3_URL_BASE . APP_ATTACHMENT_PATH);
+defineOnce('APP_INTERNAL_URL', 'https://s3.amazonaws.com/' . S3_BUCKET . '/' . APP_INTERNAL_PATH);
 
 if (! defined('VIRUS_SCAN_CMD')) define('VIRUS_SCAN_CMD', '/usr/bin/clamscan');
 

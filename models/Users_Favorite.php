@@ -5,17 +5,6 @@
  * All rights reserved.
  */
  
- /** MOVE THIS PART IN CONFIG ***/
-// Use this function to not overwrite values that were previously
-// specified in server.local.php
-function defineOnce($key, $value) {
-    if (!defined($key)) {
-        define($key, $value);
-    }
-}
-defineOnce('USERS_FAVORITES', 'rel_users_favorites');
-
-
 class Users_Favorite extends DataObject {
     public $user_id;
     public $favorite_user_id;

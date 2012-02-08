@@ -1,5 +1,6 @@
 <?php
-require_once ('config.php');
+require_once('config.php');
+require_once('functions.php');
 require_once('class/Session.class.php');
 require_once('class/Utils.class.php');
 require_once('class/Database.class.php');
@@ -170,59 +171,48 @@ function uploadProfilePicture() {
         ));
     }
 
-     $ext = end(explode(".", $_FILES['profile']['name']));
-     $tempFile = $_FILES['profile']['tmp_name'];
-     $path = UPLOAD_PATH. '/' . $_REQUEST['userid'] . '.' . $ext;
+    $ext = end(explode(".", $_FILES['profile']['name']));
+    $tempFile = $_FILES['profile']['tmp_name'];
+    $path = APP_IMAGE_PATH . $_REQUEST['userid'] . '.' . $ext;
 
-     if (move_uploaded_file($tempFile, $path)) {
+    require_once('lib/S3/S3.php');
+
+    try {
+        File::s3Upload($tempFile, $path);
+
         $imgName = strtolower($_REQUEST['userid'] . '.' . $ext);
-        $query = 'UPDATE `'.USERS.'` SET `picture` = "' . mysql_real_escape_string($imgName) . '" WHERE `id` = ' . (int)$_REQUEST['userid'] . ' LIMIT 1;';
-        if (!mysql_query($query)) {
+        $query = "
+            UPDATE `" . USERS . "` 
+            SET `picture` = '" . mysql_real_escape_string($imgName) . "' ,
+            `s3bucket` = '" . S3_BUCKET ."'
+            WHERE `id` = " . (int) $_REQUEST['userid'] . "
+            LIMIT 1";
+
+        if (! mysql_query($query)) {
+            error_log("s3upload mysql: ".mysql_error());
             respond(array(
                 'success' => false,
                 'message' => SL_DB_FAILURE
             ));
-        } else {
-               $file = $path;
-               $rc = null;
-               $type = null;
-               if ($ext == "JPG" || $ext == "jpg" || $ext == "JPEG" || $ext == "jpeg") {
-                    $rc = imagecreatefromjpeg($file);
-                    $type = "image/jpeg";
-               } else if ($ext == "GIF" || $ext == "gif") {
-                    $rc = imagecreatefromgif($file);
-                    $type = "image/gif";
-               } else if ($ext == "PNG" || $ext == "png") {
-                    $rc = imagecreatefrompng($file);
-                    $type = "image/png";
-               }
-
-               // Get original width and height
-               $width = imagesx($rc);
-               $height = imagesy($rc);
-               $cont = addslashes(fread(fopen($file,"r"),filesize($file)));
-               $size = filesize($file);
-               $sql = "INSERT INTO " . ALL_ASSETS . " (`app`, `content_type`, `content`, `size`, `filename`,`created`, `width`, `height`) " . "VALUES('".WORKLIST."','" . $type . "','" . $cont . "','" . $size . "','" . $imgName . "',NOW()," . $width . "," . $height . ") ".
-                      "ON DUPLICATE KEY UPDATE content_type = '".$type."', content = '".$cont."', size = '".$size."', updated = NOW(), width = ".$width.", height = ".$height;
-
-               $db = new Database();
-               if (! $db->query($sql)) {
-                    unlink($file);
-                    respond(array('success' => false, 'message' => "Error with: " . $file . " Error message: " . $db->getError()));
-               } else {
-                    unlink($file);
-                    respond(array(
-                        'success' => true,
-                        'picture' => $imgName
-                    ));
-               }
         }
-     } else {
+
         respond(array(
+            'success' => true,
+            'picture' => $imgName
+        ));
+
+    } catch (Exception $e) {
+        $success = false;
+        $error = 'There was a problem uploading your file';
+        error_log(__FILE__.": Error uploading images to S3:\n$e");
+            
+        return $this->setOutput(array(
             'success' => false,
             'message' => 'An error occured while uploading the file, please try again!'
-        ));
-     }
+        ));            
+    }
+
+
 }
 
 function updateuser(){

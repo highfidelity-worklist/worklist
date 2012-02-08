@@ -1349,7 +1349,7 @@ class User {
      */
     public function getAvatar($w = 50, $h = 50)
     {
-        return SERVER_URL ."thumb.php?src=".$this->picture."&h=".$h."&w=".$w."&zc=0";
+        return APP_IMAGE_URL . $this->picture;
     }
     
     /**
@@ -1357,7 +1357,7 @@ class User {
      */
     public function setAvatar()
     {
-        $this->avatar = SERVER_URL ."thumb.php?src=".$this->picture."&h=80&w=80&zc=0";
+        $this->avatar = APP_IMAGE_URL . $this->picture;
         return $this;
     }
     /**
