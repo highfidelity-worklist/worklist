@@ -47,8 +47,11 @@ include("head.html");
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="js/userstats.js"></script>
 
 <script type="text/javascript">
+var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
+var worklistUrl = '<?php echo SERVER_URL; ?>';
 var current_letter = '<?php echo $cur_letter; ?>';
 var logged_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
 var runner =  <?php echo !empty($_SESSION['is_runner']) ? 1 : 0; ?>;

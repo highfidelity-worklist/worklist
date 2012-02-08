@@ -293,8 +293,11 @@ include("head.html");
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/ajaxupload-3.6.js"></script>
+<script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript">
     var nclass;
+    var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
+    var worklistUrl = '<?php echo SERVER_URL; ?>';
 
     function validateUploadImage(file, extension) {
         if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))) {
@@ -620,6 +623,8 @@ include("head.html");
 <?php include("format.php"); ?>
 <!-- Popup for add project info-->
 <?php require_once('dialogs/popup-addproject.inc'); ?>
+<!-- Popup for budget info -->
+<?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for budget info-->
 <?php require_once('dialogs/popup-budget.inc'); ?>
 

@@ -74,6 +74,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="js/userstats.js"></script>
 <link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
 <style type="text/css">
 
@@ -161,6 +162,7 @@ function fmtDate2(d) {
     var workitems;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
     var is_runner = <?php echo isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : '"nada"' ?>;
+    var worklistUrl = '<?php echo SERVER_URL; ?>';
 
 var getPaidItems = function() {
     var paidItems = 0;
@@ -767,6 +769,8 @@ function loadTimelineChart() {
 <?php require_once('dialogs/popup-addproject.inc'); ?>
 <!-- Popup for Budget -->
 <?php require_once('dialogs/popup-budget.inc'); ?>
+<!-- Popup for budget info -->
+<?php require_once('dialogs/budget-expanded.inc'); ?>
 
 <?php include("format.php"); ?>
 

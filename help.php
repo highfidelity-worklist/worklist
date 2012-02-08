@@ -24,6 +24,11 @@ include("head.html");
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/add-proj-contact.js"></script>
+<script type="text/javascript" src="js/userstats.js"></script>
+<script type="text/javascript">
+    var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
+    var worklistUrl = '<?php echo SERVER_URL; ?>';
+</script>
 
 <title>Worklist | Help</title>
 
@@ -33,6 +38,10 @@ include("head.html");
 <body>
 
 <?php include("format.php"); ?>
+<!-- Popup for budget info -->
+<?php require_once('dialogs/budget-expanded.inc'); ?>
+<!-- Popup for budget info-->
+<?php require_once('dialogs/popup-budget.inc'); ?>
 <br/>
 <a name="top"></a>
 <h1 class="header">Worklist Frequently Asked Questions</h1> </br></br>

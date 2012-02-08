@@ -37,6 +37,7 @@ include("head.html");
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/add-proj-contact.js"></script>
+<script type="text/javascript" src="js/userstats.js"></script>
 
 <script type="text/javascript">
     function validateUploadImage(file, extension) {
@@ -114,6 +115,8 @@ include("head.html");
     }(jQuery);
     var current_letter = '<?php echo $selectedLetter; ?>';
     var current_page = '<?php echo $currentPage ?>';
+    var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
+    var worklistUrl = '<?php echo SERVER_URL; ?>';
 
     function validateCodeReviews() {
         if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
@@ -364,6 +367,8 @@ include("head.html");
     </div>
         <!-- Popup for add project info-->
         <?php include('dialogs/add-proj-contact.inc'); ?>
+        <!-- Popup for budget info -->
+        <?php require_once('dialogs/budget-expanded.inc'); ?>
         <!-- Popup for budget info-->
         <?php require_once('dialogs/popup-budget.inc'); ?>
     <div class="headerText">
