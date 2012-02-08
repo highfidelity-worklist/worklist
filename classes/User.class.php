@@ -1344,12 +1344,49 @@ class User {
         }
         return false;
     }
+
+//Garth
+    /**
+     * Checks to see if image exists in the cloud
+     * @param string $imageName
+     * @return bool
+     */
+    protected function imageExistsS3($imageName) {
+       //Don't look for resizeds since we already looked in the db
+       if (strpos($imageName,'w:')) { error_log("S3: don't look for thumbnails $imageName"); return false; }
+
+       require_once(APP_PATH . "/lib/S3/S3.php");
+
+       S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
+
+       try {
+           if (! $result = S3::getObject(S3_BUCKET,'image/'.$imageName,false)) {
+               error_log("image not found on s3");
+               return false;
+           } ;
+           error_log("imageExistsS3: $imageName . ".print_r($result->code,true));
+           if ($result->code==200) {
+               return true;
+           }
+           return false;
+       } catch ( Exception $e ) {
+           throw new Exception("imageExistsS3:getObject caught: $e imageName");
+       }
+    }
+
     /**
      * @return the $avatar
      */
     public function getAvatar($w = 50, $h = 50)
     {
-        return APP_IMAGE_URL . $this->picture;
+        if (empty($this->picture)) {
+            return SERVER_URL ."thumb.php?src=no_picture.png&h=".$h."&w=".$w."&zc=0";
+        }
+        if ($this->imageExistsS3($this->picture)) {
+            return APP_IMAGE_URL . $this->picture;
+        } else {
+            return SERVER_URL ."thumb.php?src=".$this->picture."&h=".$h."&w=".$w."&zc=0";
+        }
     }
     
     /**
