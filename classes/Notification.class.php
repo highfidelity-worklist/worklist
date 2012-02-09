@@ -61,7 +61,12 @@ class Notification {
         switch($flag) {
         case self::FUNCTIONAL_NOTIFICATIONS:
             $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
-            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0 AND u.id!=" .getSessionUserId(). " AND u.id IN({$users})";
+            $sql = "SELECT u.username 
+                FROM `" . USERS . "` u 
+                WHERE u.notifications & $flag != 0 
+                  AND u.id! = " . getSessionUserId() . " 
+                  AND u.id IN({$users}) 
+                  AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
                 while($row = mysql_fetch_row($res)) {
@@ -73,7 +78,10 @@ class Notification {
         case self::REVIEW_EMAIL_NOTIFICATIONS :
         case self::BIDDING_NOTIFICATIONS :
         case self::BIDDING_EMAIL_NOTIFICATIONS :
-            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0";
+            $sql = "SELECT u.username 
+                FROM `" . USERS . "` u 
+                WHERE u.notifications & $flag != 0 
+                  AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
                 while($row = mysql_fetch_row($res)) {
@@ -85,7 +93,12 @@ class Notification {
         case self::MY_COMPLETED_NOTIFICATIONS :
         case self::MY_BIDS_NOTIFICATIONS:
             $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
-            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.notifications & $flag != 0 AND u.id!=" .getSessionUserId(). " AND u.id IN({$users})";
+            $sql = "SELECT u.username 
+                FROM `" . USERS . "` u 
+                WHERE u.notifications & $flag != 0 
+                  AND u.id! = " . getSessionUserId() . " 
+                  AND u.id IN({$users}) 
+                  AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
                 while($row = mysql_fetch_row($res)) {
@@ -95,7 +108,10 @@ class Notification {
             break;
         case self::MY_AUTOTEST_NOTIFICATIONS:
             $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
-            $sql = "SELECT u.username FROM `" . USERS . "` u WHERE u.id IN({$users})";
+            $sql = "SELECT u.username 
+                FROM `" . USERS . "` u 
+                WHERE u.id IN({$users}) 
+                  AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
                 while($row = mysql_fetch_row($res)) {
@@ -838,12 +854,16 @@ class Notification {
     
     // get list of past due bids
     public function emailPastDueJobs(){
-        $qry = "SELECT w.id worklist_id, b.bid_done, b.id bid_id, b.email bid_email" .
-            " FROM " . WORKLIST . " w " .
-            " LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id".
-            " LEFT JOIN " . USERS . " u ON w.runner_id = u.id".
-            " WHERE (w.status = 'WORKING' OR w.status = 'REVIEW' OR w.status = 'PRE-FLIGHT' OR w.status = 'COMPLETED')".
-            " AND b.accepted = 1 AND ( b.past_notified = '0000-00-00 00:00:00' OR b.past_notified IS NULL ) AND b.withdrawn = 0";
+        $qry = "SELECT w.id worklist_id, b.bid_done, b.id bid_id, b.email bid_email
+            FROM " . WORKLIST . " w 
+              LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
+              LEFT JOIN " . USERS . " u ON w.runner_id = u.id
+              LEFT JOIN " . USERS . " bu ON bu.id = b.bidder_id
+            WHERE (w.status = 'WORKING' OR w.status = 'REVIEW' OR w.status = 'COMPLETED')
+              AND b.accepted = 1 
+              AND (b.past_notified = '0000-00-00 00:00:00' OR b.past_notified IS NULL) 
+              AND b.withdrawn = 0
+              AND bu.is_active = 1";
         $worklist = mysql_query($qry) or (error_log("select past due bids error: " . mysql_error()) && die);
         $wCount = mysql_num_rows($worklist);
         if($wCount > 0){
@@ -1003,10 +1023,12 @@ class Notification {
     public function emailExpiredBids(){
         $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount
             FROM " . WORKLIST . " w
-            LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
+              LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
+              LEFT JOIN " . USERS . " u ON u.id = b.bidder_id
             WHERE w.status = 'BIDDING'
-                AND b.expired_notify = 0
-                AND b.bid_expires < NOW()
+              AND b.expired_notify = 0
+              AND b.bid_expires < NOW()
+              AND u.is_active = 1
             ORDER BY b.worklist_id DESC";
         $worklist = mysql_query($qry);
         $wCount = mysql_num_rows($worklist);

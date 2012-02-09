@@ -1094,7 +1094,11 @@ function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id) {
         $originalComment->findCommentById((int) $parent_comment_id);
         $cuser = new User();
         $cuser->findUserById($originalComment->getUser_id());
-        $correspondent = array($cuser->getUsername());
+        if ($cuser->isActive()) {
+            $correspondent = array($cuser->getUsername());
+        } else {
+            $correspondent = array();
+        }
     }
     
     $comment->setComment($comment_text);

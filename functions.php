@@ -695,32 +695,34 @@ function deleteFee($fee_id) {
         // Get user
         $user = getUserById($fee->user_id);
 
-        // Journal message
-        $message  = $_SESSION['nickname'] . ' deleted a fee from ';
-        $message .= $user->nickname . ' on item #';
-        $message .= $fee->worklist_id . ': ';
-        $message .= $summary . '. ';
+        if ($user !== false) {
+            // Journal message
+            $message  = $_SESSION['nickname'] . ' deleted a fee from ';
+            $message .= $user->nickname . ' on item #';
+            $message .= $fee->worklist_id . ': ';
+            $message .= $summary . '. ';
+    
+            // Journal notification
+            sendJournalNotification($message);
 
-        // Journal notification
-        sendJournalNotification($message);
-
-        //sending email to the bidder
-        $options = array();
-        $options['emails'] = array($user->username);
-        $options['workitem'] = new workItem();
-        $options['workitem']->loadById($fee->worklist_id);
-        $options['type'] = "fee_deleted";
-        Notification::workitemNotify($options);
-       
-        $subject = "Fee: " . $summary;
-        $sms_message = "Your fee has been deleted by: " . $_SESSION['nickname'] . " for #{$fee->worklist_id}. ";
-        $sms_message .= "If you think this is an error, please contact the Runner."; 
-        notify_sms_by_object($user, "Fee deleted", $sms_message);
+            //sending email to the bidder
+            $options = array();
+            $options['emails'] = array($user->username);
+            $options['workitem'] = new workItem();
+            $options['workitem']->loadById($fee->worklist_id);
+            $options['type'] = "fee_deleted";
+            Notification::workitemNotify($options);
+           
+            $subject = "Fee: " . $summary;
+            $sms_message = "Your fee has been deleted by: " . $_SESSION['nickname'] . " for #{$fee->worklist_id}. ";
+            $sms_message .= "If you think this is an error, please contact the Runner."; 
+            notify_sms_by_object($user, "Fee deleted", $sms_message);
+        }
     }
 }
 
 function getUserById($id) {
-    $res = mysql_query('SELECT * FROM `' . USERS . '` WHERE id = ' . $id);
+    $res = mysql_query('SELECT * FROM `' . USERS . '` WHERE `id` = ' . $id . ' AND `is_active` = 1');
     if ($res && (mysql_num_rows($res) == 1)) {
         return mysql_fetch_object($res);
     }
@@ -728,7 +730,7 @@ function getUserById($id) {
 }
 
 function getUserByNickname($nickname) {
-    $res = mysql_query('SELECT * FROM `' . USERS . '` WHERE `nickname` = "' . $nickname . '";');
+    $res = mysql_query('SELECT * FROM `' . USERS . '` WHERE `nickname` = "' . $nickname . '" AND `is_active` = 1;');
     if ($res && (mysql_num_rows($res) == 1)) {
         return mysql_fetch_object($res);
     }

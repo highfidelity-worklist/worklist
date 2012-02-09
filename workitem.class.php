@@ -209,7 +209,9 @@ WHERE id = ' . (int)$id;
      */
     public function getUsersWithFeesId() {
     
-        $query = "SELECT user_id FROM `" .FEES."` WHERE worklist_id = ".$this->id;
+        $query = " SELECT f.`user_id`
+            FROM `" . FEES . "` f INNER JOIN `" . USERS . "` u ON u.`id` = f.`user_id`  
+            WHERE f.`worklist_id` = " . $this->id . " AND u.`is_active` = 1";
         $result_query = mysql_query($query);
         if($result_query) {
             $temp_array = array();
@@ -652,9 +654,11 @@ WHERE id = ' . (int)$id;
 
     public function getProjectRunnersId() {
         // Fix for #15353: Only select active runners 20-SEP-2011 <danS>
-        $query = " SELECT DISTINCT(runner_id) as runner
-            FROM " . WORKLIST . " AS w INNER JOIN " . USERS . " u ON u.`id` = w.runner_id
-            WHERE w.project_id = " . $this->getProjectId() . " AND u.is_runner = 1";
+        $query = " SELECT DISTINCT(w.`runner_id`) as runner
+            FROM `" . WORKLIST . "` AS w INNER JOIN `" . USERS . "` u ON u.`id` = w.`runner_id`
+            WHERE w.`project_id` = " . $this->getProjectId() . " 
+              AND u.`is_runner` = 1 
+              AND u.`is_active` = 1";
         $result_query = mysql_query($query);
         if($result_query) {
             $temp_array = array();
@@ -1104,7 +1108,10 @@ WHERE id = ' . (int)$id;
 
     function getFollowersId() {
         $followers = array();
-        $query=' SELECT user_id FROM ' . TASK_FOLLOWERS . ' WHERE workitem_id=' . $this->id;
+        $query = ' SELECT f.`user_id` 
+            FROM `' . TASK_FOLLOWERS . '` f INNER JOIN `' . USERS . '` u ON u.`id` = f.`user_id` 
+            WHERE f.`workitem_id` = ' . $this->id . '
+              AND u.`is_active` = 1';
         $res = mysql_query($query);
         while($row = mysql_fetch_row($res)) {
             $followers[]= $row[0];
