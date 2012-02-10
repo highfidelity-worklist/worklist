@@ -422,7 +422,8 @@ include("head.html"); ?>
         }
 
         // Comments
-        row += '<td width="7.5%">' + json[12] + '</td>';
+        comments = (json[12] == 0) ? "" : json[12];
+        row += '<td width="7.5%">' + comments + '</td>';
 
         if (is_runner == 1) {
             if (user_id == json[13] || json[2] == 'SUGGESTEDwithBID') {
