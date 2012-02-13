@@ -12,8 +12,8 @@
  */
 
 //Check for configuration and load
-if (file_exists(dirname(__FILE__) . '/server.local.php')) {
-    require_once(dirname(__FILE__) . '/server.local.php');
+if (file_exists(dirname(__FILE__) . '/config.php')) {
+    require_once(dirname(__FILE__) . '/config.php');
 
     // Require HTTPS
     if (!isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS'])) {
