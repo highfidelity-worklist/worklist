@@ -647,6 +647,22 @@ class Project {
             return false;
         }                
     }    
+
+/**
+ * Return project_id based on project name
+ */
+    public function getIdFromName($name) {
+        $query = "SELECT `project_id` FROM `" . PROJECTS . "`
+            WHERE `name` = '" . mysql_real_escape_string($name) . "'";
+        $result = mysql_query($query);
+        if (mysql_num_rows($result)) {
+            $row = mysql_fetch_assoc($result);
+            $project_id = $row['project_id'];
+            return $project_id;
+        } else {
+            return false;
+        }
+    }
     
     
 }// end of the class

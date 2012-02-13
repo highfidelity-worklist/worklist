@@ -166,8 +166,10 @@ $userId = getSessionUserId();
                 });
 
                 $('#save_project').click(function() {
+                    $(this).attr('disabled', 'disabled');
                     massValidation = LiveValidation.massValidate( [ project_name, project_description, project_repository ]);   
                     if (!massValidation) {
+                        $(this).removeAttr('disabled');
                         return false;
                     }
                     addForm = $("#popup-addproject");
@@ -189,6 +191,7 @@ $userId = getSessionUserId();
                         success: function(json){
                             if ( !json || json === null ) {
                                 alert("json null in addproject");
+                                $(this).removeAttr('disabled');
                                 return;
                             }
                             if ( json.error ) {
@@ -196,11 +199,36 @@ $userId = getSessionUserId();
                             } else {
                                 $('#popup-addproject').dialog('close');
                                 window.location.href = '<?php echo SERVER_URL ; ?>' + $(':input[name="name"]', addForm).val();
+                                return;
                             }
                         }
                     });
                 
+                    $(this).removeAttr('disabled');
                     return false;
+                });
+
+                var inProject = '';
+
+                new AjaxUpload('projectLogoAdd', {
+                    action: 'jsonserver.php',
+                    name: 'logoFile',
+                    data: {
+                        action: 'logoUpload',
+                        projectid: inProject,
+                    },
+                    autoSubmit: true,
+                    responseType: 'json',
+                    onSubmit: validateUploadImage,
+                    onComplete: function(file, data) {
+                        $('span.LV_validation_message.upload').css('display', 'none').empty();
+                        if (!data.success) {
+                            $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
+                        } else if (data.success == true) {
+                            $("#projectLogoAdd").attr("src", data.url);
+                            $('input[name=logoProject]').val(data.fileName);
+                        }
+                    }
                 });
             });
         });

@@ -33,8 +33,12 @@ if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
+
+    if ($project->getIdFromName($name)) {
+        die(json_encode(array('error' => "Project with the same name already exists!")));
+    }
     // check if repository exists, ignore empty repository
-    if (!empty($repository) && $project->getIdFromRepo($repository)) {
+    else if (!empty($repository) && $project->getIdFromRepo($repository)) {
         die(json_encode(array('error' => "Project repository already exists!")));
     } else if (!empty($repository)) {
         //Leaving commented out until Alexi sets up remote code execution - Dans
