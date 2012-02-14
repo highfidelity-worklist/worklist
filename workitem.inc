@@ -1226,7 +1226,7 @@ if ($action =="edit"):  ?>
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
                             if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
-                            <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo html_entity_decode($worklist['summary']);?>"/>
+                            <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo html_entity_decode($worklist['summary'], ENT_QUOTES);?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
                             <?php } ?></span>

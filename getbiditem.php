@@ -47,7 +47,7 @@ if ($bid->id) {
     if ($user->isRunner() || ($user->getId() == $workItem->getCreatorId()) || ($user->getId() == $bid->bidder_id)) {
         $bid->setAnyAccepted($workItem->hasAcceptedBids());
         $row = $bid->toArray();
-        $row['notes'] = html_entity_decode($row['notes']);
+        $row['notes'] = html_entity_decode($row['notes'], ENT_QUOTES);
         $json = json_encode($row);
         echo $json;
     } else {

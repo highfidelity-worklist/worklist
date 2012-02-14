@@ -7,6 +7,7 @@
 
 include_once('./timezones.php');
 
+
 // Autoloader
 function __autoload($class)
 {
@@ -874,7 +875,6 @@ function checkLogin() {
      */
     function linkify($url, $author = null)
     {
-        $url = preg_replace('/&#/','&XXX',$url);
         $original = $url;
 
         $class = '';
@@ -884,13 +884,12 @@ function checkLogin() {
         } else {
             $class='';
         }
-
-        $decodedUrl = html_entity_decode($url);
-        if (preg_match("/\<a href=\"([^\"]*)\"/i", $decodedUrl) == 0) {
+        $url = html_entity_decode($url, ENT_QUOTES);
+        if (preg_match("/\<a href=\"([^\"]*)\"/i", $url) == 0) {
             // modified this so that it will exclude certain characters from the end of the url
             // add to this as you see fit as I assume the list is not exhaustive
             $regexp="/((?:(?:ht|f)tps?\:\/\/|www\.)\S+[^\s\.\)\"\'])/i";
-            $url=  preg_replace($regexp,'<a href="$0"' . $class . '>$0</a>',$url);
+            $url=  preg_replace($regexp, DELIMITER . '<a href="$0"' . $class . '>$0</a>' . DELIMITER, $url);
 
             $regexp="/href=\"(www\.\S+?)\"/i";
             $url = preg_replace($regexp,'href="https://$1"',$url);
@@ -901,20 +900,20 @@ function checkLogin() {
 
         // Replace '#<number>' with a link to the worklist item with the same number
         $regexp = "/\#([1-9][0-9]*)/";
-        $url = preg_replace($regexp,'<a href="'.WORKLIST_URL.'/workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>',$url);
+        $url = preg_replace($regexp, DELIMITER . '<a href="' . WORKLIST_URL . '/workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>' . DELIMITER, $url);
 
         // Replace '#<nick>/<url>' with a link to the author sandbox
         $regexp="/\#([A-Za-z]+)\/(\S*)/i";
         if (strpos(SERVER_BASE, '~') === false) {
             $url = preg_replace(
-                $regexp,
-                '<a href="'.SERVER_BASE.'~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>',
+                $regexp, DELIMITER .
+                '<a href="' . SERVER_BASE . '~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
                 $url
             );
         } else { // link on a sand box :
             $url = preg_replace(
-                $regexp,
-                '<a href="'.SERVER_BASE.'/../~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>',
+                $regexp, DELIMITER . 
+                '<a href="' . SERVER_BASE . '/../~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
                 $url
             );
         }
@@ -923,14 +922,14 @@ function checkLogin() {
         $regexp="/\#\/(\S*)/i";
         if (strpos(SERVER_BASE, '~') === false) {
             $url = preg_replace(
-                $regexp,
-                '<a href="'.SERVER_BASE.'~'.$author.'/$1" class="sandbox-item" id="sandbox-$1">'.$author.' : $1</a>',
+                $regexp, DELIMITER . 
+                '<a href="' . SERVER_BASE . '~' . $author . '/$1" class="sandbox-item" id="sandbox-$1">'.$author.' : $1</a>' . DELIMITER,
                 $url
             );
         } else { // link on a sand box :
             $url = preg_replace(
-                $regexp,
-                '<a href="'.SERVER_BASE.'/../~'.$author.'/$1" class="sandbox-item" id="sandbox-$1" >'.$author.' : $1</a>',
+                $regexp, DELIMITER . 
+                '<a href="' . SERVER_BASE . '/../~' . $author . '/$1" class="sandbox-item" id="sandbox-$1" >'.$author.' : $1</a>' . DELIMITER,
                 $url
             );
         }
@@ -941,13 +940,26 @@ function checkLogin() {
             $url=preg_replace($regexp,"",$url);
         }
 
-        $regexp="/\b([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
-        $url=preg_replace($regexp,'<a href="mailto:$0">$0</a>',$url);
+        $regexp = "/\b([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
+        $url = preg_replace($regexp, DELIMITER . '<a href="mailto:$0">$0</a>' . DELIMITER, $url);
 
         // find anything that looks like a link and add target=_blank so it will open in a new window
-        $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"", $url);
+        $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
+        $url = htmlentities($url, ENT_QUOTES);
+        $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
+        $url = preg_replace_callback($reg,
+                'decodeDelimitedLinks',
+             $url);
+        $url = nl2br($url);
+        return $url;
+    }
 
-        return preg_replace('/&XXX/','&#',$url);
+    /**
+     * Auxiliar function to help decode anchors in linkify function
+     */
+    function decodeDelimitedLinks($matches) {
+        $result = preg_replace('/' . DELIMITER . '/', '', $matches[0]);
+        return html_entity_decode($result, ENT_QUOTES);
     }
 
     /**

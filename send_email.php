@@ -7,6 +7,7 @@
 
 require_once('html2text.inc');
 require_once('smslist.php');
+require_once('functions.php');
 
 /*  send_email
  *
