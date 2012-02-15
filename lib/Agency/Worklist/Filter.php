@@ -321,11 +321,10 @@ class Agency_Worklist_Filter {
         $this->subsort = $subsort;
         return $this;
     }
-    public function getProjectSelectbox($fromReport=false,$display=true,$active=false) {
-        $allDisplay = ($fromReport) ? "ALL" : "All Projects";
-        $box = '<select id="projectCombo" name="project" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
-        $box .= '<option value=""' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
-        foreach ( Project::getProjects($active, array('name', 'project_id')) as $project) {
+    public function getProjectSelectbox($initialMessage = 'ALL',  $active = 1, $projectId = 'projectCombo', $projectName = 'project') {
+        $box = '<select id="' . $projectId . '" name="' . $projectName . '" class="project-dropdown" ' . '>';
+        $box .= '<option value="0"' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $initialMessage . '</option>';
+        foreach ( Project::getProjects((bool) $active, array('name', 'project_id')) as $project) {
             // handle long project names
             $project_name = $project['name'];
             if (strlen($project_name) > 25) {
@@ -367,11 +366,13 @@ class Agency_Worklist_Filter {
      *        filter name assigned on the php code. This variable needs to
      *        be initialized before including the script above.
      */
-    public function getUserSelectbox($active=1,$fromReport=false) {
-        $allDisplay = ($fromReport) ? "ALL" : "All Users";
+    public function getUserSelectbox($active = 1, $allMessage = false, $id = 'userCombo', $name = 'user') {
+        $allDisplay = ($allMessage !== false) ? $allMessage : "All Users";
         $users = User::getUserList(getSessionUserId(), $active);
-        $box = '<select name="user" id="userCombo" >';
-        $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+        $box = '<select name="' . $name . '" id="' . $id . '" >';
+        if ($allMessage !== false) {
+            $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allMessage . '</option>';
+		}
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
         }

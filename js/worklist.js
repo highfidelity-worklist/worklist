@@ -395,101 +395,16 @@ $(function() {
     }
 });
 
-$(function() {
-    // bind on beforeshow newList
-    $('select[name=user]').bind({
-        'beforeshow newlist': function(e, o) {
-            
-            // check if the div for the active only button has already been created
-            // create it if it hasn't
-            if($('#userActiveBox').length == 0) {
-                var div = $('<div/>').attr('id', 'userActiveBox');                    
-                // now we add a function which gets called on click
-                div.click(function(e) {
-                    e.stopPropagation();
-                    // we hide the list and remove the active state
-                    activeUsersFlag = 1 - activeUsersFlag;
-                    o.list.hide();
-                    $('#userActiveBox').prop('checked', (activeUsersFlag ? true : false));
-                    $('#userActiveBox').hide();
-                    o.container.removeClass('ui-state-active');
-                    // we send an ajax request to get the updated list
-                    $.ajax({
-                        type: 'POST',
-                        url: 'refresh-filter.php',
-                        data: {
-                            name: filterName,
-                            active: activeUsersFlag,
-                            filter: 'users'
-                        },
-                        dataType: 'json',
-                        // on success we update the list
-                        success: $.proxy(o.setupNewList, o)
-                    });
-                });                    
-                $('.userCombo').append(div);
-            }
-            
-            // set up the label and checkbox to be placed in the div
-            var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
-            var checkbox = $('<input/>').attr({
-                type: 'checkbox',
-                id: 'onlyActive'
-            }).css({
-                margin: 0,
-                position: 'relative',
-                top: '1px'
-            });
 
-            // update the checkbox
-            if (activeUsersFlag) {
-                checkbox.prop('checked', true);
-            } else {
-                checkbox.prop('checked', false);
-            }
-            
-            // put the label + checkbox into the div
-            label.text(' Active only');
-            label.prepend(checkbox);
-            $('#userActiveBox').html(label);
-        }
-    }).comboBox();
-    $('#search-filter-wrap select[name=status]').comboBox();
-});
-    
 // function to bind hide and show events for the active only divs 
 // bind to the showing and hiding of project and user lists
 $(function() {
-    $('select[name=user]').bind({
-        'listOpen': function(e,o) {
-            $('#userActiveBox').width($('.userComboList').outerWidth());
-            $('#userActiveBox').css({
-                top: $('.userComboList').height() + 35,
-                left: $('.userComboList').css('left')
-            });
-            $('#userActiveBox').show();
-        } 
-    });
-    $('select[name=user]').bind({
-        'listClose': function(e,o) {
-            $('#userActiveBox').hide();
-        }
-    });
-    $('select[name=project]').bind({
-        'listOpen': function(e,o) {
-            $('#projectActiveBox').width($('.projectComboList').outerWidth());
-            $('#projectActiveBox').css({
-                top: $('.projectComboList').height() + 35,
-                left: $('.projectComboList').css('left')
-            });
-            $('#projectActiveBox').show();
-        } 
-    });
-    $('select[name=project]').bind({
-        'listClose': function(e,o) {
-            $('#projectActiveBox').hide();
-        }
-    });
+
+    if ($('#userCombo').length !== 0) {
+        createActiveFilter('#userCombo', 'users', 1);
+    }
+    $('#search-filter-wrap select[name=status]').comboBox();
+
     $('select[name=itemProject]').bind({
         'listOpen': function(e,o) {
             $('#projectPopupActiveBox').width($('.itemProjectComboList').outerWidth());
@@ -887,6 +802,92 @@ function be_handleSorting(section, item) {
 
     // Update Data
     be_getData(section, item, desc);
+}
+
+function createActiveFilter(elId, filter, active) {
+    var el = $(elId);
+
+    if (el.data('filterCreated') !== 'true') {
+        el.data('filterCreated', 'true');
+        el.bind({
+            'beforeshow newlist': function(e, o) {
+                
+                // check if the div for the active only button has already been created
+                // create it if it hasn't
+                var cbId = $(this).attr('id');
+                if ($('#activeBox-' + cbId).length == 0) {
+                    $(this).data('filterName', '.worklist');
+                    $(this).data('activeFlag', active);
+                    var div = $('<div/>').attr('id', 'activeBox-' + cbId);
+    
+                    div.attr('class', 'activeBox');
+                    // now we add a function which gets called on click
+                    div.click(function(e) {
+                        e.stopPropagation();
+                        // we hide the list and remove the active state
+                        el.data('activeFlag', 1 - el.data('activeFlag'));
+                        o.list.hide();
+                        $('#activeBox-' + cbId).attr('checked', (el.data('activeFlag') == 1 ? true : false));
+                        $('#activeBox-' + cbId).hide();
+                        o.container.removeClass('ui-state-active');
+                        // we send an ajax request to get the updated list
+                        $.ajax({
+                            type: 'POST',
+                            url: 'refresh-filter.php',
+                            data: {
+                                name: el.data('filterName'),
+                                active: el.data('activeFlag'),
+                                filter: filter
+                            },
+                            dataType: 'json',
+                            // on success we update the list
+                            success: $.proxy(o.setupNewList, o)
+                        });
+                    });                    
+                    $(this).next().append(div);
+                }
+                
+                // set up the label and checkbox to be placed in the div
+                var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive-'+ cbId);
+                var checkbox = $('<input/>').attr({
+                    type: 'checkbox',
+                    id: 'onlyActive-' + cbId,
+                    class: 'onlyActiveCheckbox'
+                });
+    
+                // update the checkbox
+                if (el.data('activeFlag')) {
+                    checkbox.prop('checked', true);
+                } else {
+                    checkbox.prop('checked', false);
+                }
+                
+                // put the label + checkbox into the div
+                label.text(' Active only');
+                label.prepend(checkbox);
+                $('#activeBox-' + cbId).html(label);
+            }
+        }).comboBox();
+
+        el.bind({
+            'listOpen': function(e,o) {
+                var cbId = $(this).attr('id');
+                var cbName = $(this).attr('name');
+                $('#activeBox-' + cbId).css({
+                    top: ($('#activeBox-' + cbId).prev().position().top + $('#activeBox-' + cbId).prev().outerHeight()) - 2,
+                    left: $('#activeBox-' + cbId).prev().css('left'),
+                    width: $(el).outerWidth() + 29
+                });
+                $('#activeBox-' + cbId).show();
+            } 
+        });
+        el.bind({
+            'listClose': function(e,o) {
+                var cbId = $(this).attr('id');
+                $('#activeBox-' + cbId).hide();
+            }
+        });
+    }
 }
 
 function be_cleaupTableSorting() {

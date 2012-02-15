@@ -1249,62 +1249,9 @@ include("head.html"); ?>
 
 <?php if (! $hide_project_column) : ?>
     // bind on creation of newList
-            $('select[name=project]').bind({
-                'beforeshow newlist': function(e, o) {
-                                        
-                    // check if the div for the checkbox already exists
-                    if ($('#projectActiveBox').length == 0) {
-                        var div = $('<div/>').attr('id', 'projectActiveBox');
-                        
-                        // now we add a function which gets called on click
-                        div.click(function(e) {
-                            e.stopPropagation();
-                            // we hide the list and remove the active state
-                            activeProjectsFlag = 1 - activeProjectsFlag;
-                            o.list.hide();
-                            $('#projectActiveBox').prop('checked', (activeUsersFlag ? true : false));
-                            $('#projectActiveBox').hide();
-                            o.container.removeClass('ui-state-active');
-                            // we send an ajax request to get the updated list
-                            $.ajax({
-                                type: 'POST',
-                                url: 'refresh-filter.php',
-                                data: {
-                                    name: filterName,
-                                    active: activeProjectsFlag,
-                                    filter: 'projects'
-                                },
-                                dataType: 'json',
-                                // on success we update the list
-                                success: $.proxy(o.setupNewList, o)
-                            });
-                        });
-                        $('.projectCombo').append(div);
-                    }
-                    // setup the label and checkbox to put in the div
-                    var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
-                    var checkbox = $('<input/>').attr({
-                        type: 'checkbox',
-                        id: 'onlyActive'
-                    }).css({
-                            margin: 0,
-                            position: 'relative',
-                            top: '1px',
-                    });
-
-                    // we need to update the checkbox status
-                    if (activeProjectsFlag) {
-                        checkbox.prop('checked', true);
-                    } else {
-                        checkbox.prop('checked', false);
-                    }
-                    
-                    // put the label + checkbox in the div
-                    label.text(' Active only');
-                    label.prepend(checkbox);
-                    $('#projectActiveBox').html(label);
-                }
-            }).comboBox();
+        if ($('#projectCombo').length !== 0) {
+            createActiveFilter('#projectCombo', 'projects', 1);
+        }
 <?php endif; ?>
 
         if(getQueryVariable('status') != null) {

@@ -14,15 +14,15 @@
     <div >
         <form method="get" action="" id="searchForm" >
 <?php 
-                echo $filter->getProjectSelectbox(false, !$hide_project_column, true) . " ";
-                echo $filter->getUserSelectbox(1) . " ";
+                echo $filter->getProjectSelectbox('All Projects', 1) . " ";
+                echo $filter->getUserSelectbox(1, 'All Users') . " ";
                 $allDisplay = "All Status";
                 if(isset($_SESSION['userid']) && $is_runner){
                 $status_array = array("DRAFT","SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
                 } else {
                 $status_array = array("SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
-                }                
-                                
+                }
+
                 $box = '<select id="statusCombo" name="status" multiple="multiple" style="display:none">';
                 $box .= '<option value="ALL"' . (($filter->inStatus("ALL") ) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
                 

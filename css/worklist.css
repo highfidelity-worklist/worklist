@@ -650,16 +650,17 @@ input.button-disabled ,
 .profile-link{
     cursor: pointer;
 }
-#userActiveBox,
+.activeBox,
 #projectActiveBox,
 #projectPopupActiveBox {
     position: absolute;
     background: #AAAAAA;
     display: none;
     height: 20px;
+    z-index: 100;
 }
 
-#userActiveBox label,
+.activeBox label,
 #projectActiveBox label,
 #projectPopupActiveBox label {
     line-height: 20px;
@@ -879,6 +880,12 @@ input.button-disabled ,
 
 .home-header-nav span {
     padding-right: 10px;
+}
+
+.onlyActiveCheckbox {
+    margin: 0;
+    position: 'relative';
+    top: '1px';
 }
 
 div#addFromJournal.ui-dialog,

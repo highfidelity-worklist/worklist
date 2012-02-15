@@ -52,6 +52,7 @@ include("head.html"); ?>
 <link type="text/css" href="css/review.css" rel="stylesheet" />
 <link type="text/css" href="css/favorites.css" rel="stylesheet" />
 <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
+<link type="text/css" href="css/jquery.combobox.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
@@ -170,6 +171,7 @@ function showUserInfo(userId){
 <?php } ?>
 
 <script type="text/javascript">
+var filterName = '.worklist';
 var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
@@ -347,7 +349,7 @@ $(document).ready(function(){
     // If the bid info popup is set to modal clipboard won't work!
     $('#popup-bid-info').dialog({ autoOpen: false, modal: false, width: 400, height: 500, show: 'fade', hide: 'fade' });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
-    $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
+    $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 450, height: 230, show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({ 
         closeOnEscape: false, 
         autoOpen: false, 
@@ -378,7 +380,7 @@ $(document).ready(function(){
     $('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-withdraw-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
 <?php if ($mechanic_id == $user_id): ?>
-    $('#popup-addtip').dialog({ autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
+    $('#popup-addtip').dialog({ autoOpen: false, modal: true, width: 400, height: 250, show: 'fade', hide: 'fade' });
     $('.addTip').click(function() {
         $('#popup-addtip').dialog('open');
     });
@@ -1329,21 +1331,17 @@ if ($action =="edit"):  ?>
                         </li>
                         <li>
                             <span class="project-label">Project</span>
-                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
-                                    <select id="project_id" name="project_id" class="project-dropdown">
-                                        <option value="Select project">Select project</option>
-                                        <?php foreach ( $projects as $project): ?>
-                                            <option value="<?php echo $project['project_id']; ?>" <?php echo $project['project_id'] == $worklist['project_id'] ? ' selected = "selected"' : ''; ?>>
-                                            <?php echo $project['name']; ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                            <?php elseif( !empty($worklist['project_id'])) :?>
-                                <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>">
+                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): 
+
+                                      $filter = new Agency_Worklist_Filter();
+                                      $filter->setProjectId($worklist['project_id']);
+                                      echo $filter->getProjectSelectbox('Select Project', 0, 'project_id', 'project_id');
+                                  elseif( !empty($worklist['project_id'])) :?>
+                                 <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>">
                                     <?php echo htmlspecialchars($worklist['project_name']);?>
-                                </a>
+                                 </a>
                             <?php else :?>
-                                <span>Not assigned</span>
+                             <span>Not assigned</span>
                             <?php endif;?>
                         </li>
                         <li>

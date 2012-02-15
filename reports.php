@@ -44,6 +44,10 @@ if (! empty($_REQUEST['w2_only'])) {
 }
 
 $_REQUEST['name'] = '.reports';
+
+$activeUsers = isset($_REQUEST['activeUsers']) ? (int) $_REQUEST['activeUsers'] : 1;
+$activeProjects = isset($_REQUEST['activeProjects']) ? (int) $_REQUEST['activeProjects'] : true;
+
 $filter = new Agency_Worklist_Filter($_REQUEST, true);
 if (!$filter->getStart()) {
     $filter->setStart(date("m/d/Y",strtotime('-90 days', time())));
@@ -739,22 +743,64 @@ function loadTimelineChart() {
                 toDate = fmtDate(_toDate);
             }
             if(currentTab == 0) {
-                location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
+                location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() 
+                              + '&status=' + $('select[name=status]').val() 
+                              + '&project_id=' + $('select[name=project]').val() 
+                              + '&fund_id=' + $('select[name=fund]').val() 
+                              + '&type=' + $('#type-status').val() 
+                              + '&order=' + $('#sort-by').val() 
+                              + '&start=' + fromDate 
+                              + '&end=' + toDate 
+                              + '&paidstatus=' + $('#paid-status').val() 
+                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0) 
+                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) 
+                              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             } else if(currentTab == 1) {
-                location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
+                location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() 
+                              + '&status=' + $('select[name=status]').val() 
+                              + '&project_id=' + $('select[name=project]').val() 
+                              + '&fund_id=' + $('select[name=fund]').val() 
+                              + '&type=' + $('#type-status').val() 
+                              + '&order=' + $('#sort-by').val() 
+                              + '&start=' + fromDate 
+                              + '&end=' + toDate 
+                              + '&paidstatus=' + $('#paid-status').val() 
+                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0) 
+                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) + '&activeUsers=' 
+                              + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             }
         else if(currentTab == 2) {
-                location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val() + '&status=' + $('select[name=status]').val() + '&project_id=' + $('select[name=project]').val() + '&fund_id=' + $('select[name=fund]').val() + '&type=' + $('#type-status').val() + '&order=' + $('#sort-by').val() + '&start=' + fromDate + '&end=' + toDate + '&paidstatus=' + $('#paid-status').val() + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0);
+                location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val() 
+                              + '&status=' + $('select[name=status]').val() 
+                              + '&project_id=' + $('select[name=project]').val() 
+                              + '&fund_id=' + $('select[name=fund]').val() 
+                              + '&type=' + $('#type-status').val() 
+                              + '&order=' + $('#sort-by').val() 
+                              + '&start=' + fromDate 
+                              + '&end=' + toDate 
+                              + '&paidstatus=' + $('#paid-status').val() 
+                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0) 
+                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) 
+                              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             }
         });
 
         $('#tabs').tabs('select', currentTab);
 
-        $('#type-status, #paid-status, #sort-by, select[name=status], select[name=project], select[name=fund]').bind({
+        $('#type-status, #paid-status, #sort-by, select[name=status], select[name=fund]').bind({
             'beforeshow newlist': function(e, o) {
                 o.list.css("z-index","100")
         }}).comboBox();
    });
+
+$(function() {
+    if ($('#mechanic_id').length !== 0) {
+        createActiveFilter('#mechanic_id', 'users', <?php echo $activeUsers; ?>);
+    }
+    if ($('#projectCombo').length !== 0) {
+        createActiveFilter('#projectCombo', 'projects', <?php echo $activeProjects; ?>);
+    }
+});
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 
@@ -789,9 +835,15 @@ function loadTimelineChart() {
       <table id="search-filter-section">
       <tr>
         <td class="textAlignReport">
-            <div><div class="report-label">Payee:</div> <div class="report-input-item"><?php echo $filter->getUserSelectbox(1,true); ?></div><div class="report-item-clear"></div></div>
+            <div>
+                <div class="report-label">Payee:</div> 
+                <div class="report-input-item"><?php echo $filter->getUserSelectbox($activeUsers, 'ALL'); ?></div>
+                <div class="report-item-clear"></div>
+            </div>
             <div class="second-line">
-                <div class="report-label">Project:</div> <div class="report-input-item"><?php echo $filter->getProjectSelectbox(true); ?><div class="report-item-clear"></div></div>
+                <div class="report-label">Project:</div>
+                <div class="report-input-item"><?php echo $filter->getProjectSelectbox('ALL', $activeProjects); ?></div>
+                <div class="report-item-clear"></div>
             </div>
         </td>
         <td class="textAlignReport">

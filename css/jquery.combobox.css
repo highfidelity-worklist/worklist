@@ -1,6 +1,6 @@
 .ui-combobox {
 	font-size: 12px;
-	padding: 5px;
+	padding: 0 5px 5px 5px;
 }
 
 .ui-combobox-textbox {
@@ -31,7 +31,7 @@
 	cursor: default;
 	list-style: none outside none;
 	margin: 0;
-	max-height: 200px;
+	max-height: 130px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	padding: 0;

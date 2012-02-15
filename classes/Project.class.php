@@ -351,7 +351,7 @@ class Project {
             SELECT " . ((count($selections)>0) ? implode(",", $selections) : "*")
             . " FROM `" . PROJECTS . "`" 
             . $where . "
-            ORDER BY `last_commit` DESC";
+            ORDER BY `name` ASC";
         $result = mysql_query($query);
 
         if (mysql_num_rows($result)) {

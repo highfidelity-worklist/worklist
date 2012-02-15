@@ -875,6 +875,47 @@ input.button-disabled ,
     margin-top: 15px;
 }
 
+.activeBox {
+    position: absolute;
+    background: #AAAAAA;
+    display: none;
+    height: 20px;
+    z-index: 100;
+}
+
+.activeBox label {
+    line-height: 20px;
+    padding-left: 3px;
+}
+
+.ui-icon-carat-1-s {
+    background-position: -64px 0 !important;
+}
+
+select[name=user],
+select[name=mechanic_id] {
+    width:150px;
+}
+
+div.mechanic_id ul {
+    width: 177px;
+    max-height: 170px;
+}
+
+#mechanicFee,
+#mechanicTip,
+#mechanicBid {
+    width: 170px;
+}
+
+#left-panel .project_idList li {
+    border: 0;
+}
+
+.clear {
+    clear: both;
+}
+
 #ping_bidder {
     margin-left: 4px;
     cursor: pointer;

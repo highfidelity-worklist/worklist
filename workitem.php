@@ -15,6 +15,7 @@ require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 require_once 'models/DataObject.php';
 require_once 'models/Users_Favorite.php';
+require_once('lib/Agency/Worklist/Filter.php');
 
 $statusListRunner = array("DRAFT", "SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
 $statusListMechanic = array("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "PASS");

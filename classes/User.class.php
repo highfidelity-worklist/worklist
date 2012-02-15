@@ -1201,9 +1201,9 @@ class User {
      *
      */
     public static function getUserList($populate = 0, $active = 0) {
-        $where = 'WHERE `confirm` = 1 AND `is_active` > 0';
+        $where = 'WHERE `' . USERS . '`.`confirm` = 1 AND `' . USERS . '`.`is_active` > 0';
         if ($active) {
-           $where .= ' AND (`date` > DATE_SUB(NOW(), INTERVAL 30 DAY) || `'.USERS.'`.`last_seen` > DATE_SUB(NOW(), INTERVAL 30 DAY) )';
+           $where .= ' AND (`dates`.`date` > DATE_SUB(NOW(), INTERVAL 30 DAY) || `'.USERS.'`.`last_seen` > DATE_SUB(NOW(), INTERVAL 30 DAY) )';
         }
         $sql = "
             SELECT `" . USERS . "`.* FROM `" . USERS . "` 
