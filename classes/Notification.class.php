@@ -407,8 +407,15 @@ class Notification {
                     . $data['changes'] . '<br /><br />'
                     . 'Project: ' . $project_name . '<br />'
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
-                    . 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />'
-                    . 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '<br /><br />'
+
+                    . 'Runner: ';
+                if ($workitem->getRunnerId()) $body .= $workitem->getRunner()->getNickname();
+                $body.= '<br />'
+
+                    . 'Mechanic: ';
+                if ($workitem->getMechanicId()) $body .= $workitem->getMechanic()->getNickname();
+
+                $body.= '<br /><br />'
                     . 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                     . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
                     . '-Worklist.net' ;
@@ -484,8 +491,13 @@ class Notification {
                 $body = "New item is available for functional: " . $itemLink ;
                 $body.= '<br/><br/>Project: ' . $project_name;
                 $body.= '<br/>Creator: ' . $workitem->getCreator()->getNickname();
-                $body.= '<br/>Runner: ' . $workitem->getRunner()->getNickname();
-                $body.= '<br/>Mechanic: ' . $workitem->getMechanic()->getNickname();
+
+                $body.= '<br/>Runner: ';
+                if ($workitem->getRunnerId()) $body.= $workitem->getRunner()->getNickname();
+
+                $body.= '<br/>Mechanic: ';
+                if ($workitem->getMechanicId()) $body.= $workitem->getMechanic()->getNickname();
+
                 $body.= '<br><br>Notes:<br>' .$workitem->getNotes();
                 $body.= '<br><br>You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />';
                 $body.= '<br><br>-Worklist.net' ;
