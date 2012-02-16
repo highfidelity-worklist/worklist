@@ -23,7 +23,15 @@
                     <td><?php echo relativeTime($userStats->getTimeBidAcceptedAvg(), false, false, false); ?></td>
                     <td><?php echo relativeTime($userStats->getTimeToPayAvg(), false, false, false); ?></td>
 <?php endif; ?>
-                    <td><a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a> / <a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a></td>
+                    <td>
+                        <?php if ($userStats->getTotalJobsCount() > 0) {?>
+                            <a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a>
+                        <?php } else echo "0";?>
+                            / 
+                        <?php if ($userStats->getActiveJobsCount() > 0) {?>
+                            <a href = "#" id = "active-jobs"><?php echo $userStats->getActiveJobsCount(); ?></a>
+                        <?php } else echo "0";?>
+                    </td>
                     <td><?php
             setlocale(LC_MONETARY,'en_US');
             $_totalEarnings = $userStats->getTotalEarnings();

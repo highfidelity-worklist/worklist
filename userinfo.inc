@@ -309,7 +309,14 @@
                             <tbody>
                                 <?php $userStats = new UserStats($user->getId())?>
                                 <tr class="row-role-list-live">
-                                    <td><a href = "#" id = "runner-total-jobs"><?php echo $userStats->getRunnerTotalJobsCount(); ?></a> / <a href = "#" id = "runner-active-jobs"><?php echo $userStats->getRunnerActiveJobsCount(); ?></a></td>
+                                    <td>
+                                    <?php if ($userStats->getRunnerTotalJobsCount() > 0) {?>
+                                        <a href = "#" id = "runner-total-jobs"><?php echo $userStats->getRunnerTotalJobsCount(); ?></a>
+                                    <?php } else echo "0";?> / 
+                                    <?php if ($userStats->getRunnerActiveJobsCount() > 0 ) {?>
+                                        <a href = "#" id = "runner-active-jobs"><?php echo $userStats->getRunnerActiveJobsCount(); ?></a>
+                                    <?php } else echo "0";?>
+                                    </td>
                                     <td><?php echo $userStats->getAvgJobRunTime();?></td>
                                 </tr>
                             </tbody>
