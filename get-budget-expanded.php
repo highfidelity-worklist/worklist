@@ -20,6 +20,10 @@ if (!isset($_REQUEST['section'])) {
     echo "No section requested.";
     die;
 }
+$budget_id = 0;
+if (isset($_REQUEST['budget_id'])) {
+    $budget_id = (int) $_REQUEST['budget_id'];
+}
 
 // Check if we've received sorting request
 $sortby = "";
@@ -29,6 +33,9 @@ if (isset($_REQUEST['sortby']) && isset($_REQUEST['desc'])) {
     switch ($_REQUEST['sortby']) {
         case 'be-id':
             $sortby = 'id';
+            break;
+        case 'be-budget':
+            $sortby = 'budget_id';
             break;
         case 'be-summary':
             $sortby = 'summary';
@@ -59,23 +66,23 @@ if (!isset($_REQUEST['action'])) {
 	switch ($section) {
 		case 0:
 		    if ($sort) {
-		        echo getAllocated($sortby, $desc);
+		        echo getAllocated($budget_id, $sortby, $desc);
 		    } else {
-		        echo getAllocated();
+		        echo getAllocated($budget_id);
 		    }
 		    break;
 		case 1:
 	        if ($sort) {
-                echo getSubmitted($sortby, $desc);
+                echo getSubmitted($budget_id, $sortby, $desc);
             } else {
-                echo getSubmitted();
+                echo getSubmitted($budget_id);
             }
 		    break;
 		case 2:
 	        if ($sort) {
-                echo getPaid($sortby, $desc);
+                echo getPaid($budget_id, $sortby, $desc);
             } else {
-                echo getPaid();
+                echo getPaid($budget_id);
             }
 		    break;
 	}
@@ -101,10 +108,11 @@ if (!isset($_REQUEST['action'])) {
 
 function exportCSV($data) {    
     // Create with headers
-    $csv = "Worklist ID,Summary,Who,Amount,Status,Created,Paid\n";
+    $csv = "Worklist ID,Budget,Summary,Who,Amount,Status,Created,Paid\n";
     
     foreach ($data as $item) {
         $csv .= $item->id.",";
+        $csv .= $item->budget_id.",";
         $csv .= str_replace(",", "", $item->summary).",";
         $csv .= str_replace(",", "", $item->who).",";
         $csv .= $item->amount.",";
@@ -119,10 +127,17 @@ function exportCSV($data) {
     echo $csv;
 }
 
-function getAllocated($sort=NULL, $desc=NULL) {
-    $sql = "SELECT `id`,`summary`,`status` ".
-           "FROM ".WORKLIST.
-           " WHERE `runner_id`='{$_SESSION['userid']}' AND `status` IN ('working','review','completed')";
+function getAllocated($budget_id = 0, $sort = NULL, $desc = NULL) {
+    if ($budget_id > 0) {
+        $filter = " `budget_id`={$budget_id} AND ";
+    } else {
+        $filter = " `runner_id`='{$_SESSION['userid']}' AND ";
+    }
+    $sql = "SELECT w.`id`, w.`budget_id`, w.`summary`, w.`status`, b.`reason` " .
+           " FROM " . WORKLIST . " w " .
+           " LEFT JOIN " . BUDGETS . " b ON w.budget_id = b.id ".
+           " WHERE {$filter} `status` IN ('working','review','completed')";
+
     $sql_q = mysql_query($sql) or die(mysql_error());
     $items = array();
     
@@ -150,8 +165,9 @@ function getAllocated($sort=NULL, $desc=NULL) {
             $paid_date = array('paid_date'=>"Not Paid");
         }
     
-            $items[] = array('id'=>$row['id'], 'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
-                             'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
+            $items[] = array('id'=>$row['id'], 'budget_id'=>$row['budget_id'], 'budget_title'=>$row['reason'], 
+                            'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
+                            'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
     }
     // If required sort the result
     if ($sort && $desc) {
@@ -161,10 +177,17 @@ function getAllocated($sort=NULL, $desc=NULL) {
     }
 }
 
-function getSubmitted($sort=NULL, $desc=NULL) {
-    $sql = "SELECT `id`,`summary`,`status`,`paid` ".
-           "FROM ".WORKLIST.
-           " WHERE `runner_id`='{$_SESSION['userid']}' AND `status`='done'";
+function getSubmitted($budget_id = 0, $sort = NULL, $desc = NULL) {
+    if ($budget_id > 0) {
+        $filter = " `budget_id`={$budget_id} AND ";
+    } else {
+        $filter = " `runner_id`='{$_SESSION['userid']}' AND ";
+    }
+    $sql = "SELECT w.`id`, w.`budget_id`, w.`summary`, w.`status`, b.`reason` ".
+           " FROM " . WORKLIST . " w " .
+           " LEFT JOIN " . BUDGETS . " b ON w.budget_id = b.id".
+           " WHERE {$filter} `status`='done'";
+
     $sql_q = mysql_query($sql) or die(mysql_error());
     $items = array();
     
@@ -185,8 +208,9 @@ function getSubmitted($sort=NULL, $desc=NULL) {
         if ($paid['paid'] != 1) {
             if ($fees['amount'] > 0) {
                 $paid_date = array('paid_date'=>"Not Paid");
-                $items[] = array('id'=>$row['id'], 'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
-                                 'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
+                $items[] = array('id'=>$row['id'], 'budget_id'=>$row['budget_id'], 'budget_title'=>$row['reason'],
+                                'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
+                                'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
             }
         }
     }
@@ -198,10 +222,17 @@ function getSubmitted($sort=NULL, $desc=NULL) {
     }
 }
 
-function getPaid($sort=NULL, $desc=NULL) {
-    $sql = "SELECT `id`,`summary`,`status` ".
-           "FROM ".WORKLIST.
-           " WHERE `runner_id`='{$_SESSION['userid']}' AND `status`='done'";
+function getPaid($budget_id = 0, $sort = NULL, $desc = NULL) {
+    if ($budget_id > 0) {
+        $filter = " `budget_id`={$budget_id} AND ";
+    } else {
+        $filter = " `runner_id`='{$_SESSION['userid']}' AND ";
+    }
+    $sql = "SELECT w.`id`, w.`budget_id`, w.`summary`, w.`status`, b.`reason` ".
+           " FROM " . WORKLIST . "  w " .
+           " LEFT JOIN " . BUDGETS . " b ON w.budget_id = b.id".
+           " WHERE  {$filter} `status`='done'";
+
     $sql_q = mysql_query($sql) or die(mysql_error());
     $items = array();
     
@@ -226,8 +257,9 @@ function getPaid($sort=NULL, $desc=NULL) {
                 $paid_date['paid_date'] = "No Data";
             }
 	        
-            $items[] = array('id'=>$row['id'], 'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
-                             'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
+            $items[] = array('id'=>$row['id'], 'budget_id'=>$row['budget_id'], 'budget_title'=>$row['reason'],
+                            'summary'=>$row['summary'], 'who'=>$who, 'ids'=>$ids, 'amount'=>$fees['amount'],
+                            'status'=>$row['status'], 'created'=>$created['date'], 'paid'=>$paid_date['paid_date']);
         }
     }
     // If required sort the result

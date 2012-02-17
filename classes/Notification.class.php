@@ -348,7 +348,7 @@ class Notification {
                 $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />';
 
                 $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
-                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=accept_bid">Click here to accept bid.</a>';
+                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=view_bid">Click here to accept bid.</a>';
                 $body .=  $urlacceptbid;
             break;
 
@@ -371,7 +371,7 @@ class Notification {
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />';
                 $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
                 $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] .
-                                 '&action=accept_bid">Click here to accept bid.</a>';
+                                 '&action=view_bid">Click here to accept bid.</a>';
                 $body .=  $urlacceptbid;
             break;
 

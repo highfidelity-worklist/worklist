@@ -48,6 +48,7 @@ include("head.html");
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
+<script type="text/javascript" src="js/budget.js"></script>
 
 <script type="text/javascript">
 var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
@@ -224,9 +225,14 @@ function resizeIframeDlg() {
     $('#user-info').animate({height: height});
 }
 
-function showUserInfo(userId) {
+function showUserInfo(userId, tab) {
+    if (tab) {
+        tab = "&tab=" + tab;
+    } else {
+        tab = "";
+    }
     $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
-    $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+    $('#modalIframeId').attr('src','userinfo.php?id=' + userId + tab);
     return false;
 }
 

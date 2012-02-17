@@ -226,6 +226,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
+<script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
 <?php if(isset($_REQUEST['addFromJournal'])) { ?>
 <script type="text/javascript" src="js/jquery.ba-resize.min.js"></script>
@@ -517,11 +518,16 @@ include("head.html"); ?>
         $('#user-info').animate({height: height});
     }
 
-    function showUserInfo(userId) {
+    function showUserInfo(userId, tab) {
+        if (tab) {
+            tab = "&tab=" + tab;
+        } else {
+            tab = "";
+        }
         $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
-        $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+        $('#modalIframeId').attr('src','userinfo.php?id=' + userId + tab);
         return false;
-    };
+    }
 
     function GetWorklist(npage, update, reload) {
         if(addFromJournal != '') {

@@ -8,9 +8,8 @@ require_once ("config.php");
 require_once 'class.session_handler.php';
 require_once 'functions.php';
 require_once ("models/DataObject.php");
-require_once ("models/Review.php");
+require_once ("models/Budget.php");
 include_once("send_email.php");
-require_once 'models/Users_Favorite.php';
 
 $budgetInfo = new BudgetInfo();
 $budgetInfo->validateRequest(array('action'));
@@ -36,6 +35,73 @@ class BudgetInfo {
         }
         include("dialogs/popup-give-budget.inc");
         exit(0);
+    }
+    /**
+     * Get the budget update view
+     */
+    public function getUpdateView() {
+        $reqUserId = getSessionUserId();
+        $user = new User();
+        if ($reqUserId > 0) {
+            $user->findUserById($reqUserId);
+        } else {
+            echo "You have to be logged in to access user info!";
+        }
+        $this->validateRequest(array('budgetId'));
+        $budget_id = $_REQUEST['budgetId'];
+        
+        $budget = new Budget();
+        if ($budget->loadById($budget_id)){
+            $sourceBudgetReason = "";
+            if ($budget->seed != 1 && $budget->source_budget_id > 0) {
+                $budgetSeed = new Budget();
+                if ($budgetSeed->loadById($budget->source_budget_id)){
+                    $sourceBudgetReason = $budgetSeed->reason;
+                }
+            }
+            $allocated = $budget->getAllocatedFunds();
+            $submitted = $budget->getSubmittedFunds();
+            $paid = $budget->getPaidFunds();
+            $transfered = $budget->getTransferedFunds();
+            //$transfered = 0;
+            $remaining = $budget->amount - $allocated - $submitted - $paid - $transfered;
+            ob_start();
+            include("dialogs/popup-update-budget.inc");
+            $html = ob_get_contents();
+            ob_end_clean();
+            $this->respond(true, 'Returning data', array(
+                'html' => $html
+            ));
+        } else {
+            $this->respond(true, 'Invalid budget id');
+        }
+    }
+    /**
+     * Get the budget update view
+     */
+    public function updateBudget() {
+        $reqUserId = getSessionUserId();
+        $user = new User();
+        if ($reqUserId > 0) {
+            $user->findUserById($reqUserId);
+        } else {
+            echo "You have to be logged in to access user info!";
+        }
+        $this->validateRequest(array('budgetId', 'budgetReason', 'budgetNote'));
+        $budget_id = $_REQUEST['budgetId'];
+        
+        $budget = new Budget();
+        if ($budget->loadById($budget_id)){
+            $budget->notes = $_REQUEST['budgetNote'];
+            $budget->reason = $_REQUEST['budgetReason'];
+            if ($budget->save('id')) {
+                $this->respond(true, 'Data saved');
+            } else {
+                $this->respond(true, 'Error in update budget.');
+            }
+        } else {
+            $this->respond(true, 'Invalid budget id');
+        }
     }
  
     /**

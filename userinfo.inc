@@ -99,8 +99,12 @@
         <div class="button-row">
             <?php if ($reqUserId > 0) { ?> 
             <span id="info-budget"><input type="submit" 
-                <?php if ($reqUser->getBudget() <= 0 || !$reqUser->isRunner() || $reqUserId == $user->getId()) {
-                    echo 'disabled="disabled" class="button-disabled disableable" '; } 
+                <?php 
+                if ($reqUser->getBudget() <= 0 || !$reqUser->isRunner() || $reqUserId == $user->getId()) {
+                    if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") === false) {
+                        echo 'disabled="disabled" class="button-disabled disableable" '; 
+                    }
+                }
                 ?> id="give" value="Give Budget" />
             </span>
             <span id="btn-bonus"><input type="submit" 
@@ -134,7 +138,7 @@
             <li><a href="#tabs-4">Sandbox</a><li>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
-            <li><a href="budgetHistory.php?id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>">Budget History</a></li>
+            <li><a href="budgetHistory.php?inDiv=tabs&id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>" id="tabBudgetHistory">Budget History</a></li>
         </ul>
     <?php } else {?>
         <ul>
@@ -146,7 +150,7 @@
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <?php endif; ?>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
-            <li><a href="budgetHistory.php?id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>">Budget History</a></li>
+            <li><a href="budgetHistory.php?inDiv=tabs&id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>">Budget History</a></li>
         </ul>
         <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
     <?php } ?>
@@ -387,6 +391,9 @@
 
 <!-- popup div's -->
     <div id="budget-dialog" title="Budget details" class="hidden" data-userid = "<?php echo $user-> getId(); ?>">
+    </div>
+    <div id="budget-update-dialog" title="Budget update" class="hidden" data-userid = "<?php echo $user-> getId(); ?>">
+        <div class="content"></div>
     </div>
     <div id="reject-w9" title="Reject W9" class="hidden">
         <form method="post" action = "">

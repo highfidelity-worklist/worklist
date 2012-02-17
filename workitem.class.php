@@ -32,6 +32,7 @@ class WorkItem {
     protected $code_reviewer_id;
     protected $code_review_started;
     protected $code_review_completed;
+    protected $budget_id;
 
     var $status_changed;
 
@@ -327,6 +328,17 @@ WHERE id = ' . (int)$id;
     {
         return $this->is_bug;
     }
+	
+    public function setBudget_id($budget_id)
+    {
+        $this->budget_id = $budget_id;
+        return $this;
+    }
+
+    public function getBudget_id()
+    {
+        return $this->budget_id;
+    }
 
 	
     public function setSandbox($sandbox)
@@ -508,6 +520,7 @@ WHERE id = ' . (int)$id;
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
             is_bug='.$this->getIs_bug().',
+            budget_id='.$this->getBudget_id().',
             code_reviewer_id=' . $this->getCReviewerId() . ',
             code_review_started='.$this->getCRStarted().',
             code_review_completed='.$this->getCRCompleted().',
@@ -577,11 +590,12 @@ WHERE id = ' . (int)$id;
                  " u.nickname AS runner_nickname, u.id AS runner_id,".
                  " uc.nickname AS creator_nickname, w.status, w.notes, ".
                  " w.project_id, p.name AS project_name, p.repository AS repository,
-                  w.sandbox, w.bug_job_id, w.is_bug
-                  FROM  ".WORKLIST. " as w
-                  LEFT JOIN ".USERS." as uc ON w.creator_id = uc.id
-                  LEFT JOIN ".USERS." as u ON w.runner_id = u.id
-                  LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
+                  w.sandbox, w.bug_job_id, w.is_bug, w.budget_id, b.reason AS budget_reason, b.giver_id AS budget_giver_id
+                  FROM  " . WORKLIST . " as w
+                  LEFT JOIN " . USERS . " as uc ON w.creator_id = uc.id
+                  LEFT JOIN " . USERS . " as u ON w.runner_id = u.id
+                  LEFT JOIN " . PROJECTS . " AS p ON w.project_id = p.project_id
+                  LEFT JOIN " . BUDGETS . " AS b ON w.budget_id = b.id
                   WHERE w.id = '$worklist_id'";
         $result_query = mysql_query($query);
         $row =  $result_query ? mysql_fetch_assoc($result_query) : null;
@@ -816,7 +830,7 @@ WHERE id = ' . (int)$id;
     }
 
     // Accept a bid given it's Bid id
-    public function acceptBid($bid_id, $is_mechanic = true) {
+    public function acceptBid($bid_id, $budget_id = 0, $is_mechanic = true) {
         $this->conditionalLoadByBidId($bid_id);
         /*if ($this->hasAcceptedBids()) {
             throw new Exception('Can not accept an already accepted bid.');
@@ -892,22 +906,22 @@ WHERE id = ' . (int)$id;
         if (mysql_query('BEGIN')) {
 
             // changing mechanic of the job
-            if (! $myresult = mysql_query("UPDATE `".WORKLIST."` SET " .
+            $sql = "UPDATE `" . WORKLIST  ."` SET " .
                 ($is_mechanic ? "`mechanic_id` =  '" . $bid_info['bidder_id'] . "', " : '') .
                 ($is_runner && $user_id > 0 && $workitem_info['runner_id'] == 0 ? "`runner_id` =  '".$user_id."', " : '') .
-                " `status` = 'WORKING',`status_changed`=NOW(),`sandbox` = '".$bid_info['sandbox']."' WHERE `" . WORKLIST . "`.`id` = " . $bid_info['worklist_id'])) {
+                " `status` = 'WORKING',`status_changed`=NOW(),`sandbox` = '" . $bid_info['sandbox'] . "',`budget_id` = " . $budget_id .
+                " WHERE `" . WORKLIST . "`.`id` = " . $bid_info['worklist_id'];
+            if (! $myresult = mysql_query($sql)) {
                 error_log("AcceptBid:UpdateMechanic failed: ".mysql_error());
                 mysql_query("ROLLBACK");
                 return false;
             }
-
             // marking bid as "accepted"
             if (! $result = mysql_query("UPDATE `".BIDS."` SET `accepted` =  1, `bid_done` = FROM_UNIXTIME('".$bid_info['bid_done']."') WHERE `id` = ".$bid_id)) {
                 error_log("AcceptBid:MarkBid failed: ".mysql_error());
                 mysql_query("ROLLBACK");
                 return false;
             }
-
         
             // adding bid amount to list of fees
             if (! $result = mysql_query("INSERT INTO `".FEES."` (`id`, `worklist_id`, `amount`, `user_id`, `desc`, `bid_notes`, `date`, `bid_id`) VALUES (NULL, ".$bid_info['worklist_id'].", '".$bid_info['bid_amount']."', '".$bid_info['bidder_id']."', 'Accepted Bid', '".mysql_real_escape_string($bid_info['notes'])."', NOW(), '$bid_id')")) {
@@ -966,8 +980,8 @@ WHERE id = ' . (int)$id;
                 if ($this->getStatus() != 'BIDDING') {
                     if ($this->getStatus() != 'SUGGESTEDwithBID') {
                         if ($this->getStatus() != 'SUGGESTED') {
-                    $action_error = 'Cannot place bid when workitem is in this status';
-                    return false;
+                            $action_error = 'Cannot place bid when workitem is in this status';
+                            return false;
                         }
                     }
                 }
@@ -1001,6 +1015,19 @@ WHERE id = ' . (int)$id;
                 if ($this->getStatus()== 'DONE' || $this->getStatus() == 'PASS' || $this->getStatus() == 'SUGGESTED') {
                     $action_error = 'Cannot add tip when status is DONE, PASS or SUGGESTED';
                     return false;
+                }
+                
+                return $action;
+                break;
+                
+            case 'view_bid':
+                if ($this->getStatus() != 'BIDDING') {
+                    if ($this->getStatus() != 'SUGGESTEDwithBID') {
+                        if ($this->getStatus() != 'SUGGESTED') {
+                    $action_error = 'Cannot accept bid when status is not BIDDING';
+                    return false;
+                        }
+                    }
                 }
                 
                 return $action;

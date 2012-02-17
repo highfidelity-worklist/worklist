@@ -218,6 +218,24 @@ span.info-whisper {
     margin:0px 7px 0px 0px;
 }
 
+.budget-label {
+    font-weight: bold;
+    margin: 0px 7px 0px 0px;
+    float: left;
+    width: 48px;
+    padding-top: 10px;
+}
+
+.budgetArea {
+    width: 440px;
+    margin-bottom: 6px;
+}
+
+#budgetInWorkitem {
+    float: left;
+    width: 366px;
+}
+
 .project-dropdown {
     width: 200px;
 }

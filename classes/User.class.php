@@ -61,6 +61,7 @@ class User {
     protected $allocated;
     protected $submitted;
     protected $paid;
+    protected $transfered;
     protected $allFees;
     /**
      * With this constructor you can create a user by passing an array.
@@ -426,7 +427,10 @@ class User {
             $allFunds = $row['budget'];
 
             $allocatedFunds = 0;
-            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED") AND `' . FEES . '`.`withdrawn` != 1;';
+            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
+                    WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . 
+                    WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED") AND `' . 
+                    FEES . '`.`withdrawn` != 1;';
             $result = mysql_query($sql);
             if ($result && (mysql_num_rows($result) == 1)) {
                 $row = mysql_fetch_assoc($result);
@@ -434,7 +438,9 @@ class User {
             }
 
             $submittedFunds = 0;
-            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1;';
+            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
+                    WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . 
+                    '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1;';
             $result = mysql_query($sql);
             if ($result && (mysql_num_rows($result) == 1)) {
                 $row = mysql_fetch_assoc($result);
@@ -442,20 +448,40 @@ class User {
             }
             
             $paidFunds = 0;
-            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1;';
+            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
+                    WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . 
+                    '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1;';
             $result = mysql_query($sql);
             if ($result && (mysql_num_rows($result) == 1)) {
                 $row = mysql_fetch_assoc($result);
                 $paidFunds = $row['paid'];
             }
+            
+            $transferedFunds = 0;
+            $sql = 'SELECT SUM(`' . BUDGETS . '`.`amount`) AS `transfered` FROM `' . BUDGETS . '` WHERE `' . 
+                    BUDGETS . '`.`giver_id` = ' . $this->getId();
+            $result = mysql_query($sql);
+            if ($result && (mysql_num_rows($result) == 1)) {
+                $row = mysql_fetch_assoc($result);
+                $transferedFunds = $row['transfered'];
+            }
 
             $this->setAllocated($allocatedFunds);
             $this->setSubmitted($submittedFunds);
             $this->setPaid($paidFunds);
+            $this->setTransfered($transferedFunds);
             $this->remainingFunds = $this->getBudget();
         }
 
         return $this;
+    }
+
+    public function getTransfered()
+    {
+        if (null === $this->transfered) {
+            $this->setTransfered(0);
+        }
+        return $this->transfered;
     }
 
     public function getAllocated()
@@ -469,6 +495,12 @@ class User {
     public function setAllocated($value)
     {
         $this->allocated = $value;
+        return $this;
+    }
+
+    public function setTransfered($value)
+    {
+        $this->transfered = $value;
         return $this;
     }
 
@@ -504,7 +536,7 @@ class User {
     public function getTotalGiven()
     {
         $sql = 'SELECT SUM(`amount`) AS `given`
-                FROM `' . BUDGET . '`
+                FROM `' . BUDGETS . '`
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . ';';
 
         $res = mysql_query($sql);
@@ -517,7 +549,7 @@ class User {
     public function getLastGiven()
     {
         $sql = 'SELECT `amount`, DATE_FORMAT(`transfer_date`, "%M %d, %Y") AS `date` 
-                FROM `' . BUDGET . '` 
+                FROM `' . BUDGETS . '` 
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . '
                 ORDER BY `transfer_date` DESC LIMIT 1;';
         $res = mysql_query($sql);
@@ -530,7 +562,7 @@ class User {
     public function getMaxDate()
     {
         $sql = 'SELECT DATE_FORMAT(`transfer_date`, "%M %d, %Y") AS `date` 
-                FROM `' . BUDGET . '`
+                FROM `' . BUDGETS . '`
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = ' . $_SESSION['userid'] . '
                 ORDER BY `date` DESC LIMIT 1;';
         $res = mysql_query($sql);
@@ -543,7 +575,7 @@ class User {
     public function getReason()
     {
         $sql = 'SELECT `reason` 
-                FROM `' . BUDGET . '`
+                FROM `' . BUDGETS . '`
                 WHERE `receiver_id` = ' . $this->getId() . ' AND `giver_id` = '.$_SESSION['userid'].'
                 ORDER BY `transfer_date` DESC LIMIT 1;';
         $res = mysql_query($sql);
@@ -553,11 +585,11 @@ class User {
         return false;
     }
 
-    public function getBudgetCombo()
+    public function getBudgetCombo($budget_id = 0)
     {
 // Query to get User's Budget entries
         $query =  ' SELECT amount, reason, id '
-                . ' FROM ' . BUDGET 
+                . ' FROM ' . BUDGETS 
                 . ' WHERE receiver_id = ' . $_SESSION['userid']
                 . ' AND active = 1 '
                 . ' ORDER BY id DESC ';
@@ -565,7 +597,12 @@ class User {
         $ret = "";
         if ($result) {
             while ($row = mysql_fetch_assoc($result)) {
-                $ret .= '<option value="' . $row['id'] . '" data-amount="' . $row['amount'] . '">' . 
+                if (isset($budget_id) && $budget_id == $row['id']) {
+                    $selected = "selected='selected'";
+                } else {
+                    $selected = "";
+                }
+                $ret .= '<option value="' . $row['id'] . '" ' . $selected . ' data-amount="' . $row['amount'] . '">' . 
                         $row['id'] . "|" . $row['reason'] . "|" . $row['amount'] . '</option>\n';
             }
         }

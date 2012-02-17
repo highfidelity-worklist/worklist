@@ -55,7 +55,12 @@ if (sizeof($bids) > 0 ) {
     echo $data;
 ?>
                     <tr>
-                        <td colspan="7" align="right"><input type="submit" name="accept_multiple_bid" value="Accept Selected"></td>
+                        <td colspan="7" align="right">
+                            <input type="button" id="accept_bid_select_budget"
+                                name="accept_bid_select_budget" value="Accept Selected">
+                            <input type="submit" style="display:none;" name="accept_multiple_bid" id="accept_multiple_bid" value="Confirm Accept Selected">
+                            <input type="hidden" id="budget_id_multiple_bid" name="budget_id" value="" />
+                        </td>
                     </tr>
                 </tbody>
             </table>

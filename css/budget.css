@@ -1,17 +1,38 @@
-
+#budgetInWorkitem .ui-combobox-list,
+#update-budget .ui-combobox-list,
+#popupSelectBudget .ui-combobox-list,
 #give-budget .ui-combobox-list {
     max-height: 150px;
 }
 
+#budgetInWorkitem select[name="budget-source-combo"] {
+    width: 340px;
+    margin: 10px;
+}
+
+#update-budget select[name="budget-source-combo"],
+#popupSelectBudget select[name="budget-source-combo"],
 #give-budget select[name="budget-source-combo"] {
     width: 340px;
     margin: 10px;
 }
+
+#budgetInWorkitem .ui-combobox-list li,
+#update-budget .ui-combobox-list li,
+#popupSelectBudget .ui-combobox-list li,
 #give-budget .ui-combobox-list li {
     height: 16px;
 }
+
+#budgetInWorkitem .ui-icon-carat-1-s,
+#update-budget .ui-icon-carat-1-s,
+#popupSelectBudget .ui-icon-carat-1-s,
 #give-budget .ui-icon-carat-1-s {
     background-position: -64px 0 !important;
+}
+
+#popupSelectBudget .budget-source {
+    margin-bottom: 40px;
 }
 
 #budget-reason,

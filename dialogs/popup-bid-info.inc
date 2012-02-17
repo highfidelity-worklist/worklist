@@ -1,6 +1,7 @@
     <div id="popup-bid-info" class="popup-body" title = "Bid Info">
         <form name = "popup-form" id = "popup-form" action="" method="post">
         <input type="hidden" name="bid_id" value="" />
+        <input type="hidden" id="budget_id" name="budget_id" value="" />
         <table border="0" style="border-width:0px">
             <tr>
                 <td style="width:110px">Bidder</td>
@@ -35,6 +36,23 @@
         <br/>
         </form>
 <?php if ($is_runner){ ?>
+        <div id="popupSelectBudget" style="display:none" title="Select a budget">
+            <label for="budget-source" class="info-label">Source: </label>
+            <div class="budget-source">
+                <span id="budget-source-combo-area">
+                    <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">
+                        <option value="0" selected="selected">Select a budget</option>
+                    <?php 
+                        echo $user->getBudgetCombo(); 
+                    ?>
+                    </select>
+                </span>
+            </div>
+            <div>
+                <input type="button" id="confirm_budget"  value="OK">
+                <input type="button" id="cancel_budget" value="Cancel">
+            </div>
+        </div>
         <div class="clear"></div><br />
             <p class = "info-label block">
                 Bidder statistics:

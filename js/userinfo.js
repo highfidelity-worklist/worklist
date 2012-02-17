@@ -427,6 +427,9 @@ var UserInfo = {
                 }
             });
         }
+        if (userInfo.tab != "") {
+            $("#" + userInfo.tab).click();
+        }
     },
      
     appendPagination: function(page, cPages, table) {

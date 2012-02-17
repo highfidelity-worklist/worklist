@@ -13,6 +13,7 @@
 	    <thead>
 	        <tr style="cursor:arrow;" class="table-hdng">
 	            <td id="be-id" width="40px">ID</td>
+	            <td id="be-budget" width="40px">Budget</td>
 	            <td id="be-summary">Summary</td>
 	            <td id="be-who" width="140px">Who</td>
 	            <td id="be-amount" width="60px">Amount</td>

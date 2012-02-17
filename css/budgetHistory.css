@@ -14,19 +14,29 @@ body {
     text-align: left;
     
 }
-
+ 
 .pages {
     text-align: center;
 }
 
 .date {
-    width: 90px;
+    width: 70px;
 }
+
 .giver {
-    width: 150px;
+    width: 120px;
 }
+
 .amount {
     width: 90px;
+}
+
+.for {
+    width: 350px;
+}
+
+.active {
+    width: 25px;
 }
 
 td,

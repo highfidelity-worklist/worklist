@@ -10,6 +10,8 @@
 include("config.php");
 include("class.session_handler.php");
 include("functions.php");
+require_once 'models/DataObject.php';
+require_once 'models/Budget.php';
 
 $error = false;
 $message = '';
@@ -60,13 +62,24 @@ if (!$giver->findUserById($_SESSION['userid']) || !$receiver->findUserById($rece
 
 $stringAmount = number_format($amount, 2);
 
-if ($budget_seed == 1 || $amount <= $giver->getBudget()) {
+if ($budget_seed != 1) {
+    $budget = new Budget();
+    if (!$budget->loadById($budget_source_combo) ) {
+        echo json_encode(array('success' => false, 'message' => 'Invalid budget!'));
+        return;
+    }
+    $remainingFunds = $budget->getRemainingFunds();
+}
+
+
+if ($budget_seed == 1 || 
+    ($amount <= $giver->getBudget() && $amount <= $remainingFunds)) {
     if ($budget_seed != 1) {
         $giver->setBudget($giver->getBudget() - $amount)->save();
     }
     $receiver->setBudget($receiver->getBudget() + $amount)->save();
 
-    $query = "INSERT INTO `" . BUDGET . 
+    $query = "INSERT INTO `" . BUDGETS . 
             "` (`giver_id`, `receiver_id`, `amount`, `reason`, `transfer_date`, `seed`, `source_data`, `source_budget_id`, `notes`, `active`) VALUES ('" .
             $_SESSION['userid'] . 
             "', '$receiver_id', '$amount', '$reason', NOW(), '$budget_seed', '$source', '$budget_source_combo', '$budget_note', 1)";

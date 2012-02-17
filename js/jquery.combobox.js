@@ -139,8 +139,7 @@
             });
             // add classes for the textbox and calculate the with by the original element
             this.textbox.addClass('ui-state-default ui-combobox-textbox').css({
-                width: this.el.innerWidth(),
-                height: 20
+                width: this.el.innerWidth()
             });
             // add classes for the trigger, here we can change the icon
             this.trigger.addClass('ui-state-default ui-icon ui-icon-carat-1-s');

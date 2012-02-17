@@ -53,6 +53,7 @@ include("head.html"); ?>
 <link type="text/css" href="css/favorites.css" rel="stylesheet" />
 <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.combobox.css" rel="stylesheet" />
+<link type="text/css" href="css/budget.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
@@ -66,8 +67,12 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.autogrow.js"></script>
 <script type="text/javascript" src="js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="js/class.js"></script>
+<script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
+<script type="text/javascript" src="js/jquery.combobox.js"></script>
 <script type="text/javascript" src="js/review.js"></script>
 <script type="text/javascript" src="js/favorites.js"></script>
+<script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript">
 <!-- Start User Info popup code -->
 function resizeIframeDlg() {
@@ -145,9 +150,14 @@ $(document).ready(function() {
     });
 });
 
-function showUserInfo(userId){
+function showUserInfo(userId, tab) {
+    if (tab) {
+        tab = "&tab=" + tab;
+    } else {
+        tab = "";
+    }
     $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
-    $('#modalIframeId').attr('src','userinfo.php?id=' + userId);
+    $('#modalIframeId').attr('src','userinfo.php?id=' + userId + tab);
     return false;
 }
 <!-- End User Info popup code -->
@@ -235,6 +245,40 @@ function reply(id) {
 
 $(document).ready(function(){
 
+
+    $('#popupSelectBudget').dialog({
+        autoOpen: false,
+        modal: true,
+        width: 400,
+        height: 240,
+        open: function(event, ui) {
+            
+        }         
+    }); 
+    Budget.initCombo();
+    $("#popupSelectBudget #confirm_budget").click(function() {
+        var budget = new LiveValidation('budget-source-combo', {
+            onlyOnSubmit: true ,
+            onInvalid : function() {
+                this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
+            }
+        });
+        budget.add( Validate.Exclusion, { within: [ 0 ], failureMessage: "You must select a budget!" });
+        massValidation = LiveValidation.massValidate( [ budget ]);
+        if (!massValidation) {
+          return false;
+        }
+        $("#budget_id, #budget_id_multiple_bid").val($('#budget-source-combo').val());
+        $('#popupSelectBudget').dialog("close");
+        $('#' + $('#popupSelectBudget').data("clickon")).click();
+    });
+    $("#popupSelectBudget #cancel_budget").click(function() {
+        $("#budget_id, #budget_id_multiple_bid").val("");
+        var val1 = $($('#budget-source-combo option').get(0)).attr("value");
+        $('#budget-source-combo').comboBox({action:"val", param: [val1]});
+        $('#popupSelectBudget').dialog("close");
+    });
+    
     $('#bidDoneSlider').slider({
         value: 1,
         min: 0,
@@ -347,7 +391,16 @@ $(document).ready(function(){
     });
 
     // If the bid info popup is set to modal clipboard won't work!
-    $('#popup-bid-info').dialog({ autoOpen: false, modal: false, width: 400, height: 500, show: 'fade', hide: 'fade' });
+    $('#popup-bid-info').dialog({ 
+        autoOpen: false, 
+        modal: false, 
+        width: 400, 
+        height: 500, 
+        show: 'fade', 
+        hide: 'fade',
+        open: function() {
+        }
+    });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 450, height: 230, show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({ 
@@ -475,6 +528,9 @@ $(document).ready(function(){
                 }
             }
         });
+        setTimeout(function(){
+            $(".view_bid_id").click();
+        }, 500);
     <?php 
             if (! empty($user_id)) {
     ?>
@@ -615,7 +671,9 @@ $(document).ready(function(){
 
 <?php if ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id)) : ?>
             if($('#accept_bid').length == 0) {
-                $('#popup-bid-info form').append('<input class="disableable" id="accept_bid" type="submit" name="accept_bid" value="Accept">');
+                $('#popup-bid-info form').append('<input type="button" class="disableable" id="accept_bid_select_budget" ' +
+                            '  onClick="return selectBudget(\'accept_bid\');" name="accept_bid_select_budget" value="Accept">');
+                $('#popup-bid-info form').append('<input type="submit" class="disableable" style="display:none;" id="accept_bid" name="accept_bid" value="Confirm Accept">');
                 runDisableable();
             }
 <?php endif; ?>
@@ -700,6 +758,13 @@ $(document).ready(function(){
         $('.popup-body form input[type="text"]').val('');
         $('.popup-body form select option[index=0]').prop('selected', true);
         $('.popup-body form textarea').val('');
+    }
+    
+    function selectBudget(id) {
+        $("#budget_id, #budget_id_multiple_bid").val("");
+        var val1 = $($('#budget-source-combo option').get(0)).attr("value");
+        $('#budget-source-combo').comboBox({action:"val", param: [val1]});
+        $('#popupSelectBudget').data("clickon", id).dialog('open');
     }
     function ConfirmEditBid(){
         var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
@@ -919,6 +984,10 @@ $(document).ready(function(){
                             $(this).parent().parent().find('.chkMechanic').removeAttr('checked');
                         }
                     }
+                });
+                
+                $("#accept_bid_select_budget").click(function(){
+                    selectBudget('accept_multiple_bid');
                 });
 
                 $('#popup-multiple-bid-form').submit(function() {
@@ -1344,6 +1413,43 @@ if ($action =="edit"):  ?>
                              <span>Not assigned</span>
                             <?php endif;?>
                         </li>
+                        <?php
+                            if ($user->isRunnerOfWorkitem($workitem) || 
+                                $_SESSION['userid'] == $worklist['budget_giver_id'] ||
+                                strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false) {
+                        ?>
+                        <li>
+                        <div class="budgetArea">
+                            <div class="budget-label">Budget</div>
+                            <?php 
+                                if ($user->isRunnerOfWorkitem($workitem)) {
+                            ?>
+                                <div id="budgetInWorkitem" class="budget-source">
+                                    <span id="budget-source-combo-area">
+                                        <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">
+                                            <?php 
+                                            if ( empty($worklist['budget_id']) || $worklist['budget_id'] == 0) {
+                                            ?>
+                                                <option value="0" selected="selected">Select a budget</option>
+                                            <?php 
+                                            }
+                                            echo $user->getBudgetCombo($worklist['budget_id']); ?>
+                                        </select>
+                                    </span>
+                                </div>
+                            <?php        
+                                } else {
+                                    if (!empty($worklist['budget_id'])) {
+                                        echo $worklist['budget_id'] . " - " . htmlspecialchars($worklist['budget_reason']);
+                                    } else {
+                                        echo "<span>Not assigned</span>";
+                                    }                                
+                                }
+                            ?>
+                            <div style="clear: both;"></div>
+                        </div>
+                        </li>
+                        <?php } ?>
                         <li>
                             <span class="info-label">Skills</span><br/>
 <?php if (count($workitem->getSkills()) > 0) : ?>
@@ -1440,6 +1546,20 @@ if ($action =="edit"):  ?>
                             <span>Not assigned</span>
                         <?php endif;?>
                     </li>
+                    <?php
+                        if ($user->isRunnerOfWorkitem($workitem) || 
+                            $_SESSION['userid'] == $worklist['budget_giver_id'] ||
+                            strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false) {
+                    ?>
+                    <li>
+                        <span class="project-label">Budget</span>
+                        <?php if ( !empty($worklist['budget_id']) ):?>
+                            <?php echo $worklist['budget_id'] . " - " . htmlspecialchars($worklist['budget_reason']);?>
+                        <?php else :?>
+                            <span>Not assigned</span>
+                        <?php endif;?>
+                    </li>
+                    <?php } ?>
                     <li>
                         <span class="info-label">Skills</span>
 <?php if (count($workitem->getSkills()) > 0) : ?>
@@ -1630,6 +1750,7 @@ if ($action =="edit"):  ?>
                                     $canSeeBid = $user->isRunnerOfWorkitem($workitem) || $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner);
                                     $row_class = "";
                                     $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
+                                    $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
                                     $row_class .= ($row % 2) ? 'rowodd ' : 'roweven ';
                                     $row_class .= 'biditem';
                                     $row_class .= ($canSeeBid)
@@ -1902,6 +2023,8 @@ if ($action =="edit"):  ?>
     <?php require_once 'dialogs/popup-paid.inc'; ?>
     <!-- Include Budget Popup -->
     <?php require_once('dialogs/popup-budget.inc'); ?>
+    <?php require_once('dialogs/budget-expanded.inc'); ?>
+
 <?php
     // if logged in user is the mechanic on the task, get the maximum amount
     // that they can tip from their Accepted Bid

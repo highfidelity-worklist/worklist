@@ -14,6 +14,7 @@ require_once 'timezones.php';
 require_once 'lib/Sms.php';
 require_once 'classes/Repository.class.php';
 require_once 'models/DataObject.php';
+require_once 'models/Budget.php';
 require_once 'models/Users_Favorite.php';
 require_once('lib/Agency/Worklist/Filter.php');
 
@@ -63,6 +64,7 @@ $promptForReviewUrl = true;
 $runner_budget = $user->getBudget();
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
+$view_bid_id = 0;
 $order_by = isset($_REQUEST['order']) ? $_REQUEST['order'] : 'ASC';
 if ($order_by != "DESC") {
     $order_by = "ASC";
@@ -102,6 +104,11 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "cancel_codereview";
 }
 
+if ($action == 'view_bid') {
+    $action = "view";
+    $view_bid_id = isset($_REQUEST['bid_id']) ? $_REQUEST['bid_id'] : 0;
+}
+
 // for any other action user has to be logged in
 if ($action != 'view') {
     checkLogin();
@@ -115,7 +122,7 @@ $job_changes = array();
 $status_change = '';
 if ($action =='save_workitem') {
     $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills',
-                'is_bug', 'bug_job_id');
+                'is_bug', 'bug_job_id', 'budget-source-combo');
     foreach ($args as $arg) {
         if (!empty($_REQUEST[$arg])) {
             $$arg = $_REQUEST[$arg];
@@ -127,6 +134,7 @@ if ($action =='save_workitem') {
     // code to add specifics to journal update messages
     $new_update_message='';
     $is_bug = !empty($_REQUEST['is_bug'])? 1 : 0;
+    $budget_id = !empty($_REQUEST['budget-source-combo'])? (int) $_REQUEST['budget-source-combo'] : 0;
     // First check to see if this is marked as a bug
     if ($workitem->getIs_bug() != $is_bug) {
         error_log("bug changed it");
@@ -138,7 +146,10 @@ if ($action =='save_workitem') {
         $job_changes[] = '-bug';
     }
     $workitem->setIs_bug($is_bug);
-
+    if ($workitem->getBudget_id() != $budget_id) {
+        $new_update_message .= 'Budget changed. ';
+        $workitem->setBudget_id($budget_id);
+    }
     // summary
     if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
         $workitem->setSummary($summary);
@@ -702,135 +713,158 @@ if ($action == "add_tip") {
 
 // Accept a bid
 if ($action == 'accept_bid') {
-    $bid_id = intval($_REQUEST['bid_id']);
-    // only runners can accept bids
+    if (!isset($_REQUEST['bid_id']) ||
+        !isset($_REQUEST['budget_id'])) {
+        $_SESSION['workitem_error'] = "Missing parameter to accept a bid!";
+        $redirectToDefaultView = true;
+    } else {
 
-    if ((
-            $is_runner == 1 ||
-            $workitem->getRunnerId() == $_SESSION['userid']
-        ) &&
-        !$workitem->hasAcceptedBids() &&
-        (
-            strtoupper($workitem->getStatus()) == "BIDDING" ||
-            $workitem->getStatus() == "SUGGESTEDwithBID"
-        )) {
-        // query to get a list of bids (to use the current class rather than breaking uniformity)
-        // I could have done this quite easier with just 1 query and an if statement..
-        $bids = (array) $workitem->getBids($workitem->getId());
-        $exists = false;
-        foreach ($bids as $array) {
-            if ($array['id'] == $bid_id) {
-                $exists = true;
-                $bid_amount = $array["bid_amount"];
-                break;
-            }
-        }
-
-        if ($exists) {
-            if($bid_amount <= $runner_budget) {
-                $bid_info = $workitem->acceptBid($bid_id);
-
-                // Journal notification
-                $journal_message .= $_SESSION['nickname'] .
-                    " accepted {$bid_info['bid_amount']} from " .
-                    $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " .
-                    $bid_info['summary'] . ". Status set to WORKING.";
-
-                // mail notification
-                Notification::workitemNotify(array(
-                    'type' => 'bid_accepted',
-                    'workitem' => $workitem,
-                    'recipients' => array('mechanic', 'followers')
-                ));
-
-                $bidder = new User();
-                $bidder->findUserById($bid_info['bidder_id']);
-                
-                // Update Budget
-                $runner = new User();
-                $runner->findUserById($workitem->getRunnerId());
-                $runner->updateBudget(-$bid_amount);
-
-                //send sms notification to bidder
-                Notification::sendSMS($bidder, 'Accepted', $journal_message);
-
-                $redirectToDefaultView = true;
-
-                // Send email to not accepted bidders
-                sendMailToDiscardedBids($worklist_id);
-            } else {
-                $overBudget = money_format('%i', $bid_amount - $runner_budget);
-                $_SESSION['workitem_error'] = "Failed to accept bid. Accepting this bid would make you " . $overBudget . " over your budget!";
-                $redirectToDefaultView = true;
-            }
-        }
-        else {
-            $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
+        $bid_id = intval($_REQUEST['bid_id']);
+        $budget_id = intval($_REQUEST['budget_id']);
+        
+        $budget = new Budget();
+        if (!$budget->loadById($budget_id) ) {
+            $_SESSION['workitem_error'] = "Invalid budget!";
             $redirectToDefaultView = true;
+        }
+        // only runners can accept bids        
+        if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) &&
+            !$workitem->hasAcceptedBids() &&
+            (strtoupper($workitem->getStatus()) == "BIDDING" || $workitem->getStatus() == "SUGGESTEDwithBID")) {
+            // query to get a list of bids (to use the current class rather than breaking uniformity)
+            // I could have done this quite easier with just 1 query and an if statement..
+            $bids = (array) $workitem->getBids($workitem->getId());
+            $exists = false;
+            foreach ($bids as $array) {
+                if ($array['id'] == $bid_id) {
+                    $exists = true;
+                    $bid_amount = $array["bid_amount"];
+                    break;
+                }
+            }
+
+            if ($exists) {
+                $remainingFunds = $budget->getRemainingFunds();
+                if($bid_amount <= $remainingFunds) {
+                    $bid_info = $workitem->acceptBid($bid_id, $budget_id);
+
+                    // Journal notification
+                    $journal_message .= $_SESSION['nickname'] .
+                        " accepted {$bid_info['bid_amount']} from " .
+                        $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " .
+                        $bid_info['summary'] . ". Status set to WORKING.";
+
+                    // mail notification
+                    Notification::workitemNotify(array(
+                        'type' => 'bid_accepted',
+                        'workitem' => $workitem,
+                        'recipients' => array('mechanic', 'followers')
+                    ));
+
+                    $bidder = new User();
+                    $bidder->findUserById($bid_info['bidder_id']);
+                    
+                    // Update Budget
+                    $runner = new User();
+                    $runner->findUserById($workitem->getRunnerId());
+                    $runner->updateBudget(-$bid_amount);
+
+                    //send sms notification to bidder
+                    Notification::sendSMS($bidder, 'Accepted', $journal_message);
+
+                    $redirectToDefaultView = true;
+
+                    // Send email to not accepted bidders
+                    sendMailToDiscardedBids($worklist_id);
+                } else {
+                    $overBudget = money_format('%i', $bid_amount - $remainingFunds);
+                    $_SESSION['workitem_error'] = "Failed to accept bid. Accepting this bid would make you " . $overBudget . " over your budget!";
+                    $redirectToDefaultView = true;
+                }
+            }
+            else {
+                $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
+                $redirectToDefaultView = true;
+            }
         }
     }
 }
 
 // Accept Multiple  bid
 if ($action=='accept_multiple_bid') {
-    $bid_id = $_REQUEST['chkMultipleBid'];
-    $mechanic_id = $_REQUEST['mechanic'];
-    if(count($bid_id) > 0) {
-    //only runners can accept bids
-        if ((
-                $is_runner == 1 ||
-                $workitem->getRunnerId() == getSessionUserId()
-            ) &&
-            !$workitem->hasAcceptedBids() &&
-            (
-                strtoupper($workitem->getStatus()) == "BIDDING" ||
-                $workitem->getStatus() == "SUGGESTEDwithBID"
-            )) {
-            $total = 0;
-            foreach($bid_id as $bid) {
-                $currentBid = new Bid();
-                $currentBid->findBidById($bid);
-                $total = $total + $currentBid->getBid_amount();
-            }
-            
-            if ($total <= $runner_budget) {
-                foreach($bid_id as $bid) {
-                    $bids = (array) $workitem->getBids($workitem -> getId());
-                    $exists = false;
-                    foreach ($bids as $array) {
-                        if ($array['id'] == $bid) {
-                            if ($array['bidder_id'] == $mechanic_id) {
-                                $is_mechanic = true;
-                            } else {
-                                $is_mechanic = false;
+    if (!isset($_REQUEST['budget_id'])) {
+        $_SESSION['workitem_error'] = "Missing budget to accept a bid!";
+        $redirectToDefaultView = true;
+    } else {
+        $bid_id = $_REQUEST['chkMultipleBid'];
+        $mechanic_id = $_REQUEST['mechanic'];
+        $budget_id = intval($_REQUEST['budget_id']);
+        $budget = new Budget();
+        if (!$budget->loadById($budget_id) ) {
+            $_SESSION['workitem_error'] = "Invalid budget!";
+            $redirectToDefaultView = true;
+        }
+        if (count($bid_id) > 0) {
+        //only runners can accept bids
+            if ((
+                    $is_runner == 1 ||
+                    $workitem->getRunnerId() == getSessionUserId()
+                ) &&
+                !$workitem->hasAcceptedBids() &&
+                (
+                    strtoupper($workitem->getStatus()) == "BIDDING" ||
+                    $workitem->getStatus() == "SUGGESTEDwithBID"
+                )) {
+                $total = 0;
+                foreach ($bid_id as $bid) {
+                    $currentBid = new Bid();
+                    $currentBid->findBidById($bid);
+                    $total = $total + $currentBid->getBid_amount();
+                }
+                
+                $remainingFunds = $budget->getRemainingFunds();
+                if ($total <= $remainingFunds) {
+                    foreach ($bid_id as $bid) {
+                        $bids = (array) $workitem->getBids($workitem->getId());
+                        $exists = false;
+                        foreach ($bids as $array) {
+                            if ($array['id'] == $bid) {
+                                if ($array['bidder_id'] == $mechanic_id) {
+                                    $is_mechanic = true;
+                                } else {
+                                    $is_mechanic = false;
+                                }
+                                $exists = true;
+                                break;
                             }
-                            $exists = true;
-                            break;
+                        }
+                        if ($exists) {
+                            $bid_info = $workitem->acceptBid($bid, $budget_id, $is_mechanic);
+                            // Journal notification
+                            $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". 
+                                $bid_info['nickname'] . " " . ($is_mechanic ? ' as MECHANIC ' : '') . 
+                                "on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . 
+                                ". Status set to WORKING. ";
+                            // mail notification
+                            Notification::workitemNotify(array('type' => 'bid_accepted',
+                                         'workitem' => $workitem,
+                                         'recipients' => array('mechanic', 'followers')));
+                        } else {
+                            $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
                         }
                     }
-                    if ($exists) {
-                        $bid_info = $workitem->acceptBid($bid, $is_mechanic);
-                        // Journal notification
-                        $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". $bid_info['nickname'] . " " . ($is_mechanic ? ' as MECHANIC ' : '') . "on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . ". Status set to WORKING. ";
-                        // mail notification
-                        Notification::workitemNotify(array('type' => 'bid_accepted',
-                                     'workitem' => $workitem,
-                                     'recipients' => array('mechanic', 'followers')));
-                    } else {
-                        $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
-                    }
-                }
-                // Send email to not accepted bidders
-                sendMailToDiscardedBids($worklist_id);
-                $redirectToDefaultView = true;
+                    // Send email to not accepted bidders
+                    sendMailToDiscardedBids($worklist_id);
+                    $redirectToDefaultView = true;
 
-                $runner = new User();
-                $runner->findUserById($workitem->getRunnerId());
-                $runner->updateBudget(-$total);
-            } else {
-                $overBudget = money_format('%i', $total - $runner_budget);
-                $_SESSION['workitem_error'] = "Failed to accept bids. Accepting this bids would make you " . $overBudget . " over your budget!";
-                $redirectToDefaultView = true;
+                    $runner = new User();
+                    $runner->findUserById($workitem->getRunnerId());
+                    $runner->updateBudget(-$total);
+                } else {
+                    $overBudget = money_format('%i', $total - $remainingFunds);
+                    $_SESSION['workitem_error'] = "Failed to accept bids. Accepting this bids would make you " . $overBudget . " over your budget!";
+                    $redirectToDefaultView = true;
+                }
             }
         }
     }
@@ -906,7 +940,7 @@ $activeBids = (array) $workitem->getBids($workitem->getId(), false);
 
 $currentUserHasBid = "false";
 if(!empty($bids) && is_array($bids)) {
-    foreach($bids as &$bid) {
+    foreach ($bids as &$bid) {
         if($bid['email'] == $currentUsername ) {
             $currentUserHasBid = "true";
             //break;
@@ -958,7 +992,7 @@ $total_fee = $workitem->getSumOfFee($worklist_id);
 
 //accepted bid amount
 $accepted_bid_amount = 0;
-foreach($fees as $fee){
+foreach ($fees as $fee){
     if ($fee['desc'] == 'Accepted Bid') {
         $accepted_bid_amount = $fee['amount'];  
     }
@@ -1016,7 +1050,7 @@ function sendMailToDiscardedBids($worklist_id)    {
 
     $workitem = new WorkItem($worklist_id);
     $mechanic = $workitem->getMechanic()->getUsername();
-    foreach( $bids as $bid ) {
+    foreach ( $bids as $bid ) {
         // Make sure the mechanic is not sent a discarded email
         if ($mechanic != $bid['email']){
             Notification::workitemNotify(

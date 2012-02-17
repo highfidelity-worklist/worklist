@@ -16,6 +16,7 @@
     require_once 'models/Users_Favorite.php';
 
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
+    $tab = isset($_REQUEST['tab']) ? $_REQUEST['tab'] : "";
 
     $reqUserId = getSessionUserId();
     $reqUser = new User();
@@ -150,10 +151,10 @@
         }
     }
 
-    if (isset($_REQUEST['id'])) {
+    if (isset($_REQUEST['id']) && $_REQUEST['id'] != 0) {
         $userId = (int)$_REQUEST['id'];
     } else {
-        die("No id provided");
+        $userId = getSessionUserId(); 
     }
 
     $user = new User();
@@ -260,7 +261,8 @@
                 manager: <?php echo $manager; ?>,
                 referred_by: <?php echo $referred_by; ?>,
                 user_id: <?php echo $userId; ?>,
-                nickName: '<?php echo $user->getNickName(); ?>'
+                nickName: '<?php echo $user->getNickName(); ?>',
+                tab: '<?php echo $tab; ?>'
             };
         </script>
         <script type="text/javascript" src="js/userstats.js"></script>
@@ -275,5 +277,6 @@
 <?php include('userinfo.inc'); ?>
 <!-- Popup for ping task  -->
 <?php require_once('dialogs/popup-pingtask.inc') ?>
+<?php require_once('dialogs/budget-expanded.inc'); ?>
 </body>
 </html>
