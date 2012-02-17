@@ -9,7 +9,7 @@
 include("config.php");
 include("class.session_handler.php");
 include_once("send_email.php");
-include("timezones.php");
+require_once("timezones.php");
 include("countrylist.php");
 include("smslist.php");
 require_once("classes/Notification.class.php");

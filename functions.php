@@ -5,7 +5,7 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-include_once('./timezones.php');
+require_once('timezones.php');
 
 
 // Autoloader

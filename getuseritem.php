@@ -6,7 +6,7 @@
 
 include("config.php");
 include("class.session_handler.php");
-include("timezones.php");
+require_once("timezones.php");
 
 $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'item';
 
