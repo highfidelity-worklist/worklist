@@ -337,6 +337,9 @@ WHERE id = ' . (int)$id;
 
     public function getBudget_id()
     {
+        if (!isset($this->budget_id)) {
+            $this->budget_id = 0;
+        }
         return $this->budget_id;
     }
 
@@ -526,8 +529,12 @@ WHERE id = ' . (int)$id;
             code_review_completed='.$this->getCRCompleted().',
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
         $query .= ' WHERE id='.$this->getId();
-        return mysql_query($query) ? 1 : 0;
-
+        $result_query = mysql_query($query);
+        if($result_query) {
+            return 1;
+        }
+        error_log($query);
+        return 0;
     }
 
     protected function tweetNewJob()
@@ -564,16 +571,22 @@ WHERE id = ' . (int)$id;
                 if ($this->update()) {
                     $this->saveSkills($this->skills);
                     return true;
+                } else {
+                    error_log("error1 in update, save function");
                 }
             } else {
                 if ($this->insert()) {
                     $this->saveSkills($this->skills);
                     return true;
+                } else {
+                    error_log("error2 in insert, save function");
                 }
             }
         } else {
             if ($this->insert()) {
                 $this->saveSkills($this->skills);
+            } else {
+                error_log("error3 in insert, save function");
             }
         }
 

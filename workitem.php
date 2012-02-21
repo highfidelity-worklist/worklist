@@ -453,29 +453,29 @@ if($action =='save-review-url') {
 if ($action =='status-switch') {
     $status = $_REQUEST['quick-status'];
     $status_error = '';
-
     if ($status == 'DONE' && $workitem->getProjectId() == 0) {
         $status_error = "No project associated with workitem. Could not set to DONE.";
     } else {
         if (changeStatus($workitem, $status, $user)) {
-            $workitem->save();
-            if ($status == 'DONE') {
-                $displayDialogAfterDone = true;
-            }
-            if ($status != 'DRAFT') {
-                $new_update_message = "Status set to $status. ";
-                $notifyEmpty = false;
-                $status_change = '-' . ucfirst(strtolower($status));
-                if ($status == 'FUNCTIONAL') {
-                    Notification::workitemNotify(array('type' => 'modified-functional',
-                    'workitem' => $workitem,
-                    'status_change' => $status_change,
-                    'job_changes' => $job_changes,
-                    'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
-                    array('changes' => $new_update_message));
-                    $notifyEmpty = true;
+            if ($workitem->save() == false) {
+                $status_error = "Error in save workitem process. Could not change the status.";
+            } else {
+                if ($status == 'DONE') {
+                    $displayDialogAfterDone = true;
                 }
                 if ($status != 'DRAFT') {
+                    $new_update_message = "Status set to $status. ";
+                    $notifyEmpty = false;
+                    $status_change = '-' . ucfirst(strtolower($status));
+                    if ($status == 'FUNCTIONAL') {
+                        Notification::workitemNotify(array('type' => 'modified-functional',
+                        'workitem' => $workitem,
+                        'status_change' => $status_change,
+                        'job_changes' => $job_changes,
+                        'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+                        array('changes' => $new_update_message));
+                        $notifyEmpty = true;
+                    }
                     $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
                 }
             }
