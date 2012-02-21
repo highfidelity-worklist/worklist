@@ -908,7 +908,7 @@ class Notification {
         $html .= "<p><strong>Email:</strong> " . $email . "</p>";
         $html .= "<p><strong>Phone #:</strong> " . $phone . "</p>";
         $html .= "<p><strong>Project Name:</strong> " . $proj_name . "</p>";
-        $html .= "<p><strong>Project Desctiption:</strong><br />" . nl2br($proj_desc) . "</p>";
+        $html .= "<p><strong>Project Description:</strong><br />" . nl2br($proj_desc) . "</p>";
         $html .= "</body></html>";
         if(send_email("contact@worklist.net", $subject, $html)){
             return true;
