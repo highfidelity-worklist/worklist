@@ -428,8 +428,19 @@ class File {
     public static function s3AuthenticatedURL($uri) {
         require_once(APP_PATH . "/lib/S3/S3.php");
         S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
+
+        //Save logging status
+        $save_logging = error_reporting();
+        // Turn off logging for S3
+        error_reporting(0);
+
         $authUrl = S3::getAuthenticatedURL(S3_BUCKET, $uri, 10 * 24 * 60 * 60, false, true);  //10 days
-        error_log("s3Auth: $uri $authUrl");
+
+        // Restore logging status
+        error_reporting($save_logging);
+
+        //Debug results from Auth access
+        //error_log("s3Auth: $uri $authUrl");
         return $authUrl;
     }
     

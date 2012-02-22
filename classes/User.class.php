@@ -1401,7 +1401,8 @@ class User {
                error_log("image not found on s3");
                return false;
            } ;
-           error_log("imageExistsS3: $imageName . ".print_r($result->code,true));
+           //Use to Debug S3 filecheck
+           //error_log("imageExistsS3: $imageName . ".print_r($result->code,true));
            if ($result->code==200) {
                return true;
            }
