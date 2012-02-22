@@ -163,9 +163,9 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
 
 
     return send_email($smsaddr,
-        $smssubject,
+        html_entity_decode($smssubject, ENT_QUOTES),
         '',
-        $smsbody,
+        html_entity_decode($smsbody, ENT_QUOTES),
         array(
             "From" => SMS_SENDER,
             "X-tag" => 'sms',

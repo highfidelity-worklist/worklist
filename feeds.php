@@ -19,17 +19,17 @@ function addEntry($writer, $entryData, $entryDescription) {
 	$entry = $writer->createEntry();
 	$entry->setLink(SERVER_URL . 'workitem.php?job_id=' . $entryData['worklist_id'] . '&action=view'); 
 	// must supply a non-empty value for description
-	$content = !empty($entryData['content']) ? $entryData['content'] : "N/A";
+	$content = !empty($entryData['content']) ? html_entity_decode($entryData['content'], ENT_QUOTES) : "N/A";
 	$entry->setDescription($content);   
 	//$entry->setContent($entryData['content']); 
 	$entry->addAuthor($entryData['author'], $entryData['email']); 
 
     if ($name == 'comments') {
-        $entry->setTitle($entryData['author'] . ' added a comment to workitem ' . $entryData['worklist_id']);
+        $entry->setTitle($entryData['author'] . ' added a comment to job #' . $entryData['worklist_id']);
         $entry->setDateCreated(strtotime($entryData['timestamp'])); 
         $entry->setDateCreated(strtotime($entryData['timestamp'])); 
     } else {
-        $entry->setTitle($entryData['title']); 
+        $entry->setTitle(html_entity_decode($entryData['title'], ENT_QUOTES));
         $entry->setDateCreated(time()); 
         $entry->setDateModified(time()); 
     }

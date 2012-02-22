@@ -555,7 +555,7 @@ WHERE id = ' . (int)$id;
         }
         $link = $prefix . $_SERVER['HTTP_HOST'] . $port . '/rw/?' . $this->id;
         $summary_max_length = 140-strlen('New job: ')-strlen($link)-1;
-        $summary = substr($this->summary, 0, $summary_max_length);
+        $summary = substr(html_entity_decode($this->summary, ENT_QUOTES), 0, $summary_max_length);
         
         $connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET);
         $content = $connection->get('account/verify_credentials');
