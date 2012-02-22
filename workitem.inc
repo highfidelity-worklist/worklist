@@ -1548,8 +1548,9 @@ if ($action =="edit"):  ?>
                     </li>
                     <?php
                         if ($user->isRunnerOfWorkitem($workitem) || 
-                            $_SESSION['userid'] == $worklist['budget_giver_id'] ||
-                            strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false) {
+                            (array_key_exists('userid',$_SESSION) && 
+                                ($_SESSION['userid'] == $worklist['budget_giver_id'] ||
+                                 strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false) ) ) {
                     ?>
                     <li>
                         <span class="project-label">Budget</span>

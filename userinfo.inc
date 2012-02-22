@@ -46,7 +46,7 @@
             <img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" />
             <?php
                 if ($reqUser->getId() != $user->getId()) {
-                    if ( !$reqUser->isRunner() && !$_SESSION["admin"] && !$reqUser->isActive() ) {
+                    if ( !$reqUser->isRunner() && !array_key_exists('admin',$_SESSION) && !$reqUser->isActive() ) {
                         $favoriteClass = "favorite_curr_user";
                         $title = "You must have been paid for a job in the last 90 days to Trust a person.";
                     } else {
