@@ -1,0 +1,17 @@
+<?php
+//  Copyright (c) 2009-2010, LoveMachine Inc.  
+//  All Rights Reserved.  
+//  http://www.lovemachineinc.com
+
+// AJAX request from ourselves to retrieve history
+
+include("../config.php");
+include("../functions.php");
+
+$item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
+if (empty($item))
+    return;
+$data = array("item" => $item);
+
+//15-JUL-2010 the url below will have to be changed after the helper item task for worklist is completed helper/getuseritems.php<joanne>
+echo postRequest(WORKLIST_URL."/getworkitem.php", $data);     

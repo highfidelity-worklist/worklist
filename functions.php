@@ -924,7 +924,7 @@ function checkLogin() {
         $original = $url;
 
         $class = '';
-        if(strpos($url, "get_attachment.php") > 0)
+        if(strpos($url, "helper/get_attachment.php") > 0)
         {
             $class=' class="attachment noicon"';
         } else {

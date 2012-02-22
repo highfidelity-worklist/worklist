@@ -279,7 +279,7 @@ mysql_select_db(DB_NAME);
 if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);
 
 /** Journal Attachments **/
-if (!defined("ATTACHMENT_URL")) define("ATTACHMENT_URL",SERVER_URL . "get_attachment.php");
+if (!defined("ATTACHMENT_URL")) define("ATTACHMENT_URL",SERVER_URL . "helper/get_attachment.php");
 /** File uploads / S3 settings **/
 /* These allow upload of profile images to S3 */
 if (!defined('S3_ACCESS_KEY')) define('S3_ACCESS_KEY', 'AKIAIXRYPAC4HCOWBXMQ');

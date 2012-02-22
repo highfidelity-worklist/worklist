@@ -1,0 +1,15 @@
+<?php
+require_once('Zend/OpenId/Consumer.php');
+require_once('lib/Agency/OpenId/Consumer.php');
+require_once('lib/Agency/OpenId/Extension/Ax.php');
+
+if (isset($_REQUEST['google_identifier']) && !empty($_REQUEST['google_identifier'])) {
+    // Redirecting the user to googles login page
+	$ax = new Agency_OpenId_Extension_Ax(array(
+		'email' => true
+	), null, 1.0);
+	$consumer = new Agency_OpenId_Consumer();
+	if (!$consumer->login($_REQUEST['google_identifier'], SERVER_BASE . '/worklist/login.php?redirectto=journal', 'http://' . SERVER_NAME . '/', $ax)) {
+		$msg = "Google Authentication failed!";
+	}
+}
