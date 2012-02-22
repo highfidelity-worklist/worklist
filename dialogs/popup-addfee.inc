@@ -30,7 +30,7 @@
             <div class="floatRight">
                 <p class="info-label iToolTip enterAmount">
                     Description<br />
-                    <input type="text" name="fee_desc" id="fee_desc" class="text-field iToolTip enterAmount" size="48" />
+                    <textarea name="fee_desc" id="fee_desc" class="text-field iToolTip enterAmount" rows="2" cols="20" ></textarea>
                 </p>
             </div>
 
@@ -61,12 +61,28 @@
                     return true;
                 });
                 $(function() {
+                    $(function() {
+                        $('#fee_desc').autoResize({
+                            // On resize:
+                            onResize: function() {
+                                $(this).css({opacity:0.8});
+                            },
+                            // After resize:
+                            animateCallback: function() {
+                                $(this).css({opacity:1});
+                            },
+                            // Quite slow animation:
+                            animateDuration: 300,
+                            // More extra space:
+                            extraSpace: 20
+                        });
+                    });
                     if ($('#mechanicFee').length !== 0) {
                         createActiveFilter('#mechanicFee', 'users', 1);
                     }
                 });
             </script>
-            <div>
+            <div class="clear">
                 <input type="submit" name="add_fee" value="Add Fee" class="floatRight" />
             </div>
         </form>

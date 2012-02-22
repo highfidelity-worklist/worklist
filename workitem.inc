@@ -72,6 +72,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.combobox.js"></script>
 <script type="text/javascript" src="js/review.js"></script>
 <script type="text/javascript" src="js/favorites.js"></script>
+<script type="text/javascript" src="js/autoresize.jquery.min.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript">
 <!-- Start User Info popup code -->
@@ -401,8 +402,9 @@ $(document).ready(function(){
         open: function() {
         }
     });
+    $('#popup-fee-info').dialog({ autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
-    $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 450, height: 230, show: 'fade', hide: 'fade' });
+    $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 450, show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({ 
         closeOnEscape: false, 
         autoOpen: false, 
@@ -569,6 +571,7 @@ $(document).ready(function(){
     });
 <?php if (isset($_SESSION['userid'])) {?>
     $('.paid-link').click(function(e){
+        e.stopPropagation();
         var fee_id = $(this).attr('id').substr(8);
         if ($('#feeitem-' + fee_id).html() == "Yes") {
             $('#paid_check').attr('checked', "1");
@@ -644,6 +647,7 @@ $(document).ready(function(){
 
 
     $('.wd-link').click(function(e) {
+        e.stopPropagation();
         var fee_id = $(this).attr('id').substr(3);
         $('#withdraw .fee_id').val(fee_id);
         $('#withdraw').submit();
@@ -718,6 +722,20 @@ $(document).ready(function(){
 
     });
 
+    $('tr.row-feelist-live').click(function() {
+        $.metadata.setType("elem", "script")
+        var feeData = $(this).metadata();
+
+        // row has bid data attached so user is a bidder or a runner
+        // - see table creation routine
+        if (feeData.id){
+            $('#popup-fee-info #info-fee-email').html('<a href="#" onClick="javascript:showUserInfo(' + feeData.user_id +');">' + feeData.nickname + '</a>');
+            $('#popup-fee-info #info-fee-created').text(feeData.fee_created);
+            $('#popup-fee-info #info-fee-amount').text(feeData.amount);
+            $('#popup-fee-info #info-fee-notes').html(feeData.desc);
+        }
+        $('#popup-fee-info').dialog('open');
+    });
 
 <?php } ?>
         $('#bid').click(function(e){
@@ -1752,7 +1770,7 @@ if ($action =="edit"):  ?>
                                     $row_class = "";
                                     $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
                                     $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
-                                    $row_class .= ($row % 2) ? 'rowodd ' : 'roweven ';
+                                    $row_class .= ($row++ % 2) ? 'rowodd ' : 'roweven ';
                                     $row_class .= 'biditem';
                                     $row_class .= ($canSeeBid)
                                                 ? "-" . $bid['id'] . ' clickable' 
@@ -1872,13 +1890,24 @@ if ($action =="edit"):  ?>
                                     </tr>
                                 <?php else: $row = 1;
                                     foreach($fees as $fee): ?>
-                                    <tr class="<?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
+                                    <tr class="row-feelist-live <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
+                                        <script type="data"><?php echo 
+                                                "{id: {$fee['id']}, " .
+                                                "nickname: '{$fee['nickname']}', " .
+                                                "user_id: '{$fee['user_id']}', " .
+                                                "amount: '{$fee['amount']}', " .
+                                                "fee_created: '{$fee['date']}', " .
+                                                "desc:\"" .  replaceEncodedNewLinesWithBr($fee['desc']) . "\"}";?>
+                                        </script>
                                         <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
                                         <td>$ <?php echo $fee['amount'];?></td>
                                         <?php if (($worklist['status'] == 'REVIEW' || $worklist['status'] == 'COMPLETED' || $worklist['status'] == 'DONE')&& ($fee['desc'] == 'Accepted Bid')) { ?>
                                         <td>Bid Notes: <?php echo preg_replace("/\r?\n/", "<br />", $fee['bid_notes']);?></td>
                                         <?php } else { ?>
-                                        <td><?php echo $fee['desc'];?></td>
+                                        <td><?php 
+                                                $feeDesc = replaceEncodedNewLinesWithBr($fee['desc']);
+                                                echo truncateText($feeDesc);
+                                            ?></td>
                                         <?php }?>
                                         <td><?php echo $fee['date'];?></td>
                                         <td>
@@ -2014,6 +2043,8 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/popup-confirmation.inc') ?>
     <!-- Popup for breakdown of fees-->
     <?php require_once('dialogs/popup-fees.inc') ?>
+    <!-- Popup for fee info-->
+    <?php require_once('dialogs/popup-fee-info.inc') ?>
     <!-- Popups for entering bid withdraw reason-->
     <?php require_once('dialogs/popup-withdraw-bid.inc') ?>
     <!-- Popup for Add Review Url-->
