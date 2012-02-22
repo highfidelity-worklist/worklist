@@ -934,12 +934,6 @@ div.mechanic_id ul {
     clear: both;
 }
 
-#popup-fee-info table,
-#popup-fee-info table th,
-#popup-fee-info table td {
-    border: 0;
-}
-
 #ping_bidder {
     margin-left: 4px;
     cursor: pointer;

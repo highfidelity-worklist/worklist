@@ -1038,33 +1038,6 @@ function checkLogin() {
         $string =  str_replace('&#13;&#10;', '<br/>', $string);
         return str_replace('&#10;', '<br/>', $string);
     }
-
-function truncateText($text, $chars = 200, $lines = 5) {
-    $truncated = false;
-    $total = strlen($text);
-    if ($total > $chars) {
-        $text = substr($text, 0, $chars);
-        $truncated = true;
-    }
-    $text = nl2br($text);
-    $textArray = explode('<br/>', $text);
-    $textArraySize = count($textArray);
-
-    // Remove extra lines
-    if ($textArraySize > $lines) {
-        $count = $textArraySize - $lines;
-        for ($i = 0; $i < $count; $i++) {
-            array_pop($textArray);
-        }
-        $truncated = true;
-    }
-    
-    $text = implode('<br/>', $textArray);
-    if ($truncated == true) {
-        $text = $text . " (...)";
-    }
-    return $text;
-}
     
     /* outputForJS
     *
@@ -1089,4 +1062,7 @@ function truncateText($text, $chars = 200, $lines = 5) {
         }
         return false;
     }
+    
+    
+    
     
