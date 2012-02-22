@@ -4,6 +4,10 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
+
+//Joanne added the following line for the journal attachments
+$current_dir = dirname(__FILE__) . '/';
+
 require_once('Zend/Config.php');
 require_once('Zend/Config/Ini.php');
 require_once('Zend/Registry.php');
@@ -64,6 +68,7 @@ if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', 'test30');
 if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
 
 
+//worklist tables
 if (!defined('BIDS'))           define('BIDS', 'bids');
 if (!defined('BUDGETS'))        define('BUDGETS', 'budgets');
 if (!defined('COMMENTS'))       define('COMMENTS', 'comments');
@@ -86,26 +91,76 @@ if (!defined('USERS'))          define('USERS', 'users');
 if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
 
-if (!defined('SALT'))           define('SALT', 'WORKLIST');
-if (!defined('SESSION_EXPIRE')) define('SESSION_EXPIRE', 365*24*60*60);
+//journal tables
+if (!defined("RECENT_SPEAKERS")) define("RECENT_SPEAKERS","recent_speakers");
+if (!defined("TYPING_STATUS"))   define("TYPING_STATUS","typing_status");
+if (!defined("ENTRIES")) 	     define("ENTRIES","entries");
+if (!defined("TOKENS")) 	     define("TOKENS","tokens");
+if (!defined("SURVEYS")) 	     define("SURVEYS","surveys");
+if (!defined("SURVEY_CHOICES"))  define("SURVEY_CHOICES","survey_choices");
+if (!defined("SURVEY_VOTERS"))   define("SURVEY_VOTERS","survey_voters");
+if (!defined("PENALTIES"))	     define("PENALTIES", "penalties");
+if (!defined("ENTRYJOBS"))	     define("ENTRYJOBS", "entry_jobs");
+if (!defined("BOTDATA"))         define("BOTDATA", "botdata");
+if (!defined("JOURNAL_FILES"))   define("JOURNAL_FILES", "journal_files");
+if (!defined("LATENCY_LOG"))	 define("LATENCY_LOG", "latency_log");
+if (!defined("BLOCKED_IP"))		 define("BLOCKED_IP", "blocked_ip");
+
+if (!defined('SALT'))            define('SALT', 'WORKLIST');
+if (!defined('SESSION_EXPIRE'))  define('SESSION_EXPIRE', 365*24*60*60);
 if (!defined('REQUIRELOGINAFTERCONFIRM')) define('REQUIRELOGINAFTERCONFIRM', 1);
+
+if (!defined("LATENCY_SAMPLE")) define("LATENCY_SAMPLE", 100); // 0-100: percentage of journal entries to sample
+
+// Penalty box timeouts in seconds
+if (!defined("PB_TIMEOUT_1")) 	define("PB_TIMEOUT_1", 120);
+if (!defined("PB_TIMEOUT_2")) 	define("PB_TIMEOUT_2", 300);
+if (!defined("PB_TIMEOUT_3")) 	define("PB_TIMEOUT_3", 600);
+
+// user timeout in minutes
+if (!defined('USER_TIMEOUT'))    define('USER_TIMEOUT', 30);
+if (!defined('USER_IDLETIME'))    define('USER_IDLETIME', 15);
 
 if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/worklist");
 
 //<joanne>
 if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "https://lovemachine.sendlove.us/love");
+if (!defined("REWARDER_URL"))   define("REWARDER_URL", "http://lovemachine.sendlove.us/love/tofor.php?tab=1");
 
 //<john>
-if (!defined("JOURNAL_URL")) define('JOURNAL_URL', SERVER_URL."journal");
+if (!defined("JOURNAL_URL")) define('JOURNAL_URL', SERVER_URL."worklist/journal.php");
 
 if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 
-if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'https://dev.worklist.net/journal/aj.php');
+if (!defined('JOURNAL_QUERY_URL')) define('JOURNAL_QUERY_URL', 'https://dev.worklist.net/worklist/aj.php');
 
-if (!defined('JOURNAL_API_URL')) define('JOURNAL_API_URL', 'https://dev.worklist.net/journal/add.php');
-if (!defined('JOURNAL_API_USER')) define('JOURNAL_API_USER', 'api_username');
-if (!defined('JOURNAL_API_PWD')) define('JOURNAL_API_PWD', 'api_password');
-if (!defined('JOURNAL_API_KEY')) define('JOURNAL_API_KEY', 'api_key');
+if (!defined("SURVEYS_EMAIL")) define("SURVEYS_EMAIL","all@lovemachineinc.com");
+if (!defined("JOURNAL_PICTURE_EMAIL_PREFIX")) define("JOURNAL_PICTURE_EMAIL_PREFIX","devjournalimage");
+if (!defined("JOURNAL_PICTURE_EMAIL_DOMAIN")) define("JOURNAL_PICTURE_EMAIL_DOMAIN","@sendlove.us");
+
+// Special Accounts
+if (!defined("USER_SENDLOVE"))      define("USER_SENDLOVE", "Send Love");
+if (!defined("USER_SVN"))           define("USER_SVN", "SVN");
+if (!defined('USER_SVN_ID'))	    define('USER_SVN_ID', 1339);
+if (!defined("USER_SCHEMAUPDATE"))      define("USER_SCHEMAUPDATE", "Schema Update");
+if (!defined('USER_SCHEMAUDPDATE_ID'))  define('USER_SCHEMAUPDATE_ID', 2267);
+if (!defined("USER_AUTOTESTER"))    define("USER_AUTOTESTER", "AutoTester");
+if (!defined('USER_AUTOTESTER_ID')) define('USER_AUTOTESTER_ID', 2470);
+if (!defined("USER_WORKLIST"))      define("USER_WORKLIST", "Work List");
+if (!defined('USER_JOURNAL'))	    define('USER_JOURNAL', 'Journal');
+if (!defined('USER_JOURNAL_ID'))    define('USER_JOURNAL_ID', 1430);
+if (!defined('USER_SALES'))         define('USER_SALES', 'Sales');
+if (!defined('USER_SALES_ID'))      define('USER_SALES_ID', 1854);
+if (!defined('USER_SITESCAN'))	    define('USER_SITESCAN','SiteScan');
+if (!defined('USER_SITESCAN_ID'))   define('USER_SITESCAN_ID',462);
+
+if (!defined('BOT_USER_ID'))    define('BOT_USER_ID', 1509);
+if (!defined('GUEST_NAME'))    define('GUEST_NAME', 'Guest');
+
+//Unspecified away text
+if (!defined('NOMESSAGE'))    define('NOMESSAGE', 'Currently away');
+
+if (!defined('BOTLIST'))        define('BOTLIST', 'him,me,love,survey,ping,');
 
 if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/love/api.php");
 if (!defined("SENDLOVE_API_KEY")) define("SENDLOVE_API_KEY", "uierbycur4yt73467t6trtycff3rt");
@@ -118,6 +173,9 @@ if (!defined("SALES_API_KEY")) define("SALES_API_KEY", "qxuakwyjhqp4zo7wt2ie");
 
 // key to identificate api users
 if (!defined("API_KEY"))    define("API_KEY", "worklist_dev_worklist_unsecure");
+
+// update touch file
+if (!defined('JOURNAL_UPDATE_TOUCH_FILE')) define('JOURNAL_UPDATE_TOUCH_FILE', '/tmp/journal_update');
 
 // Refresh interval for ajax updates of the history table (in seconds)
 if (!defined('AJAX_REFRESH'))   define('AJAX_REFRESH', 120);
@@ -220,11 +278,14 @@ mysql_select_db(DB_NAME);
 // time constants
 if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);
 
+/** Journal Attachments **/
+if (!defined("ATTACHMENT_URL")) define("ATTACHMENT_URL",SERVER_URL . "get_attachment.php");
 /** File uploads / S3 settings **/
-defineOnce('S3_ACCESS_KEY', 'S3_ACCESS_KEY');
-defineOnce('S3_SECRET_KEY', 'S3_SECRET_KEY');
-defineOnce('S3_BUCKET', 'worklist-dev');
-defineOnce('S3_URL_BASE', 'http://' . S3_BUCKET . '.s3.amazonaws.com/');
+/* These allow upload of profile images to S3 */
+if (!defined('S3_ACCESS_KEY')) define('S3_ACCESS_KEY', 'AKIAIXRYPAC4HCOWBXMQ');
+if (!defined('S3_SECRET_KEY')) define('S3_SECRET_KEY', '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');
+if (!defined('S3_BUCKET')) define('S3_SBUCKET', 'worklist-dev');
+if (!defined('S3_URL_BASE')) define('S3_URL_BASE', 'https://'.S3_BUCKET.'.s3.amazonaws.com/');
 defineOnce('APP_IMAGE_PATH', 'image/');
 defineOnce('APP_ATTACHMENT_PATH', 'attachment/');
 defineOnce('APP_INTERNAL_PATH', 'internal/');
@@ -249,3 +310,6 @@ defineOnce('DELIMITER', 'xxxXXXxxxYYYxxxXXXxxx');
 
 
 require_once('sanitization.php');
+
+
+

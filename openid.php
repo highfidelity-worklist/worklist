@@ -40,7 +40,7 @@ if (isset($_GET['openid_mode'])) {
 			              exit();
 			          } else {
 			              if (isset($_GET['redirectto']) && ($_GET['redirectto'] == 'journal')) {
-			                  header('Location: ' . SERVER_BASE . '/journal/index.php');
+			                  header('Location:journal.php');
 			                  exit();
 			              } else {
 			              	  header("Location:worklist.php");

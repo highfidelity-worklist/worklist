@@ -155,7 +155,7 @@ h2.extra .entry-date-extra {
 </style>
 
 <!--[if IE 6]>
-  <link rel="stylesheet" href="//<?php echo SERVER_NAME ?>/journal/css/ie.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="/css/ie.css" type="text/css" media="all" />
 <![endif]-->
 
 <div id="journalView" class="chatHistory">

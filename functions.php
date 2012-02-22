@@ -5,8 +5,8 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-require_once('timezones.php');
 
+require_once('timezones.php');
 
 // Autoloader
 function __autoload($class)
@@ -34,6 +34,36 @@ function checkReferer() {
     } else {
         return true;
     }
+}
+
+function enforceRateLimit($class, $id, $test=false) {
+        $classMap = array('love'=>array('cost'=>15, 'maximum'=>20));
+
+        if (!isset($classMap[$class])) return 0;
+        $cost = $classMap[$class]['cost'];
+        $maximum = $classMap[$class]['maximum'];
+
+        $qry = "select TIMESTAMPDIFF(SECOND,NOW(),expires) as expires from ".LIMITS." where class='$class' and id='$id'";
+        $res = mysql_query($qry);
+        if ($res && ($row = mysql_fetch_assoc($res))) {
+            $expires = max(0, $row['expires']);
+
+            if ($expires > $maximum) {
+                return $expires - $maximum;
+            }
+        } else {
+            $expires = 0;
+        }
+
+        if (!$test) {
+            $expires += $cost;
+            $res = mysql_query("update ".LIMITS." set expires=TIMESTAMPADD(SECOND,$expires,NOW()) where class='$class' and id='$id'");
+            if (!$res) {
+                $res = mysql_query("insert into ".LIMITS." set class='$class', id='$id', expires=TIMESTAMPADD(SECOND,$expires,NOW())");
+            }
+        }
+
+        return 0;
 }
 
 // Get the userId from the session, or set it to 0 for Guests.
@@ -85,6 +115,22 @@ function initSessionData($user) {
     $_SESSION['timezone']           = $user_row['timezone'];
     $_SESSION['is_runner']          = intval($user_row['is_runner']);
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
+}
+
+//joanne - TODO - wl uses function initUserById($userid)journal uses $uid {
+//let's see if we can take this out and replace any calls with function initUserById($userid) {
+
+function initSessionDataByUserId($uid) {
+    $res = mysql_query("select * from ".USERS." where id='".mysql_real_escape_string($uid)."'");
+    $user_row = (($res) ? mysql_fetch_assoc($res) : null);
+    if (empty($user_row)) return;
+
+    $_SESSION['username']           = $user_row['username'];
+    $_SESSION['confirm_string']     = isset($user_row['confirm_string']) ? $user_row['confirm_string'] : 0;
+    $_SESSION['nickname']           = $user_row['nickname'];
+    $_SESSION['timezone']           = isset($user_row['timezone']) ? $user_row['timezone'] : 0;
+    $_SESSION['is_runner']          = $user_row['is_runner'];
+    $_SESSION['is_payer']           = isset($user_row['is_payer']) ? intval($user_row['is_payer']) : 0;
 }
 
 function initUserById($userid) {
@@ -993,3 +1039,31 @@ function checkLogin() {
         $string =  str_replace('&#13;&#10;', '<br/>', $string);
         return str_replace('&#10;', '<br/>', $string);
     }
+    
+    /* outputForJS
+    *
+    * Pass a variable and it'll check that it's not null so empty numeric/date vars don't error
+    * Returns either an empty quotes string or the variable
+    * takes an optional second param as an alternative replacement
+    */
+    function outputForJS($var, $rep = "''") {
+        return (is_null($var) || empty($var)) ? $rep : $var;
+    }
+    
+    function isSpammer($ip) {
+        $sql = 'SELECT `ipv4` FROM `' . BLOCKED_IP . '` WHERE (`blocktime` + `duration`) > UNIX_TIMESTAMP(NOW());';
+        $result = mysql_query($sql);
+        
+        if ($result && (mysql_num_rows($result) > 0)) {
+            while ($row = mysql_fetch_array($result)) {
+                if ($row['ipv4'] == $ip) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    

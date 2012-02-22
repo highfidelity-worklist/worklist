@@ -1,8 +1,11 @@
 /*  
-	Copyright (c) 2009-2010, LoveMachine Inc.
+	Copyright (c) 2012, Below92, LLC
     All Rights Reserved. 
     http://www.lovemachineinc.com
 */
+/*added the following line for journal merge <Jo>*/
+body { behavior: url("csshover3.htc"); } 
+
 /*background-image: none;
 filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=images/content-box.png, sizingMethod='crop');*/
 #left {

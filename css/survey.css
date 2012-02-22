@@ -1,0 +1,65 @@
+div#wrapper #header{
+   margin: 2em;
+}
+div.survey-wrapper, div.survey-message{
+  width: 50%;
+  padding: 0.5em;
+  background-color: #FFCC99;
+  margin: 0.5em auto 0.5em auto;
+} 
+div.survey-title, div.survey-body-vote, div.survey-body-results, div.survey-wrapper table{
+  background-color: white;
+}
+div.survey-title, div.survey-body-vote, 
+div.survey-body-results, div.survey-wrapper, 
+div.survey-message{
+  padding: 0.5em;
+  -moz-border-radius: 0.8em;
+  -webkit-border-radius: 0.8em;
+}
+div.survey-title h3{
+  margin-bottom: 0;
+  text-align: right;
+}
+div.survey-title h2{
+  padding-bottom: 0;
+}
+div.survey-created, div.survey-status, div.survey-voters{
+  font-size: 1.2em;
+}
+
+div.survey-body-vote, div.survey-body-results{
+  margin-top: 0.5em;
+}
+div.survey-wrapper table tr td, div.survey-wrapper table{
+  border: none;
+}
+
+tr.survey-choice{
+  font-size: 1.3em;
+} 
+
+tr.survey-choice{
+
+}
+td.survey-choice-name{
+  font-weight: bold;
+}  
+td.survey-choice-radio{
+}
+td.survey-choice-votes{
+
+} 
+div.survey-percentage{
+  background-image: url('../images/survey-percent.png');
+  background-repeat:repeat-x;
+}    
+div.survey-message{
+  font-size:1.3em;
+}
+div.survey-noresults{
+  font-size:1.3em;
+  font-weight: bold;
+  text-align: center;
+}
+  

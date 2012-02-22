@@ -31,6 +31,15 @@ if(validateAction()) {
                 validateAPIKey();
                 loginUserIntoSession();
                 break;
+            case 'getLatestPosts':
+                getLatestPosts();
+                break;
+            case 'getTaskPosts':
+                getTaskPosts();
+                break;
+            case 'getLatestForNickname':
+	            getLatestForNickname();
+	            break;
             case 'uploadProfilePicture':
                 uploadProfilePicture();
                 break;
@@ -112,6 +121,11 @@ function validateAPIKey() {
     if( ! isset($_REQUEST["api_key"])) {
         error_log("No api key defined.");
         die("No api key defined.");
+    //If we get the JOURNAL_API_KEY, only do journal queries
+    } else if( (strcmp($_REQUEST["api_key"],JOURNAL_API_KEY) == 0 )
+           &&  (!in_array($_REQUEST['action'],array('getLatestPosts','getTaskPosts'))) ) {
+                error_log("Wrong api key provided.");
+                die("Wrong api key provided.");
     } else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
         error_log("Wrong api key provided.");
         die("Wrong api key provided.");
@@ -119,6 +133,74 @@ function validateAPIKey() {
         return true;
     }
 }
+
+function  getLatestPosts() {
+
+	require_once('chat.class.php');
+	$toTime = 0;
+	$prevNext = '';
+	$query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
+	require_once('class/AjaxResponse.class.php');
+	$response = new AjaxResponse($chat);
+	try
+	{
+		$data = $response->latest();
+	}
+	catch(Exception $e)
+	{
+		$data['error'] = $e->getMessage();
+	}
+	
+	$json = json_encode($data);
+	echo $json;
+}
+
+function  getTaskPosts() {
+
+	require_once('chat.class.php');
+	$toTime = "UNIX_TIMESTAMP()";
+	$prevNext = 'prev';
+	$query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
+	require_once('class/AjaxResponse.class.php');
+	$response = new AjaxResponse($chat);
+	try
+	{
+		$data = $response->latestFromTask($toTime, $prevNext);
+	}
+	catch(Exception $e)
+	{
+		$data['error'] = $e->getMessage();
+	}
+	
+	$json = json_encode($data);
+	echo $json;
+}
+
+// Created for Worklist Job #13424 [danbrown]
+function getLatestForNickname() {
+
+	// If we haven't specified the nickname, break out.
+	if (!isset($_REQUEST['nickname'])) return false;
+
+	// If we haven't specified the number of posts to return, or if it exceeds 100 or is less than one, default to 20.
+	if (!isset($_REQUEST['num']) || !is_numeric($_REQUEST['num']) || $_REQUEST['num'] < 1 || $_REQUEST['num'] > 100) {
+		$_REQUEST['num'] = 20;
+	}
+
+	require_once('chat.class.php');
+	require_once('class/AjaxResponse.class.php');
+
+	$response = new AjaxResponse($chat);
+
+    try {
+                $data = $response->latestForNickname($_REQUEST['nickname'],round($_REQUEST['num']));
+	} catch (Exception $e) {
+		$data['error'] = $e->getMessage();
+	}
+
+	echo $data['html'];
+}
+
 /*
 * Setting session variables for the user so he is logged in
 */

@@ -34,7 +34,7 @@ require_once("functions.php");
 <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css"/>
 <link rel="stylesheet" type="text/css" href="css/tooltip.css" />
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/jquery-1.6.3.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
 <script type="text/javascript" src="js/jquery.watermark.min.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
@@ -62,7 +62,7 @@ $(document).ready(function(){
 if (getSessionUserId() > 0) {
     $name = empty($_SESSION['nickname']) ? getSubNickname($_SESSION['username']) : getSubNickname($_SESSION['nickname']);
     echo "Welcome, <span id='user'> $name </span>  |
-        <a href='../journal' title='Login to our Live Chat Journal'> Journal </a> |
+        <a href='journal.php' title='Login to our Live Chat Journal'> Journal </a> |
         <a href='worklist.php' title='Worklist'> Worklist </a> |
         <a href='logout.php'>Logout</a>";
 } else {
@@ -100,7 +100,7 @@ if (getSessionUserId() > 0) {
             <div class="candp-logo"><a href="http://www.coffeeandpower.com" title="Coffee and Power"><img src="<?php echo SERVER_URL; ?>images/mugcp.png" border="0" height="54" /></a><br />
             CoffeeandPower Inc., <?php echo date('Y'); ?>
             </div>
-            <div class="home-footer-nav"><a href="http://blog.worklist.net">Worklist blog</a><a href="<?php echo SERVER_BASE; ?>/journal">Live chat journal</a></div>
+            <div class="home-footer-nav"><a href="http://blog.worklist.net">Worklist blog</a><a href="journal.php">Live chat journal</a></div>
             <div style="float:none; clear:both;"></div>
         </div>
     </div>
