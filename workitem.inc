@@ -1590,7 +1590,7 @@ if ($action =="edit"):  ?>
                                   ?> 
                             </a><br />
                             <?php if (($worklist['status'] == 'FUNCTIONAL' || $worklist['status'] == 'REVIEW')
-                                    && $worklist['sandbox'] != 'N/A') { ?> 
+                                    && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'WORKING' && ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $mechanic_id))) { ?> 
                                 <input type="submit" id="view-sandbox" value="View Sandbox" />
                             <?php } ?>                         
                         <?php else :?>
