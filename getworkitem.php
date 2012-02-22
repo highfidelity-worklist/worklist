@@ -7,6 +7,7 @@
 
 include("config.php");
 include("class.session_handler.php");
+include("functions.php");
 
 $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
 
