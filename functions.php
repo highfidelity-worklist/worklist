@@ -991,7 +991,6 @@ function checkLogin() {
 
         // find anything that looks like a link and add target=_blank so it will open in a new window
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
-        $url = htmlentities($url, ENT_QUOTES);
         $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
         $url = preg_replace_callback($reg,
                 'decodeDelimitedLinks',
