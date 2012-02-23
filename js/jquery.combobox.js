@@ -91,8 +91,10 @@
             this.container.click($.proxy(this.click, this));
             $(document).click($.proxy(this._outClick, this));
             // bind key events
+/*
+    Removed: bug with a textarea in the same page
             $(document).keydown($.proxy(this.keydown, this));
-            
+      */      
             // setup the combobox
             this.el.trigger('beforesetup', this);
             this._setup();
