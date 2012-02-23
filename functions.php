@@ -628,7 +628,7 @@ function sendJournalNotification($message) {
         'message' => stripslashes(strip_tags($message))
     );
 
-    return postRequest(JOURNAL_API_URL, $data);
+    return trim(postRequest(JOURNAL_API_URL, $data));
 }
 
 function withdrawBid($bid_id, $withdraw_reason) {
