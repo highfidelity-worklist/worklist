@@ -84,7 +84,7 @@ if ($result) {
     while ($row = mysql_fetch_assoc($result)) {
         $notes = "";
         if ($userId == $id ||
-            array_key_exists('is_payer',$_SESSION) ||
+            ( array_key_exists('is_payer',$_SESSION)  && $_SESSION['is_payer'] ) ||
             $row['giver_id'] == $userId) {
             if (!empty($row['notes'])) {
                 $notes = " title='Notes: " . $row['notes'];
