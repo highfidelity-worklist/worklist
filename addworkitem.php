@@ -38,8 +38,20 @@ $filter->setName('.worklist')
        ->initFilter();
 
 if ($userId > 0 ) {
-    $args = array( 'itemid', 'summary', 'project_id', 'skills', 'status', 'notes', 'bid_fee_desc', 'bid_fee_amount',
-                   'bid_fee_mechanic_id', 'invite', 'is_expense', 'is_rewarder','is_bug','bug_job_id');
+    $args = array(
+        'itemid',
+        'summary',
+        'project_id',
+        'skills',
+        'status',
+        'notes',
+        'invite',
+        'is_expense',
+        'is_rewarder',
+        'is_bug',
+        'bug_job_id'
+    );
+
     foreach ($args as $arg) {
         // Removed mysql_real_escape_string, because we should 
         // use it in sql queries, not here. Otherwise it can be applied twice sometimes
@@ -112,10 +124,6 @@ if ($userId > 0 ) {
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $workitem);
-    }
-
-    if ($bid_fee_amount > 0) {
-        $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id, $is_expense, $is_rewarder);
     }
 } else {
     echo json_encode(array( 'error' => "Invalid parameters !"));

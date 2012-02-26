@@ -179,10 +179,6 @@ if ($userId > 0 && isset($_POST['save_item'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $workitem);
     }
-
-    if ($bid_fee_amount > 0 && $status != 'DRAFT') {
-        $journal_message .= AddFee($bid_fee_itemid, $bid_fee_amount, 'Bid', $bid_fee_desc, $bid_fee_mechanic_id, $is_expense, $is_rewarder);
-    }
 }
 
 if (!empty($journal_message)) {

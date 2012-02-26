@@ -462,7 +462,59 @@ if ($action =='status-switch') {
             } else {
                 if ($status == 'DONE') {
                     $displayDialogAfterDone = true;
+
+                    // workitem is DONE, calculate the creator fee based on project roles
+                    // and accepted bid
+                    if ($workitem->hasAcceptedBids()) {
+                        $creator_fee = 0;
+                        $creator_fee_desc = 'Creator';
+                        $fee_added = false;
+                        $fee_category = '';
+                        $is_expense = '';
+                        $is_rewarder = '';
+
+                        $fees = $workitem->getFees($workitem->getId());
+                        foreach ($fees as $fee) {
+                            // find the accepted bid amount
+                            if ($fee['desc'] == 'Accepted Bid') {
+                                $accepted_bid_amount = $fee['amount'];
+                            }
+
+                            // is there a fee for the creator already? workitems might get DONE, and then
+                            // need further work / review
+                            if ($fee['desc'] == $creator_fee_desc) {
+                                $fee_added = true;
+                            }
+                        }
+
+                        if (! $fee_added) {
+
+                            // get project creator role settings, if not available, no fee is added
+                            // and will need to be added manually if applicable
+                            $project = new Project();
+                            $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Creator'");
+
+                            if (count($project_roles) != 0) {
+                                $creator_role = $project_roles[0];
+                                if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
+
+                                    $creator_fee = ($creator_role['percentage'] / 100) * $accepted_bid_amount;
+                                    if ((float) $creator_fee < $creator_role['min_amount']) {
+                                       $creator_fee = $creator_role['min_amount']; 
+                                    }
+
+                                    // add the fee
+                                    AddFee($workitem->getId(), $creator_fee, $fee_category, $creator_fee_desc, $workitem->getCreatorId(), $is_expense, $is_rewarder);
+                                    // and reduce the runners budget
+                                    $myRunner = new User();
+                                    $myRunner->findUserById($workitem->getRunnerId());
+                                    $myRunner->updateBudget(-$creator_fee);
+                                }
+                            }
+                        }
+                    }
                 }
+
                 if ($status != 'DRAFT') {
                     $new_update_message = "Status set to $status. ";
                     $notifyEmpty = false;
@@ -1000,11 +1052,14 @@ foreach ($fees as $fee){
 
 //code review fees
 $project = new Project();
-$project_roles = $project->getRoles($workitem->getProjectId(),"role_title ='Code Review'");
-if (count($project_roles) != 0 && $project_roles['percentage'] !== null && $project_roles['min_amount'] !== null) {
-    $crFee = ($project_roles['percentage'] / 100) * $accepted_bid_amount;
-    if ((float) $crFee < $project_roles['min_amount']) {
-       $crFee = $project_roles['min_amount']; 
+$project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Code Review'");
+if (count($project_roles) != 0) {
+    $crRole = $project_roles[0];
+    if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
+        $crFee = ($crRole['percentage'] / 100) * $accepted_bid_amount;
+        if ((float) $crFee < $crRole['min_amount']) {
+           $crFee = $crRole['min_amount']; 
+        }
     }
 } else {
     $crFee = (10 / 100 ) * $accepted_bid_amount;
