@@ -24,7 +24,7 @@
             echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a>";
             echo $feeinfo;  
         } ?>
-        <div id="tagline">Build software fast, make money, great community.</div>
+        <div id="tagline">A community of independent software developers.</div>
     </div>
     <div id="container">
         <div id="left"></div>
@@ -49,16 +49,16 @@
             <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
             <a href="journal.php" class="iToolTip menuJournal">Journal</a> |
             <a href="<?php echo SENDLOVE_URL ?>" class="iToolTip menuLove" target="_blank">LoveMachine</a> |
-            <a href="reports.php" class="iToolTip menuReports">Reports</a> |
             <a href="team.php">Team</a> |
-                     <a href="settings.php" class="iToolTip menuSettings">Settings</a>
+            <a href="reports.php" class="iToolTip menuReports">Reports</a> |
+            <a href="settings.php" class="iToolTip menuSettings">Settings</a>
             <?php } else {
                 echo '
                 <a href="login.php" title="Login to our Worklist">Login</a> | 
                 <a href="worklist.php" title="Worklist"> Worklist</a> | 
                 <a href="journal.php" title="Login to our Live Chat Journal"> Live Chat Journal</a> |
-                <a href="reports.php" class="iToolTip menuReports">Reports</a> |
                 <a href="team.php">Team</a> |
+                <a href="reports.php" class="iToolTip menuReports">Reports</a> |
                 <a href="help.php">Help</a> | <a href="projects.php">Projects</a>';  
             } 
             ?>

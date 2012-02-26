@@ -38,11 +38,11 @@ $userId = getSessionUserId();
                 $name = getSubNickname($_SESSION['nickname']);
             }
             $following = " | <a href='javascript:;' class='following'>My Followed Jobs</a>";
-            echo "Welcome, <span id='user'> $name </span>  $earnings $following $budget | <a href='logout.php'>Logout</a>";
+            echo "Welcome, <span id='user'> $name </span> | <a href='settings.php'>Settings</a> $earnings $following $budget | <a href='logout.php'>Logout</a>";
             echo $feeinfo;  
         } ?>
         
-        <div id="tagline">Build software fast, make money, great community.</div>       
+        <div id="tagline">A community of independent software developers.</div>       
     </div>
     
     <!-- Inline Message Container -->
@@ -92,31 +92,19 @@ $userId = getSessionUserId();
 
               <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a>
             | <a href="journal.php" class="iToolTip menuJournal">Journal</a>
-            | <a href="http://blog.worklist.net" target="_blank"/>Blog</a>
-            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
             | <a href="team.php">Team</a>
-            | <a href="settings.php" class="iToolTip menuSettings">Settings</a>
+            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
             
             <script type="text/javascript" src="js/userstats.js"></script>
             
-            <?php
-                /* Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
-                   your userid must be included below. Just remove when done!
-                   Adding alexi and jeskad - alexi 2011-10-26
-                */
-                if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
-            ?>
-            | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Add Project</a>
-            <?php } ?>
             | <a href="help.php" target="_blank">Help</a>
         <?php } else { ?>
             <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
             | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
             | <a href="journal.php" title="Login to our Live Chat Journal"> Live Chat Journal</a>
-            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
             | <a href="team.php">Team</a>
-            | <a href="http://blog.worklist.net" target="_blank"/>Blog</a>
+            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
             | <a href="projects.php" target="_blank">Projects</a>
             | <a href="help.php" target="_blank">Help</a>
         <?php } ?>

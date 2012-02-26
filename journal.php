@@ -206,12 +206,7 @@ ping someone?</a> <a href="#" class="botlink"
     echo ' | <a href="' . $lovemachineLink . '" target="_blank">SendLove</a>';
     echo ' | <a href="worklist.php" target="_blank">Worklist</a>';
     echo ' | <a href="projects.php" target="_blank">Projects</a>';
-    echo ' | <a href="http://blog.worklist.net" target="_blank"/>Blog</a>';
-        //<joanne> 09-Aug-2010 combined love and review links
-        //  if (!empty($_SESSION['username'])) {
-        //    echo ' | <a href="'.REWARDER_URL.'/" target="_blank">Review</a>';
-        //  }
-    if (!empty($_SESSION['is_payer'])) {
+   if (!empty($_SESSION['is_payer'])) {
         echo ' | <a href="reports.php" target="_blank">Reports</a>';
     } ?>
 
