@@ -284,7 +284,7 @@ if (!defined("ATTACHMENT_URL")) define("ATTACHMENT_URL",SERVER_URL . "helper/get
 /* These allow upload of profile images to S3 */
 if (!defined('S3_ACCESS_KEY')) define('S3_ACCESS_KEY', 'AKIAIXRYPAC4HCOWBXMQ');
 if (!defined('S3_SECRET_KEY')) define('S3_SECRET_KEY', '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');
-if (!defined('S3_BUCKET')) define('S3_SBUCKET', 'worklist-dev');
+defineOnce('S3_BUCKET', 'worklist-dev');
 if (!defined('S3_URL_BASE')) define('S3_URL_BASE', 'https://'.S3_BUCKET.'.s3.amazonaws.com/');
 defineOnce('APP_IMAGE_PATH', 'image/');
 defineOnce('APP_ATTACHMENT_PATH', 'attachment/');
