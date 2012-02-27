@@ -2389,31 +2389,36 @@ function initSound()
             id: 'chatSound',
             url: 'mp3/bubblepop.mp3',
             autoLoad: true,
-            autoPlay: false
+            autoPlay: false,
+            volume: 75
         });
         systemSound = soundManager.createSound({
             id: 'systemSound',
             url: 'mp3/plazzle.mp3',
             autoLoad: true,
-            autoPlay: false
+            autoPlay: false,
+            volume: 50
         });
         botSound = soundManager.createSound({
             id: 'botSound',
             url: 'mp3/sweosh.mp3',
             autoLoad: true,
-            autoPlay: false
+            autoPlay: false,
+            volume: 50
         });
         pingSound = soundManager.createSound({
             id: 'pingSound',
             url: 'mp3/warble.mp3',
             autoLoad: true,
-            autoPlay: false
+            autoPlay: false,
+            volume: 50
         });
         emergencySound = soundManager.createSound({
             id: 'emergencySound',
             url: 'mp3/red_alert.mp3',
             autoLoad: true,
-            autoPlay: false
+            autoPlay: false,
+            volume: 50
         });
 // krumch 20110708 Save sound settings
         var soundSettings = new Array(1, 1, 1, 1, 1);
