@@ -97,7 +97,15 @@ $userId = getSessionUserId();
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
             
             <script type="text/javascript" src="js/userstats.js"></script>
-            
+            <?php
+                /* Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
+                   your userid must be included below. Just remove when done!
+                   Adding alexi and jeskad - alexi 2011-10-26
+                */
+                if (strpos(BUDGET_AUTHORIZED_USERS, "," . $userId . ",") !== false):
+            ?>
+            | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Admin Project</a>
+            <?php endif; ?>
             | <a href="help.php" target="_blank">Help</a>
         <?php } else { ?>
             <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>

@@ -44,6 +44,12 @@ define('APP_LOGIN', '/logon/index.php/');
 
 define("APP_NAME","Worklist");
 
+/*  budget authorized users
+    Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
+    your userid must be included below. Just remove when done! Must have trailing comma!
+    Adding alexi and jeskad - alexi 2011-10-26
+*/
+if (!defined('BUDGET_AUTHORIZED_USERS')) define('BUDGET_AUTHORIZED_USERS', ",1,2,1020,1918,2186,1935,");
 
 //Default configuration for sandbox testing
 define('SANDBOX_SERVER_API', 'https://dev.worklist.net/sandbox/update.php');
