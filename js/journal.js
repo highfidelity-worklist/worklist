@@ -263,17 +263,17 @@ function alertNewMessage(action, entryText) {
         var search_string = entryText.entry_text.search('sent a ping to');
         // if the ping comes from the worklist and is public visible
         if (search_string != -1 && 
-        	search_string < entryText.entry_text.search(entryText.nickname) && 
-        	entryText.entry_type == 'extra' && 
-        	entryText.nickname != '') {
+            search_string < entryText.entry_text.search(entryText.nickname) && 
+            entryText.entry_type == 'extra' && 
+            entryText.nickname != '') {
             titleTimer = setInterval(changeTitle, 1000);
         }
         search_string = entryText.entry_text.search('PING!');
         // if the ping comes from the journal
         if (search_string != -1 && 
-        	search_string < entryText.entry_text.search(entryText.nickname) && 
-        	entryText.entry_type == 'extra' && 
-        	entryText.nickname != '') {
+            search_string < entryText.entry_text.search(entryText.nickname) && 
+            entryText.entry_type == 'extra' && 
+            entryText.nickname != '') {
             titleTimer = setInterval(changeTitle, 1000);
         }
     } else {
