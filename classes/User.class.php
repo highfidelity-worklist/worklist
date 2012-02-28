@@ -908,7 +908,7 @@ class User {
      * @param $is_admin the $is_admin to set
      */
     public function setIs_admin($is_admin) {
-        $this->is_runner = $is_admin;
+        $this->is_admin = $is_admin;
         return $this;
     }
 
