@@ -28,6 +28,7 @@ class User {
     protected $is_runner;
     protected $is_payer;
     protected $is_active;
+    protected $is_admin;
     protected $last_seen;
     protected $journal_nick;
     protected $is_guest;
@@ -39,6 +40,8 @@ class User {
     protected $provider;
     protected $has_sandbox;
     protected $unixusername;
+    protected $forgot_hash;
+    protected $forgot_expire;
     protected $projects;
     protected $projects_checkedout;
     protected $filter;
@@ -95,8 +98,7 @@ class User {
      * @param (string) $nick Nickname
      * @return (mixed) Either the User or false.
      */
-    public function findUserByNickname($nick)
-    {
+    public function findUserByNickname($nick) {
         $nick = mysql_real_escape_string((string)$nick);
         $where = sprintf('`nickname` = "%s"', $nick);
         return $this->loadUser($where);
@@ -233,6 +235,23 @@ class User {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Authenticates against given password
+     *
+     * @param string $password Cleartext password
+     *
+     * @throws User_Exception
+     * @return boolean
+     */
+    public function authenticate($password) {
+        if (substr($this->getPassword(), 0, 7) == '{crypt}') {
+            $encrypted = substr($this->getPassword(), 7);
+            return ($encrypted == crypt($password, $encrypted));
+        } else {
+            return (sha1($password) == $this->getPassword());
+        }
     }
 
     /**
@@ -670,6 +689,18 @@ class User {
         return $this;
     }
 
+    public function getForgot_hash() {
+        return $this->forgot_hash;
+    }
+
+    /**
+     * @param $token
+     */
+    public function setForgot_hash($token) {
+        $this->forgot_hash = $token;
+        return $this;
+    }
+
     /**
      * @return the $about
      */
@@ -865,6 +896,21 @@ class User {
         return $this;
     }
 
+
+    /**
+     * @return the $is_admin
+     */
+    public function getIs_admin() {
+        return $this->is_admin;
+    }
+
+    /**
+     * @param $is_admin the $is_admin to set
+     */
+    public function setIs_admin($is_admin) {
+        $this->is_runner = $is_admin;
+        return $this;
+    }
 
     public function getPaypal() {
         return $this->paypal;

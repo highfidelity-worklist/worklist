@@ -13,10 +13,19 @@ unset($_SESSION['username']);
 unset($_SESSION['userid']);
 unset($_SESSION['confirm_string']);
 unset($_SESSION['nickname']);
+
 if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time()-42000, '/');
+    setcookie(session_name(), '', time() - 42000, '/');
 }
+
 session_destroy();
-header("location:login.php");
+
+if (array_key_exists('HTTP_REFERER', $_SERVER)) {
+    $url = $_SERVER['HTTP_REFERER'];
+} else {
+    $url = 'login.php';
+}
+
+header("Location: " . $url);
 exit;
 ?>

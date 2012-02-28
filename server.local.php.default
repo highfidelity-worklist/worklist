@@ -40,8 +40,6 @@ define('SANDBOX_NAME', 'worklist/');
 
 define('APP_LOCATION', SANDBOX_USER . SANDBOX_NAME);
 
-define('APP_LOGIN', '/logon/index.php/');
-
 define("APP_NAME","Worklist");
 
 /*  budget authorized users

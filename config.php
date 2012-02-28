@@ -39,7 +39,6 @@ if (!defined('APP_VERSION'))    define('APP_VERSION', preg_replace('/\D/', '', A
 // authenticating with login service.
 // change it per app.
 if (!defined("SERVICE_NAME"))   define("SERVICE_NAME", 'worklistmachine');
-if (!defined("APP_LOGIN"))      define("APP_LOGIN", '/logon/index.php/');
 
 if (!defined('APP_NAME'))       define('APP_NAME','Worklist');
 if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NAME'], 1, strrpos($_SERVER['SCRIPT_NAME'], '/')));
@@ -57,7 +56,6 @@ if (!defined('SERVER_BASE'))    define('SERVER_BASE','https://'.SERVER_NAME.'/'.
 //SSL Not enabled on development
 //Secure domain defaults to standard; Include [:port] for secure https traffic if not :443
 if (!defined('SECURE_SERVER_URL')) define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION);
-if (!defined("LOGIN_APP_URL"))  define("LOGIN_APP_URL",'https://'.SERVER_NAME.APP_LOGIN);
 if (!defined('SVN_BASE_URL'))   define('SVN_BASE_URL', 'http://svn.worklist.net/listing.php?repname=');
 if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
 if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
@@ -128,7 +126,7 @@ if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "https://lovemachine.send
 if (!defined("REWARDER_URL"))   define("REWARDER_URL", "http://lovemachine.sendlove.us/love/tofor.php?tab=1");
 
 //<john>
-if (!defined("JOURNAL_URL")) define('JOURNAL_URL', SERVER_URL."worklist/journal.php");
+if (!defined("JOURNAL_URL")) define('JOURNAL_URL', SERVER_URL . "worklist/journal.php");
 
 if (!defined('JOURNAL_EXISTS')) define('JOURNAL_EXISTS', 1);
 

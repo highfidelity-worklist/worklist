@@ -1,66 +1,29 @@
 <?php
 //  vim:ts=4:et
 
+//  Copyright (c) 2012, Coffee & Power, Inc.
+//  All Rights Reserved.
+//  http://www.coffeeandpower.com
+
 ob_start();
-require_once ("config.php");
-require_once ("class.session_handler.php");
+require_once("config.php");
+require_once("class.session_handler.php");
 require_once('class/Utils.class.php');
-require_once ("functions.php");
+require_once("functions.php");
+$msg = '';
 
+// is the user logged in?
+if (isset($_SESSION['userid'])) {
 
-if(isset($_SESSION["userid"])) {
-    initSessionDataByUserId($_SESSION["userid"]);
-} else {
-    /*Section added for login Begins*/
-    $msg = "";
-    if(isset($_POST['username'])) {
-        require_once ("class/Error.class.php");
-        require_once ("class/Login.class.php");
-        require_once ("class/Response.class.php");
-        $error = new Error();
-        $username = isset($_REQUEST["username"]) ? trim($_REQUEST["username"]) : "";
-        $password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
-        if(empty($username)){
-            $error->setError("Username cannot be empty.");
-        }else if(empty($password)){
-            $error->setError("Password cannot be empty.");
-        }else{
-            $params = array("username" => $username, "password" => $password, "action" => "login");
-            ob_start();
-            // send the request
-            CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
-            $result = ob_get_contents();
-            ob_end_clean();
-            $ret = json_decode($result);
-            if($ret->error == 1){
-                $error->setError($ret->message);
-            }else{
-                $id = $ret->userid;
-                $username = $ret->username;
-                $nickname = $ret->nickname;
-                $admin = $ret->admin;
-
-                $response = new Response();
-                $login = new Login();
-                $login->setResponse($response);
-                $login->notify($id, session_id());
-
-                $res = mysql_query("select * from " . USERS . " where id='" . mysql_real_escape_string($ret->userid) . "'");
-                $user_row = (($res) ? mysql_fetch_assoc($res) : null);
-                
-                if(!empty($user_row)) {
-                    $msgLogin = "Hello, it's good to see you! Let me know if I can help you with anything.".
-                                "Type '@faq Eliza' or just click my icon in the lower left corner of the journal.".
-                                "~Love, Eliza";
-                                
-                    // Init the php session
-                    Utils::setUserSession($id, $username, $nickname, $admin);
-                } else {
-                    $error->setError("User id: " . $ret->userid . " not found in the database");
-                }
-            }
-        }
+    // have they just logged in and been redirected back? eliza wants to know
+    if (isset($_SESSION['redirectFromLogin'])) {
+        $msgLogin = "Hello, it's good to see you! Let me know if I can help you with anything.".
+                    "Type '@faq Eliza' or just click my icon in the lower left corner of the journal.".
+                    "~Love, Eliza";
+        unset($_SESSION['redirectFromLogin']);
     }
+
+    initSessionDataByUserId($_SESSION["userid"]);
 }
 
 // generate random token if none is already saved in session
@@ -71,17 +34,11 @@ if(isset($_SESSION['csrf_token'])){
     $_SESSION['csrf_token'] = $csrf_token;
 }
 
-require_once ('openid.php');
-/*Section for Login Ends*/
-require_once ("helper/checkJournal_session.php");
-require_once ("update_status.php");
-require_once ("chat.class.php");
-require_once ("penalty.class.php");
-require_once ("crypt.php");
-
-//mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysql_error());;
-//mysql_select_db(DB_NAME) or die(mysql_error());
-
+require_once("helper/checkJournal_session.php");
+require_once("update_status.php");
+require_once("chat.class.php");
+require_once("penalty.class.php");
+require_once("crypt.php");
 
 $query = (isset($_REQUEST['query'])) ? (int) $_REQUEST['query'] : '';
 
@@ -94,7 +51,6 @@ $author = '';
 $username = '';
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 
-//version
 $version = Utils::getVersion();
 
 include ("journalHead.html");
@@ -200,7 +156,7 @@ ping someone?</a> <a href="#" class="botlink"
         $lovemachineLink = 'http://www.sendlove.us/';
         //TODO <joanne>  sharing login now - logging into journal re-directs to worklist.php
         //echo '<a href="journal.php" class="loginlink">Login</a> | ';
-        echo '<a href="login.php">Login</a> | ';
+        echo '<a class="loginLink" href="login.php">Login</a> | ';
         echo '<a href="signup.php">Signup</a> ';
         }
     echo ' | <a href="' . $lovemachineLink . '" target="_blank">SendLove</a>';

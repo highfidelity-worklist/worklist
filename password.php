@@ -1,7 +1,6 @@
 <?php
 //  vim:ts=4:et
 
-//
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
@@ -19,18 +18,26 @@ $msg = array();
 if (!empty($_POST['oldpassword'])) {
     if((!empty($_POST['newpassword'])) && ($_POST['newpassword'] == $_POST['confirmpassword'])){
 
-        $ret = Utils::updateLoginData(array('oldpassword' => $_POST['oldpassword'], 
-                                            'newpassword' => $_POST['newpassword']), false, true);
-        if ($ret->error == 1) {
-            $msg = $ret->message;
-        } else {
+        $password = '{crypt}' . Utils::encryptPassword($_POST['newpassword']);
+
+        $sql = "
+            UPDATE " . USERS . " 
+            SET password = '" . mysql_real_escape_string($password) . "'
+            WHERE id ='" . $_SESSION['userid'] . "'";
+
+        if (mysql_query($sql)) {
+
             $msg[] = "Password updated successfully!";
             $to = $_SESSION['username'];
             $subject = "Password Change";
             $body  = "<p>Congratulations!</p>";
             $body .= "<p>You have successfully updated your password with ".SERVER_NAME.".";
             $body .= "</p><p>Love,<br/>Philip and Ryan</p>";
-            if (!send_email($to, $subject, $body)) { error_log("password.php: send_email failed"); }
+            if (!send_email($to, $subject, $body)) { 
+                error_log("password.php: send_email failed");
+            }
+        } else {
+            $msg[] = "Failed to update your password";
         }
     } else {
         $msg[] = "New passwords don't match!";

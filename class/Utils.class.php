@@ -37,7 +37,7 @@ class Utils{
         return false;
     }
 
-    public static function setUserSession($id, $username, $nickname, $admin){
+    public static function setUserSession($id, $username, $nickname, $admin) {
         $_SESSION["userid"]   = $id;
         $_SESSION["username"] = $username;
         $_SESSION["nickname"] = $nickname;
@@ -48,25 +48,7 @@ class Utils{
         $_SESSION['last_seen'] = date('Y-m-d');
     }
 
-    public static function updateLoginData($data, $update_nickname = true, $update_password = true){
 
-        $params = array("action" => "update", "user_data" => array("userid" => $_SESSION['userid']));
-        if($update_nickname){
-            $params["user_data"]["nickname"] = $data["nickname"];
-        }
-        if($update_password){
-            $params["user_data"]["newpassword"] = $data["newpassword"];
-            $params["user_data"]["oldpassword"] = $data["oldpassword"];
-        }
-        $params["sid"] = session_id();
-        
-        ob_start();
-        // send the request
-        echo CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
-        $result = ob_get_contents();
-        ob_end_clean();
-        return json_decode($result);
-    }
     
     public static function getVersion() {
         if (file_exists(dirname(dirname(__FILE__)) . '/version.txt')) {
@@ -89,5 +71,74 @@ class Utils{
             $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
         }
         return $pageURL;
+    }
+
+    /**
+     * Returns a random string
+     *
+     * A-Z, a-z, 0-9:
+     * Functions::randomString(10, 48, 122, array(58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96))
+     *
+     * Default is any printable ASCII character without whitespaces
+     *
+     * @param int   $len  The length of the string
+     * @param int   $from The ASCII decimal range start
+     * @param int   $to   The ASCII decimal range stop
+     * @param array $skip ASCII decimals to skip
+     *
+     * @return string Random string
+     */
+    public static function randomString($len, $from = 33, $to = 126, $skip = array()) {
+        $str = '';
+        $i = 0;
+        while ($i < $len) {
+            $dec = rand($from, $to);
+            if (in_array($dec, $skip))
+                continue;
+            $str .= chr($dec);
+            $i++;
+        }
+        return $str;
+    }
+    
+    /**
+     * Encrypts a cleartext password via the crypt() function
+     *
+     * @param string $clearText Cleartext password
+     * @return string Encrypted password
+     */
+    public static function encryptPassword($clearText) {
+        switch (true) {
+        case (defined('CRYPT_SHA512') && CRYPT_SHA512 == 1):
+            error_log('got here');
+            $salt = '$6$' . self::randomString(16);
+            break;
+
+        case (defined('CRYPT_SHA256') && CRYPT_SHA256 == 1):
+            $salt = '$5$' . self::randomString(16);
+            break;
+
+        case (defined('CRYPT_MD5') && CRYPT_MD5 == 1):
+            $salt = '$1$' . self::randomString(12);
+            break;
+
+        case (defined('CRYPT_STD_DES') && CRYPT_STD_DES == 1):
+            $salt = self::randomString(
+                2,
+                48,
+                122,
+                array(58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96)
+            );
+            break;
+        }
+        
+        error_log('encrypting with ' . $salt . ' for password: ' . $clearText);
+        error_log(crypt($clearText, $salt));
+        return crypt($clearText, $salt);
+    }
+
+    public static function redirect($url) {
+        header('Location: ' . $url);
+        exit;
     }
 }

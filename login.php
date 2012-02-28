@@ -1,74 +1,77 @@
 <?php
-//  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved. 
-//  http://www.lovemachineinc.com
-//
-ob_start();
-include("config.php");
-include("class.session_handler.php");
+//  vim:ts=4:et
 
-if (!empty($_SESSION['userid'])) {
-     header("Location:worklist.php");
-     exit;
-}
+//  Copyright (c) 2012, Coffee & Power, Inc.
+//  All Rights Reserved.
+//  http://www.coffeeandpower.com
+
+ob_start();
+require_once("config.php");
+require_once("class.session_handler.php");
 require_once("functions.php");
 require_once('class/Utils.class.php');
 
-// Database Connection Establishment String
-mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
-// Database Selection String
-mysql_select_db(DB_NAME);
+// is the user already logged in? go to worklist.php
+if (! empty($_SESSION['userid'])) {
+    Utils::redirect('worklist.php');
+}
 
 $username = isset($_REQUEST['username']) ? trim($_REQUEST['username']) : '';
-if (!empty($_REQUEST['reauth'])) { $msg = 'This transaction is not authorized!'; }
+
+if (!empty($_REQUEST['reauth'])) { 
+    $msg = 'This transaction is not authorized!';
+}
+
 $expired = !empty($_REQUEST['expired']) ? 1 : 0;
 
 if($_POST) {
-        require_once ("class/Error.class.php");
-        require_once ("class/Login.class.php");
-        require_once ("class/Response.class.php");
-        $error = new Error();
-        $username = isset($_REQUEST["username"]) ? trim($_REQUEST["username"]) : "";
-        $password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
-        if(empty($username)){
-	    $error->setError("E-mail cannot be empty.");
-        }else if(empty($password)){
-            $error->setError("Password cannot be empty.");
-        }else{
-            $params = array("username" => $username, "password" => $password, "action" => "login");
-            ob_start();
-            // send the request
-            echo CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
-            $result = ob_get_contents();
-            ob_end_clean();
-            $ret = json_decode($result);
-            if($ret->error == 1){
-                $error->setError($ret->message);
-            }else{
-                $id = $ret->userid;
-                $username = $ret->username;
-                $nickname = $ret->nickname;
-                $admin = $ret->admin; 
-                Utils::setUserSession($id, $username, $nickname, $admin);
-                // notifying other applications
-                $response = new Response();
-                $login = new Login();
-                $login->setResponse($response);
-                $login->notify($id, session_id());
-                if ($_POST['redir']) {
-                    header("Location:".urldecode($_POST['redir']));
-                } else { 
-                      if (!empty($_POST['reauth'])) {
-                          header("Location:".urldecode($_POST['reauth']));
-                      } else {
-                          header("Location:worklist.php");
-                      }
+    require_once ("class/Error.class.php");
+    require_once ("class/Login.class.php");
+    require_once ("class/Response.class.php");
+    $error = new Error();
+    $username = isset($_REQUEST["username"]) ? trim($_REQUEST["username"]) : "";
+    $password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
+    if (empty($username)) {
+        $error->setError("E-mail cannot be empty.");
+    } else if(empty($password)) {
+        $error->setError("Password cannot be empty.");
+    } else {
+        $user = new User();
+        if ($user->findUserByUsername($username)) {
+            if ($user->isActive()) {
+                if ($user->authenticate($password)) {
+
+                    print_r($user);
+                    echo "<br/>";
+                    $id = $user->getId();
+                    $username = $user->getUsername();
+                    $nickname = $user->getNickname();
+                    $admin = $user->getIs_admin();
+
+                    Utils::setUserSession($id, $username, $nickname, $admin);
+
+                    if ($_POST['redir']) {
+                        $_SESSION['redirectFromLogin'] = true;
+                        Utils::redirect(urldecode($_POST['redir']));
+                    } else { 
+                        if (!empty($_POST['reauth'])) {
+                            Utils::redirect(urldecode($_POST['reauth']));
+                        } else {
+                            Utils::redirect('worklist.php');
+                        }
+                    }
+
+                } else {
+                    $error->setError('Invalid password');
                 }
-                exit;
+            } else {
+                $error->setError('User is deactivated');
             }
+        } else {
+            $error->setError('Email Address or Password not valid');
         }
+    }
 }
-include('openid.php');
 
 if(isset($_SESSION['username']) and isset($_SESSION['confirm_string']) and $_SESSION['username']!="") {
     $res = mysql_query("select id from ".USERS.
@@ -164,5 +167,4 @@ include("head.html");
     </div>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
-<?php include("footer.php");
-?>
+<?php include("footer.php"); ?>

@@ -4,47 +4,52 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 //
-include("config.php");
-require_once("class/CURLHandler.php");
-include_once("send_email.php");
-include_once("functions.php");
 
-$msg="";
-if (!empty($_POST['submit'])) {
-  if (!empty($_POST['password'])) {
-    $vars = array(
-      'username' => $_POST['username'],
-      'token' => $_POST['token'], 
-      'password' => $_POST['password']
-    );
-      ob_start();
-      // send the request
-      echo CURLHandler::Post(LOGIN_APP_URL . 'changepassword', $vars);
-      $result = json_decode(ob_get_contents());
-      ob_end_clean();
-      
-      if ($result->success == true) {
-        sendTemplateEmail($_POST['username'], 'changed_pass', array('app_name' => APP_NAME));
-      header('Location: login.php');
-      } else {
-        $msg = 'The link to reset your password has expired or is invalid. <a href="forgot.php">Please try again.</a>';
-      }
-  } else {
-    $msg = "Please enter a password!";
-  }
+require_once("config.php");
+require_once("send_email.php");
+require_once("functions.php");
+require_once("class/Utils.class.php");
+
+$msg = '';
+
+if (! empty($_POST['submit'])) {
+    if (! empty($_POST['password'])) {
+
+        $user = new User();
+        if ($user->findUserByUsername($_POST['username'])) {
+            if ($user->getForgot_hash() == $_REQUEST['token']) {
+
+                $password = '{crypt}' . Utils::encryptPassword($_POST['password']);
+                $user->setPassword($password)
+                     ->setForgot_hash(md5(uniqid()))
+                     ->save();
+
+                sendTemplateEmail($_POST['username'], 'changed_pass', array(
+                    'app_name' => APP_NAME
+                ));
+
+                Utils::redirect('login.php');
+            }
+
+        } else {
+            $msg = 'The link to reset your password has expired or is invalid. <a href="forgot.php">Please try again.</a>';
+        }
+        
+    } else {
+        $msg = "Please enter a password!";
+    }
 }
 
 if (empty($_REQUEST['token'])) {
-  // no required information specified, redirect user
-  header('Location: login.php');
+    // no required information specified, redirect user
+    Utils::redirect('login.php');
 }
-// END EDITS By RussellReal
 /*********************************** HTML layout begins here  *************************************/
-
 include("head.html"); ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <script language="javascript">
+    // @TODO: Why have we got custom validation here when we are using LiveValidation further down?
 	function validate() {
 	 
 		if (document.frmlogin.username.value=="") {

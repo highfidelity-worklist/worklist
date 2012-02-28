@@ -2,55 +2,57 @@
 //  vim:ts=4:et
 
 //
-//  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved. 
-//  http://www.lovemachineinc.com
+//  Copyright (c) 2012, Coffee & Power, Inc.
+//  All Rights Reserved.
+//  http://www.coffeeandpower.com
 
-include("config.php");
-include("class.session_handler.php");
-include_once("send_email.php");
+require_once("config.php");
+require_once("class.session_handler.php");
+require_once("send_email.php");
 require_once("timezones.php");
-include("countrylist.php");
-include("smslist.php");
+require_once("countrylist.php");
+require_once("smslist.php");
 require_once("classes/Notification.class.php");
 
-$signup=true;
+$signup = true;
 $phone = $country = $provider = $authtype = "";
-$msg="";
-$to=1;
-mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
-mysql_select_db(DB_NAME);
+$msg = "";
+$to = 1;
+
+// @TODO: We should not be connecting to the DB here, surely it's done somewhere else? -- lithium
+// mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
+// mysql_select_db(DB_NAME);
 
 $fields_to_htmlescape = array(
-        'paypal_email' => '',
-        'contactway' => '', 
-        'payway' => '', 
-        'skills' => '', 
-        'timezone' => '', 
-        'int_code' => '', 
-        'phone' => '', 
-        'country' => '', 
-        'provider' => '',
-        'smsaddr' => '',
-        'findus' => ''
-      );
+    'paypal_email' => '',
+    'contactway' => '', 
+    'payway' => '', 
+    'skills' => '', 
+    'timezone' => '', 
+    'int_code' => '', 
+    'phone' => '', 
+    'country' => '', 
+    'provider' => '',
+    'smsaddr' => '',
+    'findus' => ''
+);
 
 $fields_to_not_escape = array(
-        'nickname' => '', 
-        'username' => '', 
-        'password' => '', 
-        'confirmpassword' => '', 
-        'sign_up' => '', 
-        'phone_edit' => '',
-        'confirm' => '',
-        'paypal' => '',
-        'about' => '', 
-        'openid' => ''
-      );
+    'nickname' => '', 
+    'username' => '', 
+    'password' => '', 
+    'confirmpassword' => '', 
+    'sign_up' => '', 
+    'phone_edit' => '',
+    'confirm' => '',
+    'paypal' => '',
+    'about' => '', 
+    'openid' => ''
+);
 
 // Remove html tags from about box
 if (isset($_POST['about'])) {
-  $_POST['about'] = strip_tags($_POST['about']);
+    $_POST['about'] = strip_tags($_POST['about']);
 }
 
 $minimal_POST = @array_intersect_key($_POST, $fields_to_not_escape + $fields_to_htmlescape);
@@ -68,10 +70,9 @@ $minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
 
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
 
-if(isset($minimal_POST['sign_up'])){
+if(isset($minimal_POST['sign_up'])) {
     require_once ("class/Error.class.php");
     require_once ("class/Utils.class.php");
-    require_once ("class/CURLHandler.php");
     $error = new Error();
     if(empty($username) || empty($_REQUEST["nickname"]) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword']))){
         $error->setError("Please fill all required fields.");
@@ -94,106 +95,89 @@ if(isset($minimal_POST['sign_up'])){
         if(! isset($minimal_POST['paypal'])){
             $minimal_POST['paypal_email'] = '';
         }
-        $params = array(
-            "username" => $minimal_POST["username"],
-            "password" => $minimal_POST["password"],
-            "action" => "signup",
-            "confirm_string" => uniqid());
-        if(isset($minimal_POST["nickname"])){
-            $params["nickname"] = $minimal_POST["nickname"];
-        }
-        foreach($minimal_POST as $key => $value){
-            if(! isset($params[$key])){
+
+        foreach ($minimal_POST as $key => $value) {
+            if (! isset($params[$key])) {
                 $params[$key] = $value;
             }
         }
-        ob_start();
-        // send the request
-        echo CURLHandler::Post(SERVER_URL . 'loginApi.php', $params, false, true);
-        $result = ob_get_contents();
-        ob_end_clean();
-        
-        $ret = json_decode($result);
-        error_log("loginApi Result:".$result);
 
-    
-        if ($ret->error == 1) {
-            $error->setError($ret->message);
-        } else {
-            $newUser = array();
-            foreach($_POST as $key => $value){
-                if(Utils::registerKey($key)){
-                    $newUser[$key] = $value;
-                }
+        $newUser = array();
+        foreach($_POST as $key => $value){
+            if(Utils::registerKey($key)){
+                $newUser[$key] = $value;
             }
-            $newUser["id"] = $ret->id;
-            $newUser["username"] = $ret->username;
-            $newUser["nickname"] = $ret->nickname;
-            $newUser["added"] = "NOW()";
-            $newUser["notifications"] = Notification::setFlags($review_notify, $bidding_notify);
-            $newUser['w9_status'] = $_POST['country'] == 'US' ? 'awaiting-receipt' : 'not-applicable';
+        }
 
-            $sql = "INSERT INTO ".USERS." ";
-            $columns = "(";
-            $values = "VALUES(";
-            foreach($newUser as $name => $value){
-                $columns .= "`".$name."`,";
-                if ($name == "added") {
-                    $values .= "NOW(),";
-                } else {
-                    $values .= "'".mysql_real_escape_string($value)."',";
-                }
-            }
-            $columns = substr($columns,0,(strlen($columns)-1));
-            $columns .= ")";
-            $values = substr($values,0,(strlen($values)-1));
-            $values .= ")";
-            $sql .= $columns." ".$values;
-            $res = mysql_query($sql);
-            $user_id = mysql_insert_id();
+        $newUser['username'] = $minimal_POST['username'];
+        $newUser['password'] = '{crypt}' . Utils::encryptPassword($minimal_POST['password']);
+        $newUser['nickname'] = $minimal_POST['nickname'];
+        $newUser['confirm_string'] = uniqid();
+        $newUser['added'] = "NOW()";
+        $newUser['notifications'] = Notification::setFlags($review_notify, $bidding_notify);
+        $newUser['w9_status'] = $_POST['country'] == 'US' ? 'awaiting-receipt' : 'not-applicable';
 
-            // Email user
-            $subject = "Registration";
-            $link = SECURE_SERVER_URL . "confirmation.php?cs=".$ret->confirm_string."&str=" . base64_encode($ret->username);
-            $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
-            $body .= "<p><a href=\"".$link."\">Click here to verify your email address and activate your account.</a></p>";
-            if (!empty($ret->newNickname) && $ret->newNickname == true) { 
-                $body .= "<p>Note: The nickname you chose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later</p>";
+        $sql = "INSERT INTO ".USERS." ";
+        $columns = "(";
+        $values = "VALUES (";
+        foreach($newUser as $name => $value) {
+            $columns .= "`" . $name . "`,";
+            if ($name == "added") {
+                $values .= "NOW(),";
+            } else {
+                $values .= "'" . mysql_real_escape_string($value) . "',";
             }
-            $plain = "You are only one click away from completing your registration!\n\n";
-            $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
-            if (!empty($ret->newNickname) && $ret->newNickname == true) { 
-                $plain .= "Note: The nickname you chose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later";
-            }
-            $plain .= $link."\n\n";
-            $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
-            if(!send_email($ret->username, $subject, $body, $plain)) {
+        }
+
+        $columns = substr($columns, 0, (strlen($columns) - 1));
+        $columns .= ")";
+        $values = substr($values, 0, (strlen($values) - 1));
+        $values .= ")";
+        $sql .= $columns." ".$values;
+        $res = mysql_query($sql);
+        $user_id = mysql_insert_id();
+
+        // Email user
+        $subject = "Registration";
+        $link = SECURE_SERVER_URL . "confirmation.php?cs=" . $newUser['confirm_string'] . "&str=" . base64_encode($newUser['username']);
+        $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
+        $body .= "<p><a href=\"".$link."\">Click here to verify your email address and activate your account.</a></p>";
+        if (!empty($ret->newNickname) && $ret->newNickname == true) { 
+            $body .= "<p>Note: The nickname you chose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later</p>";
+        }
+        $plain = "You are only one click away from completing your registration!\n\n";
+        $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
+        if (!empty($ret->newNickname) && $ret->newNickname == true) { 
+            $plain .= "Note: The nickname you chose is already taken. We created a new one for you ( ".$newUser["nickname"]." ) which can be changed later";
+        }
+        $plain .= $link."\n\n";
+        $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
+        if(!send_email($newUser['username'], $subject, $body, $plain)) {
+            error_log("signup.php: send_email failed");
+            $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
+        }
+
+        // paypal email
+        if (! empty($newUser['paypal_email'])) {
+            $paypal_hash = md5(date('r', time()));;
+            
+            $subject = "Payment address verification";
+            $link = SECURE_SERVER_URL . "confirmation.php?pp=".$paypal_hash . "&ppstr=" . base64_encode($newUser['paypal_email']);
+            $worklist_link = SERVER_URL . "worklist.php";
+            $body  = "<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the <a href='" . $worklist_link . "'>Worklist</a>.</p>";
+            $body .= '<br/><a href="' . $link . '">Click here to verify your payment address</a></p>';
+
+            $plain  = 'Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the worklist.' . "\n\n";
+            $plain .= $link . "\n\n";
+                
+            $confirm_txt .= "<br/><br/>An email containing a confirmation link was also sent to your Paypal email address. Please click on that link to verify your Paypal address and activate payments on your account.";
+            if (! send_email($newUser['paypal_email'], $subject, $body, $plain)) { 
                 error_log("signup.php: send_email failed");
                 $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
             }
-
-            // paypal email
-            if (! empty($newUser['paypal_email'])) {
-                $paypal_hash = md5(date('r', time()));;
-            
-                $subject = "Payment address verification";
-                $link = SECURE_SERVER_URL . "confirmation.php?pp=".$paypal_hash. "&ppstr=" . base64_encode($newUser['paypal_email']);
-                $worklist_link = SERVER_URL . "worklist.php";
-                $body  = "<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the <a href='" . $worklist_link . "'>Worklist</a>.</p>";
-                $body .= '<br/><a href="' . $link . '">Click here to verify your payment address</a></p>';
-
-                $plain  = 'Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the worklist.' . "\n\n";
-                $plain .= $link . "\n\n";
-                
-                $confirm_txt .= "<br/><br/>An email containing a confirmation link was also sent to your Paypal email address. Please click on that link to verify your Paypal address and activate payments on your account.";
-                if (! send_email($newUser['paypal_email'], $subject, $body, $plain)) { 
-                    error_log("signup.php: send_email failed");
-                    $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
-                }
-            }
-            if (!empty($ret->newNickname) && $ret->newNickname == true) { 
-                $confirm_txt .= "<br/><br/>Note: The nickname you chose is already taken. We created a new one for you ( ".strtoupper($newUser["nickname"])." ) which can be changed later.";
-            }
+        }
+        if (!empty($ret->newNickname) && $ret->newNickname == true) { 
+            $confirm_txt .= "<br/><br/>Note: The nickname you chose is already taken. We created a new one for you ( ".strtoupper($newUser["nickname"])." ) which can be changed later.";
         }
     }
 }

@@ -9,8 +9,7 @@
 require_once('timezones.php');
 
 // Autoloader
-function __autoload($class)
-{
+function __autoload($class) {
     $file = realpath(dirname(__FILE__) . '/classes') . "/$class.class.php";
     if (file_exists($file)) {
         require_once($file);
@@ -1066,7 +1065,3 @@ function checkLogin() {
         }
         return false;
     }
-    
-    
-    
-    

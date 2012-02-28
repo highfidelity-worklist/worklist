@@ -1,11 +1,9 @@
 <?php
 //  vim:ts=4:et
 
-//
-//  Copyright (c) 2011, LoveMachine Inc.
+//  Copyright (c) 2012, Coffee & Power, Inc.
 //  All Rights Reserved.
-//  http://www.lovemachineinc.com
-//
+//  http://www.coffeeandpower.com
 
 ob_start();
 include("config.php");
@@ -27,8 +25,8 @@ if ($userId) {
     $user->findUserById($userId);
 }
 
-$msg="";
-$company="";
+$msg = "";
+$company = "";
 
 $saveArgs = array();
 $messages = array();
@@ -61,8 +59,12 @@ if (isset($_REQUEST['save_account'])) {
         $saveArgs['provider'] = 0;
 
         $sms_flags = 0;
-        if (!empty($_REQUEST['journal_alerts'])) $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
-        if (!empty($_REQUEST['bid_alerts'])) $sms_flags |= SMS_FLAG_BID_ALERTS;
+        if (!empty($_REQUEST['journal_alerts'])) {
+            $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
+        }
+        if (!empty($_REQUEST['bid_alerts'])) {
+            $sms_flags |= SMS_FLAG_BID_ALERTS;
+        }
         $saveArgs['sms_flags'] = 0;
 
         $timezone = mysql_real_escape_string(trim($_REQUEST['timezone']));
@@ -78,23 +80,28 @@ if (isset($_REQUEST['save_account'])) {
         $self_email_notify = !empty($_REQUEST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
         $bidding_email_notify = !empty($_REQUEST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
         $review_email_notify = !empty($_REQUEST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
-        $notifications = Notification::setFlags($review_notify, 
-                                                $bidding_notify, 
-                                                $my_review_notify, 
-                                                $my_completed_notify, 
-                                                $my_bids_notify, 
-                                                $ping_notify, 
-                                                $self_email_notify, 
-                                                $bidding_email_notify, 
-                                                $review_email_notify);
-        
+
+        $notifications = Notification::setFlags(
+            $review_notify, 
+            $bidding_notify, 
+            $my_review_notify, 
+            $my_completed_notify, 
+            $my_bids_notify, 
+            $ping_notify, 
+            $self_email_notify, 
+            $bidding_email_notify, 
+            $review_email_notify
+        );
+
         $saveArgs['notifications'] = 0;
 
         // if user is new - create an entry for him
         // clear $saveArgs so it won't be updated for the second time
+        // @TODO: Follow-up. Is this for the first creation of user in the worklist database (as opposed to
+        // logon db?  -- lithium
         if (!empty($_SESSION['new_user'])) {
 
-            $user_id = intval($_SESSION['userid']);
+            $user_id = (int) $_SESSION['userid'];
             $username = $_SESSION['username'];
             $nickname = $_SESSION['nickname'];
 
@@ -109,31 +116,30 @@ if (isset($_REQUEST['save_account'])) {
         }
     }
 
-    // if nickname is different - update it through login call
+    // has the nickname changed? update the database
     $nickname = trim($_REQUEST['nickname']);
     if($nickname != $_SESSION['nickname']) {
-        
         $user = new User();
         $user->findUserByNickname($nickname);
-        
-        if ($user->getId() != null && $user->getId() != intval($_SESSION['userid'])) {
-            die(json_encode(array('error' => 1, 'message' => "Update failed, nickname already exists!")));
-        }
-        
-        $ret = Utils::updateLoginData(array('nickname' => $nickname), true, false);
-        if (isset($ret->error) && $ret->error == 1) {
-            // TODO: Actually send error back to browser, if necessary
-            $error->setError($ret->message);
 
-        } else {
-            if(!$_SESSION['new_user']) {
-                $sql = "UPDATE " . USERS . " SET nickname='" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
-                if (mysql_query($sql)) {
-                    $_SESSION['nickname'] = $nickname;
-                    $messages[] = "Your nickname is now '$nickname'.";
-                } else {
-                    $error->setError("Error updating nickname in Worklist");
-                }
+        if ($user->getId() != null && $user->getId() != intval($_SESSION['userid'])) {
+            die(json_encode(array(
+                'error' => 1, 
+                'message' => "Update failed, nickname already exists!"
+            )));
+        }
+
+
+        if (!$_SESSION['new_user']) {
+            $sql = "
+                UPDATE " . USERS . " 
+                SET nickname = '" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
+
+            if (mysql_query($sql)) {
+                $_SESSION['nickname'] = $nickname;
+                $messages[] = "Your nickname is now '$nickname'.";
+            } else {
+                $error->setError("Error updating nickname in Worklist");
             }
         }
 
@@ -144,7 +150,10 @@ if (isset($_REQUEST['save_account'])) {
             $body .= "New nickname: '" . $nickname . "'\n" ;
             $body .= "Error message: '" . $errormsg;
             send_email(FEEDBACK_EMAIL, 'Update nickname for user failed!', nl2br($body), $body);
-            die(json_encode(array('error' => 1, 'messsage' => $errormsg)));
+            die(json_encode(array(
+                'error' => 1,
+                'messsage' => $errormsg
+            )));
         }
     }
 
@@ -216,22 +225,28 @@ if (isset($_REQUEST['save_account'])) {
     $last_name = isset($_REQUEST['last_name']) ? mysql_real_escape_string($_REQUEST['last_name']) : "";
     $saveArgs = array('first_name'=>1, 'last_name'=>1);
 }
+
+// do we have data to update?
 if (!empty($saveArgs)) {
 
-    $sql = "UPDATE `".USERS."` SET ";
-    foreach ($saveArgs as $arg=>$esc) {
+    $sql = "UPDATE `" . USERS . "` SET ";
+    foreach ($saveArgs as $arg => $esc) {
 
-        if ($esc) $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+        if ($esc) {
+            $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+        }
 
         if (is_int($$arg) || ($arg == "w9_accepted" && $$arg == 'NOW()')) {
-            $sql .= "`$arg`=".$$arg.",";
+            $sql .= "`$arg` = " . $$arg . ",";
         } else {
-            $sql .= "`$arg`='".$$arg."',";
+            $sql .= "`$arg` = '" . $$arg ."',";
         }
     }
+
     $sql = rtrim($sql, ',');
     $sql .= " WHERE id = {$_SESSION['userid']}";
     $res = mysql_query($sql);
+
     if (!$res) {
         error_log("Error in saving settings: " . mysql_error() . ':' . $sql);
         die("Error in saving settings. " );

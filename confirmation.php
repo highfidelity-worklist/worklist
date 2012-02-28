@@ -1,23 +1,19 @@
 <?php
-//
-//  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved. 
-//  http://www.lovemachineinc.com
-//
+//  vim:ts=4:et
+
+//  Copyright (c) 2012, Coffee & Power, Inc.
+//  All Rights Reserved.
+//  http://www.coffeeandpower.com
 
 ob_start();
-include("config.php");
-include("class.session_handler.php");
-include_once("send_email.php");
-include_once("functions.php");
-require 'class/CURLHandler.php';
+require_once("config.php");
+require_once("class.session_handler.php");
+require_once("send_email.php");
+require_once('functions.php');
 
-$msg="";
-$to=1;
+$msg = "";
+$to = 1;
 $lightbox = "";
-
-mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
-mysql_select_db(DB_NAME);
 
 if (!empty($_REQUEST['saveW9Names'])) {
     $user_id = isset($_POST['userid']) ? mysql_real_escape_string($_POST['userid']) : "";
@@ -85,19 +81,20 @@ if (isset($_REQUEST['str'])) {
 
     // verify the email belongs to a user
     if (! $user->findUserByUsername($email)) {
-        header("Location:login.php");
-        exit;
+        Utils::redirect('login.php');
     } else {
-        $data = array("username" => base64_decode($_REQUEST['str']), "token" => $_REQUEST['cs']);
-        ob_start();
-        echo CURLHandler::doRequest("POST", LOGIN_APP_URL . "confirm", $data);
-        $result = ob_get_contents();
-        ob_end_clean();
-        $result = json_decode($result);
-        if ($result->error == 1) {
-            die($result->message);
-        }
-        $sql = "UPDATE ".USERS." SET confirm = 1, is_active = 1 WHERE username = '".mysql_real_escape_string(base64_decode($_REQUEST['str']))."'";
+        $data = array(
+            "username" => base64_decode($_REQUEST['str']),
+            "token" => $_REQUEST['cs']
+        );
+
+        $sql = "
+            UPDATE " . USERS . "
+            SET
+                confirm = 1,
+                is_active = 1
+            WHERE username = '" . mysql_real_escape_string(base64_decode($_REQUEST['str'])) . "'";
+
         mysql_query($sql);
         // send welcome email
         $data = array(
@@ -121,33 +118,28 @@ if (isset($_REQUEST['str'])) {
     // verify the email belongs to a user
     if (! $user->findUserByPPUsername($paypal_email, $hash)) {
         // hacking attempt, or some other error
-        header('Location: login.php');
+        redirect('login.php');
     } else {
         $user->setPaypal_verified(true);
         $user->setPaypal_hash('');
         $user->save();
-        header('Location: settings.php?ppconfirmed');
+        redirect('settings.php?ppconfirmed');
     }
-    exit;
 }
 
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>
-
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
-<link href="css/worklist.css" rel="stylesheet" type="text/css">
+<link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <script language="javascript" src="js/lightbox-hc.js"></script>
 
-<!-- jquery file is for LiveValidation -->
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-
-
 <title>Worklist | Confirmation</title>
+<!-- @TODO: Why two ajax uploads? -- lithium -->
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/ajaxupload-3.6.js"></script>
 <script type="text/javascript" language="javascript" >
-
 var nclass;
 
 function validateNames(file, extension) {

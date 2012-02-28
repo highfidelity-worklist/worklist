@@ -14,7 +14,7 @@ replacement data:
 'changed_pass' => array(
 
 'subject' =>
-"SendLove Password Changed",
+"Worklist Password Changed",
 
 'body' =>
 "<p>Change is good!</p>
@@ -33,7 +33,7 @@ replacement data:
 'recovery' => array(
 
 'subject' =>
-"Worklist Password Recovery",
+"Worklist Password Reset",
 
 'body' =>
 "<p>Hi,</p>

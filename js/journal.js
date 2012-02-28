@@ -2472,7 +2472,7 @@ $(window).ready(function() {
         username.add(SLEmail);
         username.add(Validate.Length, { minimum: 10, maximum: 50 } );
     });
-    $(".loginlink").bind('click', function(event, ui){
+    $(".loginLink").bind('click', function(event, ui){
         if ($('div#loginbox').is(":visible")) {
             $('div#loginbox').hide('drop', { direction: 'left' }, 500);
         } else {
