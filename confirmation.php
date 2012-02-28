@@ -175,7 +175,6 @@ function completeUpload(file, data) {
 						'<strong>Info:</strong> ' + data.message + '</p>' +
 					'</div>';
         saveNames();
-        sendw9NotificationEmail(); 					
 	} else {
 		var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
 						'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
@@ -212,18 +211,6 @@ function saveNames() {
         error: function(xhdr, status, err) {
 
         }
-    });
-}
-
-function sendw9NotificationEmail() {
-    $.ajax({
-        type: "POST",
-        url: 'jsonserver.php',
-        data: {
-            action: 'sendw9NotificationEmail',
-            userid: user
-        },
-        dataType: 'json'
     });
 }
 

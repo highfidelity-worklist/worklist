@@ -44,7 +44,7 @@ class Notification {
      */
     public static function isNotified($value, $flag = self::REVIEW_NOTIFICATIONS) {
             $result = ($value & $flag) === $flag;
-            return $result;
+            return (bool) $result;
     }
 
     /**
@@ -74,10 +74,25 @@ class Notification {
                 }
             }
             break;
-        case self::REVIEW_NOTIFICATIONS :
         case self::REVIEW_EMAIL_NOTIFICATIONS :
-        case self::BIDDING_NOTIFICATIONS :
         case self::BIDDING_EMAIL_NOTIFICATIONS :
+            $uid = getSessionUserId();
+            $sql = "SELECT u.username 
+                FROM `" . USERS . "` u 
+                WHERE ((u.notifications & $flag != 0 && u.id != " . $uid . ") 
+			          OR (u.notifications & ($flag | " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
+                  AND u.is_active = 1";
+			error_log ($sql);
+            $res = mysql_query($sql);
+            if($res) {
+                while($row = mysql_fetch_row($res)) {
+                    $result[] = $row[0];
+                }
+            }
+            break;
+
+        case self::REVIEW_NOTIFICATIONS :
+        case self::BIDDING_NOTIFICATIONS :
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
                 WHERE u.notifications & $flag != 0 
@@ -203,7 +218,7 @@ class Notification {
      * emails - send message directly to list of emails (array) -
      * if 'emails' is passed - 'recipients' option is ignored
      * @param Array $data - Array with additional data that needs to be passed on
-     * @param boolean $includeSelf - forece user receive email from self generated action
+     * @param boolean $includeSelf - force user receive email from self generated action
      * example: 'who' and 'comment' - if we send notification about new comment
      */
     public static function workitemNotify($options, $data = null, $includeSelf = true) {
@@ -260,9 +275,10 @@ class Notification {
                 if($workitem->getStatus() != 'DRAFT') {
                 $headers['From'] = '"' . $project_name . '-fee added" ' . $from_address;
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
-                        . 'Who: ' . $data['fee_adder'] . '<br>'
-                        . 'Amount: ' . $data['fee_amount'] . '<br /><br />'
-                        . 'Project: ' . $project_name . '<br />'
+                        . 'Who: ' . $data['fee_adder'] . '<br/>'
+                        . 'Amount: ' . $data['fee_amount'] . '<br/>'
+                        . 'Fee Notes: <div>' . $data['desc'] . '</div><br/><br/>'
+                        . 'Project: ' . $project_name . '<br/>'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                         if($workitem->getRunner() != '') {
                             $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
@@ -694,11 +710,19 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
+						error_log( "notifying user(".$recipientUser."): ". $rUser->getUsername());
                         if(($username = $rUser->getUsername())){
                             // Check to see if user doesn't want to be notified 
                             // If user is recipient, doesn't have check on settings and not forced to receive then exclude), 
                             // except for followers
-                            if ( $current_user->getUsername() == $username && strcmp(ucfirst($recipient), 'Followers') ) {
+							error_log('test1 ' . strcmp($current_user->getUsername(), $username));
+							error_log('test2 ' . strcmp(ucfirst($recipient), 'Followers'));
+							
+                            if ( !strcmp($current_user->getUsername(), $username) && strcmp(ucfirst($recipient), 'Followers') ) {
+							error_log('test3 ' . Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS));
+							error_log('test4 ' . $current_user->getNotifications());
+							error_log('test5 ' .  Notification::SELF_EMAIL_NOTIFICATIONS);
+	
                                 if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)
                                     || $includeSelf == false) {
                                     continue;

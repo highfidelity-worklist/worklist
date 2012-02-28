@@ -81,12 +81,6 @@ define('AJAX_REFRESH', 30);
 
 define('VIRUS_SCAN_CMD', '/usr/bin/clamscan');
 
-// Default sender and sms sender. config.php has automatic fallback for REPLYTO if not set (will use *_SENDER)
-define('DEFAULT_SENDER', 'worklist@worklist.net');
-//define('DEFAULT_REPLYTO', 'worklist@worklist.net');
-define('SMS_SENDER', 'worklist@worklist.net');
-//define('SMS_REPLYTO', 'worklist@worklist.net');
-
 //Server URL's - If running as http://host.domain.com/ (not using app location), defining SERVER_NAME is all that is needed for non-ssl sites
 define('SERVER_NAME', 'dev.worklist.net');
 define('SERVER_URL', 'https://' . SERVER_NAME . '/' . APP_LOCATION); //Include [:port] for standard http traffic if not :80
@@ -104,14 +98,14 @@ if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: ' . WORKLIST_URL . '/wo
 //define('APP_NAME','Worklist');
 define('API_KEY','worklist_dev_worklist_unsecure');
 
-define('JOURNAL_API_URL', 'https://' . SERVER_NAME . SANDBOX_USER . SANDBOX_NAME . 'add.php');
+define('JOURNAL_API_URL', 'https://' . SERVER_NAME . '/' . SANDBOX_USER . SANDBOX_NAME . 'add.php');
 define('JOURNAL_API_USER', 'api_work@dev.sendlove.us');
 define('JOURNAL_API_PWD', 'journalpwd');
 define('JOURNAL_API_KEY', 'worklist_dev_journal_unsecure');
-define('JOURNAL_QUERY_URL', 'https://' . SERVER_NAME . SANDBOX_USER . SANDBOX_NAME . 'api.php');
-define('JOURNAL_QUERY_URL_SSL', 'https://' . SERVER_NAME . SANDBOX_USER . SANDBOX_NAME . 'api.php');
+define('JOURNAL_QUERY_URL', 'https://' . SERVER_NAME . '/' . SANDBOX_USER . SANDBOX_NAME . 'api.php');
+define('JOURNAL_QUERY_URL_SSL', 'https://' . SERVER_NAME . '/' . SANDBOX_USER . SANDBOX_NAME . 'api.php');
 
-define('JOURNAL_URL', 'https://' . SERVER_NAME . SANDBOX_USER . SANDBOX_NAME . 'journal.php');
+define('JOURNAL_URL', 'https://' . SERVER_NAME . '/' . SANDBOX_USER . SANDBOX_NAME . 'journal.php');
 
 
 if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/love/api.php");

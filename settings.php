@@ -368,7 +368,6 @@ include("head.html");
                             '<strong>Info:</strong> ' + data.message + '</p>' +
                         '</div>';
             saveSettings('w9Name');
-            sendw9NotificationEmail();                                       
         } else {
             var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
                             '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
@@ -483,21 +482,6 @@ include("head.html");
         });
     }
     
-    function sendw9NotificationEmail() {
-        var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
-        $.ajax({
-            type: "POST",
-            url: 'jsonserver.php',
-            data: {
-                action: 'sendw9NotificationEmail',
-                userid: user
-            },
-            dataType: 'json',
-            success: function(data) {
-
-            }
-        });
-    }
 
     function smsSendTestMessage() {
         var int_code = $('#int_code').val();

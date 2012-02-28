@@ -728,8 +728,13 @@ class JsonServer
             File::s3Upload($tempFile, $path, false);
             $url = File::s3AuthenticatedURL($path);
             $subject = "W-9 Form from " . $user->getNickname();
+
             $body = "<p>Hi there,</p>";
-            $body .= "<p>" . $user->getNickname() . " just uploaded his/her W-9 Form, you can download and approve it from this URL:</p>";
+            $body .= "<p>" . $user->getNickname() . " just uploaded his/her W-9 Form.</p>";
+            $body .= "<p>When it's tax time, you'll need to know that " 
+                  . $user->getNickname() . " is " . $user->getFirst_name() . " " . $user->getLast_name() . "</p>";
+            $body .= "<p>You can download and approve it from this URL:</p>";
+
             $body .= "<p><a href=\"{$url}\">Click here</a></p>";
             
             if(! send_email(FINANCE_EMAIL, $subject, $body)) { 
@@ -755,20 +760,6 @@ class JsonServer
         }
 
 
-    }
-
-    protected function actionsendw9NotificationEmail() {
-        $user = new User();
-        $user->findUserById($this->getRequest()->getParam('userid'));
-        $subject = "W-9 Form from " . $user->getNickname();
-        $body = "<p>Hi there,</p>";
-        $body .= "<p>" . $user->getNickname() . " just uploaded his/her W-9 Form</p>";
-        $body .= "<p>When it's tax time, you'll need to know that " . $user->getNickname() . " is " . $user->getFirst_name() . " " . $user->getLast_name() . "</p>";
-        $body .= "<p>You can download and approve it from this ";
-        $body .= "<a href=\"" . SERVER_URL . "uploads/" . $user->getId() . "_W9.pdf\">URL</a></p>";       
-        if(!send_email(FINANCE_EMAIL, $subject, $body)) {
-             error_log("JsonServer:w9Upload: send_email failed"); 
-        }
     }
 
     protected function actionChangeUserStatus()
