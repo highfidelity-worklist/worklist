@@ -919,13 +919,14 @@ function checkLogin() {
      * remember to update the other, thanks very much
      *
      */
-    function linkify($url, $author = null)
+    function linkify($url, $author = null, $bot = false)
     {
         $original = $url;
-
+        
         $class = '';
         if(strpos($url, "helper/get_attachment.php") > 0)
         {
+            $bot = true;
             $class=' class="attachment noicon"';
         } else {
             $class='';
@@ -990,12 +991,15 @@ function checkLogin() {
         $url = preg_replace($regexp, DELIMITER . '<a href="mailto:$0">$0</a>' . DELIMITER, $url);
 
         // find anything that looks like a link and add target=_blank so it will open in a new window
+        $url = htmlspecialchars_decode($url);
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
+        if (!$bot) {
+            $url = htmlentities($url, ENT_QUOTES);
+        }
         $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
-        $url = preg_replace_callback($reg,
-                'decodeDelimitedLinks',
-             $url);
+        $url = preg_replace_callback($reg, 'decodeDelimitedLinks', $url);
         $url = nl2br($url);
+        $url = utf8_encode($url);
         return $url;
     }
 

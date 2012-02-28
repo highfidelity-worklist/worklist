@@ -73,7 +73,7 @@ class Chat
             '    <span class="entry-author">'.$rsp['bot'].'</span>'."\n".
             '    <span class="entry-date" data="'.$time.'" title="'.date("d M H:i:s", $time).'">just now</span>'."\n".
             '  </h2>'."\n".
-            '  <div class="entry-text">'.(linkify($message)).'</div>'."\n".
+            '  <div class="entry-text">' . linkify($message, null, true) . '</div>'."\n".
             '</div>';
         return $html;
     }
@@ -140,15 +140,15 @@ class Chat
                 $time = strtotime($entry['date']);
                 $func = 'onclick="javascript:showUserInfo(\''.$entry['user_id'].'\')"';
                 $newentries[] = array_merge($entry, array(
-                    'custom_class'=>$custom_class,
-                    'nickname'=>$nickname,
-                    'prev_author'=>$prev_author,
-                    'time'=>$time,
-                    'func'=>$func,
-                    'time_title'=>date("d M H:i:s", $time),
-                    'relative_time'=>relativeTime($now - $time),
-                    'entry_text'=>nl2br(linkify($entry['entry'])),
-                    'entry_type'=>'extra',
+                    'custom_class' => $custom_class,
+                    'nickname' => $nickname,
+                    'prev_author' => $prev_author,
+                    'time' => $time,
+                    'func' => $func,
+                    'time_title' => date("d M H:i:s", $time),
+                    'relative_time' => relativeTime($now - $time),
+                    'entry_text' => linkify($entry['entry']),
+                    'entry_type' => 'extra',
                 ));
                 $html .= '<div data="'.$time.'" class="entry '.$custom_class.'" id="entry-' . $entry['id'] . '">'."\n".
                     '  <h2'.($nickname!=$entry['author']?' class="other"':'').'>'."\n".
@@ -158,19 +158,19 @@ class Chat
                     '    <span '.((in_array($entry['author'], $this->botNames_)) ? '' : ''.$func.'').' class="entry-author">'.$entry['author'].'</span>'."\n".
                     '    <span class="entry-date" data="'.$time.'" title="'.date("d M H:i:s", $time).'">'.relativeTime($now - $time).'</span>'."\n".
                     '  </h2>'."\n".
-                    '  <div class="entry-text">'.nl2br(linkify($entry['entry'], $entry['author'])).'</div>'."\n".
+                    '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n".
                     '</div>';
             } else {
                 $time = strtotime($entry['date']);
                 $nickname = (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : '';
                 $newentries[] = array_merge($entry, array(
-                    'nickname'=>$nickname,
-                    'entry_text'=>nl2br(linkify($entry['entry'])),
-                    'entry_type'=>'basic',
+                    'nickname' => $nickname,
+                    'entry_text' => linkify($entry['entry']),
+                    'entry_type' => 'basic',
                     'time' => $time
                 ));
                 $html .= '<div data="' . $time . '" class="entry" id="entry-' . $entry['id'] . '">'."\n";
-                $html .= '  <div class="entry-text">'.nl2br(linkify($entry['entry'], $entry['author'])).'</div>'."\n";
+                $html .= '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n";
                 $html .= "</div>\n";
             }
 
@@ -187,7 +187,7 @@ class Chat
             '    <span class="entry-author">'.$author.'</span>'."\n".
             '    <span class="entry-date" data="'.$time.'" title="'.date("d M H:i:s", $time).'">just now</span>'."\n".
             '  </h2>'."\n".
-            '  <div class="entry-text">'.nl2br(linkify($message)).'</div>'."\n".
+            '  <div class="entry-text">' . linkify($message) . '</div>'."\n".
             '</div>';
         return $html;
     }
