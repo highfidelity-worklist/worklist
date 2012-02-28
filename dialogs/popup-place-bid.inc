@@ -2,24 +2,11 @@
     <form name="popup-form" action="" method="post" >
         <input type="hidden" name="<?php echo $get_variable;?>" value="<?php echo $worklist_id;?>" />
 <?php
-    if ($is_runner) {
-?>
-     <p><label>Mechanic</label>
-<?php
-    $filter = new Agency_Worklist_Filter();
-    echo $filter->getUserSelectbox(1, false, 'mechanicBid', 'mechanicBid');
+    if ($is_runner) {  
 ?>
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />
-     </p>
-
 <?php   } else if (isset($_SESSION['userid'])) {  ?>
-
-     <p class="info-label">
-         Mechanic<br />
-         <span id="mechanic_id"><?php echo $_SESSION['nickname']; ?></span>
-     </p>
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
-
 <?php   }  ?>
         <p class="floatLeft">
             <label id="lblAmount">Amount<br />
