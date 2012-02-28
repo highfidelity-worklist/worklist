@@ -27,9 +27,6 @@ class AjaxResponse
 		$author = isset($_SESSION['nickname']) ? $_SESSION['nickname'] : GUEST_NAME;
 		$sampled = isset($_POST['sampled']) ? $_POST['sampled'] : 0;
 		$data = $this->chat->sendEntry($author, $message, array('sampled'=>$sampled));
-		if (!isset($data['html'])) {
-			$data = array_merge($data, $this->latest_longpoll($data['messagetime']));
-		}
         return($data);
 	}
 	
@@ -317,32 +314,24 @@ class AjaxResponse
 	}
 	
 	
-	public function latest_longpoll($justupdated = false)
-	{
-		$count = (isset($_POST['count'])) ? (int)$_POST['count'] : 0;
-		if ($count > 100) $count == 100;
-		if(!$justupdated)
-		{
-      $timeout = (!empty($_POST['timeout'])) ? (int)$_POST['timeout'] : 30;
-
-      $delay = 250; /* ms */
-      $lastTouch = (isset($_POST['lasttouched'])) ? $_POST['lasttouched'] : 0;
-
-      $touched = file_get_contents(JOURNAL_UPDATE_TOUCH_FILE);
-      $i = 0;
-      if ($lastTouch != 0) {
-        if ($touched == $lastTouch) {
-          while($lastTouch == file_get_contents(JOURNAL_UPDATE_TOUCH_FILE) && ++$i < ($timeout * 1000) / $delay) {
-            usleep($delay * 1000);
-          }
+    public function latest_longpoll($justupdated = false) {
+        $count = (isset($_POST['count'])) ? (int) $_POST['count'] : 0;
+        if ($count > 100) $count = 100;
+        if (!$justupdated) {
+            $timeout = (!empty($_POST['timeout'])) ? (int) $_POST['timeout'] : 20;
+            $delay = 250; /* ms */
+            $lastTouch = (isset($_POST['lasttouched'])) ? $_POST['lasttouched'] : 0;
+            $touched = file_get_contents(JOURNAL_UPDATE_TOUCH_FILE);
+            $i = 0;
+            if ($lastTouch != 0) {
+                while($touched == $lastTouch && ++$i < ($timeout * 1000) / $delay) {
+                    usleep($delay * 1000);
+                    $touched = file_get_contents(JOURNAL_UPDATE_TOUCH_FILE);
+                }
+            }
+        } else {
+            $touched = $justupdated;
         }
-      }
-      if($i < ($timeout * 1000) / $delay) $touched = file_get_contents(JOURNAL_UPDATE_TOUCH_FILE);
-    }
-    else
-    {
-      $touched = $justupdated;
-    }
     // see if we need to retrieve system messages
     $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all';
     $lastStatus = isset($_POST['laststatus']) ? $_POST['laststatus'] : '';
@@ -428,6 +417,7 @@ class AjaxResponse
     $data['typingstatus'] = $this->chat->getGlobalTypingStatus();
     return $data;
 	}
+
 	function speakerNotes($speakers)
 	{
 		$entries = array();

@@ -512,10 +512,9 @@ function sendEntry() {
     $("#message-pane").val("");
     setLocalTypingStatus(IDLE);
 }
-
+	
 function sendEntryRetry() {
-  if (current_ajax) current_ajax.abort(); // the current request won't have the proper params, so stop it
-    clearInterval($.timer['getLatestEntries']);
+    $.sendingMessage = true;
     $.ajax({
         url: 'aj.php',
         type: 'post',
@@ -547,25 +546,22 @@ function sendEntryRetry() {
             } else {
                 if (!inThePresent) {
                     showLatest();
-                } else {
-                    updateNewMessages(json, true);
-                finishUpdate('100%', true);
                 }
             }
+            $.sendingMessage = false;
         },
         error: function(xhdr, status, err) {
             if (retries++ < 3) {
                 setTimeout(sendEntryRetry, retries * 250);
             } else {
+                $.sendingMessage = false;
                 alert("Error sending entry.");
             }
         },
-        complete: function()
-        {
-            clearInterval($.timer['getLatestEntries']);
-            $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
-            $.polling = false;
-            $.sendingMessage--;
+        complete: function() {
+            if ($.sendingMessage === false) {
+                resetLongpoll();
+            }
         }
     });
 }
@@ -586,7 +582,6 @@ function showLatest() {
     clearInterval($.timer['getLatestEntries']);
     $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
     $('.scroll-pane-throbber').show();
-
     current_ajax = $.ajax({
         url: 'aj.php',
         type: 'post',
@@ -610,11 +605,10 @@ function showLatest() {
                 $('#system-drawer').scrollTo('100%');// scrolling to the end of the drawer
             }
             finishUpdate('100%', false);
-            resetLongpoll();
         },
-        error: function(){
+        complete: function() {
             resetLongpoll();
-        },
+        }
     });
 }
 function resetLongpoll() {
@@ -629,7 +623,6 @@ function getLatestEntries(timeout)
     if (!(timeout|0)) timeout = 30;
     if ($.polling == true) return;
     $.polling = true;
-
     current_ajax = $.ajax({
         url: 'aj.php',
         type: 'post',
@@ -640,10 +633,13 @@ function getLatestEntries(timeout)
             if (!json || json === null) {
                 return;
             }
+            lastTouched = json.lasttouched;
             updateTypingIndicators(json.typingstatus);
             // if we've decided to do something else in the meantime then let's bail
-            if ($.pollingLatest == true || $.sendingMessage > 0) return;
-            updateNewMessages(json, false);
+            if ($.pollingLatest === true || $.sendingMessage === true) {
+                return;
+            }
+            updateNewMessages(json);
         },
         complete: function(){
             $.polling = false;
@@ -717,11 +713,10 @@ function arrayToString(array) {
     return output;
 }
 
-function updateNewMessages(json, redraw) {
+function updateNewMessages(json) {
 
     var botAction = null;
 
-    if (json.lasttouched) lastTouched = json.lasttouched;
     if(json.updates == 0) return;
     currentTime = parseInt(json.time);
     if (json.botdata) {
