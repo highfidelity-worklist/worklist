@@ -7,7 +7,7 @@
 
 include("config.php");
 include("class.session_handler.php");
-include("functions.php");
+require_once("functions.php");
 
 $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
 
@@ -54,27 +54,3 @@ if ($rt) {
     $json = json_encode(array('error' => "No data available"));
 }
 echo $json;
-
-function truncateText($text, $chars = 200, $lines = 5) {
-    $total = strlen($text);
-    if ($total > $chars) {
-        $text = substr($text, 0, $chars);
-    }
-    $text = nl2br($text);
-    $textArray = explode('<br/>', $text);
-    $textArraySize = count($textArray);
-
-    // Remove extra lines
-    if ($textArraySize > $lines) {
-        $count = $textArraySize - $lines;
-        for ($i = 0; $i < $count; $i++) {
-            array_pop($textArray);
-        }
-    }
-    
-    $text = implode('<br/>', $textArray);
-    if ($total > $chars) {
-        $text = $text . " (...)";
-    }
-    return $text;
-}

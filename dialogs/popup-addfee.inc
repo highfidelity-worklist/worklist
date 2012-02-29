@@ -30,7 +30,7 @@
             <div class="floatRight">
                 <p class="info-label iToolTip enterAmount">
                     Description<br />
-                    <input type="text" name="fee_desc" id="fee_desc" class="text-field iToolTip enterAmount" size="48" />
+                    <textarea name="fee_desc" id="fee_desc" class="expand" rows="2" cols="20"></textarea>
                 </p>
             </div>
 
@@ -66,7 +66,7 @@
                     }
                 });
             </script>
-            <div>
+            <div class="clear">
                 <input type="submit" name="add_fee" value="Add Fee" class="floatRight" />
             </div>
         </form>
