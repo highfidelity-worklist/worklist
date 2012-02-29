@@ -82,7 +82,6 @@ class Notification {
                 WHERE ((u.notifications & $flag != 0 && u.id != " . $uid . ") 
 			          OR (u.notifications & ($flag | " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
                   AND u.is_active = 1";
-			error_log ($sql);
             $res = mysql_query($sql);
             if($res) {
                 while($row = mysql_fetch_row($res)) {
@@ -710,19 +709,11 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
-						error_log( "notifying user(".$recipientUser."): ". $rUser->getUsername());
                         if(($username = $rUser->getUsername())){
                             // Check to see if user doesn't want to be notified 
                             // If user is recipient, doesn't have check on settings and not forced to receive then exclude), 
                             // except for followers
-							error_log('test1 ' . strcmp($current_user->getUsername(), $username));
-							error_log('test2 ' . strcmp(ucfirst($recipient), 'Followers'));
-							
                             if ( !strcmp($current_user->getUsername(), $username) && strcmp(ucfirst($recipient), 'Followers') ) {
-							error_log('test3 ' . Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS));
-							error_log('test4 ' . $current_user->getNotifications());
-							error_log('test5 ' .  Notification::SELF_EMAIL_NOTIFICATIONS);
-	
                                 if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)
                                     || $includeSelf == false) {
                                     continue;
