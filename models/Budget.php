@@ -11,6 +11,7 @@ class Budget extends DataObject {
     public $giver_id;
     public $receiver_id;
     public $amount;
+    public $original_amount;
     public $reason;
     public $notes;
     public $transfer_date;
@@ -121,6 +122,15 @@ class Budget extends DataObject {
         //$transfered = 0;
         $remaining = $this->amount - $allocated - $submitted - $paid - $transfered;
         return $remaining;
+    }
+    /**
+    Return the sum of budget amounts that are not already closed for all the children of a specific budget
+    **/
+    public function getChildrenNotClosed($budget_id) {
+        $query = "SELECT SUM(`amount`) FROM `" . BUDGETS . "` WHERE active = 1 AND source_budget_id = " . $budget_id ;
+        $result_query = mysql_query($query);
+        $row = $result_query ? mysql_fetch_row($result_query) : null;
+        return !empty($row) ? $row[0] : null;
     }
     
     public function insertNew($values) {

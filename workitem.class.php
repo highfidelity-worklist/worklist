@@ -89,6 +89,7 @@ class WorkItem {
                         w.code_review_started,
                         w.code_review_completed,
                         w.status_changed,
+                        w.budget_id,
                         p.name AS project_name
                     FROM  ".WORKLIST. " as w
                     LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
@@ -112,6 +113,7 @@ class WorkItem {
              ->setSandbox($row['sandbox'])
              ->setBugJobId($row['bug_job_id'])
              ->setIs_bug($row['is_bug'])
+             ->setBudget_id($row['budget_id'])
              ->setCReviewerId($row['code_reviewer_id'] == "" ? 0 : $row['code_reviewer_id'])
              ->setCRStarted($row['code_review_started'])
              ->setCRCompleted($row['code_review_completed'])

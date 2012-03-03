@@ -28,6 +28,10 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
     die("Application configuration not found.");
 }
 
+defineOnce('MYSQL_DEBUG_LEVEL', 0);
+defineOnce('MYSQL_DEBUG_MESSAGE_DEFAULT', 'General database error');
+
+
 if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER', 'Worklist <worklist@worklist.net>');
 if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@worklist.net');
 

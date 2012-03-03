@@ -372,7 +372,7 @@ if($action == 'finish_codereview') {
 
         $myRunner = new User();
         $myRunner->findUserById($workitem->getRunnerId());
-        $myRunner->updateBudget(-$crfee_amount);
+        $myRunner->updateBudget(-$crfee_amount, $workitem->getBudget_id());
 
         if(Notification::isNotified($myRunner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
             Notification::sendSMS($myRunner, 'Fee', $journal_message);
@@ -719,7 +719,7 @@ if ($action == "add_fee") {
         // send sms message to runner
         $runner = new User();
         $runner->findUserById($workitem->getRunnerId());
-        $runner->updateBudget(-$fee_amount);
+        $runner->updateBudget(-$fee_amount, $workitem->getBudget_id());
 
             if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
             Notification::sendSMS($runner, 'Fee', $journal_message);
@@ -819,7 +819,7 @@ if ($action == 'accept_bid') {
                     // Update Budget
                     $runner = new User();
                     $runner->findUserById($workitem->getRunnerId());
-                    $runner->updateBudget(-$bid_amount);
+                    $runner->updateBudget(-$bid_amount, $workitem->getBudget_id());
 
                     //send sms notification to bidder
                     Notification::sendSMS($bidder, 'Accepted', $journal_message);
@@ -911,7 +911,7 @@ if ($action=='accept_multiple_bid') {
 
                     $runner = new User();
                     $runner->findUserById($workitem->getRunnerId());
-                    $runner->updateBudget(-$total);
+                    $runner->updateBudget(-$total, $workitem->getBudget_id());
                 } else {
                     $overBudget = money_format('%i', $total - $remainingFunds);
                     $_SESSION['workitem_error'] = "Failed to accept bids. Accepting this bids would make you " . $overBudget . " over your budget!";

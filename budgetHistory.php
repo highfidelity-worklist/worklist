@@ -84,7 +84,7 @@ if ($result) {
     while ($row = mysql_fetch_assoc($result)) {
         $notes = "";
         if ($userId == $id ||
-            ( array_key_exists('is_payer',$_SESSION)  && $_SESSION['is_payer'] ) ||
+            (array_key_exists('is_payer', $_SESSION)  && $_SESSION['is_payer']) ||
             $row['giver_id'] == $userId) {
             if (!empty($row['notes'])) {
                 $notes = " title='Notes: " . $row['notes'];
@@ -106,7 +106,7 @@ if ($result) {
         <td><?php echo $row['nickname']; ?></td>
         <td><?php echo $row['amount']; ?></td>
         <td><?php echo $row['reason']; ?></td>
-        <td><?php echo ($row['active'] == 1) ? "Yes" : "No"; ?></td>
+        <td><?php echo ($row['active'] == 1) ? "open" : "closed"; ?></td>
     </tr>
 
 <?php

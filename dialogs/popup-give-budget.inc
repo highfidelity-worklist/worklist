@@ -1,7 +1,7 @@
 <div id="give-budget" class="hidden" title="Give Budget" style="text-align: left;">
     <form method="post" action = "">
         <div class="currentBudgetArea" >
-            <label for="budget-current" class="info-label">Current Budget: $</label>
+            <label for="budget-current" class="info-label">Total Available Funds: $</label>
             <?php echo $user-> getBudget(); ?>
         </div>
         <div class="givenBudgetArea" >

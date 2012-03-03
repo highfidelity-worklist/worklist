@@ -126,7 +126,12 @@ $(document).ready(function() {
         show: 'fade',
         hide: 'fade',
         height: 480,
-        width: 840
+        width: 840,
+        close: function() {
+            if ($('#user-info').data("budget_update_done") === true) {
+                document.location.reload(true);
+            }
+        }
     });
     if ($("#budgetPopup").length > 0) {
         $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
@@ -206,7 +211,11 @@ $(document).ready(function() {
     }
 <?php 
     if( !empty($_REQUEST['showUser'])) {
-        echo "showUserInfo(" . $_REQUEST['showUser'] . ");";
+        $tab = "";
+        if( !empty($_REQUEST['tab'])) {
+            $tab = ", '" . $_REQUEST['tab'] . "'";
+        }
+        echo "showUserInfo(" . $_REQUEST['showUser'] . $tab . ");";
     }
 ?>
 });

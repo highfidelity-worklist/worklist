@@ -139,11 +139,17 @@ var Budget = {
                 options.page = lastPage;
             }
         }
+        if (!options.fromUserid) {
+            options.fromUserid = "";
+        }
         $("#" + options.inDiv + " .budgetHistoryContent").data("lastPage", options.page);
         $("#" + options.inDiv + " .budgetHistoryContent").load("budgetHistory.php?inDiv=" + options.inDiv + "&id=" + options.id + "&page=" + options.page + options.fromUserid);
     },
     
     initUpdateDialog: function() {
+        $("#closeButton").click(function() {
+            $('#budget-update-dialog').dialog("close");
+        });
         $("#updateButton").click(function() {
             $.ajax({
                 type: "POST",
@@ -162,6 +168,32 @@ var Budget = {
                             inDiv: "tabs", 
                             id: $('#budget-receiver').val()
                         });
+                     } else {
+                        alert(json.message);
+                    }
+                },
+                error: function(json) {
+                    alert('error in updateBudget');
+                }
+            });
+        });
+        $("#closeOutButton").click(function() {
+            $.ajax({
+                type: "POST",
+                url: 'budget.php',
+                data: {
+                    action: "closeOutBudget",
+                    budgetId: $('#budget-update-dialog').data("budgetId")
+                },
+                dataType: 'json',
+                success: function(json) {
+                    if (json && json.succeeded) {
+                        $('#budget-update-dialog').dialog("close");
+                        Budget.budgetHistory({
+                            inDiv: "tabs", 
+                            id: $('#budget-receiver').val()
+                        });
+                        window.top.$('#user-info').data("budget_update_done", true);
                      } else {
                         alert(json.message);
                     }

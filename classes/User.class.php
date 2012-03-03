@@ -391,12 +391,41 @@ class User {
         return $this;
     }
     
-    public function updateBudget($amount) {
-
+    public function updateBudget($amount, $budget_id = 0, $budgetDepletedMessage = true) {
+        $budgetDepletedSent = false;
         $this->setBudget($this->getBudget() + $amount);
         $this->save();
+        if ($budget_id > 0 && $budgetDepletedMessage == true) {
+            $budget = new Budget();
+            if ($budget->loadById($budget_id) ) {
+                $remainingFunds = $budget->getRemainingFunds();
+                if ($remainingFunds + $amount <= 0) {
+                    $runnerNickname = $this->getNickname();                    
+                    $subject = "Depleted - Budget " . $budget_id . " (For " . $budget->reason . ")";
+                    $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId() . "&tab=tabBudgetHistory";
+                    $body  = '<p>Hi ' . $runnerNickname . '</p>';
+                    $body .= "<p>Budget " . $budget_id . " for " . $budget->reason . "<br/> is now depleted.</p>";
+                    $body .= '<p>If your budget has gone under 0.00, you will need to ask the user who ' .
+                            'granted you the Budget to close out this budget for you.</p>';
+                    $body .= '<p>To go to the Team Page, click <a href="' . $link . '">here</a></p>';
+                    $body .= '<p>- Worklist.net</p>';               
+                    $plain  = 'Hi ' . $runnerNickname . '\n\n';
+                    $plain .= "Budget " . $budget_id . " for " . $budget->reason . "\n is now depleted.\n\n";
+                    $plain .= 'If your budget has gone under 0.00, you will need to ask the user who ' .
+                            'granted you the Budget to close out this budget for you.\n\n';
+                    $plain .= 'To go to the Team Page, click ' . $link . "\n\n";
+                    $plain .= '- Worklist.net\n\n';                
+                    if (!send_email($this->getUsername(), $subject, $body, $plain)) { 
+                        error_log("User.class.php: send_email failed on depleted Runner warning");
+                    }
+                    $budgetDepletedSent = true;
+                }
+            } else {
+                error_log("User.class.php: send_email failed on depleted budget Runner warning - invalid budget id:" . $budget_id);
+            }
+        }
         
-        if($this->getBudget() <= 0 ) {  // Send email
+        if ($this->getBudget() <= 0 && $budgetDepletedSent === false) {  // Send email
 //            $payersList = User::getPayerList();
             $payerList = array();
 
@@ -406,7 +435,7 @@ class User {
             foreach ($payersList as $payer) {
                 $subject = $runnerNickname . "'s budget depleted";
             
-                $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId();;
+                $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId() . "&tab=tabBudgetHistory";
             
                 $body  = '<p>Hello,</p>';
                 $body .= '<p>' . $runnerNickname . '\'s current budget is now depleted.</p>';
