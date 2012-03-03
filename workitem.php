@@ -713,8 +713,8 @@ if ($action == "add_fee") {
                      'workitem' => $workitem,
                      'recipients' => array('runner')),
                      array('fee_adder' => $user->getNickname(),
-                     'fee_amount' => $fee_amount));
-        
+                           'fee_amount' => $fee_amount,
+                           'fee_desc' => $fee_desc));
 
         // send sms message to runner
         $runner = new User();

@@ -80,7 +80,7 @@ class Notification {
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
                 WHERE ((u.notifications & $flag != 0 && u.id != " . $uid . ") 
-			          OR (u.notifications & ($flag | " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
+                      OR ((u.notifications & $flag) != 0 AND (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
                   AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
@@ -276,7 +276,7 @@ class Notification {
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br/>'
                         . 'Amount: ' . $data['fee_amount'] . '<br/>'
-                        . 'Fee Notes: <div>' . $data['desc'] . '</div><br/><br/>'
+                        . '<div>Fee Notes: ' . $data['fee_desc'] . '</div><br/><br/>'
                         . 'Project: ' . $project_name . '<br/>'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                         if($workitem->getRunner() != '') {
