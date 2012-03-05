@@ -10,6 +10,7 @@ require_once("config.php");
 require_once("class.session_handler.php");
 require_once("send_email.php");
 require_once('functions.php');
+require_once('class/Utils.class.php');
 
 $msg = "";
 $to = 1;
@@ -81,7 +82,7 @@ if (isset($_REQUEST['str'])) {
 
     // verify the email belongs to a user
     if (! $user->findUserByUsername($email)) {
-        Utils::redirect('login.php');
+        Utils::redirect('signup.php');
     } else {
         $data = array(
             "username" => base64_decode($_REQUEST['str']),
