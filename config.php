@@ -310,6 +310,7 @@ if (!defined('BUDGET_AUTHORIZED_USERS')) define('BUDGET_AUTHORIZED_USERS', ",1,2
 // Delimiter used in linkify to separate encoded html from uncoded one.
 defineOnce('DELIMITER', 'xxxXXXxxxYYYxxxXXXxxx');
 
+defineOnce('REVIEW_NOTIFICATIONS_CRON_FILE', '/tmp/reviewNotificationsCron.dat');
 
 require_once('sanitization.php');
 

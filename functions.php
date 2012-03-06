@@ -7,7 +7,7 @@
 
 
 require_once('timezones.php');
-
+require_once('send_email.php');
 // Autoloader
 function __autoload($class) {
     $file = realpath(dirname(__FILE__) . '/classes') . "/$class.class.php";
@@ -626,7 +626,6 @@ function sendJournalNotification($message) {
         'pwd'     => sha1(JOURNAL_API_PWD),
         'message' => stripslashes(strip_tags($message))
     );
-
     return trim(postRequest(JOURNAL_API_URL, $data));
 }
 
@@ -1065,6 +1064,30 @@ function checkLogin() {
         }
         return false;
     }
+
+function sendReviewNotification($reviewee_id, $type, $oReview) {
+    $review = $oReview[0]['feeRange'] . " " . $oReview[0]['review'];
+    $reviewee = new User();
+    $reviewee->findUserById($reviewee_id);
+
+    $to = $reviewee->getNickname() . ' <' . $reviewee->getUsername() . '>';
+    $nickname = $reviewee->getNickname();
+    if ($type == "new") {
+        $subject = "You have received a new review";
+        $journal = $nickname . " received a new review: " . $review;
+    } else if ($type == "update") {
+        $subject = "A review of you has been updated";
+        $journal = "A review of " . $nickname . " has been updated: ". $review;
+    } else {
+        $subject = "One of your reviews has been deleted";
+        $journal = "One review of " . $nickname . " has been deleted: ". $review;
+    }
+    $body  = "<p>" . $review . "</p>";
+    if (!send_email($to, $subject, $body)) { 
+        error_log("review.php: send_email failed"); 
+    }
+    sendJournalNotification($journal);
+}
 
 function truncateText($text, $chars = 200, $lines = 5) {
     $truncated = false;

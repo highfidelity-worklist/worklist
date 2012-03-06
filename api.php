@@ -7,6 +7,8 @@ require_once('class/Database.class.php');
 require_once("class.session_handler.php");
 require_once("classes/Project.class.php");
 require_once("classes/User.class.php");
+require_once ("models/DataObject.php");
+require_once ("models/Review.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 // TODO: add API keys to these function calls
@@ -90,6 +92,10 @@ if(validateAction()) {
             case 'autoPass':
                 validateAPIKey();
                 autoPassSuggestedJobs();
+                break;
+            case 'processPendingReviewsNotifications':
+                validateAPIKey();
+                processPendingReviewsNotifications();
                 break;
             default:
                 die("Invalid action.");
@@ -499,4 +505,50 @@ function updateLastSeen() {
     } else {
         respond(array('succeeded' => false, 'message' => mysql_error()));
     }
+}
+
+function processPendingReviewsNotifications() {
+    // Check if it is time to process notifications
+    if (!canProcessNotifications()) {
+        return;
+    }
+    // process pending journal notifications
+    $pendingReviews = Review::getReviewsWithPendingJournalNotifications();
+    if($pendingReviews !== false && count($pendingReviews) > 0) {
+        foreach ($pendingReviews as $review) {
+            $tReview = new Review();
+            $tReview->loadById($review['reviewer_id'], $review['reviewee_id']);
+            sendReviewNotification($tReview->reviewee_id, 'update', $tReview->getReviews($tReview->reviewee_id,$tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
+            $tReview->journal_notified = 1;
+            $tReview->save('reviewer_id', 'reviewee_id');
+            usleep(4000000);
+        }
+    }
+    resetCronFile();
+}
+
+function canProcessNotifications() {
+    $file = REVIEW_NOTIFICATIONS_CRON_FILE;
+    // If no temp file is set (first time?) run it
+    if (!file_exists($file)) {
+        return true;
+    } else {
+        $hour = (int) file_get_contents($file);
+        $serverHour = (int) date('h'); 
+        if ($serverHour == $hour) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+function resetCronFile() {
+    $hourLag = mt_rand(5, 12);
+    $serverHour = (int) date('h');
+    $newHour = $hourLag + $serverHour;
+    if ($newHour > 23) {
+        $newHour -= 24;
+    }
+    file_put_contents(REVIEW_NOTIFICATIONS_CRON_FILE, $newHour);
 }

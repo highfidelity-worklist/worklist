@@ -5,11 +5,12 @@
  * All rights reserved.
  */
 if (!defined('REVIEWS'))   define('REVIEWS', 'reviews');
- 
+
 class Review extends DataObject {
     public $reviewer_id;
     public $reviewee_id;
     public $review;
+    public $journal_notified;
     
     public $table_name;
     
@@ -84,8 +85,34 @@ class Review extends DataObject {
         }
         return $objectData;        
     }
-    
-    
+
+
+    /**
+     * Get reviews that have been updated on DONE and have not been notified on journal yet
+     */
+    public static function getReviewsWithPendingJournalNotifications() {
+        $sql = 'SELECT * FROM ' . REVIEWS . ' WHERE journal_notified = 0';
+        $results = array();
+        if($result = mysql_query($sql)){
+            while ($row = mysql_fetch_assoc($result)){
+                $results[] = $row;
+            }
+        } else {
+            return false;
+        }
+        return $results;
+    }
+
+    /**
+     * Set the object field value to $value and also save it in the DB
+     */
+    public function setNotifiedAndSave($value) {
+        $value = (int) $value;
+        $this->journal_notified = $value;
+        $sql = 'UPDATE ' . REVIEWS . ' SET journal_notified = ' . $value;
+        $this->link->query($sql);
+    }
+
     public function insertNew($values) {
         return $this->dbInsert($values);
     }

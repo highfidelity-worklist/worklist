@@ -24,7 +24,6 @@ if($res && mysql_num_rows($res) > 0) {
     $row = mysql_fetch_assoc($res);
 
     $message = isset($_REQUEST['message']) ? $_REQUEST['message'] : '';
-
     $data = $chat->sendEntry($row['nickname'], $message, array('userid' => $row['id']), false, false);
     
     
