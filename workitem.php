@@ -460,9 +460,7 @@ if ($action =='status-switch') {
             if ($workitem->save() == false) {
                 $status_error = "Error in save workitem process. Could not change the status.";
             } else {
-                if ($status == 'DONE') {
-                    $displayDialogAfterDone = true;
-
+                if ($status == 'COMPLETED') {
                     // workitem is DONE, calculate the creator fee based on project roles
                     // and accepted bid
                     if ($workitem->hasAcceptedBids()) {
@@ -513,6 +511,10 @@ if ($action =='status-switch') {
                             }
                         }
                     }
+                }
+
+                if ($status == 'DONE') {
+                    $displayDialogAfterDone = true;
                 }
 
                 if ($status != 'DRAFT') {
