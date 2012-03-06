@@ -352,7 +352,10 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/payments.js"></script>
 </head>
 <body onLoad="updateTotalFees('0');">
-<?php include("format.php"); ?>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <div class="floatLeft">
     <h1>PayPal MassPay Run</h1>

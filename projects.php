@@ -256,7 +256,10 @@ include("head.html");
 </head>
 
 <body>
-    <?php include("format.php"); ?>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
     <link rel="shortcut icon" type="image/x-icon" href="images/worklist_favicon.png">
     <h1 class="headerTitle">Worklist Projects</h1>
     <div class="headerButtons">

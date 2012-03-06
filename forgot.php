@@ -30,7 +30,10 @@ include("head.html");
 <title>Worklist | Recover Password</title>
 </head>
 <body>
-<?php include("format.php"); ?>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
 <br/>
 <br/>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->

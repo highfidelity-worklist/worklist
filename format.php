@@ -2,49 +2,7 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-
-require_once('functions.php');
-require_once('class/Utils.class.php');
-if (!isset($is_runner)) {
-    $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
-}
-if (!isset($is_payer)) {
-    $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
-}
-
-$userId = getSessionUserId();
 ?>
-
-<div id="outside"> 
-
-<!-- Welcome, login/out -->
-
-    <div id="welcome">
-        <?php if ( isset($_SESSION['username'])) {
-            $return_from_getfeesums = true;
-            include 'getfeesums.php';
-            $feeinfo = '<div style="display:none;" id="feesDialog"><table><tr><td><b>Your fees: </b></td></tr><tr><td>this week:</td><td><a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].
-                        '</a></td></tr><tr><td>this month:</td><td><a href="#feesToolTip" class="feesum" id="fees-month">$'.$sum['month'].'</a> </td></tr></table></div>';
-            $earnings = ' | <a href="javascript:;" class="earnings">Earnings</a> ';
-            if (!empty($_SESSION['is_runner'])) {
-                 $budget = ' | <a href="javascript:;" class="budget">Budget</a> ';
-            
-             } else {
-                 $budget = '<span class="budget"></span>';
-             }
-            if (empty($_SESSION['nickname'])){ 
-                $name = getSubNickname($_SESSION['username']);
-            } else {
-                $name = getSubNickname($_SESSION['nickname']);
-            }
-            $following = " | <a href='javascript:;' class='following'>My Followed Jobs</a>";
-            echo "Welcome, <span id='user'> $name </span> | <a href='settings.php'>Settings</a> $earnings $following $budget | <a href='logout.php'>Logout</a>";
-            echo $feeinfo;  
-        } ?>
-        
-        <div id="tagline">A community of independent software developers.</div>       
-    </div>
-    
     <!-- Inline Message Container -->
     <div id="inlineMessage"></div>
     
@@ -92,6 +50,7 @@ $userId = getSessionUserId();
 
               <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a>
             | <a href="journal.php" class="iToolTip menuJournal">Journal</a>
+            | <a href="<?php echo $lovemachineLink; ?>" target="_blank">SendLove</a>
             | <a href="team.php">Team</a>
             | <a href="reports.php" class="iToolTip menuReports">Reports</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>

@@ -51,8 +51,10 @@ include("head.html");
 <title>Worklist | Change Password</title>
 </head>
 <body>
-<?php include("format.php"); ?>
-
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <h1>Change Password</h1>

@@ -92,7 +92,7 @@ var stats = {
                             $('#jobs-popup th.status').hide();
                         }
                         stats.fillJobs(json, partial(stats.showJobs, job_type), job_type);
-                        $('#jobs-popup').dialog('open');
+                        $('#jobs-popup').dialog('open').centerDialog();
                     });
     },
 

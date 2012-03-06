@@ -36,12 +36,9 @@ include("head.html");
 
 <body>
 <?php
-//	require_once('feedback.inc');
-	include("format.php");
+    require_once('header.php');
+    require_once('format.php');
 ?>
-
-
-
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <span id="privacyInfo">   
 	<h1>Worklist Privacy Statement</h1>

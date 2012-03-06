@@ -36,8 +36,10 @@ include("head.html");
 <br/>
 <br/>
 <body>
-
-<?php include("format.php"); ?>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for budget info-->

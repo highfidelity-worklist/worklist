@@ -2521,12 +2521,12 @@ $(window).ready(function() {
         return false;
     });
 
-    $('.scrollbar-down').mousedown(function(){
+    $('.scrollbar-down').mousedown(function() {
         doScroll(-20, 4, true);
         $(document).mouseup(function(){ clearInterval(scrollInterval); });
         return false;
     });
-    $('.scrollbar-down').click(function(){
+    $('.scrollbar-down').click(function() {
         doScroll(-20, 0, false);
         return false;
     });
@@ -2952,18 +2952,29 @@ function IEFix() {
         // should never reach here
     }
     var base = (ih - $('#footer').outerHeight());
-    $('#footer').css('top',(base) + 'px').css('position','fixed').css('width','100%').css('left',0);
-    if( iw > 902 )
-        var head_h = ($('#head')[0].offsetHeight) + 20;
-    else if( iw > 650 )
-        var head_h = ($('#head')[0].offsetHeight) + 50;
-    else
-        var head_h = ($('#head')[0].offsetHeight) + 80;
-    $('#guideline').css('height',(Number(base) - head_h-10) + 'px');
-    $('.scrollbar').css('height',(Number(base) - (head_h -12)) + 'px');
-    $('#online-users-container').css('height',(Number(base)-head_h-10) + 'px').css('overflow','hidden').css('padding',0);
+    $('#footer')
+        .css('top', (base) + 'px')
+        .css('position', 'fixed')
+        .css('width', '100%')
+        .css('left', 0);
 
-    $('div.scrollbar-hold').css('height',$('#guideline').outerHeight() - 28).css('top','15px');
+    if (iw > 902) {
+        var head_h = ($('#head')[0].offsetHeight) + 20;
+    } else if (iw > 650) {
+        var head_h = ($('#head')[0].offsetHeight) + 50;
+    } else {
+        var head_h = ($('#head')[0].offsetHeight) + 80;
+    }
+    $('#guideline').css('height', (Number(base) - head_h - 70) + 'px');
+    $('.scrollbar').css('height', (Number(base) - (head_h - 72)) + 'px');
+    $('#online-users-container')
+        .css('height', (Number(base) - head_h - 70) + 'px')
+        .css('overflow', 'hidden')
+        .css('padding', 0);
+
+    $('div.scrollbar-hold')
+        .css('height', $('#guideline').outerHeight() - 28)
+        .css('top','15px');
 }
 
 /* When applied to a textfield or textarea provides default text which is displayed, and once clicked on it goes away

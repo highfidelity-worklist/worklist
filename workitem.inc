@@ -1211,7 +1211,10 @@ $(document).ready(function(){
 <title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
 </head>
 <body>
-    <?php include("format.php"); ?>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
     <div id="info-top">
       <div id="info-top-left">
         <span class="info-summ-big-text<?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>

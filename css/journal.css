@@ -7,24 +7,23 @@
 /*** CMR Styles ***/
 body {
     margin: 0;
-    padding:0;
-    background: #F6F4FF;
-    text-align:left;
+    padding: 0;
+    background: url("../images/background_gradient4.jpg") repeat-x scroll center top rgb(255, 255, 255);
+    text-align: left;
     font-family: helvetica, arial, sans-serif;
-    color:#333;
-    font-size:12px;
-        height: 100%;
+    color: #333333;
+    font-size: 12px;
 }
 
-#outside { text-align:left;
+#outside {
+    text-align: left;
     position: relative;
-    width:950px;
-    margin:35px auto 10px auto;
-    }
+    margin: 35px auto 10px auto;
+}
+
 #welcome, #status-update-form p {
     position:relative;
-    padding: 0 40px 10px 40px;
-    width:870px;
+    padding: 0 40px 10px 23px;
     text-align:left;
     font-weight: bold;
     color: #98AAB2 ;
@@ -43,15 +42,29 @@ body {
     text-align:right;
 }    
 
-#container {    
+#container {
     position: relative;
-    width:950px;
-    margin:0;
+    width: 100%;
+    margin: 0;
     padding:0;
-    }
+}
+
+#left {
+    background: url("../images/left.png") no-repeat scroll right top transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#right {
+    background: url("../images/right.png") no-repeat scroll right top transparent;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 
 #left, #right {
-    height: 405px;
+    height:405px;
     width: 14px;
     margin: 0px;
     padding: 0px;
@@ -77,6 +90,16 @@ body {
     z-index:100;
 }
 
+#debug {
+    background-color: #000000;
+    width: 100px;
+    display: block;
+    top: 0;
+    left: 0;
+    z-index: 3004;
+    color: #FFFFFF;
+    position: absolute;
+}
 
 #in-rt {width:230px;
     float:right;
@@ -299,11 +322,6 @@ input[type=submit]::-moz-focus-inner, input[type=button]::-moz-focus-inner {
     z-index: 10;
 }
 
-/*** Journal.css ***/
-html, #content {
-    height:100%;
-}
-
 /* Head div style */
 #head {
     margin: 0 10px 0 10px;
@@ -377,8 +395,7 @@ html, #content {
 
 #footer {
     display: none;
-    height:80px;
-    background-color:#F6F4FF; 
+    height: 80px;
     margin: 0 !important;
 }
 
@@ -459,16 +476,19 @@ html, #content {
     margin-right:25px;
 }
 
-/*Where iframe and form are contained*/
-#content{
-    margin:auto 20px auto 10px;
-    width:auto;
+/* Where iframe and form are contained */
+#content {
+    background: none repeat scroll 0 0 #FFFFFF;
+    margin: auto 14px;
+    overflow: hidden;
 }
+
 #footer textarea{
     font-family: helvetica, arial, sans-serif;
     font-size: 1em;
     margin: 0;
 }
+
 #entries {
     position: absolute;
     width:100%;
@@ -604,8 +624,8 @@ input.hide {display:none;}
 }
 .scrollbar-down {
     background-position: -34px -88px;
-    position:absolute;
-    bottom: 20px;
+    position: relative;
+    bottom: -15px;
     width: 15px;
 }
 .scrollbar-up:hover { background-position: -19px -88px; }
@@ -1509,18 +1529,18 @@ body > #ui-toaster-br {
 /* modal messaging styles */ 
 
 #modalOverlay {
-    color:#FFF;
-    width:250px;
-    position:absolute;
-    top:85px;
-    right:40px;
-    z-index:3001;
+    color: #FFFFFF;
+    width: 250px;
+    position: absolute;
+    top: 120px;
+    right: 40px;
+    z-index: 3001;
 }
+
 .modalOverlay, .actions {
     color:#FFF;
     background:rgb(0,0,0);
     background:rgba(0,0,0,0.8);
-/*    border:3px solid #fff;*/
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

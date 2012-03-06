@@ -1,0 +1,15 @@
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.hidden {
+    display: none;
+}

@@ -67,6 +67,6 @@
 </div id="outside">
 
 <?php require_once('dialogs/footer-analytics.inc'); ?>
-
+<?php require_once('dialogs/popup-earnings.inc'); ?>
 </body>
 </html>

@@ -817,9 +817,10 @@ $(function() {
 <?php require_once('dialogs/popup-budget.inc'); ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
-
-<?php include("format.php"); ?>
-
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <div>

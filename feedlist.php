@@ -29,8 +29,11 @@ define('ATOM_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/atom
 <script type="text/javascript" src="<?php echo SERVER_URL; ?>js/jquery.tabSlideOut.v1.3.js"></script>
 <title>Worklist RSS & Atom Feeds | Lend a Hand</title>
 </head>
-<?php include("format.php"); ?>
 <body>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
     <table class="table-worklist" width="100%">
         <thead>
             <tr class="table-hdng">

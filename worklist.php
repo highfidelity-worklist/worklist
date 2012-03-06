@@ -5,9 +5,13 @@
 //  vim:ts=4:et
 
 require_once("config.php");
-if (!empty($_SERVER['PATH_INFO'])) {  header( 'Location: https://'.SERVER_NAME.'/worklist/worklist.php'); }
+if (! empty($_SERVER['PATH_INFO'])) {
+    header( 'Location: https://' . SERVER_NAME . '/worklist/worklist.php');
+    exit;
+}
+
 require_once("class.session_handler.php");
-include_once("check_new_user.php");
+require_once("check_new_user.php");
 require_once("functions.php");
 require_once("send_email.php");
 require_once("workitem.class.php");
@@ -16,14 +20,15 @@ require_once('classes/UserStats.class.php');
 require_once('classes/Repository.class.php');
 require_once('classes/Project.class.php');
 
-$page = isset($_REQUEST["page"]) ? intval($_REQUEST["page"]) : 1; //Get the page number to show, set default to 1
+$page = isset($_REQUEST["page"]) ? (int) $_REQUEST['page'] : 1; // Get the page number to show, set default to 1
 
 $userId = getSessionUserId();
 
-if( $userId > 0 ) {
+if ($userId > 0) {
     initUserById($userId);
     $user = new User();
-    $user->findUserById( $userId );
+    $user->findUserById($userId);
+    // @TODO: this is overwritten below..  -- lithium
     $nick = $user->getNickname();
     $userbudget =$user->getBudget();
     $budget = number_format($userbudget);
@@ -69,6 +74,7 @@ if ($projectName) {
 }
 
 $journal_message = '';
+// $nick is setup above.. and then overwritten here -- lithium
 $nick = '';
 
 $workitem = new WorkItem();
@@ -119,12 +125,27 @@ if (is_object($inProject) && ( $is_runner || $is_payer || $inProject->isOwner($u
 }
 
 if ($userId > 0 && isset($_POST['save_item'])) {
-    $args = array( 'itemid', 'summary', 'project_id', 'status', 'notes',
-                    'bid_fee_desc', 'bid_fee_amount','bid_fee_mechanic_id',
-                     'invite', 'is_expense', 'is_rewarder', 'is_bug', 'bug_job_id');
+    $args = array(
+        'itemid',
+        'summary',
+        'project_id',
+        'status',
+        'notes',
+        // @TODO: I don't think bid_fee_* fields are relevant anymore -- lithium
+        'bid_fee_desc',
+        'bid_fee_amount',
+        'bid_fee_mechanic_id',
+        'invite',
+        // @TODO: Same goes for is_expense and is_rewarder.. -- lithium
+        'is_expense',
+        'is_rewarder',
+        'is_bug',
+        'bug_job_id'
+    );
+
     foreach ($args as $arg) {
-            // Removed mysql_real_escape_string, because we should
-            // use it in sql queries, not here. Otherwise it can be applied twice sometimes
+        // Removed mysql_real_escape_string, because we should
+        // use it in sql queries, not here. Otherwise it can be applied twice sometimes
         $$arg = !empty($_POST[$arg])?$_POST[$arg]:'';
     }
 
@@ -143,7 +164,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
     if ($status == 'BIDDING' && $user->getIs_runner() == 1) {
         $runner_id = $userId;
-    }else{
+    } else {
         $runner_id = 0;
     }
 
@@ -181,8 +202,8 @@ if ($userId > 0 && isset($_POST['save_item'])) {
     }
 }
 
+// send journal notification is there is one
 if (!empty($journal_message)) {
-    //sending journal notification
     sendJournalNotification(stripslashes($journal_message));
 }
 
@@ -198,16 +219,19 @@ if (!is_object($inProject) && !empty($_POST)) {
     exit();
 }
 
-/*********************************** HTML layout begins here  *************************************/
 $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
-include("head.html"); ?>
+/*********************************** HTML layout begins here  *************************************/
+require_once("head.html");
+?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
-<?php if(isset($_REQUEST['addFromJournal'])) { ?>
-<link href="css/addFromJournal.css" rel="stylesheet" type="text/css">
-<?php } ?>
-<link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/ui.toaster.css" rel="stylesheet" type="text/css">
+<!-- @TODO: addFromJournal was used when the two apps were separate, an iframe was loaded with the
+     add job dialog. We can now get rid of that and load the dialog directly on top of journal -- lithium -->
+<?php if(isset($_REQUEST['addFromJournal'])): ?>
+<link href="css/addFromJournal.css" rel="stylesheet" type="text/css" />
+<?php endif; ?>
+<link href="css/worklist.css" rel="stylesheet" type="text/css" />
+<link href="css/ui.toaster.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
@@ -224,9 +248,9 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
-<?php if(isset($_REQUEST['addFromJournal'])) { ?>
+<?php if(isset($_REQUEST['addFromJournal'])): ?>
 <script type="text/javascript" src="js/jquery.ba-resize.min.js"></script>
-<?php } ?>
+<?php endif; ?>
 <script type="text/javascript">
     var lockGetWorklist = 0;
     var status_refresh = 5 * 1000;
@@ -1482,7 +1506,8 @@ if(isset($_REQUEST['addFromJournal'])) {
 </div>
 <?php
 } else {
-    include("format.php");
+    require_once('header.php');
+    require_once('format.php');
 ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 

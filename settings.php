@@ -618,8 +618,10 @@ include("head.html");
 </head>
 
 <body>
-
-<?php include("format.php"); ?>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
 <!-- Popup for add project info-->
 <?php require_once('dialogs/popup-addproject.inc'); ?>
 <!-- Popup for budget info -->
