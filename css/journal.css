@@ -139,14 +139,13 @@ body {
     padding: 0px 25px;
 }
 
-#settingsSwitch, #camera_icon { background:  url(../images/sprite.png); }
-
-#settingsSwitch {
-    background-position: -206px -118px;
+#camera_icon {
+    background:  url(../images/sprite.png);
 }
 
 #camera_icon {
-    background-position: -65px -118px;
+    background-position: -65px -119px;
+    opacity: 0.8;
 }
 
 #attach_img {
@@ -432,20 +431,18 @@ input[type=submit]::-moz-focus-inner, input[type=button]::-moz-focus-inner {
 
 #buttons {
     float: left;
-    width:120px;
-    text-align:right;
+    width: 120px;
+    text-align: right;
     height: 42px;
-    margin-top: 5px;
-    margin-left:10px;
+    margin-left: 15px;
 }
 
 #settingsButton {
     float: left;
-    width: 40px;
-    height: 42px;
-    cursor:pointer;
-    vertical-align:top;
-    padding-bottom:5px;
+    width: 33px;
+    height: 23px;
+    cursor: pointer;
+    padding-top: 6px;
 }
 
 #uploadButton {

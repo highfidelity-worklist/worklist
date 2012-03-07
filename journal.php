@@ -256,8 +256,8 @@ function StopStatus() {
                     <div id="bottom_contain">
                         <div id="bottom_left">
                             <div id="buttons">
-                                <div id="settingsButton" title="Tools &amp; Settings">
-                                    <img src="images/gif.gif" width="37" height="37" id="settingsSwitch" align="bottom" />
+                                <div id="settingsButton" title="Journal Settings">
+                                    <img src="images/gear.png" width="33" height="23" id="settingsSwitch" align="bottom" />
                                 </div>
                                 <div id="uploadButton" title="Upload to Journal">
 <?php
