@@ -322,7 +322,7 @@ class Agency_Worklist_Filter {
         return $this;
     }
     public function getProjectSelectbox($initialMessage = 'ALL',  $active = 1, $projectId = 'projectCombo', $projectName = 'project') {
-        $box = '<select id="' . $projectId . '" name="' . $projectName . '" class="project-dropdown" ' . '>';
+        $box = '<select id="' . $projectId . '" name="' . $projectName . '" class="project-dropdown hidden" ' . '>';
         $box .= '<option value="0"' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $initialMessage . '</option>';
         foreach ( Project::getProjects((bool) $active, array('name', 'project_id')) as $project) {
             // handle long project names
@@ -369,7 +369,7 @@ class Agency_Worklist_Filter {
     public function getUserSelectbox($active = 1, $allMessage = false, $id = 'userCombo', $name = 'user') {
         $allDisplay = ($allMessage !== false) ? $allMessage : "All Users";
         $users = User::getUserList(getSessionUserId(), $active);
-        $box = '<select name="' . $name . '" id="' . $id . '" >';
+        $box = '<select class="hidden" name="' . $name . '" id="' . $id . '" >';
         if ($allMessage !== false) {
             $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allMessage . '</option>';
 		}
@@ -415,7 +415,7 @@ class Agency_Worklist_Filter {
     {
         $allDisplay = ($fromReport) ? "ALL" : "All Status";
         $status_array = WorkItem::getStates();
-        $box = '<select id="status" name="status">';
+        $box = '<select class="hidden" id="status" name="status">';
         $box .= '<option value="ALL"' . (($this->getStatus() == "ALL") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach ($status_array as $status) {
             $selected = '';
