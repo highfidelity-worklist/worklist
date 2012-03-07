@@ -466,6 +466,8 @@ if ($action =='status-switch') {
                     if ($workitem->hasAcceptedBids()) {
                         $creator_fee = 0;
                         $creator_fee_desc = 'Creator';
+                        $runner_fee = 0;
+                        $runner_fee_desc = 'Runner';
                         $fee_added = false;
                         $fee_category = '';
                         $is_expense = '';
@@ -481,11 +483,14 @@ if ($action =='status-switch') {
                             // is there a fee for the creator already? workitems might get DONE, and then
                             // need further work / review
                             if ($fee['desc'] == $creator_fee_desc) {
-                                $fee_added = true;
+                                $creator_fee_added = true;
+                            }
+                            if ($fee['desc'] == $runner_fee_desc) {
+                                $runner_fee_added = true;
                             }
                         }
 
-                        if (! $fee_added) {
+                        if (! $creator_fee_added) {
 
                             // get project creator role settings, if not available, no fee is added
                             // and will need to be added manually if applicable
@@ -507,6 +512,31 @@ if ($action =='status-switch') {
                                     $myRunner = new User();
                                     $myRunner->findUserById($workitem->getRunnerId());
                                     $myRunner->updateBudget(-$creator_fee);
+                                }
+                            }
+                        }
+                        if (! $runner_fee_added) {
+
+                            // get project creator role settings, if not available, no fee is added
+                            // and will need to be added manually if applicable
+                            $project = new Project();
+                            $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Runner'");
+
+                            if (count($project_roles) != 0) {
+                                $runner_role = $project_roles[0];
+                                if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
+
+                                    $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
+                                    if ((float) $runner_fee < $runner_role['min_amount']) {
+                                       $runner_fee = $runner_role['min_amount']; 
+                                    }
+
+                                    // add the fee
+                                    AddFee($workitem->getId(), $runner_fee, $fee_category, $runner_fee_desc, $workitem->getRunnerId(), $is_expense, $is_rewarder);
+                                    // and reduce the runners budget
+                                    $myRunner = new User();
+                                    $myRunner->findUserById($workitem->getRunnerId());
+                                    $myRunner->updateBudget(-$runner_fee);
                                 }
                             }
                         }
@@ -1054,7 +1084,7 @@ foreach ($fees as $fee){
 
 //code review fees
 $project = new Project();
-$project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Code Review'");
+$project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
 if (count($project_roles) != 0) {
     $crRole = $project_roles[0];
     if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
@@ -1064,10 +1094,7 @@ if (count($project_roles) != 0) {
         }
     }
 } else {
-    $crFee = (10 / 100 ) * $accepted_bid_amount;
-    if ((float) $crFee < 2.00) {
-       $crFee = 2.00; 
-    }
+    $crFee = 0;
 }
 
 require_once "workitem.inc";

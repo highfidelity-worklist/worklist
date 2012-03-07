@@ -296,10 +296,21 @@ class Project {
             "'".intval($this->getCrAdmin())."', ".
             "'".intval($this->getCrRunner())."')";
         $rt = mysql_query($query);
-        $this->id = mysql_insert_id();
-
-        return $rt ? 1 : 0;
-    }
+        $project_id = mysql_insert_id();
+                
+        //for the project added insert 3 pre-populated roles with percentages and minimum amounts <joanne>
+        $query = "INSERT INTO ".ROLES." (project_id, role_title, percentage, min_amount)
+            VALUES 
+            ($project_id,'Creator','10.00','10.00'),
+            ($project_id,'Runner','25.00','20.00'),
+            ($project_id,'Reviewer','10.00','5.00')";
+        
+        $rt = mysql_query($query);
+        if($rt) {
+            return 1;
+        }
+        return 0;
+     }
 
     protected function update() {
 
