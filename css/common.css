@@ -1,3 +1,10 @@
+/*  
+    Copyright (c) 2012, Below92 Inc.
+    All Rights Reserved. 
+    http://www.below92.com
+*/
+
+/* Common / Shortcut styles */
 .floatLeft {
     float: left;
 }
@@ -12,4 +19,130 @@
 
 .hidden {
     display: none;
+}
+
+.height50 {
+    height: 50px !important;
+}
+
+.red {
+    color: #FF0000;
+}
+
+/* Table Styles */
+
+table {
+    border-width: 1px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-color: #aaa;
+    border-collapse: collapse;
+    background-color: white;
+    width: 100%;
+    font-family: helvetica, arial, sans-serif;
+}
+
+table th {
+    border-width: 1px;
+    padding: 0;
+    border-style: solid;
+    border-color: #aaa;
+}
+
+table td, table th {
+    border-width: 1px;
+    padding: 5px;
+    border-style: solid;
+    border-color: #aaa;
+}
+
+ table.sales-report td, table.sales-report th {
+    border-width: 1px;
+    padding: 2px;
+    border-style: solid;
+    border-color: #aaa;
+}
+
+table tr:hover {
+    background: #FFD;
+}
+
+table thead tr:hover {
+    background: url(../images/tbg.jpg) repeat-x bottom left;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        from(#E0E0E0),
+        color-stop(0.5, #FFFFFF),
+        to(#E0E0E0)
+    );
+    background-image: -moz-linear-gradient(
+        center bottom,
+        #E0E0E0,
+        #FFFFFF,
+        #E0E0E0
+    );
+}
+
+.worklist-pagination-row:hover, .feelist-total-row:hover, .bidlist-pagination-row:hover {
+    background-color: white;
+}
+
+.table-hdng {
+    height: 30px;
+    background: url(../images/tbg.jpg) repeat-x bottom left;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        from(#E0E0E0),
+        color-stop(0.5, #FFFFFF),
+        to(#E0E0E0)
+    );
+    background-image: -moz-linear-gradient(
+        center bottom,
+        #E0E0E0,
+        #FFFFFF,
+        #E0E0E0
+    );
+}
+
+.table-hdng td, .table-hdng th{
+    color: #6f6f6f;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.rowodd {
+    background-color: #fff;
+}
+.roweven{
+    background: url(../images/evenrow2.jpg) #fff repeat-x top left;
+}
+
+/* Dialogs */
+
+#feesDialog,
+#budgetPopup {
+    font-family: helvetica, arial, sans-serif;
+    color: #333333;
+    font-size: 12px;
+}
+
+#feesDialog table,
+#budgetPopup table {
+    border: none;
+    padding: 2px;
+}
+
+#feesDialog table td,
+#budgetPopup table td {
+    border: none;
+    padding: 2px;
+}
+
+#jobs-popup table td {
+    max-width: 200px;
+    overflow-x: hidden;
 }

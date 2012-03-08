@@ -308,6 +308,7 @@ function StopStatus() {
     </div><!-- /#outside -->
     <div id="worktip" class="hidden"></div>
 <?php require_once('dialogs/popup-earnings.inc'); ?>
+<?php require_once('dialogs/popup-budget.inc'); ?>
 <?php require_once('dialogs/popups-userstats.inc'); ?>
     <div id="user-info" title="User Info"></div>
 <!-- If we are logged in, include User Info Popup -->

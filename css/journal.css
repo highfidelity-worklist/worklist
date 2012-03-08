@@ -1118,23 +1118,32 @@ a[rel="attachment"]{
 #system-drawer,
 #table-system-reviewJobs ,
 #table-system-biddingJobs {
-    border-bottom:1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     width:100%;
 }
 
-#table-system-reviewJobs  a,
+#system-drawer-container table,
+#system-drawer-container td {
+    border: none;
+}
+
+#table-system-reviewJobs td,
+#table-system-biddingJobs td {
+    border: none;
+    padding: 3px;
+}
+
+#table-system-reviewJobs a,
 #table-system-biddingJobs a{
     color:#333;
 }
-
 
 #table-system-reviewJobs  .summary a,
 #table-system-biddingJobs .summary a{
     text-decoration:none;
 }
 
-
-.bold{
+.bold {
     font-weight:bold;
 }
 
