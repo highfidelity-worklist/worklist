@@ -121,8 +121,18 @@ $notifyEmpty = true;
 $job_changes = array();
 $status_change = '';
 if ($action =='save_workitem') {
-    $args = array('summary', 'notes', 'status', 'project_id', 'sandbox', 'skills',
-                'is_bug', 'bug_job_id', 'budget-source-combo');
+    $args = array(
+        'summary',
+        'notes',
+        'status',
+        'project_id',
+        'sandbox',
+        'skills',
+        'is_bug',
+        'bug_job_id',
+        'budget-source-combo'
+    );
+
     foreach ($args as $arg) {
         if (!empty($_REQUEST[$arg])) {
             $$arg = $_REQUEST[$arg];
@@ -153,8 +163,8 @@ if ($action =='save_workitem') {
     // summary
     if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
         $workitem->setSummary($summary);
+        $new_update_message .= "Summary changed. ";
         if ($workitem->getStatus() != 'DRAFT') {
-            $new_update_message .= "Summary changed. ";
             $job_changes[] = '-summary';
         }
     }
