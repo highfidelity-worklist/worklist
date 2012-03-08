@@ -4,17 +4,6 @@
             <label for="budget-current" class="info-label">Total Available Funds: $</label>
             <?php echo $user-> getBudget(); ?>
         </div>
-        <div class="givenBudgetArea" >
-            <label for="budget-tgiven" class="info-label">Total Budget From You: $</label>
-            <?php echo $user-> getTotalGiven(); ?>
-        </div>
-        <div class="lgivenBudgetArea" >
-            <label for="budget-lgiven" class="info-label">Last Budget Given By You: $</label>
-            <?php echo $user->getLastGiven();?>  on  <?php echo $user->getMaxDate(); ?>
-        </div>
-        <div class="lgivenBudgetArea" >
-            <label for="budget-lreason" class="info-label">for: </label><?php echo $user->getReason(); ?>
-        </div>
         <label for="budget-amount" class="info-label">New Budget to Give: </label><br/>
             $<input type="text" id="budget-amount" name="amount" /> 
             <?php if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false) { ?>

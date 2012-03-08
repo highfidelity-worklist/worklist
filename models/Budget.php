@@ -11,6 +11,7 @@ class Budget extends DataObject {
     public $giver_id;
     public $receiver_id;
     public $amount;
+    public $remaining;
     public $original_amount;
     public $reason;
     public $notes;
@@ -131,6 +132,11 @@ class Budget extends DataObject {
         $result_query = mysql_query($query);
         $row = $result_query ? mysql_fetch_row($result_query) : null;
         return !empty($row) ? $row[0] : null;
+    }
+    
+    public function recalculateBudgetRemaining() {
+        $this->remaining = $this->getRemainingFunds();
+        return $this->save("id");
     }
     
     public function insertNew($values) {

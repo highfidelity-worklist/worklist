@@ -93,6 +93,8 @@
     float: left;
     width: 60px;
     text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .comboListClear {

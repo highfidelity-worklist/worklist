@@ -156,8 +156,10 @@ if ($action =='save_workitem') {
         $job_changes[] = '-bug';
     }
     $workitem->setIs_bug($is_bug);
+    $old_budget_id = -1;
     if ($workitem->getBudget_id() != $budget_id) {
         $new_update_message .= 'Budget changed. ';
+        $old_budget_id = (int) $workitem->getBudget_id();
         $workitem->setBudget_id($budget_id);
     }
     // summary
@@ -270,6 +272,19 @@ if ($action =='save_workitem') {
         $new_update_message = " No changes.";
     } else {
         $workitem->save();
+        if ($old_budget_id > 0) {
+            $budget = new Budget();
+            if ($budget->loadById($old_budget_id)) {
+                $budget->recalculateBudgetRemaining();
+            } else {
+                error_log("Old budget id not found: " . $old_budget_id);
+            }
+            if ($budget->loadById($workitem->getBudget_id())) {
+                $budget->recalculateBudgetRemaining();
+            } else {
+                error_log("New budget id not found: " . $workitem->getBudget_id());
+            }
+        }
         $new_update_message = " Changes: $new_update_message";
         $notifyEmpty = false;
     }
@@ -521,7 +536,7 @@ if ($action =='status-switch') {
                                     // and reduce the runners budget
                                     $myRunner = new User();
                                     $myRunner->findUserById($workitem->getRunnerId());
-                                    $myRunner->updateBudget(-$creator_fee);
+                                    $myRunner->updateBudget(-$creator_fee, $workitem->getBudget_id());
                                 }
                             }
                         }
@@ -980,7 +995,7 @@ if ($action == "withdraw_bid") {
         // Update Runner's Budget
         $runner = new User();
         $runner->findUserById($fee->runner_id);
-        $runner->updateBudget($fee->amount);
+        $runner->updateBudget($fee->amount, $workitem->getBudget_id());
     }
     $redirectToDefaultView = true;
 }

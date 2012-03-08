@@ -395,11 +395,13 @@ class User {
         $budgetDepletedSent = false;
         $this->setBudget($this->getBudget() + $amount);
         $this->save();
-        if ($budget_id > 0 && $budgetDepletedMessage == true) {
+        if ($budget_id > 0) {
             $budget = new Budget();
             if ($budget->loadById($budget_id) ) {
                 $remainingFunds = $budget->getRemainingFunds();
-                if ($remainingFunds + $amount <= 0) {
+                $budget->remaining = $remainingFunds;
+                $budget->save("id");
+                if ($remainingFunds + $amount <= 0 && $budgetDepletedMessage == true) {
                     $runnerNickname = $this->getNickname();                    
                     $subject = "Depleted - Budget " . $budget_id . " (For " . $budget->reason . ")";
                     $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId() . "&tab=tabBudgetHistory";
@@ -636,7 +638,7 @@ class User {
     public function getBudgetCombo($budget_id = 0)
     {
 // Query to get User's Budget entries
-        $query =  ' SELECT amount, reason, id '
+        $query =  ' SELECT amount, remaining, reason, id '
                 . ' FROM ' . BUDGETS 
                 . ' WHERE receiver_id = ' . $_SESSION['userid']
                 . ' AND active = 1 '
@@ -650,8 +652,8 @@ class User {
                 } else {
                     $selected = "";
                 }
-                $ret .= '<option value="' . $row['id'] . '" ' . $selected . ' data-amount="' . $row['amount'] . '">' . 
-                        $row['id'] . "|" . $row['reason'] . "|" . $row['amount'] . '</option>\n';
+                $ret .= '<option value="' . $row['id'] . '" ' . $selected . ' data-amount="' . $row['remaining'] . '">' . 
+                        $row['id'] . "|" . $row['reason'] . "|" . $row['remaining'] . '</option>\n';
             }
         }
         return $ret;

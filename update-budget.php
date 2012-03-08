@@ -12,6 +12,7 @@ include("class.session_handler.php");
 include("functions.php");
 require_once 'models/DataObject.php';
 require_once 'models/Budget.php';
+include_once("send_email.php");
 
 $error = false;
 $message = '';
@@ -75,14 +76,14 @@ if ($budget_seed != 1) {
 if ($budget_seed == 1 || 
     ($amount <= $giver->getBudget() && $amount <= $remainingFunds)) {
     if ($budget_seed != 1) {
-        $giver->setBudget($giver->getBudget() - $amount)->save();
+        $giver->updateBudget(- $amount, $budget_source_combo);
     }
     $receiver->setBudget($receiver->getBudget() + $amount)->save();
 
     $query = "INSERT INTO `" . BUDGETS . 
-            "` (`giver_id`, `receiver_id`, `amount`, `reason`, `transfer_date`, `seed`, `source_data`, `source_budget_id`, `notes`, `active`) VALUES ('" .
+            "` (`giver_id`, `receiver_id`, `amount`, `remaining`, `reason`, `transfer_date`, `seed`, `source_data`, `source_budget_id`, `notes`, `active`) VALUES ('" .
             $_SESSION['userid'] . 
-            "', '$receiver_id', '$amount', '$reason', NOW(), '$budget_seed', '$source', '$budget_source_combo', '$budget_note', 1)";
+            "', '$receiver_id', '$amount','$amount', '$reason', NOW(), '$budget_seed', '$source', '$budget_source_combo', '$budget_note', 1)";
     if (mysql_unbuffered_query($query)){    
         $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
         if (mysql_unbuffered_query($query2)) {
