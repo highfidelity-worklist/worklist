@@ -124,7 +124,7 @@ $(document).ready(function() {
         $row = $workitem->getUserDetails($worklist['mechanic_id']);
         if (! empty($row)) {
             $nickname = $row['nickname'];
-            echo "WReview.displayInPopup({user_id: " . $worklist['mechanic_id'] . ", nickname:'" . $row['nickname'] . "', withTrust: true});";
+            echo "WReview.displayInPopup({user_id: " . $worklist['mechanic_id'] . ", nickname:'" . $row['nickname'] . "', withTrust: true, notify_now: 0});";
         }
     }
     ?>

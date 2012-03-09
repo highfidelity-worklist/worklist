@@ -87,11 +87,11 @@ class UserReview {
     }
 
     /**
-     * Verify that the code entered by the user is the same in the database
+     * Save anonymous review 
      */
     public function saveReview() {
-        $ret = $this->validateRequest(array('userReview','reviewee_id'));
-
+        $ret = $this->validateRequest(array('userReview', 'reviewee_id', 'notify_now'));
+        $notify_now = (int) $_REQUEST['notify_now'];
         $reviewer_id = getSessionUserId();
         $reqUser = new User();
         if ($reviewer_id > 0) {
@@ -109,16 +109,24 @@ class UserReview {
             if ($userReview == "") {
                 $oReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);      
                 if ($review->removeRow(" reviewer_id = ".$reviewer_id . " AND reviewee_id = ".$reviewee_id)) {
-                    sendReviewNotification($reviewee_id, "delete", $oReview);
+                    if ($notify_now) {
+                        sendReviewNotification($reviewee_id, "delete", $oReview);
+                    }
                     $this->respond(true, "Review deleted.", '');
                 } else {
                     $this->respond(false, "Cannot delete review! Please retry later.",''); 
                 }  
             } else {
+                if (!strcmp($review->review, $userReview)) {
+                    $this->respond(true, "No changes made.",'');
+                }
                 $review->review = $userReview;
+                $review->journal_notified = ($notify_now === 1 ? 1 : 0);
                 if ($review->save('reviewer_id', 'reviewee_id')) {
-                    $oReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);      
-                    sendReviewNotification($reviewee_id, "update", $oReview);
+                    $oReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);
+                    if ($notify_now) {
+                        sendReviewNotification($reviewee_id, "update", $oReview);
+                    }
                     $this->respond(true, "Review updated.",'');
                 } else {
                     $this->respond(false, "Cannot update review! Please retry later.",''); 
@@ -129,16 +137,19 @@ class UserReview {
                 $values = array(
                     'reviewer_id' => $reviewer_id,
                     'reviewee_id' => $reviewee_id,
-                    'review' => $userReview
+                    'review' => $userReview,
+                    'journal_notified' => ($notify_now === 1 ? 1 : 0)
                 );
                         
-                if ($review->insertNew($values)) {  
-                    $myReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);      
+                if ($review->insertNew($values)) {
+                    $myReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);
                     if (count($myReview) == 0) {
                         $review->removeRow(" reviewer_id = ".$reviewer_id . " AND reviewee_id = ".$reviewee_id);
                         $this->respond(true, "Review with no paid fee is not allowed.",'');
                     }
-                    sendReviewNotification($reviewee_id, "new", $myReview);
+                    if ($notify_now) {
+                        sendReviewNotification($reviewee_id, "new", $oReview);
+                    }
                     $this->respond(true, "Review saved.", array('myReview' => $myReview));
                 } else {
                     $this->respond(false, "Cannot create new review! Please retry later.", ''); 

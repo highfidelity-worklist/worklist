@@ -5,12 +5,14 @@
  */
 
 var WReview = {
+    notify_now: 1,
     initList : function() {
         $('.reviewAddLink,.reviewEditLink').click(function(){
             WReview.displayInPopup({
                 user_id: userInfo.user_id,
                 nickname: userInfo.nickName,
-                withTrust: false
+                withTrust: false,
+                notify_now: 1
             });
         });
         if ($(".myReview").length > 0) {
@@ -46,9 +48,10 @@ var WReview = {
             type: 'POST',
             url: 'review.php',
             data: { 
-                action:'saveReview',
                 userReview: $("textarea.userReview").val(),
-                reviewee_id: $("#reviewDialog").data("reviewee_id")
+                reviewee_id: $("#reviewDialog").data("reviewee_id"),
+                action:'saveReview',
+                notify_now: WReview.notify_now
             },
             dataType: 'json',
             success: function(json) {
@@ -130,6 +133,7 @@ var WReview = {
 
     displayInPopup: function(options){
         var title = "Edit the review of "+ options.nickname;
+        WReview.notify_now = options.notify_now;
         if (options.withTrust) {
             title = "Review "+ options.nickname;
         }
