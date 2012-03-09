@@ -129,7 +129,7 @@ function validateAPIKey() {
         die("No api key defined.");
     //If we get the JOURNAL_API_KEY, only do journal queries
     } else if( (strcmp($_REQUEST["api_key"],JOURNAL_API_KEY) == 0 )
-           &&  (!in_array($_REQUEST['action'],array('getLatestPosts','getTaskPosts'))) ) {
+           &&  (!in_array($_REQUEST['action'], array('getLatestPosts'))) ) {
                 error_log("Wrong api key provided.");
                 die("Wrong api key provided.");
     } else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
@@ -151,27 +151,6 @@ function  getLatestPosts() {
 	try
 	{
 		$data = $response->latest();
-	}
-	catch(Exception $e)
-	{
-		$data['error'] = $e->getMessage();
-	}
-	
-	$json = json_encode($data);
-	echo $json;
-}
-
-function  getTaskPosts() {
-
-	require_once('chat.class.php');
-	$toTime = "UNIX_TIMESTAMP()";
-	$prevNext = 'prev';
-	$query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
-	require_once('class/AjaxResponse.class.php');
-	$response = new AjaxResponse($chat);
-	try
-	{
-		$data = $response->latestFromTask($toTime, $prevNext);
 	}
 	catch(Exception $e)
 	{

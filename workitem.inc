@@ -474,35 +474,9 @@ $(document).ready(function(){
         $('.accordion').accordion({
             clearStyle: true,
             collapsible: true,
-            active: true,
-            change: function() {
-                // we only need to get this once
-                if(!$.journalChat) {
-                    $.ajax({
-                        // use journal's aj.php to query results on worklist id
-                        type: 'post',
-                        url: '<?php echo JOURNAL_QUERY_URL;?>',
-                        data: {
-                            action: 'getTaskPosts',
-                            count: 50,
-                            query: <?php echo $worklist['id'];?>,
-                            filter: 'all',
-                            order: 'ASC',
-                            api_key:'<?php echo  JOURNAL_API_KEY; ?>'
-                        },
-                        dataType: 'json',
-                        success: function(json)
-                        {
-                            if (json.html) {
-                                $('#journalChatThrobber').fadeOut();
-                                $.journalChat = true;
-                                $('#journalChat').hide(0).html(json.html).fadeIn();
-                            }
-                        }
-                    });
-                }
-            },
-        });
+            active: true
+            }
+        );
         $('.accordion').accordion( "activate" , 0 );
         $.ajax({
             type: 'post',
@@ -1993,7 +1967,9 @@ if ($action =="edit"):  ?>
                     <div class="accordion">
                         <h3><a href="#" id="loadJournalInfo">Related Journal Discussion</a></h3>
                         <div id="journalChat">
-                            <img src="images/loader.gif" id="journalChatThrobber"/>
+                            <?php
+                                echo getTaskPosts($worklist['id']);
+                             ?>
                         </div>
                     </div>
                 </div>
@@ -2081,7 +2057,24 @@ if ($action =="edit"):  ?>
         require_once('dialogs/popup-ineligible.inc');
     }
 ?>
-    <!-- Include User Info -->
-        <div id="user-info" title="User Info"></div>
-    <!-- Footer html-->
-    <?php include("footer.php"); ?>
+<!-- Include User Info -->
+    <div id="user-info" title="User Info"></div>
+<!-- Footer html-->
+<?php include("footer.php");
+
+
+function  getTaskPosts($item_id) {
+
+    require_once('chat.class.php');
+    $query = $item_id;
+    require_once('class/AjaxResponse.class.php');
+    $response = new AjaxResponse($chat);
+    try {
+        $data = $response->latestFromTask($item_id);
+    } catch(Exception $e) {
+        $data['error'] = $e->getMessage();
+    }
+    return $data['html'];
+}
+
+?>

@@ -250,70 +250,74 @@ class AjaxResponse
                 return $data;
 	}
 
-	public function latestFromTask($toTime = null, $prevNext = null)
-	{
-		$count = (isset($_POST['count'])) ? (int)$_POST['count'] : 1;
-    if ($count > 100) $count == 100;
+    public function latestFromTask($item_id) {
+        $count = 50;
 
-    // see if we need to retrieve system messages
-    $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all';
-    $query = isset($_POST['query']) ? $_POST['query'] : null;
-    $order = isset($_POST['order']) ? $_POST['order'] : null;
-    $reverse = isset($_POST['reverse']) ? $_POST['reverse'] : null;
-    $exclude = '';
-    if($filter == 'system'){
-		  $exclude = "WHERE ".$this->chat->getSystemWhere(1, 0);
+        // see if we need to retrieve system messages
+        $filter = 'all';
+        $query = (int) $item_id;
+        $order = 'ASC';
+        $reverse = null;
+        $exclude = '';
+
+        $entries_result = $this->chat->loadTaskEntries(0, array(
+            'query' => $query,
+            'toTime' => "UNIX_TIMESTAMP()",
+            'prevNext' => 'prev',
+            'filter' => $filter,
+            'system_count' => $count,
+            'count' => $count,
+            'query' => $query,
+            'order' => $order,
+            'reverse' => $reverse
+        ));
+        $lastId = $entries_result['lastId'];
+        $firstDate = $entries_result['firstDate'];
+        $lastDate = $entries_result['lastDate'];
+        $entries = $entries_result['entries'];
+        $system_entries = $entries_result['system_entries'];
+
+        /* Let bots handle entries.  These are history entries, so they can only skip entries. */
+        if (!empty($_SESSION['nickname'])) {
+            $tEntries = $entries;
+            $entries = array();
+            foreach ($tEntries as $entry) {
+                $rsp = Bot::notifyOf('entry', array($_SESSION['nickname'], $entry));
+                if ($rsp['status'] == 'skip') {
+                    continue;
+                }
+                $entries[] = $entry;
+            }
+        }
+
+        $data = array();
+        $count = count($entries);
+        $system_count = count($system_entries);
+        // use old way if json argument not defined for backwards compatibility
+        if (empty($_POST["json"])) {
+            $html = $system_html = '';
+            if ($count > 0) {
+                $html = $this->chat->formatEntries($entries, $exclude);
+            }
+            if ($count == 0) {
+                $html = '<div class="entry" id="entry-empty"><div class="entry-text">No entries found</div></div>';
+            }
+            if ($system_count > 0) {
+                $system_html = $this->chat->formatEntries($system_entries, null, false);
+            }
+            if ($system_count == 0) {
+                $system_html = '<div class="entry" id="entry-empty"><div class="entry-text">No entries found</div></div>';
+            }
+            $data = array('html'=>$html, 'system_html' => $system_html);
+        } else {
+            // new improved json way!
+            $data = array('entries'=>$entries, 'system_entries' => $system_entries);
+        }
+
+        $data = array_merge($data, array('count' => $count, 'system_count' => $system_count, 'lastId' => $lastId, 'firstDate' => $firstDate, 'lastDate' => $lastDate));
+        return ($data);
     }
 
-    $entries_result = $this->chat->loadTaskEntries(0, array(
-        'query' => $query,
-        'toTime' => $toTime,
-        'prevNext' => $prevNext,
-        'filter' => $filter,
-        'system_count' => $count,
-        'count' => $count,
-        'query' => $query,
-        'order' => $order,
-        'reverse' => $reverse
-    ));
-    $lastId = $entries_result['lastId'];
-    $firstDate = $entries_result['firstDate'];
-    $lastDate = $entries_result['lastDate'];
-    $entries = $entries_result['entries'];
-    $system_entries = $entries_result['system_entries'];
-
-	    /* Let bots handle entries.  These are history entries, so they can only skip entries. */
-	    if (!empty($_SESSION['nickname'])) {
-	        $tEntries = $entries;
-	        $entries = array();
-	        foreach ($tEntries as $entry) {
-	            $rsp = Bot::notifyOf('entry', array($_SESSION['nickname'], $entry));
-	            if ($rsp['status'] == 'skip') continue;
-	            $entries[] = $entry;
-	        }
-	    }
-
-		$data = array();
-	    $count = count($entries);
-		$system_count = count($system_entries);
-		// use old way if json argument not defined for backwards compatibility
-		if (empty($_POST["json"])) {
-		    $html = $system_html = '';
-		    if ($count > 0) $html = $this->chat->formatEntries($entries, $exclude);
-            if ($count == 0) $html = '<div class="entry" id="entry-empty"><div class="entry-text">No entries found</div></div>';
-		    if ($system_count > 0) $system_html = $this->chat->formatEntries($system_entries, null, false);
-            if ($system_count == 0) $system_html = '<div class="entry" id="entry-empty"><div class="entry-text">No entries found</div></div>';
-			$data = array('html'=>$html, 'system_html' => $system_html);
-		} else {
-			// new improved json way!
-			$data = array('entries'=>$entries, 'system_entries' => $system_entries);
-		}
-
-		$data = array_merge($data, array('count'=>$count, 'system_count'=>$system_count, 'lastId'=>$lastId, 'firstDate'=>$firstDate, 'lastDate'=>$lastDate));
-		return ($data);
-	}
-	
-	
     public function latest_longpoll($justupdated = false) {
         $count = (isset($_POST['count'])) ? (int) $_POST['count'] : 0;
         if ($count > 100) $count = 100;

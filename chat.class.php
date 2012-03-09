@@ -116,7 +116,7 @@ class Chat
         }
     if ($last_private != null) $prev_author = $last_private;
 
-        $now = time();
+        $now = strtotime($this->getNow());
         foreach ($entries as $entry) {
             $custom_class = '';
             $bot=0;
@@ -156,7 +156,7 @@ class Chat
                     // if author is bot $func string is not attached
                     // 08-MAY-2010 <Yani>
                     '    <span '.((in_array($entry['author'], $this->botNames_)) ? '' : ''.$func.'').' class="entry-author">'.$entry['author'].'</span>'."\n".
-                    '    <span class="entry-date" data="'.$time.'" title="'.date("d M H:i:s", $time).'">'.relativeTime($now - $time).'</span>'."\n".
+                    '    <span class="entry-date" data="'.$time.'" title="'.date("d M H:i:s", $now).'--'.date("d M H:i:s", $time).'">'.relativeTime($time - $now).'</span>'."\n".
                     '  </h2>'."\n".
                     '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n".
                     '</div>';
@@ -190,6 +190,16 @@ class Chat
             '  <div class="entry-text">' . linkify($message) . '</div>'."\n".
             '</div>';
         return $html;
+    }
+
+    /* 
+     * Get Mysql server current time
+     */ 
+    function getNow() {
+        $sql = "select NOW() as CurrentDateTime FROM " . ENTRIES;
+        $result = mysql_query($sql);
+        $row = mysql_fetch_assoc($result);
+        return $row['CurrentDateTime'];
     }
 
     function getCount() {
