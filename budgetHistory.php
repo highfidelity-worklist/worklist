@@ -87,9 +87,9 @@ if ($result) {
             (array_key_exists('is_payer', $_SESSION)  && $_SESSION['is_payer']) ||
             $row['giver_id'] == $userId) {
             if (!empty($row['notes'])) {
-                $notes = " title='Notes: " . $row['notes'];
+                $notes = " title='" . $row['budget_id'] . " - Notes: " . $row['notes'];
             } else {
-                $notes = " title='Notes: None";
+                $notes = " title='" . $row['budget_id'] . " - Notes: None";
             }
             $notes .=  "' ";
             $classBudgetRow = " budgetRow";
@@ -100,7 +100,7 @@ if ($result) {
 ?>
 
     <tr class="<?php echo ($i % 2 ? 'rowodd' : 'roweven') . $classBudgetRow; ?>"  data-budgetid="<?php echo $row['budget_id']; ?>"
-        <?php echo (!empty($notes)) ? $notes : ""; ?>
+        <?php echo (!empty($notes)) ? $notes : $row['budget_id'] ; ?>
     >
         <td><?php echo $row['date']; ?></td>
         <td><?php echo $row['nickname']; ?></td>

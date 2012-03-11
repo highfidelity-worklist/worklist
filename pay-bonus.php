@@ -11,6 +11,8 @@ require_once("config.php");
 require_once("functions.php");
 require_once("send_email.php");
 require_once("class.session_handler.php");
+require_once 'models/DataObject.php';
+require_once 'models/Budget.php';
 
 $error = false;
 $message = '';
@@ -32,9 +34,16 @@ if (! isset($_SESSION['userid'])) {
         $budget = $giver->getBudget();
 
         // validate required fields
-        if (empty($_REQUEST['receiver_id']) || empty($_REQUEST['amount'])) {
+        if (empty($_REQUEST['budget-source-combo-bonus']) || empty($_REQUEST['receiver_id']) || empty($_REQUEST['amount'])) {
             $error = true;
             $message = 'error: args';
+        }
+        
+        $budget_source_combo = (int) $_REQUEST['budget-source-combo-bonus'];
+        $budgetSource = new Budget();
+        if (!$budgetSource->loadById($budget_source_combo) ) {
+            $error = true;
+            $message = 'Invalid budget!';
         }
 
         $amount = floatval($_REQUEST['amount']);
@@ -47,15 +56,16 @@ if (! isset($_SESSION['userid'])) {
         $error = true;
         $message = 'error: session';
     }
+
 }
 
 
 if (! $error) {
-
-    if ($amount <= $budget) {
+    $remainingFunds = $budgetSource->getRemainingFunds();
+    if ($amount <= $budget && $amount <= $remainingFunds) {
         if (payBonusToUser($receiver_id, $amount, $reason)) {
             // deduct amount from balance
-            $giver->setBudget($budget - $amount)->save();
+            $giver->updateBudget(- $amount, $budget_source_combo);
 
             $receiver = getUserById($receiver_id);
             $receiver_email = $receiver->username;

@@ -328,8 +328,15 @@ var UserInfo = {
             return false;
         });
 
-        $('#pay-bonus').dialog({ autoOpen: false, width: 720, show: 'fade', hide: 'fade'});
-         
+        $('#pay-bonus').dialog({ 
+            autoOpen: false, 
+            width: 720, 
+            show: 'fade', 
+            hide: 'fade',
+            open: function() {
+                Budget.initCombo("budget-source-combo-bonus", "#bonus-amount");
+            }
+        });
         var bonus_amount;
        
         $('#pay_bonus').click(function(e) {
@@ -348,12 +355,18 @@ var UserInfo = {
             while(!$('#pay-bonus').is(':visible')) {
                 sleep(0);
             }
+            bonus_budget = new LiveValidation('budget-source-combo-bonus', {
+                onlyOnSubmit: true ,
+                insertAfterWhatNode: "validationMessage"
+            });
+            bonus_budget.add( Validate.Exclusion, { within: [ 0 ], failureMessage: "You must select a budget!" });
+
             UserInfo.getBonusHistory(1);
         });
         
         $('#pay-bonus form').submit(function() {
         
-            if (bonus_amount.validate()) {
+            if (bonus_amount.validate() && bonus_budget.validate()) {
                 if (confirm('Are you sure you want to pay $' + $('#bonus-amount').val() + ' to ' + userInfo.nickName + '?')) {
                     $('#pay-bonus').dialog('close');
                     $.ajax({

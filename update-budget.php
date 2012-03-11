@@ -75,9 +75,6 @@ if ($budget_seed != 1) {
 
 if ($budget_seed == 1 || 
     ($amount <= $giver->getBudget() && $amount <= $remainingFunds)) {
-    if ($budget_seed != 1) {
-        $giver->updateBudget(- $amount, $budget_source_combo);
-    }
     $receiver->setBudget($receiver->getBudget() + $amount)->save();
 
     $query = "INSERT INTO `" . BUDGETS . 
@@ -85,6 +82,9 @@ if ($budget_seed == 1 ||
             $_SESSION['userid'] . 
             "', '$receiver_id', '$amount','$amount', '$reason', NOW(), '$budget_seed', '$source', '$budget_source_combo', '$budget_note', 1)";
     if (mysql_unbuffered_query($query)){    
+        if ($budget_seed != 1) {
+            $giver->updateBudget(- $amount, $budget_source_combo);
+        }
         $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
         if (mysql_unbuffered_query($query2)) {
             $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
@@ -110,7 +110,7 @@ if ($budget_seed == 1 ||
     }
 } else {
     $error = true;
-    $message = 'You do not have enough budget available to give this amount.';
+    $message = 'You do not have enough budget available to give this amount (total: $' . $giver->getBudget() . ", from budget: " . $remainingFunds . ")";
 }
 
 $json = json_encode(array('success' => !$error, 'message' => $message));

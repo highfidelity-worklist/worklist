@@ -138,8 +138,8 @@ $(document).ready(function() {
         $("#budgetPopup").dialog({
             title: "Budget",
             autoOpen: false,
-            height: 'auto',
-            width: '250px',
+            height: 170,
+            width: 370,
             position: ['center', 60],
             modal: true
         });

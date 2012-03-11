@@ -1,39 +1,59 @@
 var Budget = {
-    initCombo: function() {
-        $('#budget-source-combo').bind({
-            'beforeshow newlist': function(e, o) {
-                $("ul.budget-source-comboList li").each(function() {
-                    var amount = 0,
-                        title = "",
-                        id = "";
-                    var pos = $(this).text().lastIndexOf("|");
-                    if (pos != -1) {
-                        amount = $(this).text().substr(pos + 1);
-                        id = $(this).text().substr(0, pos);
-                        pos = id.lastIndexOf("|");
+    initCombo: function(id, idBlur) {
+        if (!id) {
+            id = '#budget-source-combo';
+            classCombo = 'budget-source-combo';
+            idBlur = "#budget-amount";
+        } else {
+            classCombo = id;
+            id = '#' + id;
+        }
+        if ($(id).data("initComboDone") !== true) {
+            $(id).bind({
+                'beforeshow newlist': function(e, o) {
+                    $("ul." + classCombo + "List li").each(function() {
+                        var amount = 0,
+                            title = "",
+                            id = "";
+                        var pos = $(this).text().lastIndexOf("|");
                         if (pos != -1) {
-                            title = id.substr(pos + 1);
-                            id = id.substr(0, pos);
-                        }
-                        $(this).attr("title", title).html("<div class='comboListID'>" + id + "</div>" + 
-                                "<div class='comboListTitle'>" + title + "</div>" + 
-                                "<div class='comboListAmount'>$" + amount + "</div>");
-                    } else {
-                        $(this).attr("title", title).html("<div class='comboListID'>&nbsp;</div>" + 
-                                "<div class='comboListTitle'>" + $(this).text() + "</div>" + 
-                                "<div class='comboListAmount'></div>");
-                        }
-                    $(this).data("amount", amount);
-                    $(this).addClass("comboListClear");
-                });
-            }
-        }).comboBox();
-        setTimeout(function() {
-            var val1 = $($('#budget-source-combo option').get(1)).attr("value");
-            $('#budget-source-combo').comboBox({action:"val", param: [val1]});
-            val1 = $($('#budget-source-combo option[selected]').get(0)).attr("value");
-            $('#budget-source-combo').comboBox({action:"val", param: [val1]});
-        }, 20);
+                            amount = $(this).text().substr(pos + 1);
+                            id = $(this).text().substr(0, pos);
+                            pos = id.lastIndexOf("|");
+                            if (pos != -1) {
+                                title = id.substr(pos + 1);
+                                id = id.substr(0, pos);
+                            }
+                            $(this).attr("title", title).html("<div class='comboListID'>" + id + "</div>" + 
+                                    "<div class='comboListTitle'>" + title + "</div>" + 
+                                    "<div class='comboListAmount'>$" + amount + "</div>");
+                        } else {
+                            $(this).attr("title", title).html("<div class='comboListID'>&nbsp;</div>" + 
+                                    "<div class='comboListTitle'>" + $(this).text() + "</div>" + 
+                                    "<div class='comboListAmount'></div>");
+                            }
+                        $(this).data("amount", amount);
+                        $(this).addClass("comboListClear");
+                    });
+                }
+            }).comboBox();
+            $(id).data("initComboDone", true);
+            setTimeout(function() {
+                var val1 = $($(id + ' option').get(1)).attr("value");
+                $(id).comboBox({action: "val", param: [val1]});
+                val1 = $($(id + ' option[selected]').get(0)).attr("value");
+                $(id).comboBox({action: "val", param: [val1]});
+            }, 20);
+        }
+        $(idBlur).blur(function(){ 
+            var targetAmount = parseFloat($(idBlur).val());
+            $("ul." + classCombo + "List li").removeClass("redBudget");
+            $("ul." + classCombo + "List li").each(function(){
+                if (parseFloat($(this).data("amount")) < targetAmount) {
+                    $(this).addClass("redBudget");
+                }
+            });
+        });
     },
     init : function() {
         $('#give-budget form input[type="submit"]').click(function() {
@@ -99,15 +119,6 @@ var Budget = {
                 $("#budget-source").hide();
                 $("#budget-source-combo-area").show();
             }
-        });
-        $("#budget-amount").blur(function(){
-            var targetAmount = parseFloat($("#budget-amount").val());
-            $("ul.budget-source-comboList li").removeClass("redBudget");
-            $("ul.budget-source-comboList li").each(function(){
-                if (parseFloat($(this).data("amount")) < targetAmount) {
-                    $(this).addClass("redBudget");
-                }
-            });
         });
         $('#budget-dialog').dialog({
             autoOpen: false,

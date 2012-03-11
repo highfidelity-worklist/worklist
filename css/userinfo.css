@@ -277,7 +277,22 @@ p.bottom {
     color: #333;
 }
 
+.leftBonusArea {
+    float: left;
+    width: 200px;
+}
 
+.rightBonusArea {
+    float: left;
+}
+
+.rightBonusArea .ui-combobox-textbox {
+    top: 5px !important;
+}
+
+.clearBonusArea {
+    clear: both;
+}
 
 #missionInfoFavoriteCount {
     vertical-align: top;

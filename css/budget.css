@@ -3,12 +3,21 @@
     text-align: left;
 }
 
+.budget-source-combo-bonus {
+    width: 360px;
+} 
 
+#pay-bonus .ui-combobox-list,
 #budgetInWorkitem .ui-combobox-list,
 #update-budget .ui-combobox-list,
 #popupSelectBudget .ui-combobox-list,
 #give-budget .ui-combobox-list {
     max-height: 150px;
+}
+
+#pay-bonus select[name="budget-source-combo-bonus"] {
+    width: 340px;
+    margin: 10px;
 }
 
 #budgetInWorkitem select[name="budget-source-combo"] {
@@ -23,6 +32,7 @@
     margin: 10px;
 }
 
+#pay-bonus .ui-combobox-list li,
 #budgetInWorkitem .ui-combobox-list li,
 #update-budget .ui-combobox-list li,
 #popupSelectBudget .ui-combobox-list li,
@@ -30,6 +40,7 @@
     height: 16px;
 }
 
+#pay-bonus .ui-icon-carat-1-s,
 #budgetInWorkitem .ui-icon-carat-1-s,
 #update-budget .ui-icon-carat-1-s,
 #popupSelectBudget .ui-icon-carat-1-s,

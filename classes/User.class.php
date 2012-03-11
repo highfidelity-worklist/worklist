@@ -464,12 +464,13 @@ class User {
         return $this->remainingFunds;
     }
 
-    public function setRemainingFunds()
+    public function setRemainingFundsWithoutBudget()
     {
         $sql = 'SELECT `budget` FROM `' . USERS . '` WHERE `id` = "' . $this->getId() . '";';
         $result = mysql_query($sql);
         
         $this->remainingFunds = 0;
+        $remaining = null;
 
         if ($result && (mysql_num_rows($result) == 1)) {
             $row = mysql_fetch_assoc($result);
@@ -515,15 +516,104 @@ class User {
                 $row = mysql_fetch_assoc($result);
                 $transferedFunds = $row['transfered'];
             }
+            
+            $receivedFunds = 0;
+            $sql = 'SELECT SUM(`' . BUDGETS . '`.`amount`) AS `received` FROM `' . BUDGETS . '` WHERE `' . 
+                    BUDGETS . '`.`receiver_id` = ' . $this->getId();
+            $result = mysql_query($sql);
+            if ($result && (mysql_num_rows($result) == 1)) {
+                $row = mysql_fetch_assoc($result);
+                $receivedFunds = $row['received'];
+            }
 
             $this->setAllocated($allocatedFunds);
             $this->setSubmitted($submittedFunds);
             $this->setPaid($paidFunds);
             $this->setTransfered($transferedFunds);
+            $remaining = $receivedFunds - $allocatedFunds - $submittedFunds - $paidFunds - $transferedFunds;
             $this->remainingFunds = $this->getBudget();
         }
 
-        return $this;
+        return $remaining;
+    }
+
+
+    public function setRemainingFunds()
+    {
+        
+        $this->remainingFunds = 0;
+        $remaining = null;
+        $remainingFunds = 0;
+
+        $budget_filter = " AND " . WORKLIST . ".budget_id > 0 AND " . BUDGETS . ".id = " . WORKLIST . ".budget_id AND " .
+            BUDGETS . ".active = 1  ";
+
+        $allocatedFunds = 0;
+        $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '`, `' . BUDGETS . '` WHERE `' . 
+                WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . 
+                WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED") AND `' . 
+                FEES . '`.`withdrawn` != 1 ' . $budget_filter;
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $allocatedFunds = $row['allocated'];
+        }
+
+        $submittedFunds = 0;
+        $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '`, `' . BUDGETS . '` WHERE `' . 
+                WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . 
+                '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1 ' . $budget_filter;
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $submittedFunds = $row['submitted'];
+        }
+        
+        $paidFunds = 0;
+        $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '`, `' . BUDGETS . '` WHERE `' . 
+                WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . 
+                '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1 ' . $budget_filter;
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $paidFunds = $row['paid'];
+        }
+        
+        $transferedFunds = 0;
+        $sql = 'SELECT SUM(`' . BUDGETS . '`.`amount`) AS `transfered` FROM `' . BUDGETS . '` WHERE `' . 
+                BUDGETS . '`.`giver_id` = ' . $this->getId() . " AND " . BUDGETS . ".active = 1  ";
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $transferedFunds = $row['transfered'];
+        }
+        
+        $receivedFunds = 0;
+        $sql = 'SELECT SUM(`' . BUDGETS . '`.`amount`) AS `received` FROM `' . BUDGETS . '` WHERE `' . 
+                BUDGETS . '`.`receiver_id` = ' . $this->getId() . " AND " . BUDGETS . ".active = 1  ";
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $receivedFunds = $row['received'];
+        }
+        
+        $remainingFunds = 0;
+        $sql = 'SELECT SUM(`' . BUDGETS . '`.`remaining`) AS `remaining` FROM `' . BUDGETS . '` WHERE `' . 
+                BUDGETS . '`.`receiver_id` = ' . $this->getId() . " AND " . BUDGETS . ".active = 1  ";
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $remainingFunds = $row['remaining'];
+        }
+
+        $this->setAllocated($allocatedFunds);
+        $this->setSubmitted($submittedFunds);
+        $this->setPaid($paidFunds);
+        $this->setTransfered($transferedFunds);
+        $remaining = $receivedFunds - $allocatedFunds - $submittedFunds - $paidFunds - $transferedFunds;
+        $this->remainingFunds = $this->getBudget();
+
+        return $remainingFunds;
     }
 
     public function getTransfered()

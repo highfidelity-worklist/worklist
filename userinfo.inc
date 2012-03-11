@@ -100,17 +100,20 @@
             <?php if ($reqUserId > 0) { ?> 
             <span id="info-budget"><input type="submit" 
                 <?php 
-                if ($reqUser->getBudget() <= 0 || !$reqUser->isRunner() || $reqUserId == $user->getId()) {
+                if (!$reqUser->isRunner() || $reqUserId == $user->getId()) {
                     if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") === false) {
                         echo 'disabled="disabled" class="button-disabled disableable" '; 
                     }
                 }
+                echo ' title="Remaining budget you can give: $' . $reqUser->getBudget() . '" '; 
                 ?> id="give" value="Give Budget" />
             </span>
             <span id="btn-bonus"><input type="submit" 
-                <?php if ($budget <= 0 || $reqUserId == $user->getId()) { 
+                <?php if ($reqUserId == $user->getId()) { 
                     echo 'disabled="disabled" class="button-disabled disableable" '; 
-                } ?> 
+                } 
+                echo ' title="Remaining budget you can give: $' . $reqUser->getBudget() . '" '; 
+                ?> 
                 id="pay_bonus" value="Pay Bonus" name="pay_bonus" />
             </span>
                 <?php if ($reqUserId != $user->getId()) { ?>
@@ -406,8 +409,19 @@
     
     <div id="pay-bonus" class="hidden" title="Pay Bonus" style="text-align: left;">
         <form method="post" action = "">
-            <label for="bonus-amount" class="info-label">Amount: </label><br/>
+            <div class="leftBonusArea">
+                <label for="bonus-amount" class="info-label">Amount: </label><br/>
                 <input type="text" id="bonus-amount" name="amount" /><br/>
+            </div>
+            <div class="rightBonusArea">
+                <label for="budget-source" class="info-label">Source: </label><br/>
+                <select id="budget-source-combo-bonus" name="budget-source-combo-bonus" class="divComboBox">
+                <option value="0" selected="selected">Select a budget</option>
+                <?php echo $reqUser->getBudgetCombo(); ?>
+                </select>
+                <span id="validationMessage"></span>
+            </div>
+            <div class="clearBonusArea">
             <label for="bonus-reason" class="info-label">Reason: </label><br/>
                 <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/>
                 <input type = "hidden" id = "bonus-receiver" name="receiver_id" value = "<?php echo $user-> getId(); ?>" />
