@@ -1342,7 +1342,7 @@ require_once("head.html");
 
             page = 1;
             if (timeoutId) clearTimeout(timeoutId);
-            GetWorklist(page, false);
+            timeoutId = setTimeout('GetWorklist(' + page + ', false)', 50);
         });
     }
 

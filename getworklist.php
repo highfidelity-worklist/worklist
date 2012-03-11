@@ -42,13 +42,13 @@ $subofilter = $filter->getSubSort();
 $dfilter = $filter->getDir();
 $page = $filter->getPage();
 $where = '';
-$unpaid_join = '';
+
 if (!empty($sfilter)) {
     $where = "where (";
     foreach ($sfilter as $val) {
 
         $val = strtoupper(mysql_real_escape_string($val));
-        
+
             if ($val == 'ALL' && !$is_runner) {
                 $where .= "1 AND status != 'DRAFT' OR ";
             }
@@ -79,7 +79,10 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             $status_cond = "status='$val' AND";
         }
         if (($is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
-            $where .= $severalStatus . "( $status_cond ( mechanic_id = '$ufilter' OR `bidder_id` = '$ufilter' OR `runner_id` = '$ufilter' OR creator_id = '$ufilter'))";
+            $where .= $severalStatus .
+                "( $status_cond ( mechanic_id = '$ufilter' OR `runner_id` = '$ufilter' OR creator_id = '$ufilter'
+                OR `" . WORKLIST . "`.`id` in (SELECT worklist_id FROM `" . BIDS . "` where bidder_id = '$ufilter')
+                ))";
         } else if ((!$is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
             $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'))";
         } else if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter != $userId) {
@@ -87,7 +90,11 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='FUNCTIONAL' || $val =='COMPLETED' ) {
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
         } else  {
-            $where .= $severalStatus . "( $status_cond ( creator_id='$ufilter' OR runner_id='$ufilter' OR mechanic_id='$ufilter'  OR `".FEES."`.user_id='$ufilter' OR `bidder_id`='$ufilter'))";
+            $where .= $severalStatus .
+                "( $status_cond ( creator_id = '$ufilter' OR runner_id = '$ufilter' OR mechanic_id = '$ufilter'
+                OR `" . FEES . "`.user_id = '$ufilter'
+                OR `" . WORKLIST . "`.`id` in (SELECT worklist_id FROM `" . BIDS . "` where bidder_id = '$ufilter')
+                ))";
         }
         $severalStatus = " OR ";
     }
@@ -125,7 +132,7 @@ if($query!='' && $query!='Search...') {
         // convert spaces into commas
         // change ',OR,' into  space
         $query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
-    
+
         $array=explode(",",rawurldecode($query));
 
         foreach ($array as $item) {
@@ -136,72 +143,10 @@ if($query!='' && $query!='Search...') {
     }
 }
 
-$totals = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_totals` (
-           `worklist_id` int(11) NOT NULL,
-           `total_fees` decimal(10,2) NOT NULL,
-           INDEX worklist_id(worklist_id))';
-
-$emptyTotals = 'TRUNCATE `tmp_totals`';
-
-$fillTotals = 'INSERT INTO `tmp_totals`
-               SELECT `worklist_id`, SUM(amount) FROM `'.FEES.'` WHERE `withdrawn` = 0 GROUP BY `worklist_id`';
-
-mysql_query($totals);
-mysql_query($emptyTotals);
-mysql_query($fillTotals);
-
-$latest = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_latest` (
-           `worklist_id` int(11) NOT NULL,
-           `latest` DATETIME NOT NULL,
-           INDEX worklist_id(worklist_id))';
-
-$emptyLatest = 'TRUNCATE `tmp_latest`';
-$fillLatest = 'INSERT INTO `tmp_latest`
-               (SELECT `worklist_id`,
-                MAX(`bid_created`) AS `latest`
-                FROM `'.BIDS.'` WHERE `withdrawn` = 0 ';
-if(!empty($ufilter) && $userId == $ufilter){
-    $fillLatest .='AND  `bidder_id`='.$ufilter.' ';
-}
-$fillLatest .='GROUP BY `worklist_id`)';
-
-mysql_query($latest);
-mysql_query($emptyLatest);
-mysql_query($fillLatest);
-
-if($is_runner){
-    $showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
-    if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-        $showLatest = 'AND (`' . BIDS . '`.`bid_created` = `tmp_latest` . `latest` OR (`' . BIDS . '`.`bidder_id` = ' . $ufilter . ')';
-    }
-}
-else{
-    $showLatest = 'AND `'.BIDS.'`.`bid_created` = `tmp_latest`.`latest`';
-    if (($sfilter[0] == 'BIDDING') && (!empty($ufilter) && $ufilter != 'ALL')) {
-        $showLatest = 'AND `'.BIDS.'`.`bidder_id` = ' . $ufilter ;
-    }
-}
-$bids = 'CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_bids` (
-         `worklist_id` int(11) NOT NULL,
-         `bidder_id`  int(11) NOT NULL,
-         INDEX worklist_id(worklist_id))';
-
-$emptyBids = 'TRUNCATE `tmp_bids`';
-
-$fillBids = "INSERT INTO `tmp_bids`
-             SELECT `".BIDS."`.`worklist_id`,`".BIDS."`.`bidder_id`
-             FROM `".BIDS."`, `tmp_latest`
-             WHERE `".BIDS."`.`worklist_id` = `tmp_latest`.`worklist_id`
-              AND (`".BIDS."`.`withdrawn` = 0)";
-
-mysql_query($bids);
-mysql_query($emptyBids);
-mysql_query($fillBids);
-
 $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
-$qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
+$qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`,
           `bug_job_id` AS `bug_job_id`,
           `cu`.`nickname` AS `creator_nickname`,
           `ru`.`nickname` AS `runner_nickname`,
@@ -209,7 +154,16 @@ $qsel  = "SELECT DISTINCT  `".WORKLIST."`.`id`,`summary`,`status`,
           `proj`.`name` AS `project_name`,
           `worklist`.`project_id` AS `project_id`,
           TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
-          `total_fees`,`bidAmountTable`.`bid_amount`,`creator_id`,`runner_id`,`mechanic_id`,
+          SUM(`" . FEES . "`.amount) AS `total_fees`,
+          (SELECT `bid_amount`
+              FROM `" . BIDS . "`
+              WHERE `withdrawn` = 0
+              AND (`bid_expires` > NOW()
+              OR `bid_expires` = '0000-00-00 00:00:00')
+              AND worklist_id = worklist.id
+              ORDER BY bid_created DESC LIMIT 1) `bid_amount`,
+
+          `creator_id`, `runner_id`, `mechanic_id`,
           (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
            WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) AND (NOW() < `".BIDS."`.`bid_expires` OR `bid_expires`='0000-00-00 00:00:00') LIMIT 1) as bid_count,
           TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
@@ -228,27 +182,20 @@ if ((isset($_SESSION['userid']))) {
 $qbody = "FROM `".WORKLIST."`
           LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
           LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
-          LEFT JOIN `".FEES."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
-          $commentsjoin
-          LEFT OUTER JOIN `".USERS."` AS mu ON `".WORKLIST."`.`mechanic_id` = `mu`.`id`
-          LEFT JOIN `tmp_totals` AS `totals` ON `".WORKLIST."`.`id` = `totals`.`worklist_id`
-          $unpaid_join
-          LEFT JOIN `tmp_bids` AS `bids` ON `".WORKLIST."`.`id` = `bids`.`worklist_id`
+          LEFT JOIN `" . USERS . "` AS mu ON `" . WORKLIST . "`.`mechanic_id` = `mu`.`id`
+          LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id` AND `" . FEES . "`.`withdrawn` = 0
           LEFT JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id`
-          LEFT JOIN (SELECT MAX(bid_created),
-                            `worklist_id`,
-                            `bid_amount`
-                     FROM `".BIDS."`
-                     WHERE `withdrawn` = 0
-                       AND (`bid_expires` > NOW()  OR `bid_expires` = '0000-00-00 00:00:00')
-                     GROUP BY worklist_id
-                     ORDER BY worklist_id DESC ) AS `bidAmountTable` ON `".WORKLIST."`.`id` = `bidAmountTable`.`worklist_id`
-          $where ";
+          $commentsjoin
+          $where
+          ";
 
-if($ofilter == "delta"){
-    $qorder = "ORDER BY {$ofilter} {$dfilter} LIMIT " . ($page-1)*$limit . ",{$limit}";
+if ($ofilter == "delta") {
+    $idsort = $dfilter == 'DESC' ? 'ASC' : 'DESC';
+    $qorder = "GROUP BY `".WORKLIST."`.`id` ORDER BY `".WORKLIST."`.`id` {$idsort} LIMIT "
+        . ($page-1)*$limit . ",{$limit}";
 }else{
-    $qorder = "ORDER BY {$ofilter} {$dfilter},{$subofilter} {$dfilter}  LIMIT " . ($page-1)*$limit . ",{$limit}";
+    $qorder = "GROUP BY `".WORKLIST."`.`id` ORDER BY {$ofilter} {$dfilter},{$subofilter} {$dfilter}  LIMIT "
+        . ($page-1)*$limit . ",{$limit}";
 }
 
 $rtCount = mysql_query("$qcnt $qbody");
