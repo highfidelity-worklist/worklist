@@ -9,7 +9,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['is_runner']) && $_SESSION['is
     <div id="be-block" >
         <table id="be-table">
             <tr onclick="Budget.displayHistory();">
-                <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
+                <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds (legacy):</strong></td>
                 <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
                 <?php echo(money_format('$ %i', $user->getRemainingFunds())); ?></strong></td>
             </tr>
@@ -34,7 +34,7 @@ if (isset($_SESSION['userid']) && isset($_SESSION['is_runner']) && $_SESSION['is
                 <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
             </tr>
             <tr>
-                <td onclick="Budget.budgetExpand(3)" class="be-table_cell1 iToolTip budgetTransfered">Transfered:</td>
+                <td onclick="Budget.budgetExpand(3)" class="be-table_cell1 iToolTip budgetTransfered">Transferred:</td>
                 <td onclick="Budget.budgetExpand(3)" class="be-table_cell2 iToolTip budgetTransfered">
                 <?php echo(money_format('$ %i', $user->getTransfered())); ?></td>
             </tr>

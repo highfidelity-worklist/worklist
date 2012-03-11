@@ -72,7 +72,7 @@
                     <?php echo(money_format('$ %i', $paid)); ?></td>
                 </tr>
                 <tr>
-                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetTransfered">Transfered:</td>
+                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetTransfered">Transferred:</td>
                     <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetTransfered">
                     <?php echo(money_format('$ %i', $transfered)); ?></td>
                 </tr>
