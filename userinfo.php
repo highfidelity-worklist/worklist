@@ -229,6 +229,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="copyright" content="Copyright (c) 2009-2010, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com" />
+        <link type="text/css" href="css/common.css" rel="stylesheet" />
         <link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />

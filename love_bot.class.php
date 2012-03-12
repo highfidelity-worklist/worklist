@@ -4,8 +4,12 @@
 //  vim:ts=4:et
 
 // Sendlove API status and error codes. Keep in sync with .../sendlove/add.php
-define ('SL_OK', 'ok');
-define ('SL_ERROR', 'error');
+if (!defined('SL_OK')) {
+    define ('SL_OK', 'ok');
+}
+if (!defined('SL_ERROR')) {
+    define ('SL_ERROR', 'error');
+}
 define ('SL_WARNING', 'warning');
 define ('SL_NO_ERROR', '');
 define ('SL_NO_RESPONSE', 'no response');
@@ -41,7 +45,7 @@ class LoveBot extends Bot
 			'to' => $receiver,
 			'why' => $why,
 			'caller' => APP_JOURNAL);
-		$referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+		$referer = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
 		$sendlove_rsp = postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER => $referer));
 		$rsp = json_decode ($sendlove_rsp, true);
 
@@ -100,10 +104,10 @@ class LoveBot extends Bot
 
 	public function botcmd_hello($author, $botmsg) {
 		return array(
-			'bot'=>$this->respondsTo(),
-			'status'=>'ok',
-			'scope'=>'#private',
-			'message'=>"Hi $author, with the 'love' command I can send your love to co-workers at LoveMachine.  Type '@".$this->respondsTo()." help' to get started.");
+			'bot' => $this->respondsTo(),
+			'status' => 'ok',
+			'scope' => '#private',
+			'message' => "Hi $author, with the 'love' command I can send your love to co-workers at LoveMachine.  Type '@".$this->respondsTo()." help' to get started.");
 	}
 
 	public function botcmd_help($author, $botmsg) {
@@ -114,10 +118,10 @@ class LoveBot extends Bot
 	  "Example: @love ryan because he has great hair.";
 
 		return array(
-			'bot'=>$this->respondsTo(),
-			'status'=>'ok',
-			'scope'=>'#private',
-			'message'=>$message);
+			'bot' => $this->respondsTo(),
+			'status' => 'ok',
+			'scope' => '#private',
+			'message' => $message);
 	}
 
 	/*

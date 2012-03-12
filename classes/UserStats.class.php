@@ -1,7 +1,10 @@
 <?php
-define ('SL_OK', 'ok');
-define ('SL_ERROR', 'error');
-
+if (!defined('SL_OK')) {
+    define ('SL_OK', 'ok');
+}
+if (!defined('SL_ERROR')) {
+    define ('SL_ERROR', 'error');
+}
 class UserStats{
 
     protected $userId;
