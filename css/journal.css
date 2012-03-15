@@ -21,7 +21,7 @@ body {
     margin: 35px auto 10px auto;
 }
 
-#welcome, #status-update-form p {
+#welcome {
     position:relative;
     padding: 0 40px 10px 23px;
     text-align:left;
@@ -340,35 +340,6 @@ input[type=submit]::-moz-focus-inner, input[type=button]::-moz-focus-inner {
 /*    float: right; */
     width: auto;
     line-height:30px;
-}
-
-/* Status Update Fields */
-#status-wrap {
-    float: right;
-    width: auto;
-    margin-bottom: 4px;
-    margin-right: 10px;
-    line-height: 30px;
-    z-index:1;
-}
-
-#status-lbl {
-    display: none;
-}
-
-#status-update {
-    display: none;
-    width: auto;
-}
-
-#status-update-form    {
-    width:342px;
-}
-
-#status-share {
-    display: none;
-    width:116px;
-    text-align: center;
 }
 
 #drawer-switch, #reset-search {

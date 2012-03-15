@@ -260,6 +260,7 @@ class MeBot extends Bot
         // set this as the start of idletime for the wywa
         global $him_bot;
         $him_bot->recordIdleTime($me);
+        sendJournalNotification($_SESSION['nickname'] . ' is ' . ($botmsg == NOMESSAGE ? '' : 'away ') . $botmsg);
         return array(
             'bot'=>$this->respondsTo(),
             'status'=>'ok',
@@ -267,6 +268,17 @@ class MeBot extends Bot
             'custom'=>'away',
             'message'=>"$me, I've got your back while you're away. {$this->backlink}");
     }
+
+    public function botcmd_status($me, $botmsg) {
+        if (empty($botmsg)) $botmsg = ' trying to remember how use @me status correctly.';
+        User::update_status($botmsg);
+        return array(
+            'bot' => $this->respondsTo(),
+            'status' => 'ok',
+            'scope' => '#private',
+            'message' => "Your status has been changed to: {$botmsg}");
+    }
+
 
     public function botcmd_back($me, $botmsg) {
         $this->forgetInfo($me, 'away');
@@ -303,6 +315,9 @@ class MeBot extends Bot
             break;
         case 'whosaway':
             $message = "With 'whosaway' you can find out who has left an away message.";
+            break;
+        case 'status':
+            $message = "You can tell other users what you're currently up to, eg, \"$author is checking out @me help\".";
             break;
         default:
             return parent::botcmd_help($author, $botmsg);
@@ -355,7 +370,6 @@ class MeBot extends Bot
             return array('bot'=>$this->respondsTo(), 'status'=>'ignore');
         }
     }
-
 }
 
 class NotifyBot extends Bot

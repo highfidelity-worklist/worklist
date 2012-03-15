@@ -36,7 +36,6 @@ if(isset($_SESSION['csrf_token'])) {
 }
 
 require_once("helper/checkJournal_session.php");
-require_once("update_status.php");
 require_once("chat.class.php");
 require_once("penalty.class.php");
 require_once("crypt.php");
@@ -77,9 +76,9 @@ function StopStatus() {
             <a href="#" id="SettingsWindowClose">close x</a>
             <h1>Settings and Information</h1>
             <div id="botHelper">
-                <h2>Eliza</h2>
+                <h2>Chat commands</h2>
                 <p>
-                    <a href="#" class="botlink" title="Command: @faq eliza" data="@faq eliza">Who is Eliza?</a>
+                    <a href="#" class="botlink" title="Command: @me status [message]" data="@me help status">How do i set my status?</a>
                     <a href="#" class="botlink" title="Command: @me away [message]" data="@me away test">How do I set myself away?</a>
                     <a href="#" class="botlink" title="Command: @ping [user] [message]" data="@ping hello">How do I ping someone?</a>
                     <a href="#" class="botlink" title="Command: @love [to] [why]" data="@love help">How do I send love?</a>

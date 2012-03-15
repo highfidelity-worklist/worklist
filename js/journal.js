@@ -551,6 +551,7 @@ function sendEntryRetry() {
             $.sendingMessage = false;
         },
         error: function(xhdr, status, err) {
+                alert("Error sending entry:" + err);
             if (retries++ < 3) {
                 setTimeout(sendEntryRetry, retries * 250);
             } else {
@@ -829,17 +830,7 @@ function formatMessage(entry)   {
     }
     return(d1);
 }
-function getStatusUpdate(status){
-        if (status) {
-            if('<b>' + status + '</b>'!=$('#status-lbl').html()){
-                $('#status-update').val(status);
-                $('#status-update').hide();
-                $('#status-lbl').show();
-                $("#status-share").hide();
-            $('#status-lbl').html( '<b>' + status + '</b>' );
-        }
-    }
-}
+
 function getLatestSpeakers(timeout)
 {
     $.ajax({
@@ -853,14 +844,6 @@ function getLatestSpeakers(timeout)
                 return;
             }
             fillSpeakerList(json.speakers, json.current_user);
-            if(json.current_user && $.away.status > 0){
-                for (var i = 0; i < json.speakers.length; i++){
-                    if(json.speakers[i][0]== json.current_user){
-                        StopStatus();
-                        getStatusUpdate(json.speakers[i][4]);
-                    }
-                }
-            }
 
             // Update relative times
             currentTime = parseInt(json.time);
@@ -1428,10 +1411,6 @@ function fillSpeakerList(newSpeakerList, currentUser){
             speaker = getNewSpeaker(newSpeakerList[i]).css('top', i * speakerHeight);
             $speakerList.online.append(speaker);
             if (speakerHeight == 0) speakerHeight = speaker.find('span').outerHeight() + 4;
-            if(newSpeakerList[i][0]== currentUser){
-                StopStatus();
-                getStatusUpdate(newSpeakerList[i][4]);
-            }
         }
 
     /* Real changes including log in new speakers, log out old speakers, reposition speakers. */
@@ -3075,82 +3054,9 @@ $(function() {
         });
     }
 
-    var hideInputField = function() {
-        // if the status is not empty - hide input field, otherwise do not hide input
-        if ($('#status-lbl').find('b').html() != "") {
-            $('#status-update').hide();
-            $("#status-share").hide();
-            $('#status-lbl').show();
-        }
-    };
-    $("#status-share").hide();
     $('#share-this').hide();
-    $("#status-update").DefaultValue("What are you working on?");
-    $('#status-update').hide();
     $("#query").DefaultValue("Search...");
 
-
-    // if the status is empty, show input field - allow user to enter the status
-    if( $.trim($('#status-lbl').find('b').html()) == "" ) {
-        $('#status-lbl').hide();
-        $('#status-update').show();
-        $("#status-share").show();
-    } else {
-        $('#status-lbl').show();
-    }
-
-    // When status-update gets focus enlarge and show the share button
-    $("#status-update").focus(function() {
-        $("#status-update").data("focus",true);
-        $("#status-share").show();
-        StopStatus();
-    });
-
-    //When status-update lost the focus, hide input field ...
-    $("#status-update").blur(function() {
-    // if the blur event is coming due to a click on button "Share", we need to delay the hidding process.
-    // if not the click event on the hidden button is not triggered.
-        setTimeout(function() {
-            hideInputField();
-            $("#status-update").data("focus",false);
-        },500);
-    });
-
-    $("#status-lbl, #status-update-form p").mouseenter(function() {
-        $('#status-lbl').hide();
-        $('#status-update').show();
-        $('#status-share').show();
-        StopStatus();
-    });
-
-    //When status-update hasn't the focus and mouse leaves status-wrap, hide input field ...
-    $("#status-wrap").mouseleave(function(){
-        if ($("#status-update").data("focus") !== true) {
-            hideInputField();
-        }
-    });
-    //Submit the form using AJAX to the database
-    $("#status-share-btn").click(function() {
-        if($("#status-update").val() ==  "What are you working on?")
-            $("#status-update").val("");
-        if ($('#status-update').val() != '') {
-            $.ajax({
-                url: "update_status.php",
-                type: "POST",
-                       data: {action: 'update', status: $("#status-update").val(), csrf_token: csrf_token},
-                dataType: "json",
-                success: function(data){
-                    if (data.status == true) {
-                        getStatusUpdate($("#status-update").val());
-                        StopStatus();
-                    } else {
-                        $("#status-update-form").submit();
-                    }
-                }
-            });
-        }
-        return false;
-    });
 });
 
 // --

@@ -1651,4 +1651,28 @@ class User {
         }
         return true;
     }
+
+/* Updates the current calling user status, saves it to the database and sends a message to the journal
+ * @param status is the text status submitted to be udpated
+ */
+    public static function update_status($status = "") {
+        if (isset($_SESSION['userid'])){
+            if ($status != "") {
+                $journal_message =  $_SESSION['nickname'] . ' is ' . $status;
+
+            // Insert new status to the database
+                $insert = "INSERT INTO " . USER_STATUS . "(id, status, timeplaced) VALUES(" . $_SESSION['userid'] . ", '" .  mysql_real_escape_string($status) . "', NOW())";
+                if (!mysql_query($insert)) {
+                    error_log("update_status.mysq: ".mysql_error());
+                }
+
+            //Send message to the Journal
+                $journal_message = sendJournalNotification($journal_message);
+                if ($journal_message != 'ok') {
+                    return;
+                }
+            }
+        }
+        return;
+    }
 }

@@ -133,6 +133,7 @@ class Bot
 
 		/* Call the appropriate bot/cmd and return the results to the chat class */
 		$fn = 'botcmd_'.$botcmd;
+		error_log('bot fn: ' . $fn);
 		return $bot->$fn($author, $botmsg);
 	}
 

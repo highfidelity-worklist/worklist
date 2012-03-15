@@ -53,7 +53,7 @@ body {
     white-space:nowrap;
 }
 /* resets the style for the <p> tag in the status part */
-#welcome, #status-update-form p {
+#welcome {
     position:relative;
     padding: 0 40px 10px 40px;
     width:870px;
@@ -516,18 +516,3 @@ div.login_left input.text-field, div.login_right input.text-field {width:230px;}
     float: right;
 }
 
-/* Status Update Fields */
-#status-wrap {
-    z-index:1;
-    width: 550px;
-    display: inline-block;
-}
-
-#status-lbl {
-    color: #6F6F6F;
-}
-
-#status-update {
-    width: 150px;
-}
- 
