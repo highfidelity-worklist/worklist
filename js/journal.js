@@ -2319,14 +2319,11 @@ $(window).resize(function() {
 function adjustSystemDrawerSize(){
     var height;
 
-    height= $('#system-bidding-wrapper').height() - $('#system-bidding-header').height()-8;
+    height = $('#system-bidding-wrapper').height() - $('#system-bidding-header').outerHeight(true) - $('#system-bidding-wrapper>table').outerHeight(true);
     $('#system-biddingJobs').height(height);
 
-    height= $('#system-review-wrapper').height() - $('#system-review-header').height()+12;
-    $('#system-reviewJobs').height(height);
-
-    $('#system-drawer-wrapper').height($('#system-drawer-container').height() -$('#system-review-wrapper').height() -$('#system-bidding-wrapper').height() -58);
-    height= $('#system-drawer-wrapper').height() - $('#system-drawer-header').height() -$('#system-dashboard-header').height()-10;
+    $('#system-drawer-wrapper').height($('#system-drawer-container').height()  - $('#system-bidding-wrapper').outerHeight(true) );
+    height = $('#system-drawer-wrapper').height() - $('#system-drawer-header').height() - $('#system-dashboard-header').height() - 10;
     $('#system-drawer').height(height);
 
 
@@ -4286,8 +4283,6 @@ function fillBiddingReviewDrawers(json) {
             $('#table-system-biddingJobs').append(row);
         }
 
-        $('#table-system-reviewJobs tr').remove();
-        if(json==null) return;
          l = json.review.length;
         for (var i = 0; i < l; i++) {
             odd=1-odd;
@@ -4303,12 +4298,13 @@ function fillBiddingReviewDrawers(json) {
             } else {
                 linkProject='';
             }
-            var row = '<tr class="workitemtooltip ' + rowClass + '" id="workitem-' + task.id + '"><td  style="width:60px">' + linkpre + task.id + linkpost + ' </td><td  style="width:80px">'+linkProject+' </td><td class="summary" >' + linkpre + task.summary + linkpost + ' </td></tr>';
-            $('#table-system-reviewJobs').append(row);
+            var row = '<tr class="workitemInReview workitemtooltip ' + rowClass + '" id="workitem-' + task.id + '"><td class="taskid">' + 
+                linkpre + task.id + linkpost + ' R</td><td class="project">'+linkProject+' </td><td class="summary" >' + 
+                linkpre + task.summary + linkpost + ' </td></tr>';
+            $('#table-system-biddingJobs').append(row);
         }
 
         makeWorkitemTooltip(".workitemtooltip");
         $('#system-drawer').scrollTo('100%');
         $('#system-biddingJobs').scrollTo('100%');
-        $('#system-reviewJobs').scrollTo('100%');
 }

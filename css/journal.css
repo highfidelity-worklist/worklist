@@ -1051,12 +1051,12 @@ a[rel="attachment"]{
 
 
 #system-drawer-wrapper {
-    height:50%;
+    height: 66%;
 }
 
-#system-bidding-wrapper ,
-#system-review-wrapper {
-    height:25%;
+#system-bidding-wrapper  {
+    height: 34%;
+    overflow: hidden;
 }
 
 #system-drawer{
@@ -1086,8 +1086,20 @@ a[rel="attachment"]{
     background:url(../images/gradientDashboard.jpg) repeat-x;
 }
 
+.workitemInReview {
+    background-color: #EEEEFF;
+    font-weight: bold;
+}
+
+#table-system-biddingJobs .workitemInReview td.project {
+    width: 80px;
+}
+
+#table-system-biddingJobs .workitemInReview td.taskid {
+    width: 60px;
+}
+
 #system-drawer,
-#table-system-reviewJobs ,
 #table-system-biddingJobs {
     border-bottom: 1px solid #ccc;
     width:100%;
@@ -1098,18 +1110,15 @@ a[rel="attachment"]{
     border: none;
 }
 
-#table-system-reviewJobs td,
 #table-system-biddingJobs td {
     border: none;
     padding: 3px;
 }
 
-#table-system-reviewJobs a,
 #table-system-biddingJobs a{
     color:#333;
 }
 
-#table-system-reviewJobs  .summary a,
 #table-system-biddingJobs .summary a{
     text-decoration:none;
 }

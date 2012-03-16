@@ -561,7 +561,7 @@ if ($action =='status-switch') {
                                     // and reduce the runners budget
                                     $myRunner = new User();
                                     $myRunner->findUserById($workitem->getRunnerId());
-                                    $myRunner->updateBudget(-$runner_fee);
+                                    $myRunner->updateBudget(-$runner_fee, $workitem->getBudget_id());
                                 }
                             }
                         }
