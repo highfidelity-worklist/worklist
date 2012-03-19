@@ -401,7 +401,7 @@ class User {
                 $remainingFunds = $budget->getRemainingFunds();
                 $budget->remaining = $remainingFunds;
                 $budget->save("id");
-                if ($remainingFunds + $amount <= 0 && $budgetDepletedMessage == true) {
+                if ($remainingFunds <= 0 && $budgetDepletedMessage == true) {
                     $runnerNickname = $this->getNickname();                    
                     $subject = "Depleted - Budget " . $budget_id . " (For " . $budget->reason . ")";
                     $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId() . "&tab=tabBudgetHistory";
