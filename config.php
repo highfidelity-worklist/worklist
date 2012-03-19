@@ -301,11 +301,11 @@ if (! defined('VIRUS_SCAN_CMD')) define('VIRUS_SCAN_CMD', '/usr/bin/clamscan');
 if (!defined('MAX_THUMB_SIZE')) define('MAX_THUMB_SIZE', 500);
 
 /*  budget authorized users
-    Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
+    Only Ryan (2), Philip (1020) & Fred (1918) can add projects! In order to work on the add projects page in your sb,
     your userid must be included below. Just remove when done!
     Adding alexi and jeskad - alexi 2011-10-26
 */
-if (!defined('BUDGET_AUTHORIZED_USERS')) define('BUDGET_AUTHORIZED_USERS', ",1,2,1020,1918,2186,1935,");
+if (!defined('BUDGET_AUTHORIZED_USERS')) define('BUDGET_AUTHORIZED_USERS', ",2,1020,1918,");
 
 // Delimiter used in linkify to separate encoded html from uncoded one.
 defineOnce('DELIMITER', 'xxxXXXxxxYYYxxxXXXxxx');
