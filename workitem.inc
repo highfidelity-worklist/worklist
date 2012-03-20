@@ -89,6 +89,12 @@ function resizeIframeDlg() {
     $('#user-info').animate({height: height});
 }
 
+function openNotifyOverlay(html, autohide) {
+    $("#sent-notify").html(html);
+    $("#sent-notify").attr('autohide', false);
+    $("#sent-notify").dialog('open');
+}
+
 $(document).ready(function() {
     applyPopupBehavior();
     $('#user-info').dialog({
@@ -103,15 +109,18 @@ $(document).ready(function() {
     $('#sent-notify').dialog({
         modal: false,
         autoOpen: false,
-        width: 250,
-        height: 60,
+        width: 350,
+        height: 70,
         position: ['middle'],
         resizable: false,
         open: function() {
             $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
-            setTimeout(function() {
-                $("#sent-notify").dialog("close");
-            }, 3000);
+            var autoHide = $("#sent-notify").attr('autohide') ? true : false;
+            if (autoHide === false) {
+                setTimeout(function() {
+                    $("#sent-notify").dialog("close");
+                }, 3000);
+            }
         }
     });
 
@@ -270,6 +279,7 @@ $(document).ready(function(){
         }
         $("#budget_id, #budget_id_multiple_bid").val($('#budget-source-combo').val());
         $('#popupSelectBudget').dialog("close");
+        openNotifyOverlay("Accepting bids", false);
         $('#' + $('#popupSelectBudget').data("clickon")).click();
     });
     $("#popupSelectBudget #cancel_budget").click(function() {
@@ -721,15 +731,20 @@ $(document).ready(function(){
         });
 
     $('select[name="quick-status"]').change(function() {
+        var html = "<span>Changing status from <strong><?php echo $worklist['status'];?></strong> to <strong>"
+            + $(this).val() +"</strong></span>";
+
         if ($(this).val() == 'FUNCTIONAL') {
             <?php if($mechanic_id == $user_id && $promptForReviewUrl) :?>
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
                 $('#quick-status-review').val($(this).val());
                 $('#popup-reviewurl').dialog('open');
             <?php else : ?>
+                openNotifyOverlay(html, false);
                 $('#quick-status form').submit();
             <?php endif; ?>
         } else {
+            openNotifyOverlay(html, false);
             $('#quick-status form').submit();
         }
     });
