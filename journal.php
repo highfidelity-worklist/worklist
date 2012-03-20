@@ -273,8 +273,6 @@ function StopStatus() {
                         <div id="bottom_right">
                             <textarea name="message-pane" id="message-pane"></textarea><br />
                             <input type="hidden" value="<?php echo $author; ?>" name="author" id="author" />
-                            <input type="submit" value="Send" name="submitbutton" id="sub" />
-
                         </div>
                     </div>
                 </form>
