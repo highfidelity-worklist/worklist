@@ -491,9 +491,11 @@ function processPendingReviewsNotifications() {
     if (!canProcessNotifications()) {
         return;
     }
+
     // process pending journal notifications
     $pendingReviews = Review::getReviewsWithPendingJournalNotifications();
     if($pendingReviews !== false && count($pendingReviews) > 0) {
+        echo "<br/>Processing " . count($pendingReviews) . " reviews.";
         foreach ($pendingReviews as $review) {
             $tReview = new Review();
             $tReview->loadById($review['reviewer_id'], $review['reviewee_id']);
@@ -517,6 +519,9 @@ function canProcessNotifications() {
         if ($serverHour == $hour) {
             return true;
         } else {
+            echo "<br/>It is not time yet.";
+            echo "<br/>Next hour: " . $hour;
+            echo "<br/>Current hour:" . $serverHour;
             return false;
         }
     }
@@ -529,5 +534,7 @@ function resetCronFile() {
     if ($newHour > 23) {
         $newHour -= 24;
     }
+    echo "<br/>Cron File Reseted.";
+    echo "<br/>Next hour: " . $newHour;
     file_put_contents(REVIEW_NOTIFICATIONS_CRON_FILE, $newHour);
 }
