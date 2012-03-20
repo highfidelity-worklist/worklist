@@ -80,20 +80,22 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         }
         if (($is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
             $where .= $severalStatus .
-                "( $status_cond ( mechanic_id = '$ufilter' OR `runner_id` = '$ufilter' OR creator_id = '$ufilter'
-                OR `" . WORKLIST . "`.`id` in (SELECT worklist_id FROM `" . BIDS . "` where bidder_id = '$ufilter')
+                "( $status_cond (`mechanic_id` = '$ufilter' OR `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
+                OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
                 ))";
         } else if ((!$is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
-            $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'))";
+            $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
+                OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
+                ))";
         } else if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter != $userId) {
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
         } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='FUNCTIONAL' || $val =='COMPLETED' ) {
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
         } else  {
             $where .= $severalStatus .
-                "( $status_cond ( creator_id = '$ufilter' OR runner_id = '$ufilter' OR mechanic_id = '$ufilter'
+                "( $status_cond (`creator_id` = '$ufilter' OR `runner_id` = '$ufilter' OR `mechanic_id` = '$ufilter'
                 OR `" . FEES . "`.user_id = '$ufilter'
-                OR `" . WORKLIST . "`.`id` in (SELECT worklist_id FROM `" . BIDS . "` where bidder_id = '$ufilter')
+                OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
                 ))";
         }
         $severalStatus = " OR ";
@@ -160,7 +162,7 @@ $qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`,
               WHERE `withdrawn` = 0
               AND (`bid_expires` > NOW()
               OR `bid_expires` = '0000-00-00 00:00:00')
-              AND worklist_id = worklist.id
+              AND `worklist_id` = `worklist`.`id`
               ORDER BY bid_created DESC LIMIT 1) `bid_amount`,
 
           `creator_id`, `runner_id`, `mechanic_id`,
