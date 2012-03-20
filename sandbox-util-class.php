@@ -177,13 +177,13 @@ class SandBoxUtil {
                    $job_number;
 
         $result   = postRequest(SANDBOX_SERVER_API, $command);
-        
+
         if ($result) {
             //Only get a result if there was a failure (user doesn't exist or command failed)
-            if (strpos($result,'Authentication failed')!==false) {
+            if (strpos($result, 'Authentication failed') !== false) {
                 throw new Exception('Unable to communicate to sandbox server, not authorized');
             }
-            if (strpos($result,'Error')===true) {
+            if (strpos($result, 'Error') !== false) {
                 throw new Exception('Project checkout failed:'.$result);
             }
             $this->notifyCheckout($username, $unixusername, $project, $job_number);
