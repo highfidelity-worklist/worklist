@@ -91,7 +91,7 @@ function resizeIframeDlg() {
 
 function openNotifyOverlay(html, autohide) {
     $("#sent-notify").html(html);
-    $("#sent-notify").attr('autohide', false);
+    $("#sent-notify").attr('autohide', autohide);
     $("#sent-notify").dialog('open');
 }
 
