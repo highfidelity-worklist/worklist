@@ -27,6 +27,9 @@ class AjaxResponse
 		$author = isset($_SESSION['nickname']) ? $_SESSION['nickname'] : GUEST_NAME;
 		$sampled = isset($_POST['sampled']) ? $_POST['sampled'] : 0;
 		$data = $this->chat->sendEntry($author, $message, array('sampled'=>$sampled));
+        if (!isset($data['html'])) {
+            $data = array_merge($data, $this->latest_longpoll($data['messagetime']));
+        }
         return($data);
 	}
 	

@@ -546,6 +546,8 @@ function sendEntryRetry() {
             } else {
                 if (!inThePresent) {
                     showLatest();
+                } else {
+                    updateNewMessages(json, true);
                 }
             }
             $.sendingMessage = false;
@@ -717,7 +719,7 @@ function arrayToString(array) {
 function updateNewMessages(json) {
 
     var botAction = null;
-
+    var doFinishUpdate = false; // Only do this if actually added new messages.
     if(json.updates == 0) return;
     currentTime = parseInt(json.time);
     if (json.botdata) {
@@ -730,8 +732,6 @@ function updateNewMessages(json) {
             botAction = 'emergency';
         }
     }
-
-    if (json.lastId && json.lastId > 0) lastId = json.lastId;
     if (json.count > 0) {
         last_private = null;
         if (inThePresent /* TBD: && focus */) {
@@ -750,11 +750,16 @@ function updateNewMessages(json) {
                             botAction = false;
                         }
                     }
-                    $('#entries').append(formatMessage(json.newentries[entry]));
+                    if (lastId < json.newentries[entry].id) {
+                        doFinishUpdate = true;
+                        $('#entries').append(formatMessage(json.newentries[entry]));
+                    }
                 }
             }
             applyMessagePruning();
-            finishUpdate('100%', true, botAction, json.newentries[entry]);
+            if (doFinishUpdate === true) {
+                finishUpdate('100%', true, botAction, json.newentries[entry]);
+            }
         } else {
             pendingMessages += json.count;
             $('#entries-pending-count').text(pendingMessages + ' unread message' + (pendingMessages > 1 ? 's' : '') + '...');
@@ -780,10 +785,12 @@ function updateNewMessages(json) {
                 ) {
                     update=true;
                 }
-                $('#system-drawer').append(formatMessage(json.newsystementries[entry]));
+                if (lastId < json.newsystementries[entry].id) {
+                    doFinishUpdate = true;
+                    $('#system-drawer').append(formatMessage(json.newsystementries[entry]));
+                }
             }
             if(update==true) getBiddingReviewDrawers();
-
         }
         
         // [Start Comment] instead of botAction, 'system' was forcefully used before 12-Mar-2011 <godka>
@@ -795,12 +802,17 @@ function updateNewMessages(json) {
         }
 
         if (botAction == null) botAction = 'system';
-        finishUpdate('100%', true, botAction, json.newsystementries[entry]);
+        if (doFinishUpdate === true) {
+            finishUpdate('100%', true, botAction, json.newsystementries[entry]);
+        }
         // [End Comment] 12-Mar-2011 <godka>
         
         applyMessagePruning();
         $('#system-drawer').scrollTo('100%');// scrolling to the end of the drawer
         enlivenEntries();
+    }
+    if (json.lastId && json.lastId > 0) {
+        lastId = json.lastId;
     }
 }
 
