@@ -114,7 +114,7 @@ class Chat
             }
               
         }
-    if ($last_private != null) $prev_author = $last_private;
+        if ($last_private != null) $prev_author = $last_private;
 
         $now = strtotime($this->getNow());
         foreach ($entries as $entry) {
@@ -326,8 +326,8 @@ class Chat
                 $notinlimit )
             UNION
             ( $select
-                FROM $infrom $in
-                $where
+                FROM $infrom 
+                $where $in
                 ORDER BY $order
                 $inlimit )
             ORDER BY $order ;";

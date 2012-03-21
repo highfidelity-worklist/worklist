@@ -343,11 +343,10 @@ class AjaxResponse
     $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all';
     $lastStatus = isset($_POST['laststatus']) ? $_POST['laststatus'] : '';
     $lastId = isset($_POST['lastid']) ? (int)$_POST['lastid'] : 0;
-
     $entries_result = $this->chat->loadEntries($lastId, array(
       'query' => isset($query) ? $query : '',
-      'toTime' => isset($toTime) ? $toTime : '',
-      'prevNext' => isset($prevNext) ? $prevNext : '',
+      'toTime' => '',
+      'prevNext' => 'next',
       'filter' => $filter,
       'system_count' => $count,
       'count' => $count,
