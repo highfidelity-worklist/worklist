@@ -5,12 +5,12 @@
             <br/>
         <label for="budget-reason" class="info-label">For: </label><br/>
             <?php 
+                $dis = '';
                 if ($budgetClosed == 1) {
-                    echo $budget->reason; 
-                } else {
+                    $dis = ' disabled="disabled" '; 
+                }
             ?>
-            <input type="text" id="budget-reason" name="budget-reason" value="<?php echo $budget->reason; ?>"/>
-            <?php } ?>
+            <input type="text" id="budget-reason" name="budget-reason" value="<?php echo $budget->reason; ?>" <?php echo $dis; ?>/>
             <br/>
             <?php if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false &&
                     $budget->seed == 1) { ?>
@@ -29,15 +29,9 @@
             <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user->getId(); ?>" />
         <br/>
         <label for="budget-note" class="info-label">Note: </label><br/>
-            <?php 
-                if ($budgetClosed == 1) {
-                    echo $budget->notes; 
-                } else {
-            ?>
-                <textarea id="budget-note" name="budget-note"><?php echo $budget->notes; ?></textarea>
-            <?php } ?>
+            <textarea id="budget-note" name="budget-note" <?php echo $dis; ?>><?php echo $budget->notes; ?></textarea>
         <br/>
-        <input type="button" value="<?php echo ($budgetClosed == 1) ? "Close" : "Update"; ?>" id="<?php echo ($budgetClosed == 1) ? "closeButton" : "updateButton"; ?>" />
+        <input type="button" value="<?php echo ($budgetClosed == 1) ? "OK" : "Update"; ?>" id="<?php echo ($budgetClosed == 1) ? "closeButton" : "updateButton"; ?>" />
         <?php if ($budget->active == 1){ ?>
             <input type="button" value="Close Out" id="closeOutButton" />
         <?php } ?>
