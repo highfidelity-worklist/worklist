@@ -19,6 +19,7 @@ checkLogin();
 // Get sender Nickname
 $id = getSessionUserId();
 $user = getUserById($id);
+//@TODO: Next 2 fields are protected and cannot be accessed from instance - stojce
 $nickname = $user->nickname;
 $email = $user->username;
 $msg = $_REQUEST['msg'];
@@ -77,7 +78,7 @@ if (isset($_REQUEST['id'])) {
     if ($send_mail && $who != 'bidder') {
         $mail_subject = $nickname." sent you a ping for item #".$item_id;
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
-        $mail_msg .= "<a href='".WORKLIST_URL."/workitem.php?job_id=".$item_id."&action=view'>#".$item_id."</a>";
+        $mail_msg .= "<a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a>";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
         $headers = array('X-tag' => 'ping, task', 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {
@@ -103,7 +104,7 @@ if (isset($_REQUEST['id'])) {
         $mail_msg .= "<p>Your bid info:</p>";
         $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";
         $mail_msg .= "<p>Notes: " . $bid_info['notes'] . "</p>";
-        $mail_msg .= "<p>You can view the job here. <a href='".WORKLIST_URL."/workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a></p>";
+        $mail_msg .= "<p>You can view the job here. <a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a></p>";
         $mail_msg .= "<p>-Worklist.net</p>";
         $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', 'X-tag' => 'ping, task', 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {
@@ -155,6 +156,7 @@ if (isset($_REQUEST['id'])) {
         try {
             $user = new User();
             $user->findUserById($receiver->id);
+            //TODO: $user->notifications is a protected field, shouldn't be accessed from instance - stojce
             if(Notification::isNotified($user->notifications, Notification::PING_NOTIFICATIONS)) {
                 notify_sms_by_object($user, $mail_subject, $msg);
             }

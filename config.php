@@ -123,7 +123,7 @@ if (!defined("PB_TIMEOUT_3")) 	define("PB_TIMEOUT_3", 600);
 if (!defined('USER_TIMEOUT'))    define('USER_TIMEOUT', 30);
 if (!defined('USER_IDLETIME'))    define('USER_IDLETIME', 15);
 
-if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/worklist");
+if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/worklist/");
 
 //<joanne>
 if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "https://lovemachine.sendlove.us/love");

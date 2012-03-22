@@ -945,7 +945,7 @@ function checkLogin() {
 
         // Replace '#<number>' with a link to the worklist item with the same number
         $regexp = "/\#([1-9][0-9]*)/";
-        $url = preg_replace($regexp, DELIMITER . '<a href="' . WORKLIST_URL . '/workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>' . DELIMITER, $url);
+        $url = preg_replace($regexp, DELIMITER . '<a href="' . WORKLIST_URL . 'workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>' . DELIMITER, $url);
 
         // Replace '#<nick>/<url>' with a link to the author sandbox
         $regexp="/\#([A-Za-z]+)\/(\S*)/i";
