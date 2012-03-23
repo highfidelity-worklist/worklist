@@ -119,7 +119,24 @@ class Project {
              
         return true;
     }
-
+    
+    public function getTotalFees($project_id) {
+        $feesCount = 0;
+        $feesQuery = "SELECT SUM(F.amount) AS fees_sum FROM " . FEES . " F,
+                     " . WORKLIST . " W
+                     WHERE F.worklist_id = W.id
+                     AND W.project_id = " . $project_id  . "
+                     AND W.status IN ('COMPLETED', 'DONE')";
+        $feesQueryResult = mysql_query($feesQuery);
+        if (mysql_num_rows($feesQueryResult)) {
+            $feesCountArray = mysql_fetch_array($feesQueryResult);
+            if ($feesCountArray['fees_sum']) {
+                $feesCount = number_format($feesCountArray['fees_sum'], 0, '', ',');
+            }
+        }
+        return $feesCount;
+    }
+    
     public function idExists($project_id) {
         $query = "
             SELECT project_id

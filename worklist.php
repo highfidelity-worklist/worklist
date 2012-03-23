@@ -1589,7 +1589,7 @@ if (is_object($inProject)) {
 <?php endif; ?>
     </ul>
     <ul class="detailContainer">
-        <li><strong>Budget:</strong> $<?php echo $inProject->getBudget(); ?></li>
+        <li><strong>Total Funded:</strong> $<?php echo $inProject->getTotalFees($inProject->getProjectId()); ?></li>
         <li><strong>Contact Info:</strong> <?php echo $inProject->getContactInfo(); ?></li>
 <?php if ($inProject->getRepository() != '') : ?>
         <li><strong>Repository:</strong> <a href="<?php echo $inProject->getRepoUrl(); ?>"><?php echo $inProject->getRepoUrl(); ?></a></li>
