@@ -536,5 +536,6 @@ function resetCronFile() {
     }
     echo "<br/>Cron File Reseted.";
     echo "<br/>Next hour: " . $newHour;
+    unlink(REVIEW_NOTIFICATIONS_CRON_FILE);
     file_put_contents(REVIEW_NOTIFICATIONS_CRON_FILE, $newHour);
 }
