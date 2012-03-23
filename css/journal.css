@@ -1174,6 +1174,32 @@ a[rel="attachment"]{
     right: 10px;
 }
 
+#tooltip.smalltooltip div {
+    margin: 0; 
+}
+
+#tooltip.smalltooltip h3,
+#tooltip.smalltooltip .tip-entry ,
+#tooltip.smalltooltip .head  #tooltip .content  {
+	font-size: 12px;
+    font-weight: normal;
+}
+
+#tooltip .smalltooltip {
+    position: absolute;
+    z-index: 3000;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    box-shadow: 0px 2px 5px #000;
+    -moz-box-shadow: 0px 2px 5px #000;
+    -webkit-box-shadow: 0px 2px 5px #000;
+    border:0px solid #ccc;
+    background: #ffffff;
+    opacity: 1;
+    text-align: left;
+}
+
 #tooltip, #livetip {
     position: absolute;
     z-index: 3000;
@@ -1188,12 +1214,15 @@ a[rel="attachment"]{
     opacity: 1;
     text-align:left;
 }
+
 #tooltip h3, #tooltip div { 
     margin: 0; 
 }
+
 #tooltip h3, #livetip {
     padding:5px 10px;
 }
+
 #tooltip .body {
     padding:10px;
     font-size: 12px;
@@ -1207,14 +1236,16 @@ a[rel="attachment"]{
     border:3px solid #ccc;
     background-color:white;
 }
-#tooltip .head{
+
+#tooltip .head {
     font-size: 12px;
-  font-weight: bold;
-  border-bottom: solid 2px;
-  padding-bottom: 0.5em;
-  margin-bottom: 0.5em;
+    font-weight: bold;
+    border-bottom: solid 2px;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em;
 }
-#tooltip .tip-entry{
+
+#tooltip .tip-entry {
     font-size: 12px;
     padding: 0.5em 0 0 0;
     margin: 0.5em 0 0 0;
@@ -1227,7 +1258,7 @@ a[rel="attachment"]{
     border: 0;
 }
 
-#menuPopup{
+#menuPopup {
   z-index: 105;
 }
 

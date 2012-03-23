@@ -1,3 +1,6 @@
+<script type="text/javascript">
+MapToolTips();
+</script>
 <div id="update-budget">
     <form method="post" action = "">
         <label for="budget-amount" class="info-label">Budget: </label><br/>
@@ -31,9 +34,9 @@
         <label for="budget-note" class="info-label">Note: </label><br/>
             <textarea id="budget-note" name="budget-note" <?php echo $dis; ?>><?php echo $budget->notes; ?></textarea>
         <br/>
-        <input type="button" value="<?php echo ($budgetClosed == 1) ? "OK" : "Update"; ?>" id="<?php echo ($budgetClosed == 1) ? "closeButton" : "updateButton"; ?>" />
+        <input type="button" value="<?php echo ($budgetClosed == 1) ? "OK" : "Save"; ?>" class="<?php echo ($budgetClosed == 1) ? "" : "iToolTip budgetSave" ?>" id="<?php echo ($budgetClosed == 1) ? "closeButton" : "updateButton"; ?>" />
         <?php if ($budget->active == 1){ ?>
-            <input type="button" value="Close Out" id="closeOutButton" />
+            <input class="iToolTip budgetClose" type="button" value="Close Out" id="closeOutButton" />
         <?php } ?>
     </form>
     <?php
@@ -46,28 +49,28 @@
         <div>
             <table id="be-table">
                 <tr>
-                    <td class="be-table_cell1 iToolTip budgetRemaining"><strong>Remaining Funds:</strong></td>
-                    <td class="be-table_cell2 iToolTip budgetRemaining"><strong>
+                    <td class="be-table_cell1 iToolTip budgetRemaining2"><strong>Remaining Funds:</strong></td>
+                    <td class="be-table_cell2 iToolTip budgetRemaining2"><strong>
                     <?php echo(money_format('$ %i', $remaining)); ?></strong></td>
                 </tr>
                 <tr>
-                    <td onclick="Budget.budgetExpand(0,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetAllocated">Allocated:</td>
-                    <td onclick="Budget.budgetExpand(0,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetAllocated">
+                    <td onclick="Budget.budgetExpand(0,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetAllocated2">Allocated:</td>
+                    <td onclick="Budget.budgetExpand(0,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetAllocated2">
                     <?php echo(money_format('$ %i', $allocated)); ?></td>
                 </tr>
                 <tr>
-                    <td onclick="Budget.budgetExpand(1,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetSubmitted">Submitted:</td>
-                    <td onclick="Budget.budgetExpand(1,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetSubmitted">
+                    <td onclick="Budget.budgetExpand(1,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetSubmitted2">Submitted:</td>
+                    <td onclick="Budget.budgetExpand(1,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetSubmitted2">
                     <?php echo(money_format('$ %i', $submitted)); ?></td>
                 </tr>
                 <tr>
-                    <td onclick="Budget.budgetExpand(2,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetPaid">Paid:</td>
-                    <td onclick="Budget.budgetExpand(2,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetPaid">
+                    <td onclick="Budget.budgetExpand(2,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetPaid2">Paid:</td>
+                    <td onclick="Budget.budgetExpand(2,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetPaid2">
                     <?php echo(money_format('$ %i', $paid)); ?></td>
                 </tr>
                 <tr>
-                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetTransfered">Transferred:</td>
-                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetTransfered">
+                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetTransfered2">Transferred:</td>
+                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetTransfered2">
                     <?php echo(money_format('$ %i', $transfered)); ?></td>
                 </tr>
             </table>

@@ -300,6 +300,9 @@ var Budget = {
                 $(this).fadeIn('fast');
             });
         });
+        
+        $('#budget-expanded').dialog('option', 'position', ['center', 'center']);
+        
         switch (section) {
             case 0:
                 // Fetch new data via ajax

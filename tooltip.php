@@ -31,11 +31,20 @@ $tooltips = array(
 	
 	/* Budget Info tooltips         */
 
-    'budgetRemaining' => 'Total funds I have ever been assigned, less all of the below.',
-    'budgetAllocated' => 'Money total from Jobs I run that are in Working, Review & Completed Statuses.',
-    'budgetSubmitted' => 'Money total From Jobs I set to Done, but have not been paid.',
-    'budgetPaid'      => 'Money Paid out on Done jobs.',
-    'budgetTransfered'  => 'Money transfered in other budgets.',
+    'budgetRemaining1' => 'Funds still available to use towards jobs for all my budgets',
+    'budgetAllocated1' => 'Funds linked to fees in active jobs (Working, Functional, Review, Completed) for all my budgets',
+    'budgetSubmitted1' => 'Funds linked to fees in Done\'d jobs that are not yet paid for all my budgets',
+    'budgetPaid1'      => 'Funds linked to fees that have been Paid through system for all my budgets',
+    'budgetTransfered1'  => 'Funds granted to others via giving budget for all my budgets',
+    
+    /* Update Budget Info tooltips         */
+    'budgetSave' => 'Save changes made to title or notes',
+    'budgetClose' => 'Reconcile &amp; close this open budget',
+    'budgetRemaining2' => 'Funds still available to use towards jobs',
+    'budgetAllocated2' => 'Funds linked to fees in active jobs (Working, Functional, Review, Completed)',
+    'budgetSubmitted2' => 'Funds linked to fees in Done\'d jobs that are not yet paid',
+    'budgetPaid2'      => 'Funds linked to fees that have been Paid through system',
+    'budgetTransfered2'  => 'Funds granted to others via giving budget',
 	
 	/* Add Job tooltips 			*/
     'enterAmount'     =>  'Enter the amount you want to be paid if this job is accepted and done.',

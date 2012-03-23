@@ -123,7 +123,7 @@
     <!--  tooltip plugin and dictionary -->
     <script type="text/javascript" src="js/jquery.tooltip.js"></script>
     <script type="text/javascript">
-        function MapToolTips(){
+        function MapToolTips() {
             var tooltipPhraseBook = <?php include("tooltip.php"); ?>;
             $.each(tooltipPhraseBook, function(k,v) {
                 $('.iToolTip.' + k).attr('title', v);

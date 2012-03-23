@@ -460,6 +460,7 @@ function hideSettingsPopup(e) {
         delay: 0,
         extraClass: "botip",
     });
+    
     $("div#SettingsWindow").addClass('settingsboxexpanded');
     $("#settingsSwitch").bind('click', function(event, ui){
         if ($('div#SettingsWindow').is(":visible")) {
@@ -2916,11 +2917,16 @@ function resizeIframeDlg() {
     $('#user-info').animate({height: height});
 }
 
-function showUserInfo(user_id) {
-    if (user_id != 0 && user_id != undefined) {
+function showUserInfo(user_id, tab) {
+    if ((user_id != 0 || tab != '') && user_id != undefined) {
+        if (tab) {
+            tab = "&tab=" + tab;
+        } else {
+            tab = "";
+        }
         $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open').centerDialog();
         $('#user-info').dialog( "option", "width", 840 );
-        $('#modalIframeId').attr('src', 'userinfo.php?id=' + user_id);
+        $('#modalIframeId').attr('src', 'userinfo.php?id=' + user_id + tab);
         return false;
     }
 }

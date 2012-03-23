@@ -233,6 +233,7 @@
         <link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/tooltip.css" />
         <link type="text/css" href="css/userNotes.css" rel="stylesheet" />
         <link type="text/css" href="css/review.css" rel="stylesheet" />
         <link type="text/css" href="css/favorites.css" rel="stylesheet" />
@@ -272,6 +273,30 @@
         <script type="text/javascript" src="js/favorites.js"></script>
         <script type="text/javascript" src="js/userinfo.js"></script>
         <script type="text/javascript" src="js/budget.js"></script>
+        <!--  tooltip plugin and dictionary -->
+        <script type="text/javascript" src="js/jquery.tooltip.js"></script>
+        <script type="text/javascript">
+        function MapToolTips() {
+            var tooltipPhraseBook = <?php include("tooltip.php"); ?>;
+            $.each(tooltipPhraseBook, function(k,v) {
+                $('.iToolTip.' + k).attr('title', v);
+            });
+            $('.iToolTip.hoverJobRow').each(function(a,b) {
+                var jobId = $(this).attr('id');
+                var jobIdNum = jobId.substring(jobId.lastIndexOf('-') + 1, jobId.length);
+                var tit = tooltipPhraseBook.hoverJobRow;
+                $(this).attr('title', (tit + ' #' + jobIdNum));
+            });
+            $('.iToolTip').tooltip({
+                track: false,
+                delay: 600,
+                showURL: false,
+                showBody: " - ",
+                fade: 150,
+                positionLeft: true
+            });
+        };
+    </script>
         <title>User info</title>
     </head>
 <body>
