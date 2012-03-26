@@ -474,10 +474,10 @@ class Chat
       }
       if($options['filter'] == 'system')
       {
-            $from = ENTRIES." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
+            $from = ENTRIES_ALL." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
             // if the systray is open we'll do a UNION query
-            $infrom = ENTRIES." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
-            $notinfrom = ENTRIES." AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
+            $infrom = ENTRIES_ALL." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
+            $notinfrom = ENTRIES_ALL." AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
             $notin = $this->getSystemWhere(1,1);
             $authornotin = str_replace('nickname', 'author', $notin);
             $notinlimit = $options['count'] ? "LIMIT {$options['count']}" : '';
@@ -506,7 +506,7 @@ class Chat
         {
               $where .= " AND e.id > $lastId";
         }
-            $from = ENTRIES." AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` INNER JOIN ".ENTRYJOBS." AS j ON `e`.`id`=`j`.`entry_id` ";
+            $from = ENTRIES_ALL . " AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` INNER JOIN ".ENTRYJOBS." AS j ON `e`.`id`=`j`.`entry_id` ";
             $sql = "
         $select
             FROM $from
