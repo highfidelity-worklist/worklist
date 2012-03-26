@@ -23,7 +23,7 @@ class AjaxResponse
 		} elseif (isSpammer($_SERVER['REMOTE_ADDR'])) {
 		    $message = "@me echo Love to you! Sorry but you aren't allowed to participate. Your IP has been blocked. If you aren't a spammer please give us a feedback with the button above.";
 		}
-
+ 
 		$author = isset($_SESSION['nickname']) ? $_SESSION['nickname'] : GUEST_NAME;
 		$sampled = isset($_POST['sampled']) ? $_POST['sampled'] : 0;
 		$data = $this->chat->sendEntry($author, $message, array('sampled'=>$sampled));
