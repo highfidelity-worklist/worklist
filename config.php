@@ -97,6 +97,8 @@ if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
 if (!defined("RECENT_SPEAKERS")) define("RECENT_SPEAKERS","recent_speakers");
 if (!defined("TYPING_STATUS"))   define("TYPING_STATUS","typing_status");
 if (!defined("ENTRIES")) 	     define("ENTRIES","entries");
+defineOnce("ENTRIES_ALL", "entries2");
+
 if (!defined("TOKENS")) 	     define("TOKENS","tokens");
 if (!defined("SURVEYS")) 	     define("SURVEYS","surveys");
 if (!defined("SURVEY_CHOICES"))  define("SURVEY_CHOICES","survey_choices");

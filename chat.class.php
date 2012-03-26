@@ -88,16 +88,16 @@ class Chat
     }
 
     // if $last_private is true, the client has last shown a private message, so always start a new group
-    function formatEntries($entries, $exclude='', $bundle=true, $last_private=null, $returnHtml = true) {
-        
+    function formatEntries($entries, $exclude = '', $bundle = true, $last_private = null, $returnHtml = true, $all = true) {
+
         $html = '';
         if (empty($entries)) return $html;
         $newentries = array();
         $prev_author = null;
-
+        $ENTRIES_TABLE = $all === true ? ENTRIES_ALL : ENTRIES;
         // no sense in doing this query if we aren't bundling
         if ($bundle && count($entries) == 1) {
-            $sql = "SELECT author,ip FROM ".ENTRIES." ".$exclude." ORDER BY id DESC LIMIT 1,1";
+            $sql = "SELECT author,ip FROM " . $ENTRIES_TABLE . " " . $exclude . " ORDER BY id DESC LIMIT 1, 1";
             $result = mysql_query($sql);
             
             if ($result) {
@@ -136,46 +136,51 @@ class Chat
 
             if ($entry['author'].'@'.$entry['ip'] != $prev_author || !$bundle || $bot)  {
                 $nickname = (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : '';
-                $prev_author = $entry['author'].'@'.$entry['ip'];
                 $time = strtotime($entry['date']);
                 $func = 'onclick="javascript:showUserInfo(\''.$entry['user_id'].'\')"';
-                $newentries[] = array_merge($entry, array(
-                    'custom_class' => $custom_class,
-                    'nickname' => $nickname,
-                    'prev_author' => $prev_author,
-                    'time' => $time,
-                    'func' => $func,
-                    'time_title' => date("d M H:i:s", $time),
-                    'relative_time' => relativeTime($now - $time),
-                    'entry_text' => linkify($entry['entry']),
-                    'entry_type' => 'extra',
-                ));
-                $html .= '<div data="'.$time.'" class="entry '.$custom_class.'" id="entry-' . $entry['id'] . '">'."\n".
-                    '  <h2'.($nickname!=$entry['author']?' class="other"':'').'>'."\n".
-                    // checking to see if author is bot
-                    // if author is bot $func string is not attached
-                    // 08-MAY-2010 <Yani>
-                    '    <span '.((in_array($entry['author'], $this->botNames_)) ? '' : ''.$func.'').' class="entry-author">'.$entry['author'].'</span>'."\n".
-                    '    <span class="entry-date" data="'.$time.'" title="'.date("d M H:i:s", $now).'--'.date("d M H:i:s", $time).'">'.relativeTime($time - $now).'</span>'."\n".
-                    '  </h2>'."\n".
-                    '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n".
-                    '</div>';
+                if ($returnHtml !== true) {
+                    $prev_author = $entry['author'] . '@' . $entry['ip'];
+                    $newentries[] = array_merge($entry, array(
+                        'custom_class' => $custom_class,
+                        'nickname' => $nickname,
+                        'prev_author' => $prev_author,
+                        'time' => $time,
+                        'func' => $func,
+                        'time_title' => date("d M H:i:s", $time),
+                        'relative_time' => relativeTime($now - $time),
+                        'entry_text' => linkify($entry['entry']),
+                        'entry_type' => 'extra',
+                    ));
+                } else {
+                    $html .= '<div data="' . $time . '" class="entry ' . $custom_class . '" id="entry-' . $entry['id'] . '">' . "\n" .
+                        '  <h2' . ($nickname != $entry['author'] ? ' class="other"' : '') . '>' . "\n" .
+                        // checking to see if author is bot
+                        // if author is bot $func string is not attached
+                        // 08-MAY-2010 <Yani>
+                        '<span ' . ((in_array($entry['author'], $this->botNames_)) ? '' : '' . $func . '') . ' class="entry-author">' . $entry['author'] . "</span>\n" .
+                        '<span class="entry-date" data="' . $time . '" title="' . date("d M H:i:s", $now) . '--' . date("d M H:i:s", $time) . '">'.relativeTime($time - $now) . "</span>\n" .
+                        "  </h2>\n" .
+                        '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n".
+                        '</div>';
+                }
             } else {
                 $time = strtotime($entry['date']);
-                $nickname = (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : '';
-                $newentries[] = array_merge($entry, array(
-                    'nickname' => $nickname,
-                    'entry_text' => linkify($entry['entry']),
-                    'entry_type' => 'basic',
-                    'time' => $time
-                ));
-                $html .= '<div data="' . $time . '" class="entry" id="entry-' . $entry['id'] . '">'."\n";
-                $html .= '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n";
-                $html .= "</div>\n";
+                if ($returnHtml !== true) {
+                    $nickname = (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : '';
+                    $newentries[] = array_merge($entry, array(
+                        'nickname' => $nickname,
+                        'entry_text' => linkify($entry['entry']),
+                        'entry_type' => 'basic',
+                        'time' => $time
+                    )); 
+                } else {
+                    $html .= '<div data="' . $time . '" class="entry" id="entry-' . $entry['id'] . '">'."\n";
+                    $html .= '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n";
+                    $html .= "</div>\n";
+                }
             }
 
         }
-
         return $returnHtml ? $html : $newentries;
     }
 
@@ -212,7 +217,7 @@ class Chat
     function getEarliestDate($query='')
     {
         $where = $this->getWhereStatement($query);
-        $sql = "SELECT date FROM ".ENTRIES." $where ORDER BY `id` ASC LIMIT 1";
+        $sql = "SELECT date FROM ".ENTRIES_ALL." $where ORDER BY `id` ASC LIMIT 1";
         $res = mysql_query($sql);
 
         if ($res && $entry = mysql_fetch_assoc($res)) {
@@ -253,8 +258,10 @@ class Chat
         return $system."')";
     }
 
-    function loadEntries($lastId, $options = null)
+    function loadEntries($lastId, $options = null, $all = true)
     {
+      // Determine which table to use 
+      $ENTRIES_TABLE = $all === true ? ENTRIES_ALL : ENTRIES ;
       if(!isset($options['filter'])) $options['filter'] = 'all';
       $select = "SELECT
         `e`.`id`,
@@ -280,11 +287,11 @@ class Chat
           $options['count'] = $options['count'] / 2;
           // future entries first, as this is more likely to be empty
           $options['prevNext'] = 'next';
-          $one = $this->loadEntries($lastId, $options);
+          $one = $this->loadEntries($lastId, $options, true);
           // then get the remaining entries from the past
           $options['count'] = $total - count($one['entries']);
           $options['prevNext'] = 'prev';
-          $two = $this->loadEntries($lastId, $options);
+          $two = $this->loadEntries($lastId, $options, true);
           $lastId = max($one['lastId'], $two['lastId']);
           $firstDate = min($one['firstDate'], $two['firstDate']);
           $lastDate = max($one['lastDate'], $two['lastDate']);
@@ -307,10 +314,10 @@ class Chat
       }
       if($options['filter'] == 'system')
       {
-            $from = ENTRIES." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
+            $from = $ENTRIES_TABLE." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
             // if the systray is open we'll do a UNION query
-            $infrom = ENTRIES." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
-            $notinfrom = ENTRIES." AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
+            $infrom = $ENTRIES_TABLE." AS e INNER JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
+            $notinfrom = $ENTRIES_TABLE." AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
             $notin = $this->getSystemWhere(1,1);
             $authornotin = str_replace('nickname', 'author', $notin);
             $notinlimit = $options['count'] ? "LIMIT {$options['count']}" : '';
@@ -339,7 +346,7 @@ class Chat
         {
               $where .= " AND e.id > $lastId";
         }
-            $from = ENTRIES." AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
+            $from = $ENTRIES_TABLE . " AS e LEFT JOIN " . USERS . " AS u ON `u`.`id` = `user_id` ";
             $sql = "
         $select
             FROM $from
@@ -892,7 +899,7 @@ mysql_select_db(DB_NAME) or die(mysql_error());
         // prevent users in penalty box or suspended users from adding entries
         $userStatus = $userId != 'NULL' ? Penalty::getSimpleStatus($userId) : Penalty::getSimpleStatus(0, $ip);
         if($userStatus == Penalty::NOT_PENALIZED){
-
+// Send to global entries table (used for searches and timetravel)
             $sql = "INSERT INTO ".ENTRIES." (`id`, `user_id`, `entry`, `author`,`ip`, `date`, `sampled`) ".
                     " (SELECT NULL, {$userId}, '{$message}', '{$author}', '{$ip}', CURRENT_TIMESTAMP, '{$sampled}' ".
                     " FROM ".USERS.
@@ -902,9 +909,8 @@ mysql_select_db(DB_NAME) or die(mysql_error());
                     " ) OR ( ".
                         " '{$userId}' IN ('0','".BOT_USER_ID."') ". 
                     " ) LIMIT 1 );";
-        error_log("recordEntry: $sql");
             $retries = 0;
-            while (!($rt = mysql_query($sql)) && $retries++ < 3) {
+            while (!($rt = mysql_unbuffered_query($sql)) && $retries++ < 3) {
                 $fp = fopen("/tmp/journal_write.log", "a");
                 fwrite($fp, date("Y-m-d H:M:s")."::Error writing: $userId:$author:$message\n");
                 fwrite($fp, "  retry: $retries\n");
@@ -924,6 +930,28 @@ mysql_select_db(DB_NAME) or die(mysql_error());
                     mysql_query($sql);
                 }
             }   
+
+// Send to latest entries table (used for quick loading for current messages)
+            $sql = "INSERT INTO ".ENTRIES_ALL." (`id`, `user_id`, `entry`, `author`,`ip`, `date`, `sampled`) ".
+                    " (SELECT {$id}, {$userId}, '{$message}', '{$author}', '{$ip}', CURRENT_TIMESTAMP, '{$sampled}' ".
+                    " FROM ".USERS.
+                    " WHERE (".
+                        " nickname='{$author}' ". 
+                        " AND `id` = {$userId} ".
+                    " ) OR ( ".
+                        " '{$userId}' IN ('0','".BOT_USER_ID."') ". 
+                    " ) LIMIT 1 );";
+            $retries = 0;
+            while (!($rt = mysql_unbuffered_query($sql)) && $retries++ < 3) {
+                $fp = fopen("/tmp/journal_write.log", "a");
+                fwrite($fp, date("Y-m-d H:M:s")."::Error writing: $userId:$author:$message\n");
+                fwrite($fp, "  retry: $retries\n");
+                fwrite($fp, "  errno: ".mysql_errno()."\n");
+                fwrite($fp, "  error: ".mysql_error()."\n");
+                fclose($fp);
+
+                usleep(250 * 1000 * $retries);
+            }
 
             if ($sampled && !empty($userId) && $userId != BOT_USER_ID) {
                 list($usec, $sec) = explode(" ",microtime());

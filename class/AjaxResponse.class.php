@@ -23,7 +23,7 @@ class AjaxResponse
 		} elseif (isSpammer($_SERVER['REMOTE_ADDR'])) {
 		    $message = "@me echo Love to you! Sorry but you aren't allowed to participate. Your IP has been blocked. If you aren't a spammer please give us a feedback with the button above.";
 		}
-			
+
 		$author = isset($_SESSION['nickname']) ? $_SESSION['nickname'] : GUEST_NAME;
 		$sampled = isset($_POST['sampled']) ? $_POST['sampled'] : 0;
 		$data = $this->chat->sendEntry($author, $message, array('sampled'=>$sampled));
@@ -323,7 +323,9 @@ class AjaxResponse
 
     public function latest_longpoll($justupdated = false) {
         $count = (isset($_POST['count'])) ? (int) $_POST['count'] : 0;
-        if ($count > 100) $count = 100;
+        if ($count > 100) {
+            $count = 100;
+        }
         if (!$justupdated) {
             $timeout = (!empty($_POST['timeout'])) ? (int) $_POST['timeout'] : 20;
             $delay = 250; /* ms */
@@ -339,90 +341,84 @@ class AjaxResponse
         } else {
             $touched = $justupdated;
         }
-    // see if we need to retrieve system messages
-    $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all';
-    $lastStatus = isset($_POST['laststatus']) ? $_POST['laststatus'] : '';
-    $lastId = isset($_POST['lastid']) ? (int)$_POST['lastid'] : 0;
-    $entries_result = $this->chat->loadEntries($lastId, array(
-      'query' => isset($query) ? $query : '',
-      'toTime' => '',
-      'prevNext' => 'next',
-      'filter' => $filter,
-      'system_count' => $count,
-      'count' => $count,
-    ));
+        // see if we need to retrieve system messages
+        $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all';
+        $lastStatus = isset($_POST['laststatus']) ? $_POST['laststatus'] : '';
+        $lastId = isset($_POST['lastid']) ? (int)$_POST['lastid'] : 0;
+        $entries_result = $this->chat->loadEntries($lastId, array(
+            'query' => '',
+            'toTime' => '',
+            'prevNext' => '',
+            'filter' => $filter,
+            'system_count' => $count,
+            'count' => $count
+        ), false);
 //Garth in krumch task #13576 - don't log notices on empty results
-    $entries = array_key_exists('entries',$entries_result)? $entries_result['entries']:array();
+        $entries = array_key_exists('entries',$entries_result)? $entries_result['entries']:array();
 
-    $entry_count = count($entries);
-    $system_entries = array_key_exists('system_entries',$entries_result)? $entries_result['system_entries']:array();
-    $system_count = count($system_entries);
-    if ($entry_count == 0 && $system_count == 0)
-    {
-      return array(
-        'count' => 0,
-        'lasttouched' => $touched,
-        'updates'=> 0,
-        'typingstatus' => $this->chat->getGlobalTypingStatus(),
-      );
-    }
-    $lastId = $entries_result['lastId'];
-    $firstDate = $entries_result['firstDate'];
-    $lastDate = $entries_result['lastDate'];
+        $entry_count = count($entries);
+        $system_entries = array_key_exists('system_entries',$entries_result)? $entries_result['system_entries']:array();
+        $system_count = count($system_entries);
+        if ($entry_count == 0 && $system_count == 0) {
+            return array(
+                'count' => 0,
+                'lasttouched' => $touched,
+                'updates'=> 0,
+                'typingstatus' => $this->chat->getGlobalTypingStatus(),
+            );
+        }
+        $lastId = $entries_result['lastId'];
+        $firstDate = $entries_result['firstDate'];
+        $lastDate = $entries_result['lastDate'];
 
-    $last_private = !empty($_POST['last_private']) ? $_POST['last_private'] : null; // whether the client last displayed a private message
-    if ($last_private == "null") $last_private = null;
-    $data = Array('updates'=> 1);
-    // get the speakers
-    //$data['speakers'] = $this->speakerList(1);
-    //$entries = array_merge($entries, $this->speakerNotes($data['speakers']));
-
-	$entries_array = array();
-	// use old way if json argument not defined for backwards compatibility
-	if (empty($_POST["json"])) {
-	    $html = $system_html = $newentries = $newsystementries = '';
-	    if($count>0)
-	    {
-	      $html = $this->chat->formatEntries($entries, '', true, $last_private);
-	      $system_html = $this->chat->formatEntries($system_entries, null, false);
-	    }
-	    else
-	    {
-	      $newentries = $this->chat->formatEntries($entries, '', true, $last_private, 0);
-	      $newsystementries = $this->chat->formatEntries($system_entries, null, false, null, 0);
-	    }
-		$entries_array = array('html'=>$html, 'system_html'=>$system_html, 'newentries'=>$newentries, 'newsystementries'=>$newsystementries);
-	} else {
-		// new improved json way!
-		if ($count > 0)
-		{
-			$entries_array = array('entries'=>$entries, 'system_entries'=>$system_entries, 'newentries'=>'', 'newsystementries'=>'');
-		}
-		else
-		{
-			$entries_array = array('entries'=>'', 'system_entries'=>'', 'newentries'=>$entries, 'newsystementries'=>$system_entries);
-		}
-	}
-
-    $botdata = array('ping' => 0, 'emergency' => 0, 'system' => 0);
-    foreach ($entries as $entry) {
-        if (!empty($entry['botdata']['ping'])) {
-            $botdata['ping']++;
-        } elseif (!empty($entry['botdata']['emergency'])) {
-		$botdata['emergency']++;
-	} elseif (!empty($entry['botdata']['system'])) {
-		$botdata['system']++;
-	}
+        $last_private = !empty($_POST['last_private']) ? $_POST['last_private'] : null; // whether the client last displayed a private message
+        if ($last_private == "null") {
+            $last_private = null;
+        }
+        $data = Array('updates' => 1);
+        // get the speakers
+        //$data['speakers'] = $this->speakerList(1);
+        //$entries = array_merge($entries, $this->speakerNotes($data['speakers']));
+    
+        $entries_array = array();
+        // use old way if json argument not defined for backwards compatibility
+        if (empty($_POST["json"])) {
+            $html = $system_html = $newentries = $newsystementries = '';
+            if($count > 0) {
+                $html = $this->chat->formatEntries($entries, '', true, $last_private, true, true);
+                $system_html = $this->chat->formatEntries($system_entries, null, false, null, true, true);
+            } else {
+                $newentries = $this->chat->formatEntries($entries, '', true, $last_private, 0, true);
+                $newsystementries = $this->chat->formatEntries($system_entries, null, false, null, 0, true);
+            }
+            $entries_array = array('html'=>$html, 'system_html'=>$system_html, 'newentries'=>$newentries, 'newsystementries'=>$newsystementries);
+        } else {
+            // new improved json way!
+            if ($count > 0) {
+                $entries_array = array('entries'=>$entries, 'system_entries'=>$system_entries, 'newentries'=>'', 'newsystementries'=>'');
+            } else {
+                $entries_array = array('entries'=>'', 'system_entries'=>'', 'newentries'=>$entries, 'newsystementries'=>$system_entries);
+            }
+        }
+        $botdata = array('ping' => 0, 'emergency' => 0, 'system' => 0);
+        foreach ($entries as $entry) {
+            if (!empty($entry['botdata']['ping'])) {
+                $botdata['ping']++;
+            } elseif (!empty($entry['botdata']['emergency'])) {
+            $botdata['emergency']++;
+        } elseif (!empty($entry['botdata']['system'])) {
+            $botdata['system']++;
+        }
     }
     $data = array_merge($data, $entries_array, array('count'=>$entry_count, 'system_count' => $system_count,
-	    'lastId'=>$lastId,'time'=>time(), 'firstDate'=>$firstDate,'lastDate'=>$lastDate,'botdata'=>$botdata));
+        'lastId'=>$lastId,'time'=>time(), 'firstDate'=>$firstDate,'lastDate'=>$lastDate,'botdata'=>$botdata));
 
     $data['lasttouched'] = $touched;
 
     // We want typing notification to have low latency:
     $data['typingstatus'] = $this->chat->getGlobalTypingStatus();
     return $data;
-	}
+    }
 
 	function speakerNotes($speakers)
 	{

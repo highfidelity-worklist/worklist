@@ -97,6 +97,10 @@ if(validateAction()) {
                 validateAPIKey();
                 processPendingReviewsNotifications();
                 break;
+            case 'pruneJournalEntries' : 
+                validateAPIKey();
+                pruneJournalEntries();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -538,4 +542,23 @@ function resetCronFile() {
     echo "<br/>Next hour: " . $newHour;
     unlink(REVIEW_NOTIFICATIONS_CRON_FILE);
     file_put_contents(REVIEW_NOTIFICATIONS_CRON_FILE, $newHour);
+}
+
+
+// Prune Journal entries by deleting all entries except the latest 100
+function pruneJournalEntries() {
+    $sql = " SELECT MAX(id) AS maxId FROM " . ENTRIES;
+    $result = mysql_query($sql);
+    if ($result) {
+        $row = mysql_fetch_assoc($result);
+    } else {
+		die( 'Failed to get all entries');
+	}
+	$total = (int) $row['maxId'] - 100;
+
+    $sql = " DELETE FROM " . ENTRIES . " WHERE id <= {$total};";
+	echo $sql;
+    $result = mysql_unbuffered_query($sql);
+	echo "<br/> # of deleted entries: " . mysql_affected_rows();
+
 }

@@ -1656,6 +1656,7 @@ class User {
  * @param status is the text status submitted to be udpated
  */
     public static function update_status($status = "") {
+		error_log('update_satus ' . $status);
         if (isset($_SESSION['userid'])){
             if ($status != "") {
                 $journal_message =  $_SESSION['nickname'] . ' is ' . $status;
@@ -1669,6 +1670,7 @@ class User {
             //Send message to the Journal
                 $journal_message = sendJournalNotification($journal_message);
                 if ($journal_message != 'ok') {
+                    error_log("failed to send notification ".$journal_message);
                     return;
                 }
             }

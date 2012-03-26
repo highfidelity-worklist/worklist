@@ -297,7 +297,6 @@ function StopStatus() {
     <div id="worktip" class="hidden"></div>
 <?php require_once('dialogs/popup-earnings.inc'); ?>
 <?php require_once('dialogs/popup-budget.inc'); ?>
-<?php require_once('dialogs/budget-expanded.inc'); ?>
 <?php require_once('dialogs/popups-userstats.inc'); ?>
     <div id="user-info" title="User Info"></div>
 <!-- If we are logged in, include User Info Popup -->
@@ -315,7 +314,7 @@ function StopStatus() {
         var queryStr = '<?php echo $query ?>';
         var currentTime = <?php echo time() ?>;
         var earliestDate = <?php echo outputForJS($chat->getEarliestDate()) ?>;
-        var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>, lastDate = <?php echo outputForJS(strtotime($entries[count($entries)-1]['date'])); ?>;
+        var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>, lastDate = <?php echo outputForJS(strtotime($entries[count($entries)-1]['date'])-365*24*60*60); ?>;
         var inThePresent = true;
         var lastId = <?php echo outputForJS($entries[count($entries)-1]['id']); ?>;
 <?php if(isset($_SESSION['userid'])): ?>
@@ -388,37 +387,13 @@ function StopStatus() {
         soundManager.debugMode = false;
     </script>
     <!--  setup tooltip for setting and attachement links -->
-    <script type="text/javascript" src="js/jquery.tooltip.js"></script>
+    <script type="text/javascript" src="js/plugins/jquery.tooltip.min.js"></script>
     <script type="text/javascript" src="js/userstats.js"></script>
-    <script type="text/javascript" src="js/budget.js"></script>
-<!--  tooltip plugin and dictionary -->
     <script type="text/javascript">
-        function MapToolTips() {
-            var tooltipPhraseBook = <?php include("tooltip.php"); ?>;
-            $.each(tooltipPhraseBook, function(k,v) {
-                $('.iToolTip.' + k).attr('title', v);
-            });
-            $('.iToolTip.hoverJobRow').each(function(a,b) {
-                var jobId = $(this).attr('id');
-                var jobIdNum = jobId.substring(jobId.lastIndexOf('-') + 1, jobId.length);
-                var tit = tooltipPhraseBook.hoverJobRow;
-                $(this).attr('title', (tit + ' #' + jobIdNum));
-            });
-            $('.iToolTip').tooltip({
-                track: false,
-                delay: 600,
-                showURL: false,
-                fade: 150,
-                extraClass: "smalltooltip",
-                positionLeft: true
-            });
-        }
-
         $(document).ready(function() {
-            MapToolTips();
             $('#settingsButton').tooltip({fade: 250});
             $('input[name="attachment"]').tooltip({fade: 250});
-            
+
             $('#feesDialog').dialog({
                 title: "Earnings",
                 autoOpen: false,
@@ -434,7 +409,7 @@ function StopStatus() {
                 $("#budgetPopup").dialog({
                     title: "Budget",
                     autoOpen: false,
-                    height: 190,
+                    height: 170,
                     width: 370,
                     position: ['center',60],
                     modal: true
