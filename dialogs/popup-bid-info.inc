@@ -33,25 +33,7 @@
             </tr>
         </table>
         <div class="clear"></div>
-        </form>
 <?php if ($is_runner){ ?>
-        <div id="popupSelectBudget" style="display:none" title="Select a budget">
-            <label for="budget-source" class="info-label">Source: </label>
-            <div class="budget-source">
-                <span id="budget-source-combo-area">
-                    <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">
-                        <option value="0" selected="selected">Select a budget</option>
-                    <?php 
-                        echo $user->getBudgetCombo(); 
-                    ?>
-                    </select>
-                </span>
-            </div>
-            <div>
-                <input type="button" id="confirm_budget"  value="OK">
-                <input type="button" id="cancel_budget" value="Cancel">
-            </div>
-        </div>
         <div class="clear"></div><br />
             <div class = "info-label block bidderStats">
                 Bidder statistics
@@ -75,4 +57,24 @@
 <?php } ?>
         <div style="clear:both"></div>
         <div id="popup-bid-info-buttons"></div>
+        </form>
     </div>
+<?php if ($is_runner){ ?>
+        <div id="popupSelectBudget" style="display:none" title="Select a budget">
+            <label for="budget-source" class="info-label">Source: </label>
+            <div class="budget-source">
+                <span id="budget-source-combo-area">
+                    <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">
+                        <option value="0" selected="selected">Select a budget</option>
+                    <?php 
+                        echo $user->getBudgetCombo(); 
+                    ?>
+                    </select>
+                </span>
+            </div>
+            <div>
+                <input type="button" id="confirm_budget"  value="OK">
+                <input type="button" id="cancel_budget" value="Cancel">
+            </div>
+        </div>
+<?php } ?>

@@ -651,8 +651,6 @@ $(document).ready(function(){
         if(bidData.id){
             $('#popup-bid-info form input[type="submit"]').remove();
             $('#popup-bid-info form input[type="button"]').remove();
-            $('#popup-bid-info-buttons input[type="submit"]').remove();
-            $('#popup-bid-info-buttons input[type="button"]').remove();
 
             $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
             $('#popup-bid-info #info-email').html('<a href="#" onClick="javascript:showUserInfo(' + bidData.bidder_id +');">' + bidData.nickname + '</a>');
