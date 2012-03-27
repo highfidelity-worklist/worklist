@@ -105,7 +105,8 @@ span.info-whisper {
 
 #quick-status {
     margin: 8px 0;
-    float: left
+    float: left;
+    clear: both;
 }
 
 #quick-status  select{
