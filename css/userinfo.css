@@ -65,12 +65,6 @@ p.small-text{
     height:20px;
 }
 
-#user-stats {
-    position: absolute;
-    right: 1em;
-    width: auto;
-}
-
 #user-location {
     float: left;
 }
@@ -315,4 +309,16 @@ p.bottom {
     height: 60px;
     resize: none;
     width: 95%;
+}
+
+.bid-info-label {
+    font-weight: bold;
+}
+.bidderStats {
+    height: 24px;
+    vertical-align: top;
+}
+
+.bid-info-label.notes {
+    vertical-align: top;
 }

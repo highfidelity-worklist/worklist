@@ -787,7 +787,13 @@ h2.extra .entry-date-extra {
     clear: both;
     padding:0 49px;
     line-height: 1.25;
+    word-break: break-all;
 }
+
+#system-drawer .entry-text {
+    width: 465px;
+}
+
 .entry a {
     color: #0076fc;
 }

@@ -4,36 +4,35 @@
         <input type="hidden" id="budget_id" name="budget_id" value="" />
         <table border="0" style="border-width:0px">
             <tr>
-                <td style="width:110px">Bidder</td>
+                <td class="bid-info-label" style="width:110px">Bidder</td>
                 <td><span id="info-email"></span></td>
             </tr>
             <tr>
-                <td>Amount</td>
+                <td class="bid-info-label">Amount</td>
                 <td>$<span id="info-bid-amount"></span></td>
             </tr>
             <tr>
-                <td>Bid Entered</td>
+                <td class="bid-info-label">Bid Entered</td>
                 <td><span id="info-bid-created"></span></td>
             </tr>
             <tr>
-                <td>Bid Expires</td>
+                <td class="bid-info-label">Bid Expires</td>
                 <td><span id="info-bid-expires"></span></td>
             </tr>
             <tr>
-                <td>Done In</td>
+                <td class="bid-info-label">Done In</td>
                 <td><span id="info-bid-done-in"></span> </td>
             </tr>
-            <tr>
-                <td>Bid Accepted</td>
+            <tr id="bidAcceptedRow">
+                <td class="bid-info-label">Bid Accepted</td>
                 <td><span id="info-bid-accepted"></span> </td>
             </tr>
             <tr>
-                <td>Notes</td>
-                <td style="text-align:justify;"><span id="info-notes"></span></td>
+                <td class="bid-info-label notes">Notes</td>
+                <td style="text-align:justify;"><div id="info-notes"></div></td>
             </tr>
         </table>
         <div class="clear"></div>
-        <br/>
         </form>
 <?php if ($is_runner){ ?>
         <div id="popupSelectBudget" style="display:none" title="Select a budget">
@@ -54,10 +53,10 @@
             </div>
         </div>
         <div class="clear"></div><br />
-            <p class = "info-label block">
-                Bidder statistics:
+            <div class = "info-label block bidderStats">
+                Bidder statistics
                     <img src="images/loader.gif" alt = "" class = "loader" /><span class = "loader">Please wait..</span>
-            </p>
+            </div>
 
             <table id = "user-stats">
                 <thead>
@@ -74,4 +73,6 @@
                 </tbody>
             </table>
 <?php } ?>
+        <div style="clear:both"></div>
+        <div id="popup-bid-info-buttons"></div>
     </div>

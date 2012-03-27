@@ -14,7 +14,7 @@
 }
 
 #page-content {
-    width:856px;
+    width: 100%;
     clear:none;
 }
 #page-content table {
@@ -46,7 +46,7 @@ span.info-whisper {
 
 .info-summ-big{
     clear:both;
-    margin:7px 0px 8px 0;
+    margin:0 0 8px 0;
 }
 
 .info-summ-big-text{
@@ -88,13 +88,13 @@ span.info-whisper {
 
 #left-panel {
     float:left;
-    width:48%;
-    margin:12px 0px 0px 0px!important;
+    width:420px !important;
+    margin:0 !important;
     padding:0!important;
 }
 #left-panel ul{
     list-style:none!important;
-    width:447px;
+    width:100%;
     margin:0!important;
     padding:0!important;
 }
@@ -104,7 +104,7 @@ span.info-whisper {
 }
 
 #quick-status {
-    margin-top: 15px;
+    margin: 8px 0;
     float: left
 }
 
@@ -115,10 +115,6 @@ span.info-whisper {
 #left-panel li.last {
     border-bottom:none;
     margin-top:10px;
-}
-#right-panel {
-    width:48%;
-    float:right;
 }
 #right-panel .moneyZone{
     -moz-border-radius: 6px;
@@ -171,8 +167,8 @@ span.info-whisper {
     width: 200px
 }
 
-.info-notes{
-    font-size:14px;
+.info-notes {
+    font-size: 14px;
 }
 
 .info-notes textarea{
@@ -182,6 +178,14 @@ span.info-whisper {
     width:416px;
     height:164px;
     margin-top:8px;
+}
+
+#popup-bid-info {
+    max-height: 570px;
+}
+#popup-bid-info #info-notes {
+    max-height: 243px;
+    overflow: auto;
 }
 
 #creatorBox, #runnerBox, #mechanicBox, .keyPeople{
@@ -214,9 +218,16 @@ span.info-whisper {
 }
 
 .project-label {
-    font-weight:bold;
-    margin:0px 7px 0px 0px;
+    font-weight: bold;
+    float: left;
+    width: 50px;
 }
+
+.functional-label {
+    font-weight: bold;
+    float: left;
+}
+
 
 .budget-label {
     font-weight: bold;
@@ -257,30 +268,37 @@ span.info-whisper {
     font-weight:bold;
     text-align:left;
     color: black;
-    padding: 0px 0px 3px 0px;
+    padding: 0 0 3px 0;
 }
 
 .buttonContainer {
-    margin: 4px 0;
     text-align:right;
+    display: inline;
+    float: right;
 }
 
 .buttonContainer-save {
     margin:15px 0px 20px -8px;
 }
 
-#bid-panel{
-    margin:10px 0 0px;
+.buttonContainer input {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
 }
 
-#fee-panel{
-    margin: 10px 0;
+
+#bid-panel {
+    margin: 5px 0 0px;
 }
+
 #fee-accordion #fee-panel {
     margin: 0;
+    width: 400px;
 }
+
 #fee-panel.ui-accordion-content {
-    padding: 10px;
+    margin-top: 5px;
+    padding: 0px;
     background-color: #FFFFDD;
 }
 #fee-panel.ui-widget-content {
@@ -290,6 +308,7 @@ span.info-whisper {
 #tip_desc {
     width:280px;
 }
+
 #edit_workitem_form ul li {
     float:left;
     list-style: none!important;
@@ -508,14 +527,6 @@ span.info-whisper {
     background-color: #FFFFDD;
 }
 
-.info-notes textarea{
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    border-radius: 6px;
-    width:410px;
-    height:164px;
-    margin-top:8px;
-}
 
 #edit-notes {
     height:164px;
@@ -526,15 +537,14 @@ span.info-whisper {
 
 #left-panel ul{
     list-style:none!important;
-    width:410px;
+    width: 100%;
     margin:0!important;
     padding:0!important;
 }
 
 #right-panel{
-    width:410px!important;
-    margin-left:30px;
-    float:left;
+    width: 420px!important;
+    float: right;
 }
 
 .info-data input[type=text]{
@@ -549,7 +559,7 @@ span.info-whisper {
 
 .commentZone{
     margin-top:18px;
-    width:418px;
+    width: 100%;
 }
 
 /* style analytics info */
@@ -732,7 +742,6 @@ input.button-disabled ,
 #skills-list {
     display: inline-block;
     font-size: 12px;
-    margin: 5px 0;
 }
 
 #skills {
@@ -838,6 +847,11 @@ input.button-disabled ,
     width: 355px;
 }
 
+.table-caption .noteWrapper {
+    float:left;
+    padding: 6px 0 0 0;
+}
+
 .table-caption .note {
     font-size: 10px;
     color: #876F6D;
@@ -855,7 +869,7 @@ input.button-disabled ,
 }
 
 #following {
-    border-bottom: 1px solid #98AAB2;
+    text-decoration:underline;
     margin-right: 10px;
 }
 
@@ -881,7 +895,8 @@ input.button-disabled ,
 }
 
 .switchmode a {
-    margin-left: 10px;
+    font-size: 12px;
+    text-decoration: underline;
 }
 
 .switchmode {
@@ -952,4 +967,26 @@ div.mechanic_id ul {
 
 .textJustify {
     text-align: justify;
+}
+
+#uploadButtonDiv {
+    display: none;
+}
+
+.table-fees, .table-fees td {
+    border-color: #aaaaaa;
+    border-style: solid;
+}
+
+.table-fees {
+    border-width: 0 0 1px 1px;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+}
+
+.table-fees td {
+    margin: 0;
+    padding: 4px;
+    border-width: 1px 1px 0 0;
 }
