@@ -117,7 +117,7 @@ include("head.html");
     var current_page = '<?php echo $currentPage ?>';
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
     var worklistUrl = '<?php echo SERVER_URL; ?>';
-
+        
     function validateCodeReviews() {
         if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
             $('.cr_anyone_field').prop('checked', true);
@@ -272,8 +272,7 @@ include("head.html");
         <!-- Popup for budget info-->
         <?php require_once('dialogs/popup-budget.inc'); ?>
     <div class="headerText">
-            Worklist is a marketplace to rapidly build software and websites using a global network of developers, 
-            designers and testers. Below is a list of our active projects.
+            Worklist allows you to rapidly build software using a global community of developers, designers, and project managers.
     </div>
     <div style="clear:both;"></div>
     <div id="errorMessage">No projects matched your selection</div>

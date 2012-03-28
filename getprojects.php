@@ -26,6 +26,20 @@ if($letter == "all"){
 // Count total number of active projects
 $activeProjectsCount = count($projectListing);
 
+//Sort items by Bidding count, then by Total Fees
+function sortProjects($a, $b) { 
+    if ( $b["bCount"] < $a["bCount"] ) return -1;
+    if ( $b["bCount"] > $a["bCount"] ) return 1;
+    if ( $b["cCount"] < $a["cCount"] ) return -1;
+    if ( $b["cCount"] > $a["cCount"] ) return 1; 
+    if ( $b["feesCount"] > $a["feesCount"] ) return -1;
+    if ( $b["feesCount"] < $a["feesCount"] ) return 1;
+     
+    return 0; 
+} 
+ 
+usort($projectListing, "sortProjects");
+
 // Create content for each page
 // Select projects that match the letter chosen and construct the array for
 // the selected page

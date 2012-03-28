@@ -378,8 +378,7 @@ class Project {
         $query = "
             SELECT " . ((count($selections)>0) ? implode(",", $selections) : "*")
             . " FROM `" . PROJECTS . "`" 
-            . $where . "
-            ORDER BY `name` ASC";
+            . $where . " ";
         $result = mysql_query($query);
 
         if (mysql_num_rows($result)) {
@@ -416,7 +415,7 @@ class Project {
                 $project['uCount'] = $uCount;
                 $project['cCount'] = $cCount;
                 $project['feesCount'] = $feesCount;
-                $projects[$project['project_id']] = $project;
+                $projects[$project['project_id']] = $project;                
             }
             return $projects;
         }
