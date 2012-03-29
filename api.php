@@ -433,12 +433,13 @@ function sendContactEmail(){
     $phone = isset($_REQUEST['phone']) ? $_REQUEST['phone'] : '';
     $proj_name = isset($_REQUEST['project']) ? $_REQUEST['project'] : '';
     $proj_desc = isset($_REQUEST['proj_desc']) ? $_REQUEST['proj_desc'] : '';
+    $website = isset($_REQUEST['website']) ? $_REQUEST['website'] : '';
     if (empty($phone) || empty($email) || empty($phone) || empty($proj_name) || empty($proj_desc)) {
         exit(json_encode(array('error' => 'All Fields are required!')));
     }
     require_once('./classes/Notification.class.php');
     $notify = new Notification();
-    if ($notify->emailContactForm($name, $email, $phone, $proj_name, $proj_desc)) {
+    if ($notify->emailContactForm($name, $email, $phone, $proj_name, $proj_desc, $website)) {
         exit(json_encode(array('success' => true)));
     } else {
         exit(json_encode(array('error' => 'There was an error sending your message, please try again later.')));

@@ -14,7 +14,10 @@
             class="LV_validation_message LV_invalid upload"></span>
             <input type="hidden" value="" name="logoProject">
         </p>        
-        <p class="info-label">SVN Repsitory:<br />
+        <p class="info-label">Website:<br />
+            <input type="text" name="website" id="website" class="text-field" size="48" />
+        </p>
+        <p class="info-label">SVN Repository:<br />
             <input type="text" name="repository" id="repository" class="text-field" size="48" />
         </p>
         <div class="accordion">

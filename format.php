@@ -134,6 +134,7 @@
                         data: {
                             name: $(':input[name="name"]', addForm).val(),
                             description: $(':input[name="description"]', addForm).val(),
+                            website: $(':input[name="website"]', addForm).val(),
                             repository: $(':input[name="repository"]', addForm).val(),
                             logo: $(':input[name="logoProject"]', addForm).val(),
                             cr_anyone: $(':input[name="cr_anyone"]', addForm).val(),

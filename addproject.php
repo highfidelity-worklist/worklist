@@ -29,7 +29,7 @@ if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
 
     $project = new Project();
     $cr_3_favorites = $_REQUEST["cr_3_favorites"];
-    $args = array( 'name', 'description', 'repository', 'logo', 'cr_anyone', $cr_3_favorites, 'cr_project_admin', 'cr_job_runner'  );
+    $args = array( 'name', 'description', 'website', 'repository', 'logo', 'cr_anyone', $cr_3_favorites, 'cr_project_admin', 'cr_job_runner'  );
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
@@ -48,6 +48,7 @@ if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
 
     $project->setName($name);
     $project->setDescription($description);
+    $project->setWebsite($website);
     $project->setRepository($repository);
     $project->setContactInfo($user->getUsername());
     $project->setOwnerId($userId);

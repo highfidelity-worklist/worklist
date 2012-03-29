@@ -50,6 +50,7 @@ if ($projectName) {
     // save changes to project
     if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
         $inProject->setDescription($_REQUEST['description']);
+        $inProject->setWebsite($_REQUEST['website']);
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
         $cr_anyone = ($_REQUEST['cr_anyone']) ? 1 : 0;
         $cr_3_favorites = ($_REQUEST['cr_3_favorites']) ? 1 : 0;
@@ -1554,6 +1555,9 @@ if (is_object($inProject)) {
     </p>
     <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>]</h2>
         <fieldset id="editContainer">
+            <p class="info-label">Website:
+                <input name="website" id="website" type="text" value="<?php echo $inProject->getWebsite(); ?>" />
+            </p>
             <p class="info-label">Edit Description:<br />
                 <textarea name="description" id="description" size="48" /><?php echo $inProject->getDescription(); ?></textarea>
             </p>
@@ -1600,6 +1604,13 @@ if (is_object($inProject)) {
         <li><strong>Repository:</strong> <a href="<?php echo $inProject->getRepoUrl(); ?>"><?php echo $inProject->getRepoUrl(); ?></a></li>
 <?php else: ?>
         <li><strong>Repository:</strong> </li>
+<?php endif; ?>
+<?php if (! $edit_mode) : ?>
+        <li><strong>Website:</strong>
+    <?php if ($inProject->getWebsite() != '') : ?>
+            <?php echo $inProject->getWebsiteLink(); ?>
+    <?php endif; ?>
+        </li>
 <?php endif; ?>
         <li><strong>Fund:</strong> <?php echo $inProject->getFundName(); ?></li>
 <?php if ($inProject->getTestFlightTeamToken() != '' && ! $edit_mode) : ?>

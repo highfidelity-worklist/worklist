@@ -1660,6 +1660,10 @@ if ($action =="edit"):  ?>
                             <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>" target="_blank">
                                 <?php echo htmlspecialchars($worklist['project_name']);?>
                             </a>
+                            <?php if ( !empty($worklist['p_website']) ) {
+                                $project = new Project($worklist['project_id']);
+                                echo "&nbsp;<a class='project_website' href='" . $project->getWebsiteUrl() . "' target='_blank'>website</a>";
+                            }?>
                         <?php else :?>
                             <span>Not assigned</span>
                         <?php endif;?>

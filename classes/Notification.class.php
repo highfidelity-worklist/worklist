@@ -915,7 +915,7 @@ class Notification {
     }
     
     // HOME PAGE CONTACT/ADD PROJECT FORM EMAIL
-    public function emailContactForm($name, $email, $phone, $proj_name, $proj_desc){
+    public function emailContactForm($name, $email, $phone, $proj_name, $proj_desc, $website){
         $subject = "Worklist - Add Project Contact Form";
         $html = "<html><head><title>Worklist - Add Project Contact Form</title></head><body>";
         $html .= "<h2>Project Contact Information:</h2>";
@@ -923,6 +923,7 @@ class Notification {
         $html .= "<p><strong>Email:</strong> " . $email . "</p>";
         $html .= "<p><strong>Phone #:</strong> " . $phone . "</p>";
         $html .= "<p><strong>Project Name:</strong> " . $proj_name . "</p>";
+        $html .= "<p><strong>Website:</strong> " . $website . "</p>";
         $html .= "<p><strong>Project Description:</strong><br />" . nl2br($proj_desc) . "</p>";
         $html .= "</body></html>";
         if(send_email("contact@worklist.net", $subject, $html)){

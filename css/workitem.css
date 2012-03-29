@@ -86,6 +86,10 @@ span.info-whisper {
     color: #98AAB2;
 }
 
+.project_website {
+    font-size: 10px;
+}
+
 #left-panel {
     float:left;
     width:420px !important;

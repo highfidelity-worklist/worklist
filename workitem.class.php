@@ -604,7 +604,7 @@ WHERE id = ' . (int)$id;
         $query = "SELECT w.id, w.summary,w.creator_id,w.runner_id, w.mechanic_id, ".
                  " u.nickname AS runner_nickname, u.id AS runner_id,".
                  " uc.nickname AS creator_nickname, w.status, w.notes, ".
-                 " w.project_id, p.name AS project_name, p.repository AS repository,
+                 " w.project_id, p.name AS project_name, p.repository AS repository, p.website AS p_website,
                   w.sandbox, w.bug_job_id, w.is_bug, w.budget_id, b.reason AS budget_reason, b.giver_id AS budget_giver_id
                   FROM  " . WORKLIST . " as w
                   LEFT JOIN " . USERS . " as uc ON w.creator_id = uc.id

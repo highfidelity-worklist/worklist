@@ -77,7 +77,8 @@ $(function() {
                 email: $('#contactEmail').val(),
                 phone: $('#contactPhone').val(),
                 project: $('#contactProject').val(),
-                proj_desc: $('#contactProjDesc').val()
+                proj_desc: $('#contactProjDesc').val(),
+                website: $('#contactWebsite').val()
             },
             success: function(json) {
                 if (json === null) {

@@ -17,6 +17,7 @@ class Project {
     protected $project_id;
     protected $name;
     protected $description;
+    protected $website;
     protected $budget;
     protected $repository;
     protected $contact_info;
@@ -85,7 +86,7 @@ class Project {
         }
 
         $query = "
-            SELECT p.project_id, p.name, p.description, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, 
+            SELECT p.project_id, p.name, p.description, p.website, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, 
             p.fund_id, p.testflight_team_token, p.logo, p.cr_anyone, p.cr_3_favorites, p.cr_project_admin, p.cr_job_runner
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
@@ -103,6 +104,7 @@ class Project {
         $this->setProjectId($row['project_id'])
              ->setName($row['name'])
              ->setDescription($row['description'])
+             ->setWebsite($row['website'])
              ->setBudget($row['budget'])
              ->setRepository($row['repository'])
              ->setContactInfo($row['contact_info'])
@@ -177,6 +179,27 @@ class Project {
     public function getDescription() {
         return $this->description;
     }    
+
+    public function setWebsite($website) {
+        $this->website = $website;
+        return $this;
+    }
+
+    public function getWebsite() {
+        return $this->website;
+    }
+
+    public function getWebsiteLink() {
+        return linkify($this->website);
+    }
+
+    public function getWebsiteUrl() {
+        if (strpos($this->getWebsite(), "http") === 0) {
+            return $this->getWebsite();
+        } else {
+            return "http://" . $this->getWebsite();
+        }
+    }
     
     public function setBudget($budget) {
         $this->budget = $budget;
@@ -295,11 +318,13 @@ class Project {
     }
 
     protected function insert() {
-        $query = "INSERT INTO ".PROJECTS." (name, description, budget, repository, contact_info, active, owner_id, testflight_team_token,
-         logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner) ".
+        $query = "INSERT INTO " . PROJECTS . "
+            (name, description, website, budget, repository, contact_info, active, owner_id, testflight_team_token,
+                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
+            "'" . mysql_real_escape_string($this->getWebsite()) . "', " .
             "'".mysql_real_escape_string($this->getBudget())."', ".
             "'".mysql_real_escape_string($this->getRepository())."', ".
             "'".mysql_real_escape_string($this->getContactInfo())."', ".
@@ -336,6 +361,7 @@ class Project {
             SET
                 name='".mysql_real_escape_string($this->getName())."',
                 description='".mysql_real_escape_string($this->getDescription())."',
+                website='" . mysql_real_escape_string($this->getWebsite()) . "',
                 budget='".mysql_real_escape_string($this->getBudget())."',
                 repository='" .mysql_real_escape_string($this->getRepository())."',
                 contact_info='".mysql_real_escape_string($this->getContactInfo())."',
