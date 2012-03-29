@@ -36,6 +36,7 @@ $tooltips = array(
     'budgetSubmitted1' => 'Funds linked to fees in Done\'d jobs that are not yet paid for all my budgets',
     'budgetPaid1'      => 'Funds linked to fees that have been Paid through system for all my budgets',
     'budgetTransfered1'  => 'Funds granted to others via giving budget for all my budgets',
+    'budgetManaged1'  => 'Total amount of budget funds granted to me since joining Worklist',
     
     /* Update Budget Info tooltips         */
     'budgetSave' => 'Save changes made to title or notes',

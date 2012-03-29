@@ -66,6 +66,7 @@ class User {
     protected $paid;
     protected $transfered;
     protected $allFees;
+    protected $managed;
     /**
      * With this constructor you can create a user by passing an array.
      *
@@ -749,7 +750,17 @@ class User {
         return $ret;
     }
    
+    public function getTotalManaged() {
+        $sql = 'SELECT SUM(`amount`) AS `managed`
+                FROM `' . BUDGETS . '`
+                WHERE `receiver_id` = ' . $_SESSION['userid'] . ' ';
 
+        $res = mysql_query($sql);
+            if ($res && $row = mysql_fetch_assoc($res)) {
+                return $row['managed'];
+            }
+        return false;
+    }
     /**
      * @return the $nickname
      */
