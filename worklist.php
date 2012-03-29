@@ -370,7 +370,13 @@ require_once("head.html");
         }
 
 <?php if (! $hide_project_column) : ?>
-        row+= '<td width="9%"><span class="taskProject" id="' + json[16] + '"><a href="' + worklistUrl + '' + json[17] + '">' + (json[17] == null ? '' : json[17]) + '</a></span></td>';
+        var project_link = worklistUrl + '' + json[17];
+        row +=
+            '<td width="9%" class="clickable not-workitem" onclick="location.href=\'' + project_link + '\'">' +
+                '<span class="taskProject" id="' + json[16] + '">' +
+                    '<a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a>' + 
+                '</span>' + 
+            '</td>';
 <?php endif; ?>
         //If job is a bug, add reference to original job
         if( json[18] > 0) {
@@ -426,7 +432,7 @@ require_once("head.html");
         who += ', ' + createTagWho(json[14],json[5],"mechanic");
     }
 
-    row += '<td width="9.5%" class="who">' + pre + who + post + '</td>';
+    row += '<td width="9.5%" class="who not-workitem">' + pre + who + post + '</td>';
 
         if (json[2] == 'WORKING' && json[11] != null) {
             if ((RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') == 'Past due') {
@@ -631,20 +637,19 @@ require_once("head.html");
                 
                 /*commented for remove tooltip */
                 //MapToolTips();
-                $('tr.row-worklist-live').hover(
-                    function() {
-                        var selfRow=$(this);
-                        $(".taskSummary",this).wrap("<a href='" +
-                            buildHref( SetWorkItem(selfRow) ) +
-                            "'></a>");
-                        $(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").click(
-                            function() {
-                                showUserInfo($(this).attr("title"));
-                            }
-                        );
-                    },function() {
-                        $(".taskSummary",this).unwrap();
-                        $(".creator,.runner,.mechanic",$(".who",this)).toggleClass("linkTaskWho").unbind("click");;
+                $('tr.row-worklist-live').each(function() {
+                    var selfRow = $(this);
+                    $(".taskSummary", selfRow).parent().addClass("taskSummaryCell");
+                    $("td:not(.not-workitem)", selfRow).click(function() {
+                        window.location.href = buildHref( SetWorkItem(selfRow) );
+                    }).addClass("clickable");
+                
+                    $(".creator, .runner, .mechanic", $(".who", selfRow)).toggleClass("linkTaskWho").click(
+                        function() {
+                            showUserInfo($(this).attr("title"));
+                        }
+                    );
+
                 });
 
                 $('.worklist-pagination-row a').click(function(e){

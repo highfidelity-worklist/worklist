@@ -442,12 +442,23 @@ td.textAlignReport {
 #send-ping-btn {
     margin-top: 8px;
 }
-.taskProject {
+.taskProject,
+.taskSummaryCell {
     cursor: pointer;
 }
 
 .taskProject:hover {
     text-decoration: underline;
+}
+
+.taskSummary {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.taskSummary:hover {
+    text-decoration: none;
+    color: #98AAB2;
 }
 
 .ui-state-default .ui-combobox {
