@@ -38,14 +38,12 @@ if ($userId > 0) {
 }
 
 // TODO: Would be good to take out all the checks for isset($_SESSION['userid'] etc. and have them use $user instead, check $user->getId() > 0.
-
 if (empty($worklist_id)) {
     return;
 } else {
     // feed links will be made specific to the workitem
     $inWorkItem = true;
 }
-
 //Set an empty variable for $journal_message to avoid errors/warnings with .=
 $journal_message = null;
 
@@ -310,7 +308,7 @@ if ($action == 'new-comment') {
         $worklist_id = (int) $_REQUEST['worklist_id'];
         $user_id = (int) $_REQUEST['user_id'];
         $comment = $_REQUEST['comment'];
-        $correspondent = addComment($worklist_id,
+        $rt = addComment($worklist_id,
             $user_id,
             $comment,
             $parent_comment);
@@ -330,7 +328,7 @@ if ($action == 'new-comment') {
                     'type' => 'comment',
                     'workitem' => $workitem,
                     'recipients' => array('creator', 'runner', 'mechanic', 'followers'),
-                    'emails' => $correspondent),
+                    'emails' => $rt['correspondent']),
                     array(
                         'who' => $_SESSION['nickname'],
                         // removed nl2br as it's cleaner to be able to choose if this is used on output
@@ -339,8 +337,21 @@ if ($action == 'new-comment') {
                 );
         }
     }
-
-    $redirectToDefaultView = true;
+    sendJournalNotification($journal_message);
+    $comment = new Comment();
+    $comment->findCommentById((int) $rt['id']);
+    $result = array('success' => true,
+                    'id' => $rt['id'],
+            'comment' => replaceEncodedNewLinesWithBr(linkify($comment->getComment())),
+            'avatar' =>  $comment->getUser()->getAvatar(),
+            'nickname' => $comment->getUser()->getNickname(),
+            'userid' => $comment->getUser()->getId(),
+            'date' => relativeTime(strtotime($comment->getDate()) - time()));
+    ob_start();
+    $json = json_encode($result);
+    echo $json;
+    ob_end_flush();
+    exit;
 }
 
 if($action =='invite-people') {
@@ -1211,7 +1222,7 @@ function changeStatus($workitem, $newStatus, $user) {
             try {
                 $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
                 $comment = "Code review available here:\n$result";
-                $correspondent = addComment($workitem->getId(), $user->getId(), $comment);
+                $rt = addComment($workitem->getId(), $user->getId(), $comment);
             } catch (Exception $ex) {
                 error_log("Could not paste diff: \n$ex");
             }
@@ -1248,11 +1259,11 @@ function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id) {
     $comment->setComment($comment_text);
 
     try {
-        $comment->save();
+        $id = $comment->save();
     } catch(Exception $e) {
         error_log("Failure saving comment:\n".$e); 
     }  
     $redirectToDefaultView = true;
-
-    return $correspondent;
+    $result = array('correspondent' => $correspondent, 'id' => $id);
+    return $result;
 }

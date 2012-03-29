@@ -245,7 +245,7 @@ class Comment
 			$id = $this->insert();
 			if ($id !== false) {
 				$this->setId($id);
-				return true;
+				return $id;
 			}
 			return false;
 		} else {

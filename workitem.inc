@@ -208,7 +208,105 @@ function reply(id) {
     leftMargin= (20 + parseInt(commentMargin)) + "px";
     clone.css({'margin-left':leftMargin});
     $('.commentform input[name=comment_id]').val(id);
+    $('.commentform form input[name=newcomment]').click(function(event) {
+        event.preventDefault();
+        postComment();
+    });
     runDisableable();
+}
+
+function postComment() {
+    var id = $('.commentform input[name=comment_id]').val();
+    var my_comment = $('.commentform form textarea[name=comment]').val();
+    var orderby = '<?php echo $order_by; ?>';
+    var color = 'imOdd';
+    $('.commentform form textarea[name=comment]').val('');
+    $('.commentform input[name=comment_id]').val('');
+    $('.commentform').css({'margin-left':0});
+    var commentForm = $('.commentform');
+    var clone = commentForm.clone();
+    commentForm.remove();
+
+    $.ajax({
+        type: 'post',
+        url: 'workitem.php',
+        data: {
+            job_id: workitem_id,
+            worklist_id: workitem_id,
+            user_id: user_id,
+            newcomment: '1',
+            order_by: orderby,
+            comment: my_comment,
+            comment_id: id
+        },
+        dataType: 'json',
+        success: function(data) {
+            var depth;
+            var elementClass;
+            var order = '';
+            if (data.success) {
+                if (id != '') {
+                    elementClass = $('#comment-' + id).attr('class').split(" ");
+                    depth = Number(elementClass[1].substring(elementClass[1].indexOf('-') + 1)) + 1;
+                } else {
+                    depth = 0;
+                }
+                if (orderby == 'DESC' && depth > 0) {
+                    order = 'desc';
+                }
+                var replyLink = (depth < 6) ? '<div class="reply-lnk">' +
+                        '<a href="#commentform" onClick="reply(' + data.id + '); return false;">Reply</a>' +
+                    '</div>' : '';
+                var newcomment = 
+                '<li id="comment-' + data.id + '" class="comment depth-' + depth + ' ' + color + ' ' + order + '">' +
+                    '<div class="comment-info">' +
+                        '<span class="author profile-link" onClick="showUserInfo(' + data.userid +')"><strong>'+ data.nickname +'</strong>&nbsp;' +
+                            '<span class="date">' + data.date + '</span>' +
+                        '</span>' +
+                    '</div>' +
+                    '<div class="comment">' +
+                        '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" onClick="showUserInfo(' + data.userid + ')" />' +
+                         data.comment +
+                    '</div>' + 
+                    replyLink +
+                '</li>';
+                if (orderby == 'DESC') {
+                    if (id == '') {
+                        $('.commentZone ul').prepend(newcomment);
+                    } else {
+                        $(newcomment).insertBefore($('#comment-' + id).prevUntil('li[class*="' + (depth -1) + '"]').andSelf().filter(":first"));
+                    }
+                    $('.commentZone ul').prepend(clone);
+                } else {
+                    if (id == '') {
+                        $('.commentZone ul').append(newcomment);
+                    } else {
+                        $(newcomment).insertAfter($('#comment-' + id).nextUntil('li[class*="' + (depth -1) + '"]').andSelf().filter(":last"));
+                    }
+                    $('.commentZone ul').append(clone);
+                }
+                $('.commentform form input[name=newcomment]').click(function(event) {
+                    event.preventDefault();
+                    postComment();
+                });
+                var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
+                $('div.commentZone li').width(thinnestComment);
+                $('div.commentform textarea').width(thinnestComment);
+                $('#commentZone').css({'opacity':'1'});
+                $('.commentZone ul li').each(function (i) {
+                    if (color == 'imEven') {
+                        $(this).removeClass('imOdd');
+                        $(this).addClass('imEven');
+                    } else {
+                        $(this).removeClass('imEven');
+                        $(this).addClass('imOdd');
+                    }
+                    color = (color == 'imEven') ? 'imOdd' : 'imEven';
+                });
+                
+            }
+        }
+    });
 }
 
     var getSliderValueFromText = function(val) {
@@ -253,8 +351,6 @@ function reply(id) {
     }
 
 $(document).ready(function(){
-
-
     $('#popupSelectBudget').dialog({
         autoOpen: false,
         modal: true,
@@ -458,7 +554,11 @@ $(document).ready(function(){
     var has_budget = <?php echo $has_budget;?>;
     var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
     var isFollowing = <?php echo $workitem->isUserFollowing($user_id) ? 'true' : 'false';?>;
-
+   
+   $('.commentform form input[name=newcomment]').click(function(event) {
+        event.preventDefault();
+        postComment();
+    });
     $('#following').click(function() {
         $.ajax({
             type: 'post',
