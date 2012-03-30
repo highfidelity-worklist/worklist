@@ -606,7 +606,7 @@ function showLatest() {
                 var drawer = $("#system-drawer");
                 drawer.empty();
                 drawer.append(json.system_html);
-                $('#system-drawer').scrollTo('100%');// scrolling to the end of the drawer
+                $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;
             }
             finishUpdate('100%', false);
         },
@@ -809,7 +809,7 @@ function updateNewMessages(json) {
         // [End Comment] 12-Mar-2011 <godka>
         
         applyMessagePruning();
-        $('#system-drawer').scrollTo('100%');// scrolling to the end of the drawer
+        $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;// scrolling to the end of the drawer
         enlivenEntries();
     }
     if (json.lastId && json.lastId > 0) {
@@ -1597,7 +1597,7 @@ function getEntriesAt(toDate) {
             var drawer = $("#system-drawer");
             drawer.empty();
             drawer.append(json.system_html);
-            $('#system-drawer').scrollTo('100%');// scrolling to the end of the drawer
+            $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;// scrolling to the end of the drawer
         }
 
         finishUpdate(scrolllTo, false);
@@ -2340,9 +2340,8 @@ function adjustSystemDrawerSize(){
     $('#system-drawer').height(height);
 
 
-    $('#system-drawer').scrollTo('100%');
-    $('#system-biddingJobs').scrollTo('100%');
-    $('#system-reviewJobs').scrollTo('100%');
+    $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;
+    $('#system-biddingJobs')[0].scrollTop = $('#system-biddingJobs')[0].scrollHeight;
 }
 
 
@@ -2577,7 +2576,7 @@ $(window).ready(function() {
                 var drawer = $("#system-drawer");
                 drawer.empty();
                 drawer.append(json.system_html);
-                $('#system-drawer').scrollTo('100%');// scrolling to the end of the drawer
+                $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;// scrolling to the end of the drawer
             }
         }, 'json');
         return false;
@@ -4323,6 +4322,6 @@ function fillBiddingReviewDrawers(json) {
         }
 
         makeWorkitemTooltip(".workitemtooltip");
-        $('#system-drawer').scrollTo('100%');
-        $('#system-biddingJobs').scrollTo('100%');
+        $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;
+        $('#system-biddingJobs')[0].scrollTop = $('#system-biddingJobs')[0].scrollHeight;
 }
