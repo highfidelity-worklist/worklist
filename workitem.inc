@@ -196,6 +196,7 @@ var workitem_id = <?php echo $worklist['id'];?> ;
 var imageArray = new Array();
 var documentsArray = new Array();
 var ping_who = '';
+var ping_bid_id = 0;
 worklistUrl = '<?php echo SERVER_URL; ?>';
 Workitem.sandbox_url = '<?php echo $worklist['sandbox']; ?>';
 
@@ -975,6 +976,7 @@ $(document).ready(function(){
 
     function pingBidder(id) {
         ping_who = 'bidder';
+        ping_bid_id = id;
         $('#popup-pingtask form p #echo-journal').parent('p').remove();
         $('#popup-pingtask form h5').html('Ping about Bid');
         $('#popup-pingtask form input[name="bidder"]').val(id);
@@ -1160,15 +1162,19 @@ $(document).ready(function(){
             var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
-            var data = {id : <?php echo $worklist_id; ?>, who : ping_who, msg : msg, mail : mail, journal : journal, cc : cc};
+            var data = {id : <?php echo $worklist_id; ?>, who : ping_who, bid_id: ping_bid_id, msg : msg, mail : mail, journal : journal, cc : cc};
             $.ajax({
                 type: "POST",
                 url: 'pingtask.php',
                 data: data,
                 dataType: 'json',
-                success: function() {
-                    $("#sent-notify").html("<span>Your ping has been sent.</span>");
-                    $("#sent-notify").dialog("open");
+                success: function(json) {
+                    if (json && json.error) {
+                        alert("Ping failed:" + json.error);
+                    } else {
+                        $("#sent-notify").html("<span>Your ping has been sent.</span>");
+                        $("#sent-notify").dialog("open");
+                    }
                 }
             });
             $('#popup-pingtask').dialog('close');
@@ -1183,6 +1189,7 @@ $(document).ready(function(){
             }
 
             ping_who = 'mechanic';
+            ping_bid_id = 0;
             $('#popup-pingtask form h5').html('Ping the Mechanic about the task');
             $('#popup-pingtask').dialog('open');
             $('#popup-pingtask').dialog('option', 'title', 'Ping the Mechanic about the task');
@@ -1196,6 +1203,7 @@ $(document).ready(function(){
             }
 
             ping_who = 'runner';
+            ping_bid_id = 0;
             $('#popup-pingtask form h5').html('Ping the Runner about the task');
             $('#popup-pingtask').dialog('open');
             $('#popup-pingtask').dialog('option', 'title', 'Ping the Runner about the task');
@@ -1209,6 +1217,7 @@ $(document).ready(function(){
             }
 
             ping_who = 'creator';
+            ping_bid_id = 0;
             $('#popup-pingtask form h5').html('Ping the Creator about the task');
             $('#popup-pingtask').dialog('open');
             $('#popup-pingtask').dialog('option', 'title', 'Ping the Creator about the task');

@@ -32,7 +32,6 @@ $send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
 if (isset($_REQUEST['id'])) {
     $item_id = intval($_REQUEST['id']);
     $who = $_REQUEST['who'];
-    $bid_id = intval($_REQUEST['bid_id']);
     // Get item
     $item = getWorklistById( $item_id );
 
@@ -56,6 +55,12 @@ if (isset($_REQUEST['id'])) {
         $receiver_email = $receiver->username;
     } else if ($who == 'bidder') {
         // Get bidder Nickname & email
+        if (isset($_REQUEST['bid_id'])) {
+            $bid_id = (int) $_REQUEST['bid_id'];
+        } else {
+            echo json_encode(array("error" => "missing parameter bid_id"));
+            die();
+        }
         $bid = new Bid();
         $bid->findBidById($bid_id);
         $bid_info = $bid->toArray();

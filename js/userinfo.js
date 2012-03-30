@@ -208,9 +208,13 @@ var UserInfo = {
                 url: 'pingtask.php',
                 data: data,
                 dataType: 'json',
-                success: function() {
-                    $("#sent-notify").html("<span>Your message has been sent.</span>");
-                    $("#sent-notify").dialog("open");
+                success: function(json) {
+                    if (json && json.error) {
+                        alert("Ping failed:" + json.error);
+                    } else {
+                        $("#sent-notify").html("<span>Your message has been sent.</span>");
+                        $("#sent-notify").dialog("open");
+                    }
                 }
             });
             $('#popup-pingtask').dialog('close');
