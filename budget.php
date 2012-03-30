@@ -114,7 +114,7 @@ class BudgetInfo {
     **/
     public function getSumOfFeeNotPaidByBudget($budget_id) {
         $query = "SELECT SUM(`amount`) FROM `" . FEES . 
-            "` WHERE paid = 0  AND `" . FEES . 
+            "` WHERE paid = 0 AND amount > 0  AND `" . FEES . 
             "`.`withdrawn` != 1 AND worklist_id IN (SELECT id FROM " . 
                 WORKLIST . " WHERE budget_id = " . $budget_id . ")";
         $result_query = mysql_query($query);
