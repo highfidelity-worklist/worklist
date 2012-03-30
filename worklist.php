@@ -641,6 +641,7 @@ require_once("head.html");
                 $('tr.row-worklist-live').each(function() {
                     var selfRow = $(this);
                     $(".taskSummary", selfRow).parent().addClass("taskSummaryCell");
+                    $('.taskSummary', selfRow).wrap('<a href="' + buildHref(SetWorkItem(selfRow)) + '"></a>');
                     $("td:not(.not-workitem)", selfRow).click(function() {
                         window.location.href = buildHref( SetWorkItem(selfRow) );
                     }).addClass("clickable");
