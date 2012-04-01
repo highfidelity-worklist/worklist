@@ -447,8 +447,9 @@ td.textAlignReport {
     cursor: pointer;
 }
 
-.taskProject:hover {
-    text-decoration: underline;
+.taskSummaryCell a,
+.taskProject a {
+    color: #333333;
 }
 
 .taskSummary {
@@ -456,7 +457,8 @@ td.textAlignReport {
     text-decoration: underline;
 }
 
-.taskSummary:hover {
+.taskSummary:hover,
+.taskProject a:hover {
     text-decoration: none;
     color: #98AAB2;
 }
