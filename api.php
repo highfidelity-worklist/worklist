@@ -4,11 +4,13 @@ require_once('functions.php');
 require_once('class/Session.class.php');
 require_once('class/Utils.class.php');
 require_once('class/Database.class.php');
-require_once("class.session_handler.php");
-require_once("classes/Project.class.php");
-require_once("classes/User.class.php");
-require_once ("models/DataObject.php");
-require_once ("models/Review.php");
+require_once('class.session_handler.php');
+require_once('classes/Project.class.php');
+require_once('classes/User.class.php');
+require_once('models/DataObject.php');
+require_once('models/Review.php');
+require_once('sandbox-util-class.php');
+require_once('send_email.php');
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 // TODO: add API keys to these function calls
@@ -40,8 +42,8 @@ if(validateAction()) {
                 getTaskPosts();
                 break;
             case 'getLatestForNickname':
-	            getLatestForNickname();
-	            break;
+                getLatestForNickname();
+                break;
             case 'uploadProfilePicture':
                 uploadProfilePicture();
                 break;
@@ -100,6 +102,21 @@ if(validateAction()) {
             case 'pruneJournalEntries' : 
                 validateAPIKey();
                 pruneJournalEntries();
+                break;
+            case 'createRepo':
+                createRepo();
+                break;
+            case 'createSandbox':
+                createSandbox();
+                break;
+            case 'createDatabaseNewProject':
+                createDatabaseNewProject();
+                break;
+            case 'sendNewProjectEmails':
+                sendNewProjectEmails();
+                break;
+            case 'modifyConfigFile':
+                modifyConfigFile();
                 break;
             default:
                 die("Invalid action.");
@@ -563,3 +580,104 @@ function pruneJournalEntries() {
 	echo "<br/> # of deleted entries: " . mysql_affected_rows();
 
 }
+
+function createDatabaseNewProject() {
+    $sandBoxUtil = new SandBoxUtil();
+    if (array_key_exists('project', $_REQUEST)) {
+        try {
+            if ($sandBoxUtil->createDatabaseNewProject($_REQUEST['project'], $_REQUEST['username'])) {
+                echo json_encode(array('success'=>true, 'message'=>'Database created succesfully'));
+            } else {
+                echo json_encode(array('success'=>false, 'message'=>'Database creation failed'));
+            }
+        } catch (Exception $e) {
+            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
+        }
+    } else {
+        echo json_encode(array('success'=>false, 'message'=>'Missing Parameters'));
+    }
+}
+
+function createRepo() {
+    $sandBoxUtil = new SandBoxUtil();
+    if (array_key_exists('project', $_REQUEST)) {
+        try {
+            if ($sandBoxUtil->createRepo($_REQUEST['project'])) {
+                echo json_encode(array('success'=>true, 'message'=>'Repository created succesfully'));
+            } else {
+                echo json_encode(array('success'=>false, 'message'=>'Repository not created'));
+            }
+        } catch (Exception $e) {
+            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
+        }
+    } else {
+        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
+    }
+}
+
+function createSandbox() {
+    $sandBoxUtil = new SandBoxUtil();
+    if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
+        && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
+        try {
+            if ($sandBoxUtil->createSandbox($_REQUEST['username'], 
+                                        $_REQUEST['nickname'],
+                                        $_REQUEST['unixusername'], 
+                                        $_REQUEST['projectname'], 
+                                        null, 
+                                        $_REQUEST['newuser'])) {
+                $user = new User();
+                $user->findUserByNickname($_REQUEST['nickname']);
+                $user->setHas_sandbox(1);
+                $user->setUnixusername($_REQUEST['unixusername']);
+                $user->setProjects_checkedout($_REQUEST['projectname']);
+                $user->save();
+                echo json_encode(array('success'=>true, 'message'=>'Sandbox created'));
+            } else {
+                echo json_encode(array('success'=>false, 'message'=>'Sandbox creation and project checkout failed'));
+            }
+        } catch (Exception $e) {
+            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
+        }
+    } else {
+        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
+    }
+}
+
+function sendNewProjectEmails() {
+    if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
+        && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
+        $data = array();
+        $data['project_name'] = $_REQUEST['projectname'];
+        $data['nickname'] = $_REQUEST['unixusername'];
+        $data['database_user'] = $_REQUEST['dbuser'];
+        $user = new User();
+        $adminEmails = $user->getAdminEMails();
+        sendTemplateEmail($adminEmails, 'ops-project-created', $data);
+        if (!sendTemplateEmail($_REQUEST['username'], $_REQUEST['template'], $data)) {
+            echo json_encode(array('success'=>false, 'message'=>'Emails not sent'));
+        } else {
+            echo json_encode(array('success'=>true, 'message'=>'Emails sent out'));
+        }
+    } else {
+        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
+    }
+}
+
+function modifyConfigFile() {
+    $sandBoxUtil = new SandBoxUtil();
+    if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
+        && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
+        if ($sandBoxUtil->modifyConfigFile($_REQUEST['unixusername'], 
+                                           $_REQUEST['projectname'],
+                                           $_REQUEST['dbuser'])) {
+            echo json_encode(array('success'=>true, 'message'=>'Sandbox created'));
+        } else {
+            echo json_encode(array('success'=>false, 'message'=>'Sandbox creation and project checkout failed'));
+        }
+    } else {
+        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
+    }
+}
+
+?>

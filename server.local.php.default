@@ -55,6 +55,8 @@ define('SANDBOX_SERVER_API_KEY', 'simulation');
 define('SANDBOX_CREATION_EMAIL_TEMPATE', './sb-developer-mail.inc');
 define('PROJECT_CHECKOUT_EMAIL_TEMPATE', './sb-checkout-mail.inc');
 
+define('BOSS_SERVER_API', 'https://boss.below92.com/update.php');
+define('BOSS_SERVER_API_KEY', 'simulation');
 //define('COMMAND_API_KEY','notdefined');
 //define('COMMAND_UPDATE','notdefined');
 

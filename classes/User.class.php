@@ -1688,4 +1688,18 @@ class User {
         }
         return;
     }
+    
+    /*
+     * Return a list of all admin users
+     */
+    public function getAdminEMails() {
+        $adminEmails = array();
+        $sql = "SELECT username FROM users WHERE is_admin = 1";
+        if ($result = mysql_query($sql)) {
+            while ($row = mysql_fetch_assoc($result)) {
+                $adminEmails[] = $row['username'];
+            }
+        }
+        return $adminEmails;
+    }
 }

@@ -995,3 +995,30 @@ div.mechanic_id ul {
     padding: 4px;
     border-width: 1px 1px 0 0;
 }
+
+.project-description {
+    margin-bottom: 15px;
+}
+
+.project-description p {
+    font-size: 14px;
+    padding: 0;
+    margin: 10px 0;
+}
+
+#project-status p {
+    font-size: 18px;
+    padding-right: 30px;
+}
+
+#project-status .success {
+    font-size: 18px;
+    color: green;
+    float: right;
+}
+
+#project-status .error {
+    font-size: 18px;
+    color: red;
+    float: right;
+}

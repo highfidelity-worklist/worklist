@@ -29,21 +29,18 @@ if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
 
     $project = new Project();
     $cr_3_favorites = $_REQUEST["cr_3_favorites"];
-    $args = array( 'name', 'description', 'website', 'repository', 'logo', 'cr_anyone', $cr_3_favorites, 'cr_project_admin', 'cr_job_runner'  );
+    $args = array( 'name', 'description', 'website', 'logo', 'cr_anyone', $cr_3_favorites, 'cr_project_admin', 'cr_job_runner'  );
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
+    
+    if (!ctype_alnum($name)) {
+        die(json_encode(array('error' => "The name of the project can only contain letters (A-Z) and numbers (0-9). Please review and try again.")));
+    }
+    $repository = $name;
 
     if ($project->getIdFromName($name)) {
         die(json_encode(array('error' => "Project with the same name already exists!")));
-    }
-    // check if repository exists, ignore empty repository
-    else if (!empty($repository) && $project->getIdFromRepo($repository)) {
-        die(json_encode(array('error' => "Project repository already exists!")));
-    } else if (!empty($repository)) {
-        //Leaving commented out until Alexi sets up remote code execution - Dans
-        /*$project_repo = new ProjectRepoUtil();
-        $project_repo->createRepo($repository, $name);*/
     }
 
     $project->setName($name);

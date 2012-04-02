@@ -150,4 +150,56 @@ replacement data:
                <p>{reason}'
 ),
 
+/*
+ * project-created
+ *     send project creator the details associated to the newly created project
+ * 
+ * replacement data:
+ *     nickname: User's nickname
+ *     project_name: Name of the project
+ *     database_user: Name of mysql username
+ */
+'project-created-newsb' => array(
+    'subject' => 'Your project has been added to the Worklist',
+    'body' => '<p>Hi {nickname}!</p>
+               <p>Your project {project_name} has been created on Worklist.<br/>
+               The setup includes:</p>
+               <p>1. An SVN repository available at <a href="http://svn.worklist.net/listing.php?repname={project_name}">http://svn.worklist.net</a></p>
+               <p>2. A MySQL database including a sample table. You may access your development environment database using the following details:<br/>
+               Host: staging-mysql1.worklist.net<br/>
+               Database: dev_{project_name}<br/>
+               Username: dev_{database_user}<br/>
+               Password: unsecure<p/>
+               <p>3. A sandbox development environment.  You will receive another email with all required details to access your Sandbox environment shortly.</p>
+               <p>4. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
+               <p>5. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
+               <p>-Worklist.net</p>'
+),
+    
+'project-created-existingsb' => array(
+    'subject' => 'Your project has been added to the Worklist',
+    'body' => '<p>Hi {nickname}!</p>
+               <p>Your project {project_name} has been created on Worklist.<br/>
+               The setup includes:</p>
+               <p>1. An SVN repository available at <a href="http://svn.worklist.net/listing.php?repname={project_name}">http://svn.worklist.net</a></p>
+               <p>2. A MySQL database including a sample table. You may access your development environment database using the following details:<br/>
+               Host: staging-mysql1.worklist.net<br/>
+               Database: dev_{project_name}<br/>
+               Username: dev_{database_user}<br/>
+               Password: unsecure<p/>
+               <p>3. We have checked out your new project into your existing sandbox. Please use your existing credentials.</p>
+               <p>4. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
+               <p>5. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
+               <p>-Worklist.net</p>'
+),
+
+'ops-project-created' => array(
+    'subject' => 'New project added to the Worklist',
+    'body' => '<p>Hi there</p>
+               <p>Just wanted to let you know that a new project has been created on the worklist.</p>
+               <p>Project Admin: {nickname}<br/>
+               Project Name: {project_name}</p>
+               <p>You can view the details <a href="' . WORKLIST_URL . '{project_name}">here</a>.'
+)
+
 );

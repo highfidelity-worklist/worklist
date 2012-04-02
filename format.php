@@ -104,17 +104,12 @@
 
                 var project_name = new LiveValidation('name', optionsLiveValidation);
                 var project_description = new LiveValidation('description', optionsLiveValidation);
-                var project_repository = new LiveValidation('repository', optionsLiveValidation);
                 project_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 project_description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
 
-                project_name.add(Validate.Format, { failureMessage: 'Alphanumeric, - or _ characters only', pattern: new RegExp(/^[A-Za-z0-9 _-]*$/) });
+                project_name.add(Validate.Format, { failureMessage: 'Alphanumeric only', pattern: new RegExp(/^[A-Za-z0-9]*$/) });
                 project_name.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
                 project_name.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
-
-                project_repository.add(Validate.Format, { failureMessage: 'Alphanumeric, - or _ characters only. No spaces', pattern: new RegExp(/^[A-Za-z0-9_-]*$/) });
-                project_repository.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
-                project_repository.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
 
                 $('#cancel').click(function() {
                     $('#popup-addproject').dialog('close');
@@ -122,7 +117,7 @@
 
                 $('#save_project').click(function() {
                     $(this).attr('disabled', 'disabled');
-                    massValidation = LiveValidation.massValidate( [ project_name, project_description, project_repository ]);   
+                    massValidation = LiveValidation.massValidate( [ project_name, project_description ]);   
                     if (!massValidation) {
                         $(this).removeAttr('disabled');
                         return false;
@@ -135,7 +130,6 @@
                             name: $(':input[name="name"]', addForm).val(),
                             description: $(':input[name="description"]', addForm).val(),
                             website: $(':input[name="website"]', addForm).val(),
-                            repository: $(':input[name="repository"]', addForm).val(),
                             logo: $(':input[name="logoProject"]', addForm).val(),
                             cr_anyone: $(':input[name="cr_anyone"]', addForm).val(),
                             cr_3_favorites: $(':input[name="cr_3_favorites"]', addForm).val(),
@@ -154,7 +148,7 @@
                                 alert(json.error);
                             } else {
                                 $('#popup-addproject').dialog('close');
-                                window.location.href = '<?php echo SERVER_URL ; ?>' + $(':input[name="name"]', addForm).val();
+                                window.location.href = '<?php echo SERVER_URL ; ?>projectStatus.php?project=' + $(':input[name="name"]', addForm).val();
                                 return;
                             }
                         }

@@ -17,9 +17,6 @@
         <p class="info-label">Website:<br />
             <input type="text" name="website" id="website" class="text-field" size="48" />
         </p>
-        <p class="info-label">SVN Repository:<br />
-            <input type="text" name="repository" id="repository" class="text-field" size="48" />
-        </p>
         <div class="accordion">
             <h3><a href="#">Allow code reviews from:</a></h3>
             <div id="codeReviewRightsContainerAP">

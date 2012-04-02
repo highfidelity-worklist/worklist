@@ -23,6 +23,33 @@ class SandBoxUtil {
             throw new Exception('Error: ' . mysql_error());
         }
     }
+    
+    /*
+     * Create a new repository named $project
+     */
+    public function createRepo($project) {
+        //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
+        if (! defined("BOSS_SERVER_API")) { 
+            throw new Exception('Unable to communicate to sandbox server, not defined'); 
+        }
+        if (! defined("BOSS_SERVER_API_KEY")) { 
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
+
+        $command ='command=create-project-repo&';
+        $command.='key=' . BOSS_SERVER_API_KEY . '&';
+        
+        if ($result = postRequest(BOSS_SERVER_API, $command . 'project=' . $project)) {
+            if (strpos($result,'Authentication failed') !== false) { 
+                return false; 
+            }
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Error') === true) { 
+                return false; 
+            }
+            return true;
+        }
+    }
 
     public function createSandbox(
                     $username,
@@ -65,7 +92,7 @@ class SandBoxUtil {
 
         // Ensure that sandbox doesn't already exist. if so, throw an exception
         $this->ensureNonExistentSandbox($unixusername);
-
+        
         // Generate a random password.
         $password = $this->generatePassword(8);
         // Create the user and checkout all the folders. if something went wrong, throw an exception
@@ -76,16 +103,68 @@ class SandBoxUtil {
 
         // Notify Journal
         $this->notifyJournal($nickname, $projects);
+        return true;
     }
+    
+    public function createDatabaseNewProject($project, $dbuser) {
+        if (! defined("BOSS_SERVER_API")) { 
+            throw new Exception('Unable to communicate to sandbox server, not defined'); 
+        }
+        if (! defined("BOSS_SERVER_API_KEY")) { 
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
 
+        $command ='command=create-project-dbase&';
+        $command.='key=' . BOSS_SERVER_API_KEY . '&';
+        
+        if ($result = postRequest(BOSS_SERVER_API, $command . 'project=' . $project . '&dbuser=' . $dbuser)) {
+            if (strpos($result,'Authentication failed') !== false) { 
+                return false; 
+            }
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Error') === true) { 
+                return false; 
+            }
+            return true;
+        }
+    }
+    
+    public function modifyConfigFile($unixusername, $project, $mysql_username) {
+        //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
+        if (! defined("SANDBOX_SERVER_API")) { 
+            throw new Exception('Unable to communicate to sandbox server, not defined');
+        }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { 
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
+
+        $command ='command=modifyconfig&';
+        $command.='key=' . SANDBOX_SERVER_API_KEY . '&';
+        
+        if ($result = postRequest(SANDBOX_SERVER_API, $command . 'username=' . $unixusername . "&project=" . $project . "&mysql_username=" . $mysql_username)) {
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Authentication failed')!==false) {
+                throw new Exception('Unable to communicate to sandbox server, not authorized');
+            }
+            if (strpos($result,'Error') == 0) {
+                return false;
+            }
+            return true;
+        }
+    }
+    
     /**
      * Returns true if the supplied $name is in /etc/passwd
      *
     */
     public function inPasswdFile($name) {
         //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
-        if (! defined("SANDBOX_SERVER_API")) { throw new Exception('Unable to communicate to sandbox server, not defined');  }
-        if (! defined("SANDBOX_SERVER_API_KEY")) { throw new Exception('Unable to communicate to sandbox server, not authorized');  }
+        if (! defined("SANDBOX_SERVER_API")) { 
+            throw new Exception('Unable to communicate to sandbox server, not defined');
+        }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { 
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
 
 
         $command ='command=userexists&';
@@ -196,7 +275,7 @@ class SandBoxUtil {
     */
     private function validateUsername($username) {
       if(!preg_match('/^[\w\d\_\.]{2,}$/',$username)) {
-            throw new Exception('Invalid username');
+            throw new Exception('Invalid username: ' . $username);
       }
     }
 
@@ -236,6 +315,28 @@ class SandBoxUtil {
             if (strpos($result,'Authentication failed')!==false) {throw new Exception('Unable to communicate to sandbox server, not authorized'); }
             //Only get a result if there was a failure (user doesn't exist or command failed)
             if (strpos($result,'Error')===true) { throw new Exception('Sandbox create script failed: '.$result); }
+        }
+    }
+    
+    public function changeConfigFile($unixusername, $project, $dbuser) {
+        //Don't continue if we are not configured to manage sandboxes (ie: from a sandbox/dev machine)
+        if (! defined("SANDBOX_SERVER_API")) { 
+            throw new Exception('Unable to communicate to sandbox server, not defined');
+        }
+        if (! defined("SANDBOX_SERVER_API_KEY")) { 
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
+
+        $command ='command=changeconfig&';
+        $command.='key=' . SANDBOX_SERVER_API_KEY . '&';
+        if ($result = postRequest(SANDBOX_SERVER_API, $command . 'username=' . $nickname . '&repo=' . $project . '&dbuser=' . $dbuser)) {
+            if (strpos($result,'Authentication failed')!==false) {
+                throw new Exception('Unable to communicate to sandbox server, not authorized'); 
+            }
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result, 'Error') === true) { 
+                throw new Exception('Sandbox create script failed: '.$result); 
+            }
         }
     }
 
