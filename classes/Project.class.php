@@ -398,7 +398,20 @@ class Project {
     
         $where = ' ';
         if ($active) {
-            $where = ' WHERE active=1 AND DATE(`last_commit`) BETWEEN DATE_SUB(NOW(), INTERVAL 60 DAY) AND NOW() ';
+            // Don't hide projects with no commits if it doesn't have a repo
+            $where = ' WHERE active=1
+                       AND
+                       (
+                           (
+                               repository IS NOT NULL
+                               AND
+                               DATE(`last_commit`) BETWEEN DATE_SUB(NOW(), INTERVAL 60 DAY) AND NOW() 
+                           )
+                           OR
+                           (
+                               repository IS NULL
+                           )
+                       ) ';
         }
     
         $query = "
