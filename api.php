@@ -118,6 +118,12 @@ if(validateAction()) {
             case 'modifyConfigFile':
                 modifyConfigFile();
                 break;
+            case 'addPostCommitHook':
+                addPostCommitHook();
+                break;
+            case 'deployStagingSite':
+                deployStagingSite();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -674,6 +680,40 @@ function modifyConfigFile() {
             echo json_encode(array('success'=>true, 'message'=>'Sandbox created'));
         } else {
             echo json_encode(array('success'=>false, 'message'=>'Sandbox creation and project checkout failed'));
+        }
+    } else {
+        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
+    }
+}
+
+function addPostCommitHook() {
+    $sandBoxUtil = new SandBoxUtil();
+    if (array_key_exists('repo', $_REQUEST)) {
+        try {
+            if ($sandBoxUtil->addPostCommitHook($_REQUEST['repo'])) {
+                echo json_encode(array('success'=>true, 'message'=>'Post commit hook added'));
+            } else {
+                echo json_encode(array('success'=>false, 'message'=>'Failed adding post commit hook'));
+            }
+        } catch (Exception $e) {
+            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
+        }
+    } else {
+        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
+    }
+}
+
+function deployStagingSite() {
+    $sandBoxUtil = new SandBoxUtil();
+    if (array_key_exists('repo', $_REQUEST)) {
+        try {
+            if ($sandBoxUtil->deployStagingSite($_REQUEST['repo'])) {
+                echo json_encode(array('success'=>true, 'message'=>'Post commit hook added'));
+            } else {
+                echo json_encode(array('success'=>false, 'message'=>'Failed adding post commit hook'));
+            }
+        } catch (Exception $e) {
+            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
         }
     } else {
         echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));

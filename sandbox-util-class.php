@@ -339,6 +339,52 @@ class SandBoxUtil {
             }
         }
     }
+    
+    public function addPostCommitHook($repo) {
+        if (! defined("BOSS_SERVER_API")) { 
+            throw new Exception('Unable to communicate to sandbox server, not defined'); 
+        }
+        if (! defined("BOSS_SERVER_API_KEY")) { 
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
+
+        $command ='command=add-post-commit-hook&';
+        $command.='key=' . BOSS_SERVER_API_KEY . '&';
+        
+        if ($result = postRequest(BOSS_SERVER_API, $command . 'repo=' . $repo)) {
+            if (strpos($result,'Authentication failed') !== false) { 
+                return false; 
+            }
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Error') === true) { 
+                return false; 
+            }
+            return true;
+        }
+    }
+    
+    public function deployStagingSite($repo) {
+        if (! defined("BOSS_SERVER_API")) { 
+            throw new Exception('Unable to communicate to sandbox server, not defined'); 
+        }
+        if (! defined("BOSS_SERVER_API_KEY")) { 
+            throw new Exception('Unable to communicate to sandbox server, not authorized');
+        }
+
+        $command ='command=deploy-staging-site&';
+        $command.='key=' . BOSS_SERVER_API_KEY . '&';
+        
+        if ($result = postRequest(BOSS_SERVER_API, $command . 'repo=' . $repo)) {
+            if (strpos($result,'Authentication failed') !== false) { 
+                return false; 
+            }
+            //Only get a result if there was a failure (user doesn't exist or command failed)
+            if (strpos($result,'Error') === true) { 
+                return false; 
+            }
+            return true;
+        }
+    }
 
     /**
     * Generates a random password of given length

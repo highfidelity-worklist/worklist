@@ -23,6 +23,8 @@ var WorklistProject = {
             } else {
                 $('#repo-status').html("Error occurred while creating repository <span class='error'>✖</span>");
             }
+            WorklistProject.addPostCommitHook();
+            WorklistProject.deployStagingSite();
             WorklistProject.createSandbox();
         });
     },
@@ -56,15 +58,35 @@ var WorklistProject = {
     modifyConfigFile: function() {
         WorklistProject.apiCall('modifyConfigFile', 'projectname=' + projectName + '&username=' + username + '&nickname=' + nickname + '&unixusername=' + unixname + '&template=' + template + '&dbuser=' + dbuser, 
                                 function(response) {
-           if (response && response['success']) {
+            if (response && response['success']) {
+                return true;
             } else {
-                error_log("Problem while setting the right parameters on user's config.php");
+                return false;
             }
         });
     },
+    
+    addPostCommitHook: function() {
+        WorklistProject.apiCall('addPostCommitHook', 'repo=' + projectName, function(response) {
+            if (response && response['success']) {
+                return true;
+            } else {
+                return false;
+            }                                  
+        })
+    },
+    
+    deployStagingSite: function() {
+        WorklistProject.apiCall('deployStagingSite', 'repo=' + projectName, function(response) {
+            if (response && response['success']) {
+                return true;
+            } else {
+                return false;
+            }                                  
+        })
+    },
 
     apiCall: function(api, args, callback) {
-        console.log("Calling API Call with action: " + api);
         $.ajax({
             url: 'api.php?action=' + api + '&' + args,
             type: "GET",
