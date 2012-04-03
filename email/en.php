@@ -171,8 +171,9 @@ replacement data:
                Username: dev_{database_user}<br/>
                Password: unsecure<p/>
                <p>3. A sandbox development environment.  You will receive another email with all required details to access your Sandbox environment shortly.</p>
-               <p>4. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
-               <p>5. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
+               <p>4. A working copy of your site can be viewed at <a href="http://staging.worklist.net/{project_name}">http://staging.worklist.net/{project_name}</a></p>
+               <p>5. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
+               <p>6. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
                <p>-Worklist.net</p>'
 ),
     
@@ -188,8 +189,9 @@ replacement data:
                Username: dev_{database_user}<br/>
                Password: unsecure<p/>
                <p>3. We have checked out your new project into your existing sandbox. Please use your existing credentials.</p>
-               <p>4. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
-               <p>5. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
+               <p>4. A working copy of your site can be viewed at <a href="http://staging.worklist.net/{project_name}">http://staging.worklist.net/{project_name}</a></p>
+               <p>5. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
+               <p>6. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
                <p>-Worklist.net</p>'
 ),
 
