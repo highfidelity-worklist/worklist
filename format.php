@@ -82,7 +82,7 @@
                 });
                 $('#popup-addproject').data('title.dialog', 'Add Project');
                 $('#popup-addproject').dialog('open');
-<?php if ($userId) :?>
+<?php if (isset($userId) && $userId) :?>
                 // clear the form
                 $('input[type="text"]', '#popup-addproject').val('');
                 $('textarea', '#popup-addproject').val('');

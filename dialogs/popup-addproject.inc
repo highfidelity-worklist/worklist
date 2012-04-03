@@ -1,5 +1,5 @@
 <div id="popup-addproject" class="popup-body" title = "Add Project">
-    <?php if ($userId): ?>
+    <?php if (isset($userId) && $userId): ?>
     <form name="popup-form" id="popup-form-edit" action="javascript:;" method="post">
         <p class="info-label"><span class="required-field">*</span> Project Name:<br />
             <input type="text" name="name" id="name" class="text-field" size="48" />
