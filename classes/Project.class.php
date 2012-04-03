@@ -399,34 +399,41 @@ class Project {
         $where = ' ';
         if ($active) {
             // Don't hide projects with no commits if it doesn't have a repo
-            $where = ' WHERE active=1
+            $where = 'WHERE
+                       active=1
                        AND
                        (
                            (
-                               repository IS NOT NULL
+                               repository != ""
                                AND
                                DATE(`last_commit`) BETWEEN DATE_SUB(NOW(), INTERVAL 60 DAY) AND NOW() 
                            )
                            OR
                            (
-                               repository IS NULL
+                               repository = ""
                            )
                        ) ';
         }
-    
+        
         $query = "
-            SELECT " . ((count($selections)>0) ? implode(",", $selections) : "*")
-            . " FROM `" . PROJECTS . "`" 
-            . $where . " ";
+            SELECT
+                " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "
+            FROM
+                `" . PROJECTS . "`" .
+            $where . " ";
+        
         $result = mysql_query($query);
-
+        
         if (mysql_num_rows($result)) {
             while ($project = mysql_fetch_assoc($result)) {
-                $query = "SELECT SUM(status IN ('DONE', 'COMPLETE')) AS completed, 
-                    SUM(status IN ('WORKING', 'REVIEW', 'FUNCTIONAL')) AS underway, 
-                    SUM(status='BIDDING') AS bidding 
-                FROM " . WORKLIST . " 
-                WHERE project_id = " . $project['project_id'];
+                $query = "SELECT
+                            SUM(status IN ('DONE', 'COMPLETE')) AS completed, 
+                            SUM(status IN ('WORKING', 'REVIEW', 'FUNCTIONAL')) AS underway, 
+                            SUM(status='BIDDING') AS bidding 
+                          FROM
+                            " . WORKLIST . " 
+                          WHERE
+                            project_id = " . $project['project_id'];
                 $resultCount = mysql_query($query);
                 $resultCount = mysql_fetch_object($resultCount);
                     
