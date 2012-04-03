@@ -11,7 +11,9 @@ var WorklistProject = {
             } else {
                 $('#db-status').html("Error occurred while creating database <span class='error'>✖</span>");
             }
-            WorklistProject.createRepo();
+            setTimeout(function() {
+                WorklistProject.createRepo();
+            }, 5000);
         });
     },
 
@@ -23,9 +25,11 @@ var WorklistProject = {
             } else {
                 $('#repo-status').html("Error occurred while creating repository <span class='error'>✖</span>");
             }
-            WorklistProject.addPostCommitHook();
-            WorklistProject.deployStagingSite();
-            WorklistProject.createSandbox();
+            setTimeout(function() {
+                WorklistProject.addPostCommitHook();
+                WorklistProject.deployStagingSite();
+                WorklistProject.createSandbox();
+            }, 5000);
         });
     },
 
@@ -38,8 +42,10 @@ var WorklistProject = {
             } else {
                 $('#sandbox-status').html("Error occurred while creating sandbox <span class='error'>✖</span>");
             }
-            WorklistProject.modifyConfigFile();
-            WorklistProject.sendEmails();
+            setTimeout(function() {
+                WorklistProject.modifyConfigFile();
+                WorklistProject.sendEmails();
+            }, 5000)
         });
     },
 
@@ -52,6 +58,7 @@ var WorklistProject = {
             } else {
                 $('#emails-status').html("Error occurred while sending emails <span class='error'>✖</span>");
             }
+            $('#project-completed').show();
         });
     },
     

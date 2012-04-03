@@ -67,9 +67,8 @@ require_once('header.php');
 require_once('format.php');
 ?>
 
-<h1>Welcome to the Worklist!</h1>
+<h1 class="newProject">Project <?php echo $project; ?> setup underway...</h1>
 <div class="project-description">
-    <p>Your Project is currently being set up in our systems.</p>
     <p>The setup of your project includes a MySQL database, Code Repository with a sample PHP page, and a Sandbox in which you may add to and update your codebase.</p>
 </div>
 
@@ -86,7 +85,10 @@ require_once('format.php');
     <p id="emails-status">
         E-Mailing credentials ...
     </p>
-    <p>Your project details can be viewed and updated here : <a href="<?php echo SERVER_URL, $project; ?>"><?php echo $project; ?></a></p>
+</div>
+<div id="project-completed">
+    <h1>Welcome to the Worklist!</h1>
+    <p>Your project details can be viewed and updated here: <strong><a href="<?php echo SERVER_URL, $project; ?>"><?php echo $project; ?></a></strong></p>
 </div>
 
 <?php

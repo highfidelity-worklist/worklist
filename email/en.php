@@ -160,11 +160,11 @@ replacement data:
  *     database_user: Name of mysql username
  */
 'project-created-newsb' => array(
-    'subject' => 'Your project has been added to the Worklist',
+    'subject' => 'New project {project_name} added to the Worklist!',
     'body' => '<p>Hi {nickname}!</p>
-               <p>Your project {project_name} has been created on Worklist.<br/>
+               <p>Your project {project_name} has been created on Worklist, with a sample \'Hello World\' index page with data from your database.<br/>
                The setup includes:</p>
-               <p>1. An SVN repository available at <a href="http://svn.worklist.net/listing.php?repname={project_name}">http://svn.worklist.net</a></p>
+               <p>1. An SVN repository available at <a href="http://svn.worklist.net/listing.php?repname={project_name}">http://svn.worklist.net/listing.php?repname={project_name}</a></p>
                <p>2. A MySQL database including a sample table. You may access your development environment database using the following details:<br/>
                Host: staging-mysql1.worklist.net<br/>
                Database: dev_{project_name}<br/>
@@ -178,11 +178,11 @@ replacement data:
 ),
     
 'project-created-existingsb' => array(
-    'subject' => 'Your project has been added to the Worklist',
+    'subject' => 'New project {project_name} added to the Worklist!',
     'body' => '<p>Hi {nickname}!</p>
-               <p>Your project {project_name} has been created on Worklist.<br/>
+               <p>Your project {project_name} has been created on Worklist, with a sample \'Hello World\' index page with data from your database.<br/>
                The setup includes:</p>
-               <p>1. An SVN repository available at <a href="http://svn.worklist.net/listing.php?repname={project_name}">http://svn.worklist.net</a></p>
+               <p>1. An SVN repository available at <a href="http://svn.worklist.net/listing.php?repname={project_name}">http://svn.worklist.net/listing.php?repname={project_name}</a></p>
                <p>2. A MySQL database including a sample table. You may access your development environment database using the following details:<br/>
                Host: staging-mysql1.worklist.net<br/>
                Database: dev_{project_name}<br/>
@@ -196,7 +196,7 @@ replacement data:
 ),
 
 'ops-project-created' => array(
-    'subject' => 'New project added to the Worklist',
+    'subject' => 'New project {project_name} added to the Worklist!',
     'body' => '<p>Hi there</p>
                <p>Just wanted to let you know that a new project has been created on the worklist.</p>
                <p>Project Admin: {nickname}<br/>

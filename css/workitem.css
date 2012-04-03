@@ -17,6 +17,7 @@
     width: 100%;
     clear:none;
 }
+
 #page-content table {
     font-size:12px;
 }
@@ -996,6 +997,11 @@ div.mechanic_id ul {
     border-width: 1px 1px 0 0;
 }
 
+h1.newProject {
+    padding: 15px 0 0 0;
+    margin: 0;
+}
+
 .project-description {
     margin-bottom: 15px;
 }
@@ -1006,9 +1012,17 @@ div.mechanic_id ul {
     margin: 10px 0;
 }
 
+#project-status {
+    width: 85%;
+    margin: 0 auto;
+}
+
 #project-status p {
+    line-height: 36px;
+    margin: 0;
     font-size: 18px;
     padding-right: 30px;
+    border-bottom: 1px solid #CCCCCC;
 }
 
 #project-status .success {
@@ -1021,4 +1035,19 @@ div.mechanic_id ul {
     font-size: 18px;
     color: red;
     float: right;
+}
+
+#project-completed {
+    text-align: center;
+    display: none;
+}
+
+#project-completed h1 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0 5px 0;
+    padding: 0;
+}
+#project-completed p {
+    font-size: 15px;
 }
