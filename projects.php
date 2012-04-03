@@ -36,7 +36,6 @@ include("head.html");
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
-<script type="text/javascript" src="js/add-proj-contact.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 
 <script type="text/javascript">
@@ -263,10 +262,10 @@ include("head.html");
     <link rel="shortcut icon" type="image/x-icon" href="images/worklist_favicon.png">
     <h1 class="headerTitle">Worklist Projects</h1>
     <div class="headerButtons">
-        <input id="add-projects" type="button" value="Add my project" />
+        <input id="addproj" type="button" value="Add my project" />
     </div>
-        <!-- Popup for add project info-->
-        <?php include('dialogs/add-proj-contact.inc'); ?>
+        <!-- Popup for adding projects -->
+        <?php require_once('dialogs/popup-addproject.inc'); ?>
         <!-- Popup for budget info -->
         <?php require_once('dialogs/budget-expanded.inc'); ?>
         <!-- Popup for budget info-->

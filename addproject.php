@@ -16,12 +16,7 @@ $journal_message = '';
 $nick = '';
 
 $userId = getSessionUserId();
-/* Only Ryan, Philip & Fred can add projects! In order to work on the add projects
-   page in your sb, your userid must be included below. Just remove when done!
-   - joanne
-   adding alexi and jeska - alexi 2011-10-26
-*/
-if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
+if ($userId) {
     initUserById($userId);
     $user = new User();
     $user->findUserById( $userId );
@@ -29,7 +24,7 @@ if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
 
     $project = new Project();
     $cr_3_favorites = $_REQUEST["cr_3_favorites"];
-    $args = array( 'name', 'description', 'website', 'logo', 'cr_anyone', $cr_3_favorites, 'cr_project_admin', 'cr_job_runner'  );
+    $args = array('name', 'description', 'logo', 'website');
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
@@ -46,15 +41,10 @@ if (strpos(BUDGET_AUTHORIZED_USERS, ",".$userId.",") !== false) {
     $project->setName($name);
     $project->setDescription($description);
     $project->setWebsite($website);
-    $project->setRepository($repository);
     $project->setContactInfo($user->getUsername());
     $project->setOwnerId($userId);
     $project->setActive(true);
     $project->setLogo($logo);
-    $project->setCrAnyone($cr_anyone);
-    $project->setCrFav($cr_3_favorites);
-    $project->setCrAdmin($cr_project_admin);
-    $project->setCrRunner($cr_job_runner);
     $project->save();
     $journal_message = $nick . ' added project ' . $name;
     

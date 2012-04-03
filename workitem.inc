@@ -2162,8 +2162,6 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/popup-withdraw-bid.inc') ?>
     <!-- Popup for Add Review Url-->
     <?php require_once('dialogs/review-url-dialog.inc') ?>
-    <!-- Include Add Project -->
-    <?php require_once 'dialogs/popup-addproject.inc'; ?>
     <!-- Include Paid Popup -->
     <?php require_once 'dialogs/popup-paid.inc'; ?>
     <!-- Include Budget Popup -->

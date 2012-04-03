@@ -117,3 +117,13 @@
 .ln-letters a.ln-disabled, .ln-pages a.ln-disabled  {
     color:#ccc;
 }
+
+#save_project {
+    float: right;
+}
+
+#signup {
+    float: right;
+    cursor: pointer;
+    margin: 20px;
+}

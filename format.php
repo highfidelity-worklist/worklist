@@ -56,15 +56,6 @@
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
             
             <script type="text/javascript" src="js/userstats.js"></script>
-            <?php
-                /* Only Ryan, Philip & Fred can add projects! In order to work on the add projects page in your sb,
-                   your userid must be included below. Just remove when done!
-                   Adding alexi and jeskad - alexi 2011-10-26
-                */
-                if (strpos(BUDGET_AUTHORIZED_USERS, "," . $userId . ",") !== false):
-            ?>
-            | <a href="#" id="addproj" name="addproj" class="iToolTip addProj addproj">Admin Project</a>
-            <?php endif; ?>
             | <a href="help.php" target="_blank">Help</a>
         <?php } else { ?>
             <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
@@ -89,9 +80,9 @@
                     width: 415,
                     resizable: false
                 });
-
                 $('#popup-addproject').data('title.dialog', 'Add Project');
                 $('#popup-addproject').dialog('open');
+<?php if ($userId) :?>
                 // clear the form
                 $('input[type="text"]', '#popup-addproject').val('');
                 $('textarea', '#popup-addproject').val('');
@@ -117,7 +108,7 @@
 
                 $('#save_project').click(function() {
                     $(this).attr('disabled', 'disabled');
-                    massValidation = LiveValidation.massValidate( [ project_name, project_description ]);   
+                    massValidation = LiveValidation.massValidate([project_name, project_description]);
                     if (!massValidation) {
                         $(this).removeAttr('disabled');
                         return false;
@@ -129,13 +120,8 @@
                         data: {
                             name: $(':input[name="name"]', addForm).val(),
                             description: $(':input[name="description"]', addForm).val(),
-                            website: $(':input[name="website"]', addForm).val(),
                             logo: $(':input[name="logoProject"]', addForm).val(),
-                            cr_anyone: $(':input[name="cr_anyone"]', addForm).val(),
-                            cr_3_favorites: $(':input[name="cr_3_favorites"]', addForm).val(),
-                            cr_project_admin: $(':input[name="cr_project_admin"]', addForm).val(),
-                            cr_job_runner: $(':input[name="cr_job_runner"]', addForm).val()
-                                                        
+                            website: $(':input[name="website"]', addForm).val()
                         },
                         type: 'POST',
                         success: function(json){
@@ -180,6 +166,11 @@
                         }
                     }
                 });
+<?php else: ?>
+                $('#signup').click(function() {
+                    document.location = 'signup.php';
+                });
+<?php endif; ?>
             });
         });
 

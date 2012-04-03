@@ -362,8 +362,6 @@ function addCommas(nStr) {
 <body>
 <!-- Popup for breakdown of fees-->
 <?php require_once('dialogs/popup-fees.inc') ?>
-<!-- Popup for add project info-->
-<?php require_once('dialogs/popup-addproject.inc'); ?>
 <?php
     require_once('header.php');
     require_once('format.php');

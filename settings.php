@@ -622,8 +622,6 @@ include("head.html");
     require_once('header.php');
     require_once('format.php');
 ?>
-<!-- Popup for add project info-->
-<?php require_once('dialogs/popup-addproject.inc'); ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for budget info-->

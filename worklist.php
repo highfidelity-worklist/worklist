@@ -1495,8 +1495,6 @@ echo
 <?php require_once('dialogs/budget-expanded.inc') ?>
 <!-- Popups for tables with jobs from quick links -->
 <?php require_once('dialogs/popups-userstats.inc'); ?>
-<!-- Popup for add project info-->
-<?php require_once('dialogs/popup-addproject.inc'); ?>
 <!-- Popup for add role -->
 <?php include('dialogs/popup-addrole.inc') ?>
 <!-- Popup for viewing role -->

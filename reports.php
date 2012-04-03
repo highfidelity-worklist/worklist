@@ -811,8 +811,6 @@ $(function() {
 <body>
 <!-- Popup for breakdown of fees-->
 <?php require_once('dialogs/popup-fees.inc') ?>
-<!-- Popup for add project info-->
-<?php require_once('dialogs/popup-addproject.inc'); ?>
 <!-- Popup for Budget -->
 <?php require_once('dialogs/popup-budget.inc'); ?>
 <!-- Popup for budget info -->
