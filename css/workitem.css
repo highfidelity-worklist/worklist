@@ -275,6 +275,8 @@ span.info-whisper {
     text-align:left;
     color: black;
     padding: 0 0 3px 0;
+    clear: both;
+    height: 28px;
 }
 
 .buttonContainer {
