@@ -718,9 +718,9 @@ function createActiveFilter(elId, filter, active) {
                 var cbId = $(this).attr('id');
                 var cbName = $(this).attr('name');
                 $('#activeBox-' + cbId).css({
-                    top: ($('#activeBox-' + cbId).prev().position().top + $('#activeBox-' + cbId).prev().outerHeight()) - 2,
+                    top: ($('#activeBox-' + cbId).prev().position().top + $('#activeBox-' + cbId).prev().outerHeight()) + 4,
                     left: $('#activeBox-' + cbId).prev().css('left'),
-                    width: $(el).outerWidth() + 29
+                    width: $('#activeBox-' + cbId).prev().outerWidth()
                 });
                 $('#activeBox-' + cbId).show();
             } 

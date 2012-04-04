@@ -147,7 +147,8 @@
             this.trigger.addClass('ui-state-default ui-icon ui-icon-carat-1-s');
             // add classes for the list and calculate the width
             this.list.addClass('ui-combobox-list ui-corner-bottom').css({
-                width: (this.el.outerWidth() + 27 - 2)
+                width: (this.el.outerWidth() + 27 - 2),
+                "margin-top": "6px"
             });
             this.container.addClass(this.el.attr('id'));
             this.container.attr('id', 'container-' + this.el.attr('id'));
