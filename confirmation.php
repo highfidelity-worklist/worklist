@@ -114,17 +114,16 @@ if (isset($_REQUEST['str'])) {
     $user = new User();
     $paypal_email = mysql_real_escape_string(base64_decode($_REQUEST['ppstr']));
     $hash = mysql_real_escape_string($_REQUEST['pp']);
-    // echo $paypal_email;
 
     // verify the email belongs to a user
     if (! $user->findUserByPPUsername($paypal_email, $hash)) {
         // hacking attempt, or some other error
-        redirect('login.php');
+        Utils::redirect('login.php');
     } else {
         $user->setPaypal_verified(true);
         $user->setPaypal_hash('');
         $user->save();
-        redirect('settings.php?ppconfirmed');
+        Utils::redirect('settings.php?ppconfirmed');
     }
 }
 
