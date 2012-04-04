@@ -141,13 +141,13 @@
             });
             // add classes for the textbox and calculate the with by the original element
             this.textbox.addClass('ui-state-default ui-combobox-textbox').css({
-                width: this.el.innerWidth()
+                width: this.el.outerWidth() - 2
             });
             // add classes for the trigger, here we can change the icon
             this.trigger.addClass('ui-state-default ui-icon ui-icon-carat-1-s');
             // add classes for the list and calculate the width
             this.list.addClass('ui-combobox-list ui-corner-bottom').css({
-                width: (this.el.innerWidth() + 27)
+                width: (this.el.outerWidth() + 27 - 2)
             });
             this.container.addClass(this.el.attr('id'));
             this.container.attr('id', 'container-' + this.el.attr('id'));

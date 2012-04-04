@@ -943,6 +943,11 @@ require_once("head.html");
                     });
                     this.hasAutocompleter = true;
                 }
+                $('#more-accordion').accordion({
+                    clearStyle: true,
+                    collapsible: true,
+                    active: false
+                });
                 if (this.hasCombobox !== true) {
                     // to add a custom stuff we bind on events
                     $('#popup-edit select[name=itemProject]').bind({
@@ -997,15 +1002,18 @@ require_once("head.html");
                             $('#projectPopupActiveBox').html(label);
                         }
                     }).comboBox();
+                    $('#popup-edit select[name=status]').comboBox();
                     this.hasCombobox = true;
                 } else {
-                    $('#popup-edit select[name=itemProject]').next().hide();
+                    $('#popup-edit select[name=itemProject], #popup-edit select[name=status]').next().hide();
                     setTimeout(function() {
                         var val1 = $($('#popup-edit select[name=itemProject] option').get(1)).attr("value");
-                        $('#popup-edit select[name=itemProject]').comboBox({action:"val",param:[val1]});
+                        $('#popup-edit select[name=itemProject]').comboBox({action: "val", param: [val1]});
+                        val1 = $($('#popup-edit select[name=status] option').get(1)).attr("value");
+                        $('#popup-edit select[name=status]').comboBox({action: "val", param: [val1]});
                         setTimeout(function() {
-                            $('#popup-edit select[name=itemProject]').next().show();
-                            $('#popup-edit select[name=itemProject]').comboBox({action:"val",param:["select"]});
+                            $('#popup-edit select[name=itemProject], #popup-edit select[name=status]').next().show();
+                            $('#popup-edit select[name=itemProject], #popup-edit select[name=status]').comboBox({action: "val", param: ["select"]});
                         },50);
                     },20);
                     

@@ -278,7 +278,6 @@ $(function() {
         position: ['center',60],
         modal: true
     });
-    //debugger;
     $("#welcome .earnings").click(function(){
         $("#feesDialog").dialog("open");
     });
@@ -408,7 +407,7 @@ $(function() {
         'listOpen': function(e,o) {
             $('#projectPopupActiveBox').width($('.itemProjectComboList').outerWidth());
             $('#projectPopupActiveBox').css({
-                top: $('.itemProjectComboList').height() + 100,
+                top: $('.itemProjectComboList').height() + 50,
                 left: $('.itemProjectComboList').css('left')
             });
             $('#projectPopupActiveBox').show();
