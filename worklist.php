@@ -227,7 +227,7 @@ require_once("head.html");
 ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <!-- @TODO: addFromJournal was used when the two apps were separate, an iframe was loaded with the
-     add job dialog. We can now get rid of that and load the dialog directly on top of journal -- lithium -->
+     add job dialog. We can now get rid of that and load the dialog directly on top of journal -->
 <?php if(isset($_REQUEST['addFromJournal'])): ?>
 <link href="css/addFromJournal.css" rel="stylesheet" type="text/css" />
 <?php endif; ?>

@@ -13,7 +13,7 @@
             src="images/emptyLogo.png"><br>
             <span style="display: none;"
             class="LV_validation_message LV_invalid upload"></span>
-            <input type="hidden" value="" name="logoProject">
+            <input type="hidden" value="" name="logoProject" />
         </p>        
         <p class="info-label">Website:<br />
             <input type="text" name="website" id="website" class="text-field" size="48" />
@@ -25,8 +25,9 @@
             <input type="submit" class="disableable" id="save_project" name="save_item" value="Create Project">
         </div>
     </form>
-    <div class="right-note"><span class="required-field">*</span> Required fields</span></div>
+    <div class="right-note"><span class="required-field">*</span> Required fields</div>
     <?php else: ?>
+    <img style="display: none;" id="projectLogoAdd" />
     To add a project, start by creating a user account on worklist
     <input type="button" id="signup" name="signup" value="Join Worklist" />
     <?php endif; ?>

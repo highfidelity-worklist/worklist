@@ -132,6 +132,9 @@
         <h3>Want to bid?</h3>
         <a href="signup.php">Sign up now!</a>
         </div>
+      </div>
+    </div>
+  </div>
                 <?php } ?>
             </form>
         </div>
