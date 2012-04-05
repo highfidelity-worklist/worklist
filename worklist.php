@@ -528,7 +528,7 @@ require_once("head.html");
             sort = option;
             dir = 'asc';
         }
-        GetWorklist(1,false);
+        GetWorklist(1, false);
     }
 
     function resizeIframeDlg() {
@@ -583,6 +583,7 @@ require_once("head.html");
                 sort: sort,
                 dir: dir,
                 user: $('.userComboList .ui-combobox-list-selected').attr('val'),
+                inComment: $('#search_comment').hasClass("inComment") ? 1 : 0,
                 query: $("#query").val(),
                 reload: ((reload == undefined) ? false : true)
             },
@@ -1224,30 +1225,32 @@ require_once("head.html");
             resetOrder = true;
             sort = 'null';
             dir = 'asc';
-            GetWorklist(1,false);
+            GetWorklist(1, false);
+            return false;
+        });
+
+        $("#search_comment").click(function(e){
+            e.preventDefault();
+            affectedHeader = false;
+            resetOrder = true;
+            sort = 'null';
+            dir = 'asc';
+            if ($(this).hasClass("inComment")) {
+                $(this).removeClass("inComment");
+                $(this).attr("title", "Do not include comments in search");
+                $("img", this).attr("src", "images/comment_no.jpg");
+            } else {
+                $(this).addClass("inComment");
+                $(this).attr("title", "Include Comments in search");
+                $("img", this).attr("src", "images/comment.jpg");
+            }
+            GetWorklist(1, false);
             return false;
         });
 
         $("#searchForm").submit(function(){
             var query = $('#query').val();
-            var last_query = $(this).data('query') || "";
-            if (query != last_query) {
-
-                //reset projects combo
-                $('#projectCombo').data('comboBox').select(0, false);
-
-                //reset users combo
-                $('#userCombo').data('comboBox').select(0, false);
-
-                //reset status combo
-                $('.statusComboList li input[type=checkbox]').each( function() {
-                    $(this).prop('checked', false);
-                });
-                $('#statusCombo').data('comboBox').select("ALL", false);
-
-                $(this).data('query', query);
-            }
-            GetWorklist(1,false);
+            GetWorklist(1, false);
             return false;
         });
 

@@ -101,7 +101,14 @@
                 <div class="input_box">
                     <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
                     <a id="search" href="" class="searchIcon"><img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"></a>
-                <a id="search_reset" href="" class="searchIcon" title ="Clear Search Parameters"><img src="images/cross.png"/></a>
+                <?php 
+                    if ($filter->getInComment() == 1) {
+                ?>
+                    <a id="search_comment" href="" class="searchIcon inComment" title="Include Comments in search"><img src="images/comment.jpg"/></a>
+                <?php } else { ?>
+                    <a id="search_comment" href="" class="searchIcon" title="Do not include comments in search"><img src="images/comment_no.jpg"/></a>
+                <?php } ?>
+                <a id="search_reset" href="" class="searchIcon" title="Clear Search Parameters"><img src="images/cross.png"/></a>
                 </div>
         </form>
     </div>

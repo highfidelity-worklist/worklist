@@ -17,6 +17,7 @@ class Agency_Worklist_Filter {
     protected $sort = 'delta';
     protected $dir = 'ASC';
     protected $page = 1;
+    protected $inComment = 1;
     protected $project_id = 0;
     protected $project = "";
     protected $fund_id = -1;
@@ -122,6 +123,10 @@ class Agency_Worklist_Filter {
         return $this->project;
     }
     
+    public function getInComment() {
+        return $this->inComment;
+    }
+    
     public function getProjectId() {
         return $this->project_id;
     }
@@ -202,6 +207,11 @@ class Agency_Worklist_Filter {
     public function setProject($project)
     {
         $this->project =  $project;
+        return $this;
+    }
+    
+    public function setInComment($inComment) {
+        $this->inComment = $inComment;
         return $this;
     }
     

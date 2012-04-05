@@ -37,6 +37,7 @@ $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
 $sfilter = explode('/', $filter->getStatus());
 $ufilter = $filter->getUser();
 $pfilter = !empty($_POST['project_id']) ? $_POST['project_id'] : $filter->getProjectId();
+$cfilter = !empty($_POST['inComment']) ? $_POST['inComment'] : $filter->getInComment();
 $ofilter = $filter->getSort();
 $subofilter = $filter->getSubSort();
 $dfilter = $filter->getDir();
@@ -136,12 +137,20 @@ if($query!='' && $query!='Search...') {
         $query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
 
         $array=explode(",",rawurldecode($query));
+        $commentPart = "";
 
         foreach ($array as $item) {
             $item = mysql_escape_string($item);
-            $where.=" AND ( MATCH (summary, `".WORKLIST."`.`notes`) AGAINST ('$item')OR MATCH (`".FEES."`.notes) AGAINST ('$item') OR MATCH (`ru`.`nickname`) AGAINST ('$item') OR MATCH (`cu`.`nickname`) AGAINST ('$item') OR MATCH (`mu`.`nickname`) AGAINST ('$item') OR MATCH (`com`.`comment`) AGAINST ('$item')) ";
+            if ($cfilter == 1) {
+                $commentPart = " OR MATCH (`com`.`comment`) AGAINST ('$item')";
+            }
+            $where .= " AND ( MATCH (summary, `" . WORKLIST . "`.`notes`) AGAINST ('$item')OR MATCH (`" . FEES . 
+                "`.notes) AGAINST ('$item') OR MATCH (`ru`.`nickname`) AGAINST ('$item') OR MATCH (`cu`.`nickname`) AGAINST ('$item') OR MATCH (`mu`.`nickname`) AGAINST ('$item') " . 
+                $commentPart . ") ";
         }
-        $commentsjoin = "LEFT OUTER JOIN `".COMMENTS."` AS `com` ON `".WORKLIST."`.`id` = `com`.`worklist_id`";
+        if ($cfilter == 1) {
+            $commentsjoin = "LEFT OUTER JOIN `" . COMMENTS . "` AS `com` ON `" . WORKLIST . "`.`id` = `com`.`worklist_id`";
+        }
     }
 }
 

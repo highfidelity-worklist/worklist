@@ -200,7 +200,7 @@ color:#98AAB2;
     padding: 2px;
 	position: relative;
 	top: 10px;
-    width: 195px;
+    width: 220px;
 }
 .input_box input {
     border: 0 none;
@@ -230,9 +230,9 @@ color:#98AAB2;
 
 
 #search-head{
-	position:relative;
-	float:right;
-	width:720px;
+	position: relative;
+	float: right;
+	width: 740px;
 }
 #sharethis_0    {
     position:absolute;
