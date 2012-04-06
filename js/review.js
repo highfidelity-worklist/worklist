@@ -142,12 +142,20 @@ var WReview = {
             $("#reviewDialog").data("reviewee_id", options.user_id);
             $("#reviewDialog").data("nickName", options.nickname);
             $("#reviewDialog").dialog({
-                buttons: {
-                    "Save": function() { 
+                buttons: [{
+                    text: "Update Review",
+                    click: function() { 
                         WReview.clickSaveButton();
                         return;
+                    },
+                    "class": "updateReviewButton"
+                },{
+                    text: "No Changes",
+                    click: function() { 
+                        $("#reviewDialog").dialog("close");
+                        return;
                     }
-                },            
+                }],            
                 modal:true,
                 title: title,
                 autoOpen:false,
@@ -156,6 +164,7 @@ var WReview = {
                 position: ['top'],
                 open: function() {
                     var oThis=this;
+                    $(".updateReviewButton", $("#reviewDialog").parent()).attr("disabled", "disabled").addClass('ui-state-disabled');
                     $("#reviewDialog .content").load("review.php",{
                         action:"getView",
                         withTrust: (options.withTrust) ? 1 : 0,
@@ -165,6 +174,9 @@ var WReview = {
                             var msg = "Sorry but there was an error: ";
                                 $("#error").html(msg + xhr.status + " " + xhr.statusText);
                         } else {
+                            $(".userReview").keyup(function() {
+                                $(".updateReviewButton", $("#reviewDialog").parent()).removeAttr("disabled").removeClass('ui-state-disabled')
+                            });
                             if (options.withTrust) {                               
                                 $(".userReview").height("80%");
                                 WLFavorites.init( "profileInfoFavoriteInReview", options.user_id, options.nickname);
