@@ -865,27 +865,28 @@ require_once("head.html");
             }
         }
 
-        new AjaxUpload('projectLogoAdd', {
-            action: 'jsonserver.php',
-            name: 'logoFile',
-            data: {
-                action: 'logoUpload',
-                projectid: inProject,
-            },
-            autoSubmit: true,
-            responseType: 'json',
-            onSubmit: validateUploadImage,
-            onComplete: function(file, data) {
-                $('span.LV_validation_message.upload').css('display', 'none').empty();
-                if (!data.success) {
-                    $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
-                } else if (data.success == true ) {
-                    $("#projectLogoAdd").attr("src",data.url);
-                    $('input[name=logoProject]').val(data.fileName);
+        if ($('#projectLogoAdd').length > 0) {
+            new AjaxUpload('projectLogoAdd', {
+                action: 'jsonserver.php',
+                name: 'logoFile',
+                data: {
+                    action: 'logoUpload',
+                    projectid: inProject,
+                },
+                autoSubmit: true,
+                responseType: 'json',
+                onSubmit: validateUploadImage,
+                onComplete: function(file, data) {
+                    $('span.LV_validation_message.upload').css('display', 'none').empty();
+                    if (!data.success) {
+                        $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
+                    } else if (data.success == true ) {
+                        $("#projectLogoAdd").attr("src",data.url);
+                        $('input[name=logoProject]').val(data.fileName);
+                    }
                 }
-            }
-        });
-
+            });
+        }
         
         $.get('getskills.php', function(data) {
             var skills = eval(data);
@@ -1193,7 +1194,6 @@ require_once("head.html");
             if(addFromJournal != '') {
                 $('#popup-edit').dialog('option', 'dialogClass', 'addFromJournal-popup');
                 $('#popup-edit').dialog('option', 'position', ['center', 'top']);
-                $('#popup-edit').dialog('option', 'minHeight', 700);
                 $('#popup-edit').dialog('option', 'autoResize', true);
                 $('.addFromJournal-popup div.ui-dialog-titlebar').hide();
                 $('#popup-edit').parent().attr('id', 'addFromJournal');

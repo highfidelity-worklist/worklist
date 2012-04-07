@@ -3025,6 +3025,7 @@ function closeAddJobDialog() {
 function resizeJobIframe(height) {
     var frame = $('#addJobDialog');
     frame.css('height', height);
+    $('#addJobOutterDialog').css('min-height', height);
 }
 
 var addJobDialog = null;
