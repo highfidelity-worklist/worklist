@@ -497,6 +497,7 @@ var UserInfo = {
             data: { uid: current_id, rid: user_id, page: page },
             dataType: 'json',
             success: function(json) {
+                var footer = '<tr bgcolor="#FFFFFF"><td colspan="4" style="text-align:center;">No bonus history yet</tr>';
                 $('.bonus-history').find("tr:gt(0)").remove();
                 
                 for (var i = 1; i < json.length; i++) {
@@ -504,11 +505,12 @@ var UserInfo = {
                 }
 
                 // If there's only one page don't add the pagination
-                if (json[0][2] > 1) {
+                if (json.length > 0 && json[0][2] > 1) {
                     UserInfo.appendPagination(json[0][1], json[0][2], 'bonus-history');
-                } else if(json[0][2] == 0) {
-                    var footer = '<tr bgcolor="#FFFFFF"><td colspan="4" style="text-align:center;">No bonus history yet</tr>';
+                } else if(json.length > 0 && json[0][2] == 0) {
                     $('.bonus-history').append(footer);
+                } else {
+                    $('.table-bonus-history').append(footer);
                 }
                 parent.resizeIframeDlg();
             }

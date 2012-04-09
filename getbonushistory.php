@@ -13,7 +13,7 @@ include("functions.php");
 checkLogin();
 
 if (empty($_SESSION['is_runner'])) {
-    exit(0);
+    die(json_encode(array()));
 }
 
 $limit = 7;

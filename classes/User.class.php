@@ -498,6 +498,13 @@ class User {
                 $row = mysql_fetch_assoc($result);
                 $submittedFunds = $row['submitted'];
             }
+            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
+                    FEES . '`.`payer_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = 0 AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1;';
+            $result = mysql_query($sql);
+            if ($result && (mysql_num_rows($result) == 1)) {
+                $row = mysql_fetch_assoc($result);
+                $submittedFunds = $submittedFunds + $row['submitted'];
+            }
             
             $paidFunds = 0;
             $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
@@ -507,6 +514,13 @@ class User {
             if ($result && (mysql_num_rows($result) == 1)) {
                 $row = mysql_fetch_assoc($result);
                 $paidFunds = $row['paid'];
+            }
+            $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '` WHERE `' . 
+                    FEES . '`.`payer_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = 0 AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1;';
+            $result = mysql_query($sql);
+            if ($result && (mysql_num_rows($result) == 1)) {
+                $row = mysql_fetch_assoc($result);
+                $paidFunds = $paidFunds + $row['paid'];
             }
             
             $transferedFunds = 0;
@@ -548,6 +562,8 @@ class User {
 
         $budget_filter = " AND " . WORKLIST . ".budget_id > 0 AND " . BUDGETS . ".id = " . WORKLIST . ".budget_id AND " .
             BUDGETS . ".active = 1  ";
+        $budget_filter2 = " AND " . FEES . ".budget_id > 0 AND " . BUDGETS . ".id = " . FEES . ".budget_id AND " .
+            BUDGETS . ".active = 1  ";
 
         $allocatedFunds = 0;
         $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '`, `' . BUDGETS . '` WHERE `' . 
@@ -569,6 +585,13 @@ class User {
             $row = mysql_fetch_assoc($result);
             $submittedFunds = $row['submitted'];
         }
+        $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . BUDGETS . '` WHERE `' . 
+                FEES . '`.`payer_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = 0 AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1 ' . $budget_filter2;
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $submittedFunds = $submittedFunds + $row['submitted'];
+        }
         
         $paidFunds = 0;
         $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '`, `' . BUDGETS . '` WHERE `' . 
@@ -578,6 +601,13 @@ class User {
         if ($result && (mysql_num_rows($result) == 1)) {
             $row = mysql_fetch_assoc($result);
             $paidFunds = $row['paid'];
+        }
+        $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . BUDGETS . '` WHERE `' . 
+                FEES . '`.`payer_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = 0 AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1 ' . $budget_filter2;
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $paidFunds = $paidFunds + $row['paid'];
         }
         
         $transferedFunds = 0;

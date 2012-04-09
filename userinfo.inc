@@ -109,7 +109,7 @@
                 ?> id="give" value="Give Budget" />
             </span>
             <span id="btn-bonus"><input type="submit" 
-                <?php if ($reqUserId == $user->getId()) { 
+                <?php if ($reqUserId == $user->getId() || ! $is_runner) { 
                     echo 'disabled="disabled" class="button-disabled disableable" '; 
                 } 
                 echo ' title="Remaining budget you can give: $' . $reqUser->getBudget() . '" '; 

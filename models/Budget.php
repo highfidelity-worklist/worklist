@@ -85,6 +85,14 @@ class Budget extends DataObject {
             $row = mysql_fetch_assoc($result);
             $submittedFunds = $row['submitted'];
         }
+        $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '` WHERE `' . 
+                FEES . '`.`budget_id` = ' . $this->id . ' AND `' . FEES . '`.`worklist_id` = 0 AND `' . 
+                FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1;';
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $submittedFunds = $submittedFunds + $row['submitted'];
+        }
         return $submittedFunds;
     }
 
@@ -97,6 +105,14 @@ class Budget extends DataObject {
         if ($result && (mysql_num_rows($result) == 1)) {
             $row = mysql_fetch_assoc($result);
             $paidFunds = $row['paid'];
+        }
+        $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '` WHERE `' . 
+                FEES . '`.`budget_id` = ' . $this->id . ' AND `' . FEES . '`.`worklist_id` = 0 AND `' . 
+                FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1;';
+        $result = mysql_query($sql);
+        if ($result && (mysql_num_rows($result) == 1)) {
+            $row = mysql_fetch_assoc($result);
+            $paidFunds = $paidFunds + $row['paid'];
         }
         return $paidFunds;
     }

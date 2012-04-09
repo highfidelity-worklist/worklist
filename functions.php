@@ -509,11 +509,11 @@ function AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id) {
     return '';
 }
 
-function payBonusToUser($user_id, $amount, $notes) {
+function payBonusToUser($user_id, $amount, $notes, $budget_id) {
 
-    $query = "INSERT INTO `".FEES."` (`id`,`worklist_id`,`payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".
+    $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `budget_id`, `payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".
              "VALUES ".
-             "(NULL,0,'" . (int)$_SESSION['userid'] . "', '" . (int)$user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string($notes) . "', NOW(), 1, 0,0)";
+             "(NULL, 0, '" . (int)$budget_id . "', '" . (int)$_SESSION['userid'] . "', '" . (int)$user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string($notes) . "', NOW(), 1, 0,0)";
     $result = mysql_unbuffered_query($query);
 
     if (mysql_insert_id()) {

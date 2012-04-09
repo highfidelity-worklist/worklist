@@ -63,7 +63,7 @@ if (! isset($_SESSION['userid'])) {
 if (! $error) {
     $remainingFunds = $budgetSource->getRemainingFunds();
     if ($amount <= $budget && $amount <= $remainingFunds) {
-        if (payBonusToUser($receiver_id, $amount, $reason)) {
+        if (payBonusToUser($receiver_id, $amount, $reason, $budget_source_combo)) {
             // deduct amount from balance
             $giver->updateBudget(- $amount, $budget_source_combo);
 
