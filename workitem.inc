@@ -1888,7 +1888,7 @@ if ($action =="edit"):  ?>
                                     } else {
                                         $expired_class = '';
                                     }
-                                    $canSeeBid = $user->isRunnerOfWorkitem($workitem) || $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner);
+                                    $canSeeBid = $user->getIs_admin() == 1 || $user->isRunnerOfWorkitem($workitem) || $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner);
                                     $row_class = "";
                                     $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
                                     $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;

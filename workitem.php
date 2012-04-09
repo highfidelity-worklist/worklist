@@ -1068,10 +1068,12 @@ if(!empty($bids) && is_array($bids)) {
 
         if (!($user->getId() == $bid['bidder_id'] 
          || $user->isRunnerOfWorkitem($workitem) || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner) ))  {
-            $bid['nickname'] = '*name hidden*';
-            $bid['bid_amount'] = '***';
-            $bid['email'] = '********';
-            $bid['notes'] = '********';
+            if ($user->getIs_admin() == 0) {
+                $bid['nickname'] = '*name hidden*';
+                $bid['bid_amount'] = '***';
+                $bid['email'] = '********';
+                $bid['notes'] = '********';
+            }
         }
         $bid['bid_created'] = convertTimezone($bid['unix_bid_created']);
         if ($bid['unix_bid_accepted'] > 0) {
