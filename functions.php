@@ -624,7 +624,7 @@ function sendJournalNotification($message) {
     $data = array(
         'user'    => JOURNAL_API_USER,
         'pwd'     => sha1(JOURNAL_API_PWD),
-        'message' => stripslashes(strip_tags($message))
+        'message' => stripslashes($message)
     );
     return trim(postRequest(JOURNAL_API_URL, $data));
 }
@@ -991,9 +991,10 @@ function checkLogin() {
         // find anything that looks like a link and add target=_blank so it will open in a new window
         $url = htmlspecialchars_decode($url);
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
-        if (!$bot) {
-            $url = htmlentities($url, ENT_QUOTES);
-        }
+       
+       if ((!$bot) && (strpos($url,"worklist") === false)) {
+           $url = htmlentities($url, ENT_QUOTES);
+       }
         $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
         $url = preg_replace_callback($reg, 'decodeDelimitedLinks', $url);
         $url = nl2br($url);

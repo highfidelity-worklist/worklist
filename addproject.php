@@ -46,11 +46,11 @@ if ($userId) {
     $project->setActive(true);
     $project->setLogo($logo);
     $project->save();
-    $journal_message = $nick . ' added project ' . $name;
     
+    $journal_message = $nick . ' added project <a href="' . SERVER_URL . $name . '">' . $name . '</a>';
     if (!empty($journal_message)) {
         //sending journal notification
-        sendJournalNotification(stripslashes($journal_message));
+        sendJournalNotification($journal_message);
     }
 
     echo json_encode(array( 'return' => "Done!"));
