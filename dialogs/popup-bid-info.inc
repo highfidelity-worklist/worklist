@@ -61,7 +61,6 @@
     </div>
 <?php if ($is_runner){ ?>
         <div id="popupSelectBudget" style="display:none" title="Select a budget">
-            <label for="budget-source" class="info-label">Source: </label>
             <div class="budget-source">
                 <span id="budget-source-combo-area">
                     <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">
@@ -73,8 +72,8 @@
                 </span>
             </div>
             <div>
-                <input type="button" id="confirm_budget"  value="OK">
                 <input type="button" id="cancel_budget" value="Cancel">
+                <input type="button" id="confirm_budget"  value="OK">
             </div>
         </div>
 <?php } ?>

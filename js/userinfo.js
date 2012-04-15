@@ -184,19 +184,19 @@ var UserInfo = {
         $('#popup-pingtask').dialog({
             autoOpen: false, 
             width: 400, 
+            height: "auto",
+            resizable: false,
             position: [ 'top' ],
             show: 'fade',
             hide: 'fade',
-            open: function() {
-                $('#ping-msg').autogrow(80, 150);
-            },
             close: function() {
-                $('#ping-msg').autogrow(80, 150);
-                $('#ping-msg').val('');
+                $('#ping-msg').val('').css("height", "50px");
             }
         });
+        $('#ping-msg').autogrow(80, 150);
        
         $('#send-ping-btn').click(function() {
+            $('#send-ping-btn').attr("disabled", "disabled");
             var msg = $('#ping-msg').val();
             // always send email
             var mail = 1;
@@ -215,9 +215,13 @@ var UserInfo = {
                         $("#sent-notify").html("<span>Your message has been sent.</span>");
                         $("#sent-notify").dialog("open");
                     }
+                    $('#send-ping-btn').removeAttr("disabled");
+                    $('#popup-pingtask').dialog('close');
+                }, 
+                error: function() {
+                    $('#send-ping-btn').removeAttr("disabled");
                 }
             });
-            $('#popup-pingtask').dialog('close');
             return false;
         });
         

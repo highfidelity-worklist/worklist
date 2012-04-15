@@ -438,6 +438,7 @@ td.textAlignReport {
 }
 #ping-msg {
     height: 65px;
+    width: 356px;
 }
 #send-ping-btn {
     margin-top: 8px;

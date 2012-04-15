@@ -141,7 +141,7 @@ if (isset($_REQUEST['id'])) {
         $out_msg .= ": ".$msg;
 
         // Send to journal
-        echo sendJournalNotification( $out_msg );
+        sendJournalNotification( $out_msg );
     }
 
     if( $send_mail )    {
@@ -169,3 +169,4 @@ if (isset($_REQUEST['id'])) {
         }
     }
 }
+json_encode(array());

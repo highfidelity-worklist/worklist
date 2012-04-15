@@ -356,7 +356,8 @@ $(document).ready(function(){
         autoOpen: false,
         modal: true,
         width: 400,
-        height: 240,
+        resizable: false,
+        height: "auto",
         open: function(event, ui) {
             
         }         
@@ -528,17 +529,16 @@ $(document).ready(function(){
     $('#popup-pingtask').dialog({
         autoOpen: false,
         width: 400,
+        height: "auto",
+        resizable: false,
         position: [ 'top' ],
         show: 'fade',
         hide: 'fade',
-        open: function() {
-            $('#ping-msg').autogrow();
-        },
         close: function() {
-            $('#ping-msg').autogrow();
-            $('#ping-msg').val('');
+            $('#ping-msg').val('').css("height", "50px");
         }
     });
+    $('#ping-msg').autogrow();
     $('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-withdraw-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
 <?php if ($mechanic_id == $user_id): ?>
@@ -1156,6 +1156,7 @@ $(document).ready(function(){
         // Call via Ajax to ping the user in the journal
         // and in email.
         $('#send-ping-btn').click(function()    {
+            $('#send-ping-btn').attr("disabled", "disabled");
             var msg = $('#ping-msg').val();
             // if( $('#send-mail:checked').val() ) mail = 1;
             // always send email
@@ -1175,9 +1176,13 @@ $(document).ready(function(){
                         $("#sent-notify").html("<span>Your ping has been sent.</span>");
                         $("#sent-notify").dialog("open");
                     }
+                    $('#send-ping-btn').removeAttr("disabled");
+                    $('#popup-pingtask').dialog('close');
+                }, 
+                error: function() {
+                    $('#send-ping-btn').removeAttr("disabled");
                 }
             });
-            $('#popup-pingtask').dialog('close');
             return false;
 
         });

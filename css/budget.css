@@ -26,9 +26,13 @@
 }
 
 #update-budget select[name="budget-source-combo"],
-#popupSelectBudget select[name="budget-source-combo"],
 #give-budget select[name="budget-source-combo"] {
     width: 340px;
+    margin: 10px;
+}
+
+#popupSelectBudget select[name="budget-source-combo"] {
+    width: 338px;
     margin: 10px;
 }
 
@@ -49,7 +53,8 @@
 }
 
 #popupSelectBudget .budget-source {
-    margin-bottom: 40px;
+    margin-top: 6px;
+    margin-bottom: 116px;
 }
 
 #budget-reason,
@@ -60,6 +65,11 @@
 
 #budget-note {
     height: 80px;
+}
+
+#popupSelectBudget #confirm_budget,
+#popupSelectBudget #cancel_budget {
+    float: right;
 }
 
 #budget-source {

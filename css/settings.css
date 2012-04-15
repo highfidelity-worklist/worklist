@@ -20,7 +20,20 @@
     padding: 0px;
 }
 
+#w9-dialog #first_name,
+#w9-dialog #last_name {
+    width: 176px;
+}
 
+div.uploadnotice-w9 div {
+    padding: 0.7em; 
+    margin: 0.7em 0;
+    display: block;
+}
+
+#w9-dialog>div {
+    margin-bottom: 10px;
+}
 
 #account-info {
     background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;

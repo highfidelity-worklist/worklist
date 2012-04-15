@@ -350,7 +350,7 @@ include("head.html");
         if (! (extension && /^(pdf)$/i.test(extension))) {
             // extension is not allowed
             $(nclass).empty();
-            var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
+            var html = '<div class="ui-state-error ui-corner-all">' +
                             '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
                             '<strong>Error:</strong> This filetype is not allowed. Please upload a pdf file.</p>' +
                         '</div>';
@@ -559,7 +559,7 @@ include("head.html");
  
         $("#w9-dialog").dialog({
             resizable: false,
-            width: 330,
+            width: 220,
             title: 'W9 form upload',
             autoOpen: false,
             position: ['top'],
