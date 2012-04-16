@@ -267,14 +267,14 @@ function uploadProfilePicture() {
 
     $ext = end(explode(".", $_FILES['profile']['name']));
     $tempFile = $_FILES['profile']['tmp_name'];
-    $path = APP_IMAGE_PATH . $_REQUEST['userid'] . '.' . $ext;
+    $imgName = strtolower($_REQUEST['userid'] . '.' . $ext);
+    $path = APP_IMAGE_PATH . $imgName;
 
     require_once('lib/S3/S3.php');
 
     try {
         File::s3Upload($tempFile, $path);
 
-        $imgName = strtolower($_REQUEST['userid'] . '.' . $ext);
         $query = "
             UPDATE `" . USERS . "` 
             SET `picture` = '" . mysql_real_escape_string($imgName) . "' ,
