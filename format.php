@@ -10,7 +10,7 @@
     <script type="text/javascript">
     // html needed for welcome message
     var welcomeHTML = '<p><span class="inlineWelcome">Welcome to Worklist!</span></p>'+
-    '<p>Browse the list of jobs below or click on <a href="journal.php" class="iToolTip menuJournal">Journal</a> to join our chat.</p>'+
+    '<p>Browse the list of jobs below or click on <a href="journal.php" class="iToolTip menuJournal">Chat</a> to join our chat.</p>' +
     '<input type="submit" id="hideMessage" name="hideMessage" value="Hide this Message" />'+
     '<div id="inlineSource"><a href="http://svn.worklist.net/" target="_blank">Download our source code</a></div>'
     
@@ -49,8 +49,7 @@
         <?php if (isset($_SESSION['username'])) { ?>
 
               <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a>
-            | <a href="journal.php" class="iToolTip menuJournal">Journal</a>
-            | <a href="<?php echo $lovemachineLink; ?>" target="_blank">SendLove</a>
+            | <a href="journal.php" class="iToolTip menuJournal">Chat</a>
             | <a href="team.php">Team</a>
             | <a href="reports.php" class="iToolTip menuReports">Reports</a>
             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
@@ -59,8 +58,8 @@
             | <a href="help.php" target="_blank">Help</a>
         <?php } else { ?>
             <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
-            | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
-            | <a href="journal.php" title="Login to our Live Chat Journal"> Live Chat Journal</a>
+            | <a class="signupLink" href="signup.php" title="Signup For a New Account"> SIGNUP</a>
+            | <a href="journal.php" title="Login to our Chat">Chat</a>
             | <a href="team.php">Team</a>
             | <a href="reports.php" class="iToolTip menuReports">Reports</a>
             | <a href="projects.php" target="_blank">Projects</a>

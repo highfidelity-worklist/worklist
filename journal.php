@@ -19,7 +19,7 @@ if (isset($_SESSION['userid'])) {
     // have they just logged in and been redirected back? eliza wants to know
     if (isset($_SESSION['redirectFromLogin'])) {
         $msgLogin = "Hello, it's good to see you! Let me know if I can help you with anything.".
-                    "Type '@faq Eliza' or just click my icon in the lower left corner of the journal.".
+                    "Type '@faq Eliza' or just click my icon in the lower left corner of the chat.".
                     "~Love, Eliza";
         unset($_SESSION['redirectFromLogin']);
     }
@@ -56,7 +56,7 @@ $version = Utils::getVersion();
 include ("journalHead.html");
 ?>
 
-<title>Journal</title>
+<title>Chat</title>
 <script type="text/javascript">
 var refresh = 5 * 1000;
 var statusTimeoutId = null;
@@ -139,16 +139,15 @@ function StopStatus() {
                         <div id="nav">
 <?php if (isset($_SESSION['username'])): ?>
                             <a href="worklist.php" class="iToolTip menuWorklist" target="_blank">Worklist</a>
-                            | <a href="journal.php" class="iToolTip menuJournal">Journal</a>
-                            | <a href="<?php echo $lovemachineLink; ?>" target="_blank">SendLove</a>
+                            | <a href="journal.php" class="iToolTip menuJournal">Chat</a>
                             | <a href="team.php" target="_blank">Team</a>
                             | <a href="reports.php" class="iToolTip menuReports" target="_blank">Reports</a>
                             | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
                             | <a href="help.php" target="_blank">Help</a>
 <?php else: ?>
                             <a class="loginLink" href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
-                            | <a class="signupLink" href="signup.php" title="Signup For a New Account"> Signup Now</a>
-                            | <a href="journal.php" title="Login to our Live Chat Journal"> Live Chat Journal</a>
+                            | <a class="signupLink" href="signup.php" title="Signup For a New Account">SIGNUP</a>
+                            | <a href="journal.php" title="Login to our Chat">Chat</a>
                             | <a href="team.php">Team</a>
                             | <a href="reports.php" class="iToolTip menuReports">Reports</a>
                             | <a href="projects.php" target="_blank">Projects</a>
@@ -246,10 +245,10 @@ function StopStatus() {
                     <div id="bottom_contain">
                         <div id="bottom_left">
                             <div id="buttons">
-                                <div id="settingsButton" title="Journal Settings">
+                                <div id="settingsButton" title="Chat Settings">
                                     <img src="images/gear.png" width="33" height="23" id="settingsSwitch" align="bottom" />
                                 </div>
-                                <div id="uploadButton" title="Upload to Journal">
+                                <div id="uploadButton" title="Upload to Chat">
 <?php
     if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],"iPhone")) {
         if(! isset($_SESSION['userid'])) {

@@ -8,7 +8,7 @@ $tooltips = array(
 	/* List page top tooltips 		*/
 	
 	'menuWorklist'	=> 'Explore jobs or add new ones.',
-	'menuJournal'	=> 'Live Chat',
+	'menuJournal'	=> 'Chat',
 	'menuLove'		=> 'Show appreciation for cool things people have done',
 	'menuRewarder'	=> 'Give earned points/money to other teammates.',
 	'menuReports'	=> 'Audit all the work and money flow.',
