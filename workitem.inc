@@ -1531,12 +1531,19 @@ if ($action =="edit"):  ?>
                             <?php endif;?>
                         </li>
                         <li>
-                            <span class="project-label">Project</span>
+                            <span class="project-label" id="edit-project-label">Project</span>
                             <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): 
 
                                       $filter = new Agency_Worklist_Filter();
                                       $filter->setProjectId($worklist['project_id']);
                                       echo $filter->getProjectSelectbox('Select Project', 0, 'project_id', 'project_id');
+                                    ?>
+                                        <script type="text/javascript">
+                                            $(document).ready(function() {
+                                                $('#project_id').comboBox();
+                                            });
+                                        </script>
+                                    <?php
                                   elseif( !empty($worklist['project_id'])) :?>
                                  <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>">
                                     <?php echo htmlspecialchars($worklist['project_name']);?>

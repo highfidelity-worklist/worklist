@@ -229,6 +229,10 @@ span.info-whisper {
     width: 50px;
 }
 
+#edit-project-label {
+    float: none;
+}
+
 .functional-label {
     font-weight: bold;
     float: left;
