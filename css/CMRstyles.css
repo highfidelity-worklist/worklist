@@ -352,33 +352,26 @@ p.error {
 
 /* Ryan's buttons */
 
+input[type=button],
 input[type=submit] {
     background:  url(../images/button120_01.png) no-repeat 1px 2px;
-    display:inline-block;
+    display: inline-block;
     color: #444;
     font: normal 12px;
     height: 26px;
-    width:121px;
+    width: 121px;
     line-height: 26px;
-    text-align:center;
+    text-align: center;
     outline: none;
-    border:none;
+    border: none;
     -moz-outline-style: none;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-input[type=button] {
-    background:  url(../images/button120_01.png) no-repeat 1px 2px;
-    display:inline-block;
-    color: #444;
-    font: normal 12px;
-    height: 26px;
-    width:121px;
-    line-height: 26px;
-    text-align:center;
-    outline: none;
-    border:none;
-    -moz-outline-style: none;
+input[type=button].smbutton,
+input[type=submit].smbutton {
+    background:  url(../images/button80_01.png) no-repeat 1px 2px;
+    width: 81px;
 }
 
 .buttonbig {

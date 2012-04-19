@@ -1634,7 +1634,7 @@ if ($action =="edit"):  ?>
                     </ul>
                     <?php if($allowEdit && $action=="edit"): ?>
                         <div class="buttonContainer-save">
-                            <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
+                            <input type="submit" class="smbutton" value="Save" name="save_workitem" id="save_workitem" />
                         </div>
                     <?php endif;?>
                 </form>
@@ -1749,7 +1749,7 @@ if ($action =="edit"):  ?>
                               });
                             });
                         </script>
-                        <input type="submit" id="invite-people" name="invite-people" value="Invite" class="bottonAtRight" />
+                        <input type="submit" id="invite-people" name="invite-people" value="Invite" class="bottonAtRight smbutton" />
                       </form>
                     </li>
                     <?php endif;?>
@@ -1856,9 +1856,9 @@ if ($action =="edit"):  ?>
 <?php if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTEDwithBID' || ($worklist['status'] == 'SUGGESTED' && $worklist['creator_id']== $user_id)) : ?>
                         <div class="buttonContainer">
 <?php if ($user->isEligible()) : ?>
-                            <input type="submit" value="Add Bid" onClick="return showConfirmForm('bid');" />
+                            <input type="submit" class="smbutton" value="Add Bid" onClick="return showConfirmForm('bid');" />
 <?php else: ?>
-                            <input type="submit" value="Add Bid" onClick="return showIneligible('bid');" />
+                            <input type="submit" class="smbutton" value="Add Bid" onClick="return showIneligible('bid');" />
 <?php endif; ?>
 <?php if(! empty($bids) && ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids() && (((strtoupper($workitem->getStatus()) == "BIDDING")) || $workitem->getStatus() == "SUGGESTEDwithBID")):?>
                             <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
@@ -1997,7 +1997,7 @@ if ($action =="edit"):  ?>
                             
                             <div class="buttonContainer">
                                 <?php if ($mechanic_id == $user_id) : ?>
-                                    <input class="iToolTip addTip" type="submit" value="Tip User" />
+                                    <input class="iToolTip addTip smbutton" type="submit" value="Tip User" />
                                 <?php endif; ?>
                                 
                                 <?php if ($worklist['status'] == 'REVIEW') {
@@ -2027,9 +2027,9 @@ if ($action =="edit"):  ?>
                                 
                                 <?php if ($user_id): ?>
                                     <?php if ($user->isEligible()) : ?>
-                                        <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
+                                        <input class="iToolTip addFee smbutton" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
                                     <?php else: ?>
-                                        <input class="iToolTip addFee" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
+                                        <input class="iToolTip addFee smbutton" type="submit" value="Add Fee" onClick="return showIneligible('fee');"/>
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 </div>
@@ -2060,12 +2060,17 @@ if ($action =="edit"):  ?>
                                                 "fee_created: '{$fee['date']}', " .
                                                 "desc:\"" .  replaceEncodedNewLinesWithBr($fee['desc']) . "\"}";?>
                                         </script>
-                                        <td><a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"><?php echo getSubNickname($fee['nickname']);?></a></td>
-                                        <td>$ <?php echo $fee['amount'];?></td>
+                                        <td class="nickname">
+                                            <a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"
+                                                title="<?php echo $fee['nickname']; ?>">
+                                                <?php echo getSubNickname($fee['nickname'], 8);?>
+                                            </a>
+                                        </td>
+                                        <td>$<?php echo $fee['amount'];?></td>
                                         <?php if (($worklist['status'] == 'REVIEW' || $worklist['status'] == 'COMPLETED' || $worklist['status'] == 'DONE')&& ($fee['desc'] == 'Accepted Bid')) { ?>
                                         <td>Bid Notes: <?php echo preg_replace("/\r?\n/", "<br />", $fee['bid_notes']);?></td>
                                         <?php } else { ?>
-                                        <td><?php 
+                                        <td class="pre fee-description"><?php 
                                                 $feeDesc = replaceEncodedNewLinesWithBr($fee['desc']);
                                                 echo truncateText($feeDesc);
                                             ?>

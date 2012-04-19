@@ -1013,9 +1013,9 @@ function checkLogin() {
     /**
      * Return a trimmed version of the nickname
      */
-    function getSubNickname($nickname) {
-        if (strlen($nickname) > 18) {
-            return substr($nickname, 0, 18) . '...';
+    function getSubNickname($nickname, $length = 18) {
+        if (strlen($nickname) > $length) {
+            return substr($nickname, 0, $length) . '...';
         } else {
             return $nickname;
         }

@@ -1003,6 +1003,20 @@ div.mechanic_id ul {
     border-width: 1px 1px 0 0;
 }
 
+.table-fees .table-caption {
+    white-space: nowrap;
+}
+
+.table-fees .nickname {
+    max-width: 60px;
+    overflow: hidden;
+}
+
+.fee-description {
+    width: 163px;
+    max-width: 163px;
+}
+
 h1.newProject {
     padding: 15px 0 0 0;
     margin: 0;

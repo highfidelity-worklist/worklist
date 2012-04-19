@@ -1661,9 +1661,9 @@ class User {
     /**
      * Return a trimmed version of the nickname
      */
-    public function getSubNickname($nickname) {
-        if (strlen($nickname) > 13) {
-            return substr($nickname, 0, 13) . '...';
+    public function getSubNickname($nickname, $length = 13) {
+        if (strlen($nickname) > $length) {
+            return substr($nickname, 0, $length) . '...';
         } else {
             return $nickname;
         }
