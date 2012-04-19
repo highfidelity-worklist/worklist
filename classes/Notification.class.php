@@ -598,7 +598,7 @@ class Notification {
                 $body .=" failed the Autotester!";
                 $body .= '<br><br>See test results <a href="http://bit.ly/jGfIkj">here</a> ';
                 $body .= 'Please look at the test results and determine if you need to modify your commit.';
-                $body .= 'You can type "@faq CommitTests" in the Journal for more information.';
+                $body .= 'You can type "@faq CommitTests" in the Chat for more information.';
                 $body .= '<br/><br/>-worklist.net';
             break;
             
@@ -629,7 +629,7 @@ class Notification {
                 $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
                 $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
                 $body .= "[<a href=\"" . WORKLIST_URL . "/\">" . WORKLIST_URL . "</a> | Look over all our open work items]<br />";
-                $body .= "[<a href=\"" . JOURNAL_URL . "/\">" . JOURNAL_URL . "</a> | Talk with us in our Journal]<br />";
+                $body .= "[<a href=\"" . JOURNAL_URL . "/\">" . JOURNAL_URL . "</a> | Talk with us in our Chat]<br />";
                 $body .= "<p>Hope to see you soon.</p>";
             break;
 

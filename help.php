@@ -87,7 +87,8 @@ include("head.html");
         <li><a href="#ff2">Can Someone Else Help me Run Jobs?</a></li>
         <li><a href="#ff3">Do I have to Open Source my Code to use Worklist?</a></li>
         <li><a href="#ff4">I'm not a Founder, but I'd like to be, how do I get my project on Worklist?</a></li>
-        <li><a href="#ff5">How do I manage a project on Worklist? What do the various project statuses mean?</a></li>
+        <li><a href="#ff5">How do I fund my project?</a></li>
+        <li><a href="#ff6">How do I manage a project on Worklist? What do the various project statuses mean?</a></li>
     </ul>
 <br/>
 </div>
@@ -140,7 +141,7 @@ include("head.html");
         <td align="left"><h1>Developer FAQs<span class="heading-links" /></h1></td>
     </tr>
     <p><a name="df1"></a><strong>Q. What's the best way to get started?</strong></br>
-    <strong>A.</strong> Join us in the open chat channel the <a href='https://www.worklist.net/journal'>Journal</a> where there are almost always other people 
+    <strong>A.</strong> Join us in <a href='https://www.worklist.net/journal'>Chat</a> where there are almost always other people 
     around to answer questions and help you get started.</strong> 
     <br/>
     <p><a name="df2"></a><strong>Q. How can I locate jobs to bid?</strong></br>
@@ -175,18 +176,18 @@ include("head.html");
     <a href ='http://wiki.lovemachineinc.com/wiki/index.php/User:Sandbox_autoconfig'> Wiki</a></strong>. 
     <br/>
     <p><a name="df9"></a><strong>Q. On my first commit, I got an error that said I do not have commit access, now what?</strong></br>
-    <strong>A.</strong> Please contact an admin in the Journal <http://www.worklist.net/journal> or email admin@worklist.net for help.</strong> 
+    <strong>A.</strong> Please contact an admin in <a href ='http://www.worklist.net/journal'>Chat </a> or email admin@worklist.net for help.</strong> 
     <br/>
     <p><a name="df10"></a><strong>Q. After I have completed my work, how do I get paid?</strong></br>
     <strong>A.</strong> Once you've finished work and it has had a functional and code review completed, you should set the job to COMPLETED.
      The project Runner will then need to verify it works in production and will then set the job to DONE. You will not get paid until this 
-     happens. Please view the <a href ="#ff5"> Project Status</a> flow for more information.  All payments are
+     happens. Please view the <a href ="#ff6"> Project Status</a> flow for more information.  All payments are
      currently handled through Paypal. When you create your worklist account, you'll be asked to supply your Paypal email address. We will pay as
      quickly as possible after a job is marked DONE in the worklist (this is done by the person who created or is running the job).</strong> 
     <br/>
     <p><a name="df11"></a><strong>Q. Where can I go for more information? </strong></br>
     <strong>A.</strong> Visit the Worklist <a href ='http://wiki.lovemachineinc.com'>developer wiki</a>, read up on our <a href ='http://wiki.lovemachineinc.com/wiki/index.php/Coding_Standards'>Coding Standards</a>
-    Coding Standards</a>, or just visit the <a href ='http://www.worklist.net/journal'>Journal</a> and ask!</strong> 
+    Coding Standards</a>, or just visit the <a href ='http://www.worklist.net/journal'>Chat</a> and ask!</strong> 
     </p>
     <br/>
     <a href="#top">BACK TO TOP</a>
@@ -225,10 +226,15 @@ include("head.html");
     solution that works best.<br/>
     </p>
     <p><a name="ff4"></a><strong>Q. I'm not a Founder, but I'd like to be, how do I get my project on Worklist? </strong></br>
-    <strong>A.</strong> Please send us some information via this <a id="add-projects" href="#">link</a> and we'll
-    help you get started!<br/>
+    <strong>A.</strong> You can add your project from our <a href='https://www.worklist.net/worklist/projects.php'>projects </a>page.  
+    Adding a project will automatically set up a MySQL database, Code Repository with a sample PHP page, and a Sandbox in which you
+    may add to and update your codebase.<br/>
     </p>
-    <p><a name="ff5"></a><strong>Q. How do I manage a project on Worklist? What do the various project statuses mean? </strong></br>
+    <p><a name="ff5"></a><strong>Q. How do I fund my project? </strong></br>
+    <strong>A.</strong> You may add funds to your project with a Credit Card or a PayPal account. Email contact@worklist.net
+    with your project name in the subject to get more information.<br/>
+    </p>
+    <p><a name="ff6"></a><strong>Q. How do I manage a project on Worklist? What do the various project statuses mean? </strong></br>
     <strong>A.</strong> Tasks on Worklist go through various statuses from preparation through release. Once your project is up and
     funded, you might need this cheat sheet to help you out until you get the knack of our work flow.<br/>
     <p><strong>Stage One: Preparation > Setting up your jobs</strong></p> 
@@ -251,7 +257,7 @@ include("head.html");
         step, your job as Founder is to make sure everything works according to your design. If anything looks wrong, leave a comment for the
         Mechanic to fix. If the job look good, set it to REVIEW.</li>
         <li><strong>REVIEW -</strong> REVIEW means the new code is ready to be reviewed by another Mechanic. If the reviewer finds any issues,
-        they are either worked out in real-time in the Journal or via comments added to the job ticket. Once all issues have been resolved, the
+        they are either worked out in real-time in our <a href='https://www.worklist.net/journal'>Chat</a> or via comments added to the job ticket. Once all issues have been resolved, the
         Mechanic commits the code and sets the job to COMPLETED.</li> 
         <br/>
     </blockquote>

@@ -144,7 +144,7 @@ class SurveyBot extends Bot
 }
 
 function emailSurvey($question, $message) {
-    $subject = "Journal Survey: " . $question;
+    $subject = "Chat Survey: " . $question;
     $body = $message;
     sl_send_email(SURVEYS_EMAIL, $subject, $body);
 }

@@ -2116,7 +2116,7 @@ if ($action =="edit"):  ?>
                 <?php if(JOURNAL_EXISTS) { // include the journal dropdown if the journal setting is true ?>
                 <div id="journalPanel">
                     <div class="accordion">
-                        <h3><a href="#" id="loadJournalInfo">Related Journal Discussion</a></h3>
+                        <h3><a href="#" id="loadJournalInfo">Related Chat Discussion</a></h3>
                         <div id="journalChat">
                             <?php
                                 echo getTaskPosts($worklist['id']);

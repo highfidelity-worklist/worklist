@@ -70,7 +70,7 @@ $(window).focus(function setFocused() {
     clearInterval(titleTimer);
     focus = true;
     newMessageCount = 0;
-    document.title = "Journal";
+    document.title = "Chat";
 
     if (pendingMessages === 0) $('#entries-pending').hide();
     else inThePresent = false;
@@ -259,7 +259,7 @@ function alertNewMessage(action, entryText) {
     if(!focus && (entryText != undefined))
     {
         newMessageCount++;
-        document.title = "Journal (" + newMessageCount + ")";
+        document.title = "Chat (" + newMessageCount + ")";
         var search_string = entryText.entry_text.search('sent a ping to');
         // if the ping comes from the worklist and is public visible
         if (search_string != -1 && 
@@ -277,7 +277,7 @@ function alertNewMessage(action, entryText) {
             titleTimer = setInterval(changeTitle, 1000);
         }
     } else {
-        document.title = 'Journal';
+        document.title = 'Chat';
     }
     if(playSoundOnNewMessage == true) {
         var lastEntry = $("div.entry:has(h2):last");
@@ -314,10 +314,10 @@ function alertNewMessage(action, entryText) {
  * function handles the title change
  */
 function changeTitle () {
-    if (document.title == "Journal (" + newMessageCount + ")") {
+    if (document.title == "Chat (" + newMessageCount + ")") {
         document.title = '** New Ping Alert! ** (' + newMessageCount + ')';
     } else {
-        document.title = "Journal (" + newMessageCount + ")";
+        document.title = "Chat (" + newMessageCount + ")";
     }
 }
 // george removed toggleAudio as not being used
@@ -485,7 +485,7 @@ function togglePopup() {
 
 function sendEntry() {
     scrollBottom = true;
-    doc = document.location.href.split("journal");
+    doc = document.location.href.split("chat");
     //var worklistUrl = doc[0] + "/worklist/";
     $.ajax({
         url: 'api.php',
@@ -1881,7 +1881,7 @@ function initializeFileUploadSupport() {
         data : { csrf_token: csrf_token },
         responseType: 'json',
         name: 'attachment',
-        title: 'Upload to Journal',
+        title: 'Upload to Chat',
         onComplete : function(file, data){
             if(typeof(data.error) != 'undefined') {
                 if(data.error != '') {
@@ -2667,7 +2667,7 @@ $(window).ready(function() {
 
     $('#message-pane').focus();
      //fetch TZ from worklist
-    doc = document.location.href.split("journal");
+    doc = document.location.href.split("chat");
     //var worklistUrl = doc[0] + "/worklist/";
     $.ajax({
         url: 'api.php',
