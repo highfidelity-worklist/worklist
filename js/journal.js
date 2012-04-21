@@ -866,6 +866,10 @@ function getLatestSpeakers(timeout)
 }
 
 function applyPopupBehavior() {
+    $(function() {
+        $('#addaccordion').fileUpload({tracker: $('input[name=files]')});
+    });
+
     var entries = $("#entries");
 
     entries.find("a.attachment").not(".attached").each(function (a,b) {

@@ -355,7 +355,6 @@ function StopStatus() {
 <?php endif; ?>
 <!-- Popup for editing/adding  a work item -->
 <?php require_once('dialogs/popup-edit.inc'); ?>
-    <script type="text/javascript" src="js/worklist.js"></script>
     <script type="text/javascript">
 <?php
     if (isset($error) && $error->getErrorFlag() == 1) {
