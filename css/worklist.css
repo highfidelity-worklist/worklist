@@ -38,12 +38,6 @@
 	width:70px;
 }
 
-.popup-body select {
-    font-size: 14px;
-    font-family: helvetica, arial, sans-serif;
-    width: 350px;
-}
-
 #popup-edit textarea{
     height: 165px;
 }
@@ -285,13 +279,6 @@ color:#98AAB2;
   display: none;
 }
 
-.ui-state-default.ui-combobox {
-	background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent;	
-}
-.ui-state-hover.ui-combobox {
-	background: url("../images/dropdown_background.png") repeat scroll 0px -35px transparent;
-}
-
 #loader_img_title {
 	border: 2px #DCD998 solid;
 	background-color:#FFD;
@@ -462,19 +449,6 @@ td.textAlignReport {
 .taskProject a:hover {
     text-decoration: none;
     color: #98AAB2;
-}
-
-.ui-state-default .ui-combobox {
-    background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important; 
-}
-.ui-state-hover .ui-combobox !important {
-    background: url("../images/dropdown_background.png") repeat scroll 0px -35px transparent;
-}
-.ui-icon-carat-1-s {
-    background-position: -64px 0 !important;
-}
-#for_edit .ui-combobox-textbox {
-    font-size: 1.2em !important;
 }
 
 .projectLeft {
@@ -923,9 +897,3 @@ input.button-disabled ,
     top: '1px';
 }
 
-div#addFromJournal.ui-dialog,
-.addFromJournal-popup {
-    border: none !important;
-    border-radius: none !important;
-    box-shadow: none !important;
-}

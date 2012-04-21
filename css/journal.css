@@ -512,6 +512,7 @@ input.hide {display:none;}
     padding:2px;
     border:0px;
     margin:0px 0px 0px 0px;
+    top: 0px;
 }
 
 .input_box input {
@@ -522,6 +523,7 @@ input.hide {display:none;}
     padding:2px;
     border:0px;
     margin:0px 0px 0px 0px;
+    top: 0px;
 }
 
 .input_box form { 
@@ -1386,14 +1388,6 @@ textarea.LV_invalid_field:active,
     text-align: left;
 }
 
-.popup-body input[type="text"], .popup-body textarea,
-.popup-body select
-{
-    font-size: 14px;
-    font-family: "Trebuchet MS","Trebuchet",Arial,Helvetica,sans-serif;
-    width: 200px;
-}
-
 #popup-edit textarea{
     height: 110px;
 }
@@ -1660,19 +1654,12 @@ body > #ui-toaster-br {
 }
 
 #addJob {
-    height:26px;
-    float:right;
+    height: 26px;
+    float: right;
     margin: 3px 10px 0px 0px;
-    display:none;
-}
-#addJobPane {
-    position: absolute;
-    top: 0;
-    left: 0;
     display: none;
-    border: none;
-    z-index: 999999;
 }
+
 /* modal messaging styles end */
 /*
 iframe { background:#FFF; }
@@ -1687,6 +1674,3 @@ iframe { background:#FFF; }
     font-weight: bold;
 }
 
-#addJobOutterDialog.ui-dialog-content {
-    padding: 0;
-}

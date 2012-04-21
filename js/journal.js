@@ -3017,19 +3017,6 @@ jQuery.fn.DefaultValue = function(text){
 
 // --
 
-function closeAddJobDialog() {
-    addJobDialog.dialog('close');
-    return false;
-}
-
-function resizeJobIframe(height) {
-    var frame = $('#addJobDialog');
-    frame.css('height', height);
-    $('#addJobOutterDialog').css('min-height', height);
-}
-
-var addJobDialog = null;
-
 $(function() {
 
     var worklistUrl=$('#system-biddingJobs').attr('worklistUrl');
@@ -3040,23 +3027,7 @@ $(function() {
     
     if (userId > 0) {
         $("#addJob").click(function(event){
-            if(window.name == 'NaN' || window.name == '') {
-                window.name = 'J' + Date.parse('Jan 1 2011');
-            }
-
-            addJobDialog = $('<div id="addJobOutterDialog"><iframe id="addJobDialog" width="440" height="750" frameborder="0" scrolling="no" /></div>').dialog({
-                    title: 'Add Job to Worklist',
-                    autoOpen: false,
-                    width: 450,
-                    minHeight: 750,
-                    resizable: false,
-                    close: function(){ $(this).dialog('destroy'); $('#addJobDialog').remove(); },
-                    autoResize: true
-                });
-            $('#addJobDialog').attr('src', $("#addJobLink").attr('href') + window.name);
-            addJobDialog.dialog('open').centerDialog();
-            $('#addJobDialog').css('width', '');
-
+            $('#popup-edit').dialog('open');
         });
     } else {
         $("#popup-guest-message").dialog({ autoOpen: false, hide: 'drop' });

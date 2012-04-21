@@ -147,6 +147,61 @@ table thead tr:hover {
     overflow-x: hidden;
 }
 
+.filesIcon {
+    border: 1px solid #222222;
+    float: left;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.filesDescription {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 90px;
+    min-height: 75px;
+}
+
+div.documents.filesDescription {
+    margin-left: 50px;
+}
+
+.filesDescription h3:hover, .filesDescription p:hover {
+    background: #f3f3f3;
+}
+
+.fileUploadButton {
+    background:url("../images/icons/clip.png") no-repeat scroll left top transparent;
+    height: 32px;
+    line-height: 32px;
+    margin: 10px 0;
+    padding-left: 35px;
+}
+
+.ui-state-default.ui-combobox,
+.ui-state-default .ui-combobox {
+    background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important; 
+}
+
+.ui-state-hover.ui-combobox,
+.ui-state-hover .ui-combobox !important {
+    background: url("../images/dropdown_background.png") repeat scroll 0px -35px transparent;
+}
+
+.ui-icon-carat-1-s {
+    background-position: -64px 0 !important;
+}
+
+#for_edit .ui-combobox-textbox {
+    font-size: 1.2em !important;
+}
+
+.popup-body select {
+    font-size: 14px;
+    font-family: helvetica, arial, sans-serif;
+    width: 350px;
+}
+
 pre,
 .pre {
     white-space: pre;           /* CSS 2.0 */

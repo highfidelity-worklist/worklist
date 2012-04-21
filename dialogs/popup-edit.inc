@@ -1,6 +1,3 @@
-<script type="text/javascript">
-    applyPopupBehavior();
-</script>
 <div id="popup-edit" title="Add Job to Worklist" class="popup-body">
     <form name="popup-form" id="popup-form-edit" action="javascript:;" method="post">
         <input type="hidden" name="itemid" value="0" />
@@ -138,3 +135,8 @@
                 <?php } ?>
             </form>
         </div>
+<script type="text/javascript" src="js/addJob.js"></script>
+<script type="text/javascript">
+    applyPopupBehavior();
+</script>
+

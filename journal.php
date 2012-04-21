@@ -230,8 +230,7 @@ function StopStatus() {
                     </div>
                 </div><!-- /#guideline -->
 <!-- End of scroll-wrap -->
-                <a href="worklist.php?addFromJournal=" target="_blank" id="addJobLink"></a>
-                <input type="button" value="Add Job"  id="addJob"/>
+                <input type="button" value="Add Job" id="addJob" />
             </div><!-- /#content -->
             <div id="right"></div>
             <div style="clear: both;"></div>
@@ -333,6 +332,7 @@ function StopStatus() {
         var lastTouched = '<?php echo file_get_contents(JOURNAL_UPDATE_TOUCH_FILE); ?>';
         var latency_sample = '<?php echo LATENCY_SAMPLE; ?>';
         var csrf_token = '<?php echo $csrf_token; ?>';
+        var addFromJournal = true;
     </script>
 <?php
 // Force load individual files while we debug the issues using the minimized version - gj 2011-July-05
@@ -341,12 +341,21 @@ function StopStatus() {
 <?php if (true): ?>
     <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
+    <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
+    <script type="text/javascript" src="js/class.js"></script>
+    <script type="text/javascript" src="js/jquery.combobox.js"></script>
+    <script type="text/javascript" src="js/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="js/jquery.metadata.js"></script>
+    <script type="text/javascript" src="js/ajaxupload.js"></script>
     <script type="text/javascript" src="js/soundmanager2.js"></script>
     <script type="text/javascript" src="js/jquery_all.js"></script>
     <script type="text/javascript" src="js/journal.js"></script>
 <?php else: ?>
     <script type="text/javascript" src="js/jscode.min.js"></script>
 <?php endif; ?>
+<!-- Popup for editing/adding  a work item -->
+<?php require_once('dialogs/popup-edit.inc'); ?>
+    <script type="text/javascript" src="js/worklist.js"></script>
     <script type="text/javascript">
 <?php
     if (isset($error) && $error->getErrorFlag() == 1) {

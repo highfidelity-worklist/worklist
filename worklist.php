@@ -226,11 +226,6 @@ $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 require_once("head.html");
 ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
-<!-- @TODO: addFromJournal was used when the two apps were separate, an iframe was loaded with the
-     add job dialog. We can now get rid of that and load the dialog directly on top of journal -->
-<?php if(isset($_REQUEST['addFromJournal'])): ?>
-<link href="css/addFromJournal.css" rel="stylesheet" type="text/css" />
-<?php endif; ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <link href="css/ui.toaster.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
@@ -249,9 +244,6 @@ require_once("head.html");
 <script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
-<?php if(isset($_REQUEST['addFromJournal'])): ?>
-<script type="text/javascript" src="js/jquery.ba-resize.min.js"></script>
-<?php endif; ?>
 <script type="text/javascript">
     var lockGetWorklist = 0;
     var status_refresh = 5 * 1000;
@@ -285,11 +277,11 @@ require_once("head.html");
     var dirImg;
 // Ticket #11517, replace all the "isset($_SESSION['userid']) ..."  by a call to "getSessionUserId"
 //   var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
-    var user_id = <?php echo getSessionUserId(); ?>;
+    var userId = user_id = <?php echo getSessionUserId(); ?>;
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
     var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
-    var addFromJournal = '<?php echo isset($_REQUEST['addFromJournal']) ? $_REQUEST['addFromJournal'] : '' ?>';
+    var addFromJournal = false;
     var dir = '<?php echo $filter->getDir(); ?>';
     var sort = '<?php echo $filter->getSort(); ?>';
     var inProject = '<?php echo is_object($inProject) ?  $project_id  : '';?>';
@@ -557,7 +549,7 @@ require_once("head.html");
     }
 
     function GetWorklist(npage, update, reload) {
-        if(addFromJournal != '') {
+        if (addFromJournal) {
             return true;
         }
         while(lockGetWorklist) {
@@ -579,7 +571,7 @@ require_once("head.html");
             data: {
                 page: npage,
                 project_id: $('.projectComboList .ui-combobox-list-selected').attr('val') || inProject,
-                status: ($('select[name=status]').val() || []).join("/"),
+                status: ($('#statusCombo').val() || []).join("/"),
                 sort: sort,
                 dir: dir,
                 user: $('.userComboList .ui-combobox-list-selected').attr('val'),
@@ -723,77 +715,6 @@ require_once("head.html");
         return "<?php echo SERVER_URL ; ?>workitem.php?job_id="+item+"&action=view";
     }
 
-    function ResetPopup() {
-        $('#for_edit').show();
-        $('#for_view').hide();
-        $('.popup-body form input[type="text"]').val('');
-        $('.popup-body form select.resetToFirstOption option[index=0]').prop('selected', true);
-        $('.popup-body form select option[value=\'BIDDING\']').prop('selected', true);
-        $('.popup-body form textarea').val('');
-
-        //Reset popup edit form
-        $("#bug_job_id").prop ( "disabled" , true );
-        $("#bug_job_id").val ("");
-        $('#bugJobSummary').html('');
-        $("#bugJobSummary").attr("title" , 0);
-        $("#is_bug").prop('checked',false);
-        $('input[name=files]').val('');
-        $('#fileimagecontainer').text('');
-        $('#imageCount').text('0');
-       
-    }
-
-
-
-    jQuery.fn.center = function () {
-      this.css("position","absolute");
-      this.css("top", (( $(window).height() - this.outerHeight() ) / 2 ) + "px");
-      this.css("left", (( $(window).width() - this.outerWidth() ) / 2 ) + "px");
-      return this;
-    }
-    /*
-    show a message with a wait image
-    several asynchronus calls can be made with different messages
-    */
-    var loaderImg = function($)
-    {
-        var aLoading = new Array(),
-            _removeLoading = function(id) {
-                for (var j=0; j < aLoading.length; j++) {
-                    if (aLoading[j].id == id) {
-                        if (aLoading[j].onHide) {
-                            aLoading[j].onHide();
-                        }
-                        aLoading.splice(j,1);
-                    }
-                }
-            },
-            _show = function(id,title,callback) {
-                aLoading.push({ id : id, title : title, onHide : callback});
-                $("#loader_img_title").append("<div class='"+id+"'>"+title+"</div>");
-                if (aLoading.length == 1) {
-                    $("#loader_img").css("display","block");
-                }
-                $("#loader_img_title").center();
-            },
-            _hide = function(id) {
-                _removeLoading(id);
-                if (aLoading.length == 0) {
-                    $("#loader_img").css("display","none");
-                    $("#loader_img_title div").remove();
-                } else {
-                    $("#loader_img_title ."+id).remove();
-                    $("#loader_img_title").center();
-                }
-            };
-        
-    return {
-        show : _show,
-        hide : _hide
-    };
-
-    }(jQuery); // end of function loaderImg
-
     function validateCodeReviews() {
         if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
             $('.cr_anyone_field').prop('checked', true);
@@ -918,117 +839,11 @@ require_once("head.html");
             affectedHeader = $(this);
             orderBy($(this).text().toLowerCase());
         });
-        if(addFromJournal != '') {
-            var addJobPane = window.parent;
-        }
         
         // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
         $('#popup-addrole').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-role-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-edit-role').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
-        $('#popup-edit').dialog({
-            autoOpen: false,
-            show: 'fade',
-            hide: 'fade',
-            maxWidth: 600,
-            width: 415,
-            hasAutocompleter: false,
-            hasCombobox: false,
-            resizable:false,
-            open: function() {
-                if (this.hasAutocompleter !== true) {
-                    $('.invite').autocomplete('getusers.php', {
-                        multiple: true,
-                        multipleSeparator: ', ',
-                        selectFirst: true,
-                        extraParams: { nnonly: 1 }
-                    });
-                    this.hasAutocompleter = true;
-                }
-                $('#more-accordion').accordion({
-                    clearStyle: true,
-                    collapsible: true,
-                    active: false
-                });
-                if (this.hasCombobox !== true) {
-                    // to add a custom stuff we bind on events
-                    $('#popup-edit select[name=itemProject]').bind({
-                        'beforeshow newlist': function(e, o) {
-                            // check if the div for the checkbox already exists
-                            if ($('#projectPopupActiveBox').length == 0) {
-                                var div = $('<div/>').attr('id', 'projectPopupActiveBox');
-
-                                // now we add a function which gets called on click
-                                div.click(function(e) {
-                                    // we hide the list and remove the active state
-                                    activeProjectsFlag = 1 - activeProjectsFlag;
-                                    o.list.hide();
-                                    o.container.removeClass('ui-state-active');
-                                    // we send an ajax request to get the updated list
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: 'refresh-filter.php',
-                                        data: {
-                                            name: filterName,
-                                            active: activeProjectsFlag,
-                                            filter: 'projects'
-                                        },
-                                        dataType: 'json',
-                                        // on success we update the list
-                                        success: $.proxy(o.setupNewList, o)
-                                    });
-                                });
-                                $('.itemProjectCombo').append(div);
-                            }
-                            // setup the label and checkbox to put in the div
-                            var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
-                            var checkbox = $('<input/>').attr({
-                                type: 'checkbox',
-                                id: 'onlyActive'
-                            }).css({
-                                    margin: 0,
-                                    position: 'relative',
-                                    top: '1px',
-                            });
-
-                            // we need to update the checkbox status
-                            if (activeProjectsFlag) {
-                                checkbox.prop('checked', true);
-                            } else {
-                                checkbox.prop('checked', false);
-                            }
-
-                            // put the label + checkbox in the div
-                            label.text(' Active only');
-                            label.prepend(checkbox);
-                            $('#projectPopupActiveBox').html(label);
-                        }
-                    }).comboBox();
-                    $('#popup-edit select[name=status]').comboBox();
-                    this.hasCombobox = true;
-                } else {
-                    $('#popup-edit select[name=itemProject], #popup-edit select[name=status]').next().hide();
-                    setTimeout(function() {
-                        var val1 = $($('#popup-edit select[name=itemProject] option').get(1)).attr("value");
-                        $('#popup-edit select[name=itemProject]').comboBox({action: "val", param: [val1]});
-                        val1 = $($('#popup-edit select[name=status] option').get(1)).attr("value");
-                        $('#popup-edit select[name=status]').comboBox({action: "val", param: [val1]});
-                        setTimeout(function() {
-                            $('#popup-edit select[name=itemProject], #popup-edit select[name=status]').next().show();
-                            $('#popup-edit select[name=itemProject], #popup-edit select[name=status]').comboBox({action: "val", param: ["select"]});
-                        },50);
-                    },20);
-                    
-                }
-            },
-            close: function() {
-                if(addFromJournal != '') {
-                    setTimeout(function() {
-                        addJobPane.closeAddJobDialog()
-                    }, 1000);
-                }
-            }
-        });
 
         $('#user-info').dialog({
            autoOpen: false,
@@ -1047,164 +862,6 @@ require_once("head.html");
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         reattachAutoUpdate();
 
-        $('#add').click(function(){
-            $('#popup-edit').data('title.dialog', 'Add Worklist Item');
-            $('#popup-edit form input[name="itemid"]').val('');
-            ResetPopup();
-            $('#save_item').click(function(event){
-                var massValidation;
-                if ($('#save_item').data("submitIsRunning") === true) {
-                    event.preventDefault();
-                    return false;
-                }
-                $('#save_item').data( "submitIsRunning",true );
-                loaderImg.show( "saveRunning","Saving, please wait ...",function() {
-                    $('#save_item').data( "submitIsRunning",false );
-                });
-
-                if($('#popup-edit form input[name="is_bug"]').is(':checked')) {
-                    var bugJobId = new LiveValidation('bug_job_id',{
-                        onlyOnSubmit: true ,
-                        onInvalid : function() {
-                            loaderImg.hide("saveRunning");
-                            this.insertMessage( this.createMessageSpan() );
-                            this.addFieldClass();
-                        }
-                    });
-                    bugJobId.add( Validate.Custom, {
-                        against: function(value,args){
-                            id=$('#bugJobSummary').attr('title');
-                            return (id!=0)
-                        },
-                        failureMessage: "Invalid item Id"
-                    });
-
-                    massValidation = LiveValidation.massValidate([bugJobId]);
-                    if (!massValidation) {
-                        loaderImg.hide("saveRunning");
-                        event.preventDefault();
-                        return false;
-                    }
-                }
-                if($('#popup-edit form input[name="bid_fee_amount"]').val() || $('#popup-edit form input[name="bid_fee_desc"]').val()) {
-                    // see http://regexlib.com/REDetails.aspx?regexp_id=318
-                    // but without  dollar sign 22-NOV-2010 <krumch>
-                    var regex = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-                    var optionsLiveValidation = { onlyOnSubmit: true,
-                        onInvalid : function() {
-                            loaderImg.hide("saveRunning");
-                            this.insertMessage( this.createMessageSpan() );
-                            this.addFieldClass();
-                        }
-                    };
-                    var bid_fee_amount = new LiveValidation('bid_fee_amount',optionsLiveValidation);
-                    var bid_fee_desc = new LiveValidation('bid_fee_desc',optionsLiveValidation);
-
-                    bid_fee_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                    bid_fee_amount.add( Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
-                    bid_fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                    massValidation = LiveValidation.massValidate([bid_fee_amount, bid_fee_desc]);
-                    if (!massValidation) {
-                        loaderImg.hide("saveRunning");
-                        event.preventDefault();
-                        return false;
-                     }
-                } else {
-                    if (bid_fee_amount) bid_fee_amount.destroy();
-                    if (bid_fee_desc) bid_fee_desc.destroy();
-                }
-                var summary = new LiveValidation('summary',{ onlyOnSubmit: true ,
-                    onInvalid : function() {
-                        loaderImg.hide("saveRunning");
-                        this.insertMessage( this.createMessageSpan() );
-                        this.addFieldClass();
-                    }});
-                summary.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                massValidation = LiveValidation.massValidate( [ summary ]);
-                if (!massValidation) {
-                    loaderImg.hide("saveRunning");
-                    event.preventDefault();
-                    return false;
-                }
-                var itemProject = new LiveValidation('itemProjectCombo',{
-                    onlyOnSubmit: true ,
-                    onInvalid : function() {
-                        loaderImg.hide("saveRunning");
-                        this.insertMessage( this.createMessageSpan() );
-                        this.addFieldClass();
-                    }});
-                itemProject.add( Validate.Exclusion, {
-                    within: [ 'select' ], partialMatch: true,
-                    failureMessage: "You have to choose a project!"
-                });
-                massValidation = LiveValidation.massValidate( [ itemProject ]);
-                if (!massValidation) {
-                    loaderImg.hide("saveRunning");
-                    event.preventDefault();
-                    return false;
-                }
-                addForm = $("#popup-edit");
-                $.ajax({
-                    url: 'addworkitem.php',
-                    dataType: 'json',
-                    data: {
-                        bid_fee_amount:$(":input[name='bid_fee_amount']",addForm).val(),
-                        bid_fee_mechanic_id:$(":input[name='bid_fee_mechanic_id']",addForm).val(),
-                        bid_fee_desc:$(":input[name='bid_fee_desc']",addForm).val(),
-                        itemid:$(":input[name='itemid']",addForm).val(),
-                        summary:$(":input[name='summary']",addForm).val(),
-                        files:$(":input[name='files']",addForm).val(),
-                        invite:$(":input[name='invite']",addForm).val(),
-                        notes:$(":input[name='notes']",addForm).val(),
-                        page:$(":input[name='page']",addForm).val(),
-                        project_id:$(":input[name='itemProject']",addForm).val(),
-                        status:$(":input[name='status']",addForm).val(),
-                        skills:$(":input[name='skills']",addForm).val(),
-                        is_bug:$(":input[name='is_bug']",addForm).prop('checked'),
-                        bug_job_id:$(":input[name='bug_job_id']",addForm).val()
-                    },
-                    type: 'POST',
-                    success: function(json){
-                        if ( !json || json === null ) {
-                            alert("json null in addworkitem");
-                            loaderImg.hide("saveRunning");
-                            return;
-                        }
-                        if ( json.error ) {
-                            alert(json.error);
-                        } else {
-                            $('#popup-edit').dialog('close');
-                        }
-                        loaderImg.hide("saveRunning");
-                        if(addFromJournal != '') {
-                            setTimeout(function() {
-                                addJobPane.closeAddJobDialog()
-                            }, 1000);
-                        } else {
-                            if (timeoutId) clearTimeout(timeoutId);
-                            timeoutId = setTimeout("GetWorklist("+page+", true, true)", refresh);
-                            GetWorklist("+page+", true, true);
-                        }
-                    }
-                });
-                return false;
-            });
-            $('#fees_block').hide();
-            $('#fees_single_block').show();
-            if(addFromJournal != '') {
-                $('#popup-edit').dialog('option', 'dialogClass', 'addFromJournal-popup');
-                $('#popup-edit').dialog('option', 'position', ['center', 'top']);
-                $('#popup-edit').dialog('option', 'autoResize', true);
-                $('.addFromJournal-popup div.ui-dialog-titlebar').hide();
-                $('#popup-edit').parent().attr('id', 'addFromJournal');
-                $('#popup-edit').resize(function() {
-                    addJobPane.resizeJobIframe($('#popup-edit').height()+50);
-                });
-                $('#popup-edit').dialog('open');
-            } else {
-                $('#popup-edit').dialog('open');
-            }
-        });
         $("#search").click(function(e){
             e.preventDefault();
             $("#searchForm").submit();
@@ -1393,11 +1050,6 @@ require_once("head.html");
         });
     }
 
-    if(addFromJournal != '') {
-        $(function() {
-            $('#add').click();
-        });
-    }
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript">
@@ -1498,8 +1150,6 @@ echo
 
 <!-- js template for file uploads -->
 <?php require_once('dialogs/file-templates.inc'); ?>
-<!-- Popup for editing/adding  a work item -->
-<?php require_once('dialogs/popup-edit.inc'); ?>
 <!-- Popup for breakdown of fees-->
 <?php require_once('dialogs/popup-fees.inc'); ?>
 <!-- Popup for budget info -->
@@ -1515,13 +1165,6 @@ echo
 <!-- Popup for TestFlight -->
 <?php include('dialogs/popup-testflight.inc') ?>
 <?php
-if(isset($_REQUEST['addFromJournal'])) {
-?>
-<div class="hidden">
-<input type="submit" id="add" name="add" value="Add Job" />
-</div>
-<?php
-} else {
     require_once('header.php');
     require_once('format.php');
 ?>
@@ -1535,6 +1178,8 @@ if(isset($_REQUEST['journal_query'])) {
    $filter->setUser($_REQUEST['user']);
 }
    include("search-head.inc"); ?>
+<!-- Popup for editing/adding  a work item -->
+<?php require_once('dialogs/popup-edit.inc'); ?>
 <?php
 // show project information header
 if (is_object($inProject)) {
@@ -1819,5 +1464,4 @@ if (is_object($inProject)) {
 
 <?php
     include("footer.php");
-}
-?>
+
