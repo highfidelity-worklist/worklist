@@ -411,7 +411,7 @@ if($action == 'finish_codereview') {
         $myRunner->updateBudget(-$crfee_amount, $workitem->getBudget_id());
 
         if(Notification::isNotified($myRunner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-            Notification::sendSMS($myRunner, 'Fee', $journal_message);
+            Notification::sendShortSMS($myRunner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
         }
         
         $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
@@ -655,7 +655,7 @@ if ($action == "place_bid") {
             $username = $row['username'];
         }
 
-        $sms_message = "(Bid) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in on #$worklist_id $summary";
+        $sms_message = "Bid $" . number_format($bid_amount, 2) . " from " . getSubNickname($_SESSION['nickname']) . " done in $done_in on #$worklist_id $summary";
 
         // notify runner of new bid
         Notification::workitemNotify(
@@ -677,7 +677,7 @@ if ($action == "place_bid") {
         $runner = new User();
         $runner->findUserById($workitem->getRunnerId());
         if (Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-            Notification::sendSMS($runner, 'Bid', $sms_message);
+            Notification::sendShortSMS($runner, 'Bid', $sms_message, WORKITEM_URL . $worklist_id);
         }
         $status=$workitem->loadStatusByBidId($bid_id);
         if ($status == "SUGGESTEDwithBID") {
@@ -749,7 +749,7 @@ if ($action =="edit_bid") {
         $runner = new User();
         $runner->findUserById($workitem->getRunnerId());
         if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-            Notification::sendSMS($runner, 'Updated', $journal_message);
+            Notification::sendShortSMS($runner, 'Updated', $journal_message, WORKITEM_URL . $worklist_id);
         }
     }
 
@@ -790,7 +790,7 @@ if ($action == "add_fee") {
         $runner->updateBudget(-$fee_amount, $workitem->getBudget_id());
 
             if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-            Notification::sendSMS($runner, 'Fee', $journal_message);
+            Notification::sendShortSMS($runner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
             }
         }
         $redirectToDefaultView = true;
@@ -890,7 +890,7 @@ if ($action == 'accept_bid') {
                     $runner->updateBudget(-$bid_amount, $workitem->getBudget_id());
 
                     //send sms notification to bidder
-                    Notification::sendSMS($bidder, 'Accepted', $journal_message);
+                    Notification::sendShortSMS($bidder, 'Accepted', $journal_message, WORKITEM_URL . $worklist_id);
 
                     $redirectToDefaultView = true;
 

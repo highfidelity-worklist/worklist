@@ -598,7 +598,7 @@ class Notification {
                 $body .=" failed the Autotester!";
                 $body .= '<br><br>See test results <a href="http://bit.ly/jGfIkj">here</a> ';
                 $body .= 'Please look at the test results and determine if you need to modify your commit.';
-                $body .= 'You can type "@faq CommitTests" in the Chat for more information.';
+                $body .= 'You can type "@faq CommitTests" in the Journal for more information.';
                 $body .= '<br/><br/>-worklist.net';
             break;
             
@@ -629,7 +629,7 @@ class Notification {
                 $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
                 $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
                 $body .= "[<a href=\"" . WORKLIST_URL . "/\">" . WORKLIST_URL . "</a> | Look over all our open work items]<br />";
-                $body .= "[<a href=\"" . JOURNAL_URL . "/\">" . JOURNAL_URL . "</a> | Talk with us in our Chat]<br />";
+                $body .= "[<a href=\"" . JOURNAL_URL . "/\">" . JOURNAL_URL . "</a> | Talk with us in our Journal]<br />";
                 $body .= "<p>Hope to see you soon.</p>";
             break;
 
@@ -877,6 +877,38 @@ class Notification {
     public static function sendSMS($recipient, $subject, $message) {
         notify_sms_by_object($recipient, $subject, $message);
         return true;
+    }
+    
+    /**
+     * Function to send short (non-split) SMS with an opional url
+     * which will be shortened before sending the sms
+     * 
+     * @param User $recipient - user object to send message to
+     * @param String $subject - subject of the message
+     * @param String $message - actual message content
+     * @param String $url - url to be shortened and appened
+     */
+    public static function sendShortSMS($recipient, $subject, $message, $url = '') {
+        $max_chars = 150;
+        $chars_left = $max_chars - (strlen(trim($subject)) +1);
+        
+        if (parse_url($url) !== false) {
+            $shortUrl = new ShortUrl($url);
+            $shortUrl = trim($shortUrl->getShortUrl());
+            $chars_left -= strlen($shortUrl) +1;
+        }
+        
+        if (strlen($message) > $chars_left) {
+            $sms_content = substr($message, 0, $chars_left -3) . '...';
+        } else {
+            $sms_content = $message;
+        }
+        
+        if (isset($shortUrl)) {
+            $sms_content .= "\n" . $shortUrl;
+        }
+        
+        return self::sendSMS($recipient, $subject, $sms_content);
     }
     
     // get list of past due bids
