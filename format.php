@@ -186,7 +186,6 @@
                     $("#count_b").text(json.count_b);
                     $("#count_w").text(json.count_w);
                     $('#stats-text').show();
-                    MapToolTips();
                 }
             });
         });
