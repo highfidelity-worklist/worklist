@@ -16,6 +16,13 @@ function sanitizeInput() {
     sanitizeRequestInput('bid_expires', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
     sanitizeRequestInput('fee_desc', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
     sanitizeRequestInput('crfee_desc', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
+    // pingtask.php
+    sanitizeRequestInput('msg', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
+    sanitizeRequestInput('withdraw_bid_reason', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
+
+
+
+
 
 }
 
