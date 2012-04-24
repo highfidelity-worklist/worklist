@@ -236,6 +236,7 @@ require_once("head.html");
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
