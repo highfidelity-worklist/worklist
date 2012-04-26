@@ -247,6 +247,7 @@ function postComment() {
             var elementClass;
             var order = '';
             if (data.success) {
+                $('#no_comments').hide();
                 if (id != '') {
                     elementClass = $('#comment-' + id).attr('class').split(" ");
                     depth = Number(elementClass[1].substring(elementClass[1].indexOf('-') + 1)) + 1;
@@ -1790,7 +1791,7 @@ if ($action =="edit"):  ?>
                 <?php
                     $comments = Comment::findCommentsForWorkitem($worklist['id']);
                     if (empty($comments)) :
-                        ?>No comments!<?php
+                        ?><span id="no_comments">No comments!</span><?php
                     else :
                         $it=0;
                         $comments_list = array();
