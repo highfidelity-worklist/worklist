@@ -867,7 +867,8 @@ if ($action == 'accept_bid') {
                 $remainingFunds = $budget->getRemainingFunds();
                 if($bid_amount <= $remainingFunds) {
                     $bid_info = $workitem->acceptBid($bid_id, $budget_id);
-
+		      $budget->recalculateBudgetRemaining();
+					
                     // Journal notification
                     $journal_message .= $_SESSION['nickname'] .
                         " accepted {$bid_info['bid_amount']} from " .

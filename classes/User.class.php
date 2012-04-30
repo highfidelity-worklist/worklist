@@ -394,8 +394,6 @@ class User {
     
     public function updateBudget($amount, $budget_id = 0, $budgetDepletedMessage = true) {
         $budgetDepletedSent = false;
-        $this->setBudget($this->getBudget() + $amount);
-        $this->save();
         if ($budget_id > 0) {
             $budget = new Budget();
             if ($budget->loadById($budget_id) ) {
@@ -427,6 +425,9 @@ class User {
                 error_log("User.class.php: send_email failed on depleted budget Runner warning - invalid budget id:" . $budget_id);
             }
         }
+        
+        $this->setBudget($this->setRemainingFunds());
+        $this->save();
         
         if ($this->getBudget() <= 0 && $budgetDepletedSent === false) {  // Send email
 //            $payersList = User::getPayerList();
