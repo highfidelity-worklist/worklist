@@ -3,8 +3,8 @@ MapToolTips();
 </script>
 <div id="update-budget">
     <form method="post" action = "">
-        <label for="budget-amount" class="info-label">Budget: </label><br/>
-            $<?php echo $budget->amount; ?>
+        <label for="budget-amount" class="info-label">Budget: </label>&nbsp;
+            $<span id="budget-amount"><?php echo $budget->amount; ?></span>
             <br/>
         <label for="budget-reason" class="info-label">For: </label><br/>
             <?php 
@@ -24,9 +24,35 @@ MapToolTips();
             <?php 
                 } 
                 if ($budget->seed == 0) { ?>
-        <label for="budget-source" class="info-label">Source: </label>
+        <label for="budget-source" class="info-label">Source(s): </label>
         <div class="budget-source">
-            <?php echo $budget->source_data . " (" . $sourceBudgetReason . ")"; ?> 
+            <table class="budgetSourceTable" cellspacing="0" >
+                <thead>
+                    <tr>
+                        <th class="date">Date</th>
+                        <th class="giver">Grantor</th>
+                        <th class="amount">Amount</th>
+                        <th class="for">For</th>
+                    </tr>
+                </thead>
+            <?php 
+            if ($sources != null) {
+                $i = 1;
+                foreach ($sources as $source) { ?>
+                    <tr class="<?php echo ($i % 2 ? 'rowodd' : 'roweven'); ?>"  
+                        onclick="Budget.displayHistoryFromParent('<?php echo $source["giver_id"]; ?>');"                        
+                    >
+                    <?php
+                    echo "<td>" . $source["transfer_date"] . "</td><td>" . 
+                        $source["nickname"] . "</td><td>" . 
+                        $source["amount_granted"] . "</td><td>" . 
+                        $source["source_data"] . " (" . $source["reason"] . ")" .
+                        "</td></tr>"; 
+                    $i++;    
+                }
+            }
+            ?> 
+            </table>
         </div>
             <?php } ?>
             <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user->getId(); ?>" />
@@ -37,7 +63,11 @@ MapToolTips();
         <input type="button" value="<?php echo ($budgetClosed == 1) ? "OK" : "Save"; ?>" class="<?php echo ($budgetClosed == 1) ? "" : "iToolTip budgetSave" ?>" id="<?php echo ($budgetClosed == 1) ? "closeButton" : "updateButton"; ?>" />
         <?php if ($budget->active == 1){ ?>
             <input class="iToolTip budgetClose" type="button" value="Close Out" id="closeOutButton" />
-        <?php } ?>
+            <?php 
+                if ($budget->seed == 0) { ?>            
+            <input class="iToolTip budgetAddFunds" type="button" value="Add Funds" id="addFundsButton" />
+        <?php   }
+            } ?>
     </form>
     <?php
     if (isset($_SESSION['userid']) && isset($_SESSION['is_runner']) && $_SESSION['is_runner']) {

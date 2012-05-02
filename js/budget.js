@@ -56,9 +56,9 @@ var Budget = {
         });
     },
     init : function() {
+        
         $('#give-budget form input[type="submit"]').click(function() {
-            $('#give-budget form input[type="submit').attr("disabled","disabled");
-            
+            $('#give-budget form input[type="submit"]').attr("disabled", "disabled");
             var toReward = parseInt(rewarded) + parseInt($('#toreward').val());
             $.ajax({
                 url: 'update-budget.php',
@@ -69,13 +69,14 @@ var Budget = {
                     budget_seed: $('#budget-seed').is(':checked') ? 1 : 0,
                     budget_source: $('#budget-source').val(),
                     budget_source_combo: $('#budget-source-combo').val(),
-                    budget_note: $('#budget-note').val()
+                    budget_note: $('#budget-note').val(),
+                    add_funds_to: 0
                 },
                 dataType: 'json',
                 type: "POST",
                 cache: false,
                 success: function(json) {
-                    $('#give-budget form input[type="submit').removeAttr('disabled');
+                    $('#give-budget form input[type="submit"]').removeAttr('disabled');
                     if (json.success) {
                         $('#give-budget').dialog('close');
                         setTimeout(function() {
@@ -131,9 +132,9 @@ var Budget = {
             open: function() {
                 var fromUserid = "&fromUserid=" + $('#budget-dialog').data("fromUserid");
                 if ($('#budget-dialog').data("fromUserid") == "n") {
-                    $('#budget-dialog').dialog("option","title","All budget grants assigned to user");
+                    $('#budget-dialog').dialog("option", "title", "All budget grants assigned to user");
                 } else {
-                    $('#budget-dialog').dialog("option","title","All budget grants from you");
+                    $('#budget-dialog').dialog("option", "title", "All budget grants from you");
                 }
                 $('#budget-dialog').load("budgetHistory.php?inDiv=budget-dialog&id=" + $('#budget-dialog').data("userid") + "&page=1" + fromUserid);
             }
@@ -157,7 +158,89 @@ var Budget = {
         $("#" + options.inDiv + " .budgetHistoryContent").load("budgetHistory.php?inDiv=" + options.inDiv + "&id=" + options.id + "&page=" + options.page + options.fromUserid);
     },
     
+    initAddFunds: function() {
+        Budget.initCombo('budget-source-combo', '#amountToAdd');
+        $("#amountToAdd").blur(function(){ 
+            var amountToAdd = parseFloat($("#amountToAdd").val()),
+                budgetAmount = parseFloat($("#budget-amount").text());
+            if (!isNaN(amountToAdd + budgetAmount)) {
+                $("#newBudgetTotal").html(amountToAdd + budgetAmount);
+            } else {
+                $("#newBudgetTotal").html("");
+            }
+        });
+        $('#addFundsDialog form input[type="submit"]').click(function() {
+            $('#addFundsDialog form input[type="submit"]').attr("disabled", "disabled");
+            
+            $.ajax({
+                url: 'update-budget.php',
+                data: {
+                    receiver_id: $('#budget-receiver').val(),
+                    reason: "",
+                    amount: $('#amountToAdd').val(),
+                    budget_seed: 0,
+                    budget_source: "",
+                    budget_source_combo: $('#budget-source-combo').val(),
+                    budget_note: "",
+                    add_funds_to: $('#add_funds_to').val()
+                },
+                dataType: 'json',
+                type: "POST",
+                cache: false,
+                success: function(json) {
+                    $('#addFundsDialog form input[type="submit"]').removeAttr('disabled');
+                    if (json.success) {
+                        $('#addFundsDialog').dialog('close');
+                        $('#budget-update-dialog').dialog("close");
+                        setTimeout(function() {
+                            alert(json.message);
+                            Budget.budgetHistory({
+                                inDiv: "tabs", 
+                                id: $('#budget-receiver').val(), 
+                                page: 1 
+                            });
+                        }, 50);
+                        $("#isrunner").prop('checked', true);
+                    } else {
+                        alert(json.message);
+                    }
+                },
+                error: function(json) {
+                    if (json.message) {
+                        alert(json.message);
+                    } else {
+                        alert('All fields are required');
+                    }
+                }
+            });
+            return false;
+        });
+
+    },
+    
     initUpdateDialog: function() {
+        $('#budget-update-dialog').dialog('option', 'position', ['center', 'center']);
+        $('#addFundsButton').click(function(){
+            $('#addFundsDialog').dialog("destroy").remove();
+            $('#addFundsArea').remove();
+            $("body").append("<div id='addFundsArea'></div>");
+            $("#addFundsArea").load('budget.php', {
+                action: "getViewAddFunds",
+                budgetId: $('#budget-update-dialog').data("budgetId")
+                }, function() {
+                    $('#addFundsDialog').dialog({ 
+                        autoOpen: true, 
+                        width: 400, 
+                        show: 'fade', 
+                        hide: 'fade',
+                        open: function() {
+                            Budget.initAddFunds();
+                        }
+                    });
+                }
+            );
+            return false;
+        });  
         $("#closeButton").click(function() {
             $('#budget-update-dialog').dialog("close");
         });
@@ -221,8 +304,8 @@ var Budget = {
             $('#budget-update-dialog').dialog({
                 autoOpen: false,
                 modal: true,
-                width: 400,
-                height: 440,
+                width: 750,
+                height: "auto",
                 title: 'Budget details',
                 show: 'fade',
                 hide: 'fade',
@@ -266,6 +349,11 @@ var Budget = {
     displayHistory: function() {
         $('#budgetPopup').dialog('close');
         showUserInfo(0, "tabBudgetHistory");
+    },
+    
+    displayHistoryFromParent: function(user_id) {
+        window.parent.$('#user-info').dialog('close');
+        window.parent.showUserInfo(user_id, "tabBudgetHistory");
     },
     
     /**
@@ -446,3 +534,16 @@ $(function() {
     $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
 
 });
+
+
+
+function showUserInfo(userId, tab) {
+    if (tab) {
+        tab = "&tab=" + tab;
+    } else {
+        tab = "";
+    }
+    $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
+    $('#modalIframeId').attr('src', 'userinfo.php?id=' + userId + tab);
+    return false;
+}

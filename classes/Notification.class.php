@@ -980,6 +980,28 @@ class Notification {
         self::workitemSMSNotify($options);   
     }    
     
+    public function notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $add_funds_to_budget) {
+        if (!$amount || $amount < 0.01 || ! $giver || ! $receiver || ! $grantor) {
+            return false;
+        }
+
+        $subject = "Worklist - Budget Funds Added!";
+        $html = "<html><head><title>Worklist - Budget Funds Added!</title></head><body>";
+        $html .= "<h2>You've Got Budget Funds!</h2>";
+        $html .= "<p>Hello " . $receiver->getNickname() . ",<br />Your Budget grant from " . 
+            $grantor->getNickname() . " has been increased by $" . number_format($amount, 2) .
+            " (add funds by " . $giver->getNickname() . ").</p>";
+        $html .= "<p>Budget id: " . $add_funds_to_budget->id . "</p>";
+        $html .= "<p>Reason: " . $add_funds_to_budget->reason . "</p>";
+        $html .= "<p>Remaining amount: $" . number_format($amount + $add_funds_to_budget->remaining, 2) . "</p>";
+        $html .= "<p>- Worklist.net</p>";
+        $html .= "</body></html>";
+
+        if (!send_email($receiver->getUsername(), $subject, $html)) {
+            error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
+        }
+    }
+
     public function notifyBudget($amount, $reason, $giver, $receiver) {
         if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
             return false;

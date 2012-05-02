@@ -36,6 +36,20 @@ class BudgetInfo {
         include("dialogs/popup-give-budget.inc");
         exit(0);
     }
+    
+    public function getViewAddFunds() {
+        $reqUserId = getSessionUserId();
+        $user = new User();
+        if ($reqUserId > 0) {
+            $user->findUserById($reqUserId);
+        } else {
+            echo "You have to be logged in to access user info!";
+        }
+        $this->validateRequest(array('budgetId'));
+        $budget_id = (int) $_REQUEST['budgetId'];
+        include("dialogs/popup-add-funds.inc");
+        exit(0);
+    }
     /**
      * Get the budget update view
      */
@@ -48,17 +62,18 @@ class BudgetInfo {
             echo "You have to be logged in to access user info!";
         }
         $this->validateRequest(array('budgetId'));
-        $budget_id = $_REQUEST['budgetId'];
+        $budget_id = (int) $_REQUEST['budgetId'];
         
         $budget = new Budget();
         if ($budget->loadById($budget_id)) {
-            $sourceBudgetReason = "";
+            $sources = $budget->loadSources();
+/*            $sourceBudgetReason = "";
             if ($budget->seed != 1 && $budget->source_budget_id > 0) {
                 $budgetSeed = new Budget();
                 if ($budgetSeed->loadById($budget->source_budget_id)) {
                     $sourceBudgetReason = $budgetSeed->reason;
                 }
-            }
+            }*/
             $budgetClosed = !$budget->active;
             $allocated = $budget->getAllocatedFunds();
             $submitted = $budget->getSubmittedFunds();
@@ -121,6 +136,67 @@ class BudgetInfo {
         $row = $result_query ? mysql_fetch_row($result_query) : null;
         return !empty($row) ? $row[0] : null;
     }
+    
+    public function closeOutBudgetSource($remainingFunds, $budget, $budgetReceiver, $budgetGiver) {
+            $sources = $budget->loadSources(" ORDER BY s.transfer_date DESC");
+            if ($sources == null) {
+                $this->respond(false, 'No source budget found!');
+            }
+            foreach ($sources as $source) {
+                $budgetGiver = new User();
+                if (!$budgetGiver->findUserById($source["giver_id"])) {
+                    $this->respond(false, 'Invalid giver id.');
+                    return;
+                }
+                if ($remainingFunds < 0) {
+                    $budget->updateSources($source["source_id"], - $remainingFunds);
+                    $budgetGiver->updateBudget($remainingFunds, $source["budget_id"]);
+                    $this->sendBudgetcloseOutEmail(array(
+                        "budget_id" => $budget->id,
+                        "reason" => $budget->reason,
+                        "giver_id" => $source["giver_id"],
+                        "receiver_id" => $budget->receiver_id,
+                        "receiver_nickname" => $budgetReceiver->getNickname(),
+                        "receiver_email" => $budgetReceiver->getUsername(),
+                        "giver_nickname" => $budgetGiver->getNickname(),
+                        "giver_email" => $budgetGiver->getUsername(),
+                        "remainingFunds" => $remainingFunds,
+                        "original_amount" => $budget->original_amount,
+                        "amount" => $budget->amount
+                    ));
+                    return;
+                } else {
+                    if ($remainingFunds > $source["amount_granted"]) {
+                        $remainingFundsToGiveBack = $source["amount_granted"];
+                        $remainingFunds = $remainingFunds - $source["amount_granted"];
+                    } else {
+                        $remainingFundsToGiveBack = $remainingFunds;
+                        $remainingFunds = 0;
+                    }
+                    $budget->updateSources($source["source_id"], - $remainingFundsToGiveBack);
+                    $budgetGiver->updateBudget($remainingFundsToGiveBack, $source["budget_id"]);
+                    $this->sendBudgetcloseOutEmail(array(
+                        "budget_id" => $budget->id,
+                        "reason" => $budget->reason,
+                        "giver_id" => $source["giver_id"],
+                        "receiver_id" => $budget->receiver_id,
+                        "receiver_nickname" => $budgetReceiver->getNickname(),
+                        "receiver_email" => $budgetReceiver->getUsername(),
+                        "giver_nickname" => $budgetGiver->getNickname(),
+                        "giver_email" => $budgetGiver->getUsername(),
+                        "remainingFunds" => $remainingFundsToGiveBack,
+                        "original_amount" => $budget->original_amount,
+                        "amount" => $budget->amount
+                    ));
+                    if ($remainingFunds == 0) {
+                        return;
+                    }
+                }
+            }
+            if ($remainingFunds != 0) {
+                error_log("closeOutBudgetSource, remainingFunds not equal to 0, budget id: " . $budget->id);
+            }
+    }
     /**
      * Close the budget 
      */
@@ -171,21 +247,8 @@ class BudgetInfo {
                             $budget->amount = $budget->original_amount - $remainingFunds;
                             $budget->active = 0;
                             $budgetReceiver->updateBudget(- $remainingFunds, $budget->id, false);
-                            $budgetGiver->updateBudget($remainingFunds, $budget->source_budget_id);
+                            $this->closeOutBudgetSource($remainingFunds, $budget, $budgetReceiver, $budgetGiver);
                             if ($budget->save('id')) {
-                                $this->sendBudgetcloseOutEmail(array(
-                                    "budget_id" => $budget->id,
-                                    "reason" => $budget->reason,
-                                    "giver_id" => $budget->giver_id,
-                                    "receiver_id" => $budget->receiver_id,
-                                    "receiver_nickname" => $budgetReceiver->getNickname(),
-                                    "receiver_email" => $budgetReceiver->getUsername(),
-                                    "giver_nickname" => $budgetGiver->getNickname(),
-                                    "giver_email" => $budgetGiver->getUsername(),
-                                    "remainingFunds" => $remainingFunds,
-                                    "original_amount" => $budget->original_amount,
-                                    "amount" => $budget->amount
-                                ));
                                 $this->respond(true, 'Budget closed');
                             } else {
                                 $this->respond(false, 'Error in update budget.');
@@ -199,21 +262,8 @@ class BudgetInfo {
                                 $budget->amount = $budget->original_amount - $remainingFunds;
                                 $budget->active = 0;
                                 $budgetReceiver->updateBudget(- $remainingFunds, $budget->id, false);
-                                $budgetGiver->updateBudget($remainingFunds, $budget->source_budget_id);
+                                $this->closeOutBudgetSource($remainingFunds, $budget, $budgetReceiver, $budgetGiver);
                                 if ($budget->save('id')) {  
-                                    $this->sendBudgetcloseOutEmail(array(
-                                        "budget_id" => $budget->id,
-                                        "reason" => $budget->reason,
-                                        "giver_id" => $budget->giver_id,
-                                        "receiver_id" => $budget->receiver_id,
-                                        "receiver_nickname" => $budgetReceiver->getNickname(),
-                                        "receiver_email" => $budgetReceiver->getUsername(),
-                                        "giver_nickname" => $budgetGiver->getNickname(),
-                                        "giver_email" => $budgetGiver->getUsername(),
-                                        "remainingFunds" => $remainingFunds,
-                                        "original_amount" => $budget->original_amount,
-                                        "amount" => $budget->amount
-                                    ));
                                     $this->respond(true, 'Budget closed');
                                 } else {
                                     $this->respond(false, 'Error in update budget.');

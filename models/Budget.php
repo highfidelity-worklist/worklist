@@ -16,7 +16,6 @@ class Budget extends DataObject {
     public $reason;
     public $notes;
     public $transfer_date;
-    public $source_budget_id;
     public $source_data;
     public $active;
     public $seed;
@@ -59,6 +58,39 @@ class Budget extends DataObject {
         }
         
         return $objectData;
+    }
+
+    public function updateSources($source_id, $amount) {        
+        $sql = "UPDATE " . BUDGET_SOURCE . " SET original_amount = amount_granted, amount_granted = amount_granted + {$amount}
+            WHERE id = {$source_id};";
+        $result = mysql_query($sql);
+        return $result;        
+    }
+
+    public function loadSources($orderBy = " ORDER BY s.transfer_date ") {        
+        $sql = "SELECT b.reason, 
+            b.id AS budget_id,
+            s.id AS source_id,
+            s.source_data,
+            s.amount_granted,
+            DATE_FORMAT(s.transfer_date, '%Y-%m-%d') AS transfer_date,
+            u.nickname,
+            s.giver_id
+            FROM " . $this->table_name . " AS b 
+            INNER JOIN " . BUDGET_SOURCE . " AS s ON s.source_budget_id = b.id AND s.budget_id = " . $this->id . " 
+            INNER JOIN " . USERS . " AS u ON u.id = s.giver_id  
+            {$orderBy} ";
+        
+        $objectData = array();
+        if ($result = $this->link->query($sql)){
+            while ($row = $result->fetch_assoc()) {
+                $objectData[] = $row;
+            }
+            $result->close();
+        } else {
+            $objectData = null;
+        }
+        return $objectData;        
     }
 
     public function getAllocatedFunds() {
@@ -119,14 +151,12 @@ class Budget extends DataObject {
 
     public function getTransferedFunds() {
         $transferedFunds = -1;
-        $sql = 'SELECT SUM(`' . BUDGETS . '`.`amount`) AS `transfered` FROM `' . BUDGETS . '` WHERE `' . 
-                BUDGETS . '`.`source_budget_id` = ' . $this->id ;
+        $sql = 'SELECT SUM(s.`amount_granted`) AS `transfered` FROM `' . BUDGET_SOURCE . '` AS s ' . 
+            " WHERE s.source_budget_id = " . $this->id ;
         $result = mysql_query($sql);
         if ($result && (mysql_num_rows($result) == 1)) {
             $row = mysql_fetch_assoc($result);
             $transferedFunds = $row['transfered'];
-        } else {
-            error_log("getTransferedFunds error:" . $sql);
         }
         return $transferedFunds;
     }
@@ -144,7 +174,9 @@ class Budget extends DataObject {
     Return the sum of budget amounts that are not already closed for all the children of a specific budget
     **/
     public function getChildrenNotClosed($budget_id) {
-        $query = "SELECT SUM(`amount`) FROM `" . BUDGETS . "` WHERE active = 1 AND source_budget_id = " . $budget_id ;
+        $query = "SELECT SUM(b.`amount`) FROM `" . BUDGETS . " AS b " .
+                "INNER JOIN " . BUDGET_SOURCE . " AS s ON s.budget_id = b.id AND s.source_budget_id = " . $budget_id ;
+                "` WHERE active = 1 ";
         $result_query = mysql_query($query);
         $row = $result_query ? mysql_fetch_row($result_query) : null;
         return !empty($row) ? $row[0] : null;

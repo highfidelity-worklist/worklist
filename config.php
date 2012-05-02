@@ -73,6 +73,7 @@ if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
 //worklist tables
 if (!defined('BIDS'))           define('BIDS', 'bids');
 if (!defined('BUDGETS'))        define('BUDGETS', 'budgets');
+if (!defined('BUDGET_SOURCE'))  define('BUDGET_SOURCE', 'budget_source');
 if (!defined('COMMENTS'))       define('COMMENTS', 'comments');
 if (!defined('FEES'))           define('FEES', 'fees');
 defineOnce('USERS_FAVORITES', 'rel_users_favorites');

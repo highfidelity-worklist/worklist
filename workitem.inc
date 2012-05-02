@@ -159,17 +159,6 @@ $(document).ready(function() {
         return saveWorkitem();
     });
 });
-
-function showUserInfo(userId, tab) {
-    if (tab) {
-        tab = "&tab=" + tab;
-    } else {
-        tab = "";
-    }
-    $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open');
-    $('#modalIframeId').attr('src','userinfo.php?id=' + userId + tab);
-    return false;
-}
 <!-- End User Info popup code -->
 </script>
 <script type="text/html" id="uploadedFiles">

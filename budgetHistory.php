@@ -37,9 +37,13 @@ if ($fromUserid == "y") {
 
 // Query to get User's Budget entries
 $query =  ' SELECT DATE_FORMAT(b.transfer_date, "%Y-%m-%d") AS date, b.amount,'
-        . ' b.reason, b.active, b.notes, b.giver_id, b.id AS budget_id, u.nickname '
+        . ' b.reason, b.active, b.notes, b.seed, b.id AS budget_id, '
+        . '(SELECT COUNT(s.giver_id) FROM ' . BUDGET_SOURCE . 
+            ' AS s WHERE s.budget_id = b.id AND s.giver_id = ' . $userId . ') AS userid_count, '
+        . '(SELECT COUNT(DISTINCT giver_id) FROM ' . BUDGET_SOURCE . ' AS s WHERE s.budget_id = b.id ) AS givers_count, '
+        . '(SELECT u.nickname FROM ' . USERS . ' AS u, ' . BUDGET_SOURCE 
+        . ' AS s WHERE u.id = s.giver_id AND s.budget_id = b.id LIMIT 0, 1) AS nickname '
         . ' FROM ' . BUDGETS . ' AS b '
-        . ' INNER JOIN ' . USERS . ' AS u ON u.id = b.giver_id '
         . ' WHERE b.receiver_id = ' . $id
         . $fromUseridFilter
         . ' ORDER BY b.id DESC '
@@ -68,7 +72,7 @@ if ($page == 1) {
 <table class="budgetTable" cellspacing="0" >
   <thead>
     <tr>
-      <th class="date">Date</th>
+      <th class="date">Created</th>
       <th class="giver">Grantor</th>
       <th class="amount">Amount</th>
       <th class="for">For</th>
@@ -85,7 +89,7 @@ if ($result) {
         $notes = "";
         if ($userId == $id ||
             (array_key_exists('is_payer', $_SESSION)  && $_SESSION['is_payer']) ||
-            $row['giver_id'] == $userId) {
+            $row['userid_count'] > 0) {
             if (!empty($row['notes'])) {
                 $notes = " title='" . $row['budget_id'] . " - Notes: " . $row['notes'];
             } else {
@@ -103,7 +107,7 @@ if ($result) {
         <?php echo (!empty($notes)) ? $notes : $row['budget_id'] ; ?>
     >
         <td><?php echo $row['date']; ?></td>
-        <td><?php echo $row['nickname']; ?></td>
+        <td><?php echo ($row['givers_count'] == 1 ) ? $row['nickname'] : "Various"; ?></td>
         <td><?php echo $row['amount']; ?></td>
         <td><?php echo $row['reason']; ?></td>
         <td><?php echo ($row['active'] == 1) ? "open" : "closed"; ?></td>
@@ -112,7 +116,7 @@ if ($result) {
 <?php
     $i++;
     }
-}
+} 
 ?>
 
 </table>
