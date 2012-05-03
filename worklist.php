@@ -636,8 +636,10 @@ require_once("head.html");
                     var selfRow = $(this);
                     $(".taskSummary", selfRow).parent().addClass("taskSummaryCell");
                     $('.taskSummary', selfRow).wrap('<a href="' + buildHref(SetWorkItem(selfRow)) + '"></a>');
-                    $("td:not(.not-workitem)", selfRow).click(function() {
-                        window.location.href = buildHref( SetWorkItem(selfRow) );
+                    $("td:not(.not-workitem)", selfRow).click(function(e) {
+                        if (! (e.ctrlKey || e.shiftKey || e.altKey)) {
+                            window.location.href = buildHref(SetWorkItem(selfRow));
+                        }
                     }).addClass("clickable");
                 
                     $(".creator, .runner, .mechanic", $(".who", selfRow)).toggleClass("linkTaskWho").click(
