@@ -336,19 +336,21 @@ if ($action == 'new-comment') {
                     )
                 );
         }
+        sendJournalNotification($journal_message);
+        $comment = new Comment();
+        $comment->findCommentById((int) $rt['id']);
+        $result = array('success' => true,
+                        'id' => $rt['id'],
+                'comment' => replaceEncodedNewLinesWithBr(linkify($comment->getComment())),
+                'avatar' =>  $comment->getUser()->getAvatar(),
+                'nickname' => $comment->getUser()->getNickname(),
+                'userid' => $comment->getUser()->getId(),
+                'date' => relativeTime(strtotime($comment->getDate()) - time()));
+        ob_start();
+        $json = json_encode($result);
+    } else {
+        $json = json_encode(array('success' => false));
     }
-    sendJournalNotification($journal_message);
-    $comment = new Comment();
-    $comment->findCommentById((int) $rt['id']);
-    $result = array('success' => true,
-                    'id' => $rt['id'],
-            'comment' => replaceEncodedNewLinesWithBr(linkify($comment->getComment())),
-            'avatar' =>  $comment->getUser()->getAvatar(),
-            'nickname' => $comment->getUser()->getNickname(),
-            'userid' => $comment->getUser()->getId(),
-            'date' => relativeTime(strtotime($comment->getDate()) - time()));
-    ob_start();
-    $json = json_encode($result);
     echo $json;
     ob_end_flush();
     exit;
@@ -867,8 +869,8 @@ if ($action == 'accept_bid') {
                 $remainingFunds = $budget->getRemainingFunds();
                 if($bid_amount <= $remainingFunds) {
                     $bid_info = $workitem->acceptBid($bid_id, $budget_id);
-		      $budget->recalculateBudgetRemaining();
-					
+              $budget->recalculateBudgetRemaining();
+                    
                     // Journal notification
                     $journal_message .= $_SESSION['nickname'] .
                         " accepted {$bid_info['bid_amount']} from " .

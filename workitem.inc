@@ -269,35 +269,37 @@ function postComment() {
                     } else {
                         $(newcomment).insertBefore($('#comment-' + id).prevUntil('li[class*="' + (depth -1) + '"]').andSelf().filter(":first"));
                     }
-                    $('.commentZone ul').prepend(clone);
                 } else {
                     if (id == '') {
                         $('.commentZone ul').append(newcomment);
                     } else {
                         $(newcomment).insertAfter($('#comment-' + id).nextUntil('li[class*="' + (depth -1) + '"]').andSelf().filter(":last"));
                     }
-                    $('.commentZone ul').append(clone);
                 }
-                $('.commentform form input[name=newcomment]').click(function(event) {
-                    event.preventDefault();
-                    postComment();
-                });
-                var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
-                $('div.commentZone li').width(thinnestComment);
-                $('div.commentform textarea').width(thinnestComment);
-                $('#commentZone').css({'opacity':'1'});
-                $('.commentZone ul li').each(function (i) {
-                    if (color == 'imEven') {
-                        $(this).removeClass('imOdd');
-                        $(this).addClass('imEven');
-                    } else {
-                        $(this).removeClass('imEven');
-                        $(this).addClass('imOdd');
-                    }
-                    color = (color == 'imEven') ? 'imOdd' : 'imEven';
-                });
-                
             }
+            if (orderby == 'DESC') {
+                $('.commentZone ul').prepend(clone);
+            } else {
+                $('.commentZone ul').append(clone);
+            }
+            $('.commentform form input[name=newcomment]').click(function(event) {
+                event.preventDefault();
+                postComment();
+            });
+            var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
+            $('div.commentZone li').width(thinnestComment);
+            $('div.commentform textarea').width(thinnestComment);
+            $('#commentZone').css({'opacity':'1'});
+            $('.commentZone ul li').each(function (i) {
+                if (color == 'imEven') {
+                    $(this).removeClass('imOdd');
+                    $(this).addClass('imEven');
+                } else {
+                    $(this).removeClass('imEven');
+                    $(this).addClass('imOdd');
+                }
+                color = (color == 'imEven') ? 'imOdd' : 'imEven';
+            });
         }
     });
 }
