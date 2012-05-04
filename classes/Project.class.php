@@ -31,6 +31,7 @@ class Project {
     protected $cr_project_admin;
     protected $cr_3_favorites;
     protected $cr_job_runner;
+    protected $internal;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -86,8 +87,25 @@ class Project {
         }
 
         $query = "
-            SELECT p.project_id, p.name, p.description, p.website, p.budget, p.repository, p.contact_info, p.last_commit, p.active, p.owner_id, 
-            p.fund_id, p.testflight_team_token, p.logo, p.cr_anyone, p.cr_3_favorites, p.cr_project_admin, p.cr_job_runner
+            SELECT 
+                p.project_id,
+                p.name,
+                p.description,
+                p.website,
+                p.budget,
+                p.repository,
+                p.contact_info,
+                p.last_commit,
+                p.active,
+                p.owner_id, 
+                p.fund_id,
+                p.testflight_team_token,
+                p.logo,
+                p.cr_anyone,
+                p.cr_3_favorites,
+                p.cr_project_admin,
+                p.cr_job_runner,
+                p.internal
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -118,6 +136,7 @@ class Project {
              $this->setCrFav($row['cr_3_favorites']);
              $this->setCrAdmin($row['cr_project_admin']);
              $this->setCrRunner($row['cr_job_runner']);
+             $this->setInternal($row['internal']);
              
         return true;
     }
@@ -316,11 +335,20 @@ class Project {
     public function getCrRunner() {
         return $this->cr_job_runner;
     }
+    
+    public function setInternal($internal) {
+        $this->internal = $internal ? 1 : 0;
+        return $this;
+    }
+
+    public function getInternal() {
+        return $this->internal;
+    }
 
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
             (name, description, website, budget, repository, contact_info, active, owner_id, testflight_team_token,
-                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner) " .
+                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner, internal) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -336,7 +364,8 @@ class Project {
             "'".intval($this->getCrAnyone())."', ".
             "'".intval($this->getCrFav())."', ".
             "'".intval($this->getCrAdmin())."', ".
-            "'".intval($this->getCrRunner())."')";
+            "'" . intval($this->getCrRunner()) . "', " .
+            "'" . intval($this->getInternal()) . "')";
         $rt = mysql_query($query);
         $project_id = mysql_insert_id();
                 
@@ -373,10 +402,11 @@ class Project {
                 cr_anyone='".intval($this->getCrAnyone())."',
                 cr_3_favorites='".intval($this->getCrFav())."',
                 cr_project_admin='".intval($this->getCrAdmin())."',
-                cr_job_runner='".intval($this->getCrRunner())."'
+                cr_job_runner='" . intval($this->getCrRunner()) . "',
+                internal='" . intval($this->getInternal()) . "'
             WHERE project_id=" . $this->getProjectId();
         $result = mysql_query($query);
-        return mysql_query($query) ? 1 : 0;
+        return $result ? 1 : 0;
     }
 
     public function save() {
@@ -737,5 +767,14 @@ class Project {
         }
     }
     
+    function getOwnerCompany() {
+        if (!$this->getInternal()) {
+            return $this->getName();
+        } else if ($this->getFundId() == 1 || $this->getFundId() == 3) {
+            return "CoffeeandPower Inc.";
+        } else {
+            return "Below92";
+        }
+    }
     
 }// end of the class

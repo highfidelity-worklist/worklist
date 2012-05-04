@@ -897,3 +897,13 @@ input.button-disabled ,
     top: '1px';
 }
 
+#modeSwitch {
+    display: inline;
+    width: 150px;
+    float: right;
+}
+
+#internal {
+    margin-left: 0px;
+}
+

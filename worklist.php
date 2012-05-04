@@ -48,7 +48,21 @@ if ($projectName) {
         die($error);
     }
     // save changes to project
-    if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
+    if (isset($_REQUEST['save_internal']) && $userId > 0 && $user->getIs_admin()) {
+        $inProject->setInternal($_REQUEST['internal']);
+        if ($inProject->save()) {
+            echo json_encode(array(
+                'success' => true,
+                'message' => ""
+            ));
+        } else {
+            echo json_encode(array(
+                'success' => false,
+                'message' => "There was a problem setting this project to Internal"
+            ));
+        }
+        exit();
+    } else if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
         $inProject->setDescription($_REQUEST['description']);
         $inProject->setWebsite($_REQUEST['website']);
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
@@ -282,6 +296,9 @@ require_once("head.html");
     var is_runner = <?php echo $is_runner ? 1 : 0 ?>;
     var runner_id = <?php echo !empty($runner_id) ? $runner_id : 0 ?>;
     var is_payer = <?php echo $is_payer ? 1 : 0 ?>;
+    var is_admin = <?php echo $userId > 0 ? $user->getIs_admin() : 0 ?>;
+    var isProjectInternal = <?php echo is_object($inProject) ? $inProject->getInternal() : 0 ?>;
+    var project_name = "<?php echo is_object($inProject) ? addslashes($inProject->getName()) : '' ?>";
     var addFromJournal = false;
     var dir = '<?php echo $filter->getDir(); ?>';
     var sort = '<?php echo $filter->getSort(); ?>';
@@ -962,6 +979,32 @@ require_once("head.html");
             if (timeoutId) clearTimeout(timeoutId);
             GetWorklist(page, false);
         }
+
+        if (is_admin) {
+            $('#modeSwitch #internal').change(function() {
+                var is_internal = $(this).is(':checked') ? 1 : 0;
+                $.ajax({
+                    type: 'POST',
+                    url: 'worklist.php',
+                    data: {
+                        project: project_name,
+                        save_internal: 1,
+                        internal: is_internal
+                    },
+                    dataType: 'json',
+                    complete: function(data) {
+                        if (!data.success) {
+                            alert(data.message);
+                        }
+                    }
+                });
+            });
+            if (isProjectInternal) {
+                $('#modeSwitch #internal').attr('checked', true);
+            } else {
+                $('#modeSwitch #internal').removeAttr('checked');
+            }
+        }
     });
     
     function showAddRoleForm() {
@@ -1194,13 +1237,19 @@ if (is_object($inProject)) {
 <?php if (($is_runner || $inProject->isOwner($userId)) && $inProject->getTestFlightTeamToken()) : ?>
         <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
 <?php endif; ?>
+        <div id="modeSwitch">
 <?php if ( $is_runner || $is_payer || $inProject->isOwner($userId)) : ?>
-<?php if ($edit_mode) : ?>
-        <span style="width: 150px; float: right;"><a href="?action=view">Switch to View Mode</a></span>
-<?php else: ?>
-        <span style="width: 150px; float: right;"><a href="?action=edit">Switch to Edit Mode</a></span>
+    <?php if ($edit_mode) : ?>
+            <a href="?action=view">Switch to View Mode</a>
+    <?php else: ?>
+            <a href="?action=edit">Switch to Edit Mode</a>
+    <?php endif; ?>
 <?php endif; ?>
-<?php endif; ?>
+<?php if ($userId > 0 && $user->getIs_admin()) {?>
+            <br/>
+            <input type="checkbox" name="internal" id="internal" value="1" /> Internal
+<?php } ?>
+        </div>
 <?php if ($edit_mode) : ?>
     <form name="project-form" id="project-form" action="<?php echo SERVER_URL . $inProject->getName(); ?>" method="post">
     <p class="editProjectLogo">

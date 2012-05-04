@@ -21,6 +21,7 @@
     }
 
     $workitem = WorkItem::getById($worklist['id']);
+    $workitem_project = new Project($worklist['project_id']);
     $projects = Project::getProjects();
 
     $allowEdit = false;
