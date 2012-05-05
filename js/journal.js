@@ -67,6 +67,14 @@ $.sendingMessage = 0;
 var allBotNames = [];
 
 $(window).focus(function setFocused() {
+    // Clear current intervals
+    clearInterval($.timer['getLatestEntries']);
+    clearInterval($.timer['getLatestSpeakers']);
+    
+    // Reset timers to fetch new data
+    $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
+    $.timer['getLatestSpeakers'] = setInterval(getLatestSpeakers, speakerPollingInterval);
+    
     clearInterval(titleTimer);
     focus = true;
     newMessageCount = 0;
@@ -634,7 +642,7 @@ function getLatestEntries(timeout)
         dataType: 'json',
         timeout: timeout * 1000 * 2,
         success: function(json){
-            if (!json || json === null) {
+            if (!json || json === null || json.html === undefined || json.html.length === 0) {
                 return;
             }
             lastTouched = json.lasttouched;
