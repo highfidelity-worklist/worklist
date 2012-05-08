@@ -200,6 +200,19 @@ class SandBoxUtil {
         return $result;
     }
 
+    public static function authorizeCodeReview($sandbox_path) {
+        $command  = "command=authorize_review&";
+        $command .= "sandbox_dir={$sandbox_path}&";
+        $command .= "key=" . SANDBOX_SERVER_API_KEY;
+
+        $result = postRequest(SANDBOX_SERVER_API, $command);
+        if ($result === false || (int)$result < 4 || (int)$result > 28) {
+            throw new Exception('Unable to run authorization script on sandbox: ' . $result . " -- " . $command);
+        }
+
+        return (int)$result;
+    }
+
     /**
     * Check if a user's sandbox already exists.
     * Throws an exception if Sandbox already exists

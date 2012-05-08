@@ -1161,4 +1161,41 @@ WHERE id = ' . (int)$id;
         
         return $followers;
     }
+
+    public function getSandboxPath() {
+
+        $url_array = parse_url($this->sandbox);
+
+        if ($url_array['path']) {
+            $path_array = explode('/', $url_array['path']);
+            if (count($path_array) > 2 && strpos($path_array[1], '~') == 0) {
+                $path = substr($path_array[1], 1, strlen($path_array[1]) - 1);
+                $path .= DIRECTORY_SEPARATOR . 'public_html' . DIRECTORY_SEPARATOR . $path_array[2];
+                return $path;
+            }
+        }
+        return '';
+    }
+
+    public function startCodeReview($reviewer_id) {
+        $returnValue = true;
+        try {
+            $returnValue = $this->authorizeSandbox();
+        } catch (Exception $ex) {
+            //log error and allow code review
+            error_log($ex->getMessage());
+        }
+
+        $this->setCRStarted(1);
+        $this->setCReviewerId($reviewer_id);
+        $this->save();
+
+        return $returnValue;
+    }
+
+    public function authorizeSandbox() {
+        require_once("sandbox-util-class.php");
+        return (int)SandBoxUtil::authorizeCodeReview($this->getSandboxPath());
+    }
+
 }// end of the class

@@ -987,6 +987,7 @@ $(document).ready(function(){
     function showReviewForm() {
         var workitem_id = <?php echo $worklist['id'];?>;
         var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
+        openNotifyOverlay("Authorizing sandbox for code review ...", false);
         $.ajax({
             type: 'post',
             url: 'jsonserver.php',
@@ -997,9 +998,19 @@ $(document).ready(function(){
             },
             dataType: 'json',
             success: function(data) {
+                $("#sent-notify").dialog("close");
                 if (data.success) {
                     $('#popup-startreview').dialog('open');
+                } else {
+                    openNotifyOverlay(data.data);
+                    $("#sent-notify").css({'min-height': '80px', 'text-align': 'left'});
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1500);
                 }
+            },
+            error: function() {
+                $("#sent-notify").dialog("close");
             }
         });
         return false;

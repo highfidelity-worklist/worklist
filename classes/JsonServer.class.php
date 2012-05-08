@@ -504,20 +504,35 @@ class JsonServer
             'success' => $success
         ));
     }
-    
+
     protected function actionStartCodeReview() {
         $workitem_id = $this->getRequest()->getParam('workitem');
         $user_id = $this->getRequest()->getParam('userid');
-        $workitem = new WorkItem();
-        $workitem->loadById($workitem_id);
-        $user = new User();
-        $user->findUserById($user_id);
-        $workitem->setCRStarted(1);
-        $workitem->setCReviewerId($user_id);
-        $workitem->save();
-        $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workitem->getSummary();
-        sendJournalNotification($journal_message);
-        return $this->setOutput(array('success' => true,'data' => $journal_message));
+        $workItem = new WorkItem($workitem_id);
+
+        $status = $workItem->startCodeReview($user_id);
+        if($status === true || (int)$status == 0) {
+            $user = new User();
+            $user->findUserById($user_id);
+            $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workItem->getSummary();
+            sendJournalNotification($journal_message);
+            return $this->setOutput(array('success' => true,'data' => $journal_message));
+        } else {
+            $workItem->setStatus('FUNCTIONAL');
+            $workItem->save();
+
+            require_once('Notification.class.php');
+            $message = Notification::failedAuthorizationNotify($status, $workitem_id, $workItem->getMechanic()->getUsername());
+
+            //post comment
+            $comment = new Comment();
+            $comment->setWorklist_id((int)$workitem_id);
+            $comment->setUser_id((int) $workItem->getRunnerId());
+            $comment->setComment($message);
+            $comment->save();
+
+            return $this->setOutput(array('success' => false, 'data' => nl2br($message)));
+        }
     }
 
     protected function actionCancelCodeReview() {
