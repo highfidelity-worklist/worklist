@@ -62,7 +62,7 @@ class ShortUrl {
             
             $result = curl_exec($curlres);
             curl_close($curlres);
-            if($result === false ){
+            if ($result === false) {
                 return false;
             }
             $result = json_decode($result);

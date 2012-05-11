@@ -889,13 +889,13 @@ class Notification {
      * @param String $url - url to be shortened and appened
      */
     public static function sendShortSMS($recipient, $subject, $message, $url = '') {
-        $max_chars = 150;
+        $max_chars = 110;
         $chars_left = $max_chars - (strlen(trim($subject)) +1);
         
         if (parse_url($url) !== false) {
             $shortUrl = new ShortUrl($url);
             $shortUrl = trim($shortUrl->getShortUrl());
-            $chars_left -= strlen($shortUrl) +1;
+            $chars_left -= strlen($shortUrl) +2;
         }
         
         if (strlen($message) > $chars_left) {
@@ -905,7 +905,7 @@ class Notification {
         }
         
         if (isset($shortUrl)) {
-            $sms_content .= "\n" . $shortUrl;
+            $sms_content .= ': ' . $shortUrl;
         }
         
         return self::sendSMS($recipient, $subject, $sms_content);
