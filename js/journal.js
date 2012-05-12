@@ -78,8 +78,12 @@ $(window).focus(function setFocused() {
     newMessageCount = 0;
     document.title = "Chat";
 
+    if (inThePresent) {
+        scrollViewTo('100%');
+    }
+
     if (pendingMessages === 0) $('#entries-pending').hide();
-    else inThePresent = false;
+//    else inThePresent = false;
 });
 $(window).blur( function setNotFocused(){ focus = false; } );
 
