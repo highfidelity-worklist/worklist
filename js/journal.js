@@ -68,22 +68,16 @@ var allBotNames = [];
 
 $(window).focus(function setFocused() {
     // Clear current intervals
-    clearInterval($.timer['getLatestEntries']);
-    
-    // Reset timers to fetch new data
-    $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
-    
+
     clearInterval(titleTimer);
     focus = true;
     newMessageCount = 0;
     document.title = "Chat";
 
-    if (inThePresent) {
-        scrollViewTo('100%');
-    }
-
     if (pendingMessages === 0) $('#entries-pending').hide();
 //    else inThePresent = false;
+
+    scrollViewTo('100%');
 });
 $(window).blur( function setNotFocused(){ focus = false; } );
 
