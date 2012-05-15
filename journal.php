@@ -344,6 +344,7 @@ function StopStatus() {
     <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
     <script type="text/javascript" src="js/class.js"></script>
     <script type="text/javascript" src="js/jquery.combobox.js"></script>
+    <script type="text/javascript" src="js/jquery.template.js"></script>
     <script type="text/javascript" src="js/jquery.autogrow.js"></script>
     <script type="text/javascript" src="js/jquery.metadata.js"></script>
     <script type="text/javascript" src="js/ajaxupload.js"></script>
@@ -354,6 +355,8 @@ function StopStatus() {
 <?php else: ?>
     <script type="text/javascript" src="js/jscode.min.js"></script>
 <?php endif; ?>
+<!-- js template for file uploads -->
+<?php require_once('dialogs/file-templates.inc'); ?>
 <!-- Popup for editing/adding  a work item -->
 <?php require_once('dialogs/popup-edit.inc'); ?>
     <script type="text/javascript">
