@@ -450,7 +450,8 @@ class Project {
                 " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "
             FROM
                 `" . PROJECTS . "`" .
-            $where . " ";
+            $where . " " . 
+             " ORDER BY name ASC";
         
         $result = mysql_query($query);
         
