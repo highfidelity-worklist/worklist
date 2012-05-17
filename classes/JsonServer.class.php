@@ -530,6 +530,9 @@ class JsonServer
             $comment->setUser_id((int) $workItem->getRunnerId());
             $comment->setComment($message);
             $comment->save();
+            
+            $journalMessage = str_replace("\n", '', $message);
+            sendJournalNotification("#$workitem_id: " . $journalMessage);
 
             return $this->setOutput(array('success' => false, 'data' => nl2br($message)));
         }

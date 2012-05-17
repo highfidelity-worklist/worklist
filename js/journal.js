@@ -786,7 +786,8 @@ function updateNewMessages(json) {
                     json.newsystementries[entry].entry_text.indexOf('COMPLETED') != -1 ||
                     json.newsystementries[entry].entry_text.indexOf('added item') != -1 ||
                     json.newsystementries[entry].entry_text.indexOf('SUGGESTEDwithBID') != -1 ||
-                    json.newsystementries[entry].entry_text.indexOf('code review') != -1
+                    json.newsystementries[entry].entry_text.indexOf('code review') != -1 ||
+                    json.newsystementries[entry].entry_text.indexOf('Sandbox is not authorized') != -1
                 ) {
                     update=true;
                 }
