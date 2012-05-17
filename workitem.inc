@@ -2066,7 +2066,7 @@ if ($action =="edit"):  ?>
                                                 "desc:\"" .  replaceEncodedNewLinesWithBr($fee['desc']) . "\"}";?>
                                         </script>
                                         <td class="nickname">
-                                            <a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>);"
+                                            <a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>); event.stopPropagation();"
                                                 title="<?php echo $fee['nickname']; ?>">
                                                 <?php echo getSubNickname($fee['nickname'], 8);?>
                                             </a>
