@@ -4,7 +4,10 @@
  * Copyright (c) 2011 LoveMachine, LLc.
  * All rights reserved.
  */
- 
+
+require_once('models/DataObject.php');
+require_once('classes/User.class.php');
+
 class Users_Favorite extends DataObject {
     public $user_id;
     public $favorite_user_id;
@@ -46,7 +49,20 @@ class Users_Favorite extends DataObject {
         }
         return $userData;
     }
-
+    
+    /* return an array with ids of $user_id's favorite users */
+    public function getFavoriteUsers($user_id) {
+        $user_id = (int)$user_id;
+        $favoriteArray = $this->dbFetchArray(" " . USERS_FAVORITES . ".user_id={$user_id} AND " . USERS_FAVORITES . ".enabled = 1");
+        $userData = array();
+        foreach ($favoriteArray as $favorite) {
+            $user = new User();
+            $user->findUserById($favorite['favorite_user_id']);
+            $userData[] = $user->getId();
+        }
+        return $userData;
+    }
+    
     public function getMyFavoriteForUser($my_userid, $userid) {
         $my_userid = intval($my_userid);
         $userid = intval($userid);

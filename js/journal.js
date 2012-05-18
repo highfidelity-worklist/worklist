@@ -856,7 +856,7 @@ function getLatestSpeakers(timeout)
         type: 'post',
         data: { 'what': 'speakerList', 'csrf_token': csrf_token },
         dataType: 'json',
-            timeout: timeout * 1000 * 2,
+        timeout: timeout * 1000 * 2,
         success: function(json){
             if (!json || json === null) {
                 return;
@@ -1353,7 +1353,12 @@ function getNewSpeaker(newSpeaker) {
     }else{
         span.addClass('logged');
     }
-
+    
+    if (newSpeaker[0] != 0 && $.inArray(newSpeaker[0], favoriteUsers) != -1) {
+        span.addClass('favorite');
+        span.append('<div class="myfavorite">&nbsp;</div>');
+    }
+    
     h6.className = 'user'+newSpeaker[0];
     var ret = $(h6).append(span).css('opacity', getSpeakerOpacity(newSpeaker[2]));
     return ret;
@@ -2456,7 +2461,10 @@ $(window).ready(function() {
         show: 'fade',
         hide: 'fade',
         width: 800,
-        height: 480
+        height: 480,
+        close: function() {
+            getFavoriteUsers();
+        }
     });
 
     //adding logic behind login div in a corner
@@ -2639,6 +2647,9 @@ $(window).ready(function() {
     {
         clearInterval(timer);
     }
+    
+    getFavoriteUsers();
+    
     $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
     $.timer['getLatestSpeakers'] = setInterval(getLatestSpeakers, speakerPollingInterval);
     scrollViewTo('100%', true);

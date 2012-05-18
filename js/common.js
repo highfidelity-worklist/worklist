@@ -47,3 +47,20 @@ var loaderImg = function($)
     };
 
 }(jQuery); // end of function loaderImg
+
+var favoriteUsers = [];
+function getFavoriteUsers() 
+{
+    $.ajax({
+        url: 'api.php',
+        type: 'post',
+        data: {'action': 'getFavoriteUsers'},
+        dataType: 'json',
+        success: function(json) {
+            if (!json || json === null) {
+                return;
+            }
+            favoriteUsers = json.favorite_users;
+        },
+    });
+}

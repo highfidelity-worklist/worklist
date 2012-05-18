@@ -42,9 +42,11 @@ include("head.html");
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
+<link href="css/favorites.css" rel="stylesheet" type="text/css" >
 
 <script type="text/javascript" src="js/jquery.timeago.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
@@ -61,6 +63,7 @@ var current_sortkey = 'earnings30';
 var current_order = false;
 var sfilter = '30'; // Default value for the filter
 var show_actives = "FALSE";
+var show_myfavorites = "FALSE";
   
 $(document).ready(function() {
 
@@ -70,6 +73,8 @@ $(document).ready(function() {
     $('#outside').click(function() { //closing userbox on clicking outside of it
         $('#user-info').dialog('close');
     });
+
+    getFavoriteUsers();
 
     fillUserlist(current_page);
 
@@ -131,6 +136,8 @@ $(document).ready(function() {
             if ($('#user-info').data("budget_update_done") === true) {
                 document.location.reload(true);
             }
+            getFavoriteUsers();
+            fillUserlist(current_page);
         }
     });
     if ($("#budgetPopup").length > 0) {
@@ -152,7 +159,7 @@ $(document).ready(function() {
      * Enable filter for users with fees in the last X days
      */
     $('#filter-by-fees').click(function() {
-        if( show_actives == "FALSE") {
+        if (show_actives == "FALSE") {
             show_actives = "TRUE";
             fillUserlist(current_page);
         } else {
@@ -174,6 +181,19 @@ $(document).ready(function() {
         }
     });
 
+    /**
+     * Enable filter for my favorite users
+     */
+    $('#filter-by-myfavorite').click(function() {
+        if (show_myfavorites == "FALSE") {
+            show_myfavorites = "TRUE";
+            fillUserlist(current_page);
+        } else {
+            show_myfavorites = "FALSE";
+            fillUserlist(current_page);
+        }
+    });
+    
     $("#search_user").autocomplete({
         minLength: 0,
         source: function(request, response) {
@@ -240,7 +260,7 @@ function fillUserlist(npage) {
     $.ajax({
         type: "POST",
         url: 'getuserlist.php',
-        data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order + '&sfilter=' + sfilter + '&active=' + show_actives,
+        data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order + '&sfilter=' + sfilter + '&active=' + show_actives + '&myfavorite=' + show_myfavorites,
         dataType: 'json',
         success: function(json) {
         
@@ -269,7 +289,7 @@ function fillUserlist(npage) {
             $('tr.row-userlist-live').click(function(){
                 var match = $(this).attr('class').match(/useritem-\d+/);
                 var userid = match[0].substr(9);
-                showUserInfo(userid);
+                showUserInfo(userid, null);
                 return false;
             });
             
@@ -316,14 +336,23 @@ function AppendUserRow(json, odd) {
     var row;
     var pre = '';
     var post = '';
+
+    var is_myfavorite = $.inArray(json.id, favoriteUsers) != -1;
+    var favorite_div = '<div class="favorite_user myfavorite" title="Remove ' + json.nickname + ' as someone you trust. (don\'t worry it\'s anonymous)">&nbsp;</div>';
+
     row = '<tr class="row-userlist-live ';
     if (odd) {
         row += 'rowodd';
     } else {
         row += 'roweven';
     }
+
+    if (is_myfavorite) {
+        row += ' favorite';
+    }
+    
     row += ' useritem-' + json.id + '">';
-    row += '<td class = "name-col">' + json.nickname + '</td>';
+    row += '<td class="name-col">' + (is_myfavorite ? favorite_div : '') + json.nickname + '</td>';
     row += '<td class="age">'+ json.joined + '</td>';
     row += '<td class="jobs">' + json.jobs_count + '</td>';
     row += '<td class="money">' + json.budget + '</td>';
@@ -331,6 +360,39 @@ function AppendUserRow(json, odd) {
     row += '<td class="money">$' + addCommas(Math.round(json.earnings30)) + '</td>';
     row += '<td class="money">$' + addCommas(Math.round(json.rewarder)) + ' / ' + Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100*100)/100 + '%</td>';
     $('.table-userlist tbody').append(row);
+
+    var favorite_user_id = json.id;
+    var favorite_user_nickname = json.nickname;
+    if (is_myfavorite) {
+        $('tr.favorite.useritem-' + favorite_user_id + ' .favorite_user.myfavorite').click(function (e) {
+            if (!confirm('Are you sure you want to remove ' + favorite_user_nickname + ' as someone you trust?')) {
+                return false;
+            }
+            $.ajax({
+                type: 'POST',
+                url: 'favorites.php',
+                data: { 
+                    action: 'setFavorite',  
+                    favorite_user_id: favorite_user_id, 
+                    newVal: 0
+                },
+                dataType: 'json',
+                success: function(json) {
+                    if ((json === null) || (json.error)) {
+                        var message="Error returned - f1. ";
+                        if (json !== null) {
+                            message = message + json.error;
+                        }
+                        alert(message);
+                        return;
+                    }
+                }
+            });
+            getFavoriteUsers();
+            fillUserlist(current_page);
+            return false;
+        });
+    }
 }
 
 function addCommas(nStr) {
@@ -387,6 +449,9 @@ function addCommas(nStr) {
            <option value="360">1 year</option>
        </select>
     </input>
+</div>
+<div class="myfavorite-users">
+    <input type="checkbox" id="filter-by-myfavorite">Trusted by Me</input>
 </div>
 <div id="search_user_box">
     <input id="search_user"/>

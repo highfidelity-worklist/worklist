@@ -678,6 +678,9 @@ input.hide {display:none;}
     -webkit-border-radius: 9px;
     border-radius: 9px;
 }
+#online-users span.favorite {
+    padding-right: 2px;
+}
 
 .entry h2 span, #online-users span{
     background-color: #CCC;
@@ -928,6 +931,16 @@ a[rel="attachment"]{
 #online-users span.penalized {
     background-position: -54px -170px;
 }
+#online-users .myfavorite {
+  background-image: url("../images/primaryIcons-WL.png");
+  background-position: -29px -29px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  margin: 0 0 0 4px;
+  width: 15px;
+  height: 15px;
+}
+
 #online-users h6{
     padding-top: 8px;
     position: absolute;

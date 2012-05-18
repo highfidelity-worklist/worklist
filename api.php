@@ -9,6 +9,7 @@ require_once('classes/Project.class.php');
 require_once('classes/User.class.php');
 require_once('models/DataObject.php');
 require_once('models/Review.php');
+require_once('models/Users_Favorite.php');
 require_once('sandbox-util-class.php');
 require_once('send_email.php');
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
@@ -123,6 +124,9 @@ if(validateAction()) {
                 break;
             case 'deployStagingSite':
                 deployStagingSite();
+                break;
+            case 'getFavoriteUsers':
+                getFavoriteUsers();
                 break;
             default:
                 die("Invalid action.");
@@ -719,5 +723,15 @@ function deployStagingSite() {
         echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
     }
 }
+
+function getFavoriteUsers() {
+    if (!$userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : 0)) {
+        return array('favorite_users' => array());
+    }
+    $users_favorite = new Users_Favorite();
+    $data = array('favorite_users' => $users_favorite->getFavoriteUsers($userid));
+    echo json_encode($data);
+}
+
 
 ?>
