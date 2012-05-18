@@ -506,14 +506,14 @@ class JsonServer
     }
 
     protected function actionStartCodeReview() {
-        $workitem_id = $this->getRequest()->getParam('workitem');
-        $user_id = $this->getRequest()->getParam('userid');
+        $workitem_id = (int)$this->getRequest()->getParam('workitem');
+        $user_id = (int)$this->getRequest()->getParam('userid');
         $workItem = new WorkItem($workitem_id);
-
-        $status = $workItem->startCodeReview($user_id);
+        $user = new User();
+        $user->findUserById($user_id);
+        
+        $status = (int)$workItem->startCodeReview($user_id);
         if($status === true || (int)$status == 0) {
-            $user = new User();
-            $user->findUserById($user_id);
             $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workItem->getSummary();
             sendJournalNotification($journal_message);
             return $this->setOutput(array('success' => true,'data' => $journal_message));
@@ -521,8 +521,28 @@ class JsonServer
             $workItem->setStatus('FUNCTIONAL');
             $workItem->save();
 
+            $message = '';
+            if (($status & 4) == 4) { //sandbox not updated
+                $message .= " - Sandbox is not up-to-date\n";
+            }
+            if (($status & 8) == 8) { //sandbox has conflicts
+                $message .= " - Sandbox contains conflicted files\n";
+            }
+            if (($status & 16) == 16) { //sandbox has not-included files
+                $message .= " - Sandbox contains 'not-included' files\n";
+            }
+            
+            $user_is_mechanic = $workItem->getMechanic()->getId() == $user_id;
             require_once('Notification.class.php');
-            $message = Notification::failedAuthorizationNotify($status, $workitem_id, $workItem->getMechanic()->getUsername());
+            Notification::workitemNotify(
+                array(
+                    'type' => 'sb_authorization_failed',
+                    'workitem' => $workItem,
+                    'recipients' => array('mechanic'),
+                    'emails' => ($user_is_mechanic ? array() : array($user->getUsername()))
+                ),
+                array('message' => nl2br($message))
+            );
 
             //post comment
             $comment = new Comment();

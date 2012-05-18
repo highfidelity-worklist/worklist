@@ -633,6 +633,16 @@ class Notification {
                 $body .= "<p>Hope to see you soon.</p>";
             break;
 
+            case 'sb_authorization_failed':
+                $headers['From'] = '"' . $project_name . '-sandbox" ' . $from_address;
+                $body = 'Authorizing sandbox for job ';
+                $body .= '<a href=' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '>#' . $itemId . '</a>';
+                $body .= ' has failed with the following error message: <br /><br />';
+                $body .= "Sandbox is not authorized:<br />";
+                $body .= $data['message'];
+                $body .= '<br /><br />-worklist.net';
+            break;
+            
             case 'code-review-completed':
                 $headers['From'] = '"' . $project_name . '-review complete" ' . $from_address;
                 $body = '<p>Hello,</p>';
@@ -1129,36 +1139,6 @@ class Notification {
                 mysql_query($bquery);
             }
         }
-    }
-
-    public static function failedAuthorizationNotify($status, $workitem_id, $username) {
-        $status = (int)$status;
-        $message = "Sandbox is not authorized: \n";
-
-        if (($status & 4) == 4) {
-            //sandbox not updated
-            $message .= " - Sandbox is not up-to-date\n";
-        }
-
-        if (($status & 8) == 8) {
-            //sandbox has conflicts
-            $message .= " - Sandbox contains conflicted files\n";
-        }
-
-        if (($status & 16) == 16) {
-            //sandbox has not-included files
-            $message .= " - Sandbox contains 'not-included' files\n";
-        }
-
-        $subject = "Authorizing sandbox has failed for job #" . $workitem_id;
-
-        $email_message = 'Authorizing sandbox for job ';
-        $email_message .= '<a href='.SERVER_URL.'workitem.php?job_id=' . $workitem_id . '>#' . $workitem_id . '</a>';
-        $email_message .= " has failed with the following error message: \n\n" . $message;
-
-        send_email($username, $subject, nl2br($email_message), $email_message);
-
-        return $message;
     }
 
 }
