@@ -1219,7 +1219,7 @@ function doAutoScroll() {
     $('#entries').css('top', entriesTop+'px');
 
     scrollBottom = isBottom();
-    if (scrollviewHeight - entriesTop < height) {
+    if (2 + scrollviewHeight - entriesTop < height) { // Added a 2px margin to fix for height imprecisions
         inThePresent = false;
     }
 
