@@ -506,13 +506,13 @@ class JsonServer
     }
 
     protected function actionStartCodeReview() {
-        $workitem_id = (int)$this->getRequest()->getParam('workitem');
-        $user_id = (int)$this->getRequest()->getParam('userid');
+        $workitem_id = $this->getRequest()->getParam('workitem');
+        $user_id = $this->getRequest()->getParam('userid');
         $workItem = new WorkItem($workitem_id);
         $user = new User();
         $user->findUserById($user_id);
         
-        $status = (int)$workItem->startCodeReview($user_id);
+        $status = $workItem->startCodeReview($user_id);
         if($status === true || (int)$status == 0) {
             $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workItem->getSummary();
             sendJournalNotification($journal_message);
