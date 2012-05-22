@@ -1980,7 +1980,7 @@ function scrollViewTo(scrolllTo) {
     if (scrollBottom === false) {
         return;
     }
-    var height = $('#entries').height();
+    var height = $('#entries').outerHeight();
     if (scrolllTo == '100%') {
         $('#entries').css('top', scrollviewHeight - height);
     } else if (scrolllTo == '50%') {
