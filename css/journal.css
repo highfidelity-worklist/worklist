@@ -678,7 +678,7 @@ input.hide {display:none;}
     -webkit-border-radius: 9px;
     border-radius: 9px;
 }
-#online-users span.favorite {
+#online-users span.favorite, #online-users span.favorite.away {
     padding-right: 2px;
 }
 
