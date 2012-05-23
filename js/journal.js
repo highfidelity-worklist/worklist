@@ -744,6 +744,7 @@ function updateNewMessages(json) {
             lastDate = json.lastDate;
             if (json.html) {
                 $('#entries').append(json.html);
+                doFinishUpdate = true;
             } else {
                 for (entry in json.newentries) {
                     if (json.botdata) {
