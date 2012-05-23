@@ -1219,10 +1219,12 @@ function doAutoScroll() {
     }
     $('#entries').css('top', entriesTop+'px');
 
-    scrollBottom = isBottom();
     if (2 + scrollviewHeight - entriesTop < height) { // Added a 2px margin to fix for height imprecisions
         inThePresent = false;
-    }
+        scrollBottom = false;
+    } else {
+        scrollBottom = true;
+	}
 
     return false;
 }
