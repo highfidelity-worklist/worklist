@@ -132,11 +132,14 @@ if ($budget_seed == 1 ||
             return;
         } 
         $giver->updateBudget(- $amount, $budget_source_combo);
+        $budget = new Budget();
+        $budget->loadById($add_funds_to);
+        $reason = $budget->reason;
     }
     $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
     if (mysql_unbuffered_query($query2)) {
         $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
-        " for " . $_REQUEST['reason'] . ".";
+        " for " . $reason . ".";
         sendJournalNotification($journal_message);            
         if ($add_funds_to_budget == false) {
             Notification::notifyBudget($amount, $reason, $giver, $receiver);
