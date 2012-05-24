@@ -1140,5 +1140,32 @@ class Notification {
             }
         }
     }
+    
+    // Notify the mechanic and the current user about a sandbox authorization failed 
+    public static function failedAuthorizationNotify($status, $workitem, $user) {
+        $message = '';
+        if ($status & 4) { //sandbox not updated
+            $message .= " - Sandbox is not up-to-date\n";
+        }
+        if ($status & 8) { //sandbox has conflicts
+            $message .= " - Sandbox contains conflicted files\n";
+        }
+        if ($status & 16) { //sandbox has not-included files
+            $message .= " - Sandbox contains 'not-included' files\n";
+        }
+        
+        $user_is_mechanic = $workitem->getMechanic()->getId() == $user->getId();
+        self::workitemNotify(
+            array(
+                'type' => 'sb_authorization_failed',
+                'workitem' => $workitem,
+                'recipients' => array('mechanic'),
+                'emails' => ($user_is_mechanic ? array() : array($user->getUsername()))
+            ),
+            array('message' => nl2br($message))
+        );
+        
+        return $message;
+    }    
 
 }
