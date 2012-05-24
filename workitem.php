@@ -17,7 +17,6 @@ require_once 'models/DataObject.php';
 require_once 'models/Budget.php';
 require_once 'models/Users_Favorite.php';
 require_once('lib/Agency/Worklist/Filter.php');
-require_once('classes/Notification.class.php');
 
 $statusListRunner = array("DRAFT", "SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
 $statusListMechanic = array("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "PASS");
@@ -1205,46 +1204,38 @@ function changeStatus($workitem, $newStatus, $user) {
     if ($newStatus == 'DONE' && $workitem->getProjectId() == 0) {
         return false;
     }
+
+    $workitem->setStatus($newStatus);
     
     // Generate diff and send to pastebin if we're in REVIEW
     if ($newStatus == "REVIEW") {
-        //reset code_review flags
+        //reset core_review flags
         $workitem->resetCRFlags();
         if (substr($workitem->getSandbox(), 0, 4) == "http") {
             require_once("sandbox-util-class.php");
             
-            $status = $workitem->authorizeSandbox();
-            $sb_authorized = (int)$status == 0;
-            if ($sb_authorized) {
-                // Sandbox URLs look like:
-                // https://dev.worklist.net/~johncarlson21/worklist
-                // 0     12               3              4
-                $sandbox_array = explode("/", $workitem->getSandbox());
-    
-                $username = isset($sandbox_array[3]) ? $sandbox_array[3] : "~";
-                $username = substr($username, 1); // eliminate the tilde
-    
-                $sandbox = isset($sandbox_array[4]) ? $sandbox_array[4] : "";
+            // Sandbox URLs look like:
+            // https://dev.worklist.net/~johncarlson21/worklist
+            // 0     12               3              4
+            $sandbox_array = explode("/", $workitem->getSandbox());
 
-                try {
-                    $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
-                    $comment = "Code review available here:\n$result";
-                    $rt = addComment($workitem->getId(), $user->getId(), $comment);
-                } catch (Exception $ex) {
-                    error_log("Could not paste diff: \n$ex");
-                }
-            } else {
-                Notification::failedAuthorizationNotify($status, $workitem, $user);
+            $username = isset($sandbox_array[3]) ? $sandbox_array[3] : "~";
+            $username = substr($username, 1); // eliminate the tilde
+
+            $sandbox = isset($sandbox_array[4]) ? $sandbox_array[4] : "";
+
+            try {
+                $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
+                $comment = "Code review available here:\n$result";
+                $rt = addComment($workitem->getId(), $user->getId(), $comment);
+            } catch (Exception $ex) {
+                error_log("Could not paste diff: \n$ex");
             }
         }
     }
 
-    if ($newstatus != "REVIEW" || ($newstatus == "REVIEW" && $sb_authorized)) {
-        $workitem->setStatus($newStatus);
-        
-        // notifications for subscribed users
-        Notification::statusNotify($workitem);
-    }
+    // notifications for subscribed users
+    Notification::statusNotify($workitem);
     
     return true;
 }
