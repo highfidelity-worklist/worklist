@@ -5,9 +5,11 @@ if (typeof activeProjectsFlag === 'undefined') {
     function ResetPopup() {
         $('#for_edit').show();
         $('#for_view').hide();
-        $('.popup-body form input[type="text"]').val('');
+        $('.popup-body form input[name="summary"]').val('');
+        $('.popup-body form input[name="skills"]').val('');
+        $('.popup-body form input[name="invite"]').val('');
+        $('.popup-body form input[name="bug_job_id"]').val('');
         $('.popup-body form select.resetToFirstOption option:first').prop('selected', true);
-        $('.popup-body form select option[value=\'BIDDING\']').prop('selected', true);
         $('.popup-body form textarea').val('');
 
         //Reset popup edit form
