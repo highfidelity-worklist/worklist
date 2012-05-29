@@ -79,6 +79,12 @@ if ($budget_seed != 1) {
         echo json_encode(array('success' => false, 'message' => 'Invalid budget!'));
         return;
     }
+    // Check if user is owner of source budget
+    if ($budget->receiver_id != $_SESSION['userid']) {
+        echo json_encode(array('success' => false, 'message' => 'You\'re not the owner of this budget!'));
+        error_log('Possible Hacking attempt: User ' . $_SESSION['userid'] . ' attempted to budget ' . $amount . ' to ' . $receiver_id . ' from budget ' . $budget->id);
+        return;
+    }
     $remainingFunds = $budget->getRemainingFunds();
 }
 
