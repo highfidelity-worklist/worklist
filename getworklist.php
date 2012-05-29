@@ -234,7 +234,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
          5 => $row['mechanic_nickname'],
          6 => $row['delta'],
          7 => $row['total_fees'],
-         8 => $row['bid_amount'],
+         8 => ($is_runner == 1) ? $row['bid_amount'] : 0,
          9 => $row['creator_id'],
         10 => $row['bid_count'],
         11 => ($row['status'] == 'DONE') ? date("m/d/Y",time()+$row['bid_done']):$row['bid_done'],
