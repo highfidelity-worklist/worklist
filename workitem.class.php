@@ -227,6 +227,29 @@ WHERE id = ' . (int)$id;
         }
     }
     
+    /**
+     *
+     * Get users with bids in work item
+     *
+     * @return ARRAY list of users id
+     */
+    public function getUsersWithBidsId() {
+    
+        $query = "SELECT b.`bidder_id`
+            FROM `" . BIDS . "` f INNER JOIN `" . USERS . "` u ON u.`id` = b.`bidder_id`  
+            WHERE b.`worklist_id` = " . $this->id . " AND u.`is_active` = 1";
+        $result_query = mysql_query($query);
+        if($result_query) {
+            $temp_array = array();
+            while($row = mysql_fetch_assoc($result_query)) {
+                $temp_array[] = $row['bidder_id'];
+            }
+            return $temp_array;
+        } else {
+            return null;
+        }
+    }
+    
     public function getRunnerId()
     {
         return $this->runnerId;
@@ -524,7 +547,7 @@ WHERE id = ' . (int)$id;
             status_changed=NOW(),
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
-            is_bug='.$this->getIs_bug().',
+            is_bug='.($this->getIs_bug() ? 1 : 0).',
             budget_id='.$this->getBudget_id().',
             code_reviewer_id=' . $this->getCReviewerId() . ',
             code_review_started='.$this->getCRStarted().',

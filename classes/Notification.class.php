@@ -689,14 +689,20 @@ class Notification {
             break;
             case 'auto-pass':
                 $headers['From'] = '"' . $project_name . "- Auto PASSED" . '" ' . $from_address;    
-                $body = "Otto has triggered an auto-PASS for your suggested job. You may reactivate this job by updating the status." . '<br/><br/>'
-                        . "Summary: " . $itemLink . ": " . $workitem->getSummary() . '<br/>'
-                        . 'Project: ' . $project_name . '<br />'
-                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
-                        . 'Notes: '. $workitem->getNotes() . '<br /><br />'
-                        . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                        . '-Worklist.net' ; 
-            break;            
+                if (isset($data['prev_status']) && $data['prev_status'] == 'BIDDING') {
+                    $headers['From'] = '"' . $project_name . "- BIDDING Item Auto PASSED" . '" ' . $from_address;
+                    $body = "Otto has triggered an auto-PASS for job #" . $itemId . ". You may reactivate this job by updating the status or contacting an admin." . '<br/><br/>';
+                } else {
+                    $body = "Otto has triggered an auto-PASS for your suggested job. You may reactivate this job by updating the status or contacting an admin." . '<br/><br/>';
+                }
+                $body .= "Summary: " . $itemLink . ": " . $workitem->getSummary() . '<br/>'
+                    . 'Project: ' . $project_name . '<br />'
+                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
+                    . 'Notes: '. $workitem->getNotes() . '<br /><br />'
+                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                    . '-Worklist.net' ;
+                
+            break;
         }
 
     
@@ -1113,11 +1119,12 @@ class Notification {
     }
     // get list of expired bids
     public function emailExpiredBids(){
-        $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount
+        $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount, r.username runner_email
             FROM " . WORKLIST . " w
               LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
               LEFT JOIN " . USERS . " u ON u.id = b.bidder_id
-            WHERE w.status = 'BIDDING'
+              LEFT JOIN " . USERS . " r ON r.id = w.runner_id
+              WHERE w.status = 'BIDDING'
               AND b.expired_notify = 0
               AND b.bid_expires < NOW()
               AND u.is_active = 1
@@ -1127,7 +1134,7 @@ class Notification {
         if($wCount > 0){
             while ($row = mysql_fetch_assoc($worklist)) {
                 $options = array();
-                $options['emails'] = array($row['bid_email']);
+                $options['emails'] = array($row['bid_email'], $row['runner_email']);
                 $options['workitem'] = new workItem();
                 $options['workitem']->loadById($row['worklist_id']);
                 $options['type'] = "expired_bid";

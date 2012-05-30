@@ -143,6 +143,19 @@ if (!defined("SURVEYS_EMAIL")) define("SURVEYS_EMAIL","all@lovemachineinc.com");
 if (!defined("JOURNAL_PICTURE_EMAIL_PREFIX")) define("JOURNAL_PICTURE_EMAIL_PREFIX","devjournalimage");
 if (!defined("JOURNAL_PICTURE_EMAIL_DOMAIN")) define("JOURNAL_PICTURE_EMAIL_DOMAIN","@sendlove.us");
 
+//<kordero>
+if(!defined("ADMINS_EMAILS"))
+  define("ADMINS_EMAILS", 
+    "ryan@lovemachineinc.com " . 
+    "garth.johnson@gmail.com " . 
+    "philip@lovemachineinc.com " . 
+    "tj@coffeeandpower.com " . 
+    "danbrown@php.net " . 
+    "heiberger@earthlink.net " . 
+    "fred@lovemachineinc.com " . 
+    "alexi@kostibas.com"
+  );
+
 // Special Accounts
 if (!defined("USER_SENDLOVE"))      define("USER_SENDLOVE", "Send Love");
 if (!defined("USER_SVN"))           define("USER_SVN", "SVN");

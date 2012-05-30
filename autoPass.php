@@ -23,7 +23,7 @@ function autoPassJobs() {
         die('Could not connect: ' . mysql_error());
     }
     mysql_select_db(DB_NAME, $con);
-    $sql = "SELECT id FROM `" . WORKLIST ."` WHERE  status  IN ( 'SUGGESTED' , 'SUGGESTEDwithBID') AND DATEDIFF(now() , status_changed) > 30";
+    $sql = "SELECT id FROM `" . WORKLIST ."` WHERE  status  IN ( 'SUGGESTED' , 'SUGGESTEDwithBID', 'BIDDING') AND DATEDIFF(now() , status_changed) > 30";
     
     $result = mysql_query($sql);
     $delay = 0;
@@ -33,14 +33,31 @@ function autoPassJobs() {
     while ($row = mysql_fetch_assoc($result)) {
         $status = 'PASS';
         $workitem = new WorkItem($row['id']);
+        $prev_status = $workitem->getStatus();
         
         // change status of the workitem to PASS.
         $workitem->setStatus($status);
         if ($workitem->save()) {
-            //notify creator
-            Notification::workitemNotify(array('type' => 'auto-pass',
-                                               'workitem' => $workitem,
-                                               'recipients' => array('creator')));    
+            
+            $recipients = array('creator');
+            $emails = array();
+            $data = array('prev_status' => $prev_status);
+            
+            if ($prev_status == 'BIDDING') {
+                $recipients[] = 'usersWithBids';
+                $emails = preg_split('/[\s]+/', ADMINS_EMAILS);
+            }
+            
+            //notify
+            Notification::workitemNotify(
+                array(
+                    'type' => 'auto-pass',
+                    'workitem' => $workitem,
+                    'recipients' => $recipients,
+                    'emails' => $emails
+                ),
+                $data
+            );
             
             //sendJournalnotification
             $journal_message = "Otto updated item #" . $workitem->getId() . ": " . $workitem->getSummary() . ". Status set to " . $status;
