@@ -479,6 +479,7 @@ $(document).ready(function(){
     $('#popup-bid').dialog(dialog_options);
     $('#popup-edit-bid-info').dialog(dialog_options);
     $('#popup-confirmation').dialog(dialog_options);
+    $('#popup-review-started').dialog(dialog_options);
     $('#popup-ineligible').dialog({
         modal: true,
         title: "Your account is ineligible",
@@ -979,12 +980,36 @@ $(document).ready(function(){
         return false;
     }
 
-  function showFeeForm() {
-     $('#popup-addfee').dialog('open');
-     return false;
-  }
+   function showFeeForm() {
+      $('#popup-addfee').dialog('open');
+      return false;
+   }
+  
+   function CheckCodeReviewStatus() {
+      var workitem_id = <?php echo $worklist['id'];?>;
+		
+      $.ajax({
+	   type: 'post',
+	   url: 'getcodereviewstatus.php',
+	   data: {
+	       workitemid: workitem_id
+	   },
+	   dataType: 'json',
+	   success: function(data) {
+	            
+	         //now check the returned data. if code review has already been started show dialog
+	         if(data[0].code_review_started == 1 ) {
+	             $('#popup-review-started').dialog('open');
+	         }
+	         else {
+	             showReviewForm();
+	         }
+	                
+	   }
+      });
+   }
 
-    function showReviewForm() {
+   function showReviewForm() {
         var workitem_id = <?php echo $worklist['id'];?>;
         var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
         openNotifyOverlay("Authorizing sandbox for code review ...", false);
@@ -2010,7 +2035,8 @@ if ($action =="edit"):  ?>
                                         if ($mechanic_id != $user_id) {
                                             if ($user->isEligible()) {
                                                 if(hasRights($user_id, $workitem)) { ?>
-                                                    <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return showReviewForm();"/>
+                                                	
+                                                    <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"/>
                                         <?php   } else { ?>
                                                     <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
                                         <?php   }
@@ -2165,7 +2191,9 @@ if ($action =="edit"):  ?>
     <!-- Popup HTML for starting a code review -->
     <?php include("dialogs/popup-startreview.inc"); ?>
     <!-- Popup HTML for ending a code review -->
-    <?php include("dialogs/popup-endreview.inc"); ?>    
+    <?php include("dialogs/popup-endreview.inc"); ?> 
+    <!-- Popup HTML for informing user that code review is already started review -->
+    <?php include("dialogs/code-review-already-started.inc"); ?>       
     <!-- Popup for ping user on task-->
     <?php require_once('dialogs/popup-pingtask.inc') ?>
     <!-- Popup for bid info-->
