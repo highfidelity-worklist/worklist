@@ -236,7 +236,7 @@ var UserInfo = {
 
         $('#give').click(function(){
             $('#give-budget').dialog("destroy").remove();
-            $('#budget-area').remove();
+            $('#budget-area, #budget-source-combo').remove();
             $("body").append("<div id='budget-area'></div>");
             $("#budget-area").load('budget.php',{
                 action: "getView"

@@ -47,9 +47,14 @@ class BudgetInfo {
         }
         $this->validateRequest(array('budgetId'));
         $budget_id = (int) $_REQUEST['budgetId'];
-        include("dialogs/popup-add-funds.inc");
+        $budget = new Budget();
+        if ($budget->loadById($budget_id)) {
+            include("dialogs/popup-add-funds.inc");
+        } else {
+            echo 'Invalid budget id';
+        }
         exit(0);
-    }
+     }
     /**
      * Get the budget update view
      */
@@ -149,8 +154,10 @@ class BudgetInfo {
                     return;
                 }
                 if ($remainingFunds < 0) {
-                    $budget->updateSources($source["source_id"], - $remainingFunds);
-                    $budgetGiver->updateBudget($remainingFunds, $source["budget_id"]);
+                    if ($budget->seed != 1) {
+                        $budget->updateSources($source["source_id"], - $remainingFunds);
+                        $budgetGiver->updateBudget($remainingFunds, $source["budget_id"]);
+                    }
                     $this->sendBudgetcloseOutEmail(array(
                         "budget_id" => $budget->id,
                         "reason" => $budget->reason,
@@ -162,7 +169,8 @@ class BudgetInfo {
                         "giver_email" => $budgetGiver->getUsername(),
                         "remainingFunds" => $remainingFunds,
                         "original_amount" => $budget->original_amount,
-                        "amount" => $budget->amount
+                        "amount" => $budget->amount,
+                        "seed" => $budget->seed
                     ));
                     return;
                 } else {
@@ -173,8 +181,10 @@ class BudgetInfo {
                         $remainingFundsToGiveBack = $remainingFunds;
                         $remainingFunds = 0;
                     }
-                    $budget->updateSources($source["source_id"], - $remainingFundsToGiveBack);
-                    $budgetGiver->updateBudget($remainingFundsToGiveBack, $source["budget_id"]);
+                    if ($budget->seed != 1) {
+                        $budget->updateSources($source["source_id"], - $remainingFundsToGiveBack);
+                        $budgetGiver->updateBudget($remainingFundsToGiveBack, $source["budget_id"]);
+                    }
                     $this->sendBudgetcloseOutEmail(array(
                         "budget_id" => $budget->id,
                         "reason" => $budget->reason,
@@ -186,7 +196,8 @@ class BudgetInfo {
                         "giver_email" => $budgetGiver->getUsername(),
                         "remainingFunds" => $remainingFundsToGiveBack,
                         "original_amount" => $budget->original_amount,
-                        "amount" => $budget->amount
+                        "amount" => $budget->amount,
+                        "seed" => $budget->seed
                     ));
                     if ($remainingFunds == 0) {
                         return;
@@ -216,10 +227,6 @@ class BudgetInfo {
         if ($budget->loadById($budget_id)) {
             if ($budget->active != 1) {
                 $this->respond(false, 'This budget is already closed.');
-                return;
-            }
-            if ($budget->seed == 1) {
-                $this->respond(false, 'This budget is a seed budget and can\'t be closed for the moment.');
                 return;
             }
             if ($reqUserId == $budget->receiver_id ||
@@ -286,8 +293,11 @@ class BudgetInfo {
     }
      
     public function sendBudgetcloseOutEmail($options) {
-    
-        $subject = "Closed - Budget " . $options["budget_id"] . " (For " . $options["reason"] . ")";
+        $subject = "Closed - Budget ";
+        if ($options["seed"] == 1) {
+            $subject = "Closed - Seed Budget ";
+        }
+        $subject .= $options["budget_id"] . " (For " . $options["reason"] . ")";
         $link = SECURE_SERVER_URL . "team.php?showUser=" . $options["receiver_id"] . "&tab=tabBudgetHistory";
         $body = '<p>Hello ' . $options["receiver_nickname"] . '</p>';
         $body .= '<p>Your budget has been closed out:</p>';
@@ -322,7 +332,7 @@ class BudgetInfo {
         if (!send_email($options["receiver_email"], $subject, $body, $plain)) { 
             error_log("budget.php: send_email failed on closed out budget");
         }
-        if ($options["remainingFunds"] < 0) {
+        if ($options["remainingFunds"] < 0 || $options["seed"] == 1) {
             if (!send_email($options["giver_email"], $subject, $body, $plain)) { 
                 error_log("budget.php: send_email failed on closed out budget");
             }

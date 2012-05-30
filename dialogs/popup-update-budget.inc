@@ -15,15 +15,9 @@ MapToolTips();
             ?>
             <input type="text" id="budget-reason" name="budget-reason" value="<?php echo $budget->reason; ?>" <?php echo $dis; ?>/>
             <br/>
-            <?php if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false &&
-                    $budget->seed == 1) { ?>
-            <label for="budget-source" class="info-label">Source: </label>
-            <div class="budget-source">
-                <?php echo $budget->source_data; ?>
-            </div>
             <?php 
-                } 
-                if ($budget->seed == 0) { ?>
+                if ((strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false &&
+                    $budget->seed == 1) || $budget->seed == 0) { ?>
         <label for="budget-source" class="info-label">Source(s): </label>
         <div class="budget-source">
             <table class="budgetSourceTable" cellspacing="0" >
@@ -32,7 +26,7 @@ MapToolTips();
                         <th class="date">Date</th>
                         <th class="giver">Grantor</th>
                         <th class="amount">Amount</th>
-                        <th class="for">For</th>
+                        <th class="for">From</th>
                     </tr>
                 </thead>
             <?php 
@@ -43,11 +37,19 @@ MapToolTips();
                         onclick="Budget.displayHistoryFromParent('<?php echo $source["giver_id"]; ?>');"                        
                     >
                     <?php
-                    echo "<td>" . $source["transfer_date"] . "</td><td>" . 
-                        $source["nickname"] . "</td><td>" . 
-                        $source["amount_granted"] . "</td><td>" . 
-                        $source["source_data"] . " (" . $source["reason"] . ")" .
-                        "</td></tr>"; 
+                        if ($budget->seed == 0) {
+                            echo "<td>" . $source["transfer_date"] . "</td><td>" . 
+                                $source["nickname"] . "</td><td>" . 
+                                $source["amount_granted"] . "</td><td>" . 
+                                "Budget ID: " . $source["budget_id"] . " - " . $source["reason"] . 
+                                "</td></tr>"; 
+                        } else {
+                            echo "<td>" . $source["transfer_date"] . "</td><td>" . 
+                                $source["nickname"] . "</td><td>" . 
+                                $source["amount_granted"] . "</td><td>" . 
+                                "Seed Budget: " . $source["source_data"] . 
+                                "</td></tr>"; 
+                        }
                     $i++;    
                 }
             }
@@ -64,9 +66,13 @@ MapToolTips();
         <?php if ($budget->active == 1){ ?>
             <input class="iToolTip budgetClose" type="button" value="Close Out" id="closeOutButton" />
             <?php 
-                if ($budget->seed == 0) { ?>            
-            <input class="iToolTip budgetAddFunds" type="button" value="Add Funds" id="addFundsButton" />
-        <?php   }
+                if ($budget->seed == 0) { 
+                    $title = "Add Funds to this budget";
+                } else {
+                    $title = "Add Funds to this seed budget";
+                }?>            
+            <input class="iToolTip budgetAddFunds" type="button" value="Add Funds" id="addFundsButton" title="<?php echo $title; ?>"/>
+        <?php   
             } ?>
     </form>
     <?php

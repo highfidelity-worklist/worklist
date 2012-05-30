@@ -2,6 +2,9 @@
     <form method="post" action="">
         <label for="budget-source" class="info-label">Source: </label>
         <div class="budget-source">
+            <?php if ($budget->seed == 1) { ?>
+                <input type="hidden" id="budget-seed" />
+            <?php } ?>
             <input type="text" id="budget-source" name="budget-source"/>
             <span id="budget-source-combo-area">
                 <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">

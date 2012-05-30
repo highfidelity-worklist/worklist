@@ -159,6 +159,16 @@ var Budget = {
     },
     
     initAddFunds: function() {
+        var budget_seed = 0;
+        if ($("#addFundsDialog #budget-seed").length > 0) {
+            budget_seed = 1;
+            $("#addFundsDialog #budget-source").show();
+            $("#addFundsDialog #budget-source-combo-area").hide();
+        } else {
+            $("#addFundsDialog #budget-source").hide();
+            $("#addFundsDialog #budget-source-combo-area").show();
+        }
+    
         Budget.initCombo('budget-source-combo', '#amountToAdd');
         $("#amountToAdd").blur(function(){ 
             var amountToAdd = parseFloat($("#amountToAdd").val()),
@@ -178,8 +188,8 @@ var Budget = {
                     receiver_id: $('#budget-receiver').val(),
                     reason: "",
                     amount: $('#amountToAdd').val(),
-                    budget_seed: 0,
-                    budget_source: "",
+                    budget_seed: budget_seed,
+                    budget_source: $('#budget-source').val(),
                     budget_source_combo: $('#budget-source-combo').val(),
                     budget_note: "",
                     add_funds_to: $('#add_funds_to').val()
@@ -222,7 +232,7 @@ var Budget = {
         $('#budget-update-dialog').dialog('option', 'position', ['center', 'center']);
         $('#addFundsButton').click(function(){
             $('#addFundsDialog').dialog("destroy").remove();
-            $('#addFundsArea').remove();
+            $('#addFundsArea, #budget-source-combo').remove();
             $("body").append("<div id='addFundsArea'></div>");
             $("#addFundsArea").load('budget.php', {
                 action: "getViewAddFunds",

@@ -76,9 +76,10 @@ class Budget extends DataObject {
             DATE_FORMAT(s.transfer_date, '%Y-%m-%d') AS transfer_date,
             u.nickname,
             s.giver_id
-            FROM " . $this->table_name . " AS b 
-            INNER JOIN " . BUDGET_SOURCE . " AS s ON s.source_budget_id = b.id AND s.budget_id = " . $this->id . " 
+            FROM " . BUDGET_SOURCE . " AS s 
+            LEFT JOIN " . $this->table_name . " AS b ON s.source_budget_id = b.id 
             INNER JOIN " . USERS . " AS u ON u.id = s.giver_id  
+            WHERE s.budget_id = " . $this->id . "
             {$orderBy} ";
         
         $objectData = array();

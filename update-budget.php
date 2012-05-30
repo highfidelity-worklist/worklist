@@ -127,16 +127,16 @@ if ($budget_seed == 1 ||
             return;
         } 
     }
+	$query = "INSERT INTO `" . BUDGET_SOURCE . 
+			"` (`giver_id`, `budget_id`, `source_budget_id`, `amount_granted`, `original_amount`, `transfer_date`,  `source_data`) VALUES ('" .
+			$_SESSION['userid'] . 
+			"', '$add_funds_to', '$budget_source_combo', '$amount', '0', NOW(), '$source')";
+	if (!mysql_unbuffered_query($query)){ 
+		$json = json_encode(array('success' => false, 'message' => 'Error in query.'));
+		echo $json;
+		return;
+	} 
     if ($budget_seed != 1) {
-        $query = "INSERT INTO `" . BUDGET_SOURCE . 
-                "` (`giver_id`, `budget_id`, `source_budget_id`, `amount_granted`, `original_amount`, `transfer_date`,  `source_data`) VALUES ('" .
-                $_SESSION['userid'] . 
-                "', '$add_funds_to', '$budget_source_combo', '$amount', '0', NOW(), '$source')";
-        if (!mysql_unbuffered_query($query)){ 
-            $json = json_encode(array('success' => false, 'message' => 'Error in query.'));
-            echo $json;
-            return;
-        } 
         $giver->updateBudget(- $amount, $budget_source_combo);
         $budget = new Budget();
         $budget->loadById($add_funds_to);
