@@ -1116,3 +1116,31 @@ function truncateText($text, $chars = 200, $lines = 5) {
     }
     return $text;
 }
+
+function getRelated($input) {
+    $related = "";
+    $twoIds = false;
+    if( preg_match_all('/(\#[1-9][0-9]+)/i', $input, $matches)) {
+        $distinctMatches = array_unique($matches[0]);
+        foreach($distinctMatches as $match) {
+            $job_id = (int) substr($match, 1);
+            if ($job_id != $worklist_id) {
+                if ($related != "") {
+                    $twoIds = true;
+                    $related .= ", #" . $job_id;
+                } else {
+                    $related = " #" . $job_id;
+                }
+            }
+        }
+    }   
+    if ($related != "") {
+        $related .= ")";
+        if ($twoIds == true) {
+            $related = " (related jobs: " . $related;
+        } else {
+            $related = " (related job: " . $related;
+        }
+    }
+    return $related;
+}

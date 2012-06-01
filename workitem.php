@@ -210,10 +210,12 @@ if ($action =='save_workitem') {
             }
         }
     }
+    $related = "";
     if ($workitem->getNotes() != $notes && isset($_REQUEST['notes'])) {
         $workitem->setNotes($notes);
         $new_update_message .= "Notes changed. ";
         $job_changes[] = '-notes';
+        $related = getRelated($notes);
     }
     // project
     if ( $workitem->getProjectId() != $project_id) {
@@ -289,9 +291,9 @@ if ($action =='save_workitem') {
 
      $redirectToDefaultView = true;
      if ($workitem->getStatus() != 'DRAFT') {
-         $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id ".
+        $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id " .
                             $bugJournalMessage  .": ". $workitem->getSummary() .
-                            $new_update_message;
+                            $new_update_message . $related;
      }
 }
 
@@ -322,7 +324,8 @@ if ($action == 'new-comment') {
         
         // Send journal notification
         if ($workitem->getStatus() != 'DRAFT') {
-            $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary();
+            $related = getRelated($comment);
+            $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary() . $related;
             Notification::workitemNotify(
                 array(
                     'type' => 'comment',

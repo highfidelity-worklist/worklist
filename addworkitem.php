@@ -88,7 +88,7 @@ if ($userId > 0 ) {
     $workitem->setWorkitemSkills($skillsArr);
     $workitem->setIs_bug( $is_bug=='true' ? 1 : 0);
     $workitem->save();
-
+    $related = getRelated($notes);
     Notification::statusNotify($workitem);
 
     if($is_bug && $bug_job_id>0) {
@@ -108,7 +108,7 @@ if ($userId > 0 ) {
     
     if (empty($_POST['itemid'])) {
         $bid_fee_itemid = $workitem->getId();
-        $journal_message .= " item #$bid_fee_itemid$bugJournalMessage: $summary. Status set to $status. ";
+        $journal_message .= " item #$bid_fee_itemid$bugJournalMessage: $summary. Status set to $status ";
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
             foreach ($files as $file) {
@@ -118,9 +118,9 @@ if ($userId > 0 ) {
         }
     } else {
         $bid_fee_itemid = $itemid;
-        $journal_message .=  "item #$itemid: $summary: Status set to $status. ";
+        $journal_message .=  "item #$itemid: $summary: Status set to $status ";
     }
-    
+    $journal_message .=  "$related. ";
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $workitem);
