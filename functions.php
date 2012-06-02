@@ -1120,7 +1120,7 @@ function truncateText($text, $chars = 200, $lines = 5) {
 function getRelated($input) {
     $related = "";
     $twoIds = false;
-    if( preg_match_all('/(\#[1-9][0-9]+)/i', $input, $matches)) {
+    if( preg_match_all('/(\#[1-9][0-9][0-9]+)/i', $input, $matches)) {
         $distinctMatches = array_unique($matches[0]);
         foreach($distinctMatches as $match) {
             $job_id = (int) substr($match, 1);
