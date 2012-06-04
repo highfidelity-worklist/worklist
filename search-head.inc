@@ -25,7 +25,7 @@
                         "BIDDING", 
                         "WORKING", 
                         "FUNCTIONAL", 
-                        "SVNHold", 
+                        "SVN Hold", 
                         "REVIEW", 
                         "COMPLETED", 
                         "DONE", 
@@ -38,7 +38,7 @@
                         "BIDDING", 
                         "WORKING", 
                         "FUNCTIONAL", 
-                        "SVNHold", 
+                        "SVN Hold", 
                         "REVIEW", 
                         "COMPLETED", 
                         "DONE", 
@@ -90,8 +90,8 @@
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'SVNHold':
-                                if($_GET['status'] == 'svnhold') { 
+                            case 'SVN Hold':
+                                if($_GET['status'] == 'svn hold') { 
                                     $selected = ' selected="selected"';
                                 }
                                 if($_GET['status'] == 'underway') { 
