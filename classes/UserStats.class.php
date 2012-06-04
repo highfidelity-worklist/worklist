@@ -29,7 +29,7 @@ class UserStats{
     public function getTotalJobsCount(){
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
                 ."WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId})"
-                ."AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')"; 
+                ."AND `status` IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE')"; 
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return $row[0];
@@ -40,7 +40,8 @@ class UserStats{
     // wrapper for getJobsCount to get number of jobs in an active status
     public function getActiveJobsCount(){
     $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
-                . "WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId}) AND `status` IN ('WORKING', 'REVIEW', 'FUNCTIONAL')";
+         . "WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId}) "
+         . "  AND `status` IN ('WORKING', 'REVIEW', 'SVNHold', 'FUNCTIONAL')";
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return $row[0];
@@ -90,7 +91,7 @@ class UserStats{
     public function getRunnerTotalJobsCount(){
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
                 ."WHERE (`runner_id` = {$this->userId})"
-                ."AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')";
+                ."AND `status` IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE')";
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return $row[0];
@@ -109,7 +110,7 @@ class UserStats{
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
             WHERE (`runner_id` = {$this->userId})
-            AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE') ORDER BY `id` DESC 
+            AND `status` IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE') ORDER BY `id` DESC 
             LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();
@@ -128,7 +129,7 @@ class UserStats{
     }   
     public function getRunnerActiveJobsCount(){
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
-                . "WHERE (`runner_id` = {$this->userId}) AND `status` IN ('WORKING', 'REVIEW', 'FUNCTIONAL')";
+                . "WHERE (`runner_id` = {$this->userId}) AND `status` IN ('WORKING', 'REVIEW', 'SVNHold', 'FUNCTIONAL')";
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return $row[0];
@@ -147,7 +148,7 @@ class UserStats{
             LEFT JOIN `" . USERS . "` AS `mn` ON `mechanic_id` = `mn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
-            WHERE (`runner_id` = {$this->userId}) AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW') ORDER BY `id` DESC "
+            WHERE (`runner_id` = {$this->userId}) AND `status` IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW') ORDER BY `id` DESC "
             . "LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
         $itemsArray = array();
         $res = mysql_query($sql);
@@ -208,7 +209,7 @@ class UserStats{
                   LEFT OUTER JOIN " . WORKLIST . " w ON w.project_id = p.project_id
                   LEFT OUTER JOIN " . FEES . " f ON f.worklist_id = w.id
                   WHERE w.runner_id = {$this->userId} 
-                  AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')
+                  AND w.status IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE')
                   AND f.paid = 1 AND f.withdrawn = 0 AND f.expense = 0
                   GROUP BY p.project_id order by totalEarnings DESC";
         if($result = mysql_query($query)) {
@@ -524,7 +525,7 @@ class UserStats{
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
             WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId})
-            AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE') ORDER BY `id` DESC 
+            AND `status` IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE') ORDER BY `id` DESC 
             LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();
@@ -553,7 +554,9 @@ public function getActiveUserItems($status, $page = 1){
             LEFT JOIN `" . USERS . "` AS `mn` ON `mechanic_id` = `mn`.`id`
             LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
             LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
-            WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId}) AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW') ORDER BY `id` DESC "
+            WHERE (`mechanic_id` = {$this->userId} OR `runner_id` = {$this->userId}) 
+              AND `status` IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW') 
+            ORDER BY `id` DESC "
             . "LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
 
         $itemsArray = array();

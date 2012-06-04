@@ -513,22 +513,24 @@ class JsonServer
         $user->findUserById($user_id);
         
         $status = $workItem->startCodeReview($user_id);
-        if($status === true || (int)$status == 0) {
+        if ($status === null) {
+            return $this->setOutput(array('success' => false, 'data' => nl2br('Code review not available right now')));
+        } else if ($status === true || (int)$status == 0) {
             $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workItem->getSummary();
             sendJournalNotification($journal_message);
             return $this->setOutput(array('success' => true,'data' => $journal_message));
         } else {
-            $workItem->setStatus('FUNCTIONAL');
+            $workItem->setStatus('SVNHold');
             $workItem->save();
 
             $message = '';
-            if (($status & 4) == 4) { //sandbox not updated
+            if ($status & 4) { //sandbox not updated
                 $message .= " - Sandbox is not up-to-date\n";
             }
-            if (($status & 8) == 8) { //sandbox has conflicts
+            if ($status & 8) { //sandbox has conflicts
                 $message .= " - Sandbox contains conflicted files\n";
             }
-            if (($status & 16) == 16) { //sandbox has not-included files
+            if ($status & 16) { //sandbox has not-included files
                 $message .= " - Sandbox contains 'not-included' files\n";
             }
             
@@ -547,14 +549,18 @@ class JsonServer
             //post comment
             $comment = new Comment();
             $comment->setWorklist_id((int)$workitem_id);
-            $comment->setUser_id((int) $workItem->getRunnerId());
+            $comment->setUser_id((int) $user_id);
             $comment->setComment($message);
             $comment->save();
             
             $journalMessage = str_replace("\n", '', $message);
-            sendJournalNotification("#$workitem_id: " . $journalMessage);
+            sendJournalNotification("Otto could not authorize sandbox for #$workitem_id: " . $journalMessage);
 
-            return $this->setOutput(array('success' => false, 'data' => nl2br($message)));
+            return $this->setOutput(array(
+                    'success' => false, 
+                    'data' => 'Sandbox verification failed. Alerting mechanic to resolve.'
+                )
+            );
         }
     }
 

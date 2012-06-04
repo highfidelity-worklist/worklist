@@ -1212,7 +1212,7 @@ function changeStatus($workitem, $newStatus, $user) {
     
     // Generate diff and send to pastebin if we're in REVIEW
     if ($newStatus == "REVIEW") {
-        //reset core_review flags
+        //reset code_review flags
         $workitem->resetCRFlags();
         if (substr($workitem->getSandbox(), 0, 4) == "http") {
             require_once("sandbox-util-class.php");

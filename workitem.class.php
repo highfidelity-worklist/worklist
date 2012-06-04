@@ -1201,6 +1201,9 @@ WHERE id = ' . (int)$id;
     }
 
     public function startCodeReview($reviewer_id) {
+        if ($this->status != 'REVIEW' || $this->code_review_started != 0) {
+            return null; // CR is only allowed for REVIEW items without the CR started
+        }
         $returnValue = true;
         try {
             $returnValue = $this->authorizeSandbox();
@@ -1209,9 +1212,12 @@ WHERE id = ' . (int)$id;
             error_log($ex->getMessage());
         }
 
-        $this->setCRStarted(1);
-        $this->setCReviewerId($reviewer_id);
-        $this->save();
+        // set the task as CR started only if sb authorized
+        if ($returnValue === true) {
+            $this->setCRStarted(1);
+            $this->setCReviewerId($reviewer_id);
+            $this->save();
+        }
 
         return $returnValue;
     }

@@ -459,7 +459,7 @@ class Project {
             while ($project = mysql_fetch_assoc($result)) {
                 $query = "SELECT
                             SUM(status IN ('DONE', 'COMPLETE')) AS completed, 
-                            SUM(status IN ('WORKING', 'REVIEW', 'FUNCTIONAL')) AS underway, 
+                            SUM(status IN ('WORKING', 'REVIEW', 'SVNHold', 'FUNCTIONAL')) AS underway, 
                             SUM(status='BIDDING') AS bidding 
                           FROM
                             " . WORKLIST . " 
@@ -680,19 +680,19 @@ class Project {
                  (SELECT COUNT(*) FROM " . WORKLIST . " w 
                  LEFT JOIN " . PROJECTS . " p on w.project_id = p.project_id 
                  WHERE ( w.mechanic_id = u.id OR w.creator_id = u.id) 
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE') 
+                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE') 
                  AND p.project_id = "  . $this->getProjectId() . ") as totalJobCount,
                  (SELECT SUM(F.amount) FROM " . FEES . " F 
                  LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
                  LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
                  WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')				 
+                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE')				 
                  AND p.project_id = " . $this->getProjectId() . ") as totalEarnings
                  FROM " . BIDS . " b LEFT JOIN " . WORKLIST . " w ON b.worklist_id = w.id 
                  LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
                  LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
                  WHERE b.accepted = 1 
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')
+                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE')
                  AND p.project_id = " . $this->getProjectId() . " ORDER BY totalEarnings DESC";
         if($result = mysql_query($query)) {
             if(mysql_num_rows($result) > 0) {
