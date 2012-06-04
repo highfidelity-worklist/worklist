@@ -520,7 +520,7 @@ class JsonServer
             sendJournalNotification($journal_message);
             return $this->setOutput(array('success' => true,'data' => $journal_message));
         } else {
-            $workItem->setStatus('SVN Hold');
+            $workItem->setStatus('SVNHold');
             $workItem->save();
 
             $message = '';
