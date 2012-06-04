@@ -945,7 +945,8 @@ function checkLogin() {
 
         // Replace '#<number>' with a link to the worklist item with the same number
         $regexp = "/\#([1-9][0-9]*)/";
-        $url = preg_replace($regexp, DELIMITER . '<a href="' . WORKLIST_URL . 'workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>' . DELIMITER, $url);
+        $link = DELIMITER . '<a href="' . WORKLIST_URL . 'workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>' . DELIMITER;
+        $url = preg_replace($regexp,  $link, $url);
 
         // Replace '#<nick>/<url>' with a link to the author sandbox
         $regexp="/\#([A-Za-z]+)\/(\S*)/i";
@@ -991,8 +992,7 @@ function checkLogin() {
         // find anything that looks like a link and add target=_blank so it will open in a new window
         $url = htmlspecialchars_decode($url);
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
-       
-       if ((!$bot) && (strpos($url,"worklist") === false)) {
+       if (!$bot) {
            $url = htmlentities($url, ENT_QUOTES);
        }
         $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
