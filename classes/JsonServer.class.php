@@ -332,6 +332,12 @@ class JsonServer
 	           $filetype = 'image';
 	           $icon = 'images/icons/default.png';
 	        }
+            if ($workitem) {
+                $workitem_attached = new WorkItem();
+                $workitem_attached->loadById($workitem);
+                $journal_message = 'Document or Image uploaded #' . $workitem . ': ' . $workitem_attached->getSummary() . ' - ' . $file->getUrl();
+                sendJournalNotification($journal_message);
+            }
 	        return $this->setOutput(array(
 	           'success' => true,
 	           'fileid'  => $file->getId(),
@@ -341,7 +347,6 @@ class JsonServer
 	           'description' => '',
 	           'filetype'=> (isset($filetype) ? $filetype : '')
 	        ));
-
         } else {
             return $this->setOutput(array(
                 'success' => false,
