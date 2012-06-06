@@ -226,6 +226,8 @@ class Notification {
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
         $workitem = $options['workitem'];
+        $userstats = isset($options['userstats']) ? $options['userstats'] : null;
+       
         if (isset($options['project_name'])) {
             $project_name = $options['project_name'];
         } else {
@@ -344,7 +346,28 @@ class Notification {
             break;
 
             case 'bid_placed':
-                $headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
+            	$userstats->setItemsPerPage(3);
+            	$projectId = $workitem->getProjectId();;
+            	$jobsInfo = $userstats->getUserItemsForASpecificProject('DONE', $projectId);
+            	$lastThreeJobs = $jobsInfo['joblist'];
+            	$workItemUrl = '<a href="' . SERVER_URL . 'workitem.php';
+            	//create the last three jobs and link them to those Jobs.
+            	foreach ($lastThreeJobs as $row){
+            		$jobs .= $workItemUrl;
+            		$jobs .= '?job_id=' . $row['id'] . '&action=view">#' . $row['id'] . '</a>' . ' - ' . $row['summary'] . '<br />';
+            	}
+            	//if no Jobs then display 'None'
+            	if (!$jobs){
+            		$jobs = 'None <br />';
+            	}
+      
+            	//now get total jobs and total jobs and create links
+            	$totalJobs = $workItemUrl;
+            	$totalJobs .= '?job_id=' . $workitem->getId() . '&action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getTotalJobsCount() . '</a><br />';
+            	$totalActiveJobs = $workItemUrl;
+            	$totalActiveJobs .= '?job_id=' . $workitem->getId() . '&action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getActiveJobsCount() . '</a><br />';
+                
+            	$headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
                 $body =  'New bid was placed for ' . $itemLink . '<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Done In: ' . $data['done_in'] . '<br />'
@@ -352,8 +375,12 @@ class Notification {
                     . 'Bidder Name: <a href="mailto:' . $_SESSION['nickname'] . '">' . $_SESSION['nickname'] . '</a><br /><br />'
                     . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
                     . 'Notes: ' . $data['notes'] . '<br /><br />'
+                    . 'Total Jobs: ' . $totalJobs
+                    . 'Active Jobs: ' . $totalActiveJobs
+                    . 'Last 3 Jobs for ' . $project_name . ':<br />'
+                    . $jobs . '<br />'
                     . 'Project: ' . $project_name . '<br />'
-                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
                         $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
@@ -362,9 +389,9 @@ class Notification {
                     }
                 $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />';
 
-                $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
-                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=view_bid">Click here to accept bid.</a>';
-                $body .=  $urlacceptbid;
+                $urlAcceptBid  = '<br />' . $workItemUrl;
+                $urlAcceptBid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=view_bid">Click here to accept bid.</a>';
+                $body .=  $urlAcceptBid;
             break;
 
             case 'bid_updated':

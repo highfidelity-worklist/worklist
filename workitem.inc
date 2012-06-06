@@ -159,6 +159,12 @@ $(document).ready(function() {
     $('#workitem-form').submit(function() {
         return saveWorkitem();
     });
+
+    var userid_info_to_display = <?php echo (isset($_REQUEST['userinfotoshow']) && isset($_SESSION['userid'])) ? $_REQUEST['userinfotoshow'] : 0;?>; //holds the userid info to display
+    //if the page was loaded with request to display userinfo automatically then do it.
+    if (userid_info_to_display){
+    	showUserInfo(userid_info_to_display);
+    }
 });
 <!-- End User Info popup code -->
 </script>

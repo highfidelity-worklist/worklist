@@ -665,9 +665,10 @@ if ($action == "place_bid") {
         // notify runner of new bid
         Notification::workitemNotify(
             array(
-                'type' => 'bid_placed',
-                'workitem' => $workitem,
-                'recipients' => array('runner')
+                 'type' => 'bid_placed',
+                 'workitem' => $workitem,
+                 'recipients' => array('runner'),
+            	   'userstats' => new UserStats($_SESSION['userid'])
             ),
             array(
                  'done_in' => $done_in,

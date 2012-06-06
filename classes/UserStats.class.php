@@ -513,7 +513,20 @@ class UserStats{
         }
         return $count;
     }
-
+    public function getJobsCountForASpecificProject($project){
+    
+    	$count = 0;
+    	$sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
+    	. "WHERE `mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId} "
+    	."AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE')
+    	AND `creator_id` != `mechanic_id` AND project_id = " . $project;
+    
+    	$res = mysql_query($sql);
+    	if ($res && $row = mysql_fetch_row($res)){
+    		$count = $row[0];
+    	}
+    	return $count;
+    }
     public function getUserItems($status, $page = 1){
 
         $count = $this->getJobsCount($status);
@@ -542,8 +555,36 @@ class UserStats{
         }
         return false;
     }
+    public function getUserItemsForASpecificProject($status, $project, $page = 1){
     
-public function getActiveUserItems($status, $page = 1){
+    	$count = $this->getJobsCountForASpecificProject($project);
+    
+    	$sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `cn`.`nickname` AS `creator_nickname`,
+    	`rn`.`nickname` AS `runner_nickname`,
+    	DATE_FORMAT(`created`, '%m/%d/%Y') AS `created`
+    	FROM `" . WORKLIST . "`
+    	LEFT JOIN `" . USERS . "` AS `cn` ON `creator_id` = `cn`.`id`
+    	LEFT JOIN `" . USERS . "` AS `rn` ON `runner_id` = `rn`.`id`
+    	WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId})
+    	AND `status` IN ('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED', 'DONE') 
+    	AND project_id = ". $project . " ORDER BY `id` DESC
+    	LIMIT " . ($page-1)*$this->itemsPerPage . ", {$this->itemsPerPage}";
+    
+    	$itemsArray = array();
+    	$res = mysql_query($sql);
+    	if ($res){
+    	    while($row = mysql_fetch_assoc($res)){
+    	        $itemsArray[] = $row;
+    	    }
+    	    return array(
+    	        'count' => $count,
+    	        'pages' => ceil($count/$this->itemsPerPage),
+    	        'page' => $page,
+    	        'joblist' => $itemsArray);
+    	}
+    	return false;
+    }
+    public function getActiveUserItems($status, $page = 1){
 
         $count = $this->getActiveJobsCount($status);
 
@@ -561,7 +602,7 @@ public function getActiveUserItems($status, $page = 1){
 
         $itemsArray = array();
         $res = mysql_query($sql);
-        if ($res ) {
+        if ($res) {
             while($row = mysql_fetch_assoc($res)) {
                 $itemsArray[] = $row;
             }
@@ -574,7 +615,7 @@ public function getActiveUserItems($status, $page = 1){
         }
         return false;
     }
-  
+ 
     public function getBonusPaymentsTotal() {
  
     $sql = "
