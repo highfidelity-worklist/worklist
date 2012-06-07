@@ -285,7 +285,7 @@ class Agency_Worklist_Filter {
                 $sort = 'status';
                 break;
             case 'PROJECT':
-                $sort = 'project';
+                $sort = 'project_name';
                 break;
             case 'COMMENTS':
                 $sort = 'comments';
