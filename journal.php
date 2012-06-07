@@ -169,6 +169,7 @@ function StopStatus() {
                             </form>
                             <a href="" id="search_reset"><img id="reset-search" src="images/gif.gif" height="24" width="24" /></a>
                         </div>
+                        <a id="mobileEnableAlerts" class="button" ontouchstart="javascript:sndInit();">Enable Alerts</a>
                     </div>
                 </div><!-- end of div "head" -->
                 <div class="clear"></div>
@@ -307,6 +308,27 @@ function StopStatus() {
         require_once("helper/popup-guest-message.inc");
     }
 ?>
+    <audio id="chatSoundPlayer" preload="auto">
+        <source src="mp3/bubblepop.mp3" />
+        <source src="mp3/bubblepop.ogg" />
+    </audio>
+    <audio id="systemSoundPlayer" preload="auto">
+        <source src="mp3/plazzle.mp3" />
+        <source src="mp3/plazzle.ogg" />
+    </audio>
+    <audio id="pingSoundPlayer" preload="auto">
+        <source src="mp3/warble.mp3" />
+        <source src="mp3/warble.ogg" />
+    </audio>
+    <audio id="botSoundPlayer" preload="auto">
+        <source src="mp3/sweosh.mp3" />
+        <source src="mp3/sweosh.ogg" />
+    </audio>
+    <audio id="emergencySoundPlayer" preload="auto">
+        <source src="mp3/red_alert.mp3" />
+        <source src="mp3/red_alert.ogg" />
+    </audio>
+
     <script type="text/javascript">
         var is_runner = <?php echo $is_runner ?>;
         var queryStr = '<?php echo $query ?>';
@@ -348,7 +370,6 @@ function StopStatus() {
     <script type="text/javascript" src="js/jquery.autogrow.js"></script>
     <script type="text/javascript" src="js/jquery.metadata.js"></script>
     <script type="text/javascript" src="js/ajaxupload.js"></script>
-    <script type="text/javascript" src="js/soundmanager2.js"></script>
     <script type="text/javascript" src="js/jquery_all.js"></script>
     <script type="text/javascript" src="js/journal.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
@@ -394,8 +415,6 @@ function StopStatus() {
                 }
             });
         };
-        soundManager.url = 'flash/soundmanager2.swf';
-        soundManager.debugMode = false;
     </script>
     <!--  setup tooltip for setting and attachement links -->
     <script type="text/javascript" src="js/plugins/jquery.tooltip.min.js"></script>

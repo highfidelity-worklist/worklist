@@ -282,10 +282,10 @@ p.error {
 
 /* Ryan's buttons */
 
-input[type=submit], input[type=button] {
-    background:  url(../images/sprite.png);
+input[type=submit], input[type=button], .button {
+    background: url(../images/sprite.png);
     background-position: -4px -34px;
-    display:inline-block;
+    display: inline-block;
     color: #444;
     font: normal 12px;
     height: 26px;
@@ -1687,3 +1687,8 @@ iframe { background:#FFF; }
     font-weight: bold;
 }
 
+#mobileEnableAlerts {
+    float: right;
+    display: none;
+    margin-right: 20px
+}

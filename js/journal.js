@@ -59,6 +59,25 @@ var newMessageCount = 0;
 var focus = true;
 $.sendingMessage = 0;
 
+function Sound(playerElement) {
+    this.player = playerElement;
+    this.muted = false;
+}
+
+Sound.prototype.play = function() {
+    if (this.muted === false) {
+        this.player.play();
+    }
+};
+
+Sound.prototype.mute = function() {
+    this.muted = true;
+};
+
+Sound.prototype.unmute = function() {
+    this.muted = false;
+};
+
 // this array holds all
 // bot names. It is initialized
 // via a call to aj.php on page load
@@ -2380,75 +2399,61 @@ function gotoTime(gotoTime) {
 
 function initSound()
 {
-    // load sound
-    soundManager.url       = 'flash/soundmanager2.swf';
-    soundManager.debugMode = false;
-
-    soundManager.onready(function() {
-        chatSound = soundManager.createSound({
-            id: 'chatSound',
-            url: 'mp3/bubblepop.mp3',
-            autoLoad: true,
-            autoPlay: false,
-            volume: 75
-        });
-        systemSound = soundManager.createSound({
-            id: 'systemSound',
-            url: 'mp3/plazzle.mp3',
-            autoLoad: true,
-            autoPlay: false,
-            volume: 50
-        });
-        botSound = soundManager.createSound({
-            id: 'botSound',
-            url: 'mp3/sweosh.mp3',
-            autoLoad: true,
-            autoPlay: false,
-            volume: 50
-        });
-        pingSound = soundManager.createSound({
-            id: 'pingSound',
-            url: 'mp3/warble.mp3',
-            autoLoad: true,
-            autoPlay: false,
-            volume: 50
-        });
-        emergencySound = soundManager.createSound({
-            id: 'emergencySound',
-            url: 'mp3/red_alert.mp3',
-            autoLoad: true,
-            autoPlay: false,
-            volume: 50
-        });
-// krumch 20110708 Save sound settings
-        var soundSettings = new Array(1, 1, 1, 1, 1);
-        if($.cookie('sound')) soundSettings = $.cookie('sound').split(':');
-        if(0 == soundSettings[0]) {
-            chatSound.mute();
-            document.getElementById("chataudiooff").checked = true;
-        }
-        if(0 == soundSettings[1]) {
-            systemSound.mute();
-            document.getElementById("systemaudiooff").checked = true;
-        }
-        if(0 == soundSettings[2]) {
-            botSound.mute();
-            document.getElementById("botaudiooff").checked = true;
-        }
-        if(0 == soundSettings[3]) {
-            pingSound.mute();
-            document.getElementById("pingaudiooff").checked = true;
-        }
-        if(0 == soundSettings[4]) {
-            emergencySound.mute();
-            document.getElementById("emergencyaudiooff").checked = true;
-        }
-        setVolumeIcon();
-    });
+    // Attach player elements
+    chatSound      = new Sound(document.getElementById('chatSoundPlayer'));
+    systemSound    = new Sound(document.getElementById('systemSoundPlayer'));
+    pingSound      = new Sound(document.getElementById('pingSoundPlayer'));
+    botSound       = new Sound(document.getElementById('botSoundPlayer'));
+    emergencySound = new Sound(document.getElementById('emergencySoundPlayer'));
+    
+    // Save sound settings
+    var soundSettings = new Array(1, 1, 1, 1, 1);
+    if($.cookie('sound')) soundSettings = $.cookie('sound').split(':');
+    if(0 == soundSettings[0]) {
+        chatSound.mute();
+        document.getElementById("chataudiooff").checked = true;
+    }
+    if(0 == soundSettings[1]) {
+        systemSound.mute();
+        document.getElementById("systemaudiooff").checked = true;
+    }
+    if(0 == soundSettings[2]) {
+        botSound.mute();
+        document.getElementById("botaudiooff").checked = true;
+    }
+    if(0 == soundSettings[3]) {
+        pingSound.mute();
+        document.getElementById("pingaudiooff").checked = true;
+    }
+    if(0 == soundSettings[4]) {
+        emergencySound.mute();
+        document.getElementById("emergencyaudiooff").checked = true;
+    }
+    setVolumeIcon();
 }
 
+/**
+ * Important, since iPad can only play one stream at a time
+ * trying to initialize all sounds at once will fail.
+ */
+function sndInit() {
+    chatSound.player.play();
+    chatSound.player.pause();
+    
+    $('#mobileEnableAlerts').hide();
+}
 
-$(window).ready(function() {  
+$(window).ready(function() {
+    if(!navigator.userAgent.match(/iPhone/i) &&
+       !navigator.userAgent.match(/iPod/i) &&
+       !navigator.userAgent.match(/iPad/i) &&
+       !navigator.userAgent.match(/Android/i)) {
+       
+       $('#mobileEnableAlerts').remove();
+    } else {
+       $('#mobileEnableAlerts').show();
+    }
+    
     IEFix();
     $('.scroll-pane-throbber').hide();
     $('#guideline').show();
@@ -2722,7 +2727,6 @@ $(window).ready(function() {
             }
         }
     });
-    
 });
 
 $(window).load(function(){
