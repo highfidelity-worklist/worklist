@@ -121,7 +121,9 @@ if ($fund_id == 3) {
             LEFT JOIN ".USERS." u on u.id = b.user_id
         WHERE
             b.paid = 0
-            AND u.paypal_verified = '1' and b.bonus = 1
+            AND b.withdrawn = 0
+            AND u.paypal_verified = '1' 
+            AND b.bonus = 1
             AND u.has_W2 = 0
        GROUP BY b.user_id
         ";
