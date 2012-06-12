@@ -948,21 +948,19 @@ function checkLogin() {
         $link = DELIMITER . '<a href="' . WORKLIST_URL . 'workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>' . DELIMITER;
         $url = preg_replace($regexp,  $link, $url);
 
+        // Replace '#<projectName>#' with a link to the worklist project with the same name
+        $regexp = "/\#\#([A-Za-z0-9_]+)/";
+        $link = DELIMITER . '<a href="' . WORKLIST_URL . '$1">$1</a>' . DELIMITER;
+        $url = preg_replace($regexp,  $link, $url);
+
+
         // Replace '#<nick>/<url>' with a link to the author sandbox
         $regexp="/\#([A-Za-z]+)\/(\S*)/i";
-        if (strpos(SERVER_BASE, '~') === false) {
-            $url = preg_replace(
-                $regexp, DELIMITER .
-                '<a href="' . SERVER_BASE . '~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
-                $url
-            );
-        } else { // link on a sand box :
-            $url = preg_replace(
-                $regexp, DELIMITER . 
-                '<a href="' . SERVER_BASE . '/../~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
-                $url
-            );
-        }
+        $url = preg_replace(
+            $regexp, DELIMITER . 
+            '<a href="https://' . SANDBOX_SERVER . '/~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
+            $url
+        );
 
         // Replace '#/<url>' with a link to the author sandbox
         $regexp="/\#\/(\S*)/i";
@@ -980,13 +978,13 @@ function checkLogin() {
             );
         }
 
-        $regexp="/\b(?<=mailto:)([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
+        $regexp="/\b(?<=mailto:)([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
         if(preg_match($regexp,$url)){
-            $regexp="/\b(mailto:)(?=([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))/i";
+            $regexp="/\b(mailto:)(?=([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))/i";
             $url=preg_replace($regexp,"",$url);
         }
 
-        $regexp = "/\b([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
+        $regexp = "/\b([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
         $url = preg_replace($regexp, DELIMITER . '<a href="mailto:$0">$0</a>' . DELIMITER, $url);
 
         // find anything that looks like a link and add target=_blank so it will open in a new window

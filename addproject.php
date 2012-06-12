@@ -47,7 +47,7 @@ if ($userId) {
     $project->setLogo($logo);
     $project->save();
     
-    $journal_message = $nick . ' added project <a href="' . SERVER_URL . $name . '">' . $name . '</a>';
+    $journal_message = $nick . ' added project ##' . $name;
     if (!empty($journal_message)) {
         //sending journal notification
         sendJournalNotification($journal_message);
