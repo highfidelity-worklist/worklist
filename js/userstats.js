@@ -91,8 +91,34 @@ var stats = {
                         } else {
                             $('#jobs-popup th.status').hide();
                         }
+                        if (job_type == 'following') {
+                            $('#jobs-popup th.unfollow').show();
+                        } else {
+                            $('#jobs-popup th.unfollow').hide();
+                        }
                         stats.fillJobs(json, partial(stats.showJobs, job_type), job_type);
-                        $('#jobs-popup').dialog('open').centerDialog();
+                        $('#jobs-popup').dialog('open');
+                        
+                        if (job_type == 'following') {
+                            $('a[id^=unfollow-]').click(function() {
+                                var workitem_id = $(this).attr('id').split('-')[1];
+                                $.ajax({
+                                    type: 'post',
+                                    url: 'jsonserver.php',
+                                    data: {
+                                        workitem: workitem_id,
+                                        userid: user_id,
+                                        action: 'ToggleFollowing'
+                                    },
+                                    dataType: 'json',
+                                    success: function(data) {
+                                        if (data.success) {
+                                            $('#unfollow-' + workitem_id).parents('tr').remove();
+                                        }
+                                    }
+                                });
+                            });
+                        }
                     });
     },
 
@@ -131,6 +157,10 @@ var stats = {
                         
             if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                 toAppend += '<td>' + jsonjob.status + '</td>';
+            }
+            
+            if (job_type == 'following') {
+                toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';
             }
             
             toAppend += '</tr>';
@@ -183,7 +213,7 @@ var stats = {
     appendStatsPagination: function(page, cPages, table){
         stats.stats_page = page;
         var paginationRow = $('<tr bgcolor="#FFFFFF">');
-        paginationTD = $('<td colspan="6" style="text-align:center;">');
+        paginationTD = $('<td colspan="7" style="text-align:center;">');
 
         if (page > 1) {
 

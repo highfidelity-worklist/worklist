@@ -8,6 +8,7 @@
                         <th>Runner</th>
                         <th>Date</th>
                         <th class="status">Status</th>
+                        <th class="unfollow">Un-Follow</th>
                     </tr>
                 </thead>
                 <tbody><tr><td></td></tr>
