@@ -195,7 +195,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
         $bug_journal_message = " (bug of job #".$bug_job_id.")";
         notifyOriginalUsersBug($bug_job_id, $workitem);
     }
-    
+
     if(empty($_POST['itemid']))  {
         $bid_fee_itemid = $workitem->getId();
         $journal_message .= " item #$bid_fee_itemid: $summary. ";
@@ -210,7 +210,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
         $bid_fee_itemid = $itemid;
         $journal_message .=  "item #$itemid$bug_journal_message: $summary. ";
     }
-        
+
     if (!empty($_POST['invite'])) {
         $people = explode(',', $_POST['invite']);
         invitePeople($people, $workitem);
@@ -274,7 +274,7 @@ require_once("head.html");
             return false;
         }
     }
-    
+
     // This variable needs to be in sync with the PHP filter name
     var filterName = '.worklist';
     var affectedHeader = false;
@@ -385,8 +385,8 @@ require_once("head.html");
         row +=
             '<td width="9%" class="clickable not-workitem" onclick="location.href=\'' + project_link + '\'">' +
                 '<span class="taskProject" id="' + json[16] + '">' +
-                    '<a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a>' + 
-                '</span>' + 
+                    '<a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a>' +
+                '</span>' +
             '</td>';
 <?php endif; ?>
         //If job is a bug, add reference to original job
@@ -395,7 +395,7 @@ require_once("head.html");
         } else {
             extraStringBug = '';
         }
-  
+
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
         row += '<td width="41%"><span id="workitem-' + json[0] + '" class="taskSummary">' +
@@ -418,7 +418,7 @@ require_once("head.html");
                 who +=  ', ' + json[9];
                 tooltip += '<br />Mechanic: '+json[10];
             }
-            
+
             row += '<td width="15%" class="toolparent">' + pre + who + post + '<span class="tooltip">' + tooltip  + '</span>' + '</td>';
         } else {
             row += '<td width="15%">' + pre + json[3] + post + '</td>';
@@ -430,7 +430,7 @@ require_once("head.html");
             return '<span class="'+type+'" title="' + id + '">'+nickname+'</span>';
         };
     if(json[3] == json[4]){
-    
+
         // creator nickname can't be null, so not checking here
         who += createTagWho(json[9],json[3],"creator");
     }else{
@@ -518,7 +518,7 @@ require_once("head.html");
         else if (window.getSelection)
             window.getSelection().removeAllRanges();
     }
-    
+
     function SetWorkItem(item) {
         var match;
         if (item.attr('id')) {
@@ -544,14 +544,14 @@ require_once("head.html");
     function resizeIframeDlg() {
         var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
                       $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
-    
+
         var dlg_h = $('#user-info').children()
                                    .contents()
                                    .find('html body')
                                    .height();
-    
+
         var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
-    
+
         $('#user-info').animate({height: height});
     }
 
@@ -567,7 +567,7 @@ require_once("head.html");
             clearTimeout(timeoutId);
         }
         if (inProject.length > 0) {
-            $('.table-worklist tbody').html('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Loading ...</td></tr>');        
+            $('.table-worklist tbody').html('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Loading ...</td></tr>');
         } else {
             loaderImg.show("loadRunning", "Loading, please wait ...");
         }
@@ -594,7 +594,7 @@ require_once("head.html");
                     window.location.href = buildHref( json[1] );
                     return false;
                 }
-                
+
                 loaderImg.hide("loadRunning");
                 if (affectedHeader) {
                     affectedHeader.append(dirDiv);
@@ -625,7 +625,7 @@ require_once("head.html");
                     AppendRow(json[i], odd);
                     odd = !odd;
                 }
-                
+
                 AppendPagination(page, cPages, 'worklist');
 
                 if (update && lastFirst > 1) {
@@ -635,7 +635,7 @@ require_once("head.html");
                 }
                 lastId = json[1][0];
                 makeWorkitemTooltip(".taskSummary");
-                
+
                 /*commented for remove tooltip */
                 //MapToolTips();
                 $('tr.row-worklist-live').each(function() {
@@ -647,7 +647,7 @@ require_once("head.html");
                             window.location.href = buildHref(SetWorkItem(selfRow));
                         }
                     }).addClass("clickable");
-                
+
                     $(".creator, .runner, .mechanic", $(".who", selfRow)).toggleClass("linkTaskWho").click(
                         function() {
                             showUserInfo($(this).attr("title"));
@@ -738,7 +738,7 @@ require_once("head.html");
             $('#edit_cr_error_ap').delay(2000).fadeOut();
         }
     };
- 
+
     $(document).ready(function() {
         // Fix the layout for the User selection box
         var box_h = $('select[name=user]').height() +1;
@@ -817,7 +817,7 @@ require_once("head.html");
                 }
             });
         }
-        
+
         $.get('getskills.php', function(data) {
             var skills = eval(data);
             $("#skills").autocomplete(skills, {
@@ -848,7 +848,7 @@ require_once("head.html");
             affectedHeader = $(this);
             orderBy($(this).text().toLowerCase());
         });
-        
+
         // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
         $('#popup-addrole').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-role-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
@@ -863,11 +863,11 @@ require_once("head.html");
            width: 840,
            height: 480
         });
-        
+
         $('#popup-testflight').dialog({ autoOpen: false, maxWidth: 600, width: 410, show: 'fade', hide: 'fade' });
 
         GetWorklist(<?php echo $page?>, false, true);
-        
+
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         reattachAutoUpdate();
 
@@ -876,7 +876,7 @@ require_once("head.html");
             $("#searchForm").submit();
             return false;
         });
-        
+
         $('#query').keypress(function(event) {
             if (event.keyCode == '13') {
                 event.preventDefault();
@@ -941,7 +941,7 @@ require_once("head.html");
                 $('#popup-role-info').dialog('open');
             }
         });
-        
+
         $('#editRole').click(function(){
             // row has role data attached
             $('#popup-role-info').dialog('close');
@@ -952,7 +952,7 @@ require_once("head.html");
                 $('#popup-edit-role').dialog('open');
         });
 
-        
+
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         /* function commented for remove tooltip */
         //setTimeout(MapToolTips, 800);
@@ -995,18 +995,18 @@ require_once("head.html");
             }
         }
     });
-    
+
     function showAddRoleForm() {
         $('#popup-addrole').dialog('open');
         return false;
     }
-    
+
     function showTestFlightForm(project_id) {
         $('#popup-testflight').dialog('open');
         $('#popup-testflight .error').hide();
         $('#popup-testflight form').hide();
         $('#popup-testflight form #ipa-select input').remove();
-        
+
         $.getJSON('testflight.php?project_id=' + project_id, function(data) {
             $('#popup-testflight .loading').hide()
             if (data['error']) {
@@ -1021,7 +1021,7 @@ require_once("head.html");
                 $('#popup-testflight form #ipa-select input:first').prop('checked', true);
                 $('#popup-testflight form').show();
                 $('#popup-testflight .right-note').show();
-                
+
                 $('#popup-testflight form #submit_testflight').click(function() {
                     var params = 'project_id=' + project_id + '&message=' + $('#popup-testflight form #message').val();
                     params += "&ipa_file=" + $('#popup-testflight form #ipa-select input').val();
@@ -1036,12 +1036,12 @@ require_once("head.html");
                     });
                     $('#popup-testflight').dialog('close');
                 });
-                
+
             }
         });
         return false;
     }
-    
+
     function reattachAutoUpdate() {
         $("select[name=user], select[name=status], select[name=project]").change(function(){
             if ($("#search-filter").val() == 'UNPAID') {
@@ -1115,7 +1115,7 @@ var documentsArray = new Array();
         });
     };
     // get the project files
-    
+
     $.ajax({
         type: 'post',
         url: 'jsonserver.php',
@@ -1139,7 +1139,7 @@ var documentsArray = new Array();
                 $('#uploadPanel').append(files);
                 // sort the file upload accordion
                 $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
-                $('#accordion').bind( "accordionchange", function(event, ui) { 
+                $('#accordion').bind( "accordionchange", function(event, ui) {
                     if (ui.options.active == 0) {
                         workerUpdate();
                     }
@@ -1148,7 +1148,7 @@ var documentsArray = new Array();
             }
         }
     });
-    
+
     // get the project stats
     $.ajax({
         type: 'post',
@@ -1170,13 +1170,15 @@ var documentsArray = new Array();
 })(jQuery);
 </script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
-<title><?php
-echo
+<?php
+$meta_title =
   is_object($inProject)
   ?  'Project: ' . $inProject->getName()
   :  'Worklist | Build software fast, make money, great community.'
 ;
-?></title>
+?>
+<title><?php echo $meta_title; ?></title>
+<meta property="og:title" content="<?php echo (is_object($inProject)) ? 'Project: ' . $inProject->getName() : 'Worklist - A community of independent software developers'; ?>" />
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
@@ -1271,7 +1273,7 @@ if (is_object($inProject)) {
             </div>
             <div id="edit_cr_error"></div>
             <br/>
-            
+
             <div id="buttonHolder">
                 <input class="left-button" type="submit" id="cancel" name="cancel" value="Cancel">
                 <input class="right-button" type="submit" id="save_project" name="save_project" value="Save">
@@ -1445,7 +1447,7 @@ if (is_object($inProject)) {
 
 <div id="uploadPanel">
     <script type="text/html" id="projectWorkersBody">
-                <# if (developers.length > 0) { 
+                <# if (developers.length > 0) {
                     for(var i=0; i < developers.length; i++) {
                     var developer = developers[i];
                     #>
@@ -1455,7 +1457,7 @@ if (is_object($inProject)) {
                         <td><#= developer.lastActivity #></td>
                         <td><#= developer.totalEarnings #></td>
                     </tr>
-                    <# } 
+                    <# }
                 } #>
     </script>
     <script type="text/html" id="projectuploadedFiles">
@@ -1474,7 +1476,7 @@ if (is_object($inProject)) {
                         <th>Total Earned</th>
                     </tr>
                 </thead>
-                <tbody class="developerContent">              
+                <tbody class="developerContent">
                 </tbody>
             </table>
         </div>

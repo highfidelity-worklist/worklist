@@ -2,7 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="copyright" content="Copyright (c) 2011 Coffee & Power, Inc.  All Rights Reserved. http://www.coffeeandpower.com" />
+    <meta name="copyright" content="Copyright (c) 2012 CoffeeandPower Inc.  All Rights Reserved. http://www.worklist.net" />
+    <meta name="description" content="Worklist is a software development forum to rapidly prototype and build software and websites using a global network of developers, designers and testers." />
+    <meta property="og:description" content="Worklist is a software development forum to rapidly prototype and build software and websites using a global network of developers, designers and testers." />
+    <meta property="og:image" content="https://dev.worklist.net/~randomecho/worklist_17526/images/worklist_logo_large.png" />
+    <link rel="image_src" content="https://dev.worklist.net/~randomecho/worklist_17526/images/worklist_logo_large.png" />
     <link href="css/common.css" rel="stylesheet" type="text/css" />
     <link href="css/CMRstyles.css" rel="stylesheet" type="text/css" />
     <!--[if IE 6]>
@@ -51,7 +55,7 @@
                 var author = "Guest";
                 if($('#user').length > 0) {
                     author = $('#user').html();
-                } 
+                }
                 var t = 'Weekly fees for '+author;
                 $('#wFees').dialog({
                     autoOpen: false,
@@ -102,8 +106,8 @@
             delay: 300,
             showURL: false,
             fade: 150,
-            bodyHandler: function() { 
-                return $($(this).attr("href")).html(); 
+            bodyHandler: function() {
+                return $($(this).attr("href")).html();
             },
             positionLeft: false
         });

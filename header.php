@@ -16,7 +16,7 @@ $userId = getSessionUserId();
 $lovemachineLink = SENDLOVE_URL . '/';
 $linkTarget = '';
 ?>
-    <div id="outside"> 
+    <div id="outside">
 <!-- Welcome, login/out -->
         <div id="welcome">
 <?php
@@ -29,7 +29,7 @@ $linkTarget = '';
         } else {
             $budget = '<span class="budget"></span>';
         }
-        if (empty($_SESSION['nickname'])) { 
+        if (empty($_SESSION['nickname'])) {
             $name = getSubNickname($_SESSION['username']);
         } else {
             $name = getSubNickname($_SESSION['nickname']);
