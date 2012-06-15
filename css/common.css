@@ -32,31 +32,29 @@
 /* Table Styles */
 
 table {
-    border-width: 1px;
-    border-spacing: 0px;
-    border-style: solid;
-    border-color: #aaa;
     border-collapse: collapse;
     background-color: white;
     width: 100%;
     font-family: helvetica, arial, sans-serif;
 }
 
+.table-worklist {
+    font-size: 14px;
+}
+
+.table-worklist tbody tr {
+    height: 28px;
+}
+
 table th {
-    border-width: 1px;
     padding: 0;
-    border-style: solid;
-    border-color: #aaa;
 }
 
 table td, table th {
-    border-width: 1px;
     padding: 5px;
-    border-style: solid;
-    border-color: #aaa;
 }
 
- table.sales-report td, table.sales-report th {
+table.sales-report td, table.sales-report th {
     border-width: 1px;
     padding: 2px;
     border-style: solid;
@@ -67,45 +65,12 @@ table tr:hover {
     background: #FFD;
 }
 
-table thead tr:hover {
-    background: url(../images/tbg.jpg) repeat-x bottom left;
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#E0E0E0),
-        color-stop(0.5, #FFFFFF),
-        to(#E0E0E0)
-    );
-    background-image: -moz-linear-gradient(
-        center bottom,
-        #E0E0E0,
-        #FFFFFF,
-        #E0E0E0
-    );
-}
-
 .worklist-pagination-row:hover, .feelist-total-row:hover, .bidlist-pagination-row:hover {
     background-color: white;
 }
 
 .table-hdng {
     height: 30px;
-    background: url(../images/tbg.jpg) repeat-x bottom left;
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#E0E0E0),
-        color-stop(0.5, #FFFFFF),
-        to(#E0E0E0)
-    );
-    background-image: -moz-linear-gradient(
-        center bottom,
-        #E0E0E0,
-        #FFFFFF,
-        #E0E0E0
-    );
 }
 
 .table-hdng td, .table-hdng th{

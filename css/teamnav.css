@@ -13,6 +13,10 @@ h1 {
 }
 */
 
+.table-userlist * {
+    text-align: left;
+}
+
 .active-users {
     float: right;
     margin-top: 20px;
@@ -27,14 +31,8 @@ h1 {
     float: right;
 }
 
-.jobs {
-    text-align:right;
-}
 .age {
-    text-align:left;
-}
-.money {
-    text-align:right;
+    text-align: left;
 }
 
 .ln-letters, .ln-pages {

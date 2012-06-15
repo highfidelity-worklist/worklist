@@ -4,6 +4,15 @@
     http://www.lovemachineinc.com
 */
 * :focus { outline: 0; }
+
+a:active {
+    color: #000 !important;
+}
+ 
+a:hover {
+    text-decoration: underline !important;
+}
+
 .popup-body,
 #confirmation{
     display: none;
@@ -31,11 +40,11 @@
 }
 
 .popup-body #bid_fee_desc {
-	width:270px;
+    width:270px;
 }
 
 .popup-body #bid_fee_amount {
-	width:70px;
+    width:70px;
 }
 
 #popup-edit textarea{
@@ -82,38 +91,37 @@
 }
 
 .linkTaskWho {
-	text-decoration: underline;
-	cursor: pointer;
+    text-decoration: none;
+    cursor: pointer;
 }
 .linkTaskWho:hover {
-	text-decoration: none;
-	cursor: pointer;
-	color: #98AAB2;
+    cursor: pointer;
+    color: #98AAB2;
 }
 
 .roweven {
-	background-color: #eeeeee;
-	background-image: none;
+    background-color: #eeeeee;
+    background-image: none;
 }
 .rowown {
     background: #FFCC99;
 }
 .rowbidon {
-	background: #99E566;
+    background: #99E566;
 }
 .rowbidexpired {
-	background: #FF8080;
+    background: #FF8080;
 }
 .rowrunner {
-	background: #B1E1F3;	
+    background: #B1E1F3;    
 }
 .rowmechanic {
-	background: #FFFF6C;
+    background: #FFFF6C;
 }
 .rowbidexpired a,
 .rowrunner a,
 .rowmechanic a {
-	color:#000;
+    color:#000;
 }
 .workitem-selected {
     background: #FFD;
@@ -192,8 +200,8 @@ color:#98AAB2;
     display: inline-block;
     margin: 0 0 0 10px;
     padding: 2px;
-	position: relative;
-	top: 10px;
+    position: relative;
+    top: 10px;
     width: 220px;
 }
 .input_box input {
@@ -203,9 +211,9 @@ color:#98AAB2;
     margin: 0;
     padding: 4px;
     width: 130px;
-	position: relative;
-	top: -10px;
-	background: none repeat scroll 0 0 transparent !important;
+    position: relative;
+    top: -10px;
+    background: none repeat scroll 0 0 transparent !important;
 }
 .input_box form {
     display: inline;
@@ -218,15 +226,15 @@ color:#98AAB2;
     border:medium none;
 }
 .searchIcon {
-	position: relative; 
-	top: -3px;
+    position: relative; 
+    top: -3px;
 }
 
 
 #search-head{
-	position: relative;
-	float: right;
-	width: 736px;
+    position: relative;
+    float: right;
+    width: 736px;
 }
 #sharethis_0    {
     position:absolute;
@@ -254,23 +262,23 @@ color:#98AAB2;
 }
 
 #pp-filter-rbox {
-	float:right;
-	text-align:right;
-	margin-top:20px;
-	margin-right:8px;
+    float:right;
+    text-align:right;
+    margin-top:20px;
+    margin-right:8px;
 }
 
 #pp-filter-lbox {
-	float:right;
-/*	text-align:right;*/
-	margin-right:8px;
+    float:right;
+/*    text-align:right;*/
+    margin-right:8px;
 }
 
 #job_id {
     width:69px;
 }
 #wFees {
-	display: none;
+    display: none;
 }
 .feesum {
   cursor: pointer;
@@ -280,68 +288,68 @@ color:#98AAB2;
 }
 
 #loader_img_title {
-	border: 2px #DCD998 solid;
-	background-color:#FFD;
-	color: gray;
-	font-size: 16px;
-	padding:10px;
-	margin:10px;
+    border: 2px #DCD998 solid;
+    background-color:#FFD;
+    color: gray;
+    font-size: 16px;
+    padding:10px;
+    margin:10px;
 }
 
 .second-line {
-	margin-top:10px;
-	margin-bottom:5px;
+    margin-top:10px;
+    margin-bottom:5px;
 }
 
 /* Budget info */
 #be-block {
-	font-size:14px;
-	position:absolute;
-	z-index:99;
-	top:5px;
+    font-size:14px;
+    position:absolute;
+    z-index:99;
+    top:5px;
 }
 
 #be-table {
-	border: none;
-	padding:2px;
+    border: none;
+    padding:2px;
 }
 
 .be-table_cell1 {
-	border: none;
-	padding:2px;
+    border: none;
+    padding:2px;
 }
 
 .be-table_cell2 {
-	border: none;
-	text-align: right;
-	padding:2px;
+    border: none;
+    text-align: right;
+    padding:2px;
 }
 
 #be-search {
-	float:right;
+    float:right;
 }
 
 #be-search-lbl {
-	float:left;
-	font-size:14px;
-	font-weight:bold;
-	font-style:italic;
-	margin-top:5px;
-	margin-right:8px;
+    float:left;
+    font-size:14px;
+    font-weight:bold;
+    font-style:italic;
+    margin-top:5px;
+    margin-right:8px;
 }
 
 #be-search-field {
-	float:left;
-	width:180px;
-	margin-bottom:5px;
+    float:left;
+    width:180px;
+    margin-bottom:5px;
 }
 
 #be-search-clean {
-	float:right;
-	cursor:pointer;
-	background:url('../images/cross.png');
-	width:24px;
-	height:24px;
+    float:right;
+    cursor:pointer;
+    background:url('../images/cross.png');
+    width:24px;
+    height:24px;
 }
 
 .clickable { cursor:pointer; }
@@ -399,7 +407,7 @@ td.textAlignReport {
 }
 
 .bid_action_button{
-	text-align: right;
+    text-align: right;
     margin-top: 6px;
 }
 
@@ -414,7 +422,7 @@ td.textAlignReport {
 }
 
 .floatRight {
-	float: right;
+    float: right;
 }
 
 .clear {
@@ -437,18 +445,25 @@ td.textAlignReport {
 
 .taskSummaryCell a,
 .taskProject a {
-    color: #333333;
+    text-decoration: none;
+}
+
+.taskProject a {
+    color: #999999;
+}
+
+.taskSummaryCell a {
+    color: #222222;
+}
+
+.job-status {
+    color: #999999;
+    text-transform: capitalize;
 }
 
 .taskSummary {
     cursor: pointer;
-    text-decoration: underline;
-}
-
-.taskSummary:hover,
-.taskProject a:hover {
     text-decoration: none;
-    color: #98AAB2;
 }
 
 .projectLeft {
@@ -694,8 +709,8 @@ input.button-disabled ,
 }
 
 .okButton {
-	float: right;
-	margin-top: 20px;
+    float: right;
+    margin-top: 20px;
 }
 
 #inlineMessage {

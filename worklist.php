@@ -406,7 +406,7 @@ require_once("head.html");
         if ((json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID') &&json[10] > 0) {
             post = ' (' + json[10] + ')';
         }
-        row += '<td width="20%">' + pre + json[2] + post + '</td>';
+        row += '<td width="20%" class="job-status">' + pre + json[2] + post + '</td>';
 <?php endif; ?>
         pre = '';
         post = '';
