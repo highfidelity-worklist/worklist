@@ -32,6 +32,10 @@
 /* Table Styles */
 
 table {
+    border-width: 1px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-color: #aaa;
     border-collapse: collapse;
     background-color: white;
     width: 100%;
@@ -40,18 +44,45 @@ table {
 
 .table-worklist {
     font-size: 14px;
+    border: none;
 }
 
 .table-worklist tbody tr {
     height: 28px;
 }
-
-table th {
-    padding: 0;
+ 
+table td, table th {
+    border-width: 1px;
+    padding: 5px;
+    border-style: solid;
+    border-color: #aaa;
 }
 
-table td, table th {
-    padding: 5px;
+table thead tr:hover {
+    background: url('../images/tbg.jpg') repeat-x bottom left;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        from(#E0E0E0),
+        color-stop(0.5, #FFFFFF),
+        to(#E0E0E0)
+    );
+    background-image: -moz-linear-gradient(
+        center bottom,
+        #E0E0E0,
+        #FFFFFF,
+        #E0E0E0
+    );
+}
+
+.table-worklist tr:hover {
+    background: none;
+    background-image: none;
+}
+
+.table-worklist th, .table-worklist td {
+    border: none;
 }
 
 table.sales-report td, table.sales-report th {
@@ -71,6 +102,26 @@ table tr:hover {
 
 .table-hdng {
     height: 30px;
+    background: url('../images/tbg.jpg') repeat-x bottom left;
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        from(#E0E0E0),
+        color-stop(0.5, #FFFFFF),
+        to(#E0E0E0)
+    );
+    background-image: -moz-linear-gradient(
+        center bottom,
+        #E0E0E0,
+        #FFFFFF,
+        #E0E0E0
+    );
+}
+
+.table-worklist .table-hdng {
+    background: none;
+    background-image: none;
 }
 
 .table-hdng td, .table-hdng th{
@@ -83,7 +134,7 @@ table tr:hover {
     background-color: #fff;
 }
 .roweven{
-    background: url(../images/evenrow2.jpg) #fff repeat-x top left;
+    background: url('../images/evenrow2.jpg') #fff repeat-x top left;
 }
 
 /* Dialogs */
