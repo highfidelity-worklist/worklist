@@ -71,7 +71,7 @@ if ( empty($signup)) { ?>
                             <p><label>SMS Address</label><br />
                             <input type="text" id="smsaddr" name="smsaddr" size="35" value="<?php echo $smsaddr; ?>" /><br/>
                             <br/>
-                            <em id="sms_helper">Please enter the email address for sending text messages.</em>
+                            <em id="sms_helper">Please enter your mobile phone number for sending text messages.</em>
                             </p>
                         </div>
                     </div>
@@ -79,8 +79,6 @@ if ( empty($signup)) { ?>
                         // TODO: Move this inline javascript to header, or external file
                         var city = new LiveValidation('city', {validMessage: "Valid city."});
                         city.add(Validate.Presence);
-						var smsaddr = new LiveValidation('smsaddr', {validMessage: "Valid email address."});
-						smsaddr.add(Validate.Email);
                     </script>
 
                 </div>

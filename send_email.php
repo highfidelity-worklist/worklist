@@ -161,14 +161,23 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
         }
     }
 
-    return send_email($smsaddr,
-        html_entity_decode($smssubject, ENT_QUOTES),
-        '',
-        html_entity_decode($smsbody, ENT_QUOTES),
-        array(
-            "From" => SMS_SENDER,
-            "X-tag" => 'sms',
-    ));
+    if (defined("TWILIO_SID") && defined("TWILIO_TOKEN")) {
+        require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
+        $Twilio = new WLTwilio();
+        return $Twilio->send_sms($smsaddr, 
+            html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES)
+        );
+    } else {
+        return send_email($smsaddr,
+            html_entity_decode($smssubject, ENT_QUOTES),
+            '',
+            html_entity_decode($smsbody, ENT_QUOTES),
+            array(
+                "From" => SMS_SENDER,
+                "X-tag" => 'sms',
+            )
+        );
+    }
 }
 
 /*  sendTemplateEmail - send email using email template
