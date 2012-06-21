@@ -965,7 +965,7 @@ input.button-disabled ,
     display: inline-block;
     background-color: #ffffff;
     position: relative;
-    top: -6px;
+    top: -4px;
     left: -3px;
 }
 
@@ -1039,7 +1039,7 @@ input.button-disabled ,
     right: 0;
 }
 
-#welcomeInside .following{
+#welcomeInside .following {
     display: inline-block;
     vertical-align: top;
     padding-top: 7px;
@@ -1140,4 +1140,3 @@ input.button-disabled ,
 .filters .ui-combobox {
     margin: 0 2px;
 }
-
