@@ -142,11 +142,10 @@ $(document).ready(function() {
         }
     });
     if ($("#budgetPopup").length > 0) {
-        $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
         $("#budgetPopup").dialog({
-            title: "Budget",
+            title: "Earning & Budget",
             autoOpen: false,
-            height: 170,
+            height: 280,
             width: 370,
             position: ['center', 60],
             modal: true
@@ -409,6 +408,11 @@ function addCommas(nStr) {
 }
 
 </script>
+<style>
+#welcomeInside .teamBtn {
+    color: #ffffff;
+}
+</style>
 </head>
 
 <body>

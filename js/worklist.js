@@ -268,25 +268,13 @@ $(function() {
     $('#share-this').hide();
     $("#notes").DefaultValue(bidNotesHelper);
     $('#notes').css('color','#999999');
-    $('#notes').css('font-style','italic');    
+    $('#notes').css('font-style','italic');
     $("#query").DefaultValue("Search...");
-    $("#feesDialog").dialog({
-        title: "Earnings",
-        autoOpen: false,
-        height: 'auto',
-        width: '200px',
-        position: ['center',60],
-        modal: true
-    });
-    $("#welcome .earnings").click(function(){
-        $("#feesDialog").dialog("open");
-    });
     if ($("#budgetPopup").length > 0) {
-        $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
         $("#budgetPopup").dialog({
-            title: "Budget",
+            title: "Earning & Budget",
             autoOpen: false,
-            height: 170,
+            height: 280,
             width: 370,
             position: ['center',60],
             modal: true

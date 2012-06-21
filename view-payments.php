@@ -358,7 +358,6 @@ include("head.html"); ?>
     require_once('header.php');
     require_once('format.php');
     require_once('dialogs/popup-budget.inc');
-    require_once('dialogs/popup-earnings.inc');
 ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <div class="floatLeft">

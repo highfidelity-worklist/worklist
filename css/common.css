@@ -139,20 +139,17 @@ table tr:hover {
 
 /* Dialogs */
 
-#feesDialog,
 #budgetPopup {
     font-family: helvetica, arial, sans-serif;
     color: #333333;
     font-size: 12px;
 }
 
-#feesDialog table,
 #budgetPopup table {
     border: none;
     padding: 2px;
 }
 
-#feesDialog table td,
 #budgetPopup table td {
     border: none;
     padding: 2px;

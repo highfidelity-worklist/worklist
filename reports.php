@@ -126,6 +126,9 @@ td.redtext {
 td.greenText {
     color: #009900;
 }
+#welcomeInside .reportsBtn {
+    color: #ffffff;
+}
 </style>
 <script type="text/javascript">
 var filterName = ".reports";
@@ -823,7 +826,7 @@ $(function() {
 ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
-<div>
+<div style="margin-top: 15px">
     <div id="pp-reports-box" style="float:left;">
         <?php  if (!empty($_SESSION['is_payer'])) { ?>
             <input type="submit" value="Run MassPay" id="pp-masspay-button" /><br />

@@ -764,7 +764,6 @@ input.button-disabled ,
 /* Budget info */
 #be-block {
     font-size:14px;
-    position:absolute;
     z-index:99;
     top:5px;
 }

@@ -67,6 +67,11 @@ function StopStatus() {
     lastStatus = 20;
 }
 </script>
+<style>
+#welcomeInside .chatBtn {
+    color: #ffffff;
+}
+</style>
 </head>
 <body>
 <?php require_once('header.php'); ?>
@@ -137,24 +142,7 @@ function StopStatus() {
                 <div id="head">
                     <div id="h_left">
                         <div id="nav">
-<?php if (isset($_SESSION['username'])): ?>
-                            <a href="worklist.php" class="iToolTip menuWorklist" target="_blank">Worklist</a>
-                            | <a href="journal.php" class="iToolTip menuJournal">Chat</a>
-                            | <a href="team.php" target="_blank">Team</a>
-                            | <a href="reports.php" class="iToolTip menuReports" target="_blank">Reports</a>
-                            | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
-                            | <a href="help.php" target="_blank">Help</a>
-<?php else: ?>
-                            <a class="loginLink" href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
-                            | <a class="signupLink" href="signup.php" title="Signup For a New Account">SIGNUP</a>
-                            | <a href="journal.php" title="Login to our Chat">Chat</a>
-                            | <a href="team.php">Team</a>
-                            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
-                            | <a href="projects.php" target="_blank">Projects</a>
-                            | <a href="help.php" target="_blank">Help</a>
-<?php endif; ?>
                         </div>
-
                     </div>
                     <div id="h_right">
                         <img id="drawer-switch" src="images/gif.gif" height="24" width="82" alt="Dashboard"
@@ -294,7 +282,6 @@ function StopStatus() {
         <div class="clear"></div>
     </div><!-- /#outside -->
     <div id="worktip" class="hidden"></div>
-<?php require_once('dialogs/popup-earnings.inc'); ?>
 <?php require_once('dialogs/popup-budget.inc'); ?>
 <?php require_once('dialogs/popups-userstats.inc'); ?>
     <div id="user-info" title="User Info"></div>
@@ -424,22 +411,11 @@ function StopStatus() {
             $('#settingsButton').tooltip({fade: 250});
             $('input[name="attachment"]').tooltip({fade: 250});
 
-            $('#feesDialog').dialog({
-                title: "Earnings",
-                autoOpen: false,
-                width: 200
-            });
-
-            $('#welcome .earnings').click(function(){
-                $("#feesDialog").dialog("open").centerDialog();
-            });
-
             if ($("#budgetPopup").length > 0) {
-                $("#welcome .budget").html(' <a href="javascript:;" class="budget">Budget</a> ');
                 $("#budgetPopup").dialog({
-                    title: "Budget",
+                    title: "Earning & Budget",
                     autoOpen: false,
-                    height: 170,
+                    height: 280,
                     width: 370,
                     position: ['center',60],
                     modal: true

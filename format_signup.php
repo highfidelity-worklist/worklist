@@ -2,67 +2,15 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
+
+include_once('header.php');
+
 ?>
-
-<div id="outside">
-
-<!-- Welcome, login/out -->
-
-    <div id="welcome">
-        <?php if ( isset($_SESSION['username'])) {
-            $return_from_getfeesums = true;
-            include 'getfeesums.php';
-            $feeinfo = '<div style="display:none;" id="feesDialog"><table><tr><td><b>Your fees: </b></td></tr><tr><td>this week:</td><td><a href="#feesToolTip" class="feesum" id="fees-week">$'.$sum['week'].
-                        '</a></td></tr><tr><td>this month:</td><td><a href="#feesToolTip" class="feesum" id="fees-month">$'.$sum['month'].'</a> </td></tr></table></div>';
-            $earnings = ' | <a href="javascript:;" class="earnings">Earnings</a> ';
-            $budget = '<span class="budget"></span>';
-            if (empty($_SESSION['nickname'])){ 
-                $name = $_SESSION['username'];
-            } else {
-                $name = $_SESSION['nickname'];
-            }
-            echo "Welcome, <span id='user'> $name </span>  $earnings $budget | <a href='logout.php'>Logout</a>";
-            echo $feeinfo;  
-        } ?>
-        <div id="tagline">A community of independent software developers.</div>
-    </div>
     <div id="container">
         <div id="left"></div>
 
 <!-- MAIN BODY -->
         <div id="center">
-
-<!-- LOGO -->
-            <div id="stats-area">
-                <span id='stats-text'>
-                    <a href='./worklist.php?status=bidding' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
-                    bidding, 
-                    <a href='./worklist.php?status=underway' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
-                    underway
-                </span>
-            </div>
-
-<!-- Navigation placeholder -->
-        <div id="nav">
-            <?php if (isset($_SESSION['username'])) { ?>
-
-            <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a> |
-            <a href="journal.php" class="iToolTip menuJournal">Chat</a> |
-            <a href="<?php echo SENDLOVE_URL ?>" class="iToolTip menuLove" target="_blank">LoveMachine</a> |
-            <a href="team.php">Team</a> |
-            <a href="reports.php" class="iToolTip menuReports">Reports</a> |
-            <a href="settings.php" class="iToolTip menuSettings">Settings</a>
-            <?php } else {
-                echo '
-                <a href="login.php" title="Login to our Worklist">Login</a> | 
-                <a href="worklist.php" title="Worklist"> Worklist</a> | 
-                <a href="journal.php" title="Login to our Chat">Chat</a> |
-                <a href="team.php">Team</a> |
-                <a href="reports.php" class="iToolTip menuReports">Reports</a> |
-                <a href="help.php">Help</a> | <a href="projects.php">Projects</a>';  
-            } 
-            ?>
-        </div>
 
         <script type="text/javascript">
         // Code for stats

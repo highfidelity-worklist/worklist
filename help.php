@@ -31,10 +31,13 @@ include("opengraphmeta.php");
 </script>
 
 <title>Worklist | Help</title>
+<style>
+#welcomeInside .helpBtn {
+    color: #ffffff;
+}
+</style>
 
 </head>
-<br/>
-<br/>
 <body>
 <?php
     require_once('header.php');

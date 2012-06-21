@@ -253,6 +253,11 @@ include("opengraphmeta.php");
         return pagination;
     }
 </script>
+<style>
+#welcomeInside .projectsBtn {
+    color: #ffffff;
+}
+</style>
 </head>
 
 <body>

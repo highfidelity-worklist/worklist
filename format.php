@@ -35,37 +35,6 @@
         <div id="center">
 
 <!-- LOGO -->
-            <div id="stats-area">
-                <span id='stats-text'>
-                    <a href='./worklist.php?status=bidding' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
-                    bidding, 
-                    <a href='./worklist.php?status=underway' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
-                    underway
-                </span>
-            </div>
-
-<!-- Navigation placeholder -->
-        <div id="nav">
-        <?php if (isset($_SESSION['username'])) { ?>
-
-              <a href="worklist.php" class="iToolTip menuWorklist">Worklist</a>
-            | <a href="journal.php" class="iToolTip menuJournal">Chat</a>
-            | <a href="team.php">Team</a>
-            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
-            | <a href="projects.php" id="projects_link" name="projects_list" class="iToolTip listProjects" target="_blank">Projects</a>
-            
-            <script type="text/javascript" src="js/userstats.js"></script>
-            | <a href="help.php" target="_blank">Help</a>
-        <?php } else { ?>
-            <a href="login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>" title="Login to our Worklist">Login</a>
-            | <a class="signupLink" href="signup.php" title="Signup For a New Account"> SIGNUP</a>
-            | <a href="journal.php" title="Login to our Chat">Chat</a>
-            | <a href="team.php">Team</a>
-            | <a href="reports.php" class="iToolTip menuReports">Reports</a>
-            | <a href="projects.php" target="_blank">Projects</a>
-            | <a href="help.php" target="_blank">Help</a>
-        <?php } ?>
-        </div>
 
         <script type="text/javascript">
         //Code for Add Project

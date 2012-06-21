@@ -16,28 +16,47 @@ $userId = getSessionUserId();
 $lovemachineLink = SENDLOVE_URL . '/';
 $linkTarget = '';
 ?>
-    <div id="outside">
 <!-- Welcome, login/out -->
         <div id="welcome">
+            <div id="welcomeInside">
+                <div class="leftMenu">
+                    <a href="worklist.php"><div class="headerButton worlistBtn">Worklist</div></a>
+                    <div class="headerButtonSeparator">&nbsp;</div>
+                    <a href="journal.php"><div class="headerButton chatBtn">Chat</div></a>
+                    <div class="headerButtonSeparator">&nbsp;</div>
+                    <a href="team.php"><div class="headerButton teamBtn">Team</div></a>
+                    <div class="headerButtonSeparator">&nbsp;</div>
+                    <a href="reports.php"><div class="headerButton reportsBtn">Reports</div></a>
+                    <div class="headerButtonSeparator">&nbsp;</div>
+                    <a href="help.php"><div class="headerButton helpBtn">Help</div></a>
+                    <div class="headerButtonSeparator">&nbsp;</div>
+                    <a href="projects.php"><div class="headerButton projectsBtn">Projects</div></a>
+                </div>
+                <div class="rightMenu">
+<?php if (isset($_SESSION['username'])) { ?>
+                    <div class="loggedIn">
+                        <a href='javascript:;' class='following'><div>Following</div></a>
+                        <div class="headerButtonSeparator">&nbsp;</div>
+                        <a href='javascript:;' class='budget'><div class="headerButton earningsBtn"></div></a>
+                        <div class="headerButtonSeparator">&nbsp;</div>
+                        <a href='settings.php'><div class="headerButton settingsBtn"></div></a>
+                        <div class="headerButtonSeparator">&nbsp;</div>
+                        <a href='logout.php'><div class="headerButton logoutBtn"></div></a>
+                    </div>
+<?php } else { ?>
+                    <div class="loggedOut">
+                        <div class="headerButton loginBtn"><a href='login.php'>Login</a></div>
+                        <div class="headerButtonSeparator">&nbsp;</div>
+                        <div class="headerButton loginBtn bold"><a href='signup.php'>Sign Up</a>
+                    </div>
+                </div>
 <?php
-    if (isset($_SESSION['username'])) {
-        $return_from_getfeesums = true;
-        include 'getfeesums.php';
-        $earnings = ' | <a href="javascript:;" class="earnings">Earnings</a> ';
-        if (!empty($_SESSION['is_runner'])) {
-            $budget = ' | <a href="javascript:;" class="budget">Budget</a> ';
-        } else {
-            $budget = '<span class="budget"></span>';
-        }
-        if (empty($_SESSION['nickname'])) {
-            $name = getSubNickname($_SESSION['username']);
-        } else {
-            $name = getSubNickname($_SESSION['nickname']);
-        }
-        $following = " | <a href='javascript:;' class='following'>My Followed Jobs</a>";
-        echo "Welcome, <span id='user'> $name </span> | <a href='settings.php' " . $linkTarget . ">Settings</a> $earnings $following $budget | <a href='logout.php'>Logout</a>";
     }
+    $return_from_getfeesums = true;
+    include 'getfeesums.php';
 ?>
-            <div id="tagline">A community of independent software developers.</div>
-            <div class="clear"></div>
+                <div class="clear"></div>
+            </div>
         </div>
+        </div>
+        <div id="outside">

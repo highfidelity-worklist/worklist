@@ -200,7 +200,6 @@ color:#98AAB2;
     display: inline-block;
     margin: 0 0 0 10px;
     padding: 2px;
-    position: relative;
     top: 10px;
     width: 220px;
 }
@@ -230,11 +229,10 @@ color:#98AAB2;
     top: -3px;
 }
 
-
 #search-head{
     position: relative;
     float: right;
-    width: 736px;
+    width: 100%;
 }
 #sharethis_0    {
     position:absolute;
@@ -304,7 +302,6 @@ color:#98AAB2;
 /* Budget info */
 #be-block {
     font-size:14px;
-    position:absolute;
     z-index:99;
     top:5px;
 }
@@ -312,6 +309,10 @@ color:#98AAB2;
 #be-table {
     border: none;
     padding:2px;
+}
+
+#be-block .margin25 {
+    margin-top: 25px;
 }
 
 .be-table_cell1 {
@@ -766,6 +767,7 @@ input.button-disabled ,
 }
 
 /* Home page styles */
+
 #outside.home {
     margin-top: 10px;
 }
@@ -920,5 +922,222 @@ input.button-disabled ,
 
 #internal {
     margin-left: 0px;
+}
+
+/* Menu */
+
+#search-filter-wrap {
+    float: left;
+    padding-bottom: 10px;
+    top: 0;
+}
+
+#search-filter-wrap .input_box {
+    background-color: #e4e4e4;
+    background-image: none;
+    width: 227px;
+    margin: 0;
+}
+
+#search-filter-wrap .searchDiv {
+    display: inline-block;
+    border: 1px solid #999999;
+    height: 25px;
+    width: 158px;
+    background-color: #ffffff;
+    margin: 3px;
+    padding-left: 5px;
+}
+
+#search-filter-wrap #query {
+    background-color: #ffffff !important;
+    position: relative;
+    top: 0;
+    padding: 0;
+    margin: 0;
+    height: 24px;
+}
+
+#search-filter-wrap .search {
+    background: no-repeat url('../images/primaryIcons-WL.png') 3px -326px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    background-color: #ffffff;
+    position: relative;
+    top: -6px;
+    left: -3px;
+}
+
+
+#search-filter-wrap .crossSearch {
+    background: no-repeat url('../images/primaryIcons-WL.png') 3px -385px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    margin: -5px 0;
+}
+
+#search-filter-wrap .comment {
+    background: no-repeat url('../images/primaryIcons-WL.png') 0 -360px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    margin: -5px 0;
+}
+
+#search-filter-wrap .comment_no {
+    background: no-repeat url('../images/primaryIcons-WL.png') 0 -416px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    margin: -5px 0;
+}
+
+#search-filter-wrap-reports {
+    float: right;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+#search-filter-section td {
+    white-space: nowrap;
+}
+/* resets the style for the <p> tag in the status part */
+#welcome {
+    margin: auto;
+    width: 100% ;
+    heigth: 50px;
+    text-align:left;
+    font-weight: bold;
+    color: #98AAB2 ;
+    font-size: 12px;
+    z-index: 50;
+    background-color: #333333;
+    padding: 0;
+    position: relative;
+    -moz-box-shadow: 0px 0px 20px 0px #000000;
+    -webkit-box-shadow: 0px 0px 20px 0px #000000;
+    box-shadow:  0px 0px 20px 0px #000000;
+}
+
+#welcomeInside {
+    width: 862px;
+    height: 46px;
+    margin: auto;
+    font-size: 12px;
+}
+
+#welcomeInside .leftMenu {
+    margin-top: 10px;
+    float: left;
+}
+
+#welcomeInside .rightMenu {
+    margin-top: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#welcomeInside .following{
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 7px;
+}
+
+
+#welcomeInside .headerButton {
+    display: inline-block;
+    background-image: url('../images/primaryIcons-WL.png');
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    height: 30px;
+    font-size: 12px;
+    line-height: 25px;
+}
+
+#welcomeInside .headerButtonSeparator {
+    display: inline-block;
+    width: 21px;
+    background-image: url('../images/primaryIcons-WL.png');
+    background-position: 11px -298px;
+    background-repeat: no-repeat;
+    height: 30px;
+    position: relative;
+    top: -18px;
+}
+
+#welcomeInside .loggedIn .headerButtonSeparator {
+    top: -30px;
+    width: 11px;
+    background-position: 6px -298px;
+}
+
+#welcomeInside .loggedOut {
+    margin-right: 10px;
+}
+
+#welcomeInside a:hover .headerButton,
+#welcomeInside a.following:hover {
+    color: #ffffff;
+    text-decoration: none !important;
+}
+
+#welcomeInside a:active .headerButton,
+#welcomeInside a.following:active {
+    color: #ffffff;
+    text-decoration: none !important;
+}
+
+
+#welcomeInside .worlistBtn {
+    background-position: 0 -59px;
+}
+
+#welcomeInside .chatBtn {
+    background-position: 0 -89px;
+    padding-left: 38px;
+}
+
+#welcomeInside .teamBtn {
+    background-position: 0 -119px;
+}
+
+#welcomeInside .reportsBtn {
+    background-position: 0 -149px;
+    padding-left: 25px;
+    margin-left: 4px;
+}
+
+#welcomeInside .projectsBtn ,
+#welcomeInside .loginBtn {
+    background-image: none;
+    padding-left: 5px;
+}
+
+#welcomeInside .helpBtn {
+    background-position: 0 -179px;
+    padding-left: 30px;
+}
+
+#welcomeInside .earningsBtn {
+    background-position: 8px -209px;
+}
+
+#welcomeInside .settingsBtn {
+    background-position: 8px -239px;
+}
+
+#welcomeInside .logoutBtn {
+    background-position: 8px -268px;
+}
+
+.filters {
+    display: inline-block;
+}
+
+.filters .ui-combobox {
+    margin: 0 2px;
 }
 

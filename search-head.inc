@@ -1,18 +1,29 @@
-<?php if (isset($_SESSION['userid'])) { ?>
-<div id="buttons" style="padding-top:10px;">
-<p><input type="submit" id="addJob" name="addJob" value="Add Job" class="iTooltip addButton" /></p>
-</div>
-<?php } ?>
 
-<div id="search-head" <?php echo isset($_SESSION['userid']) ? 'style="height:50px;"' : 'style="height:50px;"'; ?>>
-  <div style="width:340px;">
-<?php if (isset($_SESSION['userid'])) { ?>
-    <?php } ?>
-        <div style="clear:both"></div>
-  </div>
-<div id="search-filter-wrap"<?php echo (isset($_SESSION['userid'])&& $is_runner) ? 'style="right:-6px"' : 'style="right:-6px"'; ?>>
+<div id="search-head" style="height:50px;">
+<div id="search-filter-wrap" style="right:-6px">
     <div >
         <form method="get" action="" id="searchForm" >
+                <div class="input_box">
+                  <div class="searchDiv">
+                    <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
+                    <div id="search" class="search"> &nbsp;</div>
+                  </div>
+                <?php 
+                    if ($filter->getInComment() == 1) {
+                ?>
+                    <div id="search_comment" class="inComment comment" title="Include Comments in search"></div>
+                <?php } else { ?>
+                    <div id="search_comment" title="Do not include comments in search" class="comment_no"></div>
+                <?php } ?>
+                <div class="crossSearch" id="search_reset" title="Clear Search Parameters"></div>
+                </div>
+
+<?php if (isset($_SESSION['userid'])) { ?>
+    <div id="buttons">
+        <p><input type="submit" id="addJob" name="addJob" value="Add Job" class="iTooltip addButton" /></p>
+    </div>
+<?php } ?>
+    <div class="filters">
 <?php 
                 echo $filter->getProjectSelectbox('All Projects', 1) . " ";
                 echo $filter->getUserSelectbox(1, 'All Users') . " ";
@@ -128,19 +139,7 @@
                 $box .= '</select>';
                 echo $box;
             ?>
-            
-                <div class="input_box">
-                    <input type="text" id="query" value="<?php echo (($filter->getQuery()) ? $filter->getQuery() : ''); ?>" name="query" alt="Search" size="20" />
-                    <a id="search" href="" class="searchIcon"><img height="23" width="24" border="0" alt="zoom" src="images/spacer.gif"></a>
-                <?php 
-                    if ($filter->getInComment() == 1) {
-                ?>
-                    <a id="search_comment" href="" class="searchIcon inComment" title="Include Comments in search"><img src="images/comment.jpg"/></a>
-                <?php } else { ?>
-                    <a id="search_comment" href="" class="searchIcon" title="Do not include comments in search"><img src="images/comment_no.jpg"/></a>
-                <?php } ?>
-                <a id="search_reset" href="" class="searchIcon" title="Clear Search Parameters"><img src="images/cross.png"/></a>
-                </div>
+            </div>
         </form>
     </div>
     <?php if(isset($_SESSION['userid'])){ 

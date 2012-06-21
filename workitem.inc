@@ -49,6 +49,7 @@
 
 /*********************************** HTML layout begins here  *************************************/
 include("head.html"); ?>
+<link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
 <link type="text/css" href="css/review.css" rel="stylesheet" />
 <link type="text/css" href="css/favorites.css" rel="stylesheet" />
@@ -1358,6 +1359,11 @@ $(document).ready(function(){
     }
 </script>
 <title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
+<style>
+#welcomeInside .worlistBtn {
+    color: #ffffff;
+}
+</style>
 </head>
 <body>
 <?php

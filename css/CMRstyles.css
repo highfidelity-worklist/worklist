@@ -31,39 +31,14 @@ body {
 #outside { text-align:left;
     position: relative;
     width:950px;
-    margin:35px auto 10px auto;
+    margin:0 auto 10px auto;
 }
 
 #buttons {
-    float: left;
+    display: inline-block;
+    padding-top: 15px;
+    margin: 0;
 }
-#search-filter-wrap {
-    float: left;
-    padding-bottom:10px;
-    position:absolute;
-    top:0px;
-}
-
-#search-filter-wrap-reports {
-    float: right;
-    padding-bottom:10px;
-    font-size: 1.2em;
-}
-#search-filter-section td {
-    white-space:nowrap;
-}
-/* resets the style for the <p> tag in the status part */
-#welcome {
-    position:relative;
-    padding: 0 40px 10px 40px;
-    width:870px;
-    text-align:left;
-    font-weight: bold;
-    color: #98AAB2 ;
-    font-size:12px;
-    z-index:50;
-}
-        
 #tagline {
     float:right;
     color:#98AAB2;
@@ -91,6 +66,8 @@ body {
     width:950px;
     margin:0;
     padding:0;
+    float: left;
+    top: -10px;
 }
 
 #left, #right {
@@ -114,7 +91,7 @@ body {
     width:862px;
     background: #FFFFFF;
     margin:0;
-    padding:15px 30px 15px 30px;
+    padding:0 30px 15px 30px;
     min-height:370px;
     float:left;
 }

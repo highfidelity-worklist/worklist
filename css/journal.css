@@ -18,12 +18,12 @@ body {
 #outside {
     text-align: left;
     position: relative;
-    margin: 35px auto 10px auto;
+    margin: 5px auto 10px auto;
+    width: 100%;
 }
 
 #welcome {
     position:relative;
-    padding: 0 40px 10px 23px;
     text-align:left;
     font-weight: bold;
     color: #98AAB2 ;

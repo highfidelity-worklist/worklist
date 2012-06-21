@@ -818,7 +818,7 @@ require_once('opengraphmeta.php');
                 }
             });
         }
-
+<?php if ($userId > 0) { ?>
         $.get('getskills.php', function(data) {
             var skills = eval(data);
             $("#skills").autocomplete(skills, {
@@ -831,7 +831,7 @@ require_once('opengraphmeta.php');
                 scrollHeight: 300
             });
         });
-
+<?php } ?>
         dirDiv = $("#direction");
         dirImg = $("#direction img");
         hdr = $(".table-hdng");
@@ -902,14 +902,14 @@ require_once('opengraphmeta.php');
             resetOrder = true;
             sort = 'null';
             dir = 'asc';
-            if ($(this).hasClass("inComment")) {
-                $(this).removeClass("inComment");
+            if ($(this).hasClass("comment")) {
+                $(this).removeClass("comment");
+                $(this).addClass("comment_no");
                 $(this).attr("title", "Do not include comments in search");
-                $("img", this).attr("src", "images/comment_no.jpg");
             } else {
-                $(this).addClass("inComment");
+                $(this).removeClass("comment_no");
+                $(this).addClass("comment");
                 $(this).attr("title", "Include Comments in search");
-                $("img", this).attr("src", "images/comment.jpg");
             }
             GetWorklist(1, false);
             return false;
@@ -1179,6 +1179,11 @@ $meta_title =
 ;
 ?>
 <title><?php echo $meta_title; ?></title>
+<style>
+#welcomeInside .worlistBtn {
+    color: #ffffff;
+}
+</style>
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"

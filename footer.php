@@ -60,6 +60,14 @@
             <a href="privacy.php" target="_blank">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="mailto:contact@worklist.net" target="_blank">Contact Us</a>&nbsp;&nbsp;|&nbsp;&nbsp;
             <a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a> | Version: <?php echo $version;?>
+            <div id="stats-area">
+                <span id='stats-text'>
+                    <a href='./worklist.php?status=bidding' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
+                    bidding, 
+                    <a href='./worklist.php?status=underway' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
+                    underway
+                </span>
+            </div>
         </div>
     </div>
 
@@ -67,6 +75,5 @@
 </div id="outside">
 
 <?php require_once('dialogs/footer-analytics.inc'); ?>
-<?php require_once('dialogs/popup-earnings.inc'); ?>
 </body>
 </html>
