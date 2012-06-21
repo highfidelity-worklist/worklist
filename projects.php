@@ -2,12 +2,12 @@
 /*
  * Copyright (c) 2011, LoveMachine Inc.
  * All Rights Reserved.
- * 
+ *
  * http://www.lovemachineinc.com
- * 
+ *
  * Development History:
  * 2011-07-30   #14907      Leo
- * 
+ *
  */
 error_reporting(E_ALL);
 ob_start();
@@ -25,6 +25,7 @@ $currentPage = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 
 /************************ HTML layout begins here  **************************/
 include("head.html");
+include("opengraphmeta.php");
 ?>
 <title>Worklist Projects</title>
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
@@ -105,7 +106,7 @@ include("head.html");
                     $("#loader_img_title").center();
                 }
             };
-        
+
     return {
         show : _show,
         hide : _hide
@@ -116,7 +117,7 @@ include("head.html");
     var current_page = '<?php echo $currentPage ?>';
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
     var worklistUrl = '<?php echo SERVER_URL; ?>';
-        
+
     function validateCodeReviews() {
         if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
             $('.cr_anyone_field').prop('checked', true);
@@ -132,7 +133,7 @@ include("head.html");
         }
     };
 
-    
+
     $(document).ready(function() {
         populateProjectListing(current_page);
         $('.ln-letters a').click(function() {
@@ -141,13 +142,13 @@ include("head.html");
             populateProjectListing(1);
             return false;
         });
-        
+
         $('.accordion').accordion({
             clearStyle: true,
             collapsible: true,
             active: true
         });
-            
+
         // Validate code review input
         // @TODO: The :checkbox selector is too broad, we might
         // have additional checkboxes in the future..   - lithium
@@ -163,16 +164,16 @@ include("head.html");
             data: 'page=' + selected_page + '&letter=' + current_letter,
             dataType: 'json',
             success: function(json) {
-                
+
                 $('.ln-letters a').removeClass('ln-selected');
                 $('.ln-letters a.' + current_letter).addClass('ln-selected');
-                
+
                 var currentPage = json[0][1]|0;
                 var totalPages = json[0][2]|0;
-                
+
                 // Clear all contents on screen
                 $('.projectDetailsRow').remove();
-                
+
                 if (json.length > 1) {
                     $('#projectListing').show();
                     $('#errorMessage').hide();
@@ -180,11 +181,11 @@ include("head.html");
                     $('#projectListing').hide();
                     $('#errorMessage').show();
                 }
-                
+
                 for (var i = 1; i < json.length; i++) {
                     addProjectDetails(json[i]);
                 }
-                
+
                 if(totalPages > 1) { //showing pagination only if we have more than one page
                     $('.ln-pages').html('<span>'+outputPagination(currentPage,totalPages)+'</span>');
 
@@ -193,7 +194,7 @@ include("head.html");
                         populateProjectListing(page);
                         return false;
                     });
-            
+
                 } else {
                     $('.ln-pages').html('');
                 }
@@ -223,21 +224,21 @@ include("head.html");
         }
         row += '</span></td>';
         row += '<td class="projectStats"><a href="./worklist.php?status=bidding&project=' + json.name + '" class="iToolTip jobsBidding actionBidding">'
-                + json.bCount + ' jobs </a>bidding <br/><a href="./worklist.php?status=underway&project=' + json.name + '" class="iToolTip jobsBidding actionUnderway" >' 
-                + json.uCount + ' jobs </a>underway<br/><a href="./worklist.php?status=completed&project=' + json.name + '" class="iToolTip jobsBidding actionCompleted" >' 
-                + json.cCount + ' jobs </a>completed<br/><span>$' 
+                + json.bCount + ' jobs </a>bidding <br/><a href="./worklist.php?status=underway&project=' + json.name + '" class="iToolTip jobsBidding actionUnderway" >'
+                + json.uCount + ' jobs </a>underway<br/><a href="./worklist.php?status=completed&project=' + json.name + '" class="iToolTip jobsBidding actionCompleted" >'
+                + json.cCount + ' jobs </a>completed<br/><span>$'
                 + json.feesCount + '</span> Total</td>';
         row += '</tr>';
         $('#projectListing tbody').append(row);
     }
     function outputPagination(currentPage, totalPages) {
         var pagination = '';
-        if (currentPage > 1) { 
-            pagination += '<a href="#?page=' + (currentPage-1) + '">Prev</a>'; 
+        if (currentPage > 1) {
+            pagination += '<a href="#?page=' + (currentPage-1) + '">Prev</a>';
         }
         for (var i = 1; i <= totalPages; i++) {
             var sel = '';
-            if (i == currentPage) { 
+            if (i == currentPage) {
                 if (currentPage == totalPages) {
                     sel = ' class="ln-selected ln-last"';
                 } else {
@@ -246,8 +247,8 @@ include("head.html");
             }
             pagination += '<a href="#?page=' + i + '"' + sel + '>' + i + '</a>';
         }
-        if (currentPage < totalPages) { 
-            pagination += '<a href="#?page=' + (currentPage+1) + '" class = "ln-last">Next</a>'; 
+        if (currentPage < totalPages) {
+            pagination += '<a href="#?page=' + (currentPage+1) + '" class = "ln-last">Next</a>';
         }
         return pagination;
     }

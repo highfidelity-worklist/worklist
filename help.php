@@ -15,6 +15,7 @@ require_once('classes/Project.class.php');
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html");
+include("opengraphmeta.php");
 ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
@@ -52,7 +53,7 @@ include("head.html");
 
 <h1>General FAQs<span class="heading-links" /></h1>
 
-    <ul>     
+    <ul>
         <li><a href="#gf1">What is Worklist?</a></li>
         <li><a href="#gf2">What does "Mechanic" mean?</a></li>
         <li><a href="#gf3">What does "Founder" mean? </a></li>
@@ -60,13 +61,12 @@ include("head.html");
         <li><a href="#gf5">I'm a web programmer, can I work on Worklist?</a></li>
         <li><a href="#gf6">What is a Bid?</a></li>
         <li><a href="#gf7">What is a Fee?</a></li>
-        <li><a href="#gf8">What are the job statuses (BIDDING, WORKING, etc.) and how do they work?</a></li>
     </ul>
-<br/>  
+<br/>
 </div>
 <div id="dev-faq" class="faq">
 <h1>Developer FAQs<span class="heading-links" /></h1>
-    <ul>     
+    <ul>
         <li><a href="#df1">What's the best way to get started?</a></li>
         <li><a href="#df2">How can I locate jobs to bid?</a></li>
         <li><a href="#df3">What is a reasonable bid amount?</a></li>
@@ -75,16 +75,15 @@ include("head.html");
         <li><a href="#df6">I tried to bid on a task and it said I am not eligible to bid, what's wrong?</a></li>
         <li><a href="#df7">How do I obtain a sandbox?</a></li>
         <li><a href="#df8">How do I set up my sandbox?</a></li>
-        <li><a href="#df9">What coding guidelines should I use for work done for Worklist projects?</a></li>
-        <li><a href="#df10">On my first commit, I got an error that said I do not have commit access, now what?</a></li>
-        <li><a href="#df11">After I have completed my work, how do I get paid?</a></li>
-        <li><a href="#df12">Where can I go for more information?</a></li>
+        <li><a href="#df9">On my first commit, I got an error that said I do not have commit access, now what?</a></li>
+        <li><a href="#df10">After I have completed my work, how do I get paid?</a></li>
+        <li><a href="#df11">Where can I go for more information?</a></li>
     </ul>
 <br/>
-</div>  
+</div>
 <div id="founder-faq" class="faq">
 <h1>Founder FAQs<span class="heading-links" /></h1>
-    <ul>     
+    <ul>
         <li><a href="#ff1">How Do I Know Which Bid to Accept?</a></li>
         <li><a href="#ff2">Can Someone Else Help me Run Jobs?</a></li>
         <li><a href="#ff3">Do I have to Open Source my Code to use Worklist?</a></li>
@@ -115,8 +114,8 @@ include("head.html");
     projects</a> and are always adding new tasks and projects to the list. If you are an entrepreneur or software engineer who
     wants to develop a new web or phone app, Worklist can help.<br/>
     </p>
-    <p><a name="gf5"></a><strong>Q. I'm a web programmer, can I work on Worklist? </strong></br>    
-    <strong>A.</strong> Yes! We're always looking for new web developers join our community. To get started, sign up for an 
+    <p><a name="gf5"></a><strong>Q. I'm a web programmer, can I work on Worklist? </strong></br>
+    <strong>A.</strong> Yes! We're always looking for new web developers join our community. To get started, sign up for an
     <a href ='http://www.worklist.net/worklist/signup.php' target='_blank'>account</a> or visit our <a href ='http://www.worklist.net/journal' target='_blank'>
     dev chat channel</a> where there are almost always other people around to answer questions and help you get started.<br/>
     </p>
@@ -132,51 +131,6 @@ include("head.html");
     Founder, you are also able to dispute or even delete fees if you wish.  Founders can award bonus payments to recognize a Mechanic's
     job well done or for going above and beyond.<br/>
     </p>
-    <p><a name="gf8"></a><strong>Q. What are the job statuses (SUGGESTED, BIDDING, WORKING, etc.) and how do they work? </strong></br>
-    <blockquote>
-        <li><strong>SUGGESTED -</strong> Worklist allows anyone to make suggestions for improvements to any active project. When you add a
-        job to any project it will show as SUGGESTED and the project Runner(s) can review and decide whether or not they will fund them and
-        set to BIDDING.
-        </li>
-        <li><strong>SUGGESTEDwithBID -</strong> Once you have added a SUGGESTED job, if you also have a particular solution in mind and are
-        willing to do the work, you can add a bid to your Suggested job. This changes the job status to SUGGESTEDwithBID and lets the
-        Runner(s) know that you have included a potential solution to the job you entered; this will help Runner(s) decide whether or not
-        a suggested job moves ahead and who works on it.
-        </li>
-        <li><strong>BIDDING -</strong> Once a job is set to BIDDING by a Runner, any Mechanic can put in their offer. Bidding means that
-        the job has been funded by a project Runner and active bids are being requested to complete the task. Every new job submitted by a
-        Runner will automatically be set to BIDDING.
-        </li>
-        <li><strong>WORKING -</strong> Once your bid has been selected, the job will automatically set to WORKING status. The job should remain in this status until you
-        have finished your coding and are ready for the Runner to test your sandbox.</li> 
-        <li><strong>FUNCTIONAL -</strong> When you are ready for your work to be reviewed, set the job to FUNCTIONAL. This will alert the runner
-        that they can test your sandbox.  If he/she needs any additional work done, they will post a comment on the job and set
-        the job back to WORKING status.  Once the Runner deems the task ready, they will set to REVIEW which will alert other developers
-        that the task is ready for a code review. It is important to keep your sandbox up to date in our rapid development environment.
-        Make sure to "svn up" frequently to keep your sb environment in synch with the latest changes.
-        </li>
-        <li><strong>REVIEW -</strong> REVIEW means the new code is ready to be reviewed by another Mechanic.  
-        If the reviewer finds any issues,they are either worked out in real-time in our <a href='https://www.worklist.net/journal'>Chat</a>
-        or via comments added to the job ticket. Once all issues have been resolved, you can commit the code and set the job to COMPLETED.
-        Upon your initial worklist commit, you will need to contact an Ops Team (O-Team) member in our Chat to obtain credentials. To find
-        out who is a member of the O-Team, you can type the following command in chat: @faq OTeam.  You can also email ops@worklist.net for
-        help.
-        </li>
-        <li><strong>SVN HOLD -</strong> 
-        If your sandbox is not at the latest revision when someone starts a code review, you, the Runner and the mechanic that attempted
-        to start that code review, will receive an email notice and the job will be set to "SVN HOLD".  At that time you should SVN up
-        and resolve any conflicts.  Once you are at the latest revision, set the job back to REVIEW.
-        </li>
-        <li><strong>COMPLETED -</strong> Once you have committed the code, set the task to COMPLETED.  This will alert the Runner
-        that the job is ready to test in the live environment.  When the Runner is satisfied that all is working as expected, they
-        will set the job to DONE.. 
-        </li> 
-        <li><strong>DONE -</strong> The final Worklist status. DONE jobs will be picked up in our payment system during the next payment run
-        via Paypal, currently twice a week.
-        </li>
-        </br>
-        </p>
-    </blockquote>
     <br/>
     <a href="#top">BACK TO TOP</a>
     </p>
@@ -188,69 +142,61 @@ include("head.html");
         <td align="left"><h1>Developer FAQs<span class="heading-links" /></h1></td>
     </tr>
     <p><a name="df1"></a><strong>Q. What's the best way to get started?</strong></br>
-    <strong>A.</strong> Join us in <a href='https://www.worklist.net/journal'>Chat</a> where there are almost always other people 
-    around to answer questions and help you get started.</strong> 
+    <strong>A.</strong> Join us in <a href='https://www.worklist.net/journal'>Chat</a> where there are almost always other people
+    around to answer questions and help you get started.</strong>
     <br/>
     <p><a name="df2"></a><strong>Q. How can I locate jobs to bid?</strong></br>
-    <strong>A.</strong> Go to our <a href='https://www.worklist.net/worklist'>Worklist</a> and select "Bidding" from the status drop down. This will show 
-    you a list of all currently open jobs.</strong> 
-    <br/>  
+    <strong>A.</strong> Go to our <a href='https://www.worklist.net/worklist'>Worklist</a> and select "Bidding" from the status drop down. This will show
+    you a list of all currently open jobs.</strong>
+    <br/>
     <p><a name="df3"></a><strong>Q. What is a reasonable bid amount?</strong></br>
     <strong>A.</strong> A bid is simply defined as the amount of money you will ask for completing the task described by a job write up. You can browse
      Worklist to get a good idea of what others have charged for similar jobs. When considering a task, be sure to carefully think about any
      problem areas or extra potential work before placing your bid, as your bid is considered an agreement between you and Worklist for any given
-     job.</strong> 
+     job.</strong>
     <br/>
     <p><a name="df4"></a><strong>Q. What is a fee? </strong></br>
     <strong>A.</strong> For some things, like code reviews or testing, you may simply attach fees to jobs, as opposed to winning a bid. For these
     things, use your best judgement to decide what to charge and look through similar tasks to get an idea what others are charging. Take a look
-    at some closed jobs to get an idea how much others fee-in on code reviews and other small things.</strong> 
+    at some closed jobs to get an idea how much others fee-in on code reviews and other small things.</strong>
     <br/>
     <p><a name="df5"></a><strong>Q. Can I view the source code and/or download it to my own server? </strong></br>
-    <strong>A.</strong> Yes! The websvn interface to subversion can be found at <a href='http://svn.worklist.net'> svn.worklist.net</a>. Browsing the repositories will display 
-    the path you need for doing an svn checkout or using an svn browser.</strong> 
+    <strong>A.</strong> Yes! The websvn interface to subversion can be found at <a href='http://svn.worklist.net'> svn.worklist.net</a>. Browsing the repositories will display
+    the path you need for doing an svn checkout or using an svn browser.</strong>
     <br/>
     <p><a name="df6"></a><strong>Q. I tried to bid on a task and it said I am not eligible to bid, what's wrong? </strong></br>
-    <strong>A.</strong> Before you can place a bid, you need to set up your payment information in your <a href='https://www.worklist.net/worklist/settings.php'> profile settings</a>. You need to both add your Paypal address and, 
-    if you're in the US, you will need to upload your W9 for our verification. </strong> 
+    <strong>A.</strong> Before you can place a bid, you need to set up your payment information in your <a href='https://www.worklist.net/worklist/settings.php'> profile settings</a>. You need to both add your Paypal address and,
+    if you're in the US, you will need to upload your W9 for our verification. </strong>
     <br/>
     <p><a name="df7"></a><strong>Q. How do I obtain a sandbox? </strong></br>
-    <strong>A.</strong> All code development is completed on our server. New developers who have had a bid accepted will automatically be set up 
-    with a dev sandbox. Instructions on how to access the sandbox will be sent via email. If you have not received an email, check your spam or email contact@worklist.net.  </strong> 
+    <strong>A.</strong> All code development is completed on our server. New developers who have had a bid accepted will automatically be set up
+    with a dev sandbox. Instructions on how to access the sandbox will be sent via email. If you have not received an email, check your spam or email contact@worklist.net.  </strong>
     <br/>
     <p><a name="df8"></a><strong>Q. How do I set up my sandbox?  </strong></br>
-    <strong>A.</strong> For most projects in the Worklist, your sandbox is configured and the only change required is to copy the 
-    server.local.php.default to a new server.local.php file and change the sandbox definitions to match the sandbox in which you are
-    performing the work.</p>
-    <p>
-    For our "Love" and "Admin" projects, you will need to configure the sandbox correctly. Read how in our
-    <a href ='http://wiki.lovemachineinc.com/wiki/index.php/User:Sandbox_autoconfig'> Wiki</a></strong>. 
-    </p>
-    <p><a name="df9"></a><strong>Q. What coding guidelines should I use for work done for Worklist projects?</strong></br>
-    <strong>A.</strong> We have created an easy to reference <a href ='http://wiki.worklist.net/wiki/index.php/Coding_Guidelines'>coding guidelines page</a> 
-    which explains our coding standards & overall programming philosophy.
+    <strong>A.</strong> After your sandbox has been generated, you will need to configure it correctly. Read how in our
+    <a href ='http://wiki.lovemachineinc.com/wiki/index.php/User:Sandbox_autoconfig'> Wiki</a></strong>.
     <br/>
-    <p><a name="df10"></a><strong>Q. On my first commit, I got an error that said I do not have commit access, now what?</strong></br>
-    <strong>A.</strong> Please contact an admin in <a href ='http://www.worklist.net/journal'>Chat </a> or email admin@worklist.net for help.</strong> 
+    <p><a name="df9"></a><strong>Q. On my first commit, I got an error that said I do not have commit access, now what?</strong></br>
+    <strong>A.</strong> Please contact an admin in <a href ='http://www.worklist.net/journal'>Chat </a> or email admin@worklist.net for help.</strong>
     <br/>
-    <p><a name="df11"></a><strong>Q. After I have completed my work, how do I get paid?</strong></br>
+    <p><a name="df10"></a><strong>Q. After I have completed my work, how do I get paid?</strong></br>
     <strong>A.</strong> Once you've finished work and it has had a functional and code review completed, you should set the job to COMPLETED.
-     The project Runner will then need to verify it works in production and will then set the job to DONE. You will not get paid until this 
+     The project Runner will then need to verify it works in production and will then set the job to DONE. You will not get paid until this
      happens. Please view the <a href ="#ff6"> Project Status</a> flow for more information.  All payments are
      currently handled through Paypal. When you create your worklist account, you'll be asked to supply your Paypal email address. We will pay as
-     quickly as possible after a job is marked DONE in the worklist (this is done by the person who created or is running the job).</strong> 
+     quickly as possible after a job is marked DONE in the worklist (this is done by the person who created or is running the job).</strong>
     <br/>
-    <p><a name="df12"></a><strong>Q. Where can I go for more information? </strong></br>
-    <strong>A.</strong> Visit the Worklist <a href ='http://wiki.lovemachineinc.com'>developer wiki</a> or just visit the 
-    <a href ='http://www.worklist.net/journal'>Chat</a> and ask!</strong> 
+    <p><a name="df11"></a><strong>Q. Where can I go for more information? </strong></br>
+    <strong>A.</strong> Visit the Worklist <a href ='http://wiki.lovemachineinc.com'>developer wiki</a>, read up on our <a href ='http://wiki.lovemachineinc.com/wiki/index.php/Coding_Standards'>Coding Standards</a>
+    Coding Standards</a>, or just visit the <a href ='http://www.worklist.net/journal'>Chat</a> and ask!</strong>
     </p>
     <br/>
     <a href="#top">BACK TO TOP</a>
     </p>
     </div>
 <br/>
-<!-- Start New -->  
-      
+<!-- Start New -->
+
 <div id="developer-faq" class="faq">
     <tr>
         <td align="left"><h1>Founder FAQs<span class="heading-links" /></h1></td>
@@ -270,8 +216,8 @@ include("head.html");
     contact@worklist.net for more information on how to set this up.<br/>
     </p>
     <p><a name="ff3"></a><strong>Q. Do I have to Open Source my Code to use Worklist? </strong></br>
-    <strong>A.</strong> In short, no. Open Source refers to a number of concepts, ranging from publicly available source code to a free 
-    license to use that code for any purpose. For our own projects on Worklist, we allow our code to be publicly visible because this 
+    <strong>A.</strong> In short, no. Open Source refers to a number of concepts, ranging from publicly available source code to a free
+    license to use that code for any purpose. For our own projects on Worklist, we allow our code to be publicly visible because this
     allows us the fastest product iteration. These benefits outweigh the perceived negatives, namely that competition might steal our code
     or that hackers will find exploits. Our code is not freely licensed and any unlawful use would result in the same legal action as any
     other act of theft.<br/>
@@ -281,7 +227,7 @@ include("head.html");
     solution that works best.<br/>
     </p>
     <p><a name="ff4"></a><strong>Q. I'm not a Founder, but I'd like to be, how do I get my project on Worklist? </strong></br>
-    <strong>A.</strong> You can add your project from our <a href='https://www.worklist.net/worklist/projects.php'>projects </a>page.  
+    <strong>A.</strong> You can add your project from our <a href='https://www.worklist.net/worklist/projects.php'>projects </a>page.
     Adding a project will automatically set up a MySQL database, Code Repository with a sample PHP page, and a Sandbox in which you
     may add to and update your codebase.<br/>
     </p>
@@ -292,13 +238,13 @@ include("head.html");
     <p><a name="ff6"></a><strong>Q. How do I manage a project on Worklist? What do the various project statuses mean? </strong></br>
     <strong>A.</strong> Tasks on Worklist go through various statuses from preparation through release. Once your project is up and
     funded, you might need this cheat sheet to help you out until you get the knack of our work flow.<br/>
-    <p><strong>Stage One: Preparation > Setting up your jobs</strong></p> 
+    <p><strong>Stage One: Preparation > Setting up your jobs</strong></p>
     <blockquote>
         <li><strong>SUGGESTED -</strong> Worklist allows anyone to make suggestions for improvements to any active project. When SUGGESTED tasks
-        appear on your project, you can review and decide whether or not you'd like to move them into bidding.</li> 
+        appear on your project, you can review and decide whether or not you'd like to move them into bidding.</li>
         <li><strong>SUGGESTEDwithBID -</strong> Sometimes when a Mechanic has a suggestion, they will also have a particular solution in mind
         and be willing to do the work. Don't worry, as project Founder, you always get to decide whether or not a suggested job moves ahead and
-        who works on it.</li> 
+        who works on it.</li>
         <li><strong>BIDDING -</strong> As a project Founder, every new job you submit will automatically be set to BIDDING. You can also move
         SUGGESTED jobs you'd like to get done into BIDDING status. Once a job is set to BIDDING, any Mechanic can put in their offer. For help
         in selecting which bid you want to accept, check the <a href="#ff1">FAQ</a> for tips.</li>
@@ -307,17 +253,13 @@ include("head.html");
         <p><strong>Stage Two: In Progress > Getting your jobs done</strong></p>
     <blockquote>
         <li><strong>WORKING -</strong> Once you've selected a bid, your job will automatically set to WORKING status. It will remain here until the
-        Mechanic is done with the work.</li> 
+        Mechanic is done with the work.</li>
         <li><strong>FUNCTIONAL -</strong> When the Mechanic is ready for their work to be reviewed, they will set the job to FUNCTIONAL. At this
         step, your job as Founder is to make sure everything works according to your design. If anything looks wrong, leave a comment for the
         Mechanic to fix. If the job look good, set it to REVIEW.</li>
         <li><strong>REVIEW -</strong> REVIEW means the new code is ready to be reviewed by another Mechanic. If the reviewer finds any issues,
         they are either worked out in real-time in our <a href='https://www.worklist.net/journal'>Chat</a> or via comments added to the job ticket. Once all issues have been resolved, the
-        Mechanic commits the code and sets the job to COMPLETED.</li> 
-        <li><strong>SVN HOLD -</strong> 
-        If the Mechanic's sandbox is not at the latest revision when someone starts a code review, the Runner, Mechanic and Code Reviewer
-        will receive an email notice and the job will be set to "SVN HOLD".  At that time the Mechanic will need to make any necessary
-        revisions to bring his/her sandbox up to the latest revision.  When done, the Mechanic will set the job back to REVIEW.</li>
+        Mechanic commits the code and sets the job to COMPLETED.</li>
         <br/>
     </blockquote>
         <p><strong>Stage Three: Finished > Your job is done</strong></p>
@@ -325,7 +267,7 @@ include("head.html");
         <li><strong>COMPLETED -</strong> Once your job to set to COMPLETED, the Mechanic's work should be finished. Depending on how your project is
         set up, committed code gets deployed to a staging site or even directly to the production site or both. As the Founder, you should
         double-check to make sure everything looks correct. If anything is wrong, contact the Mechanic ASAP. This stage allows Founders
-        additional time once the job is live to verify the new functionality in production. If things look good, move to the final status: DONE!</li> 
+        additional time once the job is live to verify the new functionality in production. If things look good, move to the final status: DONE!</li>
         <li><strong>DONE -</strong> The final Worklist status. Your Mechanic will not be paid until you move your job to the DONE status. As
         Founder, your DONE jobs will be picked up in our payment system during the next payment run via Paypal, currently twice a week. Funding
         for jobs under your project will come from your budget. Please email finance@worklist.net if you have any specific questions about
@@ -334,7 +276,7 @@ include("head.html");
     </blockquote>
     <a href="#top">BACK TO TOP</a>
 </div>
-   
+
 <?php
 //-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 include("footer.php");

@@ -35,6 +35,7 @@ $newStats = UserStats::getNewUserStats();
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html");
+include("opengraphmeta.php");
 ?>
 
 <title>Worklist | Team Members</title>
@@ -64,7 +65,7 @@ var current_order = false;
 var sfilter = '30'; // Default value for the filter
 var show_actives = "FALSE";
 var show_myfavorites = "FALSE";
-  
+
 $(document).ready(function() {
 
 // Set the users with fees in X days label
@@ -108,19 +109,19 @@ $(document).ready(function() {
         $('.table-userlist thead tr th div').removeClass('arrow-down');
         $('div', this).addClass('show-arrow');
         var direction = $(this).data('direction');
-        
+
         if(direction){
             $('div', this).addClass('arrow-up');
         }else{
             $('div', this).addClass('arrow-down');
         }
-        
+
         var data = $(this).metadata();
         if (!data.sortkey) return false;
         current_sortkey = data.sortkey;
         current_order = $(this).data('direction');
         fillUserlist(current_page);
-        
+
         $('.table-userlist thead tr th').data('direction', false); //reseting to default other rows
         $(this).data('direction',!direction); //switching on current
     }); //end of table sorting
@@ -154,7 +155,7 @@ $(document).ready(function() {
             $("#budgetPopup").dialog("open");
         });
     };
-        
+
     /**
      * Enable filter for users with fees in the last X days
      */
@@ -167,14 +168,14 @@ $(document).ready(function() {
             fillUserlist(current_page);
         }
     });
-    
+
     /**
      * Select users with fees in XX days
      */
     $('.days').change(function() {
         // Set the days filter
         sfilter = $('.days option:selected').val();
-        
+
         // If the filter is active reload the list
         if (show_actives === "TRUE") {
             fillUserlist(current_page);
@@ -193,13 +194,13 @@ $(document).ready(function() {
             fillUserlist(current_page);
         }
     });
-    
+
     $("#search_user").autocomplete({
         minLength: 0,
         source: function(request, response) {
             $.ajax({
                 cache: false,
-                url: 'getuserslist.php',                    
+                url: 'getuserslist.php',
                 data: {
                     startsWith: request.term,
                 },
@@ -229,7 +230,7 @@ $(document).ready(function() {
             .data("item.autocomplete", item)
             .append("<a>" + item.nickname + "</font></a>").appendTo(ul);
     }
-<?php 
+<?php
     if( !empty($_REQUEST['showUser'])) {
         $tab = "";
         if( !empty($_REQUEST['tab'])) {
@@ -263,15 +264,15 @@ function fillUserlist(npage) {
         data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order + '&sfilter=' + sfilter + '&active=' + show_actives + '&myfavorite=' + show_myfavorites,
         dataType: 'json',
         success: function(json) {
-        
+
             $('.ln-letters a').removeClass('ln-selected');
             $('.ln-letters a.' + current_letter).addClass('ln-selected');
-                    
+
             var page = json[0][1]|0;
             var cPages = json[0][2]|0;
-            
+
             $('.row-userlist-live').remove();
-            
+
             if (json.length > 1) {
                 $('.table-hdng').show();
                 $('#message').hide();
@@ -279,29 +280,29 @@ function fillUserlist(npage) {
                 $('.table-hdng').hide();
                 $('#message').show();
             }
-            
+
             var odd = true;
             for (var i = 1; i < json.length; i++) {
                 AppendUserRow(json[i], odd);
                 odd = !odd;
             }
-            
+
             $('tr.row-userlist-live').click(function(){
                 var match = $(this).attr('class').match(/useritem-\d+/);
                 var userid = match[0].substr(9);
                 showUserInfo(userid, null);
                 return false;
             });
-            
+
             if(cPages > 1){ //showing pagination only if we have more than one page
             $('.ln-pages').html('<span>'+outputPagination(page,cPages)+'</span>');
-                        
+
             $('.ln-pages a').click(function(){
                 page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                 fillUserlist(page);
                 return false;
             });
-            
+
             }else{
                 $('.ln-pages').html('');
             }
@@ -309,26 +310,26 @@ function fillUserlist(npage) {
         error: function(xhdr, status, err) {}
     });
 }
-  
+
 function outputPagination(page, cPages) {
     var pagination = '';
-    if (page > 1) { 
-        pagination += '<a href="#?page=' + (page-1) + '">Prev</a>'; 
-    } 
+    if (page > 1) {
+        pagination += '<a href="#?page=' + (page-1) + '">Prev</a>';
+    }
     for (var i = 1; i <= cPages; i++) {
         var sel = '';
-        if (i == page) { 
+        if (i == page) {
             if (page == cPages) {
                 sel = ' class="ln-selected ln-last"';
             } else {
                 sel = ' class="ln-selected"';
             }
         }
-        pagination += '<a href="#?page=' + i + '"' + sel + '>' + i + '</a>';  
+        pagination += '<a href="#?page=' + i + '"' + sel + '>' + i + '</a>';
     }
-    if (page < cPages) { 
-        pagination += '<a href="#?page=' + (page+1) + '" class = "ln-last">Next</a>'; 
-    } 
+    if (page < cPages) {
+        pagination += '<a href="#?page=' + (page+1) + '" class = "ln-last">Next</a>';
+    }
     return pagination;
 }
 
@@ -350,7 +351,7 @@ function AppendUserRow(json, odd) {
     if (is_myfavorite) {
         row += ' favorite';
     }
-    
+
     row += ' useritem-' + json.id + '">';
     row += '<td class="name-col">' + (is_myfavorite ? favorite_div : '') + json.nickname + '</td>';
     row += '<td class="age">'+ json.joined + '</td>';
@@ -371,9 +372,9 @@ function AppendUserRow(json, odd) {
             $.ajax({
                 type: 'POST',
                 url: 'favorites.php',
-                data: { 
-                    action: 'setFavorite',  
-                    favorite_user_id: favorite_user_id, 
+                data: {
+                    action: 'setFavorite',
+                    favorite_user_id: favorite_user_id,
                     newVal: 0
                 },
                 dataType: 'json',

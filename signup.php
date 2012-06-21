@@ -25,28 +25,28 @@ $to = 1;
 
 $fields_to_htmlescape = array(
     'paypal_email' => '',
-    'contactway' => '', 
-    'payway' => '', 
-    'skills' => '', 
-    'timezone' => '', 
-    'int_code' => '', 
-    'phone' => '', 
-    'country' => '', 
+    'contactway' => '',
+    'payway' => '',
+    'skills' => '',
+    'timezone' => '',
+    'int_code' => '',
+    'phone' => '',
+    'country' => '',
     'provider' => '',
     'smsaddr' => '',
     'findus' => ''
 );
 
 $fields_to_not_escape = array(
-    'nickname' => '', 
-    'username' => '', 
-    'password' => '', 
-    'confirmpassword' => '', 
-    'sign_up' => '', 
+    'nickname' => '',
+    'username' => '',
+    'password' => '',
+    'confirmpassword' => '',
+    'sign_up' => '',
     'phone_edit' => '',
     'confirm' => '',
     'paypal' => '',
-    'about' => '', 
+    'about' => '',
     'openid' => ''
 );
 
@@ -91,7 +91,7 @@ if(isset($minimal_POST['sign_up'])) {
         $minimal_POST['sms_flags'] = (! empty($_POST['journal_alerts']) ? SMS_FLAG_JOURNAL_ALERTS : 0) | (! empty($_POST['bid_alerts']) ? SMS_FLAG_BID_ALERTS : 0);
         $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
         $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
-        
+
         if(! isset($minimal_POST['paypal'])){
             $minimal_POST['paypal_email'] = '';
         }
@@ -162,7 +162,7 @@ if(isset($minimal_POST['sign_up'])) {
             // paypal email
             if (! empty($newUser['paypal_email'])) {
                 $paypal_hash = md5(date('r', time()));;
-            
+
                 $subject = "Payment address verification";
                 $link = SECURE_SERVER_URL . "confirmation.php?pp=".$paypal_hash . "&ppstr=" . base64_encode($newUser['paypal_email']);
                 $worklist_link = SERVER_URL . "worklist.php";
@@ -171,9 +171,9 @@ if(isset($minimal_POST['sign_up'])) {
 
                 $plain  = 'Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the worklist.' . "\n\n";
                 $plain .= $link . "\n\n";
-                
+
                 $confirm_txt .= "<br/><br/>An email containing a confirmation link was also sent to your Paypal email address. Please click on that link to verify your Paypal address and activate payments on your account.";
-                if (! send_email($newUser['paypal_email'], $subject, $body, $plain)) { 
+                if (! send_email($newUser['paypal_email'], $subject, $body, $plain)) {
                     error_log("signup.php: send_email failed");
                     $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
                 }
@@ -195,6 +195,7 @@ if (!empty($_GET['authtype']) && $_GET['authtype'] == 'openid') {
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html");
+include("opengraphmeta.php");
 ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
@@ -241,7 +242,7 @@ include("head.html");
             <?php foreach($error->getErrorMessage() as $msg):?>
               <p class="LV_invalid"><?php echo $msg; ?></p>
             <?php endforeach;?>
-        <?php endif; ?>       
+        <?php endif; ?>
         <form action="" name="signup" id="signupForm" method="post">
         <?php echo(($authtype === 'openid') ? '<input type="hidden" name="openid" value="' . rawurldecode($_GET['id']) . '" />' : '');?>
      <!-- Column containing left part of the fields -->
@@ -264,25 +265,25 @@ include("head.html");
     <p>
         <label for="password">Password </label>
         <br />
-        <span class="required-bullet">*</span> 
-        <input type="password" id="password" name="password" class="text-field" size="35" /> 
+        <span class="required-bullet">*</span>
+        <input type="password" id="password" name="password" class="text-field" size="35" />
     </p>
 </div>
 <script type="text/javascript">
     var password = new LiveValidation('password',{ validMessage: "You have an OK password." });
-    password.add(Validate.Length, { minimum: 5, maximum: 255 } ); 
+    password.add(Validate.Length, { minimum: 5, maximum: 255 } );
 </script>
 
 <div class="LVspace">
     <p>
         <label>Confirm Password</label> <br />
-        <span class="required-bullet">*</span> 
-        <input name="confirmpassword" id="confirmpassword" type="password" class="text-field" size="35" /> 
+        <span class="required-bullet">*</span>
+        <input name="confirmpassword" id="confirmpassword" type="password" class="text-field" size="35" />
     </p>
 </div>
 <script type="text/javascript">
     var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
-    confirmpassword.add(Validate.Custom1, { match: 'password'} ); 
+    confirmpassword.add(Validate.Custom1, { match: 'password'} );
 </script>
       <?php endif; ?>
 <div class="LVspace">
@@ -293,7 +294,7 @@ include("head.html");
         <input type="text" id="nickname" name="nickname" class="text-field" size="35" value="<?php echo isset($_POST['nickname']) ? $_POST['nickname'] : ""; ?>" />
     </p>
 </div>
-<?php 
+<?php
     $smsaddr=!empty($_REQUEST['smsaddr'])? $_REQUEST['smsaddr']:'';
     $country=!empty($_REQUEST['country'])? $_REQUEST['country']:'';
     $phone=!empty($_REQUEST['phone'])? $_REQUEST['phone']:'';
@@ -326,7 +327,7 @@ include("head.html");
 <div class="LVspace height50">
     <p>
         <label for="timezone">What timezone are you in?</label><br />
-           <span class="required-bullet"> &nbsp;</span> 
+           <span class="required-bullet"> &nbsp;</span>
         <select id="timezone" name="timezone">
             <?php
                 foreach ($timezoneTable as $key => $value) {
@@ -347,7 +348,7 @@ include("head.html");
 </div>
 <script type="text/javascript">
         var about = new LiveValidation('about');
-        about.add(Validate.Length, { minimum: 0, maximum: 150 } ); 
+        about.add(Validate.Length, { minimum: 0, maximum: 150 } );
 </script>
 <div class="LVspace">
 <p><label for="findus">How did you find us?</label><br />
@@ -371,8 +372,8 @@ include("head.html");
     </p>
 </div>
 
-<?php 
-    include("sms-inc.php"); 
+<?php
+    include("sms-inc.php");
 ?>
     <input type="checkbox" name="bidding_notify" id="bidding_notify" <?php echo !empty($_REQUEST['bidding_notify'])? ' checked="checked" ':''; ?> />Notify me when a new job is set to bidding<br />
     <input type="checkbox" name="review_notify" id="review_notify" <?php echo !empty($_REQUEST['review_notify'])? ' checked="checked" ':''; ?> />Notify me when any job is set to review<br /><br />

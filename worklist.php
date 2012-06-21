@@ -238,6 +238,7 @@ $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
 /*********************************** HTML layout begins here  *************************************/
 require_once("head.html");
+require_once('opengraphmeta.php');
 ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
@@ -406,7 +407,7 @@ require_once("head.html");
         if ((json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID') &&json[10] > 0) {
             post = ' (' + json[10] + ')';
         }
-        row += '<td width="20%" class="job-status">' + pre + json[2] + post + '</td>';
+        row += '<td width="20%">' + pre + json[2] + post + '</td>';
 <?php endif; ?>
         pre = '';
         post = '';
@@ -1178,7 +1179,6 @@ $meta_title =
 ;
 ?>
 <title><?php echo $meta_title; ?></title>
-<meta property="og:title" content="<?php echo (is_object($inProject)) ? 'Project: ' . $inProject->getName() : 'Worklist - A community of independent software developers'; ?>" />
 </head>
 <body>
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"

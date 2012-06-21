@@ -65,7 +65,9 @@ if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_p
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html"); ?>
+include("head.html");
+include("opengraphmeta.php");
+?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
@@ -184,10 +186,10 @@ function AppendPagination(page, cPages, table) {
          if(table == 'worklist') {
             <?php if (!empty($_SESSION['is_payer'])) { ?>
                 cspan = '8'
-            <?php } else { ?> 
+            <?php } else { ?>
                 cspan = '6'
-            <?php } ?> 
-        } else if(table == 'worklist-payee') { 
+            <?php } ?>
+        } else if(table == 'worklist-payee') {
             cspan = '4';
         }
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" ><td colspan="'+cspan+'" style="text-align:center;">Pages : &nbsp;';
@@ -208,7 +210,7 @@ function AppendPagination(page, cPages, table) {
         $('.table-' + table).append(pagination);
     }
 }
-    
+
 
     // json row fields: id, summary, status, payee, fee
     function AppendRow(json, odd) {
@@ -403,7 +405,7 @@ function AppendPagination(page, cPages, table) {
     function GetPayeeReport(npage, reload, sort) {
         _fromDate = $('#start-date').datepicker('getDate');
         _toDate = $('#end-date').datepicker('getDate');
-        var defaultSort = 'total_fees'; 
+        var defaultSort = 'total_fees';
         if (_fromDate != null) {
             fromDate = fmtDate(_fromDate);
         }
@@ -415,7 +417,7 @@ function AppendPagination(page, cPages, table) {
         order = current_order ? 'ASC' : 'DESC';
         var paidStatus = $('#paid-status').val();
 
-        if ($('.table-worklist-payee th div').hasClass('show-arrow')) { 
+        if ($('.table-worklist-payee th div').hasClass('show-arrow')) {
            defaultSort = '';
         }
 
@@ -447,7 +449,7 @@ function AppendPagination(page, cPages, table) {
                 var cPages = json[0][2]|0;
 
                 $('.row-worklist-payee-live').remove();
-    
+
                 if (json[0][0] == 0 ) {
                     $('.table-worklist-payee').append(
                       '<tr class="row-worklist-payee-live rowodd">'+
@@ -464,7 +466,7 @@ function AppendPagination(page, cPages, table) {
                     odd = !odd;
                 }
                 AppendPagination(page, cPages, 'worklist-payee');
-             
+
             },
             error: function(xhdr, status, err) {
                 $('.row-worklist-live-payee').remove();
@@ -596,19 +598,19 @@ function loadTimelineChart() {
             $('.table-worklist thead tr th div').removeClass('arrow-down');
             $('div', this).addClass('show-arrow');
             var direction = $(this).data('direction');
-            
+
             if (direction){
                 $('div', this).addClass('arrow-up');
             } else {
                 $('div', this).addClass('arrow-down');
             }
-            
+
             var data = $(this).metadata();
             if (!data.sortkey) {
                 alert("no sortkey");
                 return false;
             }
-            
+
             reload = false;
             current_sortkey = data.sortkey;
             current_order = $(this).data('direction');
@@ -620,7 +622,7 @@ function loadTimelineChart() {
 
     // Payee tab table sorting handling
         $('.table-worklist-payee thead tr th').hover(function(e){
-        
+
             if(! $('div', this).hasClass('show-arrow')){
                 if ($(this).data('direction')) {
                     $('div', this).addClass('arrow-up');
@@ -642,19 +644,19 @@ function loadTimelineChart() {
             $('.table-worklist-payee thead tr th div').removeClass('arrow-down');
             $('div', this).addClass('show-arrow');
             var direction = $(this).data('direction');
-            
+
             if (direction){
                 $('div', this).addClass('arrow-up');
             } else {
                 $('div', this).addClass('arrow-down');
             }
-            
+
             var data = $(this).metadata();
             if (!data.sortkey) {
                 alert("no sortkey");
                 return false;
             }
-            
+
             reload = false;
             current_sortkey = data.sortkey;
             current_order = $(this).data('direction');
@@ -663,7 +665,7 @@ function loadTimelineChart() {
             $('.table-worklist-payee thead tr th').data('direction', false); //reseting to default other rows
             $(this).data('direction',!direction); //switching on current
         }); //end of payee table sorting
-        
+
         initializeTabs();
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         $("#report-check-all").live('change', function(){
@@ -743,44 +745,44 @@ function loadTimelineChart() {
                 toDate = fmtDate(_toDate);
             }
             if(currentTab == 0) {
-                location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val() 
-                              + '&status=' + $('select[name=status]').val() 
-                              + '&project_id=' + $('select[name=project]').val() 
-                              + '&fund_id=' + $('select[name=fund]').val() 
-                              + '&type=' + $('#type-status').val() 
-                              + '&order=' + $('#sort-by').val() 
-                              + '&start=' + fromDate 
-                              + '&end=' + toDate 
-                              + '&paidstatus=' + $('#paid-status').val() 
-                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0) 
-                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) 
+                location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val()
+                              + '&status=' + $('select[name=status]').val()
+                              + '&project_id=' + $('select[name=project]').val()
+                              + '&fund_id=' + $('select[name=fund]').val()
+                              + '&type=' + $('#type-status').val()
+                              + '&order=' + $('#sort-by').val()
+                              + '&start=' + fromDate
+                              + '&end=' + toDate
+                              + '&paidstatus=' + $('#paid-status').val()
+                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
+                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
                               + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             } else if(currentTab == 1) {
-                location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val() 
-                              + '&status=' + $('select[name=status]').val() 
-                              + '&project_id=' + $('select[name=project]').val() 
-                              + '&fund_id=' + $('select[name=fund]').val() 
-                              + '&type=' + $('#type-status').val() 
-                              + '&order=' + $('#sort-by').val() 
-                              + '&start=' + fromDate 
-                              + '&end=' + toDate 
-                              + '&paidstatus=' + $('#paid-status').val() 
-                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0) 
-                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) + '&activeUsers=' 
+                location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val()
+                              + '&status=' + $('select[name=status]').val()
+                              + '&project_id=' + $('select[name=project]').val()
+                              + '&fund_id=' + $('select[name=fund]').val()
+                              + '&type=' + $('#type-status').val()
+                              + '&order=' + $('#sort-by').val()
+                              + '&start=' + fromDate
+                              + '&end=' + toDate
+                              + '&paidstatus=' + $('#paid-status').val()
+                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
+                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) + '&activeUsers='
                               + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             }
         else if(currentTab == 2) {
-                location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val() 
-                              + '&status=' + $('select[name=status]').val() 
-                              + '&project_id=' + $('select[name=project]').val() 
-                              + '&fund_id=' + $('select[name=fund]').val() 
-                              + '&type=' + $('#type-status').val() 
-                              + '&order=' + $('#sort-by').val() 
-                              + '&start=' + fromDate 
-                              + '&end=' + toDate 
-                              + '&paidstatus=' + $('#paid-status').val() 
-                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0) 
-                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) 
+                location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val()
+                              + '&status=' + $('select[name=status]').val()
+                              + '&project_id=' + $('select[name=project]').val()
+                              + '&fund_id=' + $('select[name=fund]').val()
+                              + '&type=' + $('#type-status').val()
+                              + '&order=' + $('#sort-by').val()
+                              + '&start=' + fromDate
+                              + '&end=' + toDate
+                              + '&paidstatus=' + $('#paid-status').val()
+                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
+                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
                               + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             }
         });
@@ -835,7 +837,7 @@ $(function() {
       <tr>
         <td class="textAlignReport">
             <div>
-                <div class="report-label">Payee:</div> 
+                <div class="report-label">Payee:</div>
                 <div class="report-input-item"><?php echo $filter->getUserSelectbox($activeUsers, 'ALL'); ?></div>
                 <div class="report-item-clear"></div>
             </div>

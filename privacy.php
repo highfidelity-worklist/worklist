@@ -1,7 +1,7 @@
 <?php
 //
 //  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 ob_start();
@@ -16,6 +16,7 @@ mysql_select_db(DB_NAME);
 include("functions.php");
 
 include("head.html");
+include("opengraphmeta.php");
 ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
@@ -40,7 +41,7 @@ include("head.html");
     require_once('format.php');
 ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-<span id="privacyInfo">   
+<span id="privacyInfo">
 	<h1>Worklist Privacy Statement</h1>
 	<h3>What information do we collect?</h3>
 	<p>We collect information from you when you register on our site or fill out a form.</p>
@@ -55,7 +56,7 @@ include("head.html");
 		<li>To improve customer service<br />
 		(your information helps us to more effectively respond to your customer service requests and support needs)</li>
 	</ul>
-	
+
 	<h3>How do we protect your information?</h3>
 	<p>We implement a variety of security measures to maintain the safety of your personal information when you access your personal information.</p>
 	<p>We offer the use of a secure server. All supplied sensitive/credit information is transmitted via Secure Socket Layer (SSL) technology and then encrypted into our Database to be only accessed by those authorized with special access rights to our systems, and are required to keep the information confidential.</p>
@@ -79,6 +80,6 @@ include("head.html");
 	<p>San Francisco, CA 94127, USA</p>
 	<p>admin (at) lovemachineinc (dot) com</p>
 </span>
-                    
+
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php"); ?>
