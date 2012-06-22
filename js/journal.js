@@ -2914,21 +2914,6 @@ function SimplePopup(popupId,
     }
 }
 
-(function($) {
-    $.fn.centerDialog = function() {
-        //var opts = $.extend({}, $.fn.menuPopup.defaults, options);
-
-        return this.each(function() {
-            var $this = $(this);
-            var p = $this.parent();
-            var x = (document.body.clientWidth - p.width()) / 2;
-            var y = Math.max(0, (document.body.clientHeight - p.height()) / 2);
-            p.animate({opacity: 0}, 0).css({left:x, top:y}).animate({opacity: 1}, 300);
-        });
-    }
-
-})(jQuery);
-
 function resizeIframeDlg() {
     var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
                   $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;

@@ -356,6 +356,7 @@ function StopStatus() {
     <script type="text/javascript" src="js/jquery.template.js"></script>
     <script type="text/javascript" src="js/jquery.autogrow.js"></script>
     <script type="text/javascript" src="js/jquery.metadata.js"></script>
+    <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="js/ajaxupload.js"></script>
     <script type="text/javascript" src="js/jquery_all.js"></script>
     <script type="text/javascript" src="js/journal.js"></script>

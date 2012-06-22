@@ -818,20 +818,6 @@ require_once('opengraphmeta.php');
                 }
             });
         }
-<?php if ($userId > 0) { ?>
-        $.get('getskills.php', function(data) {
-            var skills = eval(data);
-            $("#skills").autocomplete(skills, {
-                width: 320,
-                max: 10,
-                highlight: false,
-                multiple: true,
-                multipleSeparator: ", ",
-                scroll: true,
-                scrollHeight: 300
-            });
-        });
-<?php } ?>
         dirDiv = $("#direction");
         dirImg = $("#direction img");
         hdr = $(".table-hdng");
