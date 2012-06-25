@@ -161,7 +161,9 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
         }
     }
 
-    if (defined("TWILIO_SID") && defined("TWILIO_TOKEN")) {
+    if (filter_var($smsaddr, FILTER_VALIDATE_EMAIL) == false
+        && defined("TWILIO_SID") && defined("TWILIO_TOKEN")) 
+    {
         require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
         $Twilio = new WLTwilio();
         return $Twilio->send_sms($smsaddr, 

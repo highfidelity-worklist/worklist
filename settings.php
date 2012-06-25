@@ -385,6 +385,21 @@ include("head.html");
         return true;
     }
 
+    function validateEmail(email) {
+        var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
+
+    function validatePhoneNumber(phone_number) {
+        phone_number = phone_number.replace(/\s+/g, ""); 
+        return phone_number.length > 9 
+            && phone_number.match(/^(\+?[1-9]{1,3}-?)?(\([2-9]\d{2}\)|[2-9]\d{2})-?[2-9]\d{2}-?\d{4}$/);
+    }
+    
+    function validateSmsAddr(value) {
+        return validateEmail(value) || validatePhoneNumber(value); 
+    }
+
     function isJSON(json) {
         json = json.replace(/\\["\\\/bfnrtu]/g, '@');
         json = json.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');
