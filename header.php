@@ -31,6 +31,8 @@ $linkTarget = '';
                     <a href="help.php"><div class="headerButton helpBtn">Help</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
                     <a href="projects.php"><div class="headerButton projectsBtn">Projects</div></a>
+                    <div class="headerButtonSeparator">&nbsp;</div>
+                    <a href="<?php echo WIKI_URL ?>" target="_blank"><div class="headerButton wikiBtn">Wiki</div></a>
                 </div>
                 <div class="rightMenu">
 <?php if (isset($_SESSION['username'])) { ?>

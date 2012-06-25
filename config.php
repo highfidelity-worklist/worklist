@@ -156,6 +156,8 @@ if(!defined("ADMINS_EMAILS"))
     "alexi@kostibas.com"
   );
 
+if(!defined('WIKI_URL')) define('WIKI_URL', 'http://wiki.worklist.net/wiki/');
+
 // Special Accounts
 if (!defined("USER_SENDLOVE"))      define("USER_SENDLOVE", "Send Love");
 if (!defined("USER_SVN"))           define("USER_SVN", "SVN");

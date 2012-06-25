@@ -1110,7 +1110,8 @@ input.button-disabled ,
     margin-left: 4px;
 }
 
-#welcomeInside .projectsBtn ,
+#welcomeInside .projectsBtn,
+#welcomeInside .wikiBtn,
 #welcomeInside .loginBtn {
     background-image: none;
     padding-left: 5px;
