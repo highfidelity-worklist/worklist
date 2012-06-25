@@ -1057,6 +1057,11 @@ input.button-disabled ,
     line-height: 25px;
 }
 
+#welcomeInside .following,
+#welcomeInside .headerButton {
+    color: #888888;
+}
+
 #welcomeInside .headerButtonSeparator {
     display: inline-block;
     width: 21px;
