@@ -254,7 +254,6 @@ class AjaxResponse
 	}
 
     public function latestFromTask($item_id) {
-        $count = 50;
 
         // see if we need to retrieve system messages
         $filter = 'all';
@@ -268,8 +267,8 @@ class AjaxResponse
             'toTime' => "UNIX_TIMESTAMP()",
             'prevNext' => 'prev',
             'filter' => $filter,
-            'system_count' => $count,
-            'count' => $count,
+            'system_count' => 0,
+            'count' => 0,
             'query' => $query,
             'order' => $order,
             'reverse' => $reverse
