@@ -20,17 +20,17 @@ $linkTarget = '';
         <div id="welcome">
             <div id="welcomeInside">
                 <div class="leftMenu">
-                    <a href="worklist.php"><div class="headerButton worlistBtn">Worklist</div></a>
+                    <a href="worklist.php" target="_blank"><div class="headerButton worlistBtn">Worklist</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="journal.php"><div class="headerButton chatBtn">Chat</div></a>
+                    <a href="journal.php" target="_blank"><div class="headerButton chatBtn">Chat</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="team.php"><div class="headerButton teamBtn">Team</div></a>
+                    <a href="team.php" target="_blank"><div class="headerButton teamBtn">Team</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="reports.php"><div class="headerButton reportsBtn">Reports</div></a>
+                    <a href="reports.php" target="_blank"><div class="headerButton reportsBtn">Reports</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="help.php"><div class="headerButton helpBtn">Help</div></a>
+                    <a href="help.php" target="_blank"><div class="headerButton helpBtn">Help</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="projects.php"><div class="headerButton projectsBtn">Projects</div></a>
+                    <a href="projects.php" target="_blank"><div class="headerButton projectsBtn">Projects</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
                     <a href="<?php echo WIKI_URL ?>" target="_blank"><div class="headerButton wikiBtn">Wiki</div></a>
                 </div>
