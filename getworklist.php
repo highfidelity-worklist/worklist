@@ -44,32 +44,51 @@ $dfilter = $filter->getDir();
 $page = $filter->getPage();
 $where = '';
 
+// Status filter
 if (!empty($sfilter)) {
-    $where = "where (";
+    $where = "WHERE (";
     foreach ($sfilter as $val) {
 
         $val = strtoupper(mysql_real_escape_string($val));
 
             if ($val == 'ALL' && !$is_runner) {
+                /**
+                 * if current user is not a runner and is filtering by ALL 
+                 * status it wont fetch workitems in DRAFT status
+                 */
                 $where .= "1 AND status != 'DRAFT' OR ";
             }
             if ($val == 'ALL' && $is_runner == 1 ){
+                /**
+                 * if current user is a runner and is filtering by ALL status 
+                 * it wont fetch workitems in DRAFT status created by any other
+                 * user
+                 */
                 $where .= "1 AND status != 'DRAFT' OR (status = 'DRAFT' AND creator_id = $userId) OR  ";
             }
             if ($val == 'DRAFT'){
+                /**
+                 * if filtering by DRAFT status will only fetch workitems in 
+                 * DRAFT status created by current user
+                 */
                 $where .= "(status = 'DRAFT' AND creator_id = $userId) OR  ";
             } else {
+                /**
+                 * if filtering by any status different than ALL and DRAFT it 
+                 * won't do any magic
+                 */
                 $where .= "status='$val' OR ";
             }
     }
     $where .= "0)";
 }
 
+// User filter
 if (!empty($ufilter) && $ufilter != 'ALL') {
     if (empty($where)) {
-        $where = "where ";
+        $where = "WHERE (";
     } else {
-        $where .= " and ";
+        $where .= " AND (";
     }
 
     $severalStatus = "";
@@ -80,19 +99,46 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             $status_cond = "status='$val' AND";
         }
         if (($is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
+            /**
+             * If current user is a runner and filtering for himself and 
+             * (BIDDING or SwB) status then fetch all workitems where he 
+             * is mechanic, runner, creator or has bids.
+             */ 
             $where .= $severalStatus .
                 "( $status_cond (`mechanic_id` = '$ufilter' OR `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
                 OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
                 ))";
         } else if ((!$is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
+            /**
+             * If current user is a runner and filtering for certain user and 
+             * (BIDDING or SwB) status then fetch all workitems where selected
+             * user is runner, creator or has bids.
+             */ 
             $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
                 OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
                 ))";
         } else if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter != $userId) {
+            /**
+             * If current user is not a runner and is filtering for certain user
+             * and (BIDDING or SwB) status then fetch all workitems where selected
+             * user is mechanic, runner or creator.
+             */ 
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
         } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='FUNCTIONAL' || $val =='COMPLETED' ) {
+            /**
+             * If current user is filtering for any user (himself or not) and 
+             * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
+             * all workitems where selected user is mechanic, creator or runner.
+             */ 
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
         } else  {
+            /**
+             * If current user is filtering for any user (himself or not) and 
+             * didn't match above cases (filtering ALL or any other status
+             * different than BIDDING, SwB, WORKING, REVIEW, FUNCTIONAL and 
+             * COMPLETED) then fetch all workitems where selected user is
+             * creator, runner, mechanic, has fees or has bids
+             */
             $where .= $severalStatus .
                 "( $status_cond (`creator_id` = '$ufilter' OR `runner_id` = '$ufilter' OR `mechanic_id` = '$ufilter'
                 OR `" . FEES . "`.user_id = '$ufilter'
@@ -101,13 +147,15 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         }
         $severalStatus = " OR ";
     }
+    $where .= ')';
 }
 
+// Project filter
 if (!empty($pfilter) && $pfilter != 'ALL') {
     if (empty($where)) {
-        $where = "where ";
+        $where = "WHERE ";
     } else {
-        $where .= " and ";
+        $where .= " AND ";
     }
     $where .= " `".WORKLIST."`.`project_id` = '{$pfilter}' ";
 }
