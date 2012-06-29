@@ -13,25 +13,29 @@ class AjaxResponse
         return $this->chat->getBotNames();
     }
 	/* Geramy Editted from line 34 to line 118 on 04/29/2010 */
-	public function send()
-	{
-		$message = $_POST['message'];
-		$this->logTries();
+    public function send()
+    {
+        $message = $_POST['message'];
+        $this->logTries();
 		
-		if (empty($_SESSION['nickname']) && $this->areUrlsInMessage($message)) {
-			$message = "@me echo You cannot send a message with a web address if you are not logged in.";
-		} elseif (isSpammer($_SERVER['REMOTE_ADDR'])) {
-		    $message = "@me echo Love to you! Sorry but you aren't allowed to participate. Your IP has been blocked. If you aren't a spammer please give us a feedback with the button above.";
-		}
+        if (empty($_SESSION['nickname']) && $this->areUrlsInMessage($message)) {
+            $message = "@me echo You cannot send a message with a web address if you are not logged in.";
+        } elseif (isSpammer($_SERVER['REMOTE_ADDR'])) {
+            $message = "@me echo Love to you! Sorry but you aren't allowed to participate. Your IP has been blocked."
+                ." If you aren't a spammer please give us a feedback with the button above.";
+        } elseif (empty($_SESSION['nickname']) && (substr($message, 0, 3) == '@me' ||
+            substr($message, 0, 5) == '@ping')) {	    	
+            $message = "@me echo Sorry but for you to use any of the chat commands, you need to be logged in.";
+        }
  
-		$author = isset($_SESSION['nickname']) ? $_SESSION['nickname'] : GUEST_NAME;
-		$sampled = isset($_POST['sampled']) ? $_POST['sampled'] : 0;
-		$data = $this->chat->sendEntry($author, $message, array('sampled'=>$sampled));
+        $author = isset($_SESSION['nickname']) ? $_SESSION['nickname'] : GUEST_NAME;
+        $sampled = isset($_POST['sampled']) ? $_POST['sampled'] : 0;
+        $data = $this->chat->sendEntry($author, $message, array('sampled'=>$sampled));
         if (!isset($data['html'])) {
             $data = array_merge($data, $this->latest_longpoll($data['messagetime']));
         }
         return($data);
-	}
+    }
 	
 	public function updateAllEntryJobs() {
 		$this->chat->updateAllJobIds();	
