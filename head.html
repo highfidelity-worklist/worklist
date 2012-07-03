@@ -47,7 +47,7 @@
         $('#pp_api_signature').watermark('API Signature', {useNative: false});
 
         if ($('#fees-week').length > 0) {
-            $('#fees-week').click(function() {
+            $('#fees-week').parents("tr").click(function() {
                 var author = "Guest";
                 if($('#user').length > 0) {
                     author = $('#user').html();
@@ -73,7 +73,7 @@
         }
 
         if($('#fees-month').length > 0){
-            $('#fees-month').click(function() {
+            $('#fees-month').parents("tr").click(function() {
                 var author = "Guest";
                 if ($('#user').length > 0) {
                     author = $('#user').html();

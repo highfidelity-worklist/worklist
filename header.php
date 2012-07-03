@@ -37,6 +37,10 @@ $linkTarget = '';
                 <div class="rightMenu">
 <?php if (isset($_SESSION['username'])) { ?>
                     <div class="loggedIn">
+                        <a class="headerUserName" href='javascript:showUserInfo(" . $userId . ");'>
+                            Welcome, <span id='user'> <?php echo $_SESSION['nickname']; ?> </span>!&nbsp;&nbsp;
+                        </a>
+                        <div class="headerButtonSeparator">&nbsp;</div>&nbsp;
                         <a href='javascript:;' class='following'><div>Following</div></a>
                         <div class="headerButtonSeparator">&nbsp;</div>
                         <a href='javascript:;' class='budget'><div class="headerButton earningsBtn"></div></a>

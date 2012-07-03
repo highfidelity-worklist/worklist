@@ -1062,6 +1062,13 @@ input.button-disabled ,
     color: #888888;
 }
 
+#welcomeInside .headerUserName {
+    color: #ffffff;
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 7px;
+}
+
 #welcomeInside .headerButtonSeparator {
     display: inline-block;
     width: 21px;

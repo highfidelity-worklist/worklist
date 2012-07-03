@@ -495,7 +495,7 @@ var Budget = {
         });
     },
 
-    be_handleSorting: function(section, item) {
+    be_handleSorting: function(section, budget_id, item) {
         var desc = true;
         if (item.hasClass('desc')) {
             desc = false;

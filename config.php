@@ -25,7 +25,17 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
     include_once(dirname(__FILE__).'/server.local.php');
 } else {
     header("HTTP/1.0 404 Not Found");
-    die("Application configuration not found.");
+    define('WORKLIST_NUMBER', substr(dirname(__FILE__), 1 + strrpos(dirname(__FILE__), '/')));
+    $tmp_username =  substr(dirname(__FILE__), 0 , strrpos(dirname(__FILE__), '/public_html/'));
+    define('USERNAME2', substr($tmp_username, strrpos($tmp_username, '/dev-www/') + 9));
+    die('Application configuration not found.<br/>'.
+        'Run the following commands to set up your sandbox:<br/>'.
+        'cp ' . dirname(__FILE__). '/server.local.php.default ' . dirname(__FILE__). '/server.local.php<br/> ' .
+        'sed -ie "s/ini_set(\'html_errors\',FALSE);/ini_set(\'html_errors\',TRUE);/" ' . dirname(__FILE__) . '/server.local.php <br/>' .
+        'sed -ie "s/define(\'SANDBOX_NAME\', \'worklist\/\');/define(\'SANDBOX_NAME\', \'' . WORKLIST_NUMBER . '\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
+        'sed -ie "s/define(\'SANDBOX_USER\', \'\');/define(\'SANDBOX_USER\', \'~'. USERNAME2 . '\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
+        'rm ' . dirname(__FILE__) . '/server.local.phpe <br/> ' 
+        );
 }
 
 defineOnce('MYSQL_DEBUG_LEVEL', 0);

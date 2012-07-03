@@ -361,6 +361,7 @@ function StopStatus() {
     <script type="text/javascript" src="js/jquery_all.js"></script>
     <script type="text/javascript" src="js/journal.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript" src="js/budget.js"></script>
 <?php else: ?>
     <script type="text/javascript" src="js/jscode.min.js"></script>
 <?php endif; ?>
@@ -368,6 +369,7 @@ function StopStatus() {
 <?php require_once('dialogs/file-templates.inc'); ?>
 <!-- Popup for editing/adding  a work item -->
 <?php require_once('dialogs/popup-edit.inc'); ?>
+<?php require_once('dialogs/budget-expanded.inc') ?>
     <script type="text/javascript">
 <?php
     if (isset($error) && $error->getErrorFlag() == 1) {
