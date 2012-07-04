@@ -218,6 +218,7 @@ if ($action =='save_workitem') {
         $related = getRelated($notes);
     }
     // project
+
     if ( $workitem->getProjectId() != $project_id) {
         $workitem->setProjectId($project_id);
         if ($workitem->getStatus() != 'DRAFT') {

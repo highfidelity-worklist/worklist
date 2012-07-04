@@ -321,7 +321,8 @@ require_once('opengraphmeta.php');
         }
         $('#pages-dialog').prepend(selector);
     }
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row nodrag nodrop " ><td colspan="6" style="text-align:center;">Pages : &nbsp;';
+        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table +
+        '-pagination-row nodrag nodrop " ><td class="not-workitem" colspan="6" style="text-align:center;">Pages : &nbsp;';
         if (page > 1) {
             pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;';
         }
@@ -835,7 +836,6 @@ require_once('opengraphmeta.php');
             affectedHeader = $(this);
             orderBy($(this).text().toLowerCase());
         });
-
         // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
         $('#popup-addrole').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-role-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });

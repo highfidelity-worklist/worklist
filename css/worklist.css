@@ -407,6 +407,9 @@ td.textAlignReport {
     max-height: 250px;
 }
 
+#searchForm  div > p {
+    margin-bottom: 0 !important;
+}
 .bid_action_button{
     text-align: right;
     margin-top: 6px;
@@ -928,7 +931,6 @@ input.button-disabled ,
 
 #search-filter-wrap {
     float: left;
-    padding-bottom: 10px;
     top: 0;
 }
 
