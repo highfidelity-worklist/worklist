@@ -22,7 +22,7 @@ ob_start();
 if (isset($_SESSION['userid'])) {
     header("Location:worklist.php");
 } else {
-    header("Location:projects.php");
+    header("Location:welcome.php");
 }
 
 ?>
