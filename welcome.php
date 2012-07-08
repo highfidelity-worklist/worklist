@@ -101,8 +101,8 @@ include("opengraphmeta.php");
                 <div>
                     I'm an<br/>
                     <span class="welcomeRed">entrepreneur,</span><br/>
-                    I want to <a href="">start</a><br/>
-                     <a href="signup.php">a project</a>
+                    I want to <a href="signup.php">start<br/>
+                     a project</a>
                 </div>
             </div>
         </div>
