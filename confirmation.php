@@ -33,47 +33,50 @@ if (!empty($_REQUEST['saveW9Names'])) {
 if(!empty($_REQUEST['newPayPalEmail']) && !empty($_REQUEST['userId'])) {
     $paypal_hash = md5(date('r', time()));
     $paypal_email = $_REQUEST['newPayPalEmail'];
-	
-	$user = new User();
-	if( !$user->findUserById( (int) $_REQUEST['userId']) ) {
-		error_log("Failed to load user by ID on paypal email change");
-	    exit(0);
-	}
-	
-	if ($user->isPaypalVerified()) {
-		error_log("Trying to change user ".(int) $_REQUEST['userId']." paypal address on confirmation.php");
-	    exit(0);
-	}
-	
-	if ($user->getCountry() == 'US') {
-	    $user->setW9_accepted('NOW()');
-	}
-	
-	$subject = "Your payment PayPal account has been set";
+    
+    $user = new User();
+    if (! $user->findUserById((int) $_REQUEST['userId'])) {
+        error_log("Failed to load user by ID on paypal email change");
+        exit(0);
+    }
+    
+    if ($user->isPaypalVerified()) {
+        error_log("Trying to change user " . (int) $_REQUEST['userId'] . " paypal address on confirmation.php");
+        exit(0);
+    }
+    
+    if ($user->getCountry() == 'US') {
+        $user->setW9_accepted('NOW()');
+    }
+    
+    $subject = "Your payment PayPal account has been set";
 
-	$link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
-	$worklist_link = SERVER_URL . "worklist.php";
+    $link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
+    $worklist_link = SERVER_URL . "worklist.php";
 
-	$body  = '<p>Dear ' . $user->getNickname() . ',</p>';
-	$body .= '<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
-	$body .= '<p><a href="' . $link . '">Click here to confirm your payment address</a></p>';
+    $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
+    $body .= '<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the 
+            <a href="' . $worklist_link . '">Worklist</a>.</p>';
+    $body .= '<p><a href="' . $link . '">Click here to confirm your payment address</a></p>';
 
-	$plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
-	$plain .= 'Please confirm your payment email address to activate payments on your accounts and enable you to start placing bids in the Worklist.' . "\n\n";
-	$plain .= $link . "\n\n";
-			
-	$confirm_txt = "An email containing a confirmation link was sent to your payment email address. Please click on that link to verify your payment email address and activate your account.";
-	if (! send_email($paypal_email, $subject, $body, $plain)) { 
-		error_log("signup.php: send_email failed");
-		$confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
-	}
+    $plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
+    $plain .= 'Please confirm your payment email address to activate payments on your accounts and enable you 
+            to start placing bids in the Worklist.' . "\n\n";
+    $plain .= $link . "\n\n";
+            
+    $confirm_txt = "An email containing a confirmation link was sent to your payment email address. 
+            Please click on that link to verify your payment email address and activate your account.";
+    if (! send_email($paypal_email, $subject, $body, $plain)) { 
+        error_log("signup.php: send_email failed");
+        $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
+    }
 
-	$user->setPaypal_verified(false);
-	$user->setPaypal_hash($paypal_hash);
-	$user->setPaypal_email($paypal_email);
-	$user->save();
-	echo "email sent";
-	exit(0);
+    $user->setPaypal_verified(false);
+    $user->setPaypal_hash($paypal_hash);
+    $user->setPaypal_email($paypal_email);
+    $user->save();
+    echo "email sent";
+    exit(0);
 }
 
 if (isset($_REQUEST['str'])) {
@@ -144,45 +147,52 @@ var nclass;
 
 function validateNames(file, extension) {
     if (LiveValidation.massValidate( [ firstname, lastname ] )) {
+        openNotifyOverlay('Submitting your W9...', false);
         return validateW9Upload(file, extension);
     } else {
         return false;   
     }        
 }
 function validateW9Upload(file, extension) {
-	nclass = '.uploadnotice-w9';
-	return validateUpload(file, extension);
+    nclass = '.uploadnotice-w9';
+    return validateUpload(file, extension);
 }
 function validateUpload(file, extension) {
-	if (! (extension && /^(pdf)$/i.test(extension))) {
-		// extension is not allowed
-		$(nclass).empty();
-		var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
-						'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-						'<strong>Error:</strong> This filetype is not allowed. Please upload a pdf file.</p>' +
-					'</div>';
-		$(nclass).append(html);
-		// cancel upload
-		return false;
-	}
+    if (! (extension && /^(pdf)$/i.test(extension))) {
+        // extension is not allowed
+        $(nclass).empty();
+        var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
+                        '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
+                        '<strong>Error:</strong> This filetype is not allowed. Please upload a pdf file.</p>' +
+                    '</div>';
+        $(nclass).append(html);
+        // cancel upload
+        return false;
+    }
 }
 
 function completeUpload(file, data) {
-	$(nclass).empty();
-	if (data.success) {
-		var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
-						'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
-						'<strong>Info:</strong> ' + data.message + '</p>' +
-					'</div>';
+    $(nclass).empty();
+    if (data.success) {
+        openNotifyOverlay('W9 Uploaded', true);
+        var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
+                        '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
+                        '<strong>Info:</strong> ' + data.message + '</p>' +
+                    '</div>';
         saveNames();
-	} else {
-		var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
-						'<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-						'<strong>Error:</strong> ' + data.message + '</p>' +
-					'</div>';
-		this.enable();
-	}
-	$(nclass).append(html);
+    } else {
+        openNotifyOverlay('Submitting your W9...', true);
+        var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
+                        '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
+                        '<strong>Error:</strong> ' + data.message + '</p>' +
+                    '</div>';
+        this.enable();
+    }
+    
+    // wait for the upload status to fadeout
+    setTimeout(function() {
+        $(nclass).append(html);
+    }, 2000);
 }
 var user = <?php echo $user->getId(); ?>;
 
@@ -214,16 +224,29 @@ function saveNames() {
     });
 }
 
+function openNotifyOverlay(html, autohide) {
+    $("#sent-notify").html(html);
+    $('#sent-notify').css('display', '');
+    $('#sent-notify').css('left', (($('#w9-dialog').width() - $('#sent-notify').width()) / 2) + 'px');
+    if (autohide === true) {
+           setTimeout(function() {
+              $('#sent-notify').fadeOut('slow', function() {
+                  $('#sent-notify').css('display', 'none');
+              });
+         }, 1800);
+    }
+}
+
 $(document).ready(function () {
-	new AjaxUpload('formupload', {
-		action: '<?php echo SERVER_URL; ?>jsonserver.php',
-		name: 'Filedata',
-		data: { action: 'w9Upload', userid: user },
-		autoSubmit: true,
-		responseType: 'json',
-		onSubmit: validateNames,
-		onComplete: completeUpload
-	});
+    new AjaxUpload('formupload', {
+        action: '<?php echo SERVER_URL; ?>jsonserver.php',
+        name: 'Filedata',
+        data: { action: 'w9Upload', userid: user },
+        autoSubmit: true,
+        responseType: 'json',
+        onSubmit: validateNames,
+        onComplete: completeUpload
+    });
 
     $("#uploadw9").click(function() {
         $("#w9-dialog").dialog({
@@ -234,50 +257,50 @@ $(document).ready(function () {
             position: ['top']
         });
     });
-	
-	$('#save_payment').click( function () {
-		massValidation = LiveValidation.massValidate( [ paypal, w9_accepted ]);   
-		if (!massValidation) {
-		  return false;
-		}
-		$.ajax({
-			type: 'POST',
-			url: '<?php echo SERVER_URL; ?>confirmation.php',
-			data: { 
-				newPayPalEmail: $('#paypal_email').val(),
-				userId: user
-			},
-			success: function(json) {
-			    $('#savePayPalEmailDialog').dialog('open');
-			}
-		});	
-	});
+    
+    $('#save_payment').click( function () {
+        massValidation = LiveValidation.massValidate( [ paypal, w9_accepted ]);   
+        if (!massValidation) {
+          return false;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo SERVER_URL; ?>confirmation.php',
+            data: { 
+                newPayPalEmail: $('#paypal_email').val(),
+                userId: user
+            },
+            success: function(json) {
+                $('#savePayPalEmailDialog').dialog('open');
+            }
+        });    
+    });
 
-	$('#enter_later').click( function () { 
-		$('#saveLaterDialog').dialog('open');
-	});
-	
-	$('#saveLaterDialog').dialog({
-		modal: true,
-		autoOpen: false,
-		width: 350,
-		height: 180,
-		position: ['top'],
-		resizable: false
-	});
+    $('#enter_later').click( function () { 
+        $('#saveLaterDialog').dialog('open');
+    });
+    
+    $('#saveLaterDialog').dialog({
+        modal: true,
+        autoOpen: false,
+        width: 350,
+        height: 180,
+        position: ['top'],
+        resizable: false
+    });
 
-	$('#savePayPalEmailDialog').dialog({
-		modal: true,
-		autoOpen: false,
-		width: 300,
-		height: 130,
-		position: ['top'],
-		resizable: false
-	});
-	
-	$('.okButton').click( function() {
-		window.location = '<?php echo SERVER_URL; ?>login.php';
-	});
+    $('#savePayPalEmailDialog').dialog({
+        modal: true,
+        autoOpen: false,
+        width: 300,
+        height: 130,
+        position: ['top'],
+        resizable: false
+    });
+    
+    $('.okButton').click( function() {
+        window.location = '<?php echo SERVER_URL; ?>login.php';
+    });
 });
 </script>
 </head>

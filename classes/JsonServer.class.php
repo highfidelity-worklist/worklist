@@ -246,7 +246,7 @@ class JsonServer
                 'message' => File::fileUploadErrorMessage($_FILES['logoFile']['error'])
             ));
         }
-		
+        
         $ext = end(explode(".", $_FILES['logoFile']['name']));
         $fileName = File::uniqueFilename($ext);
         $tempFile = $_FILES['logoFile']['tmp_name'];
@@ -264,15 +264,15 @@ class JsonServer
                  ->setUrl($url);
             $success = $file->save();
             //good palce to set trigger for scanning
-			
+            
             return $this->setOutput(array(
-                'success' => true,
-                'fileid'  => $file->getId(),
-                'url'       => $url,
-                'title'      => $file->getTitle(),
-                'fileName' => $fileName,
+                'success'     => true,
+                'fileid'      => $file->getId(),
+                'url'         => $url,
+                'title'       => $file->getTitle(),
+                'fileName'    => $fileName,
                 'description' => '')
-			);
+            );
 
         } else {
             return $this->setOutput(array(
@@ -327,26 +327,26 @@ class JsonServer
                  ->setTitle($title)
                  ->setUrl($url);
             $success = $file->save();
-	    	$icon = File::getIconFromMime($file->getMime());
-        	if ($icon === false) {
-	           $filetype = 'image';
-	           $icon = 'images/icons/default.png';
-	        }
+            $icon = File::getIconFromMime($file->getMime());
+            if ($icon === false) {
+               $filetype = 'image';
+               $icon = 'images/icons/default.png';
+            }
             if ($workitem) {
                 $workitem_attached = new WorkItem();
                 $workitem_attached->loadById($workitem);
                 $journal_message = 'Document or Image uploaded #' . $workitem . ': ' . $workitem_attached->getSummary() . ' - ' . $file->getUrl();
                 sendJournalNotification($journal_message);
             }
-	        return $this->setOutput(array(
-	           'success' => true,
-	           'fileid'  => $file->getId(),
-	           'url'       => $file->getUrl(),
-	           'icon'      => $icon,
-	           'title'      => $file->getTitle(),
-	           'description' => '',
-	           'filetype'=> (isset($filetype) ? $filetype : '')
-	        ));
+            return $this->setOutput(array(
+               'success' => true,
+               'fileid'  => $file->getId(),
+               'url'       => $file->getUrl(),
+               'icon'      => $icon,
+               'title'      => $file->getTitle(),
+               'description' => '',
+               'filetype'=> (isset($filetype) ? $filetype : '')
+            ));
         } else {
             return $this->setOutput(array(
                 'success' => false,
@@ -787,7 +787,26 @@ class JsonServer
             $body .= "<p><a href=\"{$url}\">Click here</a></p>";
             
             if(! send_email(FINANCE_EMAIL, $subject, $body)) { 
-                error_log("JsonServer:w9Upload: send_email failed");
+                error_log("JsonServer:w9Upload: send_email to admin failed");
+            }
+            
+            // send approval email to user
+            $subject = 'Worklist.net: W9 Received';
+
+            $body = "<p>Hello you!</p>";
+            $body .= "<p>Thanks for uploading your W9 to our system. 
+                One of our staff will verify the receipt and then activate 
+                your account for bidding within the next 24 hours.<br/>
+                Until then, you are welcome to browse the jobs list, 
+                take a look at the open source code via the links at 
+                the bottom of any worklist page and ask questions in our Chat.
+                <br /><br />
+                See you in the Worklist!
+                <br /><br />
+                - the Worklist.net team";
+            
+            if(! send_email($user->getUsername(), $subject, $body)) { 
+                error_log("JsonServer:w9Upload: send_email to user failed");
             }
 
             $user->setW9_status('pending-approval');

@@ -731,13 +731,6 @@ input.button-disabled ,
     float: right;
 }
 
-#sent-notify{
-    text-align:center;
-    background-color:lightgrey;
-    height:20px !important;
-    line-height:20px;
-}
-
 #total-jobs,
 #active-jobs {
     color:#98AAB2;

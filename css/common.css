@@ -1,8 +1,8 @@
-/*  
-    Copyright (c) 2012, Below92 Inc.
-    All Rights Reserved. 
-    http://www.below92.com
-*/
+/*
+ Copyright (c) 2012, Below92 Inc.
+ All Rights Reserved.
+ http://www.below92.com
+ */
 
 /* Common / Shortcut styles */
 .floatLeft {
@@ -50,7 +50,7 @@ table {
 .table-worklist tbody tr {
     height: 28px;
 }
- 
+
 table td, table th {
     border-width: 1px;
     padding: 5px;
@@ -124,7 +124,7 @@ table tr:hover {
     background-image: none;
 }
 
-.table-hdng td, .table-hdng th{
+.table-hdng td, .table-hdng th {
     color: #6f6f6f;
     font-size: 12px;
     font-weight: bold;
@@ -133,7 +133,7 @@ table tr:hover {
 .rowodd {
     background-color: #fff;
 }
-.roweven{
+.roweven {
     background: url('../images/evenrow2.jpg') #fff repeat-x top left;
 }
 
@@ -184,20 +184,18 @@ div.documents.filesDescription {
 }
 
 .fileUploadButton {
-    background:url("../images/icons/clip.png") no-repeat scroll left top transparent;
+    background: url("../images/icons/clip.png") no-repeat scroll left top transparent;
     height: 32px;
     line-height: 32px;
     margin: 10px 0;
     padding-left: 35px;
 }
 
-.ui-state-default.ui-combobox,
-.ui-state-default .ui-combobox {
-    background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important; 
+.ui-state-default.ui-combobox, .ui-state-default .ui-combobox {
+    background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important;
 }
 
-.ui-state-hover.ui-combobox,
-.ui-state-hover .ui-combobox !important {
+.ui-state-hover.ui-combobox, .ui-state-hover .ui-combobox !important {
     background: url("../images/dropdown_background.png") repeat scroll 0px -35px transparent;
 }
 
@@ -215,15 +213,36 @@ div.documents.filesDescription {
     width: 350px;
 }
 
-pre,
-.pre {
-    white-space: pre;           /* CSS 2.0 */
-    white-space: pre-wrap;      /* CSS 2.1 */
-    white-space: pre-line;      /* CSS 3.0 */
-    white-space: -pre-wrap;     /* Opera 4-6 */
-    white-space: -o-pre-wrap;   /* Opera 7 */
+pre, .pre {
+    white-space: pre; /* CSS 2.0 */
+    white-space: pre-wrap; /* CSS 2.1 */
+    white-space: pre-line; /* CSS 3.0 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
     white-space: -moz-pre-wrap; /* Mozilla */
-    white-space: -hp-pre-wrap;  /* HP Printers */
-    word-wrap: break-word;      /* IE 5+ */
+    white-space: -hp-pre-wrap; /* HP Printers */
+    word-wrap: break-word; /* IE 5+ */
 }
 
+#sent-notify {
+    text-align: center;
+    background-color: lightgrey;
+    height: 20px !important;
+    line-height: 20px;
+}
+
+#w9-dialog #sent-notify {
+    position: absolute;
+    top: 35%;
+    left: 30%;
+    padding: 10px;
+    vertical-align: middle;
+    
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    
+    -webkit-box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
+    -moz-box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
+    box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
+}
