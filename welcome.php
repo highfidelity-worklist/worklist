@@ -191,7 +191,7 @@ include("opengraphmeta.php");
             </div>
         </div>
         <div id="entrepreneurBottom">
-            <span class="welcomeRed">Skilled developpers.</span>
+            <span class="welcomeRed">Skilled developers.</span>
              The right budget.
             <span class="welcomeRed">The working prototype.</span>
         </div>
@@ -210,9 +210,8 @@ include("opengraphmeta.php");
                 Crowdsource large projects for
                 <span class="welcomeBold">agile develoment and fast turnaround.</span>
             </div>
-            <div class="getstarted">
-                Get started quickly:
-            </div>
+            
+			
         </div>
         <div id="entrepreneur2Right">
             <div class="bullet">
@@ -225,14 +224,28 @@ include("opengraphmeta.php");
             <div class="bulletTextRight">
                 Gain creative insight and expertise from tech experts across the globe.
             </div>
+			
+			
+	
         </div>
+		
+		
+		<div class="getstartedContainer">
+			<div class="getstarted">
+                Get started quickly:
+            </div>
+			<div class="signupnowContainer">
+				<div id="collaborateArrowRight"></div>
+				<div class="signupnow">
+					&nbsp;<a href="signup.php" class="welcomeRed welcomeBold">SIGN UP NOW</a>
+				</div>
+			</div>
+			
+		</div>
+    
+	
     </div>
-    <div id="entrepreneur3">
-        <div id="collaborateArrowRight"></div>
-        <div>
-            &nbsp;<a href="signup.php" class="welcomeRed welcomeBold">SIGN UP NOW</a>
-        </div>
-    </div>
+    
 <?php
 //-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 include("footer.php");

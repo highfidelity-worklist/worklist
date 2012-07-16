@@ -246,6 +246,7 @@
     background: no-repeat url('../images/primaryIcons-WL.png') 0px -630px;
     width: 50px;
     height: 50px;
+	float:left;
 }
 
 #developerEnd {
@@ -352,8 +353,11 @@
 }
 
 .getstarted {
-    clear: both;
-    padding-top: 24px;
+    /*clear: both;*/
+    /*padding-top: 24px;*/
+	width:240px;
+	float:left;
+	padding-top:8px;
 }
 
 #entrepreneur3 {
@@ -384,4 +388,17 @@ body {
 
 #container {
     background: url('../images/45degreee_fabric_light.jpg');
+}
+
+.getstartedContainer {
+	width:600px;
+}
+
+.signupnow {
+	float:left;
+	padding-top:8px;
+}
+
+.signupnowContainer {
+	display:inline;
 }
