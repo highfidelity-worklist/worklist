@@ -8,6 +8,8 @@
  */
 require_once('lib/Workitem/Exception.php');
 require_once('lib/twitteroauth/twitteroauth.php');
+require_once('classes/User.class.php');
+require_once('classes/GitHub.class.php');
 /**
  * Workitem
  *
@@ -891,51 +893,95 @@ WHERE id = ' . (int)$id;
 
         $bid_info['nickname'] = $bidder->getNickname();
 
-        // If the project has a repository, give the user a checkout
-        $repository = $this->getRepository();
-        $job_id     = $this->id;
-
-        if ($repository) {
-            // We don't want to fail user signup if sandboxes are not online
-            // so we will not create unixusername until needed
-            if ($bidder->getHas_sandbox()) {
-                $new_user = false;
-            } else {
-                $bidder->setUnixusername(User::generateUnixusername($bidder->getNickname()));
-                $new_user = true;
+        
+        $project = new Project($this->getProjectId());
+        if ($project->getRepo_type() == 'git') {
+            // This project is connected to GitHub, override the svn standard process
+            $GitHubProject = new GitHubProject();
+            // Get the repo for this project
+            $repository = $this->getRepository();
+            $job_id = $this->getId();
+            // Verify whether the user already has this repo forked on his account
+            // If not create the fork
+            $GitHubUser = new GitHubUser($bid_info['bidder_id']);
+            if (!$GitHubUser->verifyForkExists($repository)) {
+                $forkStatus = $GitHubUser->createForkForUser($repository);
+                $bidderEmail = $bidder->getUsername();
+                $emailTemplate = 'forked-repo';
+                $data = array(
+                    'project_name' => $forkStatus['data']['full_name'],
+                    'nickname' => $bidder->getNickname(),
+                    'users_fork' => $forkStatus['data']['git_url'],
+                    'master_repo' => str_replace('https://', 'git://', $project->getRepository())
+                );
+                $senderEmail = 'Worklist <contact@worklist.net>';
+                sendTemplateEmail($bidderEmail, $emailTemplate, $data, $senderEmail);
+                sleep(10);
             }
-
-            $bid_info['sandbox'] = "http://" . SANDBOX_SERVER .
-                "/~" . $bidder->getUnixusername() . "/" .
-                $repository."_".$job_id."/";
-
-            // Provide bidder with sandbox & checkout if they don't already have one
-            // If the sandbox flag is 0, they are a new user and need one setup
-            require_once("sandbox-util-class.php");
-            $sandboxUtil = new SandBoxUtil;
-            try {
-                $sandboxUtil->createSandbox(
-                    $bidder->getUsername(),
-                    $bidder->getNickname(),
-                    $bidder->getUnixusername(),
-                    $this->getRepository(),
-                    $job_id,
-                    $new_user);
-            } catch (Exception $e) {
-                $error_email_body = "Error creating sandbox for user: " .
-                    $bidder->getUsername()."\n. " .
-                    "Script returned error: ".$e->getMessage();
-                send_email("ops@lovemachineinc.com", "Sandbox creation error",
-                              $error_email_body);
-                $bid_info['sandbox'] = "N/A";
+            // Create a branch for the user
+            if (!$forkStatus['error']) {
+                $branchStatus = $GitHubUser->createBranchForUser($job_id, $repository);
+                $bidderEmail = $bidder->getUsername();
+                $emailTemplate = 'branch-created';
+                $data = array(
+                    'branch_name' => $job_id,
+                    'nickname' => $bidder->getNickname(),
+                    'users_fork' => $forkStatus['data']['git_url'],
+                    'master_repo' => str_replace('https://', 'git://', $project->getRepository())
+                );
+                $senderEmail = 'Worklist <contact@worklist.net>';
+                sendTemplateEmail($bidderEmail, $emailTemplate, $data, $senderEmail);
             }
-
-            if ($new_user) {
-                $bidder->setHas_sandbox(1);
-                $bidder->save();
+            if (!$branchStatus['error']) {
+                $bid_info['sandbox'] = $branchStatus['branch_url'];
             }
         } else {
-            $bid_info['sandbox'] = "N/A";
+            // If the project has a repository, give the user a checkout
+            $repository = $this->getRepository();
+            $job_id     = $this->id;
+
+            if ($repository) {
+                // We don't want to fail user signup if sandboxes are not online
+                // so we will not create unixusername until needed
+                if ($bidder->getHas_sandbox()) {
+                    $new_user = false;
+                } else {
+                    $bidder->setUnixusername(User::generateUnixusername($bidder->getNickname()));
+                    $new_user = true;
+                }
+
+                $bid_info['sandbox'] = "http://" . SANDBOX_SERVER .
+                    "/~" . $bidder->getUnixusername() . "/" .
+                    $repository."_".$job_id."/";
+
+                // Provide bidder with sandbox & checkout if they don't already have one
+                // If the sandbox flag is 0, they are a new user and need one setup
+                require_once("sandbox-util-class.php");
+                $sandboxUtil = new SandBoxUtil;
+                try {
+                    $sandboxUtil->createSandbox(
+                        $bidder->getUsername(),
+                        $bidder->getNickname(),
+                        $bidder->getUnixusername(),
+                        $this->getRepository(),
+                        $job_id,
+                        $new_user);
+                } catch (Exception $e) {
+                    $error_email_body = "Error creating sandbox for user: " .
+                        $bidder->getUsername()."\n. " .
+                        "Script returned error: ".$e->getMessage();
+                    send_email("ops@lovemachineinc.com", "Sandbox creation error",
+                                $error_email_body);
+                    $bid_info['sandbox'] = "N/A";
+                }
+
+                if ($new_user) {
+                    $bidder->setHas_sandbox(1);
+                    $bidder->save();
+                }
+            } else {
+                $bid_info['sandbox'] = "N/A";
+            }
         }
 
         $bid_info['bid_done'] = strtotime('+' . $bid_info['bid_done_in'], time());
@@ -1205,21 +1251,25 @@ WHERE id = ' . (int)$id;
             return null; // CR is only allowed for REVIEW items without the CR started
         }
         $returnValue = true;
-        try {
-            $returnValue = $this->authorizeSandbox();
-        } catch (Exception $ex) {
-            //log error and allow code review
-            error_log($ex->getMessage());
-        }
+        
+        $project = new Project($this->getProjectId());
+        if ($project->getRepo_type() == 'svn') {
+            try {
+                $returnValue = $this->authorizeSandbox();
+            } catch (Exception $ex) {
+                //log error and allow code review
+                error_log($ex->getMessage());
+            }
 
-        // set the task as CR started only if sb authorized
-        if ($returnValue === true) {
-            $this->setCRStarted(1);
-            $this->setCReviewerId($reviewer_id);
-            $this->save();
+            // set the task as CR started only if sb authorized
+            if ($returnValue === true) {
+                $this->setCRStarted(1);
+                $this->setCReviewerId($reviewer_id);
+                $this->save();
+            }
         }
-
         return $returnValue;
+        
     }
 
     public function authorizeSandbox() {

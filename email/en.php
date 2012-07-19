@@ -202,6 +202,52 @@ replacement data:
                <p>Project Admin: {nickname}<br/>
                Project Name: {project_name}</p>
                <p>You can view the details <a href="' . WORKLIST_URL . '{project_name}">here</a>.'
+),
+    
+'forked-repo' => array(
+    'subject' => 'New fork {project_name} created on your GitHub account',
+    'body' => '<p>Hi {nickname}!</p>
+               <p>A fork of the project {project_name} has been created on your GitHub account. Make sure you keep this fork up to date with our master repository to guarantee you\'re always working on the most recent version of the codebase</p>
+               <p>In order for your locally cloned repository to keep up to date with master changes, please follow these instructions:</p>
+               <ol>
+               <li>Locally clone your fork: git clone {users_fork}</li>
+               <li>From your cloned copy, set the master repo as upstream: git remote add upstream {master_repo}</li>
+               </ol>
+               <p>If you have any questions, look for assistance in our Chat.</p>
+               <p>The Worklist</p>'
+),
+    
+'branch-created' => array(
+    'subject' => 'New branch {branch_name} created for repo {users_fork} on your GitHub account',
+    'body' => '<p>Hi {nickname}!</p>
+               <p>We have created a new branch {branch_name} on your {users_fork} repo in your GitHub account.</p>
+               <p>Please refer to the following basic commands to work with your new branch:</p>
+               <ol>
+               <li>Locally clone your fork: git clone {users_fork}</li>
+               <li>From your cloned copy, set the master repo as upstream: git remote add upstream {master_repo}</li>
+               <li>Make sure you\'re using the latest code: git pull upstream master</li>
+               <li>Checkout the correct branch: git checkout {branch_name}</li>
+               <li>Make all required changes, commit to your local clone as you advance, and push to your fork whenever ready: git push</li>
+               <li>Before code or functional reviews can happen, you must have pushed your progress to your GitHub fork.</li>
+               </ol>
+               <p>If you have any questions, look for assistance in our Chat.</p>
+               <p>The Worklist</p>'
+),
+
+'functional-howto' => array(
+    'subject' => 'Job #{branch_name} is ready for functional review',
+    'body' => '<p>Hi {runner}!</p>
+               <p>Job #{branch_name} is ready for functional review. Please follow these instructions to checkout and test the work done by the mechanic:</p>
+               <ul>
+               <li>Clone the mechanics fork: git clone {users_fork}</li>
+               <li>Checkout the branch created for this job: git checkout {branch_name}</li>
+               <li>Use this branch to make your build</li>
+               </ul>
+               <p>If you have any questions, please get ahold of an O-Team Member for assistance.</p>'
+),
+    
+'commit-howto' => array(
+    
 )
 
 );

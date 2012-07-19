@@ -41,6 +41,9 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
 defineOnce('MYSQL_DEBUG_LEVEL', 0);
 defineOnce('MYSQL_DEBUG_MESSAGE_DEFAULT', 'General database error');
 
+defineOnce('GITHUB_ID', 'c5bb09ca5ee6b0e20634');
+defineOnce('GITHUB_SECRET', 'b03a51691282423fc0769abbaadef4adb337dac1');
+defineOnce('GITHUB_APIURL', 'https://api.github.com/');
 
 if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER', 'Worklist <worklist@worklist.net>');
 if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@worklist.net');

@@ -1,4 +1,5 @@
 var WorklistProject = {
+    repo_type: false,
 
     init: function() {
         WorklistProject.createDb();

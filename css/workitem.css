@@ -218,9 +218,29 @@ span.info-whisper {
 .clickable {
     cursor:pointer;
 }
+
 .editable {
     color: #375D81;
 
+}
+
+.project-github {
+    padding-left: 75px;
+    height: 60px;
+    background: url('../images/github_logo.png') no-repeat;
+    margin-bottom: 15px;
+}
+
+.project-github h1 {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px 0 0 0;
+    margin: 0;
+}
+
+.project-github h2 {
+    font-size: 15px;
+    font-weight: normal;
 }
 
 .project-label {

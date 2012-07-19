@@ -32,6 +32,7 @@ class Project {
     protected $cr_3_favorites;
     protected $cr_job_runner;
     protected $internal;
+    protected $repo_type;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -94,6 +95,7 @@ class Project {
                 p.website,
                 p.budget,
                 p.repository,
+                p.repo_type,
                 p.contact_info,
                 p.last_commit,
                 p.active,
@@ -125,6 +127,7 @@ class Project {
              ->setWebsite($row['website'])
              ->setBudget($row['budget'])
              ->setRepository($row['repository'])
+             ->setRepo_type($row['repo_type'])
              ->setContactInfo($row['contact_info'])
              ->setLastCommit($row['last_commit'])
              ->setActive($row['active'])
@@ -236,7 +239,16 @@ class Project {
 
     public function getRepository() {
         return $this->repository;
-    }            
+    }
+    
+    public function setRepo_type($repo_type) {
+        $this->repo_type = $repo_type;
+        return $this;
+    }
+
+    public function getRepo_type() {
+        return $this->repo_type;
+    }        
     
     public function setContactInfo($contact_info) {
         $this->contact_info = $contact_info;
@@ -536,7 +548,11 @@ class Project {
     }
 
     public function getRepoUrl() {
-        return SVN_BASE_URL . $this->repository;
+        if ($this->getRepo_type() == 'git') {
+            return $this->repository;
+        } else {
+            return SVN_BASE_URL . $this->repository;
+        }
     }
 
 /**

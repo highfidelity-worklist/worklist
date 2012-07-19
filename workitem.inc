@@ -78,6 +78,8 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/review.js"></script>
 <script type="text/javascript" src="js/favorites.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
+<script type="text/javascript" src="js/projects.js"></script>
+<script type="text/javascript" src="js/github.js"></script>
 <script type="text/javascript">
 <!-- Start User Info popup code -->
 function resizeIframeDlg() {
@@ -190,6 +192,9 @@ $(document).ready(function() {
 <?php } ?>
 
 <script type="text/javascript">
+GitHub.isConnected = '<?php echo $isGitHubConnected; ?>';
+WorklistProject.repo_type = '<?php echo $workitem_project->getRepo_type(); ?>';
+GitHub.applicationKey = '<?php echo GITHUB_ID; ?>';
 var filterName = '.worklist';
 var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
@@ -887,6 +892,7 @@ $(document).ready(function(){
         $('#budget-source-combo').comboBox({action:"val", param: [val1]});
         $('#popupSelectBudget').data("clickon", id).dialog('open');
     }
+    
     function ConfirmEditBid(){
         var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
 
@@ -939,11 +945,17 @@ $(document).ready(function(){
         );
         $('#popup-edit-bid-info').dialog('open');
     }
-  function showConfirmForm(i) {
-      $('#popup-confirmation-type').val(i);
-      $('#popup-confirmation').dialog('open');
-      return false;
-  }
+    
+    function showConfirmForm(i) {
+        if (GitHub.validate()) {
+            $('#popup-confirmation-type').val(i);
+            $('#popup-confirmation').dialog('open');
+        } else {
+            GitHub.handleUserConnect();
+        }
+        return false;
+    }
+    
   function showIneligible(problem) {
       $('#popup-ineligible').dialog('open');
   }
@@ -1720,6 +1732,20 @@ if ($action =="edit"):  ?>
 
                     </li>
                     <li>
+                        <?php if ($workitem_project->getRepo_type() == 'git') { ?>
+                        <div class="project-github">
+                            <h1>This project is connected to GitHub</h1>
+                            <h2>
+                                <?php 
+                                if ($isGitHubConnected) { 
+                                    echo "You have successfully connected your Worklist and GitHub accounts"; 
+                                } else { 
+                                    echo "You need a GitHub account and will be requested for authorization on your first bid";
+                                }
+                                ?>
+                            </h2>
+                        </div>
+                        <?php } ?>
                         <div class="project-label">Project</div>
                         <?php if ( !empty($worklist['project_id']) ):?>
                             <a href="<?php echo Project::getProjectUrl($worklist['project_id']);?>" target="_blank">

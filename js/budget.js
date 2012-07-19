@@ -367,12 +367,12 @@ var Budget = {
     },
     
     /**
- * Show a dialog with expanded info on the selected @section
- * Sections:
- *  - 0: Allocated
- *  - 1: Submited
- *  - 2: Paid
- */
+    * Show a dialog with expanded info on the selected @section
+    * Sections:
+    *  - 0: Allocated
+    *  - 1: Submited
+    *  - 2: Paid
+    */
     budgetExpand: function(section, budget_id) {
         $('#be-search-field').val('');
         $('#be-search-field').keyup(function() {

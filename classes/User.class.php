@@ -30,6 +30,8 @@ class User {
     protected $is_active;
     protected $is_admin;
     protected $last_seen;
+    protected $github_connected;
+    protected $github_token;
     protected $journal_nick;
     protected $is_guest;
     protected $int_code;
@@ -867,7 +869,37 @@ class User {
     public function setLast_name($last_name) {
         $this->last_name = $last_name;
         return $this;
-    } 
+    }
+    
+    /**
+     * @return true if user has authorized the app with github, false otherwise
+     */
+    public function getGithub_connected() {
+        return $this->github_connected;
+    }
+    
+    /**
+     * @param (bool) $isConnected
+     */
+    public function setGithub_connected($isConnected) {
+        $this->github_connected = (bool)$isConnected;
+        return $this;
+    }
+    
+    /**
+     * @return user's github token if there's one, otherwise false
+     */
+    public function getGithub_token() {
+        return $this->github_token ? $this->github_token : false;
+    }
+    
+    /**
+     * @param (string) $GitHubToken
+     */
+    public function setGithub_token($GitHubToken) {
+        $this->github_token = $GitHubToken;
+        return $this;
+    }
 
     /**
      * @return the $is_active

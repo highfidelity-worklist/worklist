@@ -8,6 +8,8 @@ require_once 'class.session_handler.php';
 require_once 'send_email.php';
 require_once 'workitem.class.php';
 require_once 'classes/Project.class.php';
+require_once 'classes/User.class.php';
+require_once 'classes/GitHub.class.php';
 require_once 'class/Utils.class.php';
 require_once 'functions.php';
 require_once 'timezones.php';
@@ -33,6 +35,8 @@ $userId = getSessionUserId();
 $user = new User();
 if ($userId > 0) {
     $user->findUserById($userId);
+    $isGitHubConnected = $user->getGithub_connected();
+    $GitHubToken = $isGitHubConnected ? $user->getGithub_token() : false;
 } else {
     $user->setId(0);
 }
@@ -219,7 +223,7 @@ if ($action =='save_workitem') {
     }
     // project
 
-    if ( $workitem->getProjectId() != $project_id) {
+    if ($workitem->getProjectId() != $project_id) {
         $workitem->setProjectId($project_id);
         if ($workitem->getStatus() != 'DRAFT') {
             $new_update_message .= "Project changed. ";
@@ -227,7 +231,7 @@ if ($action =='save_workitem') {
         }
     }
     // Sandbox
-    if ( $workitem->getSandbox() != $sandbox) {
+    if ($workitem->getSandbox() != $sandbox) {
         $workitem->setSandbox($sandbox);
         $new_update_message .= "Sandbox changed. ";
         $job_changes[] = '-sandbox';
@@ -256,6 +260,7 @@ if ($action =='save_workitem') {
                                             'recipients' => array('runner', 'usersWithFeesBug')));
         }
     }
+    
     //if job is a bug, notify to journal
     if($bug_job_id > 0) {
         $workitem->setIs_bug(1);
@@ -264,11 +269,10 @@ if ($action =='save_workitem') {
         $bugJournalMessage = " (which is a bug)";
     } elseif (isset($is_bug) && $is_bug == 1) {
         $bugJournalMessage = " (which is a bug)";
-    }
-    else
-    {
+    } else {
         $bugJournalMessage= "";
     }
+    
     if (empty($new_update_message)) {
         $new_update_message = " No changes.";
     } else {
@@ -707,6 +711,7 @@ if ($action == "place_bid") {
     $redirectToDefaultView = true;
     // echo 'redirect is set to true ' . $redirectToDefaultView;
 }
+
 // Edit Bid
 if ($action =="edit_bid") {
     if (! $user->isEligible() ) {
@@ -874,7 +879,7 @@ if ($action == 'accept_bid') {
                 $remainingFunds = $budget->getRemainingFunds();
                 if($bid_amount <= $remainingFunds) {
                     $bid_info = $workitem->acceptBid($bid_id, $budget_id);
-              $budget->recalculateBudgetRemaining();
+                    $budget->recalculateBudgetRemaining();
                     
                     // Journal notification
                     $journal_message .= $_SESSION['nickname'] .
@@ -1211,32 +1216,73 @@ function changeStatus($workitem, $newStatus, $user) {
     }
 
     $workitem->setStatus($newStatus);
+    $projectId = $workitem->getProjectId();
+    $thisProject = new Project($projectId);
+    $repoType = $thisProject->getRepo_type();
     
     // Generate diff and send to pastebin if we're in REVIEW
     if ($newStatus == "REVIEW") {
         //reset code_review flags
         $workitem->resetCRFlags();
-        if (substr($workitem->getSandbox(), 0, 4) == "http") {
-            require_once("sandbox-util-class.php");
-            
-            // Sandbox URLs look like:
-            // https://dev.worklist.net/~johncarlson21/worklist
-            // 0     12               3              4
-            $sandbox_array = explode("/", $workitem->getSandbox());
+        if ($repoType == 'svn') {
+            if (substr($workitem->getSandbox(), 0, 4) == "http") {
+                require_once("sandbox-util-class.php");
 
-            $username = isset($sandbox_array[3]) ? $sandbox_array[3] : "~";
-            $username = substr($username, 1); // eliminate the tilde
+                // Sandbox URLs look like:
+                // https://dev.worklist.net/~johncarlson21/worklist
+                // 0     12               3              4
+                $sandbox_array = explode("/", $workitem->getSandbox());
 
-            $sandbox = isset($sandbox_array[4]) ? $sandbox_array[4] : "";
+                $username = isset($sandbox_array[3]) ? $sandbox_array[3] : "~";
+                $username = substr($username, 1); // eliminate the tilde
 
-            try {
-                $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
-                $comment = "Code review available here:\n$result";
-                $rt = addComment($workitem->getId(), $user->getId(), $comment);
-            } catch (Exception $ex) {
-                error_log("Could not paste diff: \n$ex");
+                $sandbox = isset($sandbox_array[4]) ? $sandbox_array[4] : "";
+
+                try {
+                    $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
+                    $comment = "Code review available here:\n$result";
+                    $rt = addComment($workitem->getId(), $user->getId(), $comment);
+                } catch (Exception $ex) {
+                    error_log("Could not paste diff: \n$ex");
+                }
             }
-        }
+        } elseif ($repoType == 'git') {
+            $GitHubUser = new GitHubUser($workitem->getMechanicId());
+            $pullResults = $GitHubUser->createPullRequest($workitem->getId(), $thisProject->getRepository());
+            if (!$pullResults['error'] && !isset($pullResults['data']['errors'])) {
+                $codeReviewURL = $pullResults['data']['html_url'] . '/files';
+                $comment = "Code review available here:\n" . $codeReviewURL;
+            } else {
+                $comment = $pullResults['error'] 
+                    ? "We had problems making your request to GitHub\n" 
+                    : "The following error was returned when making your pull request:\n";
+                $comment .= isset($pullResults['data']['errors']) 
+                    ? $pullResults['data']['errors'][0]['message'] 
+                    : "Unknown error"; 
+            }
+            $rt = addComment($workitem->getId(), $user->getId(), $comment);
+        } 
+    }
+    
+    if ($newStatus == 'FUNCTIONAL' && $repoType == 'git') {
+        $runner = $workitem->getRunnerId();
+        $GitHubUser = new GitHubUser($runner);
+        $runnerEmail = $GitHubUser->getUsername();
+        $GitHubBidder = new GitHubUser($workitem->getMechanicId());
+        $githubDetails = $GitHubBidder->getGitHubUserDetails();
+        $gitHubUsername = $githubDetails['data']['login'];
+        $GitHubProject = new GitHubProject();
+        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($thisProject->getRepository());
+        $usersFork = 'https://github.com/' . $githubUsername . "/" . $repoDetails['name'] . ".git";
+        $emailTemplate = 'functional-howto';
+        $data = array(
+            'branch_name' => $workitem->getId(),
+            'runner' => $GitHubUser->getNickname(),
+            'users_fork' => $usersFork,
+            'master_repo' => str_replace('https://', 'git://', $thisProject->getRepository())
+        );
+        $senderEmail = 'Worklist <contact@worklist.net>';
+        sendTemplateEmail($runnerEmail, $emailTemplate, $data, $senderEmail);
     }
 
     // notifications for subscribed users

@@ -28,6 +28,8 @@ if ($userId > 0) {
     initUserById($userId);
     $user = new User();
     $user->findUserById($userId);
+    $isGitHubConnected = $user->getGithub_connected();
+    $GitHubToken = $isGitHubConnected ? $user->getGithub_token() : false;
     // @TODO: this is overwritten below..  -- lithium
     $nick = $user->getNickname();
     $userbudget =$user->getBudget();
