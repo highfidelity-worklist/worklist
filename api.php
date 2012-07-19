@@ -128,6 +128,9 @@ if(validateAction()) {
             case 'getFavoriteUsers':
                 getFavoriteUsers();
                 break;
+            case 'getTwilioCountries':
+                getTwilioCountries();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -733,5 +736,31 @@ function getFavoriteUsers() {
     echo json_encode($data);
 }
 
+/**
+ * Returns a list of all the countries supported by Twilio
+ */
+function getTwilioCountries() {
+    $sql = 'SELECT `country_code`, `country_phone_prefix` FROM `' . COUNTRIES . '` WHERE `country_twilio_enabled` = 1';
+
+    $result = mysql_query($sql);
+    if(!is_resource($result)) {
+        echo json_encode(array(
+            'success' => false,
+            'message' => 'Could not retrieve the list of twilio supported countries'
+        ));
+        return;
+    }
+    
+    $list = array();
+    while ($row = mysql_fetch_assoc($result)) {
+        $list[$row['country_code']] = $row['country_phone_prefix'];
+    }
+    
+    echo json_encode(array(
+        'success' => true,
+        'list' => $list
+    ));
+    return;
+}
 
 ?>

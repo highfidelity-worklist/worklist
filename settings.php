@@ -55,9 +55,6 @@ if (isset($_REQUEST['save_account'])) {
             $error->setError('You are required to choose a city');
         }
 
-        $provider = mysql_real_escape_string($_REQUEST['provider']);
-        $saveArgs['provider'] = 0;
-
         $sms_flags = 0;
         if (!empty($_REQUEST['journal_alerts'])) {
             $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
@@ -105,9 +102,10 @@ if (isset($_REQUEST['save_account'])) {
             $username = $_SESSION['username'];
             $nickname = $_SESSION['nickname'];
 
-            $sql = " INSERT INTO " . USERS . " 
-                        (`id`, `username`, `nickname`, `timezone`, `country`, `provider` ,`phone`, `int_code`, `smsaddr`, `sms_flags`, `notifications`, `is_active`, `confirm`)
-                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$provider', '$phone', '$int_code', '$smsaddr', '$sms_flags', '$notifications', '1', '1')";
+            $sql = " 
+                INSERT INTO " . USERS . " 
+                (`id`, `username`, `nickname`, `timezone`, `country`, `phone`, `int_code`, `smsaddr`, `sms_flags`, `notifications`, `is_active`, `confirm`)
+                VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$phone', '$int_code', '$smsaddr', '$sms_flags', '$notifications', '1', '1')";
             mysql_unbuffered_query($sql);
             $_SESSION['new_user'] = '';
             $saveArgs = array();
@@ -414,12 +412,11 @@ include("head.html");
             if (massValidation) {
                 values = { 
                     int_code: $('#int_code').val(),
-                    phone: $('#phone').val(),
+                    phone: isTwilioSupported($('#int_code').val()) ? $('#phone').val() : '',
                     phone_edit: $('#phone_edit').val(),
                     country: $('#country').val(),
                     city: $('#city').val(),
-                    smsaddr: $('#smsaddr').val(),
-                    provider: $('#provider').val(),
+                    smsaddr: (isTwilioSupported($('#int_code').val()) && $('#phone').val() ? '' : $('#smsaddr').val()),
                     timezone: $('#timezone').val(),
                     journal_alerts: $('#journal_alerts').prop('checked') ? 1 : 0,
                     bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
@@ -511,7 +508,7 @@ include("head.html");
                 },
                 dataType: 'json'
             });
-            alert('Test SMS Sent');
+            alert('Test SMS Sent to: ' + int_code + phone);
         } else {
             alert('Please enter a valid telephone number.');
         }
@@ -694,7 +691,6 @@ include("head.html");
         $city = !$new_user ? $userInfo['city'] : '';
         $int_code = !$new_user ? $userInfo['int_code'] : '';
         $phone = !$new_user ? $userInfo['phone'] : '';
-        $provider = !$new_user ? $userInfo['provider'] : '';
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $picture = !$new_user ? $userInfo['picture'] : '';
         $notifications = !$new_user ? $userInfo['notifications'] : 0;

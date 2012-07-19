@@ -53,16 +53,10 @@ if ( empty($signup)) { ?>
                             </select>
                             <input name="phone_edit" type="hidden" id="phone_edit" value="0"/>
 
-                            <input name="stored-provider" type="hidden" id="stored-provider" value="<?php echo $provider; ?>" />
-                            <select id="provider" name="provider" <?php echo ((empty($country) || $country == '--')?'style="display:none"':'') ?> style="width:274px">
-                                <?php if (empty($country) || $country == '--') { ?>
-                                <option value="Select Country">Please select a Country</option>
-                                <?php } else { ?>
-                                <option value="Wireless Provider">(Other)</option>
-                                <?php } ?>
-                            </select>
-
-                            <input type="text" name="phone" id="phone" size="15" value="<?php echo $phone ?>" />&nbsp;
+                            <span id="phone_wrapper">
+                                <span id="phone_prefix"></span>
+                                <input type="text" name="phone" id="phone" size="30" value="<?php echo $phone ?>" />&nbsp;
+                            </span>
                             <?php if (isset($settingsPage)) { ?>
                             <a id="send-test" href="#">send test text</a>
                             <?php } ?>

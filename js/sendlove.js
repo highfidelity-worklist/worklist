@@ -4,81 +4,53 @@
 var smsCountry = '';
 var smsProvider = '';
 var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+var twilio_countries = [];
 
 function smsAddressVisibility(e)
 {
+    $('#countrynotsupported').remove();
     if ( $("#country option:selected").val() != '' ) {
-    if( $("#int_code option:selected").val() == '1'){
-        $("#smsaddr").hide();
-        $("#sms-other p").hide();
-        $("#sms-other").hide();
-    } else {
-        $("#sms-other").show();
-        $("#sms-other p").show();
-        $("#smsaddr").show();    
-    }
+        if (isTwilioSupported($("#int_code option:selected").val())) {
+            $("#smsaddr").hide();
+            $("#sms-other p").hide();
+            $("#sms-other").hide();
+            $("#phone").removeAttr('disabled');
+            $("#send-test").show();
+            $('#phone_prefix').text('+' + $("#int_code option:selected").val());
+            $('#phone_wrapper').addClass('active');
+        } else {
+            $("#sms-other").show();
+            $("#sms-other p").show();
+            $("#smsaddr").show();    
+            $("#phone").attr('disabled', 'disabled');
+            $("#send-test").hide()
+              .after('<p id="countrynotsupported" class="LV_invalid">Sorry, this country is not currently supported for SMS. Enter an e-mail address below to receive text messages.</p>');
+            $('#phone_prefix').text('');
+            $('#phone_wrapper').removeClass('active');
+        }
     }
 }
 
-function smsRefreshProvider(init)
+function smsRefreshIntCode(init)
 {
-var pos=4;
+    var pos=4;
     if (!init) $("#phone_edit").val('1');
     if (smsCountry != $("#country").val()) {
         smsCountry = $("#country").val();
         if (smsCountry == '--') {
-            $("#sms-provider").hide();
             $("#sms-other").hide();
         } else {
             var country = $("#country option:selected").text();
             var len = country.length;
-        $("#int-code option").each(function(){
+            $("#int-code option").each(function(){
                 if ($(this).text().trim().substr(0, len) == country) {
                     $(this).prop('selected', true);
                     return false;
                 }
             });
-
-        smsProvider = $("#stored-provider").val();
-            var el = $("#provider");
-            el.empty();
-            $("#sms-provider").show();
-            $.ajax({
-                type: "POST",
-                url: "getsms.php",
-                data: "c="+smsCountry,
-                dataType: "json",
-                success: function(json) {
-                    if (!json) {
-                        el.append('<option value="--">Another wireless provider</option>');
-                        $("#sms-other").show();
-                        return;
-                    }
-                    smsProviderList = new Array();
-                    var selectedFound=false;
-                    for (var i = 0; i < json.length; i++) {
-                        if (smsProvider && smsProvider == json[i]) {
-                            el.append('<option value="'+json[i]+'" selected="selected">'+json[i]+'</option>');
-                            selectedFound=true;
-                        } else {
-                            el.append('<option value="'+json[i]+'">'+json[i]+'</option>');
-                        }
-                    }
-                    if (smsProvider && smsProvider[0] == '+' || selectedFound==false) {
-                        el.append('<option value="--" selected="selected">Another wireless provider</option>');
-                        $("#sms-other").show();
-                    } else {
-                        el.append('<option value="--">Another wireless provider</option>');
-                    }
-                }, 
-                error: function(xhdr, status, err) {
-                    el.append('<option value="--">Another wireless provider</option>');
-                    $("#sms-other").show();
-                }
-            });
         }
     }
-    if ($("#country").val() == '--' || $("#provider").val() == '--') {
+    if ($("#country").val() == '--') {
         $("#sms-other").show();
     }
 
@@ -114,20 +86,55 @@ function get_timezone()
     return value;
 }
 
+function loadTwilioCountriesList(fAfter) {
+    $.ajax({
+        url: 'api.php',
+        type: 'post',
+        data: {'action': 'getTwilioCountries'},
+        dataType: 'json',
+        success: function(json) {
+            if (!json || json === null || !json.success) {
+                return;
+            }
+            twilio_countries = json.list;
+
+            if (fAfter) {
+                fAfter();
+            }
+        },
+    });
+}
+function isTwilioSupported(country_code) {
+    var supported = false;
+    for(var key in twilio_countries) {
+        if (twilio_countries[key] == country_code) {
+            supported = true;
+            break;
+        }
+    }
+    return supported;
+}
+
 $(document).ready(function(){
+    
     $("#phone").blur(function() { smsUpdatePhone(true); });
     $("#phone").keypress(function() { smsUpdatePhone(false); });
-    $("#country, #provider, #smsaddr").change(function() { smsRefreshProvider(); smsAddressVisibility(); });          
-    if( is_chrome ) {
-        $("#int_code").change(function() { smsAddressVisibility(); });
-    } else {    
-        $('#int_code').bind('click',function(event) {
-            event.preventDefault(); 
-            smsAddressVisibility(event); 
+    $("#phone").watermark('Number (4155551212, e.g.)', {useNative: false});
+    $("#country, #provider, #smsaddr").change(function() { 
+        smsRefreshIntCode(); 
+        smsAddressVisibility(); 
+    });
+    
+    loadTwilioCountriesList(function() {
+        $("#int_code").change(function() { 
+            smsAddressVisibility(); 
         });
-    }
-    smsRefreshProvider(true);
+        smsRefreshIntCode(true);
+        smsAddressVisibility();
+    });
+    
     if (!$('#timezone option[selected = "selected"]').length) {
         $('#timezone option[value = "' + get_timezone() + '"]').attr('selected','selected');
     }
+    
 });

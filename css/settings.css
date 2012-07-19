@@ -86,3 +86,24 @@ div.uploadnotice-w9 div {
     width: 100px;
     height: 100px;
 }
+
+#phone_prefix {
+    display: inline-block;
+    text-align: right;
+    width: 18px;
+    font-weight: bold;
+}
+
+#phone_wrapper {
+    display: inline-block;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    padding: 7px 7px 4px 7px;
+    margin: 0 2px;
+}
+
+#phone_wrapper.active {
+    border: 2px solid rgb(209, 207, 207);
+    padding: 5px 5px 2px 5px;
+}
