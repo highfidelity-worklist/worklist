@@ -9,7 +9,7 @@ var twilio_countries = [];
 function smsAddressVisibility(e)
 {
     $('#countrynotsupported').remove();
-    if ( $("#country option:selected").val() != '' ) {
+    if ( $("#int_code option:selected").val() != '' ) {
         if (isTwilioSupported($("#int_code option:selected").val())) {
             $("#smsaddr").hide();
             $("#sms-other p").hide();
