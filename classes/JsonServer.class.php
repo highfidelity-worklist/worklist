@@ -516,7 +516,7 @@ class JsonServer
     	 // we use a semaphore lock to ensure that no 2 users can start a code review
     	 $key = $workitem_id;
     	 $maxAcquire = 1;
-    	 $permissions = 666;
+    	 $permissions = 0666;
     	 $autoRelease = 1;
     	 $semaphore = sem_get($key, $maxAcquire, $permissions, $autoRelease);
     	
@@ -525,7 +525,7 @@ class JsonServer
     	 if(! $workItemToCheckCodeReview->getCRStarted()) {
     	     sem_acquire($semaphore); // The second, third or fourth etc reviewers code will pause here
     	 }
-
+	
 	 $workItem = new WorkItem($workitem_id);
 
         $user_id = $this->getRequest()->getParam('userid');
@@ -536,7 +536,7 @@ class JsonServer
         $status = $workItem->startCodeReview($user_id);
         
         sleep(3); // we want a 3 sec delay to ensure that database update statement executes
-	 sem_remove($semaphore);
+        sem_remove($semaphore);
 
         if ($status === null) {
             return $this->setOutput(array('success' => false, 'data' => nl2br('Code review not available right now')));
