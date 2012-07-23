@@ -19,9 +19,14 @@ if (typeof activeProjectsFlag === 'undefined') {
         $("#bugJobSummary").attr("title", 0);
         $("#is_bug").prop('checked',false);
         $('input[name=files]').val('');
-        $('#fileimagecontainer').text('');
-        $('#imageCount').text('0');
-       
+        $('#addaccordion .fileimagecontainer').html('').hide();
+        $('#addaccordion .filedocumentcontainer ').html('').hide();
+        $('#addaccordion .imageCount').text('0');
+        $('#addaccordion .documentCount').text('0');
+        imageArray = new Array();
+        documentsArray = new Array();
+        $('#addaccordion').removeData('fileUpload');
+        $('#addaccordion').fileUpload({images: imageArray, documents: documentsArray});
     }
 
         $('#popup-edit').dialog({

@@ -31,9 +31,12 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
     die('Application configuration not found.<br/>'.
         'Run the following commands to set up your sandbox:<br/>'.
         'cp ' . dirname(__FILE__). '/server.local.php.default ' . dirname(__FILE__). '/server.local.php<br/> ' .
+        'chmod 777 ' . dirname(__FILE__). '/uploads<br/>' .
         'sed -ie "s/ini_set(\'html_errors\',FALSE);/ini_set(\'html_errors\',TRUE);/" ' . dirname(__FILE__) . '/server.local.php <br/>' .
-        'sed -ie "s/define(\'SANDBOX_NAME\', \'worklist\/\');/define(\'SANDBOX_NAME\', \'' . WORKLIST_NUMBER . '\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
-        'sed -ie "s/define(\'SANDBOX_USER\', \'\');/define(\'SANDBOX_USER\', \'~'. USERNAME2 . '\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
+        'sed -ie "s/define(\'SANDBOX_NAME\', \'worklist\/\');/define(\'SANDBOX_NAME\', \'' . 
+            WORKLIST_NUMBER . '\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
+        'sed -ie "s/define(\'SANDBOX_USER\', \'\');/define(\'SANDBOX_USER\', \'~'. 
+            USERNAME2 . '\\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
         'rm ' . dirname(__FILE__) . '/server.local.phpe <br/> ' 
         );
 }
