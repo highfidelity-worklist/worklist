@@ -1065,7 +1065,7 @@ input.button-disabled ,
 }
 
 #welcomeInside .headerUserName {
-    color: #ffffff;
+    color: #888888;
     display: inline-block;
     vertical-align: top;
     padding-top: 7px;
@@ -1093,6 +1093,7 @@ input.button-disabled ,
 }
 
 #welcomeInside a:hover .headerButton,
+#welcomeInside a.headerUserName:hover,
 #welcomeInside a.following:hover {
     color: #ffffff;
     text-decoration: none !important;
