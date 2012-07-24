@@ -1008,26 +1008,29 @@ $(document).ready(function(){
   
    function CheckCodeReviewStatus() {
       var workitem_id = <?php echo $worklist['id'];?>;
-		
-      $.ajax({
-	   type: 'post',
-	   url: 'getcodereviewstatus.php',
-	   data: {
-	       workitemid: workitem_id
-	   },
-	   dataType: 'json',
-	   success: function(data) {
-	            
-	         //now check the returned data. if code review has already been started show dialog
-	         if(data[0].code_review_started == 1 ) {
-	             $('#popup-review-started').dialog('open');
-	         }
-	         else {
-	             showReviewForm();
-	         }
-	                
-	   }
-      });
+      if (WorklistProject.repo_type == 'svn') {
+        $.ajax({
+            type: 'post',
+            url: 'getcodereviewstatus.php',
+            data: {
+                workitemid: workitem_id
+            },
+            dataType: 'json',
+            success: function(data) {
+
+                    //now check the returned data. if code review has already been started show dialog
+                    if(data[0].code_review_started == 1 ) {
+                        $('#popup-review-started').dialog('open');
+                    }
+                    else {
+                        showReviewForm();
+                    }
+
+            }
+        });
+      } else {
+          showReviewForm();
+      }
    }
 
    function showReviewForm() {
