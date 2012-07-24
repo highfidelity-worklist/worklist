@@ -1036,7 +1036,9 @@ $(document).ready(function(){
    function showReviewForm() {
         var workitem_id = <?php echo $worklist['id'];?>;
         var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
-        openNotifyOverlay("Authorizing sandbox for code review ...", false);
+        if (WorklistProject.repo_type == 'svn') {
+            openNotifyOverlay("Authorizing sandbox for code review ...", false);
+        }
         $.ajax({
             type: 'post',
             url: 'jsonserver.php',

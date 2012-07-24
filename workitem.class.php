@@ -1267,6 +1267,10 @@ WHERE id = ' . (int)$id;
                 $this->setCReviewerId($reviewer_id);
                 $this->save();
             }
+        } else {
+            $this->setCRStarted(1);
+            $this->setCReviewerId($reviewer_id);
+            $this->save();
         }
         return $returnValue;
         
