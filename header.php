@@ -15,14 +15,15 @@ if (!isset($is_payer)) {
 $userId = getSessionUserId();
 $lovemachineLink = SENDLOVE_URL . '/';
 $linkTarget = '';
+$currentPage = basename($_SERVER['SCRIPT_NAME']); 
 ?>
 <!-- Welcome, login/out -->
         <div id="welcome">
             <div id="welcomeInside">
                 <div class="leftMenu">
-                    <a href="worklist.php"><div class="headerButton worlistBtn">Worklist</div></a>
+                    <a href="worklist.php" <?php if ($currentPage == 'journal.php') {?>target="_blank"<?php } ?> ><div class="headerButton worklistBtn">Worklist</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="journal.php"><div class="headerButton chatBtn">Chat</div></a>
+                    <a href="journal.php" <?php if ($currentPage != 'journal.php') {?>target="_blank"<?php } ?> ><div class="headerButton chatBtn">Chat</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
                     <a href="team.php"><div class="headerButton teamBtn">Team</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>

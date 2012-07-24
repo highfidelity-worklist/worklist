@@ -1168,7 +1168,7 @@ $meta_title =
 ?>
 <title><?php echo $meta_title; ?></title>
 <style>
-#welcomeInside .worlistBtn {
+#welcomeInside .worklistBtn {
     color: #ffffff;
 }
 </style>

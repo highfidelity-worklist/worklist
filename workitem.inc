@@ -1374,7 +1374,7 @@ $(document).ready(function(){
 </script>
 <title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
 <style>
-#welcomeInside .worlistBtn {
+#welcomeInside .worklistBtn {
     color: #ffffff;
 }
 </style>
