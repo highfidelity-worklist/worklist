@@ -152,8 +152,8 @@ class GitHubUser extends User
         $gitHubUsername = $userDetails['data']['login'];
         $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/pulls';
         $params = array(
-            'title' => 'Code Review for Job ' . $branch_name,
-            'body' => 'Code Review for Job ' . $branch_name,
+            'title' => 'Code Review for Job #' . $branch_name,
+            'body' => 'Code Review for Job #' . $branch_name . " - Workitem available at https://www.worklist.net/worklist/workitem.php?job_id=" . $branch_name . "&action=view",
             'head' => $gitHubUsername . ':' . $branch_name,
             'base' => 'master'
         );
