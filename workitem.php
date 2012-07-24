@@ -1273,7 +1273,7 @@ function changeStatus($workitem, $newStatus, $user) {
         $gitHubUsername = $githubDetails['data']['login'];
         $GitHubProject = new GitHubProject();
         $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($thisProject->getRepository());
-        $usersFork = 'https://github.com/' . $githubUsername . "/" . $repoDetails['name'] . ".git";
+        $usersFork = 'https://github.com/' . $gitHubUsername . "/" . $repoDetails['name'] . ".git";
         $emailTemplate = 'functional-howto';
         $data = array(
             'branch_name' => $workitem->getId(),
