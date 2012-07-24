@@ -36,6 +36,7 @@ if (empty($project) || empty($username) || empty($nickname) || empty($unixname))
     $errorOut = "Not all information required to create the project is available.";
 }
 ?>
+<link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
 <link type="text/css" href="css/review.css" rel="stylesheet" />
 <link type="text/css" href="css/favorites.css" rel="stylesheet" />
@@ -62,6 +63,36 @@ if (empty($project) || empty($username) || empty($nickname) || empty($unixname))
 <script type="text/javascript" src="js/favorites.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/projects.js"></script>
+<script type="text/javascript">
+function resizeIframeDlg() {
+    var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
+    $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
+
+    var dlg_h = $('#user-info').children().contents().find('html body').height();
+
+    var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
+
+    $('#user-info').animate({height: height});
+}
+
+$(document).ready(function() {
+    $('#user-info').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: false,
+        show: 'fade',
+        hide: 'fade',
+        width: 840,
+        height: 480
+    });
+});
+
+</script>
+<style>
+#welcomeInside .worlistBtn {
+    color: #ffffff;
+}
+</style>
 <?php
 require_once('header.php');
 require_once('format.php');
@@ -116,6 +147,9 @@ if (!$errorOut) {
 </script>
 <?php
 }
-
+?>
+<!-- Include User Info -->
+<div id="user-info" title="User Info"></div>
+<?php
 include("footer.php");
 ?>
