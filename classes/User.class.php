@@ -1626,4 +1626,20 @@ class User {
         }
         return $adminEmails;
     }
+    
+    public function isTwilioSupported() {
+        if (!defined("TWILIO_SID") || !defined("TWILIO_TOKEN") || !$this->int_code || !$this->phone) {
+            return false;
+        }
+        $sql = 
+            ' SELECT COUNT(*) AS c ' .
+            ' FROM ' . COUNTRIES .
+            ' WHERE country_phone_prefix = ' . $this->int_code .
+            '   AND country_twilio_enabled = 1';
+        if (!$result = mysql_query($sql)) {
+            return null;
+        }
+        $row = mysql_fetch_assoc($result); 
+        return $row['c'] > 0;
+    }
 }

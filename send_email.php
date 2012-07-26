@@ -132,44 +132,42 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
         error_log("Notify_sms_by_object does not know how to handle \$user_obj:".gettype($user_obj));
         return false;
     }
-
-    if (array_key_exists('smsaddr',$user_array) && !empty($user_array['smsaddr'])) {
-        $smsaddr = $user_array['smsaddr'];
-    } else {
-        $provider = $user_array['provider'];
-        if ( !empty($provider)) {
-            if ($provider{0} != '+') {
-                if (   array_key_exists('phone',$user_array)
-                    && !empty($user_array['phone'])
-                    && array_key_exists('country',$user_array)
-                    && !empty($user_array['country'])
-                    && array_key_exists($user_array['country'],$smslist)
-                    && !empty($smslist[$user_array['country']])
-                    && array_key_exists($provider,$smslist[$user_array['country']])
-                    && !empty($smslist[$user_array['country']][$provider]))
-                {
-                    $smsaddr = str_replace('{n}', $user_array['phone'], $smslist[$user_array['country']][$provider]);
-                } else {
-                    error_log("Unable to locate SMS path for userid: ".$user_array['id']);
-                    return false;
-                }
-            } else {
-                $smsaddr = substr($provider, 1);
-            }
-        } else {
-            return false;
-        }
-    }
-
-    if (filter_var($smsaddr, FILTER_VALIDATE_EMAIL) == false
-        && defined("TWILIO_SID") && defined("TWILIO_TOKEN")) 
-    {
+    
+    if ($user_obj->isTwilioSupported()) {
         require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
         $Twilio = new WLTwilio();
-        return $Twilio->send_sms($smsaddr, 
-            html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES)
-        );
+        $phone_number = $user_array['int_code'] . $user_array['phone'];
+        $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);
+        $ret = $Twilio->send_sms($phone_number, $message);
+        return $ret;
     } else {
+        if (array_key_exists('smsaddr',$user_array) && !empty($user_array['smsaddr'])) {
+            $smsaddr = $user_array['smsaddr'];
+        } else {
+            $provider = $user_array['provider'];
+            if ( !empty($provider)) {
+                if ($provider{0} != '+') {
+                    if (   array_key_exists('phone',$user_array)
+                        && !empty($user_array['phone'])
+                        && array_key_exists('country',$user_array)
+                        && !empty($user_array['country'])
+                        && array_key_exists($user_array['country'],$smslist)
+                        && !empty($smslist[$user_array['country']])
+                        && array_key_exists($provider,$smslist[$user_array['country']])
+                        && !empty($smslist[$user_array['country']][$provider]))
+                    {
+                        $smsaddr = str_replace('{n}', $user_array['phone'], $smslist[$user_array['country']][$provider]);
+                    } else {
+                        error_log("Unable to locate SMS path for userid: ".$user_array['id']);
+                        return false;
+                    }
+                } else {
+                    $smsaddr = substr($provider, 1);
+                }
+            } else {
+                return false;
+            }
+        }
         return send_email($smsaddr,
             html_entity_decode($smssubject, ENT_QUOTES),
             '',
