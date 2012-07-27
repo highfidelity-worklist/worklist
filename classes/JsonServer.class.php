@@ -511,22 +511,18 @@ class JsonServer
     }
 
     protected function actionStartCodeReview() {
-    	 $workitem_id = $this->getRequest()->getParam('workitem');
+        $workitem_id = $this->getRequest()->getParam('workitem');
     	
-    	 // we use a semaphore lock to ensure that no 2 users can start a code review
-    	 $key = $workitem_id;
-    	 $maxAcquire = 1;
-    	 $permissions = 0666;
-    	 $autoRelease = 1;
-    	 $semaphore = sem_get($key, $maxAcquire, $permissions, $autoRelease);
-    	
-    	 $workItemToCheckCodeReview = new WorkItem($workitem_id);
-    	
-    	 if(! $workItemToCheckCodeReview->getCRStarted()) {
-    	     sem_acquire($semaphore); // The second, third or fourth etc reviewers code will pause here
-    	 }
-	
-	 $workItem = new WorkItem($workitem_id);
+        // we use a semaphore lock to ensure that no 2 users can start a code review
+        $key = $workitem_id;
+        $maxAcquire = 1;
+        $permissions = 0666;
+        $autoRelease = 1;
+        $semaphore = sem_get($key, $maxAcquire, $permissions, $autoRelease);
+    	    	
+        sem_acquire($semaphore); // The second, third or fourth etc reviewers code will pause here
+
+        $workItem = new WorkItem($workitem_id);
 
         $user_id = $this->getRequest()->getParam('userid');
         
