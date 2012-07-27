@@ -136,9 +136,8 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
     if ($user_obj->isTwilioSupported()) {
         require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
         $Twilio = new WLTwilio();
-        $phone_number = $user_array['int_code'] . $user_array['phone'];
         $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);
-        $ret = $Twilio->send_sms($phone_number, $message);
+        $ret = $Twilio->send_sms($user_array['phone'], $message);
         return $ret;
     } else {
         if (array_key_exists('smsaddr',$user_array) && !empty($user_array['smsaddr'])) {

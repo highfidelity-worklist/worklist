@@ -412,11 +412,11 @@ include("head.html");
             if (massValidation) {
                 values = { 
                     int_code: $('#int_code').val(),
-                    phone: isTwilioSupported($('#int_code').val()) ? $('#phone').val() : '',
+                    phone: $('#int_code').val() + $('#phone').val(),
                     phone_edit: $('#phone_edit').val(),
                     country: $('#country').val(),
                     city: $('#city').val(),
-                    smsaddr: (isTwilioSupported($('#int_code').val()) && $('#phone').val() ? '' : $('#smsaddr').val()),
+                    smsaddr: ($('#smsaddr').val()),
                     timezone: $('#timezone').val(),
                     journal_alerts: $('#journal_alerts').prop('checked') ? 1 : 0,
                     bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
