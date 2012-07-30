@@ -2181,7 +2181,7 @@ if ($action =="edit"):  ?>
                     <?php if ($hideFees) {?>
                     </div><!--  end accordian -->
                     <?php } ?>
-                    <?php } else { ?>
+                    <?php } else if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTEDwithBID') { ?>
                     <div class="buttonContainer">
                         <input style="cursor:pointer;" type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
                     </div>
