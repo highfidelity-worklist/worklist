@@ -16,16 +16,16 @@
         <label for="budget-reason" class="info-label">For: </label><br/>
             <input type="text" id="budget-reason" name="budget-reason"/><br/>
         <label for="budget-source" class="info-label">Source: </label>
-        <div class="budget-source">
+        
             <input type="text" id="budget-source" name="budget-source"/>
             <span id="budget-source-combo-area">
-                <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">
+                <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
                 <option value="0" selected="selected">Select a budget</option>
                 <?php echo $user->getBudgetCombo(); ?>
                 </select>
             </span>
-        </div>
-            <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user-> getId(); ?>" />
+        
+            <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user-> getId();?>" />
         <br/>
         <label for="budget-note" class="info-label">Note: </label><br/>
             <textarea id="budget-note" name="budget-note" ></textarea>

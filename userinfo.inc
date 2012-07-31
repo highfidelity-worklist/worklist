@@ -415,7 +415,7 @@
             </div>
             <div class="rightBonusArea">
                 <label for="budget-source" class="info-label">Source: </label><br/>
-                <select id="budget-source-combo-bonus" name="budget-source-combo-bonus" class="divComboBox">
+                <select id="budget-source-combo-bonus" name="budget-source-combo-bonus" class="project-dropdown hidden">
                 <option value="0" selected="selected">Select a budget</option>
                 <?php echo $reqUser->getBudgetCombo(); ?>
                 </select>

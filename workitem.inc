@@ -1624,9 +1624,9 @@ if ($action =="edit"):  ?>
                             <?php 
                                 if ($user->isRunnerOfWorkitem($workitem)) {
                             ?>
-                                <div id="budgetInWorkitem" class="budget-source">
+                                
                                     <span id="budget-source-combo-area">
-                                        <select id="budget-source-combo" name="budget-source-combo" class="divComboBox">
+                                        <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
                                             <?php 
                                             if ( empty($worklist['budget_id']) || $worklist['budget_id'] == 0) {
                                             ?>
@@ -1636,7 +1636,7 @@ if ($action =="edit"):  ?>
                                             echo $user->getBudgetCombo($worklist['budget_id']); ?>
                                         </select>
                                     </span>
-                                </div>
+                                
                             <?php        
                                 } else {
                                     if (!empty($worklist['budget_id'])) {
