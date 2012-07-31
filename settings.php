@@ -46,7 +46,7 @@ if (isset($_REQUEST['save_account'])) {
         foreach ($saveArgs as $arg=>$esc) {
             $$arg = ($esc ? $_REQUEST[$arg] : intval($_REQUEST[$arg]));
         }
-
+        
         if (isset($_REQUEST['city'])) {
             $city = $_REQUEST['city'];
             $saveArgs['city'] = 1;
@@ -689,8 +689,13 @@ include("head.html");
         $new_user = (bool) ! empty($_SESSION['new_user']);
         $country = !$new_user ? $userInfo['country'] : '';
         $city = !$new_user ? $userInfo['city'] : '';
-        $int_code = !$new_user ? $userInfo['int_code'] : '';
-        $phone = !$new_user ? $userInfo['phone'] : '';
+        
+        $int_code = !$new_user ? trim($userInfo['int_code']) : '';
+        $phone = !$new_user ? trim($userInfo['phone']) : '';
+        if (strlen($int_code) && substr($phone, 0, strlen($int_code)) == $int_code) {
+            $phone = substr($phone, strlen($int_code));
+        }
+        
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $picture = !$new_user ? $userInfo['picture'] : '';
         $notifications = !$new_user ? $userInfo['notifications'] : 0;
