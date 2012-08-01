@@ -70,8 +70,9 @@ jQuery.fn.centerDialog = function() {
         var $this = $(this);
         var p = $this.parent();
         var x = (document.body.clientWidth - p.width()) / 2;
-        var y = Math.max(0, (document.body.clientHeight - p.height()) / 2);
+        var y = Math.max(0, ($(window).height() - p.height()) / 2);
         p.animate({opacity: 0}, 0).css({left:x, top:y}).animate({opacity: 1}, 300);
+
     });
 };
 

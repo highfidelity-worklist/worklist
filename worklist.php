@@ -560,11 +560,11 @@ require_once('opengraphmeta.php');
     }
 
     function GetWorklist(npage, update, reload) {
-        if (addFromJournal) {
+	 if (addFromJournal) {
             return true;
         }
         while(lockGetWorklist) {
-// count atoms of the Universe untill old instance finished...
+        // count atoms of the Universe untill old instance finished...
         }
         lockGetWorklist = 1;
         if (timeoutId) {

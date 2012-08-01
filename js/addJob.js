@@ -38,7 +38,7 @@ if (typeof activeProjectsFlag === 'undefined') {
             hasAutocompleter: false,
             hasCombobox: false,
             resizable: false,
-            open: function() {
+	     open: function() {
                 if (this.hasAutocompleter !== true) {
                     $('.invite').autocomplete('getusers.php', {
                         multiple: true,
@@ -144,7 +144,6 @@ if (typeof activeProjectsFlag === 'undefined') {
         });
 
         $('#addJob').click(function() {
-
             if (userId <= 0) {
                 return;
             }
@@ -295,6 +294,8 @@ if (typeof activeProjectsFlag === 'undefined') {
                 });
                 return false;
             });
+	
+		
             $('#fees_block').hide();
             $('#fees_single_block').show();
             $('#popup-edit').dialog('open').centerDialog();
