@@ -81,7 +81,6 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/projects.js"></script>
 <script type="text/javascript" src="js/github.js"></script>
 <script type="text/javascript">
-<!-- Start User Info popup code -->
 function resizeIframeDlg() {
     var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
                   $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
@@ -113,6 +112,20 @@ $(document).ready(function() {
         width: 840,
         height: 480
     });
+
+    $('#invite-people').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        show: 'fade',
+        hide: 'fade',
+        width: 350,
+        height: 140
+    });
+    $("#invite-link").click(function() { 
+        $('#invite-people').dialog('open');
+    });
+
     $('#sent-notify').dialog({
         modal: false,
         autoOpen: false,
@@ -1445,6 +1458,7 @@ $(document).ready(function(){
                     <span class="switchmode"><a title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view&order=<?php echo $order_by; ?>">View</a>
                     </span>
                 <?php endif;?>
+                <span id="invite-link" title="Invite people" href="javascript">Invite</span>
             </div>
 
         <?php if ($action != "edit"): ?>
@@ -1578,24 +1592,6 @@ if ($action =="edit"):  ?>
                                 }
                                 echo '<div id="mechanicBox"><span class="mechanicName">Mechanic</span> ' . $mech . '</div>';
                             ?>
-                        </li>
-                        <li>
-                        <?php if($worklist['status'] != 'DONE'):?>
-                    <!-- Edit: Invite People field -->
-                            <div>
-                                <span style="font-weight:bold; margin-top:-5px;">Invite people to this task</span>
-                                <span class="info-invite" style="clear:none"><input type="text" name="invite" class="invite" /></span>
-                                <script type="text/javascript">
-                                    $(document).ready(function() {
-                                    $('.invite').autocomplete('getusers.php', {
-                                        multiple: true,
-                                        multipleSeparator: ', ',
-                                        extraParams: { nnonly: 1 }
-                                    });
-                                });
-                                </script>
-                            </div>
-                            <?php endif;?>
                         </li>
                 <!-- Edit: Notes textarea -->
                         <li>
@@ -1828,24 +1824,6 @@ if ($action =="edit"):  ?>
                         <?php endif;?>
                     </li>
                     <?php endif;?>
-                    <?php if ($user_id > 0):?>
-                    <li>
-                      <form action="" method="post" name="invite-form" onSubmit="return sendInviteForm();">
-                        <span class="project-label" id="invite-label">Invite</span>
-                        <input type="text" class="invite ac_input" name="invite" autocomplete="on" style="width: 210px" />
-                        <script type="text/javascript">
-                            $(document).ready(function() {
-                              $('.invite').autocomplete('getusers.php', {
-                                multiple: false,
-                                extraParams: { nnonly: 1 }
-                              });
-                            });
-                        </script>
-                        <input type="submit" id="invite-people" name="invite-people" value="Invite" class="bottonAtRight smbutton" />
-                      </form>
-                    </li>
-                    <?php endif;?>
-
                 </ul>
 <!-- *** End of Action IF *** -->
 <?php endif;?>
@@ -2281,6 +2259,8 @@ if ($action =="edit"):  ?>
     <!-- Include Budget Popup -->
     <?php require_once('dialogs/popup-budget.inc'); ?>
     <?php require_once('dialogs/budget-expanded.inc'); ?>
+    <!-- Invite people popup -->
+    <?php require_once 'dialogs/popup-invite-people.inc'; ?>
 
 <?php
     // if logged in user is the mechanic on the task, get the maximum amount

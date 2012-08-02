@@ -892,13 +892,17 @@ input.button-disabled ,
     float: left;
 }
 
-#following {
+#following,
+#invite-link,
+.switchmode {
     text-decoration:underline;
     margin-right: 10px;
+    color: #98AAB2;
 }
 
 
-#following:hover {
+#following:hover,
+#invite-link:hover {
     color: #eeeeee;
     border-bottom: 1px solid #333333;
     background-color: #333333;
@@ -1082,4 +1086,7 @@ h1.newProject {
 }
 #project-completed p {
     font-size: 15px;
+}
+#invite-label {
+    line-height: 25px;
 }
