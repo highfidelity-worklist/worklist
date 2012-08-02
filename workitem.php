@@ -74,6 +74,8 @@ if ($order_by != "DESC") {
 
 if (isset($_REQUEST['withdraw_bid'])) {
     $action = "withdraw_bid";
+} else if(isset($_REQUEST['decline_bid'])) {
+    $action = "decline_bid";
 } else if(isset($_REQUEST['save_workitem'])) {
     $action = "save_workitem";
 } else if(isset($_REQUEST['place_bid'])) {
@@ -1012,6 +1014,28 @@ if ($action == "withdraw_bid") {
         $fee = mysql_fetch_object($res);
         if ((int)$fee->bid_id !== 0) {
             withdrawBid($fee->bid_id, $_REQUEST['withdraw_bid_reason']);
+        } else {
+            deleteFee($fee_id);
+        }
+
+        // Update Runner's Budget
+        $runner = new User();
+        $runner->findUserById($fee->runner_id);
+        $runner->updateBudget($fee->amount, $workitem->getBudget_id());
+    }
+    $redirectToDefaultView = true;
+}
+
+//Decline a bid
+if ($action == "decline_bid") {
+    if (isset($_REQUEST['bid_id'])) {
+        withdrawBid(intval($_REQUEST['bid_id']), $_REQUEST['decline_bid_reason']);
+    } else {
+        $fee_id = intval($_REQUEST['fee_id']);
+        $res = mysql_query('SELECT f.bid_id, f.amount, w.runner_id FROM `' . FEES . '` AS f, ' . WORKLIST . ' AS w WHERE f.`id`=' . $fee_id . ' AND f.worklist_id = w.id');
+        $fee = mysql_fetch_object($res);
+        if ((int)$fee->bid_id !== 0) {
+            withdrawBid($fee->bid_id, $_REQUEST['decline_bid_reason']);
         } else {
             deleteFee($fee_id);
         }

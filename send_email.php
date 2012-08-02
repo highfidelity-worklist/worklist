@@ -132,8 +132,9 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
         error_log("Notify_sms_by_object does not know how to handle \$user_obj:".gettype($user_obj));
         return false;
     }
-    
-    if ($user_obj->isTwilioSupported()) {
+    $user = new User();
+	$user->findUserById($user_array['id']);
+    if ($user->isTwilioSupported()) {
         require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
         $Twilio = new WLTwilio();
         $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);

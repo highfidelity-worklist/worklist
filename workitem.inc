@@ -550,6 +550,7 @@ $(document).ready(function(){
     $('#ping-msg').autogrow();
     $('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-withdraw-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
+    $('#popup-decline-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
 <?php if ($mechanic_id == $user_id): ?>
     $('#popup-addtip').dialog({ autoOpen: false, modal: true, width: 400, height: 250, show: 'fade', hide: 'fade' });
     $('.addTip').click(function() {
@@ -798,9 +799,11 @@ $(document).ready(function(){
 <?php } ?>
 
 <?php if($worklist['status'] != 'DONE' && $worklist['status'] != 'WORKING' && $worklist['status'] != 'FUNCTIONAL' && $worklist['status'] != 'REVIEW' && $worklist['status'] != 'COMPLETED'){?>
-            if( (is_runner==1 || (bidData.bidder_id == user_id)) && $('#withdraw_bid_accept').length == 0){
+            if( (bidData.bidder_id == user_id) && $('#withdraw_bid_accept').length == 0){
                 $('#popup-bid-info-buttons').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" >');
-            }
+            } else if (is_runner==1 && bidData.bidder_id != user_id) {
+                $('#popup-bid-info-buttons').append('<input id="decline_bid_accept" type="button" name="decline_bid_accept" value="Decline" onClick="return showDeclineBidReason()" >');
+			}
 <?php } ?>
             // change user id to current bidder id
             stats.setUserId(bidData.bidder_id);
@@ -956,11 +959,11 @@ $(document).ready(function(){
         return false;
     }
     
-  function showIneligible(problem) {
+    function showIneligible(problem) {
       $('#popup-ineligible').dialog('open');
-  }
+    }
 
-  function doConfirmForm(i) {
+    function doConfirmForm(i) {
       if (i == 'bid') {
           $('#popup-confirmation').dialog('close');
           showPlaceBidForm();
@@ -969,14 +972,14 @@ $(document).ready(function(){
           showFeeForm();
       }
       return false;
-  }
+    }
 
-  function showPlaceBidForm() {
+    function showPlaceBidForm() {
       $('#popup-bid').dialog('open');
       return false;
-  }
+    }
 
-  function showWithdrawBidReason() {
+    function showWithdrawBidReason() {
       var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
       $('#popup-bid-info').dialog('close');
 
@@ -988,8 +991,22 @@ $(document).ready(function(){
 
         $('#popup-withdraw-bid').dialog('open');
         return false;
-  }
+    }
 
+    function showDeclineBidReason() {
+      var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
+      $('#popup-bid-info').dialog('close');
+
+      SimplePopup('#popup-decline-bid',
+                'Decline Bid',
+                 bid_id,
+                 [['input', 'bid_id', 'keyId', 'eval']]);
+
+
+        $('#popup-decline-bid').dialog('open');
+        return false;
+    }
+    
     function pingBidder(id) {
         ping_who = 'bidder';
         ping_bid_id = id;
@@ -2255,6 +2272,8 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/popup-fee-info.inc') ?>
     <!-- Popups for entering bid withdraw reason-->
     <?php require_once('dialogs/popup-withdraw-bid.inc') ?>
+    <!-- Popups for entering bid decline reason-->
+    <?php require_once('dialogs/popup-decline-bid.inc') ?>
     <!-- Popup for Add Review Url-->
     <?php require_once('dialogs/review-url-dialog.inc') ?>
     <!-- Include Paid Popup -->

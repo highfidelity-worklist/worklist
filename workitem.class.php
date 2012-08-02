@@ -1051,6 +1051,15 @@ WHERE id = ' . (int)$id;
                 return $action;
                 break;
 
+            case 'decline_bid':
+                if ($this->getStatus() == 'DONE') {
+                    $action_error = 'Cannot decline bid when status is DONE';
+                    return false;
+                }
+                
+                return $action;
+                break;
+				
             case 'save_workitem':
                 if ($this->getStatus() == 'DONE') {
                     $action_error = 'Cannot change workitem when status is DONE';
