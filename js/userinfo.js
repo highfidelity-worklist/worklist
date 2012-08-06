@@ -243,7 +243,8 @@ var UserInfo = {
                 }, function() {
                     $('#give-budget').dialog({ 
                         autoOpen: true, 
-                        width: 400, 
+                        width: 450,
+                        height: 350,
                         show: 'fade', 
                         hide: 'fade',
                         open: function() {

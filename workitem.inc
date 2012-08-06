@@ -376,9 +376,9 @@ $(document).ready(function(){
     $('#popupSelectBudget').dialog({
         autoOpen: false,
         modal: true,
-        width: 400,
+        width: 450,
         resizable: false,
-        height: "auto",
+        height: 230,
         open: function(event, ui) {
             
         }         
@@ -1637,7 +1637,6 @@ if ($action =="edit"):  ?>
                             <?php 
                                 if ($user->isRunnerOfWorkitem($workitem)) {
                             ?>
-                                
                                     <span id="budget-source-combo-area">
                                         <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
                                             <?php 

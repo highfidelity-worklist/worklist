@@ -15,7 +15,7 @@
             <br/>
         <label for="budget-reason" class="info-label">For: </label><br/>
             <input type="text" id="budget-reason" name="budget-reason"/><br/>
-        <label for="budget-source" class="info-label">Source: </label>
+        <label for="budget-source" class="info-label">Source: </label><br/>
         
             <input type="text" id="budget-source" name="budget-source"/>
             <span id="budget-source-combo-area">

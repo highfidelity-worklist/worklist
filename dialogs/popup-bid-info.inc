@@ -70,10 +70,17 @@
                     ?>
                     </select>
                 </span>
-            
+            <div class="clear"></div><br/>
+            <div class="clear"></div><br/>
+            <div class="clear"></div><br/>
+            <div class="clear"></div><br/>
+            <div class="clear"></div><br/>
+            <div class="clear"></div><br/>
             <div>
-                <input type="button" id="cancel_budget" value="Cancel">
-                <input type="button" id="confirm_budget"  value="OK">
+                <span style="float:left;width:370px">
+                    <input type="button" id="cancel_budget" value="Cancel">
+                    <input type="button" id="confirm_budget"  value="OK">
+                </span>
             </div>
         </div>
 <?php } ?>
