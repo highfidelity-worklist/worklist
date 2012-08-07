@@ -1155,6 +1155,7 @@ class Notification {
               AND b.expired_notify = 0
               AND b.bid_expires < NOW()
               AND u.is_active = 1
+              AND b.withdrawn = 0
             ORDER BY b.worklist_id DESC";
         $worklist = mysql_query($qry);
         $wCount = mysql_num_rows($worklist);
