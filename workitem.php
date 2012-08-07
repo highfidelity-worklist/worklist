@@ -921,6 +921,15 @@ if ($action == 'accept_bid') {
                 $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
                 $redirectToDefaultView = true;
             }
+        } else {
+            if ($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) {
+                if ($workitem->hasAcceptedBids()) {
+                    $_SESSION['workitem_error'] = "Failed to accept bid on task with an accepted bid!";
+                } else {
+                    $_SESSION['workitem_error'] = "Accept Bid Failed, unknown task state!";
+                }
+                $redirectToDefaultView = true;
+            }
         }
     }
 }
