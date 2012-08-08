@@ -110,7 +110,7 @@ if (isset($_REQUEST['id'])) {
         $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";
         $mail_msg .= "<p>Notes: " . $bid_info['notes'] . "</p>";
         $mail_msg .= "<p>You can view the job here. <a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a></p>";
-        $mail_msg .= "<p>-Worklist.net</p>";
+        $mail_msg .= "<p><a href=\"www.worklist.net\">www.worklist.net</a></p>";
         $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', 'X-tag' => 'ping, task', 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {
             $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';

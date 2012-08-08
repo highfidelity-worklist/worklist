@@ -174,7 +174,7 @@ replacement data:
                <p>4. A working copy of your site can be viewed at <a href="http://staging.worklist.net/{project_name}">http://staging.worklist.net/{project_name}</a></p>
                <p>5. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
                <p>6. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
-               <p>-Worklist.net</p>'
+               <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
 ),
     
 'project-created-existingsb' => array(
@@ -192,7 +192,7 @@ replacement data:
                <p>4. A working copy of your site can be viewed at <a href="http://staging.worklist.net/{project_name}">http://staging.worklist.net/{project_name}</a></p>
                <p>5. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
                <p>6. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
-               <p>-Worklist.net</p>'
+               <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
 ),
 
 'ops-project-created' => array(

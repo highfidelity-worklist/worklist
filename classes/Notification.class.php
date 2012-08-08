@@ -269,7 +269,7 @@ class Notification {
                       }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
             
             case 'fee_added':
@@ -289,7 +289,7 @@ class Notification {
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
             
@@ -308,7 +308,7 @@ class Notification {
                     }
                     $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                     . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                    . '-Worklist.net' ;
+                    . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
 
@@ -325,7 +325,7 @@ class Notification {
                        }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 break;
 
             case 'bid_accepted':
@@ -342,7 +342,7 @@ class Notification {
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'The job can be viewed <a href=' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;        
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>';
             break;
 
             case 'bid_placed':
@@ -460,7 +460,7 @@ class Notification {
                 $body.= '<br /><br />'
                     . 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                     . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                    . '-Worklist.net' ;
+                    . '<a href="' . SERVER_URL . '">www.worklist.net</a>';
             break;
             
             case 'modified':
@@ -495,7 +495,7 @@ class Notification {
                     }
                     $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
                         . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                        . '-Worklist.net' ;
+                        . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
 
@@ -511,7 +511,7 @@ class Notification {
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
 
             case 'new_review':
@@ -526,7 +526,7 @@ class Notification {
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 
             break;
             case 'new_functional':
@@ -542,7 +542,7 @@ class Notification {
 
                 $body.= '<br><br>Notes:<br>' .$workitem->getNotes();
                 $body.= '<br><br>You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />';
-                $body.= '<br><br>-Worklist.net' ;
+                $body.= '<br><br><a href="' . SERVER_URL . '">www.worklist.net</a>';
                 
             break;
             case 'bug_found':
@@ -578,7 +578,7 @@ class Notification {
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
             case 'suggestedwithbid':
                 $body =  'Summary: ' . $itemLink . '<br /><br />'
@@ -592,7 +592,7 @@ class Notification {
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '-Worklist.net' ;                       
+                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;                       
             break;
             case 'autotestsuccess':
                 $reusableString = $project_name . '(v' . $revision . ')';
@@ -610,7 +610,7 @@ class Notification {
                 $body .= $revision;
                 $body .= '">here</a>';
                 $body .= ' to see the webSVN commit notes.';
-                $body .= '<br/><br/>-worklist.net';
+                $body .= '<br/><br/><a href="http://www.worklist.net">www.worklist.net</a>';
             break; 
             case 'autotestfailure':
                 $reusableString = $project_name . '(v' . $revision . ')';
@@ -626,38 +626,40 @@ class Notification {
                 $body .= '<br><br>See test results <a href="http://bit.ly/jGfIkj">here</a> ';
                 $body .= 'Please look at the test results and determine if you need to modify your commit.';
                 $body .= 'You can type "@faq CommitTests" in the Journal for more information.';
-                $body .= '<br/><br/>-worklist.net';
+                $body .= '<br/><br/><a href="http://www.worklist.net">www.worklist.net</a>';
             break;
             
             case 'invite-user':
                 $headers['From'] = '"' . $project_name . '-invited" ' . $from_address;
                 $body = "<p>Hello you!</p>";
-                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>";
+                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on ";
+                $body .= "<a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>\n";
                 $body .= "<p>Description:</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>" . $workitem -> getNotes() . "</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">this link</a>.</p>";
-                $body .= "<p>Hope to see you soon.</p>";
+                $body .= "<p>------------------------------</p>\n";
+                $body .= "<p>" . $workitem -> getNotes() . "</p>\n";
+                $body .= "<p>------------------------------</p>\n";
+                $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">this link</a>.</p>\n";
+                $body .= "<p>Hope to see you soon.</p>\n";
             break;
             case 'invite-email':
                 $headers['From'] = '"' . $project_name . '-invitation" ' . $from_address;
-                $body = "<p>Well, hello there!</p>";
-                $body .= "<p>" . $_SESSION['nickname'] . " from the Worklist thought you might be interested in bidding on this job:</p>";
-                $body .= "<p>Summary of the job: " . $workitem -> getSummary() . "</p>";
-                $body .= "<p>Description:</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>" . $workitem -> getNotes() . "</p>";
-                $body .= "<p>------------------------------</p>";
-                $body .= "<p>To bid on that job, follow the link, create an account (less than a minute) and set the price you want to be paid for completing it!</p>";
-                $body .= "<p>This item is part of a larger body of work being done at Worklist. You can join our Live Workroom to ask more questions by going <a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>";
-                $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>";
-                $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />";
-                $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />";
-                $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />";
-                $body .= "[<a href=\"" . WORKLIST_URL . "/\">" . WORKLIST_URL . "</a> | Look over all our open work items]<br />";
-                $body .= "[<a href=\"" . JOURNAL_URL . "/\">" . JOURNAL_URL . "</a> | Talk with us in our Journal]<br />";
-                $body .= "<p>Hope to see you soon.</p>";
+                $body = "<p>Well, hello there!</p>\n";
+                $body .= "<p>" . $_SESSION['nickname'] . " from the Worklist thought you might be interested in bidding on this job:</p>\n";
+                $body .= "<p>Summary of the job: " . $workitem -> getSummary() . "</p>\n";
+                $body .= "<p>Description:</p>\n";
+                $body .= "<p>------------------------------</p>\n";
+                $body .= "<p>" . $workitem -> getNotes() . "</p>\n";
+                $body .= "<p>------------------------------</p>\n";
+                $body .= "<p>To bid on that job, follow the link, create an account (less than a minute) and set the price you want to be paid for completing it!</p>\n";
+                $body .= "<p>This item is part of a larger body of work being done at Worklist. You can join our Live Workroom to ask more questions by going ";
+                $body .= "<a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>\n";
+                $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>\n";
+                $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />\n";
+                $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />\n";
+                $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />\n";
+                $body .= "[<a href=\"" . WORKLIST_URL . "/\">" . WORKLIST_URL . "</a> | Look over all our open work items]<br />\n";
+                $body .= "[<a href=\"" . JOURNAL_URL . "/\">" . JOURNAL_URL . "</a> | Talk with us in our Journal]<br />\n";
+                $body .= "<p>Hope to see you soon.</p>\n";
             break;
 
             case 'sb_authorization_failed':
@@ -667,7 +669,7 @@ class Notification {
                 $body .= ' has failed with the following error message: <br /><br />';
                 $body .= "Sandbox is not authorized:<br />";
                 $body .= $data['message'];
-                $body .= '<br /><br />-worklist.net';
+                $body .= '<br /><br /><a href="http://www.worklist.net">www.worklist.net</a>';
             break;
             
             case 'code-review-completed':
@@ -681,7 +683,7 @@ class Notification {
                 $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '</p>';
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id='.$itemId.'>here</a>.' . '<br /></p>';
-                $body .= '<p> -Worklist.net</p>';
+                $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             
             case 'job_past_due':
@@ -695,7 +697,7 @@ class Notification {
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
-                $body .= '<p> -Worklist.net</p>';
+                $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             
             case 'expired_bid':
@@ -712,7 +714,7 @@ class Notification {
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
-                $body .= '<p> -Worklist.net</p>';
+                $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             case 'auto-pass':
                 $headers['From'] = '"' . $project_name . "- Auto PASSED" . '" ' . $from_address;    
@@ -727,7 +729,7 @@ class Notification {
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
                     . 'Notes: '. $workitem->getNotes() . '<br /><br />'
                     . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                    . '-Worklist.net' ;
+                    . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 
             break;
         }
