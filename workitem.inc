@@ -2200,19 +2200,7 @@ if ($action =="edit"):  ?>
 <!-- End of div right-panel-->
         </div>
 <!-- End of div pageContent -->
-    </div><br>
-            <div style="margin:0px 101px 6px 32px;line-height:50px; padding-top:30px;padding-right:10px; float:left;display:inline-block;">
-
-                <span class="st_sharethis" st_title="Share this WorkItem" displayText="ShareThis"></span>
-                <script type="text/javascript" src="https://ws.sharethis.com/button/buttons.js"></script>
-                <script type="text/javascript">
-                    stLight.options({
-                        publisher: '4867cd3b-6b43-4c9b-b7a7-57966f818e05',
-                        onhover: false
-                    });
-                </script>
-            </div>
-            <div style="clear:both"></div>
+    </div>
 
     <!-- Popup HTML for Placing a bid -->
     <?php if(isset($message)): ?>
