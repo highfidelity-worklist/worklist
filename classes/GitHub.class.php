@@ -269,6 +269,48 @@ class GitHubProject
         return $repoDetails;
     }
     
+    public function pull_request($payload) {
+        $headLabel = $payload->pull_request->head->label;
+        $labelComponents = explode(':', $headLabel);
+        $jobNumber = trim($labelComponents[1]);
+        // Try to extract job number from head repository label
+        if (preg_match('/^[0-9]{3,}$/', $labelComponents[1])) {
+            $workItem = new WorkItem();
+            // We have what looks like a workitem number, see if it exists
+            // and if it does, we set job to completed and post comment to
+            // journal
+            if ($workItem->idExists($jobNumber)
+                && $payload->pull_request->state == 'closed') {
+                
+                $workItem->loadById($jobNumber);
+                $pullRequestNumber = $payload->pull_request->number;
+                $pullRequestURL = $payload->pull_request->html_url;
+                $pullRequestLink = '<a href=" ' 
+                    . $pullRequestURL . '" target="_blank">' 
+                    . $pullRequestNumber . '</a>';
+                $pullRequestBase = $payload->pull_request->base->label;
+                $pullRequestStatus = $payload->pull_request->merged == 'true' 
+                    ? "closed and merged"
+                    : "closed but not merged";
+                $message = "
+                    Job #{$jobNumber} - Pull request {$pullRequestLink} has
+                    been {$pullRequestStatus} into {$pullRequestBase}";
+
+                $data = array(
+                        'user'      => JOURNAL_API_USER,
+                        'pwd'       => JOURNAL_API_PWD,
+                        'message'   => $message );
+
+                postRequest(JOURNAL_API_URL, $data);
+                
+                $workItem->setStatus('COMPLETED');
+                $workItem->setJobCompletedFees();
+                $workItem->save();
+                
+            }
+        }
+    }
+    
 }
 
 ?>
