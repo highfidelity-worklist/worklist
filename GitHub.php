@@ -7,10 +7,6 @@
  * GitHub Callback Handler, use this for processing any responses
  * from the GitHub API.
  * 
- * To add a new handler, simply add the event type to $eventHandlers (as returned
- * by GitHub) and create a function with that name in the GitHubProject class.
- * The full payload object will be passed to the function.
- * 
  */
 
 require_once 'config.php';
@@ -18,39 +14,24 @@ require_once 'class.session_handler.php';
 require_once 'class/Utils.class.php';
 require_once 'functions.php';
 require_once 'classes/User.class.php';
-require_once 'workitem.class.php';
+require_once 'classes/GitHub.class.php';
 
-// This is an array of events that are allowed, if not here we just ignore for now
-$eventHandlers = array(
-    'pull_request'
+// This is an array of actions that are allowed
+$authorizedActions = array(
+    'connectUser',
+    'disconnectUser',
+    'forkRepo',
+    'pullRequest',
+    'codeMerged'
 );
 
-$eventsInRequest = array();
-
-
-if (array_key_exists('payload', $_POST)) {
-    // Webhook callbacks contain a POSTed JSON payload, if we have it, process it
-    
-    // Create object with JSON payload
-    $payload = json_decode($_REQUEST['payload']);
-    
-    foreach ($payload as $key => $value) {
-        if (in_array($key, $eventHandlers)) {
-            $eventsInRequest[] = $key;
-        }
-    }
-    
-    // I dont think a payload may include multiple events, however, just in case
-    // we list the events that we have a handler for, and run each in sequence
-    foreach ($eventsInRequest as $key => $value) {
-        $GitHubProject = new GitHubProject();
-        $GitHubProject->$value($payload);
-    }
-    
-} else {
-    // We don't have a payload, this is a response to a federeation
-    connectUser();
+// We look for a function named as the action in the request
+if (isset($_REQUEST['action']) && in_array($_REQUEST['action'], $authorizedActions)) {
+    $action = $_REQUEST['action'];
+    $action();
 }
+
+connectUser();
 
 /**
  *  
