@@ -127,9 +127,9 @@ function parseItem($result) {
     $data = Array();
     /* We only need the two values, so lets get and return them */
     /* no need to do anything more complex with xml parsing at this stage*/
-    preg_match('/\'ga:pageviews\'.*?value=\'([0-9]+)\'/', $result, $matches);
+    preg_match('/[\"|\']ga:pageviews[\"|\'].*?value=[\"|\']([0-9]+)[\"|\']/', $result, $matches);
     $data['views'] = $matches[1];
-    preg_match('/\'ga:visits\'.*?value=\'([0-9]+)\'/',$result, $matches);
+    preg_match('/[\"|\']ga:visits[\"|\'].*?value=[\"|\']([0-9]+)[\"|\']/', $result, $matches);
     $data['visits'] = $matches[1];
     return($data);
 
