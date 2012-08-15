@@ -961,7 +961,12 @@ function checkLogin() {
             '<a href="https://' . SANDBOX_SERVER . '/~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
             $url
         );
-
+        
+		// Replace '<repo> v####' with a link to the SVN server
+        $regexp = '/([a-zA-Z0-9]+)\s[v]([0-9_]+)/i';
+        $link = DELIMITER . '<a href="' . SVN_REV_URL . '$1&path=%2F&rev=$2">$1 v$2</a>' . DELIMITER;
+        $url = preg_replace($regexp,  $link, $url);
+		
         // Replace '#/<url>' with a link to the author sandbox
         $regexp="/\#\/(\S*)/i";
         if (strpos(SERVER_BASE, '~') === false) {
