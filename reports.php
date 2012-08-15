@@ -12,6 +12,7 @@ include_once("check_new_user.php");
 include_once("functions.php");
 include_once("send_email.php");
 include_once("classes/Fee.class.php");
+include_once("classes/Bonus.class.php");
 require_once('lib/Agency/Worklist/Filter.php');
 
 /* This page is only accessible to runners. */
@@ -60,7 +61,19 @@ if (!$filter->getEnd()) {
 $page = $filter->getPage();
 
 if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_payer'])) {
-    Fee::markPaidByList(explode(',', trim($_POST['paidList'], ',')), $user_paid=0, $paid_notes='', $paid=1, $fund_id=false);
+	
+    // we need to decide if we are dealing with a fee or bonus and call appropriate routine
+    $fees_id = explode(',', trim($_POST['paidList'], ','));
+    foreach($fees_id as $id) {
+        $query = "SELECT `id`, `bonus` FROM `".FEES."` WHERE `id` = $id ";
+        $result = mysql_query($query);
+        $row = mysql_fetch_assoc($result);
+        if($row['bonus']) {
+            bonus::markPaidById($id,$user_paid=0, $paid=1, true, $fund_id=false);	    	
+        } else {
+            Fee::markPaidById($id, $user_paid=0, $paid_notes='', $paid=1, true, $fund_id=false);
+        }
+    }
 }
 
 /*********************************** HTML layout begins here  *************************************/

@@ -9,9 +9,12 @@ include_once('apifunctions.php');
 class Fee
 {
     public static function markPaidByList($fee_ids, $user_paid = 0, $paid_notes = '', $paid = 1, $fund_id = false) {
+
         $summaryData = array();
         foreach ($fee_ids as $fee_id) {
+
             $summary = self::markPaidById($fee_id, $user_paid, $paid_notes, $paid, true, $fund_id);
+            
             if ($summary[0] != 0) {
                 if (isset($summaryData[$summary[0]])) {
                     $summaryData[$summary[0]][0] += $summary[1];
@@ -44,6 +47,7 @@ class Fee
         $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid`, `expense`, '0' as `rewarder` FROM `".FEES."` WHERE `id`=$fee_id AND `bonus` = 0";
         $rt = mysql_query($query) or error_log("failed to select fees: $query : " . mysql_error());
 
+ 
         if ($rt && ($row = mysql_fetch_assoc($rt))) {
             $query = "
                 UPDATE 
