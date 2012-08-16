@@ -1157,8 +1157,8 @@ WHERE id = ' . (int)$id;
                 break;
                 
             case 'save-review-url':
-                if ($this->getStatus() == 'DONE' || $this->getStatus() == 'COMPLETED') {
-                    $action_error = 'Cannot change review URL when status is DONE or COMPLETED';
+                if ($this->getStatus() == 'DONE') {
+                    $action_error = 'Cannot change review URL when status is DONE';
                     return false;
                 }
                 
