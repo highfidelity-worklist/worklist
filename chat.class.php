@@ -1016,8 +1016,6 @@ mysql_select_db(DB_NAME) or die(mysql_error());
         $row = mysql_fetch_assoc($result);
         return $row;
     }
-
-
 }
 
 static $chat = null;

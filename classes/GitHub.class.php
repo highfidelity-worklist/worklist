@@ -269,6 +269,43 @@ class GitHubProject
         return $repoDetails;
     }
     
+    public function pull_request($payload) {
+        $headLabel = $payload->pull_request->head->label;
+        $labelComponents = explode(':', $headLabel);
+        $jobNumber = trim($labelComponents[1]);
+        // Try to extract job number from head repository label
+        if (preg_match('/^[0-9]{3,}$/', $labelComponents[1])) {
+            $workItem = new WorkItem();
+            // We have what looks like a workitem number, see if it exists
+            // and if it does, we set job to completed and post comment to
+            // journal
+            if ($workItem->idExists($jobNumber)
+                && $payload->pull_request->state == 'closed') {
+                
+                $workItem->loadById($jobNumber);
+                $pullRequestNumber = $payload->pull_request->number;
+                $pullRequestURL = $payload->pull_request->html_url;
+                $pullRequestBase = $payload->pull_request->base->label;
+                $pullRequestStatus = $payload->pull_request->merged == 'true' 
+                    ? "closed and merged"
+                    : "closed but not merged";
+                $message = "
+                    Job #{$jobNumber} - Pull request {$pullRequestNumber}
+                    ({$pullRequestURL}) has been {$pullRequestStatus} into {$pullRequestBase}";
+
+                sendJournalNotification($message);
+                
+                if ($payload->pull_request->merged == 'true') {
+                    $journal_message = 
+                        "Job #{$jobNumber} has been automatically set to COMPLETED";
+                    sendJournalNotification($journal_message);
+                    $workItem->setStatus('COMPLETED');
+                    $workItem->addFeesToCompletedJob();
+                    $workItem->save();
+                }
+            }
+        }
+    }
 }
 
 ?>

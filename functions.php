@@ -423,7 +423,7 @@ function convertTimezone($timestamp){
  */
 function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder=0)
 {
-	if ($is_rewarder) $is_expense = 0;
+    if ($is_rewarder) $is_expense = 0;
     // Get work item summary
     $query = "select summary from ".WORKLIST." where id='$itemid'";
     $rt = mysql_query($query);
