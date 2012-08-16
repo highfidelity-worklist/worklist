@@ -7,6 +7,10 @@
 var pollingInterval = 1000; //ms
 var speakerPollingInterval = 10000; //ms
 
+// heartbeat
+var heartbeatInterval = 50000; //ms
+var heartbeatPaused = false;
+
 // timer for the title change
 var titleTimer = 0;
 
@@ -243,20 +247,22 @@ var isBot = function(name){
 };
 
 function heartbeat() {
-    $.post("aj.php", { 'what': 'speakeronline', 'csrf_token': csrf_token }, function(json) {
-        if (!json || json === null) {
-            return;
-        }
-        if(json.idle) {
-            customAction('idle', json.message);
-        } else {
-            customAction('unidle', json.message);
-        }
-    }, 'json');
+    if (! heartbeatPaused) {
+        $.post("aj.php", { 'what': 'speakeronline', 'csrf_token': csrf_token }, function(json) {
+            if (!json || json === null) {
+                return;
+            }
+            if(json.idle) {
+                customAction('idle', json.message);
+            } else {
+                customAction('unidle', json.message);
+            }
+        }, 'json');
+    }
 }
 //make user online
 heartbeat();
-$.alive = setInterval(heartbeat, 50000);
+$.alive = setInterval(heartbeat, heartbeatInterval);
 
 function alertNewMessage(action, entryText) {
 
@@ -507,6 +513,9 @@ function togglePopup() {
 /* End New Message Alert by danbrown */
 
 function sendEntry() {
+    if (heartbeatPaused) {
+        heartbeatPaused = false;
+    }
     scrollBottom = true;
     doc = document.location.href.split("chat");
     //var worklistUrl = doc[0] + "/worklist/";
@@ -1473,12 +1482,18 @@ function fillSpeakerList(newSpeakerList, currentUser){
         $.each(combined[1], function(userId, userStatus) {
             switch(userStatus[0]) {
                 case 0: // delete from list
+                    if (userId == window.userId) {
+                        heartbeatPaused = true;
+                    }
                     $speakerList.removeSpeaker(userId, userStatus);
                     break;
                 case 1: // reposition existing
                     $speakerList.repositionSpeaker(userId, userStatus);
                     break;
                 case 2: // add to list
+                    if (userId == window.userId) {
+                        heartbeatPaused = false;
+                    }
                     $speakerList.addSpeaker(userId, userStatus);
                     break;
             }

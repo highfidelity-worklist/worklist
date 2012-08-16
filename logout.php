@@ -9,6 +9,11 @@ ob_start();
 include("config.php");
 include("class.session_handler.php");
 
+
+require_once('chat.class.php');
+$chat = new Chat();
+$chat->offlineSpeaker($_SESSION['userid']);
+
 unset($_SESSION['username']);
 unset($_SESSION['userid']);
 unset($_SESSION['confirm_string']);
