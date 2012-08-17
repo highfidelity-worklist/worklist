@@ -287,7 +287,6 @@ require_once('opengraphmeta.php');
     var page = <?php echo $page ?>;
     var topIsOdd = true;
     var timeoutId;
-    var addedRows = 0;
     var workitem = 0;
 //    var cur_user = false;
     var workitems;
@@ -346,7 +345,6 @@ require_once('opengraphmeta.php');
     }
     // see getworklist.php for json column mapping
     function AppendRow (json, odd, prepend, moreJson, idx) {
-        var pre = '', post = '';
         var row;
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live iToolTip hoverJobRow ';
 
@@ -379,10 +377,6 @@ require_once('opengraphmeta.php');
         }
 
         row += '">';
-        if (prepend) {
-            pre = '<div class="slideDown" style="display:none">';
-            post = '</div>';
-        }
 
 <?php if (! $hide_project_column) : ?>
         var project_link = worklistUrl + '' + json[17];
@@ -402,18 +396,18 @@ require_once('opengraphmeta.php');
 
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
-        row += '<td width="41%"><span id="workitem-' + json[0] + '" class="taskSummary">' +
+        var workitemId = 'workitem-' + json[0];
+        row += '<td width="41%"><span id="' + workitemId + '" class="taskSummary">' +
                 '<span class="taskID">#' + json[0] + '</span> - ' +
-                pre + json[1] + post + extraStringBug +
+                json[1] + extraStringBug +
                 '</span></td>';
 <?php if (! $hide_project_column) : ?>
+        var bidCount = '';
         if ((json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID') &&json[10] > 0) {
-            post = ' (' + json[10] + ')';
+            bidCount = ' (' + json[10] + ')';
         }
-        row += '<td width="20%">' + pre + json[2] + post + '</td>';
+        row += '<td width="20%">' + json[2] + bidCount + '</td>';
 <?php endif; ?>
-        pre = '';
-        post = '';
 /*
         if (json[3] != '') {
             var who = json[3];
@@ -447,20 +441,19 @@ require_once('opengraphmeta.php');
         who += ', ' + createTagWho(json[14],json[5],"mechanic");
     }
 
-    row += '<td width="9.5%" class="who not-workitem">' + pre + who + post + '</td>';
+    row += '<td width="9.5%" class="who not-workitem">' + who + '</td>';
 
         if (json[2] == 'WORKING' && json[11] != null) {
+            var pastDuePre = '', pastDuePost = '';
             if ((RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') == 'Past due') {
-                pre = "<span class='past-due'>";
-                post = "</span>";
+                pastDuePre = "<span class='past-due'>";
+                pastDuePost = "</span>";
             }
-            row += '<td width="15%">' + pre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + post +'</td>';
-            pre = '';
-            post = '';
+            row += '<td width="15%">' + pastDuePre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + pastDuePost +'</td>';
         } else if (json[2] == 'DONE' && json[11] != null) {
             row += '<td width="15%">' + json[11] + '</td>';
-        }else {
-            row += '<td width="15%">' + pre + RelativeTime(json[6]) + ' ago' + post +'</td>';
+        } else {
+            row += '<td width="15%">' +  RelativeTime(json[6]) + ' ago' +'</td>';
         }
 
         // Comments
@@ -487,7 +480,7 @@ require_once('opengraphmeta.php');
                 } else {
                     feebids = '$' + feebids;
                 }
-                row += '<td width="11%">' + pre + feebids + post + '</td>';
+                row += '<td width="11%">' + feebids + '</td>';
             } else {
                 row += '<td width="11%">&nbsp;</td>';
             }
@@ -495,18 +488,19 @@ require_once('opengraphmeta.php');
         <?php endif; ?>
         row += '</tr>';
         if (prepend) {
-            $(row).prependTo('.table-worklist tbody')
-                .find('td div.slideDown').fadeIn(500);
+            // animate in each row
+            $(row).hide().prependTo('.table-worklist tbody').fadeIn(300);
             setTimeout(function(){
-                $(this).removeClass('slideDown');
                 if (moreJson && idx-- > 1) {
                     topIsOdd = !topIsOdd;
                     AppendRow(moreJson[idx], topIsOdd, true, moreJson, idx);
                 }
-            }, 500);
+            }, 300);
         } else {
             $('.table-worklist tbody').append(row);
         }
+        // Apply additional styling
+        additionalRowUpdates(workitemId);
     }
 
     function Change(obj, evt)    {
@@ -619,10 +613,13 @@ require_once('opengraphmeta.php');
                 if (!json[0][0]) return;
 
                 /* When updating, find the last first element */
-                for (var lastFirst = 1; update && page == 1 && lastId && lastFirst < json.length && lastId != json[lastFirst][0]; lastFirst++);
-                lastFirst = Math.max(1, lastFirst - addedRows);
-                addedRows = 0;
+                for (var lastFirst = 1; update && lastFirst < json.length && lastId != json[lastFirst][0]; lastFirst++);
 
+                if (update && lastId && lastFirst == json.length) {
+                    // lastId has disappeared from the list during an update.. avoid copious animations by reverting lastFirst
+                    lastFirst = 1;
+                }
+                
                 /* Output the worklist rows. */
                 var odd = topIsOdd;
                 for (var i = lastFirst; i < json.length; i++) {
@@ -638,27 +635,6 @@ require_once('opengraphmeta.php');
                     AppendRow(json[lastFirst-1], topIsOdd, true, json, lastFirst-1);
                 }
                 lastId = json[1][0];
-                makeWorkitemTooltip(".taskSummary");
-
-                /*commented for remove tooltip */
-                //MapToolTips();
-                $('tr.row-worklist-live').each(function() {
-                    var selfRow = $(this);
-                    $(".taskSummary", selfRow).parent().addClass("taskSummaryCell");
-                    $('.taskSummary', selfRow).wrap('<a href="' + buildHref(SetWorkItem(selfRow)) + '"></a>');
-                    $("td:not(.not-workitem)", selfRow).click(function(e) {
-                        if (! (e.ctrlKey || e.shiftKey || e.altKey)) {
-                            window.location.href = buildHref(SetWorkItem(selfRow));
-                        }
-                    }).addClass("clickable");
-
-                    $(".creator, .runner, .mechanic", $(".who", selfRow)).toggleClass("linkTaskWho").click(
-                        function() {
-                            showUserInfo($(this).attr("title"));
-                        }
-                    );
-
-                });
 
                 $('.worklist-pagination-row a').click(function(e){
                     page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
@@ -692,6 +668,35 @@ require_once('opengraphmeta.php');
         lockGetWorklist = 0;
     }
 
+
+    function additionalRowUpdates(workitemId) {
+        // Apply only once to new rows, either on an update or original load.
+        var rowQuery = 'tr.row-worklist-live';
+        var taskQuery = '.taskSummary';
+        if (workitemId != undefined) {
+            rowQuery += '#' + workitemId;
+            taskQuery = '#' + workitemId + taskQuery;
+        }
+        // Buid the workitem anchors
+        $(rowQuery).each(function() {
+            var selfRow = $(this);
+            $(".taskSummary", selfRow).parent().addClass("taskSummaryCell");
+            $('.taskSummary', selfRow).wrap('<a href="' + buildHref(SetWorkItem(selfRow)) + '"></a>');
+            $("td:not(.not-workitem)", selfRow).click(function(e) {
+                if (! (e.ctrlKey || e.shiftKey || e.altKey)) {
+                    window.location.href = buildHref(SetWorkItem(selfRow));
+                }
+            }).addClass("clickable");
+    
+            $(".creator, .runner, .mechanic", $(".who", selfRow)).addClass("linkTaskWho").click(
+                function() {
+                    showUserInfo($(this).attr("title"));
+                }
+            );
+        });
+        // Add the hover over tooltip
+        makeWorkitemTooltip(taskQuery);
+   }
 
     /*
     *    aneu: Added jquery.hovertip.min.js
