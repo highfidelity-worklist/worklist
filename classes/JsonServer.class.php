@@ -572,7 +572,8 @@ class JsonServer
             $comment->save();
             
             $journalMessage = str_replace("\n", '', $message);
-            sendJournalNotification("Otto could not authorize sandbox for #$workitem_id: " . $journalMessage);
+            sendJournalNotification("Otto could not authorize sandbox for #$workitem_id: " . $workItem->getSummary() . $journalMessage . 
+            " Status set to SVNHold");
 
             return $this->setOutput(array(
                     'success' => false, 
