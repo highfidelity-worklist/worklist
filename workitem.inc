@@ -81,6 +81,8 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/projects.js"></script>
 <script type="text/javascript" src="js/github.js"></script>
 <script type="text/javascript">
+    var origStatus = '<?php echo $worklist['status']; ?>';
+
 function resizeIframeDlg() {
     var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
                   $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
@@ -561,7 +563,17 @@ $(document).ready(function(){
         }
     });
     $('#ping-msg').autogrow();
-    $('#popup-reviewurl').dialog({ autoOpen: false, modal: true, width: 410, show: 'fade', hide: 'fade', resizable: false });
+    $('#popup-reviewurl').dialog({ 
+        autoOpen: false,
+        modal: true,
+        width: 410,
+        show: 'fade',
+        hide: 'fade',
+        resizable: false,
+        close: function() {
+            $('select[name=quick-status]').val(origStatus);
+        }
+    });
     $('#popup-withdraw-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
     $('#popup-decline-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
 <?php if ($mechanic_id == $user_id): ?>

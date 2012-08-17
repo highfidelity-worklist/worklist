@@ -460,8 +460,8 @@ if($action =='save-review-url') {
         $notes = (!empty($_REQUEST['review-notes'])) ? $_REQUEST['review-notes'] : null;
         
         $status_review = $_REQUEST['quick-status-review'];
-        if(!empty($status_review)) {
-           changeStatus($workitem, $status_review, $user);
+        if(!empty($status_review) && $workitem->getStatus() != $status_review) {
+            changeStatus($workitem, $status_review, $user);
         }
         $workitem->setSandbox($sandbox);
         $workitem->save();
