@@ -260,7 +260,10 @@ class MeBot extends Bot
         // set this as the start of idletime for the wywa
         global $him_bot;
         $him_bot->recordIdleTime($me);
-        sendJournalNotification($_SESSION['nickname'] . ' is ' . ($botmsg == NOMESSAGE ? '' : 'away ') . $botmsg);
+        /*($botmsg == NOMESSAGE ? '' : '')
+           This can be commented out in next line if we want to add some text in system notification.
+        */
+        sendJournalNotification($_SESSION['nickname'] . ' is ' /*. ($botmsg == NOMESSAGE ? '' : '') */. $botmsg);
         return array(
             'bot'=>$this->respondsTo(),
             'status'=>'ok',
