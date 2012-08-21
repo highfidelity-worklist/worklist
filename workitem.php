@@ -810,12 +810,12 @@ if ($action == 'accept_bid') {
                         $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " .
                         $bid_info['summary'] . ". Status set to WORKING.";
 
-                    // mail notification
+                    // mail notification - including any data returned from acceptBid
                     Notification::workitemNotify(array(
                         'type' => 'bid_accepted',
                         'workitem' => $workitem,
                         'recipients' => array('mechanic', 'followers')
-                    ));
+                    ), $bid_info);
 
                     $bidder = new User();
                     $bidder->findUserById($bid_info['bidder_id']);

@@ -340,9 +340,24 @@ class Notification {
                         if($workitem->getMechanic() != '') {
                             $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
+
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'The job can be viewed <a href=' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
-                . '<a href="' . SERVER_URL . '">www.worklist.net</a>';
+                . 'The job can be viewed <a href=' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '>here</a><br /><br />';
+
+                // render the github branch-created-sub template if necessary
+                if (!empty($data) && array_key_exists('branch_name', $data)) {
+                    $template = 'branch-created-sub';
+                    include(dirname(__FILE__) . "/../email/en.php");
+
+                    $replacedTemplate = !empty($data) ?
+                        templateReplace($emailTemplates[$template], $data) :
+                        $emailTemplates[$template];
+
+                    $body .= $replacedTemplate['body'];
+                }
+
+                $body .= '<br /><a href="' . SERVER_URL . '">www.worklist.net</a>';
+
             break;
 
             case 'bid_placed':

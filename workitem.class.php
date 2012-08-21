@@ -929,8 +929,8 @@ WHERE id = ' . (int)$id;
                     'users_fork' => $forkStatus['data']['git_url'],
                     'master_repo' => str_replace('https://', 'git://', $project->getRepository())
                 );
-                $senderEmail = 'Worklist <contact@worklist.net>';
-                sendTemplateEmail($bidderEmail, $emailTemplate, $data, $senderEmail);
+
+                $bid_info = array_merge($data, $bid_info);
             }
             if (!$branchStatus['error']) {
                 $bid_info['sandbox'] = $branchStatus['branch_url'];

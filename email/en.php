@@ -233,6 +233,21 @@ replacement data:
                <p>If you have any questions, look for assistance in our Chat.</p>
                <p>The Worklist</p>'
 ),
+'branch-created-sub' => array(
+    'body' => '<br />
+               <strong>New branch {branch_name} created for repo {users_fork} on your GitHub account</strong>
+               <p>We have created a new branch {branch_name} on your {users_fork} repo in your GitHub account.</p>
+               <p>Please refer to the following basic commands to work with your new branch:</p>
+               <ol>
+               <li>Locally clone your fork: git clone {users_fork}</li>
+               <li>From your cloned copy, set the master repo as upstream: git remote add upstream {master_repo}</li>
+               <li>Make sure you\'re using the latest code: git pull upstream master</li>
+               <li>Checkout the correct branch: git checkout {branch_name}</li>
+               <li>Make all required changes, commit to your local clone as you advance, and push to your fork whenever ready: git push</li>
+               <li>Before code or functional reviews can happen, you must have pushed your progress to your GitHub fork.</li>
+               </ol>
+               <p>If you have any questions, look for assistance in our Chat.</p>'
+),
 
 'functional-howto' => array(
     'subject' => 'Job #{branch_name} is ready for functional review',
