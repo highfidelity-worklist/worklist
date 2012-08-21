@@ -2292,6 +2292,7 @@ function  getTaskPosts($item_id) {
 
     require_once('chat.class.php');
     $query = $item_id;
+    require_once('class/AjaxResponse.class.php');
     $response = new AjaxResponse($chat);
     try {
         $data = $response->latestFromTask($item_id);

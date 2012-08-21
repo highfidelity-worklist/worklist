@@ -6,14 +6,13 @@
 //  All Rights Reserved.
 //  http://www.coffeeandpower.com
 
-require_once ("config.php");
-require_once ("class.session_handler.php");
-require_once ("send_email.php");
-require_once ("timezones.php");
-require_once ("countrylist.php");
-require_once ("smslist.php");
-require_once ("classes/Notification.class.php");
-require_once ("functions.php");
+require_once("config.php");
+require_once("class.session_handler.php");
+require_once("send_email.php");
+require_once("timezones.php");
+require_once("countrylist.php");
+require_once("smslist.php");
+require_once("classes/Notification.class.php");
 
 $signup = true;
 $phone = $country = $provider = $authtype = "";
@@ -72,6 +71,8 @@ $minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
 $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
 
 if(isset($minimal_POST['sign_up'])) {
+    require_once ("class/Error.class.php");
+    require_once ("class/Utils.class.php");
     $error = new Error();
     if(empty($username) || empty($_REQUEST["nickname"]) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword']))){
         $error->setError("Please fill all required fields.");

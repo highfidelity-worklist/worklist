@@ -2,13 +2,14 @@
 // Class to work with chat table
 //
 //  vim:ts=4:et
-require_once ("config.php");
-require_once ("functions.php");
 
 $libdir = dirname(__FILE__) . '/lib';
 set_include_path(get_include_path() . PATH_SEPARATOR . $libdir);
 
+require_once dirname(__FILE__) . '/config.php';
 require_once dirname(__FILE__) . '/bot.class.php';
+require_once dirname(__FILE__) . '/penalty.class.php';
+require_once dirname(__FILE__) . '/classes/User.class.php';
 
 mysql_connect(DB_SERVER, DB_USER,DB_PASSWORD) or die(mysql_error()) ;
 mysql_select_db(DB_NAME) or die(mysql_error());

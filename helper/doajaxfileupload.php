@@ -18,6 +18,7 @@ mysql_select_db(DB_NAME) or die(mysql_error());
 
 
 require_once(dirname(__FILE__)."/../chat.class.php");
+require_once(dirname(__FILE__)."/../files.class.php");
 
 //require_once dirname(__FILE__) . '/chat.class.php';
 //require_once dirname(__FILE__) . '/files.class.php';

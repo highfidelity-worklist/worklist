@@ -7,11 +7,12 @@
 //
 
 ob_start();
-include ("config.php");
-include ("class.session_handler.php");
-include ("check_session.php");
-include ("functions.php");
-include_once ("send_email.php");
+include("config.php");
+include("class.session_handler.php");
+include("check_session.php");
+include("functions.php");
+include_once("send_email.php");
+require_once ("class/Utils.class.php");
 
 $msg = array();
 if (!empty($_POST['oldpassword'])) {

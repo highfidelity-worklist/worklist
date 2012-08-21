@@ -5,14 +5,15 @@
 
     ob_start();
 
-    require_once ("config.php");
-    require_once ("class.session_handler.php");
-    require_once ("functions.php");
-    require_once ("timezones.php");
-    require_once ("lib/Agency/Worklist/Filter.php");
-    require_once ("models/DataObject.php");
-    require_once ("models/Review.php");
-    require_once ("models/Users_Favorite.php");
+    require_once 'config.php';
+    require_once 'class.session_handler.php';
+    require_once 'functions.php';
+    require_once 'timezones.php';
+    require_once 'sandbox-util-class.php';
+    require_once 'lib/Agency/Worklist/Filter.php';
+    require_once 'models/DataObject.php';
+    require_once 'models/Review.php';
+    require_once 'models/Users_Favorite.php';
 
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
     $tab = isset($_REQUEST['tab']) ? $_REQUEST['tab'] : "";

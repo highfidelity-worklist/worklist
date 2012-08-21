@@ -1,7 +1,7 @@
 <?php
 include "config.php";
 include "classes/User.class.php";
-include "classes/SandboxUtil.class.php";
+include "sandbox-util-class.php";
 
 if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
     throw new Exception('Error: ' . mysql_error());

@@ -3,10 +3,10 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-include ("config.php");
-include ("class.session_handler.php");
-include ("functions.php");
-
+include("config.php");
+include("class.session_handler.php");
+include("functions.php");
+require 'workitem.class.php';
 $job_id = isset($_REQUEST['job_id']) ? (int)$_REQUEST['job_id'] : 0;
 if ($job_id == 0) {
     echo $job_id;

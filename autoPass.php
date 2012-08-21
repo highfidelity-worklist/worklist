@@ -9,9 +9,13 @@ if ( strpos(strtolower($_SERVER['SCRIPT_NAME']),strtolower(basename(__FILE__))) 
     die("...");
 }
 
-require_once ("config.php");
-require_once ("functions.php");
-require_once ("send_email.php");
+require_once('config.php');
+require_once('functions.php');
+require_once('workitem.class.php');
+require_once('send_email.php');
+require_once('classes/Project.class.php');
+require_once('classes/User.class.php');
+require_once('classes/Notification.class.php');
 
 function autoPassJobs() {
     $con = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);

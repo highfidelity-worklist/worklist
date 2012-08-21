@@ -3,7 +3,9 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-require_once ("functions.php");
+require_once ('functions.php');
+require_once ('classes/User.class.php');
+require_once ('workitem.class.php');
 
 class Agency_Worklist_Filter {
     protected $name = '.worklist';

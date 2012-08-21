@@ -6,10 +6,10 @@
  * @package Workitem
  * @version $Id$
  */
-require_once ("lib/Workitem/Exception.php");
-require_once ("lib/twitteroauth/twitteroauth.php");
-require_once ("config.php");
-require_once ("functions.php");
+require_once('lib/Workitem/Exception.php');
+require_once('lib/twitteroauth/twitteroauth.php');
+require_once('classes/User.class.php');
+require_once('classes/GitHub.class.php');
 /**
  * Workitem
  *

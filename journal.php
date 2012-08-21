@@ -6,9 +6,11 @@
 //  http://www.coffeeandpower.com
 
 ob_start();
-require_once ("config.php");
-require_once ("functions.php");
-
+require_once("config.php");
+require_once("class.session_handler.php");
+require_once('class/Utils.class.php');
+require_once("functions.php");
+require_once('classes/UserStats.class.php');
 $msg = '';
 
 // is the user logged in?
@@ -35,6 +37,7 @@ if(isset($_SESSION['csrf_token'])) {
 
 require_once("helper/checkJournal_session.php");
 require_once("chat.class.php");
+require_once("penalty.class.php");
 require_once("crypt.php");
 
 $query = (isset($_REQUEST['query'])) ? (int) $_REQUEST['query'] : '';

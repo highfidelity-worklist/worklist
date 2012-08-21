@@ -2,8 +2,7 @@
 // Bot class for the 'mem' journal bot.
 // 
 //  vim:ts=4:et
-require_once ("config.php");
-require_once ("functions.php");
+include("survey.class.php");
 include_once("send_email.php");
 
 class SurveyBot extends Bot

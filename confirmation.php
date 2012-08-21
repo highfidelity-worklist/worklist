@@ -6,9 +6,11 @@
 //  http://www.coffeeandpower.com
 
 ob_start();
-require_once ("config.php");
-require_once ("send_email.php");
-require_once ("functions.php");
+require_once("config.php");
+require_once("class.session_handler.php");
+require_once("send_email.php");
+require_once('functions.php');
+require_once('class/Utils.class.php');
 
 $msg = "";
 $to = 1;

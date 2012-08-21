@@ -3,12 +3,18 @@
 //  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-require_once ("config.php");
-require_once ("functions.php");
-require_once ("send_email.php");
-require_once ("timezones.php");
-require_once ("class.session_handler.php");
+require_once 'config.php';
+require_once 'class.session_handler.php';
+require_once 'send_email.php';
+require_once 'workitem.class.php';
+require_once 'classes/Project.class.php';
+require_once 'classes/User.class.php';
+require_once 'classes/GitHub.class.php';
+require_once 'class/Utils.class.php';
+require_once 'functions.php';
+require_once 'timezones.php';
 require_once 'lib/Sms.php';
+require_once 'classes/Repository.class.php';
 require_once 'models/DataObject.php';
 require_once 'models/Budget.php';
 require_once 'models/Users_Favorite.php';
@@ -1174,6 +1180,7 @@ function changeStatus($workitem, $newStatus, $user) {
         $workitem->resetCRFlags();
         if ($repoType == 'svn') {
             if (substr($workitem->getSandbox(), 0, 4) == "http") {
+                require_once("sandbox-util-class.php");
 
                 // Sandbox URLs look like:
                 // https://dev.worklist.net/~johncarlson21/worklist
