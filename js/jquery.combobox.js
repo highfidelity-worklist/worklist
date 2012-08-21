@@ -464,7 +464,9 @@
     
     $.fn.comboBox = function(settings) {
         if (settings && settings.action && settings.action == "val") {
-            $(this).data("comboBox").val(settings.param);
+            if ($(this).data('comboBox')) {
+                $(this).data('comboBox').val(settings.param);
+            }
             return $(this);
         }
         return this.each(function() {
