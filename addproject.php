@@ -4,13 +4,10 @@
 //  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-require_once("config.php");
-require_once("class.session_handler.php");
-include_once("check_new_user.php"); 
-require_once("functions.php");
-require_once('classes/Repository.class.php');
-require_once('classes/Project.class.php');
-require_once('project-util-class.php');
+require_once ("config.php");
+require_once ("class.session_handler.php");
+include_once ("check_new_user.php"); 
+require_once ("functions.php");
 
 $journal_message = '';
 $nick = '';

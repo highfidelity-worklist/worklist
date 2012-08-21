@@ -6,10 +6,9 @@
 //  http://www.coffeeandpower.com
 
 ob_start();
-require_once("config.php");
+require_once ("config.php");
 require_once("class.session_handler.php");
-require_once("functions.php");
-require_once('class/Utils.class.php');
+require_once ("functions.php");
 
 // is the user already logged in? go to worklist.php
 if (! empty($_SESSION['userid'])) {
@@ -25,9 +24,6 @@ if (!empty($_REQUEST['reauth'])) {
 $expired = !empty($_REQUEST['expired']) ? 1 : 0;
 
 if($_POST) {
-    require_once ("class/Error.class.php");
-    require_once ("class/Login.class.php");
-    require_once ("class/Response.class.php");
     $error = new Error();
     $username = isset($_REQUEST["username"]) ? trim($_REQUEST["username"]) : "";
     $password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";

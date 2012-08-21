@@ -1,16 +1,9 @@
 <?php
-require_once('config.php');
-require_once('functions.php');
-require_once('class/Session.class.php');
-require_once('class/Utils.class.php');
-require_once('class/Database.class.php');
-require_once('class.session_handler.php');
-require_once('classes/Project.class.php');
-require_once('classes/User.class.php');
-require_once('models/DataObject.php');
-require_once('models/Review.php');
-require_once('models/Users_Favorite.php');
-require_once('sandbox-util-class.php');
+require_once ("config.php");
+require_once ("functions.php");
+require_once ("models/DataObject.php");
+require_once ("models/Review.php");
+require_once ("models/Users_Favorite.php");
 require_once('send_email.php');
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
@@ -180,7 +173,6 @@ function  getLatestPosts() {
 	$toTime = 0;
 	$prevNext = '';
 	$query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
-	require_once('class/AjaxResponse.class.php');
 	$response = new AjaxResponse($chat);
 	try
 	{
@@ -207,7 +199,6 @@ function getLatestForNickname() {
 	}
 
 	require_once('chat.class.php');
-	require_once('class/AjaxResponse.class.php');
 
 	$response = new AjaxResponse($chat);
 
@@ -224,7 +215,6 @@ function getLatestForNickname() {
 * Setting session variables for the user so he is logged in
 */
 function loginUserIntoSession(){
-    require_once("class/Database.class.php");
     $db = new Database();
     $uid = (int) $_REQUEST['user_id'];
     $sid = $_REQUEST['session_id'];

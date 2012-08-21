@@ -3,7 +3,7 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-include("class/Report.class.php");
+include ("functions.php");
 $report = new Report();
 
 $phistory = $report->getLastPaymentInfo(intval($_GET['cid']));

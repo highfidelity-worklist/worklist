@@ -2,7 +2,7 @@
 //  Copyright (c) 2010, LoveMachine Inc.
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
-require_once('class/Session.class.php');
+require_once ("classes/Session.class.php");
 
 if(!defined('CHECK_SESSION')) {
 session::check();

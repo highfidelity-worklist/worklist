@@ -211,9 +211,8 @@ class JsonServer
             $file = new File();
             $file->findFileById($fileid);
 
-            require_once(APP_PATH . '/workitem.class.php');
             try {
-                $workitem = Workitem::getById($file->getWorkitem());
+                $workitem = WorkItem::getById($file->getWorkitem());
             } catch (Exception $e) {}
             if (
               $_SESSION['is_runner'] ||
@@ -411,9 +410,8 @@ class JsonServer
             $file = new File();
             $file->findFileById($fileid);
 
-            require_once(APP_PATH . '/workitem.class.php');
             if (is_numeric($file->getWorkitem())) {
-                $workitem = Workitem::getById($file->getWorkitem());
+                $workitem = WorkItem::getById($file->getWorkitem());
                 if (
                     $_SESSION['is_runner'] ||
                     $_SESSION['is_payer'] ||
@@ -449,10 +447,9 @@ class JsonServer
 
             $file = new File();
             $file->findFileById($fileid);
-            require_once(APP_PATH . '/workitem.class.php');
             $saveit = false;
             if (is_numeric($file->getWorkitem())) {
-                $workitem = Workitem::getById($file->getWorkitem());
+                $workitem = WorkItem::getById($file->getWorkitem());
                 if (
                     $_SESSION['is_runner'] ||
                     $_SESSION['is_payer'] ||
@@ -489,8 +486,7 @@ class JsonServer
             $file = new File();
             $file->findFileById($fileid);
 
-            require_once(APP_PATH . '/workitem.class.php');
-            $workitem = Workitem::getById($file->getWorkitem());
+            $workitem = WorkItem::getById($file->getWorkitem());
             if (
               $_SESSION['is_runner'] ||
               $_SESSION['is_payer'] ||
@@ -938,8 +934,7 @@ class JsonServer
         $runner = new User();
         if ($this->getUser()->isRunner()) {
             if ($runner->findUserById($this->getRequest()->getParam('runner')) && $runner->isRunner()) {
-                require_once(APP_PATH . '/workitem.class.php');
-                $workitem = new Workitem($workitem);
+                $workitem = new WorkItem($workitem);
                 $oldRunner = $workitem->getRunner();
                 $workitem->setRunnerId($runner->getId())
                          ->save();
@@ -992,7 +987,7 @@ class JsonServer
         $workitem_id = (int) $this->getRequest()->getParam('workitem');
         $user_id     = (int) $this->getRequest()->getParam('userid');
 
-        $workitem = new Workitem($workitem_id);
+        $workitem = new WorkItem($workitem_id);
 
         $resp = $workitem->toggleUserFollowing($user_id);
 

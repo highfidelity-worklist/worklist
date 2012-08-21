@@ -6,7 +6,6 @@
 include("config.php");
 include("class.session_handler.php");
 include("functions.php");
-require 'workitem.class.php';
 
 $blankbid = array(
     'id' => 0,

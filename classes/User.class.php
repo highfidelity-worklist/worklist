@@ -7,6 +7,8 @@
 //  But please be as fair as you comment your (at least public) methods - maybe another developer
 //  needs them too.
 
+require_once ("functions.php");
+
 class User {
     protected $id;
     protected $username;
@@ -1233,7 +1235,6 @@ class User {
         // append numbers to the end of the name if it's not unique
         // to both the password file AND the user table
         // Test SanboxUtil last since that could be a remote call
-        require_once "sandbox-util-class.php";
         $attempted_unixname = $unixname;
         $x = 0;
         while (User::unixusernameExists($attempted_unixname) ||

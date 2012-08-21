@@ -5,10 +5,9 @@
 //  http://www.lovemachineinc.com
 //
 
-require_once("config.php");
-require_once("send_email.php");
-require_once("functions.php");
-require_once("class/Utils.class.php");
+require_once ("config.php");
+require_once ("send_email.php");
+require_once ("functions.php");
 
 $msg = '';
 

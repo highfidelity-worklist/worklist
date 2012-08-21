@@ -8,17 +8,18 @@
 // AJAX request from ourselves to retrieve history
 
 
-include("config.php");
-include("class.session_handler.php");
-require_once('lib/Agency/Worklist/Filter.php');
+include ("config.php");
+include ("class.session_handler.php");
+require_once ("lib/Agency/Worklist/Filter.php");
 
 // Test for a string containing 0 characters of anything other than 0-9 and #
 // After a quick trim ofcourse! :)
 // I know regex is usually the bad first stop, but there would be no back tracking in this
 // particular regular expression
 if (preg_match("/^\#\d+$/", $query = trim($_REQUEST['query']))) {
-    // if we reach here, include workitem package
-    include_once("workitem.class.php");
+    // if we reach here, include workitem package, autoloaded (hans)
+    include_once("functions.php");
+    
     $workitem = new Workitem();
     if ($workitem->idExists($id = ltrim($query,"#"))) {
         $obj = array('redirect',$id);
