@@ -8,14 +8,15 @@
 
 require_once('timezones.php');
 require_once('send_email.php');
-// Autoloader
-function __autoload($class) {
+
+function worklist_autoloader($class) {
     $file = realpath(dirname(__FILE__) . '/classes') . "/$class.class.php";
     if (file_exists($file)) {
         require_once($file);
     }
 }
 
+spl_autoload_register('worklist_autoloader');
 
 /* Fee Categories
  *
