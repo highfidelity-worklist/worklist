@@ -20,9 +20,9 @@ class scanAssets {
         mysql_select_db(DB_NAME, $con);
 
         $scan_files = array(); 
-        $sql_get_files = 'SELECT `id`, `userid`,(SELECT `username` FROM `'.USERS.'` where `id`=files.userid)
-        AS `useremail`, (select `summary` from `'.WORKLIST.'` where `id`=files.workitem) AS `workitemsummary`,
-        `url`, `title`, `description`  FROM `'.FILES.'` WHERE `is_scanned` = 0 LIMIT 10';
+        $sql_get_files = 'SELECT `id`, `userid`,(SELECT `username` FROM `' . USERS . '` where `id`=files.userid)
+        AS `useremail`, files.workitem AS `worklist_id`, `url`, `title`, `description`  
+        FROM `' . FILES . '` WHERE `is_scanned` = 0 LIMIT 10';
         $result = mysql_query($sql_get_files);
         // Read the file names of all the files available. 
         while ($row = mysql_fetch_assoc($result)) {
@@ -31,50 +31,54 @@ class scanAssets {
             $scan_files[] = $file_name;
     
             // Get the full path and prepare it for the command line. 
-            $real_path = realpath (dirname(__FILE__) .'/uploads/'. $file_name); 
+            $real_path = realpath (dirname(__FILE__) .'/uploads/' . $file_name); 
             $safe_path = escapeshellarg($real_path); 
             // Reset the values. 
             $return = -1; 
             $out = '';
-            $message = '';
-            $subject = '';
-            $cmd = VIRUS_SCAN_CMD . ' ' . $safe_path; 
+            $cmd = VIRUS_SCAN_CMD . ' ' . $safe_path;
+            $workitem = null; 
             if (!empty($safe_path) && file_exists($real_path) && filesize($real_path) > 0 ) {
                 // Execute the command.  
                 exec ($cmd, $out, $return);
                 
                 if ($return == 0) { //if clean update db 
-                    $sql = 'UPDATE `'.FILES.'` SET is_scanned = 1, scan_result = 0 WHERE `id` = '. $row['id'];
-                    $subject = 'Upload Report: Ok';
-                    $message = '';
-                } else if ($return == 1) { // If the file contains a virus send email to the user and update db. 
-                    $message = 'The file {$file_name} ( '. $row['title'] . ') that you uploaded in the workitem:"' . $row['workitemsummary'] . '" was scanned and found to be containing a virus and will be quarantined. Please upload a clean copy of the file.'; 
-                    $subject = 'Upload Report: Infected';
-                    $sql = 'UPDATE `'.FILES.'` SET is_scanned = 1, scan_result = 1 WHERE `id` = '. $row['id'];
-                } else { //unknown error
-                    $sql = 'UPDATE `'.FILES.'` SET is_scanned = 1, scan_result = 2 WHERE `id` = '. $row['id'];
-                    $subject = 'Upload Report: Error';
-                    $message = 'The file '. $file_name .' ( '. $row['title'] .') that you uploaded in the workitem:"' . $row['workitemsummary'] . '" caused an unknown error during scanning. Please upload a clean copy of the file.'; 
+                    $sql = 'UPDATE `' . FILES . '` SET is_scanned = 1, scan_result = 0 WHERE `id` = ' . $row['id'];
+                    $notify = '';
+                } else {
+                    $workitem = new WorkItem();
+                    $workitem->loadById($row['worklist_id']);
+                    
+                    if ($return == 1) { // If the file contains a virus send email to the user and update db.
+                        $notify = 'virus-found';
+                        $sql = 'UPDATE `' . FILES . '` SET is_scanned = 1, scan_result = 1 WHERE `id` = ' . $row['id'];
+                    } else { 
+                        // unknown error
+                        $notify = 'virus-error';
+                        $sql = 'UPDATE `' . FILES . '` SET is_scanned = 1, scan_result = 2 WHERE `id` = ' . $row['id'];
+                    }
                 }
             } else {
                 // If the file does not exist/0 bytes, mark it with a new status so we don't keep iterating on it - garth
                 error_log("failed test: $safe_path " . file_exists($safe_path) . " " .filesize($safe_path));
-                $sql = 'UPDATE `'.FILES.'` SET is_scanned = 4, scan_result = 0 WHERE `id` = '. $row['id'];
-                $out = '<p>File->'. $safe_path .' not found.</p>';
+                $sql = 'UPDATE `' . FILES . '` SET is_scanned = 4, scan_result = 0 WHERE `id` = ' . $row['id'];
+                $out = '<p>File->' . $safe_path .' not found.</p>';
             }
     
-            mysql_query($sql) or die(mysql_error() .':'. $sql);
+            mysql_query($sql) or die(mysql_error() .':' . $sql);
             
             //send mail if there's a problem
-            if (!empty($message)) {
-                if(!send_email($row['useremail'], $subject, $message)) {
-                    error_log("cron scanAssets.php: send_email failed");
-                    echo '<br>Email not sent->'.$row['useremail'];
-                } else {
-                    echo '<br>Email sent->'.$row['useremail'];
-                }
+            if (! empty($notify)) {
+                Notification::workitemNotify(array(
+                    'type' => $notify,
+                    'workitem' => $workitem,
+                    'emails' => array($row['useremail']),
+                    'file_name' => $file_name,
+                    'file_title' => $row['title']
+                ));
             }
-            print('<br>'. $row['title'] .' <p>'. $subject .'</p>');
+            print('<br>' . $row['title'] . ' <p>Upload Report:' . 
+                (empty($notify) ? 'Ok' : ($notify == 'virus-found') ? 'Infected' : 'Error').'</p>');
             print_r($out);
         }
     } //End of method
@@ -116,9 +120,9 @@ class scanAssets {
         mysql_select_db(DB_NAME, $con);
 
         //scan_files = array(); 
-        $sql_get_files = 'SELECT `id`, `userid`,(SELECT `username` FROM `'.USERS.'` where `id`=files.userid)
-        AS `useremail`, (select `summary` from `'.WORKLIST.'` where `id`=files.workitem) AS `workitemsummary`,
-        `url`, `title`, `description`  FROM `'.FILES.'` WHERE id=' . $id;
+        $sql_get_files = 'SELECT `id`, `userid`,(SELECT `username` FROM `' . USERS . '` where `id`=files.userid)
+        AS `useremail`, files.workitem AS `worklist_id`, `url`, `title`, `description`  
+        FROM `' . FILES . '` WHERE id=' . $id;
         $result = mysql_query($sql_get_files);
         $row = mysql_fetch_assoc($result);
         
@@ -131,33 +135,41 @@ class scanAssets {
         // Reset the values. 
         $return = -1; 
         $out = '';
-        $message = '';
-        $subject = '';
         $cmd = VIRUS_SCAN_CMD . ' ' . $safe_path; 
         $fct_return = false;
             
         if (!empty($safe_path) && file_exists($real_path) && filesize($real_path) > 0 ) {
             // Execute the command.  
             exec ($cmd, $out, $return);
-             
+            
             if ($return == 0) { //if clean update db 
-                $sql = 'UPDATE `'.FILES.'` SET is_scanned = 1, scan_result = 0 WHERE `id` = '. $id;
-                $subject = 'Upload Report: Ok';
-                $message = '';
+                $sql = 'UPDATE `' . FILES . '` SET is_scanned = 1, scan_result = 0 WHERE `id` = ' . $id;
+                $notify = '';
                 $fct_return = true;
-            } else if ($return == 1) { // If the file contains a virus send email to the user and update db. 
-                $message = 'The file {$file_name} ( '. $row['title'] . ') that you uploaded in the workitem:"' . $row['workitemsummary'] . '" was scanned and found to be containing a virus and will be quarantined. Please upload a clean copy of the file.'; 
-                $subject = 'Upload Report: Infected';
-                $sql = 'UPDATE `'.FILES.'` SET is_scanned = 1, scan_result = 1 WHERE `id` = '. $id;
-            } else { //unknown error
-                $sql = 'UPDATE `'.FILES.'` SET is_scanned = 1, scan_result = 2 WHERE `id` = '. $id;
-                $subject = 'Upload Report: Error';
-                $message = 'The file '. $file_name .' ( '. $row['title'] .') that you uploaded in the workitem:"' . $row['workitemsummary'] . '" caused an unknown error during scanning. Please upload a clean copy of the file.'; 
+            } else {
+                $workitem = new WorkItem();
+                $workitem->loadById($row['worklist_id']);
+                
+                if ($return == 1) { // If the file contains a virus send email to the user and update db.
+                    $notify = 'virus-found'; 
+                    $sql = 'UPDATE `' . FILES . '` SET is_scanned = 1, scan_result = 1 WHERE `id` = ' . $id;
+                } else { 
+                    // <unknown error
+                    $notify = 'virus-error'; 
+                    $sql = 'UPDATE `' . FILES . '` SET is_scanned = 1, scan_result = 2 WHERE `id` = ' . $id;
+                }
             }
             
             if (mysql_query($sql)) {
 		        // send mail if there's a problem
-	            if (!empty($message)) {
+	            if (! empty($notify)) {
+	               Notification::workitemNotify(array(
+	                   'type' => $notify,
+	                   'workitem' => $workitem,
+	                   'emails' => array($row['useremail']),
+	                   'file_name' => $file_name,
+	                   'file_title' => $row['title']
+	               ));
 		            if(!send_email($row['title'], $subject, $message)) {
                         //Don't fail silently if we can't send the message also
 		                error_log("cron scanAssets.php: send_email failed, msg: " . $message);

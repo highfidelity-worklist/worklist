@@ -745,7 +745,38 @@ class Notification {
                     . 'Notes: '. $workitem->getNotes() . '<br /><br />'
                     . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
                     . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
-                
+            break;
+            
+            case 'virus-found':
+                $headers['From'] = '"' . $project_name . '-upload error" ' . $from_address;
+                $body  = '<p>Hello, <br /><br /> The file ' . $options['file_name'] . ' (' . $options['file_title'] . ') ' .
+                    'that you uploaded for this workitem was scanned and found to be containing a virus and will be quarantined. <br /><br />' .
+                    'Please upload a clean copy of the file.</p>';
+                $body .= '<p>Project: ' . $project_name . '<br />';
+                $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if ($workitem->getRunnerId()) {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                }
+                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>You can view the job ';
+                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
+            break;
+
+            case 'virus-error':
+                $headers['From'] = '"' . $project_name . '-upload error" ' . $from_address;
+                $body  = '<p>Hello, <br /><br /> The file ' . $options['file_name'] . ' (' . $options['file_title'] . ') ' .
+                    'that you uploaded for this workitem caused an unknown error during scanning. <br /><br />' .
+                    'Please upload a clean copy of the file.</p>';
+                $body .= '<p>Project: ' . $project_name . '<br />';
+                $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                if ($workitem->getRunnerId()) {
+                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                }
+                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>You can view the job ';
+                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
         }
 

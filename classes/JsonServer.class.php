@@ -335,7 +335,11 @@ class JsonServer
             if ($workitem) {
                 $workitem_attached = new WorkItem();
                 $workitem_attached->loadById($workitem);
-                $journal_message = 'Document or Image uploaded #' . $workitem . ': ' . $workitem_attached->getSummary() . ' - ' . $file->getUrl();
+                $current_user = new User();
+                $current_user->findUserById($_SESSION['userid']);
+                $journal_message = 
+                    $current_user->getNickname() . ' uploaded an attachment to #' . $workitem . ': ' . 
+                    $workitem_attached->getSummary() . ' - ' . $file->getUrl();
                 sendJournalNotification($journal_message);
             }
             return $this->setOutput(array(
