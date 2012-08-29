@@ -938,11 +938,11 @@ function checkLogin() {
             $url=  preg_replace($regexp, DELIMITER . '<a href="$0"' . $class . '>$0</a>' . DELIMITER, $url);
 
             $regexp="/href=\"(www\.\S+?)\"/i";
-            $url = preg_replace($regexp,'href="https://$1"',$url);
+            $url = preg_replace($regexp,'href="http://$1"', $url);
         }
 
         $regexp="/(href=)(.)?((www\.)\S+(\.)\S+)/i";
-        $url = preg_replace($regexp,'href="https://$3"',$url);
+        $url = preg_replace($regexp,'href="http://$3"', $url);
 
         // Replace '#<number>' with a link to the worklist item with the same number
         $regexp = "/\#([1-9][0-9]*)/";
