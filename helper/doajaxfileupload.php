@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__).'/../config.php');
+require_once (dirname(__FILE__)."/../config.php");
 
 include(dirname(__FILE__)."/../class.session_handler.php");
 require_once(dirname(__FILE__).'/../functions.php');
@@ -16,11 +16,7 @@ if($_POST['csrf_token'] != $_SESSION['csrf_token']){
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysql_error());;
 mysql_select_db(DB_NAME) or die(mysql_error());
 
-
 require_once(dirname(__FILE__)."/../chat.class.php");
-
-//require_once dirname(__FILE__) . '/chat.class.php';
-//require_once dirname(__FILE__) . '/files.class.php';
 
 if(!empty($_SESSION['username']) && empty($_SESSION['nickname']))
 {

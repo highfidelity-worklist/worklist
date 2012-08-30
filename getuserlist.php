@@ -6,7 +6,9 @@
 
 include("config.php");
 include("class.session_handler.php");
+require_once('classes/User.class.php');
 include("functions.php");
+
 
 $limit = 30;
 $page = isset($_REQUEST["page"])?intval($_REQUEST["page"]) : 1;

@@ -4,8 +4,7 @@
 * All File table related operations are handled by this class
 *
 */
-
-require_once ("config.php");
+require_once(dirname(__FILE__)."/../config.php");
 
 class Files
 {
