@@ -7,8 +7,6 @@
 //  But please be as fair as you comment your (at least public) methods - maybe another developer
 //  needs them too.
 
-require_once ("functions.php");
-
 class User {
     protected $id;
     protected $username;
