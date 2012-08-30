@@ -1,7 +1,5 @@
 <?php
-$app_root_path = dirname(__FILE__);
-$app_root_path = str_replace('class','',$app_root_path);
-require_once ($app_root_path."config.php");
+require_once(dirname(__FILE__)."/../config.php");
 
 class Database {
     /**
