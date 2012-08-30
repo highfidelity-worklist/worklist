@@ -1,9 +1,8 @@
 <?php
 
-	include('config.php');
-	include("class.session_handler.php");
-	require('penalty.class.php');
-	include("helper/checkJournal_session.php");
+    include('config.php');
+    include("class.session_handler.php");
+    include("helper/checkJournal_session.php");
     require_once('functions.php');
 
     // check for referer

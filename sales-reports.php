@@ -4,15 +4,14 @@
 //  http://www.lovemachineinc.com
 
 
-include("config.php");
+include ("config.php");
 include("class.session_handler.php");
 include("check_session.php");
 include_once("check_new_user.php"); 
-include_once("functions.php");
+include_once ("functions.php");
 #include_once("../worklist/send_email.php");
 #include_once("../worklist/classes/Fee.class.php");
 #require_once('../worklist/lib/Agency/Worklist/Filter.php');
-include("class/Report.class.php");
 include("helper.php");
 
 if ( (!empty($_SESSION['is_payer']) || !empty($_SESSION['is_runner'])) === false  ) { 

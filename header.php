@@ -3,8 +3,8 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-require_once('functions.php');
-require_once('class/Utils.class.php');
+require_once ("functions.php");
+
 if (!isset($is_runner)) {
     $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 }

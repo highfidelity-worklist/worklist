@@ -1,9 +1,8 @@
 <?php
-require_once 'send_email.php';
-require_once 'workitem.class.php';
-require_once 'functions.php';
-require_once 'lib/Sms.php';
-require_once 'Project.class.php';
+require_once ("config.php");
+require_once ("functions.php");
+require_once ("send_email.php");
+require_once ("lib/Sms.php");
 
 /**
  * This class is responsible for working with notification

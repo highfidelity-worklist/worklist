@@ -3,7 +3,7 @@
 // 
 //  vim:ts=4:et
 
-require_once dirname(__FILE__) . '/config.php';
+require_once ("config.php");
 
 class Bot
 {

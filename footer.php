@@ -3,6 +3,8 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
+require_once ("functions.php");
+
 ?>
 <!-- break contained floats -->
             <div style="float:none; clear:both;"></div>
@@ -51,7 +53,6 @@
     $filename = array_pop($res);
     $repname = array_pop($res);
     $viewSourceLink = "http://svn.worklist.net/";
-    require_once('class/Utils.class.php');
     $version = Utils::getVersion();
 
 ?>
