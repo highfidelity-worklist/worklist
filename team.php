@@ -11,8 +11,6 @@ include("config.php");
 include("class.session_handler.php");
 include("check_new_user.php");
 include("functions.php");
-require_once('classes/UserStats.class.php');
-require_once('classes/User.class.php');
 
 $con=mysql_connect( DB_SERVER,DB_USER,DB_PASSWORD );
 mysql_select_db( DB_NAME,$con );
