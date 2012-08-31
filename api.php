@@ -4,6 +4,7 @@ require_once ("functions.php");
 require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
+require_once('class.session_handler.php');
 require_once('send_email.php');
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
@@ -719,7 +720,8 @@ function deployStagingSite() {
 
 function getFavoriteUsers() {
     if (!$userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : 0)) {
-        return array('favorite_users' => array());
+	echo json_encode(array('favorite_users' => array()));
+	return;
     }
     $users_favorite = new Users_Favorite();
     $data = array('favorite_users' => $users_favorite->getFavoriteUsers($userid));

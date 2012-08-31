@@ -2,7 +2,7 @@
 //  Copyright (c) 2009-2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-require_once ('CURLHandler.php');
+require_once ('CURLHandler.class.php');
 require_once('config.php');
 
 class Report{
