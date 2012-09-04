@@ -21,8 +21,12 @@ class WLTwilio {
               $message
             );
         } catch (Exception $e) {
-            error_log($e);
-            return false;
+            if (substr_count($e->getMessage(), 'not a valid phone number')) {
+                return null;
+            } else {
+                error_log($e);
+                return false;
+            }
         }
 
         return true;

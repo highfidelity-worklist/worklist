@@ -187,6 +187,18 @@ var Utils = {
         if (secondsRound > 0) dateFormated += sep + secondsRound + sec;
         
         return dateFormated;
+    },
+    
+    /**
+     * International phone number validation
+     */
+    validPhone: function(number) {
+        number.replace('[\s_\.\()-]+', '');
+        if (number.substr(0, 1) == '+') {
+            number = number.substr(1);
+        }
+        var match = number.match('^[0-9]{6}[0-9]+$');
+        return (match != null);
     }
 };
 

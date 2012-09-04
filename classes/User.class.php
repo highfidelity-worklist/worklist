@@ -36,6 +36,9 @@ class User {
     protected $is_guest;
     protected $int_code;
     protected $phone;
+    protected $phone_confirm_string;
+    protected $phone_verified;
+    protected $phone_rejected;
     protected $smsaddr;
     protected $country;
     protected $city;
@@ -1103,6 +1106,51 @@ class User {
     }
 
     /**
+     * @return the $phone_confirm_string
+     */
+    public function getPhone_confirm_string() {
+        return $this->phone_confirm_string;
+    }
+
+    /**
+     * @param $phone_confirm_string the $phone_confirm_string to set
+     */
+    public function setPhone_confirm_string($phone_confirm_string) {
+        $this->phone_confirm_string = $phone_confirm_string;
+        return $this;
+    }
+    
+    /**
+     * @return the $phone_verified
+     */
+    public function getPhone_verified() {
+        return $this->phone_verified;
+    }
+
+    /**
+     * @param $phone_verified the $phone_verified to set
+     */
+    public function setPhone_verified($phone_verified) {
+        $this->phone_verified = $phone_verified;
+        return $this;
+    }
+    
+    /**
+     * @return the $phone_rejected
+     */
+    public function getPhone_rejected() {
+        return $this->phone_rejected;
+    }
+    
+    /**
+     * @param $phone_rejected the $phone_rejected to set
+     */
+    public function setPhone_rejected($phone_rejected) {
+        $this->phone_rejected = $phone_rejected;
+        return $this;
+    }
+    
+    /**
      * @return the $smsaddr
      */
     public function getSmsaddr() {
@@ -1626,9 +1674,12 @@ class User {
         return $adminEmails;
     }
     
-    public function isTwilioSupported() {
+    public function isTwilioSupported($forced = false) {
         if (!defined("TWILIO_SID") || !defined("TWILIO_TOKEN") || !$this->int_code || !$this->phone) {
             return false;
+        }
+        if ($forced) {
+            return true;
         }
         $sql = 
             ' SELECT COUNT(*) AS c ' .
@@ -1639,6 +1690,11 @@ class User {
             return null;
         }
         $row = mysql_fetch_assoc($result); 
-        return $row['c'] > 0;
+        if ($row['c'] == 0) {
+            return false;
+        }
+        
+        return substr($this->phone_verified, 0, 10) != '0000-00-00' 
+          && substr($this->phone_rejected, 0, 10) == '0000-00-00';  
     }
 }

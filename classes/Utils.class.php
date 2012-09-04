@@ -141,4 +141,12 @@ class Utils{
         header('Location: ' . $url);
         exit;
     }
+    
+    /**
+     * International phone number validation
+     */
+    public static function validPhone($number) {
+        $number = preg_replace('/[_()\ -]+/', '', $number);
+        return preg_match('/^[0-9]{6}[0-9]+$/', $number);
+    }
 }

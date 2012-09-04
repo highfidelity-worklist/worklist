@@ -117,7 +117,7 @@ function objectToArray($object) {
 }
 
 
-function notify_sms_by_object($user_obj, $smssubject, $smsbody)
+function notify_sms_by_object($user_obj, $smssubject, $smsbody, $force_twilio = false)
 {
     global $smslist;
     $smsbody    = strip_tags($smsbody);
@@ -134,11 +134,17 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody)
     }
     $user = new User();
 	$user->findUserById($user_array['id']);
-    if ($user->isTwilioSupported()) {
+    if ($user->isTwilioSupported($force_twilio)) {
         require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
         $Twilio = new WLTwilio();
         $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);
         $ret = $Twilio->send_sms($user_array['phone'], $message);
+        if ($ret === null) {
+            // Twilio told us that phone number is invalid
+            // lets update the phone_rejected field for user
+            $user->setPhone_rejected(date('Y-m-d H:i'));
+            $user->save();
+        }
         return $ret;
     } else {
         if (array_key_exists('smsaddr',$user_array) && !empty($user_array['smsaddr'])) {

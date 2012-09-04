@@ -963,9 +963,10 @@ class Notification {
     * @param User $recipient - user object to send message to
     * @param String $subject - subject of the message
     * @param String $message - actual message content
+    * @param String $force_twilio - send trough twilio for verification purposes
     */
-    public static function sendSMS($recipient, $subject, $message) {
-        notify_sms_by_object($recipient, $subject, $message);
+    public static function sendSMS($recipient, $subject, $message, $force_twilio = false) {
+        notify_sms_by_object($recipient, $subject, $message, $force_twilio);
         return true;
     }
     
@@ -978,7 +979,7 @@ class Notification {
      * @param String $message - actual message content
      * @param String $url - url to be shortened and appened
      */
-    public static function sendShortSMS($recipient, $subject, $message, $url = '') {
+    public static function sendShortSMS($recipient, $subject, $message, $url = '', $force_twilio = false) {
         $max_chars = 110;
         $chars_left = $max_chars - (strlen(trim($subject)) +1);
         
@@ -998,7 +999,7 @@ class Notification {
             $sms_content .= ': ' . $shortUrl;
         }
         
-        return self::sendSMS($recipient, $subject, $sms_content);
+        return self::sendSMS($recipient, $subject, $sms_content, $force_twilio);
     }
     
     // get list of past due bids

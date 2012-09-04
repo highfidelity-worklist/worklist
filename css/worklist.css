@@ -621,7 +621,7 @@ input.button-disabled ,
     -webkit-opacity: 0.5;
 }
 
-#login-form {
+#login-form, #phone-confirm-form {
     border: 1px solid black;
     border-radius: 6px;
     -moz-border-radius: 6px;
@@ -632,25 +632,27 @@ input.button-disabled ,
     margin-right: 32px;
 }
 
-#login-form {
+#login-form, #phone-confirm-form {
     background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;
 }
 
-#login-form h2 {
+#login-form h2, #phone-confirm-form h2 {
     color: #000;
     margin-top: 8px;
 }
 
-#loginFormHolder {
+#loginFormHolder, #confirmPhoneFormHolder {
     position: relative;
     width: 420px;
     height: 180px;
 }
-#login-form .LV_validation_message {
+#login-form .LV_validation_message, 
+#phone-confirm-form .LV_validation_message {
     text-align: left;
 }
 
-#login-form .LV_valid {
+#login-form .LV_valid,
+#phone-confirm-form .LV_valid {
     padding-left: 0px;
 }
 

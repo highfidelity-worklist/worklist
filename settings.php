@@ -30,6 +30,7 @@ $saveArgs = array();
 $messages = array();
 $errors = 0;
 $error = new Error();
+$phone_changed = false;
 
 // process updates to user's settings
 if (isset($_REQUEST['save_account'])) {
@@ -43,6 +44,18 @@ if (isset($_REQUEST['save_account'])) {
 
         foreach ($saveArgs as $arg=>$esc) {
             $$arg = ($esc ? $_REQUEST[$arg] : intval($_REQUEST[$arg]));
+        }
+        
+        if ($phone != $user->getPhone()) {
+            $phone_verified = null;
+            $saveArgs['phone_verified'] = 0;
+            $phone_rejected = null;
+            $saveArgs['phone_rejected'] = 0;
+            if ($phone && Utils::validPhone($phone)) {
+                $phone_confirm_string = substr(uniqid(), -4);
+                $saveArgs['phone_confirm_string'] = 1;
+                $phone_changed = true;
+            }
         }
         
         if (isset($_REQUEST['city'])) {
@@ -261,6 +274,13 @@ if (!empty($saveArgs)) {
 
         $msg="Account updated successfully!";
     }
+    
+    if ($phone_changed) {
+        $url = SERVER_URL . 'confirm_phone.php?user=' . $_SESSION['userid'] . 
+            '&phone=' . $phone . '&phoneconfirmstr=' . $phone_confirm_string;
+        $msg = "Please confirm your phone number at the worklist with this code " . $phone_confirm_string;
+        Notification::sendShortSMS($user, 'Phone number confirm', $msg, $url, true);
+    }
 
     if (isset($_REQUEST['timezone'])) {
       $_SESSION['timezone'] = trim($_REQUEST['timezone']);
@@ -305,6 +325,7 @@ include("head.html");
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/ajaxupload-3.6.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
+<script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript">
     var nclass;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
@@ -387,13 +408,11 @@ include("head.html");
     }
 
     function validatePhoneNumber(phone_number) {
-        phone_number = phone_number.replace(/\s+/g, ""); 
-        return phone_number.length > 9 
-            && phone_number.match(/^(\+?[1-9]{1,3}-?)?(\([2-9]\d{2}\)|[2-9]\d{2})-?[2-9]\d{2}-?\d{4}$/);
+        return Utils.validPhone(phone_number);
     }
     
     function validateSmsAddr(value) {
-        return validateEmail(value) || validatePhoneNumber(value); 
+        return validateEmail(value); 
     }
 
     function isJSON(json) {

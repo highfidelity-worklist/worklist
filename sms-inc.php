@@ -73,8 +73,10 @@ if ( empty($signup)) { ?>
                         // TODO: Move this inline javascript to header, or external file
                         var city = new LiveValidation('city', {validMessage: "Valid city."});
                         city.add(Validate.Presence);
-                        var smsaddr = new LiveValidation('smsaddr', {validMessage: "Valid Phone number/SMS email address."});
-                        smsaddr.add(Validate.Custom, { against: validateSmsAddr, failureMessage: "Invalid Phone number/SMS email address!" });
+                        var phone = new LiveValidation('phone');
+                        phone.add(Validate.Custom, { against: validatePhoneNumber });
+                        var smsaddr = new LiveValidation('smsaddr', {validMessage: "Valid SMS email address."});
+                        smsaddr.add(Validate.Custom, { against: validateSmsAddr, failureMessage: "Invalid SMS email address!" });
                     </script>
 
                 </div>

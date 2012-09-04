@@ -107,3 +107,7 @@ div.uploadnotice-w9 div {
     border: 2px solid rgb(209, 207, 207);
     padding: 5px 5px 2px 5px;
 }
+
+#phone_wrapper .LV_validation_message {
+    display: none;
+}
