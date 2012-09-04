@@ -917,7 +917,7 @@ class JsonServer
             $user = new User();
             if($user->findUserById($_SESSION['userid'])) {
                 $user->setPhone($phone);
-                notify_sms_by_object($user, 'Test SMS', 'Test from Worklist') 
+                notify_sms_by_object($user, 'Test SMS', 'Test from Worklist', true) 
                   or error_log("failed to create SMS message");
             }
         } catch (Sms_Backend_Exception $e) {
