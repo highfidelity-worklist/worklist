@@ -31,7 +31,7 @@ if (empty($userid)) {
 }
 
 $user = new User();
-
+$validated = false;
 if ($user->findUserById($userid) && $user->isActive()) {
     if (!empty($phoneconfirmstr)) {
         if ((! empty($_SESSION['userid']) && $_SESSION['userid'] == $userid) 
@@ -53,14 +53,15 @@ if ($user->findUserById($userid) && $user->isActive()) {
                 $username = $user->getUsername();
                 $nickname = $user->getNickname();
                 $admin = $user->getIs_admin();
+                $validated = true;
                 
                 Utils::setUserSession($userid, $username, $nickname, $admin);
                 
                 if ($_POST['redir']) {
                     $_SESSION['redirectFromLogin'] = true;
-                    Utils::redirect(urldecode($_POST['redir']));
+                    $redir = urldecode($_POST['redir']);
                 } else {
-                    Utils::redirect('worklist.php');
+                    $redir = SERVER_URL;
                 }
             } else {
                 die('Invalid operation');
@@ -75,7 +76,9 @@ if ($user->findUserById($userid) && $user->isActive()) {
 }
 
 // XSS scripting fix
-$redir = strip_tags(! empty($_REQUEST['redir']) ? $_REQUEST['redir'] : '');
+if (!isset($redir)) {
+    $redir = strip_tags(! empty($_REQUEST['redir']) ? $_REQUEST['redir'] : '');
+}
 
 
 /*********************************** HTML layout begins here  *************************************/
@@ -91,7 +94,7 @@ include("head.html");
 
 <body>
 <?php include("format_signup.php"); ?>
-    <br>     
+    <br>
     <h1>Phone number confirmation</h1>
     
     <?php if (empty($_SESSION['userid'])) { ?>
@@ -105,13 +108,14 @@ include("head.html");
     <?php } ?>
     
     <div id="in-lt">
+    <?php if(! $validated) { ?>     
         <?php if(isset($error)){ ?>
             <?php foreach($error->getErrorMessage() as $msg){ ?>
               <p class="LV_invalid"><?php echo $msg; ?></p>
             <?php } ?>
         <?php } ?>
 
-    <div>
+      <div>
         <div id="phone-confirm-form" class="worklist">
         <div id="phoneConfirmFormHolder">
             <form id="phone-confirm" action="" method="post">
@@ -146,7 +150,17 @@ include("head.html");
             </form>
         </div>
         </div>
-    </div>
+      </div>
+    <?php }?>
+    <?php if ($validated) { ?>
+      <p>Thank you!, your phone number has just been validated and is now able to receive SMS.</p>
+      <p>You're now being redirected...</p>
+      <?php if (isset($redir) && ! empty($redir)) { ?>
+        <script type="text/javascript">
+        setTimeout(function() { window.location.href = '<?php echo $redir; ?>'; }, 5000);
+        </script>
+      <?php }?>
+    <?php }?>
     </div>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
