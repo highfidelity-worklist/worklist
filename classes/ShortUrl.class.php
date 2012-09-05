@@ -63,7 +63,10 @@ class ShortUrl {
             if (! count($data->results) > 0) {
                 return '';
             }
-            $url_data = array_shift($data);
+            // only get the first array item from $data->results in $url_data
+            foreach ($data->results as $longUrl => $url_data) {
+                break;
+            }
             return $url_data->shortUrl;
         } else {
             return null;
