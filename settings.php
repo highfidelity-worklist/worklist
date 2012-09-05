@@ -276,6 +276,7 @@ if (!empty($saveArgs)) {
     }
     
     if ($phone_changed) {
+        $user->findUserById($_SESSION['userid']);
         $url = SERVER_URL . 'confirm_phone.php?user=' . $_SESSION['userid'] . 
             '&phone=' . $phone . '&phoneconfirmstr=' . $phone_confirm_string;
         $msg = "Please confirm your phone number at the worklist with this code " . $phone_confirm_string;
