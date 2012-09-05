@@ -1675,11 +1675,14 @@ class User {
     }
     
     public function isTwilioSupported($forced = false) {
-        if (!defined("TWILIO_SID") || !defined("TWILIO_TOKEN") || !$this->int_code || !$this->phone) {
+        if (!defined("TWILIO_SID") || !defined("TWILIO_TOKEN")) {
             return false;
         }
         if ($forced) {
             return true;
+        }
+        if(!$this->int_code || !$this->phone) {
+            return false;
         }
         $sql = 
             ' SELECT COUNT(*) AS c ' .

@@ -139,7 +139,7 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody, $force_twilio = 
         $Twilio = new WLTwilio();
         $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);
         $ret = $Twilio->send_sms($user_array['phone'], $message);
-        if ($ret === null) {
+        if ($ret === null && !$force_twilio) {
             // Twilio told us that phone number is invalid
             // lets update the phone_rejected field for user
             $user->setPhone_rejected(date('Y-m-d H:i'));

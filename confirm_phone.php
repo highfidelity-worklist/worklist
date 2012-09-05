@@ -45,9 +45,8 @@ if ($user->findUserById($userid) && $user->isActive()) {
               && substr($user_phone_verified, 0, 10) == '0000-00-00' 
               && $phoneconfirmstr == $user_phone_confirm_string)
             {
-                $user
-                  ->setPhone_verified(date('Y-m-d H:i'))
-                  ->setPhone_confirm_string('');
+                $user->setPhone_verified(date('Y-m-d H:i'))
+                     ->setPhone_confirm_string('');
                   
                 $user->save();
                 
