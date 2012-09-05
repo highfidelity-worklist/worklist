@@ -9,9 +9,12 @@
  * @package ShortUrl
  */
 class ShortUrl {
-    protected $apiKey = '';
+    protected $apiKey = 'api_key';
+    protected $login = 'login_bitly';
     protected $longUrl = '';
     protected $shortUrl = '';
+
+    protected $version = '2.0.1';
     
     /**
      * Constructor
@@ -20,8 +23,11 @@ class ShortUrl {
      */
     public function __construct($url) 
     {
-        if (defined('GOOGLE_SHORTENER_API_KEY')) {
-            $this->apiKey = GOOGLE_SHORTENER_API_KEY;
+        if (defined('BITLY_USERNAME')) {
+            $this->login = BITLY_USERNAME;
+        }
+        if (defined('BITLY_APIKEY')) {
+            $this->apiKey = BITLY_APIKEY;
         }
         $this->longUrl = $url;
     }
@@ -36,37 +42,29 @@ class ShortUrl {
                 return $this->shortUrl;
             }
             
-            $url = 'https://www.googleapis.com/urlshortener/v1/url';
-            if (!empty($this->apiKey)) {
-                $url .= '?key=' . trim($this->apiKey);
-            }
             
-            $curlres = curl_init();
-            curl_setopt_array($curlres, array(
-                CURLOPT_URL => $url,
-                CURLOPT_SSLVERSION => 3, 
-                CURLOPT_SSL_VERIFYPEER => FALSE, 
-                CURLOPT_SSL_VERIFYHOST => 2, 
-                CURLOPT_CONNECTTIMEOUT => 5, 
-                CURLOPT_RETURNTRANSFER => 1, 
-                CURLOPT_FOLLOWLOCATION => 1, 
-                CURLOPT_HEADER => 0,
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json'
-                ),
-                CURLOPT_POST => 1, 
-                CURLOPT_POSTFIELDS => json_encode(array(
-                    'longUrl' => $this->longUrl
-                ))
+            $params = http_build_query (array(
+                'version'   => $this->version,
+                'login'     => $this->login,
+                'apiKey'    => $this->apiKey,
+                'longUrl'   => $this->longUrl,
+                'format'    => 'json'
             ));
             
-            $result = curl_exec($curlres);
-            curl_close($curlres);
-            if ($result === false) {
-                return false;
+            $url = 'http://api.bit.ly/shorten?' . $params;
+            
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_URL, $url);
+            $contents = curl_exec ($curl);
+            curl_close($curl);
+            
+            $data = json_decode($contents);
+            if (! count($data->results) > 0) {
+                return '';
             }
-            $result = json_decode($result);
-            return $this->shortUrl = $result->id;
+            $url_data = array_shift($data);
+            return $url_data->shortUrl;
         } else {
             return null;
         }

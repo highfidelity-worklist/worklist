@@ -279,8 +279,8 @@ if (!empty($saveArgs)) {
         $user->findUserById($_SESSION['userid']);
         $url = SERVER_URL . 'confirm_phone.php?user=' . $_SESSION['userid'] . 
             '&phone=' . $phone . '&phoneconfirmstr=' . $phone_confirm_string;
-        $msg = "Please confirm your phone number at the worklist with this code " . $phone_confirm_string;
-        Notification::sendShortSMS($user, 'Phone number confirm', $msg, $url, true);
+        $msg = "Validation code: " . $phone_confirm_string;
+        Notification::sendShortSMS($user, 'SMS Confirm', $msg, $url, true);
     }
 
     if (isset($_REQUEST['timezone'])) {

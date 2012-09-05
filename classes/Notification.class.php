@@ -996,7 +996,7 @@ class Notification {
         }
         
         if (isset($shortUrl)) {
-            $sms_content .= ': ' . $shortUrl;
+            $sms_content .= '. ' . $shortUrl;
         }
         
         return self::sendSMS($recipient, $subject, $sms_content, $force_twilio);
