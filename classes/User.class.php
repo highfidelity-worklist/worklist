@@ -1675,29 +1675,26 @@ class User {
     }
     
     public function isTwilioSupported($forced = false) {
-        if (!defined("TWILIO_SID") || !defined("TWILIO_TOKEN")) {
+        if (!defined("TWILIO_SID") || !defined("TWILIO_TOKEN") || !Utils::validPhone($this->phone)) {
             return false;
         }
         if ($forced) {
             return true;
+        } else {
+            $sql = 
+                ' SELECT COUNT(*) AS c ' .
+                ' FROM ' . COUNTRIES .
+                ' WHERE country_phone_prefix = ' . $this->int_code .
+                '   AND country_twilio_enabled = 1';
+            if (!$result = mysql_query($sql)) {
+                return null;
+            }
+            $row = mysql_fetch_assoc($result); 
+            if ($row['c'] == 0) {
+                return false;
+            }
         }
-        if(!$this->int_code || !$this->phone) {
-            return false;
-        }
-        $sql = 
-            ' SELECT COUNT(*) AS c ' .
-            ' FROM ' . COUNTRIES .
-            ' WHERE country_phone_prefix = ' . $this->int_code .
-            '   AND country_twilio_enabled = 1';
-        if (!$result = mysql_query($sql)) {
-            return null;
-        }
-        $row = mysql_fetch_assoc($result); 
-        if ($row['c'] == 0) {
-            return false;
-        }
-        
         return substr($this->phone_verified, 0, 10) != '0000-00-00' 
-          && substr($this->phone_rejected, 0, 10) == '0000-00-00';  
+            && substr($this->phone_rejected, 0, 10) == '0000-00-00';  
     }
 }
