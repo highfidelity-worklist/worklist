@@ -13,7 +13,9 @@ $sql = "
     SELECT `id`, `phone`
     FROM  " . USERS . " 
     WHERE LENGTH(`phone`) > 7 
-      AND SUBSTRING(`phone`, 1, 1) REGEXP '[[:digit:]]'";
+      AND SUBSTRING(`phone`, 1, 1) REGEXP '[[:digit:]]'
+      AND (`phone_confirm_string` IS NULL OR LENGTH(`phone_confirm_string` = 0))
+      AND (`phone_verified` IS NULL OR `phone_verified` = '0000-00-00 00:00:00')";
 
 $res = mysql_query($sql);
 $i = 0;
