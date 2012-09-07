@@ -956,7 +956,6 @@ WHERE id = ' . (int)$id;
 
                 // Provide bidder with sandbox & checkout if they don't already have one
                 // If the sandbox flag is 0, they are a new user and need one setup
-                require_once("sandbox-util-class.php");
                 $sandboxUtil = new SandBoxUtil;
                 try {
                     $sandboxUtil->createSandbox(
@@ -1286,7 +1285,6 @@ WHERE id = ' . (int)$id;
     }
 
     public function authorizeSandbox() {
-        require_once("sandbox-util-class.php");
         return (int)SandBoxUtil::authorizeCodeReview($this->getSandboxPath());
     }
     
