@@ -731,7 +731,7 @@ class Notification {
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             case 'auto-pass':
-                $headers['From'] = '"' . $project_name . "- Auto PASSED" . '" ' . $from_address;    
+                $headers['From'] = '"' . $project_name . "- Auto PASSED" . '" ' . $from_address;
                 if (isset($data['prev_status']) && $data['prev_status'] == 'BIDDING') {
                     $headers['From'] = '"' . $project_name . "- BIDDING Item Auto PASSED" . '" ' . $from_address;
                     $body = "Otto has triggered an auto-PASS for job #" . $itemId . ". You may reactivate this job by updating the status or contacting an admin." . '<br/><br/>';
@@ -777,6 +777,14 @@ class Notification {
                 $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
+
+            case 'deploy-failed':
+                $headers['From'] = '"' . $project_name . '-deploy error" ' . $from_address;
+                $body  = '<p>Dear ' . $workitem->getMechanic()->getNickname() . '</p>';
+                $body .= '<p>The deploy for job #' . $workitem->getId() .
+                    'was not successful, the following ERROR came up while minifying your js/css:</p>';
+                $body .= $options['error_msg'];
+                break;
         }
 
     
@@ -1069,8 +1077,34 @@ class Notification {
         'revision' => $revision);
         self::workitemNotify($options);
         self::workitemSMSNotify($options);   
-    }    
-    
+    }
+
+    public static function deployErrorNotification($work_item_id, $error_msg, $commit_revision) {
+        $error_msg = '<pre>' . $error_msg . '</pre>';
+        if ($work_item_id > 0) {
+            $workItem = new WorkItem();
+            $workItem->loadById($work_item_id);
+            $project = new Project();
+            $project->loadById($workItem->getProjectId());
+            $emails = self::getNotificationEmails(self::MY_AUTOTEST_NOTIFICATIONS, $workItem);
+            $options = array('type' => 'deploy-failed',
+                'workitem' => $workItem,
+                'emails' => $emails,
+                'project_name' => $project->getName(),
+                'error_msg' => $error_msg);
+            self::workitemNotify($options);
+        } else {
+            $headers['From'] = DEFAULT_SENDER;
+            $subject = "Deploy failed for rev." . $commit_revision;
+            $body = '<p>Deploy for commit (rev.' . $commit_revision . ') without assigned commit number has failed:</p>';
+            $body .= '<p>' . $error_msg . '</p>';
+
+            if (!send_email(OPS_EMAIL, $subject, $body, null, $headers)) {
+                error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
+            }
+        }
+    }
+
     public function notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $add_funds_to_budget) {
         if (!$amount || $amount < 0.01 || ! $giver || ! $receiver || ! $grantor) {
             return false;

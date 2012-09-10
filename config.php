@@ -174,6 +174,8 @@ if(!defined("ADMINS_EMAILS"))
     "alexi@kostibas.com"
   );
 
+if (!defined("OPS_EMAIL")) define("OPS_EMAIL", "ops@below92.com");
+
 if(!defined('WIKI_URL')) define('WIKI_URL', 'http://wiki.worklist.net/wiki/');
 
 // Special Accounts

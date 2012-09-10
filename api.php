@@ -125,6 +125,10 @@ if(validateAction()) {
             case 'getTwilioCountries':
                 getTwilioCountries();
                 break;
+            case 'deployErrorNotification':
+                validateAPIKey();
+                deployErrorNotification();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -753,6 +757,18 @@ function getTwilioCountries() {
         'list' => $list
     ));
     return;
+}
+
+function deployErrorNotification() {
+
+    $work_item_id = isset($_REQUEST['workitem']) ? $_REQUEST['workitem'] : 0;
+    $error_msg = isset($_REQUEST['error']) ? base64_decode($_REQUEST['error']) : '';
+    $commit_rev = isset($_REQUEST['rev']) ? $_REQUEST['rev'] : '';
+    require_once('classes/Notification.class.php');
+
+    $notify = new Notification();
+    $notify->deployErrorNotification($work_item_id, $error_msg, $commit_rev);
+    exit(json_encode(array('success' => true)));
 }
 
 ?>
