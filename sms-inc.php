@@ -52,6 +52,7 @@ if ( empty($signup)) { ?>
                                 <?php } ?>
                             </select>
                             <input name="phone_edit" type="hidden" id="phone_edit" value="0"/>
+                            <br />
 
                             <span id="phone_wrapper">
                                 <span id="phone_prefix"></span>

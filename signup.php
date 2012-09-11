@@ -377,7 +377,7 @@ include("opengraphmeta.php");
     <input type="checkbox" name="bidding_notify" id="bidding_notify" <?php echo !empty($_REQUEST['bidding_notify'])? ' checked="checked" ':''; ?> />Notify me when a new job is set to bidding<br />
     <input type="checkbox" name="review_notify" id="review_notify" <?php echo !empty($_REQUEST['review_notify'])? ' checked="checked" ':''; ?> />Notify me when any job is set to review<br /><br />
 
-
+</div>
 <div class="signupContainer">
     <p><input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" /></p>
 </div>

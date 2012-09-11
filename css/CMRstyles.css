@@ -95,6 +95,9 @@ body {
     min-height:370px;
     float:left;
 }
+#center > h1 {
+    margin-top: 20px;
+}
 
 #nav {
     text-align: left;
