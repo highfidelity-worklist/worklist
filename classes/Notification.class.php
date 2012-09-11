@@ -779,10 +779,12 @@ class Notification {
             break;
 
             case 'deploy-failed':
+                $subject = '#' . $itemId . ' - Deploy Error - ' . html_entity_decode($workitem -> getSummary(), ENT_QUOTES);
                 $headers['From'] = '"' . $project_name . '-deploy error" ' . $from_address;
                 $body  = '<p>Dear ' . $workitem->getMechanic()->getNickname() . '</p>';
-                $body .= '<p>The deploy for job #' . $workitem->getId() .
-                    'was not successful, the following ERROR came up while minifying your js/css:</p>';
+                $body .= '<p>There was an error deploying ' . $project_name . ' ' . $options['commit_revision'] . ' for job ' .
+                    '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">#' . $itemId . '</a>.' .
+                    ' The following error came up while minifying your JavaScript code:</p>';
                 $body .= $options['error_msg'];
                 break;
         }
@@ -1081,6 +1083,7 @@ class Notification {
 
     public static function deployErrorNotification($work_item_id, $error_msg, $commit_revision) {
         $error_msg = '<pre>' . $error_msg . '</pre>';
+        $journal_message = "Deploy failed for rev." . $commit_revision . " job ";
         if ($work_item_id > 0) {
             $workItem = new WorkItem();
             $workItem->loadById($work_item_id);
@@ -1091,8 +1094,11 @@ class Notification {
                 'workitem' => $workItem,
                 'emails' => $emails,
                 'project_name' => $project->getName(),
-                'error_msg' => $error_msg);
+                'error_msg' => $error_msg,
+                'commit_revision' => $commit_revision);
             self::workitemNotify($options);
+            $journal_message .= "#" . $work_item_id;
+
         } else {
             $headers['From'] = DEFAULT_SENDER;
             $subject = "Deploy failed for rev." . $commit_revision;
@@ -1102,7 +1108,9 @@ class Notification {
             if (!send_email(OPS_EMAIL, $subject, $body, null, $headers)) {
                 error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
             }
+            $journal_message .= "unknown";
         }
+        sendJournalNotification($journal_message);
     }
 
     public function notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $add_funds_to_budget) {
