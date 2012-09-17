@@ -660,8 +660,7 @@ function sendNewProjectEmails() {
         $data['nickname'] = $_REQUEST['unixusername'];
         $data['database_user'] = $_REQUEST['dbuser'];
         $user = new User();
-        $adminEmails = $user->getAdminEMails();
-        sendTemplateEmail($adminEmails, 'ops-project-created', $data);
+        sendTemplateEmail('support@worklist.net', 'ops-project-created', $data);
         if (!sendTemplateEmail($_REQUEST['username'], $_REQUEST['template'], $data)) {
             echo json_encode(array('success'=>false, 'message'=>'Emails not sent'));
         } else {
