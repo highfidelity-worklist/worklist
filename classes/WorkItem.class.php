@@ -1288,7 +1288,7 @@ WHERE id = ' . (int)$id;
         return (int)SandBoxUtil::authorizeCodeReview($this->getSandboxPath());
     }
     
-    public function addFeesToCompletedJob() {
+    public function addFeesToCompletedJob($include_review = false) {
         // workitem is DONE, calculate the creator fee based on project roles
         // and accepted bid
         if ($this->hasAcceptedBids()) {
@@ -1296,8 +1296,11 @@ WHERE id = ' . (int)$id;
             $creator_fee_desc = 'Creator';
             $runner_fee = 0;
             $runner_fee_desc = 'Runner';
+            $reviewer_fee = 0;
+            $reviewer_fee_desc = '/^Code Review - comment/';
             $creator_fee_added = false;
             $runner_fee_added = false;
+            $reviewer_fee_added = false;
             $fee_category = '';
             $is_expense = '';
             $is_rewarder = '';
@@ -1316,6 +1319,9 @@ WHERE id = ' . (int)$id;
                 }
                 if ($fee['desc'] == $runner_fee_desc) {
                     $runner_fee_added = true;
+                }
+                if (preg_match($reviewer_fee_desc, $fee['desc'])) {
+                    $reviewer_fee_added = true;
                 }
             }
 
@@ -1351,6 +1357,7 @@ WHERE id = ' . (int)$id;
                     }
                 }
             }
+            
             if (!$runner_fee_added) {
                 
                 // get project creator role settings, if not available, no fee is added
@@ -1369,6 +1376,34 @@ WHERE id = ' . (int)$id;
                         }
                         // add the fee
                         AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
+                        // and reduce the runners budget
+                        $myRunner = new User();
+                        $myRunner->findUserById($this->getRunnerId());
+                        $myRunner->updateBudget(-$runner_fee, $this->getBudget_id());
+                    }
+                }
+            }
+            
+            if (!$reviewer_fee_added && $include_review) {
+                $project = new Project();
+                $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Reviewer'");
+                if (count($project_roles) != 0) {
+                    error_log("[FEES] we have a role for reviewer");
+                    $reviewer_role = $project_roles[0];
+                    if ($reviewer_role['percentage'] !== null && $reviewer_role['min_amount'] !== null) {
+                        $reviewer_fee = ($reviewer_role['percentage'] / 100) * $accepted_bid_amount;
+                        if ((float) $reviewer_fee < $reviewer_role['min_amount']) {
+                            $reviewer_fee = $reviewer_role['min_amount'];
+                        }
+                        // add the fee
+                        $reviewer_fee_detail = 'Code Review - comment';
+                        AddFee($this->getId(), 
+                               $reviewer_fee, 
+                               $fee_category, 
+                               $reviewer_fee_detail, 
+                               $this->getCReviewerId(), 
+                               $is_expense, 
+                               $is_rewarder);
                         // and reduce the runners budget
                         $myRunner = new User();
                         $myRunner->findUserById($this->getRunnerId());

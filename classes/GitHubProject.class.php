@@ -136,7 +136,7 @@ class GitHubProject
                         "Job #{$jobNumber} has been automatically set to COMPLETED";
                     sendJournalNotification($journal_message);
                     $workItem->setStatus('COMPLETED');
-                    $workItem->addFeesToCompletedJob();
+                    $workItem->addFeesToCompletedJob(true);
                     $workItem->save();
                 }
             }
