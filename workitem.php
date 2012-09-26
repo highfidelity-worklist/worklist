@@ -502,19 +502,19 @@ if ($action =='status-switch') {
             if ($workitem->save() == false) {
                 $status_error = "Error in save workitem process. Could not change the status.";
             } else {
-                if ($status == 'COMPLETED') {
+                if ($status == 'Completed') {
                     $workitem->addFeesToCompletedJob();
                 }
 
-                if ($status == 'DONE') {
+                if ($status == 'Done') {
                     $displayDialogAfterDone = true;
                 }
 
-                if ($status != 'DRAFT') {
+                if ($status != 'Draft') {
                     $new_update_message = "Status set to $status. ";
                     $notifyEmpty = false;
                     $status_change = '-' . ucfirst(strtolower($status));
-                    if ($status == 'FUNCTIONAL') {
+                    if ($status == 'Functional') {
                         Notification::workitemNotify(array('type' => 'modified-functional',
                         'workitem' => $workitem,
                         'status_change' => $status_change,

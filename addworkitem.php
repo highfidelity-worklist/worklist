@@ -70,7 +70,7 @@ if ($userId > 0 ) {
     //If this item is a bug add original item id 
     $workitem->setBugJobId($bug_job_id);
     // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
-    if ($status == 'BIDDING' && $user->getIs_runner() == 1) {
+    if ($status == 'Bidding' && $user->getIs_runner() == 1) {
         $runner_id = $userId;
     }else{
         $runner_id = 0;
