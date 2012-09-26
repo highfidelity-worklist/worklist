@@ -28,6 +28,7 @@ $tooltips = array(
     'endCrDisallowed' => 'You are not authorized to End Code Review on this job',
 	'addFee'	    => 'Add a fee you would like to be paid for work done on this job.',
 	'addBid'	    => 'Make an offer to do this job.',
+	'changeSBurl'   => 'Click to change your sandbox url.',
 	
 	/* Budget Info tooltips         */
 

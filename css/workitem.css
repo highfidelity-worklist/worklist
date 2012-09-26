@@ -256,8 +256,13 @@ span.info-whisper {
 .functional-label {
     font-weight: bold;
     float: left;
+    display: block;
 }
 
+#edit_review_url:hover {
+    cursor: pointer;
+    text-decoration: underline; 
+}
 
 .budget-label {
     font-weight: bold;
