@@ -164,7 +164,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
 
     $creator_id = $userId;
 
-    if (!empty($_POST['itemid']) && ($_POST['status']) != 'DRAFT') {
+    if (!empty($_POST['itemid']) && ($_POST['status']) != 'Draft') {
         $workitem->loadById($_POST['itemid']);
         $journal_message .= $nick . " updated ";
     } else {

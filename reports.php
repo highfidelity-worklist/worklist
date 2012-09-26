@@ -854,12 +854,12 @@ $(function() {
         <td class="textAlignReport">
             <div>
                 <div class="report-label">Payee:</div>
-                <div class="report-input-item"><?php echo $filter->getUserSelectbox($activeUsers, 'All'); ?></div>
+                <div class="report-input-item"><?php echo $filter->getUserSelectbox($activeUsers, 'ALL'); ?></div>
                 <div class="report-item-clear"></div>
             </div>
             <div class="second-line">
                 <div class="report-label">Project:</div>
-                <div class="report-input-item"><?php echo $filter->getProjectSelectbox('All', $activeProjects); ?></div>
+                <div class="report-input-item"><?php echo $filter->getProjectSelectbox('ALL', $activeProjects); ?></div>
                 <div class="report-item-clear"></div>
             </div>
         </td>
@@ -868,7 +868,7 @@ $(function() {
             <div class="report-label">Paid Status:</div>
             <div class="report-input-item">
               <select id="paid-status" >
-                <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>All</option>
+                <option value="ALL"<?php echo(($filter->getPaidstatus() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
                 <option value="1"<?php echo(($filter->getPaidstatus() == '1') ? ' selected="selected"' : ''); ?>>Paid</option>
                 <option value="0"<?php echo(($filter->getPaidstatus() == '0') ? ' selected="selected"' : ''); ?>>Unpaid</option>
               </select>
@@ -879,7 +879,7 @@ $(function() {
             <div class="report-label">Type:</div>
             <div class="report-input-item">
                 <select id="type-status">
-                    <option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>All</option>
+                    <option value="ALL"<?php echo(($filter->getType() == 'ALL') ? ' selected="selected"' : ''); ?>>ALL</option>
                     <option value="Fee"<?php echo(($filter->getType() == 'Fee') ? ' selected="selected"' : ''); ?>>Fee</option>
                     <option value="Bonus"<?php echo(($filter->getType() == 'Bonus') ? ' selected="selected"' : ''); ?>>Bonus</option>
                     <option value="Expense"<?php echo(($filter->getType() == 'Expense') ? ' selected="selected"' : ''); ?>>Expense</option>

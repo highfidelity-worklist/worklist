@@ -809,12 +809,12 @@ function updateNewMessages(json) {
             var update=false;
             for (entry in json.newsystementries) {
                 if(
-                    json.newsystementries[entry].entry_text.indexOf('BIDDING') != -1 ||
-                    json.newsystementries[entry].entry_text.indexOf('REVIEW') != -1 ||
-                    json.newsystementries[entry].entry_text.indexOf('WORKING') != -1 ||
-                    json.newsystementries[entry].entry_text.indexOf('COMPLETED') != -1 ||
+                    json.newsystementries[entry].entry_text.indexOf('Bidding') != -1 ||
+                    json.newsystementries[entry].entry_text.indexOf('Review') != -1 ||
+                    json.newsystementries[entry].entry_text.indexOf('Working') != -1 ||
+                    json.newsystementries[entry].entry_text.indexOf('Completed') != -1 ||
                     json.newsystementries[entry].entry_text.indexOf('added item') != -1 ||
-                    json.newsystementries[entry].entry_text.indexOf('SUGGESTEDwithBID') != -1 ||
+                    json.newsystementries[entry].entry_text.indexOf('SuggestedWithBid') != -1 ||
                     json.newsystementries[entry].entry_text.indexOf('code review') != -1 ||
                     json.newsystementries[entry].entry_text.indexOf('authorize sandbox') != -1
                 ) {

@@ -21,13 +21,13 @@ class Agency_Worklist_Filter {
     protected $fund_id = -1;
     
     // Additional filter for reports
-    protected $paidstatus = 'All';
+    protected $paidstatus = 'ALL';
     protected $order = 'name';
     protected $start = '';
     protected $end = '';
     // Additional filter for type for reports page
     // 30-APR-2010 <Yani>
-    protected $type = "All";
+    protected $type = "ALL";
     
     // Additional filter for job in PayPal reports
     // 30-APR-2010 <Andres>
@@ -329,7 +329,7 @@ class Agency_Worklist_Filter {
         $this->subsort = $subsort;
         return $this;
     }
-    public function getProjectSelectbox($initialMessage = 'All',  $active = 1, $projectId = 'projectCombo', $projectName = 'project') {
+    public function getProjectSelectbox($initialMessage = 'ALL',  $active = 1, $projectId = 'projectCombo', $projectName = 'project') {
         $box = '<select id="' . $projectId . '" name="' . $projectName . '" class="project-dropdown hidden" ' . '>';
         $box .= '<option value="0"' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $initialMessage . '</option>';
         foreach ( Project::getProjects((bool) $active, array('name', 'project_id')) as $project) {
@@ -346,7 +346,7 @@ class Agency_Worklist_Filter {
     }
 
     public function getFundSelectbox($fromReport=false, $display=true, $active=false) {
-        $allDisplay = ($fromReport) ? "All" : "All Funds";
+        $allDisplay = ($fromReport) ? "ALL" : "All Funds";
         $box = '<select id="fundCombo" name="fund" class="project-dropdown" ' . ($display ? '' : 'style="display: none;"') . '>';
         $box .= '    <option value="-1" ' . ($this->getFund_id() == -1 ? 'selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach (Fund::getFunds() as $fund) {
@@ -421,10 +421,10 @@ class Agency_Worklist_Filter {
     
     public function getStatusSelectbox($fromReport=false)
     {
-        $allDisplay = ($fromReport) ? "All" : "All Status";
+        $allDisplay = ($fromReport) ? "ALL" : "All Status";
         $status_array = WorkItem::getStates();
         $box = '<select class="hidden" id="status" name="status">';
-        $box .= '<option value="All"' . (($this->getStatus() == "All") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+        $box .= '<option value="ALL"' . (($this->getStatus() == "ALL") ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
         foreach ($status_array as $status) {
             $selected = '';
             if ($this->getStatus() == $status) {
@@ -438,7 +438,7 @@ class Agency_Worklist_Filter {
 
     public function __construct(array $options = array(), $fromReport=false)
     {
-        $this->setStatus( ($fromReport) ? "DONE" : "BIDDING");
+        $this->setStatus( ($fromReport) ? "Done" : "Bidding");
         if (!empty($options) && (empty($options['reload']) || $options['reload'] == 'false')) {
             $this->setOptions($options);
         } elseif (!empty($options['name'])) {

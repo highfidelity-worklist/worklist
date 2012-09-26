@@ -470,9 +470,9 @@ class Project {
         if (mysql_num_rows($result)) {
             while ($project = mysql_fetch_assoc($result)) {
                 $query = "SELECT
-                            SUM(status IN ('DONE', 'COMPLETE')) AS completed, 
-                            SUM(status IN ('WORKING', 'REVIEW', 'SVNHold', 'FUNCTIONAL')) AS underway, 
-                            SUM(status='BIDDING') AS bidding 
+                            SUM(status IN ('Done', 'Completed')) AS completed, 
+                            SUM(status IN ('Working', 'Review', 'SvnHold', 'Functional')) AS underway, 
+                            SUM(status='Bidding') AS bidding 
                           FROM
                             " . WORKLIST . " 
                           WHERE
@@ -490,7 +490,7 @@ class Project {
                             " . WORKLIST . " W
                             WHERE F.worklist_id = W.id
                             AND W.project_id = " . $project['project_id'] . "
-                            AND W.status IN ('COMPLETED', 'DONE')";
+                            AND W.status IN ('Completed', 'Done')";
                     $feesQueryResult = mysql_query($feesQuery);
                     if (mysql_num_rows($feesQueryResult)) {
                         $feesCountArray = mysql_fetch_array($feesQueryResult);
@@ -682,7 +682,7 @@ class Project {
                     FROM status_log s 
                     LEFT JOIN worklist w ON s.worklist_id = w.id 
                     LEFT JOIN projects p on p.project_id = w.project_id 
-                    WHERE s.status = 'DONE' AND p.project_id = " . $this->getProjectId() . ") AS x";
+                    WHERE s.status = 'Done' AND p.project_id = " . $this->getProjectId() . ") AS x";
         if($result = mysql_query($query)) {
             $row = mysql_fetch_array($result);
             return ($row['avgJobTime'] > 0) ? relativeTime($row['avgJobTime'], false, true, false) : '';
@@ -696,19 +696,19 @@ class Project {
                  (SELECT COUNT(*) FROM " . WORKLIST . " w 
                  LEFT JOIN " . PROJECTS . " p on w.project_id = p.project_id 
                  WHERE ( w.mechanic_id = u.id OR w.creator_id = u.id) 
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE') 
+                 AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done') 
                  AND p.project_id = "  . $this->getProjectId() . ") as totalJobCount,
                  (SELECT SUM(F.amount) FROM " . FEES . " F 
                  LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
                  LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
                  WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE')				 
+                 AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')				 
                  AND p.project_id = " . $this->getProjectId() . ") as totalEarnings
                  FROM " . BIDS . " b LEFT JOIN " . WORKLIST . " w ON b.worklist_id = w.id 
                  LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
                  LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
                  WHERE b.accepted = 1 
-                 AND w.status IN ('WORKING', 'FUNCTIONAL', 'SVNHold', 'REVIEW', 'COMPLETED', 'DONE')
+                 AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
                  AND p.project_id = " . $this->getProjectId() . " ORDER BY totalEarnings DESC";
         if($result = mysql_query($query)) {
             if(mysql_num_rows($result) > 0) {
@@ -750,7 +750,7 @@ class Project {
         $query = "SELECT u.id, u.nickname, f.worklist_id, f.amount, f.paid FROM " . FEES . " f
                   LEFT JOIN " . WORKLIST . " w ON f.worklist_id = w.id
                   LEFT JOIN " . USERS . " u ON f.user_id = u.id
-                  WHERE w.status = 'DONE' AND  w. project_id = " . $this->getProjectId() . "
+                  WHERE w.status = 'Done' AND  w. project_id = " . $this->getProjectId() . "
                   AND f.withdrawn = 0 AND f. expense = 0
                   ORDER BY f.paid, f.worklist_id ASC";
         if ($result = mysql_query($query)) {

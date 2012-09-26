@@ -201,9 +201,9 @@ function StopStatus() {
                             </div>
                             <div id="system-bidding-wrapper">
                                 <div id="system-bidding-header">
-                                <a href="worklist.php?project=&user=0&status=bidding&journal_query=1" target="_blank">Jobs in Bidding</a> /
-                                <a href="worklist.php?project=&user=0&status=suggestedwithbid&journal_query=1" target="_blank">Suggested with Bid</a> / 
-                                <a href="worklist.php?project=&user=0&status=review&journal_query=1" target="_blank">Jobs Needing Code Review</a>
+                                <a href="worklist.php?project=&user=0&status=Bidding&journal_query=1" target="_blank">Jobs in Bidding</a> /
+                                <a href="worklist.php?project=&user=0&status=SuggestedWithBid&journal_query=1" target="_blank">Suggested with Bid</a> / 
+                                <a href="worklist.php?project=&user=0&status=Review&journal_query=1" target="_blank">Jobs Needing Code Review</a>
                                 </div>
                                     <table cellpadding="3" cellspacing="0">
                                     <tr class="bold"><td style="width:60px">Task #</td><td style="width:80px;">Project</td><td>Summary</td></tr>

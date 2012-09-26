@@ -348,7 +348,7 @@ function getSystemDrawerJobs(){
     $sql = " SELECT w.*, p.name as project "
          . " FROM   ". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
          . " ON     (w.project_id = p.project_id) "
-         . " WHERE  w.status = 'REVIEW' "
+         . " WHERE  w.status = 'Review' "
          . " AND w.code_review_completed = 0"
          . " AND w.code_review_started = 0"
          ;

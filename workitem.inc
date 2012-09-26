@@ -28,8 +28,8 @@
 
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || ($creator_id == $user_id && $worklist['status'] == 'SUGGESTED' && is_null($worklist['runner_id'])) ||
-    ($creator_id == $user_id && $worklist['status'] == 'SUGGESTEDwithBID' && is_null($worklist['runner_id']))) {
+    if ($is_runner || ($creator_id == $user_id && $worklist['status'] == 'Suggested' && is_null($worklist['runner_id'])) ||
+    ($creator_id == $user_id && $worklist['status'] == 'SuggestedWithBid' && is_null($worklist['runner_id']))) {
         $allowEdit = true;
         if ($action !="edit") {
             $classEditable = " editable";
@@ -897,13 +897,13 @@ $(document).ready(function(){
         }
     });
 
-<?php if((($is_runner) || ($mechanic_id == $user_id)) && 
-          (strcasecmp($worklist['status'], 'done') != 0 && 
-          strcasecmp($worklist['status'], 'completed') != 0 )) {?>
-          $('#edit_review_url').click(function(e){
-              $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
-              $('#popup-reviewurl').dialog('open');
-          });
+<?php if((($is_runner) || ($mechanic_id == $user_id)) &&
+          (strcasecmp($worklist['status'], 'Done') != 0 &&
+           strcasecmp($worklist['status'], 'Completed') != 0 )) {?>
+           $('#edit_review_url').click(function(e){
+               $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
+               $('#popup-reviewurl').dialog('open');
+        });
 <?php } ?>
   });
 
@@ -1816,14 +1816,14 @@ if ($action =="edit"):  ?>
                     <!-- View: Sandbox textarea -->
                     <?php if ($mechanic_id > 0):?>
                     <li>
-                        <?php if((strcasecmp($worklist['status'], 'working') == 0 ||
-                            strcasecmp($worklist['status'], 'review') == 0 ||
-                            strcasecmp($worklist['status'], 'functional') == 0) && (($is_runner) || ($mechanic_id == $user_id))) {?>
+                        <?php if((strcasecmp($worklist['status'], 'Working') == 0 ||
+                            strcasecmp($worklist['status'], 'Review') == 0 ||
+                            strcasecmp($worklist['status'], 'Functional') == 0) && (($is_runner) || ($mechanic_id == $user_id))) {?>
                         	<span class="iToolTip changeSBurl functional-label" id="edit_review_url">Functional &amp; Review URL</span>&nbsp;
                         <?php } else {?>
                             <span class="functional-label">Functional &amp; Review URL</span>&nbsp;
                         <?php }?>
-                        
+
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
                                   <?php 

@@ -324,7 +324,7 @@ if ($action == 'new-comment') {
 
         
         // Send journal notification
-        if ($workitem->getStatus() != 'DRAFT') {
+        if ($workitem->getStatus() != 'Draft') {
             $related = getRelated($comment);
             $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary() . $related;
             Notification::workitemNotify(
@@ -978,7 +978,7 @@ if ($action == false) {
 
 if ($redirectToDefaultView) {
     $postProcessUrl = WORKITEM_URL . $worklist_id . "&order=" . $order_by;
-    if ($workitem->getStatus() == 'DONE') {
+    if ($workitem->getStatus() == 'Done') {
         $displayDialogAfterDone = true;
     }
 }
@@ -987,7 +987,7 @@ if ($redirectToWorklistView) {
 }
 
 // we have a Journal message, send it to Journal - except for DRAFTS
-if(isset($journal_message) && $workitem->getStatus() != 'DRAFT') {
+if(isset($journal_message) && $workitem->getStatus() != 'Draft') {
     sendJournalNotification($journal_message);
     //$postProcessUrl = WORKITEM_URL . $worklist_id . "&msg=" . $journal_message;
 }
@@ -1159,7 +1159,7 @@ function changeStatus($workitem, $newStatus, $user) {
         }
     }
     
-    if ($newStatus == 'DONE' && $workitem->getProjectId() == 0) {
+    if ($newStatus == 'Done' && $workitem->getProjectId() == 0) {
         return false;
     }
 
@@ -1211,7 +1211,7 @@ function changeStatus($workitem, $newStatus, $user) {
         } 
     }
     
-    if ($newStatus == 'FUNCTIONAL' && $repoType == 'git') {
+    if ($newStatus == 'Functional' && $repoType == 'git') {
         $runner = $workitem->getRunnerId();
         $GitHubUser = new GitHubUser($runner);
         $runnerEmail = $GitHubUser->getUsername();

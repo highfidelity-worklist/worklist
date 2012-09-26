@@ -57,7 +57,7 @@ if (!empty($sfilter)) {
                  * if current user is not a runner and is filtering by ALL 
                  * status it wont fetch workitems in DRAFT status
                  */
-                $where .= "1 AND status != 'DRAFT' OR ";
+                $where .= "1 AND status != 'Draft' OR ";
             }
             if ($val == 'ALL' && $is_runner == 1 ){
                 /**
@@ -65,14 +65,14 @@ if (!empty($sfilter)) {
                  * it wont fetch workitems in DRAFT status created by any other
                  * user
                  */
-                $where .= "1 AND status != 'DRAFT' OR (status = 'DRAFT' AND creator_id = $userId) OR  ";
+                $where .= "1 AND status != 'Draft' OR (status = 'Draft' AND creator_id = $userId) OR  ";
             }
-            if ($val == 'DRAFT'){
+            if ($val == 'Draft'){
                 /**
                  * if filtering by DRAFT status will only fetch workitems in 
                  * DRAFT status created by current user
                  */
-                $where .= "(status = 'DRAFT' AND creator_id = $userId) OR  ";
+                $where .= "(status = 'Draft' AND creator_id = $userId) OR  ";
             } else {
                 /**
                  * if filtering by any status different than ALL and DRAFT it 
@@ -85,7 +85,7 @@ if (!empty($sfilter)) {
 }
 
 // User filter
-if (!empty($ufilter) && $ufilter != 'ALL') {
+if (!empty($ufilter) && $ufilter != 'All') {
     if (empty($where)) {
         $where = "WHERE (";
     } else {
@@ -94,12 +94,12 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
 
     $severalStatus = "";
     foreach ($sfilter as $val) {
-        if ($val == 'ALL') {
+        if ($val == 'All') {
             $status_cond = "";
         } else {
             $status_cond = "status='$val' AND";
         }
-        if (($is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
+        if (($is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId)) {
             /**
              * If current user is a runner and filtering for himself and 
              * (BIDDING or SwB) status then fetch all workitems where he 
@@ -109,7 +109,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
                 "( $status_cond (`mechanic_id` = '$ufilter' OR `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
                 OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
                 ))";
-        } else if ((!$is_runner && $val == 'BIDDING' || $val == 'SUGGESTEDwithBID' && $ufilter == $userId)) {
+        } else if ((!$is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId)) {
             /**
              * If current user is a runner and filtering for certain user and 
              * (BIDDING or SwB) status then fetch all workitems where selected
@@ -118,14 +118,14 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
             $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
                 OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
                 ))";
-        } else if (($val == 'BIDDING' || $val == 'SUGGESTEDwithBID') && $ufilter != $userId) {
+        } else if (($val == 'Bidding' || $val == 'SuggestedWithBid') && $ufilter != $userId) {
             /**
              * If current user is not a runner and is filtering for certain user
              * and (BIDDING or SwB) status then fetch all workitems where selected
              * user is mechanic, runner or creator.
              */ 
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
-        } else if ($val == 'WORKING' || $val =='REVIEW' || $val =='FUNCTIONAL' || $val =='COMPLETED' ) {
+        } else if ($val == 'Working' || $val =='Review' || $val =='Functional' || $val =='Completed' ) {
             /**
              * If current user is filtering for any user (himself or not) and 
              * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
@@ -152,7 +152,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
 }
 
 // Project filter
-if (!empty($pfilter) && $pfilter != 'ALL') {
+if (!empty($pfilter) && $pfilter != 'All') {
     if (empty($where)) {
         $where = "WHERE ";
     } else {
@@ -234,9 +234,9 @@ $qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`,
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
 if ((isset($_SESSION['userid']))) {
-    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0  AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
+    $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0  AND (`".WORKLIST."`.`status`='Bidding' OR `".WORKLIST."`.`status`='SuggestedWithBid') ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
     $qsel .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
-    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND (`".WORKLIST."`.`status`='BIDDING' OR `".WORKLIST."`.`status`='SUGGESTEDwithBID') AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
+    $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND (`".WORKLIST."`.`status`='Bidding' OR `".WORKLIST."`.`status`='SuggestedWithBid') AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
 }
 
 $qbody = "FROM `".WORKLIST."`
@@ -286,7 +286,7 @@ while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
          8 => ($is_runner == 1) ? $row['bid_amount'] : 0,
          9 => $row['creator_id'],
         10 => $row['bid_count'],
-        11 => ($row['status'] == 'DONE') ? date("m/d/Y",time()+$row['bid_done']):$row['bid_done'],
+        11 => ($row['status'] == 'Done') ? date("m/d/Y",time()+$row['bid_done']):$row['bid_done'],
         12 => $row['comments'],
         13 => $row['runner_id'],
         14 => $row['mechanic_id'],

@@ -732,7 +732,7 @@ class Notification {
             break;
             case 'auto-pass':
                 $headers['From'] = '"' . $project_name . "- Auto PASSED" . '" ' . $from_address;
-                if (isset($data['prev_status']) && $data['prev_status'] == 'BIDDING') {
+                if (isset($data['prev_status']) && $data['prev_status'] == 'Bidding') {
                     $headers['From'] = '"' . $project_name . "- BIDDING Item Auto PASSED" . '" ' . $from_address;
                     $body = "Otto has triggered an auto-PASS for job #" . $itemId . ". You may reactivate this job by updating the status or contacting an admin." . '<br/><br/>';
                 } else {
