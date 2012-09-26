@@ -1169,7 +1169,7 @@ function changeStatus($workitem, $newStatus, $user) {
     $repoType = $thisProject->getRepo_type();
     
     // Generate diff and send to pastebin if we're in REVIEW
-    if ($newStatus == "REVIEW") {
+    if ($newStatus == "Review") {
         //reset code_review flags
         $workitem->resetCRFlags();
         if ($repoType == 'svn') {

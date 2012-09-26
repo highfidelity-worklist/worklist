@@ -439,14 +439,14 @@ require_once('opengraphmeta.php');
 
     row += '<td width="9.5%" class="who not-workitem">' + who + '</td>';
 
-        if (json[2] == 'WORKING' && json[11] != null) {
+        if (json[2] == 'Working' && json[11] != null) {
             var pastDuePre = '', pastDuePost = '';
             if ((RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') == 'Past due') {
                 pastDuePre = "<span class='past-due'>";
                 pastDuePost = "</span>";
             }
             row += '<td width="15%">' + pastDuePre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + pastDuePost +'</td>';
-        } else if (json[2] == 'DONE' && json[11] != null) {
+        } else if (json[2] == 'Done' && json[11] != null) {
             row += '<td width="15%">' + json[11] + '</td>';
         } else {
             row += '<td width="15%">' +  RelativeTime(json[6]) + ' ago' +'</td>';
@@ -457,7 +457,7 @@ require_once('opengraphmeta.php');
         row += '<td width="7.5%">' + comments + '</td>';
 
         if (is_runner == 1) {
-            if (user_id == json[13] || json[2] == 'SUGGESTEDwithBID') {
+            if (user_id == json[13] || json[2] == 'SuggestedWithBid') {
                 var feebids = 0;
                 if(json[7]){
                     feebids = json[7];
