@@ -36,7 +36,7 @@
             </div>
             <input type="hidden" name="done_in" id="done_in" value="2 hours" />
         </div>
-        <?php if ($worklist['status'] == 'SUGGESTEDwithBID' || $worklist['status'] == 'SUGGESTED') { ?>
+        <?php if ($worklist['status'] == 'SuggestedWithBid' || $worklist['status'] == 'Suggested') { ?>
         <input type="hidden" name="bid_expires" id="bid_expires" value="1 years" />
         <?php } else { ?>
         <div class="clear"></div>

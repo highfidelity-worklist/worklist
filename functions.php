@@ -645,7 +645,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
             // change status of worklist item
             mysql_unbuffered_query("UPDATE `" . WORKLIST . "`
 	            						SET `mechanic_id` = '0',
-										`status` = 'BIDDING'
+										`status` = 'Bidding'
 										WHERE `id` = $bid->worklist_id
 										LIMIT 1 ;");
         }
@@ -654,8 +654,8 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $res = mysql_query('SELECT count(*) AS count_bids FROM `' . BIDS . '` WHERE `worklist_id` = ' . $job['id'] . ' AND `withdrawn` = 0');
         $bidCount = mysql_fetch_assoc($res);
         
-        if ($bidCount['count_bids'] == 1 && $job['status'] == 'SUGGESTEDwithBID') {
-        mysql_unbuffered_query("UPDATE `" . WORKLIST . "` SET `status` = 'SUGGESTED' WHERE `id` = $bid->worklist_id LIMIT 1 ;");
+        if ($bidCount['count_bids'] == 1 && $job['status'] == 'SuggestedWithBid') {
+        mysql_unbuffered_query("UPDATE `" . WORKLIST . "` SET `status` = 'Suggested' WHERE `id` = $bid->worklist_id LIMIT 1 ;");
         }
 
         // change bid to withdrawn and set bids.accepted to 0

@@ -53,15 +53,15 @@
         ?>
                 <p class="info-label">Status<br />
                     <select id="itemStatusCombo" name="status">
-                        <option value="DRAFT">DRAFT</option>
-                        <option value="SUGGESTED">SUGGESTED</option>
-                        <option value="BIDDING" selected="selected">BIDDING</option>
-                        <option value="WORKING">WORKING</option>
-                        <option value="DONE">DONE</option>
+                        <option value="Draft">Draft</option>
+                        <option value="Suggested">Suggested</option>
+                        <option value="Bidding" selected="selected">Bidding</option>
+                        <option value="Working">Working</option>
+                        <option value="Done">Done</option>
                     </select>
                 </p>
         <?php } else { ?>
-                <input type="hidden" id="status" name="status" value="SUGGESTED" />
+                <input type="hidden" id="status" name="status" value="Suggested" />
         <?php } ?>
                 <p class="info-label">Attached Files <br />
                     <div id="addaccordion">

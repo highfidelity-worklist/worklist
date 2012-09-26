@@ -1241,7 +1241,7 @@ class Notification {
               LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
               LEFT JOIN " . USERS . " u ON u.id = b.bidder_id
               LEFT JOIN " . USERS . " r ON r.id = w.runner_id
-              WHERE w.status = 'BIDDING'
+              WHERE w.status = 'Bidding'
               AND b.expired_notify = 0
               AND b.bid_expires < NOW()
               AND u.is_active = 1

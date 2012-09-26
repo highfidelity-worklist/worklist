@@ -365,7 +365,7 @@ function getSystemDrawerJobs(){
     $sql = " SELECT w.*, p.name as project "
          . " FROM   ". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
          . " ON     (w.project_id = p.project_id) "
-         . " WHERE  w.status = 'BIDDING' OR w.status = 'SUGGESTEDwithBID' ";
+         . " WHERE  w.status = 'Bidding' OR w.status = 'SuggestedWithBid' ";
 
     if ($result = mysql_query($sql)) {
         while ($row = mysql_fetch_assoc($result)) {
@@ -404,7 +404,7 @@ function processW2Masspay() {
 
     $sql = " UPDATE " . FEES . " AS f, " . WORKLIST . " AS w, " . USERS . " AS u "
          . " SET f.paid = 1, f.paid_date = NOW() "
-         . " WHERE f.paid = 0 AND f.worklist_id = w.id AND w.status = 'DONE' "
+         . " WHERE f.paid = 0 AND f.worklist_id = w.id AND w.status = 'Done' "
          . "   AND f.withdrawn = 0 "
          . "   AND f.user_id = u.id "
          . "   AND u.has_W2 = 1 "

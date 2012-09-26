@@ -36,11 +36,11 @@
         }
     }
     $hideFees = false;
-    if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTED' || $worklist['status'] == 'SUGGESTEDwithBID') {
+    if ($worklist['status'] == 'Bidding' || $worklist['status'] == 'Suggested' || $worklist['status'] == 'SuggestedWithBid') {
         $hideFees = true;
     }
 
-    if ($worklist['status'] == 'DRAFT' && $creator_id != $user_id) { ?>
+    if ($worklist['status'] == 'Draft' && $creator_id != $user_id) { ?>
        <script type="text/javascript"> 
        alert("Draft jobs are only viewable by their creator.");
        location = "worklist.php";
@@ -817,13 +817,13 @@ $(document).ready(function(){
 <?php endif; ?>
             }
 
-<?php if ($worklist['status'] == 'BIDDING' && ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id))) {?>
+<?php if ($worklist['status'] == 'Bidding' && ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id))) {?>
  
     $('#popup-bid-info-buttons').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" >');
  
 <?php } ?>
 
-<?php if($worklist['status'] != 'DONE' && $worklist['status'] != 'WORKING' && $worklist['status'] != 'FUNCTIONAL' && $worklist['status'] != 'REVIEW' && $worklist['status'] != 'COMPLETED'){?>
+<?php if($worklist['status'] != 'Done' && $worklist['status'] != 'Working' && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' && $worklist['status'] != 'Completed') {?>
             if( (bidData.bidder_id == user_id) && $('#withdraw_bid_accept').length == 0){
                 $('#popup-bid-info-buttons').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" >');
             } else if (is_runner==1 && bidData.bidder_id != user_id) {
@@ -882,7 +882,7 @@ $(document).ready(function(){
         var html = "<span>Changing status from <strong><?php echo $worklist['status'];?></strong> to <strong>"
             + $(this).val() +"</strong></span>";
 
-        if ($(this).val() == 'FUNCTIONAL') {
+        if ($(this).val() == 'Functional') {
             <?php if($mechanic_id == $user_id && $promptForReviewUrl) :?>
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
                 $('#quick-status-review').val($(this).val());
@@ -897,7 +897,7 @@ $(document).ready(function(){
         }
     });
 
-<?php if(($is_runner) || ($mechanic_id == $user_id) && ($worklist['status'] != 'DONE')){?>
+<?php if(($is_runner) || ($mechanic_id == $user_id) && ($worklist['status'] != 'Done')) {?>
         $('#edit_review_url').click(function(e){
                 $('#sandbox-url').val('<?php echo $worklist['sandbox']?>');
                 $('#popup-reviewurl').dialog('open');
@@ -1704,7 +1704,7 @@ if ($action =="edit"):  ?>
                     <?php if ($mechanic_id > 0):?>
                     <li>
                         <span class="functional-label" >Functional &amp; Review URL</span>
-                        <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
+                        <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
                         <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo htmlspecialchars($worklist['sandbox']);?>" />
                          <?php elseif ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
@@ -1826,8 +1826,8 @@ if ($action =="edit"):  ?>
                                   
                                   ?> 
                             </a><br />
-                            <?php if (($worklist['status'] == 'FUNCTIONAL' || $worklist['status'] == 'REVIEW')
-                                    && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'WORKING' && ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $mechanic_id))) { ?> 
+                            <?php if (($worklist['status'] == 'Functional' || $worklist['status'] == 'Review')
+                                    && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'Working' && ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $mechanic_id))) { ?> 
                                 <input type="submit" id="view-sandbox" value="View Sandbox" />
                             <?php } ?>                         
                         <?php else :?>
@@ -1905,7 +1905,7 @@ if ($action =="edit"):  ?>
                 ?>
                 </ul>
 
-                <?php if (!empty($user_id) && ($worklist['status'] != 'DONE') && $order_by == "ASC") : ?>
+                <?php if (!empty($user_id) && ($worklist['status'] != 'Done') && $order_by == "ASC") : ?>
                 <div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
                     <form action="" method="post">
                         <input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
@@ -1934,14 +1934,15 @@ if ($action =="edit"):  ?>
                             <caption class="table-caption" >
                                 <div class="noteWrapper"><b>Bids</b> <span class="note">(click bid for detail)</span></div>
 <?php if ($user_id) : ?>
-<?php if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTEDwithBID' || ($worklist['status'] == 'SUGGESTED' && $worklist['creator_id']== $user_id)) : ?>
+<?php if ($worklist['status'] == 'Bidding' || $worklist['status'] == 'SuggestedWithBid' || ($worklist['status'] == 'Suggested' && $worklist['creator_id']== $user_id)) : ?>
                         <div class="buttonContainer">
 <?php if ($user->isEligible()) : ?>
                             <input type="submit" class="smbutton" value="Add Bid" onClick="return showConfirmForm('bid');" />
 <?php else: ?>
                             <input type="submit" class="smbutton" value="Add Bid" onClick="return showIneligible('bid');" />
 <?php endif; ?>
-<?php if(! empty($bids) && ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids() && (((strtoupper($workitem->getStatus()) == "BIDDING")) || $workitem->getStatus() == "SUGGESTEDwithBID")):?>
+<?php if(! empty($bids) && ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids()
+      && ((($workitem->getStatus()) == "Bidding") || $workitem->getStatus() == "SuggestedWithBid")):?>
                             <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
 <?php endif;?>
                         </div>
@@ -2031,10 +2032,10 @@ if ($action =="edit"):  ?>
                                         } else {
                                             $bid_done_by_stamp = strtotime("+" . $bid['done_in'], time());
                                         }
-                                        if ($bid_done_by_stamp < time() && ($workitem->getStatus() == 'WORKING' || $workitem->getStatus() == 'REVIEW' || $workitem->getStatus() == 'FUNCTIONAL')) {
+                                        if ($bid_done_by_stamp < time() && ($workitem->getStatus() == 'Working' || $workitem->getStatus() == 'Review' || $workitem->getStatus() == 'Functional')) {
                                             $past_due = ' class="past-due overdue"';
                                         }
-                                        if (empty($past_due) && $workitem->getStatus() == 'DONE' && $workitem->getMechanicId() == $bid['bidder_id']) {
+                                        if (empty($past_due) && $workitem->getStatus() == 'Done' && $workitem->getMechanicId() == $bid['bidder_id']) {
                                             $past_due = ' class="past-due done"';
                                         }
 
@@ -2074,14 +2075,14 @@ if ($action =="edit"):  ?>
                             <table width="100%" class="table-fees" cellpadding="0" cellspacing="0">
                                 <caption class="table-caption" >
                                     <div class="noteWrapper"><b>Fees</b></div>
-                            <?php if($user_id && ($worklist['status'] != 'DONE')): ?>
+                            <?php if($user_id && ($worklist['status'] != 'Done')): ?>
                             
                             <div class="buttonContainer">
                                 <?php if ($mechanic_id == $user_id) : ?>
                                     <input class="iToolTip addTip smbutton" type="submit" value="Tip User" />
                                 <?php endif; ?>
                                 
-                                <?php if ($worklist['status'] == 'REVIEW') {
+                                <?php if ($worklist['status'] == 'Review') {
                                     if ($workitem->getCRStarted() !=1) {
                                         if ($mechanic_id != $user_id) {
                                             if ($user->isEligible()) {
@@ -2149,7 +2150,7 @@ if ($action =="edit"):  ?>
                                             </a>
                                         </td>
                                         <td>$<?php echo $fee['amount'];?></td>
-                                        <?php if (($worklist['status'] == 'REVIEW' || $worklist['status'] == 'COMPLETED' || $worklist['status'] == 'DONE')&& ($fee['desc'] == 'Accepted Bid')) { ?>
+                                        <?php if (($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done')&& ($fee['desc'] == 'Accepted Bid')) { ?>
                                         <td>Bid Notes: <?php echo preg_replace("/\r?\n/", "<br />", $fee['bid_notes']);?></td>
                                         <?php } else { ?>
                                         <td class="pre fee-description"><?php 
@@ -2187,7 +2188,7 @@ if ($action =="edit"):  ?>
                     <?php if ($hideFees) {?>
                     </div><!--  end accordian -->
                     <?php } ?>
-                    <?php } else if ($worklist['status'] == 'BIDDING' || $worklist['status'] == 'SUGGESTEDwithBID') { ?>
+                    <?php } else if ($worklist['status'] == 'Bidding' || $worklist['status'] == 'SuggestedWithBid') { ?>
                     <div class="buttonContainer">
                         <input style="cursor:pointer;" type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
                     </div>

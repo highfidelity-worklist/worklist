@@ -19,7 +19,7 @@ function autoPassJobs() {
         die('Could not connect: ' . mysql_error());
     }
     mysql_select_db(DB_NAME, $con);
-    $sql = "SELECT id FROM `" . WORKLIST ."` WHERE  status  IN ( 'SUGGESTED' , 'SUGGESTEDwithBID', 'BIDDING') AND DATEDIFF(now() , status_changed) > 30";
+    $sql = "SELECT id FROM `" . WORKLIST ."` WHERE  status  IN ( 'Suggested' , 'SuggestedWithBid', 'Bidding') AND DATEDIFF(now() , status_changed) > 30";
     
     $result = mysql_query($sql);
     $delay = 0;
@@ -27,7 +27,7 @@ function autoPassJobs() {
         $delay = 5;
     }
     while ($row = mysql_fetch_assoc($result)) {
-        $status = 'PASS';
+        $status = 'Pass';
         $workitem = new WorkItem($row['id']);
         $prev_status = $workitem->getStatus();
         
@@ -39,7 +39,7 @@ function autoPassJobs() {
             $emails = array();
             $data = array('prev_status' => $prev_status);
             
-            if ($prev_status == 'BIDDING') {
+            if ($prev_status == 'Bidding') {
                 $recipients[] = 'usersWithBids';
                 $emails = preg_split('/[\s]+/', ADMINS_EMAILS);
             }

@@ -106,7 +106,7 @@ if (is_object($inProject)) {
 // krumch 20110418 Set to open Worklist from Journal
     if(isset($_REQUEST['journal_query'])) {
         $filter->setName('.worklist')
-               ->setStatus(strtoupper($_REQUEST['status']))
+               ->setStatus($_REQUEST['status'])
                ->initFilter();
     } else {
         $filter->setName('.worklist')
@@ -175,7 +175,7 @@ if ($userId > 0 && isset($_POST['save_item'])) {
 
     $workitem->setBugJobId($bug_job_id);
     // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
-    if ($status == 'BIDDING' && $user->getIs_runner() == 1) {
+    if ($status == 'Bidding' && $user->getIs_runner() == 1) {
         $runner_id = $userId;
     } else {
         $runner_id = 0;
@@ -345,7 +345,7 @@ require_once('opengraphmeta.php');
         row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live iToolTip hoverJobRow ';
 
         // disable dragging for all rows except with "BIDDING" status
-        if (json[2] != 'BIDDING'){
+        if (json[2] != 'Bidding') {
             row += ' nodrag ';
         }
 
@@ -399,7 +399,7 @@ require_once('opengraphmeta.php');
                 '</span></td>';
 <?php if (! $hide_project_column) : ?>
         var bidCount = '';
-        if ((json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID') &&json[10] > 0) {
+        if ((json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') &&json[10] > 0) {
             bidCount = ' (' + json[10] + ')';
         }
         row += '<td width="20%">' + json[2] + bidCount + '</td>';
@@ -466,7 +466,7 @@ require_once('opengraphmeta.php');
                 if(json[8]){
                     bid = json[8];
                 }
-                if(json[2] == 'BIDDING' || json[2] == 'SUGGESTEDwithBID'){
+                if(json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') {
                     bid = parseFloat(bid);
                     if (bid == 0) {
                         feebids = '';

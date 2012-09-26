@@ -30,30 +30,30 @@
                 $allDisplay = "All Status";
                 if(isset($_SESSION['userid']) && $is_runner){
                     $status_array = array(
-                        "DRAFT",
-                        "SUGGESTED", 
-                        "SUGGESTEDwithBID", 
-                        "BIDDING", 
-                        "WORKING", 
-                        "FUNCTIONAL", 
-                        "SVNHold", 
-                        "REVIEW", 
-                        "COMPLETED", 
-                        "DONE", 
-                        "PASS"
+                        "Draft",
+                        "Suggested", 
+                        "SuggestedWithBid", 
+                        "Bidding", 
+                        "Working", 
+                        "Functional", 
+                        "SvnHold", 
+                        "Review", 
+                        "Completed", 
+                        "Done", 
+                        "Pass"
                     );
                 } else {
                     $status_array = array(
-                        "SUGGESTED", 
-                        "SUGGESTEDwithBID", 
-                        "BIDDING", 
-                        "WORKING", 
-                        "FUNCTIONAL", 
-                        "SVNHold", 
-                        "REVIEW", 
-                        "COMPLETED", 
-                        "DONE", 
-                        "PASS"
+                        "Suggested", 
+                        "SuggestedWithBid", 
+                        "Bidding", 
+                        "Working", 
+                        "Functional", 
+                        "SvnHold", 
+                        "Review", 
+                        "Completed", 
+                        "Done", 
+                        "Pass"
                     );
                 }
 

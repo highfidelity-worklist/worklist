@@ -14,9 +14,9 @@ require_once 'models/Budget.php';
 require_once 'models/Users_Favorite.php';
 require_once('lib/Agency/Worklist/Filter.php');
 
-$statusListRunner = array("DRAFT", "SUGGESTED", "SUGGESTEDwithBID", "BIDDING", "WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "DONE", "PASS");
-$statusListMechanic = array("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED", "PASS");
-$statusListCreator = array("SUGGESTED", "PASS");
+$statusListRunner = array("Draft", "Suggested", "SuggestedWithBid", "Bidding", "Working", "Functional", "Review", "Completed", "Done", "Pass");
+$statusListMechanic = array("Working", "Functional", "Review", "Completed", "Pass");
+$statusListCreator = array("Suggested", "Pass");
 
 $get_variable = 'job_id';
 if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL . "workitem.php?$get_variable="); }
@@ -608,7 +608,7 @@ if ($action == "place_bid") {
             Notification::sendShortSMS($runner, 'Bid', $sms_message, WORKITEM_URL . $worklist_id);
         }
         $status=$workitem->loadStatusByBidId($bid_id);
-        if ($status == "SUGGESTEDwithBID") {
+        if ($status == "SuggestedWithBid") {
             if (changeStatus($workitem, $status, $user)) {
                 $new_update_message = "Status set to $status. ";
                 $notifyEmpty = false;
@@ -779,7 +779,7 @@ if ($action == 'accept_bid') {
         // only runners can accept bids        
         if (($is_runner == 1 || $workitem->getRunnerId() == $_SESSION['userid']) &&
             !$workitem->hasAcceptedBids() &&
-            (strtoupper($workitem->getStatus()) == "BIDDING" || $workitem->getStatus() == "SUGGESTEDwithBID")) {
+            $workitem->getStatus() == "Bidding" || $workitem->getStatus() == "SuggestedWithBid") {
             // query to get a list of bids (to use the current class rather than breaking uniformity)
             // I could have done this quite easier with just 1 query and an if statement..
             $bids = (array) $workitem->getBids($workitem->getId());
@@ -802,7 +802,7 @@ if ($action == 'accept_bid') {
                     $journal_message .= $_SESSION['nickname'] .
                         " accepted {$bid_info['bid_amount']} from " .
                         $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " .
-                        $bid_info['summary'] . ". Status set to WORKING.";
+                        $bid_info['summary'] . ". Status set to Working.";
 
                     // mail notification - including any data returned from acceptBid
                     Notification::workitemNotify(array(
@@ -871,8 +871,8 @@ if ($action=='accept_multiple_bid') {
                 ) &&
                 !$workitem->hasAcceptedBids() &&
                 (
-                    strtoupper($workitem->getStatus()) == "BIDDING" ||
-                    $workitem->getStatus() == "SUGGESTEDwithBID"
+                    $workitem->getStatus() == "Bidding" ||
+                    $workitem->getStatus() == "SuggestedWithBid"
                 )) {
                 $total = 0;
                 foreach ($bid_id as $bid) {
@@ -903,7 +903,7 @@ if ($action=='accept_multiple_bid') {
                             $journal_message .= $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". 
                                 $bid_info['nickname'] . " " . ($is_mechanic ? ' as MECHANIC ' : '') . 
                                 "on item #".$bid_info['worklist_id'].": " . $bid_info['summary'] . 
-                                ". Status set to WORKING. ";
+                                ". Status set to Working. ";
                             // mail notification
                             Notification::workitemNotify(array('type' => 'bid_accepted',
                                          'workitem' => $workitem,
@@ -1028,7 +1028,7 @@ if(!empty($bids) && is_array($bids)) {
         }
 
         if (!($user->getId() == $bid['bidder_id'] 
-         || $user->isRunnerOfWorkitem($workitem) || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner) ))  {
+         || $user->isRunnerOfWorkitem($workitem) || ($worklist['status'] == 'SuggestedWithBid' && $is_runner) ))  {
             if ($user->getIs_admin() == 0) {
                 $bid['nickname'] = '*name hidden*';
                 $bid['bid_amount'] = '***';
@@ -1151,10 +1151,10 @@ function sendMailToDiscardedBids($worklist_id)    {
 
 function changeStatus($workitem, $newStatus, $user) {
 
-    $allowable = array("DRAFT", "SUGGESTED", "SUGGESTEDwithBID", "REVIEW", "FUNCTIONAL", "PASS", "COMPLETED");
+    $allowable = array("Draft", "Suggested", "SuggestedWithBid", "Review", "Functional", "Pass", "Completed");
 
     if ($user->getIs_runner() == 1) {
-        if($newStatus == 'BIDDING' && in_array($workitem->getStatus(), $allowable)) {
+        if($newStatus == 'Bidding' && in_array($workitem->getStatus(), $allowable)) {
             $workitem->setRunnerId($user->getId());
         }
     }

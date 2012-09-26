@@ -94,7 +94,7 @@ $sql_get_fee_totals = "
         (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id)
         LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id
     WHERE
-        wl.status = 'DONE'
+        wl.status = 'Done'
         AND f.paid = '0'
         AND f.withdrawn = '0'
         AND f.amount > 0
@@ -427,7 +427,7 @@ foreach ($payee_totals as $payee) {
             (".FEES." f LEFT JOIN ".USERS." u ON f.user_id = u.id)
             LEFT JOIN ".WORKLIST." wl ON f.worklist_id = wl.id
         WHERE
-            wl.status = 'DONE'
+            wl.status = 'Done'
             AND f.paid = '0'
             AND f.withdrawn = '0'
             AND u.paypal_verified = '1'
