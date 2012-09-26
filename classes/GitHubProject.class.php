@@ -133,9 +133,9 @@ class GitHubProject
                 
                 if ($payload->pull_request->merged == 'true') {
                     $journal_message = 
-                        "Job #{$jobNumber} has been automatically set to COMPLETED";
+                        "Job #{$jobNumber} has been automatically set to Completed";
                     sendJournalNotification($journal_message);
-                    $workItem->setStatus('COMPLETED');
+                    $workItem->setStatus('Completed');
                     $workItem->addFeesToCompletedJob(true);
                     $workItem->save();
                 }
