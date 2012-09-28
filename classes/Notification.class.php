@@ -272,7 +272,7 @@ class Notification {
             break;
             
             case 'fee_added':
-                if($workitem->getStatus() != 'DRAFT') {
+                if ($workitem->getStatus() != 'Draft') {
                 $headers['From'] = '"' . $project_name . '-fee added" ' . $from_address;
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br/>'
@@ -293,7 +293,7 @@ class Notification {
             break;
             
             case 'fee_deleted':
-                if($workitem->getStatus() != 'DRAFT') {
+                if ($workitem->getStatus() != 'Draft') {
                     $headers['From'] = '"' . $project_name . '-fee deleted" ' . $from_address;
                     $body = "<p>Your fee has been deleted by: ".$_SESSION['nickname']."<br/><br/>";
                     $body .= "If you think this has been done in error, please contact the job Runner.</p>";
@@ -478,7 +478,7 @@ class Notification {
             break;
             
             case 'modified':
-                if($workitem->getStatus() != 'DRAFT') {
+                if ($workitem->getStatus() != 'Draft') {
                     $from_changes = "";
                     if (!empty($options['status_change'])) {
                         $from_changes = $options['status_change'];

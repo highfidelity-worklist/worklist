@@ -164,7 +164,7 @@ if ($action =='save_workitem') {
     if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
         $workitem->setSummary($summary);
         $new_update_message .= "Summary changed. ";
-        if ($workitem->getStatus() != 'DRAFT') {
+        if ($workitem->getStatus() != 'Draft') {
             $job_changes[] = '-summary';
         }
     }
@@ -182,7 +182,7 @@ if ($action =='save_workitem') {
         // have skills been updated?
         $skillsDiff = array_diff($skillsArr, $skillsCur);
         if (is_array($skillsDiff) && ! empty($skillsDiff)) {
-            if ($workitem->getStatus() != 'DRAFT') {
+            if ($workitem->getStatus() != 'Draft') {
                 $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
             }
             // remove nasty end comma
@@ -197,7 +197,7 @@ if ($action =='save_workitem') {
         || $userId == $workitem->getRunnerId()
         || (in_array($status, $statusListMechanic))) {
 
-        if ($workitem->getStatus() != $status && !empty($status) && $status != 'DRAFT') {
+        if ($workitem->getStatus() != $status && !empty($status) && $status != 'Draft') {
             if (changeStatus($workitem, $status, $user)) {
                 if (!empty($new_update_message)) {  // add commas where appropriate
                     $new_update_message .= ", ";
@@ -221,7 +221,7 @@ if ($action =='save_workitem') {
 
     if ($workitem->getProjectId() != $project_id) {
         $workitem->setProjectId($project_id);
-        if ($workitem->getStatus() != 'DRAFT') {
+        if ($workitem->getStatus() != 'Draft') {
             $new_update_message .= "Project changed. ";
             $job_changes[] = '-project';
         }
@@ -291,7 +291,7 @@ if ($action =='save_workitem') {
     }
 
      $redirectToDefaultView = true;
-     if ($workitem->getStatus() != 'DRAFT') {
+     if ($workitem->getStatus() != 'Draft') {
         $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id " .
                             $bugJournalMessage  .": ". $workitem->getSummary() .
                             $new_update_message . $related;
@@ -704,7 +704,7 @@ if ($action == "add_fee") {
 
         $journal_message = AddFee($itemid, $fee_amount, '', $fee_desc, $mechanic_id, '', '');
 
-        if($workitem->getStatus() != 'DRAFT') {
+        if ($workitem->getStatus() != 'Draft') {
             // notify runner of new fee
             Notification::workitemNotify(array('type' => 'fee_added',
                      'workitem' => $workitem,

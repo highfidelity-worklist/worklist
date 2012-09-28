@@ -470,7 +470,7 @@ WHERE id = ' . (int)$id;
     public static function getStates()
     {
         $states = array();
-        $query = 'SELECT DISTINCT `status` FROM `' . WORKLIST . '` WHERE `status` != "DRAFT" LIMIT 0 , 30';
+        $query = 'SELECT DISTINCT `status` FROM `' . WORKLIST . '` WHERE `status` != "Draft" LIMIT 0 , 30';
         $result = mysql_query($query);
         if ($result) {
             while ($row = mysql_fetch_assoc($result)) {

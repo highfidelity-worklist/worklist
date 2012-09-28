@@ -50,7 +50,7 @@ if (!empty($sfilter)) {
     $where = "WHERE (";
     foreach ($sfilter as $val) {
 
-        $val = strtoupper(mysql_real_escape_string($val));
+        $val = mysql_real_escape_string($val);
 
             if ($val == 'ALL' && !$is_runner) {
                 /**
@@ -85,7 +85,7 @@ if (!empty($sfilter)) {
 }
 
 // User filter
-if (!empty($ufilter) && $ufilter != 'All') {
+if (!empty($ufilter) && $ufilter != 'ALL') {
     if (empty($where)) {
         $where = "WHERE (";
     } else {

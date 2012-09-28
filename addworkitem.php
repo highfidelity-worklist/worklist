@@ -127,7 +127,7 @@ if ($userId > 0 ) {
     return;
 }
 // don't send any journal notifications for DRAFTS
-if (!empty($journal_message) && $status != 'DRAFT') {
+if (!empty($journal_message) && $status != 'Draft') {
     //sending journal notification
     $data = array();
     sendJournalNotification(stripslashes($journal_message));

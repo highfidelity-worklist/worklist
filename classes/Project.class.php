@@ -652,7 +652,7 @@ class Project {
     public function getTotalJobs() {
         $query = "SELECT COUNT(p.project_id) AS jobCount FROM " . WORKLIST . " w 
                   LEFT JOIN " . PROJECTS . " p ON w.project_id = p.project_id  
-                  WHERE w.status <> 'DRAFT' AND p.project_id = " . $this->getProjectId();
+                  WHERE w.status <> 'Draft' AND p.project_id = " . $this->getProjectId();
         if($result = mysql_query($query)) {
             $count = mysql_fetch_assoc($result);
             return $count['jobCount'];
