@@ -94,7 +94,7 @@ if (!empty($ufilter) && $ufilter != 'All') {
 
     $severalStatus = "";
     foreach ($sfilter as $val) {
-        if ($val == 'All') {
+        if ($val == 'ALL') {
             $status_cond = "";
         } else {
             $status_cond = "status='$val' AND";
