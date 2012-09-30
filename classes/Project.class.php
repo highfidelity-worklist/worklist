@@ -212,7 +212,7 @@ class Project {
     }
 
     public function getWebsiteLink() {
-        return linkify($this->website);
+        return linkify($this->website, null, false, false);
     }
 
     public function getWebsiteUrl() {

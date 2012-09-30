@@ -918,10 +918,14 @@ function checkLogin() {
      * remember to update the other, thanks very much
      *
      */
-    function linkify($url, $author = null, $bot = false)
+    function linkify($url, $author = null, $bot = false, $process = true)
     {
         $original = $url;
         
+        if(!$process) {
+            return "<a href=\"" . htmlentities($url, ENT_QUOTES, "UTF-8") . "\">" . htmlspecialchars($url) . "</a>";
+        }
+
         $class = '';
         if(strpos($url, "helper/get_attachment.php") > 0)
         {
@@ -995,9 +999,10 @@ function checkLogin() {
 
         // find anything that looks like a link and add target=_blank so it will open in a new window
         $url = htmlspecialchars_decode($url);
+
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
        if (!$bot) {
-           $url = htmlentities($url, ENT_QUOTES);
+           $url = htmlentities($url, ENT_QUOTES, "UTF-8");
        }
         $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
         $url = preg_replace_callback($reg, 'decodeDelimitedLinks', $url);

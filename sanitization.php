@@ -19,10 +19,8 @@ function sanitizeInput() {
     // pingtask.php
     sanitizeRequestInput('msg', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
     sanitizeRequestInput('withdraw_bid_reason', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
-
-
-
-
+    // addproject.php
+    $_REQUEST['description'] = htmlspecialchars($_REQUEST['description']);
 
 }
 
