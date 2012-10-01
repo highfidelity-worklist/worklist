@@ -98,7 +98,7 @@ class Budget extends DataObject {
         $allocatedFunds = -1;
         $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
                 WORKLIST . '`.`budget_id` = ' . $this->id . ' AND `' . FEES . '`.`worklist_id` = `' . 
-                WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("WORKING", "FUNCTIONAL", "REVIEW", "COMPLETED") AND `' . 
+                WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("Working", "Functional", "Review", "Completed") AND `' . 
                 FEES . '`.`withdrawn` != 1;';
         $result = mysql_query($sql);
         if ($result && (mysql_num_rows($result) == 1)) {
@@ -112,7 +112,7 @@ class Budget extends DataObject {
         $submittedFunds = -1;
         $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `submitted` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
                 WORKLIST . '`.`budget_id` = ' . $this->id . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . 
-                '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1;';
+                '`.`id` AND `' . WORKLIST . '`.`status` IN ("Done") AND `' . FEES . '`.`paid` = 0 AND `' . FEES . '`.`withdrawn` != 1;';
         $result = mysql_query($sql);
         if ($result && (mysql_num_rows($result) == 1)) {
             $row = mysql_fetch_assoc($result);
@@ -133,7 +133,7 @@ class Budget extends DataObject {
         $paidFunds = -1;
         $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `paid` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
                 WORKLIST . '`.`budget_id` = ' . $this->id . ' AND `' . FEES . '`.`worklist_id` = `' . WORKLIST . 
-                '`.`id` AND `' . WORKLIST . '`.`status` IN ("DONE") AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1;';
+                '`.`id` AND `' . WORKLIST . '`.`status` IN ("Done") AND `' . FEES . '`.`paid` = 1 AND `' . FEES . '`.`withdrawn` != 1;';
         $result = mysql_query($sql);
         if ($result && (mysql_num_rows($result) == 1)) {
             $row = mysql_fetch_assoc($result);

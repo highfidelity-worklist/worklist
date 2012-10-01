@@ -68,22 +68,22 @@
                         }
                     } else {
                         switch ($status) {
-                            case 'DRAFT':
+                            case 'Draft':
                                 if($_GET['status'] == 'draft') { 
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'BIDDING':
+                            case 'Bidding':
                                 if($_GET['status'] == 'bidding') { 
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'SUGGESTEDwithBID':
+                            case 'SuggestedWithBid':
                                 if($_GET['status'] == 'suggestedwithbid') { 
                                     $selected = ' selected="selected"';
                                 }
                                 break;    
-                            case 'WORKING':
+                            case 'Working':
                                 if($_GET['status'] == 'working') { 
                                     $selected = ' selected="selected"';
                                 }
@@ -93,7 +93,7 @@
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'FUNCTIONAL':
+                            case 'Functional':
                                 if($_GET['status'] == 'functional') { 
                                     $selected = ' selected="selected"';
                                 }
@@ -101,7 +101,7 @@
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'SVNHold':
+                            case 'SvnHold':
                                 if($_GET['status'] == 'svnhold') { 
                                     $selected = ' selected="selected"';
                                 }
@@ -109,7 +109,7 @@
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'REVIEW':
+                            case 'Review':
                                 if($_GET['status'] == 'review') { 
                                     $selected = ' selected="selected"';
                                 }
@@ -117,12 +117,12 @@
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'COMPLETED':
+                            case 'Completed':
                                 if($_GET['status'] == 'completed') { 
                                     $selected = ' selected="selected"';
                                 }
                                 break;
-                            case 'DONE':
+                            case 'Done':
                                 if($_GET['status'] == 'done') { 
                                     $selected = ' selected="selected"';
                                 }
@@ -143,7 +143,7 @@
         </form>
     </div>
     <?php if(isset($_SESSION['userid'])){ 
-        $statuses = array('WORKING', 'FUNCTIONAL', 'REVIEW', 'COMPLETED'); 
+        $statuses = array('Working', 'Functional', 'Review', 'Completed'); 
         $userstats = new UserStats($_SESSION['userid']);
         $links = 'My jobs: ';
         foreach($statuses as $status){

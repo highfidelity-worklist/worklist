@@ -25,7 +25,7 @@ if(isset($_GET["weekly"])){
         $result = mysql_query("SELECT amount, worklist_id AS task 
                                FROM `".FEES."` 
                                WHERE `user_id` = {$_SESSION['userid']} AND 
-                               `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'DONE') AND 
+                               `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'Done') AND 
                                YEAR(DATE) = YEAR(NOW()) AND 
                                WEEK(`date`) = WEEK(NOW()) AND 
                                withdrawn != 1") or exit (mysql_error());
@@ -70,7 +70,7 @@ if(isset($_GET["weekly"])){
     $result = mysql_query("SELECT amount, worklist_id as task 
                            FROM `".FEES."` 
                            WHERE `user_id` = {$_SESSION['userid']} AND 
-                           `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'DONE') AND 
+                           `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'Done') AND 
                            YEAR(DATE) = YEAR(NOW()) AND 
                            MONTH(`date`) = MONTH(NOW()) AND 
                            withdrawn != 1") or exit (mysql_error());
@@ -112,7 +112,9 @@ if(isset($_GET["weekly"])){
     echo json_encode($sum);
 } else {
     if (!empty($_SESSION['userid'])) {
-        $r = mysql_query ("SELECT SUM(`amount`) AS `sum_amount` FROM `".FEES."` WHERE `user_id` = {$_SESSION['userid']} AND `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'DONE') AND YEAR(DATE) = YEAR(NOW()) AND MONTH(`date`) = MONTH(NOW()) AND withdrawn != 1;") or exit (mysql_error());
+        $r = mysql_query ("SELECT SUM(`amount`) AS `sum_amount` FROM `".FEES."` WHERE `user_id` = {$_SESSION['userid']} AND
+                          `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'Done') AND YEAR(DATE) = YEAR(NOW()) AND
+                           MONTH(`date`) = MONTH(NOW()) AND withdrawn != 1;") or exit (mysql_error());
         $sum['month'] = mysql_fetch_object($r)->sum_amount;
         if (is_numeric($sum['month'])) {
             $sum['month'] = number_format($sum['month']);
@@ -120,7 +122,9 @@ if(isset($_GET["weekly"])){
             $sum['month'] = '0';
         }
     
-        $r = mysql_query ("SELECT SUM(`amount`) AS `sum_amount` FROM `".FEES."` WHERE `user_id` = {$_SESSION['userid']} AND `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'DONE') AND YEAR(DATE) = YEAR(NOW()) AND WEEK(`date`) = WEEK(NOW()) AND withdrawn != 1;") or exit (mysql_error());
+        $r = mysql_query ("SELECT SUM(`amount`) AS `sum_amount` FROM `".FEES."` WHERE `user_id` = {$_SESSION['userid']} AND
+                          `worklist_id` IN (SELECT `id` FROM `".WORKLIST."` WHERE `status` = 'Done') AND YEAR(DATE) = YEAR(NOW()) AND
+                           WEEK(`date`) = WEEK(NOW()) AND withdrawn != 1;") or exit (mysql_error());
         $sum['week'] = mysql_fetch_object($r)->sum_amount;
         if (is_numeric($sum['week'])) {
             $sum['week'] = number_format($sum['week']);

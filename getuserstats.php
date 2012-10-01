@@ -25,7 +25,7 @@ if (isset($_REQUEST['id'])) {
         break;
 
     case 'doneJobs':
-        echo json_encode($userStats->getUserItems('DONE', $page));
+        echo json_encode($userStats->getUserItems('Done', $page));
         break;
 
     case 'activeJobs':
@@ -33,15 +33,15 @@ if (isset($_REQUEST['id'])) {
         break;
 
     case 'reviewJobs':
-        echo json_encode($userStats->getUserItems('REVIEW', $page));
+        echo json_encode($userStats->getUserItems('Review', $page));
         break;
         
     case 'workingJobs':
-        echo json_encode($userStats->getUserItems('WORKING', $page));
+        echo json_encode($userStats->getUserItems('Working', $page));
         break;
 
     case 'completedJobs':
-        echo json_encode($userStats->getUserItems('COMPLETED', $page));
+        echo json_encode($userStats->getUserItems('Completed', $page));
         break;
 
     case 'latest_earnings':

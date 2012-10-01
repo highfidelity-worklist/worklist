@@ -192,7 +192,7 @@ $(document).ready(function() {
 <div id="accordion">
 <?php require('dialogs/file-accordion.inc'); ?>
 </div>
-<?php if ($worklist['status'] != 'DONE' && (int) $user_id > 0) : ?>
+<?php if ($worklist['status'] != 'Done' && (int) $user_id > 0) : ?>
 <div id="uploadButtonDiv" class="fileUploadButton">
     Attach new files
 </div>
@@ -1480,15 +1480,15 @@ $(document).ready(function(){
             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
             <span class="info-data" style="font-size:14px"><?php echo $worklist['status'];?></span>
             <?php
-            if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') || $is_runner 
-            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE')) :
+            if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') || $is_runner 
+            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done')) :
             ?>
             <form method="post" action="" style="display:inline">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
             <select name="quick-status">
             <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>
             <?php
-            if (!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'DONE') { //mechanics
+            if (!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
                 foreach ($statusListMechanic as $status) {
                     if ($status != $worklist['status']) {?>
                         <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
@@ -1504,7 +1504,7 @@ $(document).ready(function(){
                 <?php
                     }
                 }
-            } else if ($worklist['creator_id']== $user_id && $worklist['status'] != 'DONE') { //creator
+            } else if ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done') { //creator
                 foreach ($statusListCreator as $status) {
                     if ($status != $worklist['status']) {
                 ?>
@@ -1534,7 +1534,7 @@ if ($action =="edit"):  ?>
                 <!-- Edit: Summary info -->
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
-                            if (($is_runner && $worklist['status']!='DONE') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
+                            if (($is_runner && $worklist['status']!='Done') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
                             <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo $worklist['summary'];?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
@@ -1610,7 +1610,7 @@ if ($action =="edit"):  ?>
                 <!-- Edit: Notes textarea -->
                         <li>
                             <span class="info-label">Notes</span>
-                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): ?>
+                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
                                 <span id="info-notes">
                                     <textarea name="notes" id="edit-notes" class="expandable" <?php if(count($activeBids) > 0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
                                 </span>
@@ -1620,7 +1620,7 @@ if ($action =="edit"):  ?>
                         </li>
                         <li>
                             <span class="project-label" id="edit-project-label">Project</span>
-                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'DONE')): 
+                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')): 
 
                                       $filter = new Agency_Worklist_Filter();
                                       $filter->setProjectId($worklist['project_id']);
@@ -1856,12 +1856,12 @@ if ($action =="edit"):  ?>
                     <a class="info-comments-order" href="#">&#9660;&#9650;</a>
                 <?php endif;
 
-                if (!empty($user_id) && ($worklist['status'] != 'DONE')) : ?>
+                if (!empty($user_id) && ($worklist['status'] != 'Done')) : ?>
                 <a class="info-comments-scroll-entry" href="#commentform">Scroll to bottom</a>
                 <?php endif ?>
                 <div style="clear:both;height:0px;">&nbsp;</div>              
 
-                <?php if (!empty($user_id) && ($worklist['status'] != 'DONE') && $order_by == "DESC") : ?>
+                <?php if (!empty($user_id) && ($worklist['status'] != 'Done') && $order_by == "DESC") : ?>
                 <div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
                     <form action="" method="post">
                         <input type="hidden" name="worklist_id" value="<?php echo $worklist['id']; ?>" />
@@ -1902,7 +1902,7 @@ if ($action =="edit"):  ?>
                                     <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')" />
                                     <?php echo replaceEncodedNewLinesWithBr(linkify($comment['comment']->getComment())); ?>
                                 </div>
-                                <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'DONE')) : ?>
+                                <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'Done')) : ?>
                                 <div class="reply-lnk">
                                     <a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>
                                 </div>

@@ -17,7 +17,7 @@
 		  . " TIMESTAMPDIFF(SECOND, NOW(), `" . BIDS . "`.`bid_done`) AS `future_delta` FROM `" . WORKLIST . "`"
 		  . " LEFT JOIN `" . BIDS . "` ON `bidder_id` = `mechanic_id`"
 		  . " AND `" . BIDS . "`.`accepted`= 1 AND `" . BIDS . "`.`withdrawn`= 0 AND `worklist_id` = `" . WORKLIST . "`.`id`"
-		  . " WHERE `mechanic_id` = $userId AND status = 'WORKING'";
+		  . " WHERE `mechanic_id` = $userId AND status = 'Working'";
 	$rt = mysql_query($query);
 
 	$items = array();

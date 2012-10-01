@@ -17,7 +17,7 @@ class Timeline extends DataObject {
                 CONCAT((SELECT city FROM " . USERS . " WHERE id = w.code_reviewer_id), \", \", (SELECT country FROM " . USERS . " WHERE id = w.code_reviewer_id)) as reviewer_address,
                 (SELECT SUM(amount) FROM " . FEES . " WHERE worklist_id = w.id AND user_id = w.code_reviewer_id) as reviewer_fee
             FROM " . WORKLIST . " w
-            WHERE w.status = 'DONE' 
+            WHERE w.status = 'Done' 
             AND DATE(created) > '2011-01-01'
             ORDER BY created ASC
         ";
@@ -87,7 +87,7 @@ class Timeline extends DataObject {
                 MONTH(created) as monthValue 
             FROM worklist 
             WHERE 
-                status = 'DONE' 
+                status = 'Done' 
             ORDER BY 
                 yearValue ASC, 
                 monthValue ASC 
@@ -98,7 +98,7 @@ class Timeline extends DataObject {
                 MONTH(created) as monthValue 
             FROM worklist 
             WHERE 
-                status = 'DONE' 
+                status = 'Done' 
             ORDER BY 
             yearValue DESC, 
             monthValue DESC 

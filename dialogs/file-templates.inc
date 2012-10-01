@@ -5,7 +5,7 @@
     <div class="filesDescription">
         <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
         <p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
-        <?php if (isset($worklist) && $worklist['status'] != 'DONE') : ?>
+        <?php if (isset($worklist) && $worklist['status'] != 'Done') : ?>
         <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
         <?php endif; ?>
     </div>
@@ -18,7 +18,7 @@
     <div class="documents filesDescription">
         <h3 class="edittext" id="fileTitle_<#= fileid #>"><#= title #></h3>
         <p class="edittextarea" id="fileDesc_<#= fileid #>"><#= description #></p>
-        <?php if (isset($worklist) && $worklist['status'] != 'DONE') : ?>
+        <?php if (isset($worklist) && $worklist['status'] != 'Done') : ?>
         <a class="removeAttachment" id="fileRemoveAttachment_<#= fileid #>" href="javascript:;">Remove attachment</a>
         <?php endif; ?>
     </div>

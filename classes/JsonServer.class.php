@@ -538,7 +538,7 @@ class JsonServer
             sendJournalNotification($journal_message);
             return $this->setOutput(array('success' => true,'data' => $journal_message));
         } else {
-            $workItem->setStatus('SVNHold');
+            $workItem->setStatus('SvnHold');
             $workItem->save();
 
             $message = '';
@@ -573,7 +573,7 @@ class JsonServer
             
             $journalMessage = str_replace("\n", '', $message);
             sendJournalNotification("Otto could not authorize sandbox for #$workitem_id: " . $workItem->getSummary() . $journalMessage . 
-            " Status set to SVNHold");
+            " Status set to SvnHold");
 
             return $this->setOutput(array(
                     'success' => false, 
@@ -885,7 +885,7 @@ class JsonServer
         // Only fees that haven't been withdrawn
         $sql    .=    'AND `withdrawn` = 0 ';
         // Status should be DONE
-        $sql    .=    'AND `worklist_id` IN (SELECT `id` FROM `worklist` WHERE `status` = "DONE") ';
+        $sql    .=    'AND `worklist_id` IN (SELECT `id` FROM `' . WORKLIST . '` WHERE `status` = "Done") ';
         // We only need this year
         $sql    .=    'AND YEAR(`date`) = YEAR(NOW()) ';
 

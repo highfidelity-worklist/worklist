@@ -204,7 +204,7 @@ if ($action =='save_workitem') {
                 }
                 $status_change = '-' . ucfirst(strtolower($status));
                 $new_update_message .= "Status set to $status. ";
-                if ($status == 'DONE') {
+                if ($status == 'Done') {
                     $displayDialogAfterDone = true;
                 }
             }
@@ -447,7 +447,7 @@ if($action == 'cancel_codereview') {
 if($action =='save-review-url') {
     if(!(($is_runner) ||
     ($mechanic_id == $user_id) &&
-    ($worklist['status'] != 'DONE'))) {
+    ($worklist['status'] != 'Done'))) {
         error_log("Input forgery detected for user $userId: attempting to $action.");
     } else {
         $sandbox = (!empty($_REQUEST['sandbox-url'])) ? $_REQUEST['sandbox-url'] : $workitem->getSandbox();
@@ -495,7 +495,7 @@ if($action =='save-review-url') {
 if ($action =='status-switch') {
     $status = $_REQUEST['quick-status'];
     $status_error = '';
-    if ($status == 'DONE' && $workitem->getProjectId() == 0) {
+    if ($status == 'Done' && $workitem->getProjectId() == 0) {
         $status_error = "No project associated with workitem. Could not set to DONE.";
     } else {
         if (changeStatus($workitem, $status, $user)) {

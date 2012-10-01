@@ -192,7 +192,7 @@
                         $.ajax({
                             type: "POST",
                             url: 'getstats.php',
-                            data: 'req=bidding',
+                            data: 'req=Bidding',
                             dataType: 'json',
                             success: function(json) {
                                 $.bidvisits.jobs = json;

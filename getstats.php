@@ -10,8 +10,8 @@ include("functions.php");
 $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 
 	if( $req == 'currentlink' )	{
-		$query_b = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'BIDDING'" );
-		$query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'WORKING' or status = 'REVIEW' or status = 'FUNCTIONAL'" );
+		$query_b = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'Bidding'" );
+		$query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'Working' or status = 'Review' or status = 'Functional'" );
 		$count_b = mysql_num_rows( $query_b );
 		$count_w = mysql_num_rows( $query_w );
         echo json_encode(array(
@@ -19,8 +19,8 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
                             'count_w' => $count_w
                             ));
 		
-	}	else if( $req == 'bidding' )	{
-		$query_b = mysql_query("SELECT id FROM ".WORKLIST." WHERE status = 'bidding'");
+	}	else if( $req == 'Bidding' )	{
+		$query_b = mysql_query("SELECT id FROM ".WORKLIST." WHERE status = 'Bidding'");
 		$results_b = array();
         while ($row = mysql_fetch_array($query_b, MYSQL_NUM)) {
     		$results_b[] = $row[0];
@@ -28,8 +28,8 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		echo json_encode( $results_b );
 
 	}	else if( $req == 'current' )	{
-		$query_b = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'bidding'");
-		$query_w = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'working'");
+		$query_b = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'Bidding'");
+		$query_w = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'Working'");
 		$count_b = mysql_num_rows( $query_b );
 		$count_w = mysql_num_rows( $query_w );
 		$res = array( $count_b, $count_w );
@@ -39,7 +39,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		// Get Average Fees in last 7 days
 		$query = mysql_query( "SELECT AVG(amount) FROM ".FEES." LEFT JOIN ".WORKLIST." ON
 					".FEES.".worklist_id = ".WORKLIST.".id WHERE date > DATE_SUB(NOW(),
-					INTERVAL 7 DAY) AND status = 'DONE' AND `" . FEES . "`.`withdrawn` = 0" );
+					INTERVAL 7 DAY) AND status = 'Done' AND `" . FEES . "`.`withdrawn` = 0" );
 
 		$rt = mysql_fetch_assoc( $query );
 		echo json_encode( $rt );
@@ -50,7 +50,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		$query = mysql_query("SELECT nickname, SUM(amount) as total FROM ".FEES." ".
 					"LEFT JOIN ".WORKLIST." ON ".FEES.".worklist_id = ".WORKLIST.".id ".
 					"LEFT JOIN ".USERS." ON ".FEES.".user_id = ".USERS.".id ".
-					"WHERE date >= DATE_SUB(NOW(), INTERVAL $interval DAY) AND status = 'DONE' AND `" . FEES . "`.`withdrawn` = 0 ".
+					"WHERE date >= DATE_SUB(NOW(), INTERVAL $interval DAY) AND status = 'Done' AND `" . FEES . "`.`withdrawn` = 0 ".
                     "GROUP BY user_id ORDER BY total DESC");
 
 		$tmpList = array();
@@ -87,7 +87,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 					LEFT JOIN `".USERS."` ON `".BIDS."`.`bidder_id` = `".USERS."`.`id` LEFT JOIN `".WORKLIST."`
 					ON `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`
 					LEFT JOIN `".FEES."` ON `".FEES."`.`bid_id`=`".BIDS."`.`id`
-					WHERE `status`='DONE'
+					WHERE `status`='Done'
 					AND `bid_done` > DATE_SUB(NOW(), INTERVAL 7 DAY)
 					AND `accepted`='1'
 					ORDER BY `delta` ASC;" );
@@ -105,7 +105,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 					".USERS.".id = ".FEES.".user_id WHERE ".USERS.".nickname=nick AND
 					".USERS.".is_runner=1) AS fee_no, (SELECT COUNT(*) FROM ".FEES." LEFT JOIN
 					".USERS." ON ".USERS.".id=".FEES.".user_id LEFT JOIN ".WORKLIST." ON
-					".WORKLIST.".id=".FEES.".worklist_id WHERE ".WORKLIST.".status='WORKING'
+					".WORKLIST.".id=".FEES.".worklist_id WHERE ".WORKLIST.".status='Working'
 					AND ".USERS.".nickname=nick) AS working_no FROM ".USERS." ORDER BY fee_no DESC" );
 
 		$info = array();
@@ -126,7 +126,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 					AND `".BIDS."`.`accepted`='1') AS bid_no,
 					(SELECT COUNT(*) FROM ".WORKLIST." LEFT JOIN ".USERS." ON 
 					".WORKLIST.".mechanic_id=".USERS.".id WHERE ".USERS.".nickname=nick AND
-					".WORKLIST.".status='WORKING') AS work_no FROM ".USERS." ORDER BY work_no DESC" );
+					".WORKLIST.".status='Working') AS work_no FROM ".USERS." ORDER BY work_no DESC" );
 
 		$info = array();
 		// Get user nicknames
@@ -162,7 +162,7 @@ $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
 		$info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".BIDS." LEFT JOIN ".USERS." ON
 					".USERS.".id=".BIDS.".bidder_id LEFT JOIN ".WORKLIST." ON
 					".WORKLIST.".id=".BIDS.".worklist_id WHERE ".USERS.".nickname=nick
-					AND ".WORKLIST.".status='WORKING' AND `".BIDS."`.`accepted`='1'
+					AND ".WORKLIST.".status='Working' AND `".BIDS."`.`accepted`='1'
 					AND bid_done < NOW()) AS past_due
 					FROM ".USERS." ORDER BY past_due DESC" );
 

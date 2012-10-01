@@ -72,7 +72,7 @@ switch ($name) {
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
 					FROM ".WORKLIST." w
-					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'BIDDING'
+					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'Bidding'
 					ORDER BY priority LIMIT 20";
 		break;
     case 'comments' :
@@ -110,7 +110,7 @@ switch ($name) {
 		$entryDescription = 'Worklist priority item';
 		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
 					FROM ".WORKLIST." w
-					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'DONE'
+					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'Done'
 					ORDER BY created DESC LIMIT 20";
 }
 

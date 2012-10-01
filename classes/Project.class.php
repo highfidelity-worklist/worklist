@@ -150,7 +150,7 @@ class Project {
                      " . WORKLIST . " W
                      WHERE F.worklist_id = W.id
                      AND W.project_id = " . $project_id  . "
-                     AND W.status IN ('COMPLETED', 'DONE')";
+                     AND W.status IN ('Completed', 'Done')";
         $feesQueryResult = mysql_query($feesQuery);
         if (mysql_num_rows($feesQueryResult)) {
             $feesCountArray = mysql_fetch_array($feesQueryResult);

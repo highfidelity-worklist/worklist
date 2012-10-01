@@ -38,7 +38,7 @@ if ($rt) {
 if ($rt) {
 
     $query = "SELECT summary, priority, position FROM (
-SELECT *, @rownum := @rownum+1 AS position FROM `".WORKLIST."` WHERE `status` = 'BIDDING' ORDER BY `priority` ) AS position_table WHERE id = '$id'";
+SELECT *, @rownum := @rownum+1 AS position FROM `".WORKLIST."` WHERE `status` = 'Bidding' ORDER BY `priority` ) AS position_table WHERE id = '$id'";
     $rt = mysql_query($query);
     if ($rt) {
         $row = mysql_fetch_assoc($rt);
@@ -73,7 +73,7 @@ if ($rt) {
     mysql_unbuffered_query($query);
 
     $query = "SELECT position FROM (
-SELECT *, @rownum := @rownum+1 AS position FROM `".WORKLIST."` WHERE `status` = 'BIDDING' ORDER BY `priority` ) AS position_table WHERE id = '$id'";
+SELECT *, @rownum := @rownum+1 AS position FROM `".WORKLIST."` WHERE `status` = 'Bidding' ORDER BY `priority` ) AS position_table WHERE id = '$id'";
     $rt = mysql_query($query);
     $row = mysql_fetch_assoc($rt);
     $newpos = $row['position'];

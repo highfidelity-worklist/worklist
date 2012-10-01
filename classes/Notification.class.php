@@ -362,7 +362,7 @@ class Notification {
             case 'bid_placed':
             	$userstats->setItemsPerPage(3);
             	$projectId = $workitem->getProjectId();;
-            	$jobsInfo = $userstats->getUserItemsForASpecificProject('DONE', $projectId);
+            	$jobsInfo = $userstats->getUserItemsForASpecificProject('Done', $projectId);
             	$lastThreeJobs = $jobsInfo['joblist'];
             	$workItemUrl = '<a href="' . SERVER_URL . 'workitem.php';
             	//create the last three jobs and link them to those Jobs.
@@ -1019,7 +1019,7 @@ class Notification {
               LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
               LEFT JOIN " . USERS . " u ON w.runner_id = u.id
               LEFT JOIN " . USERS . " bu ON bu.id = b.bidder_id
-            WHERE (w.status = 'WORKING' OR w.status = 'REVIEW' OR w.status = 'COMPLETED')
+            WHERE (w.status = 'Working' OR w.status = 'Review' OR w.status = 'Completed')
               AND b.accepted = 1 
               AND (b.past_notified = '0000-00-00 00:00:00' OR b.past_notified IS NULL) 
               AND b.withdrawn = 0
