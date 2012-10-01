@@ -1,5 +1,13 @@
 <div id="popup-addproject" class="popup-body" title = "Add Project">
     <?php if (isset($userId) && $userId): ?>
+    <?php
+        $user = new User();
+        $user->findUserById($userId);
+        if(!$user->isPaypalVerified() ) { ?>
+            Click <a href="settings.php">here</a> to verify your paypal address before submitting your new project.
+        <?php 
+        } else {
+    ?>
     <form name="popup-form" id="popup-form-edit" action="javascript:;" method="post">
         <p class="info-label"><span class="required-field">*</span> Project Name:<br />
             <input type="text" name="name" id="name" class="text-field" size="48" />
@@ -26,6 +34,7 @@
         </div>
     </form>
     <div class="right-note"><span class="required-field">*</span> Required fields</div>
+    <?php }?>
     <?php else: ?>
     <img style="display: none;" id="projectLogoAdd" />
     To add a project, start by creating a user account on worklist
