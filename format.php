@@ -29,7 +29,7 @@
     
     <div id="container">
         <div id="left"></div>
-        
+
 
 <!-- MAIN BODY -->
         <div id="center">
@@ -480,22 +480,45 @@
         }
         // End of user info code
         
-        function RelativeTime(x){
-        var plural = '';
- 
-        var mins = 60, hour = mins * 60; day = hour * 24,
-        week = day * 7, month = week * 4, year = day * 365;
+        function RelativeTime(x, shortMode) {
+            var plural = '';
 
-        if (x >= year){ x = (x / year)|0; dformat="year"; }
-        else if (x >= month) { x = (x / month)|0; dformat="month"; }
-        else if (x >= day*4) { x = (x / day)|0; dformat="day"; }
-        else if (x >= hour) { x = (x / hour)|0; dformat="hour"; }
-        else if (x >= mins) { x = (x / mins)|0; dformat="minute"; }
-        else { x |= 0; dformat="sec"; }
-        if (x > 1) plural = 's';
-        if (x < 0) x = 0;
-        return x + ' ' + dformat + plural;
-       }
+            var mins = 60, 
+                hour = mins * 60; 
+                day = hour * 24,
+                week = day * 7, 
+                month = week * 4, 
+                year = day * 365;
+
+            if (x >= year) { 
+                x = (x / year) | 0; 
+                dformat = shortMode ? "yr" : "year"; 
+            } else if (x >= month) {
+                x = (x / month) | 0;
+                dformat = shortMode ? "mnth" : "month";
+            } else if (x >= day * 4) {
+                x = (x / day) | 0; 
+                dformat = "day";
+            } else if (x >= hour) {
+                x = (x / hour) | 0;
+                dformat = shortMode ? "hr" : "hour";
+            } else if (x >= mins) {
+                x = (x / mins) | 0;
+                dformat = shortMode ? "min" : "minute";
+            } else {
+                x |= 0;
+                dformat = "sec";
+            }
+            
+            if (x > 1) {
+                plural = 's';
+            }
+            if (x < 0) {
+                x = 0;
+            }
+            
+            return x + ' ' + dformat + plural;
+        }
         
         </script>
 

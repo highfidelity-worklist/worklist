@@ -391,6 +391,11 @@ $(function() {
     }
     $('#search-filter-wrap select[name=status]').comboBox();
 
+    // add fading effect to the status combobox selected item shown as the list caption
+    if ($('#container-statusCombo > .fading').length == 0) {
+        $('#container-statusCombo').append('<div class="fading"></div>');
+    }
+
     $('select[name=itemProject]').bind({
         'listOpen': function(e,o) {
             $('#projectPopupActiveBox').width($('.itemProjectComboList').outerWidth());
@@ -698,6 +703,11 @@ function createActiveFilter(elId, filter, active) {
                 label.text(' Active only');
                 label.prepend(checkbox);
                 $('#activeBox-' + cbId).html(label);
+                
+                // add fading effect to the selected item shown as the list caption
+                if ($('#container-' + cbId + ' > .fading').length == 0) {
+                    $('#container-' + cbId).append('<div class="fading"></div>');
+                }
             }
         }).comboBox();
 
@@ -706,7 +716,7 @@ function createActiveFilter(elId, filter, active) {
                 var cbId = $(this).attr('id');
                 var cbName = $(this).attr('name');
                 $('#activeBox-' + cbId).css({
-                    top: ($('#activeBox-' + cbId).prev().position().top + $('#activeBox-' + cbId).prev().outerHeight()) + 4,
+                    top: ($('#activeBox-' + cbId).prev().position().top + $('#activeBox-' + cbId).prev().outerHeight()),
                     left: $('#activeBox-' + cbId).prev().css('left'),
                     width: $('#activeBox-' + cbId).prev().outerWidth()
                 });

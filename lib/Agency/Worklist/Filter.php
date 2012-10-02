@@ -335,9 +335,6 @@ class Agency_Worklist_Filter {
         foreach ( Project::getProjects((bool) $active, array('name', 'project_id')) as $project) {
             // handle long project names
             $project_name = $project['name'];
-            if (strlen($project_name) > 25) {
-                $project_name = substr($project_name, 0, 25) . '...';
-            }
             $box .= '<option value="' . $project['project_id'] . '"' . (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project_name . '</option>';
         }
         $box .= '</select>';

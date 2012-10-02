@@ -32,7 +32,7 @@ switch ($type) {
         
        $json[] = array(
             'value' => 0,
-            'text' => 'All Projects',
+            'text' => 'All projects',
             'selected' => false
         );
         
@@ -50,7 +50,7 @@ switch ($type) {
         $users = User::getUserList(getSessionUserId(), $active);
         $json[] = array(
             'value' => 0,
-            'text' => 'All Users',
+            'text' => 'All users',
             'selected' => (($filter->getUser() == 0) ? true : false)
         );
         foreach ($users as $user) {

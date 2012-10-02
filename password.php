@@ -47,6 +47,7 @@ if (!empty($_POST['oldpassword'])) {
 include("head.html");
 ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
+<link href="css/menu.css" rel="stylesheet" type="text/css">
 <title>Worklist | Change Password</title>
 </head>
 <body>

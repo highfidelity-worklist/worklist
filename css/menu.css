@@ -1,0 +1,236 @@
+/* Menu */
+
+#search-filter-wrap {
+    float: left;
+    top: 0;
+}
+
+#search-filter-wrap .input_box {
+    background-image: none;
+    width: 305px;
+    margin: 0;
+}
+
+#search-filter-wrap .searchDiv {
+    display: inline-block;
+    border: 1px solid #cccccc;
+    height: 34px;
+    width: 255px;
+    background-color: #ffffff;
+    margin: 24px -4px 10px 10px;
+    background: #ffffff no-repeat url('../images/primaryIcons-WL.png') 8px -320px;
+    padding-left: 30px;
+    position: relative;
+}
+
+#search-filter-wrap #query {
+    background-color: #ffffff;
+    position: absolute;
+    top: 3px;
+    padding: 0;
+    margin: 0;
+    height: 28px;
+    width: 165px;
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+#search-filter-wrap .crossSearch {
+    background: no-repeat url('../images/primaryIcons-WL.png') 3px -385px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    background-color: #ffffff;
+    position: absolute;
+    left: 197px;
+    top: 4px;
+}
+
+#search-filter-wrap .commentsDiv {
+    display: inline-block;
+    border-left: 1px solid #cccccc;
+    height: 34px;
+    width: 60px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #e1e8ea;
+}
+
+#search-filter-wrap .comment {
+    background: no-repeat url('../images/primaryIcons-WL.png') 0 -362px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    position: absolute;
+    top: 6px;
+    left: 7px;
+}
+
+#search-filter-wrap #search_comments {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 9px;
+    left: 36px;
+}
+
+#search-filter-wrap-reports {
+    float: right;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+#search-filter-section td {
+    white-space: nowrap;
+}
+
+/* resets the style for the <p> tag in the status part */
+#welcome {
+    margin: auto;
+    width: 100% ;
+    heigth: 50px;
+    text-align: left;
+    font-weight: bold;
+    color: #98AAB2 ;
+    font-size: 12px;
+    z-index: 50;
+    background-color: #333333;
+    padding: 0;
+    position: relative;
+    -moz-box-shadow: 0px 0px 20px 0px #000000;
+    -webkit-box-shadow: 0px 0px 20px 0px #000000;
+    box-shadow:  0px 0px 20px 0px #000000;
+}
+
+#welcomeInside {
+    width: 945px;
+    height: 46px;
+    margin: auto;
+    font-size: 12px;
+}
+
+#welcomeInside .leftMenu {
+    margin-top: 10px;
+    float: left;
+}
+
+#welcomeInside .rightMenu {
+    margin-top: 10px;
+    float: right;
+}
+
+#welcomeInside .following {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 7px;
+}
+
+#welcomeInside .headerButton {
+    display: inline-block;
+    background-image: url('../images/primaryIcons-WL.png');
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    height: 30px;
+    font-size: 12px;
+    line-height: 25px;
+}
+
+#welcomeInside .following,
+#welcomeInside .headerButton {
+    color: #888888;
+}
+
+#welcomeInside .headerUserName {
+    color: #888888;
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 7px;
+}
+
+#welcomeInside .headerButtonSeparator {
+    display: inline-block;
+    width: 21px;
+    background-image: url('../images/primaryIcons-WL.png');
+    background-position: 11px -298px;
+    background-repeat: no-repeat;
+    height: 30px;
+    position: relative;
+    top: -18px;
+}
+
+#welcomeInside .loggedIn .headerButtonSeparator {
+    top: -30px;
+    width: 11px;
+    background-position: 6px -298px;
+}
+
+#welcomeInside .loggedOut {
+    margin-right: 10px;
+}
+
+#welcomeInside a:hover .headerButton,
+#welcomeInside a.headerUserName:hover,
+#welcomeInside a.following:hover {
+    color: #ffffff;
+    text-decoration: none !important;
+}
+
+#welcomeInside a:active .headerButton,
+#welcomeInside a.following:active {
+    color: #ffffff;
+    text-decoration: none !important;
+}
+
+#welcomeInside .worklistBtn {
+    background-position: 0 -59px;
+}
+
+#welcomeInside .chatBtn {
+    background-position: 0 -89px;
+    padding-left: 38px;
+}
+
+#welcomeInside .teamBtn {
+    background-position: 0 -119px;
+}
+
+#welcomeInside .reportsBtn {
+    background-position: 0 -149px;
+    padding-left: 25px;
+    margin-left: 4px;
+}
+
+#welcomeInside .projectsBtn,
+#welcomeInside .wikiBtn,
+#welcomeInside .loginBtn {
+    background-image: none;
+    padding-left: 5px;
+}
+
+#welcomeInside .helpBtn {
+    background-position: 0 -179px;
+    padding-left: 30px;
+}
+
+#welcomeInside .earningsBtn {
+    background-position: 8px -209px;
+}
+
+#welcomeInside .settingsBtn {
+    background-position: 8px -239px;
+}
+
+#welcomeInside .logoutBtn {
+    background-position: 8px -268px;
+}
+
+.filters {
+    display: inline-block;
+}
+
+.filters .ui-combobox {
+    margin: 0 2px;
+}
+

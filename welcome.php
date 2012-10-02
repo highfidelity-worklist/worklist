@@ -29,6 +29,7 @@ include("opengraphmeta.php");
 ?>
 <title>Worklist Projects</title>
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
+<link href="css/menu.css" rel="stylesheet" type="text/css" >
 <link href="css/welcome.css" rel="stylesheet" type="text/css" >
 <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
 <link rel="shortcut icon" type="image/x-icon" href="images/worklist_favicon.png">

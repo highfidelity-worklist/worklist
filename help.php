@@ -20,6 +20,7 @@ include("opengraphmeta.php");
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
+<link type="text/css" href="css/menu.css" rel="stylesheet" />
 <link href="css/projects.css" rel="stylesheet" type="text/css" >
 
 <script type="text/javascript" src="js/worklist.js"></script>

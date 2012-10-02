@@ -99,7 +99,13 @@ a:hover {
     color: #98AAB2;
 }
 
-.roweven {
+.roweven,
+.rowown.roweven,
+.rowbidon.roweven,
+.rowbidexpired.roweven,
+.rowrunner.roweven,
+.rowmechanic.roweven
+ {
     background-color: #eeeeee;
     background-image: none;
 }
@@ -229,11 +235,171 @@ color:#98AAB2;
     top: -3px;
 }
 
-#search-head{
+#search-head {
     position: relative;
     float: right;
     width: 100%;
+    margin-bottom: 7px;
 }
+
+#search-head *, 
+.table-worklist * {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.table-worklist tr td:first-child {
+  padding-left: 10px;
+}
+
+#searchForm > div {
+    float: left;
+    height: 70px;
+    padding: 0;
+    background-color: #e1e8ea;
+}
+
+#searchForm #buttons {
+    float: right;
+    margin-left: 2px;
+    width: 104px;
+    position: relative;
+}
+
+#projectFilter label,
+#userFilter label,
+#jobStatusFilter label {
+    display: block;
+    text-align: left;
+    height: 15px;
+    margin: 1px 0 2px 3px;
+    color: #646464;
+    font-size: 9pt;
+}
+
+#projectFilter,
+#userFilter,
+#jobStatusFilter {
+    padding-top: 12px;
+    display: inline-block;
+}
+
+#projectFilter {
+    width: 193px;
+}
+
+#userFilter {
+    width: 152px;
+}
+
+#jobStatusFilter {
+    width: 183px;
+}
+
+#searchForm .ui-combobox-list {
+    margin-left: 2px;
+    margin-top: 0 !important;
+    left: -3px !important;
+    max-height: 250px;
+    top: 28px;
+}
+
+#projectFilter .ui-combobox-list {
+    width: 182px !important;
+}
+
+#userFilter .ui-combobox-list {
+    width: 142px !important;
+}
+
+#jobStatusFilter .ui-combobox-list {
+    width: 169px !important;
+}
+
+#searchForm .ui-combobox-list li {
+    overflow: hidden;
+}
+
+#projectFilter .ui-combobox-list li {
+    width: 155px;
+}
+
+#userFilter .ui-combobox-list li {
+    width: 114px;
+}
+
+#searchForm .ui-combobox-textbox {
+    color: #aa1e00;
+    font-weight: bold;
+    font-size: 11pt !important;
+    position: absolute;
+    top: 5px;
+}
+
+#projectFilter .ui-combobox-textbox {
+    width: 145px !important;
+}
+
+#userFilter .ui-combobox-textbox {
+    width: 105px !important;
+}
+
+#jobStatusFilter .ui-combobox-textbox {
+    width: 132px !important;
+}
+
+#searchForm .ui-combobox { 
+    background: none #ffffff !important;
+    border-radius: 0px !important;
+    height: 20px;
+    padding-top: 3px;
+    position: relative;
+}
+
+#projectFilter .ui-combobox {
+    width: 172px !important;
+}
+
+#userFilter .ui-combobox {
+    width: 132px !important;
+}
+
+#jobStatusFilter .ui-combobox {
+    width: 159px !important;
+}
+
+#searchForm .ui-combobox-list li.ui-state-hover {
+    background-color: #aa1e00;
+    color: #ffffff;
+}
+
+#searchForm .ui-combobox-list li.ui-combobox-list-selected {
+    background-color: #ffffff;
+    color: #646464;
+    font-weight: bold;
+}
+
+#searchForm .ui-state-default .ui-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 7px -725px transparent !important;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 20px;
+    width: 26px;
+}
+
+#searchForm .activeBox {
+    border-radius: 0 0 5px 5px;
+}
+
+#searchForm .activeBox:after {
+    content: "";
+    height: 252px;
+    position: absolute;
+    right: 17px;
+    top: -253px;
+    width: 20px;
+}
+
 #sharethis_0    {
     position:absolute;
     margin-top: 3px;
@@ -403,10 +569,6 @@ td.textAlignReport {
     width: 720px;
 }
 
-#searchForm .ui-combobox-list {
-    max-height: 250px;
-}
-
 #searchForm  div > p {
     margin-bottom: 0 !important;
 }
@@ -442,17 +604,141 @@ td.textAlignReport {
 #send-ping-btn {
     margin-top: 8px;
 }
-.taskProject,
+
+.taskProject span,
 .taskSummaryCell {
     cursor: pointer;
 }
 
+.table-worklist td > div {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    float: left;
+    position: relative;
+}
+
+.taskProject {
+    width: 92px;
+}
+
+.taskSummary {
+    width: 510px;
+    font-weight: bold;
+}
+
+.taskSummary .taskID {
+    font-weight: normal;
+}
+
+.taskStatus {
+    width: 92px;
+}
+
+.taskWho {
+    width: 104px;
+}
+
+.taskAge {
+    width: 42px;
+}
+
+.taskWho,
+.taskAge {
+    color: #999999;
+}
+
+.taskComments {
+    width: 35px;
+}
+
+.table-worklist td > div > span:last-child:after,
+.fading {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    content: "";
+    height: 1.7em;
+}
+
+.ui-combobox > .fading {
+    right: 32px;
+    height: 2em;
+}
+
+.fading,
+#searchForm .activeBox:after,
+.table-worklist td > div > span:last-child:after,
+.table-worklist tr:hover > td > div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+}
+
+.rowown > td > div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,204,153,0) 0%, rgba(255,204,153,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,204,153,0)), color-stop(100%,rgba(255,204,153,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+}
+
+.rowbidon > td > div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(153,229,102,0) 0%, rgba(153,229,102,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(153,229,102,0)), color-stop(100%,rgba(153,229,102,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+}
+
+.rowbidexpired > td > div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,128,128,0) 0%, rgba(255,128,128,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,128,128,0)), color-stop(100%,rgba(255,128,128,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+}
+
+.rowrunner > td > div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(177,225,243,0) 0%, rgba(177,225,243,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(177,225,243,0)), color-stop(100%,rgba(177,225,243,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+}
+
+.rowmechanic > td > div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,255,108,0) 0%, rgba(255,255,108,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,108,0)), color-stop(100%,rgba(255,255,108,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+}
+
+.roweven > td > div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(238,238,238,0) 0%, rgba(238,238,238,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(238,238,238,0)), color-stop(100%,rgba(238,238,238,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+}
+
 .taskSummaryCell a,
-.taskProject a {
+.taskProject span > a {
     text-decoration: none;
 }
 
-.taskProject a {
+.taskProject span > a {
     color: #999999;
 }
 
@@ -465,7 +751,7 @@ td.textAlignReport {
     text-transform: capitalize;
 }
 
-.taskSummary {
+.taskSummary > span {
     cursor: pointer;
     text-decoration: none;
 }
@@ -667,6 +953,7 @@ input.button-disabled ,
     display: none;
     height: 20px;
     z-index: 100;
+    margin-left: 2px;
 }
 
 .activeBox label,
@@ -929,232 +1216,65 @@ input.button-disabled ,
     margin-left: 0px;
 }
 
-/* Menu */
-
-#search-filter-wrap {
-    float: left;
-    top: 0;
-}
-
-#search-filter-wrap .input_box {
-    background-color: #e4e4e4;
+#buttons input[type="submit"] {
     background-image: none;
-    width: 227px;
-    margin: 0;
-}
-
-#search-filter-wrap .searchDiv {
-    display: inline-block;
-    border: 1px solid #999999;
-    height: 27px;
-    width: 158px;
-    background-color: #ffffff;
-    margin: 3px;
-    padding-left: 5px;
-}
-
-#search-filter-wrap #query {
-    background-color: #ffffff !important;
-    position: relative;
-    top: 0;
-    padding: 0;
-    margin: 0;
-    height: 24px;
-}
-
-#search-filter-wrap .search {
-    background: no-repeat url('../images/primaryIcons-WL.png') 3px -326px;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    background-color: #ffffff;
-    position: relative;
-    top: -4px;
-    left: -3px;
-}
-
-
-#search-filter-wrap .crossSearch {
-    background: no-repeat url('../images/primaryIcons-WL.png') 3px -385px;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    margin: -5px 0;
-}
-
-#search-filter-wrap .comment {
-    background: no-repeat url('../images/primaryIcons-WL.png') 0 -360px;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    margin: -5px 0;
-}
-
-#search-filter-wrap .comment_no {
-    background: no-repeat url('../images/primaryIcons-WL.png') 0 -416px;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    margin: -5px 0;
-}
-
-#search-filter-wrap-reports {
-    float: right;
-    padding-bottom: 10px;
-    font-size: 1.2em;
-}
-#search-filter-section td {
-    white-space: nowrap;
-}
-/* resets the style for the <p> tag in the status part */
-#welcome {
-    margin: auto;
-    width: 100% ;
-    heigth: 50px;
-    text-align:left;
-    font-weight: bold;
-    color: #98AAB2 ;
-    font-size: 12px;
-    z-index: 50;
-    background-color: #333333;
-    padding: 0;
-    position: relative;
-    -moz-box-shadow: 0px 0px 20px 0px #000000;
-    -webkit-box-shadow: 0px 0px 20px 0px #000000;
-    box-shadow:  0px 0px 20px 0px #000000;
-}
-
-#welcomeInside {
-    width: 862px;
-    height: 46px;
-    margin: auto;
-    font-size: 12px;
-}
-
-#welcomeInside .leftMenu {
-    margin-top: 10px;
-    float: left;
-}
-
-#welcomeInside .rightMenu {
-    margin-top: 10px;
+    background-color: #aa1e00;
+    border-radius: 7px;
+    color: #ffffff;
+    width: 83px;
+    height: 28px;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 31px;
+    right: 10px;
+    font-weight: bold;
+    font-size: 10pt;
 }
 
-#welcomeInside .following {
-    display: inline-block;
-    vertical-align: top;
-    padding-top: 7px;
-}
-
-
-#welcomeInside .headerButton {
-    display: inline-block;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    padding-left: 35px;
-    height: 30px;
-    font-size: 12px;
-    line-height: 25px;
-}
-
-#welcomeInside .following,
-#welcomeInside .headerButton {
-    color: #888888;
-}
-
-#welcomeInside .headerUserName {
-    color: #888888;
-    display: inline-block;
-    vertical-align: top;
-    padding-top: 7px;
-}
-
-#welcomeInside .headerButtonSeparator {
-    display: inline-block;
-    width: 21px;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 11px -298px;
-    background-repeat: no-repeat;
-    height: 30px;
-    position: relative;
-    top: -18px;
-}
-
-#welcomeInside .loggedIn .headerButtonSeparator {
-    top: -30px;
-    width: 11px;
-    background-position: 6px -298px;
-}
-
-#welcomeInside .loggedOut {
-    margin-right: 10px;
-}
-
-#welcomeInside a:hover .headerButton,
-#welcomeInside a.headerUserName:hover,
-#welcomeInside a.following:hover {
+#buttons input[type="submit"]:hover {
+    background-color: #333333;
     color: #ffffff;
-    text-decoration: none !important;
 }
 
-#welcomeInside a:active .headerButton,
-#welcomeInside a.following:active {
-    color: #ffffff;
-    text-decoration: none !important;
+.table-worklist .comments-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 0 -685px transparent;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
 }
 
-
-#welcomeInside .worklistBtn {
-    background-position: 0 -59px;
+.table-worklist a:hover,
+.table-worklist .linkTaskWho > a:hover {
+    color: #aa1e00 !important;
 }
 
-#welcomeInside .chatBtn {
-    background-position: 0 -89px;
-    padding-left: 38px;
-}
-
-#welcomeInside .teamBtn {
-    background-position: 0 -119px;
-}
-
-#welcomeInside .reportsBtn {
-    background-position: 0 -149px;
-    padding-left: 25px;
-    margin-left: 4px;
-}
-
-#welcomeInside .projectsBtn,
-#welcomeInside .wikiBtn,
-#welcomeInside .loginBtn {
+.table-worklist tr:hover {
     background-image: none;
-    padding-left: 5px;
+    background-color: transparent;
 }
 
-#welcomeInside .helpBtn {
-    background-position: 0 -179px;
-    padding-left: 30px;
+.table-worklist tr td:first-child {
+  padding-left: 10px;
 }
 
-#welcomeInside .earningsBtn {
-    background-position: 8px -209px;
+.table-worklist .table-hdng {
+    height: 28px;
+    border-bottom: 1px solid #e5e5e5;
+}
+#worklist #left, 
+#worklist #right {
+    display: none;
 }
 
-#welcomeInside .settingsBtn {
-    background-position: 8px -239px;
+#worklist #container {
+    width: 945px;
+    top: -12px;
 }
 
-#welcomeInside .logoutBtn {
-    background-position: 8px -268px;
+#worklist #center {
+    width: auto;
+    background: transparent;
+    padding: 0;
+    min-height: auto;
+    float: none;
 }
 
-.filters {
-    display: inline-block;
-}
-
-.filters .ui-combobox {
-    margin: 0 2px;
-}

@@ -7,7 +7,7 @@
 body {
     margin: 0;
     padding: 0;
-    background: #fff url(../images/background_gradient4.jpg) repeat-x top;
+    background-color: #ffffff;
     text-align: center;
     font-family: helvetica, arial, sans-serif;
     color: #333;
@@ -144,6 +144,11 @@ body {
     font-size:10px;
     color:#98AAB2;
     line-height:58px;
+}
+#footer:before {
+    display: block;
+    content: ' ';
+    clear:both;
 }
 #footer a {
     color:#98AAB2;

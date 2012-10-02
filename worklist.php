@@ -241,6 +241,7 @@ require_once('opengraphmeta.php');
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <link href="css/ui.toaster.css" rel="stylesheet" type="text/css" />
+<link href="css/menu.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
@@ -377,10 +378,10 @@ require_once('opengraphmeta.php');
 <?php if (! $hide_project_column) : ?>
         var project_link = worklistUrl + '' + json[17];
         row +=
-            '<td width="9%" class="clickable not-workitem" onclick="location.href=\'' + project_link + '\'">' +
-                '<span class="taskProject" id="' + json[16] + '">' +
-                    '<a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a>' +
-                '</span>' +
+            '<td class="clickable not-workitem" onclick="location.href=\'' + project_link + '\'">' +
+                '<div class="taskProject" id="' + json[16] + '">' +
+                    '<span><a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a></span>' +
+                '</div>' +
             '</td>';
 <?php endif; ?>
         //If job is a bug, add reference to original job
@@ -393,16 +394,20 @@ require_once('opengraphmeta.php');
         // Displays the ID of the task in the first row
         // 26-APR-2010 <Yani>
         var workitemId = 'workitem-' + json[0];
-        row += '<td width="41%"><span id="' + workitemId + '" class="taskSummary">' +
-                '<span class="taskID">#' + json[0] + '</span> - ' +
-                json[1] + extraStringBug +
-                '</span></td>';
+        row += '<td>' + 
+                 '<div id="' + workitemId + '" class="taskSummary">' +
+                   '<span>' +
+                     '<span class="taskID">#' + json[0] + '</span> - ' +
+                     json[1] + extraStringBug +
+                   '</span>' +
+                 '</div>' +
+               '</td>';
 <?php if (! $hide_project_column) : ?>
         var bidCount = '';
-        if ((json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') &&json[10] > 0) {
+        if ((json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') && json[10] > 0) {
             bidCount = ' (' + json[10] + ')';
         }
-        row += '<td width="20%">' + json[2] + bidCount + '</td>';
+        row += '<td><div class="taskStatus"><span>' + json[2] + bidCount + '</span></td>';
 <?php endif; ?>
 /*
         if (json[3] != '') {
@@ -434,53 +439,56 @@ require_once('opengraphmeta.php');
     }
     if(json[5] != null){
 
-        who += ', ' + createTagWho(json[14],json[5],"mechanic");
+        who += ', ' + createTagWho(json[14], json[5], "mechanic");
     }
 
-    row += '<td width="9.5%" class="who not-workitem">' + who + '</td>';
+    row += '<td class="who not-workitem">' + 
+             '<div class="taskWho">' +
+               who + 
+             '</div>' +
+           '</td>';
 
-        if (json[2] == 'Working' && json[11] != null) {
+        if (json[2] = 'Working' && json[11] != null) {
             var pastDuePre = '', pastDuePost = '';
-            if ((RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') == 'Past due') {
+            if ((RelativeTime(json[11], true) + ' from now').replace(/0 sec from now/, 'Past due') == 'Past due') {
                 pastDuePre = "<span class='past-due'>";
                 pastDuePost = "</span>";
             }
-            row += '<td width="15%">' + pastDuePre + (RelativeTime(json[11]) + ' from now').replace(/0 sec from now/,'Past due') + pastDuePost +'</td>';
-        } else if (json[2] == 'Done' && json[11] != null) {
-            row += '<td width="15%">' + json[11] + '</td>';
+            row += '<td>' +
+                     '<div class="taskAge">' + 
+                       '<span>' +
+                         pastDuePre + (RelativeTime(json[11], true) + ' from now').replace(/0 sec from now/,'Past due') + pastDuePost +
+                       '</span>' +
+                     '</div>' +
+                   '</td>';
+        } else if (json[2] == 'DONE' && json[11] != null) {
+            row += '<td>' +
+                     '<div class="taskAge">' + 
+                       '<span>' +
+                         json[11] +
+                       '</span>' +
+                     '</div>' +
+                   '</td>';
         } else {
-            row += '<td width="15%">' +  RelativeTime(json[6]) + ' ago' +'</td>';
+            row += '<td>' +
+                     '<div class="taskAge">' + 
+                       '<span>' +
+                         RelativeTime(json[6], true) +
+                       '</span>' +
+                     '</div>' +
+                   '</td>';
         }
 
         // Comments
         comments = (json[12] == 0) ? "" : json[12];
-        row += '<td width="7.5%">' + comments + '</td>';
+        row += '<td>' + 
+                 '<div class="taskComments">' + 
+                   '<span>' +
+                     comments +
+                   '<span>' +
+                 '</div>' +
+               '</td>';
 
-        if (is_runner == 1) {
-            if (user_id == json[13] || json[2] == 'SuggestedWithBid') {
-                var feebids = 0;
-                if(json[7]){
-                    feebids = json[7];
-                }
-                var bid = 0;
-                if(json[8]){
-                    bid = json[8];
-                }
-                if(json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') {
-                    bid = parseFloat(bid);
-                    if (bid == 0) {
-                        feebids = '';
-                    } else {
-                        feebids = '$' + parseFloat(bid);
-                    }
-                } else {
-                    feebids = '$' + feebids;
-                }
-                row += '<td width="11%">' + feebids + '</td>';
-            } else {
-                row += '<td width="11%">&nbsp;</td>';
-            }
-        }
         <?php endif; ?>
         row += '</tr>';
         if (prepend) {
@@ -576,7 +584,7 @@ require_once('opengraphmeta.php');
                 sort: sort,
                 dir: dir,
                 user: $('.userComboList .ui-combobox-list-selected').attr('val'),
-                inComment: $('#search_comment').hasClass("inComment") ? 1 : 0,
+                inComment: $('#search_comments').is(':checked') ? 1 : 0,
                 query: $("#query").val(),
                 reload: ((reload == undefined) ? false : true)
             },
@@ -861,16 +869,10 @@ require_once('opengraphmeta.php');
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         reattachAutoUpdate();
 
-        $("#search").click(function(e){
-            e.preventDefault();
-            $("#searchForm").submit();
-            return false;
-        });
-
         $('#query').keypress(function(event) {
             if (event.keyCode == '13') {
                 event.preventDefault();
-                $("#search").click();
+                $("#searchForm").submit();
             }
         });
 
@@ -885,23 +887,12 @@ require_once('opengraphmeta.php');
             return false;
         });
 
-        $("#search_comment").click(function(e){
-            e.preventDefault();
+        $("#search_comments").change(function(e) {
             affectedHeader = false;
             resetOrder = true;
             sort = 'null';
             dir = 'asc';
-            if ($(this).hasClass("comment")) {
-                $(this).removeClass("comment");
-                $(this).addClass("comment_no");
-                $(this).attr("title", "Do not include comments in search");
-            } else {
-                $(this).removeClass("comment_no");
-                $(this).addClass("comment");
-                $(this).attr("title", "Include Comments in search");
-            }
             GetWorklist(1, false);
-            return false;
         });
 
         $("#searchForm").submit(function(){
@@ -1174,7 +1165,7 @@ $meta_title =
 }
 </style>
 </head>
-<body>
+<body id="worklist">
 <div style="display: none; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; line-height: 100%; background: white; opacity: 0.7; filter: alpha(opacity =   70); z-index: 9998"
      id="loader_img"><div id="loader_img_title"><img src="images/loading_big.gif"
      style="z-index: 9999"></div></div>
@@ -1339,16 +1330,11 @@ if (is_object($inProject)) {
     <thead>
         <tr class="table-hdng">
             <?php if (! $hide_project_column) echo '<td class="clickable">Project</td>'; ?>
-            <td><span class="clickable">ID</span> - <span class="clickable">Summary</span></td>
+            <td><span class="clickable">Job ID</span> &amp; <span class="clickable">Summary</span></td>
             <?php if (! $hide_project_column) echo '<td class="clickable">Status</td>'; ?>
             <?php if (! $hide_project_column) echo '<td class="clickable">Who</td>'; ?>
-            <?php if (! $hide_project_column) echo '<td class="clickable" id="defaultsort">When</td>'; ?>
-            <?php if (! $hide_project_column) echo '<td class="clickable" style="min-width:80px">Comments</td>'; ?>
-            <?php if (! $hide_project_column) {
-                echo '<td class="worklist-fees clickable"';
-                echo (empty($_SESSION['is_runner'])) ? ' style="display:none"' : '';
-                echo '>Fees/Bids</td>';
-            } ?>
+            <?php if (! $hide_project_column) echo '<td class="clickable" id="defaultsort">Age</td>'; ?>
+            <?php if (! $hide_project_column) echo '<td class="clickable"><div class="comments-icon" title="Comments"></div></td>'; ?>
         </tr>
     </thead>
     <tbody>

@@ -76,11 +76,6 @@ table thead tr:hover {
     );
 }
 
-.table-worklist tr:hover {
-    background: none;
-    background-image: none;
-}
-
 .table-worklist th, .table-worklist td {
     border: none;
 }
@@ -101,7 +96,7 @@ table tr:hover {
 }
 
 .table-hdng {
-    height: 30px;
+    height: 20px;
     background: url('../images/tbg.jpg') repeat-x bottom left;
     background-image: -webkit-gradient(
         linear,
@@ -125,9 +120,10 @@ table tr:hover {
 }
 
 .table-hdng td, .table-hdng th {
-    color: #6f6f6f;
+    color: #999999;
     font-size: 12px;
     font-weight: bold;
+    padding-bottom: 2px;
 }
 
 .rowodd {
