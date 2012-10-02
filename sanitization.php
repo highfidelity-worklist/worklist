@@ -20,8 +20,7 @@ function sanitizeInput() {
     sanitizeRequestInput('msg', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
     sanitizeRequestInput('withdraw_bid_reason', FILTER_SANITIZE_SPECIAL_CHARS, !FILTER_FLAG_STRIP_LOW);
     // addproject.php
-    $_REQUEST['description'] = htmlspecialchars($_REQUEST['description']);
-
+    sanitizeRequestInput('description', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_FLAG_NO_ENCODE_QUOTES);
 }
 
 function sanitizeRequestInput($fieldName, $option=0, $flags=0) {
