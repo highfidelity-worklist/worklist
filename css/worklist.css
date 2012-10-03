@@ -99,31 +99,36 @@ a:hover {
     color: #98AAB2;
 }
 
-.roweven,
-.rowown.roweven,
-.rowbidon.roweven,
-.rowbidexpired.roweven,
-.rowrunner.roweven,
-.rowmechanic.roweven
- {
+.roweven {
     background-color: #eeeeee;
     background-image: none;
 }
-.rowown {
+
+.rowown,
+.roweven.rowown {
     background: #FFCC99;
 }
-.rowbidon {
+
+.rowbidon,
+.roweven.rowbidon {
     background: #99E566;
 }
-.rowbidexpired {
+
+.rowbidexpired,
+.roweven.rowbidexpired {
     background: #FF8080;
 }
-.rowrunner {
+
+.rowrunner,
+.roweven.rowrunner {
     background: #B1E1F3;    
 }
-.rowmechanic {
+
+.rowmechanic,
+.roweven.rowmechanic {
     background: #FFFF6C;
 }
+
 .rowbidexpired a,
 .rowrunner a,
 .rowmechanic a {
@@ -680,7 +685,8 @@ td.textAlignReport {
     background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
 }
 
-.rowown > td div > span:last-child:after {
+.rowown > td div > span:last-child:after,
+.roweven.rowown > td div > span:last-child:after {
     background: -moz-linear-gradient(left,  rgba(255,204,153,0) 0%, rgba(255,204,153,1) 100%) transparent;
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,204,153,0)), color-stop(100%,rgba(255,204,153,1)))  transparent;
     background: -webkit-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
@@ -689,7 +695,8 @@ td.textAlignReport {
     background: linear-gradient(to right,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
 }
 
-.rowbidon > td div > span:last-child:after {
+.rowbidon > td div > span:last-child:after,
+.roweven.rowbidon > td div > span:last-child:after {
     background: -moz-linear-gradient(left,  rgba(153,229,102,0) 0%, rgba(153,229,102,1) 100%) transparent;
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(153,229,102,0)), color-stop(100%,rgba(153,229,102,1)))  transparent;
     background: -webkit-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
@@ -698,7 +705,8 @@ td.textAlignReport {
     background: linear-gradient(to right,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
 }
 
-.rowbidexpired > td div > span:last-child:after {
+.rowbidexpired > td div > span:last-child:after,
+.roweven.rowbidexpired > td div > span:last-child:after {
     background: -moz-linear-gradient(left,  rgba(255,128,128,0) 0%, rgba(255,128,128,1) 100%) transparent;
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,128,128,0)), color-stop(100%,rgba(255,128,128,1)))  transparent;
     background: -webkit-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
@@ -707,7 +715,8 @@ td.textAlignReport {
     background: linear-gradient(to right,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
 }
 
-.rowrunner > td div > span:last-child:after {
+.rowrunner > td div > span:last-child:after,
+.roweven.rowrunner > td div > span:last-child:after {
     background: -moz-linear-gradient(left,  rgba(177,225,243,0) 0%, rgba(177,225,243,1) 100%) transparent;
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(177,225,243,0)), color-stop(100%,rgba(177,225,243,1)))  transparent;
     background: -webkit-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
@@ -716,7 +725,8 @@ td.textAlignReport {
     background: linear-gradient(to right,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
 }
 
-.rowmechanic > td div > span:last-child:after {
+.rowmechanic > td div > span:last-child:after,
+.roweven.rowmechanic > td div > span:last-child:after {
     background: -moz-linear-gradient(left,  rgba(255,255,108,0) 0%, rgba(255,255,108,1) 100%) transparent;
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,108,0)), color-stop(100%,rgba(255,255,108,1)))  transparent;
     background: -webkit-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
