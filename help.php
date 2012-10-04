@@ -81,7 +81,8 @@ include("opengraphmeta.php");
         <li><a href="#df8">How do I set up my sandbox?</a></li>
         <li><a href="#df9">On my first commit, I got an error that said I do not have commit access, now what?</a></li>
         <li><a href="#df10">After I have completed my work, how do I get paid?</a></li>
-        <li><a href="#df11">Where can I go for more information?</a></li>
+        <li><a href="#df11">Who is eligible to perform code reviews?  How do I become eligible?</a></li>
+        <li><a href="#df12">Where can I go for more information?</a></li>
     </ul>
 <br/>
 </div>
@@ -94,6 +95,7 @@ include("opengraphmeta.php");
         <li><a href="#ff4">I'm not a Founder, but I'd like to be, how do I get my project on Worklist?</a></li>
         <li><a href="#ff5">How do I fund my project?</a></li>
         <li><a href="#ff6">How do I manage a project on Worklist? What do the various project statuses mean?</a></li>
+        <li><a href="#ff7">Can I control who reviews code for my jobs?</a></li>
     </ul>
 <br/>
 </div>
@@ -190,7 +192,28 @@ include("opengraphmeta.php");
      currently handled through Paypal. When you create your worklist account, you'll be asked to supply your Paypal email address. We will pay as
      quickly as possible after a job is marked DONE in the worklist (this is done by the person who created or is running the job).</strong>
     <br/>
-    <p><a name="df11"></a><strong>Q. Where can I go for more information? </strong></br>
+    <p><a name="df11"></a><strong>Q. Who is eligible to perform code reviews?  How do I become eligible? </strong></br>
+    <strong>A.</strong> Each project managed in the Worklist has it's own set of rules for Code Review eligibility.  The Project Founder
+    maintains these specifications. The Founder can select from the following options:</strong>
+    </p>
+    <blockquote>
+        <li><strong>Anyone</strong></li>
+        <li><strong>Anyone that is Trusted by more than 3 people</strong></li>
+        <li><strong>Anyone that is Trusted by the Project Admin</strong></li>
+        <li><strong>Anyone that is Trusted by the Job Manager</strong></li>
+    </blockquote>
+    <br/>
+    <p>If you meet the Code Review qualification, you will be able to start a code review by clicking the Start Code Review
+    button within a task.  If not, a hover message will appear over the biutton stating that "You are not Authorized to Code Review
+    this Job".
+    </p>
+    <p>To view the guidelines for a project, navigate to the specific project from the <a href ='https://www.worklist.net/worklist/projects.php' target='_blank'>
+    projects page.</a>
+    <br/>
+    <p>Trust generally follows completed jobs.  Therefore, if you do a really awesome job on tasks, Trust will come and so will Code Review
+    Eligibility!  
+    <br/>    
+    <p><a name="df12"></a><strong>Q. Where can I go for more information? </strong></br>
     <strong>A.</strong> Visit the Worklist <a href ='http://wiki.lovemachineinc.com'>developer wiki</a>, read up on our <a href ='http://wiki.lovemachineinc.com/wiki/index.php/Coding_Standards'>Coding Standards</a>
     Coding Standards</a>, or just visit the <a href ='http://www.worklist.net/journal'>Chat</a> and ask!</strong>
     </p>
@@ -262,8 +285,8 @@ include("opengraphmeta.php");
         step, your job as Founder is to make sure everything works according to your design. If anything looks wrong, leave a comment for the
         Mechanic to fix. If the job look good, set it to REVIEW.</li>
         <li><strong>REVIEW -</strong> REVIEW means the new code is ready to be reviewed by another Mechanic. If the reviewer finds any issues,
-        they are either worked out in real-time in our <a href='https://www.worklist.net/journal'>Chat</a> or via comments added to the job ticket. Once all issues have been resolved, the
-        Mechanic commits the code and sets the job to COMPLETED.</li>
+        they are either worked out in real-time in our <a href='https://www.worklist.net/journal'>Chat</a> or via comments added to the job ticket. Once
+        all issues have been resolved, the Mechanic commits the code and sets the job to COMPLETED.</li>
         <br/>
     </blockquote>
         <p><strong>Stage Three: Finished > Your job is done</strong></p>
@@ -278,6 +301,18 @@ include("opengraphmeta.php");
         budgeting or payment.</li></br>
         </p>
     </blockquote>
+    <p><a name="ff7"></a><strong>Q.  Can I control who reviews code for my jobs? </strong></br>
+    <strong>A.</strong> Yes.  There are predefined options for each project (that can be managed within your specific project page).
+    That page may be accessed from the main <a href='https://www.worklist.net/worklist/projects.php'>projects </a>page. 
+    You may select from:<br/>
+    <blockquote>
+        <li><strong>Anyone</strong>(any Worklist user may review code)</li>
+        <li><strong>Anyone that is Trusted by more than 3 people</strong>(any user that is trusted by more than 3 other users)</li>
+        <li><strong>Anyone that is Trusted by the Project Admin</strong>(any user that is trusted by you)</li>
+        <li><strong>Anyone that is Trusted by the Job Manager</strong>(any user that is trusted by the Runner of the task)</li>
+    </blockquote>
+    
+    </p>
     <a href="#top">BACK TO TOP</a>
 </div>
 
