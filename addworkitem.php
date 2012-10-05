@@ -46,7 +46,8 @@ if ($userId > 0 ) {
         'is_expense',
         'is_rewarder',
         'is_bug',
-        'bug_job_id'
+        'bug_job_id',
+        'fileUpload'
     );
 
     foreach ($args as $arg) {
@@ -87,6 +88,21 @@ if ($userId > 0 ) {
     $workitem->save();
     $related = getRelated($notes);
     Notification::statusNotify($workitem);
+
+    // if files were uploaded, update their workitem id
+    $file = new File();
+    // update images first
+    foreach ($fileUpload['images'] as $image) {
+    	$file->findFileById($image);
+    	$file->setWorkitem($workitem->getId());
+    	$file->save();
+    }
+    // update documents
+    foreach ($fileUpload['documents'] as $document) {
+    	$file->findFileById($document);
+    	$file->setWorkitem($workitem->getId());
+    	$file->save();
+    }
 
     if($is_bug && $bug_job_id>0) {
         //Load information about original job and notify
