@@ -11,6 +11,7 @@
     </div>
     <div>
         <input id="formupload" type="button" value="upload W9" />
+        <div class="w9_loader"></div>
     </div>
     <div class="uploadnotice-w9"></div>
 

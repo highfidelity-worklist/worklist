@@ -34,7 +34,7 @@ if (typeof activeProjectsFlag === 'undefined') {
             show: 'fade',
             hide: 'fade',
             maxWidth: 600,
-            width: 415,
+            width: 505,
             hasAutocompleter: false,
             hasCombobox: false,
             resizable: false,
@@ -135,7 +135,7 @@ if (typeof activeProjectsFlag === 'undefined') {
                             $('#popup-edit select[name=itemProject], #popup-edit select[name=status]').comboBox({action: "val", param: ["select"]});
                         },50);
                     },20);
-                    
+
                 }
             },
             close: function() {
@@ -150,7 +150,7 @@ if (typeof activeProjectsFlag === 'undefined') {
             $('#popup-edit').bind('dialogbeforeclose', function() {
                 var result = confirm("Are you sure you want to close this dialog? You will lose all the information entered.");
                 if (result) {
-                    //This is a workaround for the delayed dialog close, due to Journal requests being so active - dans 
+                    //This is a workaround for the delayed dialog close, due to Journal requests being so active - dans
                     $(this).parent().hide();
                 }
                 return result;
@@ -295,8 +295,8 @@ if (typeof activeProjectsFlag === 'undefined') {
                 });
                 return false;
             });
-	
-		
+
+
             $('#fees_block').hide();
             $('#fees_single_block').show();
             $('#popup-edit').dialog('open').centerDialog();

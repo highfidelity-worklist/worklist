@@ -45,7 +45,7 @@ if (isset($_REQUEST['save_account'])) {
         foreach ($saveArgs as $arg=>$esc) {
             $$arg = ($esc ? $_REQUEST[$arg] : intval($_REQUEST[$arg]));
         }
-        
+
         if ($phone != $user->getPhone()) {
             $phone_verified = null;
             $saveArgs['phone_verified'] = 0;
@@ -57,7 +57,7 @@ if (isset($_REQUEST['save_account'])) {
                 $phone_changed = true;
             }
         }
-        
+
         if (isset($_REQUEST['city'])) {
             $city = $_REQUEST['city'];
             $saveArgs['city'] = 1;
@@ -90,14 +90,14 @@ if (isset($_REQUEST['save_account'])) {
         $review_email_notify = !empty($_REQUEST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
 
         $notifications = Notification::setFlags(
-            $review_notify, 
-            $bidding_notify, 
-            $my_review_notify, 
-            $my_completed_notify, 
-            $my_bids_notify, 
-            $ping_notify, 
-            $self_email_notify, 
-            $bidding_email_notify, 
+            $review_notify,
+            $bidding_notify,
+            $my_review_notify,
+            $my_completed_notify,
+            $my_bids_notify,
+            $ping_notify,
+            $self_email_notify,
+            $bidding_email_notify,
             $review_email_notify
         );
 
@@ -113,8 +113,8 @@ if (isset($_REQUEST['save_account'])) {
             $username = $_SESSION['username'];
             $nickname = $_SESSION['nickname'];
 
-            $sql = " 
-                INSERT INTO " . USERS . " 
+            $sql = "
+                INSERT INTO " . USERS . "
                 (`id`, `username`, `nickname`, `timezone`, `country`, `phone`, `int_code`, `smsaddr`, `sms_flags`, `notifications`, `is_active`, `confirm`)
                 VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$phone', '$int_code', '$smsaddr', '$sms_flags', '$notifications', '1', '1')";
             mysql_unbuffered_query($sql);
@@ -133,7 +133,7 @@ if (isset($_REQUEST['save_account'])) {
 
         if ($user->getId() != null && $user->getId() != intval($_SESSION['userid'])) {
             die(json_encode(array(
-                'error' => 1, 
+                'error' => 1,
                 'message' => "Update failed, nickname already exists!"
             )));
         }
@@ -141,7 +141,7 @@ if (isset($_REQUEST['save_account'])) {
 
         if (!$_SESSION['new_user']) {
             $sql = "
-                UPDATE " . USERS . " 
+                UPDATE " . USERS . "
                 SET nickname = '" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
 
             if (mysql_query($sql)) {
@@ -188,7 +188,7 @@ if (isset($_REQUEST['save_account'])) {
 
     $saveArgs = array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1);
     $messages[] = "Your payment information has been updated.";
-    
+
     if (!$user->getW9_accepted() && $user->getCountry() == 'US') {
         $w9_accepted = 'NOW()';
         $saveArgs['w9_accepted'] = 0;
@@ -202,7 +202,7 @@ if (isset($_REQUEST['save_account'])) {
         $user->setPaypal_email('');
         $user->save();
     // user changed paypal address
-    } else if ($paypalPrevious != $paypal_email) {    
+    } else if ($paypalPrevious != $paypal_email) {
         $paypal_hash = md5(date('r', time()));;
         // generate email
         $subject = "Your payment details have changed";
@@ -217,9 +217,9 @@ if (isset($_REQUEST['save_account'])) {
         $plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
         $plain .= 'Please confirm your payment email address to activate payments on your accounts and enable you to start placing bids in the Worklist.' . "\n\n";
         $plain .= $link . "\n\n";
-                
+
         $confirm_txt = "An email containing a confirmation link was sent to your payment email address. Please click on that link to verify your payment email address and activate your account.";
-        if (! send_email($paypal_email, $subject, $body, $plain)) { 
+        if (! send_email($paypal_email, $subject, $body, $plain)) {
             error_log("signup.php: send_email failed");
             $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
         }
@@ -274,10 +274,10 @@ if (!empty($saveArgs)) {
 
         $msg="Account updated successfully!";
     }
-    
+
     if ($phone_changed) {
         $user->findUserById($_SESSION['userid']);
-        $url = SERVER_URL . 'confirm_phone.php?user=' . $_SESSION['userid'] . 
+        $url = SERVER_URL . 'confirm_phone.php?user=' . $_SESSION['userid'] .
             '&phone=' . $phone . '&phoneconfirmstr=' . $phone_confirm_string;
         $msg = 'Confirm code: ' . $phone_confirm_string . ' (or follow URL)';
         Notification::sendShortSMS($user, 'Worklist phone validation', $msg, $url, true);
@@ -343,7 +343,7 @@ include("head.html");
             return false;
         }
     }
-    
+
     function completeUploadImage(file, data) {
         $('span.LV_validation_message.upload').css('display', 'none').empty();
         if (!data.success) {
@@ -357,10 +357,10 @@ include("head.html");
         if (LiveValidation.massValidate( [ firstname, lastname ] )) {
             return validateW9Upload(file, extension);
         } else {
-            return false;   
-        }        
+            return false;
+        }
     }
-    
+
     function validateW9Upload(file, extension) {
         nclass = '.uploadnotice-w9';
         return validateUpload(file, extension);
@@ -368,6 +368,12 @@ include("head.html");
     function validateUpload(file, extension) {
         if (! (extension && /^(pdf)$/i.test(extension))) {
             // extension is not allowed
+
+            // Restore the styling of upload button
+            $('#formupload').attr('value', 'upload W9');
+            $('#formupload').removeClass('w9_upload_disabled');
+            $('.w9_loader').css('visibility', 'hidden');
+
             $(nclass).empty();
             var html = '<div class="ui-state-error ui-corner-all">' +
                             '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
@@ -376,18 +382,34 @@ include("head.html");
             $(nclass).append(html);
             // cancel upload
             return false;
+        }else{
+            // Inform the user that the file is being uploaded...
+            $(nclass).empty();
+            $('#formupload').attr('value', 'uploading...');
+            $('#formupload').addClass('w9_upload_disabled');
+            $('.w9_loader').css('visibility', 'visible');
         }
     }
 
     function completeUpload(file, data) {
         $(nclass).empty();
         if (data.success) {
+            // Restore the styling of upload button
+            $('#formupload').attr('value', 'Success!');
+            $('#formupload').removeClass('w9_upload_disabled');
+            $('.w9_loader').css('visibility', 'hidden');
+
             var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
                             '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
                             '<strong>Info:</strong> ' + data.message + '</p>' +
                         '</div>';
             saveSettings('w9Name');
         } else {
+            // Restore the styling of upload button
+            $('#formupload').attr('value', 'Fail');
+            $('#formupload').removeClass('w9_upload_disabled');
+            $('.w9_loader').css('visibility', 'hidden');
+
             var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
                             '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
                             '<strong>Error:</strong> ' + data.message + '</p>' +
@@ -396,7 +418,7 @@ include("head.html");
         }
         $(nclass).append(html);
     }
-    
+
     function validateW9Agree(value) {
         if (! $('#w9_accepted').is(':checked') && $('#country').val() == 'US') {
             return false;
@@ -412,9 +434,9 @@ include("head.html");
     function validatePhoneNumber(phone_number) {
         return Utils.validPhone(phone_number);
     }
-    
+
     function validateSmsAddr(value) {
-        return validateEmail(value); 
+        return validateEmail(value);
     }
 
     function isJSON(json) {
@@ -423,13 +445,13 @@ include("head.html");
         json = json.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
         return (/^[\],:{}\s]*$/.test(json))
     }
-    
+
     function saveSettings(type) {
         var values;
         if (type == 'account') {
             var massValidation = LiveValidation.massValidate( [ nickname, city ]);
             if (massValidation) {
-                values = { 
+                values = {
                     int_code: $('#int_code').val(),
                     phone: $('#int_code').val() + $('#phone').val(),
                     phone_edit: $('#phone_edit').val(),
@@ -500,7 +522,7 @@ include("head.html");
                         message = json.message;
                     }
                 }
-                
+
                 if (type == 'payment' && json) {
                     $('#msg-'+type).html(message + '<br/>' + json);
                 } else {
@@ -512,7 +534,7 @@ include("head.html");
             }
         });
     }
-    
+
 
     function smsSendTestMessage() {
         var int_code = $('#int_code').val();
@@ -552,6 +574,7 @@ include("head.html");
 <?php if (isset($_REQUEST['ppconfirmed'])) : ?>
         $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
         $('#popup-confirmed').dialog({
+            dialogClass: "white-theme",
             modal: true,
             title: 'Your Paypal address was confirmed',
             autoOpen: true,
@@ -586,9 +609,10 @@ include("head.html");
             responseType: 'json',
             onSubmit: validateNames,
             onComplete: completeUpload
-        });   
- 
+        });
+
         $("#w9-dialog").dialog({
+            dialogClass: 'white-theme',
             resizable: false,
             width: 220,
             title: 'W9 form upload',
@@ -606,14 +630,14 @@ include("head.html");
                 $("#last_name").val('<?php echo $lastName ?>');
                 $("#first_name").val('<?php echo $firstName ?>');
                 $(".uploadnotice-w9").html('');
-                $(".LV_validation_message").html('');                  
-            }            
+                $(".LV_validation_message").html('');
+            }
         });
-        
+
         $("#uploadw9").click(function() {
             $("#w9-dialog").dialog("open");
          });
-         
+
         $.ajax({
             type: "POST",
             url: 'jsonserver.php',
@@ -673,7 +697,7 @@ include("head.html");
     </table>
     <div id="formHolder">
         <div id="formLeft">
-    
+
     <form method="post" action="settings.php" name="frmsetting">
 
         <span class="required-bullet">*</span> <span class="required">required fields</span>
@@ -708,13 +732,13 @@ include("head.html");
         $new_user = (bool) ! empty($_SESSION['new_user']);
         $country = !$new_user ? $userInfo['country'] : '';
         $city = !$new_user ? $userInfo['city'] : '';
-        
+
         $int_code = !$new_user ? trim($userInfo['int_code']) : '';
         $phone = !$new_user ? trim($userInfo['phone']) : '';
         if (strlen($int_code) && substr($phone, 0, strlen($int_code)) == $int_code) {
             $phone = substr($phone, strlen($int_code));
         }
-        
+
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $picture = !$new_user ? $userInfo['picture'] : '';
         $notifications = !$new_user ? $userInfo['notifications'] : 0;
@@ -723,14 +747,14 @@ include("head.html");
         include("sms-inc.php");
     ?>
            <br />
-        <div >Send SMS Messages</div>                
-        <div id="smsOptions">    
+        <div >Send SMS Messages</div>
+        <div id="smsOptions">
             <div class="floatLeft">
 
-            <input type="checkbox" name="my_bids_notify" value="1" <?php 
+            <input type="checkbox" name="my_bids_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::MY_BIDS_NOTIFICATIONS) ? 'checked="checked"' : '';
                 ?>/>Bids on my jobs<br />
-            <input type="checkbox" name="ping_notify" value="1" <?php 
+            <input type="checkbox" name="ping_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::PING_NOTIFICATIONS) ? 'checked="checked"' : '';
                 ?>/>Pings
             </div>
@@ -738,7 +762,7 @@ include("head.html");
                 <input type="checkbox" name="bidding_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::BIDDING_NOTIFICATIONS) ? 'checked="checked"' : '';
                 ?>/>New Jobs set to bidding<br />
-            <input type="checkbox" name="review_notify" value="1" <?php 
+            <input type="checkbox" name="review_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::REVIEW_NOTIFICATIONS) ? 'checked="checked"' : '';
                 ?>/>Any job set to review
             </div>
@@ -746,29 +770,29 @@ include("head.html");
                 <input type="checkbox" name="my_review_notify" value="1" <?php
                     echo Notification::isNotified($notifications, Notification::MY_REVIEW_NOTIFICATIONS) ? 'checked="checked"' : '';
                     ?>/>My jobs set to review<br />
-                <input type="checkbox" name="my_completed_notify" value="1" <?php 
+                <input type="checkbox" name="my_completed_notify" value="1" <?php
                     echo Notification::isNotified($notifications, Notification::MY_COMPLETED_NOTIFICATIONS) ? 'checked="checked"' : '';
                     ?>/>My jobs set to completed
             </div>
         </div>
         <br/>
-        <div >Send Email Messages</div>                
-        <div id="emailOptions">    
+        <div >Send Email Messages</div>
+        <div id="emailOptions">
             <div class="floatLeft">
                 <input type="checkbox" name="bidding_email_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::BIDDING_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : '';
                 ?>/>New Jobs set to bidding<br />
-            <input type="checkbox" name="review_email_notify" value="1" <?php 
+            <input type="checkbox" name="review_email_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::REVIEW_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : '';
                 ?>/>Any job set to review
             </div>
             <div class="floatLeft">
-                <input type="checkbox" name="self_email_notify" value="1" <?php 
-                echo Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : ''; 
+                <input type="checkbox" name="self_email_notify" value="1" <?php
+                echo Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS) ? 'checked="checked"' : '';
             ?>/>Receive email notifications from my actions<br />
-            </div>            
+            </div>
         </div>
-        
+
         <div style="clear:both">
             <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
         </div>
@@ -776,7 +800,7 @@ include("head.html");
     </div>
     <div id="formRight">
     <p style="text-align: center; cursor: pointer;">
-    <label style="text-align: left; display: block;">Photo<br></label> 
+    <label style="text-align: left; display: block;">Photo<br></label>
     <img id="profilepicture"
     src="<?php echo (empty($picture) ? 'thumb.php?src=images/no_picture.png&w=100&h=100&zc=0' : APP_IMAGE_URL . $picture); ?>" />
     <span class="picture_info">Click here to change it</span>
@@ -832,8 +856,8 @@ include("head.html");
         <h2 class="subheader">W-9 Form <small>(US Citizens Only)</small></h2>
         <p>
             All US Citizens must submit a W-9 to be paid by Worklist.
-            <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><span style="color: blue;">Download W-9 Here</span></a>. 
-            Remember, you need a valid US mailing address to receive your 1099 tax documents at the end of the year. 
+            <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><span style="color: blue;">Download W-9 Here</span></a>.
+            Remember, you need a valid US mailing address to receive your 1099 tax documents at the end of the year.
             If you move, it’s up to you to let us know your new address.
         </p>
         <p>
@@ -843,22 +867,22 @@ include("head.html");
         <blockquote>
             <input id="uploadw9" type="button" value="Upload W9" style="float:left;margin-left: 8px;" />
             <?php include("dialogs/popup-w9.inc")?>
-        </blockquote>        
+        </blockquote>
         <script type="text/javascript">
             var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
             paypal.add(Validate.Email);
-            // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal 
+            // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal
             // email, which removes their paypal verification and prevents them from bidding
             // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-            
+
             var firstname = new LiveValidation('first_name', {validMessage: "First Name looks good", onlyOnBlur: true});
             firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
             firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
-            
-            var lastname = new LiveValidation('last_name', {validMessage: "Last Name looks good", onlyOnBlur: true}); 
+
+            var lastname = new LiveValidation('last_name', {validMessage: "Last Name looks good", onlyOnBlur: true});
             lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
             lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
-                        
+
             var w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
             w9_accepted.displayMessageWhenEmpty = true;
             w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });

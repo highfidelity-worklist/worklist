@@ -10,7 +10,7 @@
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
-    
+
     $has_budget = 0;
     if (! empty($user_id)) {
         $user = new User();
@@ -41,11 +41,11 @@
     }
 
     if ($worklist['status'] == 'Draft' && $creator_id != $user_id) { ?>
-       <script type="text/javascript"> 
+       <script type="text/javascript">
        alert("Draft jobs are only viewable by their creator.");
        location = "worklist.php";
-       </script> 
-   <?php  
+       </script>
+   <?php
     return;
     }
 
@@ -59,6 +59,7 @@ include("head.html"); ?>
 <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.combobox.css" rel="stylesheet" />
 <link type="text/css" href="css/budget.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/white-theme.lm.ui.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
@@ -125,7 +126,7 @@ $(document).ready(function() {
         width: 350,
         height: 140
     });
-    $("#invite-link").click(function() { 
+    $("#invite-link").click(function() {
         $('#invite-people').dialog('open');
     });
 
@@ -148,7 +149,7 @@ $(document).ready(function() {
     });
 
     <?php
-    
+
     global $displayDialogAfterDone;
 
     if ($displayDialogAfterDone == true && $worklist['mechanic_id'] > 0) {
@@ -280,7 +281,7 @@ function postComment() {
                 var replyLink = (depth < 6) ? '<div class="reply-lnk">' +
                         '<a href="#commentform" onClick="reply(' + data.id + '); return false;">Reply</a>' +
                     '</div>' : '';
-                var newcomment = 
+                var newcomment =
                 '<li id="comment-' + data.id + '" class="comment depth-' + depth + ' ' + color + ' ' + order + '">' +
                     '<div class="comment-info">' +
                         '<span class="author profile-link" onClick="showUserInfo(' + data.userid +')"><strong>'+ data.nickname +'</strong>&nbsp;' +
@@ -290,7 +291,7 @@ function postComment() {
                     '<div class="comment">' +
                         '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" onClick="showUserInfo(' + data.userid + ')" />' +
                          data.comment +
-                    '</div>' + 
+                    '</div>' +
                     replyLink +
                 '</li>';
                 if (orderby == 'DESC') {
@@ -383,9 +384,9 @@ $(document).ready(function(){
         resizable: false,
         height: 230,
         open: function(event, ui) {
-            
-        }         
-    }); 
+
+        }
+    });
     Budget.initCombo();
     $("#popupSelectBudget #confirm_budget").click(function() {
         var budget = new LiveValidation('budget-source-combo', {
@@ -410,7 +411,7 @@ $(document).ready(function(){
         $('#budget-source-combo').comboBox({action:"val", param: [val1]});
         $('#popupSelectBudget').dialog("close");
     });
-    
+
     $('#bidDoneSlider').slider({
         value: 1,
         min: 0,
@@ -434,7 +435,7 @@ $(document).ready(function(){
             $('#bid_expires').val(getTextFromSliderValue(ui.value));
         }
     });
-    
+
     $('.sliderStepValue', '#bidDoneSlider').remove();
     $('.sliderStep', '#bidDoneSlider').eq(1).html('<div class="sliderStepValue">' + '2 hours' + '</div>');
     $('.sliderStepValue', '#bidExpireSlider').remove();
@@ -505,12 +506,13 @@ $(document).ready(function(){
     };
 
     // default dialog options
-    var dialog_options = { autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' };
+    var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' };
     $('#popup-bid').dialog(dialog_options);
     $('#popup-edit-bid-info').dialog(dialog_options);
     $('#popup-confirmation').dialog(dialog_options);
     $('#popup-review-started').dialog(dialog_options);
     $('#popup-ineligible').dialog({
+        dialogClass: 'white-theme',
         modal: true,
         title: "Your account is ineligible",
         autoOpen: false,
@@ -524,13 +526,14 @@ $(document).ready(function(){
     });
 
     // If the bid info popup is set to modal clipboard won't work!
-    $('#popup-bid-info').dialog({ 
-        autoOpen: false, 
-        modal: false, 
+    $('#popup-bid-info').dialog({
+        dialogClass: 'white-theme',
+        autoOpen: false,
+        modal: false,
         resizable: false,
-        width: 400, 
-        maxHeight: 600, 
-        show: 'fade', 
+        width: 400,
+        maxHeight: 600,
+        show: 'fade',
         hide: 'fade',
         open: function() {
         }
@@ -538,17 +541,17 @@ $(document).ready(function(){
     $('#popup-fee-info').dialog({ autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-multiple-bid-info').dialog({ autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-addfee').dialog({ autoOpen: false, modal: true, width: 450, show: 'fade', hide: 'fade' });
-    $('#popup-startreview').dialog({ 
-        closeOnEscape: false, 
-        autoOpen: false, 
-        modal: false, 
-        width: 400, 
-        show: 'fade', 
+    $('#popup-startreview').dialog({
+        closeOnEscape: false,
+        autoOpen: false,
+        modal: false,
+        width: 400,
+        show: 'fade',
         hide: 'fade',
-        open: function(event, ui) { 
-            $(".ui-dialog-titlebar-close").hide(); 
+        open: function(event, ui) {
+            $(".ui-dialog-titlebar-close").hide();
         }
-    });    
+    });
     $('#popup-paid').dialog({ autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ autoOpen: true, show: 'fade', hide: 'fade' });
     $('#popup-pingtask').dialog({
@@ -564,7 +567,7 @@ $(document).ready(function(){
         }
     });
     $('#ping-msg').autogrow();
-    $('#popup-reviewurl').dialog({ 
+    $('#popup-reviewurl').dialog({
         autoOpen: false,
         modal: true,
         width: 410,
@@ -591,7 +594,7 @@ $(document).ready(function(){
     var has_budget = <?php echo $has_budget;?>;
     var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
     var isFollowing = <?php echo $workitem->isUserFollowing($user_id) ? 'true' : 'false';?>;
-   
+
    $('.commentform form input[name=newcomment]').click(function(event) {
         event.preventDefault();
         postComment();
@@ -658,7 +661,7 @@ $(document).ready(function(){
         setTimeout(function(){
             $(".view_bid_id").click();
         }, 500);
-    <?php 
+    <?php
             if (! empty($user_id)) {
     ?>
         setFollowingText(isFollowing);
@@ -703,13 +706,13 @@ $(document).ready(function(){
         } else if ($('#feeitem-' + fee_id).html() == "No" ) {
             $('#notpaid_check').attr('checked', "1");
         }
-    
-        $('#paid_check').click(function() { 
+
+        $('#paid_check').click(function() {
                var $checkbox = $('#notpaid_check');
                $checkbox.attr('checked', !$checkbox.attr('checked'));
         });
         $('#notpaid_check').click(function() {
-               var $checkbox = $('#paid_check'); 
+               var $checkbox = $('#paid_check');
                $checkbox.attr('checked', !$checkbox.attr('checked'));
         });
         AjaxPopup('#popup-paid',
@@ -819,9 +822,9 @@ $(document).ready(function(){
             }
 
 <?php if ($worklist['status'] == 'Bidding' && ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id))) {?>
- 
+
     $('#popup-bid-info-buttons').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" >');
- 
+
 <?php } ?>
 
 <?php if($worklist['status'] != 'Done' && $worklist['status'] != 'Working' && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' && $worklist['status'] != 'Completed') {?>
@@ -916,14 +919,14 @@ $(document).ready(function(){
         $('.popup-body form select option[index=0]').prop('selected', true);
         $('.popup-body form textarea').val('');
     }
-    
+
     function selectBudget(id) {
         $("#budget_id, #budget_id_multiple_bid").val("");
         var val1 = $($('#budget-source-combo option').get(0)).attr("value");
         $('#budget-source-combo').comboBox({action:"val", param: [val1]});
         $('#popupSelectBudget').data("clickon", id).dialog('open');
     }
-    
+
     function ConfirmEditBid(){
         var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
 
@@ -976,7 +979,7 @@ $(document).ready(function(){
         );
         $('#popup-edit-bid-info').dialog('open');
     }
-    
+
     function showConfirmForm(i) {
         if (GitHub.validate()) {
             $('#popup-confirmation-type').val(i);
@@ -986,7 +989,7 @@ $(document).ready(function(){
         }
         return false;
     }
-    
+
     function showIneligible(problem) {
       $('#popup-ineligible').dialog('open');
     }
@@ -1034,7 +1037,7 @@ $(document).ready(function(){
         $('#popup-decline-bid').dialog('open');
         return false;
     }
-    
+
     function pingBidder(id) {
         ping_who = 'bidder';
         ping_bid_id = id;
@@ -1050,7 +1053,7 @@ $(document).ready(function(){
       $('#popup-addfee').dialog('open');
       return false;
    }
-  
+
    function CheckCodeReviewStatus() {
       var workitem_id = <?php echo $worklist['id'];?>;
       if (WorklistProject.repo_type == 'svn') {
@@ -1111,8 +1114,8 @@ $(document).ready(function(){
         });
         return false;
     }
-    
-    function showEndReviewForm() {       
+
+    function showEndReviewForm() {
         $('#popup-endreview').dialog({
             closeOnEscape: false,
             autoOpen: false,
@@ -1120,8 +1123,8 @@ $(document).ready(function(){
             width: 400,
             open: function(event, ui) {
                 $(".ui-dialog-titlebar-close").hide();
-            }         
-        });                                
+            }
+        });
         $('#popup-endreview').dialog('open');
     }
 
@@ -1204,7 +1207,7 @@ $(document).ready(function(){
                         }
                     }
                 });
-                
+
                 $("#accept_bid_select_budget").click(function(){
                     selectBudget('accept_multiple_bid');
                 });
@@ -1279,7 +1282,7 @@ $(document).ready(function(){
                     }
                     $('#send-ping-btn').removeAttr("disabled");
                     $('#popup-pingtask').dialog('close');
-                }, 
+                },
                 error: function() {
                     $('#send-ping-btn').removeAttr("disabled");
                 }
@@ -1407,11 +1410,11 @@ $(document).ready(function(){
     });
 
     <?php } ?>
-    
+
     function sendToLogin(){
         window.location = '<?php echo SERVER_URL; ?>login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>';
     }
-    
+
     function setFollowingText(isFollowing){
         if(isFollowing == true) {
             $('#following').attr('title', 'You are currently following this job');
@@ -1481,7 +1484,7 @@ $(document).ready(function(){
             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
             <span class="info-data" style="font-size:14px"><?php echo $worklist['status'];?></span>
             <?php
-            if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') || $is_runner 
+            if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') || $is_runner
             || ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done')) :
             ?>
             <form method="post" action="" style="display:inline">
@@ -1524,7 +1527,7 @@ $(document).ready(function(){
 
 
                 <div id="for_view">
-<?php 
+<?php
 $runner_nickname = $worklist['runner_nickname'] != '' ? $worklist['runner_nickname'] : 'Not funded';
 if ($action =="edit"):  ?>
 <!-- *** Action is Edit *** -->
@@ -1559,7 +1562,7 @@ if ($action =="edit"):  ?>
                             </select>
                             <?php } else if ($creator_id == $user_id) { ?>
                             <span class="info-data">
-                            <select id="status" name="status">          
+                            <select id="status" name="status">
                                 <?php foreach ($statusListCreator as $status) { ?>
                                 <option value="<?php echo $status; ?>" <?php echo $status == $worklist['status']?' selected="selected"' : ''; ?> ><?php echo $status; ?></option>
                                 <?php } ?>
@@ -1570,7 +1573,7 @@ if ($action =="edit"):  ?>
                         </li>
                 <!-- Edit: Key People info box -->
                         <li>
-                            <div id="creatorBox"><span id="pingCreator" class="creatorName" 
+                            <div id="creatorBox"><span id="pingCreator" class="creatorName"
                             title="<?php echo isset($_SESSION['userid']) ? "Ping Creator" : "Log in to Ping Creator"; ?>">
                             <a href="#">Creator</a></span> <a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);">
                             <?php echo $worklist['creator_nickname'];?></a></div>
@@ -1621,7 +1624,7 @@ if ($action =="edit"):  ?>
                         </li>
                         <li>
                             <span class="project-label" id="edit-project-label">Project</span>
-                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')): 
+                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')):
 
                                       $filter = new Agency_Worklist_Filter();
                                       $filter->setProjectId($worklist['project_id']);
@@ -1642,35 +1645,35 @@ if ($action =="edit"):  ?>
                             <?php endif;?>
                         </li>
                         <?php
-                            if ($user->isRunnerOfWorkitem($workitem) || 
+                            if ($user->isRunnerOfWorkitem($workitem) ||
                                 $_SESSION['userid'] == $worklist['budget_giver_id'] ||
                                 strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false) {
                         ?>
                         <li>
                         <div class="budgetArea">
                             <div class="budget-label">Budget</div>
-                            <?php 
+                            <?php
                                 if ($user->isRunnerOfWorkitem($workitem)) {
                             ?>
                                     <span id="budget-source-combo-area">
                                         <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
-                                            <?php 
+                                            <?php
                                             if ( empty($worklist['budget_id']) || $worklist['budget_id'] == 0) {
                                             ?>
                                                 <option value="0" selected="selected">Select a budget</option>
-                                            <?php 
+                                            <?php
                                             }
                                             echo $user->getBudgetCombo($worklist['budget_id']); ?>
                                         </select>
                                     </span>
-                                
-                            <?php        
+
+                            <?php
                                 } else {
                                     if (!empty($worklist['budget_id'])) {
                                         echo $worklist['budget_id'] . " - " . htmlspecialchars($worklist['budget_reason']);
                                     } else {
                                         echo "<span>Not assigned</span>";
-                                    }                                
+                                    }
                                 }
                             ?>
                             <div style="clear: both;"></div>
@@ -1768,10 +1771,10 @@ if ($action =="edit"):  ?>
                         <div class="project-github">
                             <h1>This project is connected to GitHub</h1>
                             <h2>
-                                <?php 
-                                if ($isGitHubConnected) { 
-                                    echo "You have successfully connected your Worklist and GitHub accounts"; 
-                                } else { 
+                                <?php
+                                if ($isGitHubConnected) {
+                                    echo "You have successfully connected your Worklist and GitHub accounts";
+                                } else {
                                     echo "You need a GitHub account and will be requested for authorization on your first bid";
                                 }
                                 ?>
@@ -1792,8 +1795,8 @@ if ($action =="edit"):  ?>
                         <?php endif;?>
                     </li>
                     <?php
-                        if (($user->isRunnerOfWorkitem($workitem) || 
-                            (array_key_exists('userid',$_SESSION) && 
+                        if (($user->isRunnerOfWorkitem($workitem) ||
+                            (array_key_exists('userid',$_SESSION) &&
                                 ($_SESSION['userid'] == $worklist['budget_giver_id'] ||
                                  strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false) ) ) && !empty($worklist['budget_id'])) {
                     ?>
@@ -1827,19 +1830,19 @@ if ($action =="edit"):  ?>
 
                         <?php if ( !empty($worklist['sandbox']) ):?>
                             <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
-                                  <?php 
+                                  <?php
                                   if (strlen(htmlspecialchars($worklist['sandbox'])) > 64) {
                                         echo substr(htmlspecialchars($worklist['sandbox']), 0, 64) . "...";
                                   } else {
                                       echo htmlspecialchars($worklist['sandbox']);
                                   }
-                                  
-                                  ?> 
+
+                                  ?>
                             </a><br />
                             <?php if (($worklist['status'] == 'Functional' || $worklist['status'] == 'Review')
-                                    && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'Working' && ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $mechanic_id))) { ?> 
+                                    && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'Working' && ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $mechanic_id))) { ?>
                                 <input type="submit" id="view-sandbox" value="View Sandbox" />
-                            <?php } ?>                         
+                            <?php } ?>
                         <?php else :?>
                             <span>Not assigned</span>
                         <?php endif;?>
@@ -1860,7 +1863,7 @@ if ($action =="edit"):  ?>
                 if (!empty($user_id) && ($worklist['status'] != 'Done')) : ?>
                 <a class="info-comments-scroll-entry" href="#commentform">Scroll to bottom</a>
                 <?php endif ?>
-                <div style="clear:both;height:0px;">&nbsp;</div>              
+                <div style="clear:both;height:0px;">&nbsp;</div>
 
                 <?php if (!empty($user_id) && ($worklist['status'] != 'Done') && $order_by == "DESC") : ?>
                 <div class="commentform"> <a name="commentform"></a> <span class="info-label">Write a comment</span>
@@ -1873,7 +1876,7 @@ if ($action =="edit"):  ?>
                         <br />
                         <input type="submit" name="newcomment" value="Post Comment" class="disableable" />
                     </form>
-                </div> 
+                </div>
                 <?php endif; ?>
 
                 <ul>
@@ -1926,7 +1929,7 @@ if ($action =="edit"):  ?>
                         <br />
                         <input type="submit" name="newcomment" value="Post Comment" class="disableable" />
                     </form>
-                </div> 
+                </div>
                 <?php endif; ?>
 
         <!-- End of div commentZone -->
@@ -1973,7 +1976,7 @@ if ($action =="edit"):  ?>
                                 <tr>
                                     <td style="text-align: center;" colspan="4">No bids yet.</td>
                                 </tr>
-                            <?php 
+                            <?php
                                 } else {
 
                                 $row = 1;
@@ -1986,7 +1989,7 @@ if ($action =="edit"):  ?>
                                         $biddings['0'] = $bid;
                                     }
 
-                                foreach($biddings as $key=>$bid) { 
+                                foreach($biddings as $key=>$bid) {
                                     if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
                                         $expired_class = ' expired_warn';
                                     } else {
@@ -1999,7 +2002,7 @@ if ($action =="edit"):  ?>
                                     $row_class .= ($row++ % 2) ? 'rowodd ' : 'roweven ';
                                     $row_class .= 'biditem';
                                     $row_class .= ($canSeeBid)
-                                                ? "-" . $bid['id'] . ' clickable' 
+                                                ? "-" . $bid['id'] . ' clickable'
                                                 : '';
                                     $row_class .= $expired_class;
                                     ?>
@@ -2052,8 +2055,8 @@ if ($action =="edit"):  ?>
                                         echo "<em" . $past_due . ">" . date('m/d/Y h:i a', $bid_done_by_stamp) . "</em>";
                                         date_default_timezone_set($oTz);
                                     ?>
-                                    
-                                    
+
+
                                     </td>
 <?php
     $expire_class = '';
@@ -2086,25 +2089,25 @@ if ($action =="edit"):  ?>
                                 <caption class="table-caption" >
                                     <div class="noteWrapper"><b>Fees</b></div>
                             <?php if($user_id && ($worklist['status'] != 'Done')): ?>
-                            
+
                             <div class="buttonContainer">
                                 <?php if ($mechanic_id == $user_id) : ?>
                                     <input class="iToolTip addTip smbutton" type="submit" value="Tip User" />
                                 <?php endif; ?>
-                                
+
                                 <?php if ($worklist['status'] == 'Review') {
                                     if ($workitem->getCRStarted() !=1) {
                                         if ($mechanic_id != $user_id) {
                                             if ($user->isEligible()) {
                                                 if(hasRights($user_id, $workitem)) { ?>
-                                                	
+
                                                     <input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"/>
                                         <?php   } else { ?>
                                                     <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
                                         <?php   }
                                             }
                                         }
-                                        
+
                                     } else if($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
                                         if ($user->isEligible()) {
                                             if(hasRights($user_id, $workitem)) {
@@ -2112,12 +2115,12 @@ if ($action =="edit"):  ?>
                                                     <input class="iToolTip endCr" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
                                         <?php   }
                                             }
-                                        } 
+                                        }
                                     } else if($workitem->getCRCompleted() == 1) { ?>
                                         <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
-                            <?php   }                                   
+                            <?php   }
                                 }?>
-                                
+
                                 <?php if ($user_id): ?>
                                     <?php if ($user->isEligible()) : ?>
                                         <input class="iToolTip addFee smbutton" type="submit" value="Add Fee" onClick="return showConfirmForm('fee');"/>
@@ -2145,7 +2148,7 @@ if ($action =="edit"):  ?>
                                 <?php else: $row = 1;
                                     foreach($fees as $fee): ?>
                                     <tr class="row-feelist-live <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
-                                        <script type="data"><?php echo 
+                                        <script type="data"><?php echo
                                                 "{id: {$fee['id']}, " .
                                                 "nickname: '{$fee['nickname']}', " .
                                                 "user_id: '{$fee['user_id']}', " .
@@ -2163,7 +2166,7 @@ if ($action =="edit"):  ?>
                                         <?php if (($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done')&& ($fee['desc'] == 'Accepted Bid')) { ?>
                                         <td>Bid Notes: <?php echo preg_replace("/\r?\n/", "<br />", $fee['bid_notes']);?></td>
                                         <?php } else { ?>
-                                        <td class="pre fee-description"><?php 
+                                        <td class="pre fee-description"><?php
                                                 $feeDesc = replaceEncodedNewLinesWithBr($fee['desc']);
                                                 echo truncateText($feeDesc);
                                             ?>
@@ -2241,9 +2244,9 @@ if ($action =="edit"):  ?>
     <!-- Popup HTML for starting a code review -->
     <?php include("dialogs/popup-startreview.inc"); ?>
     <!-- Popup HTML for ending a code review -->
-    <?php include("dialogs/popup-endreview.inc"); ?> 
+    <?php include("dialogs/popup-endreview.inc"); ?>
     <!-- Popup HTML for informing user that code review is already started review -->
-    <?php include("dialogs/code-review-already-started.inc"); ?>       
+    <?php include("dialogs/code-review-already-started.inc"); ?>
     <!-- Popup for ping user on task-->
     <?php require_once('dialogs/popup-pingtask.inc') ?>
     <!-- Popup for bid info-->
