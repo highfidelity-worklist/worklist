@@ -22,13 +22,14 @@ $tooltips = array(
 
 	/* Item tooltips 				*/ 
 	
-	'cR'	        => 'Start a code review on this job.',
-	'endCr'         => 'End a code review on this job.',
-    'cRDisallowed'	=> 'You are not authorized to Code Review this job.',
-    'endCrDisallowed' => 'You are not authorized to End Code Review on this job',
-	'addFee'	    => 'Add a fee you would like to be paid for work done on this job.',
-	'addBid'	    => 'Make an offer to do this job.',
-	'changeSBurl'   => 'Click to change your sandbox url.',
+        'cR'            => 'Start a code review on this job.',
+        'endCr'         => 'End a code review on this job.',
+        'cRDisallowed'  => 'You are not authorized to Code Review this job.',
+        'cRSetToFunctional'=> 'Set this job to Functional then to Review to enable Code Review.',
+        'endCrDisallowed' => 'You are not authorized to End Code Review on this job',
+        'addFee'	   => 'Add a fee you would like to be paid for work done on this job.',
+        'addBid'        => 'Make an offer to do this job.',
+        'changeSBurl'   => 'Click to change your sandbox url.',
 	
 	/* Budget Info tooltips         */
 

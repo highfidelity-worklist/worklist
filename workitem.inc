@@ -2116,8 +2116,8 @@ if ($action =="edit"):  ?>
                                         <?php   }
                                             }
                                         }
-                                    } else if($workitem->getCRCompleted() == 1) { ?>
-                                        <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" onClick="return false;"/>
+                                    } else if ($workitem->getCRCompleted()) { ?>
+                                        <input class="iToolTip cRSetToFunctional" type="submit" value="Start Code Review" onClick="return false;"/>
                             <?php   }
                                 }?>
 
