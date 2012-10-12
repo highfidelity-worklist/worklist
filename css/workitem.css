@@ -364,10 +364,9 @@ span.info-whisper {
     line-height:26px;
 }
 #edit-notes {
-    height:164px;
-    min-height:100px;
-    max-height:230px;
-    width:418px;
+    height: 164px;
+    min-height: 100px;
+    width: 410px;
 }
 .table-hdng{
     background-image:none;
@@ -562,14 +561,6 @@ span.info-whisper {
     border:2px #DCD998 solid;
     padding:0px 8px 19px 8px;
     background-color: #FFFFDD;
-}
-
-
-#edit-notes {
-    height:164px;
-    min-height:100px;
-    max-height:230px;
-    width:410px;
 }
 
 #left-panel ul{
