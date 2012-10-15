@@ -92,16 +92,20 @@ if ($userId > 0 ) {
     // if files were uploaded, update their workitem id
     $file = new File();
     // update images first
-    foreach ($fileUpload['images'] as $image) {
-    	$file->findFileById($image);
-    	$file->setWorkitem($workitem->getId());
-    	$file->save();
+    if (isset($fileUpload['images'])) {
+        foreach ($fileUpload['images'] as $image) {
+            $file->findFileById($image);
+            $file->setWorkitem($workitem->getId());
+            $file->save();
+        }
     }
     // update documents
-    foreach ($fileUpload['documents'] as $document) {
-    	$file->findFileById($document);
-    	$file->setWorkitem($workitem->getId());
-    	$file->save();
+    if (isset($fileUpload['documents'])) {
+        foreach ($fileUpload['documents'] as $document) {
+            $file->findFileById($document);
+            $file->setWorkitem($workitem->getId());
+            $file->save();
+        }
     }
 
     if($is_bug && $bug_job_id>0) {

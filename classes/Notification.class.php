@@ -1033,7 +1033,7 @@ class Notification {
                     $options = array();
                     $options['recipients'] = array("runner");
                     $options['emails'] = array($row['bid_email']);
-                    $options['workitem'] = new workItem();
+                    $options['workitem'] = new WorkItem();
                     $options['workitem']->loadById($row['worklist_id']);
                     $options['type'] = "job_past_due";
                     
@@ -1066,7 +1066,7 @@ class Notification {
     }
     
     public static function autoTestNofications($workItemId,$result,$revision) {
-        $workItem = new workItem;
+        $workItem = new WorkItem;
         $workItem->loadById($workItemId);
         $project = new Project();
         $project->loadById($workItem->getProjectId());
@@ -1253,7 +1253,7 @@ class Notification {
             while ($row = mysql_fetch_assoc($worklist)) {
                 $options = array();
                 $options['emails'] = array($row['bid_email'], $row['runner_email']);
-                $options['workitem'] = new workItem();
+                $options['workitem'] = new WorkItem();
                 $options['workitem']->loadById($row['worklist_id']);
                 $options['type'] = "expired_bid";
                 $data = array('bid_amount'=>$row['bid_amount']);

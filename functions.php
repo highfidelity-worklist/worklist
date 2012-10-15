@@ -754,7 +754,7 @@ function deleteFee($fee_id) {
             //sending email to the bidder
             $options = array();
             $options['emails'] = array($user->username);
-            $options['workitem'] = new workItem();
+            $options['workitem'] = new WorkItem();
             $options['workitem']->loadById($fee->worklist_id);
             $options['type'] = "fee_deleted";
             Notification::workitemNotify($options);
