@@ -914,8 +914,6 @@ function checkLogin() {
     /* linkify function
      *
      * this takes some input and makes links where it thinks they should go
-     * it is duplicated in journal and worklist so if you update one
-     * remember to update the other, thanks very much
      *
      */
     function linkify($url, $author = null, $bot = false, $process = true)
@@ -949,9 +947,26 @@ function checkLogin() {
         $url = preg_replace($regexp,'href="http://$3"', $url);
 
         // Replace '#<number>' with a link to the worklist item with the same number
-        $regexp = "/\#([1-9][0-9]*)/";
-        $link = DELIMITER . '<a href="' . WORKLIST_URL . 'workitem.php?job_id=$1&action=view" class="worklist-item" id="worklist-$1" >#$1</a>' . DELIMITER;
-        $url = preg_replace($regexp,  $link, $url);
+        $regexp = "/\#([1-9][0-9]{4})(\s|[^0-9a-z]|$)/i";
+        if (!function_exists('workitemLinkPregReplaceCallback')) {
+            /**
+             * Checks whether a #<number> string should be taken as a workitem link or not.
+             * This function is used as a callback with preg_replace_callback (see below lines)
+             */
+            function workitemLinkPregReplaceCallback($matches) {
+                $job_id = (int) $matches[1];
+                if ($job_id < 99999 && WorkItem::idExists($job_id)) {
+                    return
+                        DELIMITER . 
+                        '<a href="' . WORKLIST_URL . 'workitem.php?job_id=' . $job_id . '&action=view"' . 
+                        ' class="worklist-item" id="worklist-' . $job_id . '" >#' . $job_id . '</a>' . 
+                        DELIMITER . $matches[2];
+                } else {
+                    return $matches[0];
+                }
+            }
+        }
+        $url = preg_replace_callback($regexp,  'workitemLinkPregReplaceCallback', $url);
 
         // Replace '#<projectName>#' with a link to the worklist project with the same name
         $regexp = "/\#\#([A-Za-z0-9_]+)/";
@@ -1129,11 +1144,11 @@ function truncateText($text, $chars = 200, $lines = 5) {
 function getRelated($input) {
     $related = "";
     $twoIds = false;
-    if( preg_match_all('/(\#[1-9][0-9][0-9]+)/i', $input, $matches)) {
-        $distinctMatches = array_unique($matches[0]);
+    if (preg_match_all('/(\#[1-9][0-9]{4})(\s|[^0-9a-z]|$)/i', $input, $matches)) {
+        $distinctMatches = array_unique($matches[1]);
         foreach($distinctMatches as $match) {
             $job_id = (int) substr($match, 1);
-            if ($job_id != $worklist_id) {
+            if ($job_id != $worklist_id && WorkItem::idExists($job_id)) {
                 if ($related != "") {
                     $twoIds = true;
                     $related .= ", #" . $job_id;

@@ -128,15 +128,15 @@ class WorkItem {
     public function idExists($id)
     {
         $query = '
-SELECT COUNT(*)
-FROM ' . WORKLIST . '
-WHERE id = ' . (int)$id;
+            SELECT COUNT(*)
+            FROM `' . WORKLIST . '`
+            WHERE `id` = ' . (int) $id;
         $res = mysql_query($query);
         if (!$res) {
             throw new Workitem_Exception('MySQL error.');
         }
         $row = mysql_fetch_row($res);
-        return (boolean)$row[0];
+        return (boolean) $row[0];
     }
 
     public function setId($id)
