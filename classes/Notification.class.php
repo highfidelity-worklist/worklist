@@ -143,7 +143,7 @@ class Notification {
      */
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
-            case 'FUNCTIONAL':
+            case 'Functional':
                 $emails = self::getNotificationEmails(self::FUNCTIONAL_NOTIFICATIONS, $workitem);
                 $options = array('type' => 'new_functional',
                     'workitem' => $workitem,
@@ -174,7 +174,7 @@ class Notification {
                     'emails' => $myEmails);
                 self::workitemSMSNotify($options);
                 break;
-            case 'BIDDING':
+            case 'Bidding':
                 $emails = self::getNotificationEmails(self::BIDDING_EMAIL_NOTIFICATIONS);
                 $options = array('type' => 'new_bidding',
                     'workitem' => $workitem,
@@ -186,14 +186,14 @@ class Notification {
                     'emails' => $emails);
                 self::workitemSMSNotify($options);
                 break;
-            case 'COMPLETED':
+            case 'Completed':
                 $emails= self::getNotificationEmails(self::MY_COMPLETED_NOTIFICATIONS,$workitem);
                 $options = array('type' => 'my_completed',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemSMSNotify($options);
                 break;
-            case 'SUGGESTEDwithBID':
+            case 'SuggestedWithBid':
                 $emails= self::getNotificationEmails(self::MY_BIDS_NOTIFICATIONS,$workitem);
                 $options = array('type' => 'suggestedwithbid',
                 'workitem' => $workitem,
