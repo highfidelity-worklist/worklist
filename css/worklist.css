@@ -1289,3 +1289,22 @@ input.button-disabled ,
     float: none;
 }
 
+.table-worklist .worklist-pagination-row > td > span {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.table-worklist .worklist-pagination-row .page,
+.table-worklist .worklist-pagination-row .previous,
+.table-worklist .worklist-pagination-row .next {
+    padding: 3px;
+}
+
+.table-worklist .worklist-pagination-row a {
+    text-decoration: none;
+}
+
+.table-worklist .worklist-pagination-row .inactive {
+    color: #888888;
+}
+

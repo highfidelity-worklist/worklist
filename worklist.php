@@ -309,32 +309,47 @@ require_once('opengraphmeta.php');
     var skills = null;
 
     function AppendPagination(page, cPages, table)    {
-    // support for moving rows between pages
-    if(table == 'worklist') {
-        // preparing dialog
-        $('#pages-dialog select').remove();
-        var selector = $('<select>');
-        for (var i = 1; i <= cPages; i++) {
-            selector.append('<option value = "' + i + '">' + i + '</option>');
+        // support for moving rows between pages
+        if (table == 'worklist') {
+            // preparing dialog
+            $('#pages-dialog select').remove();
+            var selector = $('<select>');
+            for (var i = 1; i <= cPages; i++) {
+                selector.append('<option value = "' + i + '">' + i + '</option>');
+            }
+            $('#pages-dialog').prepend(selector);
         }
-        $('#pages-dialog').prepend(selector);
-    }
-        var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table +
-        '-pagination-row nodrag nodrop " ><td class="not-workitem" colspan="6" style="text-align:center;">Pages : &nbsp;';
-        if (page > 1) {
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page-1) + '">Prev</a> &nbsp;';
-        }
-        for (var i = 1; i <= cPages; i++) {
-            if (i == page) {
-                pagination += i + " &nbsp;";
+        
+        var selfLink = '<?php echo $_SERVER['PHP_SELF'] ?>?page=';
+        
+        var previousLink = page > 1 
+                ? '<a class="previous" href="' + selfLink + (page-1) + '">Previous</a> ' 
+                : '<span class="previous inactive">Previous</span>',
+            nextLink = page < cPages 
+                ? '<a class="next" href="' + selfLink + (page+1) + '">Next</a> ' 
+                : '<span class="next inactive">Next</span>';
+        
+        var pagination = 
+            '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row nodrag nodrop">' +
+            '<td class="not-workitem" colspan="6" style="text-align:center;"><span>' + previousLink;
+            
+        var fromPage = 1;
+        if (cPages > 10 && page > 6) {
+            if (page + 4 <= cPages) {
+                fromPage = page - 6;
             } else {
-                pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" >' + i + '</a> &nbsp;';
+                fromPage = cPages - 10;
             }
         }
-        if (page < cPages) {
-            pagination += '<a href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + (page+1) + '">Next</a> &nbsp;';
+        
+        for (var i = fromPage; (i <= (fromPage +10) && i <= cPages); i++) {
+            if (i == page) {
+                pagination += '<span class="page current">' + i + "</span> ";
+            } else {
+                pagination += '<a class="page" href="<?php echo $_SERVER['PHP_SELF'] ?>?page=' + i + '" >' + i + '</a> ';
+            }
         }
-        pagination += '</td></tr>';
+        pagination += nextLink + '</span></td></tr>';
         $('.table-' + table).append(pagination);
     }
     function return2br(dataStr) {
