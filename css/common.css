@@ -242,3 +242,14 @@ pre, .pre {
     -moz-box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
     box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
 }
+
+/* phone confirm page styling */
+#clean_phone {
+    display: none;
+}
+
+.clean_phone > label {
+    font-size: 1.1em;
+    cursor: pointer;
+    color: #98AAB2;
+}

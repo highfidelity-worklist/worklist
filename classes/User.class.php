@@ -1462,7 +1462,7 @@ class User {
     private function getUserColumns()
     {
         $columns = array();
-        $result = mysql_query('SHOW COLUMNS FROM `' . USERS);
+        $result = mysql_query('SHOW COLUMNS FROM `' . USERS . '`');
         if (mysql_num_rows($result) > 0) {
             while ($row = mysql_fetch_assoc($result)) {
                 $columns[] = $row;

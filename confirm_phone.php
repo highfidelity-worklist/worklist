@@ -15,6 +15,7 @@ $phone = isset($_REQUEST['phone']) ? trim($_REQUEST['phone']) : '';
 $phoneconfirmstr = isset($_REQUEST['phoneconfirmstr']) ? trim($_REQUEST['phoneconfirmstr']) : '';
 $userid = isset($_REQUEST['user']) ? trim($_REQUEST['user']) : '';
 $password = $_POST ? $_REQUEST['password'] : '';
+$clean_phone = isset($_POST['clean_phone']) && $_POST['clean_phone']; 
 
 // not enough data, redirect to worklist
 if (empty($phone) || (empty($userid) && empty($_SESSION['userid']))) {
@@ -27,33 +28,37 @@ if (!empty($userid) && !empty($_SESSION['userid']) && $userid != $_SESSION['user
 }
 
 if (empty($userid)) {
-  $userid = $_SESSION['userid'];
+    $userid = $_SESSION['userid'];
 }
 
 $user = new User();
 $validated = false;
+$cleaned = false;
 if ($user->findUserById($userid) && $user->isActive()) {
-    if (!empty($phoneconfirmstr)) {
-        if ((! empty($_SESSION['userid']) && $_SESSION['userid'] == $userid) 
-          || $user->authenticate($password)) 
-        {
-            $user_phone_verified = $user->getPhone_verified();
-            $user_phone = $user->getPhone();
-            $user_phone_confirm_string = $user->getPhone_confirm_string();
-            
-            if ($phone == $user_phone 
-              && substr($user_phone_verified, 0, 10) == '0000-00-00' 
-              && $phoneconfirmstr == $user_phone_confirm_string)
-            {
-                $user->setPhone_verified(date('Y-m-d H:i'))
-                     ->setPhone_confirm_string('');
-                  
-                $user->save();
+    if ((! empty($_SESSION['userid']) && $_SESSION['userid'] == $userid) || $user->authenticate($password)) {
+        $user_phone_verified = $user->getPhone_verified();
+        $user_phone = $user->getPhone();
+        $user_phone_confirm_string = $user->getPhone_confirm_string();
+        if ($phone == $user_phone && substr($user_phone_verified, 0, 10) == '0000-00-00') {
+            $error = new Error();
+            if ($phoneconfirmstr && ($phoneconfirmstr == $user_phone_confirm_string) || $clean_phone) {
+                if ($phoneconfirmstr && $phoneconfirmstr == $user_phone_confirm_string) {
+                    // phone validated, save and redirect
+                    $user->setPhone_verified(date('Y-m-d H:i'))
+                         ->setPhone_confirm_string('')
+                         ->save();
+                    $validated = true;
+                } else if ($clean_phone) {
+                    $user->setPhone_verified('0000-00-00 00:00')
+                         ->setPhone_confirm_string('')
+                         ->setPhone('')
+                         ->save();
+                    $cleaned = true;
+                }
                 
                 $username = $user->getUsername();
                 $nickname = $user->getNickname();
                 $admin = $user->getIs_admin();
-                $validated = true;
                 
                 Utils::setUserSession($userid, $username, $nickname, $admin);
                 
@@ -64,11 +69,15 @@ if ($user->findUserById($userid) && $user->isActive()) {
                     $redir = SERVER_URL;
                 }
             } else {
-                die('Invalid operation');
+                if (isset($_REQUEST['phoneconfirmstr'])) {
+                    $error->setError("Wrong confirm string. Please try again.");
+                }
             }
         } else {
-            die('Authentication failed');
+            $error->setError('Invalid operation.');
         }
+    } else {
+        $error->setError('Authentication failed.');
     }
     
 } else {
@@ -90,6 +99,20 @@ include("head.html");
 
 <!-- jquery file is for LiveValidation -->
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
+<script type="text/javascript">
+$(function() {
+    $('#clean_phone').change(function() {
+        if ($(this).is(':checked')) {
+            if (confirm('Are you sure you want to clean your phone settings?')) {
+                $('#phoneconfirmstr').val('');
+                $('#phone-confirm').submit();
+            } else {
+                $(this).attr('checked', false);
+            }
+        }
+    });
+});
+</script>
 <title>Worklist - Confirm your phone number</title>
 </head>
 
@@ -109,7 +132,7 @@ include("head.html");
     <?php } ?>
     
     <div id="in-lt">
-    <?php if(! $validated) { ?>     
+    <?php if(! ($validated || $cleaned)) { ?>     
         <?php if(isset($error)){ ?>
             <?php foreach($error->getErrorMessage() as $msg){ ?>
               <p class="LV_invalid"><?php echo $msg; ?></p>
@@ -147,7 +170,14 @@ include("head.html");
             </div>
             <?php } ?>
 
-            <p><input type="submit" id="Confirm" value="Confirm" name="Confirm" class="text-field" alt="Confirm phone number"></p>
+            <p>
+                <input type="submit" id="Confirm" value="Confirm" name="Confirm" class="text-field" alt="Confirm phone number">
+                - OR -
+                <span class="clean_phone">
+                  <label for="clean_phone">clean phone settings and don't ask me again</label>
+                  <input id="clean_phone" type="checkbox" name="clean_phone" />
+                </span>
+            </p>
             </form>
         </div>
         </div>
@@ -161,7 +191,18 @@ include("head.html");
         setTimeout(function() { window.location.href = '<?php echo $redir; ?>'; }, 5000);
         </script>
       <?php }?>
-    <?php }?>
+    <?php } else if ($cleaned) { ?>
+      <p>
+          Your phone number has just been cleaned so now you wont be able to receive SMS.
+          If you wish to receive sms please update your settings.
+      </p>
+      <p>You're now being redirected...</p>
+      <?php if (isset($redir) && ! empty($redir)) { ?>
+        <script type="text/javascript">
+          setTimeout(function() { window.location.href = '<?php echo $redir; ?>'; }, 5000);
+        </script>
+      <?php }?>
+    <?php } ?>
     </div>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
