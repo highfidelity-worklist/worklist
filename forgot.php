@@ -25,7 +25,6 @@ if(!empty($_POST['username'])) {
 include("head.html");
 ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/menu.css" rel="stylesheet" type="text/css">
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <title>Worklist | Recover Password</title>

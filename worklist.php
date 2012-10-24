@@ -241,7 +241,6 @@ require_once('opengraphmeta.php');
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <link href="css/ui.toaster.css" rel="stylesheet" type="text/css" />
-<link href="css/menu.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>

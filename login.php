@@ -109,7 +109,6 @@ include("head.html");
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/menu.css" rel="stylesheet" type="text/css">
 
 <!-- jquery file is for LiveValidation -->
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>

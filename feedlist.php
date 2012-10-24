@@ -26,7 +26,6 @@ define('RSS_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/rss.p
 define('ATOM_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/atom.png" title="rss feed" />');
 ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/menu.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="<?php echo SERVER_URL; ?>js/jquery.tabSlideOut.v1.3.js"></script>
 <title>Worklist RSS & Atom Feeds | Lend a Hand</title>
 </head>

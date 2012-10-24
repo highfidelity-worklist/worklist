@@ -316,7 +316,6 @@ include("head.html");
 
 <!--Added worklist.css to solve stylesheet issues for settings.php-->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
-<link type="text/css" href="css/menu.css" rel="stylesheet" />
 <link type="text/css" href="css/settings.css" rel="stylesheet" />
 
 <script type="text/javascript" src="js/skills.js"></script>

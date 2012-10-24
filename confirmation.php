@@ -134,7 +134,6 @@ if (isset($_REQUEST['str'])) {
 include("head.html"); ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
-<link href="css/menu.css" rel="stylesheet" type="text/css" />
 <script language="javascript" src="js/lightbox-hc.js"></script>
 
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>

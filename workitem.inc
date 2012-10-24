@@ -52,7 +52,6 @@
 /*********************************** HTML layout begins here  *************************************/
 include("head.html"); ?>
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
-<link type="text/css" href="css/menu.css" rel="stylesheet" />
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
 <link type="text/css" href="css/review.css" rel="stylesheet" />
 <link type="text/css" href="css/favorites.css" rel="stylesheet" />
