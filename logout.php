@@ -18,7 +18,7 @@ unset($_SESSION['username']);
 unset($_SESSION['userid']);
 unset($_SESSION['confirm_string']);
 unset($_SESSION['nickname']);
-
+unset($_SESSION['running']);
 if (isset($_COOKIE[session_name()])) {
     setcookie(session_name(), '', time() - 42000, '/');
 }
