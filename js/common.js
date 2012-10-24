@@ -107,4 +107,29 @@ function resizeIframeDlg() {
     $('#user-info').animate({height: height});
 }
 
-
+function outputPagination(page, cPages) {
+    var previousLink = page > 1 
+            ? '<a href="#?page=' + (page - 1) + '">Previous</a> ' 
+            : '<span>Previous</span> ',
+        nextLink = page < cPages 
+            ? '<a href="#?page=' + (page + 1) + '" class = "ln-last">Next</a> ' 
+            : '<span class="ln-last">Next</span>';
+    var pagination = previousLink;
+    var fromPage = 1;
+    if (cPages > 10 && page > 6) {
+        if (page + 4 <= cPages) {
+            fromPage = page - 6;
+        } else {
+            fromPage = cPages - 10;
+        }
+    }
+    for (var i = fromPage; (i <= (fromPage +10) && i <= cPages); i++) {
+        var sel = '';
+        if (i == page) {
+            sel = ' class="ln-selected"';
+        }
+        pagination += '<a href="#?page=' + i + '"' + sel + '>' + i + '</a>';
+    }
+    pagination += nextLink;
+    return pagination;
+}

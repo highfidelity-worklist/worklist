@@ -276,43 +276,19 @@ function fillUserlist(npage) {
                 return false;
             });
 
-            if(cPages > 1){ //showing pagination only if we have more than one page
-            $('.ln-pages').html('<span>'+outputPagination(page,cPages)+'</span>');
-
-            $('.ln-pages a').click(function(){
-                page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
-                fillUserlist(page);
-                return false;
-            });
-
-            }else{
+            if (cPages > 1) { //showing pagination only if we have more than one page
+                $('.ln-pages').html('<span>' + outputPagination(page, cPages) + '</span>');
+                $('.ln-pages a').click(function() {
+                    page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
+                    fillUserlist(page);
+                    return false;
+                });
+            } else {
                 $('.ln-pages').html('');
             }
         },
         error: function(xhdr, status, err) {}
     });
-}
-
-function outputPagination(page, cPages) {
-    var pagination = '';
-    if (page > 1) {
-        pagination += '<a href="#?page=' + (page-1) + '">Prev</a>';
-    }
-    for (var i = 1; i <= cPages; i++) {
-        var sel = '';
-        if (i == page) {
-            if (page == cPages) {
-                sel = ' class="ln-selected ln-last"';
-            } else {
-                sel = ' class="ln-selected"';
-            }
-        }
-        pagination += '<a href="#?page=' + i + '"' + sel + '>' + i + '</a>';
-    }
-    if (page < cPages) {
-        pagination += '<a href="#?page=' + (page+1) + '" class = "ln-last">Next</a>';
-    }
-    return pagination;
 }
 
 function AppendUserRow(json, odd) {

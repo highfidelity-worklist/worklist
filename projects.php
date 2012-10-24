@@ -186,15 +186,13 @@ include("opengraphmeta.php");
                     addProjectDetails(json[i]);
                 }
 
-                if(totalPages > 1) { //showing pagination only if we have more than one page
-                    $('.ln-pages').html('<span>'+outputPagination(currentPage,totalPages)+'</span>');
-
+                if (totalPages > 1) { //showing pagination only if we have more than one page
+                    $('.ln-pages').html('<span>' + outputPagination(currentPage, totalPages) + '</span>');
                     $('.ln-pages a').click(function() {
                         page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                         populateProjectListing(page);
                         return false;
                     });
-
                 } else {
                     $('.ln-pages').html('');
                 }
@@ -230,27 +228,6 @@ include("opengraphmeta.php");
                 + json.feesCount + '</span> Total</td>';
         row += '</tr>';
         $('#projectListing tbody').append(row);
-    }
-    function outputPagination(currentPage, totalPages) {
-        var pagination = '';
-        if (currentPage > 1) {
-            pagination += '<a href="#?page=' + (currentPage-1) + '">Prev</a>';
-        }
-        for (var i = 1; i <= totalPages; i++) {
-            var sel = '';
-            if (i == currentPage) {
-                if (currentPage == totalPages) {
-                    sel = ' class="ln-selected ln-last"';
-                } else {
-                    sel = ' class="ln-selected"';
-                }
-            }
-            pagination += '<a href="#?page=' + i + '"' + sel + '>' + i + '</a>';
-        }
-        if (currentPage < totalPages) {
-            pagination += '<a href="#?page=' + (currentPage+1) + '" class = "ln-last">Next</a>';
-        }
-        return pagination;
     }
 </script>
 <style>
