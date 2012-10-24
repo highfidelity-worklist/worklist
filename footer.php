@@ -38,6 +38,7 @@ require_once ("functions.php");
                   <a href="' . SERVER_URL .'feeds.php?name=comments&job_id=' . $job_id . '" title="Rss & Atom Feeds" style="text-decoration:none;">
                       <img alt="atom feed" title="atom feed" src="' . SERVER_URL .'images/atom20.png" />
                   </a>
+                  <a title="Twitter Feed" href="https://twitter.com/worklistnet" target="_blank"><img alt="follow us on twitter" title="follow us on twitter" src="' . SERVER_URL . 'images/twitter.png" /></a>
                   </div>';
         } else {
             echo '<div class="lefticon" style="padding-top:10px;">
@@ -45,7 +46,9 @@ require_once ("functions.php");
                       <img alt="rss feed" title="rss feed" src="' . SERVER_URL .'images/rss20.png" />
                       &nbsp;
                       <img alt="atom feed" title="atom feed" src="' . SERVER_URL .'images/atom20.png" />
+                      &nbsp;
                   </a>
+                  <a title="Twitter Feed" href="https://twitter.com/worklistnet" target="_blank"><img alt="follow us on twitter" title="follow us on twitter" src="' . SERVER_URL . 'images/twitter.png" /></a>
                   </div>';
         }
     }
