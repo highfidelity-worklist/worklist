@@ -249,7 +249,6 @@ require_once('opengraphmeta.php');
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
@@ -557,20 +556,6 @@ require_once('opengraphmeta.php');
         GetWorklist(1, false);
     }
 
-    function resizeIframeDlg() {
-        var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
-                      $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
-
-        var dlg_h = $('#user-info').children()
-                                   .contents()
-                                   .find('html body')
-                                   .height();
-
-        var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
-
-        $('#user-info').animate({height: height});
-    }
-
     function GetWorklist(npage, update, reload) {
 	 if (addFromJournal) {
             return true;
@@ -865,16 +850,6 @@ require_once('opengraphmeta.php');
         $('#popup-addrole').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-role-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#popup-edit-role').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
-
-        $('#user-info').dialog({
-           autoOpen: false,
-           resizable: false,
-           modal: false,
-           show: 'fade',
-           hide: 'fade',
-           width: 840,
-           height: 480
-        });
 
         $('#popup-testflight').dialog({ autoOpen: false, maxWidth: 600, width: 410, show: 'fade', hide: 'fade' });
 
@@ -1497,7 +1472,6 @@ if (is_object($inProject)) {
 <?php } ?>
 
 <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
-<div id="user-info" title="User Info"></div>
 
 <?php
     include("footer.php");

@@ -6,6 +6,10 @@
 require_once ("functions.php");
 
 ?>
+
+<!-- Include User Info -->
+<div id="user-info" title="User Info"></div>
+
 <!-- break contained floats -->
             <div style="float:none; clear:both;"></div>
 

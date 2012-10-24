@@ -2929,34 +2929,6 @@ function SimplePopup(popupId,
     }
 }
 
-function resizeIframeDlg() {
-    var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
-                  $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
-
-    var dlg_h = $('#user-info').children()
-                               .contents()
-                               .find('html body')
-                               .height();
-
-    var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
-
-    $('#user-info').animate({height: height});
-}
-
-function showUserInfo(user_id, tab) {
-    if ((user_id != 0 || tab != '') && user_id != undefined) {
-        if (tab) {
-            tab = "&tab=" + tab;
-        } else {
-            tab = "";
-        }
-        $('#user-info').html('<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />').dialog('open').centerDialog();
-        $('#user-info').dialog( "option", "width", 840 );
-        $('#modalIframeId').attr('src', 'userinfo.php?id=' + user_id + tab);
-        return false;
-    }
-}
-
 function IEFix() {
     var p = document.getElementsByTagName('body')[0];
     var ih = 0;

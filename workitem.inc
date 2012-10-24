@@ -64,7 +64,6 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/workitem.js"></script>
-<script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
@@ -106,15 +105,6 @@ function openNotifyOverlay(html, autohide) {
 
 $(document).ready(function() {
     applyPopupBehavior();
-    $('#user-info').dialog({
-        autoOpen: false,
-        resizable: false,
-        modal: false,
-        show: 'fade',
-        hide: 'fade',
-        width: 840,
-        height: 480
-    });
 
     $('#invite-people').dialog({
         autoOpen: false,
@@ -2295,8 +2285,6 @@ if ($action =="edit"):  ?>
         require_once('dialogs/popup-ineligible.inc');
     }
 ?>
-<!-- Include User Info -->
-    <div id="user-info" title="User Info"></div>
 <!-- Footer html-->
 <?php include("footer.php");
 

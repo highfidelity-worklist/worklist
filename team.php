@@ -45,7 +45,6 @@ include("opengraphmeta.php");
 
 <script type="text/javascript" src="js/jquery.timeago.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
@@ -237,20 +236,6 @@ $(document).ready(function() {
     }
 ?>
 });
-
-function resizeIframeDlg() {
-    var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
-                  $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
-
-    var dlg_h = $('#user-info').children()
-                               .contents()
-                               .find('html body')
-                               .height();
-
-    var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
-
-    $('#user-info').animate({height: height});
-}
 
 function fillUserlist(npage) {
     current_page = npage;
@@ -478,6 +463,5 @@ function addCommas(nStr) {
 </table>
 <div class="ln-letters"><a href="#" class="all ln-selected">ALL</a><a href="#" class="_">0-9</a><a href="#" class="a">A</a><a href="#" class="b">B</a><a href="#" class="c">C</a><a href="#" class="d">D</a><a href="#" class="e">E</a><a href="#" class="f">F</a><a href="#" class="g">G</a><a href="#" class="h">H</a><a href="#" class="i">I</a><a href="#" class="j">J</a><a href="#" class="k">K</a><a href="#" class="l">L</a><a href="#" class="m">M</a><a href="#" class="n">N</a><a href="#" class="o">O</a><a href="#" class="p">P</a><a href="#" class="q">Q</a><a href="#" class="r">R</a><a href="#" class="s">S</a><a href="#" class="t">T</a><a href="#" class="u">U</a><a href="#" class="v">V</a><a href="#" class="w">W</a><a href="#" class="x">X</a><a href="#" class="y">Y</a><a href="#" class="z ln-last">Z</a></div>
 <div class="ln-pages"></div>
-<div id="user-info" title="User Info"></div>
 <?php
 include("footer.php");?>
