@@ -1307,4 +1307,10 @@ input.button-disabled ,
 .table-worklist .worklist-pagination-row .inactive {
     color: #888888;
 }
-
+.addproject_img {
+    width:48px;
+    height:48px;
+    cursor: pointer; 
+    margin-top:5px; 
+    border: 2px solid rgb(209, 207, 207);
+}
