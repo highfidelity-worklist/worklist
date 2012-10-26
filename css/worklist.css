@@ -646,7 +646,7 @@ td.textAlignReport {
 }
 
 .taskAge {
-    width: 42px;
+    width: 57px;
 }
 
 .taskWho,
@@ -655,7 +655,7 @@ td.textAlignReport {
 }
 
 .taskComments {
-    width: 35px;
+    width: 20px;
 }
 
 .table-worklist td div > span:last-child:after,
@@ -671,6 +671,16 @@ td.textAlignReport {
 .ui-combobox > .fading {
     right: 32px;
     height: 2em;
+}
+
+.taskComments > span:last-child:after,
+.taskAge > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0) 100%) transparent !important;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,0)))  transparent !important;
+    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
+    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
+    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
+    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
 }
 
 .fading,
@@ -1066,7 +1076,7 @@ input.button-disabled ,
 }
 
 .past-due {
-    color: #FF0000;
+    color: #000000;
 }
 
 /* Home page styles */
