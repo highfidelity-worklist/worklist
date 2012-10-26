@@ -75,9 +75,9 @@ if ( empty($signup)) { ?>
                         var city = new LiveValidation('city', {validMessage: "Valid city."});
                         city.add(Validate.Presence);
                         var phone = new LiveValidation('phone');
-                        phone.add(Validate.Custom, { against: validatePhoneNumber });
+                        phone.add(Validate.Custom, { against: Utils.validPhone });
                         var smsaddr = new LiveValidation('smsaddr', {validMessage: "Valid SMS email address."});
-                        smsaddr.add(Validate.Custom, { against: validateSmsAddr, failureMessage: "Invalid SMS email address!" });
+                        smsaddr.add(Validate.Custom, { against: Utils.validEmail, failureMessage: "Invalid SMS email address!" });
                     </script>
 
                 </div>

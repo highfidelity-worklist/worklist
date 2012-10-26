@@ -425,19 +425,6 @@ include("head.html");
         return true;
     }
 
-    function validateEmail(email) {
-        var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        return regex.test(email);
-    }
-
-    function validatePhoneNumber(phone_number) {
-        return Utils.validPhone(phone_number);
-    }
-
-    function validateSmsAddr(value) {
-        return validateEmail(value);
-    }
-
     function isJSON(json) {
         json = json.replace(/\\["\\\/bfnrtu]/g, '@');
         json = json.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']');

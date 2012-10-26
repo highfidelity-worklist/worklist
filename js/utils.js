@@ -199,6 +199,14 @@ var Utils = {
         }
         var match = number.match('^[0-9]{6}[0-9]+$');
         return (match != null);
+    },
+    
+    /**
+     * E-mail address validation
+     */
+    validEmail: function (email) {
+        var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
     }
 };
 
