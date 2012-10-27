@@ -18,7 +18,7 @@ var WLFavorites = {
             isMyFav = true;
         }
         
-        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'trusted by ');
+        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'trusted ');
         
         $('.profileFavoriteText').html(favText);
     },
@@ -47,7 +47,7 @@ var WLFavorites = {
                 var fav = parseInt($('.profileFavoriteText').attr('data-favorite_count'));
                 if (newVal == 1) {
                     $('.profileFavoriteText').attr('data-favorite_count', fav + 1);
-                    var favText = WLFavorites.getFavoriteText(fav + 1, true, 'trusted by ');
+                    var favText = WLFavorites.getFavoriteText(fav + 1, true, 'trusted ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")
                         .removeClass("notmyfavorite")
@@ -55,7 +55,7 @@ var WLFavorites = {
                         .attr("title", "Remove " + fav_user_nickname + " from your trusted by. (don't worry it's anonymous)");
                 } else {
                     $('.profileFavoriteText').attr('data-favorite_count', fav - 1);
-                    var favText = WLFavorites.getFavoriteText(fav - 1, false, 'trusted by ');
+                    var favText = WLFavorites.getFavoriteText(fav - 1, false, 'trusted ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")
                         .removeClass("myfavorite")
