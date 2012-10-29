@@ -24,6 +24,7 @@ var retryMessage = '';
 var queryStr = '';
 var inThePresent = true;
 var scrollBottom = true;
+var queryStrIsJob = false;
 
 var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
@@ -2599,6 +2600,29 @@ $(window).ready(function() {
     $("#searchForm").submit(function(){
         queryStr = $('#query').val();
         inThePresent = false;
+		queryStrIsJob = false;
+		
+		// If  query string is a job # open new window with job detail page.
+		var re = new RegExp(/^\#?\d+$/);
+		if (queryStr.match(re)) {
+			$.ajax({
+			  type: 'POST',
+			  url: "getworklist.php",
+			  data: { 'query': queryStr},
+			  success: function(json) {
+					if (json[0] == "redirect") {
+						queryStrIsJob = true;
+						queryStr = queryStr.replace('#', '');
+						window.open('workitem.php?job_id=' + queryStr + '&action=view', '_newtab');
+					}
+				},
+			  dataType: 'json',
+			  async: false
+			});
+			if (queryStrIsJob == true) {
+				return false;
+			}
+		}
 
         var entries = $("#entries");
         entries.empty();
