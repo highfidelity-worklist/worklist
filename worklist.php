@@ -1266,7 +1266,7 @@ if (is_object($inProject)) {
     </p>
     <h2 style="line-height:48px">Project: <?php echo $inProject->getName(); ?>[#<?php echo $inProject->getProjectId(); ?>] </h2>
     <ul class="descriptionHolder">
-        <li><strong>Description:</strong> <?php echo nl2br(linkify(htmlspecialchars($inProject->getDescription()))); ?></li>
+        <li><strong>Description:</strong> <?php echo nl2br(linkify($inProject->getDescription())); ?></li>
 <?php endif; ?>
     </ul>
     <ul class="detailContainer">

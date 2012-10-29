@@ -921,6 +921,9 @@ function checkLogin() {
         $original = $url;
         
         if(!$process) {
+            if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
+                $url = utf8_encode($url);
+            }
             return "<a href=\"" . htmlentities($url, ENT_QUOTES, "UTF-8") . "\">" . htmlspecialchars($url) . "</a>";
         }
 
@@ -1016,13 +1019,15 @@ function checkLogin() {
         $url = htmlspecialchars_decode($url);
 
         $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
-       if (!$bot) {
-           $url = htmlentities($url, ENT_QUOTES, "UTF-8");
-       }
+        if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
+            $url = utf8_encode($url);
+        }
+        if (!$bot) {
+            $url = htmlentities($url, ENT_QUOTES, "UTF-8");
+        }
+        $url = nl2br($url);
         $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
         $url = preg_replace_callback($reg, 'decodeDelimitedLinks', $url);
-        $url = nl2br($url);
-        $url = utf8_encode($url);
         return $url;
     }
 
