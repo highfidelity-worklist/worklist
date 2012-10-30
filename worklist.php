@@ -507,6 +507,7 @@ require_once('opengraphmeta.php');
         if (prepend) {
             // animate in each row
             $(row).hide().prependTo('.table-worklist tbody').fadeIn(300);
+            $('#workitem-' + json[0]).removeAttr('style');
             setTimeout(function(){
                 if (moreJson && idx-- > 1) {
                     topIsOdd = !topIsOdd;
