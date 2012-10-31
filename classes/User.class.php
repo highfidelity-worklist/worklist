@@ -433,34 +433,7 @@ class User {
         
         $this->setBudget($this->setRemainingFunds());
         $this->save();
-        
-        if ($this->getBudget() <= 0 && $budgetDepletedSent === false) {  // Send email
-//            $payersList = User::getPayerList();
-            $payerList = array();
-
-            $payersList[] = $this;
-            $runnerNickname = $this->getNickname();
-            
-            foreach ($payersList as $payer) {
-                $subject = $runnerNickname . "'s budget depleted";
-            
-                $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId() . "&tab=tabBudgetHistory";
-            
-                $body  = '<p>Hello,</p>';
-                $body .= '<p>' . $runnerNickname . '\'s current budget is now depleted.</p>';
-                $body .= '<p>To go to the Team Page, click <a href="' . $link . '">here</a></p>';
-            
-                $plain  = 'Hello,\n\n';
-                $plain .= $runnerNickname . '\'s current budget is now depleted.\n\n';
-                $plain .= 'To go to the Team Page, click ' . $link . "\n\n";
-                        
-                if (! send_email($payer->getUsername(), $subject, $body, $plain)) { 
-                    error_log("signup.php: send_email failed on depleted Runner warning");
-                }
-            }
-        
-        }
-        
+       
     }
 
     public function getRemainingFunds()

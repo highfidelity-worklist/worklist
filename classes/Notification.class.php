@@ -718,7 +718,7 @@ class Notification {
                 $headers['From'] = '"' . $project_name . '-expired bid" ' . $from_address;
                 $body = "<p>Job " . $itemLink . "<br />";
                 $body .= "Your Bid on #" . $itemId . " has expired and this task is still available for Bidding.</p>";
-                $body .= "<p>Your Bid Info<br />";
+                $body .= '<p>Bidder: ' . $workitem->getMechanic()->getNickname() . '<br />';
                 $body .= "Bid Amount : $" . $data['bid_amount'] . "</p>";
                 $body .= '<p>Project: ' . $project_name . '<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
