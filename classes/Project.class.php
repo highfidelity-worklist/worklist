@@ -479,12 +479,12 @@ class Project {
                             project_id = " . $project['project_id'];
                 $resultCount = mysql_query($query);
                 $resultCount = mysql_fetch_object($resultCount);
-                    
-                $feesCount = 0;
-                $bCount = $resultCount->bidding;
-                $uCount = $resultCount->underway;
-                $cCount = $resultCount->completed;
 
+                $feesCount = 0;
+                $bCount = $resultCount->bidding === NULL ? 0 : $resultCount->bidding;
+                $uCount = $resultCount->underway === NULL ? 0 : $resultCount->underway;
+                $cCount = $resultCount->completed === NULL ? 0 : $resultCount->completed;
+	
                 if($cCount) {
                     $feesQuery = "SELECT SUM(F.amount) as fees_sum FROM " . FEES . " F,
                             " . WORKLIST . " W
