@@ -646,7 +646,8 @@ td.textAlignReport {
 }
 
 .taskAge {
-    width: 57px;
+    width: 62px;
+    font-size: .7em;
 }
 
 .taskWho,

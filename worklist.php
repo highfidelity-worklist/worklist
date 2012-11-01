@@ -462,15 +462,19 @@ require_once('opengraphmeta.php');
            '</td>';
 
         if (json[2] = 'Working' && json[11] != null) {
-            var pastDuePre = '', pastDuePost = '';
-            if ((RelativeTime(json[11], true) + ' from now').replace(/0 sec from now/, 'Past due') == 'Past due') {
-                pastDuePre = "<span class='past-due'>";
-                pastDuePost = "</span>";
+            var pastDuePre = '', 
+                pastDuePost = '',
+                strAge = RelativeTime(json[11], true);
+            if (strAge.substr(0, 1) == '-') {
+                strAge = strAge.substr(1);
+                strAge = "<span class='past-due'>Due: " + strAge + '</div>';
+            } else {
+                strAge = strAge + ' from now';
             }
             row += '<td>' +
                      '<div class="taskAge">' + 
                        '<span>' +
-                         pastDuePre + (RelativeTime(json[11], true) + ' from now').replace(/0 sec from now/,'Past due') + pastDuePost +
+                         strAge
                        '</span>' +
                      '</div>' +
                    '</td>';
