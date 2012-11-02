@@ -718,7 +718,7 @@ class Notification {
                 $headers['From'] = '"' . $project_name . '-expired bid" ' . $from_address;
                 $body = "<p>Job " . $itemLink . "<br />";
                 $body .= "Your Bid on #" . $itemId . " has expired and this task is still available for Bidding.</p>";
-                $body .= '<p>Bidder: ' . $workitem->getMechanic()->getNickname() . '<br />';
+                $body .= "<p>Bidder: " . $data['bidder_nickname'] . "<br />";
                 $body .= "Bid Amount : $" . $data['bid_amount'] . "</p>";
                 $body .= '<p>Project: ' . $project_name . '<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -1236,7 +1236,7 @@ class Notification {
     }
     // get list of expired bids
     public function emailExpiredBids(){
-        $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount, r.username runner_email
+        $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount, r.username runner_email, u.nickname bidder_nickname
             FROM " . WORKLIST . " w
               LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
               LEFT JOIN " . USERS . " u ON u.id = b.bidder_id
@@ -1256,8 +1256,8 @@ class Notification {
                 $options['workitem'] = new WorkItem();
                 $options['workitem']->loadById($row['worklist_id']);
                 $options['type'] = "expired_bid";
-                $data = array('bid_amount'=>$row['bid_amount']);
-
+                $data = array('bid_amount' => $row['bid_amount'], 'bidder_nickname' => $row['bidder_nickname']);
+                
                 self::workitemNotify($options, $data);
                 
                 $bquery = "UPDATE " . BIDS . " SET expired_notify = 1 WHERE id = " . $row['bid_id'];
