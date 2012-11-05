@@ -8,67 +8,78 @@
 <?php   } else if (isset($_SESSION['userid'])) {  ?>
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo $_SESSION['userid']; ?>' />
 <?php   }  ?>
-        <p class="floatLeft">
-            <label id="lblAmount">Amount<br />
-                <input type="text" name="bid_amount" id="bid_amount" class="text-field money" size="48" />&nbsp;USD
-            </label>
-        </p>
+        <div id="bid_amount_conatiner">
+            <p class="floatLeft" class="bid_amount_p">
+                <label id="lblAmount" class="bid_amount_heading">Bid amount<br />
+                    <input type="text" name="bid_amount" id="bid_amount" class="text-field money bid_amount_textfield" /><div id="place_bid_usd" class="bid_amount_heading">&nbsp;USD</div>
+                </label>
+            </p>
+            <div id="bid_amount_description" >
+                Often, the manager of a job (called a runner) is more concerned with the expected quality of your work (based on your notes below) than 
+                the amount you bid.     
+                <div class="clear"></div>         
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="place_bid_divider"></div>
         
         <div class="clear"></div>
-        <div id="bidDone" class="">
-            <label>Done In</label>
-            <div class="timeSlider" id="bidDoneSlider">
-                <div class="sliderStepsArea">
-                    <div class="sliderStep sliderStepFirst">
-                        <div class="sliderStepValue" >2 hours</div>
-                    </div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep sliderStepLast"></div>
-                    <div class="sliderStep sliderStepLast sliderStepLastEmpty"></div>
-                </div>
-            </div>
-            <input type="hidden" name="done_in" id="done_in" value="2 hours" />
-        </div>
         <?php if ($worklist['status'] == 'SuggestedWithBid' || $worklist['status'] == 'Suggested') { ?>
         <input type="hidden" name="bid_expires" id="bid_expires" value="1 years" />
         <?php } else { ?>
         <div class="clear"></div>
-        <div id="bidExpires" class="">
-            <label>Bid Expires</label>
-            <div class="timeSlider" id="bidExpireSlider">
-                <div class="sliderStepsArea">
-                    <div class="sliderStep sliderStepFirst">
-                        <div class="sliderStepValue" >7 days</div>
-                    </div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep"></div>
-                    <div class="sliderStep sliderStepLast"></div>
-                    <div class="sliderStep sliderStepLast sliderStepLastEmpty"></div>
-                </div>
-            </div>
-            <input type="hidden" name="bid_expires" id="bid_expires" value="7 days" />
-            
-        </div>
-       <?php } ?>
+        <input type="hidden" name="bid_expires" id="bid_expires" value="7 days" />
+        <?php } ?>
         <div class="clear"></div>
-
-        <p><label>Notes <small>(mandatory)</small></label><br />
-            <textarea class="notes expand100-200" name="notes" id="notes" /></textarea>
-        </p>
-
+        <div id="bid_notes" >
+            <div><label class="bid_amount_heading">Notes <span class="bid_notes_required">(required)</span></label><br />
+                <textarea class="notes expand100-200 bid_notes_textarea" name="notes" id="notes" /></textarea>
+                <div id="bid_notes_decsription" class="bid_notes_decsription">
+                    This is where you describe to the runner your approach on how to get this job done. These
+                     notes are one tool Runners (job managers) use to compare bidders and decide who is 
+                     right for the job.                   
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="place_bid_divider"></div>
+            <div id="bid_done_container" >
+               <div id="bidDone" >
+               <div id="bid_done_description" >
+                   <span class="bid_amount_heading">Done in ... <br/></span>
+                   <div id="bid_done_explanation">From the time I start working on this job, it will take me this amount of time to finish...</div>          
+               </div>
+               <div id="time_slider_container" >
+                   <div id="right_border" ></div>
+                   <div class="timeSlider" id="bidDoneSlider">
+                       <div class="sliderStepsArea">
+                           <div class="sliderStep sliderStepFirst">
+                               <div class="sliderStepValue" >2 hours</div>
+                           </div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep"></div>
+                           <div class="sliderStep sliderStepLast">
+                           </div> 
+                           <div class="sliderStep sliderStepLast sliderStepLastEmpty">
+                           </div>
+                      </div>
+                  </div>
+                  <div class="clear"></div>
+               </div>
+             </div>
+             <div class="clear"></div>
+             </div>
+             <input type="hidden" name="done_in" id="done_in" value="2 hours" />
+             <div class="clear"></div>
+       
+        
         <script type="text/javascript">
             // see http://regexlib.com/REDetails.aspx?regexp_id=318
             // but without dollar sign 22-NOV-2010 <krumch>
@@ -89,20 +100,7 @@
                     $('#bid').addClass('button-disabled').prop('disabled', true);
                 }
             });
-            $('#notes').focus(function() {
-                $('#notes').css('color', '#000000');
-                $('#notes').css('font-style', 'normal');
-                if($("#notes").val() == bidNotesHelper) {
-                    $("#notes").val("");
-                }
-            });
-
-            $('#notes').blur(function() {
-                if($("#notes").val() == bidNotesHelper) {
-                    $('#notes').css('color', '#999999');
-                    $('#notes').css('font-style', 'italic');
-                }
-            });
+    
             $('#popup-bid').submit(function() {
                 if ($('#mechanicBid').length !== 0) {
                     $('#popup-bid #mechanic_id').val($('#popup-bid .mechanicBidList li.ui-combobox-list-selected').attr('val'));
@@ -116,10 +114,15 @@
             });
 
         </script>
-
-             <input type="submit" id="bid" disabled="disabled" class="button-disabled disableable" name="place_bid" value="Place Bid" />
-             <?php if ($worklist['status'] == 'SUGGESTED') { ?>
-             <input type="hidden" name="swb" id="swb" value="swb"  />
-             <?php   }  ?>
+             <div id="submit_bid_button">
+                 <div id="submit_bid_btn_holder"><input type="submit" id="bid" disabled="disabled" class="button-disabled disableable place_bid_button" name="place_bid" value="Place Bid"/></div>
+                 <div id="submit_bid_description" style="">All bids will automatically expire in 7 days. If you would like to indicate a shorter expiration, 
+                      please mention it in your notes above.
+                 </div>
+                 <?php if ($worklist['status'] == 'SUGGESTED') { ?>
+                 <input type="hidden" name="swb" id="swb" value="swb"  />
+                 <?php   }  ?>
+                 <div class="clear"></div>
+             </div>
             </form>
     </div><!-- end of popup-bid -->

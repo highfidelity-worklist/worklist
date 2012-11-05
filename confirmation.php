@@ -129,6 +129,7 @@ if (isset($_REQUEST['str'])) {
     }
 }
 
+
 /*********************************** HTML layout begins here  *************************************/
 
 include("head.html"); ?>

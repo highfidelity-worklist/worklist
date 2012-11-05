@@ -972,7 +972,7 @@ $(document).ready(function(){
     function showConfirmForm(i) {
         if (GitHub.validate()) {
             $('#popup-confirmation-type').val(i);
-            $('#popup-confirmation').dialog('open');
+            $('#popup-confirmation').dialog('open');			
         } else {
             GitHub.handleUserConnect();
         }
@@ -995,7 +995,9 @@ $(document).ready(function(){
     }
 
     function showPlaceBidForm() {
+      $('#popup-bid').dialog("option", "width", 695);     
       $('#popup-bid').dialog('open');
+      $('#popup-bid').dialog("option", "title", "New Title");
       return false;
     }
 

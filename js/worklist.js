@@ -249,9 +249,6 @@ jQuery.fn.DefaultValue = function(text){
 
 $(function() {
     $('#share-this').hide();
-    $("#notes").DefaultValue(bidNotesHelper);
-    $('#notes').css('color','#999999');
-    $('#notes').css('font-style','italic');
     $("#query").DefaultValue("Search...");
     if ($("#budgetPopup").length > 0) {
         $("#budgetPopup").dialog({
