@@ -128,6 +128,7 @@ if (isset($_REQUEST['save_account'])) {
     // has the nickname changed? update the database
     $nickname = trim($_REQUEST['nickname']);
     if($nickname != $_SESSION['nickname']) {
+        $oldNickname = $_SESSION['nickname'];
         $user = new User();
         $user->findUserByNickname($nickname);
 
@@ -163,6 +164,8 @@ if (isset($_REQUEST['save_account'])) {
                 'error' => 1,
                 'messsage' => $errormsg
             )));
+        } else {
+            sendJournalNotification("The new nickname for user '" . $oldNickname . "' is: '" . $nickname . "'");
         }
     }
 

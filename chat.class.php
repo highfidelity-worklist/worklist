@@ -640,7 +640,6 @@ mysql_select_db(DB_NAME) or die(mysql_error());
     }
 
     function sendEntry($author, $message, $data = array(), $internal = false, $encode = true) {
-    error_log("sendEntry: $author : $message ");
     
         $sampled = isset($data['sampled']) ? 1 : 0;
         
@@ -921,6 +920,26 @@ mysql_select_db(DB_NAME) or die(mysql_error());
             }
 
             $id = mysql_insert_id();
+            if ($id == 0 && $retries == 0 && $userId != BOT_USER_ID) {
+                if (isset($_SESSION['userid']) && isset($_SESSION['nickname']) && $_SESSION['userid']) {
+                    $lastUserInfo = getUserById($_SESSION['userid']);
+                    if ($lastUserInfo->nickname != $author && $_SESSION['nickname'] != $lastUserInfo->nickname) {
+                        $author = $lastUserInfo->nickname;
+                        $_SESSION['nickname'] = $lastUserInfo->nickname;
+                        $sql = "INSERT INTO ".ENTRIES." (`id`, `user_id`, `entry`, `author`,`ip`, `date`, `sampled`) ".
+                                " (SELECT NULL, {$userId}, '{$message}', '{$author}', '{$ip}', CURRENT_TIMESTAMP, '{$sampled}' ".
+                                " FROM ".USERS.
+                                " WHERE (".
+                                    " nickname='{$author}' ". 
+                                    " AND `id` = {$userId} ".
+                                " ) OR ( ".
+                                    " '{$userId}' IN ('0','".BOT_USER_ID."') ". 
+                                " ) LIMIT 1 );";
+                        $rt = mysql_unbuffered_query($sql);
+                        $id = mysql_insert_id();
+                    }
+                }
+            }
             if( preg_match_all('/(\#[1-9][0-9]+)/i', $message, $matches)) {
                 $distinctMatches= array_unique($matches[0]);
                 foreach($distinctMatches as $match){

@@ -1451,7 +1451,6 @@ var speakerCount = 0;
 function fillSpeakerList(newSpeakerList, currentUser){
     var online, updateTimes = false;
     var combined = combineSpeakerLists(oldSpeakerList, newSpeakerList);
-
     /* If no positional changes, just update opacity. */
     if (combined[0] == 0) {
         updateTimes = true;
@@ -1502,7 +1501,12 @@ function fillSpeakerList(newSpeakerList, currentUser){
     }
 
     for (var i = 0; i < newSpeakerList.length; i++){
-        if (newSpeakerList[i][0] == 0) $('#online-users .user'+newSpeakerList[i][0]+' span').text(newSpeakerList[i][1]);
+        if (newSpeakerList[i][0] == 0) {
+            $('#online-users .user'+newSpeakerList[i][0]+' span').text(newSpeakerList[i][1]);
+        }
+        if ($('#online-users .user'+newSpeakerList[i][0]+' span').text() != newSpeakerList[i][1]) {
+            $('#online-users .user'+newSpeakerList[i][0]+' span').text(newSpeakerList[i][1]);
+        }
         $('#online-users .user'+newSpeakerList[i][0]).css('opacity', getSpeakerOpacity(newSpeakerList[i][2]));
     }
 
