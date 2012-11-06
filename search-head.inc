@@ -60,8 +60,8 @@
             );
         }
 
-        $box = '<select id="statusCombo" name="status" multiple="multiple" style="display:none">';
-        $box .= '<option value="ALL"' . (($filter->inStatus("ALL") ) ? ' selected="selected"' : '') . '> ' . $allDisplay . '</option>';
+        $box = '<select id="statusCombo" name="status" multiple="multiple">';
+        $box .= '<option value="ALL"' . (($filter->inStatus("ALL") || ($filter->inStatus(""))) ? ' selected="selected"' : '') .' > ' . $allDisplay . '</option>';
         
         foreach ($status_array as $status) {
             $selected = '';

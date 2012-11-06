@@ -44,20 +44,20 @@ $page = $filter->getPage();
 $where = '';
 
 // Status filter
-if (!empty($sfilter)) {
+if ($sfilter) {
     $where = "WHERE (";
     foreach ($sfilter as $val) {
 
         $val = mysql_real_escape_string($val);
 
-            if ($val == 'ALL' && !$is_runner) {
+            if (($val == 'ALL' || $val == '') && !$is_runner) {
                 /**
                  * if current user is not a runner and is filtering by ALL 
                  * status it wont fetch workitems in DRAFT status
                  */
                 $where .= "1 AND status != 'Draft' OR ";
             }
-            if ($val == 'ALL' && $is_runner == 1 ){
+            if (($val == 'ALL' || $val == '') && $is_runner == 1 ){
                 /**
                  * if current user is a runner and is filtering by ALL status 
                  * it wont fetch workitems in DRAFT status created by any other

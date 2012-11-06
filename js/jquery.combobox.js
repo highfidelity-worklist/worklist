@@ -414,6 +414,8 @@
                 if (this.el.hasClass("divComboBox")) {
                     // write the text in the textbox
                     this.textbox.html(firstValueHtml + more);
+                } else if (firstValue == "") {
+                    this.textbox.val("All Status");
                 } else {
                     // write the text in the textbox
                     this.textbox.val(firstValue + more);
