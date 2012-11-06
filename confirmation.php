@@ -127,6 +127,19 @@ if (isset($_REQUEST['str'])) {
         $user->save();
         Utils::redirect('settings.php?ppconfirmed');
     }
+} elseif (isset($_REQUEST['emstr'])) {
+    // new email address confirmation
+    $user = new User();
+    $new_email = mysql_real_escape_string(base64_decode($_REQUEST['emstr']));
+
+    if (! $user->findUserByUsername($_SESSION['username'])) {
+        Utils::redirect('login.php'); //we are not logged in
+    }
+    //save new email
+    $user->setUsername($new_email);	
+    $user->save();
+    $_SESSION['username'] = $new_email; 
+    Utils::redirect('settings.php?emconfirmed');
 }
 
 

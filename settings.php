@@ -169,6 +169,68 @@ if (isset($_REQUEST['save_account'])) {
         }
     }
 
+    // has the email changed? send confirm.
+    $username = trim($_REQUEST['username']);
+    if ($username != $_SESSION['username']) {
+    	//we need to check if the username exists
+    	$user = new User();
+    	if ( $user->findUserByUsername($username)) {
+    	    die(json_encode(array(
+ 	        'error' => 1,
+               'message' => "This e-mail address is already linked to a Worklist account."
+    	    )));
+       }
+    	
+    	$user->findUserByUsername($_SESSION['username']);
+    	//send out confirm email
+    	$email_hash = md5(date('r', time()));;
+    	
+    	// generate email for confirm to new email address
+    	$subject = "Your email has changed.";
+    	
+    	$link = SECURE_SERVER_URL . "confirmation.php?emstr=" . base64_encode($username);
+    	$worklist_link = SERVER_URL . "worklist.php";
+    	
+    	$body  = '<p>Dear ' . $user->getNickname() . ',</p>';
+    	$body .= '<p>Please confirm your new email address in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
+    	$body .= '<p><a href="' . $link . '">Click here to confirm your email address</a></p>';
+    	
+    	$plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
+    	$plain .= 'Please confirm your new email address in the Worklist.' . "\n\n";
+    	$plain .= $link . "\n\n";
+    	
+    	$confirm_email = "An email containing a confirmation link was sent to your email address.<br/>";
+    	$confirm_email .= "Please click on that link to verify your email address.";
+    	
+    	echo json_encode(array( 'confirm_email' => $confirm_email));
+    	
+    	if (! send_email($username, $subject, $body, $plain)) {
+           error_log("settings.php: send_email failed");
+    	    $confirm_txt = "There was an issue sending email. Please try again or notify support@worklist.net";
+    	}
+    	
+    	// generate email to current email address
+    	$subject = "Account email updated.";
+    	 
+    	$worklist_link = SERVER_URL . "worklist.php";
+    	 
+    	$body  = '<p>Hello you!,</p>';
+    	$body .= '<p>We received a request to update your email address for your Worklist.net account.</p>';
+    	$body .= '<p>If you did not make this request, please contact support@worklist.net immediately.</p>';
+    	$body .= '<p>See you at the <a href='.SERVER_URL.'>Worklist</a></p>';
+    	
+    	$plain  = 'Hello you! ,' . "\n\n";
+    	$plain .= 'We received a request to update your email address for your Worklist.net account.' . "\n\n";
+    	$plain .= 'If you did not make this request, please contact support@worklist.net immediately.' . "\n\n";
+    	$plain .= 'See you in the Worklist' . "\n\n";
+    	
+    	if (! send_email($_SESSION['username'], $subject, $body, $plain)) {
+    	    error_log("settings.php: send_email failed");
+    	    $confirm_txt = "There was an issue sending email. Please try again or notify support@worklist.net";
+    	}
+    	$messages[] = "We receieved your request to modify your email.";
+    }
+
 } else if (isset($_REQUEST['save_personal'])) {
     $about = isset($_REQUEST['about']) ? strip_tags(substr($_REQUEST['about'], 0, 150)) : "";
     $skills = isset($_REQUEST['skills']) ? strip_tags($_REQUEST['skills']) : "";
@@ -224,7 +286,7 @@ if (isset($_REQUEST['save_account'])) {
         $confirm_txt = "An email containing a confirmation link was sent to your payment email address. Please click on that link to verify your payment email address and activate your account.";
         if (! send_email($paypal_email, $subject, $body, $plain)) {
             error_log("signup.php: send_email failed");
-            $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
+            $confirm_txt = "There was an issue sending email. Please try again or notify support@worklist.net";
         }
 
         $user->setPaypal_verified(false);
@@ -438,7 +500,7 @@ include("head.html");
     function saveSettings(type) {
         var values;
         if (type == 'account') {
-            var massValidation = LiveValidation.massValidate( [ nickname, city ]);
+            var massValidation = LiveValidation.massValidate( [ nickname, city, username ]);
             if (massValidation) {
                 values = {
                     int_code: $('#int_code').val(),
@@ -514,6 +576,8 @@ include("head.html");
 
                 if (type == 'payment' && json) {
                     $('#msg-'+type).html(message + '<br/>' + json);
+                } else if (settings_json.confirm_email) {
+                    $('#msg-'+type).html(message + '<br/>' + settings_json.confirm_email) ;
                 } else {
                     $('#msg-'+type).html(message);
                 }
@@ -560,24 +624,32 @@ include("head.html");
         }
     }
     $(document).ready(function () {
-<?php if (isset($_REQUEST['ppconfirmed'])) : ?>
+<?php if (isset($_REQUEST['ppconfirmed']) || isset($_REQUEST['emconfirmed'])) : ?>
         $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
+
+        <?php if (isset($_REQUEST['ppconfirmed'])){  ?>
+            var $title = 'Your Paypal address was confirmed';
+            var $content = 'Thank you for confirming your Paypal address.<br/><br/>You can now bid on items in the Worklist!<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
+        <?php } else { ?>
+            var $title = 'Your email change is confirmed.';
+            var $content = 'Thank you for confirming your changed email address.<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
+        <?php } ?>
+            
         $('#popup-confirmed').dialog({
             dialogClass: "white-theme",
             modal: true,
-            title: 'Your Paypal address was confirmed',
+            title: $title,
             autoOpen: true,
             width: 300,
             position: ['top'],
             open: function() {
-                $('#popup-confirmed .content').html('Thank you for confirming your Paypal address.<br/><br/>You can now bid on items in the Worklist!<br/><br/><input style="" class="closeButton" type="button" value="Close" />');
+                $('#popup-confirmed .content').html($content);
                 $('#popup-confirmed .closeButton').click(function() {
                     $('#popup-confirmed').dialog('close');
                 });
             }
         });
 <?php endif; ?>
-
         var pictureUpload = new AjaxUpload('profilepicture', {
             action: 'api.php',
             name: 'profile',
@@ -701,6 +773,19 @@ include("head.html");
             nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );
             nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
             nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
+        </script>
+
+        <p>
+            <label for="username">Email </label>
+            <br />
+            <span class="required-bullet">*</span>
+            <input type="text" id="username" name="username" class="text-field" size="35" value="<?php echo $_SESSION['username']; ?>" />
+        </p>
+        <script type="text/javascript">
+            var username = new LiveValidation('username', {validMessage: "Valid email address."});
+            username.add( Validate.Email );
+            username.add(Validate.Length, { minimum: 4, maximum: 50 } );
+            username.add(Validate.Exclusion, { within: [ 'username' ], failureMessage: "You must set your Email!" });
         </script>
 
         <p><label for = "timezone">What timezone are you in?</label><br />
