@@ -255,6 +255,7 @@ class Notification {
         switch ($options['type']) {
             case 'comment':
                 $headers['From'] = '"' . $project_name . '-comment" ' . $from_address;
+                $headers['Reply-To'] = '"' . $_SESSION['nickname'] . '" <' . $_SESSION['username'] . '>';
                 $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
                 $body .= $data['who'] . ' says:<br />'
                       . $data['comment'] . '<br /><br />'
