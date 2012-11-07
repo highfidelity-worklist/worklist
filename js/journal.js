@@ -1388,7 +1388,7 @@ function getNewSpeaker(newSpeaker) {
     
     if (newSpeaker[0] != 0 && $.inArray(newSpeaker[0], favoriteUsers) != -1) {
         span.addClass('favorite');
-        span.append('<div class="myfavorite">&nbsp;</div>');
+        span.append($('<div></div>').addClass('myfavorite'));
     }
     
     h6.className = 'user'+newSpeaker[0];
