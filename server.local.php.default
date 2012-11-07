@@ -70,7 +70,7 @@ defineOnce('S3_URL_BASE',   'https://'.S3_BUCKET.'.s3.amazonaws.com/');
 //////////////Shouldn't need to change anything below here////////////////
 
 // Where is the Database?
-define('DB_SERVER', 'mysql.dev.sendlove.us');
+define('DB_SERVER', 'dev-db.worklist.net');
 define('DB_USER', 'dev_worklist');
 define('DB_PASSWORD', 'unsecure');
 define('DB_NAME', 'dev_worklist');
