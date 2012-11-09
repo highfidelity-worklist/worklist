@@ -31,6 +31,8 @@ $messages = array();
 $errors = 0;
 $error = new Error();
 $phone_changed = false;
+$settings_link = SECURE_SERVER_URL . "settings.php";
+$worklist_link = SERVER_URL . "worklist.php";
 
 // process updates to user's settings
 if (isset($_REQUEST['save_account'])) {
@@ -121,7 +123,12 @@ if (isset($_REQUEST['save_account'])) {
             $_SESSION['new_user'] = '';
             $saveArgs = array();
         } else {
-            $messages[] = "Your country/phone settings have been updated.";
+              // we need to check if phone/country/timezone or city settings have changed
+              // so as to send correct message in mail
+        	if ($user->getCity() != $_REQUEST['city'] || $user->getCountry() != $_REQUEST['country']
+        	    || $user->getPhone() != $_REQUEST['phone'] || $user->getTimezone() != $_REQUEST['timezone']){     		
+                  $messages[] = "Your country/phone settings have been updated.";
+              }        
         }
     }
 
@@ -173,7 +180,6 @@ if (isset($_REQUEST['save_account'])) {
     $username = trim($_REQUEST['username']);
     if ($username != $_SESSION['username']) {
     	//we need to check if the username exists
-    	$user = new User();
     	if ( $user->findUserByUsername($username)) {
     	    die(json_encode(array(
  	        'error' => 1,
@@ -189,11 +195,13 @@ if (isset($_REQUEST['save_account'])) {
     	$subject = "Your email has changed.";
     	
     	$link = SECURE_SERVER_URL . "confirmation.php?emstr=" . base64_encode($username);
-    	$worklist_link = SERVER_URL . "worklist.php";
     	
     	$body  = '<p>Dear ' . $user->getNickname() . ',</p>';
     	$body .= '<p>Please confirm your new email address in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
-    	$body .= '<p><a href="' . $link . '">Click here to confirm your email address</a></p>';
+    	$body .= '<p><a href=' . $link . '>Click here to confirm your email address</a></p>';
+       $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
+       $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
+
     	
     	$plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
     	$plain .= 'Please confirm your new email address in the Worklist.' . "\n\n";
@@ -211,9 +219,6 @@ if (isset($_REQUEST['save_account'])) {
     	
     	// generate email to current email address
     	$subject = "Account email updated.";
-    	 
-    	$worklist_link = SERVER_URL . "worklist.php";
-    	 
     	$body  = '<p>Hello you!,</p>';
     	$body .= '<p>We received a request to update your email address for your Worklist.net account.</p>';
     	$body .= '<p>If you did not make this request, please contact support@worklist.net immediately.</p>';
@@ -273,7 +278,6 @@ if (isset($_REQUEST['save_account'])) {
         $subject = "Your payment details have changed";
 
         $link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
-        $worklist_link = SERVER_URL . "worklist.php";
 
         $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
         $body .= '<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
@@ -335,6 +339,9 @@ if (!empty($saveArgs)) {
         foreach ($messages as $msg) {
             $body .= "&nbsp;&nbsp;$msg<br/>";
         }
+        $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
+        $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
+
         if(!send_email($to, $subject, $body)) { error_log("settings.php: send_email failed"); }
 
         $msg="Account updated successfully!";
@@ -563,6 +570,7 @@ include("head.html");
             url: 'settings.php',
             data: values,
             success: function(json) {
+               
                 var message = 'Account settings saved!';
                 var settings_json = isJSON(json) ? jQuery.parseJSON(json) : null;
                 if (settings_json && settings_json.error) {
@@ -572,15 +580,15 @@ include("head.html");
                     } else {
                         message = json.message;
                     }
-                }
-
+                } 
                 if (type == 'payment' && json) {
                     $('#msg-'+type).html(message + '<br/>' + json);
-                } else if (settings_json.confirm_email) {
+                } else if (settings_json && settings_json.confirm_email) {
                     $('#msg-'+type).html(message + '<br/>' + settings_json.confirm_email) ;
                 } else {
                     $('#msg-'+type).html(message);
                 }
+                
             },
             error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');
