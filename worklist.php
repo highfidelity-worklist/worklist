@@ -461,7 +461,7 @@ require_once('opengraphmeta.php');
              '</div>' +
            '</td>';
 
-        if (json[2] = 'Working' && json[11] != null) {
+        if (json[2] == 'Working' && json[11] != null) {
             var pastDuePre = '', 
                 pastDuePost = '',
                 strAge = RelativeTime(json[11], true);
@@ -478,14 +478,25 @@ require_once('opengraphmeta.php');
                        '</span>' +
                      '</div>' +
                    '</td>';
-        } else if (json[2] == 'DONE' && json[11] != null) {
+        } else if (json[2] == 'Done' ) {
+           if(json[6] != null){
             row += '<td>' +
                      '<div class="taskAge">' + 
                        '<span>' +
-                         json[11] +
+                          RelativeTime(json[6], true) +
                        '</span>' +
                      '</div>' +
                    '</td>';
+           }else{
+				
+            row += '<td>' +
+                     '<div class="taskAge">' + 
+                       '<span>' +
+                          'unknown'
+                       '</span>' +
+                     '</div>' +
+                   '</td>';
+           }
         } else {
             row += '<td>' +
                      '<div class="taskAge">' + 
