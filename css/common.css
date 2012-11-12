@@ -294,3 +294,77 @@ pre, .pre {
 .ln-letters a.ln-disabled, .ln-pages a.ln-disabled  {
     color: #cccccc;
 }
+
+#popup-edit textarea {
+    height: 165px;
+}
+
+#more-accordion #more-panel {
+    margin: 0;
+    width: 386px;
+    padding-top: 6px;
+}
+
+#more-panel.ui-accordion-content {
+    margin-top: 5px;
+    padding: 0px;
+    background-color: #FFFFDD;
+}
+
+#more-panel.ui-widget-content {
+    background-image: none;
+}
+
+.activeBox,
+#projectActiveBox,
+#projectPopupActiveBox {
+    position: absolute;
+    background: #AAAAAA;
+    display: none;
+    height: 20px;
+    z-index: 100;
+    margin-left: 2px;
+}
+
+.activeBox label,
+#projectActiveBox label,
+#projectPopupActiveBox label {
+    line-height: 20px;
+    padding-left: 3px;
+}
+
+.bid_action_button{
+    text-align: right;
+    margin-top: 6px;
+}
+
+input[type=text], input[type=password], textarea {
+    border: 2px solid #d1cfcf;;
+    padding:2px 5px;
+    margin-bottom:3px;
+    font-size:12px;
+}
+
+#itemProjectCombo {
+    width: 357px;
+}
+
+#itemStatusCombo {
+    width: 355px;
+}
+
+input[type=text]:active, 
+input[type=text]:hover, 
+input[type=text]:focus,
+textarea:active, 
+textarea:hover, 
+textarea:focus,
+input[type=password]:active, 
+input[type=password]:hover, 
+input[type=password]:focus {
+    border: 2px solid #876F6D;
+}
+
+.popup-body #bug_job_id {
+    width: 50px;
+}

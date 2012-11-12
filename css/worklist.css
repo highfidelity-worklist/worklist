@@ -47,14 +47,6 @@ a:hover {
     width:70px;
 }
 
-#popup-edit textarea{
-    height: 165px;
-}
-
-.popup-body #bug_job_id {
-    width: 50px;
-}
-
 .bugJobSummary {
     display: block;
     margin: 0;
@@ -580,10 +572,6 @@ td.textAlignReport {
 #searchForm  div > p {
     margin-bottom: 0 !important;
 }
-.bid_action_button{
-    text-align: right;
-    margin-top: 6px;
-}
 
 #add {
     font-weight: bold;
@@ -970,32 +958,6 @@ input.button-disabled ,
 .profile-link{
     cursor: pointer;
 }
-.activeBox,
-#projectActiveBox,
-#projectPopupActiveBox {
-    position: absolute;
-    background: #AAAAAA;
-    display: none;
-    height: 20px;
-    z-index: 100;
-    margin-left: 2px;
-}
-
-.activeBox label,
-#projectActiveBox label,
-#projectPopupActiveBox label {
-    line-height: 20px;
-    padding-left: 3px;
-}
-
-#itemProjectCombo {
-    width: 357px;
-}
-
-#itemStatusCombo {
-    width: 355px;
-}
-
 
 #more-accordion #more-panel {
     margin: 0;

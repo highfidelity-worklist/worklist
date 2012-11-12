@@ -257,11 +257,6 @@ input#to, input#for1 {
     padding:5px;
 }
 
-input[type=text]:active, input[type=text]:hover, input[type=text]:focus,
-input[type=password]:active, textare:active, input[type=password]:hover, input[type=password]:focus {
-    border: 2px solid #876f6d;
-}
-
 form input image{border:none;}
 
 .LVspace {height:65px; position:relative;}
@@ -469,7 +464,7 @@ input[type=submit]::-moz-focus-inner, input[type=button]::-moz-focus-inner {
     width:100%;
 }
 
-input, textarea{
+input, textarea#message-pane {
     border: 1px solid #ccc;
     margin: 0;
 }
@@ -1280,51 +1275,6 @@ a[rel="attachment"]{
   z-index: 105;
 }
 
-/*******live validation********-*/
-
-.LV_valid {
-    color:#6aa368;
-    background-image: url(../images/checkedG.gif);
-    background-repeat: no-repeat;
-    background-position: left top;
-    padding: 0 0 3px 20px;
-}
-
-.LV_invalid {
-    color:#d45955;
-    background-image: url(../images/uncheckedR.gif);
-    background-repeat: no-repeat;
-    background-position: left top;
-    padding: 0 0 3px 20px;
-}
-    
-.LV_validation_message{
-    font-weight:bold;
-    margin:0 0 0 5px;
-    display:block;
-}
-    
-input.LV_valid_field,
-input.LV_valid_field:focus,
-input.LV_valid_field:hover, 
-input.LV_valid_field:active,
-textarea.LV_valid_field:hover, 
-textarea.LV_valid_field:active,
-.fieldWithErrors input.LV_valid_field,
-.fieldWithErrors textarea.LV_valid_field {
-    border: 2px solid #6aa368;
-}
-    
-.LV_invalid_field, 
-input.LV_invalid_field:hover, 
-input.LV_invalid_field:active,
-textarea.LV_invalid_field:hover, 
-textarea.LV_invalid_field:active,
-.fieldWithErrors input.LV_invalid_field,
-.fieldWithErrors textarea.LV_invalid_field {
-    border: 2px solid #d45955;
-}
-
 /*** Penaltybox.css ***/
 #popup-penalty p{
   text-align: left;
@@ -1401,10 +1351,6 @@ textarea.LV_invalid_field:active,
 {
     padding: 8px;
     text-align: left;
-}
-
-#popup-edit textarea{
-    height: 110px;
 }
 
 .popup-body input.date {

@@ -2,6 +2,87 @@ if (typeof activeProjectsFlag === 'undefined') {
     var activeProjectsFlag = true;
 };
 
+$(function() {
+
+    $('select[name=itemProject]').bind({
+        'listOpen': function(e,o) {
+            $('#projectPopupActiveBox').width($('.itemProjectComboList').outerWidth());
+            $('#projectPopupActiveBox').css({
+                top: $('.itemProjectComboList').height() + 50,
+                left: $('.itemProjectComboList').css('left')
+            });
+            $('#projectPopupActiveBox').show();
+        },
+        'listClose': function(e,o) {
+            $('#projectPopupActiveBox').hide();
+        }
+    });
+    
+    //Enable/disable job bug id on is_bug checkbox state
+    $("#bug_job_id").ready(function() {
+        if ( !$("#is_bug").is ( ":checked" ) ) {
+            $("#bug_job_id").prop ( "disabled" , true );
+        } else {
+            $("#bug_job_id").removeAttr ( "disabled" );
+        }
+        //bind paste event to lookup for bug job summary 
+        jQuery(document).bind('paste', function(e){
+            $("#bug_job_id").keyup();
+        });
+    });
+
+    //Checkbox is_bug click event
+    $("#is_bug").click(function(){
+        if ( !$(this).is ( ":checked" ) ) {
+            //Disable and clean bug_job_id
+            $("#bug_job_id").prop ( "disabled" , true );
+            $("#bug_job_id").val ("");
+            $('#bugJobSummary').html('');
+            $("#bugJobSummary").attr("title" , 0);
+        } else {
+            //Enable bug_job_id textbox
+            $("#bug_job_id").removeAttr ( "disabled" );
+        }
+    });
+
+    $("#bug_job_id").blur(function() {
+        $("#bug_job_id").keyup();
+    });
+
+    //lookup and show job summary on bug_job_id change
+    $("#bug_job_id").keyup(function() {
+
+        var id=$("#bug_job_id").val();
+        if(id.length) {
+            $.ajax({
+                url: 'getjobinformation.php',
+                dataType: 'json',
+                data: {
+                    itemid:id
+                },
+                type: 'POST',
+                success: function(json) {
+                    if ( !json || json === null ) {
+                        alert("json null in getjobinformation");
+                        return;
+                    }
+                    if ( json.error ) {
+                        alert(json.error);
+                    } else {
+                        if(json.returnString.length>0) {
+                            $('#bugJobSummary').html('<p><small>'+json.returnString+'</small></p>');
+                            $("#bugJobSummary").attr("title" , id);    
+                        } else {
+                            $('#bugJobSummary').html("<p><small>Item doesn't exist</small></p>");
+                            $("#bugJobSummary").attr("title" , 0);
+                        }
+                    }
+                }
+            });
+        }
+    });    
+});
+
     function ResetPopup() {
         $('#for_edit').show();
         $('#for_view').hide();
@@ -34,7 +115,7 @@ if (typeof activeProjectsFlag === 'undefined') {
             show: 'fade',
             hide: 'fade',
             maxWidth: 600,
-            width: 505,
+            width: 415,
             hasAutocompleter: false,
             hasCombobox: false,
             resizable: false,
@@ -79,6 +160,7 @@ if (typeof activeProjectsFlag === 'undefined') {
                                     activeProjectsFlag = 1 - activeProjectsFlag;
                                     o.list.hide();
                                     o.container.removeClass('ui-state-active');
+                                    var filterName = filterName || '.worklist';
                                     // we send an ajax request to get the updated list
                                     $.ajax({
                                         type: 'POST',

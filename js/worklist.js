@@ -264,71 +264,6 @@ $(function() {
         });
     }
 
-    //Enable/disable job bug id on is_bug checkbox state
-    $("#bug_job_id").ready(function() {
-        if ( !$("#is_bug").is ( ":checked" ) ) {
-            $("#bug_job_id").prop ( "disabled" , true );
-        } else {
-            $("#bug_job_id").removeAttr ( "disabled" );
-        }
-        //bind paste event to lookup for bug job summary 
-        jQuery(document).bind('paste', function(e){
-            $("#bug_job_id").keyup();
-        });
-    });
-
-    //Checkbox is_bug click event
-    $("#is_bug").click(function(){
-        if ( !$(this).is ( ":checked" ) ) {
-            //Disable and clean bug_job_id
-            $("#bug_job_id").prop ( "disabled" , true );
-            $("#bug_job_id").val ("");
-            $('#bugJobSummary').html('');
-            $("#bugJobSummary").attr("title" , 0);
-        } else {
-            //Enable bug_job_id textbox
-            $("#bug_job_id").removeAttr ( "disabled" );
-        }
-    });
-
-    $("#bug_job_id").blur(function() {
-        $("#bug_job_id").keyup();
-    });
-
-
-    //lookup and show job summary on bug_job_id change
-    $("#bug_job_id").keyup(function() {
-
-        var id=$("#bug_job_id").val();
-        if(id.length) {
-            $.ajax({
-                url: 'getjobinformation.php',
-                dataType: 'json',
-                data: {
-                    itemid:id
-                },
-                type: 'POST',
-                success: function(json) {
-                    if ( !json || json === null ) {
-                        alert("json null in getjobinformation");
-                        return;
-                    }
-                    if ( json.error ) {
-                        alert(json.error);
-                    } else {
-                        if(json.returnString.length>0) {
-                            $('#bugJobSummary').html('<p><small>'+json.returnString+'</small></p>');
-                            $("#bugJobSummary").attr("title" , id);    
-                        } else {
-                            $('#bugJobSummary').html("<p><small>Item doesn't exist</small></p>");
-                            $("#bugJobSummary").attr("title" , 0);
-                        }
-                    }
-                }
-            });
-        }
-    });
-
     newHash = getPosFromHash();
     if (newHash['userid'] && newHash['userid'] != -1) {
         setTimeout(function(){
@@ -375,22 +310,7 @@ $(function() {
     if ($('#container-statusCombo > .fading').length == 0) {
         $('#container-statusCombo').append('<div class="fading"></div>');
     }
-
-    $('select[name=itemProject]').bind({
-        'listOpen': function(e,o) {
-            $('#projectPopupActiveBox').width($('.itemProjectComboList').outerWidth());
-            $('#projectPopupActiveBox').css({
-                top: $('.itemProjectComboList').height() + 50,
-                left: $('.itemProjectComboList').css('left')
-            });
-            $('#projectPopupActiveBox').show();
-        } 
-    });
-    $('select[name=itemProject]').bind({
-        'listClose': function(e,o) {
-            $('#projectPopupActiveBox').hide();
-        }
-    });   
+      
 });
 
 function sendInviteForm(){
