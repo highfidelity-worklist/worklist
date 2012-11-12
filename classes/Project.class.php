@@ -443,18 +443,10 @@ class Project {
             // Don't hide projects with no commits if it doesn't have a repo
             $where = 'WHERE
                        active=1
-                       AND
-                       (
-                           (
-                               repository != ""
-                               AND
-                               DATE(`last_commit`) BETWEEN DATE_SUB(NOW(), INTERVAL 60 DAY) AND NOW() 
-                           )
-                           OR
-                           (
-                               repository = ""
-                           )
-                       ) ';
+                      AND
+                       owner_id IN (SELECT id FROM ' . USERS . ' WHERE budget >0) 
+                      OR
+                       project_id IN (SELECT project_id FROM ' . WORKLIST . ' WHERE status="Bidding")';
         }
         
         $query = "
