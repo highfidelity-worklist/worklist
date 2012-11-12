@@ -55,7 +55,12 @@ if ($sfilter) {
                  * if current user is not a runner and is filtering by ALL 
                  * status it wont fetch workitems in DRAFT status
                  */
-                $where .= "1 AND status != 'Draft' OR ";
+                $where .= "1 AND status != 'Draft' ";
+                if (! empty($ufilter) && $ufilter != 'ALL') {
+                    $where .= " AND (IF(status = 'Bidding', IF(`fees`.user_id = $ufilter, 0, 1), 1)) OR ";
+                } else {
+                    $where .= " OR ";
+                }
             }
             if (($val == 'ALL' || $val == '') && $is_runner == 1 ){
                 /**
@@ -72,11 +77,33 @@ if ($sfilter) {
                  */
                 $where .= "(status = 'Draft' AND creator_id = $userId) OR  ";
             } else {
-                /**
-                 * if filtering by any status different than ALL and DRAFT it 
-                 * won't do any magic
-                 */
-                $where .= "status='$val' OR ";
+                
+                if ($val == 'Bidding') {
+                    /**
+                     * runner can see all
+                     */
+                    if ($is_runner) {
+                        $where .= "(status = '$val') OR ";
+                    } else if ($ufilter != 'ALL') {
+                        /**
+                         * if bidding, and user filter is not set to all users,
+                         * we need to check that logged in user is the bidder
+                         * otherwise we reveal other user's tasks they are 
+                         * bidding on
+                         */
+                        $where .= "(status = 'Bidding' AND (`fees`.user_id = $userId OR runner_id = $userId)) OR ";
+                     } else {
+                        $where .= "status = '$val' OR ";
+                     }
+                } else if ($val != 'ALL') {
+                    /**
+                     * if filtering by any status different than ALL and (DRAFT, BIDDING) it 
+                     * won't do any magic
+                     */
+                    $where .= "status = '$val' OR ";
+                } else {
+                    $where .= "status = '$val' OR ";
+                }
             }
     }
     $where .= "0)";
@@ -140,8 +167,8 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
              */
             $where .= $severalStatus .
                 "( $status_cond (`creator_id` = '$ufilter' OR `runner_id` = '$ufilter' OR `mechanic_id` = '$ufilter'
-                OR `" . FEES . "`.user_id = '$ufilter'
-                OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
+                OR (`" . FEES . "`.user_id = '$ufilter' AND status != 'Bidding')
+                OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter' AND status != 'Bidding')
                 ))";
         }
         $severalStatus = " OR ";
