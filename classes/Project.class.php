@@ -373,7 +373,7 @@ class Project {
             "'".mysql_real_escape_string($this->getTestFlightTeamToken())."', ".
             "'".mysql_real_escape_string($this->getLogo())."', ".
             "NOW(), ".
-            "'".intval($this->getCrAnyone())."', ".
+            "1, ".
             "'".intval($this->getCrFav())."', ".
             "'".intval($this->getCrAdmin())."', ".
             "'" . intval($this->getCrRunner()) . "', " .
