@@ -180,10 +180,15 @@ class HimBot extends Bot
         // set the time here so all recordings have identical timestamp
         $time = time();
 
-        // catch mentions and dump to history
-        if(preg_match('/(?:^|[\b\s]+)@([^\b\s\W]+)(?:$|[\b\s\W]+)/Ui',$message, $matches)) {
-            if(strpos(BOTLIST, $matches[1]) === false) {
-                $this->rememberInfo($matches[1], $time, "[mention]{$author}:$message");
+        // spaces duplication is needed to make below regexp works with multiple mentions (#18677)
+        $tmp_message = str_replace(' ', '  ' , $message);
+
+        // catch ALL mentions and dump to history
+        if (preg_match_all('/(?:^|[\b\s])@([^\b\s\W]+)(?:$|[\b\s\W])/Ui', $tmp_message, $matches)) {
+            foreach ($matches[1] as $mention) {
+                if (strpos(BOTLIST, $mention) === false) {
+                    $this->rememberInfo($mention, $time, "[mention]{$author}:$message");
+                }
             }
         }
 
