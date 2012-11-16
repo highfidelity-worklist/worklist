@@ -7,12 +7,6 @@
             }
             return this.each(function() {
                 var $this = $(this), fdata = $this.data('fileUpload');
-                // Activate the accordion
-                $this.accordion({
-                    clearStyle: true,
-                    collapsible: true,
-                    active: false 
-                });
                 
                 if(!fdata) {
                     fdata = {};
