@@ -1,4 +1,4 @@
-<h3><a href="#">Images (<span class="imageCount"><#= images.length #></span>)</a></h3>
+<h3>Images (<span class="imageCount"><#= images.length #></span>)</h3>
 <div class="fileimagecontainer">
 <# if (images.length > 0) { #>
     <# for(var i=0; i < images.length; i++) {
@@ -16,7 +16,7 @@
     <# } #>
 <# } #>
 </div>
-<h3><a href="#">Documents (<span class="documentCount"><#= documents.length #></span>)</a></h3>
+<h3>Documents (<span class="documentCount"><#= documents.length #></span>)</h3>
 <div class="filedocumentcontainer">
 <# if (documents.length > 0) { #>
     <# for(var i=0; i < documents.length; i++) {

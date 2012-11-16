@@ -45,7 +45,7 @@
                             width: 300,
                             resizable : false,
                             open: function() {
-                        	    $('#upload-scan-file .content').html('<p>Uploading attachment ...</p>');
+                                $('#upload-scan-file .content').html('<p>Uploading attachment ...</p>');
                             }
                         });
 

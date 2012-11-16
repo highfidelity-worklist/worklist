@@ -608,6 +608,13 @@ $(document).ready(function(){
         // journal info accordian
         // flag to say we've not loaded anything in there yet
         $.journalChat = false;
+        $('.accordion').accordion({
+            clearStyle: true,
+            collapsible: true,
+            active: true
+            }
+        );
+        $('.accordion').accordion( "activate" , 0 );
         $.ajax({
             type: 'post',
             url: 'jsonserver.php',
@@ -627,7 +634,6 @@ $(document).ready(function(){
                     for (var i=0; i < documents.length; i++) {
                         documentsArray.push(documents[i].fileid);
                     }
-                    filesArray = imageArray.concat(documentsArray);
                     var files = $('#uploadedFiles').parseTemplate(data.data);
                     $('#uploadPanel').append(files);
                     $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
@@ -1924,7 +1930,7 @@ if ($action =="edit"):  ?>
                             <span>Time for a code review!</span>
                             The code written for this job is ready to be reviewed.<br />
                             <b><u>View the diff</u></b> to see the code, then start the review ...
-                                <div class="buttonContainer feebutton">
+                            <div class="buttonContainer feebutton">
                                     <?php if ($workitem->getCRStarted() !=1) {
                                         if ($mechanic_id != $user_id) {
                                             if ($user->isEligible()) {
@@ -1948,6 +1954,7 @@ if ($action =="edit"):  ?>
                                     } else if ($workitem->getCRCompleted()) { ?>
                                         <input class="iToolTip cRSetToFunctional smbutton" type="submit" value="Start Code Review" onClick="return false;"/>
                                 <?php   } ?>
+                                <div id="review-pointer"></div>
                                 </div>
                             </div>
                             <?php }?>

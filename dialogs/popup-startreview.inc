@@ -30,8 +30,8 @@
                 function changeButton() {
                     var buttonElement = $('.cR');
                     buttonElement.remove();
-                    var endcrButton = '<input class="iToolTip endCr" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>';
-                    $('.addFee').before(endcrButton);
+                    var endcrButton = '<input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>';
+                    $('#review-pointer').before(endcrButton);
                     $('#popup-startreview').dialog('close');
                     MapToolTips();
                 }
