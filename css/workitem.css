@@ -349,6 +349,14 @@ a:hover{
     padding:0!important;
 }
 
+#left-panel .buttonContainer.view-sandbox {
+    top: -18px !important;
+    right: -2px !important;
+    padding-left: 7px !important;
+    float: right !important;
+    margin: 5px 0 !important;
+}
+
 #left-panel .buttonContainer{
     padding-left: 0 !important;
     float: left !important;
@@ -879,14 +887,6 @@ a:hover{
 .buttonContainer input {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 12px;
-}
-
-.view-sandbox {
-    top: -18px !important;
-    right: -2px !important;
-    padding-left: 7px !important;
-    float: right !important;
-    margin: 5px 0 !important;
 }
 
 .view-sandbox .smbutton {
