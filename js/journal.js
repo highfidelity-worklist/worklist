@@ -2477,7 +2477,6 @@ $(window).ready(function() {
     IEFix();
     $('.scroll-pane-throbber').hide();
     $('#guideline').show();
-    $('#footer').show();
     applyPopupBehavior();
     initializeFileUploadSupport();
     initSound();
@@ -2971,13 +2970,7 @@ function IEFix() {
     } else {
         // should never reach here
     }
-    var base = (ih - $('#footer').outerHeight());
-    $('#footer')
-        .css('top', (base) + 'px')
-        .css('position', 'fixed')
-        .css('width', '100%')
-        .css('left', 0);
-
+    var base = (ih - $('#bottom-panel').outerHeight() - $('#footer').outerHeight() - 28);
     if (iw > 902) {
         var head_h = ($('#head')[0].offsetHeight) + 20;
     } else if (iw > 650) {

@@ -142,22 +142,6 @@
             });
         });
 
-        // Code for stats
-        $(function() {
-            $('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
-            $.ajax({
-                type: "POST",
-                url: 'getstats.php',
-                data: 'req=currentlink',
-                dataType: 'json',
-                success: function(json) {
-                    if (!json || json === null) return;
-                    $("#count_b").text(json.count_b);
-                    $("#count_w").text(json.count_w);
-                    $('#stats-text').show();
-                }
-            });
-        });
         function ShowStats()    {
             // Clear the tables
             $('.row').remove();

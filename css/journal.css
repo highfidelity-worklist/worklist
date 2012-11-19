@@ -112,27 +112,22 @@ body {
     float:left;
     margin:0 0 20px 0;
 }
-    
-#footer {
-    margin:10px 0 0 0;
-    padding:0;
-    width:950px;
-    color:#98AAB2;
-}
 
 .footerText {
-    font-size:10px;
+    font-size: 10px;
 }
 
-#footer a {color:#98AAB2;}
+#bottom-panel a {
+    color: #98AAB2;
+}
 
-#footer .loves {
+#bottom-panel .loves {
     margin:0px;
     width:70px;    
     padding: 0px 15px 15px 0px;
     float: right;
 }
-#footer .lefticon {
+#bottom-panel .lefticon {
     text-align:left;
     width:70px;
     float:left;
@@ -358,18 +353,13 @@ input[type=submit]::-moz-focus-inner, input[type=button]::-moz-focus-inner {
     width:160px;
 }
 
-#footer {
-    display: none;
-    height: 80px;
-    margin: 0 !important;
-}
-
 #footer-panel    {
     margin-top:30px;
     margin-left:100px;
     width:auto;
     padding:0;
     z-index:1;
+    height: 80px;
 }
 
 #footer-panel p {
@@ -434,7 +424,6 @@ input[type=submit]::-moz-focus-inner, input[type=button]::-moz-focus-inner {
 
 #message-pane {
     width: 100%;
-    float: right;
     height:30px;
     margin-right:25px;
 }
@@ -446,7 +435,7 @@ input[type=submit]::-moz-focus-inner, input[type=button]::-moz-focus-inner {
     overflow: hidden;
 }
 
-#footer textarea{
+#msgSubmit textarea{
     font-family: helvetica, arial, sans-serif;
     font-size: 1em;
     margin: 0;
@@ -948,6 +937,7 @@ a[rel="attachment"]{
 }
 #bottom-panel {
     margin: 5px 20px 5px 10px;
+    color: #98AAB2;
 }
 #bottom-panel-left {
     width:51px;

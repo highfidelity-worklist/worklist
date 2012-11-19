@@ -65,6 +65,140 @@ function StopStatus() {
     lastStatus = 20;
 }
 </script>
+<script type="text/javascript">
+    var is_runner = <?php echo $is_runner ?>;
+    var queryStr = '<?php echo $query ?>';
+    var currentTime = <?php echo time() ?>;
+    var earliestDate = <?php echo outputForJS($chat->getEarliestDate()) ?>;
+    var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>, lastDate = <?php echo outputForJS(strtotime($entries[count($entries)-1]['date'])-365*24*60*60); ?>;
+    var inThePresent = true;
+    var lastId = <?php echo outputForJS($entries[count($entries)-1]['id']); ?>;
+    <?php if (isset($_SESSION['userid'])): ?>
+        var userId = <?php echo outputForJS($_SESSION['userid'], 0) ?>;
+    <?php else: ?>
+        var userId = 0;
+    <?php endif; ?>
+    <?php if (!empty($_SESSION['username'])): ?>
+        var userName = '<?php echo outputForJS($_SESSION['username']) ?>';
+    <?php else: ?>
+        var userName = 'Guest';
+    <?php endif; ?>
+    var userIp = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
+    var gotoDate = <?php echo  isset($_GET['goto']) ? strtotime($_GET['goto']) : (isset($_POST['goto']) ? strtotime($_POST['goto']) : '0'); ?>;
+    var messagePruningOffsetPixels = 2000;
+    var worklistUrl = '<?php echo WORKLIST_URL; ?>';
+    var lastTouched = '<?php echo file_get_contents(JOURNAL_UPDATE_TOUCH_FILE); ?>';
+    var latency_sample = '<?php echo LATENCY_SAMPLE; ?>';
+    var csrf_token = '<?php echo $csrf_token; ?>';
+    var addFromJournal = true;
+</script>
+<?php
+// Force load individual files while we debug the issues using the minimized version - gj 2011-July-05
+//        if ($_SERVER['HTTP_HOST'] == 'dev.sendlove.us' && strstr(substr($_SERVER['REQUEST_URI'],0,3),'~')) {
+?>
+<?php if (true): ?>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
+<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
+<script type="text/javascript" src="js/class.js"></script>
+<script type="text/javascript" src="js/jquery.combobox.js"></script>
+<script type="text/javascript" src="js/jquery.template.js"></script>
+<script type="text/javascript" src="js/jquery.autogrow.js"></script>
+<script type="text/javascript" src="js/jquery.metadata.js"></script>
+<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="js/ajaxupload.js"></script>
+<script type="text/javascript" src="js/jquery_all.js"></script>
+<script type="text/javascript" src="js/journal.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/budget.js"></script>
+<?php else: ?>
+<script type="text/javascript" src="js/jscode.min.js"></script>
+<?php endif; ?>
+<!-- js template for file uploads -->
+<?php require_once('dialogs/file-templates.inc'); ?>
+<!-- Popup for editing/adding  a work item -->
+<?php require_once('dialogs/popup-edit.inc'); ?>
+<?php require_once('dialogs/budget-expanded.inc') ?>
+<script type="text/javascript">
+<?php
+if (isset($error) && $error->getErrorFlag() == 1) {
+    $msg = "";
+    foreach($error->getErrorMessage() as $m) {
+        $msg .= $m ." ";
+    }
+?>
+    retryMessage = "@me <?php echo $msg;?>"
+    if (retryMessage) {
+        sendEntryRetry();
+    }
+<?php } ?>
+
+    <?php if ( isset($msgLogin)): ?>
+        $.modal.showMessage("<?php echo $msgLogin;?>", 'login', 10000);
+    <?php endif; ?>
+    // 10000 = 10 seconds
+    var checkUserLoggedInTime = 10000;
+
+    $(window).ready(function(){
+        if($('#guestUser').val() == "0") {
+            setTimeout("checkUserLoggedIn()",checkUserLoggedInTime);
+        }
+    });
+
+    var checkUserLoggedIn = function(){
+        $.getJSON('helper/getAuthenticated.php',function(res) {
+            if(res.reload == '1') {
+                window.location.reload( false );
+            } else {
+                setTimeout("checkUserLoggedIn()",checkUserLoggedInTime);
+            }
+        });
+    };
+</script>
+<!--  setup tooltip for setting and attachement links -->
+<script type="text/javascript" src="js/plugins/jquery.tooltip.min.js"></script>
+<script type="text/javascript" src="js/userstats.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#settingsButton').tooltip({fade: 250});
+        $('input[name="attachment"]').tooltip({fade: 250});
+
+        if ($("#budgetPopup").length > 0) {
+            $("#budgetPopup").dialog({
+                title: "Earning & Budget",
+                autoOpen: false,
+                height: 280,
+                width: 370,
+                position: ['center',60],
+                modal: true
+            });
+            $("#welcome .budget").click(function(){
+                $("#budgetPopup").dialog("open").centerDialog();
+            });
+        }
+
+        stats.setUserId(userId);
+
+        $("#welcome .following").click(function(){
+            stats.stats_page = 1;
+            $('#jobs-popup').dialog('option', 'title', 'Jobs I am Following').centerDialog();
+            stats.showJobs('following');
+            return false;
+        });
+
+        $('textarea#message-pane').bind('keydown keyup mousedown mouseup change', function(e) {
+            if(e.keycode == 13) {
+                setLocalTypingStatus(IDLE);
+            } else {
+                if ($(this).val() !== '') {
+                    setLocalTypingStatus(TYPING);
+                } else {
+                    setLocalTypingStatus(IDLE);
+                }
+            }
+        });
+    });
+</script>
 <style>
 #welcomeInside .chatBtn {
     color: #ffffff;
@@ -72,6 +206,37 @@ function StopStatus() {
 </style>
 </head>
 <body>
+<?php require_once('dialogs/popup-budget.inc'); ?>
+<?php require_once('dialogs/popups-userstats.inc'); ?>
+<?php
+    if( isset($_SESSION['userid']) )  {
+        require_once("helper/popup-penalty.inc");
+        require_once("helper/popup-guest-selector.inc");
+        require_once("helper/popup-useritems.inc");
+    } else {
+        require_once("helper/popup-guest-message.inc");
+    }
+?>
+<audio id="chatSoundPlayer" preload="auto">
+    <source src="mp3/bubblepop.mp3" />
+    <source src="mp3/bubblepop.ogg" />
+</audio>
+<audio id="systemSoundPlayer" preload="auto">
+    <source src="mp3/plazzle.mp3" />
+    <source src="mp3/plazzle.ogg" />
+</audio>
+<audio id="pingSoundPlayer" preload="auto">
+    <source src="mp3/warble.mp3" />
+    <source src="mp3/warble.ogg" />
+</audio>
+<audio id="botSoundPlayer" preload="auto">
+    <source src="mp3/sweosh.mp3" />
+    <source src="mp3/sweosh.ogg" />
+</audio>
+<audio id="emergencySoundPlayer" preload="auto">
+    <source src="mp3/red_alert.mp3" />
+    <source src="mp3/red_alert.ogg" />
+</audio>
 <?php require_once('header.php'); ?>
         <input type="hidden" id="guestUser" value="<?php echo empty($_SESSION['username']) ? 0  : 1; ?>" />
         <div id="loginbox" style="display: none;"></div>
@@ -225,241 +390,42 @@ function StopStatus() {
             <div id="attachment-popup"></div>
         </div><!-- /#container -->
         <div style="clear: both"></div>
-        <div id="footer">
-            <div id="bottom-panel">
-                <form method="POST" id="msgSubmit">
-                    <div id="bottom_contain">
-                        <div id="bottom_left">
-                            <div id="buttons">
-                                <div id="settingsButton" title="Chat Settings">
-                                    <img src="images/gear.png" width="33" height="23" id="settingsSwitch" align="bottom" />
-                                </div>
-                                <div id="uploadButton" title="Upload to Chat">
+
+        <div id="bottom-panel">
+            <form method="POST" id="msgSubmit">
+                <div id="bottom_contain">
+                    <div id="bottom_left">
+                        <div id="buttons">
+                            <div id="settingsButton" title="Chat Settings">
+                                <img src="images/gear.png" width="33" height="23" id="settingsSwitch" align="bottom" />
+                            </div>
+                            <div id="uploadButton" title="Upload to Chat">
 <?php
-    if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],"iPhone")) {
-        if(! isset($_SESSION['userid'])) {
-            $alt = "alert('Error uploading file: You need to be logged in to upload a file')";
-            echo '<a href="javascript:void(0)" onclick="'.$alt.'">';
-        } else {
-            $enc_id = vEncrypt($_SESSION['userid']);
-            echo '<a href="mailto:' . JOURNAL_PICTURE_EMAIL_PREFIX . '+' . $enc_id . JOURNAL_PICTURE_EMAIL_DOMAIN . '?subject=new image">';
-        }
+if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], "iPhone")) {
+    if(! isset($_SESSION['userid'])) {
+        $alt = "alert('Error uploading file: You need to be logged in to upload a file')";
+        echo '<a href="javascript:void(0)" onclick="' . $alt . '">';
+    } else {
+        $enc_id = vEncrypt($_SESSION['userid']);
+        echo '<a href="mailto:' . JOURNAL_PICTURE_EMAIL_PREFIX . '+' . $enc_id . JOURNAL_PICTURE_EMAIL_DOMAIN . '?subject=new image">';
     }
+}
 ?>
-                                    <img id="camera_icon" src="images/gif.gif" width="37" height="37" />
+                                <img id="camera_icon" src="images/gif.gif" width="37" height="37" />
 <?php
-    if( strpos($_SERVER['HTTP_USER_AGENT'],"iPhone")) {
-        echo '</a>';
-    }
+if (strpos($_SERVER['HTTP_USER_AGENT'], "iPhone")) {
+    echo '</a>';
+}
 ?>
-                                </div>
                             </div>
                         </div>
-                        <div id="bottom_right">
-                            <textarea name="message-pane" id="message-pane"></textarea><br />
-                            <input type="hidden" value="<?php echo $author; ?>" name="author" id="author" />
-                        </div>
                     </div>
-                </form>
-                <div id="footer-panel">
-                    <span id="entries-pending">
-                        <span id="entries-pending-count"></span>
-                        <input type="button" id="go" value="Go" />
-                    </span>
-                    <p id="copyright">
-                        &copy; <?php echo date("Y"); ?>
-                        <a href="http://www.coffeeandpower.com" target="_blank">Coffee & Power, Inc.</a>&nbsp;|&nbsp;
-                        <a href="privacy.php">Privacy Policy</a>&nbsp;| &nbsp;
-                        <a href="mailto:contact@worklist.net" target="_blank">Contact Us</a>&nbsp;| &nbsp;
-                        <a href="http://svn.worklist.net/" target="_blank">View the source code</a> | Version: <?php echo $version; ?>
-                    </p>
+                    <div id="bottom_right">
+                        <textarea name="message-pane" id="message-pane"></textarea>
+                        <input type="hidden" value="<?php echo $author; ?>" name="author" id="author" />
+                    </div>
                 </div>
-            </div>
-        </div><!-- /#footer -->
+            </form>
+        </div>
+<?php include("footer.php"); ?>
 
-        <div class="clear"></div>
-    </div><!-- /#outside -->
-    <div id="worktip" class="hidden"></div>
-<?php require_once('dialogs/popup-budget.inc'); ?>
-<?php require_once('dialogs/popups-userstats.inc'); ?>
-    <div id="user-info" title="User Info"></div>
-<!-- If we are logged in, include User Info Popup -->
-<?php
-    if( isset($_SESSION['userid']) )  {
-        require_once("helper/popup-penalty.inc");
-        require_once("helper/popup-guest-selector.inc");
-        require_once("helper/popup-useritems.inc");
-    } else {
-        require_once("helper/popup-guest-message.inc");
-    }
-?>
-    <audio id="chatSoundPlayer" preload="auto">
-        <source src="mp3/bubblepop.mp3" />
-        <source src="mp3/bubblepop.ogg" />
-    </audio>
-    <audio id="systemSoundPlayer" preload="auto">
-        <source src="mp3/plazzle.mp3" />
-        <source src="mp3/plazzle.ogg" />
-    </audio>
-    <audio id="pingSoundPlayer" preload="auto">
-        <source src="mp3/warble.mp3" />
-        <source src="mp3/warble.ogg" />
-    </audio>
-    <audio id="botSoundPlayer" preload="auto">
-        <source src="mp3/sweosh.mp3" />
-        <source src="mp3/sweosh.ogg" />
-    </audio>
-    <audio id="emergencySoundPlayer" preload="auto">
-        <source src="mp3/red_alert.mp3" />
-        <source src="mp3/red_alert.ogg" />
-    </audio>
-
-    <script type="text/javascript">
-        var is_runner = <?php echo $is_runner ?>;
-        var queryStr = '<?php echo $query ?>';
-        var currentTime = <?php echo time() ?>;
-        var earliestDate = <?php echo outputForJS($chat->getEarliestDate()) ?>;
-        var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>, lastDate = <?php echo outputForJS(strtotime($entries[count($entries)-1]['date'])-365*24*60*60); ?>;
-        var inThePresent = true;
-        var lastId = <?php echo outputForJS($entries[count($entries)-1]['id']); ?>;
-<?php if(isset($_SESSION['userid'])): ?>
-        var userId = <?php echo outputForJS($_SESSION['userid'], 0) ?>;
-<?php else: ?>
-        var userId = 0;
-<?php endif; ?>
-<?php if (!empty($_SESSION['username'])): ?>
-        var userName = '<?php echo outputForJS($_SESSION['username']) ?>';
-<?php else: ?>
-        var userName = 'Guest';
-<?php endif; ?>
-        var userIp = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
-        var gotoDate = <?php echo  isset($_GET['goto']) ? strtotime($_GET['goto']) : (isset($_POST['goto']) ? strtotime($_POST['goto']) : '0'); ?>;
-        var messagePruningOffsetPixels = 2000;
-        var worklistUrl = '<?php echo WORKLIST_URL; ?>';
-        var lastTouched = '<?php echo file_get_contents(JOURNAL_UPDATE_TOUCH_FILE); ?>';
-        var latency_sample = '<?php echo LATENCY_SAMPLE; ?>';
-        var csrf_token = '<?php echo $csrf_token; ?>';
-        var addFromJournal = true;
-    </script>
-<?php
-// Force load individual files while we debug the issues using the minimized version - gj 2011-July-05
-//        if ($_SERVER['HTTP_HOST'] == 'dev.sendlove.us' && strstr(substr($_SERVER['REQUEST_URI'],0,3),'~')) {
-?>
-<?php if (true): ?>
-    <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
-    <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-    <script type="text/javascript" src="js/class.js"></script>
-    <script type="text/javascript" src="js/jquery.combobox.js"></script>
-    <script type="text/javascript" src="js/jquery.template.js"></script>
-    <script type="text/javascript" src="js/jquery.autogrow.js"></script>
-    <script type="text/javascript" src="js/jquery.metadata.js"></script>
-    <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
-    <script type="text/javascript" src="js/ajaxupload.js"></script>
-    <script type="text/javascript" src="js/jquery_all.js"></script>
-    <script type="text/javascript" src="js/journal.js"></script>
-    <script type="text/javascript" src="js/common.js"></script>
-    <script type="text/javascript" src="js/budget.js"></script>
-<?php else: ?>
-    <script type="text/javascript" src="js/jscode.min.js"></script>
-<?php endif; ?>
-<!-- js template for file uploads -->
-<?php require_once('dialogs/file-templates.inc'); ?>
-<!-- Popup for editing/adding  a work item -->
-<?php require_once('dialogs/popup-edit.inc'); ?>
-<?php require_once('dialogs/budget-expanded.inc') ?>
-    <script type="text/javascript">
-<?php
-    if (isset($error) && $error->getErrorFlag() == 1) {
-        $msg = "";
-        foreach($error->getErrorMessage() as $m) {
-            $msg .= $m ." ";
-        }
-?>
-        retryMessage = "@me <?php echo $msg;?>"
-        if (retryMessage) {
-            sendEntryRetry();
-        }
-<?php } ?>
-
-        <?php if ( isset($msgLogin)): ?>
-            $.modal.showMessage("<?php echo $msgLogin;?>", 'login', 10000);
-        <?php endif; ?>
-        // 10000 = 10 seconds
-        var checkUserLoggedInTime = 10000;
-
-        $(window).ready(function(){
-            if($('#guestUser').val() == "0") {
-                setTimeout("checkUserLoggedIn()",checkUserLoggedInTime);
-            }
-        });
-
-        var checkUserLoggedIn = function(){
-            $.getJSON('helper/getAuthenticated.php',function(res) {
-                if(res.reload == '1') {
-                    window.location.reload( false );
-                } else {
-                    setTimeout("checkUserLoggedIn()",checkUserLoggedInTime);
-                }
-            });
-        };
-    </script>
-    <!--  setup tooltip for setting and attachement links -->
-    <script type="text/javascript" src="js/plugins/jquery.tooltip.min.js"></script>
-    <script type="text/javascript" src="js/userstats.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#settingsButton').tooltip({fade: 250});
-            $('input[name="attachment"]').tooltip({fade: 250});
-
-            if ($("#budgetPopup").length > 0) {
-                $("#budgetPopup").dialog({
-                    title: "Earning & Budget",
-                    autoOpen: false,
-                    height: 280,
-                    width: 370,
-                    position: ['center',60],
-                    modal: true
-                });
-                $("#welcome .budget").click(function(){
-                    $("#budgetPopup").dialog("open").centerDialog();
-                });
-            }
-
-            stats.setUserId(userId);
-
-            $("#welcome .following").click(function(){
-                stats.stats_page = 1;
-                $('#jobs-popup').dialog('option', 'title', 'Jobs I am Following').centerDialog();
-                stats.showJobs('following');
-                return false;
-            });
-
-            $('textarea#message-pane').bind('keydown keyup mousedown mouseup change', function(e) {
-                if(e.keycode == 13) {
-                    setLocalTypingStatus(IDLE);
-                } else {
-                    if ($(this).val() !== '') {
-                        setLocalTypingStatus(TYPING);
-                    } else {
-                        setLocalTypingStatus(IDLE);
-                    }
-                }
-            });
-        });
-    </script>
-
-<!-- Google Analytics -->
-    <script type="text/javascript">
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-        try {
-            var pageTracker = _gat._getTracker("UA-22868345-3");
-            pageTracker._trackPageview();
-        } catch(err) {
-        }
-    </script>
-</body>
-</html>
