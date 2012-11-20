@@ -1112,6 +1112,8 @@ a:hover{
     font-size: 14px;
     line-height: 18px;
     width: 100%;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .comment {
