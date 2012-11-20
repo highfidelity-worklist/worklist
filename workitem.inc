@@ -1331,54 +1331,58 @@ $(document).ready(function(){
         });
 
         // Reassign runner
-        (function($) {
-            if ($('#runnerBox span.runnerName') !== null) {
-                $('#runnerBox span.runnerName').css({
-                    'cursor': 'pointer',
-                }).click(function() {
-                    var shown = false;
-                    $(this).parent().siblings().fadeOut(1000, function() {
-                        if (shown != true) {
-                            shown = true;
-                            $('#runnerBox').css('width', '400px');
-                            $('#runnerBox a#ping-r-btn').css('display', 'none');
-                            $('#runnerBox span.changeRunner').fadeIn(1000, function() {
-                                $('#runnerBox span.changeRunner div input[name=changerunner]').click(function() {
-                                    $(this).unbind('click');
-                                    $.ajax({
-                                        type: 'post',
-                                        url: 'jsonserver.php',
-                                        data: {
-                                            action: 'changeRunner',
-//  to avoid script loading error when not logged
-//                                          userid: <?php echo($user_id); ?>,
-                                            userid: <?php echo(!empty($user_id) ? $user_id : "''"); ?>,
-                                            runner: $('#runnerBox span.changeRunner select[name=runner]').val(),
-                                            workitem: <?php echo($worklist_id); ?>
-                                        },
-                                        dataType: 'json',
-                                        success: function(j) {
-                                            if (j.success == true) {
-                                                $('#runnerBox span#ping-r-btn').text(j.nickname);
-                                                $('#runnerBox input[name=cancel]').click();
+        <?php 
+        if ($action == "edit"): ?>
+            (function($) {
+                if ($('#runnerBox span.runnerName') !== null) {
+                    $('#runnerBox span.runnerName').css({
+                        'cursor': 'pointer',
+                    }).click(function() {
+                        var shown = false;
+                        $(this).parent().siblings().fadeOut(1000, function() {
+                            if (shown != true) {
+                                shown = true;
+                                $('#runnerBox').css('width', '400px');
+                                $('#runnerBox a#ping-r-btn').css('display', 'none');
+                                $('#runnerBox span.changeRunner').fadeIn(1000, function() {
+                                    $('#runnerBox span.changeRunner div input[name=changerunner]').click(function() {
+                                        $(this).unbind('click');
+                                        $.ajax({
+                                            type: 'post',
+                                            url: 'jsonserver.php',
+                                            data: {
+                                                action: 'changeRunner',
+                                                // to avoid script loading error when not logged
+                                                // userid: <?php echo($user_id); ?>,
+                                                userid: <?php echo(!empty($user_id) ? $user_id : "''"); ?>,
+                                                runner: $('#runnerBox span.changeRunner select[name=runner]').val(),
+                                                workitem: <?php echo($worklist_id); ?>
+                                            },
+                                            dataType: 'json',
+                                            success: function(j) {
+                                                if (j.success == true) {
+                                                    $('#runnerBox span#ping-r-btn').text(j.nickname);
+                                                    $('#runnerBox input[name=cancel]').click();
+                                                }
                                             }
-                                        }
+                                        });
+                                    });
+                                    $('#runnerBox span.changeRunner div input[name=cancel]').click(function() {
+                                        $('#runnerBox span.changeRunner').fadeOut(1000, function() {
+                                            $('#runnerBox span.changeRunner').css('display', 'none');
+                                            $('#runnerBox').css('width', '130px');
+                                            $('#runnerBox a#ping-r-btn').css('display', 'block');
+                                            $('#runnerBox span.runnerName').parent().siblings().fadeIn(1000);
+                                        });
                                     });
                                 });
-                                $('#runnerBox span.changeRunner div input[name=cancel]').click(function() {
-                                    $('#runnerBox span.changeRunner').fadeOut(1000, function() {
-                                        $('#runnerBox span.changeRunner').css('display', 'none');
-                                        $('#runnerBox').css('width', '130px');
-                                        $('#runnerBox a#ping-r-btn').css('display', 'block');
-                                        $('#runnerBox span.runnerName').parent().siblings().fadeIn(1000);
-                                    });
-                                });
-                            });
-                        }
+                            }
+                        });
                     });
-                });
-            }
-        })(jQuery);
+                }
+            })(jQuery);
+        <?php 
+        endif; ?>
 
         // applies the same size as the thinnest to all comments the show'em
         var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
@@ -1616,7 +1620,7 @@ if ($action =="edit"):  ?>
                             <?php
                                 if( $runner_nickname != 'Not funded' ) {
                             ?>
-                            <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"> <a href="#">Runner</a></span>
+                            <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"> <a href="#">Runner:</a></span>
                             <a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') ;?></a>
                             <?php
                                 }
