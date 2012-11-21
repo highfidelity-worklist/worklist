@@ -399,6 +399,7 @@ include("head.html");
 <script type="text/javascript" src="js/ajaxupload-3.6.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript">
     var nclass;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
