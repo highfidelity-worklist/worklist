@@ -103,6 +103,13 @@ function openNotifyOverlay(html, autohide) {
     $("#sent-notify").dialog('open');
 }
 
+function scrollToLastComment() {
+    var scrolltoposition = $('div[id=scrollerPointer]').offset().top - $(window).height();
+    $('body,html').animate({scrollTop: scrolltoposition}, 800);
+    return false;
+}
+
+
 $(document).ready(function() {
     applyPopupBehavior();
 
@@ -1806,12 +1813,12 @@ if ($action =="edit"):  ?>
                     <?php endif;?>
 <!-- *** End of Action IF *** -->
 <?php endif;?>
-            <div class="commentZone">
-                <div class="info-comments">Comments &amp; Activity</div>
+            <div class="commentZone" id="commentZone">
+                <div class="info-comments">Comments</div>
 
                 <?php
                 if (!empty($user_id) && ($worklist['status'] != 'Done')) : ?>
-                <a class="info-comments-scroll-entry" href="#commentform">See most recent</a>
+                <a class="info-comments-scroll-entry" onclick="scrollToLastComment()">See most recent</a>
                 <?php endif ?>
 
                 <?php if (!empty($user_id) && ($worklist['status'] != 'Done') && $order_by == "DESC") : ?>
@@ -1884,7 +1891,8 @@ if ($action =="edit"):  ?>
                 </div>
                 <?php endif; ?>
 
-        <!-- End of div commentZone -->
+                <div id="scrollerPointer"></div>
+            <!-- End of div commentZone -->
             </div>
     <!-- End of div for_view -->
             </div>
@@ -1924,7 +1932,9 @@ if ($action =="edit"):  ?>
                 <div class="skills">
                     <div class="skills-label">Skills this job requires:</div>
                     <?php if (count($workitem->getSkills()) > 0) : ?>
-                    <?php echo implode(', ', $workitem->getSkills()); ?>
+                        <?php echo implode(', ', $workitem->getSkills()); ?>
+                    <?php else: ?>
+                        Thou shalt find out in the missive ...
                     <?php endif; ?>
                 </div>
 
@@ -2195,8 +2205,8 @@ if ($action =="edit"):  ?>
                             <div style="clear: both"></div>
                         </div>
                     <?php } else if ($worklist['status'] == 'Bidding' || $worklist['status'] == 'SuggestedWithBid') { ?>
-                    <div class="buttonContainer">
-                        <input style="cursor:pointer;" type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
+                    <div class="buttonContainer feebutton">
+                        <input style="cursor:pointer;" type="button" class="smbutton" value="Login to Bid" onClick="sendToLogin(); return false;" />
                     </div>
                     <?php } ?>                        
                 <!-- End of div fee-panel -->
@@ -2205,7 +2215,7 @@ if ($action =="edit"):  ?>
                 <div id="uploadPanel"> </div>
                 <?php if(JOURNAL_EXISTS) { // include the journal dropdown if the journal setting is true ?>
                 <div id="journalPanel">
-                        <h3><a href="#" id="loadJournalInfo">Related Chat Discussion</a></h3>
+                        <h3>Activity</h3>
                         <div id="journalChat">
                             <?php
                                 echo getTaskPosts($worklist['id']);

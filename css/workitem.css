@@ -54,6 +54,7 @@
 .moneyZone table tbody td.bid-notes span{
     padding: 12px;
     float: left;
+    word-break: break-all;
 }
 
 
@@ -101,6 +102,7 @@
     height: 18px;
     padding: 6px 0;
     width: 100%;
+    word-break: break-all;
 }
 
 .moneyZone table tbody td .table-back span {
@@ -339,7 +341,7 @@ a:hover{
 }
 
 .project_website {
-    font-size: 14px;
+    font-size: 11px;
 }
 
 #left-panel {
@@ -444,6 +446,14 @@ a:hover{
     font-size: 11px;
     font-weight: normal;
     margin: 0;
+}
+
+#uploadPanel .filesDescription form {
+    float: left;
+}
+
+#uploadPanel .filesDescription input {
+    width: 200px !important;
 }
 
 .filesDescription h3:hover, .filesDescription p:hover {
@@ -638,7 +648,7 @@ a:hover{
     height: 46px;
     border-bottom: 2px solid #e1e8ea;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .code-review {
@@ -693,6 +703,7 @@ a:hover{
     position: absolute;
     top: 5px;
     float: left;
+    font-family: Arial, Helvetica !important;
 }
 
 #info-top #container-project_id {
