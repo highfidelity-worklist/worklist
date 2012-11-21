@@ -2123,7 +2123,7 @@ if ($action =="edit"):  ?>
                                 <tbody>
                                 <?php if(empty($fees)): ?>
                                     <tr>
-                                        <td style="text-align: center;" colspan="5">No fees yet.</td>
+                                        <td style="text-align: center;" colspan="5"><span class="table-back"><span>No fees yet.</span></span></td>
                                     </tr>
                                 <?php else: $row = 1;
                                     foreach($fees as $fee): ?>
@@ -2160,9 +2160,12 @@ if ($action =="edit"):  ?>
                                                     <a href="#" class = "paid-link" id = "feeitem-<?php echo $fee['id'];?>"><?php echo $fee['paid'] == 0 ? "No" : "Yes";?></a>
                                                     <?php else: echo $fee['paid'] == 0 ? "No" : "Yes";?>
                                                     <?php endif;?>
-                                                    <?php if(($is_runner ||$user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
-                                                    - <a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>delete</a>
-                                                    <?php endif;?>
+                                                    
+                                                     <?php if ($worklist['status'] != 'Done') { ?>
+                                                        <?php if(($is_runner ||$user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
+                                                        - <a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>delete</a>
+                                                        <?php endif;?>
+                                                    <?php };?>
                                                 </span>
                                             </span>
                                         </td>
