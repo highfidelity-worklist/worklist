@@ -38,6 +38,7 @@ include("opengraphmeta.php");
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
+<script type="text/javascript" src="js/budget.js"></script>
 
 <script type="text/javascript">
     function validateUploadImage(file, extension) {
