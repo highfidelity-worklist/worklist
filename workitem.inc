@@ -28,7 +28,7 @@
 
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || ($creator_id == $user_id && $worklist['status'] == 'Suggested' && is_null($worklist['runner_id'])) ||
+    if ($is_runner || $is_project_founder || ($creator_id == $user_id && $worklist['status'] == 'Suggested' && is_null($worklist['runner_id'])) ||
     ($creator_id == $user_id && $worklist['status'] == 'SuggestedWithBid' && is_null($worklist['runner_id']))) {
         $allowEdit = true;
         if ($action !="edit") {
@@ -587,6 +587,7 @@ $(document).ready(function(){
     var has_budget = <?php echo $has_budget;?>;
     var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
     var isFollowing = <?php echo $workitem->isUserFollowing($user_id) ? 'true' : 'false';?>;
+    var is_project_founder = <?php echo $is_project_founder ? 1 : 0 ?>;
 
    $('.commentform form input[name=newcomment]').click(function(event) {
         event.preventDefault();
@@ -798,7 +799,7 @@ $(document).ready(function(){
             $('#popup-bid-info #info-bid-done-in').text(bidData.done_in);
             $('#popup-bid-info #info-notes').html(bidData.notes);
 
-<?php if ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id)) : ?>
+<?php if ($is_runner || $is_project_founder || (isset($runner_id) && $user_id == $runner_id)) : ?>
             if($('#accept_bid').length == 0) {
                 $('#popup-bid-info-buttons').append('<input type="button" class="disableable" id="accept_bid_select_budget" ' +
                             '  onClick="return selectBudget(\'accept_bid\');" name="accept_bid_select_budget" value="Accept">');
@@ -814,7 +815,7 @@ $(document).ready(function(){
 <?php endif; ?>
             }
 
-<?php if ($worklist['status'] == 'Bidding' && ((isset($is_runner) && $is_runner) || (isset($runner_id) && $user_id == $runner_id))) {?>
+<?php if ($worklist['status'] == 'Bidding' && ($is_runner || $is_project_founder || (isset($runner_id) && $user_id == $runner_id))) {?>
 
     $('#popup-bid-info-buttons').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" >');
 
@@ -823,7 +824,7 @@ $(document).ready(function(){
 <?php if($worklist['status'] != 'Done' && $worklist['status'] != 'Working' && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' && $worklist['status'] != 'Completed') {?>
             if( (bidData.bidder_id == user_id) && $('#withdraw_bid_accept').length == 0){
                 $('#popup-bid-info-buttons').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" >');
-            } else if (is_runner==1 && bidData.bidder_id != user_id) {
+            } else if ((is_runner || is_project_founder) && bidData.bidder_id != user_id) {
                 $('#popup-bid-info-buttons').append('<input id="decline_bid_accept" type="button" name="decline_bid_accept" value="Decline" onClick="return showDeclineBidReason()" >');
             }
 <?php } ?>
@@ -897,7 +898,7 @@ $(document).ready(function(){
         }
     });
 
-<?php if((($is_runner) || ($mechanic_id == $user_id)) &&
+<?php if(($is_runner || $is_project_founder || ($mechanic_id == $user_id)) &&
           (strcasecmp($worklist['status'], 'Done') != 0 &&
            strcasecmp($worklist['status'], 'Completed') != 0 )) {?>
            $('#edit_review_url').click(function(e){
@@ -1468,7 +1469,7 @@ $(document).ready(function(){
             <div id="quick-status">
                 <span class="info-label"><a href="help.php#ff5" target="_blank">Job status:</a></span>&nbsp;
             <?php
-            if ((!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') || $is_runner
+            if ((!($is_runner || $is_project_founder) && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') || $is_runner || $is_project_founder
             || ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done')) :
             ?>
                 <form id="searchForm" method="post" action="">
@@ -1476,7 +1477,7 @@ $(document).ready(function(){
                     <select id="statusCombo" name="quick-status" class="project-dropdown hidden" style="display: block;">
                         <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>
                         <?php
-                        if (!$is_runner && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
+                        if (!($is_runner || $is_project_founder) && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
                             foreach ($statusListMechanic as $status) {
                                 if ($status != $worklist['status']) {?>
                                     <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
@@ -1484,7 +1485,7 @@ $(document).ready(function(){
                                 }
                             }
                         }
-                        else if ($is_runner) { //runners and admins
+                        else if ($is_runner || $is_project_founder) { //runners and admins
                             foreach ($statusListRunner as $status) {
                                 if ($status != $worklist['status']) {
                             ?>
@@ -1541,7 +1542,7 @@ if ($action =="edit"):  ?>
             <input type="hidden" name="action" value="save_workitem" />
             <div class="project <?php if ($workitem_project->getRepo_type() == 'git') { echo ' github';} ?>">
                 <span class="info-label" id="edit-project-label">Project:&nbsp;</span>
-                <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')):
+                <?php if (($is_runner || $is_project_founder || $creator_id == $user_id) && ($worklist['status'] != 'Done')):
                           $filter = new Agency_Worklist_Filter();
                           $filter->setProjectId($worklist['project_id']);
                           echo $filter->getProjectSelectbox('Select Project', 0, 'project_id', 'project_id');
@@ -1663,7 +1664,9 @@ if ($action =="edit"):  ?>
                 <!-- Edit: Summary info -->
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
-                            if (($is_runner && $worklist['status']!='Done') || ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
+                            if ((($is_runner || $is_project_founder) && $worklist['status']!='Done') || 
+                                ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || 
+                                $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
                             <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo $worklist['summary'];?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
@@ -1673,7 +1676,7 @@ if ($action =="edit"):  ?>
                         <li>
                             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
                             <span class="info-data">
-                            <?php if ($is_runner || $user_id == $worklist['runner_id']){  ?><span class="info-data">
+                            <?php if ($is_runner || $is_project_founder || $user_id == $worklist['runner_id']){  ?><span class="info-data">
                             <select id="status" name="status">
                                 <?php foreach ($statusListRunner as $status) { ?>
                                 <option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected="selected"' : ''; ?> ><?php echo $status; ?></option>
@@ -1699,7 +1702,7 @@ if ($action =="edit"):  ?>
                 <!-- Edit: Notes textarea -->
                         <li>
                             <span class="sections">Notes</span>
-                            <?php if (($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
+                            <?php if (($$is_runner || $is_project_founder || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
                                 <span id="info-notes">
                                     <textarea name="notes" id="edit-notes" class="expandable" <?php if(count($activeBids) > 0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
                                 </span>
@@ -1748,7 +1751,7 @@ if ($action =="edit"):  ?>
                     <li>
                         <div class="sandbox-container">
                             <span class="functional-label" >Sandbox:</span><br />
-                            <?php if(($is_runner || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
+                            <?php if(($is_runner || $is_project_founder || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
                             <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo htmlspecialchars($worklist['sandbox']);?>" />
                              <?php elseif ( !empty($worklist['sandbox']) ):?>
                                 <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
@@ -1783,7 +1786,7 @@ if ($action =="edit"):  ?>
                         <div class="sandbox-container">
                             <?php if((strcasecmp($worklist['status'], 'Working') == 0 ||
                                 strcasecmp($worklist['status'], 'Review') == 0 ||
-                                strcasecmp($worklist['status'], 'Functional') == 0) && (($is_runner) || ($mechanic_id == $user_id))) {?>
+                                strcasecmp($worklist['status'], 'Functional') == 0) && ($is_runner || $is_project_founder || ($mechanic_id == $user_id))) {?>
                                 <span class="iToolTip changeSBurl functional-label" id="edit_review_url">Sandbox:</span><br />
                             <?php } else {?>
                                 <span class="functional-label">Sandbox:</span><br />
@@ -1801,7 +1804,8 @@ if ($action =="edit"):  ?>
                                       ?>
                                 </a>
                                 <?php if (($worklist['status'] == 'Functional' || $worklist['status'] == 'Review')
-                                        && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'Working' && ($user->isRunnerOfWorkitem($workitem) || $user->getId() == $mechanic_id))) { ?>
+                                        && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'Working' && 
+                                        ($user->isRunnerOfWorkitem($workitem) || $is_project_founder || $user->getId() == $mechanic_id))) { ?>
                                 <div class="buttonContainer view-sandbox">
                                      <input type="submit" class="smbutton" id="view-sandbox" value="View diff" />
                                 </div>
@@ -1960,7 +1964,7 @@ if ($action =="edit"):  ?>
                                     } else if($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
                                         if ($user->isEligible()) {
                                             if(hasRights($user_id, $workitem)) {
-                                                if($user_id == $workitem->getCReviewerId() || $is_runner || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
+                                                if($user_id == $workitem->getCReviewerId() || $is_runner || $is_project_founder || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
                                                     <input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
                                         <?php   }
                                             }
@@ -1988,7 +1992,7 @@ if ($action =="edit"):  ?>
                                             <input type="submit" class="smbutton" value="Add my bid" onClick="return showIneligible('bid');" />
                                             <?php endif; ?>
                                         </div>
-                                        <?php if(! empty($bids) && ($is_runner || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids()
+                                        <?php if(! empty($bids) && ($is_runner || $is_project_founder || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids()
                                               && ((($workitem->getStatus()) == "Bidding") || $workitem->getStatus() == "SuggestedWithBid")):?>
                                             <div class="buttonContainer bidbutton">
                                                 <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
@@ -2036,7 +2040,8 @@ if ($action =="edit"):  ?>
                                     } else {
                                         $expired_class = '';
                                     }
-                                    $canSeeBid = $user->getIs_admin() == 1 || $user->isRunnerOfWorkitem($workitem) || $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner);
+                                    $canSeeBid = $user->getIs_admin() == 1 || $is_project_founder || $user->isRunnerOfWorkitem($workitem) || 
+                                                 $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner);
                                     $row_class = "";
                                     $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
                                     $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
@@ -2172,7 +2177,7 @@ if ($action =="edit"):  ?>
                                                     <?php endif;?>
                                                     
                                                      <?php if ($worklist['status'] != 'Done') { ?>
-                                                        <?php if(($is_runner ||$user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
+                                                        <?php if(($is_runner || $is_project_founder || $user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
                                                         - <a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>delete</a>
                                                         <?php endif;?>
                                                     <?php };?>

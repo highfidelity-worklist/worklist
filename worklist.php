@@ -45,6 +45,10 @@ if ($projectName) {
         $error  = $e->getMessage();
         die($error);
     }
+    //get the project owner
+    $project_user = new User();
+    $project_user->findUserById($inProject->getOwnerId());
+
     // save changes to project
     if (isset($_REQUEST['save_internal']) && $userId > 0 && $user->getIs_admin()) {
         $inProject->setInternal($_REQUEST['internal']);
@@ -1286,7 +1290,11 @@ if (is_object($inProject)) {
 <?php endif; ?>
     </ul>
     <ul class="detailContainer">
-        <li><strong>Total Funded:</strong> $<?php echo $inProject->getTotalFees($inProject->getProjectId()); ?></li>
+        <li><strong>Total Funded:</strong> $<?php echo $inProject->getTotalFees($inProject->getProjectId()); ?></li> 
+        <li><strong>Project Founder:</strong> <a class="" href='javascript:(function() {showUserInfo(<?php echo $inProject->getOwnerId(); ?>);})();'>
+            <span><?php echo $project_user->getNickname(); ?></span>
+             </a>
+        </li>
         <li><strong>Contact Info:</strong> <?php echo $inProject->getContactInfo(); ?></li>
 <?php if ($inProject->getRepository() != '') : ?>
         <li><strong>Repository:</strong> <a href="<?php echo $inProject->getRepoUrl(); ?>"><?php echo $inProject->getRepoUrl(); ?></a></li>
