@@ -2,7 +2,7 @@
   font-family: 'Cabin';
   font-style: normal;
   font-weight: 400;
-  src: local('Cabin Regular'), local('Cabin-Regular'), url(http://themes.googleusercontent.com/static/fonts/cabin/v4/kJXt72Gt1LyFMZcEKAAvlKCWcynf_cDxXwCLxiixG1c.woff) format('woff');
+  src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
 }
 
 .warn {
