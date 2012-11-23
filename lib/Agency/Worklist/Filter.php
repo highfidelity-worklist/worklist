@@ -10,6 +10,7 @@ class Agency_Worklist_Filter {
 
     // Filter for worklist
     protected $user = 0;
+    protected $runner = 0;
     protected $status = 'Bidding';
     protected $query = '';
     protected $sort = 'delta';
@@ -132,12 +133,21 @@ class Agency_Worklist_Filter {
     public function getFund_id() {
         return $this->fund_id;
     }
+
     /**
      * @return the $user
      */
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @return the $runner
+     */
+    public function getRunner()
+    {
+        return $this->runner;
     }
 
     /**
@@ -228,6 +238,15 @@ class Agency_Worklist_Filter {
     public function setUser($user)
     {
         $this->user = (int) $user;
+        return $this;
+    }
+
+    /**
+     * @param $runner the $runner to set
+     */
+    public function setRunner($runner)
+    {
+        $this->runner = (int) $runner;
         return $this;
     }
 
@@ -377,7 +396,7 @@ class Agency_Worklist_Filter {
         $box = '<select class="hidden" name="' . $name . '" id="' . $id . '" >';
         if ($allMessage !== false) {
             $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allMessage . '</option>';
-		}
+        }
         foreach ($users as $user) {
             $box .= '<option value="' . $user->getId() . '"' . (($this->getUser() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
         }
@@ -385,6 +404,22 @@ class Agency_Worklist_Filter {
         
         return $box;
     }
+
+    public function getRunnerSelectbox($active = 1, $allMessage = false, $id = 'runnerCombo', $name = 'runner') {
+        $allDisplay = ($allMessage !== false) ? $allMessage : "All Users";
+        $users = User::getUserList(getSessionUserId(), $active, 1);
+        $box = '<select class="hidden" name="' . $name . '" id="' . $id . '" >';
+        if ($allMessage !== false) {
+            $box .= '<option value="0"' . (($this->getRunner() == 0) ? ' selected="selected"' : '') . '> ' . $allMessage . '</option>';
+        }
+        foreach ($users as $user) {
+            $box .= '<option value="' . $user->getId() . '"' . (($this->getRunner() == $user->getId()) ? ' selected="selected"' : '') . '>' . $user->getNickname() . '</option>';
+        }
+        $box .= '</select>';
+        
+        return $box;
+    }
+
     
     /**
      * Gets the manager user selection box with style

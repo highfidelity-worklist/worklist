@@ -1355,14 +1355,18 @@ class User {
      * Get a list of active users.
      * 
      * @param $active int Show only active users if 1
+     * @param $active int Show only runner users if 1
      * @param $populate int Populate a user by id
      * @return array Userlist
      *
      */
-    public static function getUserList($populate = 0, $active = 0) {
+    public static function getUserList($populate = 0, $active = 0, $runner = 0) {
         $where = 'WHERE `' . USERS . '`.`confirm` = 1 AND `' . USERS . '`.`is_active` > 0';
         if ($active) {
            $where .= ' AND (`dates`.`date` > DATE_SUB(NOW(), INTERVAL 30 DAY) || `'.USERS.'`.`last_seen` > DATE_SUB(NOW(), INTERVAL 30 DAY) )';
+        }
+        if ($runner) {
+           $where .= ' AND `is_runner` = 1';
         }
         $sql = "
             SELECT `" . USERS . "`.* FROM `" . USERS . "` 

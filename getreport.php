@@ -42,6 +42,7 @@ $sfilter = $filter->getStatus();
 $pfilter = $filter->getProjectId();
 $fundFilter = $filter->getFund_id();
 $ufilter = $filter->getUser();
+$rfilter = $filter->getRunner();
 $order = $filter->getOrder();
 $dir = $filter->getDir();
 $type = $filter->getType();
@@ -51,6 +52,10 @@ $queryType = isset( $_REQUEST['qType'] ) ? $_REQUEST['qType'] :'detail';
 $where = '';
 if ($ufilter) {
     $where = " AND `".FEES."`.`user_id` = $ufilter ";
+}
+
+if ($rfilter) {
+    $where = " AND `".FEES."`.`user_id` = $rfilter ";
 }
 
 if ($sfilter){

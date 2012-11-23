@@ -47,6 +47,7 @@ if (! empty($_REQUEST['w2_only'])) {
 $_REQUEST['name'] = '.reports';
 
 $activeUsers = isset($_REQUEST['activeUsers']) ? (int) $_REQUEST['activeUsers'] : 1;
+$activeRunners = isset($_REQUEST['activeRunners']) ? (int) $_REQUEST['activeRunners'] : 1;
 $activeProjects = isset($_REQUEST['activeProjects']) ? (int) $_REQUEST['activeProjects'] : true;
 
 $filter = new Agency_Worklist_Filter($_REQUEST, true);
@@ -346,6 +347,7 @@ function AppendPagination(page, cPages, table) {
                 page: npage,
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
+                runner: $('select[name=runner]').val(),
                 project_id: $('select[name=project]').val(),
                 fund_id: $('select[name=fund]').val(),
                 w2_only: $('#w2_only').is(':checked') ? 1 : 0,
@@ -446,6 +448,7 @@ function AppendPagination(page, cPages, table) {
                 page: npage,
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
+                runner: $('select[name=runner]').val(),
                 project_id: $('select[name=project]').val(),
                 fund_id: $('select[name=fund]').val(),
                 w2_only: $('#w2_only').is(':checked') ? 1 : 0,
@@ -544,6 +547,7 @@ function setupTimelineChart(reload) {
                 qType: 'chart',
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
+                runner: $('select[name=runner]').val(),
                 project_id: $('select[name=project]').val(),
                 fund_id: $('select[name=fund]').val(),
                 w2_only: $('#w2_only').is(':checked') ? 1 : 0,
@@ -765,6 +769,7 @@ function loadTimelineChart() {
                 location.href = 'reports.php?reload=false&view=details&user=' + $('select[name=user]').val()
                               + '&status=' + $('select[name=status]').val()
                               + '&project_id=' + $('select[name=project]').val()
+                              + '&runner=' + $('select[name=runner]').val()
                               + '&fund_id=' + $('select[name=fund]').val()
                               + '&type=' + $('#type-status').val()
                               + '&order=' + $('#sort-by').val()
@@ -773,25 +778,13 @@ function loadTimelineChart() {
                               + '&paidstatus=' + $('#paid-status').val()
                               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
                               + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
+                              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
                               + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             } else if(currentTab == 1) {
                 location.href = 'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val()
                               + '&status=' + $('select[name=status]').val()
                               + '&project_id=' + $('select[name=project]').val()
-                              + '&fund_id=' + $('select[name=fund]').val()
-                              + '&type=' + $('#type-status').val()
-                              + '&order=' + $('#sort-by').val()
-                              + '&start=' + fromDate
-                              + '&end=' + toDate
-                              + '&paidstatus=' + $('#paid-status').val()
-                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
-                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0) + '&activeUsers='
-                              + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
-            }
-        else if(currentTab == 2) {
-                location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val()
-                              + '&status=' + $('select[name=status]').val()
-                              + '&project_id=' + $('select[name=project]').val()
+                              + '&runner=' + $('select[name=runner]').val()
                               + '&fund_id=' + $('select[name=fund]').val()
                               + '&type=' + $('#type-status').val()
                               + '&order=' + $('#sort-by').val()
@@ -800,6 +793,23 @@ function loadTimelineChart() {
                               + '&paidstatus=' + $('#paid-status').val()
                               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
                               + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
+                              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
+                              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
+            }
+        else if(currentTab == 2) {
+                location.href = 'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val()
+                              + '&status=' + $('select[name=status]').val()
+                              + '&project_id=' + $('select[name=project]').val()
+                              + '&runner=' + $('select[name=runner]').val()
+                              + '&fund_id=' + $('select[name=fund]').val()
+                              + '&type=' + $('#type-status').val()
+                              + '&order=' + $('#sort-by').val()
+                              + '&start=' + fromDate
+                              + '&end=' + toDate
+                              + '&paidstatus=' + $('#paid-status').val()
+                              + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
+                              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
+                              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
                               + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
             }
         });
@@ -815,6 +825,9 @@ function loadTimelineChart() {
 $(function() {
     if ($('#mechanic_id').length !== 0) {
         createActiveFilter('#mechanic_id', 'users', <?php echo $activeUsers; ?>);
+    }
+    if ($('#runnerCombo').length !== 0) {
+        createActiveFilter('#runnerCombo', 'runners', <?php echo $activeRunners; ?>);
     }
     if ($('#projectCombo').length !== 0) {
         createActiveFilter('#projectCombo', 'projects', <?php echo $activeProjects; ?>);
@@ -896,13 +909,8 @@ $(function() {
                 <div class="report-item-clear"></div>
             </div>
             <div class="second-line">
-                <div class="report-label">Order:</div>
-                <div class="report-input-item">
-                    <select id="sort-by">
-                        <option value="name"<?php echo(($filter->getOrder() == 'name') ? ' selected="selected"' : ''); ?>>Alphabetically</option>
-                        <option value="date"<?php echo(($filter->getOrder() == 'date') ? ' selected="selected"' : ''); ?>>Chronologically</option>
-                    </select>
-                </div>
+                <div class="report-label">Runner:</div>
+                <div class="report-input-item"><?php echo $filter->getRunnerSelectbox($activeRunners, 'ALL'); ?></div>
                 <div class="report-item-clear"></div>
             </div>
         </td>
@@ -916,6 +924,16 @@ $(function() {
             </div>
         </td>
         <td class="textAlignReport">
+                <div class="report-label">Order:</div>
+                <div class="report-input-item">
+                    <select id="sort-by">
+                        <option value="name"<?php echo(($filter->getOrder() == 'name') ? ' selected="selected"' : ''); ?>>Alphabetically</option>
+                        <option value="date"<?php echo(($filter->getOrder() == 'date') ? ' selected="selected"' : ''); ?>>Chronologically</option>
+                    </select>
+                </div>
+                <div class="report-item-clear"></div>
+        </td>
+          <td class="textAlignReport">
             <div>
                 <div class="report-label">W2 Only:</div>
                 <div class="report-input-item" id="w2checkbox">
@@ -923,11 +941,6 @@ $(function() {
                 </div>
             <div class="report-item-clear"></div>
             </div>
-        </td>
-          <td class="textAlignReport">
-              <div class="report-label">&nbsp;</div>
-              <div class="report-item">&nbsp;</div>
-              <div class="report-item-clear"></div>
           </td>
       </tr>
       <tr>
