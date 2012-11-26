@@ -3044,22 +3044,6 @@ $(function() {
     // Collect Bidding Jobs info
     getBiddingReviewDrawers();
 
-    
-    if (userId > 0) {
-        $("#addJob").click(function(event){
-            $('#popup-edit').dialog('open');
-        });
-    } else {
-        $("#popup-guest-message").dialog({ autoOpen: false, hide: 'drop' });
-        $("#addJob").click(function() {
-            $("#popup-guest-message").dialog('open').centerDialog();
-        });
-        
-        $("#message-login").click(function() {
-            $("#popup-guest-message").dialog('close');
-        });
-    }
-
     $('#share-this').hide();
     $("#query").DefaultValue("Search...");
 

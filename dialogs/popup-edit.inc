@@ -5,6 +5,7 @@
         <input type="hidden" name="files" value="" />
         <div id="for_edit" <?php if(!isset($_SESSION['userid'])){ echo 'style = "display:none;"';}?>>
 <?php
+  require_once("helper/popup-guest-message.inc");
   $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
   //Using undefined SESSION['userid'] causes a warning
   if (!$is_runner && !empty($_SESSION['userid'])) {

@@ -116,8 +116,7 @@ function StopStatus() {
 <?php endif; ?>
 <!-- js template for file uploads -->
 <?php require_once('dialogs/file-templates.inc'); ?>
-<!-- Popup for editing/adding  a work item -->
-<?php require_once('dialogs/popup-edit.inc'); ?>
+
 <?php require_once('dialogs/budget-expanded.inc') ?>
 <script type="text/javascript">
 <?php
@@ -213,8 +212,6 @@ if (isset($error) && $error->getErrorFlag() == 1) {
         require_once("helper/popup-penalty.inc");
         require_once("helper/popup-guest-selector.inc");
         require_once("helper/popup-useritems.inc");
-    } else {
-        require_once("helper/popup-guest-message.inc");
     }
 ?>
 <audio id="chatSoundPlayer" preload="auto">
@@ -427,5 +424,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "iPhone")) {
                 </div>
             </form>
         </div>
+        <!-- Popup for editing/adding  a work item -->
+        <?php require_once('dialogs/popup-edit.inc'); ?>
 <?php include("footer.php"); ?>
 

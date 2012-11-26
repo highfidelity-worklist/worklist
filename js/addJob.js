@@ -226,9 +226,14 @@ $(function() {
         });
 
         $('#addJob').click(function() {
-            if (userId <= 0) {
+            if (userId <= 0) {   
+                $("#popup-guest-message").dialog({ autoOpen: false, hide: 'drop' });
+                $("#addJob").click(function() {
+                    $("#popup-guest-message").dialog('open').centerDialog();
+                });
                 return;
             }
+            
             $('#popup-edit').bind('dialogbeforeclose', function() {
                 var result = confirm("Are you sure you want to close this dialog? You will lose all the information entered.");
                 if (result) {
