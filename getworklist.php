@@ -91,9 +91,10 @@ if ($sfilter) {
                          * otherwise we reveal other user's tasks they are 
                          * bidding on
                          */
-                        $where .= "(status = 'Bidding' AND (`fees`.user_id = $userId OR runner_id = $userId)) OR ";
+                         $where .= "(status = 'Bidding' AND ((`" . WORKLIST . "`.`id` in (SELECT `worklist_id` "; 
+                         $where .= "FROM `" . BIDS . "` where `bidder_id` = '$userId' AND status = 'Bidding')) OR runner_id = $userId)) OR ";                     
                      } else {
-                        $where .= "status = '$val' OR ";
+                         $where .= "status = '$val' OR ";
                      }
                 } else if ($val != 'ALL') {
                     /**
