@@ -9,6 +9,7 @@ class PingBot extends Bot
         parent::__construct();
 
         self::registerBot($this);
+        self::watchFor($this, 'message', 'botwatch_message');
     }
 
     public function __call($request, $args)
@@ -103,29 +104,21 @@ class PingBot extends Bot
         if (!$chat->isSpeakerOnline($user[0])) {
             return array('bot'=>$this->respondsTo(), 'status'=>'ok', 'scope'=>'#private', 'message'=>"$nickname isn't online right now.");
         }
+        
+        $pinguser = new User();
+        $pinguser->findUserByNickname($nickname);
 
-	    $bot_return = "$me, I let $nickname know you wanted to talk to them.";        
+        $bot_return = "$me, I let $nickname know you wanted to talk to them.";        
         //Check if the user's last activity was more than 30 minutes ago
-        if($user[1] <= time()-1800) {
-            //If they have a cell number on file
-            if(isset($user[2])) {
-                //They have a cell number on file, txt them the PING! & Tell the requesting user the PING! went to the other user's cell
-                try {
-                    require_once('lib/Sms.php');
-                	$pinguser = new User();
-                	$pinguser->findUserByNickname($nickname);
-                	$config = Zend_Registry::get('config')->get('sms', array());
-                	if ($config instanceof Zend_Config) {
-                		$config = $config->toArray();
-                	}
-                	$smsMessage = new Sms_Message($pinguser, 'New Ping', "$me: $message");
-                	Sms::send($smsMessage, $config);
-                } catch (Sms_Backend_Exception $e) { }
-
-                $bot_return = "$me, I let $nickname know you wanted to talk to them. They have not spoken in over 30 minutes, your PING was sent to their cell phone.";
+        if ($user[1] <= time() - 1800) {
+            // If user has a phone number and is able to receive sms for PINGs lets notify him
+            if (isset($user[2]) && Notification::isNotified($pinguser->getNotifications(), Notification::PING_NOTIFICATIONS)) {
+                Notification::sendShortSMS($pinguser, "Ping from $me", $message);
+                $bot_return = "$me, I let $nickname know you wanted to talk to them. " .
+                    "They have not spoken in over 30 minutes, your PING was sent to their cell phone.";
             } else {
-            	//They do not have a cell number on file, send the ping but tell the user a text was not sent.
-            	$bot_return = "$me, I let $nickname know you wanted to talk to them, but could not text them because they don't have a cell number on file.";
+                $bot_return = "$me, I let $nickname know you wanted to talk to them, " .
+                   "but could not text them because they don't have a cell number on file.";
             }
         }
 
@@ -133,7 +126,39 @@ class PingBot extends Bot
         return array('bot'=>$this->respondsTo(), 'status'=>'ok', 'scope'=>'#privpub',
             'private'=>$bot_return, 'message'=>"PING! $nickname, you have been pinged by $me$message");
     }
+    
+    /**
+     * botwatch_message 
+     *
+     * Notifies mentioned users on chat messages if they are able to receive sms
+     */
+    public function botwatch_message($args) {
+        $author = !empty($args[0]) ? $args[0] : 'Guest';
+        $message = $args[1];
 
+        // set the time here so all recordings have identical timestamp
+        $time = time();
+        
+        // spaces duplication is needed to make below regexp works with multiple mentions
+        $tmp_message = str_replace(' ', '  ', $message);
+
+        // catch ALL mentions and dump to history
+        if (preg_match_all('/(?:^|[\b\s])@([^\b\s\W]+)(?:$|[\b\s\W])/Ui', $tmp_message, $matches)) {
+            foreach ($matches[1] as $mention) {
+                if (strpos(BOTLIST, $mention) === false) {
+                    $mentionuser = new User();
+                    if ($mentionuser->findUserByNickname($mention) && 
+                        Notification::isNotified($mentionuser->getNotifications(), Notification::PING_NOTIFICATIONS)
+                    ) {
+                        Notification::sendShortSMS($mentionuser, "Mention from $author", $message);
+                    }
+                }
+            }
+        }
+        
+        // we don't want to do anything other than record this information so return an ignore
+        return array('bot' => $this->respondsTo(), 'status' => 'ignore');
+    }
 }
 
 $ping_bot = new PingBot();

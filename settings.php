@@ -839,7 +839,7 @@ include("head.html");
                 ?>/>Bids on my jobs<br />
             <input type="checkbox" name="ping_notify" value="1" <?php
                 echo Notification::isNotified($notifications, Notification::PING_NOTIFICATIONS) ? 'checked="checked"' : '';
-                ?>/>Pings
+                ?>/>Pings / Chat mentions
             </div>
             <div class="floatLeft">
                 <input type="checkbox" name="bidding_notify" value="1" <?php
