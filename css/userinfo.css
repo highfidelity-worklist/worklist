@@ -80,14 +80,14 @@ p.small-text{
     float: left;
     margin-top: 6px;
     width: 196px;
-    border-bottom: none;
+    border-bottom: none !important;
 }
 
 #info-currenttime span {
-    font-size: 50px;
+    font-size: 45px;
     line-height: 48px;
     font-weight: normal;
-    letter-spacing: -1px;
+    letter-spacing: -2px;
     font-family: Cabin;
 }
 
