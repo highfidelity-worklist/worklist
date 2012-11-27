@@ -18,7 +18,7 @@ var WLFavorites = {
             isMyFav = true;
         }
         
-        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'trusted ');
+        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'Trusted ');
         
         $('.profileFavoriteText').html(favText);
     },
@@ -47,7 +47,7 @@ var WLFavorites = {
                 var fav = parseInt($('.profileFavoriteText').attr('data-favorite_count'));
                 if (newVal == 1) {
                     $('.profileFavoriteText').attr('data-favorite_count', fav + 1);
-                    var favText = WLFavorites.getFavoriteText(fav + 1, true, 'trusted ');
+                    var favText = WLFavorites.getFavoriteText(fav + 1, true, 'Trusted ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")
                         .removeClass("notmyfavorite")
@@ -55,7 +55,7 @@ var WLFavorites = {
                         .attr("title", "Remove " + fav_user_nickname + " from your trusted by. (don't worry it's anonymous)");
                 } else {
                     $('.profileFavoriteText').attr('data-favorite_count', fav - 1);
-                    var favText = WLFavorites.getFavoriteText(fav - 1, false, 'trusted ');
+                    var favText = WLFavorites.getFavoriteText(fav - 1, false, 'Trusted ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")
                         .removeClass("myfavorite")
@@ -112,9 +112,8 @@ var WLFavorites = {
                 if (favCount == 2) {
                     pluralize = 'person';
                 }
-                favCount--;
                 favText += 'by <span class="favBlack">' + favCount 
-                + '</span> ' + pluralize + ' <span class="favBlue">& you</span>';
+                + '</span> ' + pluralize + ' <span class="favBlue">(including you)</span>';
             }
         } else /*if the user has not favorited the mission */ {
             favText += 'by <span class="favBlack">' + favCount + '</span> ' + pluralize;

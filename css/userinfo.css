@@ -1,21 +1,31 @@
-.user-info {
-    background-color: #FFFFFF;
-    background-image: none;
+@font-face {
+  font-family: 'Cabin';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
+}
+
+#left, #right {
+    background: none;
 }
 
 .hidden {
     display: none;
 }
 
+.rowodd {
+    background-color: #ffffff;
+}
+
+.roweven {
+    background-color: #EEE !important;
+    background-image: none !important;
+}
+
 .userInfoLink {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-}
-
-.user-info p{
-    font-size: 1.3em;
-    margin: 4px 0 0;
 }
 
 .common-info {
@@ -42,7 +52,7 @@
 
 #quick-reward p {
     font-size: 1.2em;
-} 
+}
 
 #quick-reward input[type="text"] {
     width: 3em;
@@ -60,13 +70,128 @@
 .big-text{
     font-size: 1.6em;
 }
+
 p.small-text{
     font-size: 1.1em;
     height:20px;
 }
 
+#info-currenttime {
+    float: left;
+    margin-top: 6px;
+    width: 196px;
+    border-bottom: none;
+}
+
+#info-currenttime span {
+    font-size: 50px;
+    line-height: 48px;
+    font-weight: normal;
+    letter-spacing: -1px;
+    font-family: Cabin;
+}
+
+#tabs .info-label {
+    font-weight: normal; 
+    border-bottom: 2px solid #E1E8EA;
+}
+
+.info-label .info-label {
+    border: none !important;
+}
+
+.title-label-big { 
+    color: #993300;
+    font-size: 18px;
+    margin: 30px 22px 0 0;
+    line-height: 17px;
+    padding-bottom: 5px;
+}
+
+.jobs {
+    margin-top: 59px !important;
+    margin-left: -1px !important;
+}
+
+#jobs-table {
+    margin-top: -1px !important;
+    float: left;
+    width: 449px;
+    border: 1px solid #d6d6d6;
+}
+
+.title-label-medium { 
+    color: #993300;
+    font-size: 18px;
+    margin: 23px 22px 0 0;
+    line-height: 19px;
+    padding-bottom: 5px;
+    border: none;
+    float: left;
+    border-bottom: none !important;
+}
+
+.title-label-medium span { 
+    font-size: 14px;
+    color: #ccc;
+    font-weight: normal;
+}
+
+#info-skills { 
+    color: #333;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#info-about {
+    margin: 10px 22px 0 0;
+    font-size: 14px;
+    line-height: 19px;
+    float: left;
+}
+
+.about {
+    margin-top: -3px;
+}
+
+.title-label-small { 
+    color: #993300;
+    font-size: 14px;
+    margin: 21px 24px 0 0;
+    line-height: 17px;
+    padding-bottom: 12px;
+}
+
+.title-label-small a,
+.title-label-small span{ 
+    font-weight: bold;
+    color: #333;
+}
+
 #user-location {
     float: left;
+    width: 196px;
+}
+
+.totals {
+    float: left;
+    margin: 3px 0px;
+    line-height: 22px;
+    font-size: 14px;
+}
+
+.totals span{
+    font-weight: bold;
+}
+
+.totals a{
+    text-decoration: none;
+}
+
+#user-age {
+    float: left;
+    width: 196px;
+    margin-right: 21px;
 }
 
 #user-avatar {
@@ -76,40 +201,39 @@ p.small-text{
 
 #avatar {
     background: #ffffff;
-    border: 1px solid lightgrey;
-    padding: 5px;
-    margin: auto auto 3px;
-    height: 80px;
-    width: 80px;
+    height: 100px;
+    width: 100px;
 }
+
 #user-stats tbody tr td {
     text-align: center;
     font-weight: bold;
     border-width:1px;
 }
+
 #user-stats tbody tr:hover {
     background-color: white;
 }
+
 div.left-column {
     float: left;
-    width:45%;
-    height: 240px;
+    width: 437px;
     overflow-y:auto;
 }
+
 div.right-column {
-    float: left;
-    border-left: solid 1px black;
+    float: right;
     height: 100%;
     padding-left: 2px;
-    width:54%;
+    width: 455px;
 }
+
 #admin-left, #admin-middle, #admin-right {
     float: left;
 }
 
 #admin-left {
     margin-right: 0.5em;
-    border-right: 1px solid #000000;
 }
 
 #admin-right{
@@ -117,14 +241,8 @@ div.right-column {
 }
 
 #admin-left, #admin-right {
-    width: 360px;
+    width: 439px;
     height: 100%;
-}
-
-#admin-left p, 
-#admin-right p {
-    font-size: 1.2em !important;
-    line-height: 1.4em;
 }
 
 .admin-submit {
@@ -132,14 +250,13 @@ div.right-column {
     margin-right: 10px;
     margin-top: -5px;
 }
+
 #annual_salary {
     width: 120px;
 }
 
 #admin-left p.info-label {
-
 }
-
 p.bottom {
     position: absolute;
     bottom: 40px;
@@ -151,61 +268,293 @@ p.bottom {
 }
 
 #tabs {
-    margin-top: 0.5em;
-    height: 300px;
+    margin: 0 40px 0 3px;
+    border: none;
+    border-radius: 0;
+    padding: 0;
 }
-
-
 
 .tabs-bottom { 
     position: relative; 
-} 
-.tabs-bottom .ui-tabs-panel { 
-    height: 260px; 
+}
+
+.reviewTitle {
+    font-weight: normal !important;
+    padding-left: 0 !important;
+    width: 415px !important;
+    margin-top: 18px;
+}
+
+.reviewAddLink,
+.reviewEditLink {
+    font-size: 12px !important;
+    font-weight: normal !important;
+    top: 2px;
+    position: relative;
+}
+
+.reviewAddLink a,
+.reviewEditLink a {
+    color: #88AAB0 !important;
+}
+
+.reviewsList {
+    margin: 0 !important;
+    height: auto !important;
+}
+
+.noReview {
+    height: auto !important;
+    overflow-y: auto !important;
+    padding: 10px 0 20px 0 !important;
+    font-style: italic;
+    font-size: 12px;
+    width: 415px;
+    border-top: 2px solid #E1E8EA;
+}
+
+.listReviewElement {
+    height: auto !important;
+    overflow-y: auto !important;
+    padding: 10px 0 20px 0;
+    font-style: italic;
+    font-size: 12px;
+    width: 415px;
+    border-top: 2px solid #E1E8EA;
+}
+
+.listReviewElement .feeRange {
+    margin:0 !important;
+    float: none !important;
+    width: auto !important;
+    font-weight:bold;
+    text-align: right;
+}
+
+.listReviewElement .reviewText {
+    width: 415px !important;
+    margin: 9px 0 !important;
+    font-size: 14px;
+    font-style: normal;
+    line-height: 19px;
+}
+
+.tabs-bottom .ui-tabs-panel {  
     overflow: auto; 
     padding:4px !important;
+    margin-top: 94px;
+    padding: 0 !important;
 }
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+    height: 20px;
+    border-bottom: 1px solid #fff !important;
+    padding: 1px 0 !important;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a{
+    color: #608e96;
+}
+
+.top-profile-bar {
+    float: left;
+    width: 902px;
+    border-bottom: 1px solid #d6d6d6;
+    position: absolute;
+    top: -38px;
+}
+
 .tabs-bottom .ui-tabs-nav { 
     position: absolute !important; 
     left: 0; 
-    bottom: 0; 
+    top: 0; 
     right:0; 
-    padding: 0 0.2em 0.2em 0;
+    border-radius: 0;
+    background: none;
+    border: none;
+    padding: 0 !important;
+    margin-top: -70px !important;
 } 
-.tabs-bottom .ui-tabs-nav li { 
-    margin-top: -2px !important; 
-    margin-bottom: 1px !important; 
-    border-top: none; 
-    border-bottom-width: 1px; 
+
+.tabs-bottom .ui-tabs-nav li:last-child {     
+    border-right: 2px solid #E1E8EA !important;
 }
-.ui-tabs-selected { 
-    margin-top: -3px !important; 
+
+.tabs-bottom .ui-tabs-nav li {     
+    border: 2px solid #E1E8EA !important;
+    border-radius: 0;
+    background: none;
+    margin: 0 !important;
+    border-right: none !important;
+    padding: 1px 0 !important;
+    height: 27px !important;
+}
+
+.tabs-bottom .ui-tabs-nav li a{     
+    color: #999;
 }
 
 .button-row {
     float: right;
-    padding: 5px 0 10px 5px;
     text-align: right;
+    margin-top: 23px;
+    padding: 5px 0;
+    margin-right: 1px;
 }
+
+.right-column table {
+    border: none !important;
+}
+
+.right-column table td, .right-column table th {
+    border: none !important;
+}
+
+.right-column table td {
+    font-size: 12px;
+    padding-left: 8px;
+    height: 19px;
+}
+
+.right-column table tr.rowodd:hover {
+    background: #fff;
+}
+
+.right-column table tr.roweven:hover {
+    background: #efefef;
+}
+
+.right-column table td a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.right-column table td span {
+    font-weight: bold;
+}
+
+.right-column table th {
+    padding-top: 9px;
+    padding-left: 8px;
+}
+
+.right-column table th.status {
+    padding-right: 0;
+    width: 50px;
+}
+
+.right-column table th.sandbox, .right-column table td.sandbox {
+    padding-left: 0;
+}
+
+.right-column table th:first-child {
+    width: 310px;
+}
+
+.right-column .table-hdng {
+    height: 28px;
+    background: none;
+}
+
+.right-column #ping-msg {
+    height: 72px !important;
+    width: 440px;
+    border: none;
+    border-bottom: 1px solid #d6d6d6;
+}
+
+.right-column #profile-pingtask {
+    padding: 0;
+    display: block; 
+    float: left;
+    border: 1px solid #d6d6d6;
+    margin: -3px 0 0 -1px;
+    width: 450px;
+    background: #efefef;
+    height: 121px;
+}
+
+.right-column #profile-pingtask p {
+    float: right;
+    padding: 9px 18px 0 0;
+    font-size: 12px;
+}
+
+.right-column #profile-pingtask #send-ping-btn {
+    margin: 0;
+    background: #608e96;
+    color: #fff;
+    width: 112px;
+    margin-right: 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+    height: 28px;
+}
+
+
+#info-budget input,
+#btn-bonus input {
+    background: none;    
+    padding: 0;
+    width: auto;
+    font-size: 12px;
+    text-decoration: underline;
+    color: #608e96;
+}
+
 .button-row span {
-    margin: 5px; }
+    margin: 5px;
+}
 
 .quarter-column {
     float: left; 
     width: 23%;
 }
 
-.profileInfoFavorite {
-    color: #666666;
-    font-size: 12px;
-    line-height: 22px; /*28 in mission infos */
+.userName {
+    position: absolute;
+    left: 100px;
+    top: 0;
+    color: #993300;
+    font-size: 45px;
+    line-height: 50px;
     vertical-align: top;
+    padding: 6px 11px;
+    width: 293px;
+    font-family: Cabin;
+}
+
+.profileContactFavorite {
+    margin: 3px 0 -5px -1px;
+    color: #666;
+    font-size: 12px;
+    line-height: 22px;
+    vertical-align: top;
+    padding: 6px 0;
+    border-bottom: 2px solid #E1E8EA;
+    border-top: 2px solid #e1e8ea;
+    width: 451px;
+    font-weight: bold;
+    float: left;
+}
+
+.profileContactFavorite span{
+    font-weight: normal;
 }
 
 .profileInfoFavorite {
     position: absolute;
-    left: 140px;
-    top: 70px;
+    left: 100px;
+    top: 62px;
+    color: #666;
+    font-size: 12px;
+    line-height: 22px;
+    vertical-align: top;
+    padding: 6px 11px;
+    border-bottom: 2px solid #E1E8EA;
+    border-top: 2px solid #e1e8ea;
+    width: 293px;
+    font-weight: bold;
 }
 
 .profileInfoFavorite>img {
@@ -220,9 +569,7 @@ p.bottom {
     width: 20px;
     display: inline-block;
 }
-
 /* styles needed for favorite label sprite in mission info popup */
-
 .favoriteLabel {
     width: 79px;
     height: 23px;
@@ -246,9 +593,7 @@ p.bottom {
 .favoriteLabel.favorited:hover {
     background-position: 0 -179px;
 }
-
 /*styles needed for text beside favorite label in mission info popup */
-
 .favoriteText {
     font-size: 12px;
     color: #666666;
@@ -261,9 +606,13 @@ p.bottom {
     margin-right: 10px;
 }
 
-.favoriteText .favBlue,
-.profileFavoriteText .favBlue {
+.favoriteText .favBlue {
     color: #0033ff;
+}
+
+.profileFavoriteText .favBlue {
+    color: #999;
+    font-weight: normal;
 }
 
 .favoriteText .favBlack,
@@ -293,7 +642,6 @@ p.bottom {
     color: #333333;
 }
 
-
 #sent-notify {
     background-color: lightgrey;
     height: 20px !important;
@@ -314,6 +662,7 @@ p.bottom {
 .bid-info-label {
     font-weight: bold;
 }
+
 .bidderStats {
     height: 24px;
     vertical-align: top;

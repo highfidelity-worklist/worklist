@@ -71,7 +71,9 @@ function getTimeZoneDateTime($GMT) {
     }
 }
 
-function convertTimeZoneToLocalTime($timeoffset) {
+// @param $short == 1 -> return date format as 4:31 AM
+// else return date format as 04:31:22 AM
+function convertTimeZoneToLocalTime($timeoffset, $short) {
     $DefZone = getTimeZoneDateTime($timeoffset);
     date_default_timezone_set($DefZone);
     if (strlen($timeoffset) == 5) {
@@ -95,7 +97,11 @@ function convertTimeZoneToLocalTime($timeoffset) {
     $ar = localtime($time,true);
     if ($ar['tm_isdst']) { $time += 3600; }
     $time = round($time-$timezone_offset+$timezone_add);
-    $LocalTime = date("h:i:s A", $time);
+    if (isset($short) && $short == 1)
+        $LocalTime = date("g:i A", $time);
+    else
+        $LocalTime = date("h:i:s A", $time);
+
     return $LocalTime;		
 }
 ?>

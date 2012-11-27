@@ -1,10 +1,6 @@
-<script type="text/javascript">
-    parent.$('#user-info').dialog('option', 'title', 'User Info for <?php echo $user->getNickname(); ?>');
-</script>
-    <div class="user-info" title="">
-        <div class="common-info">
 <?php
-    include("userstats-table.inc");
+    // removed with job #18739
+    // include("userstats-table.inc");
     require_once 'countrylist.php'; // Get country and country url list
     // Google Maps search Base URL
     $gMapSearch = "http://maps.google.com/maps?q=";
@@ -42,103 +38,17 @@
     if (!isset($countryCodeUrl)) { $countryCodeUrl = ""; }
     if (!isset($countryName)) { $countryName = ""; }
 ?>
-        <div id="user-avatar">
-            <img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" />
-            <?php
-                if ($reqUser->getId() != $user->getId()) {
-                    if ( !$reqUser->isRunner() && !array_key_exists('admin',$_SESSION) && !$reqUser->isActive() ) {
-                        $favoriteClass = "favorite_curr_user";
-                        $title = "You must have been paid for a job in the last 90 days to Trust a person.";
-                    } else {
-                        $favoriteClass = "favorite_user";
-                        $favoriteClass .= ($favorite_enabled == 1) ? " myfavorite" : " notmyfavorite" ;
-                        $title = ($favorite_enabled == 1) ?
-                            "Remove " . ucwords($user->getNickname()) . " as someone you trust. (don't worry it's anonymous)" :
-                            "Add " . ucwords($user->getNickname()) . " as someone you trust." ;
-                    }
-                } else {
-                    $favoriteClass = "favorite_curr_user";
-                    $title = "";
-                }
-            ?>
-            <div class="profileInfoFavorite" id="profileInfoFavorite">
-                <div class="<?php echo $favoriteClass; ?>" title="<?php echo $title; ?>">&nbsp;</div>
-                <span class="profileFavoriteText" data-favorite_count="<?php echo $favorite_count; ?>"></span>
-            </div>
-        </div>
-        <p class="info-label" id="user-location">
-            <?php
-            if($user->getCity() != ""){
-                echo 'City, ';
-            }
-            if($countryCodeUrl != ""){
-                echo 'Country - ';
-            }
-            ?>
-            Local Time<br />
-            <span id="info-currenttime" title="<?php echo $timezoneTable[$user->getTimezone()]; ?>">
-                <?php
-                /* If city is not present, aka stored in DB
-                 * do nothing and proceed to next step
-                 */
-                if($user->getCity() != ""){
-                    echo '<a class="userInfoLink" href="'.$gMapSearch.''.$user->getCity().',+'.$countryName.'&z=6" target="_blank" title="See location on Google Maps">'.$user->getCity().'</a>, ';
-                }
-                /* If country code url exists is not empty
-                 * do proceed with making the url, else nothing
-                 */
-                if($countryCodeUrl != ""){
-                    echo '<a class="userInfoLink" href="'.$ciaGovBase.''.$countryCodeUrl.'.html" target="_blank" title="'.$countryName.'">'.$CCF.'</a> - ';
-                }
-        
-                echo convertTimeZoneToLocalTime($user->getTimezone());
-                ?>
-            </span>
-        </p>
-
-        <div class="button-row">
-            <?php if ($reqUserId > 0) { ?> 
-            <span id="info-budget"><input type="submit" 
-                <?php 
-                if (!$reqUser->isRunner() || $reqUserId == $user->getId()) {
-                    if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") === false) {
-                        echo 'disabled="disabled" class="button-disabled disableable" '; 
-                    }
-                }
-                echo ' title="Remaining budget you can give: $' . $reqUser->getBudget() . '" '; 
-                ?> id="give" value="Give Budget" />
-            </span>
-            <span id="btn-bonus"><input type="submit" 
-                <?php if ($reqUserId == $user->getId() || ! $is_runner) { 
-                    echo 'disabled="disabled" class="button-disabled disableable" '; 
-                } 
-                echo ' title="Remaining budget you can give: $' . $reqUser->getBudget() . '" '; 
-                ?> 
-                id="pay_bonus" value="Pay Bonus" name="pay_bonus" />
-            </span>
-                <?php if ($reqUserId != $user->getId()) { ?>
-                <span id="btn-send-message" class="nickname-ping"><input type="submit" id="send-message" value="Send message" name="send_message" /></span>
-            <?php 
-                } 
-            } ?>
-        </div>
-        <p class="info-label small-text"><br />
-            <span id="info-timezone">&nbsp;</span>
-        </p>
-        
-    </div><!-- end of common info div-->
-    <div id="sent-notify"></div>
-    <?php if(! $is_runner){ ?><hr style="clear: both;" /><?php } ?>
 
     <div id="tabs" class="tabs-bottom">
+        <div class="top-profile-bar"></div>
     <?php if($is_runner){ ?>
         <ul>
-            <li><a href="#tabs-1">User Info</a></li>
+            <li><a href="#tabs-1">Profile</a></li>
             <li><a href="#tabs-2">Admin</a></li>
             <?php if ($user->getIs_runner()) { ?>
                 <li><a href="#tabs-3">Runner</a></li>
             <?php } ?>
-            <li><a href="#tabs-4">Sandbox</a><li>
+            <li><a href="#tabs-4">Sandbox</a></li>
             <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
             <li><a href="budgetHistory.php?inDiv=tabs&id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>" id="tabBudgetHistory">Budget History</a></li>
@@ -158,33 +68,103 @@
         <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
     <?php } ?>
         <div id="tabs-1">
+            
             <div class = "left-column">
-                <p class = "info-label">About<br />
-                    <span id="info-about"><?php echo $user -> getAbout(); ?></span>
-                </p>
-                <p class = "info-label">Age<br />
-                    <span id="info-joined">
+                
+                <div class="common-info">
+                    <div id="user-avatar">
+                        <img id="avatar" src="<?php echo($user->getAvatar(80, 80)); ?>" title="Profile Picture - <?php echo($user->getNickname()); ?>" />
                         <?php
-                            $diffseconds = strtotime($user -> getAdded());
-                            echo formatableRelativeTime($diffseconds,2);
+                            if ($reqUser->getId() != $user->getId()) {
+                                if ( !$reqUser->isRunner() && !array_key_exists('admin',$_SESSION) && !$reqUser->isActive() ) {
+                                    $favoriteClass = "favorite_curr_user";
+                                    $title = "You must have been paid for a job in the last 90 days to Trust a person.";
+                                } else {
+                                    $favoriteClass = "favorite_user";
+                                    $favoriteClass .= ($favorite_enabled == 1) ? " myfavorite" : " notmyfavorite" ;
+                                    $title = ($favorite_enabled == 1) ?
+                                        "Remove " . ucwords($user->getNickname()) . " as someone you trust. (don't worry it's anonymous)" :
+                                        "Add " . ucwords($user->getNickname()) . " as someone you trust." ;
+                                }
+                            } else {
+                                $favoriteClass = "favorite_curr_user";
+                                $title = "";
+                            }
                         ?>
-                    </span>
+                        <div class="userName" id="userName">
+                            <?php echo($user->getNickname()); ?>
+                        </div>
+                        <div class="profileInfoFavorite" id="profileInfoFavorite">
+                            <div class="<?php echo $favoriteClass; ?>" title="<?php echo $title; ?>">&nbsp;</div>
+                            <span class="profileFavoriteText" data-favorite_count="<?php echo $favorite_count; ?>"></span>
+                        </div>
+                    </div>
+                    <p class="info-label title-label-small" id="user-location">
+                        Location:<br />
+                        <?php
+                        /* If city is not present, aka stored in DB
+                         * do nothing and proceed to next step
+                         */
+                        if($user->getCity() != ""){
+                            echo '<a class="userInfoLink" href="'.$gMapSearch.''.$user->getCity().',+'.$countryName.'&z=6" target="_blank" title="See location on Google Maps">'.$user->getCity().'</a>, ';
+                        }
+                        /* If country code url exists is not empty
+                         * do proceed with making the url, else nothing
+                         */
+                        if($countryCodeUrl != ""){
+                            echo '<a class="userInfoLink" href="'.$ciaGovBase.''.$countryCodeUrl.'.html" target="_blank" title="'.$countryName.'">'.$CCF.'</a>';
+                        }
+                
+                        ?>
+                    </p>
+                    <p class="info-label title-label-small" id="user-age">Worklist age:<br />
+                        <span id="info-joined">
+                            <?php
+                                $diffseconds = strtotime($user -> getAdded());
+                                echo formatableRelativeTime($diffseconds,2);
+                            ?>
+                        </span>
+                    </p>
+                    <p class="info-label title-label-small" id="info-currenttime" title="<?php echo $timezoneTable[$user->getTimezone()]; ?>">
+                        Local Time:<br />
+                        <span><?php
+                        echo convertTimeZoneToLocalTime($user->getTimezone(), 1);
+                        ?></span>
+                    </p>
+                    <p class="small-text"><br />
+                        <span id="info-timezone">&nbsp;</span>
+                    </p>
+                    <script type="text/javascript">
+                        worklistUrl = '<?php echo SERVER_URL; ?>';
+                    </script>
+                    <p class="totals">
+                        <span>Total jobs:</span>
+                        <?php if ($userStats->getTotalJobsCount() > 0) {?>
+                            <a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a>
+                        <?php } else echo "0";?><br />
+                        <span>Total earned:</span>
+                        $<?php
+                        setlocale(LC_MONETARY,'en_US');
+                        $_totalEarnings = $userStats->getTotalEarnings();
+                        echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
+                        ?><br />
+                        <span>Last 30 days:</span>
+                        $<?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30))); ?><br />
+                    </p>
+                    
+                    <!-- file with popups for user statistics-->
+                    <?php include("dialogs/popups-userstats.inc"); ?>
+                    
+                </div><!-- end of common info div-->
+                
+                <div id="sent-notify"></div>
+            
+                <p class = "info-label title-label-medium">Strengths<br />
+                    <span id="info-skills"><?php echo $user -> getSkills(); ?>&nbsp;</span>
                 </p>
-                <p class = "info-label">Strongest Skills<br />
-                    <span id="info-skills"><?php echo $user -> getSkills(); ?></span>
-                </p>
 
-                <p class = "info-label">Preferred Method of Contact<br />
-                    <span id="info-contactway"><?php echo $user -> getContactway(); ?></span>
-                </p>
-
-
-            </div><!-- end of left-column -->
-
-            <div class = "right-column">
-                <div class='reviewTitle' >
+                <div class='reviewTitle title-label-big' >
                     Reviews
-                </div>
                 <?php if ($reqUserId > 0): ?>
                 <div class='reviewAddLink'>
                     <a href='javascript:;'>Add your review</a>
@@ -193,6 +173,7 @@
                     <a href='javascript:;'>Edit your review</a>
                 </div>
                 <?php endif; ?>
+                </div>
                 <div class='reviewsList'>
 <?php
     $res="<div class='noReview'>No Review available for this user.</div>";
@@ -214,7 +195,7 @@
                     $feeRangeTitle ='Number of jobs the reviewer has worked on';
                 }
                 $res .= '<div class="listReviewElement ' . $classColor . '" title="' . $title . '">' .
-                        "<div class='feeRange' title='{$feeRangeTitle}'>" .$feeRange . "</div><div class='reviewText'>" . $review['review'] . "</div>" .
+                        "From a user involved in <span class='feeRange' title='{$feeRangeTitle}'>" .$feeRange . "</span> Worklist jobs ...<div class='reviewText'>" . $review['review'] . "</div>" .
                         '</div>' ;
             }
         }
@@ -222,63 +203,140 @@
     echo $res;
 ?>
                 </div>
+
+                <p class = "info-label about title-label-big">About<br /></p>
+                    <span id="info-about"><?php echo $user -> getAbout(); ?></span>
+            </div><!-- end of left-column -->
+
+            <div class = "right-column">
+                <div class="button-row">
+                    <?php if ($reqUserId > 0) { ?> 
+                    <span id="info-budget"><input type="submit" 
+                        <?php 
+                        if (!$reqUser->isRunner() || $reqUserId == $user->getId()) {
+                            if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") === false) {
+                                echo 'disabled="disabled" class="button-disabled disableable" '; 
+                            }
+                        }
+                        echo ' title="Remaining budget you can give: $' . $reqUser->getBudget() . '" '; 
+                        ?> id="give" value="Give Budget" />
+                    </span>
+                    <span id="btn-bonus"><input type="submit" 
+                        <?php if ($reqUserId == $user->getId() || ! $is_runner) { 
+                            echo 'disabled="disabled" class="button-disabled disableable" '; 
+                        } 
+                        echo ' title="Remaining budget you can give: $' . $reqUser->getBudget() . '" '; 
+                        ?> 
+                        id="pay_bonus" value="Pay Bonus" name="pay_bonus" />
+                    </span>
+                    <?php 
+                    } ?>
+                </div>
+
+                <p class = "profileContactFavorite">Contact info:
+                    <span id="info-contactway"><?php echo $user -> getContactway(); ?>&nbsp;</span>
+                </p>
+
+                <?php if ($reqUserId > 0) { ?> 
+                <?php if ($reqUserId != $user->getId()) { ?>
+                <p class = "info-label title-label-medium">Send Message <span>(user will be sent message via email)</span><br />
+                    <div id="profile-pingtask" title="Ping about task" class="popup-body">
+                        <form name="popup-form" id="popup-form-edit" action="" method="post">
+                            <input type="hidden" name="itemid" value="0" />
+                            <input type="hidden" name="bidder" value="0" />
+                            <textarea id="ping-msg" name="ping-msg" rows="3"></textarea>
+                            <input type="checkbox" id="send-mail" name="send_mail" checked="checked" class="hidden" />
+                            <input type="submit" id="send-ping-btn" value="Send Message" class="floatRight" />
+                            <p><input type="checkbox" id="copy-me" name="copy_me" checked="checked" /> Copy me in email</p>
+                            <p><input type="checkbox" id="echo-journal" name="echo_journal" checked="checked" /> Echo to public chat</p>
+                            <div class="clear"></div>
+                        </form>
+                    </div>
+                </p>
+                <?php 
+                    } 
+                } ?>
+
+                <p class = "info-label title-label-medium jobs">Active jobs</p>
+
+                <div id = "jobs-table" title = "Jobs list">
+                    <table>
+                        <thead>
+                            <tr class = "table-hdng">
+                                <th>Job ID & Summary</th>
+                                <th class="status">Status</th>
+                                <th class="sandbox">Sandbox</th>
+                                <th class="unfollow">Un-Follow</th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            
             </div><!-- end of right-column -->
         </div><!-- end of tabs-1 -->
         <div class="clear"></div>
 <?php if($is_runner) { ?>
         <div id="tabs-2" class="clear">
             <div id="admin-left">
-                <p class = "info-label">Email<br />
+                <p class = "info-label title-label-small">Email<br />
                     <span id="info-email"><a href="mailto:<?php echo $user -> getUsername(); ?>">
                     <?php echo $user -> getUsername(); ?></a></span>
                 </p>
                 <form id="roles" method="post" action="">
-                    <p class="info-label">Roles</p>
-                    <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label for="isrunner" class="info-label">Runner</label>
-                    <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label for="ispayer" class="info-label">Payer</label>
-                    <p class="info-label">Payment Information</p>
-                    <?php $w9_status = $user->getW9_status(); ?>
-                    <label for="isw9approved" class="info-label">W9</label>
-                    <select id="w9status" name="w9status" <?php echo $user->isUsCitizen() ? '' : 'disabled="disabled"'; ?>>
-                        <option value="awaiting-receipt" <?php echo $w9_status == 'awaiting-receipt' ? 'selected="selected"' : ''; ?>>Awaiting Receipt</option>
-                        <option value="pending-approval" <?php echo $w9_status == 'pending-approval' ? 'selected="selected"' : ''; ?>>Pending Approval</option>
-                        <option value="approved" <?php echo $w9_status == 'approved' ? 'selected="selected"' : ''; ?>>Approved</option>
-                        <option value="rejected" <?php echo $w9_status == 'rejected' ? 'selected="selected"' : ''; ?>>Rejected</option>
-                        <option value="not-applicable" <?php echo $w9_status == 'not-applicable' ? 'selected="selected"' : ''; ?>>Not Applicable</option>
-                    </select>
-                    <div style="clear: both;"></div>
-                    <input type="checkbox" id="isw2employee" name="isw2employee" <?php if ($user->getHas_W2()) echo 'checked="checked"'; ?> /><label for="isw2employee" class="info-label">W2 Employee</label>
-                    <input type="checkbox" id="ispaypalverified" name="ispaypalverified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?>/><label for="ispaypalverified" class="info-label">PayPal Verified</label>
-                    <p class="info-label">Preferred Payment Method</p>
-                    <span id="info-payway"><?php echo $user->getPayway() == '' ? $user->getPayway() : 'None selected'; ?></span>
-                    <p class="info-label">PayPal E-Mail</p>
-                    <span id="info-paypal"><?php echo ($user->getPaypal_email() == '') ? 'No address on file' : $user->getPaypal_email(); ?></span>
+                    <p class="info-label title-label-small">Roles<br />
+                        <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" <?php if($user->isRunner()) echo 'checked="checked" '; ?> /><label for="isrunner" class="info-label">Runner</label>
+                        <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" <?php if($user->isPayer()) echo 'checked="checked" '; ?> /><label for="ispayer" class="info-label">Payer</label>
+                    </p>
+                    <p class="info-label title-label-small">Payment Information<br />
+                        <?php $w9_status = $user->getW9_status(); ?>
+                        <label for="isw9approved" class="info-label">W9</label>
+                        <select id="w9status" name="w9status" <?php echo $user->isUsCitizen() ? '' : 'disabled="disabled"'; ?>>
+                            <option value="awaiting-receipt" <?php echo $w9_status == 'awaiting-receipt' ? 'selected="selected"' : ''; ?>>Awaiting Receipt</option>
+                            <option value="pending-approval" <?php echo $w9_status == 'pending-approval' ? 'selected="selected"' : ''; ?>>Pending Approval</option>
+                            <option value="approved" <?php echo $w9_status == 'approved' ? 'selected="selected"' : ''; ?>>Approved</option>
+                            <option value="rejected" <?php echo $w9_status == 'rejected' ? 'selected="selected"' : ''; ?>>Rejected</option>
+                            <option value="not-applicable" <?php echo $w9_status == 'not-applicable' ? 'selected="selected"' : ''; ?>>Not Applicable</option>
+                        </select>
+                        <input type="checkbox" id="isw2employee" name="isw2employee" <?php if ($user->getHas_W2()) echo 'checked="checked"'; ?> /><label for="isw2employee" class="info-label">W2 Employee</label>
+                        <input type="checkbox" id="ispaypalverified" name="ispaypalverified" <?php if ($user->getPaypal_verified()) echo 'checked="checked"'; ?>/><label for="ispaypalverified" class="info-label">PayPal Verified</label>
+                    </p>
+                    <p class="info-label title-label-small">Preferred Payment Method<br />
+                        <span id="info-payway"><?php echo $user->getPayway() == '' ? $user->getPayway() : 'None selected'; ?></span>
+                    </p>
+                    <p class="info-label title-label-small">PayPal E-Mail<br />
+                        <span id="info-paypal"><?php echo ($user->getPaypal_email() == '') ? 'No address on file' : $user->getPaypal_email(); ?></span>
+                    </p>
                     <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
                 </form>
             </div><!-- end of admin-left -->
             <div id="admin-right">
                 <form method="post" action="" name="userDropdownOptions" id="userDropdownOptions">
 <?php if ($is_payer): ?>
-                    <p class="info-label">Annual Salary</p>
-                    <input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>" />
-                    <input class="admin-submit" type="button" id="save_salary" value="Save salary"  name="save_salary"/>
+                    <p class="info-label title-label-small">Annual Salary<br />
+                        <input type="text" id="annual_salary" name="annual_salary" value="<?php echo $Annual_Salary;?>" />
+                        <input class="admin-submit" type="button" id="save_salary" value="Save salary"  name="save_salary"/>
+                    </p>
 <?php endif; ?>
-                    <p class="info-label">Manager</p>
-                    <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
-
-                    <p class="info-label">Referred By</p>
-                    <?php echo $filter->getReferrerUserSelectboxS("width:180px;"); ?>
-                    <p class="info-label">Status</p>
-                    <select id="isactive" name="isactive" style="width: auto;">
-                        <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
-                        <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
-                        <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
-                    </select>
-                    <p class = "info-label">Found Us On:
-                    <span><?php echo $user -> getFindus(); ?></span>
+                    <p class="info-label title-label-small">Manager<br />
+                        <?php echo $filter->getManagerUserSelectboxS("width:180px;"); ?>
+                    </p>
+                    <p class="info-label title-label-small">Referred By<br />
+                        <?php echo $filter->getReferrerUserSelectboxS("width:180px;"); ?>
+                    </p>
+                    <p class="info-label title-label-small">Status<br />
+                        <select id="isactive" name="isactive" style="width: auto;">
+                            <option value="0" <?php echo(($user->getIs_active() == 0) ? 'selected="selected"' : ''); ?>>inactive</option>
+                            <option value="1" <?php echo(($user->getIs_active() == 1) ? 'selected="selected"' : ''); ?>>active</option>
+                            <option value="2" <?php echo(($user->getIs_active() == 2) ? 'selected="selected"' : ''); ?>>secured</option>
+                        </select>
+                    </p>
+                    <p class = "info-label title-label-small">Found Us On:<br />
+                        <span><?php echo $user -> getFindus(); ?></span>
                     </p>
                 </form>
-                    <p class = "info-label">User last seen: 
+                    <p class = "info-label title-label-small">User last seen: <br />
                     <span><?php echo relativeTime($user->getTimeLastSeen(), false); ?></span>
                     </p>
             </div><!-- end of admin-right -->
@@ -288,10 +346,10 @@
                 <div style="clear: both; float: right;">
                     <input id="create_sandbox" type="submit" name="create_sandbox" value="Create SB" <?php if ($has_sandbox) { echo 'style="display: none;"'; } ?> />
                 </div>
-                <p id="unixusername-field" class="info-label">UNIX Username: <br />
+                <p id="unixusername-field" class="info-label title-label-small">UNIX Username: <br />
                     <input name="unixusername" id="unixusername" type="text" size="15" value = "<?php echo $user -> getUnixusername(); ?>" /><br />
                 </p>
-                <p id="projects-field" class="info-label">Projects to check-out :</p>
+                <p id="projects-field" class="info-label title-label-small">Projects to check-out :</p>
 <?php foreach ($projects as $project) : ?>
                 <div class="quarter-column"><input <?php if (($has_sandbox) && $user->isProjectCheckedOut( $project['id'] )) { echo 'checked="checked"  disabled="disabled" '; } ?> type="checkbox" id="<?php echo $project['id']; ?>" /><input type="hidden" class="repo" value="<?php echo $project['repo']; ?>" /><?php echo $project['name']; ?></div>
 <?php endforeach; ?>

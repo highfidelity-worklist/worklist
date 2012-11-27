@@ -231,6 +231,7 @@
         <link type="text/css" href="css/common.css" rel="stylesheet" />
         <link type="text/css" href="css/CMRstyles.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
+        <link type="text/css" href="css/menu.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="css/tooltip.css" />
         <link type="text/css" href="css/userNotes.css" rel="stylesheet" />
@@ -248,6 +249,7 @@
         <script type="text/javascript" src="js/jquery.blockUI.js"></script>
         <script type="text/javascript" src="js/jquery.autogrow.js"></script>
         <script type="text/javascript" src="js/class.js"></script>
+        <script type="text/javascript" src="js/common.js"></script>
         <script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
         <script type="text/javascript" src="js/jquery.combobox.js"></script>
         <script type="text/javascript" src="js/paginator.js"></script>
@@ -297,11 +299,14 @@
         };
     </script>
         <title>User info</title>
-    </head>
-<body>
+    </head><body>
+<?php
+    require_once('header.php');
+?>
 <?php include('userinfo.inc'); ?>
 <!-- Popup for ping task  -->
 <?php require_once('dialogs/popup-pingtask.inc') ?>
 <?php require_once('dialogs/budget-expanded.inc'); ?>
+
 </body>
 </html>

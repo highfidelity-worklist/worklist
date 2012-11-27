@@ -85,11 +85,7 @@ function showUserInfo(user_id, tab) {
     } else {
         tab = "";
     }
-    $('#user-info').html(
-        '<iframe id="modalIframeId" width="100%" height="100%" marginWidth="0" marginHeight="0" frameBorder="0" scrolling="auto" />'
-    ).dialog('open').centerDialog();
-    $('#user-info').dialog( "option", "width", 840 );
-    $('#modalIframeId').attr('src', 'userinfo.php?id=' + user_id + tab);
+    location.href = 'userinfo.php?id=' + user_id + tab;
     return false;
 }
 

@@ -2,6 +2,8 @@ var available = 0;
 var rewarded = 0;
 stats.setUserId(userInfo.user_id);
 
+stats.showJobs('activeJobs', 0);
+
 $(document).ready(function(){
     UserInfo.init();
     $('#sent-notify').dialog({
@@ -40,7 +42,7 @@ var UserInfo = {
         }
         
         // set the favText with the getFavoriteText function
-        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'trusted ');
+        var favText = WLFavorites.getFavoriteText(favCount, isMyFav, 'Trusted ');
         
         $('.profileInfoFavorite span').html(favText);
 
@@ -167,19 +169,12 @@ var UserInfo = {
             }
         });
 
-        $(".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *")
-            .removeClass("ui-corner-all ui-corner-top")
-            .addClass("ui-corner-bottom");
-            
         $("#loading").ajaxStart(function() {
             $(this).show();
         });
         $("#loading").ajaxStop(function(){
             $(this).hide();
         });
-        
-        // Resize the dialog to fit all data dynamically
-        parent.resizeIframeDlg();
        
         $('#popup-pingtask').dialog({
             autoOpen: false, 

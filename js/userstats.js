@@ -80,25 +80,34 @@ var stats = {
         stats.user_id = id;
     },
 
-    showJobs: function(job_type){
+    showJobs: function(job_type, popup){
         var user_id = (stats.user_id == 0) ? window.user_id : stats.user_id;
-        
+        if (popup != 0) {
+            containerDiv = '#jobs-popup';
+        } else {
+            containerDiv = '#jobs-table';
+        }
+
         $.getJSON('getuserstats.php', 
                     {id: user_id, statstype: job_type, page: stats.stats_page},
                     function(json) {
                         if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
-                            $('#jobs-popup th.status').show();
+                            $(containerDiv + ' th.status').show();
                         } else {
-                            $('#jobs-popup th.status').hide();
+                            $(containerDiv + ' th.status').hide();
                         }
                         if (job_type == 'following') {
-                            $('#jobs-popup th.unfollow').show();
+                            $(containerDiv + ' th.unfollow').show();
                         } else {
-                            $('#jobs-popup th.unfollow').hide();
+                            $(containerDiv + ' th.unfollow').hide();
                         }
-                        stats.fillJobs(json, partial(stats.showJobs, job_type), job_type);
-                        $('#jobs-popup').dialog('open');
+
+                        stats.fillJobs(json, partial(stats.showJobs, job_type), job_type, popup);
                         
+                        if (popup != 0) {
+                            $('#jobs-popup').dialog('open');
+                        }
+
                         if (job_type == 'following') {
                             $('a[id^=unfollow-]').click(function() {
                                 var workitem_id = $(this).attr('id').split('-')[1];
@@ -141,34 +150,64 @@ var stats = {
     },
     
     // func is a functin to be called when clicked on pagination link
-    fillJobs: function(json, func, job_type) {
-        table = $('#jobs-popup table tbody');
+    fillJobs: function(json, func, job_type, popup) {
+        if (popup != 0) {
+             table = $('#jobs-popup table tbody');
+        } else {
+             table = $('#jobs-table table tbody');
+        }
         $('tr', table).remove();
         $.each(json.joblist, function(i, jsonjob){
             var runner_nickname = jsonjob.runner_nickname != null ? jsonjob.runner_nickname : '----';
-            var toAppend = '<tr>'
-                        + '<td><a href = "' + worklistUrl 
-                        + 'workitem.php?job_id=' + jsonjob.id 
-                        + '&action=view" target = "_blank">#'+ jsonjob.id + '</a></td>'
-                        + '<td>' + jsonjob.summary + '</td>'
-                        + '<td>' + jsonjob.creator_nickname + '</td>'
-                        + '<td>' + runner_nickname + '</td>'
-                        + '<td>' + jsonjob.created + '</td>';
-                        
-            if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
-                toAppend += '<td>' + jsonjob.status + '</td>';
-            }
-            
-            if (job_type == 'following') {
-                toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';
-            }
-            
-            toAppend += '</tr>';
+            if (popup != 0) {
+                var toAppend = '<tr>'
+                            + '<td><a href = "' + worklistUrl 
+                            + 'workitem.php?job_id=' + jsonjob.id 
+                            + '&action=view" target = "_blank">#'+ jsonjob.id + '</a></td>'
+                            + '<td>' + jsonjob.summary + '</td>'
+                            + '<td>' + jsonjob.creator_nickname + '</td>'
+                            + '<td>' + runner_nickname + '</td>'
+                            + '<td>' + jsonjob.created + '</td>';
+                            
+                if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
+                    toAppend += '<td>' + jsonjob.status + '</td>';
+                }
+                
+                if (job_type == 'following') {
+                    toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';
+                }
+                
+            } else {
+                var toAppend = '<tr class="';
+                if (i % 2 == 1) {
+                    toAppend += 'rowodd';
+                } else {
+                    toAppend += 'roweven';
+                }
 
+                    toAppend += '">'
+                            + '<td><a href = "' + worklistUrl 
+                            + 'workitem.php?job_id=' + jsonjob.id 
+                            + '&action=view" target = "_blank">#'+ jsonjob.id + ' - <span>' + jsonjob.summary + '</span></a></td>';
+                            
+                if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
+                    toAppend += '<td>' + jsonjob.status + '</td>';
+                }
+
+                toAppend += '<td class="sandbox"><a id="view-sandbox">View</a></td>';
+
+                if (job_type == 'following') {
+                    toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';
+                }
+                
+            }
+            toAppend += '</tr>';
             table.append(toAppend);
         });
-        table.data('func', func);
-        stats.appendStatsPagination(json.page, json.pages, table);
+        if (popup != 0) {
+            table.data('func', func);
+            stats.appendStatsPagination(json.page, json.pages, table);
+        }
     },
     
     fillEarnings: function(json, func){
@@ -227,9 +266,9 @@ var stats = {
                 paginationTD.append(stats.getA(i, i));
                 paginationTD.append('&nbsp;');
             }
-			if(i%30==0) {
-				paginationTD.append('<br/>');
-			}
+            if(i%30==0) {
+                paginationTD.append('<br/>');
+            }
         }
         if (page < cPages) {
             paginationTD.append(stats.getA(parseInt(page) + 1, 'Next'));
