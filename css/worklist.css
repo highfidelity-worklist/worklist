@@ -235,6 +235,25 @@ color:#98AAB2;
     top: -3px;
 }
 
+#search-filter-wrap {
+    float: left;
+    top: 0;
+}
+
+#search-filter-wrap .searchDiv {
+    width: 255px;
+    height: 34px;
+}
+
+#search-filter-wrap #query {
+    width: 165px;
+    font-size: 13pt;
+}
+
+#search-filter-wrap .crossSearch {
+    left: 197px;
+}
+
 #search-head {
     position: relative;
     float: right;
@@ -1203,23 +1222,10 @@ input.button-disabled ,
     margin-left: 0px;
 }
 
-#buttons input[type="submit"] {
-    background-image: none;
-    background-color: #aa1e00;
-    border-radius: 7px;
-    color: #ffffff;
-    width: 83px;
-    height: 28px;
+#addJob {
     position: absolute;
-    top: 31px;
     right: 10px;
-    font-weight: bold;
-    font-size: 10pt;
-}
-
-#buttons input[type="submit"]:hover {
-    background-color: #333333;
-    color: #ffffff;
+    top: 31px;
 }
 
 .table-worklist .comments-icon {

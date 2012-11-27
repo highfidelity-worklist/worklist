@@ -1,10 +1,4 @@
 /* Menu */
-
-#search-filter-wrap {
-    float: left;
-    top: 0;
-}
-
 #search-filter-wrap .input_box {
     background-image: none;
     width: 305px;
@@ -14,8 +8,6 @@
 #search-filter-wrap .searchDiv {
     display: inline-block;
     border: 1px solid #cccccc;
-    height: 34px;
-    width: 255px;
     background-color: #ffffff;
     margin: 24px -4px 10px 10px;
     background: #ffffff no-repeat url('../images/primaryIcons-WL.png') 8px -320px;
@@ -30,9 +22,8 @@
     padding: 0;
     margin: 0;
     height: 28px;
-    width: 165px;
-    font-size: 13pt;
     font-weight: bold;
+    border: 0;
 }
 
 #search-filter-wrap .crossSearch {
@@ -42,7 +33,6 @@
     display: inline-block;
     background-color: #ffffff;
     position: absolute;
-    left: 197px;
     top: 4px;
 }
 

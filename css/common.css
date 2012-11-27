@@ -439,3 +439,20 @@ input[type=password]:focus {
 #stats-area a:hover {
     color: #98AAB2;
 }
+
+#addJob {
+    background-color: #AA1E00;
+    background-image: none;
+    border-radius: 7px 7px 7px 7px;
+    color: #FFFFFF;
+    font-size: 10pt;
+    font-weight: bold;
+    height: 28px;
+    width: 83px;
+    font-family: Arial, Helvetica, sans-serif;
+}    
+
+#addJob:hover {
+    background-color: #333333;
+    color: #ffffff;
+}

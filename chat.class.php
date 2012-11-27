@@ -115,6 +115,7 @@ class Chat
         }
         if ($last_private != null) $prev_author = $last_private;
 
+        $nickname = (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : '';
         $now = strtotime($this->getNow());
         foreach ($entries as $entry) {
             $custom_class = '';
@@ -132,9 +133,11 @@ class Chat
                     $bot=1;
                 }
             }
-
+            if (empty($custom_class) && $nickname != $entry['author']) {
+                $custom_class = 'other';
+            }
+            
             if ($entry['author'].'@'.$entry['ip'] != $prev_author || !$bundle || $bot)  {
-                $nickname = (isset($_SESSION['nickname'])) ? $_SESSION['nickname'] : '';
                 $time = strtotime($entry['date']);
                 $func = 'onclick="javascript:showUserInfo(\''.$entry['user_id'].'\')"';
                 if ($returnHtml !== true) {
@@ -152,7 +155,7 @@ class Chat
                     ));
                 } else {
                     $html .= '<div data="' . $time . '" class="entry ' . $custom_class . '" id="entry-' . $entry['id'] . '">' . "\n" .
-                        '  <h2' . ($nickname != $entry['author'] ? ' class="other"' : '') . '>' . "\n" .
+                        '  <h2>' . "\n" .
                         // checking to see if author is bot
                         // if author is bot $func string is not attached
                         // 08-MAY-2010 <Yani>

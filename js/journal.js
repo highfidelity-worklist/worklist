@@ -364,7 +364,6 @@ function changeTitle () {
     pingSound.unmute();
     botSound.unmute();
     emergencySound.unmute();
-    setVolumeIcon();
     hideSettingsPopup();
 }
 function AudioOff() {
@@ -378,65 +377,54 @@ function AudioOff() {
     document.getElementById("pingaudiooff").checked = true;
     document.getElementById("botaudiooff").checked = true;
     document.getElementById("emergencyaudiooff").checked = true;
-    setVolumeIcon();
     hideSettingsPopup();
 }
 function ChatAudioOn() {
     chatSound.unmute();
-    setVolumeIcon();
     saveSounds(0, 1);
     // hideSettingsPopup();
 }
 function ChatAudioOff() {
     chatSound.mute();
-    setVolumeIcon();
     saveSounds(0, 0);
     // hideSettingsPopup();
 }
 function SystemAudioOn() {
     systemSound.unmute();
-    setVolumeIcon();
     saveSounds(1, 1);
     // hideSettingsPopup();
 }
 function SystemAudioOff() {
     systemSound.mute();
-    setVolumeIcon();
     saveSounds(1, 0);
     // hideSettingsPopup();
 }
 function PingAudioOn() {
     pingSound.unmute();
-    setVolumeIcon();
     saveSounds(3, 1);
     // hideSettingsPopup();
 }
 function PingAudioOff() {
     pingSound.mute();
-    setVolumeIcon();
     saveSounds(3, 0);
     // hideSettingsPopup();
 }
 function BotAudioOn() {
     botSound.unmute();
-    setVolumeIcon();
     saveSounds(2, 1);
     // hideSettingsPopup();
 }
 function BotAudioOff() {
     botSound.mute();
-    setVolumeIcon();
     saveSounds(2, 0);
     // hideSettingsPopup();
 }
 function EmergencyAudioOn() {
     emergencySound.unmute();
-    setVolumeIcon();
     saveSounds(4, 1);
 }
 function EmergencyAudioOff() {
     emergencySound.mute();
-    setVolumeIcon();
     saveSounds(4, 0);
 }
 function saveSounds(soundID, mode) {
@@ -448,15 +436,6 @@ function saveSounds(soundID, mode) {
     soundSettings[soundID] = mode;
     $.cookie('sound', soundSettings.join(':'), { path: '/', expires: date });
 }
-function setVolumeIcon() {
-    if ( $("#chataudioon:checked").val() && $("#systemaudioon:checked").val() && $("#pingaudioon:checked").val() && $("#botaudioon:checked").val() && $("#emergencyaudioon:checked").val() ) {
-        $("#settingsSwitch").css('background-position','-206px -118px');
-    } else if ( $("#chataudiooff:checked").val() && $("#systemaudiooff:checked").val() && $("#pingaudiooff:checked").val() && $("#botaudiooff:checked").val() && $("#emergencyaudiooff:checked").val()) {
-        $("#settingsSwitch").css('background-position','-168px -118px');
-    } else {
-        $("#settingsSwitch").css('background-position','-136px -118px');
-    }
-}
 
 function hideSettingsPopup(e) {
     if(e) {
@@ -465,7 +444,7 @@ function hideSettingsPopup(e) {
     $('div#SettingsWindow:visible').hide('drop', { direction: 'left' }, 500);
 }
 
-(function($) {
+$(function($) {
     $('#SettingsWindowClose').click(hideSettingsPopup);
     $('.notTop').hide();
     $('.morebotlinks').click(function(e) {
@@ -500,7 +479,7 @@ function hideSettingsPopup(e) {
         }
         event.preventDefault();
     });
-})(jQuery);
+});
 
 function togglePopup() {
     if(displayPopupOnNewMessage == true) {
@@ -519,7 +498,6 @@ function sendEntry() {
     }
     scrollBottom = true;
     doc = document.location.href.split("chat");
-    //var worklistUrl = doc[0] + "/worklist/";
     $.ajax({
         url: 'api.php',
         type: "POST",
@@ -861,10 +839,10 @@ function formatMessage(entry)   {
     var d2 = $('<div class="entry-text">')
     d2.html(entry.entry_text);
 
-    if(entry.entry_type=='basic') d1.append(d2);
-    else    {
+    if (entry.entry_type=='basic') {
+        d1.append(d2); 
+    } else {
         var h2 = $('<h2>');
-        if(entry.nickname != entry.author) h2.addClass('other');
         if(isBot(entry.author)){
             var span1 = '<span class="entry-author">' + entry.author + '</span>';
         } else {
@@ -872,7 +850,7 @@ function formatMessage(entry)   {
         }
         var span2 = '<span class="entry-date" data="' + entry.time + '" title="' + entry.time_title + '">';
         span2 += entry.relative_time + '</span>';
-        var spans = span1 +  span2;
+        var spans = span1 + span2;
         h2.append(spans);
         d1.append(h2).append(d2);
     }
@@ -1054,7 +1032,7 @@ function customAction(action, message) {
             }
         },
         minMessage: function() {
-            var br = $('#online-users-container').append('<div class="actions"></div>');
+            var br = $('#container').append('<div class="actions"></div>');
             $('.actions', br).fadeOut(0).append($(this).parents('.modalOverlay').find('.modalContent a').clone()).fadeIn();
             $.modal.done(this);
         },
@@ -1578,9 +1556,9 @@ function fillSpeakerList(newSpeakerList, currentUser){
         }
 
         $('#livetip')
-        .css({ top: pos.top + 24, left: pos.left + 6, 'z-index': 4000, 'background-color':'white'})
-        .html('<div>' + msg + '</div>')
-        .show();
+            .css({ top: pos.top + 30, left: pos.left + 6, 'z-index': 4000, 'background-color':'white'})
+            .html('<div>' + msg + '</div>')
+            .show();
 
     });
     $('#online-users-container h6').mouseout(function(){
@@ -1621,6 +1599,7 @@ function fillSpeakerList(newSpeakerList, currentUser){
 function finishUpdate(scrolllTo, notify, botAction, entryText) {
     enlivenEntries();
     applyPopupBehavior();
+    updateRelativeTimes();
     scrollViewTo(scrolllTo);
     if (notify) {
         alertNewMessage(botAction, entryText);
@@ -1678,7 +1657,15 @@ function getEntriesNear(prev, autoScroll) {
             lastDate = $(children[99]).attr('data') | 0;
         }
 
-        $.post("aj.php", { 'what': 'time', 'count': 50, 'time': firstDate, 'prevnext':'prev', 'query': queryStr, 'csrf_token': csrf_token, 'filter': systemMsgs }, function(json) {
+        $.post("aj.php", { 
+            'what': 'time', 
+            'count': 50, 
+            'time': firstDate -1, 
+            'prevnext': 'prev', 
+            'query': queryStr, 
+            'csrf_token': csrf_token, 
+            'filter': systemMsgs
+        }, function(json) {
             $('.scroll-pane-throbber').hide();
 
             if (json.count > 0) {
@@ -1699,7 +1686,15 @@ function getEntriesNear(prev, autoScroll) {
             firstDate = $(children[i]).attr('data') | 0;
         }
 
-        $.post("aj.php", { 'what': 'time', 'count': 50, 'time': lastDate, 'prevnext':'next', 'query': queryStr, 'csrf_token': csrf_token, 'filter': systemMsgs }, function(json) {
+        $.post("aj.php", { 
+            'what': 'time', 
+            'count': 50, 
+            'time': lastDate + 1,
+            'prevnext':'next', 
+            'query': queryStr, 
+            'csrf_token': csrf_token, 
+            'filter': systemMsgs
+        }, function(json) {
             $('.scroll-pane-throbber').hide();
 
             var height = entries.height();
@@ -1810,10 +1805,49 @@ function updateTypingIndicators(data) {
 
 function updateRelativeTimes()
 {
-  // Update relative times
-  $(".entry-date").each(function(){
-    $(this).text(relativeTime(currentTime - ($(this).attr('data')|0)));
-  });
+    var mins = 60, hour = mins * 60, day = hour * 24;
+    var week = day * 7, month = day * 30, year = day * 365;
+    var delay = 0, lastTimestamp_time = 0, displayTimestamp = false;
+
+    // Update relative times
+    $(".entry-date").each(function() {
+        var timestamp = currentTime - ($(this).attr('data')|0);
+        $(this).text(relativeTime(timestamp));
+    });
+
+    var currentEntry = 0, entriesWithoutTimestamp = 0;
+    $('#entries .entry-date').each(function() {
+        currentEntry++;
+        
+        var entry_time = ($(this).attr('data')|0);
+        delay = currentTime - entry_time;
+        displayTimestamp = false;
+        
+        if (currentEntry == 1) {
+            displayTimestamp = true;
+        } else {
+            if (delay < hour) {
+                displayTimestamp = (entry_time - lastTimestamp_time > (5 * mins) || entriesWithoutTimestamp > 10);
+            }
+            if (delay > hour && delay < day) {
+                displayTimestamp = (entry_time - lastTimestamp_time > hour || entriesWithoutTimestamp > 10);
+            }
+            if (delay > day && delay < week) {
+                displayTimestamp = (entry_time - lastTimestamp_time > (3 * hour) || entriesWithoutTimestamp > 20);
+            }
+            if (delay > week) {
+                displayTimestamp = (entry_time - lastTimestamp_time > day || entriesWithoutTimestamp > 20);
+            }
+        }
+            
+        if (displayTimestamp) {
+            $(this).parents('.entry').addClass('timestamp');
+            entriesWithoutTimestamp = 0;
+            lastTimestamp_time = entry_time;
+        } else {
+            entriesWithoutTimestamp++;
+        }
+    });
 }
 
 function applyMessagePruning()
@@ -1857,10 +1891,8 @@ function applyMessagePruning()
     // update dates
 
     if (pruning.length > 0) {
-
-        scrollViewTo('100%');
         updateEntryDates();
-
+        scrollViewTo('100%');
     }
 
 }
@@ -2385,19 +2417,42 @@ $(window).resize(function() {
     relativity();
 });
 
-function adjustSystemDrawerSize(){
-    var height;
+function adjustSystemDrawerSize() {
+    var height, width, top;
 
-    height = $('#system-bidding-wrapper').height() - $('#system-bidding-header').outerHeight(true) - $('#system-bidding-wrapper>table').outerHeight(true);
-    $('#system-biddingJobs').height(height);
+    var iw = 0;
+    if (typeof window.innerWidth != 'undefined') {
+        iw = window.innerWidth;
+    } else if (typeof document.documentElement) {
+        iw = document.documentElement.clientWidth;
+    } else {
+        // should never reach here
+    }
+    
+    width = iw - $('#online-users-container').offset().left - $('#online-users-container').outerWidth() - 1;
+    $('#system-drawer-container')
+        .css('width', width)
+        .css('top', $('#content').offset().top);
+    $('#system-drawer-inner').css('height', $('#content').outerHeight());
+    
 
-    $('#system-drawer-wrapper').height($('#system-drawer-container').height()  - $('#system-bidding-wrapper').outerHeight(true) );
-    height = $('#system-drawer-wrapper').height() - $('#system-drawer-header').height() - $('#system-dashboard-header').height() - 10;
+    height = 
+        $('#system-drawer-inner').outerHeight() - 
+        $('#search-filter-wrap').outerHeight() -
+        $('#system-currentJobs').outerHeight();
+    
+    if ($('#penalty-container').is('visible')) {
+        height -= $('#penalty-container').outerHeight();
+    }
+    
+    $('#system-drawer-wrapper').outerHeight(height - 15);
+    
+    height = 
+        $('#system-drawer-wrapper').outerHeight() - 
+        $('#system-drawer-header').outerHeight();
     $('#system-drawer').height(height);
-
-
+    
     $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;
-    $('#system-biddingJobs')[0].scrollTop = $('#system-biddingJobs')[0].scrollHeight;
 }
 
 
@@ -2449,7 +2504,6 @@ function initSound()
         emergencySound.mute();
         document.getElementById("emergencyaudiooff").checked = true;
     }
-    setVolumeIcon();
 }
 
 /**
@@ -2589,17 +2643,15 @@ $(window).ready(function() {
     $('#go').click(function(){
         showLatest();
     });
-
-    $("#search").click(function(){
-        $("#searchForm").submit();
-        return false;
-    });
-    $("#search_reset").click(function(){
+    
+    $("#search_reset").click(function(e){
         if (queryStr.length > 0) {
             showLatest();
         }
+        e.preventDefault();
         return false;
     });
+    
     $("#searchForm").submit(function(){
         queryStr = $('#query').val();
         inThePresent = false;
@@ -2738,7 +2790,6 @@ $(window).ready(function() {
     $('#message-pane').focus();
      //fetch TZ from worklist
     doc = document.location.href.split("chat");
-    //var worklistUrl = doc[0] + "/worklist/";
     $.ajax({
         url: 'api.php',
         type: "POST",
@@ -2970,82 +3021,27 @@ function IEFix() {
     } else {
         // should never reach here
     }
-    var base = (ih - $('#bottom-panel').outerHeight() - $('#footer').outerHeight() - 28);
-    if (iw > 902) {
-        var head_h = ($('#head')[0].offsetHeight) + 20;
-    } else if (iw > 650) {
-        var head_h = ($('#head')[0].offsetHeight) + 50;
-    } else {
-        var head_h = ($('#head')[0].offsetHeight) + 80;
-    }
-    $('#guideline').css('height', (Number(base) - head_h - 70) + 'px');
-    $('.scrollbar').css('height', (Number(base) - (head_h - 72)) + 'px');
-    $('#online-users-container')
-        .css('height', (Number(base) - head_h - 70) + 'px')
-        .css('overflow', 'hidden')
-        .css('padding', 0);
+    var base = ih - $('#welcome').outerHeight() - 13;
+    $('#guideline').css('height', Number(base) + 'px');
+    $('.scroll-view').css('height', ($('.scroll-wrap').outerHeight() - $('#bottom-panel').outerHeight()) + 'px');
+    $('.scrollbar').css('height', ($('.scroll-wrap').outerHeight() - $('#bottom-panel').outerHeight()) + 'px');
+    $('#online-users-container').css('height', (Number(base)) + 'px');
 
+    var scrollbarholdheight = 
+        $('.scroll-wrap').outerHeight() - 
+        $('#bottom-panel').outerHeight() - 
+        $('.scrollbar-up').outerHeight() - 
+        $('.scrollbar-down').outerHeight();
     $('div.scrollbar-hold')
-        .css('height', $('#guideline').outerHeight() - 28)
+        .css('height', scrollbarholdheight + 'px')
         .css('top','15px');
 }
 
-/* When applied to a textfield or textarea provides default text which is displayed, and once clicked on it goes away
- Example:  $("#name").DefaultValue("Your fullname.");
-*/
-jQuery.fn.DefaultValue = function(text){
-    return this.each(function(){
-    //Make sure we're dealing with text-based form fields
-    if(this.type != 'text' && this.type != 'password' && this.type != 'textarea')
-      return;
-
-    //Store field reference
-    var fld_current=this;
-
-    //Set value initially if none are specified
-        if(this.value=='' || this.value == text) {
-      this.value=text;
-    } else {
-      //Other value exists - ignore
-      return;
-    }
-
-    //Remove values on focus
-    $(this).focus(function() {
-      if(this.value==text || this.value=='')
-        this.value='';
-    });
-
-    //Place values back on blur
-    $(this).blur(function() {
-      if(this.value==text || this.value=='')
-        this.value=text;
-    });
-
-    //Capture parent form submission
-    //Remove field values that are still default
-    $(this).parents("form").each(function() {
-      //Bind parent form submit
-      $(this).submit(function() {
-        if(fld_current.value==text) {
-          fld_current.value='';
-        }
-      });
-    });
-    });
-};
-
-// --
-
 $(function() {
-
-    var worklistUrl=$('#system-biddingJobs').attr('worklistUrl');
-
     // Collect Bidding Jobs info
     getBiddingReviewDrawers();
-
     $('#share-this').hide();
-    $("#query").DefaultValue("Search...");
+    $("#query").DefaultValue("Chat history...");
 
 });
 
@@ -4235,7 +4231,6 @@ Validate.Format(B,{
 
 function getBiddingReviewDrawers() {
     doc = document.location.href.split("journal");
-    //var worklistUrl = doc[0];
     $.ajax({
         url:'api.php',
         type: 'post',
@@ -4248,56 +4243,11 @@ function getBiddingReviewDrawers() {
 }
 
 function fillBiddingReviewDrawers(json) {
-        var worklistUrl=$('#system-biddingJobs').attr('worklistUrl');
-        $('#table-system-biddingJobs tr').remove();
-        if(json==null) return;
-        var l = json.bidding.length;
-        var task;
-        var odd=1;
-        var rowClass;
-        var linkProject;
-        var linkpre;
-        var linkpost='</a>';
-        for (var i = 0; i < l; i++) {
-            odd=1-odd;
-            if(odd==1){
-                rowClass ="odd";
-            } else {
-                rowClass="even";
-            }
-            task=json.bidding[i];
-            linkpre='<a href="workitem.php?job_id=' + task.id + '&action=view" target="_blank" >';
-            if(task.project !=null) {
-                linkProject='<a href="' + task.project + '" target="_blank" >'+ task.project + linkpost;
-            } else {
-                linkProject='';
-            }
-            var row = '<tr class="workitemtooltip ' + rowClass + '" id="workitem-' + task.id + '"><td  style="width:60px">' + linkpre + task.id + linkpost + ' </td><td  style="width:80px">'+linkProject+' </td><td class="summary" >' + linkpre + task.summary + linkpost + ' </td></tr>';
-            $('#table-system-biddingJobs').append(row);
-        }
-
-         l = json.review.length;
-        for (var i = 0; i < l; i++) {
-            odd=1-odd;
-            if(odd==1){
-                rowClass ="odd";
-            } else {
-                rowClass="even";
-            }
-            task=json.review[i];
-            linkpre='<a href="workitem.php?job_id=' + task.id + '&action=view" target="_blank" >';
-            if(task.project !=null) {
-                linkProject='<a href="' + task.project + '" target="_blank" >'+ task.project + linkpost;
-            } else {
-                linkProject='';
-            }
-            var row = '<tr class="workitemInReview workitemtooltip ' + rowClass + '" id="workitem-' + task.id + '"><td class="taskid">' + 
-                linkpre + task.id + linkpost + ' R</td><td class="project">'+linkProject+' </td><td class="summary" >' + 
-                linkpre + task.summary + linkpost + ' </td></tr>';
-            $('#table-system-biddingJobs').append(row);
-        }
-
-        makeWorkitemTooltip(".workitemtooltip");
-        $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;
-        $('#system-biddingJobs')[0].scrollTop = $('#system-biddingJobs')[0].scrollHeight;
+    if (json == null || !json.success) {
+        return;
+    }
+    var bidding = json.bidding == 0 ? 'no jobs' : (json.bidding == 1 ? '1 job' : json.bidding + ' jobs');
+    var review = json.review == 0 ? 'no jobs' : (json.review == 1 ? '1 job' : json.review + ' jobs');
+    $('#biddingjobs').text(bidding);
+    $('#reviewjobs').text(review);
 }

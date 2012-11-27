@@ -344,38 +344,20 @@ $project->save();
 }
 
 function getSystemDrawerJobs(){
-    $objectDataReviews= array();
-    $sql = " SELECT w.*, p.name as project "
-         . " FROM   ". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
-         . " ON     (w.project_id = p.project_id) "
-         . " WHERE  w.status = 'Review' "
-         . " AND w.code_review_completed = 0"
-         . " AND w.code_review_started = 0"
-         ;
-
-    if ($result = mysql_query($sql)) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $objectDataReviews[] = $row;
-        }
-    // Return our data array
+    $sql = " SELECT "
+         . " SUM(CASE WHEN w.status = 'Bidding' THEN 1 ELSE 0 END) AS bidding, "
+         . " SUM(CASE WHEN w.status = 'Review'  THEN 1 ELSE 0 END) AS review "
+         . " FROM ". WORKLIST." AS w "
+         . " WHERE w.status = 'Bidding' OR (w.status = 'Review' "
+         .   " AND w.code_review_completed = 0 "
+         .   " AND w.code_review_started = 0)";
+    
+    $result = mysql_query($sql);
+    if ($result && ($row = mysql_fetch_assoc($result))) {
+        respond(array('success' => true, 'bidding' => $row['bidding'], 'review' => $row['review']));
+    } else {
+        respond(array('success' => false, 'message' => "Couldn't retrieve jobs"));
     }
-    mysql_free_result($result);
-
-    $objectDataBidding= array();
-    $sql = " SELECT w.*, p.name as project "
-         . " FROM   ". WORKLIST." AS w LEFT JOIN ". PROJECTS. " AS p "
-         . " ON     (w.project_id = p.project_id) "
-         . " WHERE  w.status = 'Bidding' OR w.status = 'SuggestedWithBid' ";
-
-    if ($result = mysql_query($sql)) {
-        while ($row = mysql_fetch_assoc($result)) {
-            $objectDataBidding[] = $row;
-        }
-    // Return our data array
-    }
-    mysql_free_result($result);
-
-    respond(array('success' => true, 'review' => $objectDataReviews, 'bidding' => $objectDataBidding));
 }
 
 function sendBidNotification() {

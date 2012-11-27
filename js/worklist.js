@@ -185,67 +185,22 @@ function SimplePopup(popupId,
   }
 }
 
-/* When applied to a textfield or textarea provides default text which is displayed, and once clicked on it goes away
- Example:  $("#name").DefaultValue("Your fullname.");
-*/
-jQuery.fn.DefaultValue = function(text){
-    return this.each(function(){
-    //Make sure we're dealing with text-based form fields
-    if(this.type != 'text' && this.type != 'password' && this.type != 'textarea')
-      return;
-    
-    //Store field reference
-    var fld_current=this;
-    
-    //Set value initially if none are specified
-        if(this.value=='' || this.value == text) {
-      this.value=text;
-    } else {
-      //Other value exists - ignore
-      return;
+var getPosFromHash = function(){
+    var pos, hashString;
+    var vars = [], hash;
+    pos = location.href.indexOf("#");
+    if (pos != -1) {
+        hashString = location.href.substr(pos + 1);
+        var hashes = hashString.split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = unescape(hash[1]);
+        }            
     }
-    
-    //Remove values on focus
-    $(this).focus(function() {
-      if(this.value==text || this.value=='')
-        this.value='';
-    });
-    
-    //Place values back on blur
-    $(this).blur(function() {
-      if(this.value==text || this.value=='')
-        this.value=text;
-    });
-    
-    //Capture parent form submission
-    //Remove field values that are still default
-    $(this).parents("form").each(function() {
-      //Bind parent form submit
-      $(this).submit(function() {
-        if(fld_current.value==text) {
-          fld_current.value='';
-        }
-      });
-    });
-    });
+    return vars;
 };
-
-    var getPosFromHash = function(){
-        var pos, hashString;
-        var vars = [], hash;
-        pos = location.href.indexOf("#");
-        if (pos != -1) {
-            hashString = location.href.substr(pos + 1);
-            var hashes = hashString.split('&');
-            for(var i = 0; i < hashes.length; i++)
-            {
-                hash = hashes[i].split('=');
-                vars.push(hash[0]);
-                vars[hash[0]] = unescape(hash[1]);
-            }            
-        }
-        return vars;
-    };
 
 $(function() {
     $('#share-this').hide();

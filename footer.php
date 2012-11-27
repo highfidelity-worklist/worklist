@@ -22,6 +22,7 @@ require_once ("functions.php");
 
 <!-- Close DIV container -->
     </div>
+    <?php if (! isset($inJournal)): ?>
     <div id="footer">
 <?php
     if(!isset($inWorkItem)){
@@ -78,9 +79,15 @@ require_once ("functions.php");
             </div>
         </div>
     </div>
+    <?php endif; // if(! isset($inChat)) ?>
 
 <!-- Close DIV outside -->
 </div id="outside">
+
+<?php if (! isset($inFeedlist) || ($inFeedlist === false)): ?>
+    <!-- Popup for editing/adding  a work item -->
+    <?php require_once('dialogs/popup-edit.inc'); ?>
+<?php endif ?>
 
 <?php require_once('dialogs/footer-analytics.inc'); ?>
 </body>
