@@ -143,15 +143,15 @@
                             <a href = "#" id = "total-jobs"><?php echo $userStats->getTotalJobsCount(); ?></a>
                         <?php } else echo "0";?><br />
                         <span>Total earned:</span>
-                        $<?php
+                        <?php
                         setlocale(LC_MONETARY,'en_US');
                         $_totalEarnings = $userStats->getTotalEarnings();
                         echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$_totalEarnings));
                         ?><br />
                         <span>Last 30 days:</span>
-                        $<?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30))); ?><br />
+                        <?php echo preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$userStats->getLatestEarnings(30))); ?><br />
                     </p>
-                    
+
                     <!-- file with popups for user statistics-->
                     <?php include("dialogs/popups-userstats.inc"); ?>
                     
