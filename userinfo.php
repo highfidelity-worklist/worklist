@@ -4,6 +4,7 @@
 //  http://www.lovemachineinc.com
 
     ob_start();
+
     require_once ("config.php");
     require_once ("class.session_handler.php");
     require_once ("functions.php");
@@ -298,7 +299,7 @@
             });
         };
     </script>
-        <title>User info</title>
+        <title><?php echo $user ->getNickname() ?> - User info</title>
     </head><body>
 <?php
     require_once('header.php');

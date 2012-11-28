@@ -836,7 +836,7 @@ $(function() {
 </script>
 <script type="text/javascript" src="js/utils.js"></script>
 
-<title>Worklist Reports | Lend a Hand</title>
+<title>Reports - Worklist</title>
 
 </head>
 

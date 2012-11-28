@@ -27,7 +27,7 @@ $currentPage = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 include("head.html");
 include("opengraphmeta.php");
 ?>
-<title>Worklist Projects</title>
+<title>Worklist: A marketplace for software developers and founders.</title>
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <link href="css/welcome.css" rel="stylesheet" type="text/css" >
 <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>

@@ -1418,7 +1418,7 @@ $(document).ready(function(){
         }
     }
 </script>
-<title>#<?php print $worklist['id']." - ".$worklist['summary']; ?></title>
+<title>#<?php print $worklist['id']." - " . $worklist['summary'] . " - Worklist"; ?></title>
 <style>
 #welcomeInside .worklistBtn {
     color: #ffffff;

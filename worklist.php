@@ -1164,7 +1164,7 @@ var documentsArray = new Array();
 $meta_title =
   is_object($inProject)
   ?  'Project: ' . $inProject->getName()
-  :  'Worklist | Build software fast, make money, great community.'
+  :  'Worklist: Develop software fast.'
 ;
 ?>
 <title><?php echo $meta_title; ?></title>

@@ -73,7 +73,7 @@ $version = Utils::getVersion();
 <!--[if IE 6]>
     <link rel="stylesheet" href="css/ie.css" type="text/css" media="all" />
 <![endif]-->
-<title>Chat</title>
+<title>Chat - Worklist</title>
 <script type="text/javascript">
 var refresh = 5 * 1000;
 var statusTimeoutId = null;

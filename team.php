@@ -36,7 +36,7 @@ include("head.html");
 include("opengraphmeta.php");
 ?>
 
-<title>Worklist | Team Members</title>
+<title>Team Members - Worklist: Develop software fast.</title>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
