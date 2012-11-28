@@ -863,7 +863,7 @@ a:hover{
 }
 
 .buttonContainer:hover {
-    text-decoration: underline;
+    text-decoration: none;
     color: #FFF;
     cursor: pointer;
 }
@@ -887,7 +887,7 @@ a:hover{
     padding: 1px 14px 0 27px;
 }
 
-.buttonContainer:hover input {
+.buttonContainer input:hover {
     text-decoration: underline !important;
 }
 
