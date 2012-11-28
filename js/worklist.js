@@ -269,7 +269,7 @@ $(function() {
 });
 
 function sendInviteForm(){
-  var name = $('input[name="invite"]').val();
+  var name = $('input[name="invite"]', $("#invite-people")).val();
   var job_id = $('input[name="worklist_id"]').val();
   $.ajax({
     type: "POST",
