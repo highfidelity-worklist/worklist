@@ -852,7 +852,7 @@ mysql_select_db(DB_NAME) or die(mysql_error());
             //LocalTime
             $user = new User();
             $user->findUserById($speaker[0]);
-            $speaker[9] = convertTimeZoneToLocalTime($user->getTimezone());
+            $speaker[9] = convertTimeZoneToLocalTime($user->getTimezone(), 0);
             if (isset($_GET['debug'])) var_dump($speaker);
             $speakers[] = $speaker;
         }
