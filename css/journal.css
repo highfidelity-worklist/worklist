@@ -727,7 +727,8 @@ input.hide {
     font-weight: normal;
 }
 
-#entries .entry h2 span.entry-date {
+#entries .entry h2 span.entry-date,
+#entries .entry h2 span.entry-author {
     display: none;
 }
 
@@ -739,6 +740,10 @@ input.hide {
     text-align: left;
     height: 0px;
     line-height: 28px;
+}
+
+#entries .entry.showNickname h2 span.entry-author {
+    display: inline;
 }
 
 #entries .entry.timestamp:before {

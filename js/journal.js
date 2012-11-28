@@ -874,6 +874,7 @@ function getLatestSpeakers(timeout)
             // Update relative times
             currentTime = parseInt(json.time);
             updateRelativeTimes();
+            updateNicknamesDisplaying();
         },
     });
 }
@@ -1600,6 +1601,7 @@ function finishUpdate(scrolllTo, notify, botAction, entryText) {
     enlivenEntries();
     applyPopupBehavior();
     updateRelativeTimes();
+    updateNicknamesDisplaying();
     scrollViewTo(scrolllTo);
     if (notify) {
         alertNewMessage(botAction, entryText);
@@ -1803,8 +1805,7 @@ function updateTypingIndicators(data) {
     }
 }
 
-function updateRelativeTimes()
-{
+function updateRelativeTimes() {
     var mins = 60, hour = mins * 60, day = hour * 24;
     var week = day * 7, month = day * 30, year = day * 365;
     var delay = 0, lastTimestamp_time = 0, displayTimestamp = false;
@@ -1849,6 +1850,20 @@ function updateRelativeTimes()
         }
     });
 }
+
+function updateNicknamesDisplaying() {
+    var author = '',
+        prev_author = '';
+    $('#entries .entry-author').each(function() {
+        author = $(this).text();
+        entryWithTimestamp = $(this).parents('.entry').hasClass('timestamp');
+        if (prev_author != author || entryWithTimestamp) {
+            $(this).parents('.entry').addClass('showNickname');
+        }
+        prev_author = $(this).text();
+    });
+}
+
 
 function applyMessagePruning()
 {

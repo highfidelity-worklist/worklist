@@ -137,7 +137,7 @@ class Chat
                 $custom_class = 'other';
             }
             
-            if ($entry['author'].'@'.$entry['ip'] != $prev_author || !$bundle || $bot)  {
+            if ($entry['author'].'@'.$entry['ip'] || !$bundle || $bot)  {
                 $time = strtotime($entry['date']);
                 $func = 'onclick="javascript:showUserInfo(\''.$entry['user_id'].'\')"';
                 if ($returnHtml !== true) {
