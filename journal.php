@@ -224,6 +224,8 @@ if (isset($error) && $error->getErrorFlag() == 1) {
 </head>
 <body>
 <?php require_once('dialogs/popup-budget.inc'); ?>
+<!-- Popup for transfered info -->
+<?php require_once('dialogs/budget-transfer.inc') ?>
 <?php require_once('dialogs/popups-userstats.inc'); ?>
 <?php
     if( isset($_SESSION['userid']) )  {

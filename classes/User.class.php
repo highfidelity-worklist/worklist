@@ -1674,4 +1674,21 @@ class User {
         return substr($this->phone_verified, 0, 10) != '0000-00-00' 
             && substr($this->phone_rejected, 0, 10) == '0000-00-00';  
     }
+    
+    public function getBudgetTransfersDetails(){
+        $sql = 'SELECT s.id, b.reason, s.transfer_date, b.receiver_id, u.nickname, s.amount_granted'
+            . ' FROM ' . BUDGET_SOURCE . ' AS `s` '
+            . ' INNER JOIN ' . BUDGETS .' AS `b` ON s.budget_id = b.id  AND b.active = 1' 
+            . ' INNER JOIN ' . USERS . ' AS `u` ON b.receiver_id = u.id'
+            . ' WHERE s.giver_id = ' .  $this->getId();
+        if (!$result = mysql_query($sql)) {
+            return null;
+        }
+        while($row = mysql_fetch_assoc($result)) {
+            $ret[] = $row;
+        }
+        return $ret;
+    }
 }
+
+ 

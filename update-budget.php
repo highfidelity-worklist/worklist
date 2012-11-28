@@ -7,6 +7,7 @@
 
 // AJAX request to add/update a rewarder user
 
+
 include("config.php");
 include("class.session_handler.php");
 include("functions.php");
@@ -171,4 +172,4 @@ if ($budget_seed == 1 ||
 $json = json_encode(array('success' => !$error, 'message' => $message));
 echo $json;
 
-
+?>

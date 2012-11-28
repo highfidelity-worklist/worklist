@@ -420,6 +420,11 @@ var Budget = {
         }
     },
 
+    showBudgetTransferDialog: function() {
+         $('#budget-transfer').dialog('option', 'position', ['center', 'center']);
+         $('#budget-transfer').dialog('open');
+    },
+
     be_attachEvents: function(section, budget_id) {
         $('#be-id').click(function() {
             Budget.be_handleSorting(section, budget_id, $(this));
@@ -542,8 +547,5 @@ var Budget = {
 $(function() {
     Budget.initBudgetList();
     $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-
+    $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
 });
-
-
-

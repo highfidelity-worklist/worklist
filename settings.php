@@ -749,6 +749,8 @@ include("head.html");
 ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
+<!-- Popup for transfered info -->
+<?php require_once('dialogs/budget-transfer.inc') ?>
 <!-- Popup for budget info-->
 <?php require_once('dialogs/popup-budget.inc'); ?>
 

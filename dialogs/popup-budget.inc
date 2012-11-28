@@ -52,8 +52,8 @@ if (isset($_SESSION['userid']) && isset($_SESSION['is_runner']) && $_SESSION['is
                 <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
             </tr>
             <tr>
-                <td onclick="Budget.budgetExpand(3)" class="be-table_cell1 iToolTip budgetTransfered1">Transferred:</td>
-                <td onclick="Budget.budgetExpand(3)" class="be-table_cell2 iToolTip budgetTransfered1">
+                <td onclick="Budget.showBudgetTransferDialog()" class="be-table_cell1 iToolTip budgetTransfered1">Transferred:</td>
+                <td onclick="Budget.showBudgetTransferDialog()" class="be-table_cell2 iToolTip budgetTransfered1">
                 <?php echo(money_format('$ %i', $user->getTransfered())); ?></td>
             </tr>
 <?php } ?>

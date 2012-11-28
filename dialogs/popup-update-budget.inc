@@ -75,43 +75,44 @@ MapToolTips();
         <?php   
             } ?>
     </form>
-    <?php
-    if (isset($_SESSION['userid']) && isset($_SESSION['is_runner']) && $_SESSION['is_runner']) {
-        if (!isset($user)) {
-            $user = new User();
-            $user->findUserById($_SESSION['userid']);
-        }
-    ?>
-        <div>
-            <table id="be-table">
-                <tr>
-                    <td class="be-table_cell1 iToolTip budgetRemaining2"><strong>Remaining Funds:</strong></td>
-                    <td class="be-table_cell2 iToolTip budgetRemaining2"><strong>
-                    <?php echo(money_format('$ %i', $remaining)); ?></strong></td>
-                </tr>
-                <tr>
-                    <td onclick="Budget.budgetExpand(0,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetAllocated2">Allocated:</td>
-                    <td onclick="Budget.budgetExpand(0,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetAllocated2">
-                    <?php echo(money_format('$ %i', $allocated)); ?></td>
-                </tr>
-                <tr>
-                    <td onclick="Budget.budgetExpand(1,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetSubmitted2">Submitted:</td>
-                    <td onclick="Budget.budgetExpand(1,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetSubmitted2">
-                    <?php echo(money_format('$ %i', $submitted)); ?></td>
-                </tr>
-                <tr>
-                    <td onclick="Budget.budgetExpand(2,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetPaid2">Paid:</td>
-                    <td onclick="Budget.budgetExpand(2,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetPaid2">
-                    <?php echo(money_format('$ %i', $paid)); ?></td>
-                </tr>
-                <tr>
-                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell1 iToolTip budgetTransfered2">Transferred:</td>
-                    <td onclick="Budget.budgetExpand(3,<?php echo $budget->id; ?>)" class="be-table_cell2 iToolTip budgetTransfered2">
-                    <?php echo(money_format('$ %i', $transfered)); ?></td>
-                </tr>
-            </table>
-        </div>
-    <?php } ?>
-    
-</div><!-- end of give budget div-->
 
+<?php
+if (isset($_SESSION['userid']) && isset($_SESSION['is_runner']) && $_SESSION['is_runner']) {
+    if (!isset($user)) {
+        $user = new User();
+        $user->findUserById($_SESSION['userid']);
+    }
+?>
+		<div>
+        <table id="be-table">
+            	<tr onclick="Budget.displayHistory();">
+                <td class="be-table_cell1 iToolTip budgetRemaining1"><strong>Remaining Funds:</strong></td>
+                <td class="be-table_cell2 iToolTip budgetRemaining1"><strong>
+                <?php echo(money_format('$ %i', $user->setRemainingFunds())); ?></strong></td>
+            </tr>
+            <tr>
+                <td onclick="Budget.budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated1">Allocated:</td>
+                <td onclick="Budget.budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated1">
+                <?php echo(money_format('$ %i', $user->getAllocated())); ?></td>
+            </tr>
+            <tr>
+                <td onclick="Budget.budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted1">Submitted:</td>
+                <td onclick="Budget.budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted1">
+                <?php echo(money_format('$ %i', $user->getSubmitted())); ?></td>
+            </tr>
+            <tr>
+                <td onclick="Budget.budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid1">Paid:</td>
+                <td onclick="Budget.budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid1">
+                <?php echo(money_format('$ %i', $user->getPaid())); ?></td>
+            </tr>
+            <tr>
+                <td onclick="Budget.showBudgetTransferDialog()" class="be-table_cell1 iToolTip budgetTransfered1">Transferred:</td>
+                <td onclick="Budget.showBudgetTransferDialog()" class="be-table_cell2 iToolTip budgetTransfered1">
+                <?php echo(money_format('$ %i', $user->getTransfered())); ?></td>
+            </tr>
+         </div>
+<?php } ?>
+        </table>
+  
+
+</div><!-- end of give budget div-->

@@ -381,6 +381,8 @@ function addCommas(nStr) {
     require_once('header.php');
     require_once('format.php');
 ?>
+<!-- Popup for transfered info -->
+<?php require_once('dialogs/budget-transfer.inc') ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for Budget -->

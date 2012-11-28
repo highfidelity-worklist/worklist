@@ -348,3 +348,5 @@ function sortItems($items, $desc, $sort) {
 }
 
 ?>
+<script type="text/javascript" src="js/common.js"></script>
+<?php include('userinfo.inc'); ?>

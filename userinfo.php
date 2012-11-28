@@ -4,7 +4,6 @@
 //  http://www.lovemachineinc.com
 
     ob_start();
-
     require_once ("config.php");
     require_once ("class.session_handler.php");
     require_once ("functions.php");
@@ -308,6 +307,6 @@
 <!-- Popup for ping task  -->
 <?php require_once('dialogs/popup-pingtask.inc') ?>
 <?php require_once('dialogs/budget-expanded.inc'); ?>
-
+<?php require_once('dialogs/budget-transfer.inc'); ?>
 </body>
 </html>

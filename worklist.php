@@ -1195,6 +1195,8 @@ $meta_title =
 <?php include('dialogs/popup-edit-role.inc') ?>
 <!-- Popup for TestFlight -->
 <?php include('dialogs/popup-testflight.inc') ?>
+<!-- Popup for transfered info -->
+<?php require_once('dialogs/budget-transfer.inc') ?>
 <?php
     require_once('header.php');
     require_once('format.php');
