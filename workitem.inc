@@ -1651,9 +1651,9 @@ if ($action =="edit"):  ?>
                             $mech = 'Not assigned';
                         } else{
                             $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
-                            $mech='<a id="ping-btn" title="' . $tooltip . '">' . $mech . '</a>';
+                            $mech='<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" ><a href="#">Mechanic:</a></span><a id="ping-btn" onClick="javascript:showUserInfo(' . $worklist['mechanic_id'] . ');">' . $mech . '</a>';
                         }
-                        echo '<div id="mechanicBox"><span class="mechanicName">Mechanic:</span> ' . $mech . '</div>';
+                        echo '<div id="mechanicBox"> ' . $mech . '</div>';
                     ?>
                 </div>
                 <div id="for_view">
