@@ -346,7 +346,9 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                         <span id="reviewjobs">no jobs</span> in need of 
                                         <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=review&journal_query=1">Code Review</a>
                                     </p>
-                                    <input type="button" value="Add Job" id="addJob" />
+                                    <?php if (isset($_SESSION['userid'])): ?>
+                                        <input type="button" value="Add Job" id="addJob" />
+                                    <?php endif; ?>
                                 </div>
                             </div>      
                             <div id="penalty-container" style="display:none">
