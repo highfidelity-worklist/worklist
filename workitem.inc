@@ -1463,6 +1463,9 @@ $(document).ready(function(){
         <span class="divider">&nbsp;</span>
         <span class="title <?php echo $classEditable;?>"><?php echo $worklist['summary'];?></span>
     </div>
+<?php if ($action =="edit"):  ?>
+        <form id="workitem-form" method="post" action="">
+<?php endif; ?>
     <div id="info-top" class="top-bar">
     <div class="second-line"></div>
         <?php if ($action != "edit"): ?>
@@ -1537,7 +1540,6 @@ $(document).ready(function(){
 
 <?php
 if ($action =="edit"):  ?>
-        <form id="workitem-form" method="post" action="">
             <input type="hidden" name="save_workitem" value="save_workitem" />
             <input type="hidden" name="action" value="save_workitem" />
             <div class="project <?php if ($workitem_project->getRepo_type() == 'git') { echo ' github';} ?>">
@@ -1770,7 +1772,6 @@ if ($action =="edit"):  ?>
                             <input type="submit" class="smbutton" value="Save" name="save_workitem" id="save_workitem" />
                         </div>
                     <?php endif;?>
-                </form>
 <!-- *** End of Action is Edit *** -->
 <?php else: ?>
 <!-- *** Action is View *** -->
@@ -1919,7 +1920,7 @@ if ($action =="edit"):  ?>
                     (If known, linked to Job #)
                     <input type="text" id="bug_job_id" name="bug_job_id" class="text-field bug_job_id" size="48" value="<?php if($workitem->getBugJobId()>0) echo $workitem->getBugJobId();?>" />
                 </div>
-                <div class="bugJobSummary" id="bugJobSummary" title="0">
+                <div class="bugJobSummary" id="bugJobSummary" title="<?php if($workitem->getBugJobId()>0) echo $workitem->getBugJobId(); else echo "0";?>">
                 </div>
                 <div class="clear"></div>
                 <script type="text/javascript">
@@ -2234,7 +2235,10 @@ if ($action =="edit"):  ?>
         </div>
 <!-- End of div pageContent -->
     </div>
-
+    
+<?php if ($action =="edit"):  ?>
+                </form>
+<?php endif; ?>
     <!-- Popup HTML for Placing a bid -->
     <?php if(isset($message)): ?>
     <div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
