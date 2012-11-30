@@ -1439,8 +1439,18 @@ $(document).ready(function(){
             </div>
             <span id="invite-link" title="Invite people" href="javascript">Invite someone</span>
             <?php if ($allowEdit && $action != "edit"): ?>
-                <span class="switchmode"><a title="Switch to Edit Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=edit&order=<?php echo $order_by; ?>">Edit</a>
-                </span>
+                 
+                <?php if ($worklist['status'] == "Done"): ?>
+                    <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
+                <?php else: ?>
+                    <span class="switchmode">
+                        <a title="Switch to Edit Mode" href="
+                        <?php $format = '%s?job_id=%d&action=edit&order=%s';
+                        echo sprintf($format, $_SERVER['SCRIPT_NAME'], $worklist['id'], $order_by); ?>
+                        ">Edit</a>
+                    </span>
+                <?php endif;?>
+                
             <?php endif;?>
             <?php if ($action == "edit"): ?>
                 <span class="switchmode"><a title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view&order=<?php echo $order_by; ?>">View</a>

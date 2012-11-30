@@ -1062,7 +1062,6 @@ class WorkItem {
 				
             case 'save_workitem':
                 if ($this->getStatus() == 'Done') {
-                    $action_error = 'Cannot change workitem when status is Done';
                     return false;
                 }
                 

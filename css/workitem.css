@@ -1652,7 +1652,8 @@ input.button-disabled ,
 
 #following,
 #invite-link,
-.switchmode {
+.switchmode,
+.switchmode-done {
     float: left;
 }
 
@@ -1698,14 +1699,16 @@ switchmode:hover {
     border-right: 2px solid #e1e8ea;
 }
 
-.switchmode {
+.switchmode,
+.switchmode-done {
     padding: 10px 15px 7px 31px;
     background-image: url('../images/primaryIcons-WL.png');
     background-position: 13px -950px;
     background-repeat: no-repeat;
 }
 
-.switchmode a {
+.switchmode a,
+.switchmode-done span {
     text-decoration: none;
     color: #333;
 }

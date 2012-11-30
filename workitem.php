@@ -68,6 +68,11 @@ $promptForReviewUrl = true;
 $runner_budget = $user->getBudget();
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
+
+if ($workitem->getStatus() == 'Done' && $action == 'edit') {
+    $action = 'view';
+}
+
 $view_bid_id = 0;
 $order_by = isset($_REQUEST['order']) ? $_REQUEST['order'] : 'ASC';
 if ($order_by != "DESC") {
