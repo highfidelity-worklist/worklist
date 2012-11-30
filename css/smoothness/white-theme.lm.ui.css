@@ -84,7 +84,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     margin-top: 27%;
     background: url(./images/dialog-close.png) no-repeat;
 }
-.white-theme .ui-dialog-content {
+.white-theme .ui-dialog-content{
     padding: 10px 55px 55px 35px !important;
 }
 
@@ -122,6 +122,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .white-theme {
     color:#876F6D;
     padding:8px 15px 6px;
+    min-width: 500px;
     font-size: 16px;
     box-shadow: none;
     -o-box-shadow: none;

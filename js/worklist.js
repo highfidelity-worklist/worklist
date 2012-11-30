@@ -280,7 +280,6 @@ function sendInviteForm(){
         if(json['sent'] =='yes'){
             $("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
             $('input[name="invite"]').val('');
-            $('#invite-people').dialog('close');
         }else{
             $("#sent-notify").html("<span>The user you entered does not exist</span>");
         }
