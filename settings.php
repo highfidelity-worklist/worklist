@@ -747,6 +747,8 @@ include("head.html");
     require_once('header.php');
     require_once('format.php');
 ?>
+<!-- Popup for breakdown of fees-->
+<?php require_once('dialogs/popup-fees.inc') ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for transfered info -->

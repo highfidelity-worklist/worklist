@@ -841,6 +841,10 @@ $(function() {
 </head>
 
 <body>
+<?php
+    require_once('header.php');
+    require_once('format.php');
+?>
 <!-- Popup for breakdown of fees-->
 <?php require_once('dialogs/popup-fees.inc') ?>
 <!-- Popup for Budget -->
@@ -849,10 +853,7 @@ $(function() {
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for transfered info -->
 <?php require_once('dialogs/budget-transfer.inc') ?>
-<?php
-    require_once('header.php');
-    require_once('format.php');
-?>
+
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <div style="margin-top: 15px">

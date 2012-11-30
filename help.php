@@ -21,7 +21,6 @@ include("opengraphmeta.php");
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <link href="css/projects.css" rel="stylesheet" type="text/css" >
-
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
@@ -44,12 +43,15 @@ include("opengraphmeta.php");
     require_once('header.php');
     require_once('format.php');
 ?>
+<!-- Popup for breakdown of fees-->
+<?php require_once('dialogs/popup-fees.inc') ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for transfered info -->
 <?php require_once('dialogs/budget-transfer.inc') ?>
 <!-- Popup for budget info-->
 <?php require_once('dialogs/popup-budget.inc'); ?>
+
 <br/>
 <a name="top"></a>
 <h1 class="header">Worklist Frequently Asked Questions</h1> </br></br>

@@ -248,6 +248,8 @@ include("opengraphmeta.php");
     <div class="headerButtons">
         <input id="addproj" type="button" value="Add my project" />
     </div>
+        <!-- Popup for breakdown of fees-->
+        <?php require_once('dialogs/popup-fees.inc') ?>
         <!-- Popup for adding projects -->
         <?php require_once('dialogs/popup-addproject.inc'); ?>
         <!-- Popup for budget info -->
