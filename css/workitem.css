@@ -1875,3 +1875,26 @@ h1.newProject {
 #sandbox {
     width: 400px
 }
+
+#invite-people form div {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+
+#invite-people span.invite-label {
+    color: #666666;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#invite-people input.invite {
+    width: 235px;
+    padding: 8px;
+    border-width: 1px;
+}
+
+#invite-people input[type="submit"] {
+    margin: 15px auto 0 auto;
+    display: block;
+}
