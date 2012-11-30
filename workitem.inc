@@ -115,12 +115,13 @@ $(document).ready(function() {
 
     $('#invite-people').dialog({
         autoOpen: false,
+        dialogClass: 'white-theme',
         resizable: false,
         modal: true,
         show: 'fade',
         hide: 'fade',
-        width: 350,
-        height: 140
+        width: 'auto',
+        height: 'auto'
     });
     $("#invite-link").click(function() {
         $('#invite-people').dialog('open');
