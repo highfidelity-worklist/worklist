@@ -188,14 +188,16 @@
                     $title = "My review";
                     $feeRange = "Me";
                     $feeRangeTitle ='My review (' . $review['feeRange'] . ')';
+                    $feeText = "From <span class='feeRange' title='" . $feeRangeTitle . "'>Me</span>...";
                 } else {
                     $classColor = " ";
                     $title = "";
                     $feeRange = $review['feeRange'];
                     $feeRangeTitle ='Number of jobs the reviewer has worked on';
+                    $feeText = "From a user involved in <span class='feeRange' title='" . $feeRangeTitle . "'>" .$feeRange . "</span> Worklist jobs ...";
                 }
                 $res .= '<div class="listReviewElement ' . $classColor . '" title="' . $title . '">' .
-                        "From a user involved in <span class='feeRange' title='{$feeRangeTitle}'>" .$feeRange . "</span> Worklist jobs ...<div class='reviewText'>" . $review['review'] . "</div>" .
+                        $feeText . "<div class='reviewText'>" . $review['review'] . "</div>" .
                         '</div>' ;
             }
         }
