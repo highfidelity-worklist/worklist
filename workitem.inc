@@ -1639,7 +1639,7 @@ if ($action =="edit"):  ?>
                                 </span>
                         <?php else: ?>
                             <?php
-                                if( $runner_nickname != 'Not funded' ) {
+                                if( $worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] !='') {
                             ?>
                             <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"> <a href="#">Runner:</a></span>
                             <a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') ;?></a>
