@@ -1661,7 +1661,7 @@ if ($action =="edit"):  ?>
                                 if( $fe['desc'] == 'Accepted Bid' ) $mech = $fe['nickname'];
                         }
                         if($mech=='') {
-                            $mech = 'Not assigned';
+                            $mech = '<span class="mechanicName" title="' . $tooltip . '" >Mechanic:</span>Not assigned';
                         } else{
                             $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
                             $mech='<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" ><a href="#">Mechanic:</a></span><a id="ping-btn" onClick="javascript:showUserInfo(' . $worklist['mechanic_id'] . ');">' . $mech . '</a>';

@@ -1375,7 +1375,8 @@ class User {
                 WHERE `paid_date` IS NOT NULL AND `paid` = 1 AND 
                     `withdrawn` != 1 GROUP BY `user_id`
             ) AS `dates` ON `".USERS."`.id = `dates`.user_id
-            $where 
+            $where
+            OR id = $populate 
             ORDER BY `nickname` ASC";
         $result = mysql_query($sql);
         $i =  (int) $populate > 0 ? (int) 1 : 0;
