@@ -9,7 +9,7 @@ ob_start();
 require_once ("config.php");
 require_once ("class.session_handler.php");
 require_once ("functions.php");
-include("head.html");
+
 $msg = '';
 
 // is the user logged in?
@@ -52,7 +52,6 @@ $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $version = Utils::getVersion();
 
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -136,6 +135,7 @@ function StopStatus() {
 <?php endif; ?>
 <!-- js template for file uploads -->
 <?php require_once('dialogs/file-templates.inc'); ?>
+<?php require_once('dialogs/budget-expanded.inc') ?>
 <script type="text/javascript">
 <?php
 if (isset($error) && $error->getErrorFlag() == 1) {
@@ -222,21 +222,11 @@ if (isset($error) && $error->getErrorFlag() == 1) {
 }
 </style>
 </head>
-
-<body>    
-<?php
-    require_once('header.php');
-    require_once('format.php');
-?>
-<!-- Popup for breakdown of fees-->
-<?php require_once('dialogs/popup-fees.inc') ?>
-<!-- Popup for Budget -->
+<body>
 <?php require_once('dialogs/popup-budget.inc'); ?>
-<!-- Popup for budget info -->
-<?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for transfered info -->
 <?php require_once('dialogs/budget-transfer.inc') ?>
-
+<?php require_once('dialogs/popups-userstats.inc'); ?>
 <?php
     if( isset($_SESSION['userid']) )  {
         require_once("helper/popup-penalty.inc");
@@ -266,6 +256,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
     <source src="mp3/red_alert.mp3" />
     <source src="mp3/red_alert.ogg" />
 </audio>
+<?php require_once('header.php'); ?>
         <input type="hidden" id="guestUser" value="<?php echo empty($_SESSION['username']) ? 0  : 1; ?>" />
         <div id="container">
             <div id="left"></div>
