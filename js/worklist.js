@@ -296,10 +296,11 @@ function applyPopupBehavior() {
     $(function() {
         $('#addaccordion').fileUpload({tracker: $('input[name=files]')});
     });
-    
-    $('a.attachment').live('click', function() {
+    $('a.attachment').unbind('click');    
+    $('a.attachment').live('click', function(e) {
         var dialogUrl = $(this).attr('href');
         var verified = false;
+        e.preventDefault();
         if (dialogUrl == 'javascript:;') {
             $.ajax({
                 type: 'post',
@@ -326,85 +327,71 @@ function applyPopupBehavior() {
                 return false;
             }
         }
-
-        
-        $('<img src="'+dialogUrl+'" title="Preview">').dialog({
-                modal: true,
-                hide: 'drop', 
-                resizable: false,
-                width: 'auto',
-                height: 'auto',                
-                open:function(evt){
-                    $(this).parent().css('opacity','0');
-                    storeCursorStatus = new Array();
-                    $('*').each(function(){
-                        if($(this).css('cursor')!='auto')
-                            storeCursorStatus.push([$(this), $(this).css('cursor')]); });
-                    $('*:visible').css('cursor','wait');
-                    window.imageFiredDialogRedim = [false, evt.target];  
-                    
-                    $(evt.target).load(function(){
-                            var image = $(this);
-                            // get image size
-                            var origWidt = parseInt(image.naturalWidth);  
-                            var origHeig = parseInt(image.naturalHeight);
-                            if(!origWidt||!origHeig){
-                                var origWidt = parseInt(image.width());
-                                var origHeig = parseInt(image.height()); 
-                            }
-                            var padding = 20;
-                            var imageMargin = 12;
-                            ratio = Math.min(($(window).width()-(imageMargin+padding)*2) / origWidt,
-                                            ($(window).height()-(imageMargin+padding)*2) / origHeig);
-                            var zoom='';
-                            //alert(($(window).width()-padding*2)+' , ' +($(window).height()-padding*2)+' ==  '+origWidt+','+origHeig+ ' === '+ratio);
-                            //alert('width'+(origWidt*ratio)+', height'+(origHeig*ratio));
-                            if(ratio<1){
-                                image.css({'width':origWidt*ratio,'height':origHeig*ratio});
-                            }
-                            var dialog = image.parent()
-                            var top = ($(window).height() - image.height())/2 - imageMargin + $(window).scrollTop();
-                            var left = ($(window).width() - image.width())/2 - imageMargin;
-                            dialog.css({
-                                'top': top,
-                                'left': left 
-                            });
-                            $('*').css('cursor','auto');
-                            $.each(storeCursorStatus,function(i,v){
-                                v[0].css('cursor',v[1]); });
-                            if(ratio<1){
-                                zoom='('+Math.round(ratio*100)+'%)';
-                                image.prev('div').append(
-                                '<span class="dialogZoom" style="margin-left:10px;">'+zoom+'</span>');
-                            }
-                            if (ratio!='Infinity'){
-                                image.css({'margin':imageMargin+'px','padding':'0','border':'1px solid #ccc'});
-                                if($.browser.msie){
-                                    image.css({'border':'2px solid #000'});
-                                }else if($.browser.mozilla){
-                                    image.css({'-moz-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
-                                }else{
-                                    image.css({'-webkit-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
+        if ($('#dialogImage').length == 0) {
+            $('<img id="dialogImage" src="'+dialogUrl+'" title="Preview">').dialog({
+                    modal: true,
+                    hide: 'drop', 
+                    resizable: false,
+                    width: 'auto',
+                    height: 'auto',                
+                    open:function(evt){
+                        $(this).parent().css('opacity','0');
+                        storeCursorStatus = new Array();
+                        
+                        $(evt.target).load(function() {
+                                var image = $(this);
+                                // get image size
+                                var origWidt = parseInt(image.naturalWidth);  
+                                var origHeig = parseInt(image.naturalHeight);
+                                if (!origWidt || !origHeig) {
+                                    var origWidt = parseInt(image.width());
+                                    var origHeig = parseInt(image.height()); 
                                 }
-                                image.parent().hide();
-                                image.parent().css('opacity','1').fadeIn();
-                                clearInterval(window.imageFiredDialogRedim[3]);
-                            }
-                    })
-                    window.imageFiredDialogRedim[3] =
-                        setInterval(function(){
-                            if(!window.imageFiredDialogRedim[0]){
-                                $(window.imageFiredDialogRedim[1]).trigger('load');
-                            }
-                        },1500);
-                },
-                resizeStart:function(){
-                    $(this).parent().find('.dialogZoom').html(''); },               // hide srink percentage on resize
-                dragStop:function(evt){
-                    var dialog = $(evt.target);                                     // check if not out of screen
-
-                } 
-            }); 
+                                var padding = 20;
+                                var imageMargin = 12;
+                                ratio = Math.min(($(window).width()-(imageMargin+padding)*2) / origWidt,
+                                                ($(window).height()-(imageMargin+padding)*2) / origHeig);
+                                var zoom = '';
+                                if (ratio < 1) {
+                                    image.css({'width':origWidt*ratio,'height':origHeig*ratio});
+                                }
+                                var dialog = image.parent();
+                                var top = ($(window).height() - image.height())/2 - imageMargin + $(window).scrollTop();
+                                var left = ($(window).width() - image.width())/2 - imageMargin;
+                                dialog.css({
+                                    'top': top,
+                                    'left': left 
+                                });
+                                if (ratio < 1) {
+                                    zoom='('+Math.round(ratio*100)+'%)';
+                                    image.prev('div').append(
+                                    '<span class="dialogZoom" style="margin-left:10px;">'+zoom+'</span>');
+                                    }
+                                if (ratio!='Infinity') {
+                                    image.css({'margin':imageMargin+'px','padding':'0','border':'1px solid #ccc'});
+                                    if ($.browser.msie) {
+                                        image.css({'border':'2px solid #000'});
+                                    } else if ($.browser.mozilla) {
+                                        image.css({'-moz-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
+                                    } else {
+                                        image.css({'-webkit-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
+                                    }
+                                    image.parent().hide();
+                                    image.parent().css('opacity', '1').fadeIn();
+                                }
+                        });
+                    },
+                    resizeStart : function(){
+                        $(this).parent().find('.dialogZoom').html(''); 
+                    },               // hide srink percentage on resize
+                    dragStop : function(evt){
+                        var dialog = $(evt.target);                                     // check if not out of screen
+                    },
+                    close: function(event, ui) {
+                        $(this).dialog('destroy').remove();
+                    } 
+                }); 
+            }
         return false;
     });
     
