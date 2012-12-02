@@ -85,7 +85,8 @@ function showUserInfo(user_id, tab) {
     } else {
         tab = "";
     }
-    location.href = 'userinfo.php?id=' + user_id + tab;
+    // Show user info in new tab
+    window.open('userinfo.php?id=' + user_id + tab, '_blank');
     return false;
 }
 
