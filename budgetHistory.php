@@ -36,7 +36,7 @@ if ($fromUserid == "y") {
 
 // Query to get User's Budget entries
 $query =  ' SELECT DATE_FORMAT(b.transfer_date, "%Y-%m-%d") AS date, b.amount,'
-        . ' b.reason, b.active, b.notes, b.seed, b.id AS budget_id, '
+        . ' IF( b.active=1, b.remaining, 0.00) AS remaining, b.reason, b.active, b.notes, b.seed, b.id AS budget_id, '
         . '(SELECT COUNT(s.giver_id) FROM ' . BUDGET_SOURCE . 
             ' AS s WHERE s.budget_id = b.id AND s.giver_id = ' . $userId . ') AS userid_count, '
         . '(SELECT COUNT(DISTINCT giver_id) FROM ' . BUDGET_SOURCE . ' AS s WHERE s.budget_id = b.id ) AS givers_count, '
@@ -74,6 +74,9 @@ if ($page == 1) {
       <th class="date">Created</th>
       <th class="giver">Grantor</th>
       <th class="amount">Amount</th>
+      <?php if (!empty($id) && $userId == $id) { ?>
+      <th class="amount">Remaining</th>
+      <?php } ?>
       <th class="for">For</th>
       <th class="active">Active</th>
     </tr>
@@ -108,6 +111,10 @@ if ($result) {
         <td><?php echo $row['date']; ?></td>
         <td><?php echo ($row['givers_count'] == 1 ) ? $row['nickname'] : "Various"; ?></td>
         <td><?php echo $row['amount']; ?></td>
+        <?php if (!empty($id) && $userId == $id) { ?>
+        <td <?php if ($row['remaining'] < 0) echo 'class="red"'; ?>>
+            <?php echo $row['remaining']; ?></td>
+        <?php } ?>
         <td><?php echo $row['reason']; ?></td>
         <td><?php echo ($row['active'] == 1) ? "open" : "closed"; ?></td>
     </tr>
