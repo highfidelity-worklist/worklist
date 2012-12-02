@@ -30,7 +30,7 @@ include("opengraphmeta.php");
     var worklistUrl = '<?php echo SERVER_URL; ?>';
 </script>
 
-<title><title>Help / FAQ - Worklist</title></title>
+<title>Help / FAQ - Worklist</title>
 <style>
 #welcomeInside .helpBtn {
     color: #ffffff;
