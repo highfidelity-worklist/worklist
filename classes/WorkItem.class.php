@@ -1014,6 +1014,68 @@ class WorkItem {
                 return false;
             }
 
+            $creator_fee = 0;
+            $creator_fee_desc = 'Creator';
+
+            $runner_fee = 0;
+            $runner_fee_desc = 'Runner';
+
+            $accepted_bid_amount = $bid_info['bid_amount'];
+
+            $fee_category = '';
+            $is_expense = '';
+            $is_rewarder = '';
+
+            // get project creator role settings, if not available, no fee is added
+            // and will need to be added manually if applicable
+            $project = new Project();
+            $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Creator'");
+
+            if (count($project_roles) != 0) {
+                $creator_role = $project_roles[0];
+                if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
+
+                    $creator_fee = ($creator_role['percentage'] / 100) * $accepted_bid_amount;
+                    if ((float) $creator_fee < $creator_role['min_amount']) {
+                        $creator_fee = $creator_role['min_amount'];
+                    }
+
+                    // add the fee
+                        
+                    /**
+                     * @TODO - We call addfees and then deduct from budget
+                     * seems we should add the deduction process to the AddFee
+                     * function
+                     * 
+                     */
+                    AddFee($this->getId(), $creator_fee, $fee_category, $creator_fee_desc, $this->getCreatorId(), $is_expense, $is_rewarder);
+                    // and reduce the runners budget
+                    $myRunner = new User();
+                    $myRunner->findUserById($this->getRunnerId());
+                    $myRunner->updateBudget(-$creator_fee, $this->getBudget_id());
+                }
+            }
+
+            $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Runner'");
+            if (count($project_roles) != 0) {
+                    
+                error_log("[FEES] we have a role for runner");
+                $runner_role = $project_roles[0];
+                if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
+
+                    $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
+                    if ((float) $runner_fee < $runner_role['min_amount']) {
+                        $runner_fee = $runner_role['min_amount'];
+                    }
+                    // add the fee
+                    AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
+                    // and reduce the runners budget
+                    $myRunner = new User();
+                    $myRunner->findUserById($this->getRunnerId());
+                    $myRunner->updateBudget(-$runner_fee, $this->getBudget_id());
+                }
+            }
+
 /*
             if (! result = mysql_query("
                 INSERT INTO " . STATUS_LOG . " 
@@ -1292,18 +1354,10 @@ class WorkItem {
         // workitem is DONE, calculate the creator fee based on project roles
         // and accepted bid
         if ($this->hasAcceptedBids()) {
-            $creator_fee = 0;
-            $creator_fee_desc = 'Creator';
-            $runner_fee = 0;
-            $runner_fee_desc = 'Runner';
             $reviewer_fee = 0;
             $reviewer_fee_desc = '/^Code Review - comment/';
-            $creator_fee_added = false;
-            $runner_fee_added = false;
             $reviewer_fee_added = false;
-            $fee_category = '';
-            $is_expense = '';
-            $is_rewarder = '';
+
 
             $fees = $this->getFees($this->getId());
             foreach ($fees as $fee) {
@@ -1312,75 +1366,8 @@ class WorkItem {
                     $accepted_bid_amount = $fee['amount'];
                 }
 
-                // is there a fee for the creator already? workitems might get DONE, and then
-                // need further work / review
-                if ($fee['desc'] == $creator_fee_desc) {
-                    $creator_fee_added = true;
-                }
-                if ($fee['desc'] == $runner_fee_desc) {
-                    $runner_fee_added = true;
-                }
                 if (preg_match($reviewer_fee_desc, $fee['desc'])) {
                     $reviewer_fee_added = true;
-                }
-            }
-
-            if (!$creator_fee_added) {
-
-                // get project creator role settings, if not available, no fee is added
-                // and will need to be added manually if applicable
-                $project = new Project();
-                $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Creator'");
-
-                if (count($project_roles) != 0) {
-                    $creator_role = $project_roles[0];
-                    if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
-
-                        $creator_fee = ($creator_role['percentage'] / 100) * $accepted_bid_amount;
-                        if ((float) $creator_fee < $creator_role['min_amount']) {
-                            $creator_fee = $creator_role['min_amount'];
-                        }
-
-                        // add the fee
-                        
-                        /**
-                         * @TODO - We call addfees and then deduct from budget
-                         * seems we should add the deduction process to the AddFee
-                         * function
-                         * 
-                         */
-                        AddFee($this->getId(), $creator_fee, $fee_category, $creator_fee_desc, $this->getCreatorId(), $is_expense, $is_rewarder);
-                        // and reduce the runners budget
-                        $myRunner = new User();
-                        $myRunner->findUserById($this->getRunnerId());
-                        $myRunner->updateBudget(-$creator_fee, $this->getBudget_id());
-                    }
-                }
-            }
-            
-            if (!$runner_fee_added) {
-                
-                // get project creator role settings, if not available, no fee is added
-                // and will need to be added manually if applicable
-                $project = new Project();
-                $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Runner'");
-                if (count($project_roles) != 0) {
-                    
-                    error_log("[FEES] we have a role for runner");
-                    $runner_role = $project_roles[0];
-                    if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
-
-                        $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
-                        if ((float) $runner_fee < $runner_role['min_amount']) {
-                            $runner_fee = $runner_role['min_amount'];
-                        }
-                        // add the fee
-                        AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
-                        // and reduce the runners budget
-                        $myRunner = new User();
-                        $myRunner->findUserById($this->getRunnerId());
-                        $myRunner->updateBudget(-$runner_fee, $this->getBudget_id());
-                    }
                 }
             }
             

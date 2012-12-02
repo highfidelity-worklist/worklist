@@ -640,6 +640,31 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $res = mysql_query('SELECT * FROM `' . WORKLIST . '` WHERE `id` = ' . $bid->worklist_id);
         $job = mysql_fetch_assoc($res);
 
+        if (! in_array($job['status'], array(
+            'Draft',
+            'Suggested',
+            'SuggestedWithBid',
+            'Bidding',
+            'Done'
+        ))) {
+
+            $creator_fee_desc = 'Creator';
+            $runner_fee_desc = 'Runner';
+
+            $WorkItem = new WorkItem($bid->worklist_id);
+            $fees = $WorkItem->getFees($WorkItem->getId());
+
+            foreach ($fees as $fee) {
+                if ($fee['desc'] == $creator_fee_desc) {
+                    deleteFee($fee['id']);
+                }
+
+                if ($fee['desc'] == $runner_fee_desc) {
+                    deleteFee($fee['id']);
+                }
+            }
+        }
+
         // additional changes if status is WORKING
         if ($job['status'] == 'Working'  && ($bid->accepted == 1) && (is_runner() || ($bid->bidder_id == $_SESSION['userid']))) {
             // change status of worklist item
@@ -649,7 +674,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
 										WHERE `id` = $bid->worklist_id
 										LIMIT 1 ;");
         }
-        
+
         // set back to suggested if swb and is only bid
         $res = mysql_query('SELECT count(*) AS count_bids FROM `' . BIDS . '` WHERE `worklist_id` = ' . $job['id'] . ' AND `withdrawn` = 0');
         $bidCount = mysql_fetch_assoc($res);
