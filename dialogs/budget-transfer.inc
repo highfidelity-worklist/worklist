@@ -1,6 +1,6 @@
-<?php 
+<?php
 $user = new User();
-$user->findUserById($_SESSION['userid']);	
+$user->findUserById($_SESSION['userid']);        
 $details = $user->getBudgetTransfersDetails();
 ?>
 

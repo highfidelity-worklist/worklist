@@ -422,7 +422,7 @@ var Budget = {
 
     showBudgetTransferDialog: function() {
          $('#budget-transfer').dialog('option', 'position', ['center', 'center']);
-         $('#budget-transfer').dialog('open');
+         $('#budget-transfer').dialog('open'); 
     },
 
     be_attachEvents: function(section, budget_id) {
