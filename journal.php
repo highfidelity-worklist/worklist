@@ -223,10 +223,6 @@ if (isset($error) && $error->getErrorFlag() == 1) {
 </style>
 </head>
 <body>
-<?php require_once('dialogs/popup-budget.inc'); ?>
-<!-- Popup for transfered info -->
-<?php require_once('dialogs/budget-transfer.inc') ?>
-<?php require_once('dialogs/popups-userstats.inc'); ?>
 <?php
     if( isset($_SESSION['userid']) )  {
         require_once("helper/popup-penalty.inc");
@@ -257,6 +253,11 @@ if (isset($error) && $error->getErrorFlag() == 1) {
     <source src="mp3/red_alert.ogg" />
 </audio>
 <?php require_once('header.php'); ?>
+<?php require_once('dialogs/popup-budget.inc'); ?>
+<!-- Popup for transfered info -->
+<?php require_once('dialogs/budget-transfer.inc') ?>
+<?php require_once('dialogs/popups-userstats.inc'); ?>
+<?php require_once('dialogs/popup-fees.inc'); ?>
         <input type="hidden" id="guestUser" value="<?php echo empty($_SESSION['username']) ? 0  : 1; ?>" />
         <div id="container">
             <div id="left"></div>
@@ -440,4 +441,69 @@ if (isset($error) && $error->getErrorFlag() == 1) {
 $inJournal = true;
 include("footer.php"); 
 ?>
+    <script type="text/javascript">
+    $(function () {
+        if ($('#fees-week').length > 0) {
+            $('#fees-week').parents("tr").click(function() {
+                var author = "Guest";
+                if($('#user').length > 0) {
+                    author = $('#user').html();
+                }
+                var t = 'Weekly fees for '+author;
+                $('#wFees').dialog({
+                    autoOpen: false,
+                    title: t,
+                    show: 'fade',
+                    hide: 'fade'
+                });
+                $('#wFees').dialog( "option", "title", t );
+                $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').dialog('open');
+                $.getJSON('getfeesums.php?weekly=1', function(json) {
+                    if (json.error == 1) {
+                        $('#wFees').html('Some error occured or you are not logged in.');
+                    } else {
+                      $('#wFees').html(json.output);
+                    }
+                });
+            });
+        }
+        
+        if($('#fees-month').length > 0){
+            $('#fees-month').parents("tr").click(function() {
+                var author = "Guest";
+                if ($('#user').length > 0) {
+                    author = $('#user').html();
+                }
+                var t = 'Monthly fees for '+author;
+                $('#wFees').dialog({
+                    autoOpen: false,
+                    title: t,
+                    show: 'fade',
+                    hide: 'fade'
+                });
+                $('#wFees').dialog("option", "title", t);
+                $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').dialog('open');
+                $.getJSON('getfeesums.php?monthly=1', function(json) {
+                    if (json.error == 1) {
+                        $('#wFees').html('Some error occured or you are not logged in.');
+                    } else {
+                        $('#wFees').html(json.output);
+                    }
+                });
+            });
+        }
+    });
 
+    $('#welcomeInside .earningsBtn').click(function() {
+        $.get('getfeesums.php', function(data) {
+            var sum = eval('('+data+')');
+            if (typeof sum != 'object') {
+                return false;
+            }
+            $('#fees-week').html ('$'+sum.week);
+            $('#fees-month').html ('$'+sum.month);
+        });
+    });
+    </script>
