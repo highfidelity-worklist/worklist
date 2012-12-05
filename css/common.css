@@ -353,6 +353,11 @@ input[type=text], input[type=password], textarea {
     width: 355px;
 }
 
+#statusCombo,
+#search-filter-wrap-reports select {
+    display: none;
+}
+
 input[type=text]:active, 
 input[type=text]:hover, 
 input[type=text]:focus,

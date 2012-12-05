@@ -1488,7 +1488,7 @@ $(document).ready(function(){
             ?>
                 <form id="searchForm" method="post" action="">
                     <input type="hidden" id="status-switch" name="status-switch" value="1" />
-                    <select id="statusCombo" name="quick-status" class="project-dropdown hidden" style="display: block;">
+                    <select id="statusCombo" name="quick-status" class="project-dropdown hidden">
                         <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>
                         <?php
                         if (!($is_runner || $is_project_founder) && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
