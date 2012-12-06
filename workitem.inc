@@ -1352,10 +1352,11 @@ $(document).ready(function(){
                             if (shown != true) {
                                 shown = true;
                                 $('#runnerBox').css('width', '400px');
-                                $('#runnerBox a#ping-r-btn').css('display', 'none');
+                                $('#runnerBox #ping-r-btn').css('display', 'none');
                                 $('#runnerBox span.changeRunner').fadeIn(1000, function() {
                                     $('#runnerBox span.changeRunner div input[name=changerunner]').click(function() {
                                         $(this).unbind('click');
+                                        var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val(); 
                                         $.ajax({
                                             type: 'post',
                                             url: 'jsonserver.php',
@@ -1364,13 +1365,14 @@ $(document).ready(function(){
                                                 // to avoid script loading error when not logged
                                                 // userid: <?php echo($user_id); ?>,
                                                 userid: <?php echo(!empty($user_id) ? $user_id : "''"); ?>,
-                                                runner: $('#runnerBox span.changeRunner select[name=runner]').val(),
+                                                runner: runner_id,
                                                 workitem: <?php echo($worklist_id); ?>
                                             },
                                             dataType: 'json',
                                             success: function(j) {
                                                 if (j.success == true) {
-                                                    $('#runnerBox span#ping-r-btn').text(j.nickname);
+                                                    $('#runnerBox #ping-r-btn').text(j.nickname);
+                                                    $('#runnerBox #ping-r-btn').attr('data-user-id', runner_id);
                                                     $('#runnerBox input[name=cancel]').click();
                                                 }
                                             }
@@ -1380,7 +1382,7 @@ $(document).ready(function(){
                                         $('#runnerBox span.changeRunner').fadeOut(1000, function() {
                                             $('#runnerBox span.changeRunner').css('display', 'none');
                                             $('#runnerBox').css('width', '130px');
-                                            $('#runnerBox a#ping-r-btn').css('display', 'block');
+                                            $('#runnerBox #ping-r-btn').css('display', 'block');
                                             $('#runnerBox span.runnerName').parent().siblings().fadeIn(1000);
                                         });
                                     });
@@ -1623,7 +1625,11 @@ if ($action =="edit"):  ?>
                             <?php
                                 if( $worklist['runner_nickname'] != 'Not funded' ) {
                                     $tooltip = isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner";
-                                    echo ' <a href="#" id="ping-r-btn" title="' . $tooltip . '"onClick="javascript:showUserInfo('.$worklist['runner_id'].'">'.substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '').'</a>';
+                                    echo ' <a href="#" id="ping-r-btn" title="' . $tooltip . '"' . 
+                                        ' onClick="javascript:showUserInfo($(this).attr(\'data-user-id\'))" ' .
+                                        ' data-user-id="' . $worklist['runner_id'] . '">'.
+                                        substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
+                                        '</a>';
                                 } else {
                                     echo "&nbsp" . $worklist['runner_nickname'];
                                 } ?>
