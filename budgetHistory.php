@@ -3,7 +3,6 @@ include dirname(__FILE__).'/config.php';
 require_once 'class.session_handler.php';
 include("functions.php");
 ?>
-<link type="text/css" href="css/budgetHistory.css" rel="stylesheet" />
 <div id="BudgetHistory">
 <?php
 

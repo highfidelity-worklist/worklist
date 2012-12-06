@@ -239,6 +239,7 @@
         <link type="text/css" href="css/review.css" rel="stylesheet" />
         <link type="text/css" href="css/favorites.css" rel="stylesheet" />
         <link type="text/css" href="css/budget.css" rel="stylesheet" />
+        <link type="text/css" href="css/budgetHistory.css" rel="stylesheet" />
         <link type="text/css" href="css/jquery.combobox.css" rel="stylesheet" />
         <link href="css/LVstyles.css" rel="stylesheet" type="text/css">
         <link media="all" type="text/css" href="css/jquery-ui.css" rel="stylesheet" />
