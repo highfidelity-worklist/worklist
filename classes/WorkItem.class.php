@@ -1016,9 +1016,11 @@ class WorkItem {
 
             $creator_fee = 0;
             $creator_fee_desc = 'Creator';
+            $creator_fee_added = false;
 
             $runner_fee = 0;
             $runner_fee_desc = 'Runner';
+            $runner_fee_added = false;
 
             $accepted_bid_amount = $bid_info['bid_amount'];
 
@@ -1026,12 +1028,32 @@ class WorkItem {
             $is_expense = '';
             $is_rewarder = '';
 
+            $fees = $this->getFees($this->getId());
+
+            foreach ($fees as $fee) {
+                // find the accepted bid amount
+                if ($fee['desc'] == 'Accepted Bid') {
+                    $accepted_bid_amount = $fee['amount'];
+                }
+
+                if (preg_match($reviewer_fee_desc, $fee['desc'])) {
+                    $reviewer_fee_added = true;
+                }
+                
+                if ($fee['desc'] == $creator_fee_desc) {
+                    $creator_fee_added = true;
+                }
+                if ($fee['desc'] == $runner_fee_desc) {
+                    $runner_fee_added = true;
+                }                
+            }
+
             // get project creator role settings, if not available, no fee is added
             // and will need to be added manually if applicable
             $project = new Project();
             $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Creator'");
 
-            if (count($project_roles) != 0) {
+            if (count($project_roles) != 0 && ! $creator_fee_added) {
                 $creator_role = $project_roles[0];
                 if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
 
@@ -1057,7 +1079,7 @@ class WorkItem {
             }
 
             $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Runner'");
-            if (count($project_roles) != 0) {
+            if (count($project_roles) != 0 && ! $runner_fee_added) {
                     
                 error_log("[FEES] we have a role for runner");
                 $runner_role = $project_roles[0];
