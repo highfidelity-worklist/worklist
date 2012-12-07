@@ -165,7 +165,7 @@
 
                 <div class='reviewTitle title-label-big' >
                     Reviews
-                <?php if ($reqUserId > 0): ?>
+                <?php if ($reqUserId > 0 && $_GET['id'] <> $_SESSION['userid']): ?>
                 <div class='reviewAddLink'>
                     <a href='javascript:;'>Add your review</a>
                 </div>
