@@ -96,6 +96,8 @@ if ($sfilter) {
                      } else {
                          $where .= "status = '$val' OR ";
                      }
+                } else if ($val == 'Review') {
+                    $where .= "status IN ('Needs Review', 'Reviewed', 'In Review', 'Review') OR ";
                 } else if ($val != 'ALL') {
                     /**
                      * if filtering by any status different than ALL and (DRAFT, BIDDING) it 
@@ -232,30 +234,37 @@ if($query!='' && $query!='Search...') {
 $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
 //mega-query with total fees and latest bid for the worklist item
-$qsel  = "SELECT `".WORKLIST."`.`id`, `summary`, `status`,
-          `bug_job_id` AS `bug_job_id`,
-          `cu`.`nickname` AS `creator_nickname`,
-          `ru`.`nickname` AS `runner_nickname`,
-          `mu`.`nickname` AS `mechanic_nickname`,
-          `proj`.`name` AS `project_name`,
-          `worklist`.`project_id` AS `project_id`,
-          TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
-          SUM(`" . FEES . "`.amount) AS `total_fees`,
-          (SELECT `bid_amount`
-              FROM `" . BIDS . "`
-              WHERE `withdrawn` = 0
-              AND (`bid_expires` > NOW()
-              OR `bid_expires` = '0000-00-00 00:00:00')
-              AND `worklist_id` = `worklist`.`id`
-              ORDER BY bid_created DESC LIMIT 1) `bid_amount`,
+$qsel  = "
+    SELECT `".WORKLIST."`.`id`, `summary`, 
+    (CASE
+        WHEN status = 'Review' AND code_review_started = 0 THEN 'Needs Review'
+        WHEN status = 'Review' AND code_review_started = 1 AND code_review_completed = 0 THEN 'In Review'
+        WHEN status = 'Review' AND code_review_completed = 1 THEN 'Reviewed'
+        WHEN status != 'Review' THEN status
+    END) `status`,
+    `bug_job_id` AS `bug_job_id`,
+    `cu`.`nickname` AS `creator_nickname`,
+    `ru`.`nickname` AS `runner_nickname`,
+    `mu`.`nickname` AS `mechanic_nickname`,
+    `proj`.`name` AS `project_name`,
+    `worklist`.`project_id` AS `project_id`,
+    TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
+    SUM(`" . FEES . "`.amount) AS `total_fees`,
+    (SELECT `bid_amount`
+        FROM `" . BIDS . "`
+        WHERE `withdrawn` = 0
+        AND (`bid_expires` > NOW()
+        OR `bid_expires` = '0000-00-00 00:00:00')
+        AND `worklist_id` = `worklist`.`id`
+        ORDER BY bid_created DESC LIMIT 1) `bid_amount`,
 
-          `creator_id`, `runner_id`, `mechanic_id`,
-          (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
-           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) AND (NOW() < `".BIDS."`.`bid_expires` OR `bid_expires`='0000-00-00 00:00:00') LIMIT 1) as bid_count,
-          TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
-           WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
-           (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
-           WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
+    `creator_id`, `runner_id`, `mechanic_id`,
+    (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."`
+    WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND (`".BIDS."`.`withdrawn` = 0) AND (NOW() < `".BIDS."`.`bid_expires` OR `bid_expires`='0000-00-00 00:00:00') LIMIT 1) as bid_count,
+    TIMESTAMPDIFF(SECOND,NOW(), (SELECT `".BIDS."`.`bid_done` FROM `".BIDS."`
+    WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`accepted` = 1 LIMIT 1)) as bid_done,
+    (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
+    WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
 
 // Highlight jobs I bid on in a different color
 // 14-JUN-2010 <Tom>
