@@ -949,7 +949,7 @@ function checkLogin() {
             if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
                 $url = utf8_encode($url);
             }
-            return "<a href=\"" . htmlentities($url, ENT_QUOTES, "UTF-8") . "\">" . htmlspecialchars($url) . "</a>";
+            return '<a href="http://' . htmlentities($url, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($url) . '</a>';
         }
 
         $class = '';
