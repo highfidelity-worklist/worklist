@@ -246,7 +246,7 @@ class AjaxResponse
                 // use old way if json argument not defined for backwards compatibility
                 if (empty($_POST["json"])) {
                     $html = $system_html = '';
-                    if ($count > 0) $html = $this->chat->formatEntries(array_reverse($entries),null,false);
+                    if ($count > 0) $html = $this->chat->formatEntries($entries,null,false);
                     $data = array('html'=>$html, 'system_html' => null);
                 } else {
                         // new improved json way!

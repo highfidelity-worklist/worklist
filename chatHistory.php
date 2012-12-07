@@ -191,4 +191,5 @@ curl_close($ch);
 <a name="realBottomArea" id="realBottomArea"></a>
 <script>
   $('#journalView').scrollTop(99999);
+    makeWorkitemTooltip('.worklist-item');
 </script>

@@ -255,6 +255,7 @@
         <script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
         <script type="text/javascript" src="js/jquery.combobox.js"></script>
         <script type="text/javascript" src="js/paginator.js"></script>
+        <script type="text/javascript" src="js/worklist.js"></script>
         <script type="text/javascript">
         // This global variable user_id should not be used anymore, replace it by userInfo.user_id .
         // All the variables should be included in the object userInfo
