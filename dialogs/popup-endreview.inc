@@ -43,8 +43,9 @@
                             if (data.success) {
                                 var buttonElement = $('.endCr');
                                 buttonElement.remove();
-                                var startcrButton = '<input class="iToolTip cR" type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"/>';
-                                $('.addFee').before(startcrButton);
+                                var startcrButton = '<input class="iToolTip cR smbutton" type="submit" value="Start Code Review" 
+                                    onclick="return CheckCodeReviewStatus();" alt="">';
+                                $('#review-pointer').before(startcrButton);
                                 $('#popup-endreview').dialog('close');
                                 MapToolTips();
                             }
