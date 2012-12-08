@@ -265,6 +265,28 @@ replacement data:
     
 'commit-howto' => array(
     
+),
+
+'project-runner-added' => array(
+    'subject' => 'Added as a Runner to Project',
+    'body' =>
+        '<p>Hi {nickname}</p>
+        <p>Congrats! You have been granted Runner rights for the following project:<br />
+        <a href="{projectUrl}">{projectName}</a><br />
+        Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
+        <p>Please contact the project founder with any questions.</p>
+        <p>- Worklist.net</p>'
+),
+
+'project-runner-removed' => array(
+    'subject' => 'Runner rights removed for Project',
+    'body' => 
+        '<p>Hi {nickname}</p>
+        <p>Your Runner rights have been removed for the following project:<br />
+        <a href="{projectUrl}">{projectName}</a><br />
+        Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
+        <p>Please contact the project founder with any questions.</p>
+        <p>- Worklist.net</p>'
 )
 
 );

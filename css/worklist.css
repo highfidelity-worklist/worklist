@@ -809,11 +809,6 @@ td.textAlignReport {
     padding: 0px 0px 3px 0px;
 }
 
-.buttonContainer {
-    margin: 4px 0;
-    text-align:right;
-}
-
 .buttonContainer-save {
     margin:15px 0px 20px -8px;
 }
@@ -832,6 +827,7 @@ td.textAlignReport {
 .projectStatistics,
 .runnerStatistics,
 .projectWorkers,
+.projectRunners,
 .runnerProjects,
 .runnerWorkers {
     -moz-border-radius: 6px;
@@ -869,11 +865,6 @@ table.tablesorter thead tr .headerSortUp {
     background-image: url(../images/asc.gif);
 }
 
-.projectWorkers {
-    width: 398px;
-    margin-left: -29px;
-}
-
 .runnerProjects,
 .runnerWorkers {
     width: 340px;
@@ -891,7 +882,8 @@ table.tablesorter thead tr .headerSortUp {
     margin-top: -100px;
 }
 
-.table-workers tr {
+.table-workers tr,
+.table-proj-runners {
     font-weight: normal;
     font-size: 12px !important;
 }
@@ -1410,4 +1402,13 @@ input.button-disabled ,
     float: left; 
     font-family: arial;
     color: #666666;
+}
+
+.remove-runner-nickname {
+    width: 150px;
+}
+
+.remove-runner-label {
+    width: 30px;
+    text-align: center;
 }

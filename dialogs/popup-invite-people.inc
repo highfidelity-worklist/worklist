@@ -14,7 +14,7 @@
         });
         </script>
         <div class="clear">
-            <input type="submit" name="invite-people" value="Invite" class="bottonAtRight" />
+            <input type="submit" name="invite-people" value="Invite" class="bottonContainer" />
         </div>
     </form>
     <?php endif;?>

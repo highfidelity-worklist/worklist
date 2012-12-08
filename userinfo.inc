@@ -157,8 +157,7 @@
                     
                 </div><!-- end of common info div-->
                 
-                <div id="sent-notify"></div>
-            
+                            
                 <p class = "info-label title-label-medium">Strengths<br />
                     <span id="info-skills"><?php echo $user -> getSkills(); ?>&nbsp;</span>
                 </p>

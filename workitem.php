@@ -62,6 +62,12 @@ if($workitem_project->getOwnerId() == $_SESSION['userid']){
 	$is_project_founder = true;
 }
 
+//used for is_project_runner rights
+$is_project_runner = false;
+if($workitem->getIsRelRunner() == 1){
+    $is_project_runner = true;
+}
+
 $redirectToDefaultView = false;
 $redirectToWorklistView = false;
 $promptForReviewUrl = true;
@@ -206,8 +212,7 @@ if ($action =='save_workitem') {
     }
 
     // status
-    if ($is_runner
-        || $is_project_founder
+    if ($is_project_runner
         || $userId == $workitem->getRunnerId()
         || (in_array($status, $statusListMechanic))) {
 
@@ -459,7 +464,7 @@ if($action == 'cancel_codereview') {
 }
 
 if($action =='save-review-url') {
-    if(!($is_runner || $is_project_founder ||
+    if(!($is_project_runner || 
     ($mechanic_id == $user_id) &&
     ($worklist['status'] != 'Done'))) {
         error_log("Input forgery detected for user $userId: attempting to $action.");
@@ -791,9 +796,9 @@ if ($action == 'accept_bid') {
             $redirectToDefaultView = true;
         }
         // only runners can accept bids        
-        if (($is_runner || $workitem->getRunnerId() == $_SESSION['userid'] || $is_project_founder) &&
-            !$workitem->hasAcceptedBids() &&
-            $workitem->getStatus() == "Bidding" || $workitem->getStatus() == "SuggestedWithBid") {
+        if (($is_project_runner || $workitem->getRunnerId() == $_SESSION['userid'] || ($user->getIs_admin() == 1
+             && $is_runner) && !$workitem->hasAcceptedBids() &&
+            $workitem->getStatus() == "Bidding" || $workitem->getStatus() == "SuggestedWithBid")) {
             // query to get a list of bids (to use the current class rather than breaking uniformity)
             // I could have done this quite easier with just 1 query and an if statement..
             $bids = (array) $workitem->getBids($workitem->getId());
@@ -851,7 +856,7 @@ if ($action == 'accept_bid') {
                 $redirectToDefaultView = true;
             }
         } else {
-            if ($is_runner || $workitem->getRunnerId() == $_SESSION['userid'] || $is_project_founder) {
+            if ($workitem->getIsRelRunner() || $workitem->getRunnerId() == $_SESSION['userid']) {
                 if ($workitem->hasAcceptedBids()) {
                     $_SESSION['workitem_error'] = "Failed to accept bid on task with an accepted bid!";
                 } else {
@@ -879,9 +884,8 @@ if ($action=='accept_multiple_bid') {
         }
         if (count($bid_id) > 0) {
         //only runners can accept bids
-            if (($is_runner ||
-                    $workitem->getRunnerId() == getSessionUserId() ||
-            	      $is_project_founder
+            if (($is_project_runner || $workitem->getRunnerId() == getSessionUserId() ||
+            	 ($user->getIs_admin() == 1 && $is_runner)
                 ) &&
                 !$workitem->hasAcceptedBids() &&
                 (
@@ -1042,7 +1046,7 @@ if(!empty($bids) && is_array($bids)) {
         }
 
         if (!($user->getId() == $bid['bidder_id'] 
-         || $user->isRunnerOfWorkitem($workitem) || $is_project_founder ||($worklist['status'] == 'SuggestedWithBid' && $is_runner)))  {
+         || $user->isRunnerOfWorkitem($workitem) || ($worklist['status'] == 'SuggestedWithBid' && $workitem->getIsRelRunner())))  {
             if ($user->getIs_admin() == 0) {
                 $bid['nickname'] = '*name hidden*';
                 $bid['bid_amount'] = '***';
@@ -1167,7 +1171,7 @@ function changeStatus($workitem, $newStatus, $user) {
 
     $allowable = array("Draft", "Suggested", "SuggestedWithBid", "Review", "Functional", "Pass", "Completed");
 
-    if ($user->getIs_runner() || $is_project_founder) {
+    if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && ($is_runner))) {
         if($newStatus == 'Bidding' && in_array($workitem->getStatus(), $allowable)) {
             $workitem->setRunnerId($user->getId());
         }

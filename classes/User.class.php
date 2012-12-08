@@ -1392,10 +1392,10 @@ class User {
         return ((!empty($userlist)) ? $userlist : false);
     }
     
-    public static function getRunnerlist()
-    {
+    public static function getRunnerlist() {
         $runnerlist = array();
-        $sql = 'SELECT `' . USERS . '`.`id` FROM `' . USERS . '` WHERE `' . USERS . '`.`is_runner` = 1;';
+        $sql = 'SELECT `' . USERS . '`.`id` FROM `' . USERS . '` WHERE `' . USERS . '`.`is_runner` = 1
+                OR `' . USERS . '`.`id` IN (SELECT `runner_id` FROM `' . PROJECT_RUNNERS . '`)';
         $result = mysql_query($sql);
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $user = new User();
@@ -1403,7 +1403,18 @@ class User {
         }
         return ((!empty($runnerlist)) ? $runnerlist : false);
     }
-
+    
+    public static function getRelRunnerlist($project_id) {
+        $relrunnerlist = array();
+        $sql = 'SELECT `runner_id` FROM `' . PROJECT_RUNNERS . '` WHERE `project_id` = ' . $project_id . ' ';
+        $result = mysql_query($sql);
+        while ($result && ($row = mysql_fetch_assoc($result))) {
+            $user = new User();
+            $relrunnerlist[] = $user->findUserById($row['id']);
+        }
+        return ((!empty($relrunnerlist)) ? $relrunnerlist : false);
+    }
+   
     public static function getPayerList() {
         $payerlist = array();
         $sql = 'SELECT `' . USERS . '`.`id` FROM `' . USERS . '` WHERE `' . USERS . '`.`is_payer` = 1;';

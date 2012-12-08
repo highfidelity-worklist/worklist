@@ -724,7 +724,22 @@ class WorkItem {
             return null;
         }
     }
-
+    
+    public function getIsRelRunner() {
+        $query = "SELECT r.`runner_id` as relrunner
+                  FROM `" . PROJECT_RUNNERS . "` as r 
+                  WHERE r.`project_id` = " . $this->getProjectId() . "
+                  AND r.`runner_id` = " . $_SESSION['userid'] . " ";
+        $result = mysql_query($query);
+        
+        if ($result && mysql_num_rows($result) > 0) {
+    
+            return true;
+        }
+        return false;
+    
+    }
+        
     public function getFees($worklist_id)
     {
         $query = "SELECT fees.`id`, fees.`amount`, u.`nickname`, fees.`desc`,fees.`user_id`, DATE_FORMAT(fees.`date`, '%m/%d/%Y') as date, fees.`paid`, fees.`bid_notes`

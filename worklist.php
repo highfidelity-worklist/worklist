@@ -34,6 +34,7 @@ if ($userId > 0) {
 
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
+$is_admin = !empty($_SESSION['is_admin']) ? 1 : 0;
 
 // are we on a project page? see .htaccess rewrite
 $projectName = !empty($_REQUEST['project']) ? mysql_real_escape_string($_REQUEST['project']) : 0;
@@ -48,7 +49,10 @@ if ($projectName) {
     //get the project owner
     $project_user = new User();
     $project_user->findUserById($inProject->getOwnerId());
-
+    
+    $is_owner = $inProject->isOwner($user->getId());
+    $runners = $inProject->getRunners();
+    
     // save changes to project
     if (isset($_REQUEST['save_internal']) && $userId > 0 && $user->getIs_admin()) {
         $inProject->setInternal($_REQUEST['internal']);
@@ -64,7 +68,7 @@ if ($projectName) {
             ));
         }
         exit();
-    } else if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
+    } else if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner)) {
         $inProject->setDescription($_REQUEST['description']);
         $inProject->setWebsite($_REQUEST['website']);
         $inProject->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
@@ -118,7 +122,7 @@ if (is_object($inProject)) {
     }
 }
 // save,edit,delete roles <mikewasmie 16-jun-2011>
-if (is_object($inProject) && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
+if (is_object($inProject) && ( $is_runner || $is_payer || $is_owner)) {
     if ( isset($_POST['save_role'])) {
         $args = array('role_title', 'percentage', 'min_amount');
         foreach ($args as $arg) {
@@ -225,7 +229,7 @@ if (!empty($journal_message)) {
 }
 
 // Load roles table id owner <mikewasmike 15-jun 2011>
-if(is_object($inProject) && ( $is_runner || $is_payer || $inProject->isOwner($userId))){
+if(is_object($inProject) && ( $is_runner || $is_payer || $is_owner)){
     $roles = $inProject->getRoles($inProject->getProjectId());
 }
 
@@ -782,8 +786,12 @@ require_once('opengraphmeta.php');
             create: function(event, ui) {
                 if(inProject.length > 0) {
                     var intervalId = setInterval(function() {
-                        if($("#workers tr").length) {
+                        if($('#workers tr').length) {
                             $('#workers').paginate(20, 500);
+                            clearInterval(intervalId);
+                        }
+                        if($('#runners tr').length) {
+                            $('#runners').paginate(20, 500);
                             clearInterval(intervalId);
                         }
                     }, 2000);
@@ -875,6 +883,20 @@ require_once('opengraphmeta.php');
 
         GetWorklist(<?php echo $page?>, false, true);
 
+        $('#popup-pingtask').dialog({
+            autoOpen: false,
+            width: 400,
+            height: 'auto',
+            resizable: false,
+            position: [ 'top' ],
+            show: 'fade',
+            hide: 'fade',
+            close: function() {
+                $('#ping-msg').val('').css('height', '50px');
+            }
+        });
+        $('#ping-msg').autogrow();
+
         $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
         reattachAutoUpdate();
 
@@ -942,7 +964,35 @@ require_once('opengraphmeta.php');
                 $('#popup-edit-role').dialog('open');
         });
 
-
+        //popup for adding Project Runner
+        $('#add-runner').dialog({
+            autoOpen: false,
+            resizable: false,
+            modal: true,
+            show: 'fade',
+            hide: 'fade',
+            width: 350,
+            height: 180
+        });
+        
+        $('#addrunner-link').click(function() {
+            $('#add-runner').dialog('open');
+        });
+        //popup for removing Project Runner
+        $('#remove-runner').dialog({
+            autoOpen: false,
+            resizable: false,
+            modal: true,
+            show: 'fade',
+            hide: 'fade',
+            width: 350,
+            height: 450,
+        });
+        
+        $('#removerunner-link').click(function() {
+            $('#remove-runner').dialog('open');
+        });
+        
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         /* function commented for remove tooltip */
         //setTimeout(MapToolTips, 800);
@@ -988,6 +1038,39 @@ require_once('opengraphmeta.php');
 
     function showAddRoleForm() {
         $('#popup-addrole').dialog('open');
+        return false;
+    }
+
+    function showAddRunnerForm() {
+        $('#add-runner').dialog('open');
+        return false;
+    }
+
+    function closeAddRunnerForm() {
+        $('#add-runner').dialog('close');
+        return false;
+    }
+
+    function showRemoveRunnerForm() {
+        $('#remove-runner').dialog('open');
+        return false;
+    }   
+
+    function closeRemoveRunnerForm() {
+        $('#remove-runner').dialog('close');
+        return false;
+    }   
+
+    function showPingRunnerForm(runner_id) {
+        $('#popup-pingtask').dialog('open');
+        $('#popup-pingtask').dialog('option', 'title', 'Ping Runner');
+        $('#popup-pingtask').data('userid', runner_id);
+        return false;
+    }
+    
+    function closePingRunnerForm(runner_id) {
+        $('#popup-pingtask').dialog('close');
+        $('#popup-form-edit').data('runner', 0);
         return false;
     }
 
@@ -1081,31 +1164,40 @@ require_once('opengraphmeta.php');
 var projectid = <?php echo !empty($project_id) ? $project_id : "''"; ?>;
 var imageArray = new Array();
 var documentsArray = new Array();
-(function($) {
-
-    var workerUpdate = function() {
-        $('#workers tbody').html("Loading ...");
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                projectid: projectid,
-                userid: user_id,
-                action: 'getDevelopersForProject'
-            },
-            dataType: 'json',
-            success: function(data) {
-                if (data.success) {
-                    var files = $('#projectWorkersBody').parseTemplate(data.data);
-                    $('#workers tbody').html(files);
-                    // sort the file upload accordion
-
+$(function($) {
+    // get the project workers
+    $('#workers tbody').html('Loading ...');
+    $.ajax({
+        type: 'post',
+        url: 'jsonserver.php',
+        data: {
+            projectid: projectid,
+            userid: user_id,
+            action: 'getDevelopersForProject'
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.success) {
+                developers = data.data.developers;
+                var html = '';
+                if (developers.length > 0) {
+                    for(var i=0; i < developers.length; i++) {
+                        var developer = developers[i];
+                        html +=
+                            '<tr class="row-developer-list-live">' +
+                            '    <td class="developer"><a href="#" onclick="javascript:showUserInfo(' + developer.id + ');">' + developer.nickname  + '</a></td>' +
+                            '    <td class="jobCount">' +  developer.totalJobCount + '</td>' +
+                            '    <td>' + developer.lastActivity + '</td>' +
+                            '    <td>' + developer.totalEarnings + '</td>' +
+                            '</tr>';
+                    }
                 }
+                $('#workers tbody').html(html);
             }
-        });
-    };
+        }
+    });
+    
     // get the project files
-
     $.ajax({
         type: 'post',
         url: 'jsonserver.php',
@@ -1125,16 +1217,8 @@ var documentsArray = new Array();
                 for (var i=0; i < documents.length; i++) {
                     documentsArray.push(documents[i].fileid);
                 }
-                var files = $('#projectuploadedFiles').parseTemplate(data.data);
-                $('#uploadPanel').append(files);
-                // sort the file upload accordion
-                $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
-                $('#accordion').bind( "accordionchange", function(event, ui) {
-                    if (ui.options.active == 0) {
-                        workerUpdate();
-                    }
-                });
-
+                var files = $('#projectFilesBody').parseTemplate(data.data);
+                $('#uploadedFiles').append(files);
             }
         }
     });
@@ -1157,7 +1241,147 @@ var documentsArray = new Array();
             }
         }
     });
-})(jQuery);
+
+    // Get the project runners
+    getProjectRunners = function() {
+        $('#runners tbody').html('Loading ...');
+        $('#remove-runner tbody').html('Loading ...');
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                projectid: projectid,
+                action: 'getRunnersForProject'
+            },
+            dataType: 'json',
+            success: function(data) {
+                $('#runners tbody').html('');
+                $('#remove-runner tbody').html('');
+                if (data.success) {
+                    runners = data.data.runners;
+                    var html = '';
+                    if (runners.length > 0) {
+                        for(var i=0; i < runners.length; i++) {
+                            var runner = runners[i];
+                            html =
+                                '<tr class="row-runner-list-live">' +
+                                    '<td class="runner"><a href="#" onclick="javascript:showUserInfo(' + runner.id + ');">' + runner.nickname + '</a></td>' +
+                                    '<td class="jobCount">' + runner.totalJobCount + '</td>' +
+                                    '<td>' + (runner.lastActivity ? runner.lastActivity : '') + '</td>' +
+                                    '<td><input type="submit" value="Ping" onClick="return showPingRunnerForm(' + runner.id + ');" /></td>' +
+                                '</tr>'
+                            $('#runners tbody').append(html);
+                            
+                            if (! runner.owner) {
+                                html = 
+                                    '<tr>' +
+                                        '<td class="remove-runner-nickname" onclick="showUserInfo(' + runner.id + '">' +
+                                              runner.nickname +
+                                        '</td>' +
+                                        '<td class="remove-runner-label">' + 
+                                            '<input type="checkbox" name="runner' + runner.id + '" />' +
+                                        '</td>'
+                                    '</tr>';
+                                $('#remove-runner tbody').append(html); 
+                            }
+                        }
+                    }
+                    
+                }
+            }
+        });
+    }
+    getProjectRunners();
+    
+    $('.add-runner').autocomplete('getusers.php', {
+        multiple: false,
+        extraParams: { nnonly: 1 }
+    });
+    
+    $('#addRunner-form').submit(function(event) {
+        openNotifyOverlay('<span>Adding runner to your project...</span>', false);
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                projectid: projectid,
+                nickname: $('.add-runner').val(),
+                action: 'addRunnerToProject'
+            },
+            dataType: 'json',
+            success: function(data) {
+                $('.add-runner').val('');
+                closeNotifyOverlay();
+                openNotifyOverlay('<span>' + data.data + '<span>', true);
+                if (data.success) {
+                    getProjectRunners();
+                    closeAddRunnerForm();
+                }
+            },
+            error: function() {
+                closeNotifyOverlay();
+            }
+        });
+        
+        return false;
+    });
+
+    $('#removeRunner-form').submit(function(event) {
+        openNotifyOverlay(
+            '<span>Removing selected user(s) as Runner(s) for this project. ' +
+            'If this user has active jobs for which they are the Runner, you will need to ' +
+            'change the Runner status to an eligible Runner.</span>', true);
+        
+        var runners = '';
+        $('#remove-runner input[name^=runner]:checked').each(function() {
+            var runner = parseInt($(this).attr('name').substring(6));
+            if (runners.length) runners += ';';{
+            runners += '' + runner;
+            }
+        });
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                projectid: projectid,
+                runners: runners,
+                action: 'removeRunnersFromProject'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    getProjectRunners();
+                    closeRemoveRunnerForm();
+                }
+            },
+            error: function() {
+                closeNotifyOverlay();
+            }
+        });
+        
+        return false;
+    });
+    
+    $('#send-ping-btn').click(function(event) {
+        openNotifyOverlay('<span>Pinging runner...</span>', true);
+        $.ajax({
+            type: 'post',
+            url: 'pingtask.php',
+            data: {
+                userid: $('#popup-pingtask').data('userid'),
+                msg: $('#ping-msg').val(),
+                cc: $('#copy-me').is(':checked'),
+                journal: $('#echo-journal').is(':checked')
+            },
+            dataType: 'json',
+            success: function(data) {
+                closePingRunnerForm();
+            }
+        });
+        
+        return false;
+    });
+});
 </script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
 <?php
@@ -1180,24 +1404,33 @@ $meta_title =
      style="z-index: 9999"></div></div>
 
 <!-- js template for file uploads -->
-<?php require_once('dialogs/file-templates.inc'); ?>
-<!-- Popup for breakdown of fees-->
-<?php require_once('dialogs/popup-fees.inc'); ?>
-<!-- Popup for budget info -->
-<?php require_once('dialogs/budget-expanded.inc') ?>
-<!-- Popups for tables with jobs from quick links -->
-<?php require_once('dialogs/popups-userstats.inc'); ?>
-<!-- Popup for add role -->
-<?php include('dialogs/popup-addrole.inc') ?>
-<!-- Popup for viewing role -->
-<?php include('dialogs/popup-role-info.inc') ?>
-<!-- Popup for edit role -->
-<?php include('dialogs/popup-edit-role.inc') ?>
-<!-- Popup for TestFlight -->
-<?php include('dialogs/popup-testflight.inc') ?>
-<!-- Popup for transfered info -->
-<?php require_once('dialogs/budget-transfer.inc') ?>
-<?php
+<?php 
+    require_once('dialogs/file-templates.inc'); 
+    //Popup for breakdown of fees
+    require_once('dialogs/popup-fees.inc'); 
+    //Popup for budget info
+    require_once('dialogs/budget-expanded.inc'); 
+    //Popups for tables with jobs from quick links 
+    require_once('dialogs/popups-userstats.inc'); 
+    //Popup for add role 
+    include('dialogs/popup-addrole.inc'); 
+    //Popup for viewing role 
+    include('dialogs/popup-role-info.inc'); 
+    //Popup for edit role 
+    include('dialogs/popup-edit-role.inc'); 
+    //Popup for TestFlight -->
+    include('dialogs/popup-testflight.inc'); 
+ 
+    if (is_object($inProject)): 
+    //Popup for Adding Project Runner 
+    include('dialogs/popup-addrunner.inc'); 
+    //Popup for Removing Project Runner
+    include('dialogs/popup-removerunner.inc'); 
+    endif; 
+
+    //Popup for ping Runner
+    require_once('dialogs/popup-pingtask.inc');
+
     require_once('header.php');
     require_once('format.php');
 ?>
@@ -1217,15 +1450,15 @@ if(isset($_REQUEST['journal_query'])) {
 // show project information header
 if (is_object($inProject)) {
     $edit_mode = false;
-    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && ( $is_runner || $is_payer || $inProject->isOwner($userId))) {
+    if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && ( $is_runner || $is_payer || $is_owner)) {
         $edit_mode = true;
     }
 ?>
-<?php if (($is_runner || $inProject->isOwner($userId)) && $inProject->getTestFlightTeamToken()) : ?>
+<?php if (($is_runner || $is_owner) && $inProject->getTestFlightTeamToken()) : ?>
         <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
 <?php endif; ?>
         <div id="modeSwitch">
-<?php if ( $is_runner || $is_payer || $inProject->isOwner($userId)) : ?>
+<?php if ( $is_runner || $is_payer || $is_owner) : ?>
     <?php if ($edit_mode) : ?>
             <a href="?action=view">Switch to View Mode</a>
     <?php else: ?>
@@ -1359,7 +1592,7 @@ if (is_object($inProject)) {
 </div>
 <div class="projectRight">
 <!-- table for roles <mikewasmike 15-ju-2011>  -->
-<?php if ($inProject->isOwner($userId)) : ?>
+<?php if ($is_owner) : ?>
             <div id="for_view">
                <div class="payments">
                     <div id="payment-panel">
@@ -1396,7 +1629,7 @@ if (is_object($inProject)) {
                 </div>
             </div>
 <?php endif; ?>
-<?php if ($is_runner || $is_payer || $inProject->isOwner($userId)) : ?>
+<?php if ($is_runner || $is_payer || $is_owner) : ?>
             <div id="for_view">
                 <div class="roles">
                     <div id="roles-panel">
@@ -1441,56 +1674,68 @@ if (is_object($inProject)) {
 <!--End of roles table-->
 
 <div id="uploadPanel">
-    <script type="text/html" id="projectWorkersBody">
-                <# if (developers.length > 0) {
-                    for(var i=0; i < developers.length; i++) {
-                    var developer = developers[i];
-                    #>
-                    <tr class="row-developer-list-live">
-                        <td class="developer"><a href="#" onclick="javascript:showUserInfo(<#= developer.id #>);"><#= developer.nickname #></a></td>
-                        <td class="jobCount"><#= developer.totalJobCount #></td>
-                        <td><#= developer.lastActivity #></td>
-                        <td><#= developer.totalEarnings #></td>
-                    </tr>
-                    <# }
-                } #>
-    </script>
-    <script type="text/html" id="projectuploadedFiles">
-        <div id="accordion">
-            <h3><a href="#">Who has worked on Project</a><h3>
-        <div class="projectWorkers" >
-            <table width="100%" class="table-workers" id="workers">
-                <caption class="table-caption" >
-                    <br/>
-                </caption>
-                <thead>
-                    <tr class="table-hdng">
-                        <th>Who</th>
-                        <th># of Jobs</th>
-                        <th>Last Activity</th>
-                        <th>Total Earned</th>
-                    </tr>
-                </thead>
-                <tbody class="developerContent">
-                </tbody>
-            </table>
-        </div>
-        <?php if (!$edit_mode) { ?>
-            <h3><a href="#">Allow code reviews from:</a></h3>
-            <div id="codeReviewRightsContainer">
-                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAnyone() > 0) ? 'checked="checked"' : '' ; ?> />Anyone<br/>
-                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrFav() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is trusted by more than [3] people<br/>
-                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrAdmin() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is trusted by the project admin<br/>
-                <input disabled type="checkbox" value="1" <?php echo ($inProject->getCrRunner() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is trusted by the job manager<br/>
+    <h3><a href="javascript:"></a><h3>
+    <div class="projectRunners" >
+        <table width="100%" class="table-proj-runners" id="runners">
+            <caption class="table-caption" >
+                <br/>
+                <b>Project Runners</b>
+            </caption>
+            <thead>
+                <tr class="table-hdng">
+                    <th>Who</th>
+                    <th># of Jobs</th>
+                    <th>Last Activity</th>
+                    <th>Contact Runner</th>
+                </tr>
+            </thead>
+            <tbody class="runnerContent">
+            </tbody>
+        </table>
+        <?php if (($user->getIs_admin() == 1) || $is_owner) : ?>
+            <div class="buttonContainer">
+                <input type="submit" id="addrunner-link" value="Add" onClick="return showAddRunnerForm();" />
+                <input type="submit" id="removerunner-link" value="Remove" onClick="return showRemoveRunnerForm();" />
             </div>
-        <?php } ?>
-        <?php require('dialogs/file-accordion.inc'); ?>
+        <?php endif; ?>
+    </div>
+    <h3><a href="javascript:"></a><h3>
+    <div class="projectWorkers" >
+        <table width="100%" class="table-workers" id="workers">
+            <caption class="table-caption" >
+                <br/>
+                <b>Who has Worked on Project</b>
+            </caption>
+            <thead>
+                <tr class="table-hdng">
+                    <th>Who</th>
+                    <th># of Jobs</th>
+                    <th>Last Activity</th>
+                    <th>Total Earned</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <?php if (!$edit_mode) { ?>
+        <h3><a href="#">Allow code reviews from:</a></h3>
+        <div id="codeReviewRightsContainer">
+            <input type="checkbox" disabled="disabled" value="1" <?php echo ($inProject->getCrAnyone() > 0) ? 'checked="checked"' : '' ; ?> />Anyone<br/>
+            <input type="checkbox" disabled="disabled" value="1" <?php echo ($inProject->getCrFav() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is trusted by more than [3] people<br/>
+            <input type="checkbox" disabled="disabled" value="1" <?php echo ($inProject->getCrAdmin() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is trusted by the project admin<br/>
+            <input type="checkbox" disabled="disabled" value="1" <?php echo ($inProject->getCrRunner() > 0) ? 'checked="checked"' : '' ; ?> />Anyone who is trusted by the job manager<br/>
         </div>
-        <div class="fileUploadButton">
-            Attach new files
-        </div>
+    <?php } ?>
+    <div id="uploadedFiles">
+        <script type="text/html" id="projectFilesBody">
+            <?php require('dialogs/file-accordion.inc'); ?>
+        </script>
+    </div>
+    <div class="fileUploadButton">
+        Attach new files
+    </div>
     <div class="uploadnotice"></div>
-    </script>
 </div>
 </div>
 <div class="clear">&nbsp;</div>

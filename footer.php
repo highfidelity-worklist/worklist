@@ -87,6 +87,8 @@ require_once ("functions.php");
 <?php if (! isset($inFeedlist) || ($inFeedlist === false)): ?>
     <!-- Popup for editing/adding  a work item -->
     <?php require_once('dialogs/popup-edit.inc'); ?>
+     <!-- Popup for openNotifyOverlay() -->
+     <div id="sent-notify"></div>
 <?php endif ?>
 
 <?php require_once('dialogs/footer-analytics.inc'); ?>

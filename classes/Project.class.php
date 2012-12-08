@@ -380,6 +380,7 @@ class Project {
             "'" . intval($this->getInternal()) . "')";
         $rt = mysql_query($query);
         $project_id = mysql_insert_id();
+        $this->setProjectId($project_id);
                 
         //for the project added insert 3 pre-populated roles with percentages and minimum amounts <joanne>
         $query = "INSERT INTO ".ROLES." (project_id, role_title, percentage, min_amount)
@@ -388,7 +389,10 @@ class Project {
             ($project_id,'Runner','25.00','20.00'),
             ($project_id,'Reviewer','10.00','5.00')";
         
-        $rt = mysql_query($query);
+        $query = "INSERT INTO " . PROJECT_RUNNERS . " (project_id, runner_id)
+            VALUES 
+            ($project_id, ' " . mysql_real_escape_string($this->getOwnerId()) . " ')";
+        $rt = mysql_query($query);    
         if($rt) {
             return 1;
         }
@@ -433,9 +437,9 @@ class Project {
         }
     }
 
-/**
-    Return an array of all projects containing all fields
-**/    
+    /**
+        Return an array of all projects containing all fields
+    **/    
     public function getProjects($active = false, $selections = array()) {
     
         $where = ' ';
@@ -503,9 +507,9 @@ class Project {
         return false;
     }
 
-/**
- *  Return an array of repositories
- */
+    /**
+     *  Return an array of repositories
+     */
     public function getRepositoryList() {
     
         $query = "
@@ -525,9 +529,9 @@ class Project {
         return false;
     }
 
-/**
- * Build a project URL based on project_id
- */
+    /**
+     * Build a project URL based on project_id
+     */
     public function getProjectUrl($project_id) {
         $query = "SELECT * FROM `".PROJECTS."` WHERE `project_id`=". $project_id;
         $result = mysql_query($query);
@@ -547,9 +551,9 @@ class Project {
         }
     }
 
-/**
- * Return project_id based on repository name
- */
+    /**
+     * Return project_id based on repository name
+     */
     public function getIdFromRepo($repo) {
         $query = "SELECT `project_id` FROM `".PROJECTS."` WHERE `repository`='".$repo."'";
         $result = mysql_query($query);
@@ -562,17 +566,20 @@ class Project {
         }
     }
 
-/**
-  Determine if the given user_id owns the project
-*/
+    /**
+      Determine if the given user_id owns the project
+    */
     public function isOwner($user_id = false) {
-        if ($user_id == $this->getOwnerId()) {
-            return true;
-        }
-        
-        return false;
+        return $user_id == $this->getOwnerId();
     }
 
+    /**
+      Determine if the given user_id is a project runner
+    */
+    public function isProjectRunner($user_id = false) {
+        return array_key_exists($user_id, $this->getRunners());
+    }
+    
     /**
      * new function for getting roles for the project <mikewasmike 15-JUN-2011>
      * @param int $project_id
@@ -595,41 +602,116 @@ class Project {
         }
     }
     
-   /**
+    /**
      * new function for adding roles in the project <mikewasmike 15-JUN-2011>
      * @param int $project_id
      * @param varchar $role_title
      * @param decimal $percentage
      * @param decimal $min_amount
      * @return int|null
-    */
+     */
     public function addRole($project_id,$role_title,$percentage,$min_amount){
         $query = "INSERT INTO `".ROLES."` (id,`project_id`,`role_title`,`percentage`,`min_amount`)  VALUES(NULL,'$project_id','$role_title','$percentage','$min_amount')";
         return mysql_query($query) ? mysql_insert_id() : null;
     }
     
-   /**
+    /**
      * new function for editing roles in the project <mikewasmike 15-JUN-2011>
      * @param int $role_id
      * @param varchar $role_title
      * @param decimal $percentage
      * @param decimal $min_amount
      * @return 1|0
-    */
+     */
     public function editRole($role_id,$role_title,$percentage,$min_amount){
         $query = "UPDATE `".ROLES."` SET `role_title`='$role_title',`percentage`='$percentage',`min_amount`='$min_amount' WHERE `id`={$role_id}";
         return mysql_query($query) ? 1 : 0;
     }
     
-   /**
+    /**
      * new function for deleting roles in the project <mikewasmike 15-JUN-2011>
      * @param int $role_id
      * @return 1|0
-    */
+     */
     public function deleteRole($role_id){
         $query = "DELETE FROM `".ROLES."`  WHERE `id`={$role_id}";
+    }  
+
+    /**
+     * Add Runner to Project
+     */
+    public function addRunner($runner_id) {
+        $project_id = $this->getProjectId();
+        $runner_id = (int) $runner_id;
+        $query = 
+            "INSERT INTO `" . PROJECT_RUNNERS . "` (project_id, runner_id) " .
+            "VALUES (" . $project_id . ", " . $runner_id . ")";
         return mysql_query($query) ? 1 : 0;
     }
+    
+    /**
+     * Remove Runner from Project
+     */
+    public function deleteRunner($runner_id) {
+        $runner_id = (int) $runner_id;
+        if ($runner_id == $this->getOwnerId()) {
+            return false;
+        }
+        $project_id = $this->getProjectId();
+        $query = 
+            "DELETE FROM `" . PROJECT_RUNNERS . "` " .
+            "WHERE `project_id`={$project_id} AND `runner_id`={$runner_id}";
+        return mysql_query($query) ? 1 : 0;
+    }
+   
+    /**
+     * Get Runners Job Stats for Project
+     */
+    public function getRunners() {
+        $query = 
+            "SELECT DISTINCT u.id, u.nickname, 
+            ( SELECT COUNT(*) FROM " . WORKLIST . " w 
+            LEFT JOIN " . PROJECT_RUNNERS . " p on w.project_id = p.project_id 
+            WHERE w.runner_id = u.id 
+            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')  
+            AND p.project_id = " . $this->getProjectId() . ") as totalJobCount 
+            FROM " . USERS . " u 
+            WHERE u.id IN(SELECT runner_id from rel_project_runners WHERE project_id = " . $this->getProjectId() . ") 
+            ORDER BY totalJobCount DESC";
+            
+        $result = mysql_query($query);
+        if (is_resource($result) && mysql_num_rows($result) > 0) {
+            while($row = mysql_fetch_assoc($result)) {
+                $row['owner'] = ($row['id'] == $this->getOwnerId());
+                $runners[$row['id']] = $row;
+            }
+            return $runners;
+        } else {
+            return false;
+        }
+    }
+
+    public function getRunnersLastActivity($userId) {
+        $sql = "SELECT MAX(change_date) FROM " . STATUS_LOG . " s 
+                LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id 
+                LEFT JOIN " . PROJECT_RUNNERS . " p on p.project_id = w.project_id 
+                WHERE s.user_id = '$userId' AND p.project_id = " . $this->getProjectId() . " ";
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            $lastActivity = strtotime($row[0]);
+            $rightNow = time();
+            if($lastActivity == '') {
+                return false;
+            } else {
+                if(($rightNow - $lastActivity) > 604800) { //if greater than a week i.e. 7*24*60*60 in seconds
+                    return date('d-F-Y', $lastActivity);
+                } else {
+                    return (formatableRelativeTime($lastActivity, 2) . " ago");
+                }
+            }
+        }
+        return false;
+    } 
     
     public function getFundName() {
         $query = "SELECT `name` FROM `" . FUNDS . "` WHERE `id` = {$this->getFundId()}";
@@ -760,9 +842,9 @@ class Project {
         }                
     }    
 
-/**
- * Return project_id based on project name
- */
+    /**
+     * Return project_id based on project name
+     */
     public function getIdFromName($name) {
         $query = "SELECT `project_id` FROM `" . PROJECTS . "`
             WHERE `name` = '" . mysql_real_escape_string($name) . "'";

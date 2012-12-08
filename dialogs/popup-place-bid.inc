@@ -2,7 +2,7 @@
     <form name="popup-form" action="" method="post" >
         <input type="hidden" name="<?php echo $get_variable;?>" value="<?php echo $worklist_id;?>" />
 <?php
-    if ($is_runner || $is_project_founder) {
+    if ($is_runner || $is_project_founder || $is_project_runner) {
 ?>
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />
 <?php   } else if (isset($_SESSION['userid'])) {  ?>

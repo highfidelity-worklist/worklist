@@ -187,6 +187,11 @@ div.documents.filesDescription {
     padding-left: 35px;
 }
 
+.buttonContainer {
+    margin: 4px 0;
+    text-align: right;
+}
+
 .ui-state-default.ui-combobox, .ui-state-default .ui-combobox {
     background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important;
 }
@@ -223,8 +228,9 @@ pre, .pre {
 #sent-notify {
     text-align: center;
     background-color: lightgrey;
-    height: 20px !important;
+    height: 30px !important;
     line-height: 20px;
+    width: 500px;
 }
 
 #w9-dialog #sent-notify {

@@ -113,6 +113,7 @@ function initSessionData($user) {
     $_SESSION['confirm_string']     = $user_row['confirm_string'];
     $_SESSION['nickname']           = $user_row['nickname'];
     $_SESSION['timezone']           = $user_row['timezone'];
+    $_SESSION['is_admin']           = intval($user_row['is_admin']);
     $_SESSION['is_runner']          = intval($user_row['is_runner']);
     $_SESSION['is_payer']           = intval($user_row['is_payer']);
 }
@@ -129,6 +130,7 @@ function initSessionDataByUserId($uid) {
     $_SESSION['confirm_string']     = isset($user_row['confirm_string']) ? $user_row['confirm_string'] : 0;
     $_SESSION['nickname']           = $user_row['nickname'];
     $_SESSION['timezone']           = isset($user_row['timezone']) ? $user_row['timezone'] : 0;
+    $_SESSION['is_admin']           = $user_row['is_admin'];
     $_SESSION['is_runner']          = $user_row['is_runner'];
     $_SESSION['is_payer']           = isset($user_row['is_payer']) ? intval($user_row['is_payer']) : 0;
 }

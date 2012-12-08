@@ -33,7 +33,7 @@
             </tr>
         </table>
         <div class="clear"></div>
-<?php if ($is_runner || $is_project_founder){ ?>
+<?php if ($user->getIs_admin() == 1 && $is_runner || $is_project_founder || $is_project_runner){ ?>
         <div class="clear"></div><br />
             <div class = "info-label block bidderStats">
                 Bidder statistics
@@ -59,7 +59,7 @@
         <div id="popup-bid-info-buttons"></div>
         </form>
     </div>
-<?php if ($is_runner || $is_project_founder){ ?>
+<?php if ($is_runner || $is_project_founder || $workitem->getIsRelRunner()){ ?>
         <div id="popupSelectBudget" style="display:none" title="Select a budget">
             
                 <span id="budget-source-combo-area">

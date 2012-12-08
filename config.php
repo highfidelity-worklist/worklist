@@ -101,6 +101,7 @@ if (!defined('PAYPAL_ADMINS'))  define('PAYPAL_ADMINS', 'paypal_admins');
 if (!defined('PAYPAL_LOG'))     define('PAYPAL_LOG', 'paypal_log');
 if (!defined('PROJECTS'))       define('PROJECTS', 'projects');
 if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
+defineOnce("PROJECT_RUNNERS", "rel_project_runners");
 if (!defined('ROLES'))          define('ROLES', 'roles');
 if (!defined('SKILLS'))         define('SKILLS', 'skills');
 if (!defined('STATUS_LOG'))     define('STATUS_LOG', 'status_log');

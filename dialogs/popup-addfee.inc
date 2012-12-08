@@ -1,7 +1,7 @@
     <div id="popup-addfee" class="popup-body" title = "Add Fee">
         <form name="popup-form" id="popup-form-addfee" action="" method="post">
 <?php
-    if ($is_runner || $is_project_founder) {
+    if ($is_runner || $is_project_founder || $is_project_runner) {
 ?>      <div class="clear">
             <p class="info-label">Pay To
 <?php

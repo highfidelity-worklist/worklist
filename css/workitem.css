@@ -1495,11 +1495,6 @@ input.button-disabled ,
     clear:both;
 }
 
-.bottonAtRight{
-    margin-top: -4px;
-    float: right;
-}
-
 #total-jobs,
 #active-jobs {
     color:#98AAB2;

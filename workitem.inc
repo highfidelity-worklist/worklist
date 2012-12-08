@@ -10,7 +10,7 @@
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
-
+    
     $has_budget = 0;
     if (! empty($user_id)) {
         $user = new User();
@@ -25,11 +25,12 @@
         $workitem_project = new Project($worklist['project_id']);
     }
     $projects = Project::getProjects();
-
+    
     $allowEdit = false;
     $classEditable = "";
-    if ($is_runner || $is_project_founder || ($creator_id == $user_id && $worklist['status'] == 'Suggested' && is_null($worklist['runner_id'])) ||
-    ($creator_id == $user_id && $worklist['status'] == 'SuggestedWithBid' && is_null($worklist['runner_id']))) {
+    if (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) ||
+        ($creator_id == $user_id && $worklist['status'] == 'Suggested' && is_null($worklist['runner_id'])) ||
+        ($creator_id == $user_id && $worklist['status'] == 'SuggestedWithBid' && is_null($worklist['runner_id']))) {
         $allowEdit = true;
         if ($action !="edit") {
             $classEditable = " editable";
@@ -97,12 +98,6 @@ function resizeIframeDlg() {
     $('#user-info').animate({height: height});
 }
 
-function openNotifyOverlay(html, autohide) {
-    $("#sent-notify").html(html);
-    $("#sent-notify").attr('autohide', autohide);
-    $("#sent-notify").dialog('open');
-}
-
 function scrollToLastComment() {
     var scrolltoposition = $('div[id=scrollerPointer]').offset().top - $(window).height();
     $('body,html').animate({scrollTop: scrolltoposition}, 800);
@@ -126,25 +121,7 @@ $(document).ready(function() {
     $("#invite-link").click(function() {
         $('#invite-people').dialog('open');
     });
-
-    $('#sent-notify').dialog({
-        modal: false,
-        autoOpen: false,
-        width: 350,
-        height: 70,
-        position: ['middle'],
-        resizable: false,
-        open: function() {
-            $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
-            var autoHide = $("#sent-notify").attr('autohide') ? true : false;
-            if (autoHide === false) {
-                setTimeout(function() {
-                    $("#sent-notify").dialog("close");
-                }, 3000);
-            }
-        }
-    });
-
+    
     <?php
 
     global $displayDialogAfterDone;
@@ -589,6 +566,7 @@ $(document).ready(function(){
     var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
     var isFollowing = <?php echo $workitem->isUserFollowing($user_id) ? 'true' : 'false';?>;
     var is_project_founder = <?php echo $is_project_founder ? 1 : 0 ?>;
+    var is_project_runner = <?php echo $is_project_runner ? 1 : 0 ?>;
 
    $('.commentform form input[name=newcomment]').click(function(event) {
         event.preventDefault();
@@ -800,7 +778,7 @@ $(document).ready(function(){
             $('#popup-bid-info #info-bid-done-in').text(bidData.done_in);
             $('#popup-bid-info #info-notes').html(bidData.notes);
 
-<?php if ($is_runner || $is_project_founder || (isset($runner_id) && $user_id == $runner_id)) : ?>
+<?php if ( $is_project_runner || ($user->getIs_admin() == 1 && $is_runner) || (isset($runner_id) && $user_id == $runner_id)) : ?>
             if($('#accept_bid').length == 0) {
                 $('#popup-bid-info-buttons').append('<input type="button" class="disableable" id="accept_bid_select_budget" ' +
                             '  onClick="return selectBudget(\'accept_bid\');" name="accept_bid_select_budget" value="Accept">');
@@ -816,17 +794,19 @@ $(document).ready(function(){
 <?php endif; ?>
             }
 
-<?php if ($worklist['status'] == 'Bidding' && ($is_runner || $is_project_founder || (isset($runner_id) && $user_id == $runner_id))) {?>
+<?php if (($worklist['status'] == 'Bidding' && ($is_project_runner || ($user->getIs_admin() == 1 && $is_runner))
+          || (isset($runner_id) && $user_id == $runner_id))) {?>
 
-    $('#popup-bid-info-buttons').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" >');
+          $('#popup-bid-info-buttons').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" >');
 
 <?php } ?>
 
 <?php if($worklist['status'] != 'Done' && $worklist['status'] != 'Working' && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' && $worklist['status'] != 'Completed') {?>
             if( (bidData.bidder_id == user_id) && $('#withdraw_bid_accept').length == 0){
                 $('#popup-bid-info-buttons').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" >');
-            } else if ((is_runner || is_project_founder) && bidData.bidder_id != user_id) {
-                $('#popup-bid-info-buttons').append('<input id="decline_bid_accept" type="button" name="decline_bid_accept" value="Decline" onClick="return showDeclineBidReason()" >');
+            } else if ((is_project_runner || (is_admin && is_runner)) && bidData.bidder_id != user_id) {
+                $('#popup-bid-info-buttons').append
+                 ('<input id="decline_bid_accept" type="button" name="decline_bid_accept" value="Decline" onClick="return showDeclineBidReason()" >');
             }
 <?php } ?>
             // change user id to current bidder id
@@ -899,7 +879,7 @@ $(document).ready(function(){
         }
     });
 
-<?php if(($is_runner || $is_project_founder || ($mechanic_id == $user_id)) &&
+<?php if(($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) || ($mechanic_id == $user_id)) &&
           (strcasecmp($worklist['status'], 'Done') != 0 &&
            strcasecmp($worklist['status'], 'Completed') != 0 )) {?>
            $('#edit_review_url').click(function(e){
@@ -1097,7 +1077,7 @@ $(document).ready(function(){
             },
             dataType: 'json',
             success: function(data) {
-                $("#sent-notify").dialog("close");
+            	         closeNotifyOverlay();
                 if (data.success) {
                     $('#popup-startreview').dialog('open');
                 } else {
@@ -1109,7 +1089,7 @@ $(document).ready(function(){
                 }
             },
             error: function() {
-                $("#sent-notify").dialog("close");
+            	closeNotifyOverlay();
             }
         });
         return false;
@@ -1277,8 +1257,7 @@ $(document).ready(function(){
                     if (json && json.error) {
                         alert("Ping failed:" + json.error);
                     } else {
-                        $("#sent-notify").html("<span>Your ping has been sent.</span>");
-                        $("#sent-notify").dialog("open");
+                        openNotifyOverlay("<span>Your ping has been sent.</span>", true);
                     }
                     $('#send-ping-btn').removeAttr("disabled");
                     $('#popup-pingtask').dialog('close');
@@ -1352,11 +1331,10 @@ $(document).ready(function(){
                             if (shown != true) {
                                 shown = true;
                                 $('#runnerBox').css('width', '400px');
-                                $('#runnerBox #ping-r-btn').css('display', 'none');
+                                $('#runnerBox a#ping-r-btn').css('display', 'none');
                                 $('#runnerBox span.changeRunner').fadeIn(1000, function() {
                                     $('#runnerBox span.changeRunner div input[name=changerunner]').click(function() {
                                         $(this).unbind('click');
-                                        var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val(); 
                                         $.ajax({
                                             type: 'post',
                                             url: 'jsonserver.php',
@@ -1365,14 +1343,13 @@ $(document).ready(function(){
                                                 // to avoid script loading error when not logged
                                                 // userid: <?php echo($user_id); ?>,
                                                 userid: <?php echo(!empty($user_id) ? $user_id : "''"); ?>,
-                                                runner: runner_id,
+                                                runner: $('#runnerBox span.changeRunner select[name=runner]').val(),
                                                 workitem: <?php echo($worklist_id); ?>
                                             },
                                             dataType: 'json',
                                             success: function(j) {
                                                 if (j.success == true) {
-                                                    $('#runnerBox #ping-r-btn').text(j.nickname);
-                                                    $('#runnerBox #ping-r-btn').attr('data-user-id', runner_id);
+                                                    $('#runnerBox span#ping-r-btn').text(j.nickname);
                                                     $('#runnerBox input[name=cancel]').click();
                                                 }
                                             }
@@ -1382,7 +1359,7 @@ $(document).ready(function(){
                                         $('#runnerBox span.changeRunner').fadeOut(1000, function() {
                                             $('#runnerBox span.changeRunner').css('display', 'none');
                                             $('#runnerBox').css('width', '130px');
-                                            $('#runnerBox #ping-r-btn').css('display', 'block');
+                                            $('#runnerBox a#ping-r-btn').css('display', 'block');
                                             $('#runnerBox span.runnerName').parent().siblings().fadeIn(1000);
                                         });
                                     });
@@ -1485,15 +1462,16 @@ $(document).ready(function(){
             <div id="quick-status">
                 <span class="info-label"><a href="help.php#ff5" target="_blank">Job status:</a></span>&nbsp;
             <?php
-            if ((!($is_runner || $is_project_founder) && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') || $is_runner || $is_project_founder
-            || ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done')) :
+            if ((!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && ($mechanic_id == $user_id) &&
+                   $worklist['status'] != 'Done') || $workitem->getIsRelRunner() 
+                   || ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done')) :
             ?>
                 <form id="searchForm" method="post" action="">
                     <input type="hidden" id="status-switch" name="status-switch" value="1" />
                     <select id="statusCombo" name="quick-status" class="project-dropdown hidden">
                         <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>
                         <?php
-                        if (!($is_runner || $is_project_founder) && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
+                        if (!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
                             foreach ($statusListMechanic as $status) {
                                 if ($status != $worklist['status']) {?>
                                     <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
@@ -1501,7 +1479,7 @@ $(document).ready(function(){
                                 }
                             }
                         }
-                        else if ($is_runner || $is_project_founder) { //runners and admins
+                        else if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) { //runners and admins
                             foreach ($statusListRunner as $status) {
                                 if ($status != $worklist['status']) {
                             ?>
@@ -1557,7 +1535,7 @@ if ($action =="edit"):  ?>
             <input type="hidden" name="action" value="save_workitem" />
             <div class="project <?php if ($workitem_project->getRepo_type() == 'git') { echo ' github';} ?>">
                 <span class="info-label" id="edit-project-label">Project:&nbsp;</span>
-                <?php if (($is_runner || $is_project_founder || $creator_id == $user_id) && ($worklist['status'] != 'Done')):
+                <?php if (($is_project_runner || $creator_id == $user_id || ($is_admin && $is_runner)) && ($worklist['status'] != 'Done')):
                           $filter = new Agency_Worklist_Filter();
                           $filter->setProjectId($worklist['project_id']);
                           echo $filter->getProjectSelectbox('Select Project', 0, 'project_id', 'project_id');
@@ -1625,16 +1603,14 @@ if ($action =="edit"):  ?>
                             <?php
                                 if( $worklist['runner_nickname'] != 'Not funded' ) {
                                     $tooltip = isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner";
-                                    echo ' <a href="#" id="ping-r-btn" title="' . $tooltip . '"' . 
-                                        ' onClick="javascript:showUserInfo($(this).attr(\'data-user-id\'))" ' .
-                                        ' data-user-id="' . $worklist['runner_id'] . '">'.
-                                        substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
-                                        '</a>';
+                                    echo ' <a href="#" id="ping-r-btn" title="' . $tooltip . '
+                                    "onClick ="javascript:showUserInfo('.$worklist['runner_id'].'">
+                                    '.substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '').'</a>';
                                 } else {
                                     echo "&nbsp" . $worklist['runner_nickname'];
                                 } ?>
                                 <span class="changeRunner">
-                                    <?php $runnerslist = User::getRunnerlist();
+                                    <?php $runnerslist = User::getRunnerlist($project_id);
                                     echo '<select name="runner">';
                                     foreach ($runnerslist as $r) {
                                         echo '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . $r->getNickname() . '</option>';
@@ -1683,9 +1659,9 @@ if ($action =="edit"):  ?>
                 <!-- Edit: Summary info -->
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
-                            if ((($is_runner || $is_project_founder) && $worklist['status']!='Done') || 
-                                ($creator_id==$user_id && $worklist['status']=='SUGGESTED' || 
-                                $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
+                            if ((($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && 
+                                  $worklist['status']!='Done') ||($creator_id==$user_id && $worklist['status']=='SUGGESTED' || 
+                                  $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
                             <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo $worklist['summary'];?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
@@ -1695,7 +1671,7 @@ if ($action =="edit"):  ?>
                         <li>
                             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
                             <span class="info-data">
-                            <?php if ($is_runner || $is_project_founder || $user_id == $worklist['runner_id']){  ?><span class="info-data">
+                            <?php if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) || $user_id == $worklist['runner_id']){  ?><span class="info-data">
                             <select id="status" name="status">
                                 <?php foreach ($statusListRunner as $status) { ?>
                                 <option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected="selected"' : ''; ?> ><?php echo $status; ?></option>
@@ -1721,7 +1697,7 @@ if ($action =="edit"):  ?>
                 <!-- Edit: Notes textarea -->
                         <li>
                             <span class="sections">Notes</span>
-                            <?php if (($$is_runner || $is_project_founder || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
+                            <?php if (($is_project_runner || ($user->getIs_admin() == 1 && $is_runner) || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
                                 <span id="info-notes">
                                     <textarea name="notes" id="edit-notes" class="expandable" <?php if(count($activeBids) > 0) {echo 'disabled="disabled"';} ?> ><?php echo $worklist['notes'];?></textarea>
                                 </span>
@@ -1770,7 +1746,8 @@ if ($action =="edit"):  ?>
                     <li>
                         <div class="sandbox-container">
                             <span class="functional-label" >Sandbox:</span><br />
-                            <?php if(($is_runner || $is_project_founder || $creator_id == $user_id) && ($worklist['status'] != 'Done')): ?>
+                            <?php if(($workitem->getIsRelRunner() || $creator_id == $user_id || ($user->getIs_admin() == 1 && $is_runner))
+                                  && ($worklist['status'] != 'Done')): ?>
                             <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="<?php echo htmlspecialchars($worklist['sandbox']);?>" />
                              <?php elseif ( !empty($worklist['sandbox']) ):?>
                                 <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
@@ -1804,7 +1781,8 @@ if ($action =="edit"):  ?>
                         <div class="sandbox-container">
                             <?php if((strcasecmp($worklist['status'], 'Working') == 0 ||
                                 strcasecmp($worklist['status'], 'Review') == 0 ||
-                                strcasecmp($worklist['status'], 'Functional') == 0) && ($is_runner || $is_project_founder || ($mechanic_id == $user_id))) {?>
+                                strcasecmp($worklist['status'], 'Functional') == 0) && ($workitem->getIsRelRunner() || 
+                                ($user->getIs_admin() == 1 && $is_runner) ||($mechanic_id == $user_id))) {?>
                                 <span class="iToolTip changeSBurl functional-label" id="edit_review_url">Sandbox:</span><br />
                             <?php } else {?>
                                 <span class="functional-label">Sandbox:</span><br />
@@ -1982,7 +1960,8 @@ if ($action =="edit"):  ?>
                                     } else if($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
                                         if ($user->isEligible()) {
                                             if(hasRights($user_id, $workitem)) {
-                                                if($user_id == $workitem->getCReviewerId() || $is_runner || $is_project_founder || $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
+                                                if($user_id == $workitem->getCReviewerId() || $workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)||
+                                                $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
                                                     <input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
                                         <?php   }
                                             }
@@ -2010,8 +1989,9 @@ if ($action =="edit"):  ?>
                                             <input type="submit" class="smbutton" value="Add my bid" onClick="return showIneligible('bid');" />
                                             <?php endif; ?>
                                         </div>
-                                        <?php if(! empty($bids) && ($is_runner || $is_project_founder || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids()
-                                              && ((($workitem->getStatus()) == "Bidding") || $workitem->getStatus() == "SuggestedWithBid")):?>
+                                        <?php if(! empty($bids) && ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)
+                                                 || $user_id == $workitem->getRunnerId()) && count($bids) >1 && !$workitem->hasAcceptedBids()
+                                                 && ((($workitem->getStatus()) == "Bidding") || $workitem->getStatus() == "SuggestedWithBid")):?>
                                             <div class="buttonContainer bidbutton">
                                                 <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
                                             </div>
@@ -2058,8 +2038,8 @@ if ($action =="edit"):  ?>
                                     } else {
                                         $expired_class = '';
                                     }
-                                    $canSeeBid = $user->getIs_admin() == 1 || $is_project_founder || $user->isRunnerOfWorkitem($workitem) || 
-                                                 $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $is_runner);
+                                    $canSeeBid = $user->getIs_admin() == 1 || $is_project_runner || $user->isRunnerOfWorkitem($workitem) || 
+                                                 $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $workitem->getIsRelRunner());
                                     $row_class = "";
                                     $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
                                     $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
@@ -2195,7 +2175,8 @@ if ($action =="edit"):  ?>
                                                     <?php endif;?>
                                                     
                                                      <?php if ($worklist['status'] != 'Done') { ?>
-                                                        <?php if(($is_runner || $is_project_founder || $user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
+                                                        <?php if(($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)
+                                                              || $user_id == $workitem->getRunnerId() || $user_id == $fee['user_id']) &&($user_id && empty($fee['paid']))):?>
                                                         - <a href="#" id="wd-<?php echo $fee['id'];?>" class="wd-link" title='Delete Entry'>delete</a>
                                                         <?php endif;?>
                                                     <?php };?>
@@ -2262,7 +2243,6 @@ if ($action =="edit"):  ?>
         <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong><?php echo $message; ?></p>
     </div>
     <?php endif;?>
-    <div id="sent-notify"></div>
     <!-- Popup for  edit bid info -->
     <?php include('dialogs/popup-edit-bid-info.inc') ?>
     <!-- Popup for place bid -->

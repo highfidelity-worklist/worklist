@@ -14,6 +14,4 @@
         <div class="w9_loader"></div>
     </div>
     <div class="uploadnotice-w9"></div>
-
-    <div id="sent-notify" style="display: none;"></div>
 </div>

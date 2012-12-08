@@ -235,3 +235,33 @@ jQuery.fn.DefaultValue = function(text){
     });
     });
 };
+
+function openNotifyOverlay(html, autohide) {
+    $('#sent-notify').html(html);
+    $('#sent-notify').attr('autohide', autohide);
+    $('#sent-notify').dialog('open');
+}
+
+function closeNotifyOverlay() {
+    $('#sent-notify').dialog('close');
+}
+
+$(function() {
+    $('#sent-notify').dialog({
+        modal: false,
+        autoOpen: false,
+        width: 350,
+        height: 70,
+        position: ['middle'],
+        resizable: false,
+        open: function() {
+            $('#sent-notify').parent().children('.ui-dialog-titlebar').hide();
+            var autoHide = $('#sent-notify').attr('autohide') == 'true' ? true : false;
+            if (autoHide) {
+                setTimeout(function() {
+                    closeNotifyOverlay();
+                }, 3000);
+            }
+        }
+    });
+});
