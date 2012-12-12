@@ -1361,23 +1361,21 @@ class User {
      *
      */
     public static function getUserList($populate = 0, $active = 0, $runner = 0) {
-        $where = 'WHERE `' . USERS . '`.`confirm` = 1 AND `' . USERS . '`.`is_active` > 0';
         if ($active) {
-           $where .= ' AND (`dates`.`date` > DATE_SUB(NOW(), INTERVAL 30 DAY) || `'.USERS.'`.`last_seen` > DATE_SUB(NOW(), INTERVAL 30 DAY) )';
+           $sql = "SELECT DISTINCT users.* FROM users, worklist " .
+               "WHERE ( users.id = runner_id  OR users.id = mechanic_id  OR users.id = creator_id ) " .
+               "AND ( worklist.status_changed   > DATE_SUB(NOW(), INTERVAL 30 DAY) OR users.last_seen >DATE_SUB(NOW(), INTERVAL 15 DAY))";
+        }
+        else {
+        	$sql = "SELECT DISTINCT users.* FROM users" .
+                "WHERE users.is_active > 0 AND users.confirm = 1";
         }
         if ($runner) {
-           $where .= ' AND `is_runner` = 1';
+            $sql .= ' AND `is_runner` = 1';
         }
-        $sql = "
-            SELECT `" . USERS . "`.* FROM `" . USERS . "` 
-            LEFT JOIN (
-                SELECT `user_id`, MAX(`paid_date`) AS `date` FROM `".FEES."` 
-                WHERE `paid_date` IS NOT NULL AND `paid` = 1 AND 
-                    `withdrawn` != 1 GROUP BY `user_id`
-            ) AS `dates` ON `".USERS."`.id = `dates`.user_id
-            $where
-            OR id = $populate 
-            ORDER BY `nickname` ASC";
+        $sql .= " OR users.id = $populate " .
+            " ORDER BY nickname ASC";
+        
         $result = mysql_query($sql);
         $i =  (int) $populate > 0 ? (int) 1 : 0;
         while ($result && ($row = mysql_fetch_assoc($result))) {
