@@ -858,6 +858,9 @@ class JsonServer
             if (! sendTemplateEmail($user->getUsername(), 'project-runner-added', $data)) { 
                 error_log("JsonServer:actionAddRunnerToProject: send email to user failed");
             }
+            // Add a journal notification
+            $journal_message = $user->getNickname() . ' has been granted Runner rights for project: ##' . $project->getName();
+            sendJournalNotification($journal_message);
             
             return $this->setOutput(array(
                 'success' => true,
