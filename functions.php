@@ -667,8 +667,9 @@ function withdrawBid($bid_id, $withdraw_reason) {
             }
         }
 
-        // additional changes if status is WORKING
-        if ($job['status'] == 'Working'  && ($bid->accepted == 1) && (is_runner() || ($bid->bidder_id == $_SESSION['userid']))) {
+        // additional changes if status is WORKING, SVNHOLD, FUNCTIONAL or REVIEW
+        if (($job['status'] == 'Working' || $job['status'] == 'SVNHold' || $job['status'] == 'Review' || $job['status'] == 'Functional') 
+        && ($bid->accepted == 1) && (is_runner() || ($bid->bidder_id == $_SESSION['userid']))) {
             // change status of worklist item
             mysql_unbuffered_query("UPDATE `" . WORKLIST . "`
 	            						SET `mechanic_id` = '0',
