@@ -1361,20 +1361,30 @@ class User {
      *
      */
     public static function getUserList($populate = 0, $active = 0, $runner = 0) {
+        $sql = "";
         if ($active) {
-           $sql = "SELECT DISTINCT users.* FROM users, worklist " .
-               "WHERE ( users.id = runner_id  OR users.id = mechanic_id  OR users.id = creator_id ) " .
-               "AND ( worklist.status_changed   > DATE_SUB(NOW(), INTERVAL 30 DAY) OR users.last_seen >DATE_SUB(NOW(), INTERVAL 15 DAY))";
+            $user_where = "( users.id = runner_id  OR users.id = mechanic_id  OR users.id = creator_id )";
+            $sql .= "SELECT DISTINCT users.* FROM users, worklist
+                WHERE
+                    worklist.status_changed > DATE_SUB(NOW(), INTERVAL 30 DAY) AND 
+                    {$user_where}";
+            $sql .= $runner ? ' AND `is_runner` = 1' : '';
+            $sql .= " UNION
+                SELECT DISTINCT users.* FROM users, worklist
+                WHERE
+                    users.last_seen > DATE_SUB(NOW(), INTERVAL 15 DAY) AND
+                    {$user_where}";
+            $sql .= $runner ? ' AND `is_runner` = 1' : '';
         }
         else {
-        	$sql = "SELECT DISTINCT users.* FROM users" .
-                "WHERE users.is_active > 0 AND users.confirm = 1";
+        	$sql .= "SELECT users.* FROM users
+                WHERE users.is_active > 0 AND users.confirm = 1";
+            $sql .= $runner ? ' AND `is_runner` = 1' : '';
         }
-        if ($runner) {
-            $sql .= ' AND `is_runner` = 1';
-        }
-        $sql .= " OR users.id = $populate " .
-            " ORDER BY nickname ASC";
+        $sql .= " UNION SELECT users.* FROM users WHERE users.id = {$populate}";
+
+        // Final Query: wrap unioned queries and sort by nickname
+        $sql = "SELECT DISTINCT * FROM ({$sql}) DistinctUsers ORDER BY nickname ASC";
         
         $result = mysql_query($sql);
         $i =  (int) $populate > 0 ? (int) 1 : 0;
