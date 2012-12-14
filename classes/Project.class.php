@@ -691,6 +691,44 @@ class Project {
         }
     }
 
+    /* 
+     Get the list of allowed runners for Project
+     */
+    public static function getAllowedRunnerlist($project_id) {
+        $runnerlist = array();
+        $sql = 'SELECT `u`.*
+        FROM `' . USERS . '` u 
+        INNER JOIN `' . PROJECT_RUNNERS . '` `pr` ON (`u`.`id` = `pr`.`runner_id`) 
+        WHERE `pr`.`project_id` = ' . $project_id;
+        $result = mysql_query($sql);
+        if (mysql_num_rows($result) > 0) {
+          while ($result && ($row = mysql_fetch_assoc($result))) {
+              $user = new User();
+              $user->setId($row['id']);
+              $user->setUsername($row['username']);
+              $user->setNickname($row['nickname']);
+              $runnerlist[] = $user;
+          }
+        }
+        return ((!empty($runnerlist)) ? $runnerlist : false);
+    }
+
+    /* 
+     Check if a Runner can run a specified project.
+     */
+    public static function isAllowedRunnerForProject($runner_id, $project_id) {
+        $sql = 'SELECT `u`.*
+        FROM `' . USERS . '` u 
+        INNER JOIN `' . PROJECT_RUNNERS . '` `pr` ON (`u`.`id` = `pr`.`runner_id`) 
+        WHERE `pr`.`project_id` = ' . $project_id . ' AND `u`.`id` = ' . $runner_id;
+        
+        $result = mysql_query($sql);
+        if (mysql_num_rows($result) > 0) {
+          return true;
+        }
+        return false;
+    }
+
     public function getRunnersLastActivity($userId) {
         $sql = "SELECT MAX(change_date) FROM " . STATUS_LOG . " s 
                 LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id 

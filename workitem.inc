@@ -1614,7 +1614,7 @@ if ($action =="edit"):  ?>
                                     echo "&nbsp" . $worklist['runner_nickname'];
                                 } ?>
                                 <span class="changeRunner">
-                                    <?php $runnerslist = User::getRunnerlist($project_id);
+                                    <?php $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
                                     echo '<select name="runner">';
                                     foreach ($runnerslist as $r) {
                                         echo '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . $r->getNickname() . '</option>';

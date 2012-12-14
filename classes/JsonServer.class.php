@@ -1073,10 +1073,13 @@ class JsonServer
     protected function actionChangeRunner()
     {
         $workitem = (int)$this->getRequest()->getParam('workitem');
+        $runner_id = (int) $this->getRequest()->getParam('runner');
         $runner = new User();
+        
         if ($this->getUser()->isRunner()) {
-            if ($runner->findUserById($this->getRequest()->getParam('runner')) && $runner->isRunner()) {
-                $workitem = new WorkItem($workitem);
+            $workitem = new WorkItem($workitem);
+            if ($runner->findUserById($runner_id) && $runner->isRunner()
+                && Project::isAllowedRunnerForProject($runner_id, $workitem->getProjectId()) ) { 
                 $oldRunner = $workitem->getRunner();
                 $workitem->setRunnerId($runner->getId())
                          ->save();
@@ -1114,7 +1117,7 @@ class JsonServer
             } else {
                 return $this->setOutput(array(
                     'success' => false,
-                    'message' => 'The user specified as new runner is no runner!'
+                    'message' => 'The user specified is not allowed runner for this project!'
                 ));
             }
         } else {
