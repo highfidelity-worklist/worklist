@@ -285,6 +285,7 @@ function sendInviteForm(){
             $("#sent-notify").html("<span>The user you entered does not exist</span>");
         }
         $("#sent-notify").dialog("open");
+        setTimeout('$("#sent-notify").dialog("close");', 2000);
     },
     error: function(xhdr, status, err) {
       $("#sent-notify").html("<span>Error sending invitation</span>");
