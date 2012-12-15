@@ -1943,40 +1943,33 @@ if ($action =="edit"):  ?>
                 </div>
 
 <?php endif;?>
-                            <?php if ($user_id > 0 && $worklist['status'] == 'Review') { ?>
+                    <?php if ($user_id > 0 && $user->isEligible() && $mechanic_id != $user_id) : ?>
+                        <?php if ($worklist['status'] == 'Review' && (! $workitem->getCRCompleted()) 
+                            && ((! $workitem->getCRStarted()) || $user_id == $workitem->getCReviewerId() || $workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner))) 
+                        { ?>
                             <div class="code-review">
                             <span>Time for a code review!</span>
                             The code written for this job is ready to be reviewed.<br />
                             <b><u>View the diff</u></b> to see the code, then start the review ...
                             <div class="buttonContainer feebutton">
                                     <?php if ($workitem->getCRStarted() !=1) {
-                                        if ($mechanic_id != $user_id) {
-                                            if ($user->isEligible()) {
-                                                if(hasRights($user_id, $workitem)) { ?>
-    
-                                                    <input class="iToolTip cR smbutton" type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"/>
-                                        <?php   } else { ?>
-                                                    <input class="iToolTip cRDisallowed smbutton" type="submit" value="Start Code Review" onClick="return false;"/>
-                                        <?php   }
+                                        if (hasRights($user_id, $workitem)) {
+                                            ?><input class="iToolTip cR smbutton" type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"/><?php
+                                        } else {
+                                            ?><input class="iToolTip cRDisallowed smbutton" type="submit" value="Start Code Review" onClick="return false;"/><?php
+                                        }    
+                                    } else if ($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
+                                        if (hasRights($user_id, $workitem)) {
+                                            if ($user_id == $workitem->getCReviewerId() || $workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) {
+                                                ?><input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/><?php
                                             }
                                         }
-    
-                                    } else if($workitem->getCRStarted() == 1 && $workitem->getCRCompleted() != 1) {
-                                        if ($user->isEligible()) {
-                                            if(hasRights($user_id, $workitem)) {
-                                                if($user_id == $workitem->getCReviewerId() || $workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)||
-                                                $user_id == $workitem->getCreator() || $user_id == $mechanic_id) {?>
-                                                    <input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
-                                        <?php   }
-                                            }
-                                        }
-                                    } else if ($workitem->getCRCompleted()) { ?>
-                                        <input class="iToolTip cRSetToFunctional smbutton" type="submit" value="Start Code Review" onClick="return false;"/>
-                                <?php   } ?>
+                                    } ?>
                                 <div id="review-pointer"></div>
                                 </div>
                             </div>
-                            <?php }?>
+                        <?php } ?>
+                    <?php endif; ?>
 
             <div id="for_view">
                 <div class="moneyZone">
