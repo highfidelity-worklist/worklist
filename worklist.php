@@ -1419,7 +1419,9 @@ $meta_title =
     //Popup for edit role 
     include('dialogs/popup-edit-role.inc'); 
     //Popup for TestFlight -->
-    include('dialogs/popup-testflight.inc'); 
+    include('dialogs/popup-testflight.inc');
+	//Popup for Budget Transfer 
+    require_once('dialogs/budget-transfer.inc');
  
     if (is_object($inProject)): 
     //Popup for Adding Project Runner 
