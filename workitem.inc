@@ -121,7 +121,6 @@ $(document).ready(function() {
     $("#invite-link").click(function() {
         $('#invite-people').dialog('open');
     });
-    
     <?php
 
     global $displayDialogAfterDone;
@@ -572,6 +571,20 @@ $(document).ready(function(){
         event.preventDefault();
         postComment();
     });
+    $("#switchmode_edit").click(function(event) {
+        if (!is_project_runner){
+    	    $("#workitem_no_edit").dialog({
+                title: "Insufficient User Rights",
+                autoOpen: false,
+                height: 120,
+                width: 370,
+                position: ['center','center'],
+                modal: true
+            });
+    	    $("#workitem_no_edit").dialog("open");
+            event.preventDefault();
+        }	 	  
+	});
     $('#following').click(function() {
         $.ajax({
             type: 'post',
@@ -1425,7 +1438,7 @@ $(document).ready(function(){
                 <?php if ($worklist['status'] == "Done"): ?>
                     <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
                 <?php else: ?>
-                    <span class="switchmode">
+                    <span class="switchmode" id="switchmode_edit">
                         <a title="Switch to Edit Mode" href="
                         <?php $format = '%s?job_id=%d&action=edit&order=%s';
                         echo sprintf($format, $_SERVER['SCRIPT_NAME'], $worklist['id'], $order_by); ?>
@@ -1435,7 +1448,9 @@ $(document).ready(function(){
                 
             <?php endif;?>
             <?php if ($action == "edit"): ?>
-                <span class="switchmode"><a title="Switch to View Mode" href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view&order=<?php echo $order_by; ?>">View</a>
+                <span class="switchmode" id="switchmode_edit"><a title="Switch to View Mode" 
+                    href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?job_id=<?php echo $worklist['id'];?>&action=view&order=
+                    <?php echo $order_by; ?>">View</a>
                 </span>
             <?php endif;?>
         </div>
@@ -2279,6 +2294,8 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/budget-expanded.inc'); ?>
     <!-- Invite people popup -->
     <?php require_once 'dialogs/popup-invite-people.inc'; ?>
+    <!-- inform runner that they cant edit a job -->
+    <?php require_once 'dialogs/popup-runner-job-edit.inc'; ?>
 
 <?php
     // if logged in user is the mechanic on the task, get the maximum amount

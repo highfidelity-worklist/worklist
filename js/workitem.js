@@ -19,8 +19,7 @@ var Workitem = {
                     workitem_id: workitem_id
                 });
             }
-        });
-        
+        });       
     },
     
     openDiffPopup: function(options) {
