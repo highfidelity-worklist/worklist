@@ -303,6 +303,72 @@
     </script>
         <title><?php echo $user ->getNickname() ?> - User info</title>
     </head><body>
+    <script type="text/javascript">
+    $(function () {
+        if ($('#fees-week').length > 0) {
+            $('#fees-week').parents("tr").click(function() {
+                var author = "Guest";
+                if($('#user').length > 0) {
+                    author = $('#user').html();
+                }
+                var t = 'Weekly fees for '+author;
+                $('#wFees').dialog({
+                    autoOpen: false,
+                    title: t,
+                    show: 'fade',
+                    hide: 'fade'
+                });
+                $('#wFees').dialog( "option", "title", t );
+                $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').dialog('open');
+                $.getJSON('getfeesums.php?weekly=1', function(json) {
+                    if (json.error == 1) {
+                        $('#wFees').html('Some error occured or you are not logged in.');
+                    } else {
+                      $('#wFees').html(json.output);
+                    }
+                });
+            });
+        }
+        
+        if($('#fees-month').length > 0){
+            $('#fees-month').parents("tr").click(function() {
+                var author = "Guest";
+                if ($('#user').length > 0) {
+                    author = $('#user').html();
+                }
+                var t = 'Monthly fees for '+author;
+                $('#wFees').dialog({
+                    autoOpen: false,
+                    title: t,
+                    show: 'fade',
+                    hide: 'fade'
+                });
+                $('#wFees').dialog("option", "title", t);
+                $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').dialog('open');
+                $.getJSON('getfeesums.php?monthly=1', function(json) {
+                    if (json.error == 1) {
+                        $('#wFees').html('Some error occured or you are not logged in.');
+                    } else {
+                        $('#wFees').html(json.output);
+                    }
+                });
+            });
+        }
+    });
+
+    $('#welcomeInside .earningsBtn').click(function() {
+        $.get('getfeesums.php', function(data) {
+            var sum = eval('('+data+')');
+            if (typeof sum != 'object') {
+                return false;
+            }
+            $('#fees-week').html ('$'+sum.week);
+            $('#fees-month').html ('$'+sum.month);
+        });
+    });
+    </script>
 <?php
     require_once('header.php');
 ?>
@@ -313,6 +379,7 @@
 <?php require_once('dialogs/budget-transfer.inc'); ?>
 <!-- Popup for Budget -->
 <?php require_once('dialogs/popup-budget.inc'); ?>
+<?php require_once('dialogs/popup-fees.inc'); ?>
     <div id="sent-notify"></div>
 </body>
 </html>

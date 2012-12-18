@@ -144,6 +144,7 @@ table tr:hover {
 #budgetPopup table {
     border: none;
     padding: 2px;
+    max-width: 200px;
 }
 
 #budgetPopup table td {
