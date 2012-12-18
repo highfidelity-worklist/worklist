@@ -55,7 +55,7 @@ if ($ufilter) {
 }
 
 if ($rfilter) {
-    $where = " AND `".FEES."`.`user_id` = $rfilter ";
+    $where = " AND `".FEES."`.`user_id` = $rfilter AND `" . WORKLIST . "`.runner_id = $rfilter ";
 }
 
 if ($sfilter){
