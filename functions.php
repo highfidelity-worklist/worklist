@@ -999,11 +999,18 @@ function checkLogin() {
         }
         $url = preg_replace_callback($regexp,  'workitemLinkPregReplaceCallback', $url);
 
-        // Replace '#<projectName>#' with a link to the worklist project with the same name
+        // Replace '##<projectName>##' with a link to the worklist project with the same name
+        // This is used in situations where the project name has a space or spaces or no space
+        $regexp = "/\#\#([A-Za-z0-9_ ]+)\#\#/";
+        $link = DELIMITER . '<a href="' . WORKLIST_URL . '$1">$1</a>' . DELIMITER;
+        $url = preg_replace($regexp,  $link, $url);
+        
+        // Replace '##<projectName>' with a link to the worklist project with the same name
+        // This is used in situations where the first space encountered is assumed to
+        // be the end of the project name. Left mainly for backward compatibility.
         $regexp = "/\#\#([A-Za-z0-9_]+)/";
         $link = DELIMITER . '<a href="' . WORKLIST_URL . '$1">$1</a>' . DELIMITER;
         $url = preg_replace($regexp,  $link, $url);
-
 
         // Replace '#<nick>/<url>' with a link to the author sandbox
         $regexp="/\#([A-Za-z]+)\/(\S*)/i";
