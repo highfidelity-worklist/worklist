@@ -311,6 +311,8 @@
 <?php require_once('dialogs/popup-pingtask.inc') ?>
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <?php require_once('dialogs/budget-transfer.inc'); ?>
+<!-- Popup for Budget -->
+<?php require_once('dialogs/popup-budget.inc'); ?>
     <div id="sent-notify"></div>
 </body>
 </html>
