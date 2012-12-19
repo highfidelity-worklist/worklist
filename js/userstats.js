@@ -194,7 +194,14 @@ var stats = {
                     toAppend += '<td>' + jsonjob.status + '</td>';
                 }
 
-                toAppend += '<td class="sandbox"><a id="view-sandbox">View</a></td>';
+                if(jsonjob.sandbox == "N/A" || jsonjob.sandbox == "") {
+                    toAppend += '<td class="sandbox">N/A</td>';
+                }
+                else {
+                    toAppend += '<td class="sandbox">'
+                            + '<a id="view-sandbox-'+ jsonjob.id +'" target="_blank" href="'+ jsonjob.sandbox  +'">View</a>'
+                            + '</td>';
+                }                    
 
                 if (job_type == 'following') {
                     toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';

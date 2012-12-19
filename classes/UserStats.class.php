@@ -590,6 +590,7 @@ class UserStats{
 
         $sql = "SELECT `" . WORKLIST . "`.`id`, `summary`, `status`, `mn`.`nickname` AS `mechanic_nickname`, `cn`.`nickname` AS `creator_nickname`,
             `rn`.`nickname` AS `runner_nickname`,
+            `" . WORKLIST . "`.`sandbox` AS `sandbox`,
             DATE_FORMAT(`created`, '%m/%d/%Y') AS `created`
             FROM `" . WORKLIST . "` 
             LEFT JOIN `" . USERS . "` AS `mn` ON `mechanic_id` = `mn`.`id`
