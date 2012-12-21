@@ -121,6 +121,8 @@ if (isset($_REQUEST['withdraw_bid'])) {
     $action = "cancel_codereview";
 }
 
+
+
 if ($action == 'view_bid') {
     $action = "view";
     $view_bid_id = isset($_REQUEST['bid_id']) ? $_REQUEST['bid_id'] : 0;
@@ -517,7 +519,8 @@ if ($action =='status-switch') {
     if ($status == 'Done' && $workitem->getProjectId() == 0) {
         $status_error = "No project associated with workitem. Could not set to DONE.";
     } else {
-        if (changeStatus($workitem, $status, $user)) {
+        $status = changeStatus($workitem, $status, $user);
+        if ($status === true) {
             if ($workitem->save() == false) {
                 $status_error = "Error in save workitem process. Could not change the status.";
             } else {
@@ -545,6 +548,20 @@ if ($action =='status-switch') {
                     $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
                 }
             }
+        } else {
+
+            $message = '';
+            if ($status & 4) { //sandbox not updated
+                $message .= " - Sandbox is not up-to-date\n";
+            }
+            if ($status & 8) { //sandbox has conflicts
+                $message .= " - Sandbox contains conflicted files\n";
+            }
+            if ($status & 16) { //sandbox has not-included files
+                $message .= " - Sandbox contains 'not-included' files\n";
+            }
+
+            $status_error = "Sandbox verification failed. " . $message;
         }
     }
 }
@@ -1248,7 +1265,15 @@ function changeStatus($workitem, $newStatus, $user) {
         );
         $senderEmail = 'Worklist <contact@worklist.net>';
         sendTemplateEmail($runnerEmail, $emailTemplate, $data, $senderEmail);
-    }
+    } else if ($newStatus =='Functional' && ! ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 ))) {
+        $status = $workitem->validateFunctionalReview();
+
+        if ($status === true || $status == 0) {
+            return true;
+        }
+        
+        return $status;
+    } 
 
     // notifications for subscribed users
     Notification::statusNotify($workitem);

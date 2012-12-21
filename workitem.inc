@@ -107,6 +107,48 @@ function scrollToLastComment() {
 
 $(document).ready(function() {
     applyPopupBehavior();
+<?php
+    // if user is a runner and workitem is Functional, run sandbox up-to-date check
+    if ($worklist['status'] == 'Functional' && $is_runner):
+?>
+    var html = "<span>Checking sandbox...";
+    openNotifyOverlay(html, true);
+
+    $.ajax({
+        type: 'post',
+        url: 'jsonserver.php',
+        data: {
+            workitem: workitem_id,
+            userid: user_id,
+            action: 'validateFunctionalReview'
+        },
+        dataType: 'json',
+        success: function(data) {
+            if (data.success != true) {
+                $('<div id="functionalCheck"><div class="content"></div></div>')
+                    .appendTo('body')
+                    .hide();
+                $('#functionalCheck .content').html(data.data);
+                $('#functionalCheck').dialog({
+                    modal: true,
+                    resizable: false,
+                    dialogClass: 'white-theme',
+                    width: 'auto',
+                    height: 'auto',
+                    buttons: {
+                        'Ok': function() {
+                            $(this).dialog('close');
+                        }
+                    },
+                    close: function() {
+                        $('#functionalCheck').remove();
+                    }
+                });
+                $('#functionalCheck').dialog('open');
+            }
+        }
+    });
+<?php endif; ?>
 
     $('#invite-people').dialog({
         autoOpen: false,

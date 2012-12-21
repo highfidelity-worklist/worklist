@@ -1353,6 +1353,16 @@ class WorkItem {
         return '';
     }
 
+    public function validateFunctionalReview() {
+        $project = new Project($this->getProjectId());
+
+        if ($project->getRepo_type() == 'svn') {
+            return SandBoxUtil::authorizeCodeReview($this->getSandboxPath());
+        }
+
+        return true;
+    }
+
     public function startCodeReview($reviewer_id) {
         if ($this->status != 'Review' || $this->code_review_started != 0) {
             return null; // CR is only allowed for REVIEW items without the CR started
