@@ -573,16 +573,18 @@ $(document).ready(function(){
     });
     $("#switchmode_edit").click(function(event) {
         if (!is_project_runner){
-    	    $("#workitem_no_edit").dialog({
-                title: "Insufficient User Rights",
-                autoOpen: false,
-                height: 120,
-                width: 370,
-                position: ['center','center'],
-                modal: true
+        	 <?php if ((!$worklist['status'] == 'Suggested' || !$worklist['status'] == 'SuggestedWithBid') && !$creator_id == $user_id) { ?>
+    	         $("#workitem_no_edit").dialog({
+                     title: "Insufficient User Rights",
+                     autoOpen: false,
+                     height: 120,
+                     width: 370,
+                     position: ['center','center'],
+                     modal: true
             });
     	    $("#workitem_no_edit").dialog("open");
             event.preventDefault();
+             <?php } ?>
         }	 	  
 	});
     $('#following').click(function() {
@@ -1679,8 +1681,8 @@ if ($action =="edit"):  ?>
                         <li><span class="info-label">Summary</span><span class="info-data">
                             <?php // creator can edit it's own task if freshly added 23-MAR-2011 <godka>
                             if ((($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && 
-                                  $worklist['status']!='Done') ||($creator_id==$user_id && $worklist['status']=='SUGGESTED' || 
-                                  $worklist['status']=='SUGGESTEDwithBID' && is_null($worklist['runner_id']))) { ?>
+                                  $worklist['status']!='Done') ||($creator_id==$user_id && ($worklist['status']=='Suggested' || 
+                                  $worklist['status']=='SuggestedWithBid') && is_null($worklist['runner_id']))) { ?>
                             <input type="text" size="30" class="text-field" id="summary" name="summary" value="<?php echo $worklist['summary'];?>"/>
                             <?php } else { ?>
                             <span class="info-summ"><?php echo $worklist['summary'];?>
@@ -1690,7 +1692,9 @@ if ($action =="edit"):  ?>
                         <li>
                             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
                             <span class="info-data">
-                            <?php if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) || $user_id == $worklist['runner_id']){  ?><span class="info-data">
+                            <?php if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) ||
+                                     ($creator_id==$user_id && ($worklist['status']=='Suggested') ||
+                                      $user_id == $worklist['runner_id'])){  ?><span class="info-data">
                             <select id="status" name="status">
                                 <?php foreach ($statusListRunner as $status) { ?>
                                 <option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected="selected"' : ''; ?> ><?php echo $status; ?></option>
