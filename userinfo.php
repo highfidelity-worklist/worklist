@@ -269,7 +269,7 @@
                 user_id: <?php echo $userId; ?>,
                 nickName: '<?php echo $user->getNickName(); ?>',
                 tab: '<?php echo $tab; ?>'
-            };
+            };			
         </script>
         <script type="text/javascript" src="js/userstats.js"></script>
         <script type="text/javascript" src="js/userNotes.js"></script>

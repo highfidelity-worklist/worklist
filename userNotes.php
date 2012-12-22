@@ -38,12 +38,12 @@ class UserNotes {
         $note = new Note();
         if ($note->loadById($authorId,$userId) ){
             echo "<textarea class='userNotes'>" . $note->note . "</textarea>";
-            exit(0);
         }else{
             echo "<textarea class='userNotes'></textarea>";
-            exit(0);
-        }			
-
+        }		
+		
+        echo '<script type="text/javascript">$(".userNotes").autogrow();</script>';
+        exit(0);
     }
 
     /**
