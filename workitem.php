@@ -476,7 +476,27 @@ if($action =='save-review-url') {
         
         $status_review = $_REQUEST['quick-status-review'];
         if(!empty($status_review) && $workitem->getStatus() != $status_review) {
-            changeStatus($workitem, $status_review, $user);
+            $old_status = $workitem->getStatus();
+
+            $status = changeStatus($workitem, $status_review, $user);
+
+            if ($status !== true) {
+                // status change failed due to sandbox issues
+                $message = '';
+                if ($status & 4) { //sandbox not updated
+                    $message .= " - Sandbox is not up-to-date\n";
+                }
+                if ($status & 8) { //sandbox has conflicts
+                    $message .= " - Sandbox contains conflicted files\n";
+                }
+                if ($status & 16) { //sandbox has not-included files
+                    $message .= " - Sandbox contains 'not-included' files\n";
+                }
+
+                $status_error = "Sandbox verification failed. " . $message;
+                // revert to the old status, but still save the sandbox change
+                $workitem->setStatus($old_status);
+            }
         }
         $workitem->setSandbox($sandbox);
         $workitem->save();
