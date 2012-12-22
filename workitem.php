@@ -475,7 +475,9 @@ if($action =='save-review-url') {
         $notes = (!empty($_REQUEST['review-notes'])) ? $_REQUEST['review-notes'] : null;
         
         $status_review = $_REQUEST['quick-status-review'];
-        if(!empty($status_review) && $workitem->getStatus() != $status_review) {
+        $status_error = false;
+
+        if(! empty($status_review) && $workitem->getStatus() != $status_review) {
             $old_status = $workitem->getStatus();
 
             $status = changeStatus($workitem, $status_review, $user);
@@ -500,35 +502,39 @@ if($action =='save-review-url') {
         }
         $workitem->setSandbox($sandbox);
         $workitem->save();
-        $new_update_message = " sandbox url : $sandbox ";
-        if(!empty($status_review)) {
-            $new_update_message .= " Status set to $status_review. ";
-            $status_change = '-' . ucfirst(strtolower($status_review));
-        } else {
-            $job_changes[] = '-sandbox';
+        if ($status_error === false) {
+            $new_update_message = " sandbox url : $sandbox ";
+            if(!empty($status_review)) {
+                $new_update_message .= " Status set to $status_review. ";
+                $status_change = '-' . ucfirst(strtolower($status_review));
+            } else {
+                $job_changes[] = '-sandbox';
+            }
+            if ($notes) {
+                //add review notes
+                $fee_amount = 0.00;
+                $fee_desc = 'Review Notes:'. $notes;
+                $mechanic_id = $user->getId();
+                $itemid = $workitem->getId();
+                $is_expense = 1;
+                $fee_category = '';
+                AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
+            }
+            $notifyEmpty = false;
+            if ($status_review == 'FUNCTIONAL') {
+                $status_change = '-functional';
+                Notification::workitemNotify(array('type' => 'modified-functional',
+                    'workitem' => $workitem,
+                    'status_change' => $status_change,
+                    'job_changes' => $job_changes,
+                    'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+                    array('changes' => $new_update_message));
+              $notifyEmpty = true;
+            }
+
+            $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
         }
-        if ($notes) {
-            //add review notes
-            $fee_amount = 0.00;
-            $fee_desc = 'Review Notes:'. $notes;
-            $mechanic_id = $user->getId();
-            $itemid = $workitem->getId();
-            $is_expense = 1;
-            $fee_category = '';
-            AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
-        }
-        $notifyEmpty = false;
-        if ($status_review == 'FUNCTIONAL') {
-            $status_change = '-functional';
-            Notification::workitemNotify(array('type' => 'modified-functional',
-              'workitem' => $workitem,
-              'status_change' => $status_change,
-              'job_changes' => $job_changes,
-              'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
-              array('changes' => $new_update_message));
-          $notifyEmpty = true;
-        }
-        $journal_message = $_SESSION['nickname'] . " updated item #$worklist_id: " . $workitem->getSummary() . ".  $new_update_message";
+
         $promptForReviewUrl = false;
     }
 }
