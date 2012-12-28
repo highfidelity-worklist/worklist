@@ -1355,12 +1355,16 @@ class WorkItem {
 
     public function validateFunctionalReview() {
         $project = new Project($this->getProjectId());
-
+        $returnValue = true;
         if ($project->getRepo_type() == 'svn') {
-            return SandBoxUtil::authorizeCodeReview($this->getSandboxPath());
+            try {
+                $returnValue = $this->authorizeSandbox();
+            } catch (Exception $ex) {
+                //log error and allow code review
+                error_log($ex->getMessage());
+            }
         }
-
-        return true;
+        return $returnValue;
     }
 
     public function startCodeReview($reviewer_id) {
