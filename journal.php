@@ -110,6 +110,9 @@ function StopStatus() {
     var latency_sample = '<?php echo LATENCY_SAMPLE; ?>';
     var csrf_token = '<?php echo $csrf_token; ?>';
     var addFromJournal = true;
+    var journal = {
+        reloadWindowTimer: <?php echo defined("RELOAD_WINDOW_TIMER") ? RELOAD_WINDOW_TIMER : 3600; ?> 
+    };
 </script>
 <?php
 // Force load individual files while we debug the issues using the minimized version - gj 2011-July-05

@@ -321,6 +321,8 @@ if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);
 
 /** Journal Attachments **/
 if (!defined("ATTACHMENT_URL")) define("ATTACHMENT_URL",SERVER_URL . "helper/get_attachment.php");
+/** Journal Timer **/
+if (!defined("RELOAD_WINDOW_TIMER")) define("RELOAD_WINDOW_TIMER", 7200 ); // 2 hours in s = 10800 = 2 * 60 * 60  
 /** File uploads / S3 settings **/
 /* These allow upload of profile images to S3 */
 if (!defined('S3_ACCESS_KEY')) define('S3_ACCESS_KEY', 'AKIAIXRYPAC4HCOWBXMQ');

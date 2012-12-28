@@ -2686,6 +2686,7 @@ $(window).ready(function() {
         }
     });
     $("#message-pane").keydown(function(e) {
+        journal.reloadWindowTimerReset();
         // shift
         if (e.keyCode == 16) {
             shiftPressed = true;
@@ -2724,6 +2725,16 @@ $(window).ready(function() {
     
     $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
     $.timer['getLatestSpeakers'] = setInterval(getLatestSpeakers, speakerPollingInterval);
+    journal.reloadWindowTimerAction = function() {
+        location.reload(true);
+    };
+    journal.reloadWindowTimerReset = function() {
+        if (journal.timerReloadWindowTimer) {
+            window.clearTimeout(journal.timerReloadWindowTimer);
+        }
+        journal.timerReloadWindowTimer = setTimeout(journal.reloadWindowTimerAction, 1000 * journal.reloadWindowTimer);
+    };
+    journal.reloadWindowTimerReset();
     scrollViewTo('100%', true);
     enlivenEntries();
 
