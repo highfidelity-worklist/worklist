@@ -7,5 +7,5 @@ RewriteRule ^(.+)/$ /worklist/$1 [L,R=301]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /worklist/worklist.php?project=$1 [L,QSA]
+RewriteRule ^(.*)$ /worklist/project.php?project=$1 [L,QSA]
 

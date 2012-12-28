@@ -1,13 +1,13 @@
 <div id="popup-addrole" class="popup-body" title = "Add Role">
     <form name="popup-form" id="popup-form-edit" action="" method="post">
         <p class="info-label"><span class="required-field">*</span> Role Title:<br />
-            <input type="text" name="role_title" id="role_title" class="text-field" size="64" />
+            <input type="text" name="role_title" id="role_title" class="text-field" />
         </p>
         <p class="info-label"><span class="required-field">*</span> Percentage<br />
-            <input type="text" name="percentage" id="percentage" class="text-field" size="48" />
+            <input type="text" name="percentage" id="percentage" class="text-field" />
         </p>
         <p class="info-label">Minimum Amount<br />
-            <input type="text" name="min_amount" id="min_amount" class="text-field" size="48" />
+            <input type="text" name="min_amount" id="min_amount" class="text-field" />
         </p>
         <script type="text/javascript">
             // see http://regexlib.com/REDetails.aspx?regexp_id=318

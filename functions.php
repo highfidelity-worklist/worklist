@@ -528,7 +528,7 @@ function payBonusToUser($user_id, $amount, $notes, $budget_id) {
 
 
 function formatableRelativeTime($timestamp, $detailLevel = 1) {
-	$periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+	$periods = array("sec", "min", "hr", "day", "week", "mnth", "yr", "decade");
 	$lengths = array("60", "60", "24", "7", "4.357", "12", "10");
 	$now = time();
 	if(empty($timestamp)) {

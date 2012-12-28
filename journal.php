@@ -341,11 +341,11 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                 <div>
                                     <p>
                                         <span id="biddingjobs">no jobs</span> in 
-                                        <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=bidding&journal_query=1">Bidding</a>
+                                        <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=bidding">Bidding</a>
                                     </p>
                                     <p>
                                         <span id="reviewjobs">no jobs</span> in need of 
-                                        <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=review&journal_query=1">Code Review</a>
+                                        <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=review">Code Review</a>
                                     </p>
                                     <?php if (isset($_SESSION['userid'])): ?>
                                         <input type="button" value="Add Job" id="addJob" />

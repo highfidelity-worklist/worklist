@@ -13,13 +13,11 @@ a:hover {
     text-decoration: underline !important;
 }
 
-.popup-body,
 #confirmation{
     display: none;
 }
 
-.popup-body,
-#addproject{
+.popup-body {
     display: none;
 }
 
@@ -466,9 +464,6 @@ color:#98AAB2;
 .feesum {
   cursor: pointer;
 }
-#feesToolTip {
-  display: none;
-}
 
 #loader_img_title {
     border: 2px #DCD998 solid;
@@ -564,7 +559,7 @@ td.textAlignReport {
     text-align: right;
     padding-top:4px;
     margin:1px;
-    width:210px;:
+    width:210px;
 }
 
 .report-label,
@@ -788,27 +783,10 @@ td.textAlignReport {
     text-decoration: none;
 }
 
-.projectLeft {
-    width:430px;
-    float:left;
-}
-.projectRight {
-    width:419px;
-    float:right;
-}
-
 .noMargin {
     margin: 0;
 }
 /*roles section*/
-.table-caption {
-    font-size:14px;
-    font-weight:bold;
-    text-align:left;
-    color: black;
-    padding: 0px 0px 3px 0px;
-}
-
 .buttonContainer-save {
     margin:15px 0px 20px -8px;
 }
@@ -822,32 +800,6 @@ td.textAlignReport {
     margin-left: -25px;
 }
 
-.projectRight .payments,
-.projectRight .roles,
-.projectStatistics,
-.runnerStatistics,
-.projectWorkers,
-.projectRunners,
-.runnerProjects,
-.runnerWorkers {
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    border-radius: 6px;
-    border:2px #DCD998 solid;
-    padding:0px 8px 8px 8px;
-    background-color: #FFFFDD;
-    margin-bottom:10px;
-}
-
-.runnerStatistics {
-    width: 93%;
-    text-align: center;
-    font-weight: bold;
-}
-
-.table-runner-stats .table-caption {
-    font-size: 12px;
-}
 table.tablesorter thead tr .header {
     background-image: url(../images/bg.gif);
     background-repeat: no-repeat;
@@ -863,52 +815,6 @@ table.tablesorter thead tr .headerSortDown {
 
 table.tablesorter thead tr .headerSortUp {
     background-image: url(../images/asc.gif);
-}
-
-.runnerProjects,
-.runnerWorkers {
-    width: 340px;
-    margin-left: -29px;
-}
-
-#runner-total-jobs,
-#runner-active-jobs {
-    color: #98AAB2;
-}
-
-.projectStatistics {
-    width: 399px;
-    float: right;
-    margin-top: -100px;
-}
-
-.table-workers tr,
-.table-proj-runners {
-    font-weight: normal;
-    font-size: 12px !important;
-}
-
-.table-runner-workers tr,
-.table-runner-projects tr {
-    font-weight: bold;
-    font-size: 12px !important;
-}
-
-.table-workers tr td a,
-.table-runner-workers tr td a
-.table-runner-project tr td a {
-    text-decoration: none;
-    color: #98AAB2;
-}
-/*roles popup*/
-#popup-role-info td {
-    border:none;
-}
-
-#payment-panel,
-#roles-panel,
-#stats-panel{
-    margin: 10px 0 0px;
 }
 
 #for_view li .notestext a,
@@ -1004,52 +910,8 @@ input.button-disabled ,
     margin-top: 20px;
 }
 
-#inlineMessage {
-    width: 860px;
-    background-color: #dedcf1;
-    margin: 20px auto 10px auto;
-    padding: 10px 20px 10px 20px;
-    display: none;
-}
-
-#inlineMessage p {
-    line-height: 13px;
-    color: #6F6F6F;
-    margin: 0 0 5px 0;
-}
-
-#inlineMessage .inlineWelcome {
-    font-weight: bold;    
-}
-
-#inlineMessage a {
-    font-weight: bold;
-    text-decoration: none;
-    color: #6F6F6F;
-}
-
-#inlineMessage a:hover {
-    color: #98AAB2;
-}
-
-#inlineMessage input {
-    position: relative;
-    left: -3px;
-}
-
-#inlineSource {
-    font-size: 11px;
-    display: inline;
-    position: relative;
-    left: 3px;
-}
-
 .loading {
     font-style: italic;
-}
-
-#testFlightButton {
-    float: right;
 }
 
 .past-due {
@@ -1281,13 +1143,6 @@ input.button-disabled ,
 .table-worklist .worklist-pagination-row .inactive {
     color: #888888;
 }
-.addproject_img {
-    width:48px;
-    height:48px;
-    cursor: pointer; 
-    margin-top:5px; 
-    border: 2px solid rgb(209, 207, 207);
-}
 #bid_amount_conatiner {
     width: 100%; 
     margin-bottom: 4px; 
@@ -1402,13 +1257,4 @@ input.button-disabled ,
     float: left; 
     font-family: arial;
     color: #666666;
-}
-
-.remove-runner-nickname {
-    width: 150px;
-}
-
-.remove-runner-label {
-    width: 30px;
-    text-align: center;
 }

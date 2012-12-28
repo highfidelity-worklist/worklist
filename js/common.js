@@ -265,3 +265,57 @@ $(function() {
         }
     });
 });
+
+function makeWorkitemTooltip(className){
+    $(className).tooltip({
+        delay: 500,
+        extraClass: "content",
+        showURL: false,
+        bodyHandler: function() {
+            var msg = "Loading...";
+            var worklist_id = $(this).attr('id').substr(9);
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: 'getworkitem.php',
+                data: {'item' : worklist_id},
+                dataType: 'json',
+                bgcolor:"#ffffff",
+                success: function(json) {
+                    msg = json.summary ? '<div class = "head">' + json.summary + '</div>' : '';
+                    msg += json.notes ? '<div class = "tip-entry no-border">' + json.notes + '</div>' : '';
+                    msg += json.project ? '<div class = "tip-entry">Project: ' + json.project + '</div>' : '';
+                    if (json.runner) {
+                        msg += '<div class = "tip-entry">Runner: ' + json.runner + '</div>';
+                    } else if (json.creator) {
+                        msg += '<div class = "tip-entry">Creator: ' + json.creator + '</div>';
+                    }
+                    msg += json.job_status ? '<div class = "tip-entry">Status: ' + json.job_status + '</div>' : '';
+                    if (json.comment) {
+                        msg += '<div class = "tip-entry">Last Comment by <i>' + json.commentAuthor + '</i>: ' + json.comment + '</div>';
+                    } else {
+                        msg += '<div class = "tip-entry">No comments yet.</div>';
+                    }
+                    if (msg == '') {
+                        msg = 'No data available';
+                    }
+                },
+                error: function(xhdr, status, err) {
+                    msg = 'Data loading error.<br />Please try again.';
+                }
+            });
+            return $('<div>').html(msg);
+        }
+    });
+}
+
+function validateUploadImage(file, extension) {
+    if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))) {
+        // extension is not allowed
+        $('span.LV_validation_message.upload').css('display', 'none').empty();
+        var html = 'This filetype is not allowed!';
+        $('span.LV_validation_message.upload').css('display', 'inline').append(html);
+        // cancel upload
+        return false;
+    }
+}

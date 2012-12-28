@@ -1,0 +1,568 @@
+/*  
+    Copyright (c) 2009-2010, LoveMachine Inc.
+    All Rights Reserved. 
+    http://www.lovemachineinc.com
+*/
+
+a {
+    color: #333333;    
+}
+
+a:hover {
+    color: #608E96;
+}
+
+a:active {
+    color: #993300;
+}
+
+#center {
+    width: 902px;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: relative;
+}
+
+h2, h3 {
+    color: #993300;
+}
+
+.leftCol {
+    width: 415px;
+    float: left;
+}
+
+.rightCol {
+    width: 450px;
+    float: right;
+}
+
+table {
+    border-collapse: separate;
+    border-color: #d6d6d6;
+    font-size: 1em;
+}
+
+table tr:hover {
+    background: none;
+}
+
+table td, 
+table th {
+    border: none;
+}
+
+table thead tr,
+table thead tr:hover {
+    background: none #ffffff;
+    color: #999999;
+    font-weight: bold;
+}
+
+
+tr.rowodd, 
+tr.rowodd:hover {
+    background: none #efefef;
+}
+
+tr.roweven, 
+tr.roweven:hover {
+    background: none #ffffff;
+}
+
+td.noroles {
+    text-align: center;
+}
+
+#left, 
+#right {
+    display: none;
+}
+
+#container .buttonContainer {
+    text-align: left;
+}
+
+.buttonContainer input[type="button"],
+.buttonContainer input[type="submit"],
+.runner input[type="submit"],
+#modeSwitch input[type="submit"],
+.popup-body input[type="button"],
+.popup-body input[type="submit"],
+#uploadButtonDiv {
+    background: none #608E96;
+    border: medium none;
+    border-radius: 3px;
+    color: #FFFFFF;
+    font-family: Helvetica,arial,sans-serif;
+    font-weight: bold;
+    padding: 0 20px;
+    width: auto;
+}
+
+
+#projectHeader {
+    margin: 10px 0 25px 0;
+}
+
+#projectHeader:after,
+#projectContent:after {
+    clear: both;
+    display: block;
+    float: none;
+    content: "";
+}
+
+#projectLogo,
+#projectLogoEdit {
+    float: left;
+    margin-top: 35px;
+}
+
+#projectLogo img,
+#projectLogoEdit img {
+    width: 70px;
+    height: 70px;
+    border: 3px solid #696969;
+    display: block;
+}
+
+#projectLogoEdit {
+    position: relative;
+}
+#projectLogoEdit input, #projectLogoEdit label {
+    font-size: .7em;
+    position: absolute;
+}
+
+#projectLogoEdit input {
+    left: 0;
+    bottom: -20px;
+}
+
+#projectLogoEdit label {
+    right: 0;
+    bottom: -18px;
+}
+
+#projectHeader h2 {
+    margin: 24px 0 0 76px;
+    height: 50px;
+    font-size: 3.5em;
+    font-family: 'Cabin', sans-serif;
+    padding-bottom: 0px;
+}
+
+#projectHeader h2,
+#projectUrl > div {
+    padding-left: 19px;
+}
+
+#projectUrl {
+    float: right;
+    width: 338px;
+}
+
+#projectUrlLabel {
+    color: #993300;
+    font-size: 1.1em;
+}
+
+#projectHeader .rightCol {
+    margin-top: 74px;
+}
+
+#projectUrl > div,
+#projectHeader .rightCol > div {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 2px solid #E1E8EA;
+    border-bottom: 2px solid #E1E8EA;
+}
+
+
+#contactInfo {
+    display: inline-block;
+}
+
+#projectRunner,
+#projectInternal {
+    float: right;
+}
+
+#website {
+    width: 165px;
+    margin: 0 0 0 5px;
+}
+
+#projectInternal input,
+#projectInternal label {
+    font-size: .8em;
+    line-height: 1em;
+    vertical-align: middle;
+}
+
+#projectUrlField,
+#projectInternal input, 
+#projectInternal label,
+#contactInfo,
+#projectRunner {
+    line-height: 1.9em;
+}
+
+#projectUrlLabel,
+#contactInfo > span,
+#projectRunner > span {
+    font-weight: bold;
+}
+
+#projectContent > div > ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0;
+}
+
+#projectContent h3 {
+    font-weight: normal;
+    border-bottom: 2px solid #E1E8EA;
+    margin-bottom: 0;
+    margin-top: 15px;
+    font-size: 1.4em;
+}
+
+textarea#description {
+    width: 400px;
+    min-height: 250px;
+}
+
+#uploadPanel h3 {
+    color: #6F6F6F;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#uploadPanel .uploadbutton {
+    background-image: url('../images/primaryIcons-WL.png') !important;
+    background-position: 7px -1013px !important;
+    background-repeat: no-repeat !important;
+    padding-left: 28px !important;
+    line-height: 15px;
+    float: right;
+    height: 27px;
+}
+
+#uploadPanel .uploadbutton .smbutton {
+    padding: 7px 0px 6px 9px;
+    right: -5px !important;
+    top: 6px;
+    font-weight: normal;
+    background: none repeat scroll 0 0 transparent !important;
+    border-left: 1px solid #83A8A6 !important;
+    color: #FFFFFF !important;
+    font-size: 15px !important;
+    height: 28px !important;
+    letter-spacing: 1px !important;
+    margin: 0 !important;
+    padding: 1px 0 0 8px !important;
+    position: relative;
+    right: -2px;
+    top: 6px;
+    width: auto !important;    
+}
+
+
+#projectDescription p {
+    font-size: 1.5em;
+    padding: 10px 0 5px 0;
+    line-height: 1.3em;
+}
+
+p#projectTotalFees {
+    color: #838383;
+    margin-bottom: 5px;
+}
+
+#projectTotalFees, 
+#projectFundingSource {
+    font-style: italic;
+}
+
+#projectTotalFees strong {
+    color: #333333;    
+}
+
+p#projectFundingSource {
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+    font-size: 1em;
+    padding-top: 5px;
+}
+
+#projectContributors {
+    margin-top: 5px;
+}
+
+#projectContributors,
+#projectContributors a {
+    color: #608e96;
+    font-weight: bold;
+}
+
+#projectContributors a {
+    text-decoration: none;
+}
+
+#projectContributors a:hover,
+#projectContributors a:active {
+    text-decoration: underline;
+}
+
+#projectRoles tbody tr {
+    cursor: pointer;
+}
+
+#projectRoles .buttonContainer,
+#projectRunners .buttonContainer {
+    border-left: 1px solid #D6D6D6;
+    border-right: 1px solid #D6D6D6;
+    border-bottom: 1px solid #D6D6D6;
+    padding: 10px;
+    margin-top: 0;    
+}
+
+#projectRoles .buttonContainer {
+    width: 360px;
+}
+
+#projectRepositoryUrl:before {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+#projectRepository {
+    margin: 5px 0 17px;
+    font-size: .9em;
+}
+
+a#projectRepositoryUrl {
+    display: inline-block;
+    width: auto;
+    background-color: #efefef;
+    color: #608e96;
+    padding: 5px 10px;
+    margin: 5px 0 30px 0;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-decoration: none;
+}
+
+a#projectRepositoryUrl:hover {
+    text-decoration: underline;
+}
+
+#projectTotalJobs {
+    float: left;
+    padding: 5px;
+    width: 95px;
+    margin: 0;
+    border-top: 1px solid #d6d6d6;
+    border-left: 1px solid #d6d6d6;
+    border-right: 1px solid #d6d6d6;
+}
+
+#projectTotalJobs h3 {
+    font-size: 1em;
+    padding: 5px 0 0 3px;
+    margin-top: 0;
+}
+
+#total_jobs_stats {
+    font-size: 3.5em;
+    display: inline-block;
+    width: 90px;
+    font-family: 'Cabin', sans-serif;
+}
+
+
+#projectTotalJobs h3,
+#projectAverageBid h3,
+#projectAverageJobTime h3 {
+    border-bottom: none;
+}
+
+#projectAverageBid {
+    margin-top: 33px;
+}
+
+#projectAverageBid,
+#projectAverageJobTime {
+    float: right;
+    width: 322px;
+    margin-bottom: 0;
+}
+
+#projectAverageBid h3,
+#projectAverageJobTime h3 {
+    display: inline;
+    color: #333333;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+#avg_bid_per_job_stats,
+#avg_job_time_stats {
+    font-size: 1.2em;
+}
+
+#projectActiveJobs:before {
+    border-top: 1px solid #d6d6d6;
+    clear: both;
+    content: '';
+    float: none;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.projectJobLink {
+    width: 250px;
+}
+
+.projectJobStatus {
+    width: 80px;
+}
+
+.projectJobSandbox {
+    width: 60px;
+}
+
+.projectJobLink a {
+    font-weight: normal;
+}
+
+.projectJobLink a > span {
+    font-weight: bold;
+}
+
+.projectJobLink a > span:before {
+    content: ' - ';
+    font-weight: normal;
+}
+
+#viewHistory {
+    margin-top: 5px;
+    color: #999999;
+} 
+
+#viewHistory a {
+    font-weight: bold;
+    color: #608e96;
+    text-decoration: underline;
+}
+
+#viewHistory a:hover,
+#viewHistory a:active {
+    text-decoration: none;
+}
+
+#projectRoles h3,
+#projectPayments h3,
+#projectRunners h3,
+#projectActiveJobs h3 {
+    border-bottom: none;
+}
+
+#projectRunners .runnerRemove {
+    width: 20px;
+    text-align: center;
+}
+
+#projectRunners .runnerName {
+    width: 120px;
+}
+
+#projectRunners .runnerJobCount {
+    width: 60px;
+    font-size: 12px;
+}
+
+#projectRunners .runnerLastActivity {
+    width: 120px;
+    font-size: .8em;
+}
+
+#projectRunners .runnerPing {
+    width: 60px;
+}
+
+tr.runner > td > input[type="submit"] {
+    font-size: .8em;
+    padding: 0 10px;
+    height: 1.6em;
+}
+
+#projectRunners .buttonContainer {
+    width: 380px;
+}
+
+#projectCodeReviewRights h3 > span {
+    color: #999999;
+}
+
+#projectCodeReviewRights > div {
+    margin: 5px 0;
+}
+
+#projectCodeReviewRights label:after {
+    display: block;
+    content: '';
+    float: none;
+    clear: both;
+}
+
+#projectContent table {
+    width: auto;
+    margin-top: 5px;
+}
+
+#projectContent thead td,
+#projectContent thead th {
+    padding-top: 8px;
+}
+
+#projectContent td,
+#projectContent th {
+    padding: 6px 10px;
+}
+
+.roleTitle {
+    font-weight: bold;
+}
+
+.roleTitle,
+.rolePercentage {
+    width: 120px;
+}
+
+.roleAmmount {
+    width: 80px;
+}
+
+#popup-role-info td {
+    border:none;
+}
+
+#projectTestFlight h3 {
+    margin-bottom: 10px;
+}
+
+#modeSwitch {
+    position: absolute;
+    top: 10px;
+    right: 0;
+}
+
+.LV_validation_message {
+    display: none;
+}
+

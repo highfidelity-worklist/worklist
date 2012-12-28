@@ -796,10 +796,6 @@ a:hover{
 }
 
 .table-caption {
-    font-size:14px;
-    font-weight:bold;
-    text-align:left;
-    color: black;
     clear: both;
     height: 26px;
     padding: 0;

@@ -2,13 +2,13 @@
     <form name="popup-form" id="popup-form" action="" method="post">
         <input type="hidden" name="role_id" value="" />
         <p class="info-label"><span class="required-field">*</span> Role Title:<br />
-            <input type="text" name="role_title_edit" id="role_title_edit" class="text-field" size="64" />
+            <input type="text" name="role_title_edit" id="role_title_edit" class="text-field" />
         </p>
         <p class="info-label"><span class="required-field">*</span> Percentage<br />
-            <input type="text" name="percentage_edit" id="percentage_edit" class="text-field" size="48" />
+            <input type="text" name="percentage_edit" id="percentage_edit" class="text-field" />
         </p>
         <p class="info-label">Minimum Amount<br />
-            <input type="text" name="min_amount_edit" id="min_amount_edit" class="text-field" size="48" />
+            <input type="text" name="min_amount_edit" id="min_amount_edit" class="text-field" />
         </p>
         <script type="text/javascript">
             var regex_amount = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;

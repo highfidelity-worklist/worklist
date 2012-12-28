@@ -741,11 +741,7 @@ class Project {
             if($lastActivity == '') {
                 return false;
             } else {
-                if(($rightNow - $lastActivity) > 604800) { //if greater than a week i.e. 7*24*60*60 in seconds
-                    return date('d-F-Y', $lastActivity);
-                } else {
-                    return (formatableRelativeTime($lastActivity, 2) . " ago");
-                }
+                return (formatableRelativeTime($lastActivity, 2) . " ago");
             }
         }
         return false;
@@ -804,25 +800,36 @@ class Project {
     }
     
     public function getDevelopers() {
-        $query = "SELECT DISTINCT u.id, u.nickname, 
-                 (SELECT COUNT(*) FROM " . WORKLIST . " w 
-                 LEFT JOIN " . PROJECTS . " p on w.project_id = p.project_id 
-                 WHERE ( w.mechanic_id = u.id OR w.creator_id = u.id) 
-                 AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done') 
-                 AND p.project_id = "  . $this->getProjectId() . ") as totalJobCount,
-                 (SELECT SUM(F.amount) FROM " . FEES . " F 
-                 LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
-                 LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
-                 WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
-                 AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')				 
-                 AND p.project_id = " . $this->getProjectId() . ") as totalEarnings
-                 FROM " . BIDS . " b LEFT JOIN " . WORKLIST . " w ON b.worklist_id = w.id 
-                 LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
-                 LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
-                 WHERE b.accepted = 1 
-                 AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
-                 AND p.project_id = " . $this->getProjectId() . " ORDER BY totalEarnings DESC";
+        $query = "
+                SELECT DISTINCT u.id, u.nickname, 
+                    (
+                        SELECT COUNT(*) 
+                        FROM " . WORKLIST . " w 
+                            LEFT JOIN " . PROJECTS . " p on w.project_id = p.project_id 
+                        WHERE ( w.mechanic_id = u.id OR w.creator_id = u.id) 
+                            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done') 
+                        AND p.project_id = "  . $this->getProjectId() . "
+                    ) as totalJobCount,
+                    (
+                        SELECT SUM(F.amount) 
+                        FROM " . FEES . " F 
+                            LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
+                            LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
+                        WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
+                            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')				 
+                            AND p.project_id = " . $this->getProjectId() . "
+                    ) as totalEarnings
+                    
+                FROM " . BIDS . " b 
+                    LEFT JOIN " . WORKLIST . " w ON b.worklist_id = w.id 
+                    LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
+                    LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
+                WHERE b.accepted = 1 
+                    AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
+                    AND p.project_id = " . $this->getProjectId() . " 
+                ORDER BY totalEarnings DESC";
         if($result = mysql_query($query)) {
+            $developers = array(); 
             if(mysql_num_rows($result) > 0) {
                 while($row = mysql_fetch_assoc($result)) {
                     $developers[$row['id']] = $row;
@@ -836,6 +843,56 @@ class Project {
         return $developers;
     }
   
+    public function getContributors() {
+        $query = "
+                SELECT DISTINCT u.id, u.nickname
+                FROM " . FEES . " f 
+                    LEFT JOIN " . WORKLIST . " w ON f.worklist_id = w.id 
+                    LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
+                    LEFT JOIN " . USERS . " u ON f.user_id = u.id 
+                WHERE f.paid = 1 
+                    AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
+                    AND p.project_id = " . $this->getProjectId() . "
+                ORDER BY f.date DESC";
+        $result = mysql_query($query);
+        if ($result) {
+            $contributors = array();
+            if (mysql_num_rows($result) > 0) {
+                while ($row = mysql_fetch_assoc($result)) {
+                    $contributors[$row['id']] = $row;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return $contributors;
+    }
+
+    public function getActiveJobs() {
+        $query = "
+                SELECT `id`, `summary`, `status`, `sandbox`
+                FROM " . WORKLIST . " w
+                WHERE w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed')
+                    AND w.project_id = " . $this->getProjectId() . "
+                ORDER BY w.created ASC";
+        $result = mysql_query($query);
+        if($result) {
+            $jobs = array();
+            if (mysql_num_rows($result) > 0) {
+                while ($row = mysql_fetch_assoc($result)) {
+                    $jobs[$row['id']] = $row;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return $jobs;
+    }
+    
     public function getDevelopersLastActivity($userId) {
         $sql = "SELECT MAX(change_date) FROM " . STATUS_LOG . " s 
                 LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id 

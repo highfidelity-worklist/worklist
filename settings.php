@@ -405,17 +405,6 @@ include("head.html");
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
     var worklistUrl = '<?php echo SERVER_URL; ?>';
 
-    function validateUploadImage(file, extension) {
-        if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))) {
-            // extension is not allowed
-            $('span.LV_validation_message.upload').css('display', 'none').empty();
-            var html = 'This filetype is not allowed!';
-            $('span.LV_validation_message.upload').css('display', 'inline').append(html);
-            // cancel upload
-            return false;
-        }
-    }
-
     function completeUploadImage(file, data) {
         $('span.LV_validation_message.upload').css('display', 'none').empty();
         if (!data.success) {

@@ -697,6 +697,7 @@ class JsonServer
             ));
         }
     }
+    
     protected function actionGetFilesForProject() {
         $files = File::fetchAllFilesForProject($this->getRequest()->getParam('projectid'));
         $user = new User();
@@ -709,55 +710,30 @@ class JsonServer
             if (!File::isAllowed($file->getStatus(), $user)) {
                 continue;
             }
+            if ($file->getIs_scanned() == 0) {
+                $fileUrl = 'javascript:;';
+                $iconUrl = 'images/icons/default.png';
+            } else {
+                $fileUrl = $file->getUrl();
+                $iconUrl = $file->getUrl();
+            }
+            
             $icon = File::getIconFromMime($file->getMime());
             if ($icon === false) {
                 array_push($data['images'], array(
-                    'fileid' => $file->getId(),
-                    'url' => $file->getUrl(),
-                    'icon' => $file->getUrl(),
+                    'fileid'=> $file->getId(),
+                    'url'    => $fileUrl,
+                    'icon'    => $iconUrl,
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
                 ));
             } else {
                 array_push($data['documents'], array(
-                    'fileid' => $file->getId(),
-                    'url' => $file->getUrl(),
-                    'icon' => $icon,
+                    'fileid'=> $file->getId(),
+                    'url'    => $fileUrl,
+                    'icon'    => $icon,
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
-                ));
-            }
-        }
-
-
-        return $this->setOutput(array(
-            'success' => true,
-            'data' => $data
-        ));
-    }
-    protected function actionGetDevelopersForProject() {
-        $data = array(
-            'developers' => array()
-        );
-
-        $project = new Project();
-        try {
-            $project->loadById($this->getRequest()->getParam('projectid'));
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-            return $this->setOutput(array(
-                'success' => false,
-                'data' => $error
-            ));
-        }
-        if($developers = $project->getDevelopers()) { 
-            foreach($developers as $developer) {
-                array_push($data['developers'], array(
-                    'id'=> $developer['id'],
-                    'nickname' => $developer['nickname'],
-                    'totalJobCount' => $developer['totalJobCount'],
-                    'lastActivity' => $project->getDevelopersLastActivity($developer['id']),
-                    'totalEarnings' => ($developer['totalEarnings'] > 0) ? "$" . $developer['totalEarnings'] : ""
                 ));
             }
         }
@@ -799,7 +775,7 @@ class JsonServer
         }
     }
     
-    function actionRemoveRunnersFromProject() {
+    protected function actionRemoveRunnersFromProject() {
         $data = array();
         $project = new Project();
         
@@ -904,29 +880,7 @@ class JsonServer
             ));
         }
     }
-    
-    protected function actionGetStatsForProject() {
-        $project = new Project();
-        try {
-            $project->loadById($this->getRequest()->getParam('projectid'));
-        } catch (Exception $e) {
-            $error  = $e->getMessage();
-            return $this->setOutput(array(
-                'success' => false,
-                'data' => $error
-            ));
-        }
 
-        $data = array(
-            'total_jobs_stats' => $project->getTotalJobs(),
-            'avg_bid_per_job_stats' => number_format($project->getAvgBidFee(), 2),
-            'avg_job_time_stats' => $project->getAvgJobTime()
-        );
-        return $this->setOutput(array(
-            'success' => true,
-            'data' => $data
-        ));
-    }
 
     /**
      * This method handles the upload of the W9 form

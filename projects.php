@@ -41,16 +41,6 @@ include("opengraphmeta.php");
 <script type="text/javascript" src="js/budget.js"></script>
 
 <script type="text/javascript">
-    function validateUploadImage(file, extension) {
-        if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))) {
-            // extension is not allowed
-            $('span.LV_validation_message.upload').css('display', 'none').empty();
-            var html = 'This filetype is not allowed!';
-            $('span.LV_validation_message.upload').css('display', 'inline').append(html);
-            // cancel upload
-            return false;
-        }
-    }
     function ToolTip() {
         xOffset = 10;
         yOffset = 20;

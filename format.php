@@ -112,14 +112,12 @@
                     return false;
                 });
 
-                var inProject = '';
-
                 new AjaxUpload('projectLogoAdd', {
                     action: 'jsonserver.php',
                     name: 'logoFile',
                     data: {
                         action: 'logoUpload',
-                        projectid: inProject,
+                        projectid: '',
                     },
                     autoSubmit: true,
                     responseType: 'json',

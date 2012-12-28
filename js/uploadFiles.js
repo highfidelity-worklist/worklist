@@ -7,17 +7,11 @@
             }
             return this.each(function() {
                 var $this = $(this), fdata = $this.data('fileUpload');
-                // Activate the accordion
-                $this.accordion({
-                    clearStyle: true,
-                    collapsible: true,
-                    active: false
-                });
                 if(!fdata) {
                     fdata = {};
                     fdata.user = (typeof(user_id) != 'undefined') ? user_id : '';
                     fdata.workitem = (typeof(workitem_id) != 'undefined') ? workitem_id : null;
-                    fdata.projectid = (typeof(inProject) != 'undefined') ? inProject : null;
+                    fdata.projectid = (typeof(projectid) != 'undefined') ? projectid : null;
                     fdata.images = (typeof(options.images) != 'undefined') ? options.images : new Array();
                     fdata.documents = (typeof(options.documents) != 'undefined') ? options.documents : new Array();
                     fdata.trackfiles = typeof(options.tracker) != 'undefined' ? options.tracker : false;

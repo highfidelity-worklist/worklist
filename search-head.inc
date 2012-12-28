@@ -18,10 +18,8 @@
       </div>
       <div class="filters">
         <div id="projectFilter">
-          <?php if (empty($_REQUEST['project'])) { ?>
           <label>Which project?</label>
           <?php echo $filter->getProjectSelectbox('All projects', 1) . " "; ?>
-          <?php } ?>
         </div>
         
         <div id="userFilter">
