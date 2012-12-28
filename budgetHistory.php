@@ -71,6 +71,7 @@ if ($page == 1) {
   <thead>
     <tr>
       <th class="date">Created</th>
+      <th class="id">ID #</th>
       <th class="giver">Grantor</th>
       <th class="amount">Amount</th>
       <?php if (!empty($id) && $userId == $id) { ?>
@@ -108,6 +109,7 @@ if ($result) {
         <?php echo (!empty($notes)) ? $notes : $row['budget_id'] ; ?>
     >
         <td><?php echo $row['date']; ?></td>
+        <td><?php echo $row['budget_id']; ?></td>
         <td><?php echo ($row['givers_count'] == 1 ) ? $row['nickname'] : "Various"; ?></td>
         <td><?php echo $row['amount']; ?></td>
         <?php if (!empty($id) && $userId == $id) { ?>
