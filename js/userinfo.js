@@ -396,6 +396,8 @@ var UserInfo = {
             return false;
         });
 
+        var limitPerPage = 10;
+
         $('#runnersAccordion').accordion({
             clearStyle: true,
             collapsible: true,
@@ -403,13 +405,13 @@ var UserInfo = {
             create: function(event, ui) { 
                 var workersIntervalId = setInterval(function() {
                     if($("#runner-workers tr").length) {
-                        $('#runner-workers').paginate(5, 500);
+                        $('#runner-workers').paginate(limitPerPage, 500);
                         clearInterval(workersIntervalId);
                     }
                 }, 2000);
                 var intervalId = setInterval(function() {
                     if($("#runner-projects tr").length) {
-                        $('#runner-projects').paginate(3, 500);
+                        $('#runner-projects').paginate(limitPerPage, 500);
                         clearInterval(intervalId);
                     }
                 }, 2000);
