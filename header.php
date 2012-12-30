@@ -39,7 +39,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
 <?php if (isset($_SESSION['username'])) { ?>
                     <div class="loggedIn">
                         <a class="headerUserName" href='javascript:(function() {showUserInfo(<?php echo $userId; ?>);})();'>
-                            <span class=''><?php echo $_SESSION['nickname']; ?></span>
+                            <span id="user" class=''><?php echo $_SESSION['nickname']; ?></span>
                         </a>
                         <div class="headerButtonSeparator">&nbsp;</div>&nbsp;
                         <a href='javascript:;' class='following'><div>Following</div></a>
