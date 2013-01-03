@@ -209,7 +209,9 @@ require_once('opengraphmeta.php');
                                 var runner = runners[i];
                                 html =
                                     '<tr class="runner row' + ((i+1) % 2 ? 'odd' : 'even') + '">' +
+                                        <?php if (($user->getIs_admin() == 1) || $is_owner): ?>
                                         '<td class="runnerRemove">' + (runner.owner ? '' : '<input type="checkbox" name="runner' + runner.id + '" />') + '</td>' +
+                                        <?php endif; ?>
                                         '<td class="runnerName"><a href="#" onclick="javascript:showUserInfo(' + runner.id + ');">' + runner.nickname + '</a></td>' +
                                         '<td class="runnerJobCount">' + runner.totalJobCount + '</td>' +
                                         '<td class="runnerLastActivity">' + (runner.lastActivity ? runner.lastActivity : '') + '</td>' +
@@ -514,7 +516,7 @@ require_once('opengraphmeta.php');
                         <?php if ($project->getWebsite()): ?>
                             <?php echo $project->getWebsiteLink(); ?>
                         <?php endif; ?>
-                    <? endif; ?>
+                    <?php endif; ?>
                     </span>
                     <?php if ($userId > 0 && $user->getIs_admin()): ?>
                         <div id="projectInternal">
@@ -761,7 +763,7 @@ require_once('opengraphmeta.php');
                     <table>
                         <thead>
                             <tr>
-                                <th colspan="2">Who</th>
+                                <th <?php echo (($user->getIs_admin() == 1) || $is_owner) ? 'colspan="2"' : ''; ?>>Who</th>
                                 <th># of Jobs</th>
                                 <th>Last Activity</th>
                             </tr>
@@ -769,7 +771,7 @@ require_once('opengraphmeta.php');
                         <tbody>
                         </tbody>
                     </table>
-                    <?php if (($user->getIs_admin() == 1) || $is_owner) : ?>
+                    <?php if (($user->getIs_admin() == 1) || $is_owner): ?>
                         <div class="buttonContainer">
                             <input type="submit" id="addrunner" value="Add" />
                             <input type="submit" id="removerunner" value="Remove" />

@@ -275,6 +275,7 @@ textarea#description {
     font-size: 1.5em;
     padding: 10px 0 5px 0;
     line-height: 1.3em;
+    word-wrap: break-word;
 }
 
 p#projectTotalFees {
@@ -364,7 +365,6 @@ a#projectRepositoryUrl:hover {
 #projectTotalJobs {
     float: left;
     padding: 5px;
-    width: 95px;
     margin: 0;
     border-top: 1px solid #d6d6d6;
     border-left: 1px solid #d6d6d6;
@@ -380,7 +380,6 @@ a#projectRepositoryUrl:hover {
 #total_jobs_stats {
     font-size: 3.5em;
     display: inline-block;
-    width: 90px;
     font-family: 'Cabin', sans-serif;
 }
 
@@ -391,15 +390,14 @@ a#projectRepositoryUrl:hover {
     border-bottom: none;
 }
 
-#projectAverageBid {
-    margin-top: 33px;
+li#projectAverageBid {
+    margin-top: 32px;
 }
 
 #projectAverageBid,
 #projectAverageJobTime {
-    float: right;
-    width: 322px;
-    margin-bottom: 0;
+    float: left;
+    margin: 0 50px 0 25px;
 }
 
 #projectAverageBid h3,
