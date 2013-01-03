@@ -146,6 +146,7 @@ class BudgetInfo {
             $sources = $budget->loadSources(" ORDER BY s.transfer_date DESC");
             if ($sources == null) {
                 $this->respond(false, 'No source budget found!');
+                return;
             }
             foreach ($sources as $source) {
                 $budgetGiver = new User();
@@ -218,7 +219,8 @@ class BudgetInfo {
         if ($reqUserId > 0) {
             $user->findUserById($reqUserId);
         } else {
-            echo "You have to be logged in to access user info!";
+            $this->respond(false, 'You have to be logged in to access user info!');
+            return;
         }
         $this->validateRequest(array('budgetId'));
         $budget_id = $_REQUEST['budgetId'];
@@ -254,7 +256,7 @@ class BudgetInfo {
                             $budget->amount = $budget->original_amount - $remainingFunds;
                             $budget->active = 0;
                             $budgetReceiver->updateBudget(- $remainingFunds, $budget->id, false);
-                            $this->closeOutBudgetSource($remainingFunds, $budget, $budgetReceiver, $budgetGiver);
+                            $this->closeOutBudgetSource($remainingFunds, $budget, $budgetReceiver, $budgetGiver);//contention
                             if ($budget->save('id')) {
                                 $this->respond(true, 'Budget closed');
                             } else {
