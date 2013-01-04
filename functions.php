@@ -1134,12 +1134,22 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
     $review = $oReview[0]['feeRange'] . " " . $oReview[0]['review'];
     $reviewee = new User();
     $reviewee->findUserById($reviewee_id);
-
+    $worklist_link = SERVER_URL . "worklist.php";
+    
     $to = $reviewee->getNickname() . ' <' . $reviewee->getUsername() . '>';
+    $body  = "<p>" . $review . "</p>";
     $nickname = $reviewee->getNickname();
+    $headers = array();
     if ($type == "new") {
-        $subject = "You have received a new review";
+        $userinfo_link = SERVER_URL . 'userinfo.php?id=' . $reviewee->getId();
+        $headers['From'] = 'worklist<donotreply@worklist.net>';
+        $subject = 'New Peer Review';
         $journal = $nickname . " received a new review: " . $review;
+        $body  = '<p>Hello ' . $nickname . ',</p><br />';
+        $body  .= '<p>You have received a review from one of your peers in the Worklist.</p><br />';
+        $body  .= '<p>To see your current user reviews, click <a href="' . $userinfo_link . '">here</a>.</p>';
+        $body  .= '<p><a href="' . $userinfo_link . '">' . $userinfo_link . '</a></p><br />';
+        $body  .= '<p><a href="' . SERVER_URL . '"worklist.php>worklist' . '</a></p>';
     } else if ($type == "update") {
         $subject = "A review of you has been updated";
         $journal = "A review of " . $nickname . " has been updated: ". $review;
@@ -1147,8 +1157,8 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
         $subject = "One of your reviews has been deleted";
         $journal = "One review of " . $nickname . " has been deleted: ". $review;
     }
-    $body  = "<p>" . $review . "</p>";
-    if (!send_email($to, $subject, $body)) { 
+    
+    if (!send_email($to, $subject, $body, null, $headers)) { 
         error_log("review.php: send_email failed"); 
     }
     sendJournalNotification($journal);
