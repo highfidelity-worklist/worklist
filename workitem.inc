@@ -1377,7 +1377,7 @@ $(document).ready(function(){
 
         // Reassign runner
         <?php 
-        if ($action == "edit"): ?>
+        if ($action == "edit" && ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner))): ?>
             (function($) {
                 if ($('#runnerBox span.runnerName') !== null) {
                     $('#runnerBox span.runnerName').css({
