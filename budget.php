@@ -152,7 +152,6 @@ class BudgetInfo {
                 $budgetGiver = new User();
                 if (!$budgetGiver->findUserById($source["giver_id"])) {
                     $this->respond(false, 'Invalid giver id.');
-                    return;
                 }
                 if ($remainingFunds < 0) {
                     if ($budget->seed != 1) {
@@ -219,8 +218,7 @@ class BudgetInfo {
         if ($reqUserId > 0) {
             $user->findUserById($reqUserId);
         } else {
-            $this->respond(false, 'You have to be logged in to access user info!');
-            return;
+            echo "You have to be logged in to access user info!";
         }
         $this->validateRequest(array('budgetId'));
         $budget_id = $_REQUEST['budgetId'];
@@ -256,7 +254,7 @@ class BudgetInfo {
                             $budget->amount = $budget->original_amount - $remainingFunds;
                             $budget->active = 0;
                             $budgetReceiver->updateBudget(- $remainingFunds, $budget->id, false);
-                            $this->closeOutBudgetSource($remainingFunds, $budget, $budgetReceiver, $budgetGiver);//contention
+                            $this->closeOutBudgetSource($remainingFunds, $budget, $budgetReceiver, $budgetGiver);
                             if ($budget->save('id')) {
                                 $this->respond(true, 'Budget closed');
                             } else {

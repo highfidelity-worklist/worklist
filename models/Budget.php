@@ -98,7 +98,7 @@ class Budget extends DataObject {
         $allocatedFunds = -1;
         $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '` WHERE `' . 
                 WORKLIST . '`.`budget_id` = ' . $this->id . ' AND `' . FEES . '`.`worklist_id` = `' . 
-                WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("Working", "Functional", "Review", "Completed") AND `' . 
+                WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("Working", "SvnHold", "Functional", "Review", "Completed") AND `' . 
                 FEES . '`.`withdrawn` != 1;';
         $result = mysql_query($sql);
         if ($result && (mysql_num_rows($result) == 1)) {
