@@ -1364,16 +1364,16 @@ class User {
         $sql = "";
         if ($active) {
             $user_where = "( users.id = runner_id  OR users.id = mechanic_id  OR users.id = creator_id )";
-            $sql .= "SELECT DISTINCT users.* FROM users, worklist
+            $sql .= "SELECT DISTINCT " . USERS . ".* FROM " . USERS . "," . WORKLIST . "
                 WHERE
-                    worklist.status_changed > DATE_SUB(NOW(), INTERVAL 30 DAY) AND 
+                    " . WORKLIST . ".status_changed > DATE_SUB(NOW(), INTERVAL 30 DAY) AND 
                     {$user_where}";
             $sql .= $runner ? ' AND `is_runner` = 1' : '';
             $sql .= " UNION
-                SELECT DISTINCT users.* FROM users, worklist
+                SELECT DISTINCT " . USERS . ".* FROM " . USERS . "
                 WHERE
-                    users.last_seen > DATE_SUB(NOW(), INTERVAL 15 DAY) AND
-                    {$user_where}";
+                    " . USERS . ".added > DATE_SUB(NOW(), INTERVAL 15 DAY) ";
+            
             $sql .= $runner ? ' AND `is_runner` = 1' : '';
         }
         else {
