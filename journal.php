@@ -293,7 +293,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                 <div id="bottom_contain">
                                     <div id="bottom_left">
                                         <div id="buttons">
-                                            <div id="settingsButton" title="Chat Settings" >
+                                            <div id="settingsButton" title="Chat Settings" onclick="initSound();">
                                                 <img src="images/gif.gif" width="33" height="23" id="settingsSwitch" align="bottom" />
                                             </div>
                                             <div id="uploadButton" title="Upload to Chat">
