@@ -506,11 +506,13 @@ color:#98AAB2;
     padding:2px;
 }
 
-#be-search {
+#be-search,
+#bet-search {
     float:right;
 }
 
-#be-search-lbl {
+#be-search-lbl,
+#bet-search-lbl {
     float:left;
     font-size:14px;
     font-weight:bold;
@@ -519,13 +521,15 @@ color:#98AAB2;
     margin-right:8px;
 }
 
-#be-search-field {
+#be-search-field,
+#bet-search-field {
     float:left;
     width:180px;
     margin-bottom:5px;
 }
 
-#be-search-clean {
+#be-search-clean, 
+#bet-search-clean {
     float:right;
     cursor:pointer;
     background:url('../images/cross.png');

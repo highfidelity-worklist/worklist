@@ -372,10 +372,28 @@ var Budget = {
     *  - 0: Allocated
     *  - 1: Submited
     *  - 2: Paid
+    *  - 3: Transfered
     */
     budgetExpand: function(section, budget_id) {
         $('#be-search-field').val('');
         $('#be-search-field').keyup(function() {
+            // Search current text in the table by hiding rows
+            var search = $(this).val().toLowerCase();
+            
+            $('.data_row').each(function() {
+                var html = $(this).text().toLowerCase();
+                // If the Row doesn't contain the pattern hide it
+                if (!html.match(search)) {
+                    $(this).fadeOut('fast');
+                } else { // If is hidden but matches the pattern, show it
+                    if (!$(this).is(':visible')) {
+                        $(this).fadeIn('fast');
+                    }
+                }
+            });
+        });
+        $('#bet-search-field').val('');
+        $('#bet-search-field').keyup(function() {
             // Search current text in the table by hiding rows
             var search = $(this).val().toLowerCase();
             
@@ -398,8 +416,16 @@ var Budget = {
                 $(this).fadeIn('fast');
             });
         });
+        // If clean search, fade in any hidden items
+        $('#bet-search-clean').click(function() {
+            $('#bet-search-field').val('');
+            $('.data_row').each(function() {
+                $(this).fadeIn('fast');
+            });
+        });
         
         $('#budget-expanded').dialog('option', 'position', ['center', 'center']);
+        $('#budget-transferred').dialog('option', 'position', ['center', 'center']);
         
         switch (section) {
             case 0:
@@ -415,6 +441,11 @@ var Budget = {
             case 2:
                 // Fetch new data via ajax
                 $('#budget-expanded').dialog('open');
+                Budget.be_getData(section, budget_id);
+                break;
+            case 3:
+                // Fetch new data via ajax
+                $('#budget-transferred').dialog('open');
                 Budget.be_getData(section, budget_id);
                 break;
         }
@@ -450,13 +481,38 @@ var Budget = {
         $('#be-paid').click(function() {
             Budget.be_handleSorting(section, budget_id, $(this));
         });
+        $('#bet-id').click(function() {
+            Budget.be_handleSorting(section, budget_id, $(this));
+        });
+        $('#bet-budget').click(function() {
+            Budget.be_handleSorting(section, budget_id, $(this));
+        });
+        $('#bet-notes').click(function() {
+            Budget.be_handleSorting(section, budget_id, $(this));
+        });
+        $('#bet-who').click(function() {
+            Budget.be_handleSorting(section, budget_id, $(this));
+        });
+        $('#bet-amount').click(function() {
+            Budget.be_handleSorting(section, budget_id, $(this));
+        });
+        $('#bet-created').click(function() {
+            Budget.be_handleSorting(section, budget_id, $(this));
+        });
     },
 
     be_getData: function(section, budget_id, item, desc) {
         // Clear old data
-        var header = $('#table-budget-expanded').children()[0];
-        $('#table-budget-expanded').children().remove();
-        $('#table-budget-expanded').append(header);
+		var table = '';
+		if (section == 3) {
+			table = '#table-budget-transferred';
+		} else {
+			table = '#table-budget-expanded';
+		}
+		
+        var header = $(table).children()[0];
+        $(table).children().remove();
+        $(table).append(header);
         Budget.be_attachEvents(section, budget_id);
         
         var params = '?section=' + section + '&budget_id=' + budget_id;
@@ -470,33 +526,45 @@ var Budget = {
         $.getJSON('get-budget-expanded.php'+params, function(data) {
             // Fill the table
             for (var i = 0; i < data.length; i++) {
-                var link = '<a href="workitem.php?job_id='+data[i].id+'&action=view" target="_blank">';
-                // Separate "who" names into an array so we can add the userinfo for each one
-                var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
-                var who_link = '';
-                for (var z = 0; z < who.length; z++) {
-                    if (z < who.length-1) {
-                        who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>, ';
-                    } else {
-                        who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>';
-                    }
-                    who_link += who[z];
-                }
-                
-                var row = '<tr class="data_row"><td>' + link + '#' + data[i].id + '</a></td><td title="' + data[i].budget_title + '">' +
-                            data[i].budget_id + '</td><td>' + link+data[i].summary + '</a></td><td>' + who_link +
-                          '</td><td>$' + data[i].amount + '</td><td>' + data[i].status + '</td>' +
-                          '<td>' + data[i].created + '</td>';
-                if (data[i].paid != 'Not Paid') {
-                    row += '<td>'+data[i].paid+'</td></tr>';
+                if (section == 3 ) {
+                    var row = '<tr class="data_row"><td>#' + data[i].id + '</a></td><td title="' + data[i].budget_title + '">' +
+                                data[i].budget_title + '</td><td>' + data[i].notes + '</td><td><a href="#" onclick="showUserInfo(' + data[i].receiver_id + ')">' + data[i].who +
+                              '</a></td><td>$' + data[i].amount + '</td>' +
+                              '<td>' + data[i].created + '</td></tr>';
+                    $('#table-budget-transferred').append(row);
+
                 } else {
-                    row += '<td>'+data[i].paid+'</td></tr>';
+                    var link = '<a href="workitem.php?job_id='+data[i].id+'&action=view" target="_blank">';
+                    // Separate "who" names into an array so we can add the userinfo for each one
+                    var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
+                    var who_link = '';
+                    for (var z = 0; z < who.length; z++) {
+                        if (z < who.length-1) {
+                            who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>, ';
+                        } else {
+                            who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>';
+                        }
+                        who_link += who[z];
+                    }
+
+                    var row = '<tr class="data_row"><td>' + link + '#' + data[i].id + '</a></td><td title="' + data[i].budget_title + '">' +
+                                data[i].budget_id + '</td><td>' + link+data[i].summary + '</a></td><td>' + who_link +
+                              '</td><td>$' + data[i].amount + '</td><td>' + data[i].status + '</td>' +
+                              '<td>' + data[i].created + '</td>';
+                    if (data[i].paid != 'Not Paid') {
+                        row += '<td>'+data[i].paid+'</td></tr>';
+                    } else {
+                        row += '<td>'+data[i].paid+'</td></tr>';
+                    }
+                    $('#table-budget-expanded').append(row);
                 }
-                $('#table-budget-expanded').append(row);
-            }
+			}
         });
         $('#budget-report-export').click(function() {
             window.open('get-budget-expanded.php?section='+section+'&action=export', '_blank');
+        });
+        $('#budget-report-export-transferred').click(function() {
+            window.open('get-budget-expanded.php?section=' + section + '&action=export&budget_id=' + budget_id, '_blank');
         });
     },
 
@@ -534,12 +602,19 @@ var Budget = {
 
     be_cleaupTableSorting: function() {
         $('#be-id').children().remove();
+        $('#be-budget').children().remove();		
         $('#be-summary').children().remove();
         $('#be-who').children().remove();
         $('#be-amount').children().remove();
         $('#be-status').children().remove();
         $('#be-created').children().remove();
         $('#be-paid').children().remove();
+        $('#bet-id').children().remove();
+        $('#bet-budget').children().remove();		
+        $('#bet-notes').children().remove();
+        $('#bet-who').children().remove();
+        $('#bet-amount').children().remove();
+        $('#bet-created').children().remove();
     }
 
 };
@@ -547,5 +622,6 @@ var Budget = {
 $(function() {
     Budget.initBudgetList();
     $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
+    $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
     $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
 });

@@ -377,6 +377,7 @@
 <?php require_once('dialogs/popup-pingtask.inc') ?>
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <?php require_once('dialogs/budget-transfer.inc'); ?>
+<?php require_once('dialogs/budget-transferred.inc'); ?>
 <!-- Popup for Budget -->
 <?php require_once('dialogs/popup-budget.inc'); ?>
 <?php require_once('dialogs/popup-fees.inc'); ?>

@@ -32,24 +32,34 @@ $sort = false;
 if (isset($_REQUEST['sortby']) && isset($_REQUEST['desc'])) {
     switch ($_REQUEST['sortby']) {
         case 'be-id':
+        case 'bet-id':
             $sortby = 'id';
             break;
         case 'be-budget':
             $sortby = 'budget_id';
             break;
+        case 'bet-budget':
+            $sortby = 'budget_title';
+            break;
         case 'be-summary':
             $sortby = 'summary';
             break;
+        case 'bet-notes':
+            $sortby = 'notes';
+            break;
         case 'be-who':
+        case 'bet-who':
             $sortby = 'who';
             break;
         case 'be-amount':
+        case 'bet-amount':
             $sortby = 'amount';
             break;
         case 'be-status':
             $sortby = 'status';
             break;
         case 'be-created':
+        case 'bet-created':
             $sortby = 'created';
             break;
         case 'be-paid':
@@ -85,6 +95,13 @@ if (!isset($_REQUEST['action'])) {
                 echo getPaid($budget_id);
             }
 		    break;
+		case 3:
+	        if ($sort) {
+                echo getTransferred($budget_id, $sortby, $desc);
+            } else {
+                echo getTransferred($budget_id);
+            }
+		    break;
 	}
 } else {
     if ($_REQUEST['action'] == 'export') {
@@ -101,6 +118,10 @@ if (!isset($_REQUEST['action'])) {
 	        case 2:
 	            $data = json_decode(getPaid());
 	            exportCSV($data);
+	            break;
+	        case 3:
+	            $data = json_decode(getTransferred($budget_id));
+	            exportCSV_Transferred($data);
 	            break;
 	    }
     }
@@ -119,6 +140,25 @@ function exportCSV($data) {
         $csv .= $item->status.",";
         $csv .= $item->created.",";
         $csv .= $item->paid."\n";
+    }
+    
+    // Output headers to force download
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="Report.csv"');
+    echo $csv;
+}
+
+function exportCSV_Transferred($data) {    
+    // Create with headers
+    $csv = "Budget ID, Budget, Notes, Who, Amount, Created\n";
+    
+    foreach ($data as $item) {
+        $csv .= $item->id . ",";
+        $csv .= str_replace(",", "", $item->budget_title) . ",";
+        $csv .= str_replace(",", "", $item->notes) . ",";
+        $csv .= str_replace(",", "", $item->who) . ",";
+        $csv .= $item->amount . ",";
+        $csv .= $item->created . "\n";
     }
     
     // Output headers to force download
@@ -269,6 +309,38 @@ function getPaid($budget_id = 0, $sort = NULL, $desc = NULL) {
         return json_encode($items);
     }
 }
+
+function getTransferred($budget_id = 0, $sort = NULL, $desc = NULL) {
+    $order = "";
+    if ($sort === NULL) {
+        $order = "id DESC";
+    } else {
+        if ($desc == 'true') {
+	        $order = "{$sort} DESC";
+        } else {
+	        $order = "{$sort} ASC";
+        }
+    }
+
+    $sql = "SELECT b.`id`, b.`reason` AS budget_title, b.`notes`, b.`transfer_date` AS created, bs.`amount_granted` AS amount, u.nickname AS who, b.receiver_id " .
+           " FROM " . BUDGETS . " b " .
+		   " INNER JOIN " . USERS . " u ON b.receiver_id = u.id " .
+		   " INNER JOIN " . BUDGET_SOURCE . " bs ON b.id = bs.budget_id " .
+           " WHERE bs.`source_budget_id`={$budget_id} " .
+		   " ORDER BY {$order} " ;
+
+    $sql_q = mysql_query($sql) or die(mysql_error());
+    $items = array();
+    while ($row = mysql_fetch_assoc($sql_q)) {
+        $items[] = array('id'=>$row['id'], 'budget_title'=>$row['budget_title'],
+                         'notes'=>$row['notes'], 'who'=>$row['who'],
+                         'receiver_id'=>$row['receiver_id'], 'amount'=>$row['amount'],
+                         'created'=> substr($row['created'], 0, 10));
+    }
+    return json_encode($items);
+}
+
+
 
 function getFees($id) {
     $sql = "SELECT SUM(".FEES.".`amount`) AS `amount` ".
