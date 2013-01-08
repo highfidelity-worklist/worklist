@@ -436,7 +436,6 @@ function saveSounds(soundID, mode) {
     soundSettings[soundID] = mode;
     $.cookie('sound', soundSettings.join(':'), { path: '/', expires: date });
 }
-
 function hideSettingsPopup(e) {
     if(e) {
         e.preventDefault();

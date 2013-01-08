@@ -293,7 +293,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                 <div id="bottom_contain">
                                     <div id="bottom_left">
                                         <div id="buttons">
-                                            <div id="settingsButton" title="Chat Settings">
+                                            <div id="settingsButton" title="Chat Settings" onclick="initSound();">
                                                 <img src="images/gif.gif" width="33" height="23" id="settingsSwitch" align="bottom" />
                                             </div>
                                             <div id="uploadButton" title="Upload to Chat">
@@ -343,11 +343,11 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                             <div id="system-currentJobs">
                                 <div>
                                     <p>
-                                        <span id="biddingjobs">no jobs</span> in 
+                                        <span id="biddingjobs">no jobs</span> in
                                         <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=bidding">Bidding</a>
                                     </p>
                                     <p>
-                                        <span id="reviewjobs">no jobs</span> in need of 
+                                        <span id="reviewjobs">no jobs</span> in need of
                                         <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=review">Code Review</a>
                                     </p>
                                     <?php if (isset($_SESSION['userid'])): ?>
@@ -402,6 +402,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
         echo "<a href=\"#\" class=\"botlink notTop\" title=\"Command: @{$bot} help\" data=\"@faq {$bot}\">What can I use $bot for?</a> ";
     }
 ?>
+
                     <a href="#" class="morebotlinks">See more commands</a>
                 </p>
             </div>
@@ -411,7 +412,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                     <li>
                         <span style="cursor:pointer;text-decoration:underline;color:#9d9d9d;" onClick="chatSound.play();">Chat Sound</span>
                         <label class="on">ON <input id="chataudioon" name="chataudio" type="radio" onClick="ChatAudioOn();"></label>
-                        <label class="off">OFF <input id="chataudiooff" name="chataudio" type="radio" onClick="ChatAudioOff();" /></label>
+                        <label class="off">OFF <input id="chataudiooff" name="chataudio" type="radio" onClick="ChatAudioOff();"/></label>
                     </li>
                     <li>
                         <span style="cursor:pointer;text-decoration:underline;color:#9d9d9d;" onClick="systemSound.play();">System Sound</span>
@@ -440,9 +441,9 @@ if (isset($error) && $error->getErrorFlag() == 1) {
             </form>
         </div>
 
-<?php 
+<?php
 $inJournal = true;
-include("footer.php"); 
+include("footer.php");
 ?>
     <script type="text/javascript">
     $(function () {
@@ -471,7 +472,7 @@ include("footer.php");
                 });
             });
         }
-        
+       
         if($('#fees-month').length > 0){
             $('#fees-month').parents("tr").click(function() {
                 var author = "Guest";
@@ -509,4 +510,4 @@ include("footer.php");
             $('#fees-month').html ('$'+sum.month);
         });
     });
-    </script>
+    </script> 
