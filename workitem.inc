@@ -2184,11 +2184,11 @@ if ($action =="edit"):  ?>
                                 </caption>
                                 <thead>
                                 <tr class="table-hdng">
-                                    <td><span class="table-back"><span>Who</span></span></td>
-                                    <td><span class="table-back"><span>$</span></span></td>
-                                    <td><span class="table-back"><span>What</span></span></td>
-                                    <td><span class="table-back"><span>When</span></span></td>
-                                    <td><span class="table-back"><span>Paid</span></span></td>
+                                    <td class="who"><span class="table-back"><span>Who</span></span></td>
+                                    <td class="fee"><span class="table-back"><span>$</span></span></td>
+                                    <td class="what"><span class="table-back"><span>What</span></span></td>
+                                    <td class="when"><span class="table-back"><span>When</span></span></td>
+                                    <td class="paid"><span class="table-back"><span>Paid</span></span></td>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -2207,7 +2207,7 @@ if ($action =="edit"):  ?>
                                                 "fee_created: '{$fee['date']}', " .
                                                 "desc:\"" .  replaceEncodedNewLinesWithBr($fee['desc']) . "\"}";?>
                                         </script>
-                                        <td class="nickname">
+                                        <td class="nickname who">
                                             <span class="table-back">
                                                 <span>
                                                     <a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>); event.stopPropagation();"
@@ -2217,14 +2217,14 @@ if ($action =="edit"):  ?>
                                                 </span>
                                             </span>
                                         </td>
-                                        <td><span class="table-back"><span>$<?php echo $fee['amount'];?></span></span></td>
-                                        <td class="pre fee-description"><span class="table-back"><div class="arrow"></div></span></td>
+                                        <td class="fee"> <span class="table-back"><span>$<?php echo $fee['amount'];?></span></span></td>
+                                        <td class="pre fee-description what"><span class="table-back"><div class="arrow"></div></span></td>
                                         <td class="when"><span class="table-back"><span>
                                         <?php
                                             $date = explode("/", $fee['date']);
                                             echo date( "M j", mktime(0, 0, 0, $date[0], $date[1], $date[2]));
                                         ?></span></span></td>
-                                        <td>
+                                        <td class="paid">
                                             <span class="table-back">
                                                 <span>
                                                     <?php if($is_payer): ?>

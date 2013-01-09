@@ -33,6 +33,7 @@
 #page-content table {
     font-size: 13px;
     border: none !important;
+    table-layout: fixed;
 }
 
 .moneyZone table td, .moneyZone table th {
@@ -106,20 +107,36 @@
 }
 
 .moneyZone table tbody td .table-back span {
-    padding: 0 11px;
+    padding: 0 0 0 6px;
 }
 
-.moneyZone table tbody td.when {
-    width: 69px !important;
+.moneyZone table  td.who {
+    width: 80px;
+}
+
+.moneyZone table td.fee {
+    width: 70px;
+}
+    
+.moneyZone table td.what {
+    width: 55px;
+}
+
+.moneyZone table  td.when {
+    width: 55px;
+}
+
+.moneyZone table td.paid {
+    width: 70px;
 }
 
 .moneyZone table tbody td.when .table-back{
-    padding-left: 9px;
-    width: 60px;
+    padding-left: 2px;
+    width: 54px;
 }
 
 .moneyZone table tbody td.when .table-back span {
-    padding: 0;
+    padding: 6px;
 }
 
 .moneyZone table tbody td span a{
@@ -984,10 +1001,6 @@ a:hover{
     margin: 0;
 }
 
-.moneyZone .table-hdng td.what .table-back {
-    text-align: center;
-}
-
 .moneyZone .table-hdng td .table-back {
     font-size: 14px;
     font-weight: normal;
@@ -1000,11 +1013,11 @@ a:hover{
 }
 
 .moneyZone .table-hdng td .table-back span{
-    padding: 0 9px;
+    padding: 0 0 0 6px;
 }
 
 .moneyZone .table-hdng td.what .table-back span{
-    padding: 0 4px;
+    padding: 0 6px;
 }
 
 .moneyZone .table-hdng:hover{
