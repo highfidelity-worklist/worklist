@@ -4226,8 +4226,8 @@ function fillBiddingReviewDrawers(json) {
     if (json == null || !json.success) {
         return;
     }
-    var bidding = json.bidding == 0 ? 'no jobs' : (json.bidding == 1 ? '1 job' : json.bidding + ' jobs');
-    var review = json.review == 0 ? 'no jobs' : (json.review == 1 ? '1 job' : json.review + ' jobs');
+    var bidding = (json.bidding == 0 || json.bidding == null) ? 'no jobs' : (json.bidding == 1 ? '1 job' : json.bidding + ' jobs');
+    var review = (json.review == 0 || json.review == null) ? 'no jobs' : (json.review == 1 ? '1 job' : json.review + ' jobs');
     $('#biddingjobs').text(bidding);
     $('#reviewjobs').text(review);
 }
