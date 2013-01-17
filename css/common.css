@@ -80,13 +80,6 @@ table thead tr:hover {
     border: none;
 }
 
-table.sales-report td, table.sales-report th {
-    border-width: 1px;
-    padding: 2px;
-    border-style: solid;
-    border-color: #aaa;
-}
-
 table tr:hover {
     background: #FFD;
 }

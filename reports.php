@@ -739,11 +739,6 @@ function loadTimelineChart() {
             return false;
         });
 
-        $('#sales-reports-button').click(function() {
-            var new_window = window.open('sales-reports.php', '_blank');
-            new_window.focus();
-            return false;
-        });
         $('.text-field-sm').datepicker({
             changeMonth: true,
             changeYear: true,
@@ -861,9 +856,6 @@ $(function() {
         <?php  if (!empty($_SESSION['is_payer'])) { ?>
             <input type="submit" value="Run MassPay" id="pp-masspay-button" /><br />
         <?php  } ?>
-        <?php if (!empty($_SESSION['is_runner'])) { ?>
-            <input type="submit" value="Sales Reports" id="sales-reports-button"></input>
-        <?php } ?>
     </div>
     <div id="search-filter-wrap-reports">
       <table id="search-filter-section">
