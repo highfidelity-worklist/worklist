@@ -518,11 +518,14 @@ $(document).ready(function(){
     };
 
     // default dialog options
-    var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' };
+    var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false };
     $('#popup-bid').dialog(dialog_options);
-    $('#popup-edit-bid-info').dialog(dialog_options);
     $('#popup-confirmation').dialog(dialog_options);
     $('#popup-review-started').dialog(dialog_options);
+
+    $('#popup-edit-bid-info').dialog(
+{ dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false });
+
     $('#popup-ineligible').dialog({
         dialogClass: 'white-theme',
         modal: true,

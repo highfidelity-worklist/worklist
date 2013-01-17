@@ -58,9 +58,9 @@
         <?php } ?>
         <div class="clear"></div>
 
-        <p><label>Notes <small>(mandatory)</small><br />
+        <p><label>Notes <small>(mandatory)</small><br /><label>
         <textarea class="notes expand100-200" name="notes" id="notes-edit"></textarea>
-        </label></p>
+        </p>
         <script type="text/javascript">
             // see http://regexlib.com/REDetails.aspx?regexp_id=318
             // but without  dollar sign 22-NOV-2010 <krumch>
