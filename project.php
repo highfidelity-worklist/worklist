@@ -17,19 +17,6 @@ if (empty($_REQUEST['project'])) {
     exit;
 }
 
-$userId = getSessionUserId();
-if ($userId > 0) {
-    initUserById($userId);
-    $user = new User();
-    $user->findUserById($userId);
-    $isGitHubConnected = $user->getGithub_connected();
-    $GitHubToken = $isGitHubConnected ? $user->getGithub_token() : false;
-    // @TODO: this is overwritten below..  -- lithium
-    $nick = $user->getNickname();
-    $userbudget =$user->getBudget();
-    $budget = number_format($userbudget);
-}
-
 $projectName = mysql_real_escape_string($_REQUEST['project']);
 $project = new Project();
 try {
@@ -42,7 +29,24 @@ try {
 $project_user = new User();
 $project_user->findUserById($project->getOwnerId());
 
-$is_owner = $project->isOwner($user->getId());
+$userId = getSessionUserId();
+if ($userId > 0) {
+    initUserById($userId);
+    $user = new User();
+    $user->findUserById($userId);
+    $isGitHubConnected = $user->getGithub_connected();
+    $GitHubToken = $isGitHubConnected ? $user->getGithub_token() : false;
+    // @TODO: this is overwritten below..  -- lithium
+    $nick = $user->getNickname();
+    $userbudget =$user->getBudget();
+    $budget = number_format($userbudget);
+    $is_owner = $project->isOwner($user->getId());
+    $is_admin = $user->getIs_admin();
+} else {
+    $is_owner = false;
+    $is_admin = false;
+}
+
 $runners = $project->getRunners();
 
 if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner)) {
@@ -209,7 +213,7 @@ require_once('opengraphmeta.php');
                                 var runner = runners[i];
                                 html =
                                     '<tr class="runner row' + ((i+1) % 2 ? 'odd' : 'even') + '">' +
-                                        <?php if (($user->getIs_admin() == 1) || $is_owner): ?>
+                                        <?php if ($is_admin || $is_owner): ?>
                                         '<td class="runnerRemove">' + (runner.owner ? '' : '<input type="checkbox" name="runner' + runner.id + '" />') + '</td>' +
                                         <?php endif; ?>
                                         '<td class="runnerName"><a href="#" onclick="javascript:showUserInfo(' + runner.id + ');">' + runner.nickname + '</a></td>' +
@@ -518,7 +522,7 @@ require_once('opengraphmeta.php');
                         <?php endif; ?>
                     <?php endif; ?>
                     </span>
-                    <?php if ($userId > 0 && $user->getIs_admin()): ?>
+                    <?php if ($is_admin): ?>
                         <div id="projectInternal">
                             <input type="checkbox" name="internal" id="internal" <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?> <?php echo $project->getInternal() ? 'checked="checked"' : ''; ?> />
                             <label for="internal">Internal project</label>
@@ -763,7 +767,7 @@ require_once('opengraphmeta.php');
                     <table>
                         <thead>
                             <tr>
-                                <th <?php echo (($user->getIs_admin() == 1) || $is_owner) ? 'colspan="2"' : ''; ?>>Who</th>
+                                <th <?php echo (($is_admin == 1) || $is_owner) ? 'colspan="2"' : ''; ?>>Who</th>
                                 <th># of Jobs</th>
                                 <th>Last Activity</th>
                             </tr>
@@ -771,7 +775,7 @@ require_once('opengraphmeta.php');
                         <tbody>
                         </tbody>
                     </table>
-                    <?php if (($user->getIs_admin() == 1) || $is_owner): ?>
+                    <?php if (($is_admin == 1) || $is_owner): ?>
                         <div class="buttonContainer">
                             <input type="submit" id="addrunner" value="Add" />
                             <input type="submit" id="removerunner" value="Remove" />
