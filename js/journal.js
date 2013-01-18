@@ -3863,11 +3863,9 @@ function fillBiddingReviewDrawers(json) {
                 .text('View them all')
                 .appendTo('#need-review');
         }
-        if (parseInt(review) > 0) {
-            $('#need-review').show();
-        }  else {
-            $('#need-review').hide();
-        }
+        $('#need-review').show();
+    }  else {
+        $('#need-review').hide();
     }
     $('#biddingJobs a').text(bidding);
     relativity();
