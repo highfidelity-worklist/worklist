@@ -129,6 +129,9 @@ if(validateAction()) {
                 validateAPIKey();
                 deployErrorNotification();
                 break;
+            case 'saveSoundSettings':
+                saveSoundSettings();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -347,14 +350,37 @@ function getSystemDrawerJobs(){
     $sql = " SELECT "
          . " SUM(CASE WHEN w.status = 'Bidding' THEN 1 ELSE 0 END) AS bidding, "
          . " SUM(CASE WHEN w.status = 'Review'  THEN 1 ELSE 0 END) AS review "
-         . " FROM ". WORKLIST." AS w "
+         . " FROM " . WORKLIST . " AS w "
          . " WHERE w.status = 'Bidding' OR (w.status = 'Review' "
          .   " AND w.code_review_completed = 0 "
-         .   " AND w.code_review_started = 0)";
+         .   " AND w.code_review_started = 0);";
     
     $result = mysql_query($sql);
     if ($result && ($row = mysql_fetch_assoc($result))) {
-        respond(array('success' => true, 'bidding' => $row['bidding'], 'review' => $row['review']));
+        $bidding_count = $row['bidding'];
+        $review_count = $row['review'];
+        $need_review = array();
+        if ($review_count) {
+            $sql = " SELECT w.id, w.summary "
+                .  " FROM " . WORKLIST . " AS w "
+                .  " WHERE w.status = 'Review' "
+                .    " AND w.code_review_completed = 0 "
+                .    " AND w.code_review_started = 0"
+                .  " LIMIT 7;"; 
+            $result = mysql_query($sql);
+            while ($row = mysql_fetch_assoc($result)) {
+                $need_review[] = array(
+                    'id' => $row['id'],
+                    'summary' => $row['summary'] 
+                );
+            }
+        }
+        respond(array(
+            'success' => true, 
+            'bidding' => $bidding_count, 
+            'review' => $review_count,
+            'need_review' => $need_review
+        ));
     } else {
         respond(array('success' => false, 'message' => "Couldn't retrieve jobs"));
     }
@@ -750,6 +776,41 @@ function deployErrorNotification() {
     $notify = new Notification();
     $notify->deployErrorNotification($work_item_id, $error_msg, $commit_rev);
     exit(json_encode(array('success' => true)));
+}
+
+function saveSoundSettings() {
+    if (!$userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : 0)) {
+        echo json_encode(array('success'=>false, 'message'=>'Not logged-in user'));
+        return;
+    }
+    try {
+        $settings = 0;
+        $settings_arr = preg_split('/:/', $_REQUEST['settings'], 5);
+        
+        if ((int) $settings_arr[0]) {
+            $settings = $settings | JOURNAL_CHAT_SOUND;
+        }
+        if ((int) $settings_arr[1]) {
+            $settings = $settings | JOURNAL_SYSTEM_SOUND;
+        }
+        if ((int) $settings_arr[2]) {
+            $settings = $settings | JOURNAL_BOT_SOUND;
+        }
+        if ((int) $settings_arr[3]) {
+            $settings = $settings | JOURNAL_PING_SOUND;
+        }
+        if ((int) $settings_arr[4]) {
+            $settings = $settings | JOURNAL_EMERGENCY_ALERT;
+        }
+        
+        $user = new User();
+        $user->findUserById($userid);
+        $user->setSound_settings($settings);
+        $user->save();
+        echo json_encode(array('success'=>true, 'message'=>'Settings saved'));
+    } catch(Exception $e) {
+        echo json_encode(array('success'=>false, 'message'=>'Settings saving failed'));
+    }
 }
 
 ?>

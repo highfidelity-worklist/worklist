@@ -355,5 +355,9 @@ defineOnce('REVIEW_NOTIFICATIONS_CRON_FILE', '/tmp/reviewNotificationsCron.dat')
 
 require_once('sanitization.php');
 
-
-
+// journal sound settings
+defineOnce('JOURNAL_CHAT_SOUND',        0x10);
+defineOnce('JOURNAL_SYSTEM_SOUND',      0x08);
+defineOnce('JOURNAL_BOT_SOUND',         0x04);
+defineOnce('JOURNAL_PING_SOUND',        0x02);
+defineOnce('JOURNAL_EMERGENCY_ALERT',   0x01);

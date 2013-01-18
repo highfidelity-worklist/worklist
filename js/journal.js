@@ -25,12 +25,9 @@ var queryStr = '';
 var inThePresent = true;
 var scrollBottom = true;
 var queryStrIsJob = false;
+var inSearchResult = false;
 
 var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
-
-/* Values used by the non-linear scrollbar */
-var scrollviewHeight;
-var scrollbarBoxHeight, scrollbarThumbHeight, scrollbarThumbMin, scrollbarThumbMax, scrollbarRange;
 
 /* Values used by fillSpeakerList. */
 var speakerHeight = 0;
@@ -38,8 +35,7 @@ var speakerListHeight = 0;
 var oldSpeakerList = [];
 
 /* If we need to display system messages in main window */
-var systemMsgs = 'all';
-var systemDrawer = false;
+var systemMsgs = 'system';
 
 /* Set to true when user is in Penalty Box */
 var penalized = false;
@@ -64,6 +60,8 @@ var newMessageCount = 0;
 var focus = true;
 $.sendingMessage = 0;
 
+var previousChatInterval, futureChatInterval;
+
 function Sound(playerElement) {
     this.player = playerElement;
     this.muted = false;
@@ -83,27 +81,21 @@ Sound.prototype.unmute = function() {
     this.muted = false;
 };
 
-// this array holds all
-// bot names. It is initialized
-// via a call to aj.php on page load
-// and is available for later usage
-// 08-MAY-2010 <Yani>
+/*
+ * This array holds all bot names. 
+ * It's initialized via a call to aj.php on page load and is available for later usage.
+ */
 var allBotNames = [];
 
-$(window).focus(function setFocused() {
-    // Clear current intervals
-
-    clearInterval(titleTimer);
+$(window).focus(function() {
     focus = true;
-    newMessageCount = 0;
-    document.title = "Chat";
-
-    if (pendingMessages === 0) $('#entries-pending').hide();
-//    else inThePresent = false;
-
-    scrollViewTo('100%');
+    updateTitleTimerInterval();
+    $('#message-pane').focus();
 });
-$(window).blur( function setNotFocused(){ focus = false; } );
+
+$(window).blur(function() {
+    focus = false;
+});
 
 var latencyMonitor = {
     latencies: [],
@@ -285,9 +277,7 @@ function alertNewMessage(action, entryText) {
             localSystemSound = true;
             break;
     }
-    // alert(action); //debug
-    if(!focus && (entryText != undefined))
-    {
+    if ((!focus || inSearchResult) && (entryText != undefined)) {
         newMessageCount++;
         document.title = "Chat (" + newMessageCount + ")";
         var search_string = entryText.entry_text.search('sent a ping to');
@@ -340,6 +330,18 @@ function alertNewMessage(action, entryText) {
         displayPopupOnNewMessage = false;
     }
 }
+
+function updateTitleTimerInterval() {
+    if (focus && !inSearchResult) {
+        // Clear current intervals
+        clearInterval(titleTimer);
+        
+        newMessageCount = 0;
+        document.title = "Chat";
+        if (pendingMessages === 0) $('#entries-pending').hide();
+    }
+}
+
 /*
  * function handles the title change
  */
@@ -428,13 +430,17 @@ function EmergencyAudioOff() {
     saveSounds(4, 0);
 }
 function saveSounds(soundID, mode) {
-// krumch 20110708 Set sound settings
-    var date = new Date();
-    date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
-    var soundSettings = new Array(1, 1, 1, 1, 1);
-    if($.cookie('sound')) soundSettings = $.cookie('sound').split(':');
     soundSettings[soundID] = mode;
-    $.cookie('sound', soundSettings.join(':'), { path: '/', expires: date });
+    $.ajax({
+        url: 'api.php',
+        type: "POST",
+        data: {
+            'action': 'saveSoundSettings',
+            'settings': soundSettings.join(':')
+        },
+        dataType: "json",
+        success: function(data) {}
+    });
 }
 function hideSettingsPopup(e) {
     if(e) {
@@ -520,7 +526,7 @@ function sendEntry() {
         }
         sendEntryRetry();
     }
-    $("#message-pane").val("");
+    $("#message-pane").val("").focus();
     setLocalTypingStatus(IDLE);
 }
 	
@@ -555,11 +561,7 @@ function sendEntryRetry() {
                 $('#entries').append(json.html);
                 finishUpdate('100%', true);
             } else {
-                if (!inThePresent) {
-                    showLatest();
-                } else {
-                    updateNewMessages(json, true);
-                }
+                updateNewMessages(json, true);
             }
             $.sendingMessage = false;
         },
@@ -595,29 +597,30 @@ function showLatest() {
     if (current_ajax) current_ajax.abort(); // the current request won't have the proper params, so stop it
     clearInterval($.timer['getLatestEntries']);
     $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
-    $('.scroll-pane-throbber').show();
+    $('#loading-spin').show();
     current_ajax = $.ajax({
         url: 'aj.php',
         type: 'post',
         data: { 'what': 'latest_longpoll', 'count': 50, 'csrf_token': csrf_token, 'filter': systemMsgs },
         dataType: 'json',
         success: function(json){
-            $('.scroll-pane-throbber').hide();
+            $('#loading-spin').removeClass().hide();
             $('#entries-pending').hide();
             lastId = json.lastId;
             currentTime = parseInt(json.time);
             firstDate = json.firstDate;
             lastDate = json.lastDate;
+            if (lastDate > lastEntryDate) {
+                lastEntryDate = lastDate;
+            }
             entries.append(json.html);
             last_private = null;
             updateTypingIndicators(json.typingstatus);
-            // if drawer is open - fill it with system messages
-            if(systemDrawer){
-                var drawer = $("#system-drawer");
-                drawer.empty();
-                drawer.append(json.system_html);
-                $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;
-            }
+            
+            var drawer = $("#system-notifications > div");
+            drawer.empty();
+            drawer.prepend(json.system_html);
+            $('#system-notifications > div')[0].scrollTop = 0;
             finishUpdate('100%', false);
         },
         complete: function() {
@@ -625,6 +628,7 @@ function showLatest() {
         }
     });
 }
+
 function resetLongpoll() {
     $.polling = false;
     $.pollingLatest = false;
@@ -632,8 +636,7 @@ function resetLongpoll() {
     $.timer['getLatestEntries'] = setInterval(getLatestEntries, pollingInterval);
 }
 
-function getLatestEntries(timeout)
-{
+function getLatestEntries(timeout) {
     if (!(timeout|0)) timeout = 30;
     if ($.polling == true) return;
     $.polling = true;
@@ -659,82 +662,14 @@ function getLatestEntries(timeout)
             $.polling = false;
         }
     });
-    //$('.scroll-view').ajaxStop(getLatestEntries);
-//  applyMessagePruning();
-}
-
-/**
- * objectToString
- * Can be removed later.  Inserted now for debugging.
- * @author Daniel P. Brown <daniel.brown@parasane.net>
- * @created 14-JAN-2011
- */
-function objectToString(obj) {
-    var val, output = "";
-    if (obj) {
-        output += "{";
-        for (var i in obj) {
-            val = obj[i];
-            switch (typeof val) {
-                case ("object"):
-                    if (val[0]) {
-                        output += i + ":" + arrayToString(val) + ",";
-                    } else {
-                        output += i + ":" + objectToString(val) + ",";
-                    }
-                    break;
-                case ("string"):
-                    output += i + ":'" + escape(val) + "',";
-                    break;
-                default:
-                    output += i + ":" + val + ",";
-            }
-        }
-        output = output.substring(0, output.length-1) + "}";
-    }
-    return output;
-}
-
-/**
- * arrayToString
- * Can be removed later.  Inserted now for debugging.
- * @author Daniel P. Brown <daniel.brown@parasane.net>
- * @created 14-JAN-2011
- */
-function arrayToString(array) {
-    var output = "";
-    if (array) {
-        output += "[";
-        for (var i in array) {
-            val = array[i];
-            switch (typeof val) {
-                case ("object"):
-                    if (val[0]) {
-                        output += arrayToString(val) + ",";
-                    } else {
-                        output += objectToString(val) + ",";
-                    }
-                    break;
-                case ("string"):
-                    output += "'" + escape(val) + "',";
-                    break;
-                default:
-                    output += val + ",";
-            }
-        }
-        output = output.substring(0, output.length-1) + "]";
-    }
-    return output;
 }
 
 function updateNewMessages(json) {
-
     var botAction = null;
     var doFinishUpdate = false; // Only do this if actually added new messages.
     if(json.updates == 0) return;
     currentTime = parseInt(json.time);
     if (json.botdata) {
-        //$("#debug").html('<pre>'+objectToString(json)+'</pre><br><br>'); //better debug code
         if (json.botdata.ping) {
             botAction = 'ping';
         } else if (json.botdata.sitescan) {
@@ -745,46 +680,44 @@ function updateNewMessages(json) {
     }
     if (json.count > 0) {
         last_private = null;
-        if (inThePresent /* TBD: && focus */) {
-            $('#entries-pending').hide();
-            lastDate = json.lastDate;
-            if (json.html) {
-                $('#entries').append(json.html);
-                doFinishUpdate = true;
-            } else {
-                for (entry in json.newentries) {
-                    if (json.botdata) {
-                        if (json.botdata.ping) {
-                            botAction = 'ping';
-                        } else if (json.botdata.sitescan) {
-                            botAction = 'emergency';
-                        } else {
-                            botAction = false;
-                        }
-                    }
-                    if (lastId < json.newentries[entry].id) {
-                        doFinishUpdate = true;
-                        $('#entries').append(formatMessage(json.newentries[entry]));
+        if (!focus || inSearchResult) {
+            pendingMessages += json.count;
+        }
+        $('#entries-pending').hide();
+        lastDate = json.lastDate;
+        if (lastDate > lastEntryDate) {
+            lastEntryDate = lastDate;
+        }
+        if (json.html && !inSearchResult) {
+            $('#entries').append(json.html);
+            doFinishUpdate = true;
+        } else {
+            for (entry in json.newentries) {
+                if (json.botdata) {
+                    if (json.botdata.ping) {
+                        botAction = 'ping';
+                    } else if (json.botdata.sitescan) {
+                        botAction = 'emergency';
+                    } else {
+                        botAction = false;
                     }
                 }
+                if (!inSearchResult && lastId < json.newentries[entry].id) {
+                    doFinishUpdate = true;
+                    $('#entries').append(formatMessage(json.newentries[entry]));
+                }
+                alertNewMessage(botAction, json.newentries[entry]);
             }
-            applyMessagePruning();
-            if (doFinishUpdate === true) {
-                finishUpdate('100%', true, botAction, json.newentries[entry]);
-            }
-        } else {
-            pendingMessages += json.count;
-            $('#entries-pending-count').text(pendingMessages + ' unread message' + (pendingMessages > 1 ? 's' : '') + '...');
-            $('#entries-pending').show();
-            alertNewMessage(botAction);
+        }
+        if (!inSearchResult && doFinishUpdate === true) {
+            finishUpdate('100%', true, botAction, json.newentries[entry]);
         }
     }
     if (json.system_count > 0) {
-        if (json.system_html) {
-            $('#system-drawer').append(json.system_html);
-
+        if (!inSearchResult && json.system_html) {
+            $('#system-notifications > div').prepend(json.system_html);
         } else {
-            var update=false;
+            var update = false;
             for (entry in json.newsystementries) {
                 if(
                     json.newsystementries[entry].entry_text.indexOf('Bidding') != -1 ||
@@ -796,17 +729,16 @@ function updateNewMessages(json) {
                     json.newsystementries[entry].entry_text.indexOf('code review') != -1 ||
                     json.newsystementries[entry].entry_text.indexOf('authorize sandbox') != -1
                 ) {
-                    update=true;
+                    update = true;
                 }
-                if (lastId < json.newsystementries[entry].id) {
+                if (!inSearchResult && lastId < json.newsystementries[entry].id) {
                     doFinishUpdate = true;
-                    $('#system-drawer').append(formatMessage(json.newsystementries[entry]));
+                    $('#system-notifications > div').prepend(formatMessage(json.newsystementries[entry]));
                 }
             }
-            if(update==true) getBiddingReviewDrawers();
+            if(update == true) getBiddingReviewDrawers();
         }
         
-        // [Start Comment] instead of botAction, 'system' was forcefully used before 12-Mar-2011 <godka>
         for (entry in json.newsystementries) {
             if (json.newsystementries[entry].author == 'SiteScan') {
                 botAction = 'sitescan';
@@ -815,13 +747,11 @@ function updateNewMessages(json) {
         }
 
         if (botAction == null) botAction = 'system';
-        if (doFinishUpdate === true) {
+        if (!inSearchResult && doFinishUpdate === true) {
             finishUpdate('100%', true, botAction, json.newsystementries[entry]);
         }
-        // [End Comment] 12-Mar-2011 <godka>
         
-        applyMessagePruning();
-        $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;// scrolling to the end of the drawer
+        $('#system-notifications > div')[0].scrollTop = 0;
         enlivenEntries();
     }
     if (json.lastId && json.lastId > 0) {
@@ -829,7 +759,7 @@ function updateNewMessages(json) {
     }
 }
 
-function formatMessage(entry)   {
+function formatMessage(entry) {
     if( document.getElementById('entry-' + entry.id) ) return('');
 
     var d1 = $('<div data="' + entry.time + '" class="entry">');
@@ -856,8 +786,7 @@ function formatMessage(entry)   {
     return(d1);
 }
 
-function getLatestSpeakers(timeout)
-{
+function getLatestSpeakers(timeout) {
     $.ajax({
         url: 'aj.php',
         type: 'post',
@@ -1197,55 +1126,6 @@ function combineSpeakerLists(oldList, newList) {
     return new Array(changes, combinedList);
 }
 
-function isBottom() {
-    var bRet = false;
-    var height = $('#entries').outerHeight();
-    var botOfEntries = $('#entries').offset().top + height;
-    var botOfEntriesWindow = $(".scroll-view").offset().top + $(".scroll-view").innerHeight();
-    if (botOfEntries == botOfEntriesWindow + 2) {
-        bRet = true;
-    } 
-    return bRet;
-}
-
-var scrollInterval, scrollDelay, scrollDelta;
-function doAutoScroll() {
-    if (scrollDelay-- > 0) return;
-
-    var height = $('#entries').outerHeight();
-    if (height <= scrollviewHeight) return;
-
-    var entriesTop = $('#entries').position().top;
-    entriesTop = entriesTop + scrollDelta;
-    if (entriesTop > 0) {
-        entriesTop = 0;
-        getEntriesNear(true, true);
-    } else if (entriesTop < scrollviewHeight - height) {
-        entriesTop = scrollviewHeight - height;
-        if (!inThePresent) getEntriesNear(false, true);
-    }
-    $('#entries').css('top', entriesTop+'px');
-
-    if (2 + scrollviewHeight - entriesTop < height) { // Added a 2px margin to fix for height imprecisions
-        inThePresent = false;
-        scrollBottom = false;
-    } else {
-        scrollBottom = true;
-	}
-
-    return false;
-}
-
-function doScroll(delta, delay, auto) {
-    clearInterval(scrollInterval);
-    scrollDelta = delta;
-    scrollDelay = delay;
-    doAutoScroll();
-    if (auto) {
-        scrollInterval = setInterval(doAutoScroll, 100);
-    }
-}
-
 function buildBookmarkMenu() {
     var menuList = [];
 
@@ -1375,7 +1255,7 @@ $speakerList = {
         // get the speakerlist as a jquery object and save for later
         // we're using $speakerList so we don't need to worry about variable scope
         if(!$speakerList.online) {
-            $speakerList.online = $('#online-users');
+            $speakerList.online = $('#online-users > div');
         }
     }
 }
@@ -1516,7 +1396,7 @@ function fillSpeakerList(newSpeakerList, currentUser){
             .show();
 
     });
-    $('#online-users-container h6').mouseout(function(){
+    $('#online-users h6').mouseout(function(){
         $('#livetip').hide();
     });
 
@@ -1535,16 +1415,15 @@ function fillSpeakerList(newSpeakerList, currentUser){
         var guestMenuList = [];
         guestMenuList[guestMenuList.length] = { type: 'item',  title: 'Send to Penalty Box', fn: userHandler, actionType: 'penalty' };
         $('#online-users span.guest').menuPopup(guestMenuList, { selectionRequired: false, context: true } );
-
-        $('#online-users span.logged').click(function(e){
-            var className = e.currentTarget.parentNode.className;
-            var id = className.substring(4);
-            var numId = parseInt(id);
-            showUserInfo(numId);
-            return false;
-        });
-
     }
+    
+    $('#online-users span.logged').click(function(e){
+        var className = e.currentTarget.parentNode.className;
+        var id = className.substring(4);
+        var numId = parseInt(id);
+        showUserInfo(numId);
+        return false;
+    });
 
 
     oldSpeakerList = newSpeakerList;
@@ -1556,14 +1435,16 @@ function finishUpdate(scrolllTo, notify, botAction, entryText) {
     applyPopupBehavior();
     updateRelativeTimes();
     updateNicknamesDisplaying();
-    scrollViewTo(scrolllTo);
+    if (scrollTo !== false) {
+        scrollViewTo(scrolllTo);
+    }
     if (notify) {
         alertNewMessage(botAction, entryText);
     }
 }
 function getEntriesAt(toDate) {
-
     var now = new Date();
+    
     thePresent = (now.getTime() / 1000  - toDate <= 3);
     if (thePresent && inThePresent) {
         scrollViewTo('100%');
@@ -1573,23 +1454,24 @@ function getEntriesAt(toDate) {
     inThePresent = thePresent;
     var entries = $("#entries");
     entries.empty();
-    $('.scroll-pane-throbber').show();
+    $('#loading-spin').show();
     $.post("aj.php", { 'what': 'time', 'count': 50, 'time': toDate, 'prevnext':'', 'query': queryStr, 'csrf_token': csrf_token, 'filter': systemMsgs }, function(json) {
-        $('.scroll-pane-throbber').hide();
+        $('#loading-spin').removeClass().hide();
         firstDate = json.firstDate;
         lastDate = json.lastDate;
+        if (lastDate > lastEntryDate) {
+            lastEntryDate = lastDate;
+        }
         entries.html(json.html);
 
         var scrolllTo = '50%';
         if (inThePresent) scrolllTo = '100%'
         else if (firstDate == earliestDate) scrolllTo = '0%';
 
-        if(systemDrawer){
-            var drawer = $("#system-drawer");
-            drawer.empty();
-            drawer.append(json.system_html);
-            $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;// scrolling to the end of the drawer
-        }
+        var drawer = $("#system-notifications > div");
+        drawer.empty();
+        drawer.prepend(json.system_html);
+        $('#system-notifications > div')[0].scrollTop = 0;
 
         finishUpdate(scrolllTo, false);
     }, 'json');
@@ -1599,11 +1481,12 @@ function getEntriesNear(prev, autoScroll) {
     inThePresent = false;
     if (pendingUpdate) return;
     else if (prev && firstDate == earliestDate) return;
-
+    pendingUpdate = true;
+    
     var entries = $("#entries");
     var removeChildren = new Array();
     var children = entries.children();
-    $('.scroll-pane-throbber').show();
+    $('#loading-spin').show();
 
     if (prev) {
         for (var i = 100; i < children.length; i++) {
@@ -1622,13 +1505,15 @@ function getEntriesNear(prev, autoScroll) {
             'csrf_token': csrf_token, 
             'filter': systemMsgs
         }, function(json) {
-            $('.scroll-pane-throbber').hide();
+            $('#loading-spin').removeClass().hide();
 
             if (json.count > 0) {
                 firstDate = json.firstDate;
-                var height = entries.height();
-                height = entries.prepend(json.html).height() - height;
-                entries.css('top', (scrollviewHeight - height));
+                var prevScrollHeight = $('#entries')[0].scrollHeight,
+                    prevScrollTop = $('#entries')[0].scrollTop - 80;
+                entries.prepend(json.html);
+                var scrollTop = $('#entries')[0].scrollHeight - prevScrollHeight + prevScrollTop;
+                $('#entries')[0].scrollTop = scrollTop; 
                 finishUpdate(false, false);
             }
 
@@ -1651,13 +1536,15 @@ function getEntriesNear(prev, autoScroll) {
             'csrf_token': csrf_token, 
             'filter': systemMsgs
         }, function(json) {
-            $('.scroll-pane-throbber').hide();
+            $('#loading-spin').removeClass().hide();
 
             var height = entries.height();
             if (json.count > 0) {
                 lastDate = json.lastDate;
-                height = entries.append(json.html).height() - height;
-                if (!autoScroll) entries.css('top', ($('#entries').position().top-height));
+                if (lastDate > lastEntryDate) {
+                    lastEntryDate = lastDate;
+                }
+                entries.append(json.html);
                 finishUpdate(false, false);
             } else {
                 inThePresent = true;
@@ -1673,12 +1560,7 @@ function getEntriesNear(prev, autoScroll) {
     if (removeChildren.length > 0) {
         var delta = entries.height();
         $(removeChildren).remove();
-        delta -= entries.height();
-
-        if (!prev) entries.css('top', entries.position().top + delta);
     }
-
-    pendingUpdate = true;
 }
 
 var IDLE = 1,
@@ -1818,56 +1700,7 @@ function updateNicknamesDisplaying() {
     });
 }
 
-
-function applyMessagePruning()
-{
-    var pruningLimit = scrollviewHeight + messagePruningOffsetPixels;
-    var pruning = [];
-    if (systemDrawer) {
-        // loop all entries in document if drawer is open
-        $('.entry').each(function(entry) {
-            if ($(this).offset().top > (pruningLimit * -1)) {
-                return;
-            }
-            pruning.push(this);
-        });
-
-        // Prune also the entries in the system drawer to avoid memory leaking
-        // We'll allow a max of 50 entries
-        var sysMessageLimit = 50;
-        var sysDrawerLen = $('#system-drawer').children().length;
-        if (sysDrawerLen > sysMessageLimit) {
-            
-            for (var i = 0; i < (sysDrawerLen - sysMessageLimit); i++) {
-                pruning.push($('#system-drawer').children()[i]);
-            }
-
-        }
-
-    } else {
-        // only loop the journal
-        $('#entries .entry').each(function(entry) {
-            if ($(this).offset().top > (pruningLimit * -1)) {
-                return;
-            }
-            pruning.push(this);
-        });
-    }
-    $(pruning).each(function(entry) {
-        $(this).unbind();
-        $(this).remove();
-    });
-    // update dates
-
-    if (pruning.length > 0) {
-        updateEntryDates();
-        scrollViewTo('100%');
-    }
-
-}
-
-function updateEntryDates()
-{
+function updateEntryDates() {
     var entries = $('.entry'),
         firstEntryWithDateFromStart,
         firstEntryWithDateFromEnd;
@@ -1886,46 +1719,9 @@ function updateEntryDates()
         firstEntryWithDateFromEnd--;
         lastDate  = $('span.entry-date', entries[firstEntryWithDateFromEnd]).attr('data');
     }
-}
-
-function getScrollbarDate(now, pos) {
-    var percent, mult, offset, delta;
-    var toDate, avgDate = firstDate + (lastDate - firstDate) / 2;
-
-    if (pos < scrollbarBoxHeight / 2) {
-        var realNum = pos - scrollbarThumbMin;
-        percent = 1 - (realNum / (scrollbarRange / 2));
-    } else {
-        if (inThePresent) return now;
-        var realNum;
-        if (pos < (scrollbarRange/2)) {
-            realNum = pos - 12;
-        } else if (pos > (scrollbarRange/2)) {
-            realNum = pos + 12;
-        } else {
-            realNum = pos;
-        }
-        percent = (pos / (scrollbarRange / 2) - 1);
+    if (lastDate > lastEntryDate) {
+        lastEntryDate = lastDate;
     }
-
-    if (percent < .20) { mult = 24 * 60 * 60; offset = 0; }
-    else if (percent < .40) { mult = 2 * 24 * 60 * 60; offset = 24 * 60 * 60; }
-    else if (percent < .60) { mult = 4 * 24 * 60 * 60; offset = 3 * 24 * 60 * 60; }
-    else if (percent < .80) { mult = 23 * 24 * 60 * 60; offset = 7 * 24 * 60 * 60; }
-    else { mult = 335 * 24 * 60 * 60; offset = 30 * 24 * 60 * 60; }
-
-    ldelta = mult;
-    if (percent < 1) ldelta *= (((percent * 100) % 20) / 20);  // Fix for percent=1
-    if (pos < scrollbarBoxHeight / 2) {
-        toDate = avgDate - offset - ldelta;
-    } else {
-        toDate = avgDate + offset + ldelta;
-    }
-
-    if (toDate < earliestDate) toDate = earliestDate;
-    if (toDate >= now) toDate = now;
-
-    return toDate | 0;
 }
 
 function initializeFileUploadSupport() {
@@ -2010,8 +1806,7 @@ function relativeTime(time) {
     }
 }
 
-function pausecomp(millis)
-{
+function pausecomp(millis) {
     var date = new Date();
     var curDate = null;
 
@@ -2023,13 +1818,12 @@ function scrollViewTo(scrolllTo) {
     if (scrollBottom === false) {
         return;
     }
-    var height = $('#entries').outerHeight();
     if (scrolllTo == '100%') {
-        $('#entries').css('top', scrollviewHeight - height);
+        $('#entries')[0].scrollTop = $('#entries')[0].scrollHeight;
     } else if (scrolllTo == '50%') {
-        $("#entries").css('top', (scrollviewHeight - height) / 2);
+        $('#entries')[0].scrollTop = $('#entries')[0].scrollHeight / 2 - $('#entries').outerHeight() / 2;
     } else if (scrolllTo == '0%') {
-        $("#entries").css('top', 0);
+        $('#entries')[0].scrollTop = 0;
     }
 }
 
@@ -2322,127 +2116,42 @@ function twitterHandler(el, text, menudata) {
 }
 
 function userHandler(el, text, menudata) {
-
-    if(menudata.actionType == 'penalty'){
-
+    if (menudata.actionType == 'penalty') {
         onPenaltyBox(el);
     }
-
-    if(menudata.actionType == 'workitems'){
-
+    if (menudata.actionType == 'workitems') {
         onUserItems(el);
     }
 }
 
-function updateScrollbarThumb(e, reset) {
-    var targetPos = Math.min(scrollbarThumbMax, Math.max(scrollbarThumbMin, e.pageY - $('.scrollbar-box').offset().top));
-    var now = new Date();
-    var dte = now;
-    now = (now.getTime() / 1000) | 0;
-    var toDate = getScrollbarDate(now, targetPos);
-
-    if (!reset) {
-        var text = relativeTime(now - toDate);
-        $('.scrollbar-thumb-text').text(text);
-        if (text.length > 0) {
-            var width = $('.scrollbar-thumb-text').outerWidth();
-            $('.scrollbar-thumb').css({
-                'top': targetPos-12,
-                'width': width + 15,
-                'left': -width,
-                'background-position': (width-225)+'px 0px'
-            });
-        }
-    } else {
-        $('span.scrollbar-thumb-text').html('&nbsp;');
-        $('.scrollbar-thumb').stop().animate(
-                { top:((scrollbarBoxHeight - scrollbarThumbHeight) / 2)+'px' },
-                { queue:false, duration:1000, easing: 'easeOutBounce' });
-        $('.scrollbar-thumb').css({
-            'background-position': '-225px 0px',
-            'left': 0,
-            'width': 15
-        });
-    }
-
-    return toDate;
-}
 function relativity() {
-    IEFix();
-
-    scrollviewHeight = $('.scroll-view').outerHeight();
-    scrollbarBoxHeight = $('.scrollbar-box').outerHeight();
-    scrollbarThumbHeight = $('.scrollbar-thumb').outerHeight();
-    $('.scrollbar-thumb').css('top',((scrollbarBoxHeight - scrollbarThumbHeight) / 2)+'px');
-    scrollbarThumbMin = scrollbarThumbHeight / 2;
-    scrollbarThumbMax = scrollbarBoxHeight - scrollbarThumbHeight / 2;
-    scrollbarRange = scrollbarThumbMax - scrollbarThumbMin;
+    resizeElements();
     scrollViewTo('100%', true);
-    speakerListHeight = $('#online-users').outerHeight();
-
-    adjustSystemDrawerSize();
+    speakerListHeight = $('#online-users > div').outerHeight();
 }
 $(window).resize(function() {
     relativity();
 });
 
-function adjustSystemDrawerSize() {
-    var height, width, top;
-
-    var iw = 0;
-    if (typeof window.innerWidth != 'undefined') {
-        iw = window.innerWidth;
-    } else if (typeof document.documentElement) {
-        iw = document.documentElement.clientWidth;
-    } else {
-        // should never reach here
-    }
-    
-    width = iw - $('#online-users-container').offset().left - $('#online-users-container').outerWidth() - 1;
-    $('#system-drawer-container')
-        .css('width', width)
-        .css('top', $('#content').offset().top);
-    $('#system-drawer-inner').css('height', $('#content').outerHeight());
-    
-
-    height = 
-        $('#system-drawer-inner').outerHeight() - 
-        $('#search-filter-wrap').outerHeight() -
-        $('#system-currentJobs').outerHeight();
-    
-    if ($('#penalty-container').is('visible')) {
-        height -= $('#penalty-container').outerHeight();
-    }
-    
-    $('#system-drawer-wrapper').outerHeight(height - 15);
-    
-    height = 
-        $('#system-drawer-wrapper').outerHeight() - 
-        $('#system-drawer-header').outerHeight();
-    $('#system-drawer').height(height);
-    
-    $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;
-}
-
-
 function gotoTime(gotoTime) {
     queryStr = '';
     var entries = $("#entries");
     entries.empty();
-    $('.scroll-pane-throbber').show();
+    $('#loading-spin').show();
     $.post("aj.php", { 'what': 'time', 'count': 50, 'time': gotoTime, 'csrf_token': csrf_token, 'filter': systemMsgs }, function(json) {
-        $('.scroll-pane-throbber').hide();
+        $('#loading-spin').removeClass().hide();
         inThePresent = false;
         firstDate = json.firstDate;
         lastDate = json.lastDate;
+        if (lastDate > lastEntryDate) {
+            lastEntryDate = lastDate;
+        }
         entries.append(json.html);
         finishUpdate('50%', false);
     }, 'json');
 }
 
-
-function initSound()
-{
+function initSound() {
     // Attach player elements
     chatSound      = new Sound(document.getElementById('chatSoundPlayer'));
     systemSound    = new Sound(document.getElementById('systemSoundPlayer'));
@@ -2451,8 +2160,6 @@ function initSound()
     emergencySound = new Sound(document.getElementById('emergencySoundPlayer'));
     
     // Save sound settings
-    var soundSettings = new Array(1, 1, 1, 1, 1);
-    if($.cookie('sound')) soundSettings = $.cookie('sound').split(':');
     if(0 == soundSettings[0]) {
         chatSound.mute();
         document.getElementById("chataudiooff").checked = true;
@@ -2497,9 +2204,8 @@ $(window).ready(function() {
        $('#mobileEnableAlerts').show();
     }
     
-    IEFix();
-    $('.scroll-pane-throbber').hide();
-    $('#guideline').show();
+    resizeElements();
+    $('#loading-spin').removeClass().hide();
     applyPopupBehavior();
     initializeFileUploadSupport();
     initSound();
@@ -2517,98 +2223,8 @@ $(window).ready(function() {
         }
     });
 
-    //adding logic behind login div in a corner
-    $("div#loginbox").hide();
-    $("div#loginbox").addClass('loginexpanded');
-    //loading fields from login.php
-    $.get("helper/popuplogin.inc.php", function(response){
-        $("div#loginbox").html(response);
-        var username = new LiveValidation('username',{ validMessage: "Valid email address.", onlyOnBlur: false });
-        username.add(SLEmail);
-        username.add(Validate.Length, { minimum: 10, maximum: 50 } );
-    });
-    $(".loginLink").bind('click', function(event, ui){
-        if ($('div#loginbox').is(":visible")) {
-            $('div#loginbox').hide('drop', { direction: 'left' }, 500);
-        } else {
-            $('div#loginbox').show('drop', { direction: 'left' }, 500);
-        }
-        event.preventDefault();
-    });
     relativity();
-    $('.scrollbar-thumb').mousedown(function(e){
-        var mouseTrigger = true;
-        var offset = $('.scrollbar-thumb').offset();
-        $('.scrollbar-thumb').css({'width':'200px'});
-
-        updateScrollbarThumb(e, false);
-
-        $(document).mousemove(function(e){
-            mouseTrigger = false
-            updateScrollbarThumb(e, false);
-        });
-
-        $(document).mouseup(function(e){
-            $(document).unbind('mousemove').unbind('mouseup');
-            var toDate = updateScrollbarThumb(e, true);
-            getEntriesAt(toDate);
-        });
-
-        //return false;
-    });
-    $('.scrollbar-box').click(function(e){
-        if (mouseTrigger) {
-            mouseTrigger = false;
-            return;
-        }
-        var targetPos = e.pageY - $('.scrollbar-box').offset().top;
-        if (e.pageX - $('.scrollbar-box').offset().left > 15) return;
-        getEntriesNear(targetPos < scrollbarBoxHeight / 2, false);
-    });
-
-    $('.scrollbar-up').mousedown(function(){
-        doScroll(20, 4, true);
-        $(document).mouseup(function(){ clearInterval(scrollInterval); });
-        return false;
-    });
-    $('.scrollbar-up').click(function(){
-        doScroll(20, 0, false);
-        return false;
-    });
-
-    $('.scrollbar-down').mousedown(function() {
-        doScroll(-20, 4, true);
-        $(document).mouseup(function(){ clearInterval(scrollInterval); });
-        return false;
-    });
-    $('.scrollbar-down').click(function() {
-        doScroll(-20, 0, false);
-        return false;
-    });
-    $('.scroll-view').bind('mousewheel', function (event, delta) {
-        delta = delta || (event.wheelDelta ? event.wheelDelta / 120 : (event.detail) ?  -event.detail/3 : 0);
-        doScroll(delta * 12, false);
-    });
-
-    $(document).keydown(function(e) {
-        switch (e.keyCode) {
-        case 33:  /* Page Up */
-            getEntriesNear(true);
-            return false;
-        case 34:  /* Page Down */
-            getEntriesNear(false);
-            return false;
-        case 38:  /* Up Arrow */
-            doScroll(20, 0, true);
-            $(document).keyup(function(){ clearInterval(scrollInterval); });
-            return false;
-        case 40:  /* Down Arrow */
-            doScroll(-20, 0, true);
-            $(document).keyup(function(){ clearInterval(scrollInterval); });
-            return false;
-        }
-    });
-
+    
     $('#go').click(function(){
         showLatest();
     });
@@ -2650,22 +2266,22 @@ $(window).ready(function() {
 
         var entries = $("#entries");
         entries.empty();
-        $('.scroll-pane-throbber').show();
+        $('#loading-spin').show();
         $.post("aj.php", { 'what': 'latest', 'count': 50, 'query': queryStr, 'csrf_token': csrf_token, 'filter': systemMsgs}, function(json) {
             inThePresent = false;
-            $('.scroll-pane-throbber').hide();
+            $('#loading-spin').removeClass().hide();
             firstDate = json.firstDate;
             lastDate = json.lastDate;
             entries.append(json.html);
             finishUpdate('100%', false);
+            
+            inSearchResult = ($.trim(queryStr).length > 0);
+            updateTitleTimerInterval();
 
-            //enter search results in system drawer
-            if(systemDrawer){
-                var drawer = $("#system-drawer");
-                drawer.empty();
-                drawer.append(json.system_html);
-                $('#system-drawer')[0].scrollTop = $('#system-drawer')[0].scrollHeight;// scrolling to the end of the drawer
-            }
+            var drawer = $("#system-notifications > div");
+            drawer.empty();
+            drawer.prepend(json.system_html);
+            $('#system-notifications > div')[0].scrollTop = 0;
         }, 'json');
         return false;
     });
@@ -2705,7 +2321,7 @@ $(window).ready(function() {
             e.stopPropagation();
         }
     });
-
+    
     $('<div id="livetip" class="overlay"></div>').hide().appendTo('body');
 
     if (gotoDate != 0) {
@@ -2738,25 +2354,9 @@ $(window).ready(function() {
     enlivenEntries();
 
 
-    speakerListHeight = $('#online-users').height();
+    speakerListHeight = $('#online-users > div').height();
     getLatestSpeakers();
 
-    $('img#drawer-switch').click(function(){
-
-        // disable it for user in Penalty Box
-        if(!penalized){
-            scrollBottom = true;
-            if(!systemDrawer){
-                openDrawer();
-                $('#addJob').show();
-            }else{
-                closeDrawer();
-                $('#addJob').hide();
-            }
-            showLatest();
-        }
-        adjustSystemDrawerSize();
-    });
     $('#popup-user-info #roles input[type="submit"]').click(function(){
         var name = $(this).attr('name');
         switch(name){
@@ -2767,7 +2367,6 @@ $(window).ready(function() {
     });
     AudioOn();
 
-    $('#message-pane').focus();
      //fetch TZ from worklist
     doc = document.location.href.split("chat");
     $.ajax({
@@ -2800,45 +2399,42 @@ $(window).ready(function() {
             }
         }
     });
+    
+    $('#entries').scroll(function() {
+        if (!previousChatInterval && $('#entries')[0].scrollTop <= $('#entries .entry.timestamp:first-child').outerHeight() / 2) {
+            $('#loading-spin').addClass('loadingPreviousEntries').show();
+            previousChatInterval = setInterval(function() {
+                if ($('#entries')[0].scrollTop <= $('#entries .entry.timestamp:first-child').outerHeight() / 2) {
+                    getEntriesNear(true);
+                } else {
+                    $('#loading-spin').removeClass('loadingPreviousEntries').hide();
+                }
+                clearInterval(previousChatInterval);
+                previousChatInterval = null;
+            }, 1000);
+        } else if (!futureChatInterval && lastEntryDate > lastDate && ($('#entries')[0].scrollTop >= $('#entries')[0].scrollHeight - $('#entries').outerHeight() - $('#entries .entry:last-child').outerHeight() / 2)) {
+            $('#loading-spin').addClass('loadingFutureEntries').show();
+            futureChatInterval = setInterval(function() {
+                if ($('#entries')[0].scrollTop >= $('#entries')[0].scrollHeight - $('#entries').outerHeight() - $('#entries .entry:last-child').outerHeight() / 2) {
+                    getEntriesNear(false);
+                } else {
+                    $('#loading-spin').removeClass('loadingFutureEntries').hide();
+                }
+                clearInterval(futureChatInterval);
+                futureChatInterval = null;
+            }, 1000);
+        }
+    });
+    
+    $('#message-pane').focus();
 });
 
 $(window).load(function(){
-    // disable it for user in Penalty Box
-    if(!penalized){
-        if(!systemDrawer){
-            openDrawer();
-            $('#addJob').show();
-        }else{
-            closeDrawer();
-            $('#addJob').hide();
-        }
     showLatest();
-    }
-    adjustSystemDrawerSize();
+    resizeElements();
+    
+    $('#message-pane').focus();
 });
-
-function HideLogin(){
-    $('div#loginbox').hide('drop', { direction: 'left' }, 500);
-}
-
-function openDrawer(){
-    $('.scroll-pane').addClass('shrinked-pane');
-    $('#system-drawer-container').show();
-    systemDrawer = true;
-    systemMsgs = 'system';
-    $('#drawer-switch').css('background-position', '-150px -88px');
-
-}
-
-function closeDrawer(){
-    $('#system-drawer-container').hide();
-    $('.scroll-pane').removeClass('shrinked-pane');
-    systemDrawer = false;
-    systemMsgs = 'all';
-    $('#drawer-switch').css('background-position', '-66px -88px');
-    IEFix();
-    inThePresent=true;
-}
 
 /*
  *   Function: AjaxPopup
@@ -2987,34 +2583,48 @@ function SimplePopup(popupId,
     }
 }
 
-function IEFix() {
-    var p = document.getElementsByTagName('body')[0];
+function resizeElements() {
     var ih = 0;
     var iw = 0;
     if (typeof window.innerWidth != 'undefined') {
-        // do nothing
         ih = window.innerHeight;
         iw = window.innerWidth;
     } else if (typeof document.documentElement) {
         ih = document.documentElement.clientHeight;
         iw = document.documentElement.clientWidth;
-    } else {
-        // should never reach here
     }
-    var base = ih - $('#welcome').outerHeight() - 13;
-    $('#guideline').css('height', Number(base) + 'px');
-    $('.scroll-view').css('height', ($('.scroll-wrap').outerHeight() - $('#bottom-panel').outerHeight()) + 'px');
-    $('.scrollbar').css('height', ($('.scroll-wrap').outerHeight() - $('#bottom-panel').outerHeight()) + 'px');
-    $('#online-users-container').css('height', (Number(base)) + 'px');
+    
+    var guideline_height = ih - $('#welcome').outerHeight();
+    $('#guideline').css('height', Number(guideline_height) + 'px');
+    
+    var entries_height = $('#center-container').outerHeight() - $('#bottom-panel').outerHeight() - 1;
+    $('#entries').css('height', Number(entries_height) + 'px');
+    
+    var left_container_width = 
+        $('#welcomeInside > .leftMenu > a:first-child + .headerButtonSeparator').offset().left +
+        $('#welcomeInside > .leftMenu > a:first-child + .headerButtonSeparator').outerWidth() + 8;
+    $('#left-container').css('width', Number(left_container_width) + 'px');
+    $('#center-container').css('left', Number(left_container_width) + 'px');
 
-    var scrollbarholdheight = 
-        $('.scroll-wrap').outerHeight() - 
-        $('#bottom-panel').outerHeight() - 
-        $('.scrollbar-up').outerHeight() - 
-        $('.scrollbar-down').outerHeight();
-    $('div.scrollbar-hold')
-        .css('height', scrollbarholdheight + 'px')
-        .css('top','15px');
+    var right_container_width = iw - $('#center-container').offset().left - $('#center-container').outerWidth() - 1;
+    $('#right-container').css('width', right_container_width);
+    
+    var online_users_height = 
+        $('#left-container').outerHeight()
+      - $('#online-users > h3').outerHeight()
+      - $('#search-filter-wrap').outerHeight();
+    $('#online-users > div').outerHeight(online_users_height);
+
+    var system_notifications_height = 
+        $('#right-container').outerHeight() 
+      - $('#current-jobs').outerHeight()
+      - $('#system-notifications > h3').outerHeight()
+      - ($('#penalty-container').is(':visible') ? $('#penalty-container').outerHeight() : 0)
+      - 35;
+    $('#system-notifications > div').outerHeight(system_notifications_height);
+    
+    $('#system-notifications > div')[0].scrollTop = 0;
+
 }
 
 $(function() {
@@ -3022,7 +2632,6 @@ $(function() {
     getBiddingReviewDrawers();
     $('#share-this').hide();
     $("#query").DefaultValue("Chat history...");
-
 });
 
 // --
@@ -3868,7 +3477,7 @@ function openPenaltyBox(timeout){
     $('#penalty-container').show();
     openDrawer();
     systemMsgs = 'all'
-    $('#system-drawer').empty();
+    $('#system-notifications > div').empty();
     $('#sub').prop('disabled', true);
     $('#message').prop('disabled', true);
     $('input[name="attachment"]').prop('disabled', true);
@@ -4228,6 +3837,33 @@ function fillBiddingReviewDrawers(json) {
     }
     var bidding = (json.bidding == 0 || json.bidding == null) ? 'no jobs' : (json.bidding == 1 ? '1 job' : json.bidding + ' jobs');
     var review = (json.review == 0 || json.review == null) ? 'no jobs' : (json.review == 1 ? '1 job' : json.review + ' jobs');
-    $('#biddingjobs').text(bidding);
-    $('#reviewjobs').text(review);
+    
+    $('#need-review ul li').remove();
+    $('#need-review ul + a').remove();
+    if (parseInt(review) > 0 && json.need_review) {
+        var need_review = json.need_review;
+        for (var i = 0; i < need_review.length; i++) {
+            workitem = need_review[i];
+            var li = $('<li>');
+            $('<a>').addClass('worklist-item').attr(
+                {
+                    id: 'workitem-' + workitem.id,
+                    href: 'workitem.php?job_id=' + workitem.id + '&action=view',
+                })
+                .append('<span>#' + workitem.id + '</span> ' + workitem.summary)
+                .appendTo(li);
+            $('#need-review ul').append(li);
+        }
+        if (parseInt(review) > 7) {
+            $('<a>').attr(
+                {
+                    href: 'worklist.php?project=&user=0&status=needs-review',
+                    target: '_blank'
+                })
+                .text('View them all')
+                .appendTo('#need-review');
+        }
+    }
+    $('#biddingJobs a').text(bidding);
+    relativity();
 }

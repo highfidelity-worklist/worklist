@@ -62,6 +62,7 @@ class User {
     protected $notifications;
     protected $has_W2;
     protected $findus;
+    protected $sound_settings;
     /**
      * All about budget
      */
@@ -730,6 +731,21 @@ class User {
      */
     public function setFindus($findus) {
         $this->findus = $findus;
+        return $this;
+    }
+    
+    /**
+     * @return the $sound_settings
+     */
+    public function getSound_settings() {
+        return $this->sound_settings;
+    }
+
+    /**
+     * @param $sound_settings to set
+     */
+    public function setSound_settings($sound_settings) {
+        $this->sound_settings = $sound_settings;
         return $this;
     }
 

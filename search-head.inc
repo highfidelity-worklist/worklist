@@ -117,6 +117,9 @@
                         if ($_GET['status'] == 'underway') { 
                             $selected = ' selected="selected"';
                         }
+                        if ($_GET['status'] == 'needs-review') {
+                            $selected = ' selected="selected"';
+                        }
                         break;
                     case 'Completed':
                         if ($_GET['status'] == 'completed') { 

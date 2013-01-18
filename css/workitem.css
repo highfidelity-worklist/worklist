@@ -1432,10 +1432,6 @@ a:hover{
     cursor: pointer;
 }
 
-#feesToolTip {
-  display: none;
-}
-
 #left, #right {
     background: none;
 }

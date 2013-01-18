@@ -217,6 +217,7 @@ require_once('opengraphmeta.php');
     stats.setUserId(user_id);
     var activeProjectsFlag = true;
     var skills = null;
+    var only_needs_review_jobs = <?php echo $_GET['status'] == 'needs-review' ? 'true' : 'false' ?>;
 
     function AppendPagination(page, cPages, table)    {
         // support for moving rows between pages
@@ -473,6 +474,11 @@ require_once('opengraphmeta.php');
             clearTimeout(timeoutId);
         }
         loaderImg.show("loadRunning", "Loading, please wait ...");
+        //if ($('#statusCombo').val().length == 1 && $('#statusCombo').val()[0] == 'review')
+        var search_status = ($('#statusCombo').val() || []).join("/");
+        if (search_status == 'Review' && only_needs_review_jobs) {
+            search_status = 'Needs-Review';
+        }
         $.ajax({
             type: "POST",
             url: 'getworklist.php',
@@ -480,7 +486,7 @@ require_once('opengraphmeta.php');
             data: {
                 page: npage,
                 project_id: $('.projectComboList .ui-combobox-list-selected').attr('val'),
-                status: ($('#statusCombo').val() || []).join("/"),
+                status: search_status,
                 sort: sort,
                 dir: dir,
                 user: $('.userComboList .ui-combobox-list-selected').attr('val'),

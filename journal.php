@@ -51,6 +51,11 @@ $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 
 $version = Utils::getVersion();
 
+$user = new User();
+if ($_SESSION['userid']) {
+    $user->findUserById($_SESSION['userid']);
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -89,7 +94,9 @@ function StopStatus() {
     var queryStr = '<?php echo $query ?>';
     var currentTime = <?php echo time() ?>;
     var earliestDate = <?php echo outputForJS($chat->getEarliestDate()) ?>;
-    var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>, lastDate = <?php echo outputForJS(strtotime($entries[count($entries)-1]['date'])-365*24*60*60); ?>;
+    var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>, 
+        lastDate = <?php echo outputForJS(strtotime($entries[count($entries)-1]['date'])-365*24*60*60); ?>,
+        lastEntryDate = lastDate;
     var inThePresent = true;
     var lastId = <?php echo outputForJS($entries[count($entries)-1]['id']); ?>;
     <?php if (isset($_SESSION['userid'])): ?>
@@ -104,7 +111,6 @@ function StopStatus() {
     <?php endif; ?>
     var userIp = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
     var gotoDate = <?php echo  isset($_GET['goto']) ? strtotime($_GET['goto']) : (isset($_POST['goto']) ? strtotime($_POST['goto']) : '0'); ?>;
-    var messagePruningOffsetPixels = 2000;
     var worklistUrl = '<?php echo WORKLIST_URL; ?>';
     var lastTouched = '<?php echo file_get_contents(JOURNAL_UPDATE_TOUCH_FILE); ?>';
     var latency_sample = '<?php echo LATENCY_SAMPLE; ?>';
@@ -113,6 +119,17 @@ function StopStatus() {
     var journal = {
         reloadWindowTimer: <?php echo defined("RELOAD_WINDOW_TIMER") ? RELOAD_WINDOW_TIMER : 3600; ?> 
     };
+    <?php if ($_SESSION['userid']): ?>
+        var soundSettings = new Array(
+            <?php echo $user->getSound_settings() & JOURNAL_CHAT_SOUND ? '1' : '0'; ?>, 
+            <?php echo $user->getSound_settings() & JOURNAL_SYSTEM_SOUND ? '1' : '0'; ?>, 
+            <?php echo $user->getSound_settings() & JOURNAL_PING_SOUND ? '1' : '0'; ?>, 
+            <?php echo $user->getSound_settings() & JOURNAL_BOT_SOUND ? '1' : '0'; ?>, 
+            <?php echo $user->getSound_settings() & JOURNAL_EMERGENCY_ALERT ? '1' : '0'; ?>
+        );
+    <?php else: ?>
+        var soundSettings = new Array(1, 1, 1, 1, 1);
+    <?php endif; ?>
 </script>
 <?php
 // Force load individual files while we debug the issues using the minimized version - gj 2011-July-05
@@ -268,25 +285,25 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                 <div id="debug"></div>
                 <div class="clear"></div>
                 <div id="guideline">
-                    <div class="scroll-wrap">
-                        <div class="scroll-pane">
-                            <div class="scrollbar">
-                                <div class="scrollbar-up"></div>
-                                <div class="scrollbar-hold">
-                                    <div class="scrollbar-box">
-                                        <div class="scrollbar-thumb">
-                                            <div class="scrollbar-thumb-left"></div>
-                                            <span class="scrollbar-thumb-text"></span>
-                                        </div>
+                    <div id="left-container">
+                        <div id="search-filter-wrap" class="search">
+                            <form id="searchForm" method="post">
+                                <div class="input_box">
+                                    <div class="searchDiv">
+                                        <input id="query" type="text" value="" size="20" alt="Chat history..." name="query">
+                                        <div id="search_reset" class="crossSearch" title="Clear Search Parameters"></div>
                                     </div>
                                 </div>
-                                <div class="scrollbar-down"></div>
-                            </div>
-                            <div class="scroll-view">
-                                <div id="entries">
-<?php echo $chat->formatEntries($entries); ?>
-                                </div>
-                            </div>
+                            </form>
+                        </div>
+                        <div id="online-users">
+                            <h3>Who's here?</h3>
+                            <div></div>
+                        </div>
+                    </div>
+                    <div id="center-container">
+                        <div id="entries">
+                            <?php echo $chat->formatEntries($entries); ?>
                         </div>
                         <div id="bottom-panel">
                             <form method="POST" id="msgSubmit">
@@ -325,58 +342,42 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                             </form>
                         </div>
                     </div>
-                    <div id="online-users-container">
-                        <div id="online-users"></div>
-                    </div>
-                    <div id="system-drawer-container">
-                        <div id="system-drawer-inner">
-                            <div id="search-filter-wrap" class="search">
-                                <form id="searchForm" method="post">
-                                    <div class="input_box">
-                                        <div class="searchDiv">
-                                            <input id="query" type="text" value="" size="20" alt="Chat history..." name="query">
-                                            <div id="search_reset" class="crossSearch" title="Clear Search Parameters"></div>
-                                        </div>
-                                    </div>
-                                </form>
+                    <div id="right-container">
+                        <div id="penalty-container">
+                            <div id="penalty-message">
+                                <h2>You have been sent to Penalty Box</h2>
+                                Time until you can chat again:
                             </div>
-                            <div id="system-currentJobs">
-                                <div>
-                                    <p>
-                                        <span id="biddingjobs">no jobs</span> in
-                                        <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=bidding">Bidding</a>
-                                    </p>
-                                    <p>
-                                        <span id="reviewjobs">no jobs</span> in need of
-                                        <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=review">Code Review</a>
-                                    </p>
-                                    <?php if (isset($_SESSION['userid'])): ?>
-                                        <input type="button" value="Add Job" id="addJob" />
-                                    <?php endif; ?>
-                                </div>
-                            </div>      
-                            <div id="penalty-container" style="display:none">
-                                <div id="penalty-message">
-                                    <h2>You have been sent to Penalty Box</h2>
-                                    Time until you can chat again:
-                                </div>
-                                <div id="penalty-countdown">
-                                </div>
-                                <div id="penalty-descriptions">
-                                    <h3>Reasons given:</h3>
-                                </div>
+                            <div id="penalty-countdown">
                             </div>
-                            <div id="system-drawer-wrapper">
-                                <div id="system-drawer-header">System Notifications</div>
-                                <div id="system-drawer"></div>
+                            <div id="penalty-descriptions">
+                                <h3>Reasons given:</h3>
                             </div>
                         </div>
+                        <div id="system-notifications">
+                            <h3>System Notifications</h3>
+                            <div></div>
+                        </div>
+                        <div id="current-jobs">
+                            <div id="need-review">
+                                <h3>Ready for Code Review</h3>
+                                <ul></ul>
+                            </div>
+                            <p id="biddingJobs">
+                                There are 
+                                <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=bidding">no jobs</a>
+                                you can bid on
+                            </p>
+                            <?php if (isset($_SESSION['userid'])): ?>
+                                <input type="button" value="Add Job" id="addJob" />
+                            <?php endif; ?>
+                        </div>
                     </div>
+                    <img src="images/throbber_white_32.gif" id="loading-spin" />
                 </div><!-- /#guideline -->
             </div><!-- /#content -->
             <div id="right"></div>
             <div style="clear: both;"></div>
-            <img src="images/throbber_white_32.gif" class="scroll-pane-throbber" />
             <div id="attachment-popup"></div>
         </div><!-- /#container -->
         <div style="clear: both"></div>

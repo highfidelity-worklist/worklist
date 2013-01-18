@@ -97,7 +97,9 @@ if ($sfilter) {
                          $where .= "status = '$val' OR ";
                      }
                 } else if ($val == 'Review') {
-                    $where .= "status IN ('Needs Review', 'Reviewed', 'In Review', 'Review') OR ";
+                    $where .= "status = 'Review' OR ";
+                } else if ($val == 'Needs-Review') {
+                    $where .= "(status = 'Review' AND code_review_started = 0) OR ";
                 } else if ($val != 'ALL') {
                     /**
                      * if filtering by any status different than ALL and (DRAFT, BIDDING) it 

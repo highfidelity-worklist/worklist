@@ -194,7 +194,7 @@ class AjaxResponse
 			'system_count' => $count,
 		  	'count' => $count,
 			'query' => $query,
-			));
+        ));
 		$lastId = $entries_result['lastId'];
 		$firstDate = $entries_result['firstDate'];
 		$lastDate = $entries_result['lastDate'];
@@ -219,7 +219,7 @@ class AjaxResponse
 		if (empty($_POST["json"])) {
 		    $html = $system_html = '';
 		    if ($count > 0) $html = $this->chat->formatEntries($entries, $exclude);
-		    if ($system_count > 0) $system_html = $this->chat->formatEntries($system_entries, null, false);
+		    if ($system_count > 0) $system_html = $this->chat->formatEntries(array_reverse($system_entries), null, false);
 			$data = array('html'=>$html, 'system_html' => $system_html);
 		} else {
 			// new improved json way!
@@ -389,7 +389,7 @@ class AjaxResponse
             $html = $system_html = $newentries = $newsystementries = '';
             if($count > 0) {
                 $html = $this->chat->formatEntries($entries, '', true, $last_private, true, true);
-                $system_html = $this->chat->formatEntries($system_entries, null, false, null, true, true);
+                $system_html = $this->chat->formatEntries(array_reverse($system_entries), null, false, null, true, true);
             } else {
                 $newentries = $this->chat->formatEntries($entries, '', true, $last_private, 0, true);
                 $newsystementries = $this->chat->formatEntries($system_entries, null, false, null, 0, true);

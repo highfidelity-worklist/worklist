@@ -489,6 +489,7 @@ input[type=password]:focus {
 #addproject{
     display: none;
 }
+
 .addproject_img {
     width:48px;
     height:48px;
@@ -538,5 +539,5 @@ input[type=password]:focus {
 }
 
 #feesToolTip {
-  display: none;
+    display: none;
 }
