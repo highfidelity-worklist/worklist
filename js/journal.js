@@ -3868,5 +3868,6 @@ function fillBiddingReviewDrawers(json) {
         $('#need-review').hide();
     }
     $('#biddingJobs a').text(bidding);
+    $('#biddingJobs span').text(parseInt(bidding) == 1 ? 'is' : 'are');
     relativity();
 }

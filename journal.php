@@ -364,7 +364,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                 <ul></ul>
                             </div>
                             <p id="biddingJobs">
-                                There are 
+                                There <span>are</span> 
                                 <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=bidding">no jobs</a>
                                 you can bid on
                             </p>
