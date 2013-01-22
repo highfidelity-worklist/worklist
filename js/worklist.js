@@ -222,7 +222,7 @@ $(function() {
     newHash = getPosFromHash();
     if (newHash['userid'] && newHash['userid'] != -1) {
         setTimeout(function(){
-            showUserInfo(newHash['userid']);
+            window.open('userinfo.php?id=' + newHash['userid'], '_blank');
         },2000);
     }
     

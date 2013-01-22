@@ -43,7 +43,11 @@ if (sizeof($bids) > 0 ) {
         }
         $data .= '
                     <tr>
-                        <td><a href="#" onclick="javascript:showUserInfo(' . $bid['bidder_id'] . ');">'.$bid['nickname'].'</a></td>
+                        <td>
+                            <a href="userinfo.php?id=' . $bid['bidder_id'] . '" target="_blank"> 
+                               ' . $bid['nickname'] . '
+                            </a>
+                        </td>
                         <td>'.$bid['bid_amount'].'</td>
                         <td>'.$bid['done_in'].'</td>
                         <td ' . $expire_class . '>'. relativeTime($bid['expires']) .'</td>

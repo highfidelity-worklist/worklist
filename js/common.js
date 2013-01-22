@@ -76,20 +76,6 @@ jQuery.fn.centerDialog = function() {
     });
 };
 
-function showUserInfo(user_id, tab) {
-    if (user_id == 0 || user_id == undefined) {
-        return false;
-    }
-    if (tab) {
-        tab = "&tab=" + tab;
-    } else {
-        tab = "";
-    }
-    // Show user info in new tab
-    window.open('userinfo.php?id=' + user_id + tab, '_blank');
-    return false;
-}
-
 function resizeIframeDlg() {
     var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
                   $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;

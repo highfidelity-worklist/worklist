@@ -139,7 +139,7 @@ class Chat
             
             if ($entry['author'].'@'.$entry['ip'] || !$bundle || $bot)  {
                 $time = strtotime($entry['date']);
-                $func = 'onclick="javascript:showUserInfo(\''.$entry['user_id'].'\')"';
+                $func = 'href="userinfo.php?id='.$entry['user_id'].'"';
                 if ($returnHtml !== true) {
                     $prev_author = $entry['author'] . '@' . $entry['ip'];
                     $newentries[] = array_merge($entry, array(
@@ -154,16 +154,21 @@ class Chat
                         'entry_type' => 'extra',
                     ));
                 } else {
-                    $html .= '<div data="' . $time . '" class="entry ' . $custom_class . '" id="entry-' . $entry['id'] . '">' . "\n" .
-                        '  <h2>' . "\n" .
-                        // checking to see if author is bot
-                        // if author is bot $func string is not attached
-                        // 08-MAY-2010 <Yani>
-                        '<span ' . ((in_array($entry['author'], $this->botNames_)) ? '' : '' . $func . '') . ' class="entry-author">' . $entry['author'] . "</span>\n" .
-                        '<span class="entry-date" data="' . $time . '" title="' . date("d M H:i:s", $now) . '--' . date("d M H:i:s", $time) . '">'.relativeTime($time - $now) . "</span>\n" .
-                        "  </h2>\n" .
-                        '  <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . '</div>'."\n".
+                    $html .= 
+                        '<div data="' . $time . '" class="entry ' . $custom_class . '" id="entry-' . $entry['id'] . '">' . "\n" .
+                        "    <h2>\n" .
+                                (
+                                    in_array($entry['author'], $this->botNames_)
+                                        ? '<span class="entry-author">' . $entry['author'] . "</span>\n"
+                                        : '<a ' . $func . ' target="_blank" class="entry-author">' . $entry['author'] . "</a>\n"
+                                ) .
+                        '        <span class="entry-date" data="' . $time . '" title="' . date("d M H:i:s", $now) . '--' . date("d M H:i:s", $time) . '">' .
+                                     relativeTime($time - $now) . 
+                        "        </span>\n" .
+                        "    </h2>\n" .
+                        '    <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . "</div>'\n".
                         '</div>';
+                    
                 }
             } else {
                 $time = strtotime($entry['date']);

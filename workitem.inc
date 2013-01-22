@@ -200,7 +200,7 @@ $(document).ready(function() {
     var userid_info_to_display = <?php echo (isset($_REQUEST['userinfotoshow']) && isset($_SESSION['userid'])) ? $_REQUEST['userinfotoshow'] : 0;?>; //holds the userid info to display
     //if the page was loaded with request to display userinfo automatically then do it.
     if (userid_info_to_display){
-        showUserInfo(userid_info_to_display);
+        window.open('userinfo.php?id=' + userid_info_to_display, '_blank');
     }
 });
 <!-- End User Info popup code -->
@@ -297,14 +297,29 @@ function postComment() {
                         '<a href="#commentform" onClick="reply(' + data.id + '); return false;">Reply</a>' +
                     '</div>' : '';
                 var newcomment =
-                '<li id="comment-' + data.id + '" class="comment depth-' + depth + ' ' + color + ' ' + order + '"><div class="comment">' +
-                    '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" onClick="showUserInfo(' + data.userid + ')" />' +
-                    '<div class="comment-container"><div class="comment-info"><span class="author profile-link" onClick="showUserInfo(' + data.userid +')"><strong>'+ data.nickname +'</strong>&nbsp;<span class="date">'+
-                             data.date + '</span></span></div><div class="comment-text">' +
-                             data.comment +
-                         '</div><div class="reply-lnk">' +
-                             replyLink +
-                         '</div></div></div></li>';
+                    '<li id="comment-' + data.id + '" class="comment depth-' + depth + ' ' + color + ' ' + order + '">' +
+                        '<div class="comment">' +
+                            '<a href="userinfo.php?id=' + data.userid + '" target="_blank">' +
+                                '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
+                            '</a>' +
+                            '<div class="comment-container">' +
+                                '<div class="comment-info">' +
+                                    '<a class="author profile-link" href="userinfo.php?id=' + data.userid +'" target="_blank">' + 
+                                        '<strong>'+ data.nickname +'</strong>&nbsp;' +
+                                        '<span class="date">' +
+                                            data.date + 
+                                        '</span>' +
+                                    '</a>' +
+                                '</div>' +
+                                '<div class="comment-text">' +
+                                     data.comment +
+                                '</div>' +
+                                '<div class="reply-lnk">' +
+                                    replyLink +
+                                '</div>' +
+                            '</div>' +
+                        '</div>'
+                     '</li>';
 
                 if (orderby == 'DESC') {
                     if (id == '') {
@@ -826,7 +841,7 @@ $(document).ready(function(){
             $('#popup-bid-info form input[type="button"]').remove();
 
             $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
-            $('#popup-bid-info #info-email').html('<a href="#" onClick="javascript:showUserInfo(' + bidData.bidder_id +');">' + bidData.nickname + '</a>');
+            $('#popup-bid-info #info-email').html('<a href="userinfo.php?id=' + bidData.bidder_id +'" target="_blank">' + bidData.nickname + '</a>');
             $('#popup-bid-info #info-bid-created').text(bidData.bid_created);
             if (bidData.bid_accepted.length > 0) {
                 $('#popup-bid-info #info-bid-accepted').text(bidData.bid_accepted);
@@ -899,7 +914,7 @@ $(document).ready(function(){
         // row has bid data attached so user is a bidder or a runner
         // - see table creation routine
         if (feeData.id){
-            $('#popup-fee-info #info-fee-email').html('<a href="#" onClick="javascript:showUserInfo(' + feeData.user_id + ');">' + feeData.nickname + '</a>');
+            $('#popup-fee-info #info-fee-email').html('<a href="userinfo.php?id=' + feeData.user_id + '" target="_blank">' + feeData.nickname + '</a>');
             $('#popup-fee-info #info-fee-created').text(feeData.fee_created);
             $('#popup-fee-info #info-fee-amount').text(feeData.amount);
             $('#popup-fee-info #info-fee-notes').html(feeData.desc);
@@ -1374,7 +1389,7 @@ $(document).ready(function(){
 
         $('.CreatorPopup').click(function(event) {
             var bidderId=$(this).attr("bidderId");
-            showUserInfo(bidderId);
+            window.open('userinfo.php?id=' + bidderId, '_blank');
             event.stopPropagation();
         });
 
@@ -1657,48 +1672,41 @@ if ($action =="edit"):  ?>
                 <div class="people-info">
                     <div id="creatorBox"><span id="pingCreator" class="creatorName" 
                     title="<?php echo isset($_SESSION['userid']) ? "Ping Creator" : "Log in to Ping Creator"; ?>">
-                    <a href="#">Job creator:</a></span> <a href="#"
-                    onClick="javascript:showUserInfo(<?php echo $worklist['creator_id']; ?>);">
-                    <?php echo $worklist['creator_nickname'];?></a></div>
+                    <a href="#">Job creator:</a></span> 
+                    <a href="userinfo.php?id=<?php echo $worklist['creator_id']; ?>" target="_blank">
+                        <?php echo $worklist['creator_nickname'];?>
+                    </a>
+                </div>
                             
                         <div id="runnerBox">
                         <?php if ($action =="edit"):  ?>
                             <span class="runnerName">Runner:</span>
-                            <?php
-                                if( $worklist['runner_nickname'] != 'Not funded' ) {
-                                    $tooltip = isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner";
-                                    echo '<a href="#" id="ping-r-btn" title="' . $tooltip . '"' . 
-                                        ' onClick="javascript:showUserInfo($(this).attr(\'data-user-id\'))" ' .
-                                        ' data-user-id="' . $worklist['runner_id'] . '">'.
-                                        substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
-                                        '</a>';                                    
-                                } else {
-                                    echo "&nbsp" . $worklist['runner_nickname'];
-                                } ?>
-                                <span class="changeRunner">
-                                    <?php $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
-                                    echo '<select name="runner">';
-                                    foreach ($runnerslist as $r) {
-                                        echo '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . $r->getNickname() . '</option>';
-                                    }
-                                    echo '</select>';?>
-                                    <div class="buttonContainer"><input type="button" class="smbutton" name="changerunner" value="Change Runner" /></div>
-                                    <div class="buttonContainer"><input type="button" class="smbutton" name="cancel" value="Cancel" /></div>
-                                </span>
+                            <?php if ($worklist['runner_nickname'] != 'Not funded'): ?>
+                                <a href="userinfo.php?id=<?php echo $worklist['runner_id']; ?>" target="_blank" id="ping-r-btn" 
+                                    title="<?php echo (isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"); ?>" 
+                                    data-user-id="<?php echo $worklist['runner_id']; ?>">
+                                    <?php echo substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : ''); ?>
+                                </a>
+                            <?php else: ?>
+                                    <?php echo "&nbsp" . $worklist['runner_nickname']; ?>
+                            <?php endif; ?>
+                            <span class="changeRunner">
+                                <?php $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
+                                echo '<select name="runner">';
+                                foreach ($runnerslist as $r) {
+                                    echo '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . $r->getNickname() . '</option>';
+                                }
+                                echo '</select>';?>
+                                <div class="buttonContainer"><input type="button" class="smbutton" name="changerunner" value="Change Runner" /></div>
+                                <div class="buttonContainer"><input type="button" class="smbutton" name="cancel" value="Cancel" /></div>
+                            </span>
                         <?php else: ?>
-                            <?php
-                                if( $worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] !='') {
-                            ?>
-                            <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"> <a href="#">Runner:</a></span>
-                            <a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') ;?></a>
-                            <?php
-                                }
-                                else {
-                            ?>
-                            <span class="runnerName" title="Ping Runner">Runner:</span> Not funded
-                            <?php
-                                }
-                            ?>
+                            <?php if ($worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] != ''): ?>
+                                <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"> <a href="#">Runner:</a></span>
+                                <a href="userinfo.php?id=<?php echo $worklist['runner_id']; ?>" target="_blank"><?php echo substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') ;?></a>
+                            <?php else: ?>
+                                <span class="runnerName" title="Ping Runner">Runner:</span> Not funded
+                            <?php endif; ?>
                         <?php endif;?>
                         </div>
                 
@@ -1712,7 +1720,7 @@ if ($action =="edit"):  ?>
                             $mech = '<span class="mechanicName" title="' . $tooltip . '" >Mechanic:</span>Not assigned';
                         } else{
                             $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
-                            $mech='<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" ><a href="#">Mechanic:</a></span><a id="ping-btn" onClick="javascript:showUserInfo(' . $worklist['mechanic_id'] . ');">' . $mech . '</a>';
+                            $mech='<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" ><a href="#">Mechanic:</a></span><a id="ping-btn" href="userinfo.php?id=' . $worklist['mechanic_id'] . '" target="_blank">' . $mech . '</a>';
                         }
                         echo '<div id="mechanicBox"> ' . $mech . '</div>';
                     ?>
@@ -1922,16 +1930,18 @@ if ($action =="edit"):  ?>
                             $comment[] = $comments[$it];
                             ?><li id="comment-<?php echo $comment['id']; ?>" class="depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?> <?php if ($order_by == "DESC" && $comment['depth'] > 0) echo 'desc'; ?>">
                                 <div class="comment">
-                                    <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')" />
+                                    <a href="userinfo.php?id=<?php echo $comment['comment']->getUser()->getId(); ?>" target="_blank">
+                                        <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" />
+                                    </a>
                                     <div class="comment-container">
                                         <div class="comment-info">
-                                            <span class="author profile-link" onClick="javascript:showUserInfo('<?php echo $comment['comment']->getUser()->getId(); ?>')"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
+                                            <a class="author profile-link" href="userinfo.php?id='<?php echo $comment['comment']->getUser()->getId(); ?>" target="_blank"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
                                                 <span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
-                                            </span>
+                                            </a>
                                         </div>
                                         <div class="comment-text">
-                                        <?php echo replaceEncodedNewLinesWithBr(linkify($comment['comment']->getComment())); ?>
-                                        <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'Done')) : ?>
+                                            <?php echo replaceEncodedNewLinesWithBr(linkify($comment['comment']->getComment())); ?>
+                                            <?php if (!empty($user_id) && $comment['depth'] < 6 && ($worklist['status'] != 'Done')) : ?>
                                         </div>
                                         <div class="reply-lnk">
                                             <a href="#commentform" onClick="reply(<?php echo $comment['id']; ?>);return false;">Reply</a>
@@ -2213,8 +2223,7 @@ if ($action =="edit"):  ?>
                                         <td class="nickname who">
                                             <span class="table-back">
                                                 <span>
-                                                    <a href="#" onClick="javascript:showUserInfo(<?php echo $fee['user_id'];?>); event.stopPropagation();"
-                                                        title="<?php echo $fee['nickname']; ?>">
+                                                    <a href="userinfo.php?id=<?php echo $fee['user_id'];?>" target="_blank" title="<?php echo $fee['nickname']; ?>">
                                                         <?php echo getSubNickname($fee['nickname'], 8);?>
                                                     </a>
                                                 </span>

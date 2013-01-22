@@ -775,7 +775,7 @@ function formatMessage(entry) {
         if(isBot(entry.author)){
             var span1 = '<span class="entry-author">' + entry.author + '</span>';
         } else {
-            var span1 = '<span class="entry-author" ' + entry.func + '>' + entry.author + '</span>';
+            var span1 = '<a class="entry-author" ' + entry.func + ' target="_blank">' + entry.author + '</a>';
         }
         var span2 = '<span class="entry-date" data="' + entry.time + '" title="' + entry.time_title + '">';
         span2 += entry.relative_time + '</span>';
@@ -1421,7 +1421,7 @@ function fillSpeakerList(newSpeakerList, currentUser){
         var className = e.currentTarget.parentNode.className;
         var id = className.substring(4);
         var numId = parseInt(id);
-        showUserInfo(numId);
+        window.open('userinfo.php?id=' + numId, '_blank');
         return false;
     });
 

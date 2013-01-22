@@ -217,7 +217,7 @@ $(document).ready(function() {
         select:function(event, ui) {
             $("#search_user").val("");
             $("#search_user-id").val(ui.item.id);
-            showUserInfo(ui.item.id);
+            window.open('userinfo.php?id=' + ui.item.id, '_blank');
 
             return false;
         }
@@ -230,9 +230,9 @@ $(document).ready(function() {
     if( !empty($_REQUEST['showUser'])) {
         $tab = "";
         if( !empty($_REQUEST['tab'])) {
-            $tab = ", '" . $_REQUEST['tab'] . "'";
+            $tab = "&tab=" . $_REQUEST['tab'];
         }
-        echo "showUserInfo(" . $_REQUEST['showUser'] . $tab . ");";
+        echo "window.open('userinfo.php?id=" . $_REQUEST['showUser'] . $tab . "', '_blank')";
     }
 ?>
 });
@@ -272,7 +272,7 @@ function fillUserlist(npage) {
             $('tr.row-userlist-live').click(function(){
                 var match = $(this).attr('class').match(/useritem-\d+/);
                 var userid = match[0].substr(9);
-                showUserInfo(userid, null);
+                window.open('userinfo.php?id=' + userid, '_blank');
                 return false;
             });
 

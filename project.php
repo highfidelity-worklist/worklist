@@ -216,7 +216,7 @@ require_once('opengraphmeta.php');
                                         <?php if ($is_admin || $is_owner): ?>
                                         '<td class="runnerRemove">' + (runner.owner ? '' : '<input type="checkbox" name="runner' + runner.id + '" />') + '</td>' +
                                         <?php endif; ?>
-                                        '<td class="runnerName"><a href="#" onclick="javascript:showUserInfo(' + runner.id + ');">' + runner.nickname + '</a></td>' +
+                                        '<td class="runnerName"><a href="userinfo.php?id=' + runner.id + '" target="_blank">' + runner.nickname + '</a></td>' +
                                         '<td class="runnerJobCount">' + runner.totalJobCount + '</td>' +
                                         '<td class="runnerLastActivity">' + (runner.lastActivity ? runner.lastActivity : '') + '</td>' +
                                     '</tr>'
@@ -537,7 +537,7 @@ require_once('opengraphmeta.php');
                     <a href="mailto:<?php echo $project->getContactInfo(); ?>"><?php echo $project->getContactInfo(); ?></a>
                 </div>
                 <div id="projectRunner"><span>Project started by</span>
-                    <a href='javascript:(function() {showUserInfo(<?php echo $project->getOwnerId(); ?>);})();'>
+                    <a href='userinfo.php?id=<?php echo $project->getOwnerId(); ?>' target="_blank">
                         <span><?php echo $project_user->getNickname(); ?></span>
                     </a>
                 </div>
@@ -576,7 +576,7 @@ require_once('opengraphmeta.php');
                                 if ($count) {
                                     echo ', ';
                                 }
-                                ?><a href="javascript:(function(){showUserInfo(<?php echo $contributor['id']; ?>);})();"><?php echo $contributor['nickname']; ?></a><?php
+                                ?><a href="userinfo.php?id=<?php echo $contributor['id']; ?>" target="_blank"><?php echo $contributor['nickname']; ?></a><?php
                                 $count++;                                
                             }
                         ?>
@@ -740,7 +740,7 @@ require_once('opengraphmeta.php');
                                         $row = 1;
                                         foreach ($payments as $payment) { ?>
                                             <tr class="payment <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?>">
-                                                <td><a href="#" onClick="javascript:showUserInfo(<?php echo $payment['id']?>);"><?php echo $payment['nickname']?></a></td>
+                                                <td><a href="userinfo.php?id=<?php echo $payment['id']?>" target="_blank"><?php echo $payment['nickname']?></a></td>
                                                 <td>
                                                     <a id="worklist-<?php echo $payment['worklist_id']?>" class="payment-joblink" target="_blank"
                                                           href="workitem.php?job_id=<?php echo $payment['worklist_id']; ?>&action=view">

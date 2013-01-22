@@ -21,12 +21,13 @@ $details = $user->getBudgetTransfersDetails();
             <tr><td><?php echo $transfer['id'];?></td>
             <td><?php echo $transfer['reason'];?></td>
             <td><?php echo $transfer['transfer_date'];?></td>
-            <?php $receiver_id=$transfer['receiver_id'];?>
-            <?php echo '<td onclick="showUserInfo(' . $receiver_id . ')">'; ?>
-            <?php echo $transfer['nickname'];?></td>
+            <td>
+                <a href="userinfo.php?id=<?php echo $transfer['receiver_id']; ?>" target="blank">
+                    <?php echo $transfer['nickname']; ?>
+                </a>
+            </td>
             <td><?php echo $transfer['amount_granted'];?></td></tr>
         <?php endforeach; ?>
 	    </tbody>
 	</table><br/>
-	
 </div>

@@ -38,7 +38,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
                 <div class="rightMenu">
 <?php if (isset($_SESSION['username'])) { ?>
                     <div class="loggedIn">
-                        <a class="headerUserName" href='javascript:(function() {showUserInfo(<?php echo $userId; ?>);})();'>
+                        <a class="headerUserName" href="userinfo.php?id=<?php echo $userId; ?>" target="_blank">
                             <span id="user" class=''><?php echo $_SESSION['nickname']; ?></span>
                         </a>
                         <div class="headerButtonSeparator">&nbsp;</div>&nbsp;

@@ -600,7 +600,7 @@ require_once('opengraphmeta.php');
     
             $(".creator, .runner, .mechanic", $(".who", selfRow)).addClass("linkTaskWho").click(
                 function() {
-                    showUserInfo($(this).attr("title"));
+                    window.open('userinfo.php?id=' + $(this).attr("title"), '_blank');
                 }
             );
         });

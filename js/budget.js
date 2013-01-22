@@ -356,14 +356,14 @@ var Budget = {
         });
     },
     
-    displayHistory: function() {
+    displayHistory: function(user_id) {
         $('#budgetPopup').dialog('close');
-        showUserInfo(0, "tabBudgetHistory");
+        window.open('userinfo.php?id=' + user_id + '&tab=tabBudgetHistory', '_blank');
     },
     
     displayHistoryFromParent: function(user_id) {
         window.parent.$('#user-info').dialog('close');
-        window.parent.showUserInfo(user_id, "tabBudgetHistory");
+        window.parent.open('userinfo.php?id=' + user_id + '&tab=tabBudgetHistory', '_blank');
     },
     
     /**
@@ -527,35 +527,47 @@ var Budget = {
             // Fill the table
             for (var i = 0; i < data.length; i++) {
                 if (section == 3 ) {
-                    var row = '<tr class="data_row"><td>#' + data[i].id + '</a></td><td title="' + data[i].budget_title + '">' +
-                                data[i].budget_title + '</td><td>' + data[i].notes + '</td><td><a href="#" onclick="showUserInfo(' + data[i].receiver_id + ')">' + data[i].who +
-                              '</a></td><td>$' + data[i].amount + '</td>' +
-                              '<td>' + data[i].created + '</td></tr>';
+                    var row = 
+                        '<tr class="data_row">' +
+                        '    <td>#' + data[i].id + '</td>' +
+                        '    <td title="' + data[i].budget_title + '">' +
+                        '        ' + data[i].budget_title +
+                        '    </td>' + 
+                        '    <td>' + data[i].notes + '</td>' +
+                        '    <td>' +
+                        '        <a href="userinfo.php?id=' + data[i].receiver_id + '" target="_blank">' + data[i].who + '</a>' +
+                        '    </td>' +
+                        '    <td>$' + data[i].amount + '</td>' +
+                        '    <td>' + data[i].created + '</td>' +
+                        '</tr>';
                     $('#table-budget-transferred').append(row);
 
                 } else {
-                    var link = '<a href="workitem.php?job_id='+data[i].id+'&action=view" target="_blank">';
+                    var link = '<a href="workitem.php?job_id=' + data[i].id + '&action=view" target="_blank">';
                     // Separate "who" names into an array so we can add the userinfo for each one
                     var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
                     var who_link = '';
                     for (var z = 0; z < who.length; z++) {
-                        if (z < who.length-1) {
-                            who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>, ';
-                        } else {
-                            who[z] = '<a href="#" onclick="showUserInfo('+data[i].ids[z]+')">'+who[z]+'</a>';
+                        who[z] = '<a href="userinfo.php?id=' + data[i].ids[z] + '" target="_blank">' + who[z] + '</a> ';
+                        if (z < who.length - 1) {
+                            who[z] += ', ';
                         }
                         who_link += who[z];
                     }
 
-                    var row = '<tr class="data_row"><td>' + link + '#' + data[i].id + '</a></td><td title="' + data[i].budget_title + '">' +
-                                data[i].budget_id + '</td><td>' + link+data[i].summary + '</a></td><td>' + who_link +
-                              '</td><td>$' + data[i].amount + '</td><td>' + data[i].status + '</td>' +
-                              '<td>' + data[i].created + '</td>';
-                    if (data[i].paid != 'Not Paid') {
-                        row += '<td>'+data[i].paid+'</td></tr>';
-                    } else {
-                        row += '<td>'+data[i].paid+'</td></tr>';
-                    }
+                    var row = 
+                        '<tr class="data_row">' +
+                        '    <td>' + link + '#' + data[i].id + '</a></td>' +
+                        '    <td title="' + data[i].budget_title + '">' +
+                        '        ' + data[i].budget_id + 
+                        '    </td>' + 
+                        '    <td>' + link + data[i].summary + '</a></td>' + 
+                        '    <td>' + who_link + '</td>' + 
+                        '    <td>$' + data[i].amount + '</td>' + 
+                        '    <td>' + data[i].status + '</td>' +
+                        '    <td>' + data[i].created + '</td>' +
+                        '    <td>' + data[i].paid + '</td>' +
+                        '</tr>';
                     $('#table-budget-expanded').append(row);
                 }
 			}

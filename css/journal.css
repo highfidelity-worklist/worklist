@@ -664,13 +664,13 @@ input.hide {
 }
 
 
-#entries .entry h2 span.entry-date,
-#entries .entry h2 span.entry-author {
+#entries .entry h2 .entry-date,
+#entries .entry h2 .entry-author {
     display: none;
 }
 
-#entries .entry.timestamp h2 span.entry-date,
-#system-notifications .entry h2 span.entry-date {
+#entries .entry.timestamp h2 .entry-date,
+#system-notifications .entry h2 .entry-date {
     position: absolute;
     display: block;
     top: 0px;
@@ -679,18 +679,18 @@ input.hide {
 }
 
 
-#entries .entry.timestamp h2 span.entry-date {
+#entries .entry.timestamp h2 .entry-date {
     left: 150px;
     line-height: 28px;
 }
 
-#system-notifications .entry h2 span.entry-date {
+#system-notifications .entry h2 .entry-date {
     left: 0;
     line-height: 15px;
     margin: 2px 10px;
 }
 
-#entries .entry.showNickname h2 span.entry-author {
+#entries .entry.showNickname h2 .entry-author {
     display: inline;
 }
 
