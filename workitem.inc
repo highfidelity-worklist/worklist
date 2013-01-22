@@ -304,11 +304,11 @@ function postComment() {
                             '<div class="comment-container">' +
                                 '<div class="comment-info">' +
                                     '<a class="author profile-link" href="userinfo.php?id=' + data.userid +'" target="_blank">' +
-                                        '<strong>'+ data.nickname +'</strong>&nbsp;' +
-                                        '<span class="date">' +
-                                            data.date +
-                                        '</span>' +
+                                        data.nickname +
                                     '</a>' +
+                                    '<span class="date">' +
+                                        data.date +
+                                    '</span>' +
                                 '</div>' +
                                 '<div class="comment-text">' +
                                      data.comment +
@@ -1940,9 +1940,10 @@ if ($action =="edit"):  ?>
                                     </a>
                                     <div class="comment-container">
                                         <div class="comment-info">
-                                            <a class="author profile-link" href="userinfo.php?id='<?php echo $comment['comment']->getUser()->getId(); ?>" target="_blank"><strong><?php echo $comment['comment']->getUser()->getNickname(); ?></strong>&nbsp;
-                                                <span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
+                                            <a class="author profile-link" href="userinfo.php?id=<?php echo $comment['comment']->getUser()->getId(); ?>" target="_blank">
+                                                <?php echo $comment['comment']->getUser()->getNickname(); ?>
                                             </a>
+                                            <span class="date"><?php echo relativeTime(strtotime($comment['comment']->getDate())-time());?></span>
                                         </div>
                                         <div class="comment-text">
                                             <?php echo replaceEncodedNewLinesWithBr(linkify($comment['comment']->getComment())); ?>

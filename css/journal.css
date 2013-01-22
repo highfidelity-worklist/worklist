@@ -561,7 +561,7 @@ input.hide {
     padding: 0 5px 0 0;
 }
 
-#system-notifications h2 span:first-child:after {
+#system-notifications .entry-author:first-child:after {
     content: ':';
     display: inline;
 }
@@ -570,16 +570,19 @@ input.hide {
     margin-left: -2px;
 }
 
+.entry .entry-author {
+    text-decoration: none;
+}
 
-.entry.extra h2 span {
+.entry.extra .entry-author {
     color: #E5E5E5;
 }
 
-.entry.other h2 span {
+.entry.other .entry-author {
     color: #333333;
 }
 
-.entry.extra.other h2 span {
+.entry.extra.other .entry-author {
     color: #E6DFC6;
 }
 
@@ -587,11 +590,11 @@ input.hide {
     background-color: rgba(255, 85, 134, 0.14);
 }
 
-.entry.sendlove h2 span {
+.entry.sendlove .entry-author {
     color: #D24B3F;
 }
 
-.entry.journal h2 span {
+.entry.journal .entry-author {
     color: #89D23F;
 }
 
@@ -599,11 +602,11 @@ input.hide {
     background-color: rgba(153, 51, 0, 0.14);
 }
 
-.entry.svn h2 span {
+.entry.svn .entry-author {
     color: #AA1E00;
 }
 
-.entry.schemaupdate h2 span {
+.entry.schemaupdate .entry-author {
     color: #3D9635;
 }
 
@@ -611,11 +614,11 @@ input.hide {
     background-color: rgba(51, 102, 102, 0.14);
 }
 
-.entry.autotester h2 span {
+.entry.autotester .entry-author {
     color: #088A85;
 }
 
-.entry.worklist h2 span {
+.entry.worklist .entry-author {
     color: #5488D1;
 }
 
@@ -625,11 +628,11 @@ input.hide {
     background-image: url(../images/alert_bar.gif);
 }
 
-.entry.sitescan h2 span {
+.entry.sitescan .entry-author {
     color: #FF0000;
 }
 
-.entry.bot h2 span {
+.entry.bot .entry-author {
     color: #D98D4B;
 }
 
@@ -641,10 +644,6 @@ input.hide {
     background: -ms-linear-gradient(left,  rgba(244,244,244,0) 0%,rgba(244,244,244,1) 50%,rgba(244,244,244,0) 100%); /* IE10+ */
     background: linear-gradient(to right,  rgba(244,244,244,0) 0%,rgba(244,244,244,1) 50%,rgba(244,244,244,0) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f4f4f4', endColorstr='#00f4f4f4',GradientType=1 ); /* IE6-9 */
-}
-
-.entry-author {
-    cursor: pointer;
 }
 
 #entries .entry-author:hover {
@@ -727,7 +726,7 @@ input.hide {
     overflow: hidden;
 }
 
-.entry a {
+.entry-text a {
     color: #AA1E00;
 }
 

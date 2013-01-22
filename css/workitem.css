@@ -1607,8 +1607,9 @@ input.button-disabled ,
     width: 60px;
 }
 
-.profile-link{
-    cursor: pointer;
+a.profile-link {
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .past-due {

@@ -166,7 +166,7 @@ class Chat
                                      relativeTime($time - $now) . 
                         "        </span>\n" .
                         "    </h2>\n" .
-                        '    <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . "</div>'\n".
+                        '    <div class="entry-text">' . linkify($entry['entry'], $entry['author']) . "</div>\n".
                         '</div>';
                     
                 }
