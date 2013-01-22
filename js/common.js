@@ -225,7 +225,7 @@ jQuery.fn.DefaultValue = function(text){
 function openNotifyOverlay(html, autohide) {
     $('#sent-notify').html(html);
     $('#sent-notify').attr('autohide', autohide);
-    $('#sent-notify').dialog('open');
+    $('#sent-notify').dialog({ dialogClass:'white-theme', autoOpen: true });
 }
 
 function closeNotifyOverlay() {

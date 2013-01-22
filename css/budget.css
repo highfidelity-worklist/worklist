@@ -51,11 +51,9 @@
     height: 16px;
 }
 
-#budget-source-combo-area .ui-icon-carat-1-s,
 #pay-bonus .ui-icon-carat-1-s,
 #budgetInWorkitem .ui-icon-carat-1-s,
 #update-budget .ui-icon-carat-1-s,
-#popupSelectBudget .ui-icon-carat-1-s,
 #give-budget .ui-icon-carat-1-s {
     background-position: -64px 0 !important;
 }

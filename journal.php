@@ -204,8 +204,8 @@ if (isset($error) && $error->getErrorFlag() == 1) {
             $("#budgetPopup").dialog({
                 title: "Earning & Budget",
                 autoOpen: false,
-                height: 280,
-                width: 370,
+                height: 400,
+                width: 'auto',
                 position: ['center',60],
                 modal: true
             });

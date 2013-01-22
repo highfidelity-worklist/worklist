@@ -85,4 +85,7 @@ ul.ui-combobox-list-multiple  li.ui-combobox-list-selected {
 	background:none;
 }
 
-
+.ui-combobox input, .ui-combobox input:hover, .ui-combobox input:active, .ui-combobox input:focus {
+    outline: none !important;
+    border: none !important;
+}

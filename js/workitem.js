@@ -27,6 +27,7 @@ var Workitem = {
             $("<div id='diffUrlDialog' class='popup-body'><div class='content'>Loading ...</div></div>").appendTo("body"); 
             $("#diffUrlDialog").data("options", options);
             $('#diffUrlDialog').dialog({
+                dialogClass: 'white-theme',
                 title: 'View Sandbox Diff',
                 autoOpen: false,
                 closeOnEscape: true,

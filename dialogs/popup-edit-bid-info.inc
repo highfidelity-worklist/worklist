@@ -2,14 +2,13 @@
     <form name="popup-form" id="popup-form" action="" method="post">
         <input type="hidden" name="bid_id" value="" />
         <p class="floatLeft">
-            <label id="lblAmountEdit">Amount<br />
-                <input type="text" name="bid_amount" id="bid_amount_edit" class="text-field money" size="48" />&nbsp;USD
-            </label>
+            <label for="bid_amount_edit">Amount</label>
+            <input type="text" name="bid_amount" id="bid_amount_edit" class="text-field money" size="48" />&nbsp;USD
         </p>
         
         <div class="clear"></div>
         <div id="bidDoneEdit">
-            <label>Done In</label>
+            <span>Done In</span>
             <div class="timeSlider" id="bidDoneEditSlider">
                 <div class="sliderStepsArea">
                     <div class="sliderStep sliderStepFirst">
@@ -35,7 +34,7 @@
         <?php } else { ?>
         <div class="clear"></div>
         <div id="bidExpiresEdit">
-            <label>Bid Expires</label>
+            <span>Bid Expires</span>
             <div class="timeSlider" id="bidExpireEditSlider">
                 <div class="sliderStepsArea">
                     <div class="sliderStep sliderStepFirst">
@@ -58,7 +57,7 @@
         <?php } ?>
         <div class="clear"></div>
 
-        <p><label>Notes <small>(mandatory)</small><br /><label>
+        <p><label for="notes-edit">Notes <small>(mandatory)</small></label>
         <textarea class="notes expand100-200" name="notes" id="notes-edit"></textarea>
         </p>
         <script type="text/javascript">

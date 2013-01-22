@@ -1,4 +1,4 @@
-<div id="popup-bid" class="popup-body" title = "Place Bid">
+<div id="popup-bid" class="popup-body">
     <form name="popup-form" action="" method="post" >
         <input type="hidden" name="<?php echo $get_variable;?>" value="<?php echo $worklist_id;?>" />
 <?php
@@ -32,7 +32,7 @@
         <?php } ?>
         <div class="clear"></div>
         <div id="bid_notes" >
-            <div><label class="bid_amount_heading">Notes <span class="bid_notes_required">(required)</span></label><br />
+            <div><label class="bid_amount_heading">Notes <span class="bid_notes_required">(required)</span></label>
                 <textarea class="notes expand100-200 bid_notes_textarea" name="notes" id="notes" /></textarea>
                 <div id="bid_notes_decsription" class="bid_notes_decsription">
                     This is where you describe to the runner your approach on how to get this job done. These

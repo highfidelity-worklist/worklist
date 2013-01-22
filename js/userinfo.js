@@ -178,7 +178,7 @@ var UserInfo = {
        
         $('#popup-pingtask').dialog({
             autoOpen: false, 
-            width: 400, 
+            width: 50, 
             height: "auto",
             resizable: false,
             position: [ 'top' ],

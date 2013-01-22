@@ -612,8 +612,8 @@ td.textAlignReport {
     display: none;
 }
 #ping-msg {
-    height: 65px;
-    width: 356px;
+    height: 100px;
+    width: 322px;
 }
 #send-ping-btn {
     margin-top: 8px;
@@ -1155,7 +1155,7 @@ input.button-disabled ,
 .bid_amount_p {
     padding-right: 28px;
 }
-.bid_amount_heading {
+#bid_notes .bid_amount_heading, .bid_amount_heading {
     font-weight: bold; 
     font-size:18px !important; 
     color: #666666 !important;
@@ -1163,7 +1163,6 @@ input.button-disabled ,
 }
 .bid_amount_textfield {
     width: 73px !important; 
-    height: 27px; 
     margin-top: 6px; 
 }
 #place_bid_usd {
@@ -1200,11 +1199,10 @@ input.button-disabled ,
     float: left; 
     margin-right: 19px; 
     height: 180px !important; 
-    margin-top: 9px;
+    margin-top: 0;
 }
 #bid_notes_decsription {
     font-family: arial; 
-    padding-top: 6px;
     color: #666666;
 }
 #bid_done_container {

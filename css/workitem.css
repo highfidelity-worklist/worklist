@@ -571,6 +571,10 @@ a:hover{
     text-decoration: undeline;
 }
 
+#runnerBox .buttonContainer {
+    margin-left: 15px !important;
+}
+
 .runnerName,
 .mechanicName,
 .creatorName,
@@ -1063,7 +1067,7 @@ a:hover{
 #popup-edit-bid-info #edit_bid {
     float: right;
     position: relative;
-    margin-top: 10px;
+    margin-top: 10px !important;
 }   
 
 #popup-edit textarea {
@@ -1329,14 +1333,8 @@ a:hover{
 }
 
 #popup-bid-info #user-stats{
+    border: none;
     margin-top: 10px;
-    width: 370px;
-}
-
-#popup-bid-info #user-stats th,
-#popup-bid-info #user-stats td{
-    text-align: center;
-    border-width:1px;
 }
 
 .loader{
@@ -1551,12 +1549,13 @@ input.button-disabled ,
 #bidExpires,
 #bidExpiresEdit {
     padding: 15px 5px 15px 0;
+    font-size: 13px;;
 }
 
 /* slider css */
 .timeSlider {
-    background-color: #333333;
-    border-color: #333333;
+    background-color: #333333 !important;
+    border: solid 1px #333333 !important;
     cursor: pointer;
     float: right;
     height: 0;
@@ -1626,7 +1625,8 @@ input.button-disabled ,
 }
 
 #ping-msg {
-    width: 356px;
+    width: 322px;
+    height: 100px;
 }
 
 .table-caption .noteWrapper {
@@ -1868,33 +1868,14 @@ h1.newProject {
     font-size: 15px;
 }
 
-#invite-label {
-    line-height: 25px;
-}
-
 #sandbox {
     width: 400px
 }
 
-#invite-people form div {
-    width: 100%;
-    margin: auto;
-    text-align: center;
+#withdraw_bid {
+    width: 140px;
 }
 
-#invite-people span.invite-label {
-    color: #666666;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-#invite-people input.invite {
-    width: 235px;
-    padding: 8px;
-    border-width: 1px;
-}
-
-#invite-people input[type="submit"] {
-    margin: 15px auto 0 auto;
-    display: block;
+#popup-multiple-bid-form #accept_bid_select_budget {
+    width: 165px;
 }

@@ -259,7 +259,7 @@ $(function() {
     if ($('#userCombo').length !== 0) {
         createActiveFilter('#userCombo', 'users', 1);
     }
-    $('#search-filter-wrap select[name=status]').comboBox();
+    $('select[name=status]').comboBox();
 
     // add fading effect to the status combobox selected item shown as the list caption
     if ($('#container-statusCombo > .fading').length == 0) {

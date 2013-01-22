@@ -3,7 +3,7 @@
 <?php
     if ($is_runner || $is_project_founder || $is_project_runner) {
 ?>      <div class="clear">
-            <p class="info-label">Pay To
+            <p class="info-label"><label for="mechanic_id">Pay To</label>
 <?php
     $filter = new Agency_Worklist_Filter();
     echo $filter->getUserSelectbox(1, false, 'mechanicFee', 'mechanicFee');
@@ -14,7 +14,7 @@
 <?php
     } else  {
 ?>
-        <p class="info-label">Pay To<br />
+        <p class="info-label"><label for="mechanic_id">Pay To</label>
             <span id="mechanic_id"><?php echo !empty($_SESSION['nickname']) ? $_SESSION['nickname'] : ''; ?></span>
         </p>
             <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />
@@ -22,14 +22,14 @@
 <?php   }  ?>
             <br/>
             <input type="hidden" name="itemid" value="" />
-            <div class="floatLeft">
-                <p class="info-label iToolTip enterAmount">Fee ($USD)<br />
+            <div>
+                <p class="info-label iToolTip enterAmount"><label for="fee_amount">Fee ($USD)</label>
                 <input type="text" name="fee_amount" id="fee_amount" class="text-field money iToolTip enterAmount" size="48" />
                 </p>
             </div>
-            <div class="floatRight">
+            <div>
                 <p class="info-label iToolTip enterAmount">
-                    Description<br />
+                    <label for="fee_desc">Description</label>
                     <textarea name="fee_desc" id="fee_desc" class="expand" rows="2" cols="20"></textarea>
                 </p>
             </div>

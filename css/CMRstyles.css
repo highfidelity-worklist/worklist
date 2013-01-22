@@ -378,7 +378,8 @@ input.google {padding-left: 20px; background: transparent url("../images/google.
 div.login_left input.text-field, div.login_right input.text-field {width:230px;}
 
 #popup-bid-info table td{
-    border-width:0px;
+    border-width:0;
+    background: transparent;
 }
 
 /* TODO: This style here is overriden by another one at lm.ui.css. It should be cleared out. @qboss */

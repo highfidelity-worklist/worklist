@@ -2,13 +2,13 @@
             <table>
                 <thead>
                     <tr class = "table-hdng">
-                        <th>Job #</th>
-                        <th>Summary</th>
-                        <th>Creator</th>
-                        <th>Runner</th>
-                        <th>Date</th>
-                        <th class="status">Status</th>
-                        <th class="unfollow">Un-Follow</th>
+                        <th><span>Job #</span></th>
+                        <th><span>Summary</span></th>
+                        <th><span>Creator</span></th>
+                        <th><span>Runner</span></th>
+                        <th><span>Date</span></th>
+                        <th class="status"><span>Status</span></th>
+                        <th class="unfollow"><span>Un-Follow</span></th>
                     </tr>
                 </thead>
                 <tbody><tr><td></td></tr>
@@ -32,10 +32,10 @@
             <table>
                 <thead>
                     <tr class = "table-hdng">
-                        <th>From</th><th>Why</th><th>When</th>
+                        <th><span>From</span></th><th><span>Why</span></th><th><span>When</span></th>
                     </tr>
                 </thead>
                 <tbody><tr><td></td></tr>
                 </tbody>
             </table>
-        </div> 
+        </div>

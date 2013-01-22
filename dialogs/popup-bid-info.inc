@@ -43,7 +43,9 @@
             <table id = "user-stats">
                 <thead>
                     <tr class = "table-hdng">
-                        <th>Total / Active Jobs</th><th>Total / 30 day $</th><th>Bonus $ / %</th>
+                        <th><span>Total / Active Jobs</span></th>
+                        <th><span>Total / 30 day $</span></th>
+                        <th><span>Bonus $ / %</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,8 +62,7 @@
         </form>
     </div>
 <?php if ($is_runner || $is_project_founder || $workitem->getIsRelRunner()){ ?>
-        <div id="popupSelectBudget" style="display:none" title="Select a budget">
-            
+        <div id="popupSelectBudget" class="hidden" title="Select a budget">
                 <span id="budget-source-combo-area">
                     <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
                         <option value="0" selected="selected">Select a budget</option>
@@ -70,14 +71,8 @@
                     ?>
                     </select>
                 </span>
-            <div class="clear"></div><br/>
-            <div class="clear"></div><br/>
-            <div class="clear"></div><br/>
-            <div class="clear"></div><br/>
-            <div class="clear"></div><br/>
-            <div class="clear"></div><br/>
-            <div>
-                <span style="float:left;width:370px">
+            <div class="popup-buttons">
+                <span>
                     <input type="button" id="cancel_budget" value="Cancel">
                     <input type="button" id="confirm_budget"  value="OK">
                 </span>

@@ -4,7 +4,7 @@
             <label for="budget-current" class="info-label">Total Available Funds: $</label>
             <?php echo $user-> getBudget(); ?>
         </div>
-        <label for="budget-amount" class="info-label">New Budget to Give: </label><br/>
+        <label for="budget-amount" class="info-label">New Budget to Give: </label>
             $<input type="text" id="budget-amount" name="amount" /> 
             <?php if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false) { ?>
             <span id="budget_seed_area">
@@ -13,10 +13,9 @@
             </span>
             <?php } ?>
             <br/>
-        <label for="budget-reason" class="info-label">For: </label><br/>
+        <label for="budget-reason" class="info-label">For: </label>
             <input type="text" id="budget-reason" name="budget-reason"/><br/>
-        <label for="budget-source" class="info-label">Source: </label><br/>
-        
+        <label for="budget-source" class="info-label">Source: </label>
             <input type="text" id="budget-source" name="budget-source"/>
             <span id="budget-source-combo-area">
                 <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
@@ -27,7 +26,7 @@
         
             <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user-> getId();?>" />
         <br/>
-        <label for="budget-note" class="info-label">Note: </label><br/>
+        <label for="budget-note" class="info-label">Note: </label>
             <textarea id="budget-note" name="budget-note" ></textarea>
         <br/>
         <input type="submit" value="Give Budget" />

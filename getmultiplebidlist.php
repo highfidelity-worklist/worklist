@@ -25,13 +25,13 @@ if (sizeof($bids) > 0 ) {
                 </caption>
                 <thead>
                     <tr class="table-hdng">
-                        <td>User</td>
-                        <td>Amount</td>
-                        <td>Done in</td>
-                        <td>Expires</td>
-                        <td>Notes</td>
-                        <td>Accept</td>
-                        <td>Mechanic</td>
+                        <th><span>User</span></th>
+                        <th><span>Amount</span></th>
+                        <th><span>Done in</span></th>
+                        <th><span>Expires</span></th>
+                        <th><span>Notes</span></th>
+                        <th><span>Accept</span></th>
+                        <th><span>Mechanic</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,16 +58,12 @@ if (sizeof($bids) > 0 ) {
     }
     echo $data;
 ?>
-                    <tr>
-                        <td colspan="7" align="right">
-                            <input type="button" id="accept_bid_select_budget"
-                                name="accept_bid_select_budget" value="Accept Selected">
-                            <input type="submit" style="display:none;" name="accept_multiple_bid" id="accept_multiple_bid" value="Confirm Accept Selected">
-                            <input type="hidden" id="budget_id_multiple_bid" name="budget_id" value="" />
-                        </td>
-                    </tr>
                 </tbody>
             </table>
+            <input type="hidden" name="accept_multiple_bid" id="accept_multiple_bid" value="Confirm Accept Selected">
+            <input type="hidden" id="budget_id_multiple_bid" name="budget_id" value="" />
+            <input type="button" id="accept_bid_select_budget"
+                   name="accept_bid_select_budget" value="Accept Selected">
         </form>
 <?php
 } else {

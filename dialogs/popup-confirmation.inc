@@ -1,4 +1,4 @@
-    <div id="popup-confirmation" class="popup-body" title = "Please confirm">
+    <div id="popup-confirmation" class="popup-body">
         <p><strong>I agree that</strong> by adding either a bid or a fee, I accept that I will not
         be paid for this work unless <?php echo $workitem_project->getOwnerCompany(); ?>
         and the owner of this job approves payment.</p>

@@ -14,26 +14,25 @@
 ?>
     <div id="popup-addtip" class="popup-body" title = "Add Tip">
         <form name="popup-form" id="popup-form-addtip" action="" method="post">
-            <div>
-                <p class="info-label">Pay To
+            <div class="field">
+                <label for="mechanic_id">Pay To</label>
 <?php
     $filter = new Agency_Worklist_Filter();
     echo $filter->getUserSelectbox(1, false, 'mechanicTip', 'mechanicTip');
 ?>
                     <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />
-                </p>
+                
                 <br/>
             </div>
             <input type="hidden" name="itemid" value="" />
-            <div class="floatLeft">
-                    <p class="info-label iToolTip enterAmount">Tip ($USD)<br />
+            <div class="field">
+                    <label for="tip_amount">Tip ($USD)</label>
                         <input type="text" name="tip_amount" id="tip_amount" class="text-field money iToolTip enterAmount" size="48" />
-                    </p>
             </div>
-            <div class="floatRight">
-                <p class="info-label iToolTip enterAmount">Note<br />
+            <div class="clear">
+                <label for="tip_desc">Note</label>
                     <input type="text" name="tip_desc" id="tip_desc" class="text-field iToolTip enterAmount" size="48" />
-                </p>
+                
             </div>
             <script type="text/javascript">
                 // see http://regexlib.com/REDetails.aspx?regexp_id=318
@@ -69,7 +68,7 @@
                     }
                 });
             </script>
-            <div class="clear floatRight">
+            <div class="clear">
                 <input type="submit" id="add_tip" name="add_tip" value="Add Tip" />
             </div>
         </form>

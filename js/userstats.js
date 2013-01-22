@@ -2,7 +2,7 @@ if (typeof stats == "undefined") {
 
 $(function(){
 
-    var dialog_options = {autoOpen: false, width: '685px', show: 'fade', hide: 'fade'};
+    var dialog_options = { dialogClass: 'white-theme', autoOpen: false, width: '685px', show: 'fade', hide: 'fade'};
     $('#jobs-popup').dialog(dialog_options);
     $('#lovelist-popup').dialog(dialog_options);
     $('#latest-earnings-popup').dialog(dialog_options);
@@ -12,19 +12,19 @@ $(function(){
         stats.showJobs('doneJobs');
         return false;
     });
-    
+
     $('#runner-total-jobs').click(function(){
         stats.stats_page = 1;
         stats.showJobs('runnerTotalJobs');
         return false;
-    }); 
-    
+    });
+
     $('#runner-active-jobs, #quick-links-working').click(function(){
         stats.stats_page = 1;
         $('#jobs-popup').dialog('option', 'title', 'Active jobs');
         stats.showJobs('runnerActiveJobs');
         return false;
-    });      
+    });
 
     $('#active-jobs, #quick-links-working').click(function(){
         stats.stats_page = 1;
@@ -32,14 +32,14 @@ $(function(){
         stats.showJobs('activeJobs');
         return false;
     });
-    
+
     $('#quick-links-review').click(function(){
         stats.stats_page = 1;
         $('#jobs-popup').dialog('option', 'title', 'Jobs in review');
         stats.showJobs('reviewJobs');
         return false;
     });
-    
+
     $('#quick-links-completed').click(function(){
         stats.stats_page = 1;
         $('#jobs-popup').dialog('option', 'title', 'Completed jobs');
@@ -72,10 +72,10 @@ $(function(){
 
 
 var stats = {
-    
+
     stats_page: 1,
     user_id: 0,
-    
+
     setUserId: function(id){
         stats.user_id = id;
     },
@@ -88,7 +88,7 @@ var stats = {
             containerDiv = '#jobs-table';
         }
 
-        $.getJSON('getuserstats.php', 
+        $.getJSON('getuserstats.php',
                     {id: user_id, statstype: job_type, page: stats.stats_page},
                     function(json) {
                         if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
@@ -103,7 +103,7 @@ var stats = {
                         }
 
                         stats.fillJobs(json, partial(stats.showJobs, job_type), job_type, popup);
-                        
+
                         if (popup != 0) {
                             $('#jobs-popup').dialog('open');
                         }
@@ -141,14 +141,14 @@ var stats = {
     },
 
     showLove: function(){
-        $.getJSON('getuserstats.php', 
+        $.getJSON('getuserstats.php',
                     {id: stats.user_id, statstype: 'love', page: stats.stats_page},
                     function(json){
                         stats.fillLove(json, stats.showLove);
                         $('#lovelist-popup').dialog('open');
                     });
     },
-    
+
     // func is a functin to be called when clicked on pagination link
     fillJobs: function(json, func, job_type, popup) {
         if (popup != 0) {
@@ -161,22 +161,22 @@ var stats = {
             var runner_nickname = jsonjob.runner_nickname != null ? jsonjob.runner_nickname : '----';
             if (popup != 0) {
                 var toAppend = '<tr>'
-                            + '<td><a href = "' + worklistUrl 
-                            + 'workitem.php?job_id=' + jsonjob.id 
+                            + '<td><a href = "' + worklistUrl
+                            + 'workitem.php?job_id=' + jsonjob.id
                             + '&action=view" target = "_blank">#'+ jsonjob.id + '</a></td>'
                             + '<td>' + jsonjob.summary + '</td>'
                             + '<td>' + jsonjob.creator_nickname + '</td>'
                             + '<td>' + runner_nickname + '</td>'
                             + '<td>' + jsonjob.created + '</td>';
-                            
+
                 if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                     toAppend += '<td>' + jsonjob.status + '</td>';
                 }
-                
+
                 if (job_type == 'following') {
                     toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';
                 }
-                
+
             } else {
                 var toAppend = '<tr class="';
                 if (i % 2 == 1) {
@@ -186,10 +186,10 @@ var stats = {
                 }
 
                     toAppend += '">'
-                            + '<td><a href = "' + worklistUrl 
-                            + 'workitem.php?job_id=' + jsonjob.id 
+                            + '<td><a href = "' + worklistUrl
+                            + 'workitem.php?job_id=' + jsonjob.id
                             + '&action=view" target = "_blank">#'+ jsonjob.id + ' - <span>' + jsonjob.summary + '</span></a></td>';
-                            
+
                 if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                     toAppend += '<td>' + jsonjob.status + '</td>';
                 }
@@ -201,12 +201,12 @@ var stats = {
                     toAppend += '<td class="sandbox">'
                             + '<a id="view-sandbox-'+ jsonjob.id +'" target="_blank" href="'+ jsonjob.sandbox  +'">View</a>'
                             + '</td>';
-                }                    
+                }
 
                 if (job_type == 'following') {
                     toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';
                 }
-                
+
             }
             toAppend += '</tr>';
             table.append(toAppend);
@@ -216,7 +216,7 @@ var stats = {
             stats.appendStatsPagination(json.page, json.pages, table);
         }
     },
-    
+
     fillEarnings: function(json, func){
         var table = $('#latest-earnings-popup table tbody');
         $('tr', table).remove();
@@ -238,7 +238,7 @@ var stats = {
         table.data('func', func);
         stats.appendStatsPagination(json.page, json.pages, table);
     },
-    
+
     fillLove: function(json, func){
         $('#lovelist-popup table tbody tr').remove();
         $.each(json.love, function(i, jsonlove){
@@ -255,7 +255,7 @@ var stats = {
         table.data('func', func);
         stats.appendStatsPagination(json.page, json.pages, table);
     },
-    
+
     appendStatsPagination: function(page, cPages, table){
         stats.stats_page = page;
         var paginationRow = $('<tr bgcolor="#FFFFFF">');
@@ -291,7 +291,7 @@ var stats = {
             return false;
         });
     },
-    
+
     getA: function(page, txt){
         var a = $('<a href = "#">');
         a.data('page', page);

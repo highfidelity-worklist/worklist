@@ -142,6 +142,7 @@ var WReview = {
             $("#reviewDialog").data("reviewee_id", options.user_id);
             $("#reviewDialog").data("nickName", options.nickname);
             $("#reviewDialog").dialog({
+                dialogClass: 'white-theme',
                 buttons: [{
                     text: "Update Review",
                     click: function() { 

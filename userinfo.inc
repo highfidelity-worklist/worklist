@@ -248,8 +248,10 @@
                             <textarea id="ping-msg" name="ping-msg" rows="3"></textarea>
                             <input type="checkbox" id="send-mail" name="send_mail" checked="checked" class="hidden" />
                             <input type="submit" id="send-ping-btn" value="Send Message" class="floatRight" />
-                            <p><input type="checkbox" id="copy-me" name="copy_me" checked="checked" /> Copy me in email</p>
-                            <p><input type="checkbox" id="echo-journal" name="echo_journal" checked="checked" /> Echo to public chat</p>
+                            <p>
+                                <div><input type="checkbox" id="copy-me" name="copy_me" checked="checked" /> Copy me in email</div>
+                                <div><input type="checkbox" id="echo-journal" name="echo_journal" checked="checked" /> Echo to public chat</div>
+                            </p>
                             <div class="clear"></div>
                         </form>
                     </div>

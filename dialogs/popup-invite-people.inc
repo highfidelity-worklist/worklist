@@ -2,8 +2,8 @@
     <?php if ($user_id > 0):?>
     <form action="" method="post" name="invite-form" onSubmit="return sendInviteForm();">
         <div>
-            <span class="invite-label" id="invite-label">Invite</span>
-            <input type="text" class="invite ac_input" name="invite" autocomplete="on" />
+            <label for="invite">Invite</label>
+            <input id="invite" type="text" class="invite ac_input" name="invite" autocomplete="on" />
         </div>
         <script type="text/javascript">
         $(document).ready(function() {
