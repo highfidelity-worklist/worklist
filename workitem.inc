@@ -1686,41 +1686,6 @@ if ($action =="edit"):  ?>
                         <div id="runnerBox">
                         <?php if ($action =="edit"):  ?>
                             <span class="runnerName">Runner:</span>
-<<<<<<< .mine
-                            <?php
-                                if( $worklist['runner_nickname'] != 'Not funded' ) {
-                                    $tooltip = isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner";
-                                    echo '<a href="#" id="ping-r-btn" title="' . $tooltip . '"' .
-                                        ' onClick="javascript:showUserInfo($(this).attr(\'data-user-id\'))" ' .
-                                        ' data-user-id="' . $worklist['runner_id'] . '">'.
-                                        substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
-                                        '</a>';
-                                } else {
-                                    echo "&nbsp" . $worklist['runner_nickname'];
-                                } ?>
-                                <span class="changeRunner">
-                                    <?php $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
-                                    echo '<select name="runner">';
-                                    foreach ($runnerslist as $r) {
-                                        echo '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . $r->getNickname() . '</option>';
-                                    }
-                                    echo '</select>';?>
-                                    <div class="buttonContainer"><input type="button" class="smbutton" name="changerunner" value="Change Runner" /></div>
-                                    <div class="buttonContainer"><input type="button" class="smbutton" name="cancel" value="Cancel" /></div>
-                                </span>
-                        <?php else: ?>
-                            <?php
-                                if( $worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] !='') {
-                            ?>
-                            <span id="pingRunner" class="runnerName" title="<?php echo isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"; ?>"> <a href="#">Runner:</a></span>
-                            <a href="#" onClick="javascript:showUserInfo(<?php echo $worklist['runner_id']; ?>);"><?php echo substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') ;?></a>
-                            <?php
-                                }
-                                else {
-                            ?>
-                            <span class="runnerName" title="Ping Runner">Runner:</span> Not funded
-                            <?php
-=======
                             <?php if ($worklist['runner_nickname'] != 'Not funded'): ?>
                                 <a href="userinfo.php?id=<?php echo $worklist['runner_id']; ?>" target="_blank" id="ping-r-btn"
                                     title="<?php echo (isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner"); ?>"
@@ -1735,7 +1700,6 @@ if ($action =="edit"):  ?>
                                 echo '<select name="runner">';
                                 foreach ($runnerslist as $r) {
                                     echo '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . $r->getNickname() . '</option>';
->>>>>>> .r1628
                                 }
                                 echo '</select>';?>
                                 <div class="buttonContainer"><input type="button" class="smbutton" name="changerunner" value="Change Runner" /></div>
