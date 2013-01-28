@@ -49,7 +49,11 @@ $(function(){
 
     $("#welcome .following").click(function(){
         stats.stats_page = 1;
-        $('#jobs-popup').dialog('option', 'title', 'Jobs I am Following');
+        $('#jobs-popup').dialog({
+            title: "Jobs I am Following",
+            dialogClass: 'white-theme',
+            modal: true
+        });
         stats.showJobs('following');
         return false;
     });
@@ -127,6 +131,7 @@ var stats = {
                                     }
                                 });
                             });
+                            $('#jobs-popup').addClass('table-popup');
                         }
                     });
     },

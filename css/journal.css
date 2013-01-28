@@ -139,7 +139,6 @@ h2 {
 
 h3 {
     font-size: 15px;
-    color: #6f6f6f;
     margin: 0 0 5px 0;
     padding: 0;
 }
@@ -455,7 +454,7 @@ input {
 .loginexpanded, 
 .settingsboxexpanded {
     position: absolute;
-    width: 15em;
+    width: 21em;
     border: 3px solid #ccc;
     background: white;
     text-align: left;
@@ -1035,8 +1034,7 @@ a[rel="attachment"] {
     font-size: 12px;
     position: fixed;
 }
-
-#SettingsWindow, 
+ 
 #loginbox, 
 .overlay {
     border-radius: 10px;
@@ -1061,8 +1059,11 @@ a[rel="attachment"] {
 }
 
 #SettingsWindow h2 {
-    margin: 0 0 0.4em 0;
-    padding: 0 0 0.4em 0;
+    color: #608e96;
+    font-size: 15px;
+    margin: 0 0 5px 0;
+    padding: 0;
+    font-weight: bold;
     border-bottom: 1px solid #CCC;
 }
 
@@ -1081,8 +1082,7 @@ a[rel="attachment"] {
 
 #botHelper, 
 #audiosetter {
-    border-top: 1px solid #CCC;
-    margin: 0.4em 0 0 0;
+    margin: 0.4em 35px 35px 35px;
     padding: 0.4em 0 0 0;
 }
 
@@ -1096,12 +1096,15 @@ a[rel="attachment"] {
 #audiosetter li {
     margin: 0 0 0.4em 0;
     padding: 0 0 0.4em 0;
-    border-bottom: 1px solid #EEE;
     position: relative;
 }
 
 #audiosetter label {
     position: absolute;
+}
+
+#audiosetter label.active {
+    color: #608e96;
 }
 
 #audiosetter .on {

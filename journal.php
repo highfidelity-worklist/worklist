@@ -70,8 +70,10 @@ if ($_SESSION['userid']) {
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.css" media="all" />
 <link rel="stylesheet" type="text/css" href="css/jquery.autocomplete.css" />
 <link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css" />
+<link rel="stylesheet" type="text/css" href="css/smoothness/white-theme.lm.ui.css"/>
 <link rel="stylesheet" type="text/css" href="css/budget.css" />
 <link rel="stylesheet" type="text/css" href="css/journal.css" />
+<link rel="stylesheet" type="text/css" href="css/worklist.css" />
 <link rel="stylesheet" type="text/css" href="css/userinfo.css" />
 <link rel="stylesheet" type="text/css" href="css/favorites.css" />
 <link rel="stylesheet" type="text/css" href="css/LVstyles.css" />
@@ -203,13 +205,13 @@ if (isset($error) && $error->getErrorFlag() == 1) {
         if ($("#budgetPopup").length > 0) {
             $("#budgetPopup").dialog({
                 title: "Earning & Budget",
+                dialogClass: 'white-theme',
                 autoOpen: false,
-                height: 400,
-                width: 'auto',
                 position: ['center',60],
                 modal: true
             });
             $("#welcome .budget").click(function(){
+                $("#budgetPopup").addClass("table-popup");
                 $("#budgetPopup").dialog("open").centerDialog();
             });
         }
@@ -383,9 +385,16 @@ if (isset($error) && $error->getErrorFlag() == 1) {
         <div style="clear: both"></div>
 
         <div id="loginbox" style="display: none;"></div>
-        <div id="SettingsWindow" style="display: none;">
-            <a href="#" id="SettingsWindowClose">close x</a>
-            <h1>Settings and Information</h1>
+        <div id="SettingsWindow"
+            style="display: none;opacity: 1;"
+            class="ui-dialog ui-widget ui-widget-content ui-corner-all white-theme ui-draggable ui-resizable"
+            tabindex="-1" role="dialog">
+            <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+                <span class="ui-dialog-title">Settings and Information</span>
+                <a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button" id="SettingsWindowClose">
+                    <span class="ui-icon ui-icon-closethick">close</span>
+                </a>
+            </div>
             <div id="botHelper">
                 <h2>Chat commands</h2>
                 <p>
@@ -411,22 +420,22 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                 <h2>Audio Settings</h2>
                 <ul>
                     <li>
-                        <span style="cursor:pointer;text-decoration:underline;color:#9d9d9d;" onClick="chatSound.play();">Chat Sound</span>
+                        <span style="cursor:pointer;text-decoration:underline;" onClick="chatSound.play();">Chat Sound</span>
                         <label class="on">ON <input id="chataudioon" name="chataudio" type="radio" onClick="ChatAudioOn();"></label>
                         <label class="off">OFF <input id="chataudiooff" name="chataudio" type="radio" onClick="ChatAudioOff();"/></label>
                     </li>
                     <li>
-                        <span style="cursor:pointer;text-decoration:underline;color:#9d9d9d;" onClick="systemSound.play();">System Sound</span>
+                        <span style="cursor:pointer;text-decoration:underline;" onClick="systemSound.play();">System Sound</span>
                         <label class="on">ON <input id="systemaudioon" name="systemaudio" type="radio" onClick="SystemAudioOn();"> </label>
                         <label class="off">OFF <input id="systemaudiooff" name="systemaudio" type="radio" onClick="SystemAudioOff();"> </label>
                     </li>
                     <li>
-                        <span style="cursor:pointer;text-decoration:underline;color:#9d9d9d;" onClick="pingSound.play();">Ping Sound</span>
+                        <span style="cursor:pointer;text-decoration:underline;" onClick="pingSound.play();">Ping Sound</span>
                         <label class="on">ON <input id="pingaudioon" name="pingaudio" type="radio" onClick="PingAudioOn();"> </label>
                         <label class="off">OFF <input id="pingaudiooff" name="pingaudio" type="radio" onClick="PingAudioOff();"> </label>
                     </li>
                     <li>
-                        <span style="cursor:pointer;text-decoration:underline;color:#9d9d9d;" onClick="botSound.play();">Bot Sound</span>
+                        <span style="cursor:pointer;text-decoration:underline;" onClick="botSound.play();">Bot Sound</span>
                         <label class="on">ON <input id="botaudioon" name="botaudio" type="radio" onClick="BotAudioOn();"> </label>
                         <label class="off">OFF <input id="botaudiooff" name="botaudio" type="radio" onClick="BotAudioOff();"> </label>
                     </li>
@@ -434,12 +443,20 @@ if (isset($error) && $error->getErrorFlag() == 1) {
     // @TODO - Discuss: Allow for emergency audio to be flipped on and off by choice?
 ?>
                     <li>
-                        <span style="cursor:pointer;text-decoration:underline;color:#9d9d9d;" onClick="emergencySound.play();">Emergency Alert</span>
+                        <span style="cursor:pointer;text-decoration:underline;" onClick="emergencySound.play();">Emergency Alert</span>
                         <label class="on">ON <input id="emergencyaudioon" name="emergencyaudio" type="radio" onClick="EmergencyAudioOn();"> </label>
                         <label class="off">OFF <input id="emergencyaudiooff" name="emergencyaudio" type="radio" onClick="EmergencyAudioOff();"> </label>
                     </li>
                 </ul>
             </form>
+            <div class="ui-resizable-handle ui-resizable-n" style=""></div>
+            <div class="ui-resizable-handle ui-resizable-e" style=""></div>
+            <div class="ui-resizable-handle ui-resizable-s" style=""></div>
+            <div class="ui-resizable-handle ui-resizable-w" style=""></div>
+            <div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se ui-icon-grip-diagonal-se" style="z-index: 1001;"></div>
+            <div class="ui-resizable-handle ui-resizable-sw" style="z-index: 1002;"></div>
+            <div class="ui-resizable-handle ui-resizable-ne" style="z-index: 1003;"></div>
+            <div class="ui-resizable-handle ui-resizable-nw" style="z-index: 1004;"></div>
         </div>
 
 <?php
@@ -457,12 +474,14 @@ include("footer.php");
                 var t = 'Weekly fees for '+author;
                 $('#wFees').dialog({
                     autoOpen: false,
+                    dialogClass: 'white-theme',
                     title: t,
                     show: 'fade',
                     hide: 'fade'
                 });
                 $('#wFees').dialog( "option", "title", t );
                 $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').addClass('table-popup');
                 $('#wFees').dialog('open');
                 $.getJSON('getfeesums.php?weekly=1', function(json) {
                     if (json.error == 1) {
@@ -483,12 +502,14 @@ include("footer.php");
                 var t = 'Monthly fees for '+author;
                 $('#wFees').dialog({
                     autoOpen: false,
+                    dialogClass: 'white-theme',
                     title: t,
                     show: 'fade',
                     hide: 'fade'
                 });
                 $('#wFees').dialog("option", "title", t);
                 $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').addClass('table-popup');
                 $('#wFees').dialog('open');
                 $.getJSON('getfeesums.php?monthly=1', function(json) {
                     if (json.error == 1) {

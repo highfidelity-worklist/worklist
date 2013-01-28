@@ -383,50 +383,70 @@ function AudioOff() {
 }
 function ChatAudioOn() {
     chatSound.unmute();
+    $("#chataudioon").parent(this).addClass("active");
+    $("#chataudiooff").parent(this).removeClass("active");
     saveSounds(0, 1);
     // hideSettingsPopup();
 }
 function ChatAudioOff() {
     chatSound.mute();
+    $("#chataudiooff").parent(this).addClass("active");
+    $("#chataudioon").parent(this).removeClass("active");
     saveSounds(0, 0);
     // hideSettingsPopup();
 }
 function SystemAudioOn() {
     systemSound.unmute();
+    $("#systemaudioon").parent(this).addClass("active");
+    $("#systemaudiooff").parent(this).removeClass("active");
     saveSounds(1, 1);
     // hideSettingsPopup();
 }
 function SystemAudioOff() {
     systemSound.mute();
+    $("#systemaudiooff").parent(this).addClass("active");
+    $("#systemaudioon").parent(this).removeClass("active");
     saveSounds(1, 0);
     // hideSettingsPopup();
 }
 function PingAudioOn() {
     pingSound.unmute();
+    $("#pingaudioon").parent(this).addClass("active");
+    $("#pingaudiooff").parent(this).removeClass("active");
     saveSounds(3, 1);
     // hideSettingsPopup();
 }
 function PingAudioOff() {
     pingSound.mute();
+    $("#pingaudiooff").parent(this).addClass("active");
+    $("#pingaudioon").parent(this).removeClass("active");
     saveSounds(3, 0);
     // hideSettingsPopup();
 }
 function BotAudioOn() {
     botSound.unmute();
+    $("#botaudioon").parent(this).addClass("active");
+    $("#botaudiooff").parent(this).removeClass("active");
     saveSounds(2, 1);
     // hideSettingsPopup();
 }
 function BotAudioOff() {
     botSound.mute();
+    $("#botaudiooff").parent(this).addClass("active");
+    $("#botaudioon").parent(this).removeClass("active");
     saveSounds(2, 0);
     // hideSettingsPopup();
 }
 function EmergencyAudioOn() {
     emergencySound.unmute();
+    $("#emergencyaudioon").parent(this).addClass("active");
+    $("#emergencyaudiooff").parent(this).removeClass("active");
     saveSounds(4, 1);
 }
 function EmergencyAudioOff() {
     emergencySound.mute();
+    $("#emergencyaudiooff").parent(this).addClass("active");
+    $("#emergencyaudioon").parent(this).removeClass("active");
     saveSounds(4, 0);
 }
 function saveSounds(soundID, mode) {
@@ -2605,6 +2625,7 @@ function resizeElements() {
         $('#welcomeInside > .leftMenu > a:first-child + .headerButtonSeparator').outerWidth() + 8;
     $('#left-container').css('width', Number(left_container_width) + 'px');
     $('#center-container').css('left', Number(left_container_width) + 'px');
+    $('div#SettingsWindow').css('left', Number(left_container_width) + 'px');
 
     var right_container_width = iw - $('#center-container').offset().left - $('#center-container').outerWidth() - 1;
     $('#right-container').css('width', right_container_width);

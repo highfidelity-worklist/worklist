@@ -60,10 +60,12 @@
                 $('#wFees').dialog({
                     autoOpen: false,
                     title: t,
+            		dialogClass: 'white-theme',
                     show: 'fade',
                     hide: 'fade'
                 });
                 $('#wFees').dialog( "option", "title", t );
+				$('#wFees').addClass('table-popup');
                 $('#wFees').html('<img src="images/loader.gif" />');
                 $('#wFees').dialog('open');
                 $.getJSON('getfeesums.php?weekly=1', function(json) {
@@ -86,11 +88,13 @@
                 $('#wFees').dialog({
                     autoOpen: false,
                     title: t,
-                    show: 'fade',
+            		dialogClass: 'white-theme',
+					show: 'fade',
                     hide: 'fade'
                 });
                 $('#wFees').dialog("option", "title", t);
-                $('#wFees').html('<img src="images/loader.gif" />');
+				$('#wFees').addClass('table-popup');
+				$('#wFees').html('<img src="images/loader.gif" />');
                 $('#wFees').dialog('open');
                 $.getJSON('getfeesums.php?monthly=1', function(json) {
                     if (json.error == 1) {

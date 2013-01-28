@@ -424,9 +424,13 @@ var Budget = {
             });
         });
         
+        $('#budget-expanded').dialog('option', 'dialogClass', 'white-theme');
+        $('#budget-transferred').dialog('option', 'dialogClass', 'white-theme');
         $('#budget-expanded').dialog('option', 'position', ['center', 'center']);
         $('#budget-transferred').dialog('option', 'position', ['center', 'center']);
-        
+        $('#budget-expanded').addClass('table-popup');
+        $('#budget-transferred').addClass('table-popup');
+
         switch (section) {
             case 0:
                 // Fetch new data via ajax
@@ -452,8 +456,10 @@ var Budget = {
     },
 
     showBudgetTransferDialog: function() {
-         $('#budget-transfer').dialog('option', 'position', ['center', 'center']);
-         $('#budget-transfer').dialog('open'); 
+        $('#budget-transfer').dialog('option', 'position', ['center', 'center']);
+        $('#budget-transfer').dialog('option', 'dialogClass', 'white-theme');
+        $('#budget-transfer').addClass('table-popup');
+        $('#budget-transfer').dialog('open'); 
     },
 
     be_attachEvents: function(section, budget_id) {

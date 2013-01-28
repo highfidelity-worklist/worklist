@@ -208,13 +208,14 @@ $(function() {
     if ($("#budgetPopup").length > 0) {
         $("#budgetPopup").dialog({
             title: "Earning & Budget",
+            dialogClass: 'white-theme',
             autoOpen: false,
-            height: 280,
-            width: 370,
+            width: 340,
             position: ['center',60],
             modal: true
         });
         $("#welcome .budget").click(function(){
+            $("#budgetPopup").addClass("table-popup");
             $("#budgetPopup").dialog("open");
         });
     }
