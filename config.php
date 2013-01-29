@@ -48,6 +48,10 @@ defineOnce('GITHUB_ID', 'c5bb09ca5ee6b0e20634');
 defineOnce('GITHUB_SECRET', 'b03a51691282423fc0769abbaadef4adb337dac1');
 defineOnce('GITHUB_API_URL', 'https://api.github.com/');
 
+defineOnce('SENDGRID_API_URL','https://sendgrid.com/api/mail.send.json');
+defineOnce('SENDGRID_API_USER','worklist-dev');
+defineOnce('SENDGRID_API_KEY','38MacRUwrawRaq3');
+
 if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER', 'Worklist <worklist@worklist.net>');
 if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@worklist.net');
 

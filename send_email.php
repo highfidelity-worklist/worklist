@@ -23,57 +23,66 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
         error_log("attempted to send an empty or misconfigured message");
         return false;
     }
-
-    $hash = md5(date('r', time()));
+    
+    $nameAndAddressRegex = '/(.*)<(.*)>/';
+    $toIncludesNameAndAddress = preg_match($nameAndAddressRegex, $to, $toDetails);
+    
+    if ($toIncludesNameAndAddress) {
+        $toName = $toDetails[1];
+        $toAddress = $toDetails[2];
+    } else {
+        $toName = $to;
+        $toAddress = $to;
+    }
 
     // If no 'From' address specified, use default
     if (empty($headers['From'])) {
-        $headers['From'] = DEFAULT_SENDER;
-    }
-    if (empty($headers['X-tag'])) {
-        $headers['X-tag'] = 'worklist';
+        $fromName = DEFAULT_SENDER;
+        $fromAddress = DEFAULT_SENDER;
     } else {
-        $headers['X-tag'] .= ', worklist';
+        $fromIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['From'], $fromDetails);
+        if ($fromIncludesNameAndAddress) {
+            $fromName = $fromDetails[1];
+            $fromAddress = $fromDetails[2];
+        } else {
+            $fromName = $headers['From'];
+            $fromAddress = $headers['From'];
+        }
     }
-
+    
     if (!empty($html)) {
         if (empty($plain)) {
             $h2t = new html2text(html_entity_decode($html, ENT_QUOTES), 75);
             $plain = $h2t->convert();
         }
-
-        $headers["Content-Type"] = "multipart/alternative; boundary=\"PHP-alt-$hash\"";
-        $body = "
---PHP-alt-$hash
-Content-Type: text/plain; charset=\"iso-8859-1\"
-Content-Transfer-Encoding: 7bit
-
-".$plain."
-
---PHP-alt-$hash
-Content-Type: text/html; charset=\"iso-8859-1\"
-Content-Transfer-Encoding: 7bit
-
-".$html."
-
---PHP-alt-$hash--";
     } else {
         if (empty($plain)) {
             // if both HTML & Plain bodies are empty, don't send mail
             return false;
         }
-        $body = $plain;
     }
 
-    // Implode header array into a string for mail()
-    $header_string = "";
-    foreach ($headers as $header=>$value) {
-        $header_string .= "{$header}: {$value}\r\n";
+    $curl = new CURLHandler();
+    $postArray = array(
+        'from' => $fromAddress,
+        'fromname' => $fromName,
+        'to' => $toAddress,
+        'toname' => $toName,
+        'subject' => $subject,
+        'html' => $html,
+        'text'=> $plain,
+        'api_user' => SENDGRID_API_USER,
+        'api_key' => SENDGRID_API_KEY
+    );
+    
+    try {
+        $result = $curl::Get(SENDGRID_API_URL, $postArray);
+    } catch(Exception $e) {
+        error_log("[ERROR] Unable to send message through SendGrid API - Exception: " . $e->getMessage());
+        return false;
     }
-    if (mail($to, $subject, $body, $header_string, '-f' . DEFAULT_SENDER)) {
-        return true;
-    }
-    return false;
+    
+    return true;
 }
 
 /* notify_sms functions
