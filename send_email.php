@@ -77,6 +77,7 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     
     try {
         $result = $curl::Get(SENDGRID_API_URL, $postArray);
+        error_log('[SENDGRID] ' . $result);
     } catch(Exception $e) {
         error_log("[ERROR] Unable to send message through SendGrid API - Exception: " . $e->getMessage());
         return false;
