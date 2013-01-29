@@ -17,7 +17,10 @@ class CURLHandler {
      * @param string $url url to get
      * @return string HTML output
      */
-    public static function Get($url){
+    public static function Get($url, $vars = array()){
+        if(count($vars) > 0){
+            $url .= '?' . http_build_query($vars);
+        }
         return self::doRequest('GET', $url);
     }
     
