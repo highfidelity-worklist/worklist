@@ -5,6 +5,7 @@
 //  http://www.lovemachineinc.com
 //
 
+require_once('config.php');
 require_once('html2text.inc');
 require_once('smslist.php');
 require_once('functions.php');
@@ -77,7 +78,7 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     
     try {
         $result = $curl::Get(SENDGRID_API_URL, $postArray);
-        error_log('[SENDGRID] ' . $result);
+        error_log('[SENDGRID] User' . SENDGRID_API_USER . 'KEY '. SENDGRID_API_KEY . $result);
     } catch(Exception $e) {
         error_log("[ERROR] Unable to send message through SendGrid API - Exception: " . $e->getMessage());
         return false;
