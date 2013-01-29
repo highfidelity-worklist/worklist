@@ -44,10 +44,10 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
         $fromIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['From'], $fromDetails);
         if ($fromIncludesNameAndAddress) {
             $fromName = $fromDetails[1];
-            $fromAddress = $fromDetails[2];
+            $fromAddress = str_replace(' ', '-', $fromDetails[2]);
         } else {
             $fromName = $headers['From'];
-            $fromAddress = $headers['From'];
+            $fromAddress = str_replace(' ', '-', $headers['From']);
         }
     }
     
@@ -78,7 +78,6 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     
     try {
         $result = $curl::Get(SENDGRID_API_URL, $postArray);
-        error_log('[SENDGRID] User' . SENDGRID_API_USER . 'KEY '. SENDGRID_API_KEY . $result);
     } catch(Exception $e) {
         error_log("[ERROR] Unable to send message through SendGrid API - Exception: " . $e->getMessage());
         return false;
