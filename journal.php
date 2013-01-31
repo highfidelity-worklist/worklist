@@ -73,7 +73,6 @@ if ($_SESSION['userid']) {
 <link rel="stylesheet" type="text/css" href="css/smoothness/white-theme.lm.ui.css"/>
 <link rel="stylesheet" type="text/css" href="css/budget.css" />
 <link rel="stylesheet" type="text/css" href="css/journal.css" />
-<link rel="stylesheet" type="text/css" href="css/worklist.css" />
 <link rel="stylesheet" type="text/css" href="css/userinfo.css" />
 <link rel="stylesheet" type="text/css" href="css/favorites.css" />
 <link rel="stylesheet" type="text/css" href="css/LVstyles.css" />

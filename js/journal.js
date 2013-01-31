@@ -870,8 +870,8 @@ function applyPopupBehavior() {
                                 var origWidt = parseInt(image.width());
                                 var origHeig = parseInt(image.height()); }
                             var padding = 10; //space to be left around dialog box
-                            ratio = Math.min(($('body').innerWidth()-padding*2) / origWidt,
-                                            ($('body').innerHeight()-padding*2) / origHeig);
+                            ratio = Math.min(($('#guideline').innerWidth()-padding*2) / origWidt,
+                                            ($('#guideline').innerHeight()-padding*2) / origHeig);
                             var zoom='';
                             if(ratio<1){ // if bigger than viewport
                                 image.css({'width':origWidt*ratio,'height':origHeig*ratio});
@@ -879,9 +879,9 @@ function applyPopupBehavior() {
                             var dialog = image.parent()
                             dialog.css({ // center dialog to the screen
                                 'top':(function(){
-                                    return (($('body').innerHeight() - dialog.height())/2)+40;})(),
+                                    return (($('#guideline').innerHeight() - dialog.height())/2)+40;})(),
                                 'left':(function(){
-                                    return (($('body').innerWidth() - dialog.width())/2);})() });
+                                    return (($('#guideline').innerWidth() - dialog.width())/2);})() });
                             $('*').css('cursor','auto'); // revert cursor to previous values
                             $.each(storeCursorStatus,function(i,v){
                                 v[0].css('cursor',v[1]); });
@@ -918,9 +918,9 @@ function applyPopupBehavior() {
                     if( dialog.position().top <5 ) // if it is, recenter it
                         dialog.css({
                             'top':(function(){
-                                return (($('body').innerHeight() - dialog.height())/2)+40; })(),
+                                return (($('#guideline').innerHeight() - dialog.height())/2)+40; })(),
                             'left':(function(){
-                                return (($('body').innerWidth() - dialog.width())/2); })() }); } }); }); });
+                                return (($('#guideline').innerWidth() - dialog.width())/2); })() }); } }); }); });
 
 }
 

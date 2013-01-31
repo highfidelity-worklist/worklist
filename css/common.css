@@ -177,6 +177,65 @@ table tr:hover {
     padding: 1px;
 }
 
+/* Budget info */
+#be-block {
+    font-size:14px;
+    z-index:99;
+    top:5px;
+}
+
+#be-table {
+    border: none;
+    padding:2px;
+}
+
+#be-block .margin25 {
+    margin-top: 25px;
+}
+
+.be-table_cell1 {
+    border: none;
+    padding:2px;
+}
+
+.be-table_cell2 {
+    border: none;
+    text-align: right;
+    padding:2px;
+    width: 100px;
+}
+
+#be-search,
+#bet-search {
+    float:right;
+}
+
+#be-search-lbl,
+#bet-search-lbl {
+    float:left;
+    font-size:14px;
+    font-weight:bold;
+    font-style:italic;
+    margin-top:5px;
+    margin-right:8px;
+}
+
+#be-search-field,
+#bet-search-field {
+    float:left;
+    width:180px;
+    margin-bottom:5px;
+}
+
+#be-search-clean, 
+#bet-search-clean {
+    float:right;
+    cursor:pointer;
+    background:url('../images/cross.png');
+    width:24px;
+    height:24px;
+}
+
 #jobs-popup table td {
     max-width: 200px;
     overflow-x: hidden;
