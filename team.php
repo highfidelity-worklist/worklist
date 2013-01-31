@@ -40,12 +40,10 @@ include("opengraphmeta.php");
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
-<link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <link href="css/favorites.css" rel="stylesheet" type="text/css" >
 
 <script type="text/javascript" src="js/jquery.timeago.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
@@ -168,9 +166,9 @@ $(document).ready(function() {
     /**
      * Select users with fees in XX days
      */
-    $('.days').change(function() {
+    $('#days').change(function() {
         // Set the days filter
-        sfilter = $('.days option:selected').val();
+        sfilter = $('#days option:selected').val();
 
         // If the filter is active reload the list
         if (show_actives === "TRUE") {
@@ -191,7 +189,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#search_user").autocomplete({
+    $("#query").autocomplete({
         minLength: 0,
         source: function(request, response) {
             $.ajax({
@@ -215,7 +213,7 @@ $(document).ready(function() {
             return false;
         },
         select:function(event, ui) {
-            $("#search_user").val("");
+            $("#query").val("");
             $("#search_user-id").val(ui.item.id);
             window.open('userinfo.php?id=' + ui.item.id, '_blank');
 
@@ -235,6 +233,9 @@ $(document).ready(function() {
         echo "window.open('userinfo.php?id=" . $_REQUEST['showUser'] . $tab . "', '_blank')";
     }
 ?>
+    
+    $("#query").DefaultValue("Search team...");
+    $('#days').comboBox();
 });
 
 function fillUserlist(npage) {
@@ -374,7 +375,7 @@ function addCommas(nStr) {
 </style>
 </head>
 
-<body>
+<body id="team">
 <!-- Popup for breakdown of fees-->
 <?php require_once('dialogs/popup-fees.inc') ?>
 <?php
@@ -389,57 +390,96 @@ function addCommas(nStr) {
 <?php require_once('dialogs/popup-budget.inc'); ?>
 
 <h1>Team Members</h1>
-<table id="newUserStats">
-    <caption>New user statistics - past 30 days</caption>
-    <tr class="table-hdng">
-        <th>New users</th>
-        <th>Logged in</th>
-        <th>With fees</th>
-        <th>With bids</th>
-    </tr>
-    <tr>
-        <td><?php echo $newStats['newUsers']; ?></td>
-        <td><?php echo $newStats['newUsersLoggedIn']; ?></td>
-        <td><?php echo $newStats['newUsersWithFees']; ?></td>
-        <td><?php echo $newStats['newUsersWithBids']; ?></td>
-    </tr>
-</table>
-<div class="clear"></div>
-<div class="active-users">
-    <input type="checkbox" id="filter-by-fees">Has fees in the last
-       <select name="days" class="days">
-           <option value="7">7 days</option>
-           <option value="30" selected="selected">30 days</option>
-           <option value="60">60 days</option>
-           <option value="90">90 days</option>
-           <option value="360">1 year</option>
-       </select>
-    </input>
+<div id="newUserStats">
+    <h2>New user statistics:</h2>
+    <p>
+        <span>In the past 30 days</span><br /> 
+        <?php echo $newStats['newUsers']; ?> users have signed up,<br />
+        <?php echo $newStats['newUsersLoggedIn']; ?> have logged in,<br />
+        <?php echo $newStats['newUsersWithFees']; ?> have added fees,<br />
+        &amp; <?php echo $newStats['newUsersWithBids']; ?> have added bids
+    </p>
 </div>
-<div class="myfavorite-users">
-    <input type="checkbox" id="filter-by-myfavorite">Trusted by Me</input>
+<div id="leftcol">
+    <div id="searchbar">
+        <div id="search_user_box">
+            <div id="search-filter-wrap">
+                <div>
+                    <div class="input_box">
+                        <div class="searchDiv">
+                            <input type="text" id="query" name="query" alt="Search team..." size="20" value="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="filters_box">
+            <div class="myfavorite-users">
+                <input type="checkbox" id="filter-by-myfavorite" />
+                <label for="filter-by-myfavorite">Trusted by Me</label>
+            </div>
+            <div class="active-users">
+                <div>
+                    <input type="checkbox" id="filter-by-fees" />
+                    <label for="filter-by-fees">Has fees in the last</label>
+                </div>
+                <select name="days" id="days">
+                    <option value="7">7 days</option>
+                    <option value="30" selected="selected">30 days</option>
+                    <option value="60">60 days</option>
+                    <option value="90">90 days</option>
+                    <option value="360">1 year</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div id="message">No results</div>
+    <table class="table-userlist" style="width:100%">
+        <thead>
+            <tr class="table-hdng">
+                <th class="sort {sortkey: 'nickname'} clickable">Nickname<div class = "arrow"><div/></th>
+                <th class="sort {sortkey: 'added'} clickable age">Age<div class = "arrow"><div/></th>
+                <th class="sort {sortkey: 'jobs_count'} clickable jobs">Jobs<div class = "arrow"><div/></th>
+                <th class="sort {sortkey: 'budget'} clickable money">Budget<div class = "arrow"><div/></th>
+                <th class="sort {sortkey: 'earnings'} clickable money">Total Earnings<div class = "arrow"><div/></th>
+                <th class="sort {sortkey: 'earnings30'} clickable money">30 Day Earnings<div class = "arrow"><div/></th>
+                <th class="sort {sortkey: 'rewarder'} clickable money">Bonus $ / %<div class = "arrow"><div/></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div class="ln-letters">
+        <a href="#" class="all ln-selected">ALL</a>
+        <a href="#" class="_">0-9</a>
+        <a href="#" class="a">A</a>
+        <a href="#" class="b">B</a>
+        <a href="#" class="c">C</a>
+        <a href="#" class="d">D</a>
+        <a href="#" class="e">E</a>
+        <a href="#" class="f">F</a>
+        <a href="#" class="g">G</a>
+        <a href="#" class="h">H</a>
+        <a href="#" class="i">I</a>
+        <a href="#" class="j">J</a>
+        <a href="#" class="k">K</a>
+        <a href="#" class="l">L</a>
+        <a href="#" class="m">M</a>
+        <a href="#" class="n">N</a>
+        <a href="#" class="o">O</a>
+        <a href="#" class="p">P</a>
+        <a href="#" class="q">Q</a>
+        <a href="#" class="r">R</a>
+        <a href="#" class="s">S</a>
+        <a href="#" class="t">T</a>
+        <a href="#" class="u">U</a>
+        <a href="#" class="v">V</a>
+        <a href="#" class="w">W</a>
+        <a href="#" class="x">X</a>
+        <a href="#" class="y">Y</a>
+        <a href="#" class="z ln-last">Z</a>
+    </div>
+    <div class="ln-pages"></div>
 </div>
-<div id="search_user_box">
-    <input id="search_user"/>
-</div>
-<div class="clear"></div>
-<div id="message">No results</div>
-<table class="table-userlist" style="width:100%">
-    <thead>
-        <tr class="table-hdng">
-            <th class="sort {sortkey: 'nickname'} clickable">Nickname<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'added'} clickable age">Age<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'jobs_count'} clickable jobs">Jobs<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'budget'} clickable money">Budget<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'earnings'} clickable money">Total Earnings<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'earnings30'} clickable money">30 Day Earnings<div class = "arrow"><div/></th>
-            <th class="sort {sortkey: 'rewarder'} clickable money">Bonus $ / %<div class = "arrow"><div/></th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-<div class="ln-letters"><a href="#" class="all ln-selected">ALL</a><a href="#" class="_">0-9</a><a href="#" class="a">A</a><a href="#" class="b">B</a><a href="#" class="c">C</a><a href="#" class="d">D</a><a href="#" class="e">E</a><a href="#" class="f">F</a><a href="#" class="g">G</a><a href="#" class="h">H</a><a href="#" class="i">I</a><a href="#" class="j">J</a><a href="#" class="k">K</a><a href="#" class="l">L</a><a href="#" class="m">M</a><a href="#" class="n">N</a><a href="#" class="o">O</a><a href="#" class="p">P</a><a href="#" class="q">Q</a><a href="#" class="r">R</a><a href="#" class="s">S</a><a href="#" class="t">T</a><a href="#" class="u">U</a><a href="#" class="v">V</a><a href="#" class="w">W</a><a href="#" class="x">X</a><a href="#" class="y">Y</a><a href="#" class="z ln-last">Z</a></div>
-<div class="ln-pages"></div>
 <?php
 include("footer.php");?>

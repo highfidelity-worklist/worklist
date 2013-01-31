@@ -1,9 +1,49 @@
 /***** Override global page styles *****/
 h1 {
-    float:left;
-    margin-top:20px;
+    display: none;
 }
 /***** Override global page styles *****/
+
+#leftcol {
+    width: 700px;
+}
+
+#newUserStats {
+    font-family: helvetica,arial,sans-serif;
+    float: right;
+    width: 300px;
+    margin-top: 20px;
+}
+
+#newUserStats h2 {
+    color: #333333;
+    font-size: 1.3em;
+    padding: 10px 0 4px;
+    font-weight: bold;
+}
+
+#newUserStats p > span {
+    color: #666666;
+}
+
+#newUserStats p {
+    color: #999999;
+    font-size: 1.3em;
+    line-height: 1.5em;
+    font-weight: bold;
+}
+
+div#center {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#left, 
+#right {
+    display: none;
+}
+
 
 /*
 #quickfilters {
@@ -17,18 +57,14 @@ h1 {
     text-align: left;
 }
 
-.active-users {
-    float: right;
-    margin-top: 20px;
-    margin-bottom: 10px;
+.table-userlist th {
+    padding-top: 15px;
+    padding-bottom: 5px;
 }
 
-.myfavorite-users {
-    border: 0 none;
-    display: inline-block;
-    position: relative;
-    margin: 20px 0 10px 10px;
-    float: right;
+.table-userlist tbody {
+    border-top: 1px solid #eeeeee;
+    padding-top: 5px;
 }
 
 .age {
@@ -42,43 +78,70 @@ h1 {
 #userlist{
     list-style: none;
 }
+
 .table-userlist, 
-.table-worklist, 
 .table-worklist-payee {
     margin-left: auto;
     margin-right: auto;
+    border-collapse: collapse;
+    border: none;
 }
+
+.table-userlist td,
+.table-userlist th {
+    border: none;
+}
+
+#team tr:hover {
+    background-color: #ffffff;
+}
+
+#team tr.roweven,
+#team tr.roweven:hover {
+    background-image: none;
+    background-color: #eeeeee;
+}
+
 .table-userlist .name-col{
     text-align: left;
+    font-weight: bold;
 }
+
+.table-userlist th:first-child,
+.table-userlist .name-col {
+    padding-left: 12px;
+}
+
 .table-userlist .arrow,
-.table-worklist .arrow, 
+.table-worklist .arrow,
 .table-worklist-payee .arrow  {
     float:right;
     height: 15px;
     width: 15px;
     margin-left: 2px;
 }
+
 .table-userlist .arrow-down,
 .table-worklist .arrow-down,
 .table-worklist-payee .arrow-down {
     background-image: url(../images/arrow-down.png);
 }
+
 .table-userlist .arrow-up,
 .table-worklist .arrow-up, 
 .table-worklist-payee .arrow-up {
     background-image: url(../images/arrow-up.png)
 }
+
 #message{
     text-align: center;
     display:none;
     font-size: 1.3em;
 }
 
-table#newUserStats {
-    width: 300px;
+#newUserStats {
+    width: 220px;
     float: right;
-    margin-top: 10px;
 }
 
 #newUserStats caption {
@@ -92,35 +155,97 @@ table#newUserStats {
     text-align: center;
 }
 
+#searchbar {
+    background-color: #E1E8EA;
+    height: 70px;
+    margin-top: -1px;
+}
+
 #search_user_box {
-    background: url("../images/input_bg.gif") no-repeat scroll 0 0 transparent;
-    border: 0 none;
-    display: inline-block;
-    position: relative;
-    width: 195px;
-    margin: 20px 0 10px 10px;
-    float: right;
+    width: 250px;
+    float: left;
 }
 
-#search_user_box input {
-    border: 0 none;
-    color: #2C3549;
-    font-size: 13px;
+#search-filter-wrap div.input_box {
     margin: 0;
-    padding: 4px;
-    width: 130px;
-    top: -10px;
-    background: none repeat scroll 0 0 transparent !important;
-}
-
-#search_user_box .searchIcon {
-    top: 0;
-    float: right;
-}
+    padding: 0;
+    width: 250px;
+} 
 
 #clear_input {
     margin-left: 25px;
 }
+
+.myfavorite-users label,
+.active-users label {
+    font-weight: bold;
+}
+
+.myfavorite-users,
+.active-users {
+    float: left;
+    margin: 32px 10px 10px;
+}
+
+.active-users > div {
+    float: left;
+}
+
+#filters_box .ui-combobox {
+    width: 96px;
+    background: none #ffffff !important;
+    border-radius: 0px !important;
+    height: 20px;
+    padding-top: 3px;
+    position: relative;
+    float: right;
+    margin: -5px 0 0 10px;
+    font-size: 13px;
+}
+
+#filters_box .ui-combobox-list li.ui-state-hover {
+    background-color: #aa1e00;
+    color: #ffffff;
+}
+
+#filters_box .ui-combobox-list li.ui-combobox-list-selected {
+    background-color: #ffffff;
+    color: #646464;
+    font-weight: bold;
+}
+
+#filters_box .ui-state-default .ui-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 7px -725px transparent !important;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 20px;
+    width: 26px;
+}
+
+#filters_box .ui-combobox-list {
+    width: 106px;
+    margin-left: 2px;
+    margin-top: 0 !important;
+    left: -3px !important;
+    max-height: 250px;
+    top: 28px;
+}
+
+#filters_box .ui-combobox-list li {
+    width: 96px;
+    overflow: hidden;
+}
+
+#filters_box .ui-combobox-textbox {
+    width: 139px !important;
+    color: #333333;
+    font-weight: bold;
+    font-size: 14px;
+    position: absolute;
+    top: 7px;
+}
+
 
 .ui-menu .ui-menu-item a {
     text-align: left;
@@ -137,10 +262,124 @@ table#newUserStats {
     width: 20px;
     margin-right: 5px;
 }
+
+.table-userlist tr > td {
+    padding: 7px 5px;
+}
+
+.table-userlist tr:hover {
+    cursor: pointer;
+}
 .table-userlist tr.favorite {
     line-height: 22px;
 }
+
 .table-userlist tr.favorite td {
     padding-top: 1px;
     padding-bottom: 2px;
+}
+
+
+.input_box {
+    background:transparent url(../images/input_bg.gif) no-repeat scroll 0 0;
+    border: 0 none;
+    display: inline-block;
+    margin: 0 0 0 10px;
+    padding: 2px;
+    top: 10px;
+    width: 250px;
+}
+
+.input_box input {
+    border: 0 none;
+    color: #2C3549;
+    font-size: 13px;
+    margin: 0;
+    padding: 4px;
+    width: 130px;
+    position: relative;
+    top: 3px;
+    background: none repeat scroll 0 0 transparent !important;
+}
+
+.input_box form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.input_box input[type="text"]:active,
+.input_box input[type="text"]:hover,
+.input_box input[type="text"]:focus {
+    border: medium none;
+}
+
+.searchIcon {
+    position: relative; 
+    top: -3px;
+}
+
+#search-filter-wrap .searchDiv {
+    width: 195px;
+    height: 34px;
+}
+
+#query {
+    width: 193px;
+    font-size: 13pt;
+}
+
+
+#query, 
+#filters_box .ui-combobox-textbox,
+#filters_box .ui-combobox-list li {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+#search-filter-wrap .crossSearch {
+    left: 197px;
+}
+
+#team .table-hdng, 
+#team .table-popup .table-hdng {
+     background: none;
+     background-image: none;
+}
+
+#team .ln-letters a {
+    border: none;
+}
+
+#team .ln-letters a,
+#team .ln-letters a:hover,
+#team .ln-pages a:hover {
+    background-color: #ffffff;
+}
+
+#team .ln-letters a:active,
+#team .ln-pages a:active {
+    color: #AA1E00;
+}
+
+#team .ln-letters a.ln-selected, 
+#team .ln-pages a.ln-selected {
+    font-weight: bold;
+    background-color: #EAEAEA;
+}
+
+#team .ln-letters a,
+#team .ln-pages a,
+#team .ln-pages > span > span {
+    display: inline-block;
+    border: none;
+    border-radius: 5px;
+}
+
+#team .ln-pages > span > span {
+    color: #cccccc;
+}
+
+#team .ln-letters a:hover,
+#team .ln-pages a:hover {
+    text-decoration: underline;
 }
