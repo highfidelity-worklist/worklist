@@ -5,6 +5,13 @@
  */
 
 /* Common / Shortcut styles */
+@font-face {
+    font-family: 'Cabin';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
+}
+
 .floatLeft {
     float: left;
 }
@@ -227,7 +234,7 @@ table tr:hover {
     margin-bottom:5px;
 }
 
-#be-search-clean, 
+#be-search-clean,
 #bet-search-clean {
     float:right;
     cursor:pointer;
@@ -289,10 +296,6 @@ div.documents.filesDescription {
     background-position: -64px 0 !important;
 }
 
-#for_edit .ui-combobox-textbox {
-    font-size: 1.2em !important;
-}
-
 .popup-body select {
     font-size: 14px;
     font-family: helvetica, arial, sans-serif;
@@ -324,11 +327,9 @@ pre, .pre {
     left: 30%;
     padding: 10px;
     vertical-align: middle;
-    
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
-    
     -webkit-box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
     -moz-box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
     box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
@@ -358,7 +359,7 @@ pre, .pre {
     margin-bottom: 20px;
 }
 
-.ln-letters a, 
+.ln-letters a,
 .ln-pages a,
 .ln-pages > span > span {
     font-size: 1.3em;
@@ -370,13 +371,13 @@ pre, .pre {
     text-decoration: none;
 }
 
-.ln-letters a.ln-last, 
+.ln-letters a.ln-last,
 .ln-pages .ln-last {
     border-right: 1px solid silver;
 }
 
 .ln-letters a:hover,
-.ln-letters a.ln-selected, 
+.ln-letters a.ln-selected,
 .ln-pages a:hover,
 .ln-pages a.ln-selected {
     background-color: #eaeaea;
@@ -386,9 +387,6 @@ pre, .pre {
     color: #cccccc;
 }
 
-#popup-edit textarea {
-    height: 165px;
-}
 
 #more-accordion #more-panel {
     margin: 0;
@@ -414,7 +412,6 @@ pre, .pre {
     display: none;
     height: 20px;
     z-index: 100;
-    margin-left: 2px;
 }
 
 .activeBox label,
@@ -422,11 +419,9 @@ pre, .pre {
 #projectPopupActiveBox label {
     line-height: 20px;
     padding-left: 3px;
-}
-
-.bid_action_button{
-    text-align: right;
-    margin-top: 6px;
+    color: #000000 !important;
+    font-weight: normal;
+    font-family: helvetica, arial, sans-serif;
 }
 
 input[type=text], input[type=password], textarea {
@@ -437,11 +432,11 @@ input[type=text], input[type=password], textarea {
 }
 
 #itemProjectCombo {
-    width: 357px;
+    width: 210px;
 }
 
 #itemStatusCombo {
-    width: 355px;
+    width: 210px;
 }
 
 #statusCombo,
@@ -449,20 +444,16 @@ input[type=text], input[type=password], textarea {
     display: none;
 }
 
-input[type=text]:active, 
-input[type=text]:hover, 
+input[type=text]:active,
+input[type=text]:hover,
 input[type=text]:focus,
-textarea:active, 
-textarea:hover, 
+textarea:active,
+textarea:hover,
 textarea:focus,
-input[type=password]:active, 
-input[type=password]:hover, 
+input[type=password]:active,
+input[type=password]:hover,
 input[type=password]:focus {
     border: 2px solid #876F6D;
-}
-
-.popup-body #bug_job_id {
-    width: 50px;
 }
 
 #footer {
@@ -523,7 +514,7 @@ input[type=password]:focus {
     cursor: hand;
 }
 
-#nav a, 
+#nav a,
 #welcome a,
 #stats-area a {
     color: #6f6f6f;
@@ -546,7 +537,7 @@ input[type=password]:focus {
     height: 28px;
     width: 83px;
     font-family: Arial, Helvetica, sans-serif;
-}    
+}
 
 #addJob:hover {
     background-color: #333333;
@@ -584,8 +575,8 @@ input[type=password]:focus {
 .addproject_img {
     width:48px;
     height:48px;
-    cursor: pointer; 
-    margin-top:5px; 
+    cursor: pointer;
+    margin-top:5px;
     border: 2px solid rgb(209, 207, 207);
 }
 
@@ -604,7 +595,7 @@ input[type=password]:focus {
 }
 
 #inlineMessage .inlineWelcome {
-    font-weight: bold;    
+    font-weight: bold;
 }
 
 #inlineMessage a {
@@ -631,4 +622,141 @@ input[type=password]:focus {
 
 #feesToolTip {
     display: none;
+}
+
+/*** add job popup ***/
+#popup-edit label:not(.small-label) {
+    color: #608E96 !important;
+    padding-bottom: 0.3em;
+    font-weight: normal;
+}
+
+.popup-body #bug_job_id {
+    width: 73px;
+    color: #AA1E00;
+    font-weight: bold;
+}
+
+#popup-edit {
+    padding: 13px 30px 70px 30px !important;
+}
+
+#popup-edit input[type="text"]:not(.ui-combobox-textbox),
+#popup-edit input[type="password"],
+#popup-edit textarea {
+    border: 1px solid #d1cfcf !important;
+    margin-bottom: 21px;
+}
+
+#popup-edit input[type="text"]:not(.ui-combobox-textbox):focus,
+#popup-edit input[type="password"]:focus,
+#popup-edit textarea:focus {
+    border: 1px solid #608E96 !important;
+    outline: none;
+}
+
+#input-section #summary {
+    font-size: 16px;
+    text-indent: 4px;
+    padding-left: 4px !important;
+}
+
+#input-section textarea {
+    width: 483px;
+}
+
+#input-section input[type=text] {
+    width: 484px;
+}
+
+#is-bug-section {
+    padding: 23px 0 0 65px;
+}
+
+#is-bug-section label {
+    font-weight: bold;
+}
+
+.uploadbutton {
+    background-image: url('../images/primaryIcons-WL.png') !important;
+    background-position: 7px -1013px !important;
+    background-repeat: no-repeat !important;
+    padding-left: 28px !important;
+    line-height: 15px;
+}
+
+.buttonContainer:hover {
+    text-decoration: none;
+    color: #FFF;
+    cursor: pointer;
+}
+
+.uploadbutton .smbutton {
+    padding: 7px 0px 6px 9px !important;
+    right: -5px !important;
+    top: 6px;
+}
+
+#center .buttonContainer,
+#popup-edit .buttonContainer {
+    display: inline-block;
+    text-align:right;
+    background-color: #608E96;
+    border-radius: 4px;
+    height: 27px;
+    padding: 1px 14px 0 27px;
+}
+
+#center .buttonContainer {
+    margin: 4px 0 4px 4px;
+    position: relative;
+    top: -16px;
+    float: right;
+}
+
+.smbutton {
+    color: #FFFFFF !important;
+    background: none !important;
+    font-size: 13px !important;
+    border-left: 1px solid #83a8a6 !important;
+    padding: 1px 0 0 8px !important;
+    width: auto !important;
+    position: relative;
+    height: 28px !important;
+    top: -1px;
+    margin: 0 !important;
+    letter-spacing: 1px !important;
+    right: -2px;
+}
+
+.button-section {
+    height: 60px;
+    background-color: #E8EFF0;
+    padding: 10px 25px;
+    position: relative;
+    left: -25px;
+    width: 492px;
+    margin-top: 10px;
+}
+
+.button-section .bid_action_button input[type=submit] {
+    margin-top: 10px !important;
+    background-color: #AA1E00 !important;
+    font-weight: normal !important;
+}
+
+#popup-edit #addaccordion {
+    margin-top: -10px;
+}
+
+.button-section .floatRight {
+    position: relative;
+    right: -6px;
+}
+
+#lebel-for-invite span {
+    background: url('../images/primaryIcons-WL.png') -199px -923px;
+    display: inline-block;
+    width: 25px;
+    height: 20px;
 }

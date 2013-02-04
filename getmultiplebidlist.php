@@ -44,7 +44,7 @@ if (sizeof($bids) > 0 ) {
         $data .= '
                     <tr>
                         <td>
-                            <a href="userinfo.php?id=' . $bid['bidder_id'] . '" target="_blank"> 
+                            <a href="userinfo.php?id=' . $bid['bidder_id'] . '" target="_blank">
                                ' . $bid['nickname'] . '
                             </a>
                         </td>

@@ -38,13 +38,14 @@
                             $('<div id="upload-scan-file"><div class="content"></div></div>').appendTo('body');
                         }
                         $('#upload-scan-file').dialog({
+                            dialogClass: 'white-theme',
                             modal: true,
                             title: null,
                             autoOpen: true,
                             width: 300,
                             resizable : false,
                             open: function() {
-                                $('#upload-scan-file .content').html('<p>Uploading attachment ...</p>');
+                                $('#upload-scan-file .content').text('Uploading attachment ...');
                             }
                         });
 
@@ -131,9 +132,9 @@
             return this.each(function() {
                 var $this = $(this),fdata = $this.data('fileUpload');
                 if (fdata.user) {
-                    $('.edittextarea').editable('jsonserver.php', { 
+                    $('.edittextarea').editable('jsonserver.php', {
                         indicator: 'Saving ...',
-                        tooltip: 'Click to add/edit note ...', 
+                        tooltip: 'Click to add/edit note ...',
                         placeholder: 'Click to add note',
                         type: 'text',
                         submit: 'OK',
@@ -146,9 +147,9 @@
                         },
                         method: 'post'
                     });
-                    $('.edittext').editable('jsonserver.php', { 
+                    $('.edittext').editable('jsonserver.php', {
                         indicator: 'Saving ...',
-                        tooltip: 'Click to change the title ...', 
+                        tooltip: 'Click to change the title ...',
                         placeholder: 'Add title',
                         type: 'text',
                         submit: 'OK',
@@ -168,7 +169,7 @@
 
                     if (!confirm('Are you sure you want to remove attachment ' + $('#fileTitle_' + file_id).text() + '?')) {
                         return;
-                    } 
+                    }
                     $.ajax({
                         url: "jsonserver.php",
                         type: "POST",
@@ -179,7 +180,7 @@
                                 var fileDesc = $(oThis).parents(".filesDescription");
                                 header = fileDesc.parent().prev("h3");
                                 var iPos = -1;
-                                if ($(".documentCount", header).length != 0) {                         
+                                if ($(".documentCount", header).length != 0) {
                                     for (var i=0; i < fdata.documents.length; i++) {
                                         if (fdata.documents[i] == file_id) {
                                             iPos = i;

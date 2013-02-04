@@ -38,7 +38,7 @@
 
 .moneyZone table td, .moneyZone table th {
     border-width: 0px;
-    padding: 0 1px 0 0; 
+    padding: 0 1px 0 0;
 }
 
 .moneyZone table tbody td.bid-notes {
@@ -84,13 +84,13 @@
 
 .moneyZone table tbody tr {
     background: #FFF;
-    border: 1px solid #E1E8EA !important; 
+    border: 1px solid #E1E8EA !important;
     border-left: none !important;
     border-bottom: none !important;
 }
 
 .moneyZone table tbody tr.row-feelist-live {
-    border-top: 3px solid white !important; 
+    border-top: 3px solid white !important;
 }
 
 .moneyZone table tbody tr:hover{
@@ -117,7 +117,7 @@
 .moneyZone table td.fee {
     width: 70px;
 }
-    
+
 .moneyZone table td.what {
     width: 55px;
 }
@@ -413,13 +413,13 @@ a:hover{
     margin-top: 13px;
     margin-left: 1px;
     margin-right: 3px;
-} 
+}
 
 .project .info-label {
     width: auto;
     margin-top: 7px;
     margin-left: 1px;
-} 
+}
 
 #left-panel li.last {
     border-bottom:none;
@@ -778,7 +778,7 @@ a:hover{
 
 #edit_review_url:hover {
     cursor: pointer;
-    text-decoration: underline; 
+    text-decoration: underline;
 }
 
 .budget-label {
@@ -838,21 +838,6 @@ a:hover{
     right: -2px;
 }
 
-.smbutton {
-    color: #FFFFFF !important;
-    background: none !important;
-    font-size: 13px !important;
-    border-left: 1px solid #83a8a6 !important;
-    padding: 1px 0 0 8px !important;
-    width: auto !important;
-    position: relative;
-    height: 28px !important;
-    top: -1px;
-    margin: 0 !important;
-    letter-spacing: 1px !important;
-    right: -2px;
-}
-
 .bidbutton {
     background-image: url('../images/primaryIcons-WL.png') !important;
     background-position: 8px -985px !important;
@@ -869,39 +854,6 @@ a:hover{
 .feebutton .smbutton {
     padding: 2px 0px 2px 9px !important;
     right: -6px !important;
-}
-
-.uploadbutton {
-    background-image: url('../images/primaryIcons-WL.png') !important;
-    background-position: 7px -1013px !important;
-    background-repeat: no-repeat !important;
-    padding-left: 28px !important;
-    line-height: 15px;
-}
-
-.buttonContainer:hover {
-    text-decoration: none;
-    color: #FFF;
-    cursor: pointer;
-}
-
-.uploadbutton .smbutton {
-    padding: 7px 0px 6px 9px !important;
-    right: -5px !important;
-    top: 6px;
-}
-
-#center .buttonContainer {
-    display: inline;
-    float: right;
-    position: relative;
-    top: -16px;
-    margin: 4px 0 4px 4px;
-    text-align:right;
-    background-color: #608E96;
-    border-radius: 4px;
-    height: 27px;
-    padding: 1px 14px 0 27px;
 }
 
 .buttonContainer input:hover {
@@ -1068,7 +1020,7 @@ a:hover{
     float: right;
     position: relative;
     margin-top: 10px !important;
-}   
+}
 
 #popup-edit textarea {
     height: 110px;
@@ -1472,11 +1424,11 @@ a:hover{
 }
 
 input.button-disabled ,
-.button-disabled { 
+.button-disabled {
     cursor: default;
-    opacity: 0.5; 
-    -moz-opacity: 0.5; 
-    -webkit-opacity: 0.5; 
+    opacity: 0.5;
+    -moz-opacity: 0.5;
+    -webkit-opacity: 0.5;
 }
 
 .removeAttachment  {

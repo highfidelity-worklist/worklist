@@ -42,12 +42,32 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .white-theme .ui-dialog-titlebar-close span { display: block; margin: 1px; }
 .white-theme .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }
 .white-theme .ui-dialog-content { border: 0; padding: 15px; background: none; overflow: auto; position:relative; }
-.white-theme .ui-dialog-content label { font-weight: bold; font-size:1.1em !important; color: #666666 !important; font-family: cabin; display: block; text-align: left; padding-bottom: 0.5em; }
-.white-theme .ui-dialog-content input[type=text]:not(.ui-combobox-textbox) { padding: 0.55em 0.35em !important; }
 .white-theme .ui-dialog-content .checkbox-label { color: #000000 !important; font-weight: normal; font-family: sans-serif; font-size: 1em !important; }
 .white-theme .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; background-image: none; margin: .5em 0 0 0; padding: .3em 1em .5em .4em; }
 .white-theme .ui-dialog-buttonpane button { float: right; margin: .5em .4em .5em 0; cursor: pointer; padding: .2em .6em .3em .6em; line-height: 1.4em; width:auto; overflow:visible; }
 .white-theme .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
+
+.white-theme .ui-dialog-content label {
+    font-size:1.1em !important;
+    color: #666666 !important;
+    font-family: 'Cabin', sans-serif;
+    display: block;
+    text-align: left;
+    padding-bottom: 0.5em;
+}
+
+.white-theme .ui-dialog-content .small-label,
+.white-theme .ui-dialog-content label small {
+    font-weight: normal;
+    color: #707070!important;
+    font-size:0.75em !important;
+    font-family: helvetica, arial, sans-serif;
+    padding-bottom: 0.15em;
+}
+
+.white-theme .ui-dialog-content input[type=text]:not(.ui-combobox-textbox) {
+    padding: 0.5em 0.35em !important;
+}
 
 /* W9 Form loader*/
 .w9_loader {
@@ -240,10 +260,12 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .white-theme .ui-combobox-textbox {
     color: #AA1E00;
     font-weight: bold;
-    font-size: 11pt !important;
+    font-size: 1.1em !important;
     font-family: Arial, Helvetica, sans-serif !important;
     text-indent: 9px;
-    height: 30px;
+    padding-bottom: 6px !important;
+    position: relative;
+    top: -2px;
 }
 
 #for_view div.ui-state-default,

@@ -234,7 +234,7 @@ a:hover {
 
 input[type=text], input[type=password], textarea {
     border: 2px solid #d1cfcf;;
-    padding:2px 5px;
+    padding:0.5em 0.4em;
     margin-bottom:3px;
     font-size:12px;
 }
