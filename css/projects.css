@@ -49,7 +49,7 @@
     text-align: right;
     width: 50%;
 }
-.projectStats a, .projectStats span{
+.projectStats a, .projectStats span {
     color: #6F6F6F;
     text-decoration: none;
 }
@@ -94,4 +94,174 @@
     float: right;
     cursor: pointer;
     margin: 20px;
+}
+
+#popup-addproject .smbutton {
+    color: #FFFFFF !important;
+    background: none !important;
+    font-size: 13px !important;
+    border-left: 1px solid #83a8a6 !important;
+    padding: 1px 0 0 8px !important;
+    width: auto !important;
+    position: relative;
+    height: 28px !important;
+    top: -1px;
+    margin: 0 !important;
+    letter-spacing: 1px !important;
+    right: -2px;
+}
+
+#popup-addproject .uploadbutton .smbutton {
+    padding: 7px 3px 6px 9px !important;
+    right: -5px !important;
+    top: 6px;
+}
+
+#popup-addproject .fileUploadButton {
+    background: url("../images/icons/clip.png") no-repeat scroll left top transparent;
+    height: 32px;
+    line-height: 32px;
+    margin: 10px 0;
+    padding-left: 35px;
+}
+
+#popup-addproject .buttonContainer {
+    display: inline;
+    float: left;
+    position: relative;
+    top: -16px;
+    margin: 11px 0 4px 0;
+    text-align:right;
+    background-color: #608E96;
+    border-radius: 4px;
+    height: 27px;
+    padding: 1px 14px 0 27px;
+}
+
+#popup-addproject .uploadbutton {
+    background-image: url('../images/primaryIcons-WL.png') !important;
+    background-position: 7px -1013px !important;
+    background-repeat: no-repeat !important;
+    padding-left: 28px !important;
+    line-height: 15px;
+}
+
+#popup-addproject {
+    padding: 10px 31px 55px 30px !important;
+    margin-top: -29px;
+}
+
+#popup-addproject div.addproject {
+    padding-top: 9px; 
+    padding-bottom: 9px;  
+    background-color: #E8EFF0; 
+    position: relative; 
+    float: left;
+    width: 539px;
+    margin-left: -22px;
+    margin-top: -3px;
+    margin-bottom: -37px;
+}
+
+#popup-addproject div.addproject input {
+    margin: 10px 22px !important; 
+    font-size: 18px;
+    font-weight: normal !important;
+    padding: 0 18px;
+    height: 44px;
+    width: 134px;
+    background-color: #993300 !important;
+}
+
+#popup-addproject .help {
+    width: 341px;
+    float: left;
+    font-size: 12px;
+    padding: 0 56px 28px 15px;
+    margin-top: -10px;
+    line-height: 16px;
+    color: #797979;
+}
+
+#popup-addproject .help strong {
+    color: #666666 !important;
+}
+
+#popup-addproject .help a {
+    color: #993300 !important;
+    font-weight: bold;
+}
+
+#popup-addproject .upload {
+    width: 205px;
+    float: left;
+    font-size: 12px;
+    padding: 4px 137px 14px 11px;
+    margin-top: -10px;
+    line-height: 16px;
+}
+
+#popup-addproject .info-label span.title {
+    font-size: 18px;
+    color: #608e96;
+}
+
+#popup-addproject .info-label textarea,
+#popup-addproject .info-label input[type=text] {
+    width: 474px;
+    border: 1px solid #d1cdc3;
+    margin: 3px 0 15px 0;
+}
+
+#popup-addproject .info-label textarea {
+    margin: 6px 0 14px 0;
+    height: 173px;
+    padding: 6px 8px 6px 10px;
+    line-height: 18px;
+}
+
+#popup-addproject .info-label input[type=text] {
+    height: 17px;
+    font-weight: bold;
+}
+
+#popup-addproject .info-label #name {
+    font-size: 16px;
+    padding: 8px 9px 7px 9px !important;
+    margin-top: 4px;
+}
+
+#popup-addproject .info-label #website {
+    padding: 7px 9px 8px 9px !important;
+    margin-top: 5px;
+}
+
+.addproject_img {
+    cursor: auto;  
+}
+
+.LV_validation_message {
+    font-size: 12px;
+    background-image: none;
+    margin-left: 76px;
+    font-weight: bold !important;
+}
+
+.error-submit {
+    font-size: 12px;
+    float: left;
+    margin-left: 171px;
+    margin-top: -47px;
+    width: 300px;
+    font-weight: bold;
+    display:none;
+}
+
+.error-submit strong {
+    color: #d45955!important;
+}
+
+textarea.LV_invalid_field,
+input.LV_invalid_field {
+    border-color: #d45955!important;
 }

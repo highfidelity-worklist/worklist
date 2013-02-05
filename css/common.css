@@ -284,6 +284,7 @@ div.documents.filesDescription {
     text-align: right;
 }
 
+
 .ui-state-default.ui-combobox, .ui-state-default .ui-combobox {
     background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important;
 }
@@ -573,11 +574,19 @@ input[type=password]:focus {
 }
 
 .addproject_img {
-    width:48px;
-    height:48px;
-    cursor: pointer;
-    margin-top:5px;
-    border: 2px solid rgb(209, 207, 207);
+    width: 74px;
+    height: 74px;
+    cursor: pointer;  
+    border: 3px solid #999;
+    float: left;
+    background-color: #eaeff0;
+}
+
+.addproject_img.no-border {
+    width: 80px;
+    height: 80px;
+    border: 0;
+    background-color: #fff !important;
 }
 
 #inlineMessage {

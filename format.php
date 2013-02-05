@@ -42,10 +42,11 @@
             $('#addproj').click(function() {
                 $('#popup-addproject').dialog({ 
                     autoOpen: false, 
+                    dialogClass: 'white-theme',
                     show: 'fade', 
                     hide: 'fade',
-                    maxWidth: 600, 
-                    width: 415,
+                    maxWidth: 555, 
+                    width: 555,
                     resizable: false
                 });
                 $('#popup-addproject').data('title.dialog', 'Add Project');
@@ -79,6 +80,14 @@
                     massValidation = LiveValidation.massValidate([project_name, project_description]);
                     if (!massValidation) {
                         $(this).removeAttr('disabled');
+                        $(".error-submit").css('display', 'block');
+                        $("#name_container span.LV_validation_message").css('margin-top', '-70px');
+                        $("#name_container span.LV_validation_message").css('margin-bottom', '55px');
+                        descriptionHeight = parseInt($("#description").css('height'));
+                        marginTop = descriptionHeight + 51;
+                        marginBottom = descriptionHeight + 37;
+                        $("#description_container span.LV_validation_message").css('margin-top', '-' + marginTop + 'px');
+                        $("#description_container span.LV_validation_message").css('margin-bottom', marginBottom + 'px');
                         return false;
                     }
                     addForm = $("#popup-addproject");
@@ -127,7 +136,8 @@
                         if (!data.success) {
                             $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
                         } else if (data.success == true) {
-                            $("#projectLogoAdd").attr("src", data.url);
+                            $("#projectLogo").addClass('no-border');
+                            $("#projectLogo").attr("src", data.url);
                             $('input[name=logoProject]').val(data.fileName);
                         }
                     }
