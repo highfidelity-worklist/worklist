@@ -229,6 +229,7 @@ GitHub.applicationKey = '<?php echo GITHUB_ID; ?>';
 var filterName = '.worklist';
 var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
+var budget_id = <?php echo $worklist['budget_id'];?>;
 var imageArray = new Array();
 var documentsArray = new Array();
 var ping_who = '';
@@ -934,8 +935,13 @@ $(document).ready(function(){
             }
         });
 
-    $('select[name="quick-status"]').change(function() {
-
+    $('select[name="quick-status"]').change(function(ev) {
+        if ($(this).val() == 'Done' && budget_id == 0) {
+            openNotifyOverlay("No budget has been assigned to this job.", true);
+            $('.statusComboList').css('display', 'none');
+            $('.statusComboList li[val=' +  origStatus + ']').click();
+            return false;
+        }
         if ($(this).val() != null && $(this).val() != '<?php echo $worklist['status'];?>') {
             var html = "<span>Changing status from <strong><?php echo $worklist['status'];?></strong> to <strong>"
                 + $(this).val() +"</strong></span>";
