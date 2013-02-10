@@ -28,7 +28,7 @@
                         action: 'fileUpload',
                         userid: fdata.user,
                         projectid: fdata.projectid,
-                        workitem: fdata.workitem,
+                        workitem: fdata.workitem
                     },
                     autoSubmit: true,
                     responseType: 'json',
@@ -94,19 +94,15 @@
                                             fdata.images = new Array();
                                             fdata.documents = new Array();
                                         }
+
+                                        var newFile = $('#uploadDocument').parseTemplate(data);
+                                        $('#attachments').append(newFile);
                                         if (data.filetype == 'image') {
-                                            var newFile = $('#uploadImage').parseTemplate(data);
-                                            $('.fileimagecontainer', $this).append(newFile);
-                                            fdata.images.push(data.fileid);
-                                            $('.imageCount', $this).empty().html(fdata.images.length);
-                                            $this.accordion('activate', 0);
-                                        } else {
-                                            var newFile = $('#uploadDocument').parseTemplate(data);
-                                            $('.filedocumentcontainer', $this).append(newFile);
                                             fdata.documents.push(data.fileid);
-                                            $('.documentCount', $this).empty().html(fdata.documents.length);
-                                            $this.accordion('activate', 1);
+                                        } else {
+                                            fdata.documents.push(data.fileid);
                                         }
+
                                         if(fdata.trackfiles) {
                                             fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
                                         }
@@ -165,7 +161,7 @@
                 }
                 $(".removeAttachment").unbind("click").click(function(){
                     var file_id = this.id.replace('fileRemoveAttachment_', ''),
-                    oThis= this;
+                    oThis = this;
 
                     if (!confirm('Are you sure you want to remove attachment ' + $('#fileTitle_' + file_id).text() + '?')) {
                         return;
@@ -177,10 +173,9 @@
                         dataType: "json",
                         success: function(json){
                             if (json.success == true) {
-                                var fileDesc = $(oThis).parents(".filesDescription");
-                                header = fileDesc.parent().prev("h3");
                                 var iPos = -1;
-                                if ($(".documentCount", header).length != 0) {
+
+                                if (fdata.documents.length > 0) {
                                     for (var i=0; i < fdata.documents.length; i++) {
                                         if (fdata.documents[i] == file_id) {
                                             iPos = i;
@@ -190,23 +185,20 @@
 
                                     if (iPos != -1) {
                                         fdata.documents.splice(iPos,1);
-                                        $(".documentCount", header).text(parseInt($(".documentCount", header).text()) - 1);
                                     }
-                                } else {
-                                    for (var i=0; i < fdata.images.length; i++) {
-                                        if (fdata.images[i] == file_id) {
-                                            iPos = i;
+                                }
+
+                                if (iPos == -1 && fdata.images.length > 0) {
+                                    for (var ii=0; ii < fdata.documents.length; ii++) {
+                                        if (fdata.documents[i] == file_id) {
+                                            fdata.images.splice(iPos,1);
                                             break;
                                         }
                                     }
-                                    if (iPos != -1) {
-                                        fdata.images.splice(iPos,1);
-                                        $(".imageCount", header).text(parseInt($(".imageCount", header).text()) - 1);
-                                    }
                                 }
+
                                 $this.data('fileUploads', fdata);
-                                fileDesc.prev().remove();
-                                fileDesc.remove();
+                                $(oThis).parent().remove()
                             } else {
                                 alert(json.message);
                             }

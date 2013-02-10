@@ -1431,13 +1431,6 @@ input.button-disabled ,
     -webkit-opacity: 0.5;
 }
 
-.removeAttachment  {
-    cursor: pointer;
-    text-decoration: underline;
-    font-size: 11px;
-    color: #999999;
-}
-
 .floatLeft{
     float:left;
 }

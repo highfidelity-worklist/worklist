@@ -76,6 +76,10 @@ if ($_SESSION['userid']) {
 <link rel="stylesheet" type="text/css" href="css/userinfo.css" />
 <link rel="stylesheet" type="text/css" href="css/favorites.css" />
 <link rel="stylesheet" type="text/css" href="css/LVstyles.css" />
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome-ie7.min.css">
+    <![endif]-->
 <!--[if IE 6]>
     <link rel="stylesheet" href="css/ie.css" type="text/css" media="all" />
 <![endif]-->
@@ -95,7 +99,7 @@ function StopStatus() {
     var queryStr = '<?php echo $query ?>';
     var currentTime = <?php echo time() ?>;
     var earliestDate = <?php echo outputForJS($chat->getEarliestDate()) ?>;
-    var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>, 
+    var firstDate = <?php echo outputForJS(strtotime($entries[0]['date'])) ?>,
         lastDate = <?php echo outputForJS(strtotime($entries[count($entries)-1]['date'])-365*24*60*60); ?>,
         lastEntryDate = lastDate;
     var inThePresent = true;
@@ -118,14 +122,14 @@ function StopStatus() {
     var csrf_token = '<?php echo $csrf_token; ?>';
     var addFromJournal = true;
     var journal = {
-        reloadWindowTimer: <?php echo defined("RELOAD_WINDOW_TIMER") ? RELOAD_WINDOW_TIMER : 3600; ?> 
+        reloadWindowTimer: <?php echo defined("RELOAD_WINDOW_TIMER") ? RELOAD_WINDOW_TIMER : 3600; ?>
     };
     <?php if ($_SESSION['userid']): ?>
         var soundSettings = new Array(
-            <?php echo $user->getSound_settings() & JOURNAL_CHAT_SOUND ? '1' : '0'; ?>, 
-            <?php echo $user->getSound_settings() & JOURNAL_SYSTEM_SOUND ? '1' : '0'; ?>, 
-            <?php echo $user->getSound_settings() & JOURNAL_PING_SOUND ? '1' : '0'; ?>, 
-            <?php echo $user->getSound_settings() & JOURNAL_BOT_SOUND ? '1' : '0'; ?>, 
+            <?php echo $user->getSound_settings() & JOURNAL_CHAT_SOUND ? '1' : '0'; ?>,
+            <?php echo $user->getSound_settings() & JOURNAL_SYSTEM_SOUND ? '1' : '0'; ?>,
+            <?php echo $user->getSound_settings() & JOURNAL_PING_SOUND ? '1' : '0'; ?>,
+            <?php echo $user->getSound_settings() & JOURNAL_BOT_SOUND ? '1' : '0'; ?>,
             <?php echo $user->getSound_settings() & JOURNAL_EMERGENCY_ALERT ? '1' : '0'; ?>
         );
     <?php else: ?>
@@ -365,7 +369,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                 <ul></ul>
                             </div>
                             <p id="biddingJobs">
-                                There <span>are</span> 
+                                There <span>are</span>
                                 <a target="_blank" href="<?php echo WORKLIST_URL; ?>worklist.php?project=&user=0&status=bidding">no jobs</a>
                                 you can bid on
                             </p>
@@ -491,7 +495,7 @@ include("footer.php");
                 });
             });
         }
-       
+
         if($('#fees-month').length > 0){
             $('#fees-month').parents("tr").click(function() {
                 var author = "Guest";
@@ -531,4 +535,4 @@ include("footer.php");
             $('#fees-month').html ('$'+sum.month);
         });
     });
-    </script> 
+    </script>

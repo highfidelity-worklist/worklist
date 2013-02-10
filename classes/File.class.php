@@ -1,13 +1,13 @@
 <?php
 //  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved. 
+//  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
 //  This class handles one or more Files if you need more functionality don't hesitate to add it.
 //  But please be as fair as you comment your methods - maybe another developer needs them too.
 
 class File {
-    
+
     protected $id;
     protected $userid;
     protected $workitem;
@@ -20,7 +20,7 @@ class File {
     protected $is_scanned;
     protected $scan_result;
     protected $files = array();
-    
+
     /**
      * With this constructor you can create a user by passing an array.
      *
@@ -36,7 +36,7 @@ class File {
 
     /**
      * This method finds a file by its id
-     * 
+     *
      * @param int $id
      * @return File $this
      */
@@ -47,7 +47,7 @@ class File {
         $where = sprintf('`id` = %d', (int)$id);
         return $this->loadFiles($where);
     }
-    
+
     /**
      * @return the $id
      */
@@ -77,7 +77,7 @@ class File {
         $this->userid = $userid;
         return $this;
     }
-    
+
     /**
      * @return the $workitem
      */
@@ -99,7 +99,7 @@ class File {
     public function getProjectId() {
         return $this->projectid;
     }
-     
+
     /**
     * @param $projectid to set
     */
@@ -159,7 +159,7 @@ class File {
     public function getUrl() {
         return $this->url;
     }
-    
+
     /**
      * @return the scan status
      */
@@ -174,7 +174,7 @@ class File {
         $this->is_scanned = $is_scanned;
         return $this;
     }
-    
+
     /**
      * @param $url the $url to set
      */
@@ -182,7 +182,6 @@ class File {
         $this->url = $url;
         return $this;
     }
-    
 
     /**
      * @return the $status
@@ -236,10 +235,10 @@ class File {
         }
         $this->$method();
     }
-    
+
     /**
      * Use this method to update or insert a user.
-     * 
+     *
      * @return (boolean)
      */
     public function save() {
@@ -254,7 +253,7 @@ class File {
             return $this->update();
         }
     }
-    
+
     /**
      * Automatically sets the options array
      * Array: Name => Value
@@ -272,13 +271,13 @@ class File {
         }
         return $this;
     }
-    
+
     private function loadFiles($where) {
         // now we build the sql query
         $sql = 'SELECT * FROM `' . FILES . '` WHERE ' . $where . ' LIMIT 1;';
         // and get the result
         $result = mysql_query($sql);
-        
+
         if ($result && (mysql_num_rows($result) == 1)) {
             $options = mysql_fetch_assoc($result);
             $this->setOptions($options);
@@ -286,7 +285,7 @@ class File {
         }
         return false;
     }
-    
+
     private function getColumns() {
         $columns = array();
         $result = mysql_query('SHOW COLUMNS FROM `' . FILES);
@@ -298,7 +297,7 @@ class File {
         }
         return false;
     }
-    
+
     private function prepareData() {
         $columns = $this->getColumns();
         $cols = array(); $values = array();
@@ -328,7 +327,7 @@ class File {
         }
         return false;
     }
-    
+
     private function update() {
         $flag = false;
         $data = $this->prepareData();
@@ -343,18 +342,15 @@ class File {
             $sql .= '`' . $column . '` = "' . $data['values'][$index] . '"';
             $flag = true;
         }
-        $sql .= ' WHERE `id` = ' . (int)$this->getId() . ';'; 
+        $sql .= ' WHERE `id` = ' . (int)$this->getId() . ';';
         $result = mysql_query($sql);
         if ($result) {
             return true;
         }
         return false;
     }
-    
-    public function remove() {
 
-        // delete from S3
-        $this->s3Remove($this->getUrl());
+    public function remove() {
 
         $sql = "
             DELETE FROM `" . FILES . "`
@@ -362,6 +358,9 @@ class File {
 
         $result = mysql_query($sql);
         if ($result) {
+            // delete from S3
+            $this->s3Remove($this->getUrl());
+
             return array(
                 'success' => true,
                 'message' => "File removed:" . (int) $this->getId()
@@ -372,16 +371,16 @@ class File {
             'message' => "Error, cannot remove file :" . (int)$this->getId() . " , sql:" . $sql
         );
     }
-    
+
     /** Get the name of a file based on its URL **/
     public function getFileName() {
         $file_name  = pathinfo(parse_url($this->getUrl(), PHP_URL_PATH), PATHINFO_BASENAME);
         return $file_name;
     }
-    
+
     /** Build the path to a file based on its filename **/
     public function getRealPath() {
-        // Get the file name. 
+        // Get the file name.
         return UPLOAD_PATH . '/' . $this->getFileName();
     }
 
@@ -408,7 +407,7 @@ class File {
             throw new Exception("S3 upload failed ({$source_filename})");
         }
     }
-    
+
     public static function s3Remove($uri) {
         require_once(APP_PATH . "/lib/S3/S3.php");
         // get just the URI component, strip the base_url
@@ -421,10 +420,9 @@ class File {
             return true;
         } else {
             error_log('Failed to delete file with uri: ' . $uri);
-            throw new Exception("S3 delete fialed ({$uri})");
         }
     }
-    
+
     public static function s3AuthenticatedURL($uri) {
         require_once(APP_PATH . "/lib/S3/S3.php");
         S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
@@ -443,7 +441,7 @@ class File {
         //error_log("s3Auth: $uri $authUrl");
         return $authUrl;
     }
-    
+
     public static function uniqueFilename($strExt = 'tmp') {
         // explode the IP of the remote client into four parts
         $arrIp = explode('.', $_SERVER['REMOTE_ADDR']);
@@ -459,12 +457,12 @@ class File {
         // tack on the extension and return the filename
         return $strUid . '.' . $strExt;
     }
-    
+
     public static function isAllowed($filestatus = 3, $user = null) {
         if (null === $user) {
             return false;
         }
-        
+
         switch ($filestatus) {
             case 3:
                 if ($user->isRunner && $user->isPayer) {
@@ -487,11 +485,11 @@ class File {
         }
         return false;
     }
-    
-    
+
+
     /**
      * This method fetches all files for a workitem
-     * 
+     *
      * @param int $workitem
      * @return array $files
      */
@@ -509,10 +507,10 @@ class File {
         }
         return $files;
     }
-    
+
     /**
      * This method fetches all files for a project
-     * 
+     *
      * @param int $projectid
      * @return array $files
      */
@@ -530,7 +528,7 @@ class File {
         }
         return $files;
     }
-    
+
     public static function fileUploadErrorMessage($error_code) {
         switch ($error_code) {
             case UPLOAD_ERR_INI_SIZE:
@@ -550,8 +548,8 @@ class File {
             default:
                 return 'Unknown upload error, please try again later.';
         }
-    } 
-    
+    }
+
     public static function getIconFromMime($mime = '') {
         $mimes = array(
             'application/pdf'           => 'images/icons/pdf.png',
@@ -564,11 +562,11 @@ class File {
             'image/png'                 => false,
             'image/x-png'               => false
         );
-        
+
         if (isset($mimes[$mime])) {
             return $mimes[$mime];
         }
         return 'images/icons/default.png';
     }
-    
+
 }

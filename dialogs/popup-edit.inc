@@ -62,15 +62,16 @@
                     </label>
                     <input id="ivite" type="text" name="invite" class="invite" />
 
-                    <div id="addaccordion" class="clear"></div>
-                    <div id="uploadButtonDiv" class="buttonContainer uploadbutton fileUploadButton">
-                        <span class="smbutton">Attach files</span>
+                    <div class="upload-section">
+                        <div id="addaccordion" class="clear"></div>
+                        <div id="uploadButtonDiv" class="buttonContainer uploadbutton fileUploadButton">
+                            <span class="smbutton">Attach files</span>
+                        </div>
+                        <div id="attachments"></div>
+                        <input type="hidden" name="files" value="" />
+                        <div class="uploadnotice"></div>
+                        <script type="text/javascript" src="js/uploadFiles.js"></script>
                     </div>
-                    <input type="hidden" name="files" value="" />
-
-                    <div class="uploadnotice"></div>
-                    <script type="text/javascript" src="js/uploadFiles.js"></script>
-
                 </div>
 
                 <div class="button-section">
