@@ -324,11 +324,21 @@ p#projectFundingSource {
 
 #projectRoles .buttonContainer,
 #projectRunners .buttonContainer {
+    background-color: transparent;
+    border-bottom: 1px solid #D6D6D6;
     border-left: 1px solid #D6D6D6;
     border-right: 1px solid #D6D6D6;
-    border-bottom: 1px solid #D6D6D6;
+    float: left;
+    margin: 0;
     padding: 10px;
-    margin-top: 0;    
+    position: static;
+    top: 0;
+    border-radius: 0px;
+}
+
+#projectRoles .buttonContainer,
+#projectRunners .buttonContainer:hover {
+    cursor: default;
 }
 
 #projectRoles .buttonContainer {
@@ -555,9 +565,10 @@ tr.runner > td > input[type="submit"] {
 }
 
 #modeSwitch {
-    position: absolute;
-    top: 10px;
-    right: 0;
+    position: absolute !important;
+    top: 10px !important;
+    right: 0 !important;
+    background-color: transparent !important;
 }
 
 .LV_validation_message {
