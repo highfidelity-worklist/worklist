@@ -874,7 +874,7 @@ class Project {
         $query = "
                 SELECT `id`, `summary`, `status`, `sandbox`
                 FROM " . WORKLIST . " w
-                WHERE w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed')
+                WHERE w.status IN ('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed')
                     AND w.project_id = " . $this->getProjectId() . "
                 ORDER BY w.created ASC";
         $result = mysql_query($query);
