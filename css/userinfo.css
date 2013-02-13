@@ -473,7 +473,7 @@ p.bottom {
 
 .right-column #ping-msg {
     height: 72px !important;
-    width: 440px;
+    width: 439px;
     border: none;
     border-bottom: 1px solid #d6d6d6;
 }
@@ -486,7 +486,7 @@ p.bottom {
     margin: -3px 0 0 -1px;
     width: 450px;
     background: #efefef;
-    height: 121px;
+    height: 131px;
 }
 
 .right-column #profile-pingtask p {
