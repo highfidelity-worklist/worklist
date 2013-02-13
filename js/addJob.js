@@ -8,7 +8,7 @@ $(function() {
         'listOpen': function(e,o) {
             $('#projectPopupActiveBox').width($('.itemProjectComboList').outerWidth());
             $('#projectPopupActiveBox').css({
-                top: $('.itemProjectComboList').height() + 50,
+                top: $('.itemProjectComboList').height() + 62,
                 left: $('.itemProjectComboList').css('left')
             });
             $('#projectPopupActiveBox').show();
