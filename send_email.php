@@ -84,6 +84,15 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
             $postArray['replyto'] = $headers['Reply-To'];
         }
     }
+// check for copy, using bcc since cc is not present in Sendgrid api 
+    if (!empty($headers['Cc'])) {
+        $ccIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['Cc'], $ccDetails);
+        if ($ccIncludesNameAndAddress) {
+            $postArray['bcc'] = str_replace(' ', '-', $ccDetails[2]);
+        } else {
+            $postArray['bcc'] = $headers['Cc'];
+        }
+    }
     
     try {
         $result = CURLHandler::Get(SENDGRID_API_URL, $postArray);
