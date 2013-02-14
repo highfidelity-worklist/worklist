@@ -43,7 +43,7 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     } else {
         $fromIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['From'], $fromDetails);
         if ($fromIncludesNameAndAddress) {
-            $fromName = $fromDetails[1];
+            $fromName = str_replace('"', '', $fromDetails[1]);
             $fromAddress = str_replace(' ', '-', $fromDetails[2]);
         } else {
             $fromName = $headers['From'];
