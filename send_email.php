@@ -75,9 +75,18 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
         'api_user' => SENDGRID_API_USER,
         'api_key' => SENDGRID_API_KEY
     );
+	
+    if (!empty($headers['Reply-To'])) {
+        $replyToIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['Reply-To'], $replyToDetails);
+        if ($replyToIncludesNameAndAddress) {
+            $postArray['replyto'] = str_replace(' ', '-', $replyToDetails[2]);
+        } else {
+            $postArray['replyto'] = $headers['Reply-To'];
+        }
+    }
     
     try {
-        $result = $curl::Get(SENDGRID_API_URL, $postArray);
+        $result = CURLHandler::Get(SENDGRID_API_URL, $postArray);
     } catch(Exception $e) {
         error_log("[ERROR] Unable to send message through SendGrid API - Exception: " . $e->getMessage());
         return false;

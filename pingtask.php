@@ -78,14 +78,14 @@ if (isset($_REQUEST['id'])) {
         // Send to journal
         sendJournalNotification($out_msg);
     }
-
+	
     // Send mail
     if ($send_mail && $who != 'bidder') {
         $mail_subject = $nickname." sent you a ping for item #".$item_id;
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
         $mail_msg .= "<a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a>";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
-        $headers = array('X-tag' => 'ping, task', 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
+        $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {
             $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
         }
@@ -111,7 +111,10 @@ if (isset($_REQUEST['id'])) {
         $mail_msg .= "<p>Notes: " . $bid_info['notes'] . "</p>";
         $mail_msg .= "<p>You can view the job here. <a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a></p>";
         $mail_msg .= "<p><a href=\"www.worklist.net\">www.worklist.net</a></p>";
-        $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', 'X-tag' => 'ping, task', 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
+        $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', '
+            X-tag' => 'ping, task', 
+            'From' => NOREPLY_SENDER, 
+            'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {
             $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
         }
@@ -149,7 +152,7 @@ if (isset($_REQUEST['id'])) {
         $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
         $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-        $headers = array('X-tag' => 'ping', 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
+        $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {
             $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
         }

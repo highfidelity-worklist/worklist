@@ -53,6 +53,7 @@ defineOnce('SENDGRID_API_USER','worklist-dev');
 defineOnce('SENDGRID_API_KEY','38MacRUwrawRaq3');
 
 if (!defined('DEFAULT_SENDER')) define('DEFAULT_SENDER', 'Worklist <worklist@worklist.net>');
+if (!defined('NOREPLY_SENDER')) define('NOREPLY_SENDER', 'Worklist <no-reply@worklist.net>');
 if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@worklist.net');
 
 # Add revision (version) information
