@@ -136,7 +136,7 @@ class BudgetInfo {
         $query = "SELECT SUM(`amount`) FROM `" . FEES . 
             "` WHERE paid = 0 AND amount > 0  AND `" . FEES . 
             "`.`withdrawn` != 1 AND ((worklist_id = 0 AND budget_id = " . $budget_id . ") OR worklist_id IN (SELECT id FROM " . 
-                WORKLIST . " WHERE budget_id = " . $budget_id . "))";
+                WORKLIST . " WHERE budget_id = " . $budget_id . " AND status != 'Pass'))";
         $result_query = mysql_query($query);
         $row = $result_query ? mysql_fetch_row($result_query) : null;
         return !empty($row) ? $row[0] : null;
