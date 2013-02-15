@@ -176,7 +176,7 @@ function getAllocated($budget_id = 0, $sort = NULL, $desc = NULL) {
     $sql = "SELECT w.`id`, w.`budget_id`, w.`summary`, w.`status`, b.`reason` " .
            " FROM " . WORKLIST . " w " .
            " LEFT JOIN " . BUDGETS . " b ON w.budget_id = b.id ".
-           " WHERE {$filter} `status` IN ('working','review','completed')";
+           " WHERE {$filter} `status` IN ('functional', 'svnhold', 'working', 'review', 'completed')";
 
     $sql_q = mysql_query($sql) or die(mysql_error());
     $items = array();
