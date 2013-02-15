@@ -12,9 +12,6 @@ require_once ("functions.php");
 require_once ("send_email.php");
 require_once ('lib/Agency/Worklist/Filter.php');
 
-$page=isset($_REQUEST["page"])?intval($_REQUEST["page"]):1; //Get the page number to show, set default to 1
-$is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
-$is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
 $journal_message = '';
 $nick = '';
 
@@ -26,13 +23,7 @@ if ($userId > 0) {
     $user = new User();
     $user->findUserById( $userId );
     $nick = $user->getNickname();
-    $userbudget =$user->getBudget();
-    $budget = number_format($userbudget);
 }
-
-$filter = new Agency_Worklist_Filter();
-$filter->setName('.worklist')
-       ->initFilter();
 
 if ($userId > 0 ) {
     $args = array(
@@ -73,7 +64,7 @@ if ($userId > 0 ) {
     // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
     if ($status == 'Bidding' && $user->getIs_runner() == 1) {
         $runner_id = $userId;
-    }else{
+    } else {
         $runner_id = 0;
     }
 
@@ -84,7 +75,7 @@ if ($userId > 0 ) {
     $workitem->setStatus($status);
     $workitem->setNotes($notes);
     $workitem->setWorkitemSkills($skillsArr);
-    $workitem->setIs_bug( $is_bug=='true' ? 1 : 0);
+    $workitem->setIs_bug($is_bug == 'true' ? 1 : 0);
     $workitem->save();
     $related = getRelated($notes);
     Notification::statusNotify($workitem);
@@ -108,20 +99,26 @@ if ($userId > 0 ) {
         }
     }
 
-    if($is_bug && $bug_job_id>0) {
+    if($is_bug && $bug_job_id > 0) {
         //Load information about original job and notify
         //users with fees and runner
-        Notification::workitemNotify(array('type' => 'bug_found',
-                                    'workitem' => $workitem,
-                                    'recipients' => array('runner', 'usersWithFeesBug')));
-        Notification::workitemSMSNotify(array('type' => 'bug_found',
-                                        'workitem' => $workitem,
-                                        'recipients' => array('runner', 'usersWithFeesBug')));
+        Notification::workitemNotify(array(
+            'type' => 'bug_found',
+            'workitem' => $workitem,
+            'recipients' => array('runner', 'usersWithFeesBug')
+        ));
+        Notification::workitemSMSNotify(array(
+            'type' => 'bug_found',
+            'workitem' => $workitem,
+            'recipients' => array(
+                'runner', 
+                'usersWithFeesBug'
+            )
+        ));
         $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
     } else {
         $bugJournalMessage= "";
     }
-    
     
     if (empty($_POST['itemid'])) {
         $bid_fee_itemid = $workitem->getId();
@@ -143,9 +140,10 @@ if ($userId > 0 ) {
         invitePeople($people, $workitem);
     }
 } else {
-    echo json_encode(array( 'error' => "Invalid parameters !"));
+    echo json_encode(array('error' => "Invalid parameters !"));
     return;
 }
+
 // don't send any journal notifications for DRAFTS
 if (!empty($journal_message) && $status != 'Draft') {
     //sending journal notification
@@ -153,12 +151,14 @@ if (!empty($journal_message) && $status != 'Draft') {
     sendJournalNotification(stripslashes($journal_message));
 }
 
-    // Notify Runners of new suggested task
-if($status == 'SUGGESTED' && $project_id != '') {
-    Notification::workitemNotify(array('type' => 'suggested',
+// Notify Runners of new suggested task
+if ($status == 'SUGGESTED' && $project_id != '') {
+    Notification::workitemNotify(array(
+        'type' => 'suggested',
         'workitem' => $workitem,
         'recipients' => array('projectRunners')),
-        array('notes' => $notes));        
+        array('notes' => $notes)
+    );        
 }
 
-echo json_encode(array( 'return' => "Done!"));
+echo json_encode(array('return' => "Done!"));
