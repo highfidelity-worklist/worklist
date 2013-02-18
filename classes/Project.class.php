@@ -150,6 +150,7 @@ class Project {
                      " . WORKLIST . " W
                      WHERE F.worklist_id = W.id
                      AND W.project_id = " . $project_id  . "
+                     AND F.withdrawn = 0
                      AND W.status IN ('Completed', 'Done')";
         $feesQueryResult = mysql_query($feesQuery);
         if (mysql_num_rows($feesQueryResult)) {
@@ -484,7 +485,8 @@ class Project {
                 if($cCount) {
                     $feesQuery = "SELECT SUM(F.amount) as fees_sum FROM " . FEES . " F,
                             " . WORKLIST . " W
-                            WHERE F.worklist_id = W.id
+                            WHERE F.worklist_id = W.id 
+                            AND F.withdrawn = 0
                             AND W.project_id = " . $project['project_id'] . "
                             AND W.status IN ('Completed', 'Done')";
                     $feesQueryResult = mysql_query($feesQuery);
