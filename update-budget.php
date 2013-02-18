@@ -105,7 +105,7 @@ if ($add_funds_to != 0) {
 
 
 if ($budget_seed == 1 || 
-    ($amount <= $giver->getBudget() && $amount <= $remainingFunds)) {
+    ($amount <=  $budget->getRemainingFunds())) {
     $receiver->setBudget($receiver->getBudget() + $amount)->save();
     if ($add_funds_to == 0) {
         $query = "INSERT INTO `" . BUDGETS . 
@@ -166,7 +166,7 @@ if ($budget_seed == 1 ||
     }
 } else {
     $error = true;
-    $message = 'You do not have enough budget available to give this amount (total: $' . $giver->getBudget() . ", from budget: " . $remainingFunds . ")";
+    $message = 'You do not have enough budget available to give this amount (total: $' . $giver->getBudget() . ", from budget: " . $budget->id . ")";
 }
 
 $json = json_encode(array('success' => !$error, 'message' => $message));

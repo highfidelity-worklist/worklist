@@ -15,8 +15,8 @@
         
         <br/>
         <div class="currentBudgetArea" >
-            <label for="budget-current" class="info-label">Current Funds Granted: $</label>
-            <?php echo $user-> getBudget(); ?>
+            <label for="budget-current" class="info-label">Total Funds Available (all budgets):</label>
+            $<?php echo $user->getBudget(); ?>
         </div>
         <br/>
         <label for="amountToAdd" class="info-label">Amount to Add: </label>
@@ -24,10 +24,10 @@
         <br/>
         <br/>
         <div class="currentBudgetArea" >
-            <label for="newBudgetTotal" class="info-label">New Budget Total: $</label>
-             <span id="newBudgetTotal"></span>
+            <label for="newBudgetTotal" class="info-label">New Budget Total: </label>
+             $<span id="newBudgetTotal"></span>
         </div>
-        <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user-> getId(); ?>" />
+        <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user->getId(); ?>" />
         <input type="hidden" id="add_funds_to" name="add_funds_to" value="<?php echo $budget_id; ?>" />
         <br/>
         <br/>

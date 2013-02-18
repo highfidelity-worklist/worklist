@@ -1,8 +1,8 @@
 <div id="give-budget" class="hidden" title="Give Budget" style="text-align: left;">
     <form method="post" action = "">
         <div class="currentBudgetArea" >
-            <label for="budget-current" class="info-label">Total Available Funds: $</label>
-            <?php echo $user-> getBudget(); ?>
+            <label for="budget-current" class="info-label">Total Available Funds (all budgets): </label>
+            $<?php echo $user->getBudget(); ?>
         </div>
         <label for="budget-amount" class="info-label">New Budget to Give: </label>
             $<input type="text" id="budget-amount" name="amount" /> 
@@ -24,7 +24,7 @@
                 </select>
             </span>
         
-            <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user-> getId();?>" />
+            <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user->getId();?>" />
         <br/>
         <label for="budget-note" class="info-label">Note: </label>
             <textarea id="budget-note" name="budget-note" ></textarea>
