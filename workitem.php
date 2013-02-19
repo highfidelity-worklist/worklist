@@ -1222,6 +1222,13 @@ function changeStatus($workitem, $newStatus, $user) {
     if ($newStatus == 'Done' && $workitem->getProjectId() == 0) {
         return false;
     }
+// Set all 0.00 fees as paid
+    if ($newStatus == 'Done' ) {
+        if (!$workitem->flagAll0FeesAsPaid()) {
+            return false;
+        }
+    }
+
 
     $workitem->setStatus($newStatus);
     $projectId = $workitem->getProjectId();

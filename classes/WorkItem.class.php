@@ -1460,5 +1460,12 @@ class WorkItem {
             }
         }
     }
-
+    function flagAll0FeesAsPaid() {
+        $query = "UPDATE " . FEES . " SET paid = 1, paid_date=NOW(), user_paid =" . $this->getRunnerId() 
+            . " WHERE worklist_id = " . $this->id . " AND amount = 0 AND withdrawn = 0";
+        if (! $result = mysql_query($query)) {
+            return false;
+        }
+        return true;
+    }
 }// end of the class
