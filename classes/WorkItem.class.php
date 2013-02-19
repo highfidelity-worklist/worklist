@@ -891,13 +891,22 @@ class WorkItem {
         /*if ($this->hasAcceptedBids()) {
             throw new Exception('Can not accept an already accepted bid.');
         }*/
-
+        
+        
+        $user_id = isset($_SESSION['userid']) ? (int)$_SESSION['userid'] : 0;
+        $is_runner = isset($_SESSION['is_runner']) ? (int)$_SESSION['is_runner'] : 0;
+        
+        // If a bid is being accepted, and the runner for the workitem does not exist (incase a bid went from suggested straight
+        // to working), then we should set the person accepting the bid as the runner;
+        if (!$this->getRunnerId()) {
+            $this->setRunnerId($user_id);
+        }
+        
         $res = mysql_query('SELECT * FROM `'.BIDS.'` WHERE `id`=' . $bid_id);
         $bid_info = mysql_fetch_assoc($res);
         $workitem_info = $this->getWorkItem($bid_info['worklist_id']);
         
-        $user_id = isset($_SESSION['userid']) ? (int)$_SESSION['userid'] : 0;
-        $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+
 
         // Get bidder information
         $bidder = new User;
@@ -1104,7 +1113,7 @@ class WorkItem {
                     if ((float) $runner_fee < $runner_role['min_amount']) {
                         $runner_fee = $runner_role['min_amount'];
                     }
-                    // add the fee
+                    // add the fee 
                     AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
                     // and reduce the runners budget
                     $myRunner = new User();
