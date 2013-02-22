@@ -278,7 +278,7 @@ var stats = {
                 paginationTD.append(stats.getA(i, i));
                 paginationTD.append('&nbsp;');
             }
-            if(i%30==0) {
+            if(i%20==0) {
                 paginationTD.append('<br/>');
             }
         }
