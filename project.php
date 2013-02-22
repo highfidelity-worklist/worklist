@@ -683,8 +683,13 @@ require_once('opengraphmeta.php');
                     <span id="avg_job_time_stats" title="Average time from Bid Accept to being Paid"><?php echo $project->getAvgJobTime(); ?></span>
                 </li>
                 <li id="projectActiveJobs">
-                    <?php $jobs = $project->getActiveJobs(); ?>
-                    <h3><?php echo (count($jobs) ? count($jobs) : 'No'); ?> active job<?php echo (count($jobs) == 1 ? '' : 's'); ?></h3>
+                    <?php 
+                    $jobs = $project->getActiveJobs(); 
+                    if($jobs) { ?>
+                        <h3><?php echo (count($jobs)); ?> active job<?php echo (count($jobs) == 1 ? '' : 's'); ?></h3>
+                    <?php } else { ?>
+                        <h3>no active jobs</h3>
+                    <?php } ?>
                     <table>
                         <thead>
                             <tr>
