@@ -38,7 +38,7 @@ replacement data:
 'body' =>
 "<p>Hi,</p>
 <p>Please click on the link below or copy and paste the url in browser to reset your password.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;{url}</p>
+{url}</p>
 <p>Worklist</p>",
 ),
 
