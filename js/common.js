@@ -255,7 +255,7 @@ $(function() {
 function makeWorkitemTooltip(className){
     $(className).tooltip({
         delay: 500,
-        extraClass: "content",
+        extraClass: "white-theme content",
         showURL: false,
         bodyHandler: function() {
             var msg = "Loading...";
@@ -271,11 +271,23 @@ function makeWorkitemTooltip(className){
                     msg = json.summary ? '<div class = "head">' + json.summary + '</div>' : '';
                     msg += json.notes ? '<div class = "tip-entry no-border">' + json.notes + '</div>' : '';
                     msg += json.project ? '<div class = "tip-entry">Project: ' + json.project + '</div>' : '';
+                    msg += '<div class="tip-entry">';
+
                     if (json.runner) {
-                        msg += '<div class = "tip-entry">Runner: ' + json.runner + '</div>';
-                    } else if (json.creator) {
-                        msg += '<div class = "tip-entry">Creator: ' + json.creator + '</div>';
+                        msg += '<div class = "tip-entry FL no-border">Runner: ' + json.runner + '</div>';
                     }
+
+                    if (json.creator) {
+                        msg += '<div class = "tip-entry FL no-border">Creator: ' + json.creator + '</div>';
+                    }
+
+                    if (json.mechanic) {
+                        msg += '<div class="tip-entry FL no-border">Mechanic: ' + json.mechanic + '</div>';
+                    }
+
+                    msg += '</div>';
+                    msg += '<div class="clear"></div>';
+
                     msg += json.job_status ? '<div class = "tip-entry">Status: ' + json.job_status + '</div>' : '';
                     if (json.comment) {
                         msg += '<div class = "tip-entry">Last Comment by <i>' + json.commentAuthor + '</i>: ' + json.comment + '</div>';

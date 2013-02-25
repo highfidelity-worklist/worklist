@@ -75,6 +75,7 @@ if ($_SESSION['userid']) {
 <link rel="stylesheet" type="text/css" href="css/journal.css" />
 <link rel="stylesheet" type="text/css" href="css/userinfo.css" />
 <link rel="stylesheet" type="text/css" href="css/favorites.css" />
+<link rel="stylesheet" type="text/css" href="css/tooltip.css" />
 <link rel="stylesheet" type="text/css" href="css/LVstyles.css" />
     <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
     <!--[if IE 7]>

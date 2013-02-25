@@ -1,51 +1,46 @@
 @charset "utf-8";
 /* CSS Document */
 
-
 #tooltip, #livetip {
     position: absolute;
     z-index: 3000;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    box-shadow: 0px 2px 5px #000;
-    -moz-box-shadow: 0px 2px 5px #000;
-    -webkit-box-shadow: 0px 2px 5px #000;
-    border:0px solid #ccc;
+    font-family: Helvetica, sans-serif;
+    border: 0px solid #eaeff0;
     background: rgba(255, 255, 255, 0.9);
-    text-align:left;
+    text-align: left;
 }
+
 #tooltip h3, #tooltip div { 
     margin: 0; 
 }
 #tooltip h3, #livetip {
-    padding:5px 10px;
+    padding: 5px 10px;
 }
+
 #tooltip .body {
-    padding:10px;
-    font-size: 12px;
+    padding: 20px;
+    font-size: 16px;
 }
 
 #tooltip.content { 
-    font-size: 12px;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    font-size: 16px;
     width: 400px; 
-    border:3px solid #ccc;
-    background-color:white;
+    border: 3px solid #ccc;
+    background-color: white;
 }
 
 #tooltip .head {
-    font-size: 12px;
+    font-family: 'Cabin';
+    color: #993300 !important;
+    font-size: 18px;
     font-weight: bold;
-    border-bottom: solid 2px;
+    border-bottom: solid 2px #666666;
     padding-bottom: 0.5em;
     margin-bottom: 0.5em;
 }
 
 #tooltip .tip-entry {
-    font-size: 12px;
+    font-size: 14px;
     padding: 0.5em 0 0 0;
     margin: 0.5em 0 0 0;
     border-top: solid 1px;
@@ -55,4 +50,9 @@
     border: 0;
     padding: 0;
     margin: 0;
+}
+
+#tooltip .tip-entry.FL {
+    float: left;
+    padding-right: 15px;
 }

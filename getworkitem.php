@@ -22,10 +22,12 @@ $query = "SELECT
         w.status job_status,
         w.notes,
         p.name project,
-        r.nickname runner
+        r.nickname runner,
+        m.nickname mechanic
     FROM ".WORKLIST." w
-    LEFT JOIN ".USERS." c ON w.creator_id = c.id
-    LEFT JOIN ".USERS." r ON w.runner_id = r.id
+    LEFT JOIN " . USERS . " c ON w.creator_id = c.id
+    LEFT JOIN " . USERS . " r ON w.runner_id = r.id
+    LEFT JOIN " . USERS . " m ON w.mechanic_id = m.id
     LEFT JOIN ".PROJECTS." p ON w.project_id = p.project_id
     WHERE w.id = '$item'
         AND (w.status <> 'Draft' OR (w.status = 'Draft' AND w.creator_id = '$userId'))";

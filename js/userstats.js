@@ -166,7 +166,7 @@ var stats = {
             var runner_nickname = jsonjob.runner_nickname != null ? jsonjob.runner_nickname : '----';
             if (popup != 0) {
                 var toAppend = '<tr>'
-                            + '<td><a href = "' + worklistUrl
+                            + '<td class="workitem" id="workitem-' + jsonjob.id + '"><a href = "' + worklistUrl
                             + 'workitem.php?job_id=' + jsonjob.id
                             + '&action=view" target = "_blank">#'+ jsonjob.id + '</a></td>'
                             + '<td>' + jsonjob.summary + '</td>'
@@ -191,7 +191,7 @@ var stats = {
                 }
 
                     toAppend += '">'
-                            + '<td><a href = "' + worklistUrl
+                            + '<td class="workitem" id="workitem-' + jsonjob.id + '"><a href = "' + worklistUrl
                             + 'workitem.php?job_id=' + jsonjob.id
                             + '&action=view" target = "_blank">#'+ jsonjob.id + ' - <span>' + jsonjob.summary + '</span></a></td>';
 
@@ -220,6 +220,8 @@ var stats = {
             table.data('func', func);
             stats.appendStatsPagination(json.page, json.pages, table);
         }
+        
+        makeWorkitemTooltip($('.workitem'));
     },
 
     fillEarnings: function(json, func){
