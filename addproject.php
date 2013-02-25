@@ -37,6 +37,7 @@ if ($userId) {
 
     $project->setName($name);
     $project->setDescription($description);
+    $project->setRepository($name);
     $project->setWebsite($website);
     $project->setContactInfo($user->getUsername());
     $project->setOwnerId($userId);
