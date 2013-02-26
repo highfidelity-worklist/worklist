@@ -78,7 +78,7 @@ if ($userId > 0 ) {
     $workitem->setIs_bug($is_bug == 'true' ? 1 : 0);
     $workitem->save();
     $related = getRelated($notes);
-    Notification::statusNotify($workitem);
+    Notification::massStatusNotify($workitem);
 
     // if files were uploaded, update their workitem id
     $file = new File();

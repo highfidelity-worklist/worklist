@@ -1308,7 +1308,7 @@ function changeStatus($workitem, $newStatus, $user) {
     } 
 
     // notifications for subscribed users
-    Notification::statusNotify($workitem);
+    Notification::massStatusNotify($workitem);
     
     return true;
 }

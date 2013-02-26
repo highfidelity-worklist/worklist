@@ -139,7 +139,7 @@ class Notification {
     /**
      * Notifications for workitem statuses
      *
-     * @param String $status - status of workitem
+     * @param Object $workitem instance of a Workitem class
      */
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
@@ -203,6 +203,27 @@ class Notification {
                 self::workitemSMSNotify($options, $data);             
             break;
         }
+    }
+
+    /**
+     * Async wrapper to Notification::statusNotify to avoid big delays 
+     * on massive notifications.
+     * 
+     * @param object $workitem instance of a Workitem class
+     */
+    function massStatusNotify($workitem) {
+        return CURLHandler::Post(
+            SERVER_URL . 'api.php',
+            array(
+                'action' => 'sendNotifications',
+                'api_key' => API_KEY,
+                'command' => 'statusNotify',
+                'workitem' => $workitem->getId()
+            ),
+            false,
+            false,
+            true
+        );
     }
 
     /**

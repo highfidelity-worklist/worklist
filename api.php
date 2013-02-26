@@ -132,6 +132,10 @@ if(validateAction()) {
             case 'saveSoundSettings':
                 saveSoundSettings();
                 break;
+            case 'sendNotifications':
+                validateAPIKey();
+                sendNotifications();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -811,6 +815,28 @@ function saveSoundSettings() {
     } catch(Exception $e) {
         echo json_encode(array('success'=>false, 'message'=>'Settings saving failed'));
     }
+}
+
+function sendNotifications() {
+    if (! array_key_exists('command', $_REQUEST)) {
+        echo json_encode(array('success' => false, 'message' => 'Missing parameters'));
+        exit;
+    }
+    $command = $_REQUEST['command'];
+    switch ($command) {
+        case 'statusNotify':
+            if (! array_key_exists('workitem', $_REQUEST)) {
+                echo json_encode(array('success' => false, 'message' => 'Missing parameters'));
+                exit;
+            }
+            $workitem_id = (int) $_REQUEST['workitem'];
+            $workitem = new WorkItem;
+            $workitem->loadById($workitem_id);
+            Notification::statusNotify($workitem);
+            error_log('api.php: statusNotify completed');
+            break;
+    }
+    echo json_encode(array('success' => true, 'message' => 'Notifications sent'));
 }
 
 ?>

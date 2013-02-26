@@ -746,7 +746,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         	$workitem = new WorkItem();
         	$workitem->loadById($job['id']);
         	
-        	Notification::statusNotify($workitem);
+        	Notification::massStatusNotify($workitem);
         }
         
     }
