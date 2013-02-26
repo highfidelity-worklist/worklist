@@ -262,7 +262,7 @@
 
                 <p class = "info-label title-label-medium jobs">Active jobs</p>
 
-                <div id = "jobs-table" title = "Jobs list">
+                <div id="jobs-table">
                     <table>
                         <thead>
                             <tr class = "table-hdng">
