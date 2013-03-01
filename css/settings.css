@@ -76,8 +76,12 @@ div.uploadnotice-w9 div {
     padding: 3px 10px;
 }
 
+
 .floatLeft {
     float: left;
+}
+#phoneconfirmstr {
+    width:150px;
 }
 
 #profilepicture {

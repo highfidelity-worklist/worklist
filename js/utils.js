@@ -41,6 +41,8 @@ var Utils = {
                 autoOpen: false,
                 closeOnEscape: true,
                 resizable: false,
+                dialogClass: 'white-theme',
+                modal: true,
                 show: 'drop',
                 hide: 'drop',
                 buttons: [

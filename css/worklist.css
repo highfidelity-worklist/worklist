@@ -782,7 +782,9 @@ input.button-disabled ,
     -moz-opacity: 0.5;
     -webkit-opacity: 0.5;
 }
-
+#phone-confirm-form {
+    width: 253px;
+}
 #login-form, #phone-confirm-form {
     border: 1px solid black;
     border-radius: 6px;

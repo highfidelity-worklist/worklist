@@ -122,6 +122,11 @@ body {
     width:607px;
 }
 
+.in-lt-confirmphone {
+    width:255px !important;
+    padding-left: 12px;
+}
+
 #rt-login {
     width:200px;
     float:right;

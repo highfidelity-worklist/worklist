@@ -30,9 +30,64 @@ $saveArgs = array();
 $messages = array();
 $errors = 0;
 $error = new Error();
-$phone_changed = false;
 $settings_link = SECURE_SERVER_URL . "settings.php";
 $worklist_link = SERVER_URL . "worklist.php";
+$returned_json = array();
+
+// Get phone confirm string
+if (isset($_REQUEST['setConfirmString']) && isset($_REQUEST ['phone'])){
+ 
+    $phone = $_REQUEST['phone']; 
+    if (!isset($_SESSION['phone'])){
+        $_SESSION['phone'] = $phone;
+    }
+    $phone_confirm_string = null;
+    if ($phone && Utils::validPhone($phone)) {
+        
+        if (!$_SESSION['phone_confirm_string'] || $_SESSION['phone'] !=  $phone) {
+            $_SESSION['phone'] = $phone;
+            $phone_confirm_string = substr(uniqid(), -4);
+            $_SESSION['phone_confirm_string'] = $phone_confirm_string;
+            $user->setPhone($phone);
+            $msg = 'Confirm code: ' . $phone_confirm_string;
+            Notification::sendShortSMS($user, 'Worklist phone validation', $msg, '', true);
+            $returned_json['confirmSent'] =  1;
+        }  
+    } else {
+        $returned_json['phoneInvalid'] = true;
+        echo json_encode ($returned_json);
+        exit; 
+    }
+    
+    echo json_encode ($returned_json);
+    exit ();
+}
+
+//confirm phone string or clean phone
+if (isset($_REQUEST ['confirm_phone']) || isset($_REQUEST ['clean_phone'])) {
+
+    $phone = $_REQUEST ['$phone'];
+    $phoneconfirmstr = $_REQUEST ['$phoneconfirmstr'];
+    $clean_phone = $_REQUEST ['clean_phone'];
+
+    if (isset($clean_phone)) {
+        $user->setPhone_verified ( '0000-00-00 00:00' )->setPhone ( '' )->save ();
+        unset($_SESSION['phone_confirm_string']);
+        unset($_SESSION['phone']);
+        echo json_encode ( array ('phone_cleaned' => 'true' ) );
+    } else {
+        if($_SESSION['phone_confirm_string'] == $phoneconfirmstr) {
+            $user->setPhone_verified ( date ( 'Y-m-d H:i' ) )->setPhone ( $phone )->save ();
+            unset($_SESSION['phone_confirm_string']);
+            unset($_SESSION['phone']);
+            echo json_encode ( array ('phone_validated' => 1 ) );
+        }
+        else {
+            echo json_encode ( array ('phone_validated' => 0 ) );
+        }
+    }
+    exit ();
+}
 
 // process updates to user's settings
 if (isset($_REQUEST['save_account'])) {
@@ -46,18 +101,6 @@ if (isset($_REQUEST['save_account'])) {
 
         foreach ($saveArgs as $arg=>$esc) {
             $$arg = ($esc ? $_REQUEST[$arg] : intval($_REQUEST[$arg]));
-        }
-
-        if ($phone != $user->getPhone()) {
-            $phone_verified = null;
-            $saveArgs['phone_verified'] = 0;
-            $phone_rejected = null;
-            $saveArgs['phone_rejected'] = 0;
-            if ($phone && Utils::validPhone($phone)) {
-                $phone_confirm_string = substr(uniqid(), -4);
-                $saveArgs['phone_confirm_string'] = 1;
-                $phone_changed = true;
-            }
         }
 
         if (isset($_REQUEST['city'])) {
@@ -210,7 +253,7 @@ if (isset($_REQUEST['save_account'])) {
     	$confirm_email = "An email containing a confirmation link was sent to your email address.<br/>";
     	$confirm_email .= "Please click on that link to verify your email address.";
     	
-    	echo json_encode(array( 'confirm_email' => $confirm_email));
+    	$returned_json['confirm_email'] = $confirm_email;
     	
     	if (! send_email($username, $subject, $body, $plain)) {
            error_log("settings.php: send_email failed");
@@ -347,13 +390,6 @@ if (!empty($saveArgs)) {
         $msg="Account updated successfully!";
     }
 
-    if ($phone_changed) {
-        $user->findUserById($_SESSION['userid']);
-        $url = SERVER_URL . 'confirm_phone.php?user=' . $_SESSION['userid'] .
-            '&phone=' . $phone . '&phoneconfirmstr=' . $phone_confirm_string;
-        $msg = 'Confirm code: ' . $phone_confirm_string . ' (or follow URL)';
-        Notification::sendShortSMS($user, 'Worklist phone validation', $msg, $url, true);
-    }
 
     if (isset($_REQUEST['timezone'])) {
       $_SESSION['timezone'] = trim($_REQUEST['timezone']);
@@ -361,13 +397,11 @@ if (!empty($saveArgs)) {
 
     if (isset($confirm_txt) && ! empty($confirm_txt)) {
         echo $confirm_txt;
-    } else {
         exit;
-    }
-
+    } 
+    echo json_encode($returned_json);
     // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions
     exit;
-
 }
 
 // getting userInfo to prepopulate fields
@@ -404,7 +438,8 @@ include("head.html");
     var nclass;
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
     var worklistUrl = '<?php echo SERVER_URL; ?>';
-
+    var sessionusername = '<?php echo $_SESSION['username']; ?>';
+    
     function completeUploadImage(file, data) {
         $('span.LV_validation_message.upload').css('display', 'none').empty();
         if (!data.success) {
@@ -493,15 +528,115 @@ include("head.html");
         json = json.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
         return (/^[\],:{}\s]*$/.test(json))
     }
+    function confirm_or_clean_phone(values) {
+        $.ajax({
+            type: "POST",
+            url: 'settings.php',
+            data: values,
+            async:   false,
 
+            success: function(json) {
+               
+                var phone_confirm_json = isJSON(json) ? jQuery.parseJSON(json) : null; 
+
+                if(values.confirm_phone) {
+                    
+                    if(phone_confirm_json && phone_confirm_json.phone_validated == true) {
+                        $('#phone').data('last_confirmed_phone', $('#phone').val());
+                        $('#popup-confirmphone').dialog('close');
+                        Utils.infoDialog('Phone Confirmed', "Congratulations! You have successfully confirmed your phone.");
+                        if($("#username").val() != sessionusername) {
+                            alert('Please note that you have also modified your email.' + 
+                                    ' \n After clicking on the confirm link in your email, \n please send yourself a test sms.' + 
+                	        ' Thank you!');
+                            $("#Confirm").removeData('email_edited');
+                        }
+                        
+                    } else if(phone_confirm_json && !phone_confirm_json.phone_validated){
+                        alert('Your phone confirm code does not match. Please try again.');
+                    }else {
+                        alert('There was an error confirming your phone. Please try again.');
+                    }
+                 } else if(values.clean_phone) {
+                    if(phone_confirm_json.phone_cleaned) {
+                        $('#phone').val('');
+                        $('#phone').data('last_confirmed_phone','');
+                        $('#popup-confirmphone').dialog('close');
+                        Utils.infoDialog('Phone Reset', "You have successfully reset your phone settings.");
+                    } else {
+                        alert("There was an error cleaning your phone settings. Please try again.");
+                    }    	                	
+                }	 
+            },
+
+            error: function(xhdr, status, err) {
+                $('#msg-'+type).text('We were unable to save your settings. Please try again.');    	                
+            }
+        });
+    	        
+    }
+
+    function DisplayConfirmPhoneDialog() {
+        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 800, 
+            width: 390, show: 'fade', hide: 'fade', resizable: false };
+        $('#popup-confirmphone').dialog(dialog_options);
+        $('#popup-confirmphone').dialog('open');
+    }
+    function GetPhoneValidation() {
+        //if the phone was edited, we need to confirm it
+        if($("#phone_edit").val() && jQuery.trim($('#phone').val()).length > 0 && $("#phone").val() 
+            != $("#phone").data('watermarkText') && $('#phone').data('last_confirmed_phone') !=
+             $('#phone').val()) {
+            var phone_value = $('#int_code').val() + $('#phone').val();
+            values = {
+                    setConfirmString: 1,
+                    phone: phone_value
+            };
+            //ajax call to get phone confirm string
+            $.ajax({
+                type: "POST",
+                url: 'settings.php',
+                data: values,
+                async:   false,
+                
+                success: function(json) {
+                    var settings_json = isJSON(json) ? jQuery.parseJSON(json) : null;
+                    
+                    // check if phone is valid
+                    if(settings_json && settings_json.phoneInvalid) {
+                        alert('You have entered an invalid phone number.');
+                        return;
+                    } 
+     
+                    DisplayConfirmPhoneDialog();
+                    
+                },
+
+                error: function(xhdr, status, err) {
+                    alert('There was an error confirming your phone. Please try again.');    	                
+                }
+            });
+        } else {
+            saveSettings('account');
+        }
+        
+    }
     function saveSettings(type) {
+        
         var values;
         if (type == 'account') {
             var massValidation = LiveValidation.massValidate( [ nickname, city, username ]);
+            // we need to account for the value of the watermark for the phone. There may be a bug in the plugin
+            // so we adjust the phone no accordingly Teddy 25/Feb/13
+            var phone_value = $('#int_code').val() + $('#phone').val();
+            if($('#phone').val() == $("#phone").data('watermarkText')) {
+                phone_value = '';
+            }
+ 
             if (massValidation) {
                 values = {
                     int_code: $('#int_code').val(),
-                    phone: $('#int_code').val() + $('#phone').val(),
+                    phone: phone_value,
                     phone_edit: $('#phone_edit').val(),
                     country: $('#country').val(),
                     city: $('#city').val(),
@@ -579,6 +714,7 @@ include("head.html");
                     $('#msg-'+type).html(message);
                 }
                 
+
             },
             error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');
@@ -622,6 +758,7 @@ include("head.html");
         }
     }
     $(document).ready(function () {
+        $('#phone').data('last_confirmed_phone', $('#phone').val());
 <?php if (isset($_REQUEST['ppconfirmed']) || isset($_REQUEST['emconfirmed'])) : ?>
         $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
 
@@ -711,9 +848,36 @@ include("head.html");
                 }
             }
         });
+        $('#popup-confirmphone').bind('dialogclose', function(event) {
+            // If the dialog closed and phone is not confirmed,
+            // then we need to revert back to old phone number in the #phone field
+            if($('#phone').data('last_confirmed_phone') != $('#phone').val()) {
+                $('#phone').val($('#phone').data('last_confirmed_phone'));
+                $("#phone_edit").val('0');
+            }
+            saveSettings('account');
+        });
+        $("#Confirm").click(function() {
+            
+                values = {
+                    phone: $('#int_code').val() + $('#phone').val(),
+                    confirm_phone: 1,
+                    $phoneconfirmstr: $("#phoneconfirmstr").val()
+                };
+                confirm_or_clean_phone(values);   	
+            return false;
+        });
+        
+        $("#clean_phone_span").click(function() {
+            values = {
+                clean_phone: 1
+            };
+            confirm_or_clean_phone(values);
+        });
+	    	    
         $("#send-test").click(smsSendTestMessage);
         $("#save_account").click(function() {
-            saveSettings('account');
+            GetPhoneValidation();            
             return false;
         });
         $("#save_personal").click(function() {
@@ -744,6 +908,8 @@ include("head.html");
 <?php require_once('dialogs/budget-transfer.inc') ?>
 <!-- Popup for budget info-->
 <?php require_once('dialogs/popup-budget.inc'); ?>
+<!-- Popup for Phone confirmation-->
+<?php require_once('dialogs/popup-confirmphone.inc'); ?>
 
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
@@ -814,7 +980,7 @@ include("head.html");
         if (strlen($int_code) && substr($phone, 0, strlen($int_code)) == $int_code) {
             $phone = substr($phone, strlen($int_code));
         }
-
+ 
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $picture = !$new_user ? $userInfo['picture'] : '';
         $notifications = !$new_user ? $userInfo['notifications'] : 0;

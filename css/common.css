@@ -345,6 +345,7 @@ pre, .pre {
     font-size: 1.1em;
     cursor: pointer;
     color: #98AAB2;
+    display: inline-block !important;
 }
 
 /*
