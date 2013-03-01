@@ -395,9 +395,9 @@ function addCommas(nStr) {
     <p>
         <span>In the past 30 days</span><br /> 
         <?php echo $newStats['newUsers'] == 0 ? 'no' : $newStats['newUsers']; ?> user<?php echo $newStats['newUsers'] > 1 ? 's have' : ' has' ?> signed up,<br />
-        <?php echo $newStats['newUsersLoggedIn'] == 0 ? 'no one' : $newStats['newUsersLoggedIn']; ?> <?php echo $newStats['newUsersLoggedIn'] > 1 ? 's have' : ' has' ?> logged in,<br />
-        <?php echo $newStats['newUsersWithFees'] == 0 ? 'no one' : $newStats['newUsersWithFees']; ?> <?php echo $newStats['newUsersWithFees'] > 1 ? 's have' : ' has' ?> added fees &amp;<br />
-        <?php echo $newStats['newUsersWithBids'] == 0 ? 'no one' : $newStats['newUsersWithBids']; ?> <?php echo $newStats['newUsersWithBids'] > 1 ? 's have' : ' has' ?> added bids
+        <?php echo $newStats['newUsersLoggedIn'] == 0 ? 'no one' : $newStats['newUsersLoggedIn']; ?> <?php echo $newStats['newUsersLoggedIn'] > 1 ? 'have' : ' has' ?> logged in,<br />
+        <?php echo $newStats['newUsersWithFees'] == 0 ? 'no one' : $newStats['newUsersWithFees']; ?> <?php echo $newStats['newUsersWithFees'] > 1 ? 'have' : ' has' ?> added fees &amp;<br />
+        <?php echo $newStats['newUsersWithBids'] == 0 ? 'no one' : $newStats['newUsersWithBids']; ?> <?php echo $newStats['newUsersWithBids'] > 1 ? 'have' : ' has' ?> added bids
     </p>
 </div>
 <div id="leftcol">
