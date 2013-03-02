@@ -46,27 +46,18 @@ if($_POST) {
 
                     Utils::setUserSession($id, $username, $nickname, $admin);
                     
-                    $user_phone_verified = $user->getPhone_verified();
-                    $user_phone_confirm_string = $user->getPhone_confirm_string(); 
-                    if (! empty($user_phone_confirm_string) && substr($user_phone_verified, 0, 10) == '0000-00-00') {
-                        $phone = $user->getPhone();
-                        $redir = 'confirm_phone.php?user=' . $id . 
-                            '&phone=' . $phone .  
-                            ($_POST['redir'] ? '&redir=' . $_POST['redir'] : '');
-                        
-                        Utils::redirect($redir);
-                    } else {
-	                    if ($_POST['redir']) {
-	                        $_SESSION['redirectFromLogin'] = true;
-	                        Utils::redirect(urldecode($_POST['redir']));
-	                    } else { 
-	                        if (!empty($_POST['reauth'])) {
-	                            Utils::redirect(urldecode($_POST['reauth']));
-	                        } else {
-	                            Utils::redirect('worklist.php');
-	                        }
+
+	                if ($_POST['redir']) {
+	                    $_SESSION['redirectFromLogin'] = true;
+	                    Utils::redirect(urldecode($_POST['redir']));
+	                } else { 
+	                    if (!empty($_POST['reauth'])) {
+	                        Utils::redirect(urldecode($_POST['reauth']));
+	                    } else {
+	                        Utils::redirect('worklist.php');
 	                    }
-                    }
+	                }
+                    
 
                 } else {
                     $error->setError('Invalid password');
