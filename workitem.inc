@@ -702,6 +702,7 @@ $(document).ready(function(){
                     var files = $('#uploadedFiles').parseTemplate(data.data);
                     $('#uploadPanel').append(files);
                     $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
+                    $('#uploadPanel').data('files', data.data);
                     $('#accordion').bind( "accordionchangestart", function(event, ui) {
                         $('#uploadButtonDiv').appendTo(ui.newContent);
                         $('#uploadButtonDiv').css('display', 'block');

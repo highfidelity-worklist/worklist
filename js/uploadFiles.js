@@ -85,7 +85,6 @@
                                     success: function(json) {
                                         if (json.success == true) {
                                             data.url = json.url;
-                                            data.icon = json.icon;
                                         }
 
                                         $('#upload-scan-file').dialog("close");
@@ -97,16 +96,28 @@
 
                                         var newFile = $('#uploadDocument').parseTemplate(data);
                                         $('#attachments').append(newFile);
+
                                         if (data.filetype == 'image') {
-                                            fdata.documents.push(data.fileid);
+                                            data.icon = 'images/icons/tiff.png';
+                                            fdata.images.push(data.fileid);
                                         } else {
                                             fdata.documents.push(data.fileid);
                                         }
+                                        var files = $('#uploadPanel').data('files');
+                                        if (data.filetype == 'image') {
+                                            files.images.push(data);
+                                        } else {
+                                            files.documents.push(data);
+                                        }
+                                        var filesHtml = $('#uploadedFiles').parseTemplate(files);
+                                        $('#uploadPanel').html(filesHtml);
+                                        $('#accordion').fileUpload({images: files.images, documents: files.documents});
+                                        $('#uploadPanel').data('files', files);
 
                                         if(fdata.trackfiles) {
                                             fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
                                         }
-                                        $this.data('fileUploads', fdata);
+                                        $this.data('fileUpload', fdata);
                                         $this.fileUpload('editable');
 
                                     }
@@ -189,16 +200,40 @@
                                 }
 
                                 if (iPos == -1 && fdata.images.length > 0) {
-                                    for (var ii=0; ii < fdata.documents.length; ii++) {
-                                        if (fdata.documents[i] == file_id) {
-                                            fdata.images.splice(iPos,1);
+                                    for (var ii = 0; ii < fdata.images.length; ii++) {
+                                        if (fdata.images[ii] == file_id) {
+                                            fdata.images.splice(ii, 1);
                                             break;
                                         }
                                     }
                                 }
 
-                                $this.data('fileUploads', fdata);
-                                $(oThis).parent().remove()
+                                $this.data('fileUpload', fdata);
+
+                                var files = $('#uploadPanel').data('files');
+                                iPos = -1;
+                                if (files.documents.length > 0) {
+                                    for (var i=0; i < files.documents.length; i++) {
+                                        if (files.documents[i].fileid == file_id) {
+                                            iPos = i;
+                                            files.documents.splice(iPos, 1);
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (iPos == -1 && files.images.length > 0) {
+                                    for (var ii = 0; ii < files.images.length; ii++) {
+                                        if (files.images[ii].fileid == file_id) {
+                                            files.images.splice(ii, 1);
+                                            break;
+                                        }
+                                    }
+                                }
+                                var filesHtml = $('#uploadedFiles').parseTemplate(files);
+                                $('#uploadPanel').html(filesHtml);
+                                $('#uploadPanel').data('files', files);
+                                $('#accordion').fileUpload({images: files.images, documents: files.documents});
                             } else {
                                 alert(json.message);
                             }
