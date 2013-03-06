@@ -1,9 +1,12 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2012, Coffee & Power, Inc.
-//  All Rights Reserved.
-//  http://www.coffeeandpower.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ob_start();
 require_once ("config.php");
@@ -148,9 +151,6 @@ if (isset($_REQUEST['str'])) {
 include("head.html"); ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
-<script language="javascript" src="js/lightbox-hc.js"></script>
-
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <title>Worklist | Confirmation</title>
 <!-- @TODO: Why two ajax uploads? -- lithium -->
 <script type="text/javascript" src="js/ajaxupload.js"></script>

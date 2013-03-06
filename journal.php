@@ -1,9 +1,12 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2012, Coffee & Power, Inc.
-//  All Rights Reserved.
-//  http://www.coffeeandpower.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ob_start();
 require_once ("config.php");
@@ -56,34 +59,13 @@ if ($_SESSION['userid']) {
     $user->findUserById($_SESSION['userid']);
 }
 
+require_once('head.html');
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="copyright" content="Copyright (c) 2010, LoveMachine Inc.  All Rights Reserved. http://www.lovemachineinc.com " />
-<link rel="shortcut icon" type="image/x-icon" href="images/worklist_favicon.png" />
-<link rel="stylesheet" type="text/css" href="css/CMRstyles.css" />
-<link rel="stylesheet" type="text/css" href="css/menu.css" />
-<link rel="stylesheet" type="text/css" href="css/common.css" />
-<link rel="stylesheet" type="text/css" href="css/jquery.combobox.css" />
-<link rel="stylesheet" type="text/css" href="css/jquery-ui.css" media="all" />
-<link rel="stylesheet" type="text/css" href="css/jquery.autocomplete.css" />
-<link rel="stylesheet" type="text/css" href="css/smoothness/lm.ui.css" />
-<link rel="stylesheet" type="text/css" href="css/smoothness/white-theme.lm.ui.css"/>
 <link rel="stylesheet" type="text/css" href="css/budget.css" />
 <link rel="stylesheet" type="text/css" href="css/journal.css" />
 <link rel="stylesheet" type="text/css" href="css/userinfo.css" />
 <link rel="stylesheet" type="text/css" href="css/favorites.css" />
-<link rel="stylesheet" type="text/css" href="css/tooltip.css" />
-<link rel="stylesheet" type="text/css" href="css/LVstyles.css" />
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
-    <!--[if IE 7]>
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome-ie7.min.css">
-    <![endif]-->
-<!--[if IE 6]>
-    <link rel="stylesheet" href="css/ie.css" type="text/css" media="all" />
-<![endif]-->
+
 <title>Chat - Worklist</title>
 <script type="text/javascript">
 var refresh = 5 * 1000;
@@ -117,7 +99,6 @@ function StopStatus() {
     <?php endif; ?>
     var userIp = '<?php echo $_SERVER['REMOTE_ADDR']; ?>';
     var gotoDate = <?php echo  isset($_GET['goto']) ? strtotime($_GET['goto']) : (isset($_POST['goto']) ? strtotime($_POST['goto']) : '0'); ?>;
-    var worklistUrl = '<?php echo WORKLIST_URL; ?>';
     var lastTouched = '<?php echo file_get_contents(JOURNAL_UPDATE_TOUCH_FILE); ?>';
     var latency_sample = '<?php echo LATENCY_SAMPLE; ?>';
     var csrf_token = '<?php echo $csrf_token; ?>';
@@ -142,20 +123,11 @@ function StopStatus() {
 //        if ($_SERVER['HTTP_HOST'] == 'dev.sendlove.us' && strstr(substr($_SERVER['REQUEST_URI'],0,3),'~')) {
 ?>
 <?php if (true): ?>
-<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.8.12.min.js"></script>
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-<script type="text/javascript" src="js/class.js"></script>
-<script type="text/javascript" src="js/jquery.combobox.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
-<script type="text/javascript" src="js/jquery.autogrow.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery_all.js"></script>
 <script type="text/javascript" src="js/journal.js"></script>
-<script type="text/javascript" src="js/common.js"></script>
-<script type="text/javascript" src="js/budget.js"></script>
 <?php else: ?>
 <script type="text/javascript" src="js/jscode.min.js"></script>
 <?php endif; ?>
@@ -198,36 +170,13 @@ if (isset($error) && $error->getErrorFlag() == 1) {
         });
     };
 </script>
-<!--  setup tooltip for setting and attachement links -->
-<script type="text/javascript" src="js/plugins/jquery.tooltip.min.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#settingsButton').tooltip({fade: 250});
         $('input[name="attachment"]').tooltip({fade: 250});
 
-        if ($("#budgetPopup").length > 0) {
-            $("#budgetPopup").dialog({
-                title: "Earning & Budget",
-                dialogClass: 'white-theme',
-                autoOpen: false,
-                position: ['center',60],
-                modal: true
-            });
-            $("#welcome .budget").click(function(){
-                $("#budgetPopup").addClass("table-popup");
-                $("#budgetPopup").dialog("open").centerDialog();
-            });
-        }
 
-        stats.setUserId(userId);
-
-        $("#welcome .following").click(function(){
-            stats.stats_page = 1;
-            $('#jobs-popup').dialog('option', 'title', 'Jobs I am Following').centerDialog();
-            stats.showJobs('following');
-            return false;
-        });
 
         $('textarea#message-pane').bind('keydown keyup mousedown mouseup change', function(e) {
             if(e.keycode == 13) {
@@ -279,7 +228,6 @@ if (isset($error) && $error->getErrorFlag() == 1) {
     <source src="mp3/red_alert.ogg" />
 </audio>
 <?php require_once('header.php'); ?>
-<?php require_once('dialogs/popup-budget.inc'); ?>
 <!-- Popup for transfered info -->
 <?php require_once('dialogs/budget-transfer.inc') ?>
 <?php require_once('dialogs/popups-userstats.inc'); ?>
@@ -463,10 +411,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
             <div class="ui-resizable-handle ui-resizable-nw" style="z-index: 1004;"></div>
         </div>
 
-<?php
-$inJournal = true;
-include("footer.php");
-?>
+
     <script type="text/javascript">
     $(function () {
         if ($('#fees-week').length > 0) {
@@ -537,3 +482,8 @@ include("footer.php");
         });
     });
     </script>
+<?php
+    $inJournal = true;
+    include("footer.php");
+?>
+

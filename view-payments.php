@@ -1,9 +1,12 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2011, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 /**
 *    Page: view-payments.php
@@ -341,15 +344,11 @@ include("head.html"); ?>
 <title>PayPal MassPay Run</title>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/payments.css" rel="stylesheet" type="text/css">
-<link href="css/ui.toaster.css" rel="stylesheet" type="text/css">
-
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
-<script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
 <script type="text/javascript" src="js/ui.toaster.js"></script>
 <script type="text/javascript" src="js/payments.js"></script>
 </head>
@@ -357,7 +356,6 @@ include("head.html"); ?>
 <?php
     require_once('header.php');
     require_once('format.php');
-    require_once('dialogs/popup-budget.inc');
 ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 <div class="floatLeft">

@@ -1,35 +1,25 @@
 <?php
-
-//
-//  Copyright (c) 2011, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.below92.com
-//
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ob_start();
 include("config.php");
 include("class.session_handler.php");
 include("check_new_user.php");
 include("functions.php");
-require_once('classes/Project.class.php');
 /*********************************** HTML layout begins here  *************************************/
-
 include("head.html");
 include("opengraphmeta.php");
 ?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
-<link href="css/projects.css" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/userstats.js"></script>
-<script type="text/javascript" src="js/budget.js"></script>
-<script type="text/javascript">
-    var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
-    var worklistUrl = '<?php echo SERVER_URL; ?>';
-</script>
-
 <title>Help / FAQ - Worklist</title>
 <style>
 #welcomeInside .helpBtn {
@@ -49,9 +39,6 @@ include("opengraphmeta.php");
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for transfered info -->
 <?php require_once('dialogs/budget-transfer.inc') ?>
-<!-- Popup for budget info-->
-<?php require_once('dialogs/popup-budget.inc'); ?>
-
 <br/>
 <a name="top"></a>
 <h1 class="header">Worklist Frequently Asked Questions</h1> </br></br>

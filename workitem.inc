@@ -1,9 +1,12 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
@@ -57,12 +60,9 @@ include("head.html"); ?>
 <link type="text/css" href="css/review.css" rel="stylesheet" />
 <link type="text/css" href="css/favorites.css" rel="stylesheet" />
 <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
-<link type="text/css" href="css/jquery.combobox.css" rel="stylesheet" />
 <link type="text/css" href="css/budget.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/workitem.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
@@ -70,14 +70,9 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.tallest.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/jquery.autogrow.js"></script>
 <script type="text/javascript" src="js/jquery.blockUI.js"></script>
-<script type="text/javascript" src="js/class.js"></script>
-<script type="text/javascript" src="js/jquery.scrollTo-min.js"></script>
-<script type="text/javascript" src="js/jquery.combobox.js"></script>
 <script type="text/javascript" src="js/review.js"></script>
 <script type="text/javascript" src="js/favorites.js"></script>
-<script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/projects.js"></script>
 <script type="text/javascript" src="js/github.js"></script>
 <script type="text/javascript">
@@ -2360,8 +2355,6 @@ if ($action =="edit"):  ?>
     <?php require_once('dialogs/review-url-dialog.inc') ?>
     <!-- Include Paid Popup -->
     <?php require_once 'dialogs/popup-paid.inc'; ?>
-    <!-- Include Budget Popup -->
-    <?php require_once('dialogs/popup-budget.inc'); ?>
     <?php require_once('dialogs/budget-expanded.inc'); ?>
     <!-- Invite people popup -->
     <?php require_once 'dialogs/popup-invite-people.inc'; ?>

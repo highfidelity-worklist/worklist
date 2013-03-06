@@ -1,8 +1,12 @@
 <?php
-
-//  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved. 
-//  http://www.lovemachineinc.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 include("config.php");
 include_once("send_email.php");
@@ -35,11 +39,6 @@ if(!empty($_POST['username']))
 include("head.html"); ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
-
-<!-- jquery file is for LiveValidation -->
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-
-
 <title>Worklist | Recover Password</title>
 
 </head>
@@ -79,4 +78,4 @@ include("head.html"); ?>
         </form>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
-<?php include("footer.php"); ?>
+<?php require_once('footer.php'); ?>

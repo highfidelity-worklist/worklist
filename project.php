@@ -1,8 +1,12 @@
 <?php
-//  Copyright (c) 2011, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-//  vim:ts=4:et
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 require_once ("config.php");
 require_once ("class.session_handler.php");
@@ -137,9 +141,6 @@ require_once('opengraphmeta.php');
 ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/project.css" rel="stylesheet" type="text/css" />
-<link href="css/ui.toaster.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
@@ -147,11 +148,7 @@ require_once('opengraphmeta.php');
 <script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
-<script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
-<script type="text/javascript" src="js/ui.toaster.js"></script>
-<script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
-<script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
 <script type="text/javascript">
     var userId = user_id = <?php echo getSessionUserId(); ?>;

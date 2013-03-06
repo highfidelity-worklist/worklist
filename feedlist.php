@@ -1,11 +1,15 @@
 <?php
 /**
- * Copyright (c) 2010, LoveMachine Inc.
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
  * All Rights Reserved. 
- * http://www.lovemachineinc.com
  *
+ * http://www.worklist.net
  */
+
 // Hack to suppress links in footer.php when showing feeds
+
 include("config.php");
 include("class.session_handler.php");
 include("check_session.php");
@@ -25,8 +29,7 @@ include('head.html');
 define('RSS_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/rss.png" title="rss feed" />');
 define('ATOM_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/atom.png" title="rss feed" />');
 ?>
-<link href="css/worklist.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="<?php echo SERVER_URL; ?>js/jquery.tabSlideOut.v1.3.js"></script>
+<link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <title>Worklist RSS & Atom Feeds | Lend a Hand</title>
 </head>
 <body>
@@ -58,9 +61,4 @@ define('ATOM_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/atom
             <td><a href="<?php echo SERVER_URL; ?>feeds.php?name=comments&format=atom"><?php echo ATOM_ICON_HTML; ?></a></td>
         </tr>
     </table>
-<?php 
-include('footer.php');
-?>
-
-
-
+<?php require_once('footer.php'); ?>

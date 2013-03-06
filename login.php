@@ -1,14 +1,17 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2012, Coffee & Power, Inc.
-//  All Rights Reserved.
-//  http://www.coffeeandpower.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ob_start();
-require_once ("config.php");
+require_once("config.php");
 require_once("class.session_handler.php");
-require_once ("functions.php");
+require_once("functions.php");
 
 // is the user already logged in? go to worklist.php
 if (! empty($_SESSION['userid'])) {
@@ -96,14 +99,8 @@ $redir = strip_tags(!empty($_REQUEST['redir'])?$_REQUEST['redir']:(!empty($_REQU
 
 include("head.html");
 ?>
-
-
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-
-<!-- jquery file is for LiveValidation -->
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-
 <title>Welcome to the Worklist</title>
 
 </head>

@@ -172,8 +172,6 @@
   </div>
   <?php } ?>
   </div>
-
-<?php require_once('dialogs/popup-budget.inc'); ?>
 </div>
 
 <div style="clear: both"></div>

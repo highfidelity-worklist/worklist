@@ -1,9 +1,17 @@
 <?php
-//  Copyright (c) 2009-2010, LoveMachine Inc.                                                                                                                          
-//  All Rights Reserved.                                                                                                                                          
-//  http://www.lovemachineinc.com
-include("config.php");
-include_once("send_email.php");
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
+
+require_once("config.php");
+require_once("send_email.php");
+
+// @TODO: We extra the request but it seems we then don't use it?
 extract($_REQUEST);
 
 if(!empty($_POST['username'])) { 

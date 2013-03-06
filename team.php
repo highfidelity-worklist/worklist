@@ -1,19 +1,18 @@
 <?php
-//  vim:ts=4:et
-//
-//  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-//
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ob_start();
 include("config.php");
 include("class.session_handler.php");
 include("check_new_user.php");
 include("functions.php");
-
-$con=mysql_connect( DB_SERVER,DB_USER,DB_PASSWORD );
-mysql_select_db( DB_NAME,$con );
 
 $cur_letter = isset( $_POST['letter'] ) ? $_POST['letter'] : "all";
 $cur_page = isset( $_POST['page'] ) ? intval($_POST['page'] ) : 1;
@@ -44,15 +43,8 @@ include("opengraphmeta.php");
 
 <script type="text/javascript" src="js/jquery.timeago.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/userstats.js"></script>
-<script type="text/javascript" src="js/budget.js"></script>
-
 <script type="text/javascript">
-var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
-var worklistUrl = '<?php echo SERVER_URL; ?>';
 var current_letter = '<?php echo $cur_letter; ?>';
-var logged_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
 var runner =  <?php echo !empty($_SESSION['is_runner']) ? 1 : 0; ?>;
 var current_page = <?php echo $cur_page; ?>;
 var current_sortkey = 'earnings30';
@@ -65,10 +57,6 @@ $(document).ready(function() {
 
 // Set the users with fees in X days label
     $('.select-days').html(sfilter + ' days');
-
-    $('#outside').click(function() { //closing userbox on clicking outside of it
-        $('#user-info').dialog('close');
-    });
 
     getFavoriteUsers();
 
@@ -120,35 +108,6 @@ $(document).ready(function() {
         $('.table-userlist thead tr th').data('direction', false); //reseting to default other rows
         $(this).data('direction',!direction); //switching on current
     }); //end of table sorting
-
-    $('#user-info').dialog({
-        autoOpen: false,
-        modal: true,
-        show: 'fade',
-        hide: 'fade',
-        height: 480,
-        width: 840,
-        close: function() {
-            if ($('#user-info').data("budget_update_done") === true) {
-                document.location.reload(true);
-            }
-            getFavoriteUsers();
-            fillUserlist(current_page);
-        }
-    });
-    if ($("#budgetPopup").length > 0) {
-        $("#budgetPopup").dialog({
-            title: "Earning & Budget",
-            autoOpen: false,
-            height: 280,
-            width: 370,
-            position: ['center', 60],
-            modal: true
-        });
-        $("#welcome .budget").click(function(){
-            $("#budgetPopup").dialog("open");
-        });
-    };
 
     /**
      * Enable filter for users with fees in the last X days

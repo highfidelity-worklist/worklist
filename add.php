@@ -1,4 +1,12 @@
 <?php
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ini_set('display_errors', 1);
 
@@ -11,6 +19,7 @@ if (empty($_SERVER['HTTPS'])) {
     exit;
 }
 
+// @TODO: Isn't database connection handled elsewhere, config.php?
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysql_error());;
 mysql_select_db(DB_NAME) or die(mysql_error());
 

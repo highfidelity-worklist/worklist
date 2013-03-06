@@ -1,4 +1,13 @@
 <?php
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
+
 require_once ("config.php");
 require_once ("functions.php");
 require_once ("models/DataObject.php");

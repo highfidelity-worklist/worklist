@@ -85,12 +85,24 @@ require_once ("functions.php");
 </div id="outside">
 
 <?php if (! isset($inFeedlist) || ($inFeedlist === false)): ?>
-    <!-- Popup for editing/adding  a work item -->
-    <?php require_once('dialogs/popup-edit.inc'); ?>
+
      <!-- Popup for openNotifyOverlay() -->
      <div id="sent-notify"></div>
 <?php endif ?>
+<?php
+    // Dialogs / popups
+    
+    // @TODO: Determine and implement a standard way to check for user login across the application
+    // The if / else structure is there so that it can be implemented down the track
+    // if ($userId) {
+        // dialogs that should only be available when logged in
 
-<?php require_once('dialogs/footer-analytics.inc'); ?>
+        // budget information
+        require_once('dialogs/popup-budget.inc');
+    // } else {
+        // popups that should always be included
+        require_once('dialogs/footer-analytics.inc');    
+    // }
+?>
 </body>
 </html>

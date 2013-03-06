@@ -1,9 +1,13 @@
 <?php
-//  vim:ts=4:et
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
-//  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
 ob_start();
 
 include("config.php");
@@ -88,14 +92,8 @@ include("opengraphmeta.php");
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <script src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/timeline-chart.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/userstats.js"></script>
-<script type="text/javascript" src="js/budget.js"></script>
 <link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
 <style type="text/css">
 
@@ -184,9 +182,7 @@ function fmtDate2(d) {
     var paid_list = [];
     var workitem = 0;
     var workitems;
-    var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : '"nada"' ?>;
     var is_runner = <?php echo isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : '"nada"' ?>;
-    var worklistUrl = '<?php echo SERVER_URL; ?>';
 
 var getPaidItems = function() {
     var paidItems = 0;
@@ -829,8 +825,6 @@ $(function() {
     }
 });
 </script>
-<script type="text/javascript" src="js/utils.js"></script>
-
 <title>Reports - Worklist</title>
 
 </head>
@@ -842,8 +836,6 @@ $(function() {
 ?>
 <!-- Popup for breakdown of fees-->
 <?php require_once('dialogs/popup-fees.inc') ?>
-<!-- Popup for Budget -->
-<?php require_once('dialogs/popup-budget.inc'); ?>
 <!-- Popup for budget info -->
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for transfered info -->

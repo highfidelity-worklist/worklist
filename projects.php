@@ -1,15 +1,17 @@
 <?php
-/*
- * Copyright (c) 2011, LoveMachine Inc.
- * All Rights Reserved.
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
  *
- * http://www.lovemachineinc.com
+ * http://www.worklist.net
  *
  * Development History:
  * 2011-07-30   #14907      Leo
  *
  */
-error_reporting(E_ALL);
+
 ob_start();
 include("config.php");
 include("class.session_handler.php");
@@ -106,8 +108,6 @@ include("opengraphmeta.php");
     }(jQuery);
     var current_letter = '<?php echo $selectedLetter; ?>';
     var current_page = '<?php echo $currentPage ?>';
-    var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
-    var worklistUrl = '<?php echo SERVER_URL; ?>';
 
     function validateCodeReviews() {
         if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
@@ -246,8 +246,6 @@ include("opengraphmeta.php");
         <?php require_once('dialogs/budget-expanded.inc'); ?>
         <!-- Popup for transfered info -->
         <?php require_once('dialogs/budget-transfer.inc') ?>
-        <!-- Popup for budget info-->
-        <?php require_once('dialogs/popup-budget.inc'); ?>
     <div class="headerText">
             Worklist allows you to rapidly build software using a global community of developers, designers, and project managers.
     </div>

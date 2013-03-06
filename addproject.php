@@ -1,13 +1,17 @@
 <?php
-//  vim:ts=4:et
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
-//  Copyright (c) 2011, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-require_once ("config.php");
-require_once ("class.session_handler.php");
-include_once ("check_new_user.php"); 
-require_once ("functions.php");
+require_once("config.php");
+require_once("class.session_handler.php");
+require_once("check_new_user.php"); 
+require_once("functions.php");
 
 $journal_message = '';
 $nick = '';

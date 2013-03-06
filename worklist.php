@@ -1,8 +1,12 @@
 <?php
-//  Copyright (c) 2011, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-//  vim:ts=4:et
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 require_once ("config.php");
 if (! empty($_SERVER['PATH_INFO'])) {
@@ -165,22 +169,14 @@ require_once('opengraphmeta.php');
 ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
-<link href="css/ui.toaster.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="js/jquery.livevalidation.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
-<script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
-<script type="text/javascript" src="js/ui.toaster.js"></script>
-<script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
-<script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
 <script type="text/javascript">
     var lockGetWorklist = 0;
@@ -213,7 +209,6 @@ require_once('opengraphmeta.php');
     var dir = '<?php echo $filter->getDir(); ?>';
     var sort = '<?php echo $filter->getSort(); ?>';
     var resetOrder = false;
-    var worklistUrl = '<?php echo SERVER_URL; ?>';
     stats.setUserId(user_id);
     var activeProjectsFlag = true;
     var skills = null;
@@ -781,7 +776,6 @@ require_once('opengraphmeta.php');
     }
 
 </script>
-<script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
 <title>Worklist: Develop software fast.></title>
 <style>

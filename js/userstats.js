@@ -1,3 +1,12 @@
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
+
 if (typeof stats == "undefined") {
 
 $(function(){

@@ -1,10 +1,12 @@
 <?php
-//  vim:ts=4:et
-
-//
-//  Copyright (c) 2012, Coffee & Power, Inc.
-//  All Rights Reserved.
-//  http://www.coffeeandpower.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 require_once ("config.php");
 require_once ("class.session_handler.php");
@@ -19,10 +21,6 @@ $signup = true;
 $phone = $country = $provider = $authtype = "";
 $msg = "";
 $to = 1;
-
-// @TODO: We should not be connecting to the DB here, surely it's done somewhere else? -- lithium
-// mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
-// mysql_select_db(DB_NAME);
 
 $fields_to_htmlescape = array(
     'paypal_email' => '',
@@ -200,7 +198,6 @@ include("opengraphmeta.php");
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/sendlove.js"></script>
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userSkills.js"></script>

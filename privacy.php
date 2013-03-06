@@ -1,40 +1,24 @@
 <?php
-//
-//  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ob_start();
 include("config.php");
 include("class.session_handler.php");
-// Database Connection Establishment String
-mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
-// Database Selection String
-mysql_select_db(DB_NAME);
-/*********************************** HTML layout begins here  *************************************/
-
 include("functions.php");
-
 include("head.html");
 include("opengraphmeta.php");
 ?>
-
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<link href="css/feedback.css" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="js/jquery.tabSlideOut.v1.3.js"></script>
-<script type="text/javascript" src="js/ui.toaster.js"></script>
-<script type="text/javascript" src="js/feedback.js"></script>
-
-
-
-
-
 <title>Worklist | Privacy Statement</title>
-
-
 </head>
-
 <body>
 <?php
     require_once('header.php');
@@ -82,4 +66,4 @@ include("opengraphmeta.php");
 </span>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
-<?php include("footer.php"); ?>
+<?php require_once('footer.php'); ?>

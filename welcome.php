@@ -31,26 +31,11 @@ include("opengraphmeta.php");
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <link href="css/welcome.css" rel="stylesheet" type="text/css" >
 <link href='https://fonts.googleapis.com/css?family=Cabin:400,700' rel='stylesheet' type='text/css'>
-<link rel="shortcut icon" type="image/x-icon" href="images/worklist_favicon.png">
 
 <script type="text/javascript" src="js/jquery.timeago.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
-<script type="text/javascript" src="js/userstats.js"></script>
-
-<script type="text/javascript">
-
-
-    $(document).ready(function() {
-     })
-</script>
-<style>
-
-</style>
 </head>
-
 <body>
 <?php
     require_once('header.php');
@@ -211,7 +196,7 @@ include("opengraphmeta.php");
                 <span class="welcomeBold">agile develoment and fast turnaround.</span>
             </div>
             
-			
+            
         </div>
         <div id="entrepreneur2Right">
             <div class="bullet">
@@ -224,30 +209,20 @@ include("opengraphmeta.php");
             <div class="bulletTextRight">
                 Gain creative insight and expertise from tech experts across the globe.
             </div>
-			
-			
-	
         </div>
-		
-		
-		<div class="getstartedContainer">
-			<div class="getstarted">
+        <div class="getstartedContainer">
+            <div class="getstarted">
                 Get started quickly:
             </div>
-			<div class="signupnowContainer">
-				<div id="collaborateArrowRight"></div>
-				<div class="signupnow">
-					&nbsp;<a href="signup.php" class="welcomeRed welcomeBold">SIGN UP NOW</a>
-				</div>
-			</div>
-			
-		</div>
-    
-	
+            <div class="signupnowContainer">
+                <div id="collaborateArrowRight"></div>
+                <div class="signupnow">
+                    &nbsp;<a href="signup.php" class="welcomeRed welcomeBold">SIGN UP NOW</a>
+                </div>
+            </div>
+            
+        </div>
     </div>
-    
 <?php
 //-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 include("footer.php");
-?>
-</div>

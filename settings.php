@@ -1,9 +1,12 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2012, Coffee & Power, Inc.
-//  All Rights Reserved.
-//  http://www.coffeeandpower.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 ob_start();
 include ("config.php");
@@ -906,8 +909,6 @@ include("head.html");
 <?php require_once('dialogs/budget-expanded.inc'); ?>
 <!-- Popup for transfered info -->
 <?php require_once('dialogs/budget-transfer.inc') ?>
-<!-- Popup for budget info-->
-<?php require_once('dialogs/popup-budget.inc'); ?>
 <!-- Popup for Phone confirmation-->
 <?php require_once('dialogs/popup-confirmphone.inc'); ?>
 

@@ -1,9 +1,12 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2010, LoveMachine Inc.  
-//  All Rights Reserved.  
-//  http://www.lovemachineinc.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
   /*
    *  Should userid be provided in $_REQUEST instead of $_SESSION?

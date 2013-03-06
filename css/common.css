@@ -1,7 +1,10 @@
-/*
- Copyright (c) 2012, Below92 Inc.
- All Rights Reserved.
- http://www.below92.com
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
  */
 
 /* Common / Shortcut styles */
@@ -459,12 +462,13 @@ input[type=password]:focus {
 }
 
 #footer {
-    margin: 10px 0 0 0;
-    padding: 0 44px 0px 44px;
+    margin: 10px auto;
+    padding: 0 44px;
     text-align: center;
     font-size: 10px;
     color: #98AAB2;
     line-height: 58px;
+    max-width: 873px;
 }
 
 #footer:before {

@@ -1,9 +1,12 @@
 <?php
-//
-//  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-//
+/**
+ * vim:ts=4:et
+ * 
+ * Copyright (c) 2013, CoffeeandPower Inc.
+ * All Rights Reserved. 
+ *
+ * http://www.worklist.net
+ */
 
 require_once ("config.php");
 require_once ("send_email.php");
@@ -44,7 +47,8 @@ if (empty($_REQUEST['token'])) {
     Utils::redirect('login.php');
 }
 /*********************************** HTML layout begins here  *************************************/
-include("head.html"); ?>
+include("head.html");
+?>
 
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <script language="javascript">
