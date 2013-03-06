@@ -1753,8 +1753,8 @@ if ($action =="edit"):  ?>
                             <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
                             <span class="info-data">
                             <?php if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) ||
-                                     ($creator_id==$user_id && ($worklist['status']=='Suggested') ||
-                                      $user_id == $worklist['runner_id'])){  ?><span class="info-data">
+                                     ($creator_id==$user_id && $worklist['status']=='Suggested') ||
+                                      $user_id == $worklist['runner_id']){  ?><span class="info-data">
                             <select id="status" name="status" class="hidden">
                                 <?php foreach ($statusListRunner as $status) { ?>
                                 <option value="<?php echo $status; ?>"<?php echo $status == $worklist['status']?' selected="selected"' : ''; ?> ><?php echo $status; ?></option>
