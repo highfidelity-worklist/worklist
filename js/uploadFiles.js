@@ -99,9 +99,7 @@
 
                                         if (data.filetype == 'image') {
                                             data.icon = 'images/icons/tiff.png';
-                                            fdata.images.push(data.fileid);
                                         } else {
-                                            fdata.documents.push(data.fileid);
                                         }
                                         var files = $('#uploadPanel').data('files');
                                         if (data.filetype == 'image') {
@@ -111,8 +109,8 @@
                                         }
                                         var filesHtml = $('#uploadedFiles').parseTemplate(files);
                                         $('#uploadPanel').html(filesHtml);
-                                        $('#accordion').fileUpload({images: files.images, documents: files.documents});
                                         $('#uploadPanel').data('files', files);
+                                        $('#accordion').fileUpload({images: files.images, documents: files.documents});
 
                                         if(fdata.trackfiles) {
                                             fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
