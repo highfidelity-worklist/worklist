@@ -125,6 +125,7 @@ function StopStatus() {
 <?php if (true): ?>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
+<script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery_all.js"></script>
 <script type="text/javascript" src="js/journal.js"></script>
@@ -264,7 +265,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                 <div id="bottom_contain">
                                     <div id="bottom_left">
                                         <div id="buttons">
-                                            <div id="settingsButton" onclick="initSound();" title="Chat Settings" >
+                                            <div id="settingsButton" onClick="initSound();" title="Chat Settings" >
                                                 <img src="images/gif.gif" width="33" height="23" id="settingsSwitch" align="bottom" />
                                             </div>
                                             <div id="uploadButton" title="Upload to Chat">
