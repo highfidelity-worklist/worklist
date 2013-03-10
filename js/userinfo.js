@@ -3,6 +3,7 @@ var rewarded = 0;
 stats.setUserId(userInfo.user_id);
 
 stats.showJobs('activeJobs', 0);
+stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
 
 $(document).ready(function(){
     UserInfo.init();

@@ -527,6 +527,40 @@ class UserStats{
     	}
     	return $count;
     }
+
+    public function getCompletedJobsWithStats($page = 1) {
+        $sql = "
+            SELECT id, summary, f.cost, DATEDIFF(d2.change_date, d1.change_date) days
+            FROM " . WORKLIST . " w
+            LEFT JOIN " . STATUS_LOG . " d1 ON d1.worklist_id = w.id AND d1.status = 'Working'
+            LEFT JOIN " . STATUS_LOG . " d2 ON d2.worklist_id = w.id AND d2.status = 'Completed'
+            LEFT JOIN (
+                SELECT SUM(amount) cost, worklist_id
+                FROM " . FEES . "
+                GROUP BY worklist_id) f ON f.worklist_id = w.id
+            WHERE
+                (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId}) AND
+                w.`status` IN ('Completed', 'Done')
+            ORDER BY `id` DESC
+            LIMIT 5";
+
+        $res = mysql_query($sql);
+        if ($res) {
+            $itemsArray = array();
+            while ($row = mysql_fetch_assoc($res)) {
+                $itemsArray[] = $row;
+            }
+
+            return array(
+                'joblist' => $itemsArray,
+                'pages' => 1, 
+                'page' => $page
+            );
+        }
+        
+        return false;
+    }
+
     public function getUserItems($status, $page = 1){
 
         $count = $this->getJobsCount($status);

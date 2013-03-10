@@ -93,12 +93,17 @@ var stats = {
         stats.user_id = id;
     },
 
-    showJobs: function(job_type, popup){
+    showJobs: function(job_type, popup, container){
+        var containerDiv = '';
         var user_id = (stats.user_id == 0) ? window.user_id : stats.user_id;
         if (popup != 0) {
             containerDiv = '#jobs-popup';
         } else {
-            containerDiv = '#jobs-table';
+            if (typeof(container) !== 'undefined') {
+                containerDiv = '#' + container;
+            } else {
+                containerDiv = '#jobs-table';
+            }
         }
 
         $.getJSON('getuserstats.php',
@@ -115,7 +120,7 @@ var stats = {
                             $(containerDiv + ' th.unfollow').hide();
                         }
 
-                        stats.fillJobs(json, partial(stats.showJobs, job_type), job_type, popup);
+                        stats.fillJobs(json, partial(stats.showJobs, job_type), job_type, popup, container);
 
                         if (popup != 0) {
                             $('#jobs-popup').dialog('open');
@@ -164,14 +169,18 @@ var stats = {
     },
 
     // func is a functin to be called when clicked on pagination link
-    fillJobs: function(json, func, job_type, popup) {
+    fillJobs: function(json, func, job_type, popup, container) {
         if (popup != 0) {
              table = $('#jobs-popup table tbody');
         } else {
-             table = $('#jobs-table table tbody');
+            if (typeof(container) !== 'undefined') {
+                table = $('#' + container + ' table tbody');
+            } else {
+                table = $('#jobs-table table tbody');
+            }
         }
         $('tr', table).remove();
-        $.each(json.joblist, function(i, jsonjob){
+        $.each(json.joblist, function(i, jsonjob) {
             var runner_nickname = jsonjob.runner_nickname != null ? jsonjob.runner_nickname : '----';
             if (popup != 0) {
                 var toAppend = '<tr>'
@@ -210,8 +219,10 @@ var stats = {
 
                 if(jsonjob.sandbox == "N/A" || jsonjob.sandbox == "") {
                     toAppend += '<td class="sandbox">N/A</td>';
-                }
-                else {
+                } else if (job_type == 'completedJobsWithStats') {
+                    toAppend += '<td class="cost">' + (jsonjob.cost ? jsonjob.cost : '0.00') + '</td>';
+                    toAppend += '<td class="time">' + ( (jsonjob.days && jsonjob.days > 0) ? jsonjob.days : '0') + ' days</td>';
+                } else {
                     toAppend += '<td class="sandbox">'
                             + '<a id="view-sandbox-'+ jsonjob.id +'" target="_blank" href="'+ jsonjob.sandbox  +'">View</a>'
                             + '</td>';
@@ -220,7 +231,7 @@ var stats = {
                 if (job_type == 'following') {
                     toAppend += '<td><a href="#" id="unfollow-' + jsonjob.id + '">Un-Follow</a></td>';
                 }
-
+                
             }
             toAppend += '</tr>';
             table.append(toAppend);

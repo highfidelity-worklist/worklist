@@ -113,7 +113,8 @@ p.small-text{
     margin-left: -1px !important;
 }
 
-#jobs-table {
+#jobs-table,
+#completed-jobs-table {
     margin-top: -1px !important;
     float: left;
     width: 449px;

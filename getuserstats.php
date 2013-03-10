@@ -40,6 +40,10 @@ if (isset($_REQUEST['id'])) {
         echo json_encode($userStats->getUserItems('Working', $page));
         break;
 
+    case 'completedJobsWithStats':
+        echo json_encode($userStats->getCompletedJobsWithStats());
+        break;
+
     case 'completedJobs':
         echo json_encode($userStats->getUserItems('Completed', $page));
         break;

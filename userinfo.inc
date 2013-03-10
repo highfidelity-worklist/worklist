@@ -276,7 +276,22 @@
                         </tbody>
                     </table>
                 </div>
-            
+
+                <p class = "info-label title-label-medium completed-jobs">Last 5 completed jobs</p>
+                <div id="completed-jobs-table">
+                    <table>
+                        <thead>
+                            <tr class = "table-hdng">
+                                <th>Job ID & Summary</th>
+                                <th class="cost">Cost</th>
+                                <th class="time">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
             </div><!-- end of right-column -->
         </div><!-- end of tabs-1 -->
         <div class="clear"></div>
