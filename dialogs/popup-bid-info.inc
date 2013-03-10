@@ -35,6 +35,8 @@
         <div class="clear"></div>
 <?php if ($user->getIs_admin() == 1 && $is_runner || $is_project_founder || $is_project_runner){ ?>
         <div class="clear"></div><br />
+        <div id="project_history"></div>
+        <div class="clear"></div><br />
             <div class = "info-label block bidderStats">
                 Bidder statistics
                     <img src="images/loader.gif" alt = "" class = "loader" /><span class = "loader">Please wait..</span>

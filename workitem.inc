@@ -885,9 +885,42 @@ $(document).ready(function(){
 <?php } ?>
             // change user id to current bidder id
             stats.setUserId(bidData.bidder_id);
-
+            
             // filling and appending user stats table
             $('.loader').show();
+
+            // get data for recent jobs completed
+            $.getJSON('getuserstats.php', {
+                id: bidData.bidder_id,
+                project_id: <?php echo $worklist['project_id']; ?>,
+                statstype: 'project_history'
+            }, function(json) {
+                if (json.joblist) {
+                    var html = '';
+
+                    if (json.joblist.length > 0) {
+                        var jobCount = json.joblist.length > 3 ? 3 : json.joblist.length;
+
+                        html += '<div class="info-label block bidderStats">';
+                        html += 'Last ' + jobCount + ' job(s) for <?php echo $worklist['project_name']; ?></div><br />';
+                        var urlBase = '<a target="_blank" class="worklist-item font-14" href="<?php echo SERVER_URL; ?>workitem.php';
+                        for (var i = 0; i < jobCount; i++) {
+                            job = json.joblist[i];
+                            html += urlBase;
+                            html += '?job_id=' + job.id + '&action=view" id="worklist-' + job.id + '">#' +job.id + 
+                                '</a> - ' + job.summary + '<br />';
+                        }
+
+                    } else {
+                        html += 'No prior jobs for <?php echo $worklist['project_name']; ?>';
+                    }
+
+                    $('#project_history').html(html);
+                    // activate tooltips
+                    makeWorkitemTooltip("#project_history .worklist-item");
+                }
+            });
+
             $.getJSON('getuserstats.php', {id: bidData.bidder_id, statstype: 'counts'}, function(json) {
 
                 // filling the table from json stats

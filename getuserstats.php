@@ -57,7 +57,12 @@ if (isset($_REQUEST['id'])) {
 
     case 'runnerActiveJobs':
         echo json_encode($userStats->getActiveRunnerItems($page));
-        break;        
+        break;
+
+    case 'project_history':
+        $projectId = $_REQUEST['project_id'];
+        echo json_encode($userStats->getUserItemsForASpecificProject('Done', $projectId));
+        break;
 
     case 'counts':
 			setlocale(LC_MONETARY,'en_US');

@@ -17,6 +17,10 @@ a:hover {
     display: none;
 }
 
+.font-14 {
+    font-size: 14px;
+}
+
 .popup-body {
     display: none;
 }
