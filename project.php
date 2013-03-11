@@ -21,7 +21,9 @@ if (empty($_REQUEST['project'])) {
     exit;
 }
 
+
 $projectName = mysql_real_escape_string($_REQUEST['project']);
+
 $project = new Project();
 try {
     $project->loadByName($projectName);
@@ -115,7 +117,7 @@ if ($is_runner || $is_payer || $project->isOwner($userId)) {
 /* Prevent reposts on refresh */
 if (! empty($_POST)) {
     unset($_POST);
-    header('Location: ' . APP_BASE . '/' . $projectName);
+    header('Location: ' . $projectName);
     exit();
 }
 
@@ -320,8 +322,8 @@ require_once('opengraphmeta.php');
         }
         
         //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
-        $('tr.role').click(function(){
-            $.metadata.setType("elem", "script")
+        $('tr.role').click(function() {
+            $.metadata.setType("elem", "script");
             var roleData = $(this).metadata();
 
             // row has role data attached
@@ -372,9 +374,9 @@ require_once('opengraphmeta.php');
         });
         
         // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
-        $('#popup-addrole').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
-        $('#popup-role-info').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
-        $('#popup-edit-role').dialog({ autoOpen: false, modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
+        $('#popup-addrole').dialog({ autoOpen: false, dialogClass: 'white-theme', modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
+        $('#popup-role-info').dialog({ autoOpen: false, dialogClass: 'white-theme', modal: true, maxWidth: 600, width: 350, show: 'fade', hide: 'fade' });
+        $('#popup-edit-role').dialog({ autoOpen: false, dialogClass: 'white-theme', modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
 
         $('#popup-testflight').dialog({ autoOpen: false, maxWidth: 600, width: 410, show: 'fade', hide: 'fade' });
         
@@ -604,10 +606,10 @@ require_once('opengraphmeta.php');
                                                  echo '-'.$role['id'];?>">
                                                 <script type="data">
                                                     {
-                                                        id: '{<?php echo $role['id']; ?>}', 
-                                                        role_title: '{<?php echo $role['role_title']; ?>}', 
-                                                        percentage: {'<?php echo $role['percentage']; ?>}', 
-                                                        min_amount: {'<?php echo $role['min_amount']; ?>}'
+                                                        id: '<?php echo $role['id']; ?>', 
+                                                        role_title: '<?php echo $role['role_title']; ?>', 
+                                                        percentage: '<?php echo $role['percentage']; ?>', 
+                                                        min_amount: '<?php echo $role['min_amount']; ?>'
                                                     }
                                                 </script>
                                             <td class="roleTitle"><div><span><?php echo $role['role_title'];?></span></div></td>

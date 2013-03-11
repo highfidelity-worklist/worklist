@@ -17,7 +17,6 @@
             </tr>
         </table>
         <div class="clear"></div>
-        <br/>
         <div>
             <input type="submit" id="delete_role" name="delete_role" value="Delete">
             <input type="button" name="edit" id="editRole" value="Edit">

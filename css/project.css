@@ -556,10 +556,6 @@ tr.runner > td > input[type="submit"] {
     width: 80px;
 }
 
-#popup-role-info td {
-    border:none;
-}
-
 #projectTestFlight h3 {
     margin-bottom: 10px;
 }
