@@ -650,6 +650,7 @@ class Project {
      */
     public function deleteRole($role_id){
         $query = "DELETE FROM `".ROLES."`  WHERE `id`={$role_id}";
+        return mysql_query($query) ? 1 : 0;
     }  
 
     /**
