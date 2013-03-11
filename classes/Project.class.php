@@ -360,6 +360,15 @@ class Project {
         return $this->internal;
     }
     
+    public function setCreationDate($creation_date) {
+        $this->creation_date = $creation_date;
+        return $this;
+    }
+    
+    public function getCreationDate() {
+        return $this->creation_date;
+    }
+    
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
             (name, description, website, budget, repository, contact_info, active, owner_id, testflight_team_token,
@@ -641,8 +650,6 @@ class Project {
      */
     public function deleteRole($role_id){
         $query = "DELETE FROM `".ROLES."`  WHERE `id`={$role_id}";
-        return mysql_query($query) ? 1 : 0;
-        
     }  
 
     /**
