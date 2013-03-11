@@ -541,7 +541,8 @@ class UserStats{
             WHERE
                 (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId}) AND
                 w.`status` IN ('Completed', 'Done')
-            ORDER BY `id` DESC
+            GROUP BY w.`id`
+            ORDER BY w.`id` DESC
             LIMIT 5";
 
         $res = mysql_query($sql);
