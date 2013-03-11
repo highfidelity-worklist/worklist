@@ -33,6 +33,7 @@ class Project {
     protected $cr_job_runner;
     protected $internal;
     protected $repo_type;
+    protected $creation_date;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -107,7 +108,8 @@ class Project {
                 p.cr_3_favorites,
                 p.cr_project_admin,
                 p.cr_job_runner,
-                p.internal
+                p.internal, 
+                p.creation_date
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -140,7 +142,7 @@ class Project {
              $this->setCrAdmin($row['cr_project_admin']);
              $this->setCrRunner($row['cr_job_runner']);
              $this->setInternal($row['internal']);
-             
+             $this->setCreationDate($row['creation_date']);
         return true;
     }
     
@@ -357,11 +359,11 @@ class Project {
     public function getInternal() {
         return $this->internal;
     }
-
+    
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
             (name, description, website, budget, repository, contact_info, active, owner_id, testflight_team_token,
-                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner, internal) " .
+                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner, internal, creation_date) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -378,7 +380,8 @@ class Project {
             "'".intval($this->getCrFav())."', ".
             "'".intval($this->getCrAdmin())."', ".
             "'" . intval($this->getCrRunner()) . "', " .
-            "'" . intval($this->getInternal()) . "')";
+            "'" . intval($this->getInternal()) . "', " .
+            "NOW())";
         $rt = mysql_query($query);
         $project_id = mysql_insert_id();
         $this->setProjectId($project_id);
