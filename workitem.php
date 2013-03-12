@@ -1309,7 +1309,12 @@ function changeStatus($workitem, $newStatus, $user) {
 
     // notifications for subscribed users
     Notification::massStatusNotify($workitem);
-    
+
+    // HipChat Notification	
+    $hipchat_Message = $user->getNickname() . " updated job #" . $workitem->getId() . ". Status changed to " . $newStatus . ".";
+    if ($thisProject->getHipchat_enabled()) {
+        $thisProject->sendHipchat_notification(linkify($hipchat_Message));
+    }
     return true;
 }
 

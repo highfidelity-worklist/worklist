@@ -366,3 +366,7 @@ defineOnce('JOURNAL_SYSTEM_SOUND',      0x08);
 defineOnce('JOURNAL_BOT_SOUND',         0x04);
 defineOnce('JOURNAL_PING_SOUND',        0x02);
 defineOnce('JOURNAL_EMERGENCY_ALERT',   0x01);
+
+//Hipchat settings
+defineOnce('HIPCHAT_API_AUTH_URL', "https://api.hipchat.com/v1/rooms/list?auth_token=");
+defineOnce('HIPCHAT_API_MESSAGE_URL', "https://api.hipchat.com/v1/rooms/message?format=json&auth_token=");

@@ -64,10 +64,14 @@ if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner))
     $cr_project_admin = isset($_REQUEST['cr_project_admin']) ? 1 : 0;
     $cr_job_runner = isset($_REQUEST['cr_job_runner']) ? 1 : 0;
     $internal = isset($_REQUEST['internal']) ? 1 : 0;
+    $hipchat_enabled = isset($_REQUEST['hipchat_enabled']) ? 1 : 0;
     $project->setCrAnyone($cr_anyone);
     $project->setCrFav($cr_3_favorites);
     $project->setCrAdmin($cr_project_admin);
     $project->setCrRunner($cr_job_runner);
+    $project->setHipchat_enabled($hipchat_enabled);
+    $project->setHipchat_notification_token($_REQUEST['hipchat_notification_token']);
+    $project->setHipchat_room($_REQUEST['hipchat_room']);
     
     if ($user->getIs_admin()) {
         $project->setInternal($internal);
@@ -628,6 +632,26 @@ require_once('opengraphmeta.php');
                         </div>
                     </li>
                 <?php endif; ?>
+                <li id="projectRunners">
+                    <h3>Project runners</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th <?php echo (($is_admin == 1) || $is_owner) ? 'colspan="2"' : ''; ?>>Who</th>
+                                <th># of Jobs</th>
+                                <th>Last Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <?php if (($is_admin == 1) || $is_owner): ?>
+                        <div class="buttonContainer">
+                            <input type="submit" id="addrunner" value="Add" />
+                            <input type="submit" id="removerunner" value="Remove" />
+                        </div>
+                    <?php endif; ?>
+                </li>
                 <li id="projectCodeReviewRights">
                     <h3>Code reviews <span>are allowed from</span></h3>
                     <div>
@@ -655,6 +679,40 @@ require_once('opengraphmeta.php');
                         <label for="cr_job_runner_field">Anyone who is trusted by the job manager</label>
                     </div>
                 </li>
+                <?php if($edit_mode == true) { ?>
+                <li id="hipchat">
+                    <h3>Hip Chat</h3>
+                    <div>
+                        <div>
+                            <input type="checkbox" name="hipchat_enabled" id="hipchat_enabled" <?php echo ($project->getHipchat_enabled()) ? 'checked="checked"' : '' ; ?> />
+                            <label for="hipchat_enabled">Enabled</label>                                                    
+                        </div>
+                        <div>
+                            <label for="hipchat_notification_token">Notification Token</label>
+                            <input type="text" name="hipchat_notification_token" id="hipchat_notification_token" value="<?php echo $project->getHipchat_notification_token(); ?>" />
+                        </div>
+                        <div>
+                            <label for="hipchat_room">Room</label>
+                            <input type="text" id="hipchat_room" name="hipchat_room" value="<?php echo $project->getHipchat_room(); ?>" />                        
+                        </div>
+                    </div>
+                </li>
+                <?php }  
+                      if ($project->getTestFlightTeamToken() != '' || $edit_mode) : ?>
+                    <li id="projectTestFlight">
+                        <h3>TestFlight</h3>
+                        <?php if ($edit_mode): ?>
+                            <label for="testflight_team_token">Team token</label>
+                            <input name="testflight_team_token" id="testflight_team_token" type="text" value="<?php echo $project->getTestFlightTeamToken(); ?>" />
+                        <?php else: ?> 
+                            <div class="buttonContainer">
+                                <?php if (($is_runner || $is_owner) && $project->getTestFlightTeamToken()) : ?>
+                                    <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
         <div class="rightCol">
@@ -764,41 +822,6 @@ require_once('opengraphmeta.php');
                                 </table>
                             </div>
                         </div>
-                    </li>
-                <?php endif; ?>
-                <li id="projectRunners">
-                    <h3>Project runners</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th <?php echo (($is_admin == 1) || $is_owner) ? 'colspan="2"' : ''; ?>>Who</th>
-                                <th># of Jobs</th>
-                                <th>Last Activity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <?php if (($is_admin == 1) || $is_owner): ?>
-                        <div class="buttonContainer">
-                            <input type="submit" id="addrunner" value="Add" />
-                            <input type="submit" id="removerunner" value="Remove" />
-                        </div>
-                    <?php endif; ?>
-                </li>
-                <?php if ($project->getTestFlightTeamToken() != '' || $edit_mode) : ?>
-                    <li id="projectTestFlight">
-                        <h3>TestFlight</h3>
-                        <?php if ($edit_mode): ?>
-                            <label for="testflight_team_token">Team token</label>
-                            <input name="testflight_team_token" id="testflight_team_token" type="text" value="<?php echo $project->getTestFlightTeamToken(); ?>" />
-                        <?php else: ?> 
-                            <div class="buttonContainer">
-                                <?php if (($is_runner || $is_owner) && $project->getTestFlightTeamToken()) : ?>
-                                    <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
                     </li>
                 <?php endif; ?>
                 <li>

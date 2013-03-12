@@ -571,3 +571,17 @@ tr.runner > td > input[type="submit"] {
     display: none;
 }
 
+#hipchat {
+    clear: both;
+}
+
+#hipchat label {
+    display: inline-block;
+    width: 110px;
+    text-align: left;
+}
+
+#hipchat_notification_token,
+#hipchat_room {
+    width: 220px;
+}

@@ -8,6 +8,7 @@
  * @version $Id$
  */
 require_once('lib/Project/Exception.php');
+require_once ("send_email.php");
 /**
  * Project
  *
@@ -34,6 +35,9 @@ class Project {
     protected $internal;
     protected $repo_type;
     protected $creation_date;
+    protected $hipchat_enabled;
+    protected $hipchat_notification_token;
+    protected $hipchat_room;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -109,7 +113,10 @@ class Project {
                 p.cr_project_admin,
                 p.cr_job_runner,
                 p.internal, 
-                p.creation_date
+                p.creation_date,
+                p.hipchat_enabled,
+                p.hipchat_notification_token,
+                p.hipchat_room
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -143,6 +150,9 @@ class Project {
              $this->setCrRunner($row['cr_job_runner']);
              $this->setInternal($row['internal']);
              $this->setCreationDate($row['creation_date']);
+        $this->setHipchat_enabled($row['hipchat_enabled']);
+        $this->setHipchat_notification_token($row['hipchat_notification_token']);
+        $this->setHipchat_room($row['hipchat_room']);
         return true;
     }
     
@@ -369,14 +379,91 @@ class Project {
         return $this->creation_date;
     }
     
+    public function setHipchat_notification_token($hipchat_notification_token) {
+        $this->hipchat_notification_token = $hipchat_notification_token;
+        return $this;
+    }
+
+    public function getHipchat_notification_token() {
+        return $this->hipchat_notification_token;
+    }
+
+    public function setHipchat_enabled($hipchat_enabled) {
+        $this->hipchat_enabled = $hipchat_enabled;
+        return $this;
+    }
+
+    public function getHipchat_enabled() {
+        return $this->hipchat_enabled;
+    }
+    public function setHipchat_room($hipchat_room) {
+        $this->hipchat_room = $hipchat_room;
+        return $this;
+    }
+
+    public function getHipchat_room() {
+        return $this->hipchat_room;
+    }
+
+    public function sendHipchat_notification($message) {
+        $success = true;
+        $room_id = 0;
+        $token = $this->getHipchat_notification_token();
+        $url = HIPCHAT_API_AUTH_URL . $token;
+        
+        $response = CURLHandler::Get($url, array());
+        $response = json_decode($response);
+
+        if (count($response->rooms)) {
+            foreach($response->rooms as $key => $room) {
+                if ($room->name == trim($this->getHipchat_room())) {
+                    $room_id = $room->room_id;
+                    break;
+                }
+            }
+            
+            if ($room_id > 0 ) {
+                $url = HIPCHAT_API_MESSAGE_URL . $token;
+                $fields = array( 
+                    'room_id' => $room_id,
+                    'from' => 'Worklist.net',
+                    'message' => $message,
+                    'message_format' => 'html'
+                );
+                
+                $result = CURLHandler::Post($url, $fields);
+                $result = json_decode($result);
+                if ($result->status != 'sent') {
+                    $success = false;
+                    $body = "Failed to send message: " . $message;
+                }
+            } else {
+                    $success = false;
+                    $body = "Failed to find room " . $this->getHipchat_room() . ".";
+            }
+        } else {
+            $success = false;
+            $body = "Failed to authenticate to hipchat.";            
+        }
+
+        if ($success == false) {
+            $email = $this->getContactInfo();
+            $subject = "HipChat Notification Failed";
+            if (!send_email($email, $subject, $body, $body, array('Cc' => OPS_EMAIL))) {
+               error_log("project-class.php: sendHipchat_notification : send_email failed");
+            }
+        }
+    }
+
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
             (name, description, website, budget, repository, contact_info, active, owner_id, testflight_team_token,
-                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner, internal, creation_date) " .
+                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner, internal, creation_date, 
+                hipchat_enabled, hipchat_notification_token, hipchat_room) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
-            "'" . mysql_real_escape_string($this->getWebsite()) . "', " .
+            "'".mysql_real_escape_string($this->getWebsite()) . "', " .
             "'".mysql_real_escape_string($this->getBudget())."', ".
             "'".mysql_real_escape_string($this->getRepository())."', ".
             "'".mysql_real_escape_string($this->getContactInfo())."', ".
@@ -390,7 +477,10 @@ class Project {
             "'".intval($this->getCrAdmin())."', ".
             "'" . intval($this->getCrRunner()) . "', " .
             "'" . intval($this->getInternal()) . "', " .
-            "NOW())";
+            "NOW(), " .
+            "'" . intval($this->getHipchat_enabled()) . "', " .
+            "'" . mysql_real_escape_string($this->getHipchat_notification_token()) . "', " .
+            "'" . mysql_real_escape_string($this->getHipchat_room()) . "')";
         $rt = mysql_query($query);
         $project_id = mysql_insert_id();
         $this->setProjectId($project_id);
@@ -433,7 +523,10 @@ class Project {
                 cr_3_favorites='".intval($this->getCrFav())."',
                 cr_project_admin='".intval($this->getCrAdmin())."',
                 cr_job_runner='" . intval($this->getCrRunner()) . "',
-                internal='" . intval($this->getInternal()) . "'
+                internal='" . intval($this->getInternal()) . "',
+                hipchat_enabled='" . intval($this->getHipchat_enabled()) . "',
+                hipchat_notification_token='" . mysql_real_escape_string($this->getHipchat_notification_token()) . "',
+                hipchat_room='" . mysql_real_escape_string($this->getHipchat_room()) . "'
             WHERE project_id=" . $this->getProjectId();
         $result = mysql_query($query);
         return $result ? 1 : 0;
@@ -494,7 +587,7 @@ class Project {
                 $bCount = $resultCount->bidding === NULL ? 0 : $resultCount->bidding;
                 $uCount = $resultCount->underway === NULL ? 0 : $resultCount->underway;
                 $cCount = $resultCount->completed === NULL ? 0 : $resultCount->completed;
-	
+    
                 if($cCount) {
                     $feesQuery = "SELECT SUM(F.amount) as fees_sum FROM " . FEES . " F,
                             " . WORKLIST . " W
@@ -832,7 +925,7 @@ class Project {
                             LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
                             LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
                         WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
-                            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')				 
+                            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')                 
                             AND p.project_id = " . $this->getProjectId() . "
                     ) as totalEarnings
                     
@@ -930,7 +1023,7 @@ class Project {
         }
         return false;
     } 
-	
+    
     public function getPaymentStats() {
         $query = "SELECT u.id, u.nickname, f.worklist_id, f.amount, f.paid FROM " . FEES . " f
                   LEFT JOIN " . WORKLIST . " w ON f.worklist_id = w.id
