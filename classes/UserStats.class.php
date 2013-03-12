@@ -530,14 +530,19 @@ class UserStats{
 
     public function getCompletedJobsWithStats($page = 1) {
         $sql = "
-            SELECT id, summary, f.cost, DATEDIFF(d2.change_date, d1.change_date) days
+            SELECT w.id, w.summary, f.cost, DATEDIFF(d2.change_date, b.date) days
             FROM " . WORKLIST . " w
-            LEFT JOIN " . STATUS_LOG . " d1 ON d1.worklist_id = w.id AND d1.status = 'Working'
+            # Code is commented out as there is not a reliable 'Working' status date due to issues
+            # in the acceptdBid method. This method has been updated.
+            # LEFT JOIN " . STATUS_LOG . " d1 ON d1.worklist_id = w.id AND d1.status = 'Working'
             LEFT JOIN " . STATUS_LOG . " d2 ON d2.worklist_id = w.id AND d2.status = 'Completed'
+            # And temporarily using the creation date of the Accepted Bid
+            LEFT JOIN " . FEES . " b ON b.worklist_id = w.id AND b.desc = 'Accepted Bid'
             LEFT JOIN (
                 SELECT SUM(amount) cost, worklist_id
                 FROM " . FEES . "
-                GROUP BY worklist_id) f ON f.worklist_id = w.id
+                GROUP BY worklist_id
+            ) f ON f.worklist_id = w.id
             WHERE
                 (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId}) AND
                 w.`status` IN ('Completed', 'Done')

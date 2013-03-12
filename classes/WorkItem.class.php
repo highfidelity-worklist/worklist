@@ -1122,17 +1122,15 @@ class WorkItem {
                 }
             }
 
-/*
-            if (! result = mysql_query("
-                INSERT INTO " . STATUS_LOG . " 
-                    (worklist_id, status, user_id, change_date) 
-                VALUES 
-                    (" . $bid_info['worklist_id'] . ", 'WORKING', ".$_SESSION['userid'].", NOW())";
+            // add an entry to the status log
+            $status_sql = "
+                INSERT INTO " . STATUS_LOG . " (worklist_id, status, user_id, change_date)
+                VALUES({$bid_info['worklist_id']}, 'Working', {$_SESSION['userid']}, NOW())";
+            if (! $result = mysql_query($status_sql)) {
                 error_log("AcceptedBid:Insert status log failed: " . mysql_error());
                 mysql_query("ROLLBACK");
                 return false;
             }
-*/
 
             // When we get this far, commit and return bid_info
             if (mysql_query('COMMIT')) {
