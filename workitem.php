@@ -1311,7 +1311,7 @@ function changeStatus($workitem, $newStatus, $user) {
     Notification::massStatusNotify($workitem);
 
     // HipChat Notification	
-    $hipchat_Message = $user->getNickname() . " updated job #" . $workitem->getId() . ". Status changed to " . $newStatus . ".";
+    $hipchat_Message = $user->getNickname() . " updated job #" . $workitem->getId() . " - " . $workitem->getSummary() . ". Status changed to " . $newStatus . ".";
     if ($thisProject->getHipchat_enabled()) {
         $thisProject->sendHipchat_notification(linkify($hipchat_Message));
     }
