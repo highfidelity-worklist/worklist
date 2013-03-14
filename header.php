@@ -32,8 +32,8 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
                     <div class="headerButtonSeparator">&nbsp;</div>
                     <a href="team.php"><div class="headerButton teamBtn">Team</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="reports.php"><div class="headerButton reportsBtn">Reports</div></a>
-                    <div class="headerButtonSeparator">&nbsp;</div>
+                    <!--<a href="reports.php"><div class="headerButton reportsBtn">Reports</div></a>
+                    <div class="headerButtonSeparator">&nbsp;</div>-->
                     <a href="help.php"><div class="headerButton helpBtn">Help</div></a>
                     <div class="headerButtonSeparator">&nbsp;</div>
                     <a href="projects.php"><div class="headerButton projectsBtn">Projects</div></a>
