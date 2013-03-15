@@ -219,6 +219,8 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody, $force_twilio = 
  *  $data - array of key-value replacements for template
  */
 
+
+// TODO - Marco - Include headers argument to allow ,eg, sending bcc copies
 function sendTemplateEmail($to, $template, $data = array(), $from = false){
     include (dirname(__FILE__) . "/email/en.php");
 

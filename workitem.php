@@ -1307,6 +1307,11 @@ function changeStatus($workitem, $newStatus, $user) {
         return $status;
     } 
 
+    if ($newStatus == 'Working') {
+        $thisProject->setActive(1);
+        $thisProject->save();
+    }
+
     // notifications for subscribed users
     Notification::massStatusNotify($workitem);
 
@@ -1315,6 +1320,8 @@ function changeStatus($workitem, $newStatus, $user) {
     if ($thisProject->getHipchat_enabled()) {
         $thisProject->sendHipchat_notification(linkify($hipchat_Message));
     }
+	
+
     return true;
 }
 

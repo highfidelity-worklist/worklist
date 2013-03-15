@@ -287,6 +287,20 @@ replacement data:
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>
         <p>- Worklist.net</p>'
+),
+'project-inactive' => array(
+    'subject' => 'Project set as inactive',
+    'body' => 
+        '<p>Hi {owner}!</p>
+        <p>Your project, <a href="{projectUrl}">{projectName}</a> has not shown any activity in 90+ days.</p>
+        <p>We will be setting your project as inactive, but will retain all data including repository, database and sandboxes.</p> 
+        <p>Should you elect to add any new jobs for <a href="{projectUrl}">{projectName}</a> in the future, you can still do so – just make sure the Project Select active only checkbox is deselected when adding your job.</p>
+        <p>Once a job reaches working status, your project will automatically be reactivated again!</p>
+        <p></p>
+        <p>Please email <a href="mailto:' . SUPPORT_EMAIL . '">' . SUPPORT_EMAIL . '</a> with any issues or concerns.</p>
+        <p></p>
+        <p>- Worklist.net</p>'
 )
+
 
 );

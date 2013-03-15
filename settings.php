@@ -260,24 +260,24 @@ if (isset($_REQUEST['save_account'])) {
     	
     	if (! send_email($username, $subject, $body, $plain)) {
            error_log("settings.php: send_email failed");
-    	    $confirm_txt = "There was an issue sending email. Please try again or notify support@worklist.net";
+    	    $confirm_txt = "There was an issue sending email. Please try again or notify ". SUPPORT_EMAIL;
     	}
     	
     	// generate email to current email address
     	$subject = "Account email updated.";
     	$body  = '<p>Hello you!,</p>';
     	$body .= '<p>We received a request to update your email address for your Worklist.net account.</p>';
-    	$body .= '<p>If you did not make this request, please contact support@worklist.net immediately.</p>';
+    	$body .= '<p>If you did not make this request, please contact ' . SUPPORT_EMAIL . ' immediately.</p>';
     	$body .= '<p>See you at the <a href='.SERVER_URL.'>Worklist</a></p>';
     	
     	$plain  = 'Hello you! ,' . "\n\n";
     	$plain .= 'We received a request to update your email address for your Worklist.net account.' . "\n\n";
-    	$plain .= 'If you did not make this request, please contact support@worklist.net immediately.' . "\n\n";
+    	$plain .= 'If you did not make this request, please contact ' . SUPPORT_EMAIL . ' immediately.' . "\n\n";
     	$plain .= 'See you in the Worklist' . "\n\n";
     	
     	if (! send_email($_SESSION['username'], $subject, $body, $plain)) {
     	    error_log("settings.php: send_email failed");
-    	    $confirm_txt = "There was an issue sending email. Please try again or notify support@worklist.net";
+    	    $confirm_txt = 'There was an issue sending email. Please try again or notify ' . SUPPORT_EMAIL;
     	}
     	$messages[] = "We receieved your request to modify your email.";
     }
@@ -336,7 +336,7 @@ if (isset($_REQUEST['save_account'])) {
         $confirm_txt = "An email containing a confirmation link was sent to your payment email address. Please click on that link to verify your payment email address and activate your account.";
         if (! send_email($paypal_email, $subject, $body, $plain)) {
             error_log("signup.php: send_email failed");
-            $confirm_txt = "There was an issue sending email. Please try again or notify support@worklist.net";
+            $confirm_txt = 'There was an issue sending email. Please try again or notify ' . SUPPORT_EMAIL ;
         }
 
         $user->setPaypal_verified(false);

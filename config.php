@@ -181,6 +181,7 @@ if(!defined("ADMINS_EMAILS"))
   );
 
 if (!defined("OPS_EMAIL")) define("OPS_EMAIL", "ops@below92.com");
+defineOnce('SUPPORT_EMAIL', 'support@worklist.net');
 
 if(!defined('WIKI_URL')) define('WIKI_URL', 'http://wiki.worklist.net/wiki/');
 

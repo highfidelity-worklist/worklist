@@ -145,6 +145,10 @@ if(validateAction()) {
                 validateAPIKey();
                 sendNotifications();
                 break;
+            case 'checkInactiveProjects':
+                validateAPIKey();
+                checkInactiveProjects();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -190,46 +194,46 @@ function validateAPIKey() {
 
 function  getLatestPosts() {
 
-	require_once('chat.class.php');
-	$toTime = 0;
-	$prevNext = '';
-	$query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
-	$response = new AjaxResponse($chat);
-	try
-	{
-		$data = $response->latest();
-	}
-	catch(Exception $e)
-	{
-		$data['error'] = $e->getMessage();
-	}
-	
-	$json = json_encode($data);
-	echo $json;
+    require_once('chat.class.php');
+    $toTime = 0;
+    $prevNext = '';
+    $query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
+    $response = new AjaxResponse($chat);
+    try
+    {
+        $data = $response->latest();
+    }
+    catch(Exception $e)
+    {
+        $data['error'] = $e->getMessage();
+    }
+    
+    $json = json_encode($data);
+    echo $json;
 }
 
 // Created for Worklist Job #13424 [danbrown]
 function getLatestForNickname() {
 
-	// If we haven't specified the nickname, break out.
-	if (!isset($_REQUEST['nickname'])) return false;
+    // If we haven't specified the nickname, break out.
+    if (!isset($_REQUEST['nickname'])) return false;
 
-	// If we haven't specified the number of posts to return, or if it exceeds 100 or is less than one, default to 20.
-	if (!isset($_REQUEST['num']) || !is_numeric($_REQUEST['num']) || $_REQUEST['num'] < 1 || $_REQUEST['num'] > 100) {
-		$_REQUEST['num'] = 20;
-	}
+    // If we haven't specified the number of posts to return, or if it exceeds 100 or is less than one, default to 20.
+    if (!isset($_REQUEST['num']) || !is_numeric($_REQUEST['num']) || $_REQUEST['num'] < 1 || $_REQUEST['num'] > 100) {
+        $_REQUEST['num'] = 20;
+    }
 
-	require_once('chat.class.php');
+    require_once('chat.class.php');
 
-	$response = new AjaxResponse($chat);
+    $response = new AjaxResponse($chat);
 
     try {
                 $data = $response->latestForNickname($_REQUEST['nickname'],round($_REQUEST['num']));
-	} catch (Exception $e) {
-		$data['error'] = $e->getMessage();
-	}
+    } catch (Exception $e) {
+        $data['error'] = $e->getMessage();
+    }
 
-	echo $data['html'];
+    echo $data['html'];
 }
 
 /*
@@ -599,14 +603,14 @@ function pruneJournalEntries() {
     if ($result) {
         $row = mysql_fetch_assoc($result);
     } else {
-		die( 'Failed to get all entries');
-	}
-	$total = (int) $row['maxId'] - 100;
+        die( 'Failed to get all entries');
+    }
+    $total = (int) $row['maxId'] - 100;
 
     $sql = " DELETE FROM " . ENTRIES . " WHERE id <= {$total};";
-	echo $sql;
+    echo $sql;
     $result = mysql_unbuffered_query($sql);
-	echo "<br/> # of deleted entries: " . mysql_affected_rows();
+    echo "<br/> # of deleted entries: " . mysql_affected_rows();
 
 }
 
@@ -681,7 +685,7 @@ function sendNewProjectEmails() {
         $data['nickname'] = $_REQUEST['unixusername'];
         $data['database_user'] = $_REQUEST['dbuser'];
         $user = new User();
-        sendTemplateEmail('support@worklist.net', 'ops-project-created', $data);
+        sendTemplateEmail(SUPPORT_EMAIL, 'ops-project-created', $data);
         if (!sendTemplateEmail($_REQUEST['username'], $_REQUEST['template'], $data)) {
             echo json_encode(array('success'=>false, 'message'=>'Emails not sent'));
         } else {
@@ -744,8 +748,8 @@ function deployStagingSite() {
 
 function getFavoriteUsers() {
     if (!$userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : 0)) {
-	echo json_encode(array('favorite_users' => array()));
-	return;
+    echo json_encode(array('favorite_users' => array()));
+    return;
     }
     $users_favorite = new Users_Favorite();
     $data = array('favorite_users' => $users_favorite->getFavoriteUsers($userid));
@@ -846,6 +850,53 @@ function sendNotifications() {
             break;
     }
     echo json_encode(array('success' => true, 'message' => 'Notifications sent'));
+}
+
+function checkInactiveProjects() {
+    require_once('send_email.php');
+    require_once('classes/Project.class.php');
+    
+    $report_message = '';
+    $db = new Database();
+    
+    $sql_inactive_projects = "
+        SELECT w.project_id, p.name, p.contact_info, u.nickname, MAX(status_changed) AS last_change 
+        FROM " . WORKLIST . " AS w 
+        INNER JOIN " . PROJECTS . " AS p ON w.project_id=p.project_id 
+        LEFT JOIN " . USERS . " AS u ON u.id=p.owner_id 
+        WHERE p.active = 1 OR 1
+        GROUP BY w.project_id HAVING last_change < DATE_SUB(NOW(), INTERVAL 90 DAY) 
+        ORDER BY p.name ASC";
+    
+    // Delete accounts which exists for at least 45 days and never have been used.
+    $result = $db->query($sql_inactive_projects);
+    
+    while ($row = mysql_fetch_assoc($result)) {
+        $project = new Project($row['project_id']);
+        // send email
+        $data = array( 
+            'owner' => $row['nickname'],
+            'projectUrl' => Project::getProjectUrl($row['project_id']),
+            'projectName' => $row['name']
+        );
+        if (! sendTemplateEmail($row['contact_info'], 'project-inactive', $data)) {
+            $report_message .= ' <p> Ok ---';
+        } else {
+            $report_message .= ' <p> Fail -';
+        }
+        $report_message .= ' Project (' . $row['project_id'] . ')- <a href="' . Project::getProjectUrl($row['project_id']) . '">' . $row['name'] . '</a> -- Last changed status: ' .  $row['last_change'] . '</p>';
+        $project->setActive(0);
+        $project->save();
+    }
+    // Send report to ops if any project was set as inactive
+    if ($report_message != '') {
+        $headers['From'] = DEFAULT_SENDER;
+        $subject = "Inactive Projects Report";
+        $body = $report_message;
+        if (!send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
+            error_log ('checkActiveProjects cron: Failed to send email report'); 
+        }
+    }
 }
 
 ?>
