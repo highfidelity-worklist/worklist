@@ -221,8 +221,7 @@ var stats = {
                     toAppend += '<td class="sandbox">N/A</td>';
                 } else if (job_type == 'completedJobsWithStats') {
                     toAppend += '<td class="cost">$' + (jsonjob.cost ? jsonjob.cost : '0.00') + '</td>';
-                    toAppend += '<td class="time">' + ( (jsonjob.days && jsonjob.days > 0) ? jsonjob.days : '0') +
-                        (jsonjob.days == 1 ? ' day' : ' days') + '</td>';
+                    toAppend += '<td class="time">' + ( (jsonjob.days && jsonjob.days > 1) ? jsonjob.days + ' days' : '1 day') + '</td>';
                 } else {
                     toAppend += '<td class="sandbox">'
                             + '<a id="view-sandbox-'+ jsonjob.id +'" target="_blank" href="'+ jsonjob.sandbox  +'">View</a>'
