@@ -24,6 +24,7 @@ include("opengraphmeta.php");
 <style>
 #welcomeInside .helpBtn {
     color: #ffffff;
+    background-position: -356px -179px;
 }
 </style>
 

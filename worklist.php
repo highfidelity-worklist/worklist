@@ -781,6 +781,7 @@ require_once('opengraphmeta.php');
 <style>
 #welcomeInside .worklistBtn {
     color: #ffffff;
+    background-position: -356px -59px;
 }
 </style>
 </head>

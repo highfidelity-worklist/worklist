@@ -330,6 +330,7 @@ function addCommas(nStr) {
 <style>
 #welcomeInside .teamBtn {
     color: #ffffff;
+    background-position: -356px -119px;
 }
 </style>
 </head>

@@ -171,6 +171,7 @@
 #welcomeInside a.following:active {
     color: #ffffff;
     text-decoration: none !important;
+    opacity: 0.5;
 }
 
 #welcomeInside .worklistBtn {
@@ -188,6 +189,26 @@
 
 #welcomeInside .reportsBtn {
     background-position: 0 -149px;
+    padding-left: 25px;
+    margin-left: 4px;
+}
+
+#welcomeInside .worklistBtn:hover {
+    background-position: -356px -59px;
+}
+
+
+#welcomeInside .chatBtn:hover {
+    background-position: -356px -89px;
+    padding-left: 38px;
+}
+
+#welcomeInside .teamBtn:hover {
+    background-position: -356px -119px;
+}
+
+#welcomeInside .reportsBtn:hover {
+    background-position: -356px -149px;
     padding-left: 25px;
     margin-left: 4px;
 }
@@ -214,6 +235,22 @@
 
 #welcomeInside .logoutBtn {
     background-position: 8px -268px;
+}
+
+#welcomeInside .helpBtn:hover {
+    background-position: -356px -179px;
+}
+
+#welcomeInside .earningsBtn:hover {
+    background-position: -348px -209px;
+}
+
+#welcomeInside .settingsBtn:hover {
+    background-position: -348px -239px;
+}
+
+#welcomeInside .logoutBtn:hover {
+    background-position: -348px -268px;
 }
 
 .filters {

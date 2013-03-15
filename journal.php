@@ -195,6 +195,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
 <style>
 #welcomeInside .chatBtn {
     color: #ffffff;
+    background-position: -356px -89px;
 }
 </style>
 </head>

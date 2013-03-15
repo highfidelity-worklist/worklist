@@ -896,6 +896,12 @@ include("head.html");
 
 <title>Worklist | Account Settings</title>
 
+<style>
+#welcomeInside .settingsBtn {
+    background-position: -348px -239px;
+}
+</style>
+
 </head>
 
 <body>
