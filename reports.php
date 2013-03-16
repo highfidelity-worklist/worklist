@@ -94,6 +94,7 @@ include("opengraphmeta.php");
 <script src="js/timeline-chart.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
+<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <link rel="stylesheet" href="css/datepicker.css" type="text/css" media="screen">
 <style type="text/css">
 

@@ -7,10 +7,7 @@
 //ob_start();
 
 include("config.php");
-include("class.session_handler.php");
-include("check_session.php");
 include("functions.php");
-
 
 $con=mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME,$con);

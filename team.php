@@ -374,7 +374,7 @@ function addCommas(nStr) {
             </div>
         </div>
         <div id="filters_box">
-            <div class="myfavorite-users">
+            <div class="myfavorite-users" <?php echo (getSessionUserId() == 0 ? 'style="display: none"' : ''); ?>>
                 <input type="checkbox" id="filter-by-myfavorite" />
                 <label for="filter-by-myfavorite">Trusted by Me</label>
             </div>
