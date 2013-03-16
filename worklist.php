@@ -177,7 +177,6 @@ require_once('opengraphmeta.php');
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
-<script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
 <script type="text/javascript">
     var lockGetWorklist = 0;
