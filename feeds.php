@@ -6,7 +6,7 @@
  * 
  * Feeds.php
  * Paramters:  name= name_of_feed (priority | completed)
- * 			   format=atom | rss
+ *             format=atom | rss
  */
 require_once('config.php');
 require_once('db.php');
@@ -16,13 +16,12 @@ function addEntry($writer, $entryData, $entryDescription) {
 
     global $name;
 
-	$entry = $writer->createEntry();
-	$entry->setLink(SERVER_URL . 'workitem.php?job_id=' . $entryData['worklist_id'] . '&action=view'); 
-	// must supply a non-empty value for description
-	$content = !empty($entryData['content']) ? html_entity_decode($entryData['content'], ENT_QUOTES) : "N/A";
-	$entry->setDescription($content);   
-	//$entry->setContent($entryData['content']); 
-	$entry->addAuthor($entryData['author'], $entryData['email']); 
+    $entry = $writer->createEntry();
+    $entry->setLink(SERVER_URL . 'workitem.php?job_id=' . $entryData['worklist_id'] . '&action=view'); 
+    // must supply a non-empty value for description
+    $content = !empty($entryData['content']) ? html_entity_decode($entryData['content'], ENT_QUOTES) : "N/A";
+    $entry->setDescription($content);   
+    $entry->addAuthor($entryData['author'], $entryData['email']); 
 
     if ($name == 'comments') {
         $entry->setTitle($entryData['author'] . ' added a comment to job #' . $entryData['worklist_id']);
@@ -33,48 +32,67 @@ function addEntry($writer, $entryData, $entryDescription) {
         $entry->setDateCreated(time()); 
         $entry->setDateModified(time()); 
     }
-	$writer->addEntry($entry); // manual addition post-creation 
+    $writer->addEntry($entry); // manual addition post-creation 
 }
 
 function loadFeed($writer, $query, $entryDescription) {
-	$db = Zend_Registry::get('db');
-	$result = $db->fetchAll($query);
-	if ($result) {
-		foreach($result as $row) {
-			addEntry($writer, $row, $entryDescription);
-		}
-	}
+    $db = Zend_Registry::get('db');
+    $result = $db->fetchAll($query);
+    if ($result) {
+        foreach ($result as $row) {
+            addEntry($writer, $row, $entryDescription);
+        }
+    }
 }
 
 $format = isset($_REQUEST['format']) ? $_REQUEST['format'] : 'rss';
 $job_id = isset($_REQUEST['job_id']) ? $_REQUEST['job_id'] : false;
 
 if (!($format == 'atom' || $format == 'rss')) {
-	$format = 'rss';
+    $format = 'rss';
 } 
 $name = isset($_REQUEST['name']) ? $_REQUEST['name'] : 'completed';
 // Connect to db
 try {
-	$db = Zend_Registry::get('db');
-	$db->getConnection();
+    $db = Zend_Registry::get('db');
+    $db->getConnection();
 } catch (Zend_Db_Adapter_Exception $e) {
     // failed login, db not running
     
 } catch (Zend_Exception $e) {
-	// factory() failed load of mysqli
+    // factory() failed load of mysqli
 } 
 
 switch ($name) {
-	case 'priority' :
-		$name = 'priority';
-		$title = 'Worklist Top Priority Bidding Jobs';
-		$description = SERVER_NAME.' Worklist, highest priority jobs Bidding';
-		$entryDescription = 'Worklist priority item';
-		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
-					FROM ".WORKLIST." w
-					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'Bidding'
-					ORDER BY priority LIMIT 20";
-		break;
+    case 'priority' :
+        $name = 'priority';
+        $title = 'Worklist Top Priority Bidding Jobs';
+        $projects = isset($_REQUEST['projects']) ? preg_split('/,/', $_REQUEST['projects']) : array();
+        $description = SERVER_NAME.' Worklist, highest priority jobs Bidding';
+        $entryDescription = 'Worklist priority item';
+        $cond = "w.status = 'Bidding'";
+        $limit = isset($_REQUEST['limit']) ? (int) $_REQUEST['limit'] : 20;
+        if (! empty($projects)) {
+            $projectList = '';
+            foreach ($projects as $project) {
+                $projectList .= (strlen($projectList) > 0 ? ',' : '') . "'" . addslashes($project) . "'";
+            }
+            $cond .= ' AND p.name IN (' . $projectList . ')';
+        }
+        $query = "
+            SELECT
+                w.id as worklist_id, 
+                u1.nickname as author, 
+                username as email, 
+                summary as title, 
+                notes as content
+            FROM " . WORKLIST . " w
+                JOIN " . USERS . " u1 ON u1.id = w.creator_id
+                JOIN " . PROJECTS . " p ON p.project_id = w.project_id  
+            WHERE " . $cond . "
+            ORDER BY priority 
+            LIMIT " . $limit;
+        break;
     case 'comments' :
         $name = 'comments';
         if (isset($job_id) && $job_id) {
@@ -102,16 +120,16 @@ switch ($name) {
             " . $where . "
             ORDER BY timestamp DESC LIMIT 20";
         break;
-	case 'completed' : 
-	default :
-		$name = 'completed';
-		$title = 'Worklist most Recent completed jobs';
-		$description = SERVER_NAME.' Worklist, Most recent completed Jobs';
-		$entryDescription = 'Worklist priority item';
-		$query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
-					FROM ".WORKLIST." w
-					JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'Done'
-					ORDER BY created DESC LIMIT 20";
+    case 'completed' : 
+    default :
+        $name = 'completed';
+        $title = 'Worklist most Recent completed jobs';
+        $description = SERVER_NAME.' Worklist, Most recent completed Jobs';
+        $entryDescription = 'Worklist priority item';
+        $query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
+                    FROM ".WORKLIST." w
+                    JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'Done'
+                    ORDER BY created DESC LIMIT 20";
 }
 
 $url = 'https://'.SERVER_NAME.'/';
