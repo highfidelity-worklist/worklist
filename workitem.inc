@@ -598,8 +598,9 @@ $(document).ready(function(){
     $('#ping-msg').autogrow();
     $('#popup-reviewurl').dialog({
         autoOpen: false,
+        dialogClass: 'white-theme',
         modal: true,
-        width: 410,
+        width: 450,
         show: 'fade',
         hide: 'fade',
         resizable: false,
@@ -1213,10 +1214,11 @@ $(document).ready(function(){
 
     function showEndReviewForm() {
         $('#popup-endreview').dialog({
+            dialogClass: 'white-theme',
             closeOnEscape: false,
             autoOpen: false,
             modal: false,
-            width: 400,
+            width: 650,
             open: function(event, ui) {
                 $(".ui-dialog-titlebar-close").hide();
             }
