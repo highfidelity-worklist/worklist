@@ -353,13 +353,15 @@ if ($action == 'new-comment') {
                     'type' => 'comment',
                     'workitem' => $workitem,
                     'recipients' => array('creator', 'runner', 'mechanic', 'followers'),
-                    'emails' => $rt['correspondent']),
-                    array(
-                        'who' => $_SESSION['nickname'],
-                        // removed nl2br as it's cleaner to be able to choose if this is used on output
-                        'comment' => $comment
-                    )
-                );
+                    'emails' => $rt['correspondent']
+                ),
+                array(
+                    'who' => $_SESSION['nickname'],
+                    // removed nl2br as it's cleaner to be able to choose if this is used on output
+                    'comment' => $comment
+                ),
+                false
+            );
         }
         sendJournalNotification($journal_message);
         $comment = new Comment();
@@ -1339,7 +1341,10 @@ function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id) {
         $originalComment->findCommentById((int) $parent_comment_id);
         $cuser = new User();
         $cuser->findUserById($originalComment->getUser_id());
-        if ($cuser->isActive()) {
+        // add the author of the parent comment, as long as it's not the
+        // same as the logged in user, in order to prevent email notification
+        // to the author of the new comment
+        if ($cuser->isActive() && ($cuser->getId() != getSessionUserId())) {
             $correspondent = array($cuser->getUsername());
         } else {
             $correspondent = array();
