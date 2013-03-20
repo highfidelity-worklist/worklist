@@ -202,6 +202,7 @@ span.info-whisper {
 .info-data input[type=text]{
     width:351px;
     margin-bottom:8px;
+    padding: 6px 9px;
 }
 
 input[type=text], input[type=password], textarea {
@@ -212,6 +213,10 @@ input[type=text]:active, input[type=text]:hover, input[type=text]:focus,
 textarea:active, textarea:hover, textarea:focus,
 input[type=password]:active, input[type=password]:hover, input[type=password]:focus {
     border: 1px solid #608E96;
+}
+
+#container-status {
+    margin-top: 10px;
 }
 
 .info-invite input[type=text]{
@@ -400,6 +405,10 @@ a:hover{
     padding:1px 0px 5px 0px;
 }
 
+#for_view ul li {
+    margin-bottom: 20px;
+}
+
 #quick-status {
     float: left;
     top: -13px;
@@ -419,6 +428,11 @@ a:hover{
     width: auto;
     margin-top: 7px;
     margin-left: 1px;
+}
+
+#for_view .info-label,
+#for_view .sections {
+    margin-bottom: 5px;
 }
 
 #left-panel li.last {
@@ -633,9 +647,14 @@ a:hover{
 
 #workitem-form {
     width: auto;
-    float: right;
     margin-top: -7px !important;
     margin-right: 1px;
+}
+
+#workitem-form .top-bar .project {
+    position: relative;
+    top: -7px;
+    right: -10px;
 }
 
 .project, .job-budget{
@@ -666,7 +685,7 @@ a:hover{
 }
 
 .skills, .people-info{
-    height: 46px;
+    height: 56px;
     border-bottom: 2px solid #e1e8ea;
     font-weight: bold;
     font-size: 14px;
@@ -715,6 +734,7 @@ a:hover{
     padding: 9px 12px;
     margin-left: -12px;
     font-size: 14px;
+    width: 437px;
 }
 
 #info-top .ui-combobox-textbox {
@@ -923,6 +943,7 @@ a:hover{
     height: 164px;
     min-height: 100px;
     width: 410px;
+    padding: 6px 9px;
 }
 
 .table-bids .table-hdng td:first-child{
@@ -1423,6 +1444,15 @@ a:hover{
     text-decoration:none;
 }
 
+#summary, 
+#edit-notes {
+    width: 425px;
+}
+
+#for_view ul.ui-combobox-list li {
+    margin-bottom: 0;
+}
+
 input.button-disabled ,
 .button-disabled {
     cursor: default;
@@ -1462,8 +1492,9 @@ input.button-disabled ,
 }
 
 #skills {
-    width: 330px;
-    margin: 0 0 13px -1px;
+    width: 312px;
+    margin: 0 0 23px -1px;
+    padding: 6px 9px;
 }
 
 /* Budget info */
@@ -1815,7 +1846,7 @@ h1.newProject {
 }
 
 #sandbox {
-    width: 400px
+    width: 425px
 }
 
 #withdraw_bid {
@@ -1837,4 +1868,3 @@ h1.newProject {
     font-size: 16px;
     list-style-type: square;
 }
-    
