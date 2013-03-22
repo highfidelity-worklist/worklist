@@ -685,7 +685,6 @@ if ($action == "place_bid") {
 
         $sms_message = "Bid $" . number_format($bid_amount, 2) . " from " . getSubNickname($_SESSION['nickname']) . " done in $done_in on #$worklist_id $summary";
         
-        
         $options = array(
              'type' => 'bid_placed',
              'workitem' => $workitem,
@@ -702,7 +701,6 @@ if ($action == "place_bid") {
         
         // notify runner of new bid
         Notification::workitemNotify($options, $data);
-        
 
         // sending sms message to the runner
         $runner = new User();

@@ -901,8 +901,8 @@ class Notification {
         }
         
         $itemId = $workitem->getId();
-        $itemLinkShort = '<a href="'.SERVER_URL."workitem.php?job_id=$itemId\">#$itemId</a>";
-        $itemLink = "$itemLinkShort$bugJournalMessage: ".$workitem->getSummary();
+        $itemLinkShort = '<a href="'.SERVER_URL."workitem.php?job_id={$itemId}\">#{$itemId}</a>";
+        $itemLink = "{$itemLinkShort}{$bugJournalMessage}: ".$workitem->getSummary();
         
         $message = null;
         $message_format = 'html';
@@ -912,7 +912,7 @@ class Notification {
             case 'comment':
                 $nick = $data['who'];
                 $related = $data['related'];
-                $message = "$nick posted a comment on issue $itemLink$related";
+                $message = "{$nick} posted a comment on issue {$itemLink}{$related}";
             break;
             
             case 'fee_added':
@@ -921,61 +921,62 @@ class Notification {
                 $nick = $data['nick'];
                 
                 if ($mechanic_id == $_SESSION['userid']) {
-                    $message = "$nick added a fee of \$$fee_amount to item $itemLink";
+                    $message = "{$nick} added a fee of \${$fee_amount} to item {$itemLink}";
                 } else {
-                    $rt = mysql_query("select nickname from ".USERS." where id='".(int)$mechanic_id."'");
+                    $rt = mysql_query("SELECT nickname FROM ".USERS.
+                        " WHERE id='".(int)$mechanic_id."'");
                     if ($rt) {
                         $row = mysql_fetch_assoc($rt);
                         $nickname = $row['nickname'];
                     } else {
-                        $nickname = "unknown-$mechanic_id";
+                        $nickname = "unknown-{$mechanic_id}";
                     }
                     
-                    $message = "$nick on behalf of $nickname added a fee of \$$fee_amount to item $itemLink";
+                    $message = "{$nick} on behalf of {$nickname} added a fee of \${$fee_amount} to item {$itemLink}";
                 }
             break;
             
             case 'fee_deleted':
                 $nick = $data['nick'];
                 $fee_nick = $data['fee_nick'];
-                $message = "$nick deleted a fee from $fee_nick on item $itemLink";
+                $message = "{$nick} deleted a fee from {$fee_nick} on item {$itemLink}";
             break;
             
             case 'tip_added':
                 $nick = $data['nick'];
                 $tipped_nickname = $data['tipped_nickname'];
-                $message = "$nick tipped $tipped_nickname on job $itemLink";
+                $message = "{$nick} tipped {$tipped_nickname} on job {$itemLink}";
             break;
             
             case 'bid_accepted':
                 $nick = $data['nick'];
                 $bid_amount = $data['bid_amount'];
                 $nickname = $data['nickname'];
-                $message = "$nick accepted $bid_amount from $nickname on item $itemLink. Status set to Working.";
+                $message = "{$nick} accepted {$bid_amount} from {$nickname} on item {$itemLink}. Status set to Working.";
             break;
             
             case 'bid_placed':
-                $message = "A bid was placed on item $itemLink.";
+                $message = "A bid was placed on item {$itemLink}.";
                 
                 $new_update_message = $data['new_update_message'];
                 if ($new_update_message) {
-                    $message .= " $new_update_message";
+                    $message .= " {$new_update_message}";
                 }
             break;
             
             case 'bid_updated':
-                $message = "Bid updated on item $itemLink";
+                $message = "Bid updated on item {$itemLink}";
             break;
             
             case 'workitem-add':
                 $nick = $data['nick'];
                 $status = $data['status'];
-                $message = "$nick added job $itemLink. Status set to $status";
+                $message = "{$nick} added job {$itemLink}. Status set to {$status}";
             break;
             
             case 'code-review-completed':
                 $nick = $data['nick'];
-                $message = "$nick has completed their code review for $itemLink";
+                $message = "{$nick} has completed their code review for {$itemLink}";
             break;
             
             case 'workitem-update':
@@ -983,23 +984,23 @@ class Notification {
                 $new_update_message = $data['new_update_message'];
                 $related = $data['related'];
                 
-                $message = "$nickname updated item $itemLink.$new_update_message$related";
+                $message = "{$nickname} updated item {$itemLink}.{$new_update_message}{$related}";
             break;
             
             case 'status-notify':
                 $nick = $data['nick'];
                 $status = $data['status'];
-                $message = "$nick updated item $itemLink. Status set to $status";
+                $message = "{$nick} updated item {$itemLink}. Status set to {$status}";
             break;
             
             case 'code-review-started':
                 $nick = $data['nick'];
-                $message = "$nick has started a code review for $itemLink";
+                $message = "{$nick} has started a code review for {$itemLink}";
             break;
             
             case 'code-review-canceled':
                 $nick = $data['nick'];
-                $message = "$nick has canceled their code review for $itemLink";
+                $message = "{$nick} has canceled their code review for {$itemLink}";
             break;
             
             case 'ping':
@@ -1007,7 +1008,7 @@ class Notification {
                 $receiver_nick = $data['receiver_nick'];
                 $msg = $data['msg'];
                 
-                $message = "$nickname sent a ping to $receiver_nick about item $itemLink: $msg";
+                $message = "{$nickname} sent a ping to {$receiver_nick} about item {$itemLink}: {$msg}";
             break;
         }
         
