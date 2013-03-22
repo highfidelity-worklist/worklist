@@ -869,6 +869,152 @@ class Notification {
             }
         }
     }
+    
+    
+    /**
+     *  This function sends notification to HipChat about updates of workitems
+     *
+     * @param Array $options - Array with options:
+     * type - type of notification to send out
+     * workitem - workitem object with updated data
+     * @param Array $data - Array with additional data that needs to be passed on
+     */
+    public static function workitemNotifyHipchat($options, $data = null) {
+        $workitem = $options['workitem'];
+        
+        try {
+            $project = new Project();
+            $project->loadById($workitem->getProjectId());
+            $project_name = $project->getName();
+        } catch (Exception $e) {
+            error_log($e->getMessage()." Workitem: #".$workitem->getId()." has an invalid project id:".$workitem->getProjectId());
+            return;
+        }
+        
+        if (!$project->getHipchat_enabled()) {
+            return;
+        }
+        
+        $bugJournalMessage = '';
+        if (array_key_exists('bug_journal_message', $data)) {
+            $bugJournalMessage = $data['bug_journal_message'];
+        }
+        
+        $itemId = $workitem->getId();
+        $itemLinkShort = '<a href="'.SERVER_URL."workitem.php?job_id=$itemId\">#$itemId</a>";
+        $itemLink = "$itemLinkShort$bugJournalMessage: ".$workitem->getSummary();
+        
+        $message = null;
+        $message_format = 'html';
+        $notify = 0;
+        
+        switch ($options['type']) {
+            case 'comment':
+                $nick = $data['who'];
+                $related = $data['related'];
+                $message = "$nick posted a comment on issue $itemLink$related";
+            break;
+            
+            case 'fee_added':
+                $mechanic_id = $data['mechanic_id'];
+                $fee_amount = $data['fee_amount'];
+                $nick = $data['nick'];
+                
+                if ($mechanic_id == $_SESSION['userid']) {
+                    $message = "$nick added a fee of \$$fee_amount to item $itemLink";
+                } else {
+                    $rt = mysql_query("select nickname from ".USERS." where id='".(int)$mechanic_id."'");
+                    if ($rt) {
+                        $row = mysql_fetch_assoc($rt);
+                        $nickname = $row['nickname'];
+                    } else {
+                        $nickname = "unknown-$mechanic_id";
+                    }
+                    
+                    $message = "$nick on behalf of $nickname added a fee of \$$fee_amount to item $itemLink";
+                }
+            break;
+            
+            case 'fee_deleted':
+                $nick = $data['nick'];
+                $fee_nick = $data['fee_nick'];
+                $message = "$nick deleted a fee from $fee_nick on item $itemLink";
+            break;
+            
+            case 'tip_added':
+                $nick = $data['nick'];
+                $tipped_nickname = $data['tipped_nickname'];
+                $message = "$nick tipped $tipped_nickname on job $itemLink";
+            break;
+            
+            case 'bid_accepted':
+                $nick = $data['nick'];
+                $bid_amount = $data['bid_amount'];
+                $nickname = $data['nickname'];
+                $message = "$nick accepted $bid_amount from $nickname on item $itemLink. Status set to Working.";
+            break;
+            
+            case 'bid_placed':
+                $message = "A bid was placed on item $itemLink.";
+                
+                $new_update_message = $data['new_update_message'];
+                if ($new_update_message) {
+                    $message .= " $new_update_message";
+                }
+            break;
+            
+            case 'bid_updated':
+                $message = "Bid updated on item $itemLink";
+            break;
+            
+            case 'suggested':
+                $nick = $data['nick'];
+                $status = $data['status'];
+                $message = "$nick added job $itemLink. Status set to $status";
+            break;
+            
+            case 'code-review-completed':
+                $nick = $data['nick'];
+                $message = "$nick has completed their code review for $itemLink";
+            break;
+            
+            case 'workitem-update':
+                $nickname = $data['nick'];
+                $new_update_message = $data['new_update_message'];
+                $related = $data['related'];
+                
+                $message = "$nickname updated item $itemLink.$new_update_message$related";
+            break;
+            
+            case 'status-notify':
+                $nick = $data['nick'];
+                $status = $data['status'];
+                $message = "$nick updated item $itemLink. Status set to $status";
+            break;
+            
+            case 'code-review-started':
+                $nick = $data['nick'];
+                $message = "$nick has started a code review for $itemLink";
+            break;
+            
+            case 'code-review-canceled':
+                $nick = $data['nick'];
+                $message = "$nick has canceled their code review for $itemLink";
+            break;
+            
+            case 'ping':
+                $nickname = $data['nick'];
+                $receiver_nick = $data['receiver_nick'];
+                $msg = $data['msg'];
+                
+                $message = "$nickname sent a ping to $receiver_nick about item $itemLink: $msg";
+            break;
+        }
+        
+        if ($message) {
+            $project->sendHipchat_notification($message, $message_format, $notify);
+        }
+    }
 
     /**
      * This function is similar to workitemNotify but sends messages as sms

@@ -317,6 +317,18 @@ if ($action =='save_workitem') {
         $journal_message .= $_SESSION['nickname'] . " updated item #$worklist_id " .
                             $bugJournalMessage  .": ". $workitem->getSummary() .
                             $new_update_message . $related;
+        
+        $options = array(
+            'type' => 'workitem-update',
+            'workitem' => $workitem
+        );
+        $data = array(
+            'nick' => $_SESSION['nickname'],
+            'bug_journal_message' => $bugJournalMessage,
+            'new_update_message' => $new_update_message,
+            'related' => $related
+        );
+        Notification::workitemNotifyHipchat($options, $data);
      }
 }
 
@@ -349,20 +361,22 @@ if ($action == 'new-comment') {
         if ($workitem->getStatus() != 'Draft') {
             $related = getRelated($comment);
             $journal_message .= $_SESSION['nickname'] . " posted a comment on issue #$worklist_id: " . $workitem->getSummary() . $related;
-            Notification::workitemNotify(
-                array(
-                    'type' => 'comment',
-                    'workitem' => $workitem,
-                    'recipients' => array('creator', 'runner', 'mechanic', 'followers'),
-                    'emails' => $rt['correspondent']
-                ),
-                array(
-                    'who' => $_SESSION['nickname'],
-                    // removed nl2br as it's cleaner to be able to choose if this is used on output
-                    'comment' => $comment
-                ),
-                false
+            
+            $options = array(
+                'type' => 'comment',
+                'workitem' => $workitem,
+                'recipients' => array('creator', 'runner', 'mechanic', 'followers'),
+                'emails' => $rt['correspondent']
             );
+            $data = array(
+                'who' => $_SESSION['nickname'],
+                // removed nl2br as it's cleaner to be able to choose if this is used on output
+                'comment' => $comment,
+                'related' => $related
+            );
+            
+            Notification::workitemNotify($options, $data, false);
+            Notification::workitemNotifyHipchat($options, $data);
         }
         sendJournalNotification($journal_message);
         $comment = new Comment();
@@ -401,6 +415,15 @@ if($action == 'start_codereview') {
         $workitem->setCRStarted(1);
         $workitem->save();
         $journal_message = $_SESSION['nickname'] . " has started a code review for #$worklist_id: " . $workitem->getSummary();
+        
+        $options = array(
+            'type' => 'code-review-started',
+            'workitem' => $workitem
+        );
+        $data = array(
+            'nick' => $_SESSION['nickname']
+        );
+        Notification::workitemNotifyHipchat($options, $data);
     }
 }
 
@@ -439,12 +462,18 @@ if($action == 'finish_codereview') {
         }
         
         $journal_message = $_SESSION['nickname'] . " has completed their code review for #$worklist_id: " . $workitem->getSummary();
-
-        Notification::workitemNotify(array(
+        
+        $options = array(
             'type' => 'code-review-completed',
             'workitem' => $workitem,
             'recipients' => array('runner', 'mechanic', 'followers')
-        ));
+        );
+        Notification::workitemNotify($options);
+        
+        $data = array(
+            'nick' => $_SESSION['nickname']
+        );
+        Notification::workitemNotifyHipchat($options, $data);
     }
 }
 
@@ -459,6 +488,15 @@ if($action == 'cancel_codereview') {
         $workitem->setCRStarted(0);
         $workitem->save();
         $journal_message = $_SESSION['nickname'] . " has canceled their code review for #$worklist_id: " . $workitem->getSummary();
+        
+        $options = array(
+            'type' => 'code-review-canceled',
+            'workitem' => $workitem,
+        );
+        $data = array(
+            'nick' => $_SESSION['nickname'],
+        );
+        Notification::workitemNotifyHipchat($options, $data);
     }    
 }
 
@@ -641,23 +679,25 @@ if ($action == "place_bid") {
         }
 
         $sms_message = "Bid $" . number_format($bid_amount, 2) . " from " . getSubNickname($_SESSION['nickname']) . " done in $done_in on #$worklist_id $summary";
-
-        // notify runner of new bid
-        Notification::workitemNotify(
-            array(
-                 'type' => 'bid_placed',
-                 'workitem' => $workitem,
-                 'recipients' => array('runner'),
-            	   'userstats' => new UserStats($_SESSION['userid'])
-            ),
-            array(
-                 'done_in' => $done_in,
-                 'bid_expires' => $bid_expires,
-                 'bid_amount' => $bid_amount,
-                 'notes' => replaceEncodedNewLinesWithBr($notes),
-                 'bid_id' => $bid_id
-            )
+        
+        
+        $options = array(
+             'type' => 'bid_placed',
+             'workitem' => $workitem,
+             'recipients' => array('runner'),
+             'userstats' => new UserStats($_SESSION['userid'])
         );
+        $data = array(
+             'done_in' => $done_in,
+             'bid_expires' => $bid_expires,
+             'bid_amount' => $bid_amount,
+             'notes' => replaceEncodedNewLinesWithBr($notes),
+             'bid_id' => $bid_id,
+        );
+        
+        // notify runner of new bid
+        Notification::workitemNotify($options, $data);
+        
 
         // sending sms message to the runner
         $runner = new User();
@@ -673,6 +713,10 @@ if ($action == "place_bid") {
                 $journal_message .= "$new_update_message";
             }
         }
+        
+        $data['new_update_message'] = $new_update_message;
+        Notification::workitemNotifyHipchat($options, $data);
+        
         if(!$notifyEmpty) {
             Notification::workitemNotify(array('type' => 'suggestedwithbid',
             'workitem' => $workitem,
@@ -719,18 +763,23 @@ if ($action =="edit_bid") {
             $summary = $row['summary'];
             $username = $row['username'];
         }
-        // notify runner of new bid
-        Notification::workitemNotify(array(
+        
+        $options = array(
             'type' => 'bid_updated',
             'workitem' => $workitem,
             'recipients' => array('runner')
-        ), array(
+        );
+        $data = array(
             'done_in' => $done_in_edit,
             'bid_expires' => $bid_expires_edit,
             'bid_amount' => $bid_amount,
             'notes' => replaceEncodedNewLinesWithBr($notes),
             'bid_id' => $bid_id
-        ));
+        );
+        
+        // notify runner of new bid
+        Notification::workitemNotify($options, $data);
+        Notification::workitemNotifyHipchat($options, $data);
 
         // sending sms message to the runner
         $runner = new User();
@@ -763,21 +812,30 @@ if ($action == "add_fee") {
         $journal_message = AddFee($itemid, $fee_amount, '', $fee_desc, $mechanic_id, '', '');
 
         if ($workitem->getStatus() != 'Draft') {
-            // notify runner of new fee
-            Notification::workitemNotify(array('type' => 'fee_added',
-                     'workitem' => $workitem,
-                     'recipients' => array('runner')),
-                     array('fee_adder' => $user->getNickname(),
-                           'fee_amount' => $fee_amount,
-                           'fee_desc' => $fee_desc));
+            $options = array(
+                'type' => 'fee_added',
+                'workitem' => $workitem,
+                'recipients' => array('runner')
+            );
+            $data = array(
+                'fee_adder' => $user->getNickname(),
+                'fee_amount' => $fee_amount,
+                'fee_desc' => $fee_desc,
+                'mechanic_id' => $mechanic_id,
+            );
+            
+            Notification::workitemNotify($options, $data);
+            
+            $data['nick'] = $_SESSION['nickname'];
+            Notification::workitemNotifyHipchat($options, $data);
 
-        // send sms message to runner
-        $runner = new User();
-        $runner->findUserById($workitem->getRunnerId());
-        $runner->updateBudget(-$fee_amount, $workitem->getBudget_id());
+            // send sms message to runner
+            $runner = new User();
+            $runner->findUserById($workitem->getRunnerId());
+            $runner->updateBudget(-$fee_amount, $workitem->getBudget_id());
 
             if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-            Notification::sendShortSMS($runner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
+                Notification::sendShortSMS($runner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
             }
         }
         $redirectToDefaultView = true;
@@ -805,14 +863,23 @@ if ($action == "add_tip") {
         // notify recipient of new tip
         $recipient = new User();
         $recipient->findUserById($mechanic_id);
-        Notification::workitemNotify(array('type' => 'tip_added',
+        
+        $options = array(
+            'type' => 'tip_added',
             'workitem' => $workitem,
-            'emails' => array($recipient->getUsername())),
-            array('tip_adder' => $user->getNickname(),
-                    'tip_desc' => $tip_desc,
-                    'tip_amount' => $tip_amount
-        )
+            'emails' => array($recipient->getUsername())
         );
+        $data = array(
+            'tip_adder' => $user->getNickname(),
+            'tip_desc' => $tip_desc,
+            'tip_amount' => $tip_amount
+        );
+        
+        Notification::workitemNotify($options, $data);
+        
+        $data['nick'] = $_SESSION['nickname'];
+        $data['tipped_nickname'] = $recipient->getNickname();
+        Notification::workitemNotifyHipchat($options, $data);
     }
     
     $redirectToDefaultView = true;
@@ -861,13 +928,19 @@ if ($action == 'accept_bid') {
                         " accepted {$bid_info['bid_amount']} from " .
                         $bid_info['nickname'] . " on item #{$bid_info['worklist_id']}: " .
                         $bid_info['summary'] . ". Status set to Working.";
-
-                    // mail notification - including any data returned from acceptBid
-                    Notification::workitemNotify(array(
+                    
+                    $options = array(
                         'type' => 'bid_accepted',
                         'workitem' => $workitem,
                         'recipients' => array('mechanic', 'followers')
-                    ), $bid_info);
+                    );
+                    
+                    // mail notification - including any data returned from acceptBid
+                    Notification::workitemNotify($options, $bid_info);
+                    
+                    $data = $bid_info;
+                    $data['nick'] = $_SESSION['nickname'];
+                    Notification::workitemNotifyHipchat($options, $data);
 
                     $bidder = new User();
                     $bidder->findUserById($bid_info['bidder_id']);
@@ -1311,14 +1384,19 @@ function changeStatus($workitem, $newStatus, $user) {
 
     // notifications for subscribed users
     Notification::massStatusNotify($workitem);
-
-    // HipChat Notification	
-    $hipchat_Message = $user->getNickname() . " updated job #" . $workitem->getId() . " - " . $workitem->getSummary() . ". Status changed to " . $newStatus . ".";
-    if ($thisProject->getHipchat_enabled()) {
-        $thisProject->sendHipchat_notification(linkify($hipchat_Message));
+    
+    if ($newStatus != 'SuggestedWithBid') {
+        $options = array(
+            'type' => 'status-notify',
+            'workitem' => $workitem,
+        );
+        $data = array(
+            'nick' => $user->getNickname(),
+            'status' => $newStatus,
+        );
+        Notification::workitemNotifyHipchat($options, $data);
     }
-	
-
+    
     return true;
 }
 

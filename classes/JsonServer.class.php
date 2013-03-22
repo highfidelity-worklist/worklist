@@ -566,6 +566,16 @@ class JsonServer
         } else if ($status === true || (int)$status == 0) {
             $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workItem->getSummary();
             sendJournalNotification($journal_message);
+            
+            $options = array(
+                'type' => 'code-review-started',
+                'workitem' => $workItem,
+            );
+            $data = array(
+                'nick' => $user->getNickname()
+            );
+            Notification::workitemNotifyHipchat($options, $data);
+            
             return $this->setOutput(array('success' => true,'data' => $journal_message));
         } else {
             $workItem->setStatus('SvnHold');
@@ -625,6 +635,16 @@ class JsonServer
         $workitem->save();
         $journal_message = $user->getNickname() . " has canceled their code review for #$workitem_id: " . $workitem->getSummary();
         sendJournalNotification($journal_message);
+        
+        $options = array(
+            'type' => 'code-review-canceled',
+            'workitem' => $workitem,
+        );
+        $data = array(
+            'nick' => $user->getNickname(),
+        );
+        Notification::workitemNotifyHipchat($options, $data);
+        
         return $this->setOutput(array('success' => true,'data' => $journal_message));
     }
     

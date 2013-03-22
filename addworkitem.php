@@ -155,13 +155,20 @@ if (!empty($journal_message) && $status != 'Draft') {
 }
 
 // Notify Runners of new suggested task
-if ($status == 'SUGGESTED' && $project_id != '') {
-    Notification::workitemNotify(array(
+if ($status == 'Suggested' && $project_id != '') {
+    $options = array(
         'type' => 'suggested',
         'workitem' => $workitem,
-        'recipients' => array('projectRunners')),
-        array('notes' => $notes)
-    );        
+        'recipients' => array('projectRunners')
+    );
+    $data = array(
+        'notes' => $notes,
+        'nick' => $nick,
+        'status' => $status
+    );
+    
+    Notification::workitemNotify($options, $data);
+    Notification::workitemNotifyHipchat($options, $data);
 }
 
 echo json_encode(array('return' => "Done!"));

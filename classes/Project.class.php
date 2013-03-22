@@ -405,7 +405,7 @@ class Project {
         return $this->hipchat_room;
     }
 
-    public function sendHipchat_notification($message) {
+    public function sendHipchat_notification($message, $message_format='html', $notify=0) {
         $success = true;
         $room_id = 0;
         $token = $this->getHipchat_notification_token();
@@ -428,7 +428,8 @@ class Project {
                     'room_id' => $room_id,
                     'from' => 'Worklist.net',
                     'message' => $message,
-                    'message_format' => 'html'
+                    'message_format' => $message_format,
+                    'notify' => $notify
                 );
                 
                 $result = CURLHandler::Post($url, $fields);

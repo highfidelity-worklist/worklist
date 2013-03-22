@@ -77,6 +77,20 @@ if (isset($_REQUEST['id'])) {
 
         // Send to journal
         sendJournalNotification($out_msg);
+        
+        $workitem = new WorkItem();
+        $workitem->loadById($item_id);
+        
+        $options = array(
+            'type' => 'ping',
+            'workitem' => $workitem,
+        );
+        $data = array(
+            'nick' => $nickname,
+            'receiver_nick' => $receiver_nick,
+            'msg' => $msg
+        );
+        Notification::workitemNotifyHipchat($options, $data);
     }
 	
     // Send mail

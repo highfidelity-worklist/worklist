@@ -786,7 +786,13 @@ function deleteFee($fee_id) {
             $options['workitem']->loadById($fee->worklist_id);
             $options['type'] = "fee_deleted";
             Notification::workitemNotify($options);
-           
+            
+            $data = array(
+                'nick' => $_SESSION['nickname'],
+                'fee_nick' => $user->nickname
+            );
+            Notification::workitemNotifyHipchat($options, $data);
+            
             $subject = "Fee: " . $summary;
             $sms_message = "Your fee has been deleted by: " . $_SESSION['nickname'] . " for #{$fee->worklist_id}. ";
             $sms_message .= "If you think this is an error, please contact the Runner."; 
