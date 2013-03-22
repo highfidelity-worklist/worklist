@@ -891,7 +891,7 @@ class Notification {
             return;
         }
         
-        if (!$project->getHipchat_enabled()) {
+        if (!$project->getHipchatEnabled()) {
             return;
         }
         

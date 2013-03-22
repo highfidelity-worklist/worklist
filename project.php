@@ -58,6 +58,7 @@ $runners = $project->getRunners();
 if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner)) {
     $project->setDescription($_REQUEST['description']);
     $project->setWebsite($_REQUEST['website']);
+    $project->setTestFlightEnabled(isset($_REQUEST['testflight_enabled']) ? 1 : 0);
     $project->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
     $cr_anyone = ($_REQUEST['cr_anyone']) ? 1 : 0;
     $cr_3_favorites = ($_REQUEST['cr_3_favorites']) ? 1 : 0;
@@ -69,9 +70,10 @@ if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner))
     $project->setCrFav($cr_3_favorites);
     $project->setCrAdmin($cr_project_admin);
     $project->setCrRunner($cr_job_runner);
-    $project->setHipchat_enabled($hipchat_enabled);
-    $project->setHipchat_notification_token($_REQUEST['hipchat_notification_token']);
-    $project->setHipchat_room($_REQUEST['hipchat_room']);
+    $project->setHipchatEnabled($hipchat_enabled);
+    $project->setHipchatNotificationToken($_REQUEST['hipchat_notification_token']);
+    $project->setHipchatRoom($_REQUEST['hipchat_room']);
+    $project->setHipchatColor($_REQUEST['hipchat_color']);
     
     if ($user->getIs_admin()) {
         $project->setInternal($internal);
@@ -680,40 +682,59 @@ require_once('opengraphmeta.php');
                         <label for="cr_job_runner_field">Anyone who is trusted by the job manager</label>
                     </div>
                 </li>
-                <?php if($edit_mode == true) { ?>
                 <li id="hipchat">
-                    <h3>Hip Chat</h3>
+                    <h3>HipChat</h3>
                     <div>
                         <div>
-                            <input type="checkbox" name="hipchat_enabled" id="hipchat_enabled" <?php echo ($project->getHipchat_enabled()) ? 'checked="checked"' : '' ; ?> />
-                            <label for="hipchat_enabled">Enabled</label>                                                    
+                            <input type="checkbox" name="hipchat_enabled" id="hipchat_enabled"
+                                <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?>
+                                <?php echo ($project->getHipchatEnabled()) ? 'checked="checked"' : '' ; ?> />
+                            <label for="hipchat_enabled">Enabled</label>
                         </div>
-                        <div>
-                            <label for="hipchat_notification_token">Notification Token</label>
-                            <input type="text" name="hipchat_notification_token" id="hipchat_notification_token" value="<?php echo $project->getHipchat_notification_token(); ?>" />
-                        </div>
-                        <div>
-                            <label for="hipchat_room">Room</label>
-                            <input type="text" id="hipchat_room" name="hipchat_room" value="<?php echo $project->getHipchat_room(); ?>" />                        
-                        </div>
+                        <?php if($edit_mode == true) { ?>
+                            <div>
+                                <label for="hipchat_notification_token">Notification Token</label>
+                                <input type="text" name="hipchat_notification_token" id="hipchat_notification_token" value="<?php echo $project->getHipchatNotificationToken(); ?>" />
+                            </div>
+                            <div>
+                                <label for="hipchat_room">Room</label>
+                                <input type="text" id="hipchat_room" name="hipchat_room" value="<?php echo $project->getHipchatRoom(); ?>" />                        
+                            </div>
+                            <div>
+                                <label for="hipchat_color">Message Color</label>
+                                <?php
+                                    foreach ($project->getHipchatColorsArray() as $color) {
+                                        $selected = '';
+                                        if ($project->getHipchatColor() == $color) {
+                                            $selected = 'checked="checked"';
+                                        }
+                                        echo "<div><label><input name=\"hipchat_color\" type=\"radio\"\
+                                            $selected value=\"$color\" />$color</label></div>";
+                                    }
+                                ?>
+                            </div>
+                        <?php } ?>
                     </div>
-                </li>
-                <?php }  
-                      if ($project->getTestFlightTeamToken() != '' || $edit_mode) : ?>
-                    <li id="projectTestFlight">
-                        <h3>TestFlight</h3>
-                        <?php if ($edit_mode): ?>
-                            <label for="testflight_team_token">Team token</label>
-                            <input name="testflight_team_token" id="testflight_team_token" type="text" value="<?php echo $project->getTestFlightTeamToken(); ?>" />
-                        <?php else: ?> 
+                </li>  
+                <li id="projectTestFlight">
+                    <h3>TestFlight</h3>
+                    <div>
+                        <input type="checkbox" name="testflight_enabled" id="testflight_enabled"
+                            <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?>
+                            <?php echo ($project->getTestFlightEnabled()) ? 'checked="checked"' : '' ; ?> />
+                        <label for="testflight_enabled">Enabled</label>
+                    </div>
+                    <?php if ($edit_mode): ?>
+                        <label for="testflight_team_token">Team token</label>
+                        <input name="testflight_team_token" id="testflight_team_token" type="text" value="<?php echo $project->getTestFlightTeamToken(); ?>" />
+                    <?php else: ?> 
+                        <?php if (($is_runner || $is_owner) && $project->getTestFlightEnabled() && $project->getTestFlightTeamToken()) : ?>
                             <div class="buttonContainer">
-                                <?php if (($is_runner || $is_owner) && $project->getTestFlightTeamToken()) : ?>
-                                    <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
-                                <?php endif; ?>
+                                <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
                             </div>
                         <?php endif; ?>
-                    </li>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </li>
             </ul>
         </div>
         <div class="rightCol">

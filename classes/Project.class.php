@@ -26,6 +26,7 @@ class Project {
     protected $active;
     protected $owner_id;
     protected $fund_id;
+    protected $testflight_enabled;
     protected $testflight_team_token;
     protected $logo;
     protected $cr_anyone;
@@ -38,6 +39,7 @@ class Project {
     protected $hipchat_enabled;
     protected $hipchat_notification_token;
     protected $hipchat_room;
+    protected $hipchat_color;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -106,6 +108,7 @@ class Project {
                 p.active,
                 p.owner_id, 
                 p.fund_id,
+                p.testflight_enabled,
                 p.testflight_team_token,
                 p.logo,
                 p.cr_anyone,
@@ -116,7 +119,8 @@ class Project {
                 p.creation_date,
                 p.hipchat_enabled,
                 p.hipchat_notification_token,
-                p.hipchat_room
+                p.hipchat_room,
+                p.hipchat_color
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -140,6 +144,7 @@ class Project {
              ->setContactInfo($row['contact_info'])
              ->setLastCommit($row['last_commit'])
              ->setActive($row['active'])
+             ->setTestFlightEnabled($row['testflight_enabled'])
              ->setTestFlightTeamToken($row['testflight_team_token'])
              ->setLogo($row['logo'])
              ->setOwnerId($row['owner_id'])
@@ -150,9 +155,10 @@ class Project {
              $this->setCrRunner($row['cr_job_runner']);
              $this->setInternal($row['internal']);
              $this->setCreationDate($row['creation_date']);
-        $this->setHipchat_enabled($row['hipchat_enabled']);
-        $this->setHipchat_notification_token($row['hipchat_notification_token']);
-        $this->setHipchat_room($row['hipchat_room']);
+        $this->setHipchatEnabled($row['hipchat_enabled']);
+        $this->setHipchatNotificationToken($row['hipchat_notification_token']);
+        $this->setHipchatRoom($row['hipchat_room']);
+        $this->setHipchatColor($row['hipchat_color']);
         return true;
     }
     
@@ -316,6 +322,15 @@ class Project {
         return $this->testflight_team_token;
     }
 
+    public function setTestFlightEnabled($testflight_enabled) {
+        $this->testflight_enabled = $testflight_enabled;
+        return $this;
+    }
+
+    public function getTestFlightEnabled() {
+        return $this->testflight_enabled;
+    }
+
     public function setLogo($logo) {
         $this->logo = $logo;
         return $this;
@@ -379,36 +394,67 @@ class Project {
         return $this->creation_date;
     }
     
-    public function setHipchat_notification_token($hipchat_notification_token) {
+    public function setHipchatNotificationToken($hipchat_notification_token) {
         $this->hipchat_notification_token = $hipchat_notification_token;
         return $this;
     }
 
-    public function getHipchat_notification_token() {
+    public function getHipchatNotificationToken() {
         return $this->hipchat_notification_token;
     }
 
-    public function setHipchat_enabled($hipchat_enabled) {
+    public function setHipchatEnabled($hipchat_enabled) {
         $this->hipchat_enabled = $hipchat_enabled;
         return $this;
     }
 
-    public function getHipchat_enabled() {
+    public function getHipchatEnabled() {
         return $this->hipchat_enabled;
     }
-    public function setHipchat_room($hipchat_room) {
+    public function setHipchatRoom($hipchat_room) {
         $this->hipchat_room = $hipchat_room;
         return $this;
     }
 
-    public function getHipchat_room() {
+    public function getHipchatRoom() {
         return $this->hipchat_room;
+    }
+    
+    public function setHipchatColor($hipchat_color) {
+        $this->hipchat_color = $hipchat_color;
+        return $this;
+    }
+    
+    public function getHipchatColor() {
+        $hipchat_color = $this->hipchat_color;
+        
+        if (in_array($hipchat_color, $this->getHipchatColorsArray())) {
+            return $hipchat_color;
+        }
+        
+        return $this->getHipchatDefaultColor();
+    }
+    
+    public function getHipchatColorsArray() {
+        return array(
+             "yellow",
+             "red",
+             "green",
+             "purple",
+             "gray",
+             "random"
+        );
+    }
+    
+    public function getHipchatDefaultColor() {
+        $colors = $this->getHipchatColorsArray();
+        return $colors[0];
     }
 
     public function sendHipchat_notification($message, $message_format='html', $notify=0) {
         $success = true;
         $room_id = 0;
-        $token = $this->getHipchat_notification_token();
+        $token = $this->getHipchatNotificationToken();
         $url = HIPCHAT_API_AUTH_URL . $token;
         
         $response = CURLHandler::Get($url, array());
@@ -416,7 +462,7 @@ class Project {
 
         if (count($response->rooms)) {
             foreach($response->rooms as $key => $room) {
-                if ($room->name == trim($this->getHipchat_room())) {
+                if ($room->name == trim($this->getHipchatRoom())) {
                     $room_id = $room->room_id;
                     break;
                 }
@@ -429,7 +475,8 @@ class Project {
                     'from' => 'Worklist.net',
                     'message' => $message,
                     'message_format' => $message_format,
-                    'notify' => $notify
+                    'notify' => $notify,
+                    'color' => $this->getHipchatColor()
                 );
                 
                 $result = CURLHandler::Post($url, $fields);
@@ -440,7 +487,7 @@ class Project {
                 }
             } else {
                     $success = false;
-                    $body = "Failed to find room " . $this->getHipchat_room() . ".";
+                    $body = "Failed to find room " . $this->getHipchatRoom() . ".";
             }
         } else {
             $success = false;
@@ -458,9 +505,11 @@ class Project {
 
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
-            (name, description, website, budget, repository, contact_info, active, owner_id, testflight_team_token,
-                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin, cr_job_runner, internal, creation_date, 
-                hipchat_enabled, hipchat_notification_token, hipchat_room) " .
+            (name, description, website, budget, repository, contact_info, active,
+                owner_id, testflight_enabled, testflight_team_token,
+                logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin,
+                cr_job_runner, internal, creation_date, hipchat_enabled,
+                hipchat_notification_token, hipchat_room, hipchat_color) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -470,6 +519,7 @@ class Project {
             "'".mysql_real_escape_string($this->getContactInfo())."', ".
             "'".mysql_real_escape_string($this->getActive())."', ".
             "'".mysql_real_escape_string($this->getOwnerId())."', ".
+            "'".mysql_real_escape_string($this->getTestFlightEnabled())."', ".
             "'".mysql_real_escape_string($this->getTestFlightTeamToken())."', ".
             "'".mysql_real_escape_string($this->getLogo())."', ".
             "NOW(), ".
@@ -479,9 +529,10 @@ class Project {
             "'" . intval($this->getCrRunner()) . "', " .
             "'" . intval($this->getInternal()) . "', " .
             "NOW(), " .
-            "'" . intval($this->getHipchat_enabled()) . "', " .
-            "'" . mysql_real_escape_string($this->getHipchat_notification_token()) . "', " .
-            "'" . mysql_real_escape_string($this->getHipchat_room()) . "')";
+            "'" . intval($this->getHipchatEnabled()) . "', " .
+            "'" . mysql_real_escape_string($this->getHipchatNotificationToken()) . "', " .
+            "'" . mysql_real_escape_string($this->getHipchatRoom()) . "', " .
+            "'" . mysql_real_escape_string($this->getHipchatColor()) . "')";
         $rt = mysql_query($query);
         $project_id = mysql_insert_id();
         $this->setProjectId($project_id);
@@ -516,6 +567,7 @@ class Project {
                 repository='" .mysql_real_escape_string($this->getRepository())."',
                 contact_info='".mysql_real_escape_string($this->getContactInfo())."',
                 last_commit='".mysql_real_escape_string($this->getLastCommit())."',
+                testflight_enabled='".mysql_real_escape_string($this->getTestFlightEnabled())."',
                 testflight_team_token='".mysql_real_escape_string($this->getTestFlightTeamToken())."',
                 logo='".mysql_real_escape_string($this->getLogo())."',
                 active='".intval($this->getActive())."',
@@ -525,9 +577,10 @@ class Project {
                 cr_project_admin='".intval($this->getCrAdmin())."',
                 cr_job_runner='" . intval($this->getCrRunner()) . "',
                 internal='" . intval($this->getInternal()) . "',
-                hipchat_enabled='" . intval($this->getHipchat_enabled()) . "',
-                hipchat_notification_token='" . mysql_real_escape_string($this->getHipchat_notification_token()) . "',
-                hipchat_room='" . mysql_real_escape_string($this->getHipchat_room()) . "'
+                hipchat_enabled='" . intval($this->getHipchatEnabled()) . "',
+                hipchat_notification_token='" . mysql_real_escape_string($this->getHipchatNotificationToken()) . "',
+                hipchat_room='" . mysql_real_escape_string($this->getHipchatRoom()) . "',
+                hipchat_color='" . mysql_real_escape_string($this->getHipchatColor()) . "'
             WHERE project_id=" . $this->getProjectId();
         $result = mysql_query($query);
         return $result ? 1 : 0;
