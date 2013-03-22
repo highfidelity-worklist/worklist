@@ -849,10 +849,18 @@ function invitePerson($invite, $workitem) {
 }
 /* invite people By nickname or by email*/
 function invitePeople(array $people, $workitem) {
+    $nonExistingInvites = array();
     foreach ($people as $invite) {
-        // Call the invite person function
-        invitePerson($invite, $workitem);
+        $invite = trim($invite);
+        if(!empty($invite)){
+            // Call the invite person function
+            if(!invitePerson($invite, $workitem)) {
+                // means person was not invited cause they dont exist
+                $nonExistingInvites[] = $invite;
+            }
+        }
     }
+    return $nonExistingInvites;
 }
 /**
  Validate an email address.

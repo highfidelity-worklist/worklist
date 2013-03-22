@@ -668,7 +668,11 @@ class Notification {
             case 'invite-user':
                 $headers['From'] = '"' . $project_name . '-invited" ' . $from_address;
                 $body = "<p>Hello you!</p>";
-                $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on ";
+                if(getSessionUserId()) {
+                    $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on ";
+                } else {
+                    $body .= "<p>You have been invited at the Worklist to bid on ";
+                }                
                 $body .= "<a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>\n";
                 $body .= "<p>Description:</p>";
                 $body .= "<p>------------------------------</p>\n";

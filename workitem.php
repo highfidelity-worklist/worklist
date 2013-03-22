@@ -3,6 +3,7 @@
 //  Copyright (c) 2011, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
+
 require_once ("config.php");
 require_once ("functions.php");
 require_once ("send_email.php");
@@ -129,7 +130,7 @@ if ($action == 'view_bid') {
 }
 
 // for any other action user has to be logged in
-if ($action != 'view') {
+if ($action != 'view' && $action != 'invite-people') {
     checkLogin();
     $action_error = '';
     $action = $workitem->validateAction($action, &$action_error);
@@ -384,20 +385,14 @@ if ($action == 'new-comment') {
 }
 
 if($action =='invite-people') {
+   
     // Send invitation
-    $invite = $_REQUEST['invite'];
-    if (invitePerson($invite, $workitem)) {
-        $result = array('sent'=>'yes','person'=> $invite);
-    } else {
-        $result = array('sent'=>'no','person'=> $invite);
-    }
-    if($_REQUEST['json'] =='y') {
-      ob_start();
-      $json = json_encode($result);
-      echo $json;
-      ob_end_flush();
-      exit;
-    }
+    $people = explode(',', $_REQUEST['invite']);
+    $nonExistingPeople = invitePeople($people, $workitem);
+    $json = json_encode($nonExistingPeople);
+    echo $json;
+    exit;
+   
 }
 if($action == 'start_codereview') {
     if(!($user->isEligible() && $userId == $workitem->getMechanicId())) {

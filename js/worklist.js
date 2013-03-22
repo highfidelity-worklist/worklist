@@ -271,22 +271,36 @@ $(function() {
 
 function sendInviteForm(){
   var name = $('input[name="invite"]', $("#invite-people")).val();
-  var job_id = $('input[name="worklist_id"]').val();
   $.ajax({
     type: "POST",
-    url: "workitem.php?job_id="+job_id,
-    data: "json=y&invite="+name+"&invite-people=Invite",
+    url: "workitem.php?job_id=" + worklist_id,
+    data: "invite=" + name + "&invite-people=Invite",
     dataType: "json",
     success: function(json) {
-        if(json['sent'] =='yes'){
+ 
+        if (!json.length) {
             $("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
             $('input[name="invite"]').val('');
             $('#invite-people').dialog('close');
-        }else{
-            $("#sent-notify").html("<span>The user you entered does not exist</span>");
+            $("#sent-notify").dialog("open");
+            setTimeout(function() {
+                $("#sent-notify").dialog("close"); 
+            }, 2000);
+            
+        } else {
+            alert("Some of the users you sent do not exist. Please correct those shown and try again.");
+            $('#invite').val('');
+            // we need to enter unsent items back into text field
+            for (var i = 0; i < json.length; i++) {
+                if(i != 0) {
+                    $('#invite').val($('#invite').val() + ',' + json[i]);
+                } else {
+                    $('#invite').val($('#invite').val() + json[i]);
+                }
+                
+            }
         }
-        $("#sent-notify").dialog("open");
-        setTimeout('$("#sent-notify").dialog("close");', 2000);
+        
     },
     error: function(xhdr, status, err) {
       $("#sent-notify").html("<span>Error sending invitation</span>");

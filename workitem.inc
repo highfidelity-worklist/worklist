@@ -78,6 +78,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/github.js"></script>
 <script type="text/javascript">
     var origStatus = '<?php echo $worklist['status']; ?>';
+    var worklist_id = '<?php echo($worklist_id); ?>';
 
 function resizeIframeDlg() {
     var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
@@ -153,7 +154,23 @@ $(document).ready(function() {
         show: 'fade',
         hide: 'fade',
         width: 'auto',
-        height: 'auto'
+        height: 'auto',
+        open: function() {
+            if ($(this).data('hasAutocomplete') != true) {
+                $('#invite').autocomplete('getusers.php', {
+                    multiple: true,
+                    multipleSeparator: ', ',
+                    selectFirst: true,
+                    extraParams: { nnonly: 1 }
+                });
+                $(this).data('hasAutocomplete', 1);
+            }
+            
+        },
+        close: function() {
+            $('.ac_results').hide();              
+        }
+            
     });
     $("#invite-link").click(function() {
         $('#invite-people').dialog('open');
