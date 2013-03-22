@@ -16,6 +16,7 @@ require_once ("send_email.php");
 require_once ('lib/Agency/Worklist/Filter.php');
 
 $journal_message = '';
+$workitem_added = false;
 $nick = '';
 
 $workitem = new WorkItem();
@@ -58,6 +59,7 @@ if ($userId > 0 ) {
         $journal_message .= $nick . " updated ";
     } else {
         $workitem->setCreatorId($creator_id);
+        $workitem_added = true;
         $journal_message .= $nick . " added ";
     }
     $workitem->setSummary($summary);
@@ -149,9 +151,23 @@ if ($userId > 0 ) {
 
 // don't send any journal notifications for DRAFTS
 if (!empty($journal_message) && $status != 'Draft') {
-    //sending journal notification
-    $data = array();
+    
     sendJournalNotification(stripslashes($journal_message));
+    
+    if ($workitem_added) {
+        $options = array(
+            'type' => 'workitem-add',
+            'workitem' => $workitem,
+            'recipients' => array('projectRunners')
+        );
+        $data = array(
+            'notes' => $notes,
+            'nick' => $nick,
+            'status' => $status
+        );
+
+        Notification::workitemNotifyHipchat($options, $data);
+    }
 }
 
 // Notify Runners of new suggested task
@@ -168,7 +184,6 @@ if ($status == 'Suggested' && $project_id != '') {
     );
     
     Notification::workitemNotify($options, $data);
-    Notification::workitemNotifyHipchat($options, $data);
 }
 
 echo json_encode(array('return' => "Done!"));

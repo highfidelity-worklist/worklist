@@ -967,7 +967,7 @@ class Notification {
                 $message = "Bid updated on item $itemLink";
             break;
             
-            case 'suggested':
+            case 'workitem-add':
                 $nick = $data['nick'];
                 $status = $data['status'];
                 $message = "$nick added job $itemLink. Status set to $status";
