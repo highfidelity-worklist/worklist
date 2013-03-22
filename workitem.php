@@ -626,13 +626,18 @@ if ($action =='status-switch') {
     }
 }
 
-if(!$notifyEmpty) {
-    Notification::workitemNotify(array('type' => 'modified',
-              'workitem' => $workitem,
-              'status_change' => $status_change,
-              'job_changes' => $job_changes,
-              'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
-              array('changes' => $new_update_message));
+if (!$notifyEmpty) {
+    $options = array(
+        'type' => 'modified',
+        'workitem' => $workitem,
+        'status_change' => $status_change,
+        'job_changes' => $job_changes,
+        'recipients' => array('runner', 'creator', 'mechanic', 'followers')
+    );
+    $data = array(
+        'changes' => $new_update_message
+    );
+    Notification::workitemNotify($options, $data);
 }
 
 if ($action == "place_bid") {
@@ -718,10 +723,13 @@ if ($action == "place_bid") {
         Notification::workitemNotifyHipchat($options, $data);
         
         if(!$notifyEmpty) {
-            Notification::workitemNotify(array('type' => 'suggestedwithbid',
-            'workitem' => $workitem,
-            'recipients' => array('projectRunners')),
-            array('notes' => $notes));
+            $options = array(
+                'type' => 'suggestedwithbid',
+                'workitem' => $workitem,
+                'recipients' => array('projectRunners')
+            );
+            $data = array('notes' => $notes);
+            Notification::workitemNotify($options, $data);
         }
     } else {
         error_log("Input forgery detected for user $userId: attempting to $action.");
