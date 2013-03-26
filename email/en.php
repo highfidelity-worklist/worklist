@@ -300,7 +300,18 @@ replacement data:
         <p>Please email <a href="mailto:' . SUPPORT_EMAIL . '">' . SUPPORT_EMAIL . '</a> with any issues or concerns.</p>
         <p></p>
         <p>- Worklist.net</p>'
+),
+'project-removed' => array(
+    'subject' => 'Your project was removed',
+    'body' => 
+        '<p>Hi {owner}!</p>
+        <p>Your project, <a href="{projectUrl}">{projectName}</a> was added on {creation_date}. Since that time, no jobs have been added.</p> 
+        <p>We are removing this project from the Worklist. Should you wish to pursue this in the future please 
+           feel free to re-add the project and we will be more than happy to work with you!</p>
+        <p></p>
+        <p>Pease email <a href="mailto:' . SUPPORT_EMAIL . '">' . SUPPORT_EMAIL . '</a> with any issues or concerns.</p>
+        <p></p>
+        <p>- Worklist.net</p>'
 )
-
 
 );

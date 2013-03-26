@@ -149,6 +149,10 @@ if(validateAction()) {
                 validateAPIKey();
                 checkInactiveProjects();
                 break;
+            case 'checkRemovableProjects':
+                validateAPIKey();
+                checkRemovableProjects();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -899,4 +903,105 @@ function checkInactiveProjects() {
     }
 }
 
+function checkRemovableProjects() {
+    require_once('send_email.php');
+    require_once('classes/Project.class.php');
+    
+    $report_message = '';
+    $db = new Database();
+
+    $sql_projects = "
+        SELECT p.project_id, p.name, u.nickname, p.creation_date 
+        FROM " . PROJECTS . " AS p 
+        LEFT JOIN " . USERS . " AS u ON u.id=p.owner_id 
+        WHERE p.project_id NOT IN (SELECT DISTINCT w1.project_id 
+        FROM " . WORKLIST . " AS w1)
+          AND p.creation_date < DATE_SUB(NOW(), INTERVAL 180 DAY)";
+    
+    $result = $db->query($sql_projects);
+    while ($row = mysql_fetch_assoc($result)) {
+        // send email
+        $data = array( 
+            'owner' => $row['nickname'],
+            'projectUrl' => Project::getProjectUrl($row['project_id']),
+            'projectName' => $row['name'],
+            'creation_date' => date('Y-m-d', strtotime($row['creation_date']))
+        );
+        if (sendTemplateEmail($row['contact_info'], 'project-removed', $data)) {
+            $report_message .= ' <p> Ok email---';
+        } else {
+            $report_message .= ' <p> Failed email -';
+        }
+        $report_message .= ' Project (' . $row['project_id'] . ')- <a href="' . Project::getProjectUrl($row['project_id']) . '">' . $row['name'] . '</a> -- Created: ' .  $row['creation_date'] . '</p>';
+
+    // Remove projects dependencies
+
+        // Remove project users
+        $report_message .= '<p> Users removed for project id ' . $row['project_id'] . ':</p>';
+        $sql_get_project_users = "SELECT * FROM " . PROJECT_USERS . " WHERE project_id = " . $row['project_id'];
+        $result_temp = $db->query($sql_get_project_users);
+        while ($row_temp = mysql_fetch_assoc($result_temp)) {
+            $report_message .= dump_row_values($row_temp);
+        }
+        
+        $sql_remove_project_users = "DELETE FROM " . PROJECT_USERS . " WHERE project_id = " . $row['project_id'];
+        $db->query($sql_remove_project_users);
+
+        // Remove project runners
+        $report_message .= '<p> Runners removed for project id ' . $row['project_id'] . ':</p>';
+        $sql_get_project_runners = "SELECT * FROM " . PROJECT_RUNNERS . " WHERE project_id = " . $row['project_id'];
+        $result_temp = $db->query($sql_get_project_runners);
+        while ($row_temp = mysql_fetch_assoc($result_temp)) {
+            $report_message .= dump_row_values($row_temp);
+        }
+        $sql_remove_project_runners = "DELETE FROM " . PROJECT_RUNNERS . " WHERE project_id = " . $row['project_id'];
+        $db->query($sql_remove_project_runners);
+
+        // Remove project roles
+        $report_message .= '<p> Roles removed for project id ' . $row['project_id'] . ':</p>';
+        $sql_get_project_roles = "SELECT * FROM " . ROLES . " WHERE project_id = " . $row['project_id'];
+        $result_temp = $db->query($sql_get_project_roles);
+        while ($row_temp = mysql_fetch_assoc($result_temp)) {
+            $report_message .= dump_row_values($row_temp);
+        }
+        $sql_remove_project_roles = "DELETE FROM " . ROLES . " WHERE project_id = " . $row['project_id'];
+        $db->query($sql_remove_project_roles);
+
+        $url = TOWER_API_URL;
+        $fields = array( 
+                'action' => 'staging_cleanup',
+                'name' => $row['name']
+        );
+                
+        $result = CURLHandler::Post($url, $fields);
+
+        // Remove project 
+        $report_message .= '<p> Project id ' . $row['project_id'] . ' removed </p>';
+        $sql_get_project = "SELECT * FROM " . PROJECTS . " WHERE project_id = " . $row['project_id'];
+        $result_temp = $db->query($sql_get_project);
+        while ($row_temp = mysql_fetch_assoc($result_temp)) {
+            $report_message .= dump_row_values($row_temp);
+        }
+        $sql_remove_project = "DELETE FROM " . PROJECTS . " WHERE project_id = " . $row['project_id'];
+        $db->query($sql_remove_project);
+    }
+    // Send report to ops if any project was set as inactive
+    if ($report_message != '') {
+        $headers['From'] = DEFAULT_SENDER;
+        $subject = "Removed Projects Report";
+        $body = $report_message;
+        if (!send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
+            error_log ('checkActiveProjects cron: Failed to send email report'); 
+        }
+    }
+}
+
+function dump_row_values($row) {
+    $dump = '<p>';
+    foreach ($row as $key=> $val ) {
+        $dump .= '"' . $key . '" => ' . $val . ':';
+    }
+    $dump .= '</p>';
+    return $dump;
+}
 ?>

@@ -371,3 +371,6 @@ defineOnce('JOURNAL_EMERGENCY_ALERT',   0x01);
 //Hipchat settings
 defineOnce('HIPCHAT_API_AUTH_URL', "https://api.hipchat.com/v1/rooms/list?auth_token=");
 defineOnce('HIPCHAT_API_MESSAGE_URL', "https://api.hipchat.com/v1/rooms/message?format=json&auth_token=");
+
+//Tower api settings
+defineOnce('TOWER_API_URL', " https://a-tower.below92.com/");
