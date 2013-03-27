@@ -9,57 +9,148 @@
 *
 */
 
-#projectListing {
-    border: none;
-}
-
-#addProjectLink {
-    margin-bottom: 15px;
-}
-.projectDetailsRow {
-    padding: 10px 0 10px 0;
-    border-bottom: 1px solid #876F6D;
-}
-.projectDetailsRow td {
-    border: none;
-    padding: 20px 30px 20px 0;
-    vertical-align: top;
-}
-
-.projectDescription {
-    width: 70%;
-    text-align: justify;
-}
-
-.projectDescription h2 {
-    font-size: 15px;
-    font-weight: bold;
-    padding-bottom: 0px;
-}
-
-.projectDescription a {
-    text-decoration: none;
-}
-
-.projectStats {
-    color: #98AAB2;
-    font-size: 12px;
-    font-weight: bold;
-    height: 15px;
-    text-align: right;
-    width: 50%;
-}
-.projectStats a, .projectStats span {
-    color: #6F6F6F;
-    text-decoration: none;
-}
-
-.projectLogo {
-    width: 75px;
+/**
+ * Overrides for project page
+ */
+#outside {
     text-align: center;
-    padding: 20px 5px 20px 5px !important;
 }
 
+h1 {
+    font-family: 'Cabin', sans-serif;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    padding: 0;
+    color: #141414;
+    text-align: left;
+}
+
+#add-project {
+    color: #993300;
+    float: right;
+    font-size: 20px;
+    text-decoration: none;
+    width: 150px;
+    font-family: 'Cabin', sans-serif;
+    text-align: right;
+}
+
+#add-project span {
+    color: #141414;
+    font-weight: bold;
+}
+
+#all-projects {
+    font-family: 'Cabin', sans-serif;
+    font-size: 20px;
+    color: #666666;
+}
+
+#projects {
+    color: #666666;
+    /*
+    margin: 25px auto;
+    clear: both;
+    display: table;
+    */
+    text-align: center;
+}
+
+#projects > article {
+    border: 1px solid #CCCCCC;
+    border-radius: 6px;
+    box-shadow: 0 0 5px #CCCCCC;
+    display: inline-block;
+    height: 310px;
+    margin: 10px;
+    margin: 0 22px 25px 0;
+    padding: 22px 25px 20px 25px;
+    text-align: left;
+    vertical-align: middle;
+    width: 234px;
+}
+
+#projects > article img {
+    margin-bottom: 15px;
+    width: 48px;
+    height: 48px;
+    border-radius: 3px;
+    box-shadow: 0 0 5px #CCCCCC;
+}
+
+#projects > article h2,
+#projects > article h2 a {
+    font-size: 26px;
+    font-family: 'Cabin', sans-serif;
+    color: #993300;
+    text-decoration: none;
+    padding-bottom: 0;
+    margin-bottom: 8px;
+}
+
+#projects section.description {
+    height: 126px;
+    font-size: 16px;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 21px;
+}
+
+#projects article .stats {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#projects article .stats li {
+    color: #666666;
+    margin-bottom: 5px;
+}
+
+#projects article .stats a {
+    text-decoration: none;
+    color: #666666;
+}
+
+#projects article .stats a:underline {
+    text-decoration: underline;
+}
+
+/**
+ * Responsive
+ */
+@media screen and (max-width: 530px) {
+    #projects > article {
+        margin: 0 auto 25px;
+        float: none;
+    }
+    
+    section#projects {
+        text-align: center;
+    }
+    
+    h1,
+    #add-project,
+    #all-projects {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    h1,
+    #add-project,
+    #all-projects {
+        font-size: 14px;
+    }
+
+    #container {
+        padding: 5px;
+    }
+}
+
+/**
+ * Popups
+ */
 .signupLink {
     font-size: 1.3em;
     color: #5488D1 !important;

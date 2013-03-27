@@ -601,7 +601,7 @@ class Project {
     /**
         Return an array of all projects containing all fields
     **/    
-    public function getProjects($active = false, $selections = array()) {
+    public function getProjects($active = false, $selections = array(), $onlyInactive = false) {
     
         $where = ' ';
         if ($active) {
@@ -612,8 +612,10 @@ class Project {
                        (owner_id IN (SELECT id FROM ' . USERS . ' WHERE budget >0) 
                       OR
                        project_id IN (SELECT project_id FROM ' . WORKLIST . ' WHERE status="Bidding"))';
+        } else if ($onlyInactive) {
+            $where = 'WHERE active = 0';
         }
-        
+
         $query = "
             SELECT
                 " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "

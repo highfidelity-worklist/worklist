@@ -1,0 +1,86 @@
+/**
+ * Responsive
+ */
+#outside,
+#welcomeInside {
+    width: auto;
+    padding: 0 30px;
+}
+
+#container,
+#center {
+    width: auto;
+}
+
+#right,
+#left {
+    display: none;
+}
+
+@media only screen and (max-width: 880px) {
+    #footer,
+    #welcome .loggedIn .following,
+    #welcome .rightMenu .headerButtonSeparator {
+        display: none;
+    }
+
+    #welcome .leftMenu .headerButton {
+        background-image: none;
+        padding-left: 10px !important;
+    }
+}
+
+@media only screen and (max-width: 679px) {
+    #welcome .loggedIn .budget,
+    #welcome .loggedIn .settingsBtn {
+        display: none;
+    }
+
+    #welcome .headerButton {
+        font-size: 11px;
+    }
+
+    #footer {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 0px) and (max-width: 610px) {
+    #welcome .headerButtonSeparator {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 530px) {
+    #welcomeInside {
+        padding: 0;
+    }
+
+    #welcome .headerButtonSeparator {
+        display: none;
+    }
+    
+    #outside,
+    #center {
+        padding: 0 10px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    #welcomeInside .leftMenu .wikiBtn,
+    #welcomeInside .leftMenu .teamBtn {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    #center,
+    #outside {
+        padding: 0;
+    }
+    
+    #container {
+        padding: 5px;
+    }    
+
+}

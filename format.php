@@ -44,7 +44,7 @@
         <script type="text/javascript">
         //Code for Add Project
         $(document).ready(function() {
-            $('#addproj').click(function() {
+            $('#add-project').click(function() {
                 $('#popup-addproject').dialog({ 
                     autoOpen: false, 
                     dialogClass: 'white-theme',
