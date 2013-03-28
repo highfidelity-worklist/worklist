@@ -310,7 +310,7 @@ function postComment() {
                         '<a href="#commentform" onClick="reply(' + data.id + '); return false;">Reply</a>' +
                     '</div>' : '';
                 var newcomment =
-                    '<li id="comment-' + data.id + '" class="comment depth-' + depth + ' ' + color + ' ' + order + '">' +
+                    '<li id="comment-' + data.id + '" class="depth-' + depth + ' ' + color + ' ' + order + '">' +
                         '<div class="comment">' +
                             '<a href="userinfo.php?id=' + data.userid + '" target="_blank">' +
                                 '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
@@ -344,7 +344,13 @@ function postComment() {
                     if (id == '') {
                         $('.commentZone ul').append(newcomment);
                     } else {
-                        $(newcomment).insertAfter($('#comment-' + id).nextUntil('li[class*="' + (depth -1) + '"]').andSelf().filter(":last"));
+                        var cond = new Array();
+                        var depthtmp = depth -1;
+                        while (depthtmp > -1) {
+                            cond.push('li[class*="depth-' + (depthtmp) + '"]');
+                            depthtmp--;
+                        }
+                        $(newcomment).insertAfter($('#comment-' + id).nextUntil(cond.join(',')).andSelf().filter(":last"));
                     }
                 }
             }
@@ -650,8 +656,8 @@ $(document).ready(function(){
     });
     $("#switchmode_edit").click(function(event) {
         if (!is_project_runner){
-        	 <?php if ((!$worklist['status'] == 'Suggested' || !$worklist['status'] == 'SuggestedWithBid') && !$creator_id == $user_id) { ?>
-    	         $("#workitem_no_edit").dialog({
+             <?php if ((!$worklist['status'] == 'Suggested' || !$worklist['status'] == 'SuggestedWithBid') && !$creator_id == $user_id) { ?>
+                 $("#workitem_no_edit").dialog({
                      title: "Insufficient User Rights",
                      autoOpen: false,
                      height: 120,
@@ -659,11 +665,11 @@ $(document).ready(function(){
                      position: ['center','center'],
                      modal: true
             });
-    	    $("#workitem_no_edit").dialog("open");
+            $("#workitem_no_edit").dialog("open");
             event.preventDefault();
              <?php } ?>
         }
-	});
+    });
     $('#following').click(function() {
         $.ajax({
             type: 'post',
@@ -1211,7 +1217,7 @@ $(document).ready(function(){
             },
             dataType: 'json',
             success: function(data) {
-            	         closeNotifyOverlay();
+                closeNotifyOverlay();
                 if (data.success) {
                     $('#popup-startreview').dialog('open');
                 } else {
@@ -1223,7 +1229,7 @@ $(document).ready(function(){
                 }
             },
             error: function() {
-            	closeNotifyOverlay();
+                closeNotifyOverlay();
             }
         });
         return false;
