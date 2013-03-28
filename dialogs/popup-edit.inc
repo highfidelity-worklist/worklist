@@ -57,10 +57,10 @@
                     <label for="skills">Skills necessary <small> (separate by commas ... ex: JavaScript, PHP, CSS)</small></label>
                     <input type="text" id="skills" name="skills" class="text-field" size="35" value="" />
 
-                    <label for="invite" id="lebel-for-invite"><span></span>Invite Worklist users
+                    <label for="ivite" id="lebel-for-invite"><span></span>Invite Worklist users
                         <small>(separate by commas)</small>
                     </label>
-                    <input id="invite" type="text" name="invite" class="invite" />
+                    <input id="ivite" type="text" name="invite" class="invite" />
 
                     <div class="upload-section">
                         <div id="addaccordion" class="clear"></div>
