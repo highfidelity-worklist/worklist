@@ -213,6 +213,9 @@ $.Autocompleter = function(input, options) {
 			if ( words.length > 1 ) {
 				var seperator = options.multipleSeparator.length;
 				var cursorAt = $(input).selection().start;
+				if (cursorAt == -1) {
+					cursorAt = $(input).val().length;
+				}
 				var wordAt, progress = 0;
 				$.each(words, function(i, word) {
 					progress += word.length;
