@@ -1601,16 +1601,16 @@ $(document).ready(function(){
             <div id="quick-status">
                 <span class="info-label"><a href="help.php#ff5" target="_blank">Job status:</a></span>&nbsp;
             <?php
-            if ((!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && ($mechanic_id == $user_id) &&
+            if ((!$workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) || ($mechanic_id == $user_id) &&
                    $worklist['status'] != 'Done') || $workitem->getIsRelRunner()
-                   || ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done')) :
+                   || ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done')):
             ?>
                 <form id="searchForm" method="post" action="">
                     <input type="hidden" id="status-switch" name="status-switch" value="1" />
                     <select id="statusCombo" name="quick-status" class="project-dropdown hidden">
-                        <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>
+                        <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>  
                         <?php
-                        if (!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
+                        if (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) || ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
                             foreach ($statusListMechanic as $status) {
                                 if ($status != $worklist['status']) {?>
                                     <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
