@@ -232,26 +232,6 @@ function closeNotifyOverlay() {
     $('#sent-notify').dialog('close');
 }
 
-$(function() {
-    $('#sent-notify').dialog({
-        modal: false,
-        autoOpen: false,
-        width: 350,
-        height: 70,
-        position: ['middle'],
-        resizable: false,
-        open: function() {
-            $('#sent-notify').parent().children('.ui-dialog-titlebar').hide();
-            var autoHide = $('#sent-notify').attr('autohide') == 'true' ? true : false;
-            if (autoHide) {
-                setTimeout(function() {
-                    closeNotifyOverlay();
-                }, 3000);
-            }
-        }
-    });
-});
-
 function makeWorkitemTooltip(className){
     $(className).tooltip({
         delay: 500,
@@ -317,3 +297,46 @@ function validateUploadImage(file, extension) {
         return false;
     }
 }
+
+// main common.js initialization
+$(function() {
+    $('#sent-notify').dialog({
+        modal: false,
+        autoOpen: false,
+        width: 350,
+        height: 70,
+        position: ['middle'],
+        resizable: false,
+        open: function() {
+            $('#sent-notify').parent().children('.ui-dialog-titlebar').hide();
+            var autoHide = $('#sent-notify').attr('autohide') == 'true' ? true : false;
+            if (autoHide) {
+                setTimeout(function() {
+                    closeNotifyOverlay();
+                }, 3000);
+            }
+        }
+    });
+    
+    $(document).ajaxSend(function(event, request, settings) {
+        if ($('#ajaxSpin').length > 0) {
+            return
+        };
+        var showAjaxSpin = true;
+        switch(settings.url) {
+            case 'aj.php':
+                showAjaxSpin = false;
+                break;
+        }
+        if (showAjaxSpin) {
+            $('<figure id="ajaxSpin"><img src="images/loader.gif" /></figure>').appendTo('body');
+        }
+    });
+    
+    var clearAjaxSpin = function() {
+        $('#ajaxSpin').remove();
+    };
+    
+    $(document).ajaxComplete(clearAjaxSpin);
+
+});

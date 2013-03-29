@@ -813,3 +813,28 @@ input[type=password]:focus {
     border-right: solid 1px #CBCBCB;
     color: #000000;
 }
+
+#ajaxSpin {
+    position: fixed;
+    top: 48%;
+    right: 48%;
+    width: 64px;
+    height: 64px;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    border-radius: 32px;
+    box-shadow: 3px 2px 6px #999;
+    z-index: 999;
+    background: -moz-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(255, 255, 255, 1)));
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 1) 100%);
+    background: -o-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 1) 100%);
+    background: -ms-radial-gradient(center, ellipse cover, rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 1) 100%);
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 0%,rgba(255, 255, 255, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1);
+}
+
+#ajaxSpin img {
+    margin: 22px;
+}
