@@ -7,7 +7,7 @@
             }
             return this.each(function() {
                 var $this = $(this), fdata = $this.data('fileUpload');
-                if(!fdata) {
+                if(!fdata) {  
                     fdata = {};
                     fdata.user = (typeof(user_id) != 'undefined') ? user_id : '';
                     fdata.workitem = (typeof(workitem_id) != 'undefined') ? workitem_id : null;
@@ -103,15 +103,24 @@
                                         }
                                         var files = $('#uploadPanel').data('files');
                                         if (data.filetype == 'image') {
-                                            files.images.push(data);
+                                            if(typeof(files) != "undefined") {
+                                                files.images.push(data); 
+                                            } else { 
+                                                fdata.images.push(data.fileid);
+                                            }
                                         } else {
-                                            files.documents.push(data);
+                                            if(typeof(files) != "undefined") {
+                                                files.documents.push(data); 
+                                            } else { 
+                                                fdata.documents.push(data.fileid); 
+                                            }
                                         }
-                                        var filesHtml = $('#uploadedFiles').parseTemplate(files);
-                                        $('#uploadPanel').html(filesHtml);
-                                        $('#uploadPanel').data('files', files);
-                                        $('#accordion').fileUpload({images: files.images, documents: files.documents});
-
+                                        if(typeof(files) != "undefined") {
+                                            var filesHtml = $('#uploadedFiles').parseTemplate(files);
+                                            $('#uploadPanel').html(filesHtml);
+                                            $('#uploadPanel').data('files', files);
+                                            $('#accordion').fileUpload({images: files.images, documents: files.documents});
+                                        }
                                         if(fdata.trackfiles) {
                                             fdata.trackfiles.val(fdata.images.concat(fdata.documents).join(','));
                                         }
@@ -209,32 +218,37 @@
                                 $this.data('fileUpload', fdata);
 
                                 var files = $('#uploadPanel').data('files');
-                                iPos = -1;
-                                if (files.documents.length > 0) {
-                                    for (var i=0; i < files.documents.length; i++) {
-                                        if (files.documents[i].fileid == file_id) {
-                                            iPos = i;
-                                            files.documents.splice(iPos, 1);
-                                            break;
+                                if(typeof(files) != "undefined") {
+                                    iPos = -1;
+                                    if (files.documents.length > 0) {
+                                        for (var i=0; i < files.documents.length; i++) {
+                                           if (files.documents[i].fileid == file_id) {
+                                               iPos = i;
+                                               files.documents.splice(iPos, 1);
+                                               break;
+                                           }
                                         }
                                     }
-                                }
-
-                                if (iPos == -1 && files.images.length > 0) {
-                                    for (var ii = 0; ii < files.images.length; ii++) {
-                                        if (files.images[ii].fileid == file_id) {
-                                            files.images.splice(ii, 1);
-                                            break;
+                                    if (iPos == -1 && files.images.length > 0) {
+                                        for (var ii = 0; ii < files.images.length; ii++) {
+                                            if (files.images[ii].fileid == file_id) {
+                                                files.images.splice(ii, 1);
+                                                break;
+                                             }
                                         }
                                     }
-                                }
-                                var filesHtml = $('#uploadedFiles').parseTemplate(files);
-                                $('#uploadPanel').html(filesHtml);
-                                $('#uploadPanel').data('files', files);
-                                $('#accordion').fileUpload({images: files.images, documents: files.documents});
+                                    var filesHtml = $('#uploadedFiles').parseTemplate(files);
+                                    $('#uploadPanel').html(filesHtml);
+                                    $('#uploadPanel').data('files', files);
+                                    $('#accordion').fileUpload({images: files.images, documents: files.documents});
+                                    };
+                                    if(typeof(files) == "undefined") {
+                                        $(oThis).parent().remove()
+                                    }   
                             } else {
                                 alert(json.message);
                             }
+                            
                         }
                     });
                 });
