@@ -222,11 +222,11 @@
                                     iPos = -1;
                                     if (files.documents.length > 0) {
                                         for (var i=0; i < files.documents.length; i++) {
-                                           if (files.documents[i].fileid == file_id) {
-                                               iPos = i;
-                                               files.documents.splice(iPos, 1);
-                                               break;
-                                           }
+                                            if (files.documents[i].fileid == file_id) {
+                                                iPos = i;
+                                                files.documents.splice(iPos, 1);
+                                                break;
+                                            }
                                         }
                                     }
                                     if (iPos == -1 && files.images.length > 0) {
@@ -241,10 +241,10 @@
                                     $('#uploadPanel').html(filesHtml);
                                     $('#uploadPanel').data('files', files);
                                     $('#accordion').fileUpload({images: files.images, documents: files.documents});
-                                    };
-                                    if(typeof(files) == "undefined") {
-                                        $(oThis).parent().remove()
-                                    }   
+                                };
+                                if(typeof(files) == "undefined") {
+                                    $(oThis).parent().remove()
+                                }   
                             } else {
                                 alert(json.message);
                             }
