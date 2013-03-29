@@ -1616,7 +1616,8 @@ $(document).ready(function(){
                     <select id="statusCombo" name="quick-status" class="project-dropdown hidden">
                         <option value="<?php echo $worklist['status'];?>" selected="selected"><?php echo $worklist['status'];?></option>  
                         <?php
-                        if (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) || ($mechanic_id == $user_id) && $worklist['status'] != 'Done') { //mechanics
+                        if (!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && ($mechanic_id == $user_id) && 
+                              $worklist['status'] != 'Done') { //mechanics
                             foreach ($statusListMechanic as $status) {
                                 if ($status != $worklist['status']) {?>
                                     <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
