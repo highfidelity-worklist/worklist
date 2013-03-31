@@ -1416,6 +1416,7 @@ class Notification {
               LEFT JOIN " . USERS . " r ON r.id = w.runner_id
               WHERE w.status = 'Bidding'
               AND b.expired_notify = 0
+              AND b.bid_expires <> '0000-00-00 00:00:00'
               AND b.bid_expires < NOW()
               AND u.is_active = 1
               AND b.withdrawn = 0

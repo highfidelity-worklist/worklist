@@ -682,6 +682,9 @@ class WorkItem {
                 if (! empty($row['unix_bid_accepted'])) {
                     $row['expires'] = null;
                     $temp_array[] = $row;
+                } else if (empty($row['expires'])) {
+                    // take any bid with bid_expires written as 0000-00-00 00:00:00 -mika - Mar 31 2013
+                    $temp_array[] = $row;
                 } else if (! empty($row['expires']) && empty($row['unix_bid_accepted'])) {
                     // skip expired bids that are not accepted;
                     // Had to change this, because of oddness of this if() statement
