@@ -262,7 +262,6 @@
         <script type="text/javascript" src="js/userinfo.js"></script>
         <script type="text/javascript" src="js/budget.js"></script>
         <!--  tooltip plugin and dictionary -->
-        <script type="text/javascript" src="js/jquery.tooltip.js"></script>
         <script type="text/javascript">
         function MapToolTips() {
             var tooltipPhraseBook = <?php include("tooltip.php"); ?>;
@@ -364,7 +363,4 @@
 <?php require_once('dialogs/budget-transfer.inc'); ?>
 <?php require_once('dialogs/budget-transferred.inc'); ?>
 <?php require_once('dialogs/popup-fees.inc'); ?>
-    <div id="sent-notify"></div>
-<?php
-require_once('footer.php');
-?>
+<?php require_once('footer.php'); ?>

@@ -14,6 +14,7 @@ $(document).ready(function(){
         height: 60,
         position: ['middle'],
         resizable: false,
+        dialogClass: 'white-theme',
         open: function() {
             $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
             setTimeout(function() {
@@ -212,7 +213,6 @@ var UserInfo = {
                         $("#sent-notify").dialog("open");
                     }
                     $('#send-ping-btn').removeAttr("disabled");
-                    $('#popup-pingtask').dialog('close');
                 }, 
                 error: function() {
                     $('#send-ping-btn').removeAttr("disabled");
