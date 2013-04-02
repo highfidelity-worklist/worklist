@@ -1491,7 +1491,7 @@ input.button-disabled ,
     font-size: 12px;
 }
 
-#skills {
+#skills-edit {
     width: 312px;
     margin: 0 0 23px -1px;
     padding: 6px 9px;
@@ -1867,4 +1867,10 @@ h1.newProject {
 #popup-endreview li {
     font-size: 16px;
     list-style-type: square;
+}
+
+.ui-menu .ui-menu-item a.ui-state-hover,
+.ui-menu .ui-menu-item a.ui-state-active {
+    text-decoration:none !important;
+    color: #000 !important;
 }

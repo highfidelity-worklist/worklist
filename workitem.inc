@@ -68,7 +68,6 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="js/jquery.tallest.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.blockUI.js"></script>
@@ -76,6 +75,7 @@ include("head.html"); ?>
 <script type="text/javascript" src="js/favorites.js"></script>
 <script type="text/javascript" src="js/projects.js"></script>
 <script type="text/javascript" src="js/github.js"></script>
+<script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript">
     var origStatus = '<?php echo $worklist['status']; ?>';
     var worklist_id = '<?php echo($worklist_id); ?>';
@@ -102,6 +102,8 @@ function scrollToLastComment() {
 
 
 $(document).ready(function() {
+    
+
     applyPopupBehavior();
 <?php
     // if user is a runner and workitem is Functional, run sandbox up-to-date check
@@ -155,21 +157,11 @@ $(document).ready(function() {
         hide: 'fade',
         width: 'auto',
         height: 'auto',
-        open: function() {
-            if ($(this).data('hasAutocomplete') != true) {
-                $('#invite').autocomplete('getusers.php', {
-                    multiple: true,
-                    multipleSeparator: ', ',
-                    selectFirst: true,
-                    extraParams: { nnonly: 1 }
-                });
-                $(this).data('hasAutocomplete', 1);
-            }
-            
+        open: function() {  
+            var autoArgs = autocompleteMultiple('getuserslist');
+            $("#invite").bind("keydown", autoArgs.bind);
+            $("#invite").autocomplete(autoArgs, null);               
         },
-        close: function() {
-            $('.ac_results').hide();              
-        }
             
     });
     $("#invite-link").click(function() {
@@ -191,16 +183,11 @@ $(document).ready(function() {
 
     <?php if ($user_id > 0) { ?>
     $.get('getskills.php', function(data) {
-        var skills = eval(data);
-        $("#skills").autocomplete(skills, {
-            width: 320,
-            max: 10,
-            highlight: false,
-            multiple: true,
-            multipleSeparator: ", ",
-            scroll: true,
-            scrollHeight: 300
-        });
+        var skillsData = eval(data);
+        
+        var autoArgsSkills = autocompleteMultiple('getskills', skillsData);
+        $("#skills-edit").bind("keydown", autoArgsSkills.bind);
+        $("#skills-edit").autocomplete(autoArgsSkills);               
     });
     <?php } ?>
     makeWorkitemTooltip(".worklist-item");
@@ -2051,9 +2038,9 @@ if ($action =="edit"):  ?>
             <div class="skills">
                 <span class="skills-label">Skills this job requires:</span><br/>
                 <?php if (count($workitem->getSkills()) > 0) : ?>
-                <input type="text" size="60" class="text-field" name="skills" id="skills" value="<?php echo implode(', ', $workitem->getSkills()) . ', '; ?>" /></span>
+                <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="<?php echo implode(', ', $workitem->getSkills()) . ', '; ?>" /></span>
                 <?php else: ?>
-                <input type="text" size="60" class="text-field" name="skills" id="skills" value="" /></span>
+                <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
                 <?php endif; ?>
                 <div class="floatLeft">
                     <label id="bugLabel"><input type="checkbox" name="is_bug" id="is_bug" <?php if ($workitem->getBugJobId()>0 || $workitem->getIs_bug() == 1) echo 'checked="checked"';?>/> Bug</label>

@@ -340,3 +340,74 @@ $(function() {
     $(document).ajaxComplete(clearAjaxSpin);
 
 });
+
+/* We replaced the jquery.autocomplete.js because it was obsolete and unsupported. 
+ * Please refer to #19214 for details. Teddy 1/Apr/2013
+ */
+function autocompleteSplit( val ) {
+    return val.split( /,\s*/ );
+}
+
+function autocompleteExtractLast( term ) {
+    return autocompleteSplit( term ).pop();
+}
+
+/**
+ * 
+ * @param status
+ * @param datasource - pass null if unused.
+ * @returns object autocomplete arguments
+ */
+function autocompleteMultiple(status, datasource) {
+    var autocompleteArguments;
+    autocompleteArguments = {
+        bind: function( event ) {
+            if (event.keyCode === $.ui.keyCode.TAB &&
+                $(this).data("ui-autocomplete").menu.active) {
+                    event.preventDefault();
+            }
+   
+        },
+        minLength: 0,
+        focus: function(event, ui) {
+            return false;
+        },
+        select: function( event, ui ) {
+            var terms = autocompleteSplit( this.value );
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push( ui.item.value );
+            // add placeholder to get the comma-and-space at the end
+            terms.push( "" );
+            this.value = terms.join( ", " );
+            return false;
+        }
+        
+    };
+    
+    if (status == 'getuserslist') {       
+            autocompleteArguments.source =  function(request, response) {
+                $.getJSON( "getuserslist.php", {
+                    startsWith: autocompleteExtractLast( request.term ),
+                    getNicknameOnly: true
+                    }, response );
+            };
+            autocompleteArguments.search = function() {
+                // custom minLength
+                var term = autocompleteExtractLast(this.value);
+                if ( term.length < 1 ) {
+                  return false;
+                }
+            };
+            
+    } else if (status == 'getskills') {
+        autocompleteArguments.source = function( request, response ) {
+         // delegate back to autocomplete, but extract the last term
+            response( $.ui.autocomplete.filter(
+                    skillsSet, autocompleteExtractLast( request.term ) ) );
+            };
+    }
+    return autocompleteArguments;
+    
+}

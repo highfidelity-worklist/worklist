@@ -126,26 +126,15 @@ $('#popup-edit').dialog({
     hasAutocompleter: false,
     hasCombobox: false,
     resizable: false,
-    open: function() {
+    open: function() {        
         if (this.hasAutocompleter !== true) {
-            $('.invite').autocomplete('getusers.php', {
-                multiple: true,
-                multipleSeparator: ', ',
-                selectFirst: true,
-                extraParams: { nnonly: 1 }
-            });
-            $.get('getskills.php', function(data) {
-                var skills = eval(data);
-                $("#skills").autocomplete(skills, {
-                    width: 320,
-                    max: 10,
-                    highlight: false,
-                    multiple: true,
-                    multipleSeparator: ", ",
-                    scroll: true,
-                    scrollHeight: 300
-                });
-            });
+            var autoArgs = autocompleteMultiple('getuserslist', null);
+            $("#ivite").bind("keydown", autoArgs.bind);
+            $("#ivite").autocomplete(autoArgs);  
+            
+            var autoArgsSkills = autocompleteMultiple('getskills', skillsSet);
+            $("#skills").bind("keydown", autoArgsSkills.bind);
+            $("#skills").autocomplete(autoArgsSkills);  
             this.hasAutocompleter = true;
         }
         $('#more-accordion').accordion({

@@ -1,4 +1,4 @@
-var skills = [
+var skillsSet = [
 '.NET',
 'Access DB',
 'Active Directory',

@@ -838,3 +838,7 @@ input[type=password]:focus {
 #ajaxSpin img {
     margin: 22px;
 }
+
+.ui-autocomplete a.ui-state-hover {
+    background: #FFD;
+}

@@ -5,7 +5,7 @@
         </div>
         <div class="floatLeft">
             <span class="project-label" id="addRunner-label">Add Runner</span>
-            <input type="text" class="add-runner ac_input" name="addrunner" autocomplete="on" />
+            <input type="text" class="add-runner ac_input" name="addrunner" id="addrunner-textbox" autocomplete="on" />
         </div>
         <div class="buttonContainer">
             <input type="submit" name="add-runner" value="Add" />

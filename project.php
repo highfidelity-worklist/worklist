@@ -153,7 +153,6 @@ require_once('opengraphmeta.php');
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
@@ -235,10 +234,9 @@ require_once('opengraphmeta.php');
         }
         getProjectRunners();
         
-        $('.add-runner').autocomplete('getusers.php', {
-            multiple: false,
-            extraParams: { nnonly: 1 }
-        });
+        var autoArgs = autocompleteMultiple('getuserslist', null);
+        $("#addrunner-textbox").bind("keydown", autoArgs.bind);
+        $("#addrunner-textbox").autocomplete(autoArgs);  
         
         $('#addRunner-form').submit(function(event) {
             openNotifyOverlay('<span>Adding runner to your project...</span>', false);
@@ -386,9 +384,7 @@ require_once('opengraphmeta.php');
         $('#popup-edit-role').dialog({ autoOpen: false, dialogClass: 'white-theme', modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
 
         $('#popup-testflight').dialog({ autoOpen: false, maxWidth: 600, width: 410, show: 'fade', hide: 'fade' });
-        
-        $("#owner").autocomplete('getusers.php', { cacheLength: 1, max: 8 } );
-        
+
         <?php if ($edit_mode): ?>
             $('#cancel_project_edit').click(function() {
                 location.href = '?action=view';

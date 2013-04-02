@@ -12,8 +12,13 @@ include("functions.php");
 $con=mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 mysql_select_db(DB_NAME,$con);
 
-$query = "select id, nickname from ".USERS." WHERE 1=1";
-if(isset($_REQUEST['startsWith']) && !empty($_REQUEST['startsWith'])) {
+$query = "SELECT id, nickname FROM " . USERS . " WHERE 1=1";
+
+if (isset($_REQUEST['getNicknameOnly'])) {
+    $query = "SELECT nickname FROM " . USERS . " WHERE 1=1";
+}
+
+if (isset($_REQUEST['startsWith']) && !empty($_REQUEST['startsWith'])) {
     $startsWith = $_REQUEST['startsWith'];
     $query .= " AND nickname like '".mysql_real_escape_string($startsWith)."%'";
 }
@@ -24,8 +29,14 @@ $result = mysql_query($query);
 
 $data = array();
 while ($result && $row=mysql_fetch_assoc($result)) {
-    $data[] = $row;
+    if ($_REQUEST['getNicknameOnly']) {
+        $data[] = $row['nickname'];
+    } else {
+        $data[] = $row;
+    }
+        
 }
+
 
 echo json_encode($data);
 

@@ -40,7 +40,6 @@ if (empty($project) || empty($username) || empty($nickname) || empty($unixname))
 <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.combobox.css" rel="stylesheet" />
 <link type="text/css" href="css/budget.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/datepicker.js"></script>
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>

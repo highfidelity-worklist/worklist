@@ -37,7 +37,6 @@ include("opengraphmeta.php");
 
 <script type="text/javascript" src="js/jquery.timeago.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
-<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
 <script type="text/javascript" src="js/project.js"></script>
 <script type="text/javascript" src="js/utils.js"></script>
