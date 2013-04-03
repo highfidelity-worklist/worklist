@@ -834,16 +834,22 @@ class Project {
      */
     public function getRunners() {
         $query = 
-            "SELECT DISTINCT u.id, u.nickname, 
-            ( SELECT COUNT(*) FROM " . WORKLIST . " w 
-            LEFT JOIN " . PROJECT_RUNNERS . " p on w.project_id = p.project_id 
-            WHERE w.runner_id = u.id 
-            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')  
-            AND p.project_id = " . $this->getProjectId() . ") as totalJobCount 
+            "SELECT DISTINCT u.id, u.nickname, (
+                SELECT COUNT(DISTINCT(w.id))
+                FROM " . WORKLIST . " w 
+                LEFT JOIN " . PROJECT_RUNNERS . " p on w.project_id = p.project_id 
+                WHERE w.runner_id = u.id 
+                AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')  
+                AND p.project_id = " . $this->getProjectId() . "
+            ) totalJobCount 
             FROM " . USERS . " u 
-            WHERE u.id IN(SELECT runner_id from rel_project_runners WHERE project_id = " . $this->getProjectId() . ") 
+            WHERE u.id IN (
+                SELECT runner_id
+                FROM rel_project_runners
+                WHERE project_id = " . $this->getProjectId() . "
+            ) 
             ORDER BY totalJobCount DESC";
-            
+
         $result = mysql_query($query);
         if (is_resource($result) && mysql_num_rows($result) > 0) {
             while($row = mysql_fetch_assoc($result)) {
@@ -923,9 +929,14 @@ class Project {
     }
     
     public function getTotalJobs() {
-        $query = "SELECT COUNT(p.project_id) AS jobCount FROM " . WORKLIST . " w 
-                  LEFT JOIN " . PROJECTS . " p ON w.project_id = p.project_id  
-                  WHERE w.status <> 'Draft' AND p.project_id = " . $this->getProjectId();
+        $query = "
+            SELECT COUNT(w.id) jobCount
+            FROM " . WORKLIST . " w 
+            LEFT JOIN " . PROJECTS . " p ON w.project_id = p.project_id  
+            WHERE
+                w.status NOT IN ('Draft', 'Pass') AND
+                p.project_id = " . $this->getProjectId();
+
         if($result = mysql_query($query)) {
             $count = mysql_fetch_assoc($result);
             return $count['jobCount'];
