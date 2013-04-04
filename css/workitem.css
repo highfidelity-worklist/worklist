@@ -384,7 +384,7 @@ a:hover{
 #left-panel .buttonContainer{
     padding-left: 0 !important;
     float: left !important;
-    margin: 12px 0 !important;
+    margin: 12px 5px !important;
 }
 
 #left-panel .buttonContainer .smbutton{
@@ -1213,7 +1213,7 @@ a:hover{
     border: 1px solid #D6D6D6;
     padding: 12px;
     margin-top: -4px;
-    width: 425px;
+    width: 405px;
     height: 21px;
 }
 
@@ -1221,10 +1221,14 @@ a:hover{
     border: none !important;
 }
 
+.commentform .button-container .hidden {
+    display: none !important;
+}
+
 .commentform .button-container .buttonContainer {
     padding-left: 6px;
     float: left;
-    margin: 12px 0;
+    margin: 12px 4px 0;
 }
 
 .commentform textarea {
@@ -1233,7 +1237,7 @@ a:hover{
     padding: 12px;
     border: 1px solid #D6D6D6;
     font-size: 13px;
-    width: 425px !important;
+    width: 405px !important;
     height: 52px;
     font-family: Arial, Helvetica, sans-serif;
 }

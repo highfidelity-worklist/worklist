@@ -243,9 +243,24 @@ function reply(id) {
     commentForm.remove();
     clone.insertAfter($('#comment-' + id));
     commentMargin = $('#comment-' + id).css('margin-left');
-    leftMargin= (64 + parseInt(commentMargin)) + "px";
+    leftMargin = 64 + "px";
     clone.css({'margin-left':leftMargin});
     $('.commentform input[name=comment_id]').val(id);
+    $('.commentform input[name=newcomment]').val('Reply');
+    $('.commentform .buttonContainer').removeClass('hidden');
+    $('.commentform form input[name=cancel]').click(function(event) {
+        event.preventDefault();
+        $('.commentform').remove();
+        clone.css({'margin-left':'0'});
+        clone.insertAfter($('.commentZone ul'));
+        $(this).parent().addClass('hidden');
+        $('.commentform input[name=newcomment]').val('Comment');
+        $('.commentform input[name=comment_id]').val('');
+        $('.commentform form input[name=newcomment]').click(function(event) {
+            event.preventDefault();
+            postComment();
+        });
+    });
     $('.commentform form input[name=newcomment]').click(function(event) {
         event.preventDefault();
         postComment();
@@ -260,6 +275,8 @@ function postComment() {
     var color = 'imOdd';
     $('.commentform form textarea[name=comment]').val('');
     $('.commentform input[name=comment_id]').val('');
+    $('.commentform input[name=newcomment]').val('Comment');
+    $('.commentform input[name=cancel]').parent().addClass('hidden');
     $('.commentform').css({'margin-left':0});
     var commentForm = $('.commentform');
     var clone = commentForm.clone();
@@ -2020,7 +2037,10 @@ if ($action =="edit"):  ?>
                         <input type="hidden" name="comment_id" value="" />
                         <textarea name="comment" class="expand100-300" cols="20" rows="4" size="33"></textarea>
                         <br />
-                        <div class="button-container"><div class="buttonContainer"><input type="submit" class="smbutton" name="newcomment" value="Comment" class="disableable" /></div></div>
+                        <div class="button-container">
+                            <div class="buttonContainer"><input type="submit" class="smbutton" name="newcomment" value="Comment" class="disableable" /></div>
+                            <div class="buttonContainer hidden"><input type="submit" class="smbutton" name="cancel" value="Cancel" class="disableable" /></div>
+                        </div>
                     </form>
                 </div>
                 <?php endif; ?>
