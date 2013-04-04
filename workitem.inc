@@ -1620,7 +1620,9 @@ $(document).ready(function(){
                             <?php
                                 }
                             }
-                        } else if ($worklist['creator_id']== $user_id && $worklist['status'] != 'Done') { //creator
+                        } else if ($worklist['creator_id']== $user_id && $worklist['status'] != 'Working' 
+                            && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' 
+                            && $worklist['status'] != 'Completed' && $worklist['status'] != 'Done' ) { //creator
                             foreach ($statusListCreator as $status) {
                                 if ($status != $worklist['status']) {
                             ?>
