@@ -839,7 +839,7 @@ class Project {
                 FROM " . WORKLIST . " w 
                 LEFT JOIN " . PROJECT_RUNNERS . " p on w.project_id = p.project_id 
                 WHERE w.runner_id = u.id 
-                AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')  
+                AND w.status IN('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')  
                 AND p.project_id = " . $this->getProjectId() . "
             ) totalJobCount 
             FROM " . USERS . " u 
