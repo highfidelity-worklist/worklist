@@ -205,7 +205,7 @@ $options = array(
        	CURLOPT_TIMEOUT        => 120,
         CURLOPT_MAXREDIRS      => 10,
        	CURLOPT_POST           => 1,
-        CURLOPT_POSTFIELDS     => http_build_query(array_merge($_GET,array('api_key' => JOURNAL_API_KEY))),
+        CURLOPT_POSTFIELDS     => http_build_query(array_merge($_GET, array('api_key' => API_KEY))),
        	CURLOPT_SSL_VERIFYHOST => 0,
         CURLOPT_SSL_VERIFYPEER => false,
        	CURLOPT_VERBOSE        => 1,

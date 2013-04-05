@@ -91,7 +91,7 @@ class Review extends DataObject {
      * Get reviews that have been updated on DONE and have not been notified on journal yet
      */
     public static function getReviewsWithPendingJournalNotifications() {
-        $sql = 'SELECT * FROM ' . REVIEWS . ' WHERE journal_notified = 0';
+        $sql = 'SELECT * FROM ' . REVIEWS . ' WHERE journal_notified != 1';
         $results = array();
         if($result = mysql_query($sql)){
             while ($row = mysql_fetch_assoc($result)){

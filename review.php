@@ -121,12 +121,9 @@ class UserReview {
                     $this->respond(true, "No changes made.",'');
                 }
                 $review->review = $userReview;
-                $review->journal_notified = ($notify_now === 1 ? 1 : 0);
+                $review->journal_notified = 0;
                 if ($review->save('reviewer_id', 'reviewee_id')) {
                     $oReview = $review->getReviews($reviewee_id, $reviewer_id, ' AND r.reviewer_id=' . $reviewer_id);
-                    if ($notify_now) {
-                        sendReviewNotification($reviewee_id, "update", $oReview);
-                    }
                     $this->respond(true, "Review updated.",'');
                 } else {
                     $this->respond(false, "Cannot update review! Please retry later.",''); 
@@ -138,7 +135,7 @@ class UserReview {
                     'reviewer_id' => $reviewer_id,
                     'reviewee_id' => $reviewee_id,
                     'review' => $userReview,
-                    'journal_notified' => ($notify_now === 1 ? 1 : 0)
+                    'journal_notified' => -1
                 );
                         
                 if ($review->insertNew($values)) {
@@ -146,9 +143,6 @@ class UserReview {
                     if (count($myReview) == 0) {
                         $review->removeRow(" reviewer_id = ".$reviewer_id . " AND reviewee_id = ".$reviewee_id);
                         $this->respond(true, "Review with no paid fee is not allowed.",'');
-                    }
-                    if ($notify_now) {
-                        sendReviewNotification($reviewee_id, "new", $oReview);
                     }
                     $this->respond(true, "Review saved.", array('myReview' => $myReview));
                 } else {

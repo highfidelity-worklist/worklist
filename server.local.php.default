@@ -103,7 +103,6 @@ define('API_KEY','worklist_dev_worklist_unsecure');
 define('JOURNAL_API_URL', 'https://' . SERVER_NAME . '/' . SANDBOX_USER . SANDBOX_NAME . 'add.php');
 define('JOURNAL_API_USER', 'api_work@dev.sendlove.us');
 define('JOURNAL_API_PWD', 'journalpwd');
-define('JOURNAL_API_KEY', 'worklist_dev_journal_unsecure');
 define('JOURNAL_QUERY_URL', 'https://' . SERVER_NAME . '/' . SANDBOX_USER . SANDBOX_NAME . 'api.php');
 define('JOURNAL_QUERY_URL_SSL', 'https://' . SERVER_NAME . '/' . SANDBOX_USER . SANDBOX_NAME . 'api.php');
 

@@ -39,9 +39,6 @@ if(validateAction()) {
                 validateAPIKey();
                 loginUserIntoSession();
                 break;
-            case 'getLatestPosts':
-                getLatestPosts();
-                break;
             case 'getTaskPosts':
                 getTaskPosts();
                 break;
@@ -183,37 +180,12 @@ function validateAPIKey() {
     if( ! isset($_REQUEST["api_key"])) {
         error_log("No api key defined.");
         die("No api key defined.");
-    //If we get the JOURNAL_API_KEY, only do journal queries
-    } else if( (strcmp($_REQUEST["api_key"],JOURNAL_API_KEY) == 0 )
-           &&  (!in_array($_REQUEST['action'], array('getLatestPosts'))) ) {
-                error_log("Wrong api key provided.");
-                die("Wrong api key provided.");
     } else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
         error_log("Wrong api key provided.");
         die("Wrong api key provided.");
     } else {
         return true;
     }
-}
-
-function  getLatestPosts() {
-
-    require_once('chat.class.php');
-    $toTime = 0;
-    $prevNext = '';
-    $query = isset($_REQUEST['query']) ? $_REQUEST['query'] : '';
-    $response = new AjaxResponse($chat);
-    try
-    {
-        $data = $response->latest();
-    }
-    catch(Exception $e)
-    {
-        $data['error'] = $e->getMessage();
-    }
-    
-    $json = json_encode($data);
-    echo $json;
 }
 
 // Created for Worklist Job #13424 [danbrown]
@@ -558,7 +530,13 @@ function processPendingReviewsNotifications() {
         foreach ($pendingReviews as $review) {
             $tReview = new Review();
             $tReview->loadById($review['reviewer_id'], $review['reviewee_id']);
-            sendReviewNotification($tReview->reviewee_id, 'update', $tReview->getReviews($tReview->reviewee_id,$tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
+            if ($tReview->journal_notified == 0) {
+                sendReviewNotification($tReview->reviewee_id, 'update',
+                    $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
+            } else {
+                sendReviewNotification($tReview->reviewee_id, 'new', 
+                    $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
+            }
             $tReview->journal_notified = 1;
             $tReview->save('reviewer_id', 'reviewee_id');
             usleep(4000000);
