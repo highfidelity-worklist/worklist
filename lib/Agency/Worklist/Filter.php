@@ -351,13 +351,33 @@ class Agency_Worklist_Filter {
     public function getProjectSelectbox($initialMessage = 'ALL',  $active = 1, $projectId = 'projectCombo', $projectName = 'project') {
         $box = '<select id="' . $projectId . '" name="' . $projectName . '" class="project-dropdown hidden" ' . '>';
         $box .= '<option value="0"' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $initialMessage . '</option>';
+        
+        $options = '';
+        $found = false;
+
         foreach ( Project::getProjects((bool) $active, array('name', 'project_id')) as $project) {
+            if ($this->getProjectId() && $this->getProjectId() == $project['project_id']) {
+                $found = true;
+            }
+
             // handle long project names
             $project_name = $project['name'];
-            $box .= '<option value="' . $project['project_id'] . '"' . (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project_name . '</option>';
+            $options .= '<option value="' . $project['project_id'] . '"' . 
+                (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project_name . '</option>';
         }
-        $box .= '</select>';
         
+        if (! $found && $this->getProjectId()) {
+            $options = '';
+
+            foreach ( Project::getProjects(false, array('name', 'project_id')) as $project) {
+                // handle long project names
+                $project_name = $project['name'];
+                $options .= '<option value="' . $project['project_id'] . '"' . 
+                    (($this->getProjectId() == $project['project_id']) ? ' selected="selected"' : '') . '>' . $project_name . '</option>';
+            }
+        }
+
+        $box .= ($options . '</select>');
         return $box;
     }
 

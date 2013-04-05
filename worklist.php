@@ -55,6 +55,10 @@ $project_id = 0;
 
 if (! empty($_REQUEST['status'])) {
     $filter->setStatus($_REQUEST['status']);
+} else {
+    if (array_key_exists('status', $_REQUEST)) {
+        $filter->setStatus('ALL');
+    }
 }
 
 if (isset($_REQUEST['project'])) {
@@ -64,11 +68,18 @@ if (isset($_REQUEST['project'])) {
         if ($project_id = $project->getProjectId()) {
             $filter->setProjectId($project_id);
         }
-    } catch(Exception $e) {}
+    } catch(Exception $e) {
+        $filter->setProjectId(0);
+    }
     unset($project);
 }
+
 if (! empty($_REQUEST['user'])) {
     $filter->setUser($_REQUEST['user']);
+} else {
+    if (array_key_exists('user', $_REQUEST)) {
+        $filter->setUser(0);
+    }
 }
 
 if ($userId > 0 && isset($_POST['save_item'])) {

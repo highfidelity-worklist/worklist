@@ -71,10 +71,10 @@ require_once ("functions.php");
             <a href="<?php echo $viewSourceLink;?>" target="_blank">View the source code</a> | Version: <?php echo $version;?>
             <div id="stats-area">
                 <span id='stats-text'>
-                    <a href='./worklist.php?status=bidding' class='iToolTip jobsBidding actionBidding' ><span id='count_b'></span> jobs</a>
-                    bidding, 
-                    <a href='./worklist.php?status=underway' class='iToolTip jobsBidding actionUnderway' ><span id='count_w'></span> jobs</a>
-                    underway
+                    <a href="./worklist.php?status=bidding&project=0&user=0" class="iToolTip jobsBidding actionBidding">
+                        <span id="count_b"></span> jobs</a> bidding, 
+                    <a href="./worklist.php?status=underway&project=0&user=0" class="iToolTip jobsBidding actionUnderway">
+                        <span id="count_w"></span> jobs</a> underway
                 </span>
             </div>
         </div>
