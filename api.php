@@ -519,7 +519,7 @@ function updateLastSeen() {
 
 function processPendingReviewsNotifications() {
     // Check if it is time to process notifications
-    if (!canProcessNotifications()) {
+    if (!isset($_REQUEST['force']) && !canProcessNotifications()) {
         return;
     }
 
@@ -541,6 +541,8 @@ function processPendingReviewsNotifications() {
             $tReview->save('reviewer_id', 'reviewee_id');
             usleep(4000000);
         }
+    } else {
+        echo "<br />Processed. No pending Reviews.";
     }
     resetCronFile();
 }
@@ -552,7 +554,7 @@ function canProcessNotifications() {
         return true;
     } else {
         $hour = (int) file_get_contents($file);
-        $serverHour = (int) date('h'); 
+        $serverHour = (int) date('H'); 
         if ($serverHour == $hour) {
             return true;
         } else {
@@ -566,7 +568,7 @@ function canProcessNotifications() {
 
 function resetCronFile() {
     $hourLag = mt_rand(5, 12);
-    $serverHour = (int) date('h');
+    $serverHour = (int) date('H');
     $newHour = $hourLag + $serverHour;
     if ($newHour > 23) {
         $newHour -= 24;
@@ -575,6 +577,7 @@ function resetCronFile() {
     echo "<br/>Next hour: " . $newHour;
     unlink(REVIEW_NOTIFICATIONS_CRON_FILE);
     file_put_contents(REVIEW_NOTIFICATIONS_CRON_FILE, $newHour);
+    chmod (REVIEW_NOTIFICATIONS_CRON_FILE, 0755);
 }
 
 
