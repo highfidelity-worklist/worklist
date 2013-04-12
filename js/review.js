@@ -157,11 +157,11 @@ var WReview = {
                         return;
                     }
                 }],            
-                modal:true,
+                modal: true,
                 title: title,
-                autoOpen:false,
-                width:650,
-                height:350,
+                autoOpen: false,
+                resizable: false,
+                width: 650,
                 position: ['top'],
                 open: function() {
                     var oThis=this;
