@@ -129,6 +129,7 @@ function StopStatus() {
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/jquery_all.js"></script>
 <script type="text/javascript" src="js/journal.js"></script>
+<script type="text/javascript" src="js/skills.js"></script>
 <?php else: ?>
 <script type="text/javascript" src="js/jscode.min.js"></script>
 <?php endif; ?>
