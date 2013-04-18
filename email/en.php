@@ -266,7 +266,16 @@ replacement data:
 'commit-howto' => array(
     
 ),
-
+'project-codereviewer-added' => array(
+   'subject' => 'Added as a Code Reviewer to Project',
+   'body' =>
+       '<p>Hi {nickname}</p>
+       <p>Congrats! You have been granted Code Review rights for the following project:<br />
+       <a href="{projectUrl}">{projectName}</a><br />
+       Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
+       <p>Please contact the project founder with any questions.</p>
+       <p>- Worklist.net</p>'
+),
 'project-runner-added' => array(
     'subject' => 'Added as a Runner to Project',
     'body' =>
@@ -283,6 +292,16 @@ replacement data:
     'body' => 
         '<p>Hi {nickname}</p>
         <p>Your Runner rights have been removed for the following project:<br />
+        <a href="{projectUrl}">{projectName}</a><br />
+        Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
+        <p>Please contact the project founder with any questions.</p>
+        <p>- Worklist.net</p>'
+),
+'project-codereview-removed' => array(
+        'subject' => 'Code Review rights removed for Project',
+        'body' =>
+        '<p>Hi {nickname}</p>
+        <p>Your Code Review rights have been removed for the following project:<br />
         <a href="{projectUrl}">{projectName}</a><br />
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>

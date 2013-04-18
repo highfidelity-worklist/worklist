@@ -75,22 +75,23 @@
 
     }(jQuery);
 
-    function validateCodeReviews() {
-        if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
-            $('.cr_anyone_field').prop('checked', true);
-            $('#edit_cr_error').html("One selection must be checked");
-            $('#edit_cr_error').fadeIn();
-            $('#edit_cr_error').delay(2000).fadeOut();
+    function validateCodeReviews(control) {
+        if (!$('#cr_anyone_field').is(':checked') && !$('#cr_3_favorites_field').is(':checked') && 
+            !$('#cr_project_admin_field').is(':checked') && !$('#cr_job_runner_field').is(':checked') &&
+            !$('#cr_users_specified_field').is(':checked')) {
+            $('#cr_anyone_field').prop('checked', true);
+            openNotifyOverlay('One selection must be checked', true);
         };
-        if (!$('.cr_anyone_field_ap').is(':checked') && !$('.cr_3_favorites_field_ap').is(':checked') && !$('.cr_project_admin_field_ap').is(':checked') && !$('.cr_job_runner_field_ap').is(':checked')) {
-            $('.cr_anyone_field_ap').prop('checked', true);
-            $('#edit_cr_error_ap').html("One selection must be checked");
-            $('#edit_cr_error_ap').fadeIn();
-            $('#edit_cr_error_ap').delay(2000).fadeOut();
+        if($(control).attr('id') == "cr_users_specified_field") {
+            if($('#cr_users_specified_field').is(':checked')) {
+                $('.code_review_chks').prop('checked', false);
+            } 
+        } else if ($(control).is(':checked')) {
+            $('#cr_users_specified_field').prop('checked', false);
         }
+
     };
-
-
+    
     $(document).ready(function() {
         populateProjectListing();
 
@@ -103,8 +104,8 @@
         // Validate code review input
         // @TODO: The :checkbox selector is too broad, we might
         // have additional checkboxes in the future..   - lithium
-        $(':checkbox').change(function() {
-            validateCodeReviews();
+        $('.code_review_chks, #cr_users_specified_field').change(function(){
+            validateCodeReviews(this);
         });
 
     });

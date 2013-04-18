@@ -5,10 +5,8 @@
         </div>
         <div class="floatLeft">
             <span class="project-label" id="addRunner-label">Add Runner</span>
-            <input type="text" class="add-runner ac_input" name="addrunner" id="addrunner-textbox" autocomplete="on" />
-        </div>
-        <div class="buttonContainer">
-            <input type="submit" name="add-runner" value="Add" />
+            <input type="text" class="add-runner" name="addrunner" id="addrunner-textbox" />
+            <input type="submit" id="add-runner-submit" name="add-runner" class="add-submit" value="Add" />
         </div>
     </form>
 </div>

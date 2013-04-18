@@ -33,6 +33,7 @@ class Project {
     protected $cr_project_admin;
     protected $cr_3_favorites;
     protected $cr_job_runner;
+    protected $cr_users_specified;
     protected $internal;
     protected $repo_type;
     protected $creation_date;
@@ -115,6 +116,7 @@ class Project {
                 p.cr_3_favorites,
                 p.cr_project_admin,
                 p.cr_job_runner,
+                p.cr_users_specified,
                 p.internal, 
                 p.creation_date,
                 p.hipchat_enabled,
@@ -153,6 +155,7 @@ class Project {
              $this->setCrFav($row['cr_3_favorites']);
              $this->setCrAdmin($row['cr_project_admin']);
              $this->setCrRunner($row['cr_job_runner']);
+             $this->setCrUsersSpecified($row['cr_users_specified']);
              $this->setInternal($row['internal']);
              $this->setCreationDate($row['creation_date']);
         $this->setHipchatEnabled($row['hipchat_enabled']);
@@ -371,11 +374,15 @@ class Project {
         $this->cr_job_runner = $cr_job_runner;
         return $this;
     }
-
+    public function setCrUsersSpecified($cr_users_specified) {
+        $this->cr_users_specified = $cr_users_specified;
+    }
     public function getCrRunner() {
         return $this->cr_job_runner;
     }
-    
+    public function getCrUsersSpecified() {
+        return $this->cr_users_specified;
+    }
     public function setInternal($internal) {
         $this->internal = $internal ? 1 : 0;
         return $this;
@@ -508,7 +515,7 @@ class Project {
             (name, description, website, budget, repository, contact_info, active,
                 owner_id, testflight_enabled, testflight_team_token,
                 logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin,
-                cr_job_runner, internal, creation_date, hipchat_enabled,
+                cr_job_runner,cr_users_specified, internal, creation_date, hipchat_enabled,
                 hipchat_notification_token, hipchat_room, hipchat_color) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
@@ -527,6 +534,7 @@ class Project {
             "'".intval($this->getCrFav())."', ".
             "'".intval($this->getCrAdmin())."', ".
             "'" . intval($this->getCrRunner()) . "', " .
+            "'" . intval($this->getCrUsersSpecified()) . "', " .
             "'" . intval($this->getInternal()) . "', " .
             "NOW(), " .
             "'" . intval($this->getHipchatEnabled()) . "', " .
@@ -576,6 +584,7 @@ class Project {
                 cr_3_favorites='".intval($this->getCrFav())."',
                 cr_project_admin='".intval($this->getCrAdmin())."',
                 cr_job_runner='" . intval($this->getCrRunner()) . "',
+                cr_users_specified='" . intval($this->getCrUsersSpecified()) . "',
                 internal='" . intval($this->getInternal()) . "',
                 hipchat_enabled='" . intval($this->getHipchatEnabled()) . "',
                 hipchat_notification_token='" . mysql_real_escape_string($this->getHipchatNotificationToken()) . "',
@@ -736,7 +745,10 @@ class Project {
     public function isOwner($user_id = false) {
         return $user_id == $this->getOwnerId();
     }
-
+    public function isProjectCodeReviewer($user_id = false) {
+        return array_key_exists($user_id, $this->getCodeReviewers());
+    }
+    
     /**
       Determine if the given user_id is a project runner
     */
@@ -801,7 +813,29 @@ class Project {
         $query = "DELETE FROM `".ROLES."`  WHERE `id`={$role_id}";
         return mysql_query($query) ? 1 : 0;
     }  
-
+    /**
+     * Allows you to add a code reviewer to the project
+     * @param $codeReviewer_id
+     * @return number
+     */
+    public function addCodeReviewer($codeReviewer_id) {
+        $project_id = $this->getProjectId();
+        $codeReviewer_id = (int) $codeReviewer_id;
+        $query = "INSERT INTO `" . REL_PROJECT_CODE_REVIEWERS . "` (project_id, code_reviewer_id) " .
+            "VALUES (" . $project_id . ", " . $codeReviewer_id . ")";
+        return mysql_query($query) ? 1 : 0;
+    }
+    
+    public function deleteCodeReviewer($codeReviewer_id) {
+        $codeReviewer_id = (int) $codeReviewer_id;
+        if ($codeReviewer_id == $this->getOwnerId()) {
+            return false;
+        }
+        $project_id = $this->getProjectId();
+        $query = "DELETE FROM `" . REL_PROJECT_CODE_REVIEWERS . "` " .
+            "WHERE `project_id`={$project_id} AND `code_reviewer_id`={$codeReviewer_id}";
+        return mysql_query($query) ? 1 : 0;
+    }
     /**
      * Add Runner to Project
      */
@@ -861,7 +895,41 @@ class Project {
             return false;
         }
     }
-
+    
+    /**
+     * Get the Code Reviewers for current project
+     * @return unknown|boolean
+     */
+    public function getCodeReviewers() {
+       $query =
+        "SELECT DISTINCT u.id, u.nickname, (
+        SELECT COUNT(DISTINCT(w.id))
+        FROM " . WORKLIST . " w
+        LEFT JOIN " . REL_PROJECT_CODE_REVIEWERS . " p on w.project_id = p.project_id
+        WHERE (w.runner_id = u.id OR w.creator_id = u.id OR w.mechanic_id = u.id)
+        AND w.status IN('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
+        AND p.project_id = " . $this->getProjectId() . "
+        ) totalJobCount
+        FROM " . USERS . " u
+        WHERE u.id IN (
+        SELECT code_reviewer_id
+        FROM " . REL_PROJECT_CODE_REVIEWERS . "
+        WHERE project_id = " . $this->getProjectId() . "
+        )
+        ORDER BY totalJobCount DESC";
+       
+        $result = mysql_query($query);
+        
+        if (is_resource($result) && mysql_num_rows($result) > 0) {
+            while($row = mysql_fetch_assoc($result)) {
+                $row['owner'] = ($row['id'] == $this->getOwnerId());
+                $code_reviewers[$row['id']] = $row;
+            }
+            return $code_reviewers;
+        } else {
+            return false;
+        }
+    }
     /* 
      Get the list of allowed runners for Project
      */
@@ -900,6 +968,29 @@ class Project {
         return false;
     }
 
+    /**
+     * Get the last activity of the code reviewer on the current project
+     * @param $userId
+     * @return boolean|string
+     */
+    public function getCodeReviewersLastActivity($userId) {
+        $sql = "SELECT MAX(change_date) FROM " . STATUS_LOG . " s
+            LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id
+            LEFT JOIN " . REL_PROJECT_CODE_REVIEWERS . " p on p.project_id = w.project_id
+            WHERE s.user_id = " . $userId . " AND p.project_id = " . $this->getProjectId() . " ";
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            $lastActivity = strtotime($row[0]);
+            $rightNow = time();
+            if($lastActivity == '') {
+                return false;
+            } else {
+                return (formatableRelativeTime($lastActivity, 2) . " ago");
+            }
+        }
+            return false;
+    }
+    
     public function getRunnersLastActivity($userId) {
         $sql = "SELECT MAX(change_date) FROM " . STATUS_LOG . " s 
                 LEFT JOIN " . WORKLIST . " w ON s.worklist_id = w.id 

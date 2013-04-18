@@ -63,6 +63,7 @@ if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner))
     $cr_anyone = ($_REQUEST['cr_anyone']) ? 1 : 0;
     $cr_3_favorites = ($_REQUEST['cr_3_favorites']) ? 1 : 0;
     $cr_project_admin = isset($_REQUEST['cr_project_admin']) ? 1 : 0;
+    $cr_users_specified = isset($_REQUEST['cr_users_specified']) ? 1 : 0;
     $cr_job_runner = isset($_REQUEST['cr_job_runner']) ? 1 : 0;
     $internal = isset($_REQUEST['internal']) ? 1 : 0;
     $hipchat_enabled = isset($_REQUEST['hipchat_enabled']) ? 1 : 0;
@@ -70,6 +71,7 @@ if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner))
     $project->setCrFav($cr_3_favorites);
     $project->setCrAdmin($cr_project_admin);
     $project->setCrRunner($cr_job_runner);
+    $project->setCrUsersSpecified($cr_users_specified);
     $project->setHipchatEnabled($hipchat_enabled);
     $project->setHipchatNotificationToken($_REQUEST['hipchat_notification_token']);
     $project->setHipchatRoom($_REQUEST['hipchat_room']);
@@ -157,6 +159,7 @@ require_once('opengraphmeta.php');
 <script type="text/javascript" src="js/timepicker.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/paginator.js"></script>
+<script type="text/javascript" src="js/project.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter_desc.js"></script>
 <script type="text/javascript">
     var userId = user_id = <?php echo getSessionUserId(); ?>;
@@ -234,10 +237,7 @@ require_once('opengraphmeta.php');
         }
         getProjectRunners();
         
-        var autoArgs = autocompleteMultiple('getuserslist', null);
-        $("#addrunner-textbox").bind("keydown", autoArgs.bind);
-        $("#addrunner-textbox").autocomplete(autoArgs);  
-        
+        $("#addrunner-textbox").autocomplete({source: autocompleteUserSource});
         $('#addRunner-form').submit(function(event) {
             openNotifyOverlay('<span>Adding runner to your project...</span>', false);
             $.ajax({
@@ -265,12 +265,11 @@ require_once('opengraphmeta.php');
             
             return false;
         });
-    
+
         $('#removerunner').click(function(event) {
-            openNotifyOverlay(
-                '<span>Removing selected user(s) as Runner(s) for this project. ' +
+            Utils.infoDialog('Removing Runner','Removing selected user(s) as Runner(s) for this project. ' +
                 'If this user has active jobs for which they are the Runner, you will need to ' +
-                'change the Runner status to an eligible Runner.</span>', true);
+                'change the Runner status to an eligible Runner.' );
             
             var runners = '';
             $('#projectRunners input[name^=runner]:checked').each(function() {
@@ -291,6 +290,100 @@ require_once('opengraphmeta.php');
                 success: function(data) {
                     if (data.success) {
                         getProjectRunners();
+                    }
+                }
+            });
+            return false;
+        });
+
+        $("#addcodereviewer-textbox").autocomplete({source: autocompleteUserSource});
+        // Get the project code reviewers
+        getProjectCodeReviewers = function() {
+            $('#projectCodeReviewRights tbody').html('Loading ...');
+            $.ajax({
+                type: 'post',
+                url: 'jsonserver.php',
+                data: {
+                    projectid: projectid,
+                    action: 'getCodeReviewersProject'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#projectCodeReviewRights tbody').html('');
+                    if (data.success) {
+                        codeReviewers = data.data.codeReviewers;
+                        var html = '';
+                        if (codeReviewers.length > 0) {
+                            for(var i=0; i < codeReviewers.length; i++) {
+                                var codeReviewer = codeReviewers[i];
+                                html =
+                                    '<tr class="codeReviewer row' + ((i+1) % 2 ? 'odd' : 'even') + '">' +
+                                        <?php if ($is_admin || $is_owner): ?>
+                                        '<td class="codeReviewerRemove">' + (codeReviewer.owner ? '' : '<input type="checkbox" name="codereviewer' + codeReviewer.id + '" />') + '</td>' +
+                                        <?php endif; ?>
+                                        '<td class="codeReviewerName"><a href="userinfo.php?id=' + codeReviewer.id + '" target="_blank">' + codeReviewer.nickname + '</a></td>' +
+                                        '<td class="codeReviewerJobCount">' + codeReviewer.totalJobCount + '</td>' +
+                                        '<td class="codeReviewerLastActivity">' + (codeReviewer.lastActivity ? codeReviewer.lastActivity : '') + '</td>' +
+                                    '</tr>'
+                                $('#projectCodeReviewRights tbody').append(html);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        getProjectCodeReviewers();
+
+        $('#addcodereviewer-form').submit(function(event) {
+            openNotifyOverlay('<span>Adding Code Reviewer to your project...</span>', false);
+            $.ajax({
+                type: 'post',
+                url: 'jsonserver.php',
+                data: {
+                    projectid: projectid,
+                    nickname: $('.add-codeReviewer').val(),
+                    action: 'addCodeReviewerToProject'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('.add-codeReviewer').val('');
+                    closeNotifyOverlay();
+                    openNotifyOverlay('<span>' + data.data + '<span>', true);
+                    if (data.success) {
+                        getProjectCodeReviewers();
+                        $('#add-codereviewer').dialog('close');
+                    }
+                },
+                error: function() {
+                    closeNotifyOverlay();
+                }
+            });
+            
+            return false;
+        });
+        
+        $('#removecodereviewer').click(function(event) {
+            openNotifyOverlay(
+                '<span>Removing selected user(s) as Code reviewer(s) for this project. ', true);
+            var codeReviewers = '';
+            $('#projectCodeReviewRights input[name^=codereviewer]:checked').each(function() {
+                var codeReviewer = parseInt($(this).attr('name').substring(12));
+                if (codeReviewers.length) codeReviewers += ';';{
+                codeReviewers += '' + codeReviewer;
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url: 'jsonserver.php',
+                data: {
+                    projectid: projectid,
+                    codeReviewers: codeReviewers,
+                    action: 'removeCodeReviewersFromProject'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success) {
+                        getProjectCodeReviewers();
                     }
                 }
             });
@@ -352,19 +445,24 @@ require_once('opengraphmeta.php');
                 $('#popup-edit-role').dialog('open');
         });
 
-        //popup for adding Project Runner
-        $('#add-runner').dialog({
+        //popup for adding Project Runner and code reviewers
+        $('#add-runner, #add-codereviewer').dialog({
             autoOpen: false,
+            dialogClass: 'white-theme',
             resizable: false,
             modal: true,
             show: 'fade',
             hide: 'fade',
-            width: 350,
-            height: 180
+            width: 480,
+            height: 200
         });
         
         $('#addrunner').click(function() {
             $('#add-runner').dialog('open');
+        });
+        
+        $('#addcodereviewer').click(function() {
+            $('#add-codereviewer').dialog('open');
         });
         
         //popup for removing Project Runner
@@ -492,10 +590,11 @@ require_once('opengraphmeta.php');
     include('dialogs/popup-edit-role.inc'); 
     //Popup for TestFlight -->
     include('dialogs/popup-testflight.inc'); 
-    
     //Popup for Adding Project Runner 
     include('dialogs/popup-addrunner.inc'); 
-
+    //Popup for Adding Project Code Reviewer
+    include('dialogs/popup-addcodereviewer.inc');
+    
     require_once('header.php');
     require_once('format.php');
 ?>
@@ -633,7 +732,7 @@ require_once('opengraphmeta.php');
                 <?php endif; ?>
                 <li id="projectRunners">
                     <h3>Project runners</h3>
-                    <table>
+                    <table id="project_runners_table">
                         <thead>
                             <tr>
                                 <th <?php echo (($is_admin == 1) || $is_owner) ? 'colspan="2"' : ''; ?>>Who</th>
@@ -654,29 +753,52 @@ require_once('opengraphmeta.php');
                 <li id="projectCodeReviewRights">
                     <h3>Code reviews <span>are allowed from</span></h3>
                     <div>
-                        <input id="cr_anyone_field" name="cr_anyone" type="checkbox" 
+                        <input id="cr_anyone_field" name="cr_anyone" type="checkbox" class="code_review_chks"
                             <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?> value="1" 
                             <?php echo ($project->getCrAnyone() > 0) ? 'checked="checked"' : '' ; ?> />
                         <label for="cr_anyone_field">Anyone</label>
                     </div>
                     <div>
-                        <input id="cr_3_favorites_field" name="cr_3_favorites" type="checkbox" 
+                        <input id="cr_3_favorites_field" name="cr_3_favorites" type="checkbox" class="code_review_chks"
                         <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?> value="1" 
                         <?php echo ($project->getCrFav() > 0) ? 'checked="checked"' : '' ; ?> />
                         <label for="cr_3_favorites_field">Anyone who is trusted by more than [3] people</label>
                     </div>
                     <div>
-                        <input id="cr_project_admin_field" name="cr_project_admin" type="checkbox" 
+                        <input id="cr_project_admin_field" name="cr_project_admin" type="checkbox" class="code_review_chks"
                         <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?> value="1" 
                         <?php echo ($project->getCrAdmin() > 0) ? 'checked="checked"' : '' ; ?> />
                         <label for="cr_project_admin_field">Anyone who is trusted by the project admin</label>
                     </div>
                     <div>
-                        <input id="cr_job_runner_field" name="cr_job_runner" type="checkbox" 
+                        <input id="cr_job_runner_field" name="cr_job_runner" type="checkbox" class="code_review_chks"
                         <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?> value="1" 
                         <?php echo ($project->getCrRunner() > 0) ? 'checked="checked"' : '' ; ?> />
                         <label for="cr_job_runner_field">Anyone who is trusted by the job manager</label>
                     </div>
+                    <div>
+                        <input id="cr_users_specified_field" name="cr_users_specified" type="checkbox"
+                        <?php echo $edit_mode ? '' : 'disabled="disabled"'; ?> value="1" 
+                        <?php echo ($project->getCrUsersSpecified() > 0) ? 'checked="checked"' : '' ; ?> />
+                        <label for="cr_users_specified_field">Use only code reviewers listed below</label>
+                    </div>
+                    <table id="codeReviewers">
+                        <thead>
+                            <tr>
+                                <th <?php echo (($is_admin == 1) || $is_owner) ? 'colspan="2"' : ''; ?>>Who</th>
+                                <th># of Jobs</th>
+                                <th>Last Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <?php if (($is_admin == 1) || $is_owner): ?>
+                        <div class="buttonContainer">
+                            <input type="submit" id="addcodereviewer" value="Add" />
+                            <input type="submit" id="removecodereviewer" value="Remove" />
+                        </div>
+                    <?php endif; ?>
                 </li>
                 <li id="hipchat">
                     <h3>HipChat</h3>

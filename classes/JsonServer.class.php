@@ -764,13 +764,44 @@ class JsonServer
         ));
     }
     
+    protected function actionGetCodeReviewersProject() {
+        $data = array();
+        $project = new Project();
+        try {
+            $project->loadById($this->getRequest()->getParam('projectid'));
+    
+            if($codeReviewers = $project->getCodeReviewers()) {
+                foreach($codeReviewers as $codeReviewer) {
+                    $data[] = array(
+                        'id'=> $codeReviewer['id'],
+                        'nickname' => $codeReviewer['nickname'],
+                        'totalJobCount' => $codeReviewer['totalJobCount'],
+                        'lastActivity' => $project->getCodeReviewersLastActivity($codeReviewer['id']),
+                        'owner' => $codeReviewer['owner']
+                    );
+                }
+            }
+            
+            return $this->setOutput(array(
+                'success' => true,
+                'data' => array('codeReviewers' => $data)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            return $this->setOutput(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+    
     protected function actionGetRunnersForProject() {
         $data = array();
         $project = new Project();
         try {
             $project->loadById($this->getRequest()->getParam('projectid'));
-
-            if($runners = $project->getRunners()) { 
+    
+            if($runners = $project->getRunners()) {
                 foreach($runners as $runner) {
                     $data[] = array(
                         'id'=> $runner['id'],
@@ -794,7 +825,7 @@ class JsonServer
             ));
         }
     }
-    
+        
     protected function actionRemoveRunnersFromProject() {
         $data = array();
         $project = new Project();
@@ -836,6 +867,115 @@ class JsonServer
             return $this->setOutput(array(
                 'success' => true,
                 'data' => array('deleted_runners' => $deleted_runners)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            return $this->setOutput(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+    
+    protected function actionRemoveCodeReviewersFromProject() {
+        $data = array();
+        $project = new Project();
+    
+        try {
+            $request_user = $this->getUser();
+    
+            $project->loadById($this->getRequest()->getParam('projectid'));
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+    
+            $codeReviewers = preg_split('/;/', $this->getRequest()->getParam('codeReviewers'));
+            $deleted_codeReviewers = array();
+            foreach($codeReviewers as $codeReviewer) {
+                if ($project->deleteCodeReviewer($codeReviewer)) {
+                    $deleted_codeReviewers[] = $codeReviewer;
+                    $user = new User();
+                    $user->findUserById($codeReviewer);
+                    $founder = new User();
+                    $founder->findUserById($project->getOwnerId());
+                    $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+                    $data = array(
+                        'nickname' => $user->getNickname(),
+                        'projectName' => $project->getName(),
+                        'projectUrl' => Project::getProjectUrl($project->getProjectId()),
+                        'projectFounder' => $founder->getNickname(),
+                        'projectFounderUrl' => $founderUrl
+                    );
+                    if (! sendTemplateEmail($user->getUsername(), 'project-codereview-removed', $data)) {
+                        error_log("JsonServer:actionRemoveCodeReviewersFromProject: send_email to user failed");
+                    }
+                }
+            }
+    
+            return $this->setOutput(array(
+                'success' => true,
+                'data' => array('deleted_codereviewers' => $deleted_codeReviewers)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            return $this->setOutput(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+    
+    /**
+     * Allows you to add a code reviewer to the project
+     */
+    protected function actionAddCodeReviewerToProject() {
+        $project = new Project();
+        $user = new User();
+        $founder = new User();
+        try {
+            $request_user = $this->getUser();
+    
+            $project->loadById($this->getRequest()->getParam('projectid'));
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            $user->findUserByNickname($this->getRequest()->getParam('nickname'));
+            if (!$user->getId()) {
+                throw new Exception('Not a user in our system');
+            }
+            if ($project->isProjectCodeReviewer($user->getId())) {
+                throw new Exception('Entered user is already a Code Reviewer for this project');
+            }
+    
+            if (! $project->addCodeReviewer($user->getId())) {
+                throw new Exception('Could not add the user as a runner for this project');
+            }
+    
+            $founder->findUserById($project->getOwnerId());
+            $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+            $data = array(
+                'nickname' => $user->getNickname(),
+                'projectName' => $project->getName(),
+                'projectUrl' => Project::getProjectUrl($project->getProjectId()),
+                'projectFounder' => $founder->getNickname(),
+                'projectFounderUrl' => $founderUrl
+            );
+            if (! sendTemplateEmail($user->getUsername(), 'project-codereviewer-added', $data)) {
+                error_log("JsonServer:actionAddCodeReviewerToProject: send email to user failed");
+            }
+            // Add a journal notification
+            $journal_message = $user->getNickname() . ' has been granted Code Review rights for project: ##' . $project->getName() . '##';
+            sendJournalNotification($journal_message);
+    
+            return $this->setOutput(array(
+                'success' => true,
+                'data' => 'Code Reviewer added successfully'
             ));
         } catch (Exception $e) {
             $error = $e->getMessage();

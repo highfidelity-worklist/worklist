@@ -651,18 +651,14 @@ require_once('opengraphmeta.php');
     }
 
     function validateCodeReviews() {
-        if (!$('.cr_anyone_field').is(':checked') && !$('.cr_3_favorites_field').is(':checked') && !$('.cr_project_admin_field').is(':checked') && !$('.cr_job_runner_field').is(':checked')) {
-            $('.cr_anyone_field').prop('checked', true);
+        if (!$('#cr_anyone_field').is(':checked') && !$('#cr_3_favorites_field').is(':checked') && !$('#cr_project_admin_field').is(':checked') && !$('#cr_job_runner_field').is(':checked')) {
+            $('#cr_anyone_field').prop('checked', true);
             $('#edit_cr_error').html("One selection must be checked");
             $('#edit_cr_error').fadeIn();
             $('#edit_cr_error').delay(2000).fadeOut();
+            return false;
         };
-        if (!$('.cr_anyone_field_ap').is(':checked') && !$('.cr_3_favorites_field_ap').is(':checked') && !$('.cr_project_admin_field_ap').is(':checked') && !$('.cr_job_runner_field_ap').is(':checked')) {
-            $('.cr_anyone_field_ap').prop('checked', true);
-            $('#edit_cr_error_ap').html("One selection must be checked");
-            $('#edit_cr_error_ap').fadeIn();
-            $('#edit_cr_error_ap').delay(2000).fadeOut();
-        }
+        
     };
 
     $(document).ready(function() {

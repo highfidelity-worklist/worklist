@@ -658,13 +658,6 @@ p.bottom {
     color: #333333;
 }
 
-#sent-notify {
-    line-height: 30px;
-    background-color: transparent;
-    text-align: center;
-    padding: 30px 0 !important;
-}
-
 #w9status {
     width: 150px;
 }

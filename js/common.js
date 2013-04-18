@@ -351,7 +351,12 @@ function autocompleteSplit( val ) {
 function autocompleteExtractLast( term ) {
     return autocompleteSplit( term ).pop();
 }
-
+var autocompleteUserSource = function(request, response) {
+    $.getJSON( "getuserslist.php", {
+        startsWith: autocompleteExtractLast( request.term ),
+        getNicknameOnly: true
+        }, response );
+};
 /**
  * 
  * @param status
@@ -387,12 +392,7 @@ function autocompleteMultiple(status, datasource) {
     };
     
     if (status == 'getuserslist') {       
-            autocompleteArguments.source =  function(request, response) {
-                $.getJSON( "getuserslist.php", {
-                    startsWith: autocompleteExtractLast( request.term ),
-                    getNicknameOnly: true
-                    }, response );
-            };
+            autocompleteArguments.source = autocompleteUserSource;
             autocompleteArguments.search = function() {
                 // custom minLength
                 var term = autocompleteExtractLast(this.value);
