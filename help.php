@@ -193,6 +193,7 @@ include("opengraphmeta.php");
         <li><strong>Anyone that is Trusted by more than 3 people</strong></li>
         <li><strong>Anyone that is Trusted by the Project Admin</strong></li>
         <li><strong>Anyone that is Trusted by the Job Manager</strong></li>
+        <li><strong>Use only code reviewers listed below</strong>(Only specific users that the Project Admin delegates)</li>
     </blockquote>
     <br/>
     <p>If you meet the Code Review qualification, you will be able to start a code review by clicking the Start Code Review
@@ -302,6 +303,7 @@ include("opengraphmeta.php");
         <li><strong>Anyone that is Trusted by more than 3 people</strong>(any user that is trusted by more than 3 other users)</li>
         <li><strong>Anyone that is Trusted by the Project Admin</strong>(any user that is trusted by you)</li>
         <li><strong>Anyone that is Trusted by the Job Manager</strong>(any user that is trusted by the Runner of the task)</li>
+        <li><strong>Use only code reviewers listed below</strong>(Only specific users that you delegate)</li>
     </blockquote>
     
     </p>
