@@ -2,7 +2,11 @@ var WorklistProject = {
     repo_type: false,
 
     init: function() {
-        WorklistProject.createDb();
+        if (this.repo_type == 'git') {
+            WorklistProject.sendEmails();
+        } else {
+            WorklistProject.createDb();
+        }
     },
 
     createDb: function() {
@@ -52,7 +56,14 @@ var WorklistProject = {
 
     sendEmails: function() {
         WorklistProject.apiCall('sendNewProjectEmails', 
-                                'projectname=' + projectName + '&username=' + username + '&nickname=' + nickname + '&unixusername=' + unixname + '&template=' + template + '&dbuser=' + dbuser, 
+                                'projectname=' + projectName + 
+                                '&username=' + username + 
+                                '&nickname=' + nickname + 
+                                '&unixusername=' + unixname + 
+                                '&template=' + template + 
+                                '&dbuser=' + dbuser + 
+                                '&repo_type=' + this.repo_type +
+                                '&github_repo_url=' + github_repo_url, 
                                 function(response) {
             if (response && response['success']) {
                 $('#emails-status').html("Emails sent <span class='success'>✔</span>");

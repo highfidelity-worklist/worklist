@@ -41,6 +41,7 @@ class Project {
     protected $hipchat_notification_token;
     protected $hipchat_room;
     protected $hipchat_color;
+    protected $github_repo_url;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -516,7 +517,7 @@ class Project {
                 owner_id, testflight_enabled, testflight_team_token,
                 logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin,
                 cr_job_runner,cr_users_specified, internal, creation_date, hipchat_enabled,
-                hipchat_notification_token, hipchat_room, hipchat_color) " .
+                hipchat_notification_token, hipchat_room, hipchat_color, repo_type) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -540,7 +541,8 @@ class Project {
             "'" . intval($this->getHipchatEnabled()) . "', " .
             "'" . mysql_real_escape_string($this->getHipchatNotificationToken()) . "', " .
             "'" . mysql_real_escape_string($this->getHipchatRoom()) . "', " .
-            "'" . mysql_real_escape_string($this->getHipchatColor()) . "')";
+            "'" . mysql_real_escape_string($this->getHipchatColor()) . "', " .
+            "'" . mysql_real_escape_string($this->getRepo_type()) . "')";
         $rt = mysql_query($query);
         $project_id = mysql_insert_id();
         $this->setProjectId($project_id);

@@ -34,9 +34,13 @@
                     <span class="smbutton">Upload logo</span>
                 </div>
                 <span class="upload">Upload PNG, JPG or GIF with <br />square dimensions, at least 80x80 px</span>
-                
+                <p class="info-label" id="github_container">
+                    <input type="checkbox" id="checkGitHub" name="checkGitHub" title="Link to my GitHub" />If you already have a repository for your code at GitHub, link it to your project.<br/>
+                    <span class="title">GitHub repo URL</span><br />
+                    <input type="text" name="githubRepoURL" id="githubRepoURL" placeholder="ex. http://github.com/organization/project.git" disabled="disabled" />
+                </p>
                 <div class="addproject">
-                    <input type="submit" class="disableable" id="save_project" name="save_item" value="Add project">
+                    <input type="submit" id="save_project" name="save_item" value="Add project">
                     <span class="error-submit"><strong>Oops, there were a few errors.</strong> Please check the notes above and make corrections then resubmit.</span>
                 </div>
             </form>

@@ -25,7 +25,7 @@ if ($userId) {
 
     $project = new Project();
     $cr_3_favorites = $_REQUEST["cr_3_favorites"];
-    $args = array('name', 'description', 'logo', 'website');
+    $args = array('name', 'description', 'logo', 'website', 'checkGitHub', 'github_repo_url');
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
@@ -41,12 +41,18 @@ if ($userId) {
 
     $project->setName($name);
     $project->setDescription($description);
-    $project->setRepository($name);
     $project->setWebsite($website);
     $project->setContactInfo($user->getUsername());
     $project->setOwnerId($userId);
     $project->setActive(true);
     $project->setLogo($logo);
+    if ($checkGitHub == 'true') {
+        $project->setRepo_type('git');
+        $project->setRepository($github_repo_url);
+    } else {
+        $project->setRepo_type('svn');
+        $project->setRepository($name);
+	}
     $project->save();
     
     $journal_message = $nick . ' added project ##' . $name;

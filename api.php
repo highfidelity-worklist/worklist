@@ -669,6 +669,8 @@ function sendNewProjectEmails() {
         $data['project_name'] = $_REQUEST['projectname'];
         $data['nickname'] = $_REQUEST['unixusername'];
         $data['database_user'] = $_REQUEST['dbuser'];
+        $data['repo_type'] = $_REQUEST['repo_type'];
+        $data['github_repo_url'] = $_REQUEST['github_repo_url'];
         $user = new User();
         sendTemplateEmail(SUPPORT_EMAIL, 'ops-project-created', $data);
         if (!sendTemplateEmail($_REQUEST['username'], $_REQUEST['template'], $data)) {

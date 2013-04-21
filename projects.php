@@ -28,6 +28,11 @@ $currentPage = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 /************************ HTML layout begins here  **************************/
 include("head.html");
 include("opengraphmeta.php");
+
+$user = new User();
+$user->findUserById($userId);
+$isGitHubConnected = $user->getGithub_connected();
+
 ?>
 <title>Projects - Worklist: Develop software fast.</title>
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
@@ -44,8 +49,10 @@ include("opengraphmeta.php");
 <script type="text/javascript" src="js/userstats.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/plugins/jquery.infinitescroll.min.js"></script>
+<script type="text/javascript" src="js/github.js"></script>
 <script type="text/javascript">
-
+    GitHub.isConnected = '<?php echo $isGitHubConnected; ?>';
+    GitHub.applicationKey = '<?php echo GITHUB_ID; ?>';
 </script>
 <style>
 #welcomeInside .projectsBtn {
@@ -77,7 +84,6 @@ include("opengraphmeta.php");
     // breakdown of fees
     require_once('dialogs/popup-fees.inc');
     // add project dialog
-    require_once('dialogs/popup-addproject.inc');
     // budget info
     require_once('dialogs/budget-expanded.inc');
     // transferred budget

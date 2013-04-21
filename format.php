@@ -69,20 +69,42 @@
 
                 var project_name = new LiveValidation('name', optionsLiveValidation);
                 var project_description = new LiveValidation('description', optionsLiveValidation);
-                project_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                project_description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                var github_repo_url = new LiveValidation('githubRepoURL', optionsLiveValidation);
 
+                project_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 project_name.add(Validate.Format, { failureMessage: 'Alphanumeric only', pattern: new RegExp(/^[A-Za-z0-9]*$/) });
                 project_name.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
                 project_name.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
+
+                project_description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                var regex_url = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                github_repo_url.add(Validate.Format, { pattern: regex_url, failureMessage: "Repo URL is not valid" });
+
+                $('#checkGitHub').unbind('click').click( function () {
+                    // if checked
+                    if ($(this).prop('checked')) {
+                        $('#githubRepoURL').prop('disabled', false);
+                        if (!GitHub.isConnected) {
+                            GitHub.handleUserConnect(false);
+                        }
+                        github_repo_url.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    } else {
+                        $('#githubRepoURL').prop('disabled', true);
+                        github_repo_url.remove( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    }    
+                });
 
                 $('#cancel').click(function() {
                     $('#popup-addproject').dialog('close');
                 });
 
                 $('#save_project').click(function() {
+                    var validateFields = new Array(project_name, project_description);
                     $(this).attr('disabled', 'disabled');
-                    massValidation = LiveValidation.massValidate([project_name, project_description]);
+                    if ($('#checkGitHub').prop('checked')) {
+                        validateFields.push(github_repo_url);
+                    } 
+                    massValidation = LiveValidation.massValidate(validateFields);
                     if (!massValidation) {
                         $(this).removeAttr('disabled');
                         $(".error-submit").css('display', 'block');
@@ -93,6 +115,9 @@
                         marginBottom = descriptionHeight + 37;
                         $("#description_container span.LV_validation_message").css('margin-top', '-' + marginTop + 'px');
                         $("#description_container span.LV_validation_message").css('margin-bottom', marginBottom + 'px');
+                        $("#github_container span.LV_validation_message").css('margin-top', '-68px');
+                        $("#github_container span.LV_validation_message").css('margin-left', '140px');
+                        $("#github_container span.LV_validation_message").css('margin-bottom', '54px');
                         return false;
                     }
                     addForm = $("#popup-addproject");
@@ -103,7 +128,9 @@
                             name: $(':input[name="name"]', addForm).val(),
                             description: $(':input[name="description"]', addForm).val(),
                             logo: $(':input[name="logoProject"]', addForm).val(),
-                            website: $(':input[name="website"]', addForm).val()
+                            website: $(':input[name="website"]', addForm).val(),
+                            checkGitHub: $(':input[name="checkGitHub"]', addForm).prop('checked'),
+                            github_repo_url: $(':input[name="githubRepoURL"]', addForm).val()
                         },
                         type: 'POST',
                         success: function(json){

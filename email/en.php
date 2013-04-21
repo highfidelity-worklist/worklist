@@ -197,12 +197,26 @@ replacement data:
                <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
 ),
 
+'project-created-github' => array(
+    'subject' => 'New project {project_name} added to the Worklist!',
+    'body' => '<p>Hi {nickname}!</p>
+               <p>Your project {project_name} has been created on Worklist and is linked to your GitHub space.<br/><br/>
+               Details:</p>
+               <p>1. Your GitHub repository URL is: <a href="{github_repo_url}">{github_repo_url}</a></p>
+               <p>2. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
+               <p>3. Your project is set to allow anybody to code review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
+               <p>4. More information about Worklist.net and being a project founder can be found on our Help page <a href="' . WORKLIST_URL . 'help.php">here</a>.</p>
+               <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
+),
+
 'ops-project-created' => array(
     'subject' => 'New project {project_name} added to the Worklist!',
     'body' => '<p>Hi there</p>
                <p>Just wanted to let you know that a new project has been created on the worklist.</p>
                <p>Project Admin: {nickname}<br/>
-               Project Name: {project_name}</p>
+               Project Name: {project_name}<br/>
+               Project Repo type:{repo_type}
+               </p>
                <p>You can view the details <a href="' . WORKLIST_URL . '{project_name}">here</a>.'
 ),
     

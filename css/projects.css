@@ -356,3 +356,10 @@ textarea.LV_invalid_field,
 input.LV_invalid_field {
     border-color: #d45955!important;
 }
+
+#github_container {
+    clear: both;
+    font-size: 12px !important;
+    font-weight: normal;
+    font-family: Helvetica,Arial,sans-serif;
+}

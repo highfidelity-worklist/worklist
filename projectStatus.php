@@ -32,6 +32,15 @@ if ($userHasSandbox) {
 if (empty($project) || empty($username) || empty($nickname) || empty($unixname)) {
     $errorOut = "Not all information required to create the project is available.";
 }
+
+$projectObj = new Project();
+$projectObj->loadByName($project);
+$isGithubProject = $projectObj->getRepo_type() == 'git' ? true : false;
+
+if ($isGithubProject) {
+    $templateEmail = "project-created-github";
+}    
+
 ?>
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
@@ -70,11 +79,29 @@ require_once('format.php');
 ?>
 
 <h1 class="newProject">Project <?php echo $project; ?> setup underway...</h1>
-<div class="project-description">
-    <p>The setup of your project includes a MySQL database, Code Repository with a sample PHP page, and a Sandbox in which you may add to and update your codebase.</p>
-</div>
-
-<div id="project-status">
+<?php if($isGithubProject) { ?>
+    <div class="project-description">
+        <p>Your project is being linked to the GitHub repository you specified. 
+           Users will be able to bid on your projects once they have validated their GitHub credentials with Worklist. 
+        </p>
+    </div>
+<?php } else { ?>
+    <div class="project-description">
+        <p>The setup of your project includes a MySQL database, Code Repository with a sample PHP page, and a Sandbox in which you may add to and update your codebase.</p>
+    </div>
+<?php } ?> 
+    <div id="project-status">
+<?php if($isGithubProject) { ?>
+        <p>
+            GitHub Repository linked
+        </p>    
+        <p>
+            Emails sent
+        </p>    
+        <p>
+            Project created!
+        </p>    
+<?php } else { ?>
     <p id="db-status">
         Creating  MySQL Database with sample table ...
     </p>
@@ -87,6 +114,7 @@ require_once('format.php');
     <p id="emails-status">
         E-Mailing credentials ...
     </p>
+<?php } ?>
 </div>
 <div id="project-completed">
     <h1>Welcome to the Worklist!</h1>
@@ -104,8 +132,10 @@ if (!$errorOut) {
         newuser = '<?php echo $newUser; ?>',
         dbuser = '<?php echo $db_user; ?>',
         template = '<?php echo $templateEmail; ?>';
+        github_repo_url = '<?php echo $projectObj->getRepository(); ?>';
         
-    $(function(){
+    $(function() {
+        WorklistProject.repo_type = '<?php echo $projectObj->getRepo_type(); ?>';
         WorklistProject.init();
     });
     
