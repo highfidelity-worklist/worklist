@@ -14,29 +14,41 @@ body {
     text-align: left;
     
 }
+
+.budgetSourceTable {
+    border: 1px solid #D1CFCF !important;
+}
  
 .pages {
     text-align: center;
 }
 
 .date {
-    width: 70px;
+    width: 105px;
+}
+
+.id {
+    width: 40px;
 }
 
 .giver {
-    width: 120px;
-}
-
-.amount {
     width: 90px;
 }
 
+.amount {
+    width: 50px;
+}
+
 .for {
-    width: 350px;
+    width: 230px;
 }
 
 .active {
-    width: 25px;
+    width: 45px;
+}
+
+#budget-report-export{
+    width: 130px;
 }
 
 td,

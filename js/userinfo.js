@@ -238,9 +238,10 @@ var UserInfo = {
                 action: "getView"
                 }, function() {
                     $('#give-budget').dialog({ 
+                        dialogClass: 'white-theme',
                         autoOpen: true, 
-                        width: 450,
-                        height: 350,
+                        resizable: false,
+                        width: 500,
                         show: 'fade', 
                         hide: 'fade',
                         open: function() {

@@ -53,8 +53,7 @@
 
 #pay-bonus .ui-icon-carat-1-s,
 #budgetInWorkitem .ui-icon-carat-1-s,
-#update-budget .ui-icon-carat-1-s,
-#give-budget .ui-icon-carat-1-s {
+#update-budget .ui-icon-carat-1-s {
     background-position: -64px 0 !important;
 }
 
@@ -94,6 +93,10 @@
 .givenBudgetArea,
 .currentBudgetArea {
     margin-bottom: 6px;
+}
+
+.currentBudgetArea {
+    margin-top: 10px;
 }
 
 .redBudget,

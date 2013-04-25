@@ -230,13 +230,14 @@
 
     require_once('head.html');
 ?>
+        <link type="text/css" href="css/budgetHistory.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
         <link type="text/css" href="css/userinfo.css" rel="stylesheet" />
         <link type="text/css" href="css/userNotes.css" rel="stylesheet" />
         <link type="text/css" href="css/review.css" rel="stylesheet" />
         <link type="text/css" href="css/favorites.css" rel="stylesheet" />
         <link type="text/css" href="css/budget.css" rel="stylesheet" />
-        <link type="text/css" href="css/budgetHistory.css" rel="stylesheet" />
+        
 
         <script type="text/javascript" src="js/jquery.blockUI.js"></script>
         <script type="text/javascript" src="js/paginator.js"></script>

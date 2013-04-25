@@ -64,12 +64,12 @@ if ( $count['total'] == 0){
 	exit(0);
 }
 if ($page == 1) {
-    echo "<div class='budgetHistoryContent'>";
+    echo "<div id=\"budgetHistoryContent\">";
 }
 ?>
-<table class="budgetTable" cellspacing="0" >
+<table>
   <thead>
-    <tr>
+    <tr class="table-hdng">
       <th class="date">Created</th>
       <th class="id">ID #</th>
       <th class="giver">Grantor</th>
@@ -105,19 +105,19 @@ if ($result) {
             
 ?>
 
-    <tr class="<?php echo ($i % 2 ? 'rowodd' : 'roweven') . $classBudgetRow; ?>"  data-budgetid="<?php echo $row['budget_id']; ?>"
+    <tr class="<?php echo ($i % 2 ? 'roweven' : 'rowodd') . $classBudgetRow; ?>"  data-budgetid="<?php echo $row['budget_id']; ?>"
         <?php echo (!empty($notes)) ? $notes : $row['budget_id'] ; ?>
     >
-        <td><?php echo $row['date']; ?></td>
-        <td><?php echo $row['budget_id']; ?></td>
-        <td><?php echo ($row['givers_count'] == 1 ) ? $row['nickname'] : "Various"; ?></td>
-        <td><?php echo $row['amount']; ?></td>
+        <td><span><?php echo $row['date']; ?></span></td>
+        <td><span><?php echo $row['budget_id']; ?></span></td>
+        <td><span><?php echo ($row['givers_count'] == 1 ) ? $row['nickname'] : "Various"; ?></span></td>
+        <td><span><?php echo $row['amount']; ?></span></td>
         <?php if (!empty($id) && $userId == $id) { ?>
-        <td <?php if ($row['remaining'] < 0) echo 'class="red"'; ?>>
-            <?php echo $row['remaining']; ?></td>
+        <td<?php if ($row['remaining'] < 0) echo 'class="red"'; ?>><span>
+            <?php echo $row['remaining']; ?></span></td>
         <?php } ?>
-        <td><?php echo $row['reason']; ?></td>
-        <td><?php echo ($row['active'] == 1) ? "open" : "closed"; ?></td>
+        <td><span><?php echo $row['reason']; ?></span></td>
+        <td><span><?php echo ($row['active'] == 1) ? "open" : "closed"; ?></span></td>
     </tr>
 
 <?php

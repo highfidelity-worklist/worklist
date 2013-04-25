@@ -215,7 +215,6 @@ $(function() {
             modal: true
         });
         $("#welcome .budget").click(function(){
-            $("#budgetPopup").addClass("table-popup");
             $("#budgetPopup").dialog("open");
         });
     }

@@ -13,14 +13,14 @@
             </select>
         </span>
         
-        <br/>
+        <br/><br/>
         <div class="currentBudgetArea" >
             <label for="budget-current" class="info-label">Total Funds Available (all budgets):</label>
             $<?php echo $user->getBudget(); ?>
         </div>
         <br/>
-        <label for="amountToAdd" class="info-label">Amount to Add: </label>
-        $<input type="text" id="amountToAdd" name="amountToAdd" /> 
+        <label for="amountToAdd" class="info-label">Amount to Add (USD): </label>
+        <input type="text" id="amountToAdd" name="amountToAdd" /> 
         <br/>
         <br/>
         <div class="currentBudgetArea" >
@@ -29,8 +29,6 @@
         </div>
         <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user->getId(); ?>" />
         <input type="hidden" id="add_funds_to" name="add_funds_to" value="<?php echo $budget_id; ?>" />
-        <br/>
-        <br/>
         <input type="submit" value="OK" />
     </form>
 </div><!-- end of give budget div-->

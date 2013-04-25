@@ -4,17 +4,16 @@
             <label for="budget-current" class="info-label">Total Available Funds (all budgets): </label>
             $<?php echo $user->getBudget(); ?>
         </div>
-        <label for="budget-amount" class="info-label">New Budget to Give: </label>
-            $<input type="text" id="budget-amount" name="amount" /> 
+        <br/>
+        <label for="budget-amount" class="info-label">New Budget to Give (USD): </label>
+            <input type="text" id="budget-amount" name="amount" /> 
             <?php if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false) { ?>
             <span id="budget_seed_area">
                 <label for="budget-seed" class="info-label">Seed: </label>
                 <input type="checkbox" id="budget-seed" name="budget-seed"  />
             </span>
             <?php } ?>
-            <br/>
-        <label for="budget-reason" class="info-label">For: </label>
-            <input type="text" id="budget-reason" name="budget-reason"/><br/>
+            <br/><br/>
         <label for="budget-source" class="info-label">Source: </label>
             <input type="text" id="budget-source" name="budget-source"/>
             <span id="budget-source-combo-area">
@@ -22,8 +21,9 @@
                 <option value="0" selected="selected">Select a budget</option>
                 <?php echo $user->getBudgetCombo(); ?>
                 </select>
-            </span>
-        
+            </span><br/><br/>
+        <label for="budget-reason" class="info-label">For: </label>
+            <input type="text" id="budget-reason" name="budget-reason"/><br/>       
             <input type="hidden" id="budget-receiver" name="receiver_id" value="<?php echo $user->getId();?>" />
         <br/>
         <label for="budget-note" class="info-label">Note: </label>

@@ -113,7 +113,7 @@ p.small-text{
     margin-left: -1px !important;
 }
 
-#jobs-table,
+#jobs-table, 
 #completed-jobs-table {
     margin-top: -1px !important;
     float: left;
@@ -121,6 +121,11 @@ p.small-text{
     border: 1px solid #d6d6d6;
 }
 
+#BudgetHistory {
+    border: 1px solid #d6d6d6;
+    display: table;
+    margin: 0 auto;
+}
 .title-label-medium {
     color: #993300;
     font-size: 18px;
@@ -418,29 +423,37 @@ p.bottom {
     margin-right: 1px;
 }
 
-.right-column table {
+.right-column table, 
+#BudgetHistory table {
     border: none !important;
 }
 
-.right-column table td, .right-column table th {
+.right-column table td, 
+.right-column table th, 
+#BudgetHistory table th, 
+#BudgetHistory table td {
     border: none !important;
 }
 
-.right-column table td {
+.right-column table td, 
+#BudgetHistory table td {
     font-size: 12px;
     padding-left: 8px;
     height: 19px;
 }
 
-.right-column table tr.rowodd:hover {
+.right-column table tr.rowodd:hover, 
+#BudgetHistory table tr.rowodd:hover {
     background: #fff;
 }
 
-.right-column table tr.roweven:hover {
+.right-column table tr.roweven:hover,
+#BudgetHistory table tr.roweven:hover {
     background: #efefef;
 }
 
-.right-column table td a {
+.right-column table td a, 
+#BudgetHistory table td a {
     text-decoration: none;
     cursor: pointer;
 }
@@ -449,17 +462,22 @@ p.bottom {
     font-weight: bold;
 }
 
-.right-column table th {
+.right-column table th, 
+#BudgetHistory table th {
     padding-top: 9px;
     padding-left: 8px;
 }
 
-.right-column table th.status {
+.right-column table th.status, 
+#BudgetHistory table th.status {
     padding-right: 0;
     width: 50px;
 }
 
-.right-column table th.sandbox, .right-column table td.sandbox {
+.right-column table th.sandbox, 
+.right-column table td.sandbox,
+#BudgetHistory table th.sandbox, 
+#BudgetHistory table td.sandbox{
     padding-left: 0;
 }
 
@@ -467,7 +485,9 @@ p.bottom {
     width: 310px;
 }
 
-.right-column .table-hdng {
+.right-column .table-hdng, 
+.table-budget-history, 
+#BudgetHistory .table-hdng{
     height: 28px;
     background: none;
 }
@@ -577,7 +597,8 @@ p.bottom {
     vertical-align: middle;
 }
 
-.favorite_user, .favorite_curr_user {
+.favorite_user, 
+.favorite_curr_user {
     background-image: url('../images/otherSprite.png');
     background-position: -60px 0;
     background-repeat: no-repeat;

@@ -144,7 +144,7 @@ var Budget = {
     
     budgetHistory: function(options) {
         if (!options.page) {
-            var lastPage = $("#" + options.inDiv + " .budgetHistoryContent").data("lastPage");
+            var lastPage = $("#" + options.inDiv + " #budgetHistoryContent").data("lastPage");
             if (!lastPage) {
                 options.page = 1;
             } else {
@@ -154,8 +154,8 @@ var Budget = {
         if (!options.fromUserid) {
             options.fromUserid = "";
         }
-        $("#" + options.inDiv + " .budgetHistoryContent").data("lastPage", options.page);
-        $("#" + options.inDiv + " .budgetHistoryContent").load("budgetHistory.php?inDiv=" + options.inDiv + "&id=" + options.id + "&page=" + options.page + options.fromUserid);
+        $("#" + options.inDiv + " #budgetHistoryContent").data("lastPage", options.page);
+        $("#" + options.inDiv + " #budgetHistoryContent").load("budgetHistory.php?inDiv=" + options.inDiv + "&id=" + options.id + "&page=" + options.page + options.fromUserid);
     },
     
     initAddFunds: function() {
@@ -239,10 +239,12 @@ var Budget = {
                 budgetId: $('#budget-update-dialog').data("budgetId")
                 }, function() {
                     $('#addFundsDialog').dialog({ 
+                        dialogClass: 'white-theme',
                         autoOpen: true, 
-                        width: 400, 
+                        width: 480, 
                         show: 'fade', 
                         hide: 'fade',
+                        resizable: false,
                         open: function() {
                             Budget.initAddFunds();
                         }
@@ -312,10 +314,12 @@ var Budget = {
     createBudgetUpdateDialog: function() {
         if ($('#budget-update-dialog').data("budgetId") == null) {
             $('#budget-update-dialog').dialog({
+                dialogClass: 'white-theme',  
                 autoOpen: false,
                 modal: true,
                 width: 750,
                 height: "auto",
+                resizable: false,
                 title: 'Budget details',
                 show: 'fade',
                 hide: 'fade',
@@ -423,13 +427,19 @@ var Budget = {
                 $(this).fadeIn('fast');
             });
         });
-        
-        $('#budget-expanded').dialog('option', 'dialogClass', 'white-theme');
+        $('#budget-expanded').dialog({
+            modal: false,
+            autoOpen: false,
+            position: ['middle'],
+            resizable: false,
+            dialogClass: 'white-theme'});
         $('#budget-transferred').dialog('option', 'dialogClass', 'white-theme');
-        $('#budget-expanded').dialog('option', 'position', ['center', 'center']);
-        $('#budget-transferred').dialog('option', 'position', ['center', 'center']);
-        $('#budget-expanded').addClass('table-popup');
-        $('#budget-transferred').addClass('table-popup');
+        $('#budget-transferred').dialog({
+            modal: false,
+            autoOpen: false,
+            position: ['middle'],
+            resizable: false,
+            dialogClass: 'white-theme'});
 
         switch (section) {
             case 0:

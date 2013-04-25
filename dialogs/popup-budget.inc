@@ -1,11 +1,7 @@
 <div id="budgetPopup" style="display:none;">
   <div id="be-block" >
-        <table id="be-table">
-            <tr>
-                <td>
-                    <b>Your fees </b>
-                </td>
-            </tr>
+        <label class="info-label" >Your Fees</label>   
+        <table>
             <tr>
                 <td class="be-table_cell1">this week:</td>
                 <td class="be-table_cell2"><a href="#feesToolTip" class="feesum" id="fees-week">$<?php echo $sum['week']; ?></a></td>
@@ -14,18 +10,17 @@
                 <td class="be-table_cell1">this month:</td>
                 <td class="be-table_cell2"><a href="#feesToolTip" class="feesum" id="fees-month">$<?php echo $sum['month']; ?></a></td>
             </tr>
-            <tr>
-                <td colspan="2">
-                    <div class="margin25"><b>Budget </b></div>
-                </td>
-            </tr>
+        </table>
 <?php
 if (isset($_SESSION['userid']) && isset($_SESSION['is_runner']) && $_SESSION['is_runner']) {
     if (!isset($user)) {
         $user = new User();
         $user->findUserById($_SESSION['userid']);
     }
-?>
+?>      
+        <br />
+        <label class="info-label" >Budget</label>   
+        <table>
             <tr onclick="Budget.displayHistory(<? echo $_SESSION['userid'] ?>);">
                 <td class="be-table_cell1 iToolTip budgetManaged1"><strong>Total Funds Managed (lifetime):</strong></td>
                 <td class="be-table_cell2 iToolTip budgetManaged1"><strong>
