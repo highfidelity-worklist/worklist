@@ -622,7 +622,8 @@ class Project {
                       AND
                        (owner_id IN (SELECT id FROM ' . USERS . ' WHERE budget >0) 
                       OR
-                       project_id IN (SELECT project_id FROM ' . WORKLIST . ' WHERE status="Bidding"))';
+                       project_id IN (SELECT project_id FROM ' . WORKLIST . '
+                        WHERE status IN ("Bidding", "Working", "Review", "SVNHold", "Completed")))';
         } else if ($onlyInactive) {
             $where = 'WHERE active = 0';
         }
