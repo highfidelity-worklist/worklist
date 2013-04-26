@@ -113,7 +113,7 @@ if ($result) {
         <td><span><?php echo ($row['givers_count'] == 1 ) ? $row['nickname'] : "Various"; ?></span></td>
         <td><span><?php echo $row['amount']; ?></span></td>
         <?php if (!empty($id) && $userId == $id) { ?>
-        <td<?php if ($row['remaining'] < 0) echo 'class="red"'; ?>><span>
+        <td<?php if ($row['remaining'] < 0) echo ' class="red"'; ?>><span>
             <?php echo $row['remaining']; ?></span></td>
         <?php } ?>
         <td><span><?php echo $row['reason']; ?></span></td>
