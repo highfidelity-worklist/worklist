@@ -348,7 +348,8 @@ function applyPopupBehavior() {
                     hide: 'drop', 
                     resizable: false,
                     width: 'auto',
-                    height: 'auto',                
+                    height: 'auto',
+                    dialogClass: 'white-theme',
                     open:function(evt){
                         $(this).parent().css('opacity','0');
                         storeCursorStatus = new Array();
