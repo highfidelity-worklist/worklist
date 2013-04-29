@@ -1,6 +1,7 @@
 .userReview {
     width: 98%;
-    height: 160px;
+    height: 160px !important;
+    resize: none;
 }
 
 #reviewDialog .content {
