@@ -113,6 +113,7 @@ $(document).ready(function() {
      * Enable filter for users with fees in the last X days
      */
     $('#filter-by-fees').click(function() {
+        current_page = 1;
         if (show_actives == "FALSE") {
             show_actives = "TRUE";
             fillUserlist(current_page);
@@ -139,6 +140,7 @@ $(document).ready(function() {
      * Enable filter for my favorite users
      */
     $('#filter-by-myfavorite').click(function() {
+        current_page = 1;
         if (show_myfavorites == "FALSE") {
             show_myfavorites = "TRUE";
             fillUserlist(current_page);
