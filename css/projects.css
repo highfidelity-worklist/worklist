@@ -87,6 +87,12 @@ h1 {
     text-decoration: none;
     padding-bottom: 0;
     margin-bottom: 8px;
+    overflow: hidden;
+    max-width: 255px;
+}
+
+#projects > article h2 div {
+    position: relative;
 }
 
 #projects section.description {
