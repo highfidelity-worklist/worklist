@@ -1165,7 +1165,8 @@ $(document).ready(function(){
     function pingBidder(id) {
         ping_who = 'bidder';
         ping_bid_id = id;
-        $('#popup-pingtask form p #echo-journal').parent('p').remove();
+        $('#echo-journal-span').css('display', 'none');
+        $('#send-ping-btn').val('Send Reply');
         $('#popup-pingtask form h5').html('Ping about Bid');
         $('#popup-pingtask form input[name="bidder"]').val(id);
         $('#popup-pingtask').dialog('open');
@@ -1402,10 +1403,14 @@ $(document).ready(function(){
                     if (json && json.error) {
                         alert("Ping failed:" + json.error);
                     } else {
-                        openNotifyOverlay("<span>Your ping has been sent.</span>", true);
+                        var msg = "<span>Your ping has been sent.</span>"
+                        if ($('#send-ping-btn').val() == 'Send Reply') {
+                            msg = "<span>Your reply has been sent.</span>";
+                        }
+                        openNotifyOverlay(msg, true);
                     }
-                    $('#send-ping-btn').removeAttr("disabled");
                     $('#popup-pingtask').dialog('close');
+                    $('#send-ping-btn').removeAttr("disabled");
                 },
                 error: function() {
                     $('#send-ping-btn').removeAttr("disabled");
@@ -1414,7 +1419,12 @@ $(document).ready(function(){
             return false;
 
         });
-
+        
+        $('#popup-pingtask').bind('dialogclose', function(event) {
+            $("#echo-journal-span").css("display", "block");
+            $("#send-ping-btn").val('Send ping');
+        });
+        
         $('#pingMechanic').click(function() {
             if (!$.loggedin) {
                 sendToLogin();
