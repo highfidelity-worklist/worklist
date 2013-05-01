@@ -914,6 +914,38 @@ a:hover{
     background-image:none;
 }
 
+#fee-panel #job-total .noteWrapper {
+    background-color: #E1E8EA;
+    border-top: 3px solid white !important;
+    padding: 14px 10px;
+    text-align: right;
+}
+
+#fee-panel #job-total span.label {
+    cursor: auto;
+    font-size: 14px; 
+    font-weight: bold;
+}
+
+#fee-panel #job-total:hover td span.label {
+    background-color: #E1E8EA;
+}
+
+#fee-panel #job-total span.label:hover {
+    background-color: #E1E8EA;
+}
+
+#fee-panel #job-total span.data {
+    background-color: #FFFFFF;
+    border: 1px solid #D3D3D3;
+    cursor: auto;
+    color: #AA1E00;
+    font-size: 15px;
+    font-weight: bold;
+    height: 25px;
+    padding: 5px 9px;
+}
+
 #fee_desc,
 #tip_desc {
     width:280px;

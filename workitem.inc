@@ -2291,12 +2291,15 @@ if ($action =="edit"):  ?>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <?php $feeTotal = 0; ?>
                                 <?php if(empty($fees)): ?>
                                     <tr>
                                         <td style="text-align: center;" colspan="5"><span class="table-back"><span>No fees yet.</span></span></td>
                                     </tr>
                                 <?php else: $row = 1;
-                                    foreach($fees as $fee): ?>
+                                    foreach($fees as $fee):
+                                        $feeTotal += (float) $fee['amount'];
+                                ?>
                                     <tr class="row-feelist-live <?php ($row % 2) ? print 'rowodd' : print 'roweven'; $row++; ?> ">
                                         <script type="data"><?php echo
                                                 "{id: {$fee['id']}, " .
@@ -2353,6 +2356,14 @@ if ($action =="edit"):  ?>
                                         </td>
                                     </tr>
                                     <?php endforeach;?>
+                                    <tr id="job-total">
+                                        <td colspan="5">
+                                            <div class="noteWrapper">
+                                                <span class="label">Job Total :</span>
+                                                <span class="data">$ <?php echo number_format($feeTotal, 2); ?></span>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 <?php endif;?>
                                 </tbody>
                             </table>
