@@ -4,6 +4,14 @@
  */
 class GitHubProject
 {
+    private $github_id;
+    private $github_secret;
+
+    public function __construct($gitHubId = null, $gitHubSecret = null) {
+        $this->github_id = empty($gitHubId) ? GITHUB_ID : $gitHubId;
+        $this->github_secret = empty($gitHubSecret) ? GITHUB_SECRET : $gitHubSecret;
+    }
+
     public function makeApiRequest(
                     $path,
                     $method,
@@ -14,9 +22,8 @@ class GitHubProject
         $error = false;
         $message = false;
         $data = false;
-        $postArray = array();
         $postString = '';
-        $headers = array('Accept: application/json');
+        $headers = array('Accept: application/json', 'User-Agent: worklist/' . Utils::getVersion());
         
         // Define variables required for API
         if ($path == 'login/oauth/access_token') {
@@ -24,11 +31,10 @@ class GitHubProject
         } else {
             $apiURL = GITHUB_API_URL . $path;
         }
-        $github_id = GITHUB_ID;
-        $github_secret = GITHUB_SECRET;
+
         $credentials = array(
-            'client_id' => urlencode($github_id),
-            'client_secret' => urlencode($github_secret)
+            'client_id' => urlencode($this->github_id),
+            'client_secret' => urlencode($this->github_secret)
         );
         
         $postArray = array_merge($params, $credentials);
@@ -66,7 +72,7 @@ class GitHubProject
             $apiResponse = curl_exec($curl);
             if ($apiResponse && !curl_errno($curl)) {
                 $error = false;
-                $message = "API Call executed successfuly";
+                $message = "API Call executed successfully";
                 $data = json_decode($apiResponse, true);
             } elseif (curl_errno($curl)) {
                 $error = true;

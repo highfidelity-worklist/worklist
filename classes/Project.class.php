@@ -42,6 +42,8 @@ class Project {
     protected $hipchat_room;
     protected $hipchat_color;
     protected $github_repo_url;
+    protected $github_id;
+    protected $github_secret;
 
     public function __construct($id = null) {
         if (!mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD)) {
@@ -123,7 +125,9 @@ class Project {
                 p.hipchat_enabled,
                 p.hipchat_notification_token,
                 p.hipchat_room,
-                p.hipchat_color
+                p.hipchat_color,
+                p.github_id,
+                p.github_secret
             FROM  ".PROJECTS. " as p
             WHERE p.project_id = '" . (int)$project_id . "'";
         $res = mysql_query($query);
@@ -163,6 +167,8 @@ class Project {
         $this->setHipchatNotificationToken($row['hipchat_notification_token']);
         $this->setHipchatRoom($row['hipchat_room']);
         $this->setHipchatColor($row['hipchat_color']);
+        $this->setGithubId($row['github_id']);
+        $this->setGithubSecret($row['github_secret']);
         return true;
     }
     
@@ -442,7 +448,26 @@ class Project {
         
         return $this->getHipchatDefaultColor();
     }
-    
+
+    public function getGithubId() {
+        if ($this->getRepo_type() == 'git'){
+            return empty($this->github_id) ? GITHUB_ID : $this->github_id;
+        }
+        return null;
+    }
+
+    public function setGithubId($github_id) {
+        $this->github_id = $github_id;
+    }
+
+    public function getGithubSecret() {
+        return $this->github_secret;
+    }
+
+    public function setGithubSecret($github_secret) {
+        $this->github_secret = $github_secret;
+    }
+
     public function getHipchatColorsArray() {
         return array(
              "yellow",
@@ -517,7 +542,7 @@ class Project {
                 owner_id, testflight_enabled, testflight_team_token,
                 logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin,
                 cr_job_runner,cr_users_specified, internal, creation_date, hipchat_enabled,
-                hipchat_notification_token, hipchat_room, hipchat_color, repo_type) " .
+                hipchat_notification_token, hipchat_room, hipchat_color, repo_type, github_id, github_secret) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -542,7 +567,9 @@ class Project {
             "'" . mysql_real_escape_string($this->getHipchatNotificationToken()) . "', " .
             "'" . mysql_real_escape_string($this->getHipchatRoom()) . "', " .
             "'" . mysql_real_escape_string($this->getHipchatColor()) . "', " .
-            "'" . mysql_real_escape_string($this->getRepo_type()) . "')";
+            "'" . mysql_real_escape_string($this->getRepo_type()) . "', " .
+            "'" . mysql_real_escape_string($this->getGithubId()) . "', " .
+            "'" . mysql_real_escape_string($this->getGithubSecret()) . "')";
         $rt = mysql_query($query);
         $project_id = mysql_insert_id();
         $this->setProjectId($project_id);
@@ -1232,5 +1259,5 @@ class Project {
             return "Below92";
         }
     }
-    
+
 }// end of the class

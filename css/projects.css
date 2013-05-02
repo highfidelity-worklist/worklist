@@ -369,3 +369,7 @@ input.LV_invalid_field {
     font-weight: normal;
     font-family: Helvetica,Arial,sans-serif;
 }
+
+#custom-github-info {
+    padding-bottom: 15px;
+}

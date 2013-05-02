@@ -25,7 +25,18 @@ if ($userId) {
 
     $project = new Project();
     $cr_3_favorites = $_REQUEST["cr_3_favorites"];
-    $args = array('name', 'description', 'logo', 'website', 'checkGitHub', 'github_repo_url');
+    $args = array(
+        'name',
+        'description',
+        'logo',
+        'website',
+        'checkGitHub',
+        'github_repo_url',
+        'defaultGithubApp',
+        'githubClientId',
+        'githubClientSecret'
+    );
+
     foreach ($args as $arg) {
         $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
     }
@@ -49,6 +60,11 @@ if ($userId) {
     if ($checkGitHub == 'true') {
         $project->setRepo_type('git');
         $project->setRepository($github_repo_url);
+
+        if ($defaultGithubApp == 'false') {
+            $project->setGithubId($githubClientId);
+            $project->setGithubSecret($githubClientSecret);
+        }
     } else {
         $project->setRepo_type('svn');
         $project->setRepository($name);

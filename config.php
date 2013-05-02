@@ -8,10 +8,6 @@
 //Joanne added the following line for the journal attachments
 $current_dir = dirname(__FILE__) . '/';
 
-require_once('Zend/Config.php');
-require_once('Zend/Config/Ini.php');
-require_once('Zend/Registry.php');
-
 // Use this function to not overwrite values that were previously
 // specified in server.local.php
 // @TODO: Migrate all constants to use this handy function :)
@@ -33,11 +29,11 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
         'cp ' . dirname(__FILE__). '/server.local.php.default ' . dirname(__FILE__). '/server.local.php<br/> ' .
         'chmod 777 ' . dirname(__FILE__). '/uploads<br/>' .
         'sed -ie "s/ini_set(\'html_errors\',FALSE);/ini_set(\'html_errors\',TRUE);/" ' . dirname(__FILE__) . '/server.local.php <br/>' .
-        'sed -ie "s/define(\'SANDBOX_NAME\', \'worklist\/\');/define(\'SANDBOX_NAME\', \'' . 
+        'sed -ie "s/define(\'SANDBOX_NAME\', \'worklist\/\');/define(\'SANDBOX_NAME\', \'' .
             WORKLIST_NUMBER . '\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
-        'sed -ie "s/define(\'SANDBOX_USER\', \'\');/define(\'SANDBOX_USER\', \'~'. 
+        'sed -ie "s/define(\'SANDBOX_USER\', \'\');/define(\'SANDBOX_USER\', \'~'.
             USERNAME2 . '\\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
-        'rm ' . dirname(__FILE__) . '/server.local.phpe <br/><br/> ' 
+        'rm ' . dirname(__FILE__) . '/server.local.phpe <br/><br/> '
         );
 }
 
@@ -59,7 +55,7 @@ if (!defined('SMS_SENDER'))     define('SMS_SENDER', 'worklist@worklist.net');
 # Add revision (version) information
 if (!defined('APP_REVISION'))   define('APP_REVISION', '$Rev$');
 if (!defined('APP_VERSION'))    define('APP_VERSION', preg_replace('/\D/', '', APP_REVISION));
- 
+
 // this is the name of the app that will be used when
 // authenticating with login service.
 // change it per app.
@@ -115,6 +111,7 @@ if (!defined('TOKENS'))         define('TOKENS', 'tokens');
 if (!defined('WORKITEM_SKILLS')) define('WORKITEM_SKILLS', 'workitem_skills');
 if (!defined('USER_STATUS'))    define('USER_STATUS', 'user_status');
 if (!defined('USERS'))          define('USERS', 'users');
+if (!defined('USERS_AUTH_TOKENS')) define('USERS_AUTH_TOKENS', 'users_auth_tokens');
 if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
 if (!defined('REL_PROJECT_CODE_REVIEWERS'))  define('REL_PROJECT_CODE_REVIEWERS', 'rel_project_code_reviewers');
@@ -242,7 +239,7 @@ if (!defined("TESTFLIGHT_API_TOKEN"))    define("TESTFLIGHT_API_TOKEN", "c5ae8c5
  * Clickatell sms gateway settings
  */
 if (defined('SMS_INI_FILE') && file_exists(SMS_INI_FILE) && is_readable(SMS_INI_FILE)) {
-    $smsIni = new Zend_Config_Ini(SMS_INI_FILE);
+    $smsIni = '';//new Zend_Config_Ini(SMS_INI_FILE);
     $clickatell = $smsIni->clickatell;
     if ($clickatell !== null) {
         define('CLICKATELL_WSDL',     $clickatell->wsdl);
@@ -317,7 +314,7 @@ $config = array(
     )
 );
 // New config object, allows additional merging
-Zend_Registry::set('config', new Zend_Config($config, true));
+//Zend_Registry::set('config', new Zend_Config($config, true));
 // Database Connection Establishment String
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 // Database Selection String
@@ -329,7 +326,7 @@ if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);
 /** Journal Attachments **/
 if (!defined("ATTACHMENT_URL")) define("ATTACHMENT_URL",SERVER_URL . "helper/get_attachment.php");
 /** Journal Timer **/
-if (!defined("RELOAD_WINDOW_TIMER")) define("RELOAD_WINDOW_TIMER", 7200 ); // 2 hours in s = 10800 = 2 * 60 * 60  
+if (!defined("RELOAD_WINDOW_TIMER")) define("RELOAD_WINDOW_TIMER", 7200 ); // 2 hours in s = 10800 = 2 * 60 * 60
 /** File uploads / S3 settings **/
 /* These allow upload of profile images to S3 */
 if (!defined('S3_ACCESS_KEY')) define('S3_ACCESS_KEY', 'AKIAIXRYPAC4HCOWBXMQ');

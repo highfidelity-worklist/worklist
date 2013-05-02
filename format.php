@@ -69,7 +69,9 @@
 
                 var project_name = new LiveValidation('name', optionsLiveValidation);
                 var project_description = new LiveValidation('description', optionsLiveValidation);
-                var github_repo_url = new LiveValidation('githubRepoURL', optionsLiveValidation);
+                var github_repo_url = new LiveValidation('githubRepoURL', optionsLiveValidation),
+                    vGithubClientId =  new LiveValidation('githubClientId', optionsLiveValidation),
+                    vGithubClientSecret =  new LiveValidation('githubClientSecret', optionsLiveValidation);
 
                 project_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 project_name.add(Validate.Format, { failureMessage: 'Alphanumeric only', pattern: new RegExp(/^[A-Za-z0-9]*$/) });
@@ -79,19 +81,34 @@
                 project_description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 var regex_url = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
                 github_repo_url.add(Validate.Format, { pattern: regex_url, failureMessage: "Repo URL is not valid" });
+                var gitHubValidator = [Validate.Presence, { failureMessage: "Can't be empty!" }];
+
+                github_repo_url.add(gitHubValidator[0], gitHubValidator[1]);
+                vGithubClientId.add(gitHubValidator[0], gitHubValidator[1]);
+                vGithubClientSecret.add(gitHubValidator[0], gitHubValidator[1]);
 
                 $('#checkGitHub').unbind('click').click( function () {
                     // if checked
-                    if ($(this).prop('checked')) {
-                        $('#githubRepoURL').prop('disabled', false);
-                        if (!GitHub.isConnected) {
-                            GitHub.handleUserConnect(false);
-                        }
-                        github_repo_url.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    if (this.checked) {
+                        $('#github-info').show();
+                        github_repo_url.enable();
                     } else {
-                        $('#githubRepoURL').prop('disabled', true);
-                        github_repo_url.remove( Validate.Presence, { failureMessage: "Can't be empty!" });
-                    }    
+                        $('#github-info').hide();
+                        github_repo_url.disable();
+                    }
+                });
+
+                $('#checkDefaultGitHub').unbind('click').click( function () {
+                    // if checked
+                    if (this.checked) {
+                        $('#custom-github-info').hide();
+                        vGithubClientId.disable();
+                        vGithubClientSecret.disable();
+                    } else {
+                        $('#custom-github-info').show();
+                        vGithubClientId.enable();
+                        vGithubClientSecret.enable();
+                    }
                 });
 
                 $('#cancel').click(function() {
@@ -99,13 +116,16 @@
                 });
 
                 $('#save_project').click(function() {
-                    var validateFields = new Array(project_name, project_description);
+                    var validateFields = new Array(
+                        project_name,
+                        project_description,
+                        github_repo_url,
+                        vGithubClientId,
+                        vGithubClientSecret
+                    );
+
                     $(this).attr('disabled', 'disabled');
-                    if ($('#checkGitHub').prop('checked')) {
-                        validateFields.push(github_repo_url);
-                    } 
-                    massValidation = LiveValidation.massValidate(validateFields);
-                    if (!massValidation) {
+                    if (!LiveValidation.massValidate(validateFields)) {
                         $(this).removeAttr('disabled');
                         $(".error-submit").css('display', 'block');
                         $("#name_container span.LV_validation_message").css('margin-top', '-70px');
@@ -116,11 +136,11 @@
                         $("#description_container span.LV_validation_message").css('margin-top', '-' + marginTop + 'px');
                         $("#description_container span.LV_validation_message").css('margin-bottom', marginBottom + 'px');
                         $("#github_container span.LV_validation_message").css('margin-top', '-68px');
-                        $("#github_container span.LV_validation_message").css('margin-left', '140px');
+                        $("#github_container span.LV_validation_message").css('margin-left', '160px');
                         $("#github_container span.LV_validation_message").css('margin-bottom', '54px');
                         return false;
                     }
-                    addForm = $("#popup-addproject");
+                    var addForm = $("#popup-addproject");
                     $.ajax({
                         url: 'addproject.php',
                         dataType: 'json',
@@ -130,7 +150,10 @@
                             logo: $(':input[name="logoProject"]', addForm).val(),
                             website: $(':input[name="website"]', addForm).val(),
                             checkGitHub: $(':input[name="checkGitHub"]', addForm).prop('checked'),
-                            github_repo_url: $(':input[name="githubRepoURL"]', addForm).val()
+                            github_repo_url: $(':input[name="githubRepoURL"]', addForm).val(),
+                            defaultGithubApp: $('#checkDefaultGitHub').is(':checked'),
+                            githubClientId: $('#githubClientId').val(),
+                            githubClientSecret: $('#githubClientSecret').val()
                         },
                         type: 'POST',
                         success: function(json){

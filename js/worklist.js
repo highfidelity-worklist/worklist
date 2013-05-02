@@ -231,7 +231,7 @@ $(function() {
 /* get analytics info for this page */
 $(function() {
     $.analytics = $('#analytics');
-    if($.analytics) {
+    if ($.analytics.length) {
         var jobid=$.analytics.attr('data');
         $.ajax({
             url: 'visitQuery.php?jobid='+jobid,
@@ -246,7 +246,7 @@ $(function() {
                 p.append($('<span>').html(' Unique: ' + json.visits))
                 p.append($('<span>').html(' Total: ' + json.views));
                 $.analytics.append(p);
-            },
+            }
         });
     }
 });

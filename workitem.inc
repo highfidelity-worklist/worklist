@@ -161,7 +161,7 @@ $(document).ready(function() {
             var autoArgs = autocompleteMultiple('getuserslist');
             $("#invite").bind("keydown", autoArgs.bind);
             $("#invite").autocomplete(autoArgs, null);               
-        },
+        }
             
     });
     $("#invite-link").click(function() {
@@ -225,7 +225,8 @@ $(document).ready(function() {
 <script type="text/javascript">
 GitHub.isConnected = '<?php echo $isGitHubConnected; ?>';
 WorklistProject.repo_type = '<?php echo $workitem_project->getRepo_type(); ?>';
-GitHub.applicationKey = '<?php echo GITHUB_ID; ?>';
+GitHub.applicationKey = '<?php echo $workitem_project->getGithubId(); ?>';
+var project_id = <?php echo $worklist['project_id']; ?>;
 var filterName = '.worklist';
 var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
 var workitem_id = <?php echo $worklist['id'];?> ;
@@ -2141,7 +2142,13 @@ if ($action =="edit"):  ?>
                                     <?php if ($worklist['status'] == 'Bidding' || $worklist['status'] == 'SuggestedWithBid' || ($worklist['status'] == 'Suggested' && $worklist['creator_id']== $user_id)) : ?>
                                         <div class="buttonContainer bidbutton">
                                             <?php if ($user->isEligible()) : ?>
-                                            <input type="submit" class="smbutton" value="Add my bid" onClick="return showConfirmForm('bid');" />
+                                                <?php
+                                                $buttonText = "Add my bid";
+                                                if ($workitem_project->getRepo_type() == 'git' && !$isGitHubConnected) {
+                                                    $buttonText = 'Authorize GitHub app';
+                                                }
+                                                ?>
+                                            <input type="submit" class="smbutton" value="<?php echo $buttonText; ?>" onClick="return showConfirmForm('bid');" />
                                             <?php else: ?>
                                             <input type="submit" class="smbutton" value="Add my bid" onClick="return showIneligible('bid');" />
                                             <?php endif; ?>

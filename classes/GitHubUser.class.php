@@ -14,14 +14,11 @@
  */
 class GitHubUser extends User
 {
-    protected $github_connected;
-    protected $github_secret;
-    
     public function __construct($userID) {
         $this->findUserById((int)$userID);
     }
     
-    public function processConnectResponse() {
+    public function processConnectResponse($gitHubId, $gitHubSecret) {
         $error = isset($_REQUEST['error']) ? true : false;
         $message = $error ? $_REQUEST['error'] : false;
         $data = false;
@@ -32,7 +29,7 @@ class GitHubUser extends User
                     'code' => $_REQUEST['code'],
                     'state' => $_REQUEST['state']
                 );
-                $GitHubProject = new GitHubProject();
+                $GitHubProject = new GitHubProject($gitHubId, $gitHubSecret);
                 return $GitHubProject->makeApiRequest('login/oauth/access_token', 'POST', false, $params);
             } else {
                 return array(
@@ -43,20 +40,32 @@ class GitHubUser extends User
         }
     }
     
-    public function storeCredentials($GitHubToken) {
-        $this->setGithub_connected(true);
-        $this->setGithub_token($GitHubToken);
-        if ($this->save()) {
+    public function storeCredentials($gitHubToken, $gitHubId) {
+        $sql = "INSERT INTO `" . USERS_AUTH_TOKENS . "` (`user_id`, `github_id`, `auth_token`)
+            VALUES ('" . (int)$this->id . "',
+            '" . mysql_real_escape_string($gitHubId) . "',
+            '" . mysql_real_escape_string($gitHubToken) . "')";
+        $result = mysql_query($sql);
+        if ($result) {
             return true;
-        } else {
-            return false;
         }
+
+        // token already exists - update it
+        $sql = "UPDATE `" . USERS_AUTH_TOKENS . "`
+            SET `auth_token` = '" . mysql_real_escape_string($gitHubToken) . "'
+            WHERE `user_id` = " . (int)$this->id . " AND `github_id` = '" . mysql_real_escape_string($gitHubId) . "'";
+        mysql_query($sql);
+        return false;
     }
     
-    public function verifyForkExists($repository) {
+    public function verifyForkExists(Project $project) {
+        //
         $GitHubProject = new GitHubProject();
-        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($repository);
-        $listOfRepos = $this->getListOfReposForUser();
+        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($project->getRepository());
+        $listOfRepos = $this->getListOfReposForUser($project);
+        if ($listOfRepos === null) {
+            return false;
+        }
         $userRepos = $listOfRepos['data'];
         $i = 0;
         while ($i < count($userRepos)) {
@@ -68,29 +77,32 @@ class GitHubUser extends User
         return false;
     }
     
-    public function createForkForUser($repository) {
-        $token = $this->getGithub_token();
-        $GitHubProject = new GitHubProject();
-        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($repository);
+    public function createForkForUser(Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $GitHubProject = new GitHubProject($project->getGithubId(), $project->getGithubSecret());
+        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($project->getRepository());
         $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/forks';
         return $GitHubProject->makeApiRequest($path, 'POST', $token, false);
     }
     
-    public function getListOfReposForUser() {
-         $token = $this->getGithub_token();
-         $GitHubProject = new GitHubProject();
-         return $GitHubProject->makeApiRequest('user/repos', 'GET', $token, false);
+    public function getListOfReposForUser(Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        if ($token == null) {
+            return null;
+        }
+        $GitHubProject = new GitHubProject($project->getGithubId(), $project->getGithubSecret());
+        return $GitHubProject->makeApiRequest('user/repos', 'GET', $token, false);
     }
     
-    public function getListOfBranchesForUsersRepo($repository) {
+    public function getListOfBranchesForUsersRepo(Project $project) {
         $listOfBranches = array();
         $latestMasterCommit = false;
         $data = array();
         $i = 0;
-        $token = $this->getGithub_token();
-        $GitHubProject = new GitHubProject();
-        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($repository);
-        $userDetails = $this->getGitHubUserDetails();
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $GitHubProject = new GitHubProject($project->getGithubId(), $project->getGithubSecret());
+        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($project->getRepository());
+        $userDetails = $this->getGitHubUserDetails($project);
         $gitHubUsername = $userDetails['data']['login'];
         $path = 'repos/' . $gitHubUsername . '/' . $repoDetails['name'] . '/branches';
         $rawOutput = $GitHubProject->makeApiRequest($path, 'GET', $token, false);
@@ -112,20 +124,20 @@ class GitHubUser extends User
         return $data;
     }
     
-    public function getGitHubUserDetails() {
-        $token = $this->getGithub_token();
-        $GitHubProject = new GitHubProject();
+    public function getGitHubUserDetails(Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $GitHubProject = new GitHubProject($project->getGithubId(), $project->getGithubSecret());
         return $GitHubProject->makeApiRequest('user', 'GET', $token, false);
     }
     
-    public function createBranchForUser($branch_name, $repository) {
+    public function createBranchForUser($branch_name, Project $project) {
         $branchDetails = array();
-        $token = $this->getGithub_token();
-        $GitHubProject = new GitHubProject();
-        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($repository);
-        $listOfBranches = $this->getListOfBranchesForUsersRepo($repository);
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $GitHubProject = new GitHubProject($project->getGithubId(), $project->getGithubSecret());
+        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($project->getRepository());
+        $listOfBranches = $this->getListOfBranchesForUsersRepo($project);
         $latestCommit = $listOfBranches['latest_master_commit'];
-        $userDetails = $this->getGitHubUserDetails();
+        $userDetails = $this->getGitHubUserDetails($project);
         $gitHubUsername = $userDetails['data']['login'];
         // Verify whether theres a branch named $branch_name already
         if (!in_array($branch_name, $listOfBranches['branches'])) {
@@ -144,11 +156,11 @@ class GitHubUser extends User
         return false;
     }
     
-    public function createPullRequest($branch_name, $repository) {
-        $token = $this->getGithub_token();
-        $GitHubProject = new GitHubProject();
-        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($repository);
-        $userDetails = $this->getGitHubUserDetails();
+    public function createPullRequest($branch_name, Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $GitHubProject = new GitHubProject($project->getGithubId(), $project->getGithubSecret());
+        $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($project->getRepository());
+        $userDetails = $this->getGitHubUserDetails($project);
         $gitHubUsername = $userDetails['data']['login'];
         $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/pulls';
         $params = array(
@@ -160,5 +172,4 @@ class GitHubUser extends User
         $pullRequestStatus = $GitHubProject->makeApiRequest($path, 'POST', $token, $params, true);
         return $pullRequestStatus;
     }
-    
 }

@@ -19,7 +19,6 @@ checkLogin();
 // Get sender Nickname
 $id = getSessionUserId();
 $user = getUserById($id);
-//@TODO: Next 2 fields are protected and cannot be accessed from instance - stojce
 $nickname = $user->nickname;
 $email = $user->username;
 $msg = $_REQUEST['msg'];

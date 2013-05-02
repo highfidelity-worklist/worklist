@@ -30,8 +30,6 @@ class User {
     protected $is_active;
     protected $is_admin;
     protected $last_seen;
-    protected $github_connected;
-    protected $github_token;
     protected $journal_nick;
     protected $is_guest;
     protected $int_code;
@@ -73,6 +71,9 @@ class User {
     protected $transfered;
     protected $allFees;
     protected $managed;
+
+    private $auth_tokens = array();
+
     /**
      * With this constructor you can create a user by passing an array.
      *
@@ -862,35 +863,27 @@ class User {
         $this->last_name = $last_name;
         return $this;
     }
-    
+
     /**
-     * @return true if user has authorized the app with github, false otherwise
+     * @param $gitHubId
+     * @return bool if user has authorized the app with github, false otherwise
      */
-    public function getGithub_connected() {
-        return $this->github_connected;
-    }
-    
-    /**
-     * @param (bool) $isConnected
-     */
-    public function setGithub_connected($isConnected) {
-        $this->github_connected = (bool)$isConnected;
-        return $this;
-    }
-    
-    /**
-     * @return user's github token if there's one, otherwise false
-     */
-    public function getGithub_token() {
-        return $this->github_token ? $this->github_token : false;
-    }
-    
-    /**
-     * @param (string) $GitHubToken
-     */
-    public function setGithub_token($GitHubToken) {
-        $this->github_token = $GitHubToken;
-        return $this;
+    public function isGithub_connected($gitHubId) {
+        $userId = getSessionUserId();
+        if ($userId == 0) {
+            return false;
+        }
+
+        $sql = "SELECT COUNT(*) AS count FROM `" . USERS_AUTH_TOKENS . "`
+                WHERE user_id = " . (int)$userId . " AND github_id = '" . mysql_real_escape_string($gitHubId) . "'";
+
+        $result = mysql_query($sql);
+        if ($result && mysql_num_rows($result) > 0) {
+            $row = mysql_fetch_assoc($result);
+            return (int)$row['count'] > 0;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -1724,6 +1717,28 @@ class User {
             $ret[] = $row;
         }
         return $ret;
+    }
+
+    /**
+     * returns user's github authorization token for GitHub application
+     * @param $github_id
+     * @return null|mixed
+     */
+    public function authTokenForGitHubId($github_id) {
+
+        if (isset($this->auth_tokens[$github_id])) {
+            return $this->auth_tokens[$github_id];
+        }
+
+        $sql = "SELECT auth_token FROM " . USERS_AUTH_TOKENS . "
+            WHERE github_id = '" . mysql_real_escape_string($github_id) . "'
+            AND user_id = " . (int)$this->id;
+        if (!$result = mysql_query($sql)) {
+            return null;
+        }
+        $row = mysql_fetch_assoc($result);
+        $this->auth_tokens[$github_id] = $row['auth_token'];
+        return $this->auth_tokens[$github_id];
     }
 }
 

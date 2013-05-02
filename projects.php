@@ -31,7 +31,6 @@ include("opengraphmeta.php");
 
 $user = new User();
 $user->findUserById($userId);
-$isGitHubConnected = $user->getGithub_connected();
 
 ?>
 <title>Projects - Worklist: Develop software fast.</title>
@@ -50,10 +49,6 @@ $isGitHubConnected = $user->getGithub_connected();
 <script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/plugins/jquery.infinitescroll.min.js"></script>
 <script type="text/javascript" src="js/github.js"></script>
-<script type="text/javascript">
-    GitHub.isConnected = '<?php echo $isGitHubConnected; ?>';
-    GitHub.applicationKey = '<?php echo GITHUB_ID; ?>';
-</script>
 <style>
 #welcomeInside .projectsBtn {
     color: #ffffff;

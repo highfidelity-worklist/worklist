@@ -47,7 +47,7 @@ if (array_key_exists('payload', $_POST)) {
     }
     
 } else {
-    // We don't have a payload, this is a response to a federeation
+    // We don't have a payload, this is a response to a federation
     connectUser();
 }
 
@@ -56,13 +56,22 @@ if (array_key_exists('payload', $_POST)) {
  */
 function connectUser() {
     $GitHub = new GitHubUser(getSessionUserId());
-    $connectResponse = $GitHub->processConnectResponse();
+    $projectId= str_replace('/', '', $_SERVER['PATH_INFO']);
+    $project = new Project($projectId);
+    $connectResponse = $GitHub->processConnectResponse($project->getGithubId(), $project->getGithubSecret());
     print_r($connectResponse);
     if (!$connectResponse['error']) {
-        if ($GitHub->storeCredentials($connectResponse['data']['access_token'])) {
+
+        if ($GitHub->storeCredentials($connectResponse['data']['access_token'], $project->getGithubId())) {
             // Everything went well, we should now close this window and allow the user
             // to continue his bidding process.
             $message = 'You have succesfully authorized our application in GitHub. Go ahead and Add your Bid!';
+
+            $journal_message = sprintf("%s has been validated for project ##%s##" ,
+                $GitHub->getNickname(),
+                $project->getName());
+            sendJournalNotification($journal_message);
+
         } else {
             // Something went wrong updating the users details, close this window and
             // display a proper error message to the user
@@ -75,7 +84,6 @@ function connectUser() {
     };
 }
 
-;
 ?>
 <html>
     <head>

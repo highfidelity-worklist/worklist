@@ -31,8 +31,6 @@ $userId = getSessionUserId();
 $user = new User();
 if ($userId > 0) {
     $user->findUserById($userId);
-    $isGitHubConnected = $user->getGithub_connected();
-    $GitHubToken = $isGitHubConnected ? $user->getGithub_token() : false;
 } else {
     $user->setId(0);
 }
@@ -62,6 +60,8 @@ $is_project_founder = false;
 if($workitem_project->getOwnerId() == $_SESSION['userid']){
 	$is_project_founder = true;
 }
+
+$isGitHubConnected = $user->isGithub_connected($workitem_project->getGithubId());
 
 //used for is_project_runner rights
 $is_project_runner = false;
@@ -1348,7 +1348,8 @@ function changeStatus($workitem, $newStatus, $user) {
             }
         } elseif ($repoType == 'git') {
             $GitHubUser = new GitHubUser($workitem->getMechanicId());
-            $pullResults = $GitHubUser->createPullRequest($workitem->getId(), $thisProject->getRepository());
+            $pullResults = $GitHubUser->createPullRequest($workitem->getId(), $thisProject);
+
             if (!$pullResults['error'] && !isset($pullResults['data']['errors'])) {
                 $codeReviewURL = $pullResults['data']['html_url'] . '/files';
                 $comment = "Code review available here:\n" . $codeReviewURL;
@@ -1369,7 +1370,7 @@ function changeStatus($workitem, $newStatus, $user) {
         $GitHubUser = new GitHubUser($runner);
         $runnerEmail = $GitHubUser->getUsername();
         $GitHubBidder = new GitHubUser($workitem->getMechanicId());
-        $githubDetails = $GitHubBidder->getGitHubUserDetails();
+        $githubDetails = $GitHubBidder->getGitHubUserDetails($thisProject);
         $gitHubUsername = $githubDetails['data']['login'];
         $GitHubProject = new GitHubProject();
         $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($thisProject->getRepository());

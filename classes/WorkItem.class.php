@@ -932,8 +932,8 @@ class WorkItem {
             // Verify whether the user already has this repo forked on his account
             // If not create the fork
             $GitHubUser = new GitHubUser($bid_info['bidder_id']);
-            if (!$GitHubUser->verifyForkExists($repository)) {
-                $forkStatus = $GitHubUser->createForkForUser($repository);
+            if (!$GitHubUser->verifyForkExists($project)) {
+                $forkStatus = $GitHubUser->createForkForUser($project);
                 $bidderEmail = $bidder->getUsername();
                 $emailTemplate = 'forked-repo';
                 $data = array(
@@ -948,7 +948,7 @@ class WorkItem {
             }
             // Create a branch for the user
             if (!$forkStatus['error']) {
-                $branchStatus = $GitHubUser->createBranchForUser($job_id, $repository);
+                $branchStatus = $GitHubUser->createBranchForUser($job_id, $project);
                 $bidderEmail = $bidder->getUsername();
                 $emailTemplate = 'branch-created';
                 $data = array(

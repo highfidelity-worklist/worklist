@@ -36,6 +36,7 @@ if (empty($project) || empty($username) || empty($nickname) || empty($unixname))
 $projectObj = new Project();
 $projectObj->loadByName($project);
 $isGithubProject = $projectObj->getRepo_type() == 'git' ? true : false;
+$isGitHubConnected = $user->isGithub_connected($projectObj->getGithubId());
 
 if ($isGithubProject) {
     $templateEmail = "project-created-github";
@@ -68,6 +69,7 @@ if ($isGithubProject) {
 <script type="text/javascript" src="js/favorites.js"></script>
 <script type="text/javascript" src="js/budget.js"></script>
 <script type="text/javascript" src="js/projects.js"></script>
+<script type="text/javascript" src="js/github.js"></script>
 <style>
 #welcomeInside .worlistBtn {
     color: #ffffff;
@@ -126,6 +128,7 @@ if (!$errorOut) {
 ?>
 <script type="text/javascript">
     var projectName = '<?php echo $project; ?>',
+        project_id = <?php echo $projectObj->getProjectId(); ?>,
         username = '<?php echo $username; ?>',
         nickname = '<?php echo $nickname; ?>',
         unixname = '<?php echo $unixname; ?>',
@@ -133,12 +136,18 @@ if (!$errorOut) {
         dbuser = '<?php echo $db_user; ?>',
         template = '<?php echo $templateEmail; ?>';
         github_repo_url = '<?php echo $projectObj->getRepository(); ?>';
-        
+
+    GitHub.isConnected = '<?php echo $isGitHubConnected; ?>';
+    GitHub.applicationKey = '<?php echo $projectObj->getGithubId(); ?>';
+
     $(function() {
         WorklistProject.repo_type = '<?php echo $projectObj->getRepo_type(); ?>';
         WorklistProject.init();
+        if (!GitHub.validate()) {
+            GitHub.handleUserConnect();
+        }
     });
-    
+
 </script>
 <?php
 } else {

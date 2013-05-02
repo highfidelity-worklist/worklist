@@ -32,8 +32,6 @@ if ($userId > 0) {
     initUserById($userId);
     $user = new User();
     $user->findUserById($userId);
-    $isGitHubConnected = $user->getGithub_connected();
-    $GitHubToken = $isGitHubConnected ? $user->getGithub_token() : false;
     // @TODO: this is overwritten below..  -- lithium
     $nick = $user->getNickname();
     $userbudget =$user->getBudget();
@@ -785,7 +783,7 @@ require_once('opengraphmeta.php');
 
 </script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
-<title>Worklist: Develop software fast.></title>
+<title>Worklist: Develop software fast.</title>
 <style>
 #welcomeInside .worklistBtn {
     color: #ffffff;
