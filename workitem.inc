@@ -1166,6 +1166,7 @@ $(document).ready(function(){
     function pingBidder(id) {
         ping_who = 'bidder';
         ping_bid_id = id;
+        $('#echo-journal').prop('checked', false);
         $('#echo-journal-span').css('display', 'none');
         $('#send-ping-btn').val('Send Reply');
         $('#popup-pingtask form h5').html('Ping about Bid');
@@ -1424,6 +1425,7 @@ $(document).ready(function(){
         $('#popup-pingtask').bind('dialogclose', function(event) {
             $("#echo-journal-span").css("display", "block");
             $("#send-ping-btn").val('Send ping');
+            $('#echo-journal').prop('checked', true);
         });
         
         $('#pingMechanic').click(function() {
