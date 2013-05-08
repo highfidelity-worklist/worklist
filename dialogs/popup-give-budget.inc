@@ -6,14 +6,18 @@
         </div>
         <br/>
         <label for="budget-amount" class="info-label">New Budget to Give (USD): </label>
-            <input type="text" id="budget-amount" name="amount" /> 
-            <?php if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false) { ?>
+        <input type="text" id="budget-amount" name="amount" /> 
+        <?php 
+        if (strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false) { ?>
+            <br/>
+            <br/>
             <span id="budget_seed_area">
                 <label for="budget-seed" class="info-label">Seed: </label>
-                <input type="checkbox" id="budget-seed" name="budget-seed"  />
+                <input type="checkbox" id="budget-seed" name="budget-seed" />
             </span>
-            <?php } ?>
-            <br/><br/>
+            <br/>
+        <?php } ?>
+        <br/>
         <label for="budget-source" class="info-label">Source: </label>
             <input type="text" id="budget-source" name="budget-source"/>
             <span id="budget-source-combo-area">
