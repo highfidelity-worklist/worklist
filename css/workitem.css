@@ -1793,7 +1793,7 @@ div.mechanic_id ul {
 }
 
 #info-fee-notes {
-    overflow: scroll;
+    overflow: auto;
     max-height: 180px
 }
 
