@@ -51,7 +51,7 @@ if(!empty($_REQUEST['newPayPalEmail']) && !empty($_REQUEST['userId'])) {
         $user->setW9_accepted('NOW()');
     }
     
-    $subject = "Your payment PayPal account has been set";
+    $subject = "Your payment account has been set";
 
     $link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
     $worklist_link = SERVER_URL . "worklist.php";
