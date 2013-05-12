@@ -42,8 +42,11 @@ require_once ("functions.php");
 
                   <a href="' . SERVER_URL .'feeds.php?name=comments&job_id=' . $job_id . '" title="Rss & Atom Feeds" style="text-decoration:none;">
                       <img alt="atom feed" title="atom feed" src="' . SERVER_URL .'images/atom20.png" />
-                  </a>
-                  <a title="Twitter Feed" href="https://twitter.com/worklistnet" target="_blank"><img alt="follow us on twitter" title="follow us on twitter" src="' . SERVER_URL . 'images/twitter.png" /></a>
+                  </a>&nbsp;
+
+                  <a title="Twitter Feed" href="https://twitter.com/worklistnet" target="_blank">
+                      <img alt="follow us on twitter" title="follow us on twitter" src="' . SERVER_URL . 'images/twitter.png" />
+                  </a>&nbsp;
                   </div>';
         } else {
             echo '<div class="lefticon" style="padding-top:10px;">
