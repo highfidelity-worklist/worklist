@@ -158,7 +158,7 @@ class Chat
                         '<div data="' . $time . '" class="entry ' . $custom_class . '" id="entry-' . $entry['id'] . '">' . "\n" .
                         "    <h2>\n" .
                                 (
-                                    in_array($entry['author'], $this->botNames_)
+                                    in_array($entry['author'], $this->botNames_) || $entry['author'] =='Guest'
                                         ? '<span class="entry-author">' . $entry['author'] . "</span>\n"
                                         : '<a ' . $func . ' target="_blank" class="entry-author">' . $entry['author'] . "</a>\n"
                                 ) .
