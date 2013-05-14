@@ -1,4 +1,3 @@
-
 <div id="search-head">
 <div id="search-filter-wrap">
   <div>
@@ -148,11 +147,11 @@
         </div>
       </div>
 
-      <div id="buttons">
-      <?php if (isset($_SESSION['userid'])) { ?>
-        <p><input type="submit" id="addJob" name="addJob" value="Add job" class="iTooltip addButton" /></p>
-      <?php } ?>
-      </div>
+    <div id="buttons">
+    <?php if (isset($_SESSION['userid'])): ?>
+        <p><a href="addjob.php" id="addJobButton" title="Create a new job" target="_blank">Add job</a></p>
+    <?php endif; ?>
+    </div>
 
     </form>
   </div>

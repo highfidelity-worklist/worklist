@@ -286,15 +286,6 @@ div.documents.filesDescription {
     text-align: right;
 }
 
-
-.ui-state-default.ui-combobox, .ui-state-default .ui-combobox {
-    background: url("../images/dropdown_background.png") repeat scroll 0px -3px transparent !important;
-}
-
-.ui-state-hover.ui-combobox, .ui-state-hover .ui-combobox {
-    background: url("../images/dropdown_background.png") repeat scroll 0px -35px transparent;
-}
-
 .ui-icon-carat-1-s {
     background-position: -64px 0 !important;
 }
@@ -419,6 +410,10 @@ pre, .pre {
     z-index: 100;
 }
 
+.activeBox {
+    margin-left: 2px;
+}
+
 .activeBox label,
 #projectActiveBox label,
 #projectPopupActiveBox label {
@@ -533,21 +528,27 @@ input[type=password]:focus {
     color: #98AAB2;
 }
 
-#addJob {
+a#addJobButton {
     background-color: #AA1E00;
     background-image: none;
     border-radius: 7px 7px 7px 7px;
     color: #FFFFFF;
     font-size: 10pt;
     font-weight: bold;
-    height: 28px;
-    width: 83px;
+    padding: 5px 15px;
     font-family: Arial, Helvetica, sans-serif;
+    display: inline-block;
 }
 
-#addJob:hover {
+a#addJobButton,
+a#addJobButton:hover {
+    text-decoration: none;
+}
+
+a#addJobButton:hover {
     background-color: #333333;
     color: #ffffff;
+    cursor: pointer;   
 }
 
 .table-caption {
@@ -638,59 +639,6 @@ input[type=password]:focus {
     display: none;
 }
 
-/*** add job popup ***/
-#popup-edit label:not(.small-label) {
-    color: #608E96 !important;
-    padding-bottom: 0.3em;
-    font-weight: normal;
-}
-
-.popup-body #bug_job_id {
-    width: 73px;
-    color: #AA1E00;
-    font-weight: bold;
-}
-
-#popup-edit {
-    padding: 13px 30px 70px 30px !important;
-}
-
-#popup-edit input[type="text"]:not(.ui-combobox-textbox),
-#popup-edit input[type="password"],
-#popup-edit textarea {
-    border: 1px solid #d1cfcf !important;
-    margin-bottom: 21px;
-}
-
-#popup-edit input[type="text"]:not(.ui-combobox-textbox):focus,
-#popup-edit input[type="password"]:focus,
-#popup-edit textarea:focus {
-    border: 1px solid #608E96 !important;
-    outline: none;
-}
-
-#input-section #summary {
-    font-size: 16px;
-    text-indent: 4px;
-    padding-left: 4px !important;
-}
-
-#input-section textarea {
-    width: 483px;
-}
-
-#input-section input[type=text] {
-    width: 484px;
-}
-
-#is-bug-section {
-    padding: 23px 0 0 65px;
-}
-
-#is-bug-section label {
-    font-weight: bold;
-}
-
 .uploadbutton {
     background-image: url('../images/primaryIcons-WL.png') !important;
     background-position: 7px -1013px !important;
@@ -711,17 +659,13 @@ input[type=password]:focus {
     top: 6px;
 }
 
-#center .buttonContainer,
-#popup-edit .buttonContainer {
+#center .buttonContainer {
     display: inline-block;
     text-align:right;
     background-color: #608E96;
     border-radius: 4px;
     height: 27px;
     padding: 1px 14px 0 27px;
-}
-
-#center .buttonContainer {
     margin: 4px 0 4px 4px;
     position: relative;
     top: -16px;
@@ -743,75 +687,11 @@ input[type=password]:focus {
     right: -2px;
 }
 
-.button-section {
-    height: 60px;
-    background-color: #E8EFF0;
-    padding: 10px 25px;
-    position: relative;
-    left: -25px;
-    width: 492px;
-    margin-top: 10px;
-}
-
-.button-section .bid_action_button input[type=submit] {
-    margin-top: 10px !important;
-    background-color: #AA1E00 !important;
-    font-weight: normal !important;
-}
-
-#popup-edit #addaccordion {
-    margin-top: -10px;
-}
-
-.button-section .floatRight {
-    position: relative;
-    right: -6px;
-}
-
 #lebel-for-invite span {
     background: url('../images/primaryIcons-WL.png') -199px -923px;
     display: inline-block;
     width: 25px;
     height: 20px;
-}
-
-#input-section::after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-}
-
-#input-section #attachments {
-    float: left;
-    width: 359px;
-    margin: 6px 0 0 6px;
-}
-
-#input-section #uploadButtonDiv {
-    float: left;
-    padding-left: 5px;
-}
-
-#input-section .attachment {
-    margin: 6px 3px;
-    float: left;
-}
-
-#input-section .attachment span {
-    padding: 2px 5px;
-    background-color: #E9EEEF;
-    font-size: 12px;
-    color: #608E96;
-    border-left: solid 1px #CBCBCB;
-    border-bottom: solid 1px #CBCBCB;
-    border-top: solid 1px #CBCBCB;
-}
-
-#input-section .attachment .removeAttachment {
-    cursor: pointer;
-    border-right: solid 1px #CBCBCB;
-    color: #000000;
 }
 
 #ajaxSpin {

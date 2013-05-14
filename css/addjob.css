@@ -1,0 +1,338 @@
+#addJob {
+    font-size: 16px;
+    max-width: 945px;
+    margin: 1.5em auto; 
+}
+
+#addJob fieldset {
+    border: 0 none;
+}
+
+#addJob fieldset > label {
+    font-family: 'Cabin', sans-serif;
+    font-size: 1.1em;
+    display: block;
+    text-align: left;
+    color: #608e96;
+    padding-bottom: 0.3em;
+}
+
+#addJob fieldset > input[type=text],
+#addJob fieldset > textarea {
+    font-size: 1.2em;
+    border: 1px solid #d1cfcf;
+    width: 95%;
+    padding: 1%;
+}
+
+
+#addJob fieldset > input[type=text]:focus,
+#addJob fieldset > textarea:focus {
+    border-color: #608e96;
+    outline: none;
+}
+
+#addJob fieldset > input[type=text]:hover,
+#addJob fieldset > textarea:hover {
+    outline: 1px solid #608e96;
+}
+
+#addJob .ui-combobox-textbox {
+    color: #AA1E00;
+    font-weight: bold;
+    font-size: 1.1em !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    text-indent: 9px;
+    padding-bottom: 6px !important;
+    position: relative;
+    top: -2px;
+}
+
+#addJob div.ui-state-default {
+    background: none #ffffff !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#addJob div.ui-state-default .ui-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
+    right: 4px;
+    height: 22px;
+    width: 26px;
+}
+
+#addJob .ui-combobox-list-selected {
+    background-color: transparent;
+    font-weight: bold;
+}
+
+#addJob .ui-combobox-list li.ui-state-hover {
+    background-color: #aa1e00;
+    color: #ffffff;
+}
+
+#addJob .ui-combobox-list {
+    border-radius: 0;
+    margin-top: 1px !important;
+}
+
+#addJob .ui-combobox-list li {
+    padding: 0 5px 0 4px;
+    line-height: 18px;
+}
+
+#addJob .ui-combobox-textbox {
+    color: #aa1e00;
+    font-weight: bold;
+    font-size: 1.1em !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    text-indent: 9px;
+    padding-bottom: 6px !important;
+    position: relative;
+    top: -2px;
+}
+
+#addJob div.ui-state-default {
+    background: none #ffffff !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#addJob div.ui-state-default .ui-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
+    right: 4px;
+    height: 22px;
+    width: 26px;
+}
+
+#addJob .ui-combobox-list-selected {
+    background-color: transparent;
+    font-weight: bold;
+}
+
+#addJob .ui-combobox-list li.ui-state-hover {
+    background-color: #aa1e00;
+    color: #ffffff;
+}
+
+#addJob .ui-combobox-list {
+    border-radius: 0;
+    margin-top: 1px !important;
+}
+
+#addJob .ui-combobox-list li {
+    padding: 0 5px 0 4px;
+    line-height: 18px;
+}
+
+#projectPopupActiveBox {
+    border-radius: 0 0 5px 5px;
+    margin-top: -5px;
+}
+
+#container-itemProjectCombo,
+#container-itemStatusCombo {
+    width: 235px;
+}
+
+#project,
+#bug {
+    width: 45%;
+    display: inline-block; 
+}
+
+#bug {
+    text-align: right;
+    position: relative;
+}
+
+#bug fieldset,
+#buttons fieldset {
+    display: inline-block;
+}
+
+#addJob input#bug_job_id {
+    color: #aa1e00;
+    font-size: 0.9em;
+    padding: 5px 2px;
+    width: 65px;
+}
+
+#bug > p {
+    position: absolute;
+    right: 20px;
+    margin: 0;
+    bottom: 0;
+}
+
+fieldset#project > label,
+#bug fieldset > label,
+#buttons fieldset > label,
+fieldset > label > small {
+    color: #707070;
+    font-size: .75em;
+}
+
+#bug fieldset > label[for=is_bug],
+#is_bug {
+    display: inline-block;
+}
+
+textarea#notes {
+    height: 7em;
+}
+
+#upload-section {
+    height: 38px;
+    margin: 0 5px;
+}
+
+#attachments {
+    display: inline-block;
+    margin: 5px;
+}
+
+#uploadButtonDiv {
+    display: inline-block;
+    text-align: right;
+    background-color: #608e96;
+    border-radius: 4px;
+    height: 27px;
+    padding: 1px 14px 0 5px;
+    margin: 5px;
+    position: relative;
+    vertical-align: top;
+}
+
+#addJob .attachment {
+    margin: 6px 3px;
+    float: left;
+}
+
+#addJob .attachment span {
+    padding: 2px 5px;
+    background-color: #e9eeef;
+    font-size: 12px;
+    color: #608E96;
+    border-left: solid 1px #cbcbcb;
+    border-bottom: solid 1px #cbcbcb;
+    border-top: solid 1px #cbcbcb;
+}
+
+#addJob .attachment .removeAttachment {
+    cursor: pointer;
+    border-right: solid 1px #cbcbcb;
+    color: #000000;
+}
+
+#buttons {
+    background-color: #e8eff0;
+    margin: 20px 0;
+    padding: 10px 5px;
+    position: relative;
+    width: 98%;
+}
+
+#save > input[type=submit] {
+    margin-top: 10px;
+    background: none #aa1e00;
+    font-weight: normal;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 1.1em;
+    height: 2.2em;
+    font-family: Arial,sans-serif;
+}
+
+#save {
+    text-align: right;
+    width: 96%;
+}
+
+#buttons fieldset + #save {
+    float: right;
+    width: auto;
+}
+
+@media screen and (max-width: 770px) {
+    #addJob {
+        font-size: 15px;
+        max-width: 750px;
+        margin: 1em auto; 
+    }
+    
+    #bug {
+        width: auto;
+        float: right;
+        margin-right: 18px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    textarea#notes {
+        height: 5em;
+    }
+}
+
+@media screen and (max-width: 530px) {
+    #addJob {
+        font-size: 14px;
+        max-width: 520px;
+        margin: 0.5em auto; 
+    }
+    
+    #addJob fieldset > input[type=text],
+    #addJob fieldset > textarea {
+        font-size: 0.9em;
+    }
+    
+    #bug {
+        margin: 3px 15px 0 0;
+        text-align: center;
+    }
+    
+    #bug fieldset {
+        display: block;
+        padding: 0;
+    }
+    
+    #bug label[for=bug_job_id] {
+        display: none;
+    }
+    
+    #addJob input#bug_job_id {
+        width: 50px;
+        font-size: 0.8em;
+    }
+    
+    #bug > p {
+        float: right;
+        right: 5px;
+        text-align: right;
+        bottom: -20px;
+        width: 400px;
+    }
+    
+    fieldset#project > label, 
+    #bug fieldset > label, 
+    #buttons fieldset > label, 
+    fieldset > label > small {
+        font-size: 0.65em;
+    }
+    
+    #buttons > fieldset {
+        display: inline;
+        width: auto;
+        vertical-align: top;
+    }
+    
+    #buttons fieldset + #save > input[type="submit"] {
+        width: 64px;
+    }
+    
+    textarea#notes {
+        height: 4em;
+    }
+}

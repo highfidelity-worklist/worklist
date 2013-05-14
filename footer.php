@@ -88,8 +88,6 @@ require_once ("functions.php");
 </div id="outside">
 
 <?php if (! isset($inFeedlist) || ($inFeedlist === false)): ?>
-	<?php require_once('dialogs/popup-edit.inc'); ?>
-
      <!-- Popup for openNotifyOverlay() -->
      <div id="sent-notify"></div>
 <?php endif ?>

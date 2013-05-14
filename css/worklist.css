@@ -6,11 +6,11 @@
 * :focus { outline: 0; }
 
 a:active {
-    color: #000 !important;
+    color: #000000;
 }
- 
+
 a:hover {
-    text-decoration: underline !important;
+    text-decoration: underline;
 }
 
 #confirmation{
@@ -376,8 +376,7 @@ color:#98AAB2;
     position: relative;
 }
 
-#projectFilter .ui-combobox {
-    width: 172px !important;
+#projectFilter .ui-combobox {width: 172px !important;
 }
 
 #userFilter .ui-combobox {
@@ -1022,10 +1021,8 @@ input.button-disabled ,
     margin-left: 0px;
 }
 
-#addJob {
-    position: absolute;
-    right: 10px;
-    top: 31px;
+a#addJobButton {
+    margin: 31px 5px 2px 12px;
 }
 
 .table-worklist .comments-icon {

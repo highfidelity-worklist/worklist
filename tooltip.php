@@ -16,7 +16,6 @@ $tooltips = array(
 	
 	
 	/* List's list tooltips 		*/
-	'addButton'		=> 'Create a new job that needs to get done.',
 	'hoverJobRow'	=> 'View, edit, or make a bid on this job.',
 	
 

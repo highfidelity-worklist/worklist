@@ -17,6 +17,14 @@
     display: none;
 }
 
+@media only screen and (min-width: 970px) {
+    #outside, 
+    #welcomeInside {
+        padding: 0;
+        width: 950px;
+    }
+}
+
 @media only screen and (max-width: 880px) {
     #footer,
     #welcome .loggedIn .following,

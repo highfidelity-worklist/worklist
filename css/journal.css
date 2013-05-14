@@ -1771,22 +1771,12 @@ body > #ui-toaster-br {
     color: #FFF !important;
 }
 
-#addJob {
+a#addJobButton {
+    margin: 10px;
     float: right;
-    margin: 10px 10px 10px 0;
-}
-
-#addJob:after {
-    flat: none;
-    content: '';
-    clear: both;
-    display: block;
 }
 
 /* modal messaging styles end */
-/*
- iframe { background:#FFF; }
- */
 
 #popup-guest-message {
     text-align: center;

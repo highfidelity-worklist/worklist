@@ -145,7 +145,7 @@
         editable: function() {
             return this.each(function() {
                 var $this = $(this),fdata = $this.data('fileUpload');
-                if (fdata.user) {
+                if (fdata.user && $('.edittextarea').editable) {
                     $('.edittextarea').editable('jsonserver.php', {
                         indicator: 'Saving ...',
                         tooltip: 'Click to add/edit note ...',

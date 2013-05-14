@@ -738,40 +738,27 @@ $(document).ready(function(){
         setTimeout(function(){
             $(".view_bid_id").click();
         }, 500);
-    <?php
-            if (!empty($user_id) || $user_id < 0) {
-    ?>
-        setFollowingText(isFollowing);
-    <?php   } else {
-    ?>  $('#followingLogin').html('<a href="login.php">Login to follow this task.</a>');
-    <?php   }
-    ?>
+        <?php if (!empty($user_id) || $user_id < 0): ?>
+            setFollowingText(isFollowing);
+        <?php else: ?>  
+            $('#followingLogin').html('<a href="login.php">Login to follow this task.</a>');
+        <?php endif; ?>
     })(jQuery);
-
-    SimplePopup('#popup-bid',
-            'Place Bid',
-            workitem_id,
-            [['input', 'itemid', 'keyId', 'eval']]);
-
-
-        $('.popup-body form input[type="submit"]').click(function(){
-      var name = $(this).attr('name');
-//    $(".popup-page-value").val(page);
-      switch(name){
-          case "add_fee_dialog":
-              SimplePopup('#popup-addfee',
-                  'Add Fee',
-                  workitem_id,
-                  [['input', 'itemid', 'keyId', 'eval']]);
-              $('#popup-addfee').dialog('open');
-              return false;
-          case "reset":
-              ResetPopup();
-              return false;
-          case "cancel":
-              $('#popup-edit').dialog('close');
-              $('#popup-paid').dialog('close');
-              return false;
+    
+    SimplePopup('#popup-bid', 'Place Bid', workitem_id, [['input', 'itemid', 'keyId', 'eval']]);
+    $('.popup-body form input[type="submit"]').click(function(){
+        var name = $(this).attr('name');
+        switch(name) {
+            case "add_fee_dialog":
+                SimplePopup('#popup-addfee', 'Add Fee', workitem_id, [['input', 'itemid', 'keyId', 'eval']]);
+                $('#popup-addfee').dialog('open');
+                return false;
+            case "reset":
+                ResetPopup();
+                return false;
+            case "cancel":
+                $('#popup-paid').dialog('close');
+                return false;
          }
     });
 <?php if (isset($_SESSION['userid'])) {?>

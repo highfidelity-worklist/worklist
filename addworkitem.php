@@ -186,4 +186,7 @@ if ($status == 'Suggested' && $project_id != '') {
     Notification::workitemNotify($options, $data);
 }
 
-echo json_encode(array('return' => "Done!"));
+echo json_encode(array(
+    'return' => "Done!",
+    'workitem' => $workitem->getId()
+));

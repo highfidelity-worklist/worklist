@@ -220,7 +220,6 @@ require_once('opengraphmeta.php');
     var sort = '<?php echo $filter->getSort(); ?>';
     var resetOrder = false;
     stats.setUserId(user_id);
-    var activeProjectsFlag = true;
     var skills = null;
     var only_needs_review_jobs = <?php echo $_GET['status'] == 'needs-review' ? 'true' : 'false' ?>;
 
@@ -814,10 +813,7 @@ require_once('opengraphmeta.php');
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <!-- Head with search filters, user status, runer budget stats and quick links for the jobs-->
-<?php
-   include("search-head.inc"); ?>
-<!-- Popup for editing/adding  a work item -->
-<?php require_once('dialogs/popup-edit.inc'); ?>
+<?php include("search-head.inc"); ?>
 <table class="table-worklist">
     <thead>
         <tr class="table-hdng">

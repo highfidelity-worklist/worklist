@@ -38,10 +38,10 @@
                 </div>
 
 
-                <div class="floatLeft" id="is-bug-section">
+                <div id="is-bug-section">
                     <label for="is_bug" class="small-label"><input type="checkbox" name="is_bug" id="is_bug" /> This is a bug</label>
                 </div>
-                <div class="floatRight">
+                <div>
                     <label for="bug_job_id" class="small-label">Bug of job # ... </label>
                     <input type="text" id="bug_job_id" name="bug_job_id" class="bug_job_id iToolTip enterAmount" size="48" value="" />
                 </div>

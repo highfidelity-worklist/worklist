@@ -1075,10 +1075,6 @@ a:hover{
     margin-top: 10px !important;
 }
 
-#popup-edit textarea {
-    height: 110px;
-}
-
 .popup-body input.date {
     width: 130px;
 }

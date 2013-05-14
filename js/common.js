@@ -367,9 +367,11 @@ function autocompleteMultiple(status, datasource) {
     var autocompleteArguments;
     autocompleteArguments = {
         bind: function( event ) {
-            if (event.keyCode === $.ui.keyCode.TAB &&
-                $(this).data("ui-autocomplete").menu.active) {
-                    event.preventDefault();
+            if (event.keyCode === $.ui.keyCode.TAB && 
+                $(this).data("ui-autocomplete") && 
+                $(this).data("ui-autocomplete").menu.active
+            ) {
+                event.preventDefault();
             }
    
         },

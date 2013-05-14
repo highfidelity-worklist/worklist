@@ -326,7 +326,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                                 you can bid on
                             </p>
                             <?php if (isset($_SESSION['userid'])): ?>
-                                <input type="button" value="Add Job" id="addJob" />
+                                <a title="Create a new job" id="addJobButton" href="addjob.php" target="_blank">Add job</a>
                             <?php endif; ?>
                         </div>
                     </div>
