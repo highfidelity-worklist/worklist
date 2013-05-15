@@ -280,9 +280,9 @@ class JsonServer
             return $this->setOutput(array(
                         'success' => $success,
                         'fileid' => $file->getId(),
-                        'url' => $url,
+                        'url' => $file->getUrl(),
                         'title' => $file->getTitle(),
-                        'fileName' => $fileName,
+                        'fileName' => $file->getFileName(),
                         'description' => '',
                         'message' => $error ? $error : '')
             );
