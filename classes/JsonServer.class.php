@@ -241,11 +241,11 @@ class JsonServer
         // check if we have a error
         if ($_FILES['logoFile']['error'] !== UPLOAD_ERR_OK) {
             return $this->setOutput(array(
-                'success' => false,
-                'message' => File::fileUploadErrorMessage($_FILES['logoFile']['error'])
-            ));
+                        'success' => false,
+                        'message' => File::fileUploadErrorMessage($_FILES['logoFile']['error'])
+                    ));
         }
-        
+
         $ext = end(explode(".", $_FILES['logoFile']['name']));
         $fileName = File::uniqueFilename($ext);
         $tempFile = $_FILES['logoFile']['tmp_name'];
@@ -259,27 +259,39 @@ class JsonServer
 
             $file = new File();
             $file->setProjectId($projectid)
-                 ->setTitle($title)
-                 ->setUrl($url);
+                  ->setTitle($title)
+                  ->setUrl($url);
             $success = $file->save();
-            //good palce to set trigger for scanning
-            
-            return $this->setOutput(array(
-                'success'     => true,
-                'fileid'      => $file->getId(),
-                'url'         => $url,
-                'title'       => $file->getTitle(),
-                'fileName'    => $fileName,
-                'description' => '')
-            );
 
+            if ($success) {
+                // move file to S3
+                try {
+                    File::s3Upload($file->getRealPath(), APP_ATTACHMENT_PATH . $file->getFileName());
+                    $file->setUrl(APP_ATTACHMENT_URL . $file->getFileName());
+                    $file->save();
+                    unlink($file->getRealPath());
+                } catch (Exception $e) {
+                    $success = false;
+                    $error = 'There was a problem uploading your file';
+                    error_log(__FILE__ . ": Error uploading images to S3:\n$e");
+                }
+            }
+
+            return $this->setOutput(array(
+                        'success' => $success,
+                        'fileid' => $file->getId(),
+                        'url' => $url,
+                        'title' => $file->getTitle(),
+                        'fileName' => $fileName,
+                        'description' => '',
+                        'message' => $error ? $error : '')
+            );
         } else {
             return $this->setOutput(array(
-                'success' => false,
-                'message' => 'An error occured while uploading the  '.$tempFile.','. $path.' please try again!'
-            ));
+                        'success' => false,
+                        'message' => 'An error occured while uploading the  ' . $tempFile . ',' . $path . ' please try again!'
+                    ));
         }
-
     }
     /**
      * This method adds a file to a workitem
