@@ -375,3 +375,7 @@ div#center {
 #team .ln-pages a:hover {
     text-decoration: underline;
 }
+
+#container {
+    width: 950px !important;
+}
