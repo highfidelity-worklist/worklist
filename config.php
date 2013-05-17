@@ -318,7 +318,7 @@ $config = array(
     )
 );
 // New config object, allows additional merging
-//Zend_Registry::set('config', new Zend_Config($config, true));
+Zend_Registry::set('config', new Zend_Config($config, true));
 // Database Connection Establishment String
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 // Database Selection String
