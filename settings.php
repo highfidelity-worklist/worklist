@@ -1,9 +1,9 @@
 <?php
 /**
  * vim:ts=4:et
- * 
+ *
  * Copyright (c) 2013, CoffeeandPower Inc.
- * All Rights Reserved. 
+ * All Rights Reserved.
  *
  * http://www.worklist.net
  */
@@ -39,14 +39,14 @@ $returned_json = array();
 
 // Get phone confirm string
 if (isset($_REQUEST['setConfirmString']) && isset($_REQUEST ['phone'])){
- 
-    $phone = $_REQUEST['phone']; 
+
+    $phone = $_REQUEST['phone'];
     if (!isset($_SESSION['phone'])){
         $_SESSION['phone'] = $phone;
     }
     $phone_confirm_string = null;
     if ($phone && Utils::validPhone($phone)) {
-        
+
         if (!$_SESSION['phone_confirm_string'] || $_SESSION['phone'] !=  $phone) {
             $_SESSION['phone'] = $phone;
             $phone_confirm_string = substr(uniqid(), -4);
@@ -55,13 +55,13 @@ if (isset($_REQUEST['setConfirmString']) && isset($_REQUEST ['phone'])){
             $msg = 'Confirm code: ' . $phone_confirm_string;
             Notification::sendShortSMS($user, 'Worklist phone validation', $msg, '', true);
             $returned_json['confirmSent'] =  1;
-        }  
+        }
     } else {
         $returned_json['phoneInvalid'] = true;
         echo json_encode ($returned_json);
-        exit; 
+        exit;
     }
-    
+
     echo json_encode ($returned_json);
     exit ();
 }
@@ -172,9 +172,9 @@ if (isset($_REQUEST['save_account'])) {
               // we need to check if phone/country/timezone or city settings have changed
               // so as to send correct message in mail
         	if ($user->getCity() != $_REQUEST['city'] || $user->getCountry() != $_REQUEST['country']
-        	    || $user->getPhone() != $_REQUEST['phone'] || $user->getTimezone() != $_REQUEST['timezone']){     		
+        	    || $user->getPhone() != $_REQUEST['phone'] || $user->getTimezone() != $_REQUEST['timezone']){
                   $messages[] = "Your country/phone settings have been updated.";
-              }        
+              }
         }
     }
 
@@ -232,49 +232,49 @@ if (isset($_REQUEST['save_account'])) {
                'message' => "This e-mail address is already linked to a Worklist account."
     	    )));
        }
-    	
+
     	$user->findUserByUsername($_SESSION['username']);
     	//send out confirm email
     	$email_hash = md5(date('r', time()));;
-    	
+
     	// generate email for confirm to new email address
     	$subject = "Your email has changed.";
-    	
+
     	$link = SECURE_SERVER_URL . "confirmation.php?emstr=" . base64_encode($username);
-    	
+
     	$body  = '<p>Dear ' . $user->getNickname() . ',</p>';
     	$body .= '<p>Please confirm your new email address in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
     	$body .= '<p><a href=' . $link . '>Click here to confirm your email address</a></p>';
        $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
        $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
 
-    	
+
     	$plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
     	$plain .= 'Please confirm your new email address in the Worklist.' . "\n\n";
     	$plain .= $link . "\n\n";
-    	
+
     	$confirm_email = "An email containing a confirmation link was sent to your email address.<br/>";
     	$confirm_email .= "Please click on that link to verify your email address.";
-    	
+
     	$returned_json['confirm_email'] = $confirm_email;
-    	
+
     	if (! send_email($username, $subject, $body, $plain)) {
            error_log("settings.php: send_email failed");
     	    $confirm_txt = "There was an issue sending email. Please try again or notify ". SUPPORT_EMAIL;
     	}
-    	
+
     	// generate email to current email address
     	$subject = "Account email updated.";
     	$body  = '<p>Hello you!,</p>';
     	$body .= '<p>We received a request to update your email address for your Worklist.net account.</p>';
     	$body .= '<p>If you did not make this request, please contact ' . SUPPORT_EMAIL . ' immediately.</p>';
     	$body .= '<p>See you at the <a href='.SERVER_URL.'>Worklist</a></p>';
-    	
+
     	$plain  = 'Hello you! ,' . "\n\n";
     	$plain .= 'We received a request to update your email address for your Worklist.net account.' . "\n\n";
     	$plain .= 'If you did not make this request, please contact ' . SUPPORT_EMAIL . ' immediately.' . "\n\n";
     	$plain .= 'See you in the Worklist' . "\n\n";
-    	
+
     	if (! send_email($_SESSION['username'], $subject, $body, $plain)) {
     	    error_log("settings.php: send_email failed");
     	    $confirm_txt = 'There was an issue sending email. Please try again or notify ' . SUPPORT_EMAIL;
@@ -401,7 +401,7 @@ if (!empty($saveArgs)) {
     if (isset($confirm_txt) && ! empty($confirm_txt)) {
         echo $confirm_txt;
         exit;
-    } 
+    }
     echo json_encode($returned_json);
     // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions
     exit;
@@ -442,7 +442,7 @@ include("head.html");
     var user_id = <?php echo isset($_SESSION['userid']) ? $_SESSION['userid'] : 0; ?>;
     var worklistUrl = '<?php echo SERVER_URL; ?>';
     var sessionusername = '<?php echo $_SESSION['username']; ?>';
-    
+
     function completeUploadImage(file, data) {
         $('span.LV_validation_message.upload').css('display', 'none').empty();
         if (!data.success) {
@@ -539,22 +539,22 @@ include("head.html");
             async:   false,
 
             success: function(json) {
-               
-                var phone_confirm_json = isJSON(json) ? jQuery.parseJSON(json) : null; 
+
+                var phone_confirm_json = isJSON(json) ? jQuery.parseJSON(json) : null;
 
                 if(values.confirm_phone) {
-                    
+
                     if(phone_confirm_json && phone_confirm_json.phone_validated == true) {
                         $('#phone').data('last_confirmed_phone', $('#phone').val());
                         $('#popup-confirmphone').dialog('close');
                         Utils.infoDialog('Phone Confirmed', "Congratulations! You have successfully confirmed your phone.");
                         if($("#username").val() != sessionusername) {
-                            alert('Please note that you have also modified your email.' + 
-                                    ' \n After clicking on the confirm link in your email, \n please send yourself a test sms.' + 
+                            alert('Please note that you have also modified your email.' +
+                                    ' \n After clicking on the confirm link in your email, \n please send yourself a test sms.' +
                 	        ' Thank you!');
                             $("#Confirm").removeData('email_edited');
                         }
-                        
+
                     } else if(phone_confirm_json && !phone_confirm_json.phone_validated){
                         alert('Your phone confirm code does not match. Please try again.');
                     }else {
@@ -568,26 +568,26 @@ include("head.html");
                         Utils.infoDialog('Phone Reset', "You have successfully reset your phone settings.");
                     } else {
                         alert("There was an error cleaning your phone settings. Please try again.");
-                    }    	                	
-                }	 
+                    }
+                }
             },
 
             error: function(xhdr, status, err) {
-                $('#msg-'+type).text('We were unable to save your settings. Please try again.');    	                
+                $('#msg-'+type).text('We were unable to save your settings. Please try again.');
             }
         });
-    	        
+
     }
 
     function DisplayConfirmPhoneDialog() {
-        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 800, 
+        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 800,
             width: 390, show: 'fade', hide: 'fade', resizable: false };
         $('#popup-confirmphone').dialog(dialog_options);
         $('#popup-confirmphone').dialog('open');
     }
     function GetPhoneValidation() {
         //if the phone was edited, we need to confirm it
-        if($("#phone_edit").val() && jQuery.trim($('#phone').val()).length > 0 && $("#phone").val() 
+        if($("#phone_edit").val() && jQuery.trim($('#phone').val()).length > 0 && $("#phone").val()
             != $("#phone").data('watermarkText') && $('#phone').data('last_confirmed_phone') !=
              $('#phone').val()) {
             var phone_value = $('#int_code').val() + $('#phone').val();
@@ -601,31 +601,31 @@ include("head.html");
                 url: 'settings.php',
                 data: values,
                 async:   false,
-                
+
                 success: function(json) {
                     var settings_json = isJSON(json) ? jQuery.parseJSON(json) : null;
-                    
+
                     // check if phone is valid
                     if(settings_json && settings_json.phoneInvalid) {
                         alert('You have entered an invalid phone number.');
                         return;
-                    } 
-     
+                    }
+
                     DisplayConfirmPhoneDialog();
-                    
+
                 },
 
                 error: function(xhdr, status, err) {
-                    alert('There was an error confirming your phone. Please try again.');    	                
+                    alert('There was an error confirming your phone. Please try again.');
                 }
             });
         } else {
             saveSettings('account');
         }
-        
+
     }
     function saveSettings(type) {
-        
+
         var values;
         if (type == 'account') {
             var massValidation = LiveValidation.massValidate( [ nickname, city, username ]);
@@ -635,7 +635,7 @@ include("head.html");
             if($('#phone').val() == $("#phone").data('watermarkText')) {
                 phone_value = '';
             }
- 
+
             if (massValidation) {
                 values = {
                     int_code: $('#int_code').val(),
@@ -698,7 +698,7 @@ include("head.html");
             url: 'settings.php',
             data: values,
             success: function(json) {
-               
+
                 var message = 'Account settings saved!';
                 var settings_json = isJSON(json) ? jQuery.parseJSON(json) : null;
                 if (settings_json && settings_json.error) {
@@ -708,7 +708,7 @@ include("head.html");
                     } else {
                         message = json.message;
                     }
-                } 
+                }
                 if (type == 'payment' && json) {
                     $('#msg-'+type).html(message + '<br/>' + json);
                 } else if (settings_json && settings_json.confirm_email) {
@@ -716,7 +716,7 @@ include("head.html");
                 } else {
                     $('#msg-'+type).html(message);
                 }
-                
+
 
             },
             error: function(xhdr, status, err) {
@@ -772,7 +772,7 @@ include("head.html");
             var $title = 'Your email change is confirmed.';
             var $content = 'Thank you for confirming your changed email address.<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
         <?php } ?>
-            
+
         $('#popup-confirmed').dialog({
             dialogClass: "white-theme",
             modal: true,
@@ -861,26 +861,26 @@ include("head.html");
             saveSettings('account');
         });
         $("#Confirm").click(function() {
-            
+
                 values = {
                     phone: $('#int_code').val() + $('#phone').val(),
                     confirm_phone: 1,
                     $phoneconfirmstr: $("#phoneconfirmstr").val()
                 };
-                confirm_or_clean_phone(values);   	
+                confirm_or_clean_phone(values);
             return false;
         });
-        
+
         $("#clean_phone_span").click(function() {
             values = {
                 clean_phone: 1
             };
             confirm_or_clean_phone(values);
         });
-	    	    
+
         $("#send-test").click(smsSendTestMessage);
         $("#save_account").click(function() {
-            GetPhoneValidation();            
+            GetPhoneValidation();
             return false;
         });
         $("#save_personal").click(function() {
@@ -987,7 +987,7 @@ include("head.html");
         if (strlen($int_code) && substr($phone, 0, strlen($int_code)) == $int_code) {
             $phone = substr($phone, strlen($int_code));
         }
- 
+
         $sms_flags = !$new_user ? $userInfo['sms_flags'] : '';
         $picture = !$new_user ? $userInfo['picture'] : '';
         $notifications = !$new_user ? $userInfo['notifications'] : 0;
@@ -1042,9 +1042,9 @@ include("head.html");
             </div>
         </div>
 
-        <div style="clear:both">
-            <input type="submit" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
-        </div>
+        <p>
+            <input type="submit" class="wide" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
+        </p>
     </form>
     </div>
     <div id="formRight">
@@ -1085,7 +1085,7 @@ include("head.html");
             <input type="text" id="contactway" name="contactway" class="text-field" value="<?php echo $userInfo['contactway']; ?>" style="width:95%" />
         </p>
 
-        <input type="submit" id="save_personal" value="Save Personal Info" alt="Save Personal Info" name="save_personal" />
+        <input type="submit" class="wide" id="save_personal" value="Save Personal Info" alt="Save Personal Info" name="save_personal" />
 
     </form>
 
@@ -1138,7 +1138,7 @@ include("head.html");
         </script>
 
 
-        <input type="submit" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
+        <input type="submit" class="wide" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
 
     </form>
 

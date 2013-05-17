@@ -1,8 +1,8 @@
 /**
  * vim:ts=4:et
- * 
+ *
  * Copyright (c) 2013, CoffeeandPower Inc.
- * All Rights Reserved. 
+ * All Rights Reserved.
  *
  * http://www.worklist.net
  */
@@ -288,6 +288,7 @@ div.documents.filesDescription {
 
 .ui-icon-carat-1-s {
     background-position: -64px 0 !important;
+    border: 1px solid #d3d3d3;
 }
 
 .popup-body select {
@@ -425,6 +426,7 @@ pre, .pre {
 }
 
 input[type=text], input[type=password], textarea {
+    font-family: Helvetica, Arial, sans-serif;
     border: 2px solid #d1cfcf;
     padding:2px 5px;
     margin-bottom:3px;
@@ -548,7 +550,7 @@ a#addJobButton:hover {
 a#addJobButton:hover {
     background-color: #333333;
     color: #ffffff;
-    cursor: pointer;   
+    cursor: pointer;
 }
 
 .table-caption {

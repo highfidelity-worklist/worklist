@@ -1,9 +1,9 @@
 <?php
 /**
  * vim:ts=4:et
- * 
+ *
  * Copyright (c) 2013, CoffeeandPower Inc.
- * All Rights Reserved. 
+ * All Rights Reserved.
  *
  * http://www.worklist.net
  */
@@ -36,7 +36,7 @@ if (! empty($_POST['submit'])) {
         } else {
             $msg = 'The link to reset your password has expired or is invalid. <a href="forgot.php">Please try again.</a>';
         }
-        
+
     } else {
         $msg = "Please enter a password!";
     }
@@ -54,7 +54,7 @@ include("head.html");
 <script language="javascript">
     // @TODO: Why have we got custom validation here when we are using LiveValidation further down?
 	function validate() {
-	 
+
 		if (document.frmlogin.username.value=="") {
 			alert("Please enter your email");
 			document.frmlogin.username.focus();
@@ -112,8 +112,8 @@ include("head.html");
         password.add(Validate.Length, { minimum: 5, maximum: 255 } );
 </script>
   </div>
- 
-  <div class="LVspace">              
+
+  <div class="LVspace">
   <p><label>Confirm Password<br />
  <input type="password" name="confirmpassword" id="confirmpassword" size="30"></label></p>
                 <script type="text/javascript">
@@ -122,10 +122,10 @@ include("head.html");
                      confirmpassword.add(Validate.Confirmation, { match: 'password'} );
                 </script>
  </div>
-<p><input type="submit" class="lgbutton" value="Reset Password" alt="Reset Password" name="submit" /></p>
+<p><input type="submit" class="wide" value="Reset Password" alt="Reset Password" name="submit" /></p>
 </form>
 <? } ?>
 
 <!-- ---------------------- end MAIN CONTENT HERE ---------------------- -->
 <?php include("footer.php"); ?>
- 
+

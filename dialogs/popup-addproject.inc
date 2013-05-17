@@ -67,6 +67,6 @@
     <?php else: ?>
     <img style="display: none;" id="projectLogoAdd" />
     To add a project, start by creating a user account on worklist
-    <input type="button" id="signup" name="signup" value="Join Worklist" />
+    <input type="button" class="wide" id="signup" name="signup" value="Join Worklist" />
     <?php endif; ?>
 </div>

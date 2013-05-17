@@ -1,8 +1,5 @@
 #account-info, #personal-info, #payment-info {
-    border: 1px solid black;
-    border-radius: 6px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
+    border: 5px solid #EAEFF0;
     padding: 8px;
     margin-bottom: 6px;
     margin-left: 32px;
@@ -26,7 +23,7 @@
 }
 
 div.uploadnotice-w9 div {
-    padding: 0.7em; 
+    padding: 0.7em;
     margin: 0.7em 0;
     display: block;
 }
@@ -36,16 +33,7 @@ div.uploadnotice-w9 div {
 }
 
 #account-info {
-    background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;
     margin-top: 24px;
-}
-
-#personal-info {
-    background: #FFF url(../images/lm_gradient2.jpg) no-repeat top center;
-}
-
-#payment-info {
-    background: #FFF url(../images/lm_gradient3.jpg) no-repeat top center;
 }
 
 #account-info h2, #personal-info h2, #payment-info h2 {

@@ -1,6 +1,12 @@
 .ui-combobox {
 	font-size: 12px;
 	padding: 0 5px 5px 5px;
+    border: 1px solid #d3d3d3;
+}
+
+.ui-combobox.ui-state-hover,
+.ui-combobox .ui-icon.ui-state-hover {
+    border: 1px solid #999999;
 }
 
 .ui-combobox-textbox {

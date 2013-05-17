@@ -113,7 +113,7 @@ p.small-text{
     margin-left: -1px !important;
 }
 
-#jobs-table, 
+#jobs-table,
 #completed-jobs-table {
     margin-top: -1px !important;
     float: left;
@@ -267,9 +267,8 @@ div.right-column {
 }
 
 .admin-submit {
-    float: right;
-    margin-right: 10px;
-    margin-top: -5px;
+    margin-top: 0 !important;
+    float: right !important;
 }
 
 #annual_salary {
@@ -423,26 +422,26 @@ p.bottom {
     margin-right: 1px;
 }
 
-.right-column table, 
+.right-column table,
 #BudgetHistory table {
     border: none !important;
 }
 
-.right-column table td, 
-.right-column table th, 
-#BudgetHistory table th, 
+.right-column table td,
+.right-column table th,
+#BudgetHistory table th,
 #BudgetHistory table td {
     border: none !important;
 }
 
-.right-column table td, 
+.right-column table td,
 #BudgetHistory table td {
     font-size: 12px;
     padding-left: 8px;
     height: 19px;
 }
 
-.right-column table tr.rowodd:hover, 
+.right-column table tr.rowodd:hover,
 #BudgetHistory table tr.rowodd:hover {
     background: #fff;
 }
@@ -452,7 +451,7 @@ p.bottom {
     background: #efefef;
 }
 
-.right-column table td a, 
+.right-column table td a,
 #BudgetHistory table td a {
     text-decoration: none;
     cursor: pointer;
@@ -462,21 +461,21 @@ p.bottom {
     font-weight: bold;
 }
 
-.right-column table th, 
+.right-column table th,
 #BudgetHistory table th {
     padding-top: 9px;
     padding-left: 8px;
 }
 
-.right-column table th.status, 
+.right-column table th.status,
 #BudgetHistory table th.status {
     padding-right: 0;
     width: 50px;
 }
 
-.right-column table th.sandbox, 
+.right-column table th.sandbox,
 .right-column table td.sandbox,
-#BudgetHistory table th.sandbox, 
+#BudgetHistory table th.sandbox,
 #BudgetHistory table td.sandbox{
     padding-left: 0;
 }
@@ -485,8 +484,8 @@ p.bottom {
     width: 310px;
 }
 
-.right-column .table-hdng, 
-.table-budget-history, 
+.right-column .table-hdng,
+.table-budget-history,
 #BudgetHistory .table-hdng{
     height: 28px;
     background: none;
@@ -597,7 +596,7 @@ p.bottom {
     vertical-align: middle;
 }
 
-.favorite_user, 
+.favorite_user,
 .favorite_curr_user {
     background-image: url('../images/otherSprite.png');
     background-position: -60px 0;

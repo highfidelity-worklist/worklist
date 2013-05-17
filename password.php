@@ -20,7 +20,7 @@ if (!empty($_POST['oldpassword'])) {
         $password = '{crypt}' . Utils::encryptPassword($_POST['newpassword']);
 
         $sql = "
-            UPDATE " . USERS . " 
+            UPDATE " . USERS . "
             SET password = '" . mysql_real_escape_string($password) . "'
             WHERE id ='" . $_SESSION['userid'] . "'";
 
@@ -32,7 +32,7 @@ if (!empty($_POST['oldpassword'])) {
             $body  = "<p>Congratulations!</p>";
             $body .= "<p>You have successfully updated your password with ".SERVER_NAME.".";
             $body .= "</p><p>Love,<br/>Philip and Ryan</p>";
-            if (!send_email($to, $subject, $body)) { 
+            if (!send_email($to, $subject, $body)) {
                 error_log("password.php: send_email failed");
             }
         } else {
@@ -91,7 +91,7 @@ include("head.html");
     </script>
     </div>
 
-    <input type="submit" value="Change Password" alt="Change Password" name="change-password" />
+    <input class="wide" type="submit" value="Change Password" alt="Change Password" name="change-password" />
 
 </form>
 

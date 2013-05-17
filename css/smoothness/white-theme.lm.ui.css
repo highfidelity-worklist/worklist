@@ -91,23 +91,28 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
     padding: 0 15px 34px 28px;
 }
 
-.white-theme input[type=button], button, .white-theme input[type=submit]{
+input[type=button], button, input[type=submit] {
     background: #608e96;
     color: white;
-    font-size: 1.1em;
-    font-weight: bold;
     border-radius: 5px;
     -o-border-radius: 5px;
     webkit-border-radius: 5px;
     moz-border-radius: 5px;
-    float: none;
     height: 2.2em;
     margin-right: 3px;
-    margin-top: 2em;
+    font-size: 1.1em;
+    border: none;
+    -webkit-appearance: none;
 }
 
-.white-theme input[type=button].wide,
-.white-theme input[type=submit].wide {
+.white-theme input[type=button], .white-theme input[type=submit] {
+    margin-top: 2em;
+    float: none;
+    font-weight: bold;
+}
+
+input[type=button].wide,
+input[type=submit].wide {
     width: 200px;
 }
 
