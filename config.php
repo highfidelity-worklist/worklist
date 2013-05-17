@@ -8,6 +8,10 @@
 //Joanne added the following line for the journal attachments
 $current_dir = dirname(__FILE__) . '/';
 
+require_once('Zend/Config.php');
+require_once('Zend/Config/Ini.php');
+require_once('Zend/Registry.php');
+
 // Use this function to not overwrite values that were previously
 // specified in server.local.php
 // @TODO: Migrate all constants to use this handy function :)
