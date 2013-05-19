@@ -3,7 +3,7 @@
 
 /* Generic exception class
  */
-class OAuthException2 extends Exception {
+class OAuthException extends Exception {
   // pass
 }
 

@@ -8,6 +8,7 @@
 require_once 'lib/Sms/Backend.php';
 require_once 'lib/Sms/Message.php';
 require_once 'lib/Sms/Numberlist.php';
+require_once 'Zend/Mail.php';
 /**
  * Sms backend e-mail to sms
  *
