@@ -37,49 +37,23 @@
     outline: 1px solid #608e96;
 }
 
-#addJob .ui-combobox-textbox {
-    color: #AA1E00;
-    font-weight: bold;
-    font-size: 1.1em !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-    text-indent: 9px;
-    padding-bottom: 6px !important;
-    position: relative;
-    top: -2px;
+#itemProjectCombo {
+    width: 210px;
 }
 
-#addJob div.ui-state-default {
-    background: none #ffffff !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
+#itemStatusCombo {
+    width: 210px;
 }
 
-#addJob div.ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
-    right: 4px;
-    height: 22px;
-    width: 26px;
+#container-itemProjectCombo,
+#container-itemStatusCombo,
+.itemProjectComboList,
+.itemStatusComboList {
+    width: 235px !important;
 }
 
-#addJob .ui-combobox-list-selected {
-    background-color: transparent;
-    font-weight: bold;
-}
-
-#addJob .ui-combobox-list li.ui-state-hover {
-    background-color: #aa1e00;
-    color: #ffffff;
-}
-
-#addJob .ui-combobox-list {
-    border-radius: 0;
-    margin-top: 1px !important;
-}
-
-#addJob .ui-combobox-list li {
-    padding: 0 5px 0 4px;
-    line-height: 18px;
+.ui-combobox-textbox {
+    width: 205px !important;
 }
 
 #addJob .ui-combobox-textbox {
@@ -124,17 +98,12 @@
 
 #addJob .ui-combobox-list li {
     padding: 0 5px 0 4px;
-    line-height: 18px;
+    line-height: 2.5em;
 }
 
 #projectPopupActiveBox {
     border-radius: 0 0 5px 5px;
     margin-top: -5px;
-}
-
-#container-itemProjectCombo,
-#container-itemStatusCombo {
-    width: 235px;
 }
 
 #project,
@@ -165,6 +134,7 @@
     right: 20px;
     margin: 0;
     bottom: 0;
+    color: #666;
 }
 
 fieldset#project > label,
@@ -262,6 +232,29 @@ textarea#notes {
         max-width: 750px;
         margin: 1em auto; 
     }
+
+    #itemProjectCombo {
+        width: 150px;
+    }
+    
+    #itemStatusCombo {
+        width: 150px;
+    }
+
+    #container-itemProjectCombo,
+    #container-itemStatusCombo,
+    .itemProjectComboList,
+    .itemStatusComboList {
+        width: 175px !important;
+    }
+    
+    .ui-combobox-textbox {
+        width: 145px !important;
+    }
+    
+    #projectPopupActiveBox {
+        margin-top: -7px;
+    }
     
     #bug {
         width: auto;
@@ -286,6 +279,14 @@ textarea#notes {
     #addJob fieldset > input[type=text],
     #addJob fieldset > textarea {
         font-size: 0.9em;
+    }
+
+    #itemStatusCombo {
+        width: 120px;
+    }
+
+    #container-itemStatusCombo {
+        width: 145px;
     }
     
     #bug {
@@ -312,7 +313,10 @@ textarea#notes {
         right: 5px;
         text-align: right;
         bottom: -20px;
-        width: 400px;
+        width: 250px;
+        font-size: .7em;
+        height: 15px;
+        overflow: hidden;
     }
     
     fieldset#project > label, 
@@ -329,7 +333,7 @@ textarea#notes {
     }
     
     #buttons fieldset + #save > input[type="submit"] {
-        width: 64px;
+        width: auto;
     }
     
     textarea#notes {

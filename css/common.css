@@ -433,14 +433,6 @@ input[type=text], input[type=password], textarea {
     font-size:12px;
 }
 
-#itemProjectCombo {
-    width: 210px;
-}
-
-#itemStatusCombo {
-    width: 210px;
-}
-
 #statusCombo,
 #search-filter-wrap-reports select {
     display: none;

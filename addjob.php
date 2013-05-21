@@ -23,6 +23,7 @@ include("head.html");
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/addjob.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
 <?php require_once('header.php'); ?>

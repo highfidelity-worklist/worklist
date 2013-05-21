@@ -26,6 +26,10 @@
 }
 
 @media only screen and (max-width: 880px) {
+    body {
+        overflow-x: hidden;
+    }
+    
     #footer,
     #welcome .loggedIn .following,
     #welcome .rightMenu .headerButtonSeparator {
