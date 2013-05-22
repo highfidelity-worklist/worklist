@@ -1937,16 +1937,20 @@ if ($action =="edit"):  ?>
                             <?php }?>
 
                             <?php if ( !empty($worklist['sandbox']) ):?>
-                                <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
-                                      <?php
-                                      if (strlen(htmlspecialchars($worklist['sandbox'])) > 64) {
-                                            echo substr(htmlspecialchars($worklist['sandbox']), 0, 64) . "...";
-                                      } else {
-                                          echo htmlspecialchars($worklist['sandbox']);
-                                      }
-
+                                <div class="sandboxlink">
+                                    <div class="relative">
+                                        <a href="<?php echo $worklist['sandbox'];?>" target="_blank">
+                                          <?php
+                                          if (strlen(htmlspecialchars($worklist['sandbox'])) > 64) {
+                                              echo substr(htmlspecialchars($worklist['sandbox']), 0, 64) . "...";
+                                          } else {
+                                              echo htmlspecialchars($worklist['sandbox']);
+                                          }
                                       ?>
-                                </a>
+                                        </a>
+                                        <span class="fadingblue">&nbsp;</span>
+                                    </div>
+                                </div>
                                 <?php if (($worklist['status'] == 'Functional' || $worklist['status'] == 'Review')
                                         && $worklist['sandbox'] != 'N/A' || ($worklist['status'] == 'Working' &&
                                         ($user->isRunnerOfWorkitem($workitem) || $is_project_founder || $user->getId() == $mechanic_id))) { ?>

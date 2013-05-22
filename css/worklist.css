@@ -614,7 +614,8 @@ td.textAlignReport {
 }
 
 .table-worklist td div > span:last-child:after,
-.fading {
+.fading,
+.fadingblue {
     position: absolute;
     right: 0;
     top: 0;
@@ -648,6 +649,15 @@ td.textAlignReport {
     background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
     background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
     background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+}
+
+.fadingblue {
+    background: -moz-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(230, 243, 244, 0)), color-stop(100%, rgba(230, 243, 244, 1))) transparent;
+    background: -webkit-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: -o-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: -ms-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: linear-gradient(to right, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
 }
 
 .rowown > td div > span:last-child:after,
@@ -1198,4 +1208,13 @@ a#addJobButton {
     float: left; 
     font-family: arial;
     color: #666666;
+}
+
+.sandboxlink {
+    max-width: 340px;
+    overflow: hidden;
+}
+
+.relative {
+    position: relative;
 }
