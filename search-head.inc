@@ -10,8 +10,8 @@
           <div class="commentsDiv">
             <label for="search_comments">
               <div id="search_comment" class="comment" title="Toggle include/not include comments in search"></div>
+              <input type="checkbox" name="search_comments" id="search_comments" /> 
             </label>
-            <input type="checkbox" name="search_comments" id="search_comments" /> 
           </div>
         </div>
       </div>
