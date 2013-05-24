@@ -3,10 +3,6 @@
     text-align: left;
 }
 
-.budget-source-combo-bonus {
-    width: 360px;
-} 
-
 #budget-source-combo-area .ui-combobox-list,
 #pay-bonus .ui-combobox-list,
 #budgetInWorkitem .ui-combobox-list,
@@ -51,7 +47,6 @@
     height: 16px;
 }
 
-#pay-bonus .ui-icon-carat-1-s,
 #budgetInWorkitem .ui-icon-carat-1-s,
 #update-budget .ui-icon-carat-1-s {
     background-position: -64px 0 !important;

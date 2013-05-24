@@ -665,12 +665,9 @@ p.bottom {
     float: left;
 }
 
-.rightBonusArea .ui-combobox-textbox {
-    top: 5px !important;
-}
-
 .clearBonusArea {
     clear: both;
+    padding-top: 15px;
 }
 
 #missionInfoFavoriteCount {
@@ -699,4 +696,9 @@ p.bottom {
 
 .bid-info-label.notes {
     vertical-align: top;
+}
+
+#bonus-amount {
+    margin: 0;
+    padding: 0.4em 0.35em !important;
 }

@@ -337,7 +337,9 @@ var UserInfo = {
         $('#pay-bonus').dialog({ 
             autoOpen: false, 
             width: 720, 
-            show: 'fade', 
+            show: 'fade',
+            dialogClass: 'white-theme',
+            resizable: false,
             hide: 'fade',
             open: function() {
                 Budget.initCombo("budget-source-combo-bonus", "#bonus-amount");
@@ -511,10 +513,8 @@ var UserInfo = {
                 // If there's only one page don't add the pagination
                 if (json.length > 0 && json[0][2] > 1) {
                     UserInfo.appendPagination(json[0][1], json[0][2], 'bonus-history');
-                } else if(json.length > 0 && json[0][2] == 0) {
+                } else if(json[0][0] == 0 || (json.length > 0 && json[0][2] == 0)) {
                     $('.bonus-history').append(footer);
-                } else {
-                    $('.table-bonus-history').append(footer);
                 }
                 parent.resizeIframeDlg();
             }
