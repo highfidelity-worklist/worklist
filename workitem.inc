@@ -2005,7 +2005,7 @@ if ($action =="edit"):  ?>
                             ?><li id="comment-<?php echo $comment['id']; ?>" class="depth-<?php echo $comment['depth']; ?> <?php ($it % 2) ? print 'imOdd' : print 'imEven'; $it++; ?> <?php if ($order_by == "DESC" && $comment['depth'] > 0) echo 'desc'; ?>">
                                 <div class="comment">
                                     <a href="userinfo.php?id=<?php echo $comment['comment']->getUser()->getId(); ?>" target="_blank">
-                                        <image class="picture profile-link" src="<?php //echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" />
+                                        <image class="picture profile-link" src="<?php echo $comment['comment']->getUser()->getAvatar(); ?>" title="Profile Picture - <?php echo($comment['comment']->getUser()->getNickname()); ?>" />
                                     </a>
                                     <div class="comment-container">
                                         <div class="comment-info">
