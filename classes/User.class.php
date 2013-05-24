@@ -1574,12 +1574,12 @@ class User {
     {
         if (empty($this->picture)) {
             return SERVER_URL ."thumb.php?src=no_picture.png&h=".$h."&w=".$w."&zc=0";
-        }
-        if ($this->imageExistsS3($this->picture)) {
-            return APP_IMAGE_URL . $this->picture;
         } else {
-            return SERVER_URL ."thumb.php?src=".$this->picture."&h=".$h."&w=".$w."&zc=0";
-        }
+        // if ($this->imageExistsS3($this->picture)) {
+            return APP_IMAGE_URL . $this->picture;
+        } //else {
+        //    return SERVER_URL ."thumb.php?src=".$this->picture."&h=".$h."&w=".$w."&zc=0";
+        //}
     }
     
     /**
