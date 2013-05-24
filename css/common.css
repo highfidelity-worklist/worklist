@@ -309,12 +309,23 @@ pre, .pre {
 }
 
 #sent-notify {
+    font-weight: bold;
     line-height: 30px;
     background-color: transparent;
     text-align: center;
     padding: 30px 0 !important;
     height: 30px !important;
     width: 500px;
+}
+
+#sent-notify button {
+    background-color: #608e96;
+    color: #FFFFFF;
+    font-size: 1.1em;
+    font-weight: bold;
+    height: 2.2em;
+    margin-right: 3px;
+    margin-top: 2em;
 }
 
 #w9-dialog #sent-notify {

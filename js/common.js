@@ -222,10 +222,28 @@ jQuery.fn.DefaultValue = function(text){
     });
 };
 
-function openNotifyOverlay(html, autohide) {
+function openNotifyOverlay(html, autohide, button) {
     $('#sent-notify').html(html);
     $('#sent-notify').attr('autohide', autohide);
-    $('#sent-notify').dialog({ dialogClass:'white-theme', autoOpen: true });
+
+    if (typeof(button) == 'undefined') {
+        var button = true;
+    }
+
+    $('#sent-notify').dialog({
+        dialogClass:'white-theme'
+    });
+    
+    if (button) {
+        $('#sent-notify').dialog('option', 'buttons', [{
+            text: 'Got it',
+            click: function() {
+                $(this).dialog('close');
+            }
+        }]);
+    }
+    
+    $('#sent-notify').dialog('open');
 }
 
 function closeNotifyOverlay() {
@@ -290,9 +308,7 @@ function makeWorkitemTooltip(className){
 function validateUploadImage(file, extension) {
     if (!(extension && /^(jpg|jpeg|gif|png)$/i.test(extension))) {
         // extension is not allowed
-        $('span.LV_validation_message.upload').css('display', 'none').empty();
-        var html = 'This filetype is not allowed!';
-        $('span.LV_validation_message.upload').css('display', 'inline').append(html);
+        openNotifyOverlay('This filetype is not allowed', false);
         // cancel upload
         return false;
     }

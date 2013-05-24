@@ -102,8 +102,9 @@ function scrollToLastComment() {
 
 
 $(document).ready(function() {
-    
-
+<?php if (! empty($status_error)) : ?>
+    openNotifyOverlay('<?php echo $status_error; ?>', false);
+<?php endif; ?>
     applyPopupBehavior();
 <?php
     // if user is a runner and workitem is Functional, run sandbox up-to-date check
@@ -1917,9 +1918,6 @@ if ($action =="edit"):  ?>
 <!-- *** End of Action is Edit *** -->
 <?php else: ?>
 <!-- *** Action is View *** -->
-<?php if (! empty($status_error)) : ?>
-                    <span class="LV_invalid status-error"><?php echo $status_error; ?></span>
-<?php endif; ?>
                 <!-- View: Key People info -->
                     <!-- View: Notes textarea -->
                         <span class="sections">Notes</span>

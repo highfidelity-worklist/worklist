@@ -37,6 +37,7 @@
                         if ($("#upload-scan-file").length == 0) {
                             $('<div id="upload-scan-file"><div class="content"></div></div>').appendTo('body');
                         }
+
                         $('#upload-scan-file').dialog({
                             dialogClass: 'white-theme',
                             modal: true,
@@ -57,14 +58,8 @@
                         $this.accordion('activate', false);
                         $('.uploadnotice').empty();
                         if (! (extension && !(/^(exe)$/i.test(extension)))){
-                            // extension is not allowed
-                            var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;position:relative;" class="ui-state-error ui-corner-all">'+
-                            '<div title="click here to close the warning message" onclick="$(this).parent().hide();" style="cursor:pointer;position:absolute;right:5px;top:4px;">x</div>' +
-                            '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-                            '<strong>Error:</strong> This filetype is not allowed.</p>' +
-                            '</div>';
-                            $('.uploadnotice').append(html);
-                            // cancel upload
+                            openNotifyOverlay('This filetype is not allowed', false);
+                            $('#upload-scan-file').dialog('close');
                             return false;
                         }
                         this.disable();
