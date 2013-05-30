@@ -114,7 +114,7 @@ include("opengraphmeta.php");
     </p>
     <p><a name="gf5"></a><strong>Q. I'm a web programmer, can I work on Worklist? </strong></br>
     <strong>A.</strong> Yes! We're always looking for new web developers join our community. To get started, sign up for an
-    <a href ='http://www.worklist.net/worklist/signup.php' target='_blank'>account</a> or visit our <a href ='http://www.worklist.net/journal' target='_blank'>
+    <a href ='http://www.worklist.net/worklist/signup.php' target='_blank'>account</a> or visit our <a href ='https://worklist.net/journal.php' target='_blank'>
     dev chat channel</a> where there are almost always other people around to answer questions and help you get started.<br/>
     </p>
     <p><a name="gf6"></a><strong>Q. What is a Bid? </strong></br>
@@ -140,7 +140,7 @@ include("opengraphmeta.php");
         <td align="left"><h1>Developer FAQs<span class="heading-links" /></h1></td>
     </tr>
     <p><a name="df1"></a><strong>Q. What's the best way to get started?</strong></br>
-    <strong>A.</strong> Join us in <a href='https://www.worklist.net/journal'>Chat</a> where there are almost always other people
+    <strong>A.</strong> Join us in <a href='https://worklist.net/journal.php' target='_blank'>Chat</a> where there are almost always other people
     around to answer questions and help you get started.</strong>
     <br/>
     <p><a name="df2"></a><strong>Q. How can I locate jobs to bid?</strong></br>
@@ -175,7 +175,7 @@ include("opengraphmeta.php");
     <a href ='http://wiki.lovemachineinc.com/wiki/index.php/User:Sandbox_autoconfig'> Wiki</a></strong>.
     <br/>
     <p><a name="df9"></a><strong>Q. On my first commit, I got an error that said I do not have commit access, now what?</strong></br>
-    <strong>A.</strong> Please contact an admin in <a href ='http://www.worklist.net/journal'>Chat </a> or email admin@worklist.net for help.</strong>
+    <strong>A.</strong> Please contact an admin in <a href ='https://worklist.net/journal.php' target='_blank'>Chat </a> or email admin@worklist.net for help.</strong>
     <br/>
     <p><a name="df10"></a><strong>Q. After I have completed my work, how do I get paid?</strong></br>
     <strong>A.</strong> Once you've finished work and it has had a functional and code review completed, you should set the job to COMPLETED.
@@ -208,7 +208,7 @@ include("opengraphmeta.php");
     <br/>    
     <p><a name="df12"></a><strong>Q. Where can I go for more information? </strong></br>
     <strong>A.</strong> Visit the Worklist <a href ='http://wiki.lovemachineinc.com'>developer wiki</a>, read up on our <a href ='http://wiki.lovemachineinc.com/wiki/index.php/Coding_Standards'>Coding Standards</a>
-    Coding Standards</a>, or just visit the <a href ='http://www.worklist.net/journal'>Chat</a> and ask!</strong>
+    Coding Standards</a>, or just visit the <a href ='https://worklist.net/journal.php' target='_blank'>Chat</a> and ask!</strong>
     </p>
     <br/>
     <a href="#top">BACK TO TOP</a>
@@ -278,7 +278,7 @@ include("opengraphmeta.php");
         step, your job as Founder is to make sure everything works according to your design. If anything looks wrong, leave a comment for the
         Mechanic to fix. If the job look good, set it to REVIEW.</li>
         <li><strong>REVIEW -</strong> REVIEW means the new code is ready to be reviewed by another Mechanic. If the reviewer finds any issues,
-        they are either worked out in real-time in our <a href='https://www.worklist.net/journal'>Chat</a> or via comments added to the job ticket. Once
+        they are either worked out in real-time in our <a href='https://worklist.net/journal.php' target='_blank'>Chat</a> or via comments added to the job ticket. Once
         all issues have been resolved, the Mechanic commits the code and sets the job to COMPLETED.</li>
         <br/>
     </blockquote>
