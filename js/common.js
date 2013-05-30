@@ -226,8 +226,15 @@ function openNotifyOverlay(html, autohide, button) {
     $('#sent-notify').html(html);
     $('#sent-notify').attr('autohide', autohide);
 
+    /**
+     *  'Got it' button is shown by default, unless autohide is true
+     */
     if (typeof(button) == 'undefined') {
         var button = true;
+
+        if (autohide) {
+            button = false;
+        }
     }
 
     $('#sent-notify').dialog({

@@ -999,11 +999,11 @@ $(document).ready(function(){
                     $('#quick-status-review').val($(this).val());
                     $('#popup-reviewurl').dialog('open');
                 <?php else : ?>
-                    openNotifyOverlay(html, false);
+                    openNotifyOverlay(html, false, false);
                     $('#quick-status form').submit();
                 <?php endif; ?>
             } else {
-                openNotifyOverlay(html, false);
+                openNotifyOverlay(html, false, false);
                 $('#quick-status form').submit();
             }
         }
