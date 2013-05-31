@@ -1632,7 +1632,7 @@ $(document).ready(function(){
                         }
                         else if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) { //runners and admins
                             foreach ($statusListRunner as $status) {
-                                if ($status != $worklist['status']) {
+                                if ( $status != $worklist['status'] ) {
                             ?>
                                 <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
                             <?php
@@ -1642,7 +1642,7 @@ $(document).ready(function(){
                             && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' 
                             && $worklist['status'] != 'Completed' && $worklist['status'] != 'Done' ) { //creator
                             foreach ($statusListCreator as $status) {
-                                if ($status != $worklist['status']) {
+                                if (!($status == 'Suggested' && $worklist['status'] == 'SuggestedWithBid') && $status != $worklist['status']) {
                             ?>
                                 <option value="<?php echo $status; ?>"><?php echo $status; ?></option>
                             <?php
