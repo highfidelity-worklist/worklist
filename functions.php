@@ -1036,7 +1036,7 @@ function checkLogin() {
         
 		// Replace '<repo> v####' with a link to the SVN server
         $regexp = '/([a-zA-Z0-9]+)\s[v]([0-9_]+)/i';
-        $link = DELIMITER . '<a href="' . SVN_REV_URL . '$1&path=%2F&rev=$2">$1 v$2</a>' . DELIMITER;
+        $link = DELIMITER . '<a href="' . SVN_REV_URL . '$1&rev=$2">$1 v$2</a>' . DELIMITER;
         $url = preg_replace($regexp,  $link, $url);
 		
         // Replace '#/<url>' with a link to the author sandbox
