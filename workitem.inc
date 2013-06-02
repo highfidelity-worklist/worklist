@@ -455,7 +455,7 @@ $(document).ready(function(){
         }
         $("#budget_id, #budget_id_multiple_bid").val($('#budget-source-combo').val());
         $('#popupSelectBudget').dialog("close");
-        openNotifyOverlay("Accepting bids", false);
+        openNotifyOverlay("Accepting bids", false, false);
         $('#' + $('#popupSelectBudget').data("clickon")).click();
     });
     $("#popupSelectBudget #cancel_budget").click(function() {
