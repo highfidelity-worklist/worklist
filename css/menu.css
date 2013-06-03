@@ -119,7 +119,7 @@
 #welcomeInside .following {
     display: inline-block;
     vertical-align: top;
-    padding-top: 7px;
+    padding-top: 4px;
 }
 
 #welcomeInside .headerButton {
@@ -142,7 +142,7 @@
     color: #888888;
     display: inline-block;
     vertical-align: top;
-    padding-top: 7px;
+    padding-top: 4px;
 }
 
 #welcomeInside .headerButtonSeparator {

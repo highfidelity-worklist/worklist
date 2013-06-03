@@ -1218,3 +1218,94 @@ a#addJobButton {
 .relative {
     position: relative;
 }
+
+@media only screen and (max-width: 640px) {
+
+    #outside, #worklist #container {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    #center {
+        margin: 10px;
+        overflow: hidden;
+    }
+
+    #search-filter-wrap {
+        width: 100%;
+        background-color: #E1E8EA;
+    }
+
+    #search-filter-wrap .input_box {
+        width: auto;
+    }
+
+    #search-filter-wrap #search_comments {
+        margin-top: 3px;
+    }
+
+    #search-filter-wrap .searchDiv {
+        margin: 17px 10px;
+        background-image: none;
+        padding-left: 5px;
+    }
+
+    #searchForm div > p {
+        margin: 0;
+    }
+
+    #search-filter-wrap #search_reset {
+        left: 170px;
+    }
+
+    #searchForm #buttons {
+        width: auto;
+    }
+
+    a#addJobButton {
+        margin: 20px 5px 7px 5px;
+    }
+
+    .taskSummaryCell > a {
+        position: relative;
+    }
+
+    .taskSummary {
+        position: relative;
+        width: 95%;
+    }
+
+    .taskSummary > span:last-child {
+        display: inline-block;
+        width: 90%;
+    }
+
+    .project-col, .status-col, .who-col, .age-col, .comments-col, .filters {
+        display: none;
+    }
+
+    #tooltip[style] {
+        left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+
+    #center {
+        margin: 10px 2px;
+    }
+
+    #search-filter-wrap .searchDiv {
+        width: 165px;
+    }
+
+    #search-filter-wrap #query {
+        width: 75px;
+    }
+
+    #search-filter-wrap #search_reset {
+        left: 83px;
+    }
+}

@@ -177,6 +177,7 @@ require_once("head.html");
 require_once('opengraphmeta.php');
 ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
@@ -307,7 +308,7 @@ require_once('opengraphmeta.php');
 
         var project_link = worklistUrl + '' + json[17];
         row +=
-            '<td class="clickable not-workitem" onclick="location.href=\'' + project_link + '\'">' +
+            '<td class="clickable not-workitem project-col" onclick="location.href=\'' + project_link + '\'">' +
                 '<div class="taskProject" id="' + json[16] + '">' +
                     '<span><a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a></span>' +
                 '</div>' +
@@ -334,7 +335,7 @@ require_once('opengraphmeta.php');
         if ((json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') && json[10] > 0) {
             bidCount = ' (' + json[10] + ')';
         }
-        row += '<td><div class="taskStatus"><span>' + json[2] + bidCount + '</span></td>';
+        row += '<td class="status-col"><div class="taskStatus"><span>' + json[2] + bidCount + '</span></td>';
 
         var who = '',
             createTagWho = function (id, nickname, type) {
@@ -351,7 +352,7 @@ require_once('opengraphmeta.php');
             who += ', ' + createTagWho(json[14], json[5], "mechanic");
         }
     
-        row += '<td class="who not-workitem">' + 
+        row += '<td class="who not-workitem who-col">' + 
                  '<div class="taskWho">' +
                    who + 
                  '</div>' +
@@ -367,7 +368,7 @@ require_once('opengraphmeta.php');
             } else {
                 strAge = strAge + ' from now';
             }
-            row += '<td>' +
+            row += '<td class="age-col">' +
                      '<div class="taskAge">' + 
                        '<span>' +
                          strAge
@@ -376,7 +377,7 @@ require_once('opengraphmeta.php');
                    '</td>';
         } else if (json[2] == 'Done' ) {
     if (json[6] != null){
-            row += '<td>' +
+            row += '<td class="age-col">' +
                      '<div class="taskAge">' + 
                        '<span>' +
                          RelativeTime(json[6], true) +
@@ -384,7 +385,7 @@ require_once('opengraphmeta.php');
                      '</div>' +
                     '</td>';
             } else {
-            row += '<td>' +
+            row += '<td class="age-col">' +
                      '<div class="taskAge">' + 
                        '<span>' +
                          'unknown'
@@ -393,7 +394,7 @@ require_once('opengraphmeta.php');
                    '</td>';
             }
         } else {
-            row += '<td>' +
+            row += '<td class="age-col">' +
                      '<div class="taskAge">' + 
                        '<span>' +
                          RelativeTime(json[6], true) +
@@ -404,7 +405,7 @@ require_once('opengraphmeta.php');
 
         // Comments
         comments = (json[12] == 0) ? "" : json[12];
-        row += '<td>' + 
+        row += '<td class="age-col">' + 
                  '<div class="taskComments">' + 
                    '<span>' +
                      comments +
@@ -817,12 +818,12 @@ require_once('opengraphmeta.php');
 <table class="table-worklist">
     <thead>
         <tr class="table-hdng">
-            <td class="clickable">Project</td>
+            <td class="clickable project-col">Project</td>
             <td><span class="clickable">Job ID</span> &amp; <span class="clickable">Summary</span></td>
-            <td class="clickable">Status</td>
-            <td class="clickable">Who</td>
-            <td class="clickable" id="defaultsort">Age</td>
-            <td class="clickable"><div class="comments-icon" title="Comments"></div></td>
+            <td class="clickable status-col">Status</td>
+            <td class="clickable who-col">Who</td>
+            <td class="clickable age-col" id="defaultsort">Age</td>
+            <td class="clickable comments-col"><div class="comments-icon" title="Comments"></div></td>
         </tr>
     </thead>
     <tbody>

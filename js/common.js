@@ -26,6 +26,7 @@ var loaderImg = function($)
             aLoading.push({ id: id, title: title, onHide: callback});
             $("#loader_img_title").append("<div class='" + id + "'>" + title + "</div>");
             if (aLoading.length == 1) {
+                $("#ajaxSpin").css("display", "none");
                 $("#loader_img").css("display", "block");
             }
             $("#loader_img_title").center();
@@ -351,7 +352,7 @@ $(function() {
                 showAjaxSpin = false;
                 break;
         }
-        if (showAjaxSpin) {
+        if (showAjaxSpin && $("#loader_img").css('display') != "block") {
             $('<figure id="ajaxSpin"><img src="images/loader.gif" /></figure>').appendTo('body');
         }
     });
