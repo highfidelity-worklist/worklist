@@ -354,7 +354,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                 <h2>Chat commands</h2>
                 <p>
                     <a href="#" class="botlink" title="Command: @me status [message]" data="@me help status">How do i set my status?</a>
-                    <a href="#" class="botlink" title="Command: @me away [message]" data="@me away test">How do I set myself away?</a>
+                    <a href="#" class="botlink" title="Command: @me away [message]" data="@me help away">How do I set myself away?</a>
                     <a href="#" class="botlink" title="Command: @ping [user] [message]" data="@ping hello">How do I ping someone?</a>
                     <a href="#" class="botlink" title="Command: @love [to] [why]" data="@love help">How do I send love?</a>
                     <a href="#" class="botlink" title="Command: @alert add [keyword]" data="@alert help">How do I add an alert?</a>
