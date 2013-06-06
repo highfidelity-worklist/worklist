@@ -3870,6 +3870,7 @@ function fillBiddingReviewDrawers(json) {
                 {
                     id: 'workitem-' + workitem.id,
                     href: 'workitem.php?job_id=' + workitem.id + '&action=view',
+                    target: '_blank',
                 })
                 .append('<span>#' + workitem.id + '</span> ' + workitem.summary)
                 .appendTo(li);
