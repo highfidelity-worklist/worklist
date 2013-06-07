@@ -429,7 +429,6 @@ include("head.html");
 
 <script type="text/javascript" src="js/skills.js"></script>
 <script type="text/javascript" src="js/userSkills.js"></script>
-<script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/sendlove.js"></script>
 <script type="text/javascript" src="js/ajaxupload.js"></script>
 <script type="text/javascript" src="js/worklist.js"></script>
@@ -628,7 +627,7 @@ include("head.html");
 
         var values;
         if (type == 'account') {
-            var massValidation = LiveValidation.massValidate( [ nickname, city, username ]);
+            var massValidation = LiveValidation.massValidate( [ nickname, city, username ], true);
             // we need to account for the value of the watermark for the phone. There may be a bug in the plugin
             // so we adjust the phone no accordingly Teddy 25/Feb/13
             var phone_value = $('#int_code').val() + $('#phone').val();
@@ -661,6 +660,9 @@ include("head.html");
                     review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0
                 };
             } else {
+                // Validation failed. We use openNotifyOverlay to display messages
+                var errorHtml = createMultipleNotifyHtmlMessages(LiveValidation.massValidateErrors);
+                openNotifyOverlay(errorHtml, null, null, true);
                 return false;
             }
         } else if (type == 'personal') {
@@ -709,15 +711,13 @@ include("head.html");
                         message = json.message;
                     }
                 }
-                if (type == 'payment' && json) {
-                    $('#msg-'+type).html(message + '<br/>' + json);
-                } else if (settings_json && settings_json.confirm_email) {
-                    $('#msg-'+type).html(message + '<br/>' + settings_json.confirm_email) ;
+
+                if(settings_json.error == 1) {
+                    openNotifyOverlay(message,false,false,true); // Display with a red border id its an error
                 } else {
-                    $('#msg-'+type).html(message);
+                    openNotifyOverlay(message);
                 }
-
-
+                
             },
             error: function(xhdr, status, err) {
                 $('#msg-'+type).text('We were unable to save your settings. Please try again.');

@@ -223,14 +223,27 @@ jQuery.fn.DefaultValue = function(text){
     });
 };
 
-function openNotifyOverlay(html, autohide, button) {
+/**
+ * Use this function to create multiple html messages for
+ * openNotifyOverlay function. Pass all messages in in a string array 
+ * Retunrs html
+ */
+function createMultipleNotifyHtmlMessages(arrayOfMessages) {
+    var html = '';
+    for(var i=0; i < arrayOfMessages.length; i++) {
+        html += '<div>' + arrayOfMessages[i] + '</div>'
+    }
+    return html;
+}
+
+function openNotifyOverlay(html, autohide, button, displayRedBorder) {
     $('#sent-notify').html(html);
     $('#sent-notify').attr('autohide', autohide);
-
+    
     /**
      *  'Got it' button is shown by default, unless autohide is true
      */
-    if (typeof(button) == 'undefined') {
+    if (typeof(button) == 'undefined' || button == null) {
         var button = true;
 
         if (autohide) {
@@ -252,6 +265,22 @@ function openNotifyOverlay(html, autohide, button) {
     }
     
     $('#sent-notify').dialog('open');
+    
+    /**
+     * we need to remove the height so that the element automatically readjusts to
+     * a proper height based on the mesages to display.
+     */
+    $('#sent-notify').css("height", "");
+ 
+    var sentNotifyParent = $('#sent-notify').parent();
+    $(sentNotifyParent).attr('id', ''); // We remove the id to default back to blue border
+    if(displayRedBorder) {
+        /**
+         * We give the container an id. This is important so that
+         * we can have our css to set the red border trump the white theme css
+         */
+        $(sentNotifyParent).attr('id', 'openOverlayContainer');
+    }
 }
 
 function closeNotifyOverlay() {

@@ -1246,13 +1246,9 @@ $(document).ready(function(){
 
     function saveWorkitem() {
         var massValidation;
+        var bugJobId;
         if($('#is_bug').is(':checked')) {
-            var bugJobId = new LiveValidation('bug_job_id', {
-                onlyOnSubmit: true ,
-                onInvalid : function() {
-                    this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-                }
-            });
+            bugJobId = new LiveValidation('bug_job_id');
             bugJobId.add( Validate.Custom, {
                 against: function(value,args){
                     id = $('#bugJobSummary').attr('title');
@@ -1260,40 +1256,33 @@ $(document).ready(function(){
                 },
                 failureMessage: "Invalid item Id"
             });
-            massValidation = LiveValidation.massValidate([ bugJobId ]);
-            if (! massValidation) {
-                return false;
-            }
         }
-        var summary = new LiveValidation('summary', {
-            onlyOnSubmit: true ,
-            onInvalid : function() {
-                this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-            }
-        });
+        
+        var summary = new LiveValidation('summary');
         summary.add( Validate.Presence, {
-            failureMessage: "Can't be empty!"
+            failureMessage: "Summary field can't be empty!"
         });
-        massValidation = LiveValidation.massValidate( [ summary ]);
-        if (!massValidation) {
-          return false;
-        }
 
-        var editProject = new LiveValidation('project_id', {
-            onInvalid : function() {
-                this.insertMessage( this.createMessageSpan() );
-                this.addFieldClass();
-            }
-        });
+        var editProject = new LiveValidation('project_id');
         editProject.add( Validate.Exclusion, {
-            within: [ 'Select project' ],
+            within: [ 'select' ],
             partialMatch: true,
             failureMessage: "You have to choose a project!"
         });
-        massValidation = LiveValidation.massValidate( [ editProject ]);
-        if (! massValidation) {
+
+        if($('#is_bug').is(':checked')) { 
+            massValidation = LiveValidation.massValidate([editProject, summary, bugJobId],true);
+        } else {
+            massValidation = LiveValidation.massValidate([editProject,summary],true);
+        }
+                    
+        if (!massValidation) {
+            // Validation failed. We use openNotifyOverlay to display messages
+            var errorHtml = createMultipleNotifyHtmlMessages(LiveValidation.massValidateErrors);
+            openNotifyOverlay(errorHtml, null, null, true);
             return false;
         }
+        
     }
 
     function AcceptMultipleBidOpen(){

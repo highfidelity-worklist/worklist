@@ -163,15 +163,9 @@ $(function() {
             $('#save > input').data("submitIsRunning", false);
         });
 
+        var bugJobId;
         if($('#addJob form input[name="is_bug"]').is(':checked')) {
-            var bugJobId = new LiveValidation('bug_job_id', {
-                onlyOnSubmit: true,
-                onInvalid : function() {
-                    loaderImg.hide("saveRunning");
-                    this.insertMessage(this.createMessageSpan());
-                    this.addFieldClass();
-                }
-            });
+            bugJobId = new LiveValidation('bug_job_id');
             bugJobId.add( Validate.Custom, {
                 against: function(value, args) {
                     id = $('#bug > p').attr('title');
@@ -184,46 +178,31 @@ $(function() {
                 },
                 failureMessage: "Invalid item Id"
             });
+        }
+        var summary = new LiveValidation('summary');
+        summary.add(Validate.Presence, {failureMessage: "You Must Enter The Job Title!"});
 
-            massValidation = LiveValidation.massValidate([bugJobId]);
-            if (!massValidation) {
-                loaderImg.hide("saveRunning");
-                event.preventDefault();
-                return false;
-            }
-        }
-        var summary = new LiveValidation('summary', {
-            onlyOnSubmit: true,
-            onInvalid: function() {
-                loaderImg.hide("saveRunning");
-                this.insertMessage(this.createMessageSpan());
-                this.addFieldClass();
-            }
-        });
-        summary.add(Validate.Presence, {failureMessage: "Can't be empty!"});
-        massValidation = LiveValidation.massValidate([summary]);
-        if (!massValidation) {
-            loaderImg.hide("saveRunning");
-            event.preventDefault();
-            return false;
-        }
-        var itemProject = new LiveValidation('itemProjectCombo', {
-            onlyOnSubmit: true ,
-            onInvalid: function() {
-                loaderImg.hide("saveRunning");
-                this.insertMessage( this.createMessageSpan() );
-                this.addFieldClass();
-            }});
+        var itemProject = new LiveValidation('itemProjectCombo');
         itemProject.add( Validate.Exclusion, {
             within: [ 'select' ], partialMatch: true,
             failureMessage: "You have to choose a project!"
         });
-        massValidation = LiveValidation.massValidate([itemProject]);
+        
+        if($('#addJob form input[name="is_bug"]').is(':checked')) { 
+            massValidation = LiveValidation.massValidate([itemProject, summary, bugJobId],true);
+        } else {
+            massValidation = LiveValidation.massValidate([itemProject, summary],true);
+        }
+                    
         if (!massValidation) {
-            loaderImg.hide("saveRunning");
             event.preventDefault();
+            // Validation failed. We use openNotifyOverlay to display messages
+            var errorHtml = createMultipleNotifyHtmlMessages(LiveValidation.massValidateErrors);
+            openNotifyOverlay(errorHtml, null, null, true);
+            $('#save > input').data("submitIsRunning", false);
             return false;
         }
+        
         addForm = $("#addJob");
         $.ajax({
             url: 'addworkitem.php',

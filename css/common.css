@@ -739,3 +739,7 @@ a#addJobButton:hover {
 .moneyPaddingSmall {
     padding-right: 12px !important;
 }
+
+#openOverlayContainer {
+	border: 5px solid #FF0000 !important;
+}
