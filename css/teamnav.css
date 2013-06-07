@@ -5,7 +5,7 @@ h1 {
 /***** Override global page styles *****/
 
 #leftcol {
-    width: 700px;
+    width: 725px;
 }
 
 #newUserStats {
@@ -377,5 +377,5 @@ div#center {
 }
 
 #container {
-    width: 950px !important;
+    width: 975px !important;
 }

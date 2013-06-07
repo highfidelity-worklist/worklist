@@ -727,3 +727,15 @@ a#addJobButton:hover {
 .ui-autocomplete a.ui-state-hover {
     background: #FFD;
 }
+
+.money {
+    text-align: right !important;
+}
+
+.moneyPadding {
+    padding-right: 23px !important;
+}
+
+.moneyPaddingSmall {
+    padding-right: 12px !important;
+}

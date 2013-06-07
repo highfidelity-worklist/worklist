@@ -275,11 +275,11 @@ function AppendUserRow(json, odd) {
     row += ' useritem-' + json.id + '">';
     row += '<td class="name-col">' + (is_myfavorite ? favorite_div : '') + json.nickname + '</td>';
     row += '<td class="age">'+ json.joined + '</td>';
-    row += '<td class="jobs">' + json.jobs_count + '</td>';
-    row += '<td class="money">' + json.budget + '</td>';
-    row += '<td class="money">$' +addCommas(Math.round(json.earnings)) + '</td>';
-    row += '<td class="money">$' + addCommas(Math.round(json.earnings30)) + '</td>';
-    row += '<td class="money">$' + addCommas(Math.round(json.rewarder)) + ' / ' + Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100*100)/100 + '%</td>';
+    row += '<td class="jobs money moneyPadding">' + json.jobs_count + '</td>';
+    row += '<td class="money moneyPadding">' + json.budget + '</td>';
+    row += '<td class="money moneyPadding">$' +addCommas(json.earnings.toFixed(2)) + '</td>';
+    row += '<td class="money moneyPadding">$' + addCommas(json.earnings30) + '</td>';
+    row += '<td class="money moneyPadding">(' + (Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100*100)/100)+ '%) $' + addCommas(json.rewarder) +  '</td>';
     $('.table-userlist tbody').append(row);
 
     var favorite_user_id = json.id;
@@ -405,7 +405,7 @@ function addCommas(nStr) {
                 <th class="sort {sortkey: 'budget'} clickable money">Budget<div class = "arrow"><div/></th>
                 <th class="sort {sortkey: 'earnings'} clickable money">Total Earnings<div class = "arrow"><div/></th>
                 <th class="sort {sortkey: 'earnings30'} clickable money">30 Day Earnings<div class = "arrow"><div/></th>
-                <th class="sort {sortkey: 'rewarder'} clickable money">Bonus $ / %<div class = "arrow"><div/></th>
+                <th class="sort {sortkey: 'rewarder'} clickable money">(%) Bonus $<div class = "arrow"><div/></th>
             </tr>
         </thead>
         <tbody>

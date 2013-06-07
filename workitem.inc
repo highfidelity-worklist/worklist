@@ -2165,8 +2165,8 @@ if ($action =="edit"):  ?>
                             <thead>
                                 <tr class="table-hdng">
                                     <td><span class="table-back"><span>Who</span></span></td>
-                                    <td><span class="table-back"><span>$</span></span></td>
-                                    <td><span class="table-back"><span>Done in ...</span></span></td>
+                                    <td><span class="table-back"><span class="moneyPaddingSmall">Amount</span></span></td>
+                                    <td class="money"><span class="table-back"><span class="moneyPaddingSmall">Done in ...</span></span></td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2234,8 +2234,8 @@ if ($action =="edit"):  ?>
                                         </span>
                                     </span>
                                     </td>
-                                    <td ><span class="table-back"><span>$ <?php echo $bid['bid_amount'];?></span></span></td>
-                                    <td ><span class="table-back"><span><?php echo $bid['done_in'];?></span></span></td>
+                                    <td class="money"><span class="table-back"><span class="moneyPaddingSmall">$ <?php echo $bid['bid_amount'];?></span></span></td>
+                                    <td class="money"><span class="table-back"><span class="moneyPaddingSmall"><?php echo $bid['done_in'];?></span></span></td>
 <?php
     $expire_class = '';
     if (isset($bid['expires']) && $bid['expires'] != -1) {
@@ -2282,7 +2282,7 @@ if ($action =="edit"):  ?>
                                 <thead>
                                 <tr class="table-hdng">
                                     <td class="who"><span class="table-back"><span>Who</span></span></td>
-                                    <td class="fee"><span class="table-back"><span>$</span></span></td>
+                                    <td class="fee"><span class="table-back"><span class="moneyPaddingSmall">Amount</span></span></td>
                                     <td class="what"><span class="table-back"><span>What</span></span></td>
                                     <td class="when"><span class="table-back"><span>When</span></span></td>
                                     <td class="paid"><span class="table-back"><span>Paid</span></span></td>
@@ -2316,7 +2316,7 @@ if ($action =="edit"):  ?>
                                                 </span>
                                             </span>
                                         </td>
-                                        <td class="fee"> <span class="table-back"><span>$<?php echo $fee['amount'];?></span></span></td>
+                                        <td class="fee"> <span class="table-back money"><span class="moneyPaddingSmall">$<?php echo $fee['amount'];?></span></span></td>
                                         <td class="pre fee-description what"><span class="table-back"><div class="arrow"></div></span></td>
                                         <td class="when"><span class="table-back"><span>
                                         <?php
