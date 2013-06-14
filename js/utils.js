@@ -5,30 +5,6 @@
  * All rights reserved.
  */
 
-function refreshUsersFilter() {
-	if (activeUsersFlag) {
-		activeUsersFlag = 0;
-	} else {
-		activeUsersFlag = 1;
-	}
-	
-	$.ajax({
-		type: 'POST',
-		url: 'refresh-filter.php',
-		data: 'name='+filterName+'&active='+activeUsersFlag,
-		dataType: 'data',
-		success:function(data) {
-			var parent = $('#userSelection').parent();
-			$('#userSelection').remove();
-			parent.prepend(data);
-            // If we are in worklist reattach the autoupdate event
-            if (filterName == ".worklist") {
-                reattachAutoUpdate();
-            }
-		}
-	});
-}
-
 var Utils = {
     /**
      * Shows a info dialog with @message
@@ -209,6 +185,13 @@ var Utils = {
     validEmail: function (email) {
         var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         return regex.test(email);
+    },
+    
+    /**
+     * Returns whether browser is in a mobile device
+     */
+    isMobile: function() {
+        return (typeof window.orientation != 'undefined');
     }
 };
 

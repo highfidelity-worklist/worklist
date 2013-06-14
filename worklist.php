@@ -468,7 +468,7 @@ require_once('opengraphmeta.php');
     }
 
     function GetWorklist(npage, update, reload) {
-	 if (addFromJournal) {
+       if (addFromJournal) {
             return true;
         }
         while(lockGetWorklist) {
@@ -479,10 +479,24 @@ require_once('opengraphmeta.php');
             clearTimeout(timeoutId);
         }
         loaderImg.show("loadRunning", "Loading, please wait ...");
-        //if ($('#statusCombo').val().length == 1 && $('#statusCombo').val()[0] == 'review')
-        var search_status = ($('#statusCombo').val() || []).join("/");
-        if (search_status == 'Review' && only_needs_review_jobs) {
-            search_status = 'Needs-Review';
+        var search_status = '',
+            search_user = '0',
+            search_project = '0';
+        if (Utils.isMobile() && !$('.filters').is(':visible')) {
+            if (userId) {
+                search_status = 'Working/Functional/SvnHold/Review/Completed';
+                search_user = '' + userId;
+            } else {
+                search_status = 'Bidding';
+            }
+            reload = true;
+        } else {
+            search_status = ($('#statusCombo').val() || []).join("/");
+            if (search_status == 'Review' && only_needs_review_jobs) {
+                search_status = 'Needs-Review';
+            }
+            search_user = $('.userComboList .ui-combobox-list-selected').attr('val');
+            search_project = $('.projectComboList .ui-combobox-list-selected').attr('val');
         }
         $.ajax({
             type: "POST",
@@ -490,11 +504,11 @@ require_once('opengraphmeta.php');
             cache: false,
             data: {
                 page: npage,
-                project_id: $('.projectComboList .ui-combobox-list-selected').attr('val'),
+                project_id: search_project,
                 status: search_status,
                 sort: sort,
                 dir: dir,
-                user: $('.userComboList .ui-combobox-list-selected').attr('val'),
+                user: search_user,
                 inComment: $('#search_comments').is(':checked') ? 1 : 0,
                 query: $("#query").val(),
                 reload: ((reload == undefined) ? false : true)
