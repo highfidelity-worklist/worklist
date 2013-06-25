@@ -1219,12 +1219,103 @@ a#addJobButton {
     position: relative;
 }
 
-@media only screen and (max-width: 640px) {
-
-    #outside, #worklist #container {
-        width: 100%;
+@media only screen and (max-width: 970px) {
+    #outside, 
+    #worklist #container {
+        width: 640px;
         padding: 0;
-        margin: 0;
+        margin: 0 auto;
+    }
+    
+    #search-filter-wrap .input_box {
+        width: 230px;
+    }
+    
+    #search-filter-wrap .searchDiv {
+        width: 187px;
+    }
+    
+    #search-filter-wrap .crossSearch {
+        left: 129px;
+    }
+    
+    #projectFilter .ui-combobox {
+        width: 137px !important;
+    }
+    
+    #projectFilter .ui-combobox-textbox {
+        width: 110px !important;
+    }
+    
+    #projectFilter .ui-combobox-list {
+        width: 147px !important;
+    }
+    
+    #projectFilter .ui-combobox-list li {
+        width: 120px;
+    }
+    
+    #projectFilter {
+        width: 153px;
+    }
+    
+    #searchForm > .filters > div > label {
+        display: none;
+    }
+    
+    #searchForm > .filters > div > .ui-combobox {
+        margin-top: 18px;
+    }
+    
+    #jobStatusFilter .ui-combobox {
+        width: 139px !important;
+    }
+    
+    #jobStatusFilter .ui-combobox-textbox {
+        width: 112px !important;
+    }
+    
+    #jobStatusFilter .ui-combobox-list {
+        width: 149px !important;
+    }
+    
+    #jobStatusFilter {
+        width: 156px;
+    }
+        
+    #userFilter {
+        display: none;
+    }
+    
+    #searchForm #buttons {
+        width: 92px;
+    }
+    
+    a#addJobButton {
+        margin-left: 5px;
+    }
+    
+    .taskSummary {
+        width: 415px;
+    }
+
+    .who-col,
+    .age-col, 
+    .comments-col {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    #outside, 
+    #worklist #container {
+        width: 450px;
+        padding: 0;
+        margin: 0 auto;
+    }
+    
+    .taskSummary {
+        width: 415px;
     }
 
     #center {
@@ -1256,7 +1347,7 @@ a#addJobButton {
     }
 
     #search-filter-wrap #search_reset {
-        left: 170px;
+        display: none;
     }
 
     #searchForm #buttons {
@@ -1267,21 +1358,12 @@ a#addJobButton {
         margin: 20px 5px 7px 5px;
     }
 
-    .taskSummaryCell > a {
-        position: relative;
-    }
-
-    .taskSummary {
-        position: relative;
-        width: 95%;
-    }
-
-    .taskSummary > span:last-child {
-        display: inline-block;
-        width: 90%;
-    }
-
-    .project-col, .status-col, .who-col, .age-col, .comments-col, .filters {
+    .project-col, 
+    .status-col, 
+    .who-col, 
+    .age-col, 
+    .comments-col, 
+    .filters {
         display: none;
     }
 
@@ -1292,6 +1374,14 @@ a#addJobButton {
 }
 
 @media only screen and (max-width: 450px) {
+    #outside, 
+    #worklist #container {
+        width: 300px;
+    }
+    
+    .taskSummary {
+        width: 275px;
+    }
 
     #center {
         margin: 10px 2px;

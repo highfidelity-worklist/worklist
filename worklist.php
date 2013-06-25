@@ -472,7 +472,7 @@ require_once('opengraphmeta.php');
             return true;
         }
         while(lockGetWorklist) {
-        // count atoms of the Universe untill old instance finished...
+            // count atoms of the Universe untill old instance finished...
         }
         lockGetWorklist = 1;
         if (timeoutId) {
@@ -482,22 +482,32 @@ require_once('opengraphmeta.php');
         var search_status = '',
             search_user = '0',
             search_project = '0';
-        if (Utils.isMobile() && !$('.filters').is(':visible')) {
-            if (userId) {
-                search_status = 'Working/Functional/SvnHold/Review/Completed';
-                search_user = '' + userId;
-            } else {
-                search_status = 'Bidding';
-            }
-            reload = true;
+        
+        if ($('#projectFilter').is(':visible')) {
+            search_project = $('.projectComboList .ui-combobox-list-selected').attr('val');
         } else {
+            search_project = 'All';
+        }
+        
+        if ($('#userFilter').is(':visible')) {
+            search_user = $('.userComboList .ui-combobox-list-selected').attr('val');
+        } else if (userId) {
+            search_user = '' + userId;
+        } else {
+            search_user = 'ALL';
+        }
+        
+        if ($('#jobStatusFilter').is(':visible')) {
             search_status = ($('#statusCombo').val() || []).join("/");
+        } else if (userId) {
+            search_status = 'Working/Functional/SvnHold/Review/Completed';
             if (search_status == 'Review' && only_needs_review_jobs) {
                 search_status = 'Needs-Review';
             }
-            search_user = $('.userComboList .ui-combobox-list-selected').attr('val');
-            search_project = $('.projectComboList .ui-combobox-list-selected').attr('val');
+        } else {
+            search_status = 'Bidding';
         }
+        
         $.ajax({
             type: "POST",
             url: 'getworklist.php',

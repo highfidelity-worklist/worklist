@@ -508,7 +508,7 @@ class Agency_Worklist_Filter {
         }
     }
 
-    private function setOptions(array $options)
+    private function setOptions($options)
     {
         if (!empty($options['name'])) {
             $this->setName($options['name']);
