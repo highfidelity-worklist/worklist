@@ -29,7 +29,7 @@ class UserStats{
     public function getTotalJobsCount(){
         $sql = "SELECT COUNT(*) FROM `" . WORKLIST . "` "
                 ."WHERE (`mechanic_id` = {$this->userId} OR `creator_id` = {$this->userId})"
-                ."AND `status` IN ('Working', 'FunctionalL', 'SvnHold', 'Review', 'Completed', 'Done')"; 
+                ."AND `status` IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')"; 
         $res = mysql_query($sql);
         if($res && $row = mysql_fetch_row($res)){
             return $row[0];
