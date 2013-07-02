@@ -43,6 +43,8 @@ $dfilter = $filter->getDir();
 $page = $filter->getPage();
 $where = '';
 
+$mobile_filter = isset($_POST['mobile']) ? ($_POST['mobile'] == 'true') : false;
+
 // Status filter
 if ($sfilter) {
     $where = "WHERE (";
@@ -82,7 +84,7 @@ if ($sfilter) {
                     /**
                      * runner can see all
                      */
-                    if ($is_runner) {
+                    if ($is_runner || $mobile_filter) {
                         $where .= "(status = '$val') OR ";
                     } else if ($ufilter != 'ALL') {
                         /**
@@ -129,7 +131,10 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
         } else {
             $status_cond = "status='$val' AND";
         }
-        if (($is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId)) {
+        
+        if ($val == 'Bidding' && $mobile_filter) {
+            $where .= $severalStatus . "( $status_cond 1)";
+        } else if ($is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId) {
             /**
              * If current user is a runner and filtering for himself and 
              * (BIDDING or SwB) status then fetch all workitems where he 
@@ -155,7 +160,7 @@ if (!empty($ufilter) && $ufilter != 'ALL') {
              * user is mechanic, runner or creator.
              */ 
             $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
-        } else if ($val == 'Working' || $val =='Review' || $val =='Functional' || $val =='Completed' ) {
+        } else if ($val == 'Working' || $val =='Review' || $val =='Functional' || $val =='Completed') {
             /**
              * If current user is filtering for any user (himself or not) and 
              * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
