@@ -535,7 +535,9 @@ class Agency_Worklist_Filter {
                 }
             }
         }
-        $this->save($cleanOptions);
+        if (!isset($options['save']) || $options['save'] != 'false') {
+            $this->save($cleanOptions);
+        }
         return $this;
     }
 

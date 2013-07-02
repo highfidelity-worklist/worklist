@@ -481,31 +481,40 @@ require_once('opengraphmeta.php');
         loaderImg.show("loadRunning", "Loading, please wait ...");
         var search_status = '',
             search_user = '0',
-            search_project = '0';
+            search_project = '0',
+            save_filter = true;
         
         if ($('#projectFilter').is(':visible')) {
             search_project = $('.projectComboList .ui-combobox-list-selected').attr('val');
         } else {
             search_project = 'All';
+            reload = undefined;
+            save_filter = false;
         }
         
         if ($('#userFilter').is(':visible')) {
             search_user = $('.userComboList .ui-combobox-list-selected').attr('val');
-        } else if (userId) {
-            search_user = '' + userId;
         } else {
-            search_user = 'ALL';
+            reload = undefined;
+            save_filter = false;
+            if (userId) {
+                search_user = '' + userId;
+            } else {
+                search_user = 'ALL';
+            }            
         }
         
-        if ($('#jobStatusFilter').is(':visible')) {
-            search_status = ($('#statusCombo').val() || []).join("/");
-        } else if (userId) {
-            search_status = 'Working/Functional/SvnHold/Review/Completed';
+        search_status = ($('#statusCombo').val() || []).join("/");
+        if (!$('#jobStatusFilter').is(':visible') || (search_status == 'Review' && only_needs_review_jobs)) {
+            reload = undefined;
+            save_filter = false;
             if (search_status == 'Review' && only_needs_review_jobs) {
                 search_status = 'Needs-Review';
+            } else if (userId) {
+                search_status = 'Working/Functional/SvnHold/Review/Completed';
+            } else {
+                search_status = 'Bidding';
             }
-        } else {
-            search_status = 'Bidding';
         }
         
         $.ajax({
@@ -521,7 +530,8 @@ require_once('opengraphmeta.php');
                 user: search_user,
                 inComment: $('#search_comments').is(':checked') ? 1 : 0,
                 query: $("#query").val(),
-                reload: ((reload == undefined) ? false : true)
+                reload: ((reload == undefined) ? false : true),
+                save: save_filter
             },
             dataType: 'json',
             success: function(json) {
