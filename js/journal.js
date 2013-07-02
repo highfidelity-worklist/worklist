@@ -1534,7 +1534,7 @@ function getEntriesNear(prev, autoScroll) {
                 entries.prepend(json.html);
                 var scrollTop = $('#entries')[0].scrollHeight - prevScrollHeight + prevScrollTop;
                 $('#entries')[0].scrollTop = scrollTop; 
-                finishUpdate(false, false);
+                finishUpdate('100%', false);
             }
 
             pendingUpdate = false;
