@@ -31,7 +31,7 @@ class JsonServer
      /*/
     public function getOutput()
     {
-        if (null === $this->output) {
+        if ($this->output === null) {
             $this->setOutput(array(
                 'success' => false,
                 'message' => 'No output!'
@@ -661,9 +661,12 @@ class JsonServer
     }
     
     protected function actionGetFilesForWorkitem() {
-        $files = File::fetchAllFilesForWorkitem($this->getRequest()->getParam('workitem'));
+        $workitem_id = $this->getRequest()->getParam('workitem');
+        $files = File::fetchAllFilesForWorkitem($workitem_id);
         $user = new User();
         $user->findUserById($this->getRequest()->getParam('userid'));
+        $workitem = WorkItem::getById($workitem_id);
+        
         $data = array(
             'images' => array(),
             'documents' => array()
@@ -674,17 +677,38 @@ class JsonServer
             }
             if ($file->getIs_scanned() == 0) {
                 $fileUrl = 'javascript:;';
+                $errorMsg = "This file is awaiting verification, please try again after sometime.";
                 $iconUrl = 'images/icons/default.png';
             } else {
                 $fileUrl = $file->getUrl();
                 $iconUrl = $file->getUrl();
             }
+            if (
+              $_SESSION['is_runner'] ||
+              $_SESSION['is_payer'] ||
+              $_SESSION['userid'] == $file->getUserid() ||
+              $_SESSION['userid'] == $workitem->getCreatorId() ||
+              $_SESSION['userid'] == $workitem->getMechanicId() ||
+              $_SESSION['userid'] == $workitem->getRunnerId()
+            ) {
+                $can_delete = true;
+            } else {
+                $can_delete = false;
+            }
             
             $icon = File::getIconFromMime($file->getMime());
+            if(! isset($_SESSION['userid']) || $_SESSION['userid'] <= 0) {
+                $fileUrl = "javascript:;";
+                $errorMsg = "Please login to view this file.";
+            } else {
+                $errorMsg = "";
+            }
             if ($icon === false) {
                 array_push($data['images'], array(
                     'fileid'=> $file->getId(),
                     'url'    => $fileUrl,
+                    'error' => $errorMsg,
+                    'can_delete' => $can_delete,
                     'icon'    => $iconUrl,
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
@@ -693,6 +717,8 @@ class JsonServer
                 array_push($data['documents'], array(
                     'fileid'=> $file->getId(),
                     'url'    => $fileUrl,
+                    'error' => $errorMsg,
+                    'can_delete' => $can_delete,
                     'icon'    => $icon,
                     'title' => $file->getTitle(),
                     'description' => $file->getDescription()
@@ -704,30 +730,6 @@ class JsonServer
             'success' => true,
             'data' => $data
         ));
-    }
-
-    protected function actionGetVerificationStatus() {
-    
-        if(isset($_SESSION['userid']) && $_SESSION['userid'] > 0) {
-            $fileid = $this->getRequest()->getParam('fileid');
-            $file = new File();
-            
-            if ($file->findFileById($fileid)) {
-                $data = array(
-                'status' => $file->getIs_scanned(),
-                'url' => $file->getUrl()
-                );
-            } else {
-                $data = array(
-                'status' => -1,
-                'url' => ''
-                );
-            }
-            return $this->setOutput(array(
-                'success' => true,
-                'data' => $data
-            ));
-        }
     }
     
     protected function actionGetFilesForProject() {

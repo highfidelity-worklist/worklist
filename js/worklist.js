@@ -308,41 +308,14 @@ function sendInviteForm(){
   return false;
 }
 function applyPopupBehavior() {
-    $(function() {
-        $('#addaccordion').fileUpload({tracker: $('input[name=files]')});
-    });
+
     $('a.attachment').unbind('click');    
     $('a.attachment').live('click', function(e) {
         var dialogUrl = $(this).attr('href');
-        var verified = false;
         e.preventDefault();
         if (dialogUrl == 'javascript:;') {
-            $.ajax({
-                type: 'post',
-                url: 'jsonserver.php',
-                data: {
-                    fileid: $(this).data('fileid'),
-                    action: 'getVerificationStatus'
-                },
-                dataType: 'json',
-                success: function(data) {
-                    if (data.success && data.data.status == 1) {
-                        dialogUrl = data.data.url;
-                        verified = true;
-                    } else if(data.success && data.data.status == 0) {
-                        alert('This file is awaiting verification, please try again after sometime.');
-                    } else {
-                        alert('Error while trying to fetch file.');
-                    }
-                }
-        
-                
-            });   
-            if (verified == false) {
-                return false;
-            }
-        }
-        if ($('#dialogImage').length == 0) {
+            alert($(this).data('error_message'));
+        } else if ($('#dialogImage').length == 0) {
             $('<img id="dialogImage" src="'+dialogUrl+'" title="Preview">').dialog({
                     modal: true,
                     hide: 'drop', 
@@ -408,29 +381,13 @@ function applyPopupBehavior() {
                     } 
                 }); 
             }
-        return false;
+            return false;
     });
     
-    $('a.docs').live('click', function() {
-        //alert($(this).data('fileid'));
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                fileid: $(this).data('fileid'),
-                action: 'getVerificationStatus'
-            },
-            dataType: 'json',
-            success: function(data) {
-                //alert(data.data.status + data.data.url);
-                if (data.success && data.data.status == 1) {
-                    window.open(data.data.url);
-                } else {
-                    alert('This file is awaiting verification, please try again after sometime.');
-                }
-            }
-        });
-        return false;
+    $('a.docs').live('click', function(e) {
+        if ($(this).attr('href') == "javascript:;") {
+            alert($(this).data('error_message'));
+        }
     });
 }
 
