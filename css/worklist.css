@@ -376,7 +376,8 @@ color:#98AAB2;
     position: relative;
 }
 
-#projectFilter .ui-combobox {width: 172px !important;
+#projectFilter .ui-combobox {
+    width: 172px !important;
 }
 
 #userFilter .ui-combobox {
@@ -640,7 +641,6 @@ td.textAlignReport {
 }
 
 .fading,
-#searchForm .activeBox:after,
 .table-worklist td div > span:last-child:after,
 .table-worklist tr:hover > td div > span:last-child:after {
     background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%) transparent;
