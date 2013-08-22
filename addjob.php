@@ -60,12 +60,12 @@ include("head.html");
         </fieldset>
         
         <fieldset id="content">
-            <label for="notes">Full description</label>
+            <label for="notes">Full description<small> (Describe the work necessary to successfully complete this job.)</small></label>
             <textarea name="notes" id="notes"></textarea>
         </fieldset>
         
         <fieldset>
-            <label for="skills">Skills necessary <small> (separate by commas ... ex: JavaScript, PHP, CSS)</small></label>
+            <label for="skills">Skills necessary <small> (separate by commas ... ex: C, Linux, Software Architecture)</small></label>
             <input type="text" id="skills" name="skills" class="text-field" value="" />
         </fieldset>
         

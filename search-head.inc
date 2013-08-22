@@ -149,7 +149,7 @@
 
     <div id="buttons">
     <?php if (isset($_SESSION['userid'])): ?>
-        <p><a href="addjob.php" id="addJobButton" title="Create a new job" target="_blank">Add job</a></p>
+        <p><a href="addjob.php" id="addJobButton" title="Suggest a Feature or Report a Bug" target="_blank">Add job</a></p>
     <?php endif; ?>
     </div>
 
