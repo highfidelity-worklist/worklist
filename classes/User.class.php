@@ -151,9 +151,11 @@ class User {
         }
 
         if ($this->isUsCitizen()) {
-            if (! $this->isW9Approved()) {
-                return false;
-            }
+            // Quick and dirty fix to disable w9 verification - leo@lovemachineinc.com
+            //if (! $this->isW9Approved()) {
+            //    return false;
+            //}
+            return true;
         }
     
         if ($this->isPaypalVerified()) {
@@ -199,10 +201,11 @@ class User {
      * @return (boolean)
      */
     public function isW9Approved() {
-        if ($this->getW9_status() === 'approved') {
-            return true;
-        }
-        return false;
+        // Quick and dirty fix to disable W9 checking - leo@lovemachineinc.com
+        //if ($this->getW9_status() === 'approved') {
+        //    return true;
+        //}
+        return true;
     }
 
     /**
