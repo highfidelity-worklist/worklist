@@ -1,5 +1,4 @@
 var available = 0;
-var rewarded = 0;
 stats.setUserId(userInfo.user_id);
 
 stats.showJobs('activeJobs', 0);
@@ -252,46 +251,6 @@ var UserInfo = {
             );
             return false;
         });           
-       
-        $('#quick-reward').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
-        
-        $('a#reward-link').click(function() {
-            $('#quick-reward form input[type="text"]').val('');
-            //Wire off rewarder functions for now - GJ 5/24
-            return false;
-            
-            $.getJSON('get-rewarder-user.php', {'id': userInfo.user_id}, function(json) {
-            
-                rewarded = json.rewarded;
-                available = json.available;
-                $('#quick-reward #already').text(rewarded);
-                $('#quick-reward #available').text(available);
-               
-                $('#quick-reward').dialog('open');
-            });
-            
-            return false;
-        });
-       
-        $('#quick-reward form input[type="submit"]').click(function() {
-        
-            $('#quick-reward').dialog('close');
-            //Wire off rewarder functions for now - GJ 5/24
-            return false;
-            
-            var toReward = parseInt($('#toreward').val());
-            
-            $.ajax({
-                url: 'reward-user.php',
-                data: 'id=' + userInfo.user_id + '&points=' + toReward,
-                dataType: 'json',
-                type: "POST",
-                cache: false,
-                success: function(json) {
-                }
-            });
-            return false;
-        });
        
         $('#create_sandbox').click(function(){
             var projects = '';

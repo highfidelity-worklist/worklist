@@ -59,7 +59,6 @@ var Budget = {
         
         $('#give-budget form input[type="submit"]').click(function() {
             $('#give-budget form input[type="submit"]').attr("disabled", "disabled");
-            var toReward = parseInt(rewarded) + parseInt($('#toreward').val());
             $.ajax({
                 url: 'update-budget.php',
                 data: {
