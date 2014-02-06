@@ -7,8 +7,8 @@
 
 ob_start();
 include("config.php");
-include("class.session_handler.php");
 
+Session::check();
 
 require_once('chat.class.php');
 $chat = new Chat();

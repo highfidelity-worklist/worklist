@@ -28,7 +28,7 @@ var WLFavorites = {
          */
         $.ajax({
             type: 'POST',
-            url: 'favorites.php',
+            url: 'api.php',
             data: { 
                 action: 'setFavorite',  
                 favorite_user_id: favorite_user_id, 

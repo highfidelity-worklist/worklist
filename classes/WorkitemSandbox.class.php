@@ -1,12 +1,4 @@
 <?php
-/**
- * Worklist
- * Copyright (c) 2010-2011 LoveMachine, LLc.
- * All rights reserved.
- */
-require_once ("config.php");
-require_once ("class.session_handler.php");
-require_once ("functions.php");
 
 class WorkitemSandbox extends Ajax {
 
@@ -44,10 +36,3 @@ class WorkitemSandbox extends Ajax {
         echo '<div id="urlContent">' . $result . '</div>';
     }
 }
-
-$workitemSandbox = new WorkitemSandbox();
-$workitemSandbox->validateRequest(array('action'));
-$action = $_REQUEST['action'];
-$workitemSandbox->$action();
-
-?>

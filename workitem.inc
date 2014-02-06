@@ -8,8 +8,10 @@
  * http://www.worklist.net
  */
 
+
     $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
     $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+    $is_admin = isset($_SESSION['is_admin']) ? $_SESSION['is_admin'] : 0;
     $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
     $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
     $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
@@ -183,7 +185,7 @@ $(document).ready(function() {
     ?>
 
     <?php if ($user_id > 0) { ?>
-    $.get('getskills.php', function(data) {
+    $.get('api.php?action=getSkills', function(data) {
         var skillsData = eval(data);
         
         var autoArgsSkills = autocompleteMultiple('getskills', skillsData);
@@ -650,6 +652,7 @@ $(document).ready(function(){
     var workitem_id = <?php echo $worklist['id'];?>;
     var already_bid = <?php echo $currentUserHasBid ;?>;
     var is_runner = <?php echo $is_runner;?>;
+    var is_admin = <?php echo $is_admin;?>;
     var has_budget = <?php echo $has_budget;?>;
     var user_id = <?php echo !empty($user_id) ? $user_id : "''"; ?>;
     var isFollowing = <?php echo $workitem->isUserFollowing($user_id) ? 'true' : 'false';?>;
@@ -782,7 +785,7 @@ $(document).ready(function(){
         });
         AjaxPopup('#popup-paid',
             'Pay Fee',
-            'getfeeitem.php',
+            'api.php?action=getFeeItem',
             fee_id,
             [ ['input', 'itemid', 'keyId', 'eval'],
             ['textarea', 'paid_notes', 'json[2]', 'eval'],
@@ -794,9 +797,10 @@ $(document).ready(function(){
             $('#popup-paid > form').submit(function() {
                 // now we save the payment via ajax
                 $.ajax({
-                    url: 'paycheck.php',
+                    url: 'api.php',
                     dataType: 'json',
                     data: {
+                        action: 'payCheck',
                         itemid: $('#' + this.id + ' input[name=itemid]').val(),
                         paid_check: $('#' + this.id + ' input[name=paid_check]').prop('checked') ? 1 : 0,
                         paid_notes: $('#' + this.id + ' textarea[name=paid_notes]').val()
@@ -908,7 +912,7 @@ $(document).ready(function(){
             $('.loader').show();
 
             // get data for recent jobs completed
-            $.getJSON('getuserstats.php', {
+            $.getJSON('api.php?action=getUserStats', {
                 id: bidData.bidder_id,
                 project_id: <?php echo $worklist['project_id']; ?>,
                 statstype: 'project_history'
@@ -939,7 +943,7 @@ $(document).ready(function(){
                 }
             });
 
-            $.getJSON('getuserstats.php', {id: bidData.bidder_id, statstype: 'counts'}, function(json) {
+            $.getJSON('api.php?action=getUserStats', {id: bidData.bidder_id, statstype: 'counts'}, function(json) {
 
                 // filling the table from json stats
                 $('#total-jobs').html(json.total_jobs );
@@ -1041,7 +1045,7 @@ $(document).ready(function(){
         $('#popup-bid-info').dialog('close');
         AjaxPopup('#popup-edit-bid-info',
             'Edit Bid',
-            'getbiditem.php',
+            'api.php?action=getBidItem',
             bid_id,
             [
                 ['input', 'bid_id', 'keyId', 'eval'],
@@ -1174,8 +1178,9 @@ $(document).ready(function(){
       if (WorklistProject.repo_type == 'svn') {
         $.ajax({
             type: 'post',
-            url: 'getcodereviewstatus.php',
+            url: 'api.php',
             data: {
+                action: 'getCodeReviewStatus',
                 workitemid: workitem_id
             },
             dataType: 'json',
@@ -1289,8 +1294,11 @@ $(document).ready(function(){
         var job_id = workitem_id;
         $.ajax({
             type: 'POST',
-            url: 'getmultiplebidlist.php',
-            data: "job_id=" + job_id,
+            url: 'api.php',
+            data: {
+                "action": "getMultipleBidList",
+                "job_id": job_id
+            },
             success:function(response) {
                 $('#popup-multiple-bid-info').html(response);
                 $("#popup-multiple-bid-info .chkMechanic").change(function() {
@@ -1372,10 +1380,19 @@ $(document).ready(function(){
             var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
-            var data = {id : <?php echo $worklist_id; ?>, who : ping_who, bid_id: ping_bid_id, msg : msg, mail : mail, journal : journal, cc : cc};
+            var data = {
+                'action': 'pingTask',
+                'id' : <?php echo $worklist_id; ?>, 
+                'who' : ping_who, 
+                'bid_id': ping_bid_id, 
+                'msg' : msg, 
+                'mail' : mail, 
+                'journal' : journal, 
+                'cc' : cc
+            };
             $.ajax({
                 type: "POST",
-                url: 'pingtask.php',
+                url: 'api.php',
                 data: data,
                 dataType: 'json',
                 success: function(json) {
@@ -1780,7 +1797,7 @@ if ($action =="edit"):  ?>
                                 if( $fe['desc'] == 'Accepted Bid' ) $mech = $fe['nickname'];
                         }
                         if($mech=='') {
-                            $mech = '<span class="mechanicName" title="' . $tooltip . '" >Mechanic:</span>Not assigned';
+                            $mech = '<span class="mechanicName">Mechanic:</span>Not assigned';
                         } else{
                             $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
                             $mech='<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" ><a href="#">Mechanic:</a></span><a id="ping-btn" href="userinfo.php?id=' . $worklist['mechanic_id'] . '" target="_blank">' . $mech . '</a>';
@@ -2459,20 +2476,4 @@ if ($action =="edit"):  ?>
     }
 ?>
 <!-- Footer html-->
-<?php include("footer.php");
-
-
-function  getTaskPosts($item_id) {
-
-    require_once('chat.class.php');
-    $query = $item_id;
-    $response = new AjaxResponse($chat);
-    try {
-        $data = $response->latestFromTask($item_id);
-    } catch(Exception $e) {
-        $data['error'] = $e->getMessage();
-    }
-    return $data['html'];
-}
-
-?>
+<?php include("footer.php"); ?>

@@ -1,8 +1,9 @@
 <?php
 require_once("config.php");
-require_once('class.session_handler.php');
 if(!isset($_SESSION)) { session_start(); }
-require_once('check_session.php');
+
+Session::check();
+checkLogin();
 
 if (empty($_SESSION['is_payer'])) {
    header("Location:reports.php");

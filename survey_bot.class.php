@@ -3,8 +3,6 @@
 // 
 //  vim:ts=4:et
 require_once ("config.php");
-require_once ("functions.php");
-include_once("send_email.php");
 
 class SurveyBot extends Bot
 {

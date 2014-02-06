@@ -10,9 +10,8 @@
 
 ob_start();
 require_once ("config.php");
-require_once ("class.session_handler.php");
-require_once ("send_email.php");
-require_once ("functions.php");
+
+Session::check();
 
 $msg = "";
 $to = 1;
@@ -109,7 +108,7 @@ if (isset($_REQUEST['str'])) {
 
         sendTemplateEmail($user->getUsername(), 'welcome', $data, 'Worklist <contact@worklist.net>');
         if (REQUIRELOGINAFTERCONFIRM) {
-            session::init(); // User must log in AFTER confirming (they're not allowed to before)
+            Session::init(); // User must log in AFTER confirming (they're not allowed to before)
         } else {
             initSessionData($row); //Optionally can login with confirm URL
         }

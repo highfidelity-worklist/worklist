@@ -1,3 +1,6 @@
+<?php
+$sum = Fee::getSums();
+?>
 <div id="budgetPopup" style="display:none;">
   <div id="be-block" >
         <label class="info-label" >Your Fees</label>   

@@ -2267,8 +2267,11 @@ $(window).ready(function() {
 		if (queryStr.match(re)) {
 			$.ajax({
 			  type: 'POST',
-			  url: "getworklist.php",
-			  data: { 'query': queryStr},
+			  url: "api.php",
+			  data: {
+                'action': 'getWorklist',
+                'query': queryStr
+              },
 			  success: function(json) {
 					if (json[0] == "redirect") {
 						queryStrIsJob = true;
@@ -3554,7 +3557,7 @@ function onUserItems(el){
 
     var id = el.parent().attr('class').substring(4);
 
-    $.getJSON('getuseritems.php?id=' + id,
+    $.getJSON('api.php?action=getUserItems&id=' + id,
         function(json){
             if(json.length > 0) {
                 $('#popup-useritems #item-list .item-entry').remove();

@@ -12,10 +12,8 @@ if(!array_key_exists('HTTPS', $_SERVER)) {
 }
 
 require_once("config.php");
-require_once("class.session_handler.php");
-include_once("check_new_user.php");
-require_once("send_email.php");
-require_once("functions.php");
+
+Session::check();
 
 ob_start();
 

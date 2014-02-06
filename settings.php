@@ -10,15 +10,10 @@
 
 ob_start();
 include ("config.php");
-include ("class.session_handler.php");
-include ("check_session.php");
-include ("functions.php");
-require_once ("timezones.php");
-include ("countrylist.php");
-include ("smslist.php");
-include_once ("send_email.php");
 require_once ("lib/Sms.php");
 
+Session::check();
+checkLogin();
 
 $userId = getSessionUserId();
 if ($userId) {

@@ -10,8 +10,8 @@
 
 ob_start();
 require_once ("config.php");
-require_once ("class.session_handler.php");
-require_once ("functions.php");
+
+Session::check();
 
 $msg = '';
 
@@ -118,11 +118,6 @@ function StopStatus() {
         var soundSettings = new Array(1, 1, 1, 1, 1);
     <?php endif; ?>
 </script>
-<?php
-// Force load individual files while we debug the issues using the minimized version - gj 2011-July-05
-//        if ($_SERVER['HTTP_HOST'] == 'dev.sendlove.us' && strstr(substr($_SERVER['REQUEST_URI'],0,3),'~')) {
-?>
-<?php if (true): ?>
 <script type="text/javascript" src="js/jquery.template.js"></script>
 <script type="text/javascript" src="js/jquery.metadata.js"></script>
 <script type="text/javascript" src="js/jquery.jeditable.min.js"></script>
@@ -130,9 +125,6 @@ function StopStatus() {
 <script type="text/javascript" src="js/jquery_all.js"></script>
 <script type="text/javascript" src="js/journal.js"></script>
 <script type="text/javascript" src="js/skills.js"></script>
-<?php else: ?>
-<script type="text/javascript" src="js/jscode.min.js"></script>
-<?php endif; ?>
 <!-- js template for file uploads -->
 <?php require_once('dialogs/file-templates.inc'); ?>
 <?php require_once('dialogs/budget-expanded.inc') ?>
@@ -435,7 +427,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                 $('#wFees').html('<img src="images/loader.gif" />');
                 $('#wFees').addClass('table-popup');
                 $('#wFees').dialog('open');
-                $.getJSON('getfeesums.php?weekly=1', function(json) {
+                $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
                     if (json.error == 1) {
                         $('#wFees').html('Some error occured or you are not logged in.');
                     } else {
@@ -463,7 +455,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
                 $('#wFees').html('<img src="images/loader.gif" />');
                 $('#wFees').addClass('table-popup');
                 $('#wFees').dialog('open');
-                $.getJSON('getfeesums.php?monthly=1', function(json) {
+                $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
                     if (json.error == 1) {
                         $('#wFees').html('Some error occured or you are not logged in.');
                     } else {
@@ -475,7 +467,7 @@ if (isset($error) && $error->getErrorFlag() == 1) {
     });
 
     $('#welcomeInside .earningsBtn').click(function() {
-        $.get('getfeesums.php', function(data) {
+        $.get('api.php?action=getFeeSums', function(data) {
             var sum = eval('('+data+')');
             if (typeof sum != 'object') {
                 return false;

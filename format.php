@@ -9,28 +9,7 @@
  */
 ?>
     <!-- Inline Message Container -->
-    <div id="inlineMessage"></div>
-    
-    <?php if (basename($_SERVER['PHP_SELF']) == 'worklist.php' && (array_key_exists('inlineHide',$_SESSION) && $_SESSION['inlineHide'] == 0) ) { ?>
-    <script type="text/javascript">
-    // html needed for welcome message
-    var welcomeHTML = '<p><span class="inlineWelcome">Welcome to Worklist!</span></p>'+
-    '<p>Browse the list of jobs below or click on <a href="journal.php" class="iToolTip menuJournal">Chat</a> to join our chat.</p>' +
-    '<input type="submit" id="hideMessage" name="hideMessage" value="Hide this Message" />'+
-    '<div id="inlineSource"><a href="http://svn.worklist.net/" target="_blank">Download our source code</a></div>'
-    
-    // call the addInlineMessage function to show the inline message for new users
-    addInlineMessage(welcomeHTML);
-    
-    // code for button to hide inline message
-    $('#hideMessage').click(function(){
-        $('#inlineMessage').fadeOut(750);
-    });
-    
-    </script>
-    
-    <?php } ?>
-    
+    <div id="inlineMessage"></div> 
     
     <div id="container">
         <div id="left"></div>
@@ -142,9 +121,10 @@
                     }
                     var addForm = $("#popup-addproject");
                     $.ajax({
-                        url: 'addproject.php',
+                        url: 'api.php',
                         dataType: 'json',
                         data: {
+                            action: 'addProject',
                             name: $(':input[name="name"]', addForm).val(),
                             description: $(':input[name="description"]', addForm).val(),
                             logo: $(':input[name="logoProject"]', addForm).val(),
@@ -228,8 +208,11 @@
             // From here on we load all the data
             $.ajax({
                 type: "GET",
-                url: 'visitQuery.php',
-                data: 'jobid=0',
+                url: 'api.php',
+                data: {
+                    action: 'visitQuery',
+                    jobid: 0
+                },
                 dataType: 'json',
                 success: function(json) {
                     $.bidvisits = {};
@@ -238,8 +221,11 @@
                     if ($.bidvisits.count > 0) {
                         $.ajax({
                             type: "POST",
-                            url: 'getstats.php',
-                            data: 'req=Bidding',
+                            url: 'api.php',
+                            data: {
+                                action: 'getStats',
+                                req: 'Bidding'
+                            },
                             dataType: 'json',
                             success: function(json) {
                                 $.bidvisits.jobs = json;
@@ -278,8 +264,11 @@
             // Load the bids and works labels
             $.ajax({
                 type: "POST",
-                url: 'getstats.php',
-                data: 'req=current',
+                url: 'api.php',
+                data: {
+                    action: 'getStats',
+                    req: 'current'
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('#span-bids').html(json[0]);
@@ -287,8 +276,11 @@
                     // Get average fees
                     $.ajax({
                         type: "POST",
-                        url: 'getstats.php',
-                        data: 'req=fees',
+                        url: 'api.php',
+                        data: {
+                            action: "getStats",
+                            req: 'fees'
+                        },
                         dataType: 'json',
                         success: function(json) {
                             var data = json['AVG(amount)'];
@@ -302,8 +294,12 @@
             // Get last completed jobs in last 30 days
             $.ajax({
                 type: "POST",
-                url: 'getstats.php',
-                data: 'req=feeslist&interval=30',
+                url: 'api.php',
+                data: {
+                    action: 'getStats',
+                    req: 'feeslist',
+                    interval: 30
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('.fee30row').remove();
@@ -323,8 +319,12 @@
             // Get last completed jobs in last 7 days
             $.ajax({
                 type: "POST",
-                url: 'getstats.php',
-                data: 'req=feeslist&interval=7',
+                url: 'api.php',
+                data: {
+                    action: 'getStats',
+                    req: 'feeslist',
+                    interval: 7
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('.fee7row').remove();
@@ -344,8 +344,11 @@
             // Get top 10 runners
             $.ajax({
                 type: "POST",
-                url: 'getstats.php',
-                data: 'req=runners',
+                url: 'api.php',
+                data: {
+                    action: 'getStats', 
+                    req: 'runners'
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('.runrow').remove();
@@ -373,8 +376,11 @@
             // Get top 10 mechanics
             $.ajax({
                 type: "POST",
-                url: 'getstats.php',
-                data: 'req=mechanics',
+                url: 'api.php',
+                data: {
+                    action:'getStats', 
+                    req: 'mechanics'
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('.mecrow').remove();
@@ -402,8 +408,11 @@
             // Get top 10 feed adders
             $.ajax({
                 type: "POST",
-                url: 'getstats.php',
-                data: 'req=feeadders',
+                url: 'api.php',
+                data: {
+                    action: 'getStats', 
+                    req: 'feeadders'
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('.feerow').remove();
@@ -433,8 +442,11 @@
             // Get top 10 mechanics with "Past Due"
             $.ajax({
                 type: "POST",
-                url: 'getstats.php',
-                data: 'req=pastdue',
+                url: 'api.php',
+                data: {
+                    action: 'getStats', 
+                    req:'pastdue'
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('.pastrow').remove();
@@ -474,8 +486,12 @@
             if( typeof( userid ) != 'number' )    {
                 $.ajax({
                     type: "POST",
-                    url: 'getuseritem.php',
-                    data: 'req=id&nickname='+userid,
+                    url: 'api.php',
+                    data: {
+                        action: 'getUserItem',
+                        req: 'id',
+                        nickname: userid
+                    },
                     dataType: 'json',
                     success: function(json)    {
                         userid = json[0];
@@ -494,8 +510,12 @@
             $('#roles').show();
             $.ajax({
                 type: "POST",
-                url: 'getuseritem.php',
-                data: 'req=item&item='+userid,
+                url: 'api.php',
+                data: {
+                    action: 'getUserItem',
+                    req: 'item',
+                    item: userid
+                },
                 dataType: 'json',
                 success: function(json) {
                     $('#popup-user-info #userid').val(json[0]);

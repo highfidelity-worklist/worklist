@@ -1,5 +1,5 @@
 <?php
-require_once ("functions.php");
+require_once ("config.php");
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 $thumb = new thumber();

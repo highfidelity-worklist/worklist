@@ -28,9 +28,8 @@
 #error_reporting(E_ALL);
 
 include("config.php");
-include("class.session_handler.php");
-include_once("functions.php");
-include_once("send_email.php");
+
+Session::check();
 
 //send non-payers back to the reports page.
 if (empty($_SESSION['is_payer'])) {
@@ -208,8 +207,6 @@ switch ($action) {
                 $alert_msg = "You need to provide all credentials!";
                 break;
             }
-            include_once("paypal-functions.php");
-            include_once("classes/Fee.class.php");   
 
             //Get fee information for paypal transaction 
             $num_fees = count($_POST["payfee"]);
@@ -296,7 +293,7 @@ switch ($action) {
                 $nvpStr .= "&L_EMAIL$i=$receiverEmail&L_Amt$i=$amount&L_UNIQUEID$i=$uniqueID&L_NOTE$i=$note";
             }
 
-            // Execute the API operation; see the PPHttpPost function in the paypal-functions.php file.
+            // Execute the API operation; see the PPHttpPost function
             $httpParsedResponseAr = PPHttpPost('MassPay', $nvpStr, $_POST);
             #$httpParsedResponseAr = array("ACK" => "SUCCESS");
 

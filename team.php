@@ -10,9 +10,8 @@
 
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("check_new_user.php");
-include("functions.php");
+
+Session::check();
 
 $cur_letter = isset( $_POST['letter'] ) ? $_POST['letter'] : "all";
 $cur_page = isset( $_POST['page'] ) ? intval($_POST['page'] ) : 1;
@@ -155,9 +154,10 @@ $(document).ready(function() {
         source: function(request, response) {
             $.ajax({
                 cache: false,
-                url: 'getuserslist.php',
+                url: 'api.php',
                 data: {
-                    startsWith: request.term,
+                    action: 'getUsersList',
+                    startsWith: request.term
                 },
                 dataType: 'json',
                 success: function(users) {
@@ -204,8 +204,17 @@ function fillUserlist(npage) {
     var order = current_order ? 'ASC' : 'DESC';
     $.ajax({
         type: "POST",
-        url: 'getuserlist.php',
-        data: 'letter=' + current_letter + '&page=' + npage + '&order=' + current_sortkey + '&order_dir=' + order + '&sfilter=' + sfilter + '&active=' + show_actives + '&myfavorite=' + show_myfavorites,
+        url: 'api.php',
+        data: {
+            'action': 'getUserList',
+            'letter': current_letter,
+            'page': npage,
+            'order': current_sortkey,
+            'order_dir': order,
+            'sfilter': sfilter,
+            'active': show_actives,
+            'myfavorite': show_myfavorites
+        },
         dataType: 'json',
         success: function(json) {
 
@@ -291,7 +300,7 @@ function AppendUserRow(json, odd) {
             }
             $.ajax({
                 type: 'POST',
-                url: 'favorites.php',
+                url: 'api.php',
                 data: {
                     action: 'setFavorite',
                     favorite_user_id: favorite_user_id,

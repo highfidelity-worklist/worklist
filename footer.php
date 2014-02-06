@@ -1,12 +1,3 @@
-<?php
-//  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-
-require_once ("functions.php");
-
-?>
-
 <!-- Include User Info -->
 <div id="user-info" title="User Info"></div>
 

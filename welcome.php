@@ -12,9 +12,8 @@
 error_reporting(E_ALL);
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("check_new_user.php");
-include("functions.php");
+
+Session::check();
 
 $userId = getSessionUserId();
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;

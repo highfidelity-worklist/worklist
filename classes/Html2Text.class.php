@@ -5,8 +5,6 @@
  * Redistribution of source must retain this copyright notice.
  */
 
-include ("htmlparser.inc");
-
 /**
  * Class Html2Text. (HtmlParser example.)
  * Converts HTML to ASCII attempting to preserve

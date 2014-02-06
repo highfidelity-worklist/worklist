@@ -9,7 +9,6 @@
  */
 
 include("config.php");
-include_once("send_email.php");
 // Database Connection Establishment String
 mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
 // Database Selection String

@@ -46,11 +46,12 @@ var WReview = {
         WReview.block(true,"Saving ...",$("#reviewDialog").parent());
         $.ajax({
             type: 'POST',
-            url: 'review.php',
+            url: 'api.php',
             data: { 
+                action: 'userReview',
                 userReview: $("textarea.userReview").val(),
                 reviewee_id: $("#reviewDialog").data("reviewee_id"),
-                action:'saveReview',
+                method: 'saveReview',
                 notify_now: WReview.notify_now
             },
             dataType: 'json',
@@ -166,11 +167,14 @@ var WReview = {
                 open: function() {
                     var oThis=this;
                     $(".updateReviewButton", $("#reviewDialog").parent()).attr("disabled", "disabled").addClass('ui-state-disabled');
-                    $("#reviewDialog .content").load("review.php",{
-                        action:"getView",
-                        withTrust: (options.withTrust) ? 1 : 0,
-                        reviewee_id: $("#reviewDialog").data("reviewee_id")
-                        },function(response, status, xhr){    
+                    $("#reviewDialog .content").load("api.php",
+                        {
+                            action: "userReview",
+                            method: "getView",
+                            withTrust: (options.withTrust) ? 1 : 0,
+                            reviewee_id: $("#reviewDialog").data("reviewee_id")
+                        },
+                        function(response, status, xhr){    
                         if (status == "error") {
                             var msg = "Sorry but there was an error: ";
                                 $("#error").html(msg + xhr.status + " " + xhr.statusText);

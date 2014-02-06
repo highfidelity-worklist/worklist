@@ -1,9 +1,8 @@
 <?php
     include ("config.php");
-    include ("class.session_handler.php");
-    include ("check_session.php");
-    include ("survey.class.php");
-    require_once ("functions.php");
+
+    Session::check();
+    checkLogin();
 
     mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die(mysql_error());;
     mysql_select_db(DB_NAME) or die(mysql_error());

@@ -234,7 +234,7 @@ $(function() {
     if ($.analytics.length) {
         var jobid=$.analytics.attr('data');
         $.ajax({
-            url: 'visitQuery.php?jobid='+jobid,
+            url: 'api.php?action=visitQuery&jobid=' + jobid,
             dataType: 'json',
             success: function(json) {
                 if(parseInt(json.visits)+parseInt(json.views) == 0)
@@ -441,8 +441,9 @@ function createActiveFilter(elId, filter, active) {
                         // we send an ajax request to get the updated list
                         $.ajax({
                             type: 'POST',
-                            url: 'refresh-filter.php',
+                            url: 'api.php',
                             data: {
+                                action: 'refreshFilter',
                                 name: el.data('filterName'),
                                 active: el.data('activeFlag'),
                                 filter: filter

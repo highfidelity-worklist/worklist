@@ -3,11 +3,6 @@
 // 
 //  vim:ts=4:et
 
-require_once dirname(__FILE__) . '/../config.php';
-include_once "send_email.php";
-require_once('classes/Project.class.php');
-require_once('functions.php');
-
 class SandBoxUtil {
     //This needs to be synced with the matching file in journal - garth 12/15/2010
     private $projectList = array();

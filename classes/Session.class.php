@@ -2,9 +2,8 @@
 //  Copyright (c) 2009-2010, LoveMachine Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
-require_once(dirname(__FILE__)."/../config.php");
 
-class session {
+class Session {
     // session-lifetime
     var $lifeTime;
     // mysql-handle
@@ -20,7 +19,7 @@ class session {
             session_destroy();
         }
 
-        self::$objSession = new session();
+        self::$objSession = new Session();
         session_set_save_handler(array(&self::$objSession,"open"),
                                  array(&self::$objSession,"close"),
                                  array(&self::$objSession,"read"),
@@ -35,7 +34,7 @@ class session {
         $_SESSION['running'] = "true";
     }
     static function initById($sid){
-        session::init($sid);
+        Session::init($sid);
     }
     public function establishDbConnection(){
         $link = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD) or die('Could not connect: ' . mysql_error());
@@ -59,10 +58,15 @@ class session {
         return $this;
     }
     static function check() {
+        if (defined('CHECK_SESSION')) {
+            return;
+        } else {
+            define('CHECK_SESSION',true);
+        }
         session_set_cookie_params(SESSION_EXPIRE);
         if(empty($_SESSION['running'])) {
             // There is no session or session expired
-            session::init();
+            Session::init();
         }
         // Reset the expiration time upon page load
         if (isset($_COOKIE[session_name()]))

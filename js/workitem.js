@@ -67,8 +67,9 @@ var Workitem = {
     
     fillDiffPopup: function() {
         var options = $("#diffUrlDialog").data("options");
-        $("#diffUrlDialog .content").load("sandbox.php #urlContent", {
-            action: 'getDiffUrlView',
+        $("#diffUrlDialog .content").load("api.php #urlContent", {
+            action: 'workitemSandbox',
+            method: 'getDiffUrlView',
             sandbox_url: options.sandbox_url,
             workitem_id: options.workitem_id
         });        

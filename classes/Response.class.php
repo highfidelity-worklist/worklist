@@ -1,5 +1,4 @@
 <?php
-require_once ("functions.php");
 
 class Response {
     /***

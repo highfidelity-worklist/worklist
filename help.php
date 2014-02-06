@@ -10,9 +10,9 @@
 
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("check_new_user.php");
-include("functions.php");
+
+Session::check();
+
 /*********************************** HTML layout begins here  *************************************/
 include("head.html");
 include("opengraphmeta.php");

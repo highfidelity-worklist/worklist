@@ -10,8 +10,9 @@
 
 
 require_once('config.php');
-require_once('class.session_handler.php');
-require_once('functions.php');
+
+Session::check();
+
 // is the user already logged in? go to worklist.php
 if (getSessionUserId() > 0) {
     Utils::redirect('worklist.php');

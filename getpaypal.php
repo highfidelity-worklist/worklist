@@ -6,9 +6,9 @@
 //  http://www.lovemachineinc.com
 
 include("config.php");
-include("class.session_handler.php");
-include("functions.php");
 require_once('lib/Agency/Worklist/Filter.php');
+
+Session::check();
 
 if (empty($_SESSION['userid'])) {
     return;

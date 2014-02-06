@@ -14,9 +14,8 @@
 
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("check_new_user.php");
-include("functions.php");
+
+Session::check();
 
 $userId = getSessionUserId();
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -67,7 +66,7 @@ $user->findUserById($userId);
         <a id="all-projects" href="javascript:">All other projects</a>
         <nav id="page-nav">
             <!-- this link is here because infinitescroll requires it -->
-            <a href="getprojects.php?page=2"></a>
+            <a href="api.php?action=getProjects&page=2"></a>
         </nav>
         
     </div>

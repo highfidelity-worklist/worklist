@@ -106,7 +106,7 @@ var stats = {
             }
         }
 
-        $.getJSON('getuserstats.php',
+        $.getJSON('api.php?action=getUserStats',
                     {id: user_id, statstype: job_type, page: stats.stats_page},
                     function(json) {
                         if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
@@ -151,7 +151,7 @@ var stats = {
     },
 
     showLatestEarnings: function(){
-        $.getJSON('getuserstats.php',
+        $.getJSON('api.php?action=getUserStats',
                     {id: stats.user_id, statstype: 'latest_earnings', page: stats.stats_page},
                     function(json){
                         stats.fillEarnings(json, stats.showLatestEarnings);
@@ -160,7 +160,7 @@ var stats = {
     },
 
     showLove: function(){
-        $.getJSON('getuserstats.php',
+        $.getJSON('api.php?action=getuserstats',
                     {id: stats.user_id, statstype: 'love', page: stats.stats_page},
                     function(json){
                         stats.fillLove(json, stats.showLove);

@@ -9,7 +9,6 @@
  */
 
 require_once("config.php");
-require_once("send_email.php");
 
 // @TODO: We extra the request but it seems we then don't use it?
 extract($_REQUEST);

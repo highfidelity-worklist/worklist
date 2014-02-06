@@ -5,10 +5,10 @@
 //  http://www.lovemachineinc.com
 
 require_once ("config.php");
-require_once ("functions.php");
-require_once ("send_email.php");
-require_once ("timezones.php");
-require_once ("class.session_handler.php");
+
+Session::check();
+
+require_once('chat.class.php');
 require_once 'lib/Sms.php';
 require_once 'models/DataObject.php';
 require_once 'models/Budget.php';
@@ -1451,4 +1451,16 @@ function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id) {
     $redirectToDefaultView = true;
     $result = array('correspondent' => $correspondent, 'id' => $id);
     return $result;
+}
+
+function  getTaskPosts($item_id) {
+    global $chat;
+    $query = $item_id;
+    $response = new AjaxResponse($chat);
+    try {
+        $data = $response->latestFromTask($item_id);
+    } catch(Exception $e) {
+        $data['error'] = $e->getMessage();
+    }
+    return $data['html'];
 }

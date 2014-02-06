@@ -8,8 +8,6 @@
  * http://www.worklist.net
  */
 
-require_once ("functions.php");
-
 if (!isset($is_runner)) {
     $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 }
@@ -63,9 +61,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
                     </div>
                 </div>
 <?php
-    }
-    $return_from_getfeesums = true;
-    include 'getfeesums.php';
+    }    
 ?>
                 <div class="clear"></div>
             </div>

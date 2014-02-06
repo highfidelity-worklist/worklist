@@ -9,13 +9,8 @@
  */
 
 require_once ("config.php");
-require_once ("class.session_handler.php");
-require_once ("send_email.php");
-require_once ("timezones.php");
-require_once ("countrylist.php");
-require_once ("smslist.php");
-require_once ("classes/Notification.class.php");
-require_once ("functions.php");
+
+Session::check();
 
 $signup = true;
 $phone = $country = $provider = $authtype = "";

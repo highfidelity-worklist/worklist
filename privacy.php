@@ -10,10 +10,10 @@
 
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("functions.php");
 include("head.html");
 include("opengraphmeta.php");
+
+Session::check();
 ?>
 <!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css">

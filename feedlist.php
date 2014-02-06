@@ -11,10 +11,10 @@
 // Hack to suppress links in footer.php when showing feeds
 
 include("config.php");
-include("class.session_handler.php");
-include("check_session.php");
-require_once('functions.php');
-include_once("send_email.php");
+
+Session::check();
+checkLogin();
+
 $inFeedlist = true;
 $userId = getSessionUserId();
 if( $userId > 0 )   {

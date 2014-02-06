@@ -1,8 +1,7 @@
 <?php
 require_once (dirname(__FILE__)."/../config.php");
 
-include(dirname(__FILE__)."/../class.session_handler.php");
-require_once(dirname(__FILE__).'/../functions.php');
+Session::check();
 
 // check for referer
 if(!checkReferer()){

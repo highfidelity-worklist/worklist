@@ -1,9 +1,9 @@
 <?php
 
     include('config.php');
-    include("class.session_handler.php");
     include("helper/checkJournal_session.php");
-    require_once('functions.php');
+
+    Session::check();
 
     // check for referer
     if(!checkReferer()){

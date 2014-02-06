@@ -4,10 +4,9 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 require_once ("config.php");
-require_once ("functions.php");
-require_once 'class.session_handler.php';
-require_once 'send_email.php';
 require_once 'head.html';
+
+Session::check();
 
 $project =  isset($_REQUEST['project']) ? $_REQUEST['project'] : null;
 $errorOut = false;

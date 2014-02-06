@@ -9,8 +9,6 @@
  */
 
 require_once ("config.php");
-require_once ("send_email.php");
-require_once ("functions.php");
 
 $msg = '';
 

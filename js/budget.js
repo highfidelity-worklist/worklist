@@ -60,8 +60,9 @@ var Budget = {
         $('#give-budget form input[type="submit"]').click(function() {
             $('#give-budget form input[type="submit"]').attr("disabled", "disabled");
             $.ajax({
-                url: 'update-budget.php',
+                url: 'api.php',
                 data: {
+                    action: 'updateBudget',
                     receiver_id: $('#budget-receiver').val(),
                     reason: $('#budget-reason').val(),
                     amount: $('#budget-amount').val(),
@@ -135,7 +136,7 @@ var Budget = {
                 } else {
                     $('#budget-dialog').dialog("option", "title", "All budget grants from you");
                 }
-                $('#budget-dialog').load("budgetHistory.php?inDiv=budget-dialog&id=" + $('#budget-dialog').data("userid") + "&page=1" + fromUserid);
+                $('#budget-dialog').load("api.php?action=budgetHistory&inDiv=budget-dialog&id=" + $('#budget-dialog').data("userid") + "&page=1" + fromUserid);
             }
         });
         Budget.initCombo();
@@ -154,7 +155,7 @@ var Budget = {
             options.fromUserid = "";
         }
         $("#" + options.inDiv + " #budgetHistoryContent").data("lastPage", options.page);
-        $("#" + options.inDiv + " #budgetHistoryContent").load("budgetHistory.php?inDiv=" + options.inDiv + "&id=" + options.id + "&page=" + options.page + options.fromUserid);
+        $("#" + options.inDiv + " #budgetHistoryContent").load("api.php?action=budgetHistory&inDiv=" + options.inDiv + "&id=" + options.id + "&page=" + options.page + options.fromUserid);
     },
     
     initAddFunds: function() {
@@ -182,8 +183,9 @@ var Budget = {
             $('#addFundsDialog form input[type="submit"]').attr("disabled", "disabled");
             
             $.ajax({
-                url: 'update-budget.php',
+                url: 'api.php',
                 data: {
+                    action: 'updateBudget',
                     receiver_id: $('#budget-receiver').val(),
                     reason: "",
                     amount: $('#amountToAdd').val(),
@@ -233,9 +235,11 @@ var Budget = {
             $('#addFundsDialog').dialog("destroy").remove();
             $('#addFundsArea, #budget-source-combo').remove();
             $("body").append("<div id='addFundsArea'></div>");
-            $("#addFundsArea").load('budget.php', {
-                action: "getViewAddFunds",
-                budgetId: $('#budget-update-dialog').data("budgetId")
+            $("#addFundsArea").load('api.php', 
+                {
+                    action: "budgetInfo",
+                    method: "getViewAddFunds",
+                    budgetId: $('#budget-update-dialog').data("budgetId")
                 }, function() {
                     $('#addFundsDialog').dialog({ 
                         dialogClass: 'white-theme',
@@ -258,9 +262,10 @@ var Budget = {
         $("#updateButton").click(function() {
             $.ajax({
                 type: "POST",
-                url: 'budget.php',
+                url: 'api.php',
                 data: {
-                    action: "updateBudget",
+                    action: "budgetInfo",
+                    method: "updateBudget",
                     budgetId: $('#budget-update-dialog').data("budgetId"),
                     budgetReason: $('#budget-reason').val(),
                     budgetNote: $('#budget-note').val()
@@ -285,9 +290,10 @@ var Budget = {
         $("#closeOutButton").click(function() {
             $.ajax({
                 type: "POST",
-                url: 'budget.php',
+                url: 'api.php',
                 data: {
-                    action: "closeOutBudget",
+                    action: "budgetInfo",
+                    method: "closeOutBudget",
                     budgetId: $('#budget-update-dialog').data("budgetId")
                 },
                 dataType: 'json',
@@ -325,9 +331,10 @@ var Budget = {
                 open: function() {
                     $.ajax({
                         type: "POST",
-                        url: 'budget.php',
+                        url: 'api.php',
                         data: {
-                            action: "getUpdateView",
+                            action: "budgetInfo",
+                            method: "getUpdateView",
                             budgetId: $('#budget-update-dialog').data("budgetId")
                         },
                         dataType: 'json',
@@ -530,15 +537,15 @@ var Budget = {
         $(table).append(header);
         Budget.be_attachEvents(section, budget_id);
         
-        var params = '?section=' + section + '&budget_id=' + budget_id;
+        var params = '?action=manageBudget&section=' + section + '&budget_id=' + budget_id;
         var sortby = '';
         // If we've got an item sort by it
         if (item) {
             sortby = item.attr('id');
             params += '&sortby='+sortby+'&desc='+desc;
         }
-        
-        $.getJSON('get-budget-expanded.php'+params, function(data) {
+        console.log('api.php'+params);
+        $.getJSON('api.php'+params, function(data) {
             // Fill the table
             for (var i = 0; i < data.length; i++) {
                 if (section == 3 ) {
@@ -558,7 +565,7 @@ var Budget = {
                     $('#table-budget-transferred').append(row);
 
                 } else {
-                    var link = '<a href="workitem.php?job_id=' + data[i].id + '&action=view" target="_blank">';
+                    var link = '<a href="workitem.php?job_id=' + data[i].id + '&method=view" target="_blank">';
                     // Separate "who" names into an array so we can add the userinfo for each one
                     var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
                     var who_link = '';
@@ -588,10 +595,10 @@ var Budget = {
 			}
         });
         $('#budget-report-export').click(function() {
-            window.open('get-budget-expanded.php?section='+section+'&action=export', '_blank');
+            window.open('api.php?action=manageBudget&section='+section+'&method=export', '_blank');
         });
         $('#budget-report-export-transferred').click(function() {
-            window.open('get-budget-expanded.php?section=' + section + '&action=export&budget_id=' + budget_id, '_blank');
+            window.open('api.php?action=manageBudget&section=' + section + '&method=export&budget_id=' + budget_id, '_blank');
         });
     },
 

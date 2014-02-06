@@ -198,10 +198,17 @@ var UserInfo = {
             var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
-            var data = {userid : userInfo.user_id, msg : msg, mail : mail, journal : journal, cc : cc};
+            var data = {
+                'action': 'pingTask',
+                'userid' : userInfo.user_id, 
+                'msg' : msg, 
+                'mail' : mail, 
+                'journal' : journal, 
+                'cc' : cc
+            };
             $.ajax({
                 type: "POST",
-                url: 'pingtask.php',
+                url: 'api.php',
                 data: data,
                 dataType: 'json',
                 success: function(json) {
@@ -233,8 +240,10 @@ var UserInfo = {
             $('#give-budget').dialog("destroy").remove();
             $('#budget-area, #budget-source-combo').remove();
             $("body").append("<div id='budget-area'></div>");
-            $("#budget-area").load('budget.php',{
-                action: "getView"
+            $("#budget-area").load('api.php',
+                {
+                    action: "budgetInfo",
+                    method: "getView"
                 }, function() {
                     $('#give-budget').dialog({ 
                         dialogClass: 'white-theme',
@@ -337,7 +346,7 @@ var UserInfo = {
                 if (confirm('Are you sure you want to pay $' + $('#bonus-amount').val() + ' to ' + userInfo.nickName + '?')) {
                     $('#pay-bonus').dialog('close');
                     $.ajax({
-                        url: 'pay-bonus.php',
+                        url: 'api.php?action=payBonus',
                         data: $('#pay-bonus form').serialize(),
                         dataType: 'json',
                         type: "POST",
@@ -458,8 +467,13 @@ var UserInfo = {
         $.ajax({
             cache: false,
             type: 'GET',
-            url: 'getbonushistory.php',
-            data: { uid: current_id, rid: user_id, page: page },
+            url: 'api.php',
+            data: {
+                action: 'getBonusHistory', 
+                uid: current_id, 
+                rid: user_id, 
+                page: page
+            },
             dataType: 'json',
             success: function(json) {
                 var footer = '<tr bgcolor="#FFFFFF"><td colspan="4" style="text-align:center;">No bonus history yet</tr>';

@@ -165,8 +165,11 @@ $(function() {
     if (('#stats-text').length > 0) {
         $.ajax({
             type: "POST",
-            url: 'getstats.php',
-            data: 'req=currentlink',
+            url: 'api.php',
+            data: {
+                action: 'getStats',
+                req: 'currentlink'
+            },
             dataType: 'json',
             success: function(json) {
                 if (!json || json === null) return;
@@ -298,8 +301,11 @@ function makeWorkitemTooltip(className){
             $.ajax({
                 type: "POST",
                 async: false,
-                url: 'getworkitem.php',
-                data: {'item' : worklist_id},
+                url: 'api.php',
+                data: {
+                    'action': 'getWorkitem',
+                    'item' : worklist_id
+                },
                 dataType: 'json',
                 bgcolor:"#ffffff",
                 success: function(json) {
@@ -405,7 +411,7 @@ function autocompleteExtractLast( term ) {
     return autocompleteSplit( term ).pop();
 }
 var autocompleteUserSource = function(request, response) {
-    $.getJSON( "getuserslist.php", {
+    $.getJSON( "api.php?action=getUsersList", {
         startsWith: autocompleteExtractLast( request.term ),
         getNicknameOnly: true
         }, response );
