@@ -59,7 +59,7 @@ if ($_SESSION['userid']) {
     $user->findUserById($_SESSION['userid']);
 }
 
-require_once('head.html');
+require_once('head.php');
 ?>
 <link rel="stylesheet" type="text/css" href="css/budget.css" />
 <link rel="stylesheet" type="text/css" href="css/journal.css" />

@@ -10,12 +10,14 @@
 
 ob_start();
 include("config.php");
-include("head.html");
-include("opengraphmeta.php");
 
 Session::check();
+
+include("head.php");
+include("opengraphmeta.php");
+
 ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <title>Worklist | Privacy Statement</title>
 </head>

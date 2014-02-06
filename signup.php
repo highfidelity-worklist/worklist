@@ -186,11 +186,11 @@ if (!empty($_GET['authtype']) && $_GET['authtype'] == 'openid') {
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 include("opengraphmeta.php");
 ?>
 
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/sendlove.js"></script>

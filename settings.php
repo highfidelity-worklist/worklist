@@ -413,10 +413,10 @@ if (!empty($saveArgs)) {
     }
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 ?>
 
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 
 <!--Added worklist.css to solve stylesheet issues for settings.php-->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />

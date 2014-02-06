@@ -29,7 +29,7 @@
 	}
     }
 
-    include("head.html");
+    include("head.php");
     if($surveyData = $survey -> getSurveyData()){
 	echo '<title>Surveys - ' . $surveyData['question'] . '</title>';
     }else{

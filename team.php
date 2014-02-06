@@ -30,13 +30,13 @@ if( $userId > 0 )   {
 $newStats = UserStats::getNewUserStats();
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 include("opengraphmeta.php");
 ?>
 
 <title>Team Members - Worklist: Develop software fast.</title>
 
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
 <link href="css/favorites.css" rel="stylesheet" type="text/css" >
 

@@ -25,7 +25,7 @@ if( $userId > 0 )   {
     $budget =number_format($userbudget);
  }
 
-include('head.html');
+include('head.php');
 define('RSS_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/rss.png" title="rss feed" />');
 define('ATOM_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/atom.png" title="rss feed" />');
 ?>

@@ -103,9 +103,9 @@ $redir = strip_tags(!empty($_REQUEST['redir'])?$_REQUEST['redir']:(!empty($_REQU
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
     <link href="css/worklist.css" rel="stylesheet" type="text/css" />
     <link href="css/login.css" rel="stylesheet" type="text/css" />
     <title>Welcome to the Worklist</title>

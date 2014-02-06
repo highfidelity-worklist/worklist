@@ -7,7 +7,7 @@ checkLogin();
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $projects = Project::getProjects(true);
 
-include("head.html");
+include("head.php");
 ?>
 <title>Add task / Report bug - Worklist: Develop software fast.</title>
 <link href="css/addjob.css" rel="stylesheet" type="text/css" />

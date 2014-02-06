@@ -23,7 +23,7 @@ $selectedLetter = isset($_REQUEST['letter']) ? $_REQUEST['letter'] : "all";
 $currentPage = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 
 /************************ HTML layout begins here  **************************/
-include("head.html");
+include("head.php");
 include("opengraphmeta.php");
 ?>
 <title>Worklist: A marketplace for software developers and founders.</title>

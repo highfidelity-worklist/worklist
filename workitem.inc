@@ -56,7 +56,7 @@
     }
 
 /*********************************** HTML layout begins here  *************************************/
-include("head.html"); ?>
+include("head.php"); ?>
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <link type="text/css" href="css/workitem.css" rel="stylesheet" />
 <link type="text/css" href="css/review.css" rel="stylesheet" />

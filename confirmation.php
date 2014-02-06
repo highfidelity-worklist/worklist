@@ -147,8 +147,8 @@ if (isset($_REQUEST['str'])) {
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html"); ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+include("head.php"); ?>
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <title>Worklist | Confirmation</title>
 <!-- @TODO: Why two ajax uploads? -- lithium -->

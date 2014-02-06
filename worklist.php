@@ -171,10 +171,10 @@ if (! empty($_POST)) {
 $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
 /*********************************** HTML layout begins here  *************************************/
-require_once("head.html");
+require_once("head.php");
 require_once('opengraphmeta.php');
 ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>

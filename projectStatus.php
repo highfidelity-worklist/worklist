@@ -4,9 +4,11 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 require_once ("config.php");
-require_once 'head.html';
 
 Session::check();
+
+require_once 'head.php';
+
 
 $project =  isset($_REQUEST['project']) ? $_REQUEST['project'] : null;
 $errorOut = false;

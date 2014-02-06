@@ -132,7 +132,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && ( $is_runner 
 }
 
 /*********************************** HTML layout begins here  *************************************/
-require_once("head.html");
+require_once("head.php");
 
 
 $meta_title = 'Worklist Project: ' . $project->getName();
@@ -146,7 +146,7 @@ if ($project->getLogo()) {
 }
 require_once('opengraphmeta.php');
 ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link href="css/project.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>

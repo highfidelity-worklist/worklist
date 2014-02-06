@@ -39,7 +39,7 @@ if(!empty($_POST['delete-account']))
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 ?>
 
 <title>Worklist | Delete Account</title>

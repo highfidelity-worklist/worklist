@@ -227,7 +227,7 @@
     }
     $favorite_count = $users_favorite->getUserFavoriteCount($userId);
 
-    require_once('head.html');
+    require_once('head.php');
 ?>
         <link type="text/css" href="css/budgetHistory.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />

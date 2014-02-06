@@ -29,10 +29,48 @@ if(!empty($_POST['username'])) {
     }
 }
 /*********************************** HTML layout begins here  *************************************/
-include("head.html");
+include("head.php");
 ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  --> 
+    <?php if (basename($_SERVER['PHP_SELF']) == 'worklist.php' && (array_key_exists('inlineHide',$_SESSION) && $_SESSION['inlineHide'] == 0) ) { ?>
+    <script type="text/javascript">
+    // html needed for welcome message
+    var welcomeHTML = '<p><span class="inlineWelcome">Welcome to Worklist!</span></p>'+
+    '<p>Browse the list of jobs below or click on <a href="journal.php" class="iToolTip menuJournal">Chat</a> to join our chat.</p>' +
+    '<input type="submit" id="hideMessage" name="hideMessage" value="Hide this Message" />'+
+    '<div id="inlineSource"><a href="http://svn.worklist.net/" target="_blank">Download our source code</a></div>'
+    
+    // call the addInlineMessage function to show the inline message for new users
+    addInlineMessage(welcomeHTML);
+    
+    // code for button to hide inline message
+    $('#hideMessage').click(function(){
+        $('#inlineMessage').fadeOut(750);
+    });
+    
+    </script>
+    
+    <?php } ?>
+    <?php if (basename($_SERVER['PHP_SELF']) == 'worklist.php' && (array_key_exists('inlineHide',$_SESSION) && $_SESSION['inlineHide'] == 0) ) { ?>
+    <script type="text/javascript">
+    // html needed for welcome message
+    var welcomeHTML = '<p><span class="inlineWelcome">Welcome to Worklist!</span></p>'+
+    '<p>Browse the list of jobs below or click on <a href="journal.php" class="iToolTip menuJournal">Chat</a> to join our chat.</p>' +
+    '<input type="submit" id="hideMessage" name="hideMessage" value="Hide this Message" />'+
+    '<div id="inlineSource"><a href="http://svn.worklist.net/" target="_blank">Download our source code</a></div>'
+    
+    // call the addInlineMessage function to show the inline message for new users
+    addInlineMessage(welcomeHTML);
+    
+    // code for button to hide inline message
+    $('#hideMessage').click(function(){
+        $('#inlineMessage').fadeOut(750);
+    });
+    
+    </script>
+    
+    <?php } ?>
 <script type="text/javascript" src="js/jquery.livevalidation.js"></script>
 <title>Worklist | Recover Password</title>
 </head>
