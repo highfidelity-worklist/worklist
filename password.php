@@ -8,10 +8,9 @@
 
 ob_start();
 include ("config.php");
-include ("class.session_handler.php");
-include ("check_session.php");
-include ("functions.php");
-include_once ("send_email.php");
+
+Session::check();
+checkLogin();
 
 $msg = array();
 if (!empty($_POST['oldpassword'])) {
@@ -44,7 +43,7 @@ if (!empty($_POST['oldpassword'])) {
 }
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 ?>
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <title>Worklist | Change Password</title>

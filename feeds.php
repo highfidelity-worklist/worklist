@@ -9,8 +9,12 @@
  *             format=atom | rss
  */
 require_once('config.php');
-require_once('db.php');
+require_once('Zend/Db.php');
 require_once('Zend/Feed/Writer/Feed.php');
+
+$config = Zend_Registry::get('config');
+// This does not make a db connection.  Must be done later using $db->getConnection();
+Zend_Registry::set('db', Zend_Db::factory($config->database));
 
 function addEntry($writer, $entryData, $entryDescription) {
 

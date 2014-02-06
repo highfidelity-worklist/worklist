@@ -11,13 +11,12 @@
     ob_start();
 
     require_once ("config.php");
-    require_once ("class.session_handler.php");
-    require_once ("functions.php");
-    require_once ("timezones.php");
     require_once ("lib/Agency/Worklist/Filter.php");
     require_once ("models/DataObject.php");
     require_once ("models/Review.php");
     require_once ("models/Users_Favorite.php");
+
+    Session::check();
 
     $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
     $tab = isset($_REQUEST['tab']) ? $_REQUEST['tab'] : "";
@@ -228,7 +227,7 @@
     }
     $favorite_count = $users_favorite->getUserFavoriteCount($userId);
 
-    require_once('head.html');
+    require_once('head.php');
 ?>
         <link type="text/css" href="css/budgetHistory.css" rel="stylesheet" />
         <link type="text/css" href="css/worklist.css" rel="stylesheet" />
@@ -265,7 +264,7 @@
         <!--  tooltip plugin and dictionary -->
         <script type="text/javascript">
         function MapToolTips() {
-            var tooltipPhraseBook = <?php include("tooltip.php"); ?>;
+            var tooltipPhraseBook = <?php echo $tooltip ?>;
             $.each(tooltipPhraseBook, function(k,v) {
                 $('.iToolTip.' + k).attr('title', v);
             });
@@ -306,7 +305,7 @@
                     $('#wFees').dialog( "option", "title", t );
                     $('#wFees').html('<img src="images/loader.gif" />');
                     $('#wFees').dialog('open');
-                    $.getJSON('getfeesums.php?weekly=1', function(json) {
+                    $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
                         if (json.error == 1) {
                             $('#wFees').html('Some error occured or you are not logged in.');
                         } else {
@@ -332,7 +331,7 @@
                     $('#wFees').dialog("option", "title", t);
                     $('#wFees').html('<img src="images/loader.gif" />');
                     $('#wFees').dialog('open');
-                    $.getJSON('getfeesums.php?monthly=1', function(json) {
+                    $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
                         if (json.error == 1) {
                             $('#wFees').html('Some error occured or you are not logged in.');
                         } else {
@@ -344,7 +343,7 @@
         });
 
         $('#welcomeInside .earningsBtn').click(function() {
-            $.get('getfeesums.php', function(data) {
+            $.get('api.php?action=getFeeSums', function(data) {
                 var sum = eval('('+data+')');
                 if (typeof sum != 'object') {
                     return false;

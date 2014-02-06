@@ -1,21 +1,15 @@
 <?php
 
-if (count(get_included_files()) == 1) { 
-          header('HTTP/1.0 403 Forbidden');
-          exit;
-}
-
-class scanAssets {
+class ScanAssets {
 
     public function scanAll() {
         error_reporting(E_ALL | E_STRICT);
         set_time_limit(15*60);
         date_default_timezone_set('UTC');
-        require_once(dirname(__FILE__).'/send_email.php');
         require_once(dirname(__FILE__).'/config.php');
         $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
         if (!$con) {
-	        die('Could not connect: ' . mysql_error());
+            die('Could not connect: ' . mysql_error());
         }
         mysql_select_db(DB_NAME, $con);
 
@@ -109,13 +103,12 @@ class scanAssets {
     public function scanFile($id) {
         set_time_limit(15*60);
         date_default_timezone_set('UTC');
-        require_once(dirname(__FILE__).'/send_email.php');
         require_once(dirname(__FILE__).'/config.php');
         
         $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
         if (!$con) {
-	        error_log('Could not connect: ' . mysql_error());
-        	die();
+            error_log('Could not connect: ' . mysql_error());
+            die();
         }
         mysql_select_db(DB_NAME, $con);
 
@@ -161,18 +154,18 @@ class scanAssets {
             }
             
             if (mysql_query($sql)) {
-		        // send mail if there's a problem
-	            if (! empty($notify)) {
-	               Notification::workitemNotify(array(
-	                   'type' => $notify,
-	                   'workitem' => $workitem,
-	                   'emails' => array($row['useremail']),
-	                   'file_name' => $file_name,
-	                   'file_title' => $row['title']
-	               ));
-		            if(!send_email($row['title'], $subject, $message)) {
+                // send mail if there's a problem
+                if (! empty($notify)) {
+                   Notification::workitemNotify(array(
+                       'type' => $notify,
+                       'workitem' => $workitem,
+                       'emails' => array($row['useremail']),
+                       'file_name' => $file_name,
+                       'file_title' => $row['title']
+                   ));
+                    if(!send_email($row['title'], $subject, $message)) {
                         //Don't fail silently if we can't send the message also
-		                error_log("cron scanAssets.php: send_email failed, msg: " . $message);
+                        error_log("cron ScanAssets: send_email failed, msg: " . $message);
                     }
                 }
             } else {
@@ -183,5 +176,3 @@ class scanAssets {
         return $fct_return;
     } //End of method
 } //End of Class
-
-?>

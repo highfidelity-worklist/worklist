@@ -9,8 +9,6 @@
  */
 
 require_once ("config.php");
-require_once ("send_email.php");
-require_once ("functions.php");
 
 $msg = '';
 
@@ -47,10 +45,10 @@ if (empty($_REQUEST['token'])) {
     Utils::redirect('login.php');
 }
 /*********************************** HTML layout begins here  *************************************/
-include("head.html");
+include("head.php");
 ?>
 
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <script language="javascript">
     // @TODO: Why have we got custom validation here when we are using LiveValidation further down?
 	function validate() {

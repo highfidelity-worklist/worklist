@@ -5,10 +5,6 @@
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
-
-require_once('timezones.php');
-require_once('send_email.php');
-
 function worklist_autoloader($class) {
     $file = realpath(dirname(__FILE__) . '/classes') . "/$class.class.php";
     if (file_exists($file)) {
@@ -17,6 +13,85 @@ function worklist_autoloader($class) {
 }
 
 spl_autoload_register('worklist_autoloader');
+
+include_once('chat.class.php');
+
+/**
+ * Timezones functions
+ */
+function getTimeZoneDateTime($GMT) {
+    $timezones = array(
+        '-1200'=>'Pacific/Kwajalein',
+        '-1100'=>'Pacific/Samoa',
+        '-1000'=>'Pacific/Honolulu',
+        '-0900'=>'America/Juneau',
+        '-0800'=>'America/Los_Angeles',
+        '-0700'=>'America/Denver',
+        '-0600'=>'America/Mexico_City',
+        '-0500'=>'America/New_York',
+        '-0400'=>'America/Caracas',
+        '-0330'=>'America/St_Johns',
+        '-0300'=>'America/Argentina/Buenos_Aires',
+        '-0200'=>'Atlantic/Azores',// no cities here so just picking an hour ahead
+        '-0100'=>'Atlantic/Azores',
+        '+0000'=>'Europe/London',
+        '+0100'=>'Europe/Paris',
+        '+0200'=>'Europe/Helsinki',
+        '+0300'=>'Europe/Moscow',
+        '+0330'=>'Asia/Tehran',
+        '+0400'=>'Asia/Baku',
+        '+0430'=>'Asia/Kabul',
+        '+0500'=>'Asia/Karachi',
+        '+0530'=>'Asia/Calcutta',
+        '+0600'=>'Asia/Colombo',
+        '+0700'=>'Asia/Bangkok',
+        '+0800'=>'Asia/Singapore',
+        '+0900'=>'Asia/Tokyo',
+        '+0930'=>'Australia/Darwin',
+        '+1000'=>'Pacific/Guam',
+        '+1100'=>'Asia/Magadan',
+        '+1200'=>'Asia/Kamchatka'
+    );
+    if(isset($timezones[$GMT])){
+        return $timezones[$GMT];
+    } else {
+        return date_default_timezone_get();
+    }
+}
+
+// @param $short == 1 -> return date format as 4:31 AM
+// else return date format as 04:31:22 AM
+function convertTimeZoneToLocalTime($timeoffset, $short) {
+    $DefZone = getTimeZoneDateTime($timeoffset);
+    date_default_timezone_set($DefZone);
+    if (strlen($timeoffset) == 5) {
+        $formatedTime = str_split($timeoffset);
+        $Symbol = $formatedTime[0];
+        $First = $formatedTime[1];
+        $Second = $formatedTime[2];
+        $Third = $formatedTime[3];
+        $Fourth = $formatedTime[4];
+        if ($Third=="3") {
+            $Third =5;
+        }
+        $timezone_local = $Symbol.$First.$Second.".".$Third.$Fourth;
+    } else {
+        $timezone_local = 0;
+    }
+
+    $time = time();
+    $timezone_offset = date("Z");
+    $timezone_add = round($timezone_local*60*60);
+    $ar = localtime($time,true);
+    if ($ar['tm_isdst']) { $time += 3600; }
+    $time = round($time-$timezone_offset+$timezone_add);
+    if (isset($short) && $short == 1)
+        $LocalTime = date("g:i A", $time);
+    else
+        $LocalTime = date("h:i:s A", $time);
+
+    return $LocalTime;      
+}
 
 /* Fee Categories
  *
@@ -307,48 +382,6 @@ function defineSendLoveAPI() {
     return 0;
  }
 
-
-
-/*  Function: GetUserList
- *
- *  Purpose: This function return a list of confirmed users.
- *
- *  Parameters: userid - The userid of the user signed in.
- *              nickname - The nickname of the user signed in.
- *              skipUser - If true, don't include the row for the user passed in.
- *              attrs - list of additional attributes to return
- */
-function GetUserList($userid, $nickname, $skipUser=false, $attrs=array()) {
-    if (!empty($attrs)) {
-        $extra = ", `" . implode("`,`", $attrs) . "`";
-    } else {
-        $extra = "";
-    }
-
-    $rt = mysql_query("SELECT `id`, `nickname` $extra  FROM `".USERS."` WHERE `id`!='{$userid}' AND `confirm`='1' AND `is_active` = 1 ORDER BY `nickname`");
-
-    $userList = array();
-    if (! $skipUser && ! empty($userid) && ! empty($nickname)) {
-        $skipUser = true;
-        $userList[$userid] = $nickname;
-    }
-
-    while ($rt && $row = mysql_fetch_assoc($rt)) {
-        if (!$skipUser || $userid != $row['id']) {
-            if (empty($attrs)) {
-                $userList[$row['id']] = $row['nickname'];
-            } else {
-                $userList[$row['id']] = array('nickname'=>$row['nickname']);
-                foreach ($attrs as $attr) {
-                    $userList[$row['id']][$attr] = $row[$attr];
-                }
-            }
-        }
-    }
-
-    return $userList;
-}
-
 /* postRequest
  *
  * Function for performing a CURL request given an url and post data.
@@ -623,13 +656,25 @@ function is_runner() {
 }
 
 function sendJournalNotification($message) {
-    
-    $data = array(
-        'user'    => JOURNAL_API_USER,
-        'pwd'     => sha1(JOURNAL_API_PWD),
-        'message' => stripslashes($message)
-    );
-    return trim(postRequest(JOURNAL_API_URL, $data));
+    global $chat;
+
+    $username = mysql_real_escape_string(JOURNAL_API_USER);
+    $password = mysql_real_escape_string(sha1(JOURNAL_API_PWD));
+    $sql = "select id, nickname from ".USERS." where username='$username' and password='$password' and confirm='1'";
+    if (! $res = mysql_query($sql)) {
+        error_log("jadd.mysql: ".mysql_error());
+    }
+    if($res && mysql_num_rows($res) > 0) {
+        $row = mysql_fetch_assoc($res);
+        $data = $chat->sendEntry($row['nickname'], $message, array('userid' => $row['id']), false, false);
+        if($data['status'] == 'ok') {
+            return "ok";
+        } else {
+            return "error: failed while writing entry with status: {$data['status']}.";
+        }
+    } else {
+        return "error: invalid user.";
+    }
 }
 
 function withdrawBid($bid_id, $withdraw_reason) {
@@ -733,7 +778,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $item_link = SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view";
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
-        if (!send_email($recipient->username, $subject, $body)) { error_log("functions.php:withdrawlFee: send_email failed"); }
+        if (!send_email($recipient->username, $subject, $body)) { error_log("withdrawBid: send_email failed"); }
         notify_sms_by_object($recipient, $subject, "${txtbody}\n${item_link}");
         
         // Check if there are any active bids remaining
@@ -952,7 +997,6 @@ function checkLogin() {
         exit;
     }
 }
-
     /* linkify function
      *
      * this takes some input and makes links where it thinks they should go
@@ -1232,3 +1276,468 @@ function getRelated($input) {
     }
     return $related;
 }
+
+function addRewarderBalance($userId, $points, $worklist_id = 0, $fee_id = 0) {
+    //Wire off rewarder interface for the time being - gj 5/21/10
+    if(true) return 1;
+
+    defineSendLoveAPI();
+
+    $reason = "Worklist paid you $" . $points;
+    $params = array (
+            'action' => 'change_balance',
+            'api_key' => REWARDER_API_KEY,
+            'user_id' => $userId,
+            'points' => $points,
+            'reason' => $reason,
+            'worklist_id' => $worklist_id,
+            'fee_id' => $fee_id,
+                    );
+
+    $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
+
+    if ($retval['status'] == "ok") {
+        return 1;
+    } else {
+        return -1;
+    }
+}
+
+/*
+* getRewardedPoints  - api call to rewarder to get how many
+* points $giverId has given to $receiverId
+*
+*/
+function getRewardedPoints($giverId, $receiverId) {
+    defineSendLoveAPI();
+
+
+    $params = array (
+            'action' => 'get_points',
+            'api_key' => REWARDER_API_KEY,
+            'giver_id' => $giverId,
+            'receiver_id' => $receiverId,
+                    );
+
+    $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
+
+    if ($retval['status'] == "ok") {
+        return $retval['data'];
+    } else {
+        return -1;
+    }
+}
+
+/*
+* rewardUser - api call to rewarder to grant
+* rewarder points from $giverId to $receiverId
+*
+*/
+function rewardUser($giverId, $receiverId, $points) {
+    defineSendLoveAPI();
+
+    $params = array (
+            'action' => 'reward_user',
+            'api_key' => REWARDER_API_KEY,
+            'giver_id' => $giverId,
+            'receiver_id' => $receiverId,
+            'points' => $points,
+                    );
+
+    $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+    $retval = json_decode(postRequest (REWARDER_API_URL, $params, array(CURLOPT_REFERER => $referer)), true);
+
+    if ($retval['status'] == "ok") {
+        return $retval['data'];
+    } else {
+        return -1;
+    }
+}  
+
+/*******************************************************
+    PPHttpPost: NVP post function for masspay.
+    Author: Jason (jkofoed@gmail.com)
+    Date: 2010-04-01 [Happy April Fool's!]
+********************************************************/    
+function PPHttpPost($methodName_, $nvpStr_, $credentials) {
+    $environment = 'live'; // 'sandbox' or 'beta-sandbox' or 'live'
+    $pp_user = $credentials['pp_api_username'];
+    $pp_pass = $credentials['pp_api_password'];
+    $pp_signature = $credentials['pp_api_signature'];
+
+    $API_Endpoint = "https://api-3t.paypal.com/nvp";
+    if("sandbox" === $environment || "beta-sandbox" === $environment) {
+        $API_Endpoint = "https://api-3t.$environment.paypal.com/nvp";
+    }
+    $version = urlencode('51.0');
+
+    // Set the curl parameters.
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $API_Endpoint);
+    curl_setopt($ch, CURLOPT_VERBOSE, 1);
+
+    // Turn off the server and peer verification (TrustManager Concept).
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+
+    // Set the API operation, version, and API signature in the request.
+    $nvpreq = 'METHOD='.$methodName_.'&VERSION='.$version.'&PWD='.$pp_pass.'&USER='.$pp_user.'&SIGNATURE='.$pp_signature.''.$nvpStr_;
+
+    // Set the request as a POST FIELD for curl.
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
+
+    // Get response from the server.
+    $httpResponse = curl_exec($ch);
+
+    if(!$httpResponse) {
+        exit("$methodName_ failed: ".curl_error($ch).'('.curl_errno($ch).')');
+    }
+
+    // Extract the response details.
+    $httpResponseAr = explode("&", $httpResponse);
+    $httpParsedResponseAr = array();
+    foreach ($httpResponseAr as $i => $value) {
+        $tmpAr = explode("=", $value);
+        if(sizeof($tmpAr) > 1) {
+            $httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+        }
+    }
+    $httpParsedResponseAr["nvpEndpoint"] = $API_Endpoint;
+    $httpParsedResponseAr["nvpString"] = $nvpreq;
+    if((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)) {
+        exit("Invalid HTTP Response for POST request($nvpreq) to $API_Endpoint.");
+    }
+
+    return $httpParsedResponseAr;
+}
+
+/*  send_email
+ *
+ *  send email using local mail()
+ */
+function send_email($to, $subject, $html, $plain = null, $headers = array()) {
+    //Validate arguments
+    $html= replaceEncodedNewLinesWithBr($html);
+    if (empty($to) ||
+        empty($subject) ||
+        (empty($html) && empty($plain) ||
+        !is_array($headers))) {
+        error_log("attempted to send an empty or misconfigured message");
+        return false;
+    }
+    
+    $nameAndAddressRegex = '/(.*)<(.*)>/';
+    $toIncludesNameAndAddress = preg_match($nameAndAddressRegex, $to, $toDetails);
+    
+    if ($toIncludesNameAndAddress) {
+        $toName = $toDetails[1];
+        $toAddress = $toDetails[2];
+    } else {
+        $toName = $to;
+        $toAddress = $to;
+    }
+
+    // If no 'From' address specified, use default
+    if (empty($headers['From'])) {
+        $fromName = DEFAULT_SENDER;
+        $fromAddress = DEFAULT_SENDER;
+    } else {
+        $fromIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['From'], $fromDetails);
+        if ($fromIncludesNameAndAddress) {
+            $fromName = str_replace('"', '', $fromDetails[1]);
+            $fromAddress = str_replace(' ', '-', $fromDetails[2]);
+        } else {
+            $fromName = $headers['From'];
+            $fromAddress = str_replace(' ', '-', $headers['From']);
+        }
+    }
+    
+    if (!empty($html)) {
+        if (empty($plain)) {
+            $h2t = new Html2Text(html_entity_decode($html, ENT_QUOTES), 75);
+            $plain = $h2t->convert();
+        }
+    } else {
+        if (empty($plain)) {
+            // if both HTML & Plain bodies are empty, don't send mail
+            return false;
+        }
+    }
+
+    $curl = new CURLHandler();
+    $postArray = array(
+        'from' => $fromAddress,
+        'fromname' => $fromName,
+        'to' => $toAddress,
+        'toname' => $toName,
+        'subject' => $subject,
+        'html' => $html,
+        'text'=> $plain,
+        'api_user' => SENDGRID_API_USER,
+        'api_key' => SENDGRID_API_KEY
+    );
+    
+    if (!empty($headers['Reply-To'])) {
+        $replyToIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['Reply-To'], $replyToDetails);
+        if ($replyToIncludesNameAndAddress) {
+            $postArray['replyto'] = str_replace(' ', '-', $replyToDetails[2]);
+        } else {
+            $postArray['replyto'] = $headers['Reply-To'];
+        }
+    }
+// check for copy, using bcc since cc is not present in Sendgrid api 
+    if (!empty($headers['Cc'])) {
+        $ccIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['Cc'], $ccDetails);
+        if ($ccIncludesNameAndAddress) {
+            $postArray['bcc'] = str_replace(' ', '-', $ccDetails[2]);
+        } else {
+            $postArray['bcc'] = $headers['Cc'];
+        }
+    }
+    
+    try {
+        $result = CURLHandler::Get(SENDGRID_API_URL, $postArray);
+    } catch(Exception $e) {
+        error_log("[ERROR] Unable to send message through SendGrid API - Exception: " . $e->getMessage());
+        return false;
+    }
+    
+    return true;
+}
+
+/* notify_sms functions
+ *
+ * Notify by user_id or by user object
+ *
+ */
+function notify_sms_by_id($user_id, $smssubject, $smsbody)
+{
+    //Fetch phone info using user_id
+    $sql = 'SELECT
+             phone, country, provider, smsaddr
+            FROM
+              '.USERS.'
+            WHERE
+             id = '. mysql_real_escape_string($user_id);
+
+    $res = mysql_query($sql);
+    $phone_info = mysql_fetch_object($res);
+    if (is_object($phone_info)) {
+        if (! notify_sms_by_object($phone_info, $smssubject, $smsbody) ) {
+            error_log("notify_sms_by_id: notify_sms_by_object failed. Not sending SMS. ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
+        } else {
+            return true;
+        }
+    } else {
+        error_log("notify_sms_by_id: Query '${sql}' failed. Not sending SMS." .
+                  " ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
+    }
+}
+
+function objectToArray($object) {
+    $dump = '$dump = '.var_export($object, true);
+    $dump = preg_replace('/object\([^\)]+\)#[0-9]+ /', 'array', $dump);
+    $dump = preg_replace('/[a-zA-Z_]+::__set_state/', '', $dump);
+    $dump = str_replace(':protected', '', $dump);
+    $dump = str_replace(':private', '', $dump);
+    $dump .= ';';
+    eval($dump);
+    return $dump;
+}
+
+
+function notify_sms_by_object($user_obj, $smssubject, $smsbody, $force_twilio = false)
+{
+    global $smslist;
+    $smsbody    = strip_tags($smsbody);
+
+    if (is_array($user_obj)) {
+        //error_log("smsbyobject already an array");
+        $user_array=$user_obj;
+    } elseif (is_object($user_obj)) {
+        //error_log("smsbyobject convert to array");
+        $user_array=objectToArray($user_obj);
+    } else {
+        error_log("Notify_sms_by_object does not know how to handle \$user_obj:".gettype($user_obj));
+        return false;
+    }
+    $user = new User();
+    $user->findUserById($user_array['id']);
+    if ($user->isTwilioSupported($force_twilio)) {
+        require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
+        $Twilio = new WLTwilio();
+        $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);
+        $ret = $Twilio->send_sms($user_array['phone'], $message);
+        if ($ret === null && !$force_twilio) {
+            // Twilio told us that phone number is invalid
+            // lets update the phone_rejected field for user
+            $user->setPhone_rejected(date('Y-m-d H:i'));
+            $user->save();
+        }
+        return $ret;
+    } else {
+        if (array_key_exists('smsaddr',$user_array) && !empty($user_array['smsaddr'])) {
+            $smsaddr = $user_array['smsaddr'];
+        } else {
+            $provider = $user_array['provider'];
+            if ( !empty($provider)) {
+                if ($provider{0} != '+') {
+                    if (   array_key_exists('phone',$user_array)
+                        && !empty($user_array['phone'])
+                        && array_key_exists('country',$user_array)
+                        && !empty($user_array['country'])
+                        && array_key_exists($user_array['country'],$smslist)
+                        && !empty($smslist[$user_array['country']])
+                        && array_key_exists($provider,$smslist[$user_array['country']])
+                        && !empty($smslist[$user_array['country']][$provider]))
+                    {
+                        $smsaddr = str_replace('{n}', $user_array['phone'], $smslist[$user_array['country']][$provider]);
+                    } else {
+                        error_log("Unable to locate SMS path for userid: ".$user_array['id']);
+                        return false;
+                    }
+                } else {
+                    $smsaddr = substr($provider, 1);
+                }
+            } else {
+                return false;
+            }
+        }
+        return send_email($smsaddr,
+            html_entity_decode($smssubject, ENT_QUOTES),
+            '',
+            html_entity_decode($smsbody, ENT_QUOTES),
+            array(
+                "From" => SMS_SENDER,
+                "X-tag" => 'sms',
+            )
+        );
+    }
+}
+
+/*  sendTemplateEmail - send email using email template
+ *  $template - name of the template to use, for example 'confirmation'
+ *  $data - array of key-value replacements for template
+ */
+
+
+// TODO - Marco - Include headers argument to allow ,eg, sending bcc copies
+function sendTemplateEmail($to, $template, $data = array(), $from = false){
+    include (dirname(__FILE__) . "/email/en.php");
+
+    $recipients = is_array($to) ? $to : array($to);
+
+    $replacedTemplate = !empty($data) ?
+                        templateReplace($emailTemplates[$template], $data) :
+                        $emailTemplates[$template];
+
+    $subject = $replacedTemplate['subject'];
+    $html = $replacedTemplate['body'];
+    $plain = !empty($replacedTemplate['plain']) ?
+                $replacedTemplate['plain'] :
+                null;
+    $xtag  = !empty($replacedTemplate['X-tag']) ?
+                $replacedTemplate['X-tag'] :
+                null;
+
+    $headers = array();
+    if (!empty($xtag)) {
+        $headers['X-tag'] = $xtag;
+    }
+    if (!empty($from)) {
+        $headers['From'] = $from;
+    }
+
+    $result = null;
+    foreach($recipients as $recipient){
+        if (! $result = send_email($recipient, $subject, $html, $plain, $headers)) {
+            error_log("send_email:Template: send_email failed");
+        }
+    }
+
+    return $result;
+}
+
+/* templateReplace - function to replace all occurencies of
+ * {key} with value from $replacements array
+ * for example: if $replacements is array('nickname' => 'John')
+ * function will replace {nickname} in $templateData array with 'John'
+ */
+
+function templateReplace($templateData, $replacements){
+
+    foreach($templateData as &$templateIndice){
+        foreach($replacements as $find => $replacement){
+
+            $pattern = array(
+                        '/\{' . preg_quote($find) . '\}/',
+                        '/\{' . preg_quote(strtoupper($find)) . '\}/',
+                            );
+            $templateIndice = preg_replace($pattern, $replacement, $templateIndice);
+        }
+    }
+
+    return $templateData;
+}
+
+
+/************************
+*   Worklist tooltips   *
+************************/
+$tooltip = json_encode(array(
+    /* List page top tooltips       */
+    
+    'menuWorklist'  => 'Explore jobs or add new ones.',
+    'menuJournal'   => 'Chat',
+    'menuLove'      => 'Show appreciation for cool things people have done',
+    'menuRewarder'  => 'Give earned points/money to other teammates.',
+    'menuReports'   => 'Audit all the work and money flow.',
+    'jobsBidding'   => 'See more stats on jobs and team members.',
+    
+    
+    /* List's list tooltips         */
+    'hoverJobRow'   => 'View, edit, or make a bid on this job.',
+    
+
+    /* Item tooltips                */ 
+    
+        'cR'            => 'Start a code review on this job.',
+        'endCr'         => 'End a code review on this job.',
+        'cRDisallowed'  => 'You are not authorized to Code Review this job.',
+        'cRSetToFunctional'=> 'Set this job to Functional then to Review to enable Code Review.',
+        'endCrDisallowed' => 'You are not authorized to End Code Review on this job',
+        'addFee'       => 'Add a fee you would like to be paid for work done on this job.',
+        'addBid'        => 'Make an offer to do this job.',
+        'changeSBurl'   => 'Click to change your sandbox url.',
+    
+    /* Budget Info tooltips         */
+
+    'budgetRemaining1' => 'Funds still available to use towards jobs for all my budgets',
+    'budgetAllocated1' => 'Funds linked to fees in active jobs (Working, Functional, Review, Completed) for all my budgets',
+    'budgetSubmitted1' => 'Funds linked to fees in Done\'d jobs that are not yet paid for all my budgets',
+    'budgetPaid1'      => 'Funds linked to fees that have been Paid through system for all my budgets',
+    'budgetTransfered1'  => 'Funds granted to others via giving budget for all my budgets',
+    'budgetManaged1'  => 'Total amount of budget funds granted to me since joining Worklist',
+    
+    /* Update Budget Info tooltips         */
+    'budgetSave' => 'Save changes made to title or notes',
+    'budgetClose' => 'Reconcile &amp; close this open budget',
+    'budgetRemaining2' => 'Funds still available to use towards jobs',
+    'budgetAllocated2' => 'Funds linked to fees in active jobs (Working, Functional, Review, Completed)',
+    'budgetSubmitted2' => 'Funds linked to fees in Done\'d jobs that are not yet paid',
+    'budgetPaid2'      => 'Funds linked to fees that have been Paid through system',
+    'budgetTransfered2'  => 'Funds granted to others via giving budget',
+    
+    /* Add Job tooltips             */
+    'enterAmount'     =>  'Enter the amount you want to be paid if this job is accepted and done.',
+    'enterNotes'      =>  'Enter detailed code review info in Comments Section.',
+    'enterCrAmount'   =>  'Recommended review fee based on project settings.',
+
+    /* Add Project tooltips             */
+    'addProj' => 'Add a new project to the Worklist.'
+));

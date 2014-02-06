@@ -6,8 +6,6 @@ if (php_sapi_name() != 'cli') {
 
 $application_path = dirname(dirname(__FILE__)) . '/';
 require_once ($application_path . 'config.php');
-require_once ($application_path . "functions.php");
-include_once ($application_path . "send_email.php");
 
 /**
  * Cleans each phone number less than 6 digits

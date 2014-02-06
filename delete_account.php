@@ -10,10 +10,9 @@
 
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("check_session.php");
-include("functions.php");
-include_once("send_email.php");
+
+Session::check();
+checkLogin();
 
 if(!empty($_POST['delete-account']))
 {
@@ -40,7 +39,7 @@ if(!empty($_POST['delete-account']))
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 ?>
 
 <title>Worklist | Delete Account</title>

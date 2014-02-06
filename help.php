@@ -10,15 +10,15 @@
 
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("check_new_user.php");
-include("functions.php");
+
+Session::check();
+
 /*********************************** HTML layout begins here  *************************************/
-include("head.html");
+include("head.php");
 include("opengraphmeta.php");
 ?>
 
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link type="text/css" href="css/worklist.css" rel="stylesheet" />
 <title>Help / FAQ - Worklist</title>
 <style>

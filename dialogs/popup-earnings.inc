@@ -1,3 +1,6 @@
+<?php
+$sum = Fee::getSums();
+?>
     <div class="hidden" id="feesDialog">
         <table>
             <tr>

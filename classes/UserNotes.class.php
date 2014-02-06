@@ -1,20 +1,4 @@
 <?php
-/**
- * Worklist
- * Copyright (c) 2010-2011 LoveMachine, LLc.
- * All rights reserved.
- */
-require_once ("config.php");
-require_once 'class.session_handler.php';
-require_once 'functions.php';
-require_once ("models/DataObject.php");
-require_once ("models/Note.php");
-
-$usernotes = new UserNotes();
-$usernotes->validateRequest(array('action'));
-
-$action = $_REQUEST['action'];
-$usernotes->$action(); 
 
 class UserNotes {
     
@@ -40,8 +24,8 @@ class UserNotes {
             echo "<textarea class='userNotes'>" . $note->note . "</textarea>";
         }else{
             echo "<textarea class='userNotes'></textarea>";
-        }		
-		
+        }       
+        
         echo '<script type="text/javascript">$(".userNotes").autogrow();</script>';
         exit(0);
     }
@@ -130,4 +114,3 @@ class UserNotes {
         exit(0);
     }
 }
-

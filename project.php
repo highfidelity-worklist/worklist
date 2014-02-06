@@ -9,9 +9,8 @@
  */
 
 require_once ("config.php");
-require_once ("class.session_handler.php");
-require_once ("functions.php");
-require_once ("send_email.php");
+
+Session::check();
 
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
@@ -133,7 +132,7 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && ( $is_runner 
 }
 
 /*********************************** HTML layout begins here  *************************************/
-require_once("head.html");
+require_once("head.php");
 
 
 $meta_title = 'Worklist Project: ' . $project->getName();
@@ -147,7 +146,7 @@ if ($project->getLogo()) {
 }
 require_once('opengraphmeta.php');
 ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link href="css/project.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
 <script type="text/javascript" src="js/jquery.template.js"></script>
@@ -515,7 +514,7 @@ require_once('opengraphmeta.php');
         $('#popup-testflight form').hide();
         $('#popup-testflight form #ipa-select input').remove();
 
-        $.getJSON('testflight.php?project_id=' + project_id, function(data) {
+        $.getJSON('api.php?action=testFlight&project_id=' + project_id, function(data) {
             $('#popup-testflight .loading').hide()
             if (data['error']) {
                 $('#popup-testflight .error')
@@ -535,7 +534,7 @@ require_once('opengraphmeta.php');
                     params += "&ipa_file=" + $('#popup-testflight form #ipa-select input').val();
                     params += "&notify="
                     params += $('#popup-testflight form input[type=checkbox]').is(':checked');
-                    $.getJSON('testflight.php?' + params, function(data) {
+                    $.getJSON('api.php?action=testFlight&' + params, function(data) {
                         if (data == null) {
                             alert("There was an error with publishing to TestFlight. Please try again.");
                         } else if (data['error']) {

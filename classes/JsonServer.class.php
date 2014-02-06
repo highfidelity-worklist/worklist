@@ -372,8 +372,7 @@ class JsonServer
     }
 
     protected function actionScanFile() {
-        require_once('./scanAssets.php');
-        $scanner = new scanAssets();
+        $scanner = new ScanAssets();
         $file_id = $this->getRequest()->getParam('fileid');
 
         $file = new File();

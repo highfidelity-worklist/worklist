@@ -82,7 +82,7 @@
                     $('#wFees').addClass('table-popup');
                     $('#wFees').html('<img src="images/loader.gif" />');
                     $('#wFees').dialog('open');
-                    $.getJSON('getfeesums.php?weekly=1', function(json) {
+                    $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
                         if (json.error == 1) {
                             $('#wFees').html('Some error occured or you are not logged in.');
                         } else {
@@ -110,7 +110,7 @@
                     $('#wFees').addClass('table-popup');
                     $('#wFees').html('<img src="images/loader.gif" />');
                     $('#wFees').dialog('open');
-                    $.getJSON('getfeesums.php?monthly=1', function(json) {
+                    $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
                         if (json.error == 1) {
                             $('#wFees').html('Some error occured or you are not logged in.');
                         } else {
@@ -142,7 +142,7 @@
         });
 
         var updateFeeSumsTimes = setInterval(function () {
-            $.get('getfeesums.php', function(data) {
+            $.get('api.php?action=getFeeSums', function(data) {
                 var sum = eval('('+data+')');
                 if (typeof sum != 'object') {
                     return false;
@@ -155,7 +155,7 @@
     <!--  tooltip plugin and dictionary -->
     <script type="text/javascript">
         function MapToolTips() {
-            var tooltipPhraseBook = <?php include("tooltip.php"); ?>;
+            var tooltipPhraseBook = <?php echo $tooltip ?>;
             $.each(tooltipPhraseBook, function(k,v) {
                 $('.iToolTip.' + k).attr('title', v);
             });

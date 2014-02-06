@@ -1,23 +1,4 @@
 <?php
-/**
- * Coffee And Power
- * Copyright (c) 2010 LoveMachine, LLc.
- * All rights reserved.
- */
-
-require_once ("config.php");
-require_once 'class.session_handler.php';
-require_once 'functions.php';
-require_once ("models/DataObject.php");
-require_once ("models/Review.php");
-include_once("send_email.php");
-require_once 'models/Users_Favorite.php';
-
-$userReview = new UserReview();
-$userReview->validateRequest(array('action'));
-
-$action = $_REQUEST['action'];
-$userReview->$action(); 
 
 class UserReview {
     
@@ -83,7 +64,7 @@ class UserReview {
         }else{
             echo $withTrustHTML . "<textarea class='userReview'></textarea>";
             exit(0);
-        }			
+        }           
     }
 
     /**

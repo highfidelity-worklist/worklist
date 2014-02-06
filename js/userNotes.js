@@ -15,9 +15,10 @@ var userNotes = {
     saveUserNotes: function(fAfter) {
         $.ajax({
             type: 'POST',
-            url: userNotes.base_url + 'userNotes.php',
+            url: userNotes.base_url + 'api.php',
             data: { 
-                action:'saveUserNotes',
+                action: 'userNotes',
+                method: 'saveUserNotes',
                 userNotes: $(".userNotes").val(),
                 userId: $("#userid").val() 
             },

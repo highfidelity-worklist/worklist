@@ -10,8 +10,9 @@
 
 
 require_once('config.php');
-require_once('class.session_handler.php');
-require_once('functions.php');
+
+Session::check();
+
 // is the user already logged in? go to worklist.php
 if (getSessionUserId() > 0) {
     Utils::redirect('worklist.php');
@@ -102,9 +103,9 @@ $redir = strip_tags(!empty($_REQUEST['redir'])?$_REQUEST['redir']:(!empty($_REQU
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
     <link href="css/worklist.css" rel="stylesheet" type="text/css" />
     <link href="css/login.css" rel="stylesheet" type="text/css" />
     <title>Welcome to the Worklist</title>

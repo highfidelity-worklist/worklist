@@ -113,7 +113,7 @@
     function populateProjectListing() {
         $.ajax({
             type: "GET",
-            url: 'getprojects.php',
+            url: 'api.php?action=getProjects',
             dataType: 'json',
             success: function(json) {
 

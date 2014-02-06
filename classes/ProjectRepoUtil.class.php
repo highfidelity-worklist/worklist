@@ -3,9 +3,6 @@
 // 
 //  vim:ts=4:et
 
-require_once ("config.php");
-include_once "send_email.php";
-require_once ("functions.php");
 
 class ProjectRepoUtil {
 

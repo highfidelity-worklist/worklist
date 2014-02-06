@@ -1,13 +1,13 @@
 <?php
 require_once('config.php');
-require_once("class.session_handler.php");
-require_once("check_session.php");
-require_once("functions.php");
+
+Session::check();
+checkLogin();
 
 $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
 $projects = Project::getProjects(true);
 
-include("head.html");
+include("head.php");
 ?>
 <title>Add task / Report bug - Worklist: Develop software fast.</title>
 <link href="css/addjob.css" rel="stylesheet" type="text/css" />

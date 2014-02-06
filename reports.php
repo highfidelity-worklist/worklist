@@ -11,13 +11,11 @@
 ob_start();
 
 include("config.php");
-include("class.session_handler.php");
-include_once("check_new_user.php");
-include_once("functions.php");
-include_once("send_email.php");
 include_once("classes/Fee.class.php");
 include_once("classes/Bonus.class.php");
 require_once('lib/Agency/Worklist/Filter.php');
+
+Session::check();
 
 /* This page is only accessible to runners. */
 if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']) && isset($_POST['paid'])) {
@@ -83,11 +81,11 @@ if(isset($_POST['paid']) && !empty($_POST['paidList']) && !empty($_SESSION['is_p
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 include("opengraphmeta.php");
 ?>
 
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link href="css/teamnav.css" rel="stylesheet" type="text/css">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" >
 <script src="js/raphael-min.js" type="text/javascript" charset="utf-8"></script>
@@ -157,7 +155,11 @@ var current_sortkey = '<?php echo $filter->getOrder(); ?>';
     *
     */
     function withdraw_fee(fee_id) {
-        var ajax_connection = $.get('wd_fee.php', { 'wd_fee_id': fee_id  },
+        var ajax_connection = $.get('api.php', 
+            {
+                action: 'wdFee', 
+                wd_fee_id: fee_id
+            },
             function(data) {
                 if (data = 'Update Successful!') {
                     $('#workitem-'+fee_id).remove();
@@ -338,8 +340,9 @@ function AppendPagination(page, cPages, table) {
 
         $.ajax({
             type: "POST",
-            url: 'getreport.php',
+            url: 'api.php',
             data: {
+                action: "getReport",
                 page: npage,
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),
@@ -438,8 +441,9 @@ function AppendPagination(page, cPages, table) {
 
         $.ajax({
             type: "POST",
-            url: 'getreport.php',
+            url: 'api.php',
             data: {
+                action: "getReport",
                 qType: 'payee',
                 page: npage,
                 status: $('select[name=status]').val(),
@@ -538,8 +542,9 @@ function setupTimelineChart(reload) {
         var paidStatus = $('#paid-status').val();
         $.ajax({
             type: "POST",
-            url: 'getreport.php',
+            url: 'api.php',
             data: {
+                action: "getReport",
                 qType: 'chart',
                 status: $('select[name=status]').val(),
                 user: $('select[name=user]').val(),

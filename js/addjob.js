@@ -57,10 +57,11 @@ $(function() {
         var id=$("#bug_job_id").val();
         if(id.length) {
             $.ajax({
-                url: 'getjobinformation.php',
+                url: 'api.php',
                 dataType: 'json',
                 data: {
-                    itemid:id
+                    action: 'getJobInformation',
+                    itemid: id
                 },
                 type: 'POST',
                 success: function(json) {
@@ -99,8 +100,9 @@ $(function() {
                 // we send an ajax request to get the updated list
                 $.ajax({
                     type: 'POST',
-                    url: 'refresh-filter.php',
+                    url: 'api.php',
                     data: {
+                        action: 'refreshFilter',
                         name: filterName,
                         active: activeProjectsFlag,
                         filter: 'projects'
@@ -205,9 +207,10 @@ $(function() {
         
         addForm = $("#addJob");
         $.ajax({
-            url: 'addworkitem.php',
+            url: 'api.php',
             dataType: 'json',
             data: {
+                action: 'addWorkitem',
                 summary: $(":input[name='summary']", addForm).val(),
                 files: $(":input[name='files']", addForm).val(),
                 invite: $(":input[name='invite']", addForm).val(),

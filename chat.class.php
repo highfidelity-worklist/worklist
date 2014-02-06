@@ -3,7 +3,6 @@
 //
 //  vim:ts=4:et
 require_once ("config.php");
-require_once ("functions.php");
 
 $libdir = dirname(__FILE__) . '/lib';
 set_include_path(get_include_path() . PATH_SEPARATOR . $libdir);
@@ -654,12 +653,12 @@ mysql_select_db(DB_NAME) or die(mysql_error());
         // let's do this first, so if a bot hijacks the entry we're still 
         // going to mark the user as not typing any more
         // and we need to know the userid before we can do that
-        if (isset($_SESSION['userid']) && $_SESSION['userid'] && ($author != USER_JOURNAL)) {
+        if (isset($data['userid'])) {
+            $userId = $data['userid'];
+        } else if (isset($_SESSION['userid']) && $_SESSION['userid'] && ($author != USER_JOURNAL)) {
             $userId = $_SESSION['userid'];
             /* Mark user as idle. */
             $this->setTypingStatus(IDLE, $userId);
-        } else {
-            $userId = isset($data['userid']) ? $data['userid'] : 0;
         }
 
         /* Give the bots a chance to respond to the new message. */
@@ -905,7 +904,7 @@ mysql_select_db(DB_NAME) or die(mysql_error());
         // prevent users in penalty box or suspended users from adding entries
         $userStatus = $userId != 'NULL' ? Penalty::getSimpleStatus($userId) : Penalty::getSimpleStatus(0, $ip);
         if($userStatus == Penalty::NOT_PENALIZED){
-// Send to global entries table (used for searches and timetravel)
+            // Send to global entries table (used for searches and timetravel)
             $sql = "INSERT INTO ".ENTRIES." (`id`, `user_id`, `entry`, `author`,`ip`, `date`, `sampled`) ".
                     " (SELECT NULL, {$userId}, '{$message}', '{$author}', '{$ip}', CURRENT_TIMESTAMP, '{$sampled}' ".
                     " FROM ".USERS.
@@ -915,6 +914,7 @@ mysql_select_db(DB_NAME) or die(mysql_error());
                     " ) OR ( ".
                         " '{$userId}' IN ('0','".BOT_USER_ID."') ". 
                     " ) LIMIT 1 );";
+
             $retries = 0;
             while (!($rt = mysql_unbuffered_query($sql)) && $retries++ < 3) {
                 $fp = fopen("/tmp/journal_write.log", "a");
@@ -957,7 +957,7 @@ mysql_select_db(DB_NAME) or die(mysql_error());
                 }
             }   
 
-// Send to latest entries table (used for quick loading for current messages)
+            // Send to latest entries table (used for quick loading for current messages)
             $sql = "INSERT INTO ".ENTRIES_ALL." (`id`, `user_id`, `entry`, `author`,`ip`, `date`, `sampled`) ".
                     " (SELECT {$id}, {$userId}, '{$message}', '{$author}', '{$ip}', CURRENT_TIMESTAMP, '{$sampled}' ".
                     " FROM ".USERS.

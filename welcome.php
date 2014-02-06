@@ -12,9 +12,8 @@
 error_reporting(E_ALL);
 ob_start();
 include("config.php");
-include("class.session_handler.php");
-include("check_new_user.php");
-include("functions.php");
+
+Session::check();
 
 $userId = getSessionUserId();
 $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
@@ -24,7 +23,7 @@ $selectedLetter = isset($_REQUEST['letter']) ? $_REQUEST['letter'] : "all";
 $currentPage = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 
 /************************ HTML layout begins here  **************************/
-include("head.html");
+include("head.php");
 include("opengraphmeta.php");
 ?>
 <title>Worklist: A marketplace for software developers and founders.</title>

@@ -14,10 +14,8 @@
 // AJAX request from ourselves to retrieve history
 
 include("config.php");
-include("functions.php");
 //if (!checkReferer()) die;
 
-include("smslist.php");
 require_once 'lib/Sms.php';
 
 if (empty($_POST['c'])) {

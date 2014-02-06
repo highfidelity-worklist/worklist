@@ -8,8 +8,6 @@
  */
 require_once ("lib/Workitem/Exception.php");
 require_once ("lib/twitteroauth/twitteroauth.php");
-require_once(dirname(__FILE__)."/../config.php");
-require_once ("functions.php");
 /**
  * Workitem
  *

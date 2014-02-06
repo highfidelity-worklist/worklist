@@ -1,21 +1,4 @@
 <?php
-/**
- * Coffee And Power
- * Copyright (c) 2012 LoveMachine, LLc.
- * All rights reserved.
- */
-require_once ("config.php");
-require_once 'class.session_handler.php';
-require_once 'functions.php';
-require_once ("models/DataObject.php");
-require_once ("models/Budget.php");
-include_once("send_email.php");
-
-$budgetInfo = new BudgetInfo();
-$budgetInfo->validateRequest(array('action'));
-
-$action = $_REQUEST['action'];
-$budgetInfo->$action(); 
 
 class BudgetInfo {
     
@@ -330,11 +313,11 @@ class BudgetInfo {
         $plain .= '- Worklist.net\n\n';       
 
         if (!send_email($options["receiver_email"], $subject, $body, $plain)) { 
-            error_log("budget.php: send_email failed on closed out budget");
+            error_log("BudgetInfo: send_email failed on closed out budget");
         }
         if ($options["remainingFunds"] < 0 || $options["seed"] == 1) {
             if (!send_email($options["giver_email"], $subject, $body, $plain)) { 
-                error_log("budget.php: send_email failed on closed out budget");
+                error_log("BudgetInfo: send_email failed on closed out budget");
             }
         }
     }

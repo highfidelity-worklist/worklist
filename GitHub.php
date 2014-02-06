@@ -14,11 +14,11 @@
  */
 
 require_once ("config.php");
-require_once 'class.session_handler.php';
-require_once ("functions.php");
 require_once 'chat.class.php';
 require_once 'models/DataObject.php';
 require_once 'models/Budget.php';
+
+Session::check();
 
 // This is an array of events that are allowed, if not here we just ignore for now
 $eventHandlers = array(

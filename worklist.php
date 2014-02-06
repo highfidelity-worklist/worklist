@@ -14,11 +14,9 @@ if (! empty($_SERVER['PATH_INFO'])) {
     exit;
 }
 
-require_once ("class.session_handler.php");
-require_once ("check_new_user.php");
-require_once ("functions.php");
-require_once ("send_email.php");
 require_once ('lib/Agency/Worklist/Filter.php');
+
+Session::check();
 
 $page = isset($_REQUEST["page"]) ? (int) $_REQUEST['page'] : 1; // Get the page number to show, set default to 1
 
@@ -173,10 +171,10 @@ if (! empty($_POST)) {
 $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
 /*********************************** HTML layout begins here  *************************************/
-require_once("head.html");
+require_once("head.php");
 require_once('opengraphmeta.php');
 ?>
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.tablednd_0_5.js"></script>
@@ -521,9 +519,10 @@ require_once('opengraphmeta.php');
         
         $.ajax({
             type: "POST",
-            url: 'getworklist.php',
+            url: 'api.php',
             cache: false,
             data: {
+                action: 'getWorklist',
                 page: npage,
                 project_id: search_project,
                 status: search_status,
@@ -788,36 +787,6 @@ require_once('opengraphmeta.php');
             timeoutId = setTimeout('GetWorklist(' + page + ', false)', 50);
         });
     }
-
-    function getIdFromPage(npage, worklist_id)  {
-        $.ajax({
-            type: "POST",
-            url: 'getworklist.php',
-            cache: false,
-            data: 'page='+npage+'&sfilter='+$("#search-filter").val()+'&ufilter='+$("#user-filter").val()+"&query="+$("#query").val(),
-            dataType: 'json',
-            success: function(json) {
-                // if moving on the greater page - place item on top, if on page with smaller number - on the end of the list
-                if(npage > page){
-                    prev_id = json[1][0];
-                }else{
-                    prev_id = json[json.length-2][0];
-                }
-                updatePriority(worklist_id, prev_id, 5);
-            }
-        });
-    }
-    function updatePriority(worklist_id, prev_id, bump){
-        $.ajax({
-            type: "POST",
-            url: 'updatepriority.php',
-            data: 'id='+worklist_id+'&previd='+prev_id+'&bump='+bump,
-            success: function(json) {
-                GetWorklist(page, true);
-            }
-        });
-    }
-
 </script>
 <script type="text/javascript" src="js/uploadFiles.js"></script>
 <title>Worklist: Develop software fast.</title>

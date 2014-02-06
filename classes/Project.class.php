@@ -8,7 +8,6 @@
  * @version $Id$
  */
 require_once('lib/Project/Exception.php');
-require_once ("send_email.php");
 /**
  * Project
  *

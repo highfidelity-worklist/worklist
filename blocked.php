@@ -9,9 +9,9 @@
  */
 
 include('config.php');
-require_once("class.session_handler.php");
 require_once('helper/checkJournal_session.php');
-require_once('functions.php');
+
+Session::check();
 
 if(!empty($_REQUEST['unblockIp'])) {
 	$sql="DELETE FROM " . BLOCKED_IP . " WHERE ipv4='" . $_REQUEST['unblockIp'] . "';";

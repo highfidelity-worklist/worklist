@@ -1,7 +1,6 @@
 <?php
     // removed with job #18739
     // include("userstats-table.inc");
-    require_once 'countrylist.php'; // Get country and country url list
     // Google Maps search Base URL
     $gMapSearch = "http://maps.google.com/maps?q=";
     // CIA.gov Base URL
@@ -49,9 +48,9 @@
                 <li><a href="#tabs-3">Runner</a></li>
             <?php } ?>
             <li><a href="#tabs-4">Sandbox</a></li>
-            <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
+            <li><a href="api.php?action=userNotes&method=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
-            <li><a href="budgetHistory.php?inDiv=tabs&id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>" id="tabBudgetHistory">Budget History</a></li>
+            <li><a href="api.php?action=budgetHistory&inDiv=tabs&id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>" id="tabBudgetHistory">Budget History</a></li>
         </ul>
     <?php } else {?>
         <ul>
@@ -60,10 +59,10 @@
                 <li><a href="#tabs-3">Runner</a></li>
             <?php } ?>            
             <?php if ($reqUserId > 0): ?>
-            <li><a href="userNotes.php?action=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
+            <li><a href="api.php?action=userNotes&method=getNote&userId=<?php echo $user->getId(); ?>">My Notes</a></li>
             <?php endif; ?>
             <li><a href="chatHistory.php?action=getLatestForNickname&nickname=<?php echo urlencode($user->getNickname()); ?>&num=100&<?php echo time(); ?>">Chat History</a></li>
-            <li><a href="budgetHistory.php?inDiv=tabs&id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>">Budget History</a></li>
+            <li><a href="api.php?action=budgetHistory&inDiv=tabs&id=<?php echo urlencode($user->getId()); ?>&num=100&<?php echo time(); ?>">Budget History</a></li>
         </ul>
         <input type="hidden" name="userid" id="userid" value="<?php echo $user->getId(); ?>" />
     <?php } ?>

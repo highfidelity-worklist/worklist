@@ -9,13 +9,8 @@
  */
 
 require_once ("config.php");
-require_once ("class.session_handler.php");
-require_once ("send_email.php");
-require_once ("timezones.php");
-require_once ("countrylist.php");
-require_once ("smslist.php");
-require_once ("classes/Notification.class.php");
-require_once ("functions.php");
+
+Session::check();
 
 $signup = true;
 $phone = $country = $provider = $authtype = "";
@@ -191,11 +186,11 @@ if (!empty($_GET['authtype']) && $_GET['authtype'] == 'openid') {
 
 /*********************************** HTML layout begins here  *************************************/
 
-include("head.html");
+include("head.php");
 include("opengraphmeta.php");
 ?>
 
-<!-- Add page-specific scripts and styles here, see head.html for global scripts and styles  -->
+<!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 
 <link href="css/worklist.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/sendlove.js"></script>
