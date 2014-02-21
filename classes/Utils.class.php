@@ -46,8 +46,6 @@ class Utils{
         // date will be checked against db in initUserById
         $_SESSION['last_seen'] = date('Y-m-d');
     }
-
-
     
     public static function getVersion() {
         if (file_exists(dirname(dirname(__FILE__)) . '/version.txt')) {

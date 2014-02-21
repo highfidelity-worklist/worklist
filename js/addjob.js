@@ -233,7 +233,7 @@ $(function() {
                 if (json.error) {
                     alert(json.error);
                 } else {
-                    location.href = 'workitem.php?job_id=' + json.workitem;
+                    location.href = 'job/' + json.workitem;
                 }
             }
         });

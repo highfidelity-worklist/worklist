@@ -1,20 +1,22 @@
 <?php
-//  vim:ts=4:et
-
-//  Copyright (c) 2009-2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
 
 function worklist_autoloader($class) {
-    $file = realpath(dirname(__FILE__) . '/classes') . "/$class.class.php";
+    if ($class != 'View' && substr($class, -4) == 'View') {
+        $fileName = strtolower(substr($class, 0, -4));
+        $file = VIEWS_DIR . DIRECTORY_SEPARATOR . $fileName . '.php';
+    } else if ($class != 'Controller' && substr($class, -10) == 'Controller') {
+        $fileName = strtolower(substr($class, 0, -10));
+        $file = CONTROLLERS_DIR . DIRECTORY_SEPARATOR . $fileName . '.php';
+    } else {
+        $file = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'classes') . 
+            DIRECTORY_SEPARATOR . "$class.class.php";
+    }
     if (file_exists($file)) {
         require_once($file);
     }
 }
 
 spl_autoload_register('worklist_autoloader');
-
-include_once('chat.class.php');
 
 /**
  * Timezones functions
@@ -92,14 +94,6 @@ function convertTimeZoneToLocalTime($timeoffset, $short) {
 
     return $LocalTime;      
 }
-
-/* Fee Categories
- *
- * The cannonical list of recognized fees.
- * For popup-addfee.inc (and other places)
- */
-$feeCategories = array(
-       'Bid', 'Code Review', 'Design Spec', 'Misc Expense', 'Management Fee');
 
 function checkReferer() {
     $len = strlen(SERVER_NAME);
@@ -452,9 +446,11 @@ function convertTimezone($timestamp){
  *
  *  Parameters:     itemid - id of the worklist entry
  *              fee_amount - amount of the fee
- *            fee_category - accounting category for the fee (Refer to $feeCategory for canonical list)
+ *            fee_category - accounting category for the fee (Refer to below list)
  *                fee_desc - description of the fee entry
  *             mechanic_id - userid of the mechanic
+ *
+ * Fee Categories: Bid, Code Review, Design Spec, Misc Expense, Management Fee
  *
  */
 function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder=0)
@@ -775,7 +771,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $txtbody = $body;
         
         // Continue adding text to email body
-        $item_link = SERVER_URL."workitem.php?job_id={$bid->worklist_id}&action=view";
+        $item_link = SERVER_URL."job/{$bid->worklist_id}";
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
         if (!send_email($recipient->username, $subject, $body)) { error_log("withdrawBid: send_email failed"); }
@@ -997,202 +993,203 @@ function checkLogin() {
         exit;
     }
 }
-    /* linkify function
-     *
-     * this takes some input and makes links where it thinks they should go
-     *
-     */
-    function linkify($url, $author = null, $bot = false, $process = true)
-    {
-        $original = $url;
-        
-        if(!$process) {
-            if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
-                $url = utf8_encode($url);
-            }
-            return '<a href="http://' . htmlentities($url, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($url) . '</a>';
-        }
 
-        $class = '';
-        if(strpos($url, "helper/get_attachment.php") > 0)
-        {
-            $bot = true;
-            $class=' class="attachment noicon"';
-        } else {
-            $class='';
-        }
-        $url = html_entity_decode($url, ENT_QUOTES);
-        if (preg_match("/\<a href=\"([^\"]*)\"/i", $url) == 0) {
-            // modified this so that it will exclude certain characters from the end of the url
-            // add to this as you see fit as I assume the list is not exhaustive
-            $regexp="/((?:(?:ht|f)tps?\:\/\/|www\.)\S+[^\s\.\)\"\'])/i";
-            $url=  preg_replace($regexp, DELIMITER . '<a href="$0"' . $class . '>$0</a>' . DELIMITER, $url);
-
-            $regexp="/href=\"(www\.\S+?)\"/i";
-            $url = preg_replace($regexp,'href="http://$1"', $url);
-        }
-
-        $regexp="/(href=)(.)?((www\.)\S+(\.)\S+)/i";
-        $url = preg_replace($regexp,'href="http://$3"', $url);
-
-        // Replace '#<number>' with a link to the worklist item with the same number
-        $regexp = "/\#([1-9][0-9]{4})(\s|[^0-9a-z]|$)/i";
-        if (!function_exists('workitemLinkPregReplaceCallback')) {
-            /**
-             * Checks whether a #<number> string should be taken as a workitem link or not.
-             * This function is used as a callback with preg_replace_callback (see below lines)
-             */
-            function workitemLinkPregReplaceCallback($matches) {
-                $job_id = (int) $matches[1];
-                if ($job_id < 99999 && WorkItem::idExists($job_id)) {
-                    return
-                        DELIMITER . 
-                        '<a href="' . WORKLIST_URL . 'workitem.php?job_id=' . $job_id . '&action=view"' . 
-                        ' class="worklist-item" id="worklist-' . $job_id . '" >#' . $job_id . '</a>' . 
-                        DELIMITER . $matches[2];
-                } else {
-                    return $matches[0];
-                }
-            }
-        }
-        $url = preg_replace_callback($regexp,  'workitemLinkPregReplaceCallback', $url);
-
-        // Replace '##<projectName>##' with a link to the worklist project with the same name
-        // This is used in situations where the project name has a space or spaces or no space
-        $regexp = "/\#\#([A-Za-z0-9_ ]+)\#\#/";
-        $link = DELIMITER . '<a href="' . WORKLIST_URL . '$1">$1</a>' . DELIMITER;
-        $url = preg_replace($regexp,  $link, $url);
-        
-        // Replace '##<projectName>' with a link to the worklist project with the same name
-        // This is used in situations where the first space encountered is assumed to
-        // be the end of the project name. Left mainly for backward compatibility.
-        $regexp = "/\#\#([A-Za-z0-9_]+)/";
-        $link = DELIMITER . '<a href="' . WORKLIST_URL . '$1">$1</a>' . DELIMITER;
-        $url = preg_replace($regexp,  $link, $url);
-
-        // Replace '#<nick>/<url>' with a link to the author sandbox
-        $regexp="/\#([A-Za-z]+)\/(\S*)/i";
-        $url = preg_replace(
-            $regexp, DELIMITER . 
-            '<a href="https://' . SANDBOX_SERVER . '/~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
-            $url
-        );
-        
-		// Replace '<repo> v####' with a link to the SVN server
-        $regexp = '/([a-zA-Z0-9]+)\s[v]([0-9_]+)/i';
-        $link = DELIMITER . '<a href="' . SVN_REV_URL . '$1&rev=$2">$1 v$2</a>' . DELIMITER;
-        $url = preg_replace($regexp,  $link, $url);
-		
-        // Replace '#/<url>' with a link to the author sandbox
-        $regexp="/\#\/(\S*)/i";
-        if (strpos(SERVER_BASE, '~') === false) {
-            $url = preg_replace(
-                $regexp, DELIMITER . 
-                '<a href="' . SERVER_BASE . '~' . $author . '/$1" class="sandbox-item" id="sandbox-$1">'.$author.' : $1</a>' . DELIMITER,
-                $url
-            );
-        } else { // link on a sand box :
-            $url = preg_replace(
-                $regexp, DELIMITER . 
-                '<a href="' . SERVER_BASE . '/../~' . $author . '/$1" class="sandbox-item" id="sandbox-$1" >'.$author.' : $1</a>' . DELIMITER,
-                $url
-            );
-        }
-
-        $regexp="/\b(?<=mailto:)([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
-        if(preg_match($regexp,$url)){
-            $regexp="/\b(mailto:)(?=([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))/i";
-            $url=preg_replace($regexp,"",$url);
-        }
-
-        $regexp = "/\b([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
-        $url = preg_replace($regexp, DELIMITER . '<a href="mailto:$0">$0</a>' . DELIMITER, $url);
-
-        // find anything that looks like a link and add target=_blank so it will open in a new window
-        $url = htmlspecialchars_decode($url);
-
-        $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
+/* linkify function
+ *
+ * this takes some input and makes links where it thinks they should go
+ *
+ */
+function linkify($url, $author = null, $bot = false, $process = true)
+{
+    $original = $url;
+    
+    if(!$process) {
         if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
             $url = utf8_encode($url);
         }
-        if (!$bot) {
-            $url = htmlentities($url, ENT_QUOTES, "UTF-8");
-        }
-        $url = nl2br($url);
-        $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
-        $url = preg_replace_callback($reg, 'decodeDelimitedLinks', $url);
-        return $url;
+        return '<a href="http://' . htmlentities($url, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($url) . '</a>';
     }
 
-    /**
-     * Auxiliar function to help decode anchors in linkify function
-     */
-    function decodeDelimitedLinks($matches) {
-        $result = preg_replace('/' . DELIMITER . '/', '', $matches[0]);
-        return html_entity_decode($result, ENT_QUOTES);
+    $class = '';
+    if(strpos($url, "helper/get_attachment.php") > 0)
+    {
+        $bot = true;
+        $class=' class="attachment noicon"';
+    } else {
+        $class='';
+    }
+    $url = html_entity_decode($url, ENT_QUOTES);
+    if (preg_match("/\<a href=\"([^\"]*)\"/i", $url) == 0) {
+        // modified this so that it will exclude certain characters from the end of the url
+        // add to this as you see fit as I assume the list is not exhaustive
+        $regexp="/((?:(?:ht|f)tps?\:\/\/|www\.)\S+[^\s\.\)\"\'])/i";
+        $url=  preg_replace($regexp, DELIMITER . '<a href="$0"' . $class . '>$0</a>' . DELIMITER, $url);
+
+        $regexp="/href=\"(www\.\S+?)\"/i";
+        $url = preg_replace($regexp,'href="http://$1"', $url);
     }
 
-    /**
-     * Return a trimmed version of the nickname
-     */
-    function getSubNickname($nickname, $length = 18) {
-        if (strlen($nickname) > $length) {
-            return substr($nickname, 0, $length) . '...';
-        } else {
-            return $nickname;
+    $regexp="/(href=)(.)?((www\.)\S+(\.)\S+)/i";
+    $url = preg_replace($regexp,'href="http://$3"', $url);
+
+    // Replace '#<number>' with a link to the worklist item with the same number
+    $regexp = "/\#([1-9][0-9]{4})(\s|[^0-9a-z]|$)/i";
+    if (!function_exists('workitemLinkPregReplaceCallback')) {
+        /**
+         * Checks whether a #<number> string should be taken as a workitem link or not.
+         * This function is used as a callback with preg_replace_callback (see below lines)
+         */
+        function workitemLinkPregReplaceCallback($matches) {
+            $job_id = (int) $matches[1];
+            if ($job_id < 99999 && WorkItem::idExists($job_id)) {
+                return
+                    DELIMITER . 
+                    '<a href="' . WORKLIST_URL . 'job/' . $job_id . '"' . 
+                    ' class="worklist-item" id="worklist-' . $job_id . '" >#' . $job_id . '</a>' . 
+                    DELIMITER . $matches[2];
+            } else {
+                return $matches[0];
+            }
         }
+    }
+    $url = preg_replace_callback($regexp,  'workitemLinkPregReplaceCallback', $url);
+
+    // Replace '##<projectName>##' with a link to the worklist project with the same name
+    // This is used in situations where the project name has a space or spaces or no space
+    $regexp = "/\#\#([A-Za-z0-9_ ]+)\#\#/";
+    $link = DELIMITER . '<a href="' . WORKLIST_URL . '$1">$1</a>' . DELIMITER;
+    $url = preg_replace($regexp,  $link, $url);
+    
+    // Replace '##<projectName>' with a link to the worklist project with the same name
+    // This is used in situations where the first space encountered is assumed to
+    // be the end of the project name. Left mainly for backward compatibility.
+    $regexp = "/\#\#([A-Za-z0-9_]+)/";
+    $link = DELIMITER . '<a href="' . WORKLIST_URL . '$1">$1</a>' . DELIMITER;
+    $url = preg_replace($regexp,  $link, $url);
+
+    // Replace '#<nick>/<url>' with a link to the author sandbox
+    $regexp="/\#([A-Za-z]+)\/(\S*)/i";
+    $url = preg_replace(
+        $regexp, DELIMITER . 
+        '<a href="https://' . SANDBOX_SERVER . '/~$1/$2" class="sandbox-item" id="sandbox-$1">$1 : $2</a>' . DELIMITER,
+        $url
+    );
+    
+	// Replace '<repo> v####' with a link to the SVN server
+    $regexp = '/([a-zA-Z0-9]+)\s[v]([0-9_]+)/i';
+    $link = DELIMITER . '<a href="' . SVN_REV_URL . '$1&rev=$2">$1 v$2</a>' . DELIMITER;
+    $url = preg_replace($regexp,  $link, $url);
+	
+    // Replace '#/<url>' with a link to the author sandbox
+    $regexp="/\#\/(\S*)/i";
+    if (strpos(SERVER_BASE, '~') === false) {
+        $url = preg_replace(
+            $regexp, DELIMITER . 
+            '<a href="' . SERVER_BASE . '~' . $author . '/$1" class="sandbox-item" id="sandbox-$1">'.$author.' : $1</a>' . DELIMITER,
+            $url
+        );
+    } else { // link on a sand box :
+        $url = preg_replace(
+            $regexp, DELIMITER . 
+            '<a href="' . SERVER_BASE . '/../~' . $author . '/$1" class="sandbox-item" id="sandbox-$1" >'.$author.' : $1</a>' . DELIMITER,
+            $url
+        );
     }
 
-    function getProjectList() {
-        $query = "SELECT * FROM `".PROJECTS."` WHERE active=1";
-        $query = mysql_query($query);
-        $projects = array();
-        $i = 0;
-        while ($project = mysql_fetch_array($query)) {
-            $projects[$i]['name'] = $project['name'];
-            $projects[$i]['id']   = $project['project_id'];
-            $projects[$i]['repo'] = $project['repository'];
-            $i++;
-        }
-        return $projects;
+    $regexp="/\b(?<=mailto:)([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
+    if(preg_match($regexp,$url)){
+        $regexp="/\b(mailto:)(?=([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))/i";
+        $url=preg_replace($regexp,"",$url);
     }
+
+    $regexp = "/\b([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
+    $url = preg_replace($regexp, DELIMITER . '<a href="mailto:$0">$0</a>' . DELIMITER, $url);
+
+    // find anything that looks like a link and add target=_blank so it will open in a new window
+    $url = htmlspecialchars_decode($url);
+
+    $url = preg_replace("/<a\s+href=\"/", "<a target=\"_blank\" href=\"" , $url);
+    if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
+        $url = utf8_encode($url);
+    }
+    if (!$bot) {
+        $url = htmlentities($url, ENT_QUOTES, "UTF-8");
+    }
+    $url = nl2br($url);
+    $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
+    $url = preg_replace_callback($reg, 'decodeDelimitedLinks', $url);
+    return $url;
+}
+
+/**
+ * Auxiliar function to help decode anchors in linkify function
+ */
+function decodeDelimitedLinks($matches) {
+    $result = preg_replace('/' . DELIMITER . '/', '', $matches[0]);
+    return html_entity_decode($result, ENT_QUOTES);
+}
+
+/**
+ * Return a trimmed version of the nickname
+ */
+function getSubNickname($nickname, $length = 18) {
+    if (strlen($nickname) > $length) {
+        return substr($nickname, 0, $length) . '...';
+    } else {
+        return $nickname;
+    }
+}
+
+function getProjectList() {
+    $query = "SELECT * FROM `".PROJECTS."` WHERE active=1";
+    $query = mysql_query($query);
+    $projects = array();
+    $i = 0;
+    while ($project = mysql_fetch_array($query)) {
+        $projects[$i]['name'] = $project['name'];
+        $projects[$i]['id']   = $project['project_id'];
+        $projects[$i]['repo'] = $project['repository'];
+        $i++;
+    }
+    return $projects;
+}
 
 /* This function is used to add <br/> to encoded strings
  */
-    function replaceEncodedNewLinesWithBr($string) {
-        $string =  str_replace('&#13;&#10;', '<br/>', $string);
-        return str_replace('&#10;', '<br/>', $string);
-    }
+function replaceEncodedNewLinesWithBr($string) {
+    $string =  str_replace('&#13;&#10;', '<br/>', $string);
+    return str_replace('&#10;', '<br/>', $string);
+}
+
+/* outputForJS
+*
+* Pass a variable and it'll check that it's not null so empty numeric/date vars don't error
+* Returns either an empty quotes string or the variable
+* takes an optional second param as an alternative replacement
+*/
+function outputForJS($var, $rep = "''") {
+    return (is_null($var) || empty($var)) ? $rep : $var;
+}
+
+function isSpammer($ip) {
+    $sql = 'SELECT `ipv4` FROM `' . BLOCKED_IP . '` WHERE (`blocktime` + `duration`) > UNIX_TIMESTAMP(NOW());';
+    $result = mysql_query($sql);
     
-    /* outputForJS
-    *
-    * Pass a variable and it'll check that it's not null so empty numeric/date vars don't error
-    * Returns either an empty quotes string or the variable
-    * takes an optional second param as an alternative replacement
-    */
-    function outputForJS($var, $rep = "''") {
-        return (is_null($var) || empty($var)) ? $rep : $var;
-    }
-    
-    function isSpammer($ip) {
-        $sql = 'SELECT `ipv4` FROM `' . BLOCKED_IP . '` WHERE (`blocktime` + `duration`) > UNIX_TIMESTAMP(NOW());';
-        $result = mysql_query($sql);
-        
-        if ($result && (mysql_num_rows($result) > 0)) {
-            while ($row = mysql_fetch_array($result)) {
-                if ($row['ipv4'] == $ip) {
-                    return true;
-                }
+    if ($result && (mysql_num_rows($result) > 0)) {
+        while ($row = mysql_fetch_array($result)) {
+            if ($row['ipv4'] == $ip) {
+                return true;
             }
         }
-        return false;
     }
+    return false;
+}
 
 function sendReviewNotification($reviewee_id, $type, $oReview) {
     $review = $oReview[0]['feeRange'] . " " . $oReview[0]['review'];
     $reviewee = new User();
     $reviewee->findUserById($reviewee_id);
-    $worklist_link = SERVER_URL . "worklist.php";
+    $worklist_link = SERVER_URL . "jobs";
     
     $to = $reviewee->getNickname() . ' <' . $reviewee->getUsername() . '>';
     $body  = "<p>" . $review . "</p>";
@@ -1207,7 +1204,7 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
         $body  .= '<p>You have received a review from one of your peers in the Worklist.</p><br />';
         $body  .= '<p>To see your current user reviews, click <a href="' . $userinfo_link . '">here</a>.</p>';
         $body  .= '<p><a href="' . $userinfo_link . '">' . $userinfo_link . '</a></p><br />';
-        $body  .= '<p><a href="' . SERVER_URL . '"worklist.php>worklist' . '</a></p>';
+        $body  .= '<p><a href="' . SERVER_URL . '"jobs>worklist' . '</a></p>';
     } else if ($type == "update") {
         $subject = "A review of you has been updated";
         $journal = "A review of " . $nickname . " has been updated: ". $review;
@@ -1684,60 +1681,3 @@ function templateReplace($templateData, $replacements){
 
     return $templateData;
 }
-
-
-/************************
-*   Worklist tooltips   *
-************************/
-$tooltip = json_encode(array(
-    /* List page top tooltips       */
-    
-    'menuWorklist'  => 'Explore jobs or add new ones.',
-    'menuJournal'   => 'Chat',
-    'menuLove'      => 'Show appreciation for cool things people have done',
-    'menuRewarder'  => 'Give earned points/money to other teammates.',
-    'menuReports'   => 'Audit all the work and money flow.',
-    'jobsBidding'   => 'See more stats on jobs and team members.',
-    
-    
-    /* List's list tooltips         */
-    'hoverJobRow'   => 'View, edit, or make a bid on this job.',
-    
-
-    /* Item tooltips                */ 
-    
-        'cR'            => 'Start a code review on this job.',
-        'endCr'         => 'End a code review on this job.',
-        'cRDisallowed'  => 'You are not authorized to Code Review this job.',
-        'cRSetToFunctional'=> 'Set this job to Functional then to Review to enable Code Review.',
-        'endCrDisallowed' => 'You are not authorized to End Code Review on this job',
-        'addFee'       => 'Add a fee you would like to be paid for work done on this job.',
-        'addBid'        => 'Make an offer to do this job.',
-        'changeSBurl'   => 'Click to change your sandbox url.',
-    
-    /* Budget Info tooltips         */
-
-    'budgetRemaining1' => 'Funds still available to use towards jobs for all my budgets',
-    'budgetAllocated1' => 'Funds linked to fees in active jobs (Working, Functional, Review, Completed) for all my budgets',
-    'budgetSubmitted1' => 'Funds linked to fees in Done\'d jobs that are not yet paid for all my budgets',
-    'budgetPaid1'      => 'Funds linked to fees that have been Paid through system for all my budgets',
-    'budgetTransfered1'  => 'Funds granted to others via giving budget for all my budgets',
-    'budgetManaged1'  => 'Total amount of budget funds granted to me since joining Worklist',
-    
-    /* Update Budget Info tooltips         */
-    'budgetSave' => 'Save changes made to title or notes',
-    'budgetClose' => 'Reconcile &amp; close this open budget',
-    'budgetRemaining2' => 'Funds still available to use towards jobs',
-    'budgetAllocated2' => 'Funds linked to fees in active jobs (Working, Functional, Review, Completed)',
-    'budgetSubmitted2' => 'Funds linked to fees in Done\'d jobs that are not yet paid',
-    'budgetPaid2'      => 'Funds linked to fees that have been Paid through system',
-    'budgetTransfered2'  => 'Funds granted to others via giving budget',
-    
-    /* Add Job tooltips             */
-    'enterAmount'     =>  'Enter the amount you want to be paid if this job is accepted and done.',
-    'enterNotes'      =>  'Enter detailed code review info in Comments Section.',
-    'enterCrAmount'   =>  'Recommended review fee based on project settings.',
-
-    /* Add Project tooltips             */
-    'addProj' => 'Add a new project to the Worklist.'
-));

@@ -155,6 +155,10 @@ class Comment
 		return $this->date;
 	}
 
+    public function getRelativeDate() {
+        return relativeTime(strtotime($this->date) - time());
+    }
+
 	/**
 	 * @param $date the $date to set
 	 */
@@ -171,6 +175,10 @@ class Comment
 	{
 		return $this->comment;
 	}
+
+    public function getCommentWithLinks() {
+        return linkify($this->comment);
+    }
 
 	/**
 	 * @param $comment the $comment to set

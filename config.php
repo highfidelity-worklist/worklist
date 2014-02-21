@@ -1276,6 +1276,28 @@ $timezoneTable = array(
     "+1200" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka"
 );
 
-require_once('functions.php');
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
 
+defineOnce('VIEWS_DIR', dirname(__FILE__) . '/views');
+defineOnce('CONTROLLERS_DIR', dirname(__FILE__) . '/controllers');
+defineOnce('MUSTACHE_DIR', VIEWS_DIR . '/mustache');
+defineOnce('TEMP_DIR', dirname(__FILE__) . '/tmp');
+defineOnce('CACHE_DIR', TEMP_DIR . '/cache');
+
+defineOnce('DEFAULT_CONTROLLER_NAME', 'Home');
+defineOnce('DEFAULT_CONTROLLER_METHOD', 'run');
+
+require_once('vendor/autoload.php');
+require_once('functions.php');
 Sanitize::filterInput();
+
+function shutdown() {
+    foreach (get_declared_classes() as $class) {
+        if ($class == 'Dispatcher') {
+            $controller = new $class();
+            $controller->run();
+            break;
+        }
+    }
+}
+register_shutdown_function('shutdown');

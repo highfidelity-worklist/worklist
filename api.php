@@ -13,7 +13,6 @@ require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 require_once ("models/Budget.php");
-require_once ("lib/Agency/Worklist/Filter.php");
 
 Session::check();
 
@@ -43,9 +42,6 @@ if(validateAction()) {
                 break;
             case 'getTaskPosts':
                 getTaskPosts();
-                break;
-            case 'getLatestForNickname':
-                getLatestForNickname();
                 break;
             case 'uploadProfilePicture':
                 uploadProfilePicture();
@@ -293,30 +289,6 @@ function validateAPIKey() {
     } else {
         return true;
     }
-}
-
-// Created for Worklist Job #13424 [danbrown]
-function getLatestForNickname() {
-
-    // If we haven't specified the nickname, break out.
-    if (!isset($_REQUEST['nickname'])) return false;
-
-    // If we haven't specified the number of posts to return, or if it exceeds 100 or is less than one, default to 20.
-    if (!isset($_REQUEST['num']) || !is_numeric($_REQUEST['num']) || $_REQUEST['num'] < 1 || $_REQUEST['num'] > 100) {
-        $_REQUEST['num'] = 20;
-    }
-
-    require_once('chat.class.php');
-
-    $response = new AjaxResponse($chat);
-
-    try {
-                $data = $response->latestForNickname($_REQUEST['nickname'],round($_REQUEST['num']));
-    } catch (Exception $e) {
-        $data['error'] = $e->getMessage();
-    }
-
-    echo $data['html'];
 }
 
 /*
@@ -1407,7 +1379,7 @@ function setFavorite() {
             $favorite_user->findUserById($favorite_user_id);
             if ($newVal == 1) {
                                     
-                $resetUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $favorite_user_id ;
+                $resetUrl = SECURE_SERVER_URL . 'jobs#userid=' . $favorite_user_id ;
                 $resetUrl = '<a href="' . $resetUrl . '" title="Your profile">' . $resetUrl . '</a>';
                 $data = array();
                 $data['link'] = $resetUrl;
@@ -3129,7 +3101,7 @@ function payCheck() {
 
             $subject = "Worklist.net paid you " . $total_fee_pay ." for ". $summary;
             $body  = "Your Fee was marked paid.<br/>";
-            $body .= "Job <a href='" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . "</a>: <a href='" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "</a><br/>";
+            $body .= "Job <a href='" . SERVER_URL . "job/" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . "</a>: <a href='" . SERVER_URL . "job/" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . "job/" . $fee_pay['worklist_id'] . "</a><br/>";
             $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
             $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
             $body .= "Contact the job Runner with any questions<br/><br/>Worklist.net<br/>";
@@ -3225,7 +3197,7 @@ function pingTask() {
         if ($send_mail && $who != 'bidder') {
             $mail_subject = $nickname." sent you a ping for item #".$item_id;
             $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
-            $mail_msg .= "<a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a>";
+            $mail_msg .= "<a href='" . WORKLIST_URL . "job/" . $item_id . "?action=view'>#" . $item_id . "</a>";
             $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
             $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
             if ($send_cc) {
@@ -3251,7 +3223,7 @@ function pingTask() {
             $mail_msg .= "<p>Your bid info:</p>";
             $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";
             $mail_msg .= "<p>Notes: " . $bid_info['notes'] . "</p>";
-            $mail_msg .= "<p>You can view the job here. <a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a></p>";
+            $mail_msg .= "<p>You can view the job here. <a href='" . WORKLIST_URL . "job/" . $item_id . "?action=view'>#" . $item_id . "</a></p>";
             $mail_msg .= "<p><a href=\"www.worklist.net\">www.worklist.net</a></p>";
             $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', '
                 X-tag' => 'ping, task', 

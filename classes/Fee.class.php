@@ -138,7 +138,7 @@ class Fee
                     $c++;
                     $output .= '
                     <tr>
-                      <td><a href="workitem.php?job_id='.$row->task.'">'.$row->task.'</a></td>
+                      <td><a href="job/'.$row->task.'">'.$row->task.'</a></td>
                       <td style="color: #6F6F6F; font-weight:bold;">$'.$row->amount.'</td>
                     </tr>
                     ';
@@ -182,7 +182,7 @@ class Fee
                     $c++;
                     $output .= '
                     <tr>
-                      <td><a href="workitem.php?job_id='.$row->task.'">'.$row->task.'</a></td>
+                      <td><a href="job/'.$row->task.'">'.$row->task.'</a></td>
                       <td style="color: #6F6F6F; font-weight:bold;">$'.$row->amount.'</td>
                     </tr>
                     ';

@@ -103,7 +103,7 @@
 
 #projectPopupActiveBox {
     border-radius: 0 0 5px 5px;
-    margin-top: -5px;
+    top: 270px !important;
 }
 
 #project,

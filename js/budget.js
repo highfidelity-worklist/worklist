@@ -304,7 +304,6 @@ var Budget = {
                             inDiv: "tabs", 
                             id: $('#budget-receiver').val()
                         });
-                        window.top.$('#user-info').data("budget_update_done", true);
                      } else {
                         alert(json.message);
                     }
@@ -370,12 +369,7 @@ var Budget = {
         $('#budgetPopup').dialog('close');
         window.open('userinfo.php?id=' + user_id + '&tab=tabBudgetHistory', '_blank');
     },
-    
-    displayHistoryFromParent: function(user_id) {
-        window.parent.$('#user-info').dialog('close');
-        window.parent.open('userinfo.php?id=' + user_id + '&tab=tabBudgetHistory', '_blank');
-    },
-    
+        
     /**
     * Show a dialog with expanded info on the selected @section
     * Sections:
@@ -565,7 +559,7 @@ var Budget = {
                     $('#table-budget-transferred').append(row);
 
                 } else {
-                    var link = '<a href="workitem.php?job_id=' + data[i].id + '&method=view" target="_blank">';
+                    var link = '<a href="job/' + data[i].id + '" target="_blank">';
                     // Separate "who" names into an array so we can add the userinfo for each one
                     var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
                     var who_link = '';

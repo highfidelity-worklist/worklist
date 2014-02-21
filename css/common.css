@@ -449,6 +449,215 @@ input[type=text], input[type=password], textarea {
     display: none;
 }
 
+#searchbar .input_box {
+    border: 0 none;
+    display: inline-block;
+    margin: 0 0 0 10px;
+    padding: 2px;
+    top: 10px;
+    width: 220px;
+}
+#searchbar .input_box input {
+    border: 0 none;
+    color: #2C3549;
+    font-size: 13px;
+    margin: 0;
+    padding: 4px;
+    width: 130px;
+    position: relative;
+    top: -10px;
+    background: none repeat scroll 0 0 transparent !important;
+}
+#searchbar .input_box form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+#searchbar .input_box input[type="text"]:active,
+#searchbar .input_box input[type="text"]:hover,
+#searchbar .input_box input[type="text"]:focus {
+    border:medium none;
+}
+#searchbar .searchIcon {
+    position: relative; 
+    top: -3px;
+}
+
+#searchbar #query {
+    width: 165px;
+    font-size: 13pt;
+}
+
+#searchbar .crossSearch {
+    left: 197px;
+}
+
+#searchbar {
+    position: relative;
+    float: right;
+    width: 100%;
+    margin-bottom: 7px;
+    background-color: #e1e8ea;
+}
+
+#searchbar *, 
+.table-worklist * {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.table-worklist tr td:first-child {
+  padding-left: 10px;
+}
+
+#searchForm > div {
+    float: left;
+    height: 70px;
+    padding: 0;
+}
+
+#searchForm #buttons {
+    float: right;
+    margin-left: 2px;
+    width: 110px;
+    position: relative;
+    border-left: 2px solid #fff;
+}
+
+#projectFilter label,
+#userFilter label,
+#jobStatusFilter label {
+    display: block;
+    text-align: left;
+    height: 15px;
+    margin: 1px 0 2px 3px;
+    color: #646464;
+    font-size: 9pt;
+}
+
+#projectFilter,
+#userFilter,
+#jobStatusFilter {
+    padding-top: 12px;
+    display: inline-block;
+}
+
+#projectFilter {
+    width: 193px;
+}
+
+#userFilter {
+    width: 152px;
+}
+
+#jobStatusFilter {
+    width: 183px;
+}
+
+#searchForm .ui-combobox-list {
+    margin-left: 2px;
+    margin-top: 0 !important;
+    left: -3px !important;
+    max-height: 250px;
+    top: 28px;
+}
+
+#projectFilter .ui-combobox-list {
+    width: 182px !important;
+}
+
+#userFilter .ui-combobox-list {
+    width: 142px !important;
+}
+
+#jobStatusFilter .ui-combobox-list {
+    width: 169px !important;
+}
+
+#searchForm .ui-combobox-list li {
+    overflow: hidden;
+}
+
+#projectFilter .ui-combobox-list li {
+    width: 180px;
+}
+
+#userFilter .ui-combobox-list li {
+    width: 140px;
+}
+
+#searchForm .ui-combobox-textbox {
+    color: #aa1e00;
+    font-weight: bold;
+    font-size: 11pt !important;
+    position: absolute;
+    top: 5px;
+}
+
+#projectFilter .ui-combobox-textbox {
+    width: 145px !important;
+}
+
+#userFilter .ui-combobox-textbox {
+    width: 105px !important;
+}
+
+#jobStatusFilter .ui-combobox-textbox {
+    width: 132px !important;
+}
+
+#searchForm .ui-combobox { 
+    background: none #ffffff !important;
+    border-radius: 0px !important;
+    height: 30px;
+    padding-top: 3px;
+    position: relative;
+}
+
+#projectFilter .ui-combobox {
+    width: 182px !important;
+}
+
+#userFilter .ui-combobox {
+    width: 142px !important;
+}
+
+#jobStatusFilter .ui-combobox {
+    width: 169px !important;
+}
+
+#searchForm .ui-combobox-list li.ui-state-hover {
+    background-color: #aa1e00;
+    color: #ffffff;
+}
+
+#searchForm .ui-combobox-list li.ui-combobox-list-selected {
+    background-color: #ffffff;
+    color: #646464;
+    font-weight: bold;
+}
+
+#searchForm .ui-state-default .ui-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 7px -725px transparent !important;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 20px;
+    width: 26px;
+}
+
+#searchForm .activeBox {
+    border-radius: 0 0 5px 5px;
+}
+
+#searchForm .activeBox:after {
+    content: "";
+    height: 252px;
+    position: absolute;
+    right: 17px;
+    top: -253px;
+    width: 20px;
+}
+
 input[type=text]:active,
 input[type=text]:hover,
 input[type=text]:focus,
@@ -742,4 +951,254 @@ a#addJobButton:hover {
 
 #openOverlayContainer {
 	border: 5px solid #FF0000 !important;
+}
+
+
+#searchbar .input_box {
+    background-image: none;
+    width: 305px;
+    margin: 0;
+}
+
+#searchbar .searchDiv {
+    display: inline-block;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    margin: 22px -4px 10px 10px;
+    background: #ffffff no-repeat url('../images/primaryIcons-WL.png') 8px -320px;
+    padding-left: 30px;
+    position: relative;
+    width: 255px;
+    height: 34px;
+}
+
+#searchbar #query {
+    background-color: #ffffff;
+    position: absolute;
+    top: 3px;
+    padding: 0;
+    margin: 0;
+    height: 28px;
+    font-weight: bold;
+    border: 0;
+}
+
+#searchbar .crossSearch {
+    background: no-repeat url('../images/primaryIcons-WL.png') 3px -385px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    background-color: #ffffff;
+    position: absolute;
+    top: 4px;
+}
+
+#searchbar .commentsDiv {
+    display: inline-block;
+    border-left: 1px solid #cccccc;
+    height: 35px;
+    width: 60px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#searchbar .comment {
+    background: no-repeat url('../images/primaryIcons-WL.png') 0 -362px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    float: left;
+    padding-right: 5px;
+}
+
+#searchbar .commentsDiv label {
+    top: 6px;
+    left: 7px;
+    position: absolute;
+}
+
+#searchbar #search_comments {
+    width: 20px;
+    float: left;
+    margin-top: 6px;
+    position: static;
+    padding: 0; 
+
+}
+
+#search-filter-wrap-reports {
+    float: right;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+#search-filter-section td {
+    white-space: nowrap;
+}
+
+.filters {
+    display: inline-block;
+}
+
+.filters .ui-combobox {
+    margin: 0 2px;
+}
+
+@media only screen and (max-width: 970px) {
+    #searchbar .input_box {
+        width: 230px;
+    }
+    
+    #searchbar .searchDiv {
+        width: 187px;
+    }
+    
+    #searchbar .crossSearch {
+        left: 129px;
+    }
+    
+    #projectFilter .ui-combobox {
+        width: 137px !important;
+    }
+    
+    #projectFilter .ui-combobox-textbox {
+        width: 110px !important;
+    }
+    
+    #projectFilter .ui-combobox-list {
+        width: 147px !important;
+    }
+    
+    #projectFilter .ui-combobox-list li {
+        width: 120px;
+    }
+    
+    #projectFilter {
+        width: 153px;
+    }
+    
+    #searchForm > .filters > div > label {
+        display: none;
+    }
+    
+    #searchForm > .filters > div > .ui-combobox {
+        margin-top: 18px;
+    }
+    
+    #jobStatusFilter .ui-combobox {
+        width: 139px !important;
+    }
+    
+    #jobStatusFilter .ui-combobox-textbox {
+        width: 112px !important;
+    }
+    
+    #jobStatusFilter .ui-combobox-list {
+        width: 149px !important;
+    }
+    
+    #jobStatusFilter {
+        width: 156px;
+    }
+        
+    #userFilter {
+        display: none;
+    }
+    
+    a#addJobButton {
+        margin-left: 5px;
+    }
+    
+    .taskSummary {
+        width: 415px;
+    }
+
+    .who-col,
+    .age-col, 
+    .comments-col {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    .taskSummary {
+        width: 415px;
+    }
+
+    #center {
+        margin: 10px;
+        overflow: hidden;
+    }
+
+    #searchbar {
+        width: 100%;
+        background-color: #E1E8EA;
+    }
+
+    #searchbar .input_box {
+        width: auto;
+    }
+
+    #searchbar #search_comments {
+        margin-top: 3px;
+    }
+
+    #searchbar .searchDiv {
+        margin: 17px 10px;
+        background-image: none;
+        padding-left: 5px;
+    }
+
+    #searchForm div > p {
+        margin: 0;
+    }
+
+    #searchbar #search_reset {
+        display: none;
+    }
+
+    #searchForm #buttons {
+        width: auto;
+    }
+
+    a#addJobButton {
+        margin: 20px 5px 7px 5px;
+    }
+
+    .project-col, 
+    .status-col, 
+    .who-col, 
+    .age-col, 
+    .comments-col, 
+    .filters {
+        display: none;
+    }
+
+    #tooltip[style] {
+        left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .taskSummary {
+        width: 275px;
+    }
+
+    #center {
+        margin: 10px 2px;
+    }
+
+    #searchbar .searchDiv {
+        width: 165px;
+    }
+
+    #searchbar #query {
+        width: 75px;
+    }
+
+    #searchbar #search_reset {
+        left: 83px;
+    }
 }

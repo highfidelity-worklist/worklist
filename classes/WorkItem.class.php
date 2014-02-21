@@ -1,13 +1,5 @@
 <?php
-//  vim:ts=4:et
-/**
- * Workitem
- *
- * @package Workitem
- * @version $Id$
- */
-require_once ("lib/Workitem/Exception.php");
-require_once ("lib/twitteroauth/twitteroauth.php");
+
 /**
  * Workitem
  *

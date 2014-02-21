@@ -33,10 +33,7 @@ define('ATOM_ICON_HTML', '<img alt="rss feed" src="' . SERVER_URL . 'images/atom
 <title>Worklist RSS & Atom Feeds | Lend a Hand</title>
 </head>
 <body>
-<?php
-    require_once('header.php');
-    require_once('format.php');
-?>
+<?php require_once('header.php'); ?>
     <table class="table-worklist" width="100%">
         <thead>
             <tr class="table-hdng">

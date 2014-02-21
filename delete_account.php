@@ -47,10 +47,7 @@ include("head.php");
 </head>
 
 <body>
-<?php
-    require_once('header.php');
-    require_once('format.php');
-?>
+<?php require_once('header.php'); ?>
 <!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
 
 <h1>Delete Account</h1>

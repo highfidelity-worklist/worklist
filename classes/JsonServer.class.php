@@ -863,7 +863,7 @@ class JsonServer
                     $user->findUserById($runner);
                     $founder = new User();
                     $founder->findUserById($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),
@@ -914,7 +914,7 @@ class JsonServer
                     $user->findUserById($codeReviewer);
                     $founder = new User();
                     $founder->findUserById($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),
@@ -971,7 +971,7 @@ class JsonServer
             }
     
             $founder->findUserById($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),
@@ -1026,7 +1026,7 @@ class JsonServer
             }
             
             $founder->findUserById($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),

@@ -1,13 +1,4 @@
 <?php
-/**
- * vim:ts=4:et
- * 
- * Copyright (c) 2013, CoffeeandPower Inc.
- * All Rights Reserved. 
- *
- * http://www.worklist.net
- */
-
 if (!isset($is_runner)) {
     $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
 }
@@ -18,53 +9,46 @@ if (!isset($is_payer)) {
 $userId = getSessionUserId();
 $lovemachineLink = SENDLOVE_URL . '/';
 $linkTarget = '';
-$currentPage = basename($_SERVER['SCRIPT_NAME']); 
+$currentPage = basename($_SERVER['SCRIPT_NAME'], ".php"); 
 ?>
-<!-- Welcome, login/out -->
-        <div id="welcome">
-            <div id="welcomeInside">
-                <div class="leftMenu">
-                    <a href="worklist.php" <?php if ($currentPage == 'journal.php') {?>target="_blank"<?php } ?> ><div class="headerButton worklistBtn">Worklist</div></a>
-                    <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="journal.php" <?php if ($currentPage != 'journal.php') {?>target="_blank"<?php } ?> ><div class="headerButton chatBtn">Chat</div></a>
-                    <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="team.php"><div class="headerButton teamBtn">Team</div></a>
-                    <div class="headerButtonSeparator">&nbsp;</div>
-                    <!--<a href="reports.php"><div class="headerButton reportsBtn">Reports</div></a>
-                    <div class="headerButtonSeparator">&nbsp;</div>-->
-                    <a href="help.php"><div class="headerButton helpBtn">Help</div></a>
-                    <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="projects.php"><div class="headerButton projectsBtn">Projects</div></a>
-                    <div class="headerButtonSeparator">&nbsp;</div>
-                    <a href="<?php echo WIKI_URL ?>"><div class="headerButton wikiBtn">Wiki</div></a>
-                </div>
-                <div class="rightMenu">
-<?php if (isset($_SESSION['username'])) { ?>
-                    <div class="loggedIn">
-                        <a class="headerUserName" href="userinfo.php?id=<?php echo $userId; ?>" target="_blank">
-                            <span id="user" class=''><?php echo $_SESSION['nickname']; ?></span>
-                        </a>
-                        <div class="headerButtonSeparator">&nbsp;</div>&nbsp;
-                        <a href='javascript:;' class='following'><div>Following</div></a>
-                        <div class="headerButtonSeparator">&nbsp;</div>
-                        <a href='javascript:;' class='budget'><div class="headerButton earningsBtn"></div></a>
-                        <div class="headerButtonSeparator">&nbsp;</div>
-                        <a href='settings.php'><div class="headerButton settingsBtn"></div></a>
-                        <div class="headerButtonSeparator">&nbsp;</div>
-                        <a href='logout.php'><div class="headerButton logoutBtn"></div></a>
-                    </div>
-<?php } else { ?>
-                    <div class="loggedOut">
-                        <div class="headerButton loginBtn"><a href='login.php'>Login</a></div>
-                        <div class="headerButtonSeparator">&nbsp;</div>
-                        <div class="headerButton loginBtn bold"><a href='signup.php'>Sign Up</a>
-                    </div>
-                </div>
-<?php
-    }    
-?>
-                <div class="clear"></div>
-            </div>
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="./">Worklist</a>
         </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li <?php echo ($currentPage == 'jobs' ? 'class="active"' : ''); ?>><a href="./jobs">Jobs</a></li>
+                <li <?php echo ($currentPage == 'projects' ? 'class="active"' : ''); ?>><a href="./projects">Projects</a></li>
+                <li <?php echo ($currentPage == 'status' ? 'class="active"' : ''); ?>><a href="./status">Status</a></li>
+                <li <?php echo ($currentPage == 'team' ? 'class="active"' : ''); ?>><a href="./team">Team</a></li>
+                <li <?php echo ($currentPage == 'help' ? 'class="active"' : ''); ?>><a href="./help">Help</a></li>
+            </ul>
+            
+            <ul class="nav navbar-nav navbar-right">
+                <?php if (isset($_SESSION['username'])): ?>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $_SESSION['nickname']; ?> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a class="following" href="#">Jobs I'm Following</a></li>
+                            <li><a class="budget" href="#">My earnings</a></li>
+                            <li><a href="./settings">Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="./logout">Logout</a></li>
+                        </ul>
+                    </li>
+                <?php else: ?>
+                    <li><a href="./login">Login</a></li>
+                    <li><a href="./signup">Signup</a></li>
+                <?php endif; ?>
+            </ul>
         </div>
-        <div id="outside">
+    </div>
+</nav>
+<div class="container">

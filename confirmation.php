@@ -52,8 +52,8 @@ if(!empty($_REQUEST['newPayPalEmail']) && !empty($_REQUEST['userId'])) {
     
     $subject = "Your payment account has been set";
 
-    $link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
-    $worklist_link = SERVER_URL . "worklist.php";
+    $link = SECURE_SERVER_URL . "confirmation?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
+    $worklist_link = SERVER_URL . "jobs";
 
     $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
     $body .= '<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the 
@@ -86,7 +86,7 @@ if (isset($_REQUEST['str'])) {
 
     // verify the email belongs to a user
     if (! $user->findUserByUsername($email)) {
-        Utils::redirect('signup.php');
+        Utils::redirect('signup');
     } else {
         $data = array(
             "username" => base64_decode($_REQUEST['str']),
@@ -122,12 +122,12 @@ if (isset($_REQUEST['str'])) {
     // verify the email belongs to a user
     if (! $user->findUserByPPUsername($paypal_email, $hash)) {
         // hacking attempt, or some other error
-        Utils::redirect('login.php');
+        Utils::redirect('login');
     } else {
         $user->setPaypal_verified(true);
         $user->setPaypal_hash('');
         $user->save();
-        Utils::redirect('settings.php?ppconfirmed');
+        Utils::redirect('settings?ppconfirmed');
     }
 } elseif (isset($_REQUEST['emstr'])) {
     // new email address confirmation
@@ -135,13 +135,13 @@ if (isset($_REQUEST['str'])) {
     $new_email = mysql_real_escape_string(base64_decode($_REQUEST['emstr']));
 
     if (! $user->findUserByUsername($_SESSION['username'])) {
-        Utils::redirect('login.php'); //we are not logged in
+        Utils::redirect('login'); //we are not logged in
     }
     //save new email
     $user->setUsername($new_email);	
     $user->save();
     $_SESSION['username'] = $new_email; 
-    Utils::redirect('settings.php?emconfirmed');
+    Utils::redirect('settings?emconfirmed');
 }
 
 
@@ -151,9 +151,7 @@ include("head.php"); ?>
 <!-- Add page-specific scripts and styles here, see head.php for global scripts and styles  -->
 <link href="css/worklist.css" rel="stylesheet" type="text/css" />
 <title>Worklist | Confirmation</title>
-<!-- @TODO: Why two ajax uploads? -- lithium -->
-<script type="text/javascript" src="js/ajaxupload.js"></script>
-<script type="text/javascript" src="js/ajaxupload-3.6.js"></script>
+<script type="text/javascript" src="js/ajaxupload/ajaxupload.js"></script>
 <script type="text/javascript" language="javascript" >
 var nclass;
 
@@ -225,7 +223,7 @@ function saveNames() {
         };
     $.ajax({
         type: "POST",
-        url: 'confirmation.php',
+        url: 'confirmation',
         data: values,
         success: function(json) {
 
@@ -251,7 +249,7 @@ function openNotifyOverlay(html, autohide) {
 
 $(document).ready(function () {
     new AjaxUpload('formupload', {
-        action: '<?php echo SERVER_URL; ?>jsonserver.php',
+        action: '<?php echo SERVER_URL; ?>jsonserver',
         name: 'Filedata',
         data: { action: 'w9Upload', userid: user },
         autoSubmit: true,
@@ -277,7 +275,7 @@ $(document).ready(function () {
         }
         $.ajax({
             type: 'POST',
-            url: '<?php echo SERVER_URL; ?>confirmation.php',
+            url: '<?php echo SERVER_URL; ?>confirmation',
             data: { 
                 newPayPalEmail: $('#paypal_email').val(),
                 userId: user
@@ -311,7 +309,7 @@ $(document).ready(function () {
     });
     
     $('.okButton').click( function() {
-        window.location = '<?php echo SERVER_URL; ?>login.php';
+        window.location = '<?php echo SERVER_URL; ?>login';
     });
 });
 </script>
@@ -340,7 +338,7 @@ $(document).ready(function () {
         <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you’ll do your part!</label>
     </p>
 <div id="payment-info" class="settings">
-    <form method="post" action="settings.php" name="frmsetting">
+    <form method="post" action="settings" name="frmsetting">
         <h2 class="subheader">Paypal Payment Info</h2>
         <p id="msg-payment" class="error"></p>
         <blockquote>

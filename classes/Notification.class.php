@@ -262,7 +262,7 @@ class Notification {
         $revision = isset($options['revision']) ? $options['revision'] : null;
         
         $itemId = $workitem -> getId();
-        $itemLink = '<a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>#' . $itemId
+        $itemLink = '<a href='.SERVER_URL.'job/' . $itemId . '>#' . $itemId
                     . '</a>  ' . $workitem -> getSummary() . ' ';
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
@@ -286,7 +286,7 @@ class Notification {
                           $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                       }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
             
@@ -306,7 +306,7 @@ class Notification {
                             $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
@@ -325,7 +325,7 @@ class Notification {
                         $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
                     $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                    . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                     . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
@@ -342,7 +342,7 @@ class Notification {
                            $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                        }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 break;
 
@@ -360,7 +360,7 @@ class Notification {
                         }
 
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'The job can be viewed <a href=' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '>here</a><br /><br />';
+                . 'The job can be viewed <a href=' . SERVER_URL . 'job/' . $itemId . '>here</a><br /><br />';
 
                 // render the github branch-created-sub template if necessary
                 if (!empty($data) && array_key_exists('branch_name', $data)) {
@@ -383,11 +383,11 @@ class Notification {
             	$projectId = $workitem->getProjectId();;
             	$jobsInfo = $userstats->getUserItemsForASpecificProject('Done', $projectId);
             	$lastThreeJobs = $jobsInfo['joblist'];
-            	$workItemUrl = '<a href="' . SERVER_URL . 'workitem.php';
+            	$workItemUrl = '<a href="' . SERVER_URL . 'job/';
             	//create the last three jobs and link them to those Jobs.
             	foreach ($lastThreeJobs as $row){
             		$jobs .= $workItemUrl;
-            		$jobs .= '?job_id=' . $row['id'] . '&action=view">#' . $row['id'] . '</a>' . ' - ' . $row['summary'] . '<br />';
+            		$jobs .= $row['id'] . '">#' . $row['id'] . '</a>' . ' - ' . $row['summary'] . '<br />';
             	}
             	//if no Jobs then display 'None'
             	if (!$jobs){
@@ -396,9 +396,9 @@ class Notification {
       
             	//now get total jobs and total jobs and create links
             	$totalJobs = $workItemUrl;
-            	$totalJobs .= '?job_id=' . $workitem->getId() . '&action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getTotalJobsCount() . '</a><br />';
+            	$totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getTotalJobsCount() . '</a><br />';
             	$totalActiveJobs = $workItemUrl;
-            	$totalActiveJobs .= '?job_id=' . $workitem->getId() . '&action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getActiveJobsCount() . '</a><br />';
+            	$totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getActiveJobsCount() . '</a><br />';
                 
             	$headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
                 $body =  'New bid was placed for ' . $itemLink . '<br /><br />'
@@ -423,7 +423,7 @@ class Notification {
                 $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />';
 
                 $urlAcceptBid  = '<br />' . $workItemUrl;
-                $urlAcceptBid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] . '&action=view_bid">Click here to accept bid.</a>';
+                $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Click here to accept bid.</a>';
                 $body .=  $urlAcceptBid;
             break;
 
@@ -444,8 +444,8 @@ class Notification {
                         $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />';
-                $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'workitem.php';
-                $urlacceptbid .= '?job_id=' . $itemId . '&bid_id=' . $data['bid_id'] .
+                $urlacceptbid  = '<br /><a href="' . SERVER_URL . 'job/';
+                $urlacceptbid .= $itemId . '?bid_id=' . $data['bid_id'] .
                                  '&action=view_bid">Click here to accept bid.</a>';
                 $body .=  $urlacceptbid;
             break;
@@ -453,7 +453,7 @@ class Notification {
             case 'bid_discarded':
                 $headers['From'] = '"' . $project_name . '-bid not accepted" ' . $from_address;
                 $body = "<p>Hello " . $data['who'] . ",</p>";
-                $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."workitem.php?job_id=".$itemId."'>#".$itemId."</a> '" . $workitem -> getSummary() . "'. This job has just been filled by another mechanic.</br></p>";
+                $body .= "<p>Thanks for adding your bid to <a href='".SERVER_URL."job/".$itemId."'>#".$itemId."</a> '" . $workitem -> getSummary() . "'. This job has just been filled by another mechanic.</br></p>";
                 $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
                 $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
             break;
@@ -492,7 +492,7 @@ class Notification {
 
                 $body.= '<br /><br />'
                     . 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                    . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                     . '<a href="' . SERVER_URL . '">www.worklist.net</a>';
             break;
             
@@ -527,7 +527,7 @@ class Notification {
                         $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
                     $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
-                        . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                        . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                         . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
@@ -543,7 +543,7 @@ class Notification {
                    $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'You are welcome to bid the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
 
@@ -558,7 +558,7 @@ class Notification {
                     $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 
             break;
@@ -574,7 +574,7 @@ class Notification {
                 if ($workitem->getMechanicId()) $body.= $workitem->getMechanic()->getNickname();
 
                 $body.= '<br><br>Notes:<br>' .$workitem->getNotes();
-                $body.= '<br><br>You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />';
+                $body.= '<br><br>You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />';
                 $body.= '<br><br><a href="' . SERVER_URL . '">www.worklist.net</a>';
                 
             break;
@@ -596,7 +596,7 @@ class Notification {
                 if($workitem->getMechanic() != '') {
                    $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . "</p><br/>";
                 }
-                $body .= '<br><br><a href=' . SERVER_URL . 'workitem.php?job_id=' .
+                $body .= '<br><br><a href=' . SERVER_URL . 'job/' .
                             $itemId . '>View new item</a>.';
             break;
             case 'suggested':
@@ -610,7 +610,7 @@ class Notification {
                     $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
             case 'suggestedwithbid':
@@ -624,7 +624,7 @@ class Notification {
                 $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                . 'You are welcome to bid the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                . 'You are welcome to bid the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;                       
             break;
             case 'autotestsuccess':
@@ -670,12 +670,12 @@ class Notification {
                 } else {
                     $body .= "<p>You have been invited at the Worklist to bid on ";
                 }                
-                $body .= "<a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">" . $workitem -> getSummary() . "</a>.</p>\n";
+                $body .= "<a href=\"" . SERVER_URL . "job/$itemId\">" . $workitem -> getSummary() . "</a>.</p>\n";
                 $body .= "<p>Description:</p>";
                 $body .= "<p>------------------------------</p>\n";
                 $body .= "<p>" . $workitem -> getNotes() . "</p>\n";
                 $body .= "<p>------------------------------</p>\n";
-                $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "workitem.php?job_id=$itemId\">this link</a>.</p>\n";
+                $body .= "<p>To bid on that job Just follow <a href=\"" . SERVER_URL . "job/$itemId\">this link</a>.</p>\n";
                 $body .= "<p>Hope to see you soon.</p>\n";
             break;
             case 'invite-email':
@@ -702,7 +702,7 @@ class Notification {
             case 'sb_authorization_failed':
                 $headers['From'] = '"' . $project_name . '-sandbox" ' . $from_address;
                 $body = 'Authorizing sandbox for job ';
-                $body .= '<a href=' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '>#' . $itemId . '</a>';
+                $body .= '<a href=' . SERVER_URL . 'job/' . $itemId . '>#' . $itemId . '</a>';
                 $body .= ' has failed with the following error message: <br /><br />';
                 $body .= "Sandbox is not authorized:<br />";
                 $body .= $data['message'];
@@ -719,7 +719,7 @@ class Notification {
                 $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
                 $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '</p>';
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
-                $body .= '<p>You can view the job <a href='.SERVER_URL.'workitem.php?job_id='.$itemId.'>here</a>.' . '<br /></p>';
+                $body .= '<p>You can view the job <a href='.SERVER_URL.'job/'.$itemId.'>here</a>.' . '<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             
@@ -733,7 +733,7 @@ class Notification {
                 $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '</p>';
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
-                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<a href="' . SERVER_URL . 'job/' . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             
@@ -750,7 +750,7 @@ class Notification {
                 }
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
-                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<a href="' . SERVER_URL . 'job/' . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             case 'auto-pass':
@@ -765,7 +765,7 @@ class Notification {
                     . 'Project: ' . $project_name . '<br />'
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
                     . 'Notes: '. $workitem->getNotes() . '<br /><br />'
-                    . 'You can view the job <a href='.SERVER_URL.'workitem.php?job_id=' . $itemId . '>here</a>.' . '<br /><br />'
+                    . 'You can view the job <a href='.SERVER_URL.'job/' . $itemId . '>here</a>.' . '<br /><br />'
                     . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
             
@@ -781,7 +781,7 @@ class Notification {
                 }
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
-                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<a href="' . SERVER_URL . 'job/' . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
 
@@ -797,7 +797,7 @@ class Notification {
                 }
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
-                $body .= '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">here</a>.<br /></p>';
+                $body .= '<a href="' . SERVER_URL . 'job/' . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
 
@@ -806,7 +806,7 @@ class Notification {
                 $headers['From'] = '"' . $project_name . '-deploy error" ' . $from_address;
                 $body  = '<p>Dear ' . $workitem->getMechanic()->getNickname() . '</p>';
                 $body .= '<p>There was an error deploying ' . $project_name . ' ' . $options['commit_revision'] . ' for job ' .
-                    '<a href="' . SERVER_URL . 'workitem.php?job_id=' . $itemId . '">#' . $itemId . '</a>.' .
+                    '<a href="' . SERVER_URL . 'job/' . $itemId . '">#' . $itemId . '</a>.' .
                     ' The following error came up while minifying your JavaScript code:</p>';
                 $body .= $options['error_msg'];
                 break;
@@ -898,7 +898,7 @@ class Notification {
         }
         
         $itemId = $workitem->getId();
-        $itemLinkShort = '<a href="'.SERVER_URL."workitem.php?job_id={$itemId}\">#{$itemId}</a>";
+        $itemLinkShort = '<a href="'.SERVER_URL."job/{$itemId}\">#{$itemId}</a>";
         $itemLink = "{$itemLinkShort}{$bugJournalMessage}: ".$workitem->getSummary();
         
         $message = null;

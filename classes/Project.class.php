@@ -1,13 +1,5 @@
 <?php
-//  vim:ts=4:et
 
-/** 
- * Project
- *
- * @package Project
- * @version $Id$
- */
-require_once('lib/Project/Exception.php');
 /**
  * Project
  *
@@ -74,7 +66,7 @@ class Project {
             $project_id = $row['project_id'];
             $this->load($project_id);
         } else {
-            throw new Project_Exception('There is no project by that name (' . $name . ')');
+            throw new Exception('There is no project by that name (' . $name . ')');
         }
     }
 
@@ -86,13 +78,13 @@ class Project {
             $project_id = $row['project_id'];
             $this->load($project_id);
         } else {
-            throw new Project_Exception('There is no project with that repository');
+            throw new Exception('There is no project with that repository');
         }
     }
 
     protected function load($project_id = null) {
         if ($project_id === null && ! $this->project_id) {
-            throw new Project_Exception('Missing project id.');
+            throw new Exception('Missing project id.');
         } elseif ($project_id === null) {
             $project_id = $this->project_id;
         }
@@ -132,12 +124,12 @@ class Project {
         $res = mysql_query($query);
 
         if (!$res) {
-            throw new Project_Exception('MySQL error.');
+            throw new Exception('MySQL error.');
         }
 
         $row = mysql_fetch_assoc($res);
         if (! $row) {
-            throw new Project_Exception('Invalid project id.');
+            throw new Exception('Invalid project id.');
         }
 
         $this->setProjectId($row['project_id'])
@@ -197,7 +189,7 @@ class Project {
         
         $res = mysql_query($query);
         if (!$res) {
-            throw new Project_Exception('MySQL error.');
+            throw new Exception('MySQL error.');
         }
         $row = mysql_fetch_row($res);
         return (boolean)$row[0];
@@ -956,7 +948,7 @@ class Project {
             }
             return $code_reviewers;
         } else {
-            return false;
+            return array();
         }
     }
     /* 

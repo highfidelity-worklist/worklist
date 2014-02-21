@@ -1,0 +1,8 @@
+{
+    "require": {
+        "mustache/mustache": "*",
+        "corneltek/pux": "*"
+    },
+    "minimum-stability": "dev"
+}
+

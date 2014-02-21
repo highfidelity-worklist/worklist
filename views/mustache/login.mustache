@@ -1,0 +1,31 @@
+<section id="login">
+    <h1>Login to Worklist</h1>
+    {{#failed}}
+       <div class="errors">
+        {{#errors}}
+            <p class="error">{{msg}}</p>
+        {{/errors}}
+        </div>
+    {{/failed}}
+    <form id="form-login" action="" method="post">
+        <input type="hidden" name="redir" value="{{redir}}" />
+        <label for="username">Email</label>
+        <input type="text" id="form[username]" name="username" class="text-field" size="40" />
+
+        <div class="clear"></div>
+
+        <label for="password">Password</label>
+        <input id="form[password]" type="password" name="password" class="text-field" />
+        <div class="clear"></div>
+
+        <p class="actions">
+            <input type="submit" id="Login" name="Login" value="Login" />
+            or <a href="forgot.php" title="Reset your password">recover password</a>
+        </p>
+    </form>
+    <div class="clear"></div>
+</section>
+
+<section id="signup">
+    <p>New to the Worklist? <a href="signup.php" title="Sign up to worklist">Sign up now.</a></p>
+</section>
