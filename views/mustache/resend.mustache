@@ -1,0 +1,14 @@
+<h1>Re-Send Email Confirmation</h1>                   
+<h3>Check your spam folder for the confirmation email or enter your email below to have us send you a new one</h3><br />
+<form action="#" method="post">
+    {{#msg}}
+        <p class="LV_valid">{{msg}}</p>
+    {{/msg}}
+    <div class="LVspace">
+        <label>Email<br />
+            <input type="text" id="username" name="username" class="text-field" size="30" />
+        </label>
+    </div>
+  <br />
+  <p><input type="submit" value="Send Mail" alt="Send Mail"></p>
+</form>
