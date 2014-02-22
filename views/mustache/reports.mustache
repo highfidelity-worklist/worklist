@@ -1,0 +1,167 @@
+<script type="text/javascript">
+    var currentTab = {{showTab}}; // 0 for details and 1 for chart
+    var current_order = {{filterDirAsc}};
+    var current_sortkey = '{{filter.getOrder}}';
+    var page = 0{{filter.getPage}} ? 0{{filter.getPage}} : 1;
+    var activeUsers = {{activeUsers}};
+    var activeRunners = {{activeRunners}};
+    var activeProjects = {{activeProjects}};
+</script>
+<div style="margin-top: 15px">
+    <div id="pp-reports-box" style="float:left;">
+        {{#currentUser.is_payer}}
+            <input type="submit" value="Run MassPay" id="pp-masspay-button" /><br />
+        {{/currentUser.is_payer}}
+    </div>
+    <div id="search-filter-wrap-reports">
+      <table id="search-filter-section">
+      <tr>
+        <td class="textAlignReport">
+            <div>
+                <div class="report-label">Payee:</div>
+                <div class="report-input-item">{{& userSelectbox}}</div>
+                <div class="report-item-clear"></div>
+            </div>
+            <div class="second-line">
+                <div class="report-label">Project:</div>
+                <div class="report-input-item">{{& projectSelectbox}}</div>
+                <div class="report-item-clear"></div>
+            </div>
+        </td>
+        <td class="textAlignReport">
+            <div>
+            <div class="report-label">Paid Status:</div>
+            <div class="report-input-item">
+              <select id="paid-status" >
+                <option value="ALL" {{#filterPaidStatusAll}}selected="selected"{{/filterPaidStatusAll}}>ALL</option>
+                <option value="1" {{#filterPaidStatusPaid}}selected="selected"{{/filterPaidStatusPaid}}>Paid</option>
+                <option value="0" {{#filterPaidStatusUnpaid}}selected="selected"{{/filterPaidStatusUnpaid}}>Unpaid</option>
+              </select>
+            </div>
+            <div class="report-item-clear"></div>
+          </div>
+          <div class="second-line">
+            <div class="report-label">Type:</div>
+            <div class="report-input-item">
+                <select id="type-status">
+                    <option value="ALL" {{#filterTypeAll}}selected="selected"{{/filterTypeAll}}>ALL</option>
+                    <option value="Fee" {{#filterTypeFee}}selected="selected"{{/filterTypeFee}}>Fee</option>
+                    <option value="Bonus" {{#filterTypeBonus}}selected="selected"{{/filterTypeBonus}}>Bonus</option>
+                    <option value="Expense" {{#filterTypeExpense}}selected="selected"{{/filterTypeExpense}}>Expense</option>
+                </select>
+            </div>
+            <div class="report-item-clear"></div>
+           </div>
+        </td>
+        <td class="textAlignReport">
+            <div>
+                <div class="report-label">Item Status:</div>
+                <div class="report-input-item">{{& statusSelectBox}}</div>
+                <div class="report-item-clear"></div>
+            </div>
+            <div class="second-line">
+                <div class="report-label">Runner:</div>
+                <div class="report-input-item">{{& runnerSelectBox}}</div>
+                <div class="report-item-clear"></div>
+            </div>
+        </td>
+       </tr>
+       <tr>
+        <td class="textAlignReport">
+            <div>
+                <div class="report-label">Fund:</div>
+                <div class="report-input-item">{{& fundSelectBox}}</div>
+                <div class="report-item-clear"></div>
+            </div>
+        </td>
+        <td class="textAlignReport">
+                <div class="report-label">Order:</div>
+                <div class="report-input-item">
+                    <select id="sort-by">
+                        <option value="name" {{#filterOrderedByName}}selected="selected"{{/filterOrderedByName}}>Alphabetically</option>
+                        <option value="date" {{#filterOrderedByDate}}selected="selected"{{/filterOrderedByDate}}>Chronologically</option>
+                    </select>
+                </div>
+                <div class="report-item-clear"></div>
+        </td>
+          <td class="textAlignReport">
+            <div>
+                <div class="report-label">W2 Only:</div>
+                <div class="report-input-item" id="w2checkbox">
+                    <input id="w2_only" name="w2_only" type="checkbox" {{#w2_only}}checked="checked"{{/w2_only}} />
+                </div>
+            <div class="report-item-clear"></div>
+            </div>
+          </td>
+      </tr>
+      <tr>
+          <td class="report-left-label">Fee added between</td>
+          <td>
+          <input type="text" class="text-field-sm" id="start-date" name="start_date" tabindex="1" 
+            value="{{filterStartDate}}" title="Start Date" size="20" />
+          <label for="end-date"> and </label>
+          <input type="text" class="text-field-sm" id="end-date" name="end_date" tabindex="2" 
+            value="{{filterEndDate}}" title="End Date" size="20" />
+          </td>
+          <td style = "text-align: right;">
+        <input type="submit" value="Go" id="refreshReport"></input>
+          </td>
+      </tr>
+      </table>
+    </div>
+    <div style="clear:both"></div>
+    <div id="tabs">
+    <ul>
+        <li><a href="#tab-details" >Details</a></li>
+        <li><a href="#tab-chart" >Chart</a></li>
+        <li><a href="#tab-payee" >Payee</a></li>
+    </ul>
+    <div id="tab-details">
+            <form id="reportForm" method="post" action="" />
+        <input type="hidden" id="paid-list" name="paidList" value="" />
+        <table width="100%" class="table-worklist">
+            <thead>
+            <tr class="table-hdng">
+                {{#currentUser.is_payer}}
+                <td width="3%"><input type="checkbox" id="report-check-all" value="1" /></td>
+                <td width="5%">Void Fee</td>
+                {{/currentUser.is_payer}}
+                <th width="7%" class="sort {sortkey: 'id'} clickable">ID<div class = "arrow"><div/></th>
+                <th width="30%" class="sort {sortkey: 'summary'} clickable">Summary<div class = "arrow"><div/></th>
+                <th width="25%" class="sort {sortkey: 'desc'} clickable">Description<div class = "arrow"><div/></th>
+                <th width="12%" class="sort {sortkey: 'payee'} clickable">Payee<div class = "arrow"><div/></th>
+                <th width="15%" class="sort {sortkey: 'paid_date'} clickable">Paid Date<div class = "arrow"><div/></th>
+                <th width="5%" class="sort {sortkey: 'fee'} clickable">Fee<div class = "arrow"><div/></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        {{#currentUser.is_payer}}
+        <input type="submit" id="pay" name="paid" value="Mark Paid" /> <span id="amtpaid" style="display:none">($0 paid)</span>
+        {{/currentUser.is_payer}}
+    </form>
+    </div>
+    <div id="tab-chart">
+        <div id="timeline-chart">
+
+        </div>
+    </div>
+    <div id="tab-payee">
+        <div id="payee">
+        <table width="100%" class="table-worklist-payee">
+            <thead>
+             <tr class="table-hdng">
+                <th width="12%" class="sort {sortkey: 'payee'} clickable" >Payee name<div class = "arrow"><div/></th>
+                <th width="30%" class="sort {sortkey: 'jobs'} clickable" >Jobs<div class = "arrow"><div/></th>
+                <th width="25%" class="sort {sortkey: 'avg_job'} clickable" >Avg / Job<div class = "arrow"><div/></th>
+                <th width="12%" class="sort {sortkey: 'total_fees'} clickable" >Total Fees<div class = "arrow"><div/></th>
+             </tr>
+            </thead>
+          <tbody>
+          </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
