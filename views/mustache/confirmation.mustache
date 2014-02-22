@@ -1,0 +1,89 @@
+<script type="text/javascript" language="javascript" >
+    var userCountry = '{{userCountry}}';
+</script>
+<!-- Light Box Code Start -->
+<div id="filter" onClick="closebox()"></div>
+<div id="box" >
+<p align="center">Email Confirmation</p>
+<p><font  style="color:#624100; font-size:12px; font-family:helvetica, arial, sans-serif;">Registration complete! Welcome to the Worklist. You can now start work.</font></p>
+<p>&nbsp;</p>
+<p align="center"><strong><a href="#" onClick="closebox()">Close</a></strong></p>
+</div>
+<!-- Light Box Code End -->
+<h1>You are almost ready!</h1>
+      
+<p>In order to place bids and receive work from Worklist, you need to enter your PayPal enabled E-mail address, and if you are a US Citizen we also need a W-9 form, which you can download from <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" >here</a>. Remember, you need a valid US mailing address to receive your 1099 tax documents at the end of the year. If you move, it’s up to you to let us know your new address.</p>
+<p>
+    <input type="checkbox" name="w9_accepted" id="w9_accepted" />
+    <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you’ll do your part!</label>
+</p>
+<div id="payment-info" class="settings">
+    <form method="post" action="settings" name="frmsetting">
+        <h2 class="subheader">Paypal Payment Info</h2>
+        <p id="msg-payment" class="error"></p>
+        <blockquote>
+            <p id="paytype-paypal"><label>Paypal Email</label><br />
+                <input type="text" id="paypal_email" name="paypal_email" class="text-field" value=""  />
+            </p>
+
+            <div id="w9-dialog" style="display:none">
+                <div>
+                    <strong>First Name:</strong>
+                    <br />
+                    <input class="text-field" type="text" name="first_name" id="first_name" value="" />
+                </div>
+                <div>
+                    <strong>Last Name:</strong>
+                    <br />
+                    <input class="text-field" type="text" name="last_name" id="last_name" value="" />
+                </div>
+                <div>
+                    <input id="formupload" type="button" value="upload W9" />
+                    <div class="w9_loader"></div>
+                </div>
+                <div class="uploadnotice-w9"></div>
+            </div>
+
+            <script type="text/javascript">
+                var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
+                paypal.add(Validate.Email);
+                paypal.add(Validate.Presence);
+
+                var firstname = new LiveValidation('first_name', {validMessage: "First Name looks good", onlyOnBlur: true});
+                firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
+                firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
+                
+                var lastname = new LiveValidation('last_name', {validMessage: "Last Name looks good", onlyOnBlur: true}); 
+                lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
+                lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
+                
+                var w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
+                w9_accepted.displayMessageWhenEmpty = true;
+                w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
+            </script>
+            <input type="hidden" name="paytype" id="paytype" value="paypal" />
+            <input type="hidden" name="payway" id="payway" value="paypal" />
+        </blockquote>
+        <h2 class="subheader">W-9 Form <small>(US Citizens Only)</small></h2>
+        <p>
+        </p>
+        <blockquote>
+            <input id="uploadw9" type="button" value="Upload W9" style="float:left;margin-left: 8px;" />
+        </blockquote>
+
+        <input type="button" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
+        <input type="button" id="enter_later" value="Enter Info Later" alt="I will enter later" name="enter_later" />
+
+    </form>
+
+</div>
+<div id='saveLaterDialog' title='Save Later'>
+    <div class='content'>Remember, you need to submit your PayPal e-mail (and W-9 form for US Citizens) before you may bid on jobs. You may now log into the Worklist with OK button that will take user to Login page.
+    </div>
+     <input type="button" value="Ok" alt="Ok" class="okButton" />
+</div>
+<div id='savePayPalEmailDialog' title='Save PayPal Email'>
+    <div class='content'>You may now log into the Worklist
+    </div>
+    <input type="button" value="Ok" alt="Ok" class="okButton" />
+</div>                    
