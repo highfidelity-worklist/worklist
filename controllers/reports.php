@@ -72,28 +72,3 @@ class ReportsController extends Controller {
 
 }
 
-
-/*********************************** HTML layout begins here  *************************************/
-
-include("head.php");
-include("opengraphmeta.php");
-?>
-
-
-<title>Reports - Worklist</title>
-
-</head>
-
-<body>
-<?php require_once('header.php'); ?>
-<!-- Popup for breakdown of fees-->
-<?php require_once('dialogs/popup-fees.inc') ?>
-<!-- Popup for budget info -->
-<?php require_once('dialogs/budget-expanded.inc'); ?>
-<!-- Popup for transfered info -->
-<?php require_once('dialogs/budget-transfer.inc') ?>
-
-<!-- ---------------------- BEGIN MAIN CONTENT HERE ---------------------- -->
-
-<?php
-include("footer.php"); ?>
