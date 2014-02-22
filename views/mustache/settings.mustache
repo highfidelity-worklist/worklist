@@ -1,0 +1,145 @@
+<h1 class="header">Edit Account Settings</h1>
+
+<div id="account-info" class="settings">
+
+    <table width="100%">
+    <tr>
+        <td align="left"><h2 class="subheader">Account Info<span class="heading-links" /></h2></td>
+        <td align="right"><a href="password.php">Change my password...</a></td>
+    </tr>
+    </table>
+    <div id="formHolder">
+        <div id="formLeft">
+
+    <form method="post" action="settings" name="frmsetting">
+
+        <span class="required-bullet">*</span> <span class="required">required fields</span>
+
+        <p id="msg-account" class="error"></p>
+
+        <p><label for = "nickname">Nickname</label><br />
+            <span class="required-bullet">*</span> <input name="nickname" type="text" id="nickname"  value = "{{currentUser.nickname}}" size="35"/>
+        </p>
+
+        <p>
+            <label for="username">Email </label>
+            <br />
+            <span class="required-bullet">*</span>
+            <input type="text" id="username" name="username" class="text-field" size="35" value="{{currentUser.username}}" />
+        </p>
+
+        <p><label for = "timezone">What timezone are you in?</label><br />
+            <span class="required-bullet">*</span> {{& timezoneSelectBox}}
+        </p>
+        <br />
+        <div >Send Email Messages</div>
+        <div id="emailOptions">
+            <div class="floatLeft">
+                <input type="checkbox" name="bidding_email_notify" value="1" 
+                  {{#receivesBiddingJobsAlerts}}checked="checked"{{/receivesBiddingJobsAlerts}}>New Jobs set to bidding<br />
+                <input type="checkbox" name="review_email_notify" value="1" 
+                {{#receivesReviewJobsAlerts}}checked="checked"{{/receivesReviewJobsAlerts}}>checked="checked"' : '';
+                ?>/>Any job set to review
+            </div>
+            <div class="floatLeft">
+                <input type="checkbox" name="self_email_notify" value="1"
+                {{#receivesSelfActionsAlerts}}checked="checked"{{/receivesSelfActionsAlerts}}>checked="checked"' : '';
+            ?>/>Receive email notifications from my actions<br />
+            </div>
+        </div>
+
+        <p>
+            <input type="submit" class="wide" id="save_account" value="Save Account Info" alt="Save Account Info" name="save_account" />
+        </p>
+    </form>
+    </div>
+    <div id="formRight">
+    <p style="text-align: center; cursor: pointer;">
+    <label style="text-align: left; display: block;">Photo<br></label>
+    <img id="profilepicture" src="{{& picture}}" />
+    <span class="picture_info">Click here to change it</span>
+    <span style="display: none;"
+    class="LV_validation_message LV_invalid upload"></span></p>
+    </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+{{^new_user}}
+<div id="personal-info" class="settings">
+
+    <h2 class="subheader">Personal Info</h2>
+
+    <p id="msg-personal" class="error"></p>
+
+    <form method="post" action="settings" name="frmsetting">
+
+        <p><label for = "about">What do we need to know about you?</label><br />
+            <textarea id="about" name="about" rows="5" style="width:95%">{{userInfo.about}}</textarea>
+        </p>
+
+        <p><label for = "skills">Pick three skills you think are your strongest</label><br />
+            <input type="text" id="skills" name="skills" class="text-field skills-watermark" value="{{userInfo.skills}}" style="width:95%" />
+        </p>
+
+        <p><label for = "contactway">What is the preferred way to contact you?</label><br />
+            <input type="text" id="contactway" name="contactway" class="text-field" value="{{userInfo.contactway}}" style="width:95%" />
+        </p>
+
+        <input type="submit" class="wide" id="save_personal" value="Save Personal Info" alt="Save Personal Info" name="save_personal" />
+
+    </form>
+
+</div>
+
+<div id="payment-info" class="settings">
+    <form method="post" action="settings" name="frmsetting">
+        <h2 class="subheader">Paypal Payment Info</h2>
+        <p id="msg-payment" class="error"></p>
+        <blockquote>
+            <p id="paytype-paypal"><label>Paypal Email</label><br />
+                <span class="required-bullet">*</span> 
+                <input type="text" id="paypal_email" name="paypal_email" class="text-field" 
+                  value="{{userInfo.paypal_email}}" style="width:95%" />
+            </p>
+            <input type="hidden" name="paytype" id="paytype" value="paypal" />
+            <input type="hidden" name="payway" id="payway" value="paypal" />
+        </blockquote>
+        <h2 class="subheader">W-9 Form <small>(US Citizens Only)</small></h2>
+        <p>
+            All US Citizens must submit a W-9 to be paid by Worklist.
+            <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" link="#00008B" target="_blank"><span style="color: blue;">Download W-9 Here</span></a>.
+            Remember, you need a valid US mailing address to receive your 1099 tax documents at the end of the year.
+            If you move, it’s up to you to let us know your new address.
+        </p>
+        <p>
+            <input type="checkbox" name="w9_accepted" id="w9_accepted" 
+              {{#user.getW9_accepted}}checked="checked" disabled="disabled"{{/user.getW9_accepted}} />
+            <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you'll do your part!</label>
+        </p>
+        <blockquote>
+            <input id="uploadw9" type="button" value="Upload W9" style="float:left;margin-left: 8px;" />
+            <div id="w9-dialog" style="display:none">
+                <div>
+                    <strong>First Name:</strong>
+                    <br />
+                    <input class="text-field" type="text" name="first_name" id="first_name" value="" />
+                </div>
+                <div>
+                    <strong>Last Name:</strong>
+                    <br />
+                    <input class="text-field" type="text" name="last_name" id="last_name" value="" />
+                </div>
+                <div>
+                    <input id="formupload" type="button" value="upload W9" />
+                    <div class="w9_loader"></div>
+                </div>
+                <div class="uploadnotice-w9"></div>
+            </div>
+        </blockquote>
+        <input type="submit" class="wide" id="save_payment" value="Save Payment Info" alt="Save Payment Info" name="save_payment" />
+
+    </form>
+
+</div>
+{{/new_user}}
