@@ -1,5 +1,4 @@
 <?php
-require_once ("lib/Sms.php");
 
 /**
  * This class is responsible for working with notification

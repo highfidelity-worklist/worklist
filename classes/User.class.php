@@ -1550,8 +1550,6 @@ class User {
        //Don't look for resizeds since we already looked in the db
        if (strpos($imageName,'w:')) { error_log("S3: don't look for thumbnails $imageName"); return false; }
 
-       require_once(APP_PATH . "/lib/S3/S3.php");
-
        S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
 
        try {

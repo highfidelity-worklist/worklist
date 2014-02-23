@@ -3,7 +3,6 @@
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 include ("config.php");
-require_once ("lib/Sms.php");
 
 try {
 	$server = new JsonServer();
