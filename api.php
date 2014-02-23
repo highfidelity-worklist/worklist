@@ -347,8 +347,6 @@ function uploadProfilePicture() {
     $imgName = strtolower($_REQUEST['userid'] . '.' . $ext);
     $path = APP_IMAGE_PATH . $imgName;
 
-    require_once('lib/S3/S3.php');
-
     try {
         File::s3Upload($tempFile, $path);
 
@@ -3612,12 +3610,12 @@ function visitQuery() {
      * Google Analytics API Token 
      * New tokens can be created by calling auth.php in the subdir resources
      */
-    $token = '1/kTlFYUDNtShl_ejOORk1v8fAKhmj3FmIam1i-NTMyqE';
+    $token = GOOGLE_ANALYTICS_TOKEN;
     /* site ids can be obtained from analytics 
      * by logging into the profile, it's currently
      * called Profile ID on screen
      */
-    $ids = '46390018';
+    $ids = GOOGLE_ANALYTICS_PROFILE_ID;
 
     $jobid = (int) $_GET['jobid'];
     if ($jobid > 0) {
