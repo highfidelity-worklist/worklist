@@ -1566,7 +1566,6 @@ function notify_sms_by_object($user_obj, $smssubject, $smsbody, $force_twilio = 
     $user = new User();
     $user->findUserById($user_array['id']);
     if ($user->isTwilioSupported($force_twilio)) {
-        require_once(dirname(__FILE__) . '/lib/wl-twilio.php');
         $Twilio = new WLTwilio();
         $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);
         $ret = $Twilio->send_sms($user_array['phone'], $message);

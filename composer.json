@@ -1,8 +1,26 @@
 {
     "require": {
         "mustache/mustache": "*",
-        "corneltek/pux": "*"
+        "corneltek/pux": "*",
+        "twilio/twilio-php": "*"
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "twilio/twilio-php",
+                "version": "0.1",
+                "source": {
+                    "url": "https://github.com/twilio/twilio-php",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "files": ["Services/Twilio.php"]
+                }
+            }
+        }
+    ],
     "minimum-stability": "dev"
 }
 

@@ -60,7 +60,7 @@ class WorkItem {
     protected function load($id = null)
     {
         if ($id === null && !$this->id) {
-            throw new Workitem_Exception('Missing workitem id.');
+            throw new Exception('Missing workitem id.');
         } elseif ($id === null) {
             $id = $this->id;
         }
@@ -88,11 +88,11 @@ class WorkItem {
                     WHERE w.id = '" . (int)$id . "'";
         $res = mysql_query($query);
         if (!$res) {
-            throw new Workitem_Exception('MySQL error.');
+            throw new Exception('MySQL error.');
         }
         $row = mysql_fetch_assoc($res);
         if (!$row) {
-            throw new Workitem_Exception('Invalid workitem id.');
+            throw new Exception('Invalid workitem id.');
         }
         $this->setId($row['id'])
              ->setSummary($row['summary'])
@@ -123,7 +123,7 @@ class WorkItem {
             WHERE `id` = ' . (int) $id;
         $res = mysql_query($query);
         if (!$res) {
-            throw new Workitem_Exception('MySQL error.');
+            throw new Exception('MySQL error.');
         }
         $row = mysql_fetch_row($res);
         return (boolean) $row[0];
@@ -556,6 +556,7 @@ class WorkItem {
 
     protected function tweetNewJob()
     {
+        /*
         if (!defined('TWITTER_OAUTH_SECRET') || TWITTER_OAUTH_SECRET=='' ) {
             return false;
         }
@@ -579,6 +580,7 @@ class WorkItem {
          
         $message='New job: ' . $summary . ' ' . $link;
         $connection->post('statuses/update', array('status' => $message));
+        */
     }
 
 
@@ -1303,7 +1305,7 @@ class WorkItem {
         $query = 'SELECT COUNT(*) FROM ' . TASK_FOLLOWERS . ' WHERE user_id = ' . (int)$id . ' AND workitem_id=' . $this->id;
         $res = mysql_query($query);
         if (!$res) {
-            throw new Workitem_Exception('Could not retrieve result.');
+            throw new Exception('Could not retrieve result.');
         }
         $row = mysql_fetch_row($res);
         return (boolean)$row[0];
@@ -1319,7 +1321,7 @@ class WorkItem {
 //		return $query;
         $res = mysql_query($query);
         if (!$res) {
-            throw new Workitem_Exception('Could not retrieve result.');
+            throw new Exception('Could not retrieve result.');
         }
         return !$isFollowing;
     }

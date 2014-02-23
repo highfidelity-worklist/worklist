@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__).'/twilio-php-3252c53/Services/Twilio.php');
-
 class WLTwilio {
     public function __construct() {
         if (!defined("TWILIO_SID") || !defined("TWILIO_TOKEN")) {

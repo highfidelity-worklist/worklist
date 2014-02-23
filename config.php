@@ -375,6 +375,10 @@ defineOnce('HIPCHAT_API_MESSAGE_URL', "https://api.hipchat.com/v1/rooms/message?
 //Tower api settings
 defineOnce('TOWER_API_URL', " https://a-tower.below92.com/");
 
+// Google Analytics settings
+defineOnce('GOOGLE_ANALYTICS_TOKEN', '1/kTlFYUDNtShl_ejOORk1v8fAKhmj3FmIam1i-NTMyqE');
+defineOnce('GOOGLE_ANALYTICS_PROFILE_ID', '46390018');
+
 $countryurllist = array(
     'AF'=>'Afghanistan',                                                        
     'AL'=>'Albania',
