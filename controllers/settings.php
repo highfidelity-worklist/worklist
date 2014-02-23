@@ -1,7 +1,7 @@
 <?php
 
 class SettingsController extends Controller {
-    public function run () {
+    public function run() {
         checkLogin();
 
         $userId = getSessionUserId();
