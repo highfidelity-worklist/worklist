@@ -8,18 +8,39 @@ class Dispatcher {
         $dispatcher = new Pux\Mux;
 
         $dispatcher->get('/addjob', array('AddJob'));
+        $dispatcher->get('/confirmation', array('Confirmation'));
+        $dispatcher->post('/confirmation', array('Confirmation'));
+        $dispatcher->get('/feedlist', array('Feedlist'));
+        $dispatcher->get('/feeds', array('Feeds'));
+        $dispatcher->get('/forgot', array('Forgot'));
+        $dispatcher->post('/forgot', array('Forgot'));
         $dispatcher->get('/help', array('Help'));
-        $dispatcher->get('/job/:id', array('Job'));
         $dispatcher->get('/jobs', array('Jobs'));
         $dispatcher->get('/login', array('Login'));
         $dispatcher->post('/login', array('Login'));
         $dispatcher->get('/logout', array('Logout'));
+        $dispatcher->get('/password', array('Password'));
+        $dispatcher->post('/password', array('Password'));
         $dispatcher->get('/privacy', array('Privacy'));
+        $dispatcher->get('/projectstatus', array('ProjectStatus'));
         $dispatcher->get('/projects', array('Projects'));
+        $dispatcher->get('/reports', array('Reports'));
+        $dispatcher->post('/reports', array('Reports'));
+        $dispatcher->get('/resend', array('Resend'));
+        $dispatcher->post('/resend', array('Resend'));
+        $dispatcher->get('/resetpass', array('ResetPass'));
+        $dispatcher->post('/resetpass', array('ResetPass'));
         $dispatcher->get('/status', array('Status'));
+        $dispatcher->get('/settings', array('Settings'));
+        $dispatcher->post('/settings', array('Settings'));
+        $dispatcher->get('/signup', array('Signup'));
+        $dispatcher->post('/signup', array('Signup'));
         $dispatcher->get('/team', array('Team'));
         $dispatcher->get('/welcome', array('Welcome'));
         #$dispatcher->get('/', array(''));
+        $dispatcher->get('/:id', array('Job'), array(
+            'require' => array('id' => '\d+')
+        ));
         $dispatcher->get('/:project', array('Project'));
 
         try {

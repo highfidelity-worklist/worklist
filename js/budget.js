@@ -559,7 +559,7 @@ var Budget = {
                     $('#table-budget-transferred').append(row);
 
                 } else {
-                    var link = '<a href="job/' + data[i].id + '" target="_blank">';
+                    var link = '<a href="./' + data[i].id + '" target="_blank">';
                     // Separate "who" names into an array so we can add the userinfo for each one
                     var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
                     var who_link = '';

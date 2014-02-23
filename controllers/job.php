@@ -13,7 +13,7 @@ class JobController extends Controller {
         $this->write('statusListCreator', array("Suggested", "Pass"));
 
         $get_variable = 'job_id';
-        if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL . "job/"); }
+        if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL); }
         if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER_URL . "jobs?$get_variable="); }
         $worklist_id = intval($job_id);
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
@@ -1755,7 +1755,7 @@ $(document).ready(function() {
         <?php
             //Show original item id if displayed item is a bug
             if($workitem->getBugJobId() > 0) {
-                $originalItemLink = SERVER_URL."job/".
+                $originalItemLink = SERVER_URL.
                                     $workitem->getBugJobId()."?action=view&order=" . $order_by;
                 echo "  [ bug of <a href='".$originalItemLink."' class='worklist-item' id='workitem-".$workitem->getBugJobId()."' >".$workitem->getBugJobId()."</a> ]";
             }

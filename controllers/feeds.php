@@ -116,7 +116,7 @@ class FeedsController extends Controller {
         global $name;
 
         $entry = $writer->createEntry();
-        $entry->setLink(SERVER_URL . 'job/' . $entryData['worklist_id']); 
+        $entry->setLink(SERVER_URL . $entryData['worklist_id']); 
         // must supply a non-empty value for description
         $content = !empty($entryData['content']) ? html_entity_decode($entryData['content'], ENT_QUOTES) : "N/A";
         $entry->setDescription($content);   

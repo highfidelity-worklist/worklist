@@ -771,7 +771,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $txtbody = $body;
         
         // Continue adding text to email body
-        $item_link = SERVER_URL."job/{$bid->worklist_id}";
+        $item_link = SERVER_URL . $bid->worklist_id;
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
         if (!send_email($recipient->username, $subject, $body)) { error_log("withdrawBid: send_email failed"); }
@@ -1044,7 +1044,7 @@ function linkify($url, $author = null, $bot = false, $process = true)
             if ($job_id < 99999 && WorkItem::idExists($job_id)) {
                 return
                     DELIMITER . 
-                    '<a href="' . WORKLIST_URL . 'job/' . $job_id . '"' . 
+                    '<a href="' . WORKLIST_URL . $job_id . '"' . 
                     ' class="worklist-item" id="worklist-' . $job_id . '" >#' . $job_id . '</a>' . 
                     DELIMITER . $matches[2];
             } else {

@@ -554,7 +554,7 @@ function ToolTip() {
 }
 
 function buildHref(item ) {
-    return worklistUrl + "job/" + item;
+    return worklistUrl + item;
 }
 
 function validateCodeReviews() {

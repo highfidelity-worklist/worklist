@@ -86,7 +86,7 @@
             {{/statusDone}}
             {{^statusDone}}
                 <span class="switchmode" id="switchmode_edit">
-                    <a title="Switch to Edit Mode" href="./job/{{worklist.id}}?action=edit&order={{order_by}}">
+                    <a title="Switch to Edit Mode" href="./{{worklist.id}}?action=edit&order={{order_by}}">
                         Edit
                     </a>
                 </span>
@@ -94,7 +94,7 @@
         {{/canEditAndNotEditing}}
         {{#editing}}
             <span class="switchmode" id="switchmode_edit">
-                <a title="Switch to View Mode" href="./job/{{worklist.id}}?action=view&order={{order_by}}">
+                <a title="Switch to View Mode" href="./{{worklist.id}}?action=view&order={{order_by}}">
                     View
                 </a>
             </span>
@@ -106,7 +106,7 @@
     #{{worklist.id}}
     {{#workitem.getBugJobId}}}
         bug of 
-        <a href="./job/{{workitem.getBugJobId}}action=view&order=order_by" 
+        <a href="./{{workitem.getBugJobId}}action=view&order=order_by" 
           class="worklist-item" id="workitem-{{workitem.getBugJobId}}">
           {{workitem.getBugJobId}}
         </a>

@@ -136,7 +136,7 @@ function postComment() {
 
     $.ajax({
         type: 'post',
-        url: 'job/' + workitem_id,
+        url: './' + workitem_id,
         data: {
             job_id: workitem_id,
             worklist_id: workitem_id,
@@ -773,7 +773,7 @@ $(document).ready(function(){
 
                         html += '<div class="info-label block bidderStats">';
                         html += 'Last ' + jobCount + ' job(s) for <?php echo $worklist['project_name']; ?></div><br />';
-                        var urlBase = '<a target="_blank" class="worklist-item font-14" href="<?php echo SERVER_URL; ?>job/';
+                        var urlBase = '<a target="_blank" class="worklist-item font-14" href="<?php echo SERVER_URL; ?>';
                         for (var i = 0; i < jobCount; i++) {
                             job = json.joblist[i];
                             html += urlBase;

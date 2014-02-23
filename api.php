@@ -3101,7 +3101,8 @@ function payCheck() {
 
             $subject = "Worklist.net paid you " . $total_fee_pay ." for ". $summary;
             $body  = "Your Fee was marked paid.<br/>";
-            $body .= "Job <a href='" . SERVER_URL . "job/" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . "</a>: <a href='" . SERVER_URL . "job/" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . "job/" . $fee_pay['worklist_id'] . "</a><br/>";
+            $body .= "Job <a href='./" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . 
+              "</a>: <a href='./" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . $fee_pay['worklist_id'] . "</a><br/>";
             $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
             $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
             $body .= "Contact the job Runner with any questions<br/><br/>Worklist.net<br/>";
@@ -3197,7 +3198,7 @@ function pingTask() {
         if ($send_mail && $who != 'bidder') {
             $mail_subject = $nickname." sent you a ping for item #".$item_id;
             $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
-            $mail_msg .= "<a href='" . WORKLIST_URL . "job/" . $item_id . "?action=view'>#" . $item_id . "</a>";
+            $mail_msg .= "<a href='./" . $item_id . "?action=view'>#" . $item_id . "</a>";
             $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
             $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
             if ($send_cc) {
@@ -3223,7 +3224,7 @@ function pingTask() {
             $mail_msg .= "<p>Your bid info:</p>";
             $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";
             $mail_msg .= "<p>Notes: " . $bid_info['notes'] . "</p>";
-            $mail_msg .= "<p>You can view the job here. <a href='" . WORKLIST_URL . "job/" . $item_id . "?action=view'>#" . $item_id . "</a></p>";
+            $mail_msg .= "<p>You can view the job here. <a href='./" . $item_id . "?action=view'>#" . $item_id . "</a></p>";
             $mail_msg .= "<p><a href=\"www.worklist.net\">www.worklist.net</a></p>";
             $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', '
                 X-tag' => 'ping, task', 

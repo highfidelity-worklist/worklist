@@ -3,7 +3,7 @@
 class SignupController extends Controller {
     public function run() {
         $signup = true;
-        $phone = $country = $provider = $authtype = "";
+        $country = "";
         $msg = "";
         $to = 1;
 
@@ -13,11 +13,7 @@ class SignupController extends Controller {
             'payway' => '',
             'skills' => '',
             'timezone' => '',
-            'int_code' => '',
-            'phone' => '',
             'country' => '',
-            'provider' => '',
-            'smsaddr' => '',
             'findus' => ''
         );
 
@@ -27,11 +23,9 @@ class SignupController extends Controller {
             'password' => '',
             'confirmpassword' => '',
             'sign_up' => '',
-            'phone_edit' => '',
             'confirm' => '',
             'paypal' => '',
-            'about' => '',
-            'openid' => ''
+            'about' => ''
         );
 
         // Remove html tags from about box
@@ -41,22 +35,12 @@ class SignupController extends Controller {
 
         $minimal_POST = @array_intersect_key($_POST, $fields_to_not_escape + $fields_to_htmlescape);
 
-        // TODO: Code repeated from settings.php. Must be put in a library
-        // compute smsaddr from phone and provider
-        //error_log("signup: ".$minimal_POST['country'].';'.$smslist[$minimal_POST['country']][$minimal_POST['provider']]) ;
-        $prov_address = (isset($minimal_POST['country']) && isset($smslist[$minimal_POST['country']][$minimal_POST['provider']])) ? $smslist[$minimal_POST['country']][$minimal_POST['provider']] : '';
         $country = '';
-        $provider = '';
-        $int_code = '';
-        $phone = isset($minimal_POST['phone']) ? preg_replace('/\D/', '', $minimal_POST['phone']) : '';
-        $sms_flags = 0;
-        $minimal_POST['smsaddr'] = str_replace('{n}', $phone, $prov_address);
-
         $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
 
         $error = new Error();
         if(isset($minimal_POST['sign_up'])) {
-            if(empty($username) || empty($_REQUEST["nickname"]) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && ($_GET['authtype'] != 'openid') && empty($minimal_POST['confirmpassword']))){
+            if(empty($username) || empty($_REQUEST["nickname"]) || (! empty($_GET['authtype']) && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && empty($minimal_POST['confirmpassword']))){
                 $error->setError("Please fill all required fields.");
             }
             $about = isset($minimal_POST['about']) ? $minimal_POST['about'] : "";
@@ -68,9 +52,7 @@ class SignupController extends Controller {
                 $send_confirm_email = false;
                 $minimal_POST = array_merge($minimal_POST, array_map('htmlspecialchars', array_intersect_key($minimal_POST, $fields_to_htmlescape)));
                 unset($minimal_POST['confirmpassword']);
-                unset($minimal_POST['phone_edit']);
                 unset($minimal_POST['sign_up']);
-                $minimal_POST['sms_flags'] = (! empty($_POST['journal_alerts']) ? SMS_FLAG_JOURNAL_ALERTS : 0) | (! empty($_POST['bid_alerts']) ? SMS_FLAG_BID_ALERTS : 0);
                 $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
                 $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
 
@@ -162,16 +144,6 @@ class SignupController extends Controller {
                     }
                 }
             }
-        }
-
-        // if we have openid authentication there are a few prefilled values
-        //Add test for GET:authtype to reduce warnings
-        if (!empty($_GET['authtype']) && $_GET['authtype'] == 'openid') {
-          $_POST['nickname'] = rawurldecode($_GET['nickname']);
-          $_POST['username'] = rawurldecode($_GET['email']);
-          $country = rawurldecode($_GET['country']);
-          $_POST['timezone'] = rawurldecode($_GET['timezone']);
-          $authtype = 'openid';
         }
 
         $this->write('confirm_txt', $confirm_txt);

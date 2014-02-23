@@ -29,33 +29,9 @@ class SettingsController extends Controller {
             $updateNickname = false;
             $updatePassword = false;
 
-            // check if phone was updated
-            if (isset($_REQUEST['phone_edit']) || isset($_REQUEST['int_code']) || isset($_REQUEST['timezone'])) {
-                $saveArgs = array('int_code'=>0, 'phone'=>1, 'country'=>1, 'smsaddr'=>1);
-
-                foreach ($saveArgs as $arg=>$esc) {
-                    $$arg = ($esc ? $_REQUEST[$arg] : intval($_REQUEST[$arg]));
-                }
-
-                if (isset($_REQUEST['city'])) {
-                    $city = $_REQUEST['city'];
-                    $saveArgs['city'] = 1;
-                } else {
-                    // TODO: Actually return the error to user, rather than rely on javascript validation
-                    $error->setError('You are required to choose a city');
-                }
-
-                $sms_flags = 0;
-                if (!empty($_REQUEST['journal_alerts'])) {
-                    $sms_flags |= SMS_FLAG_JOURNAL_ALERTS;
-                }
-                if (!empty($_REQUEST['bid_alerts'])) {
-                    $sms_flags |= SMS_FLAG_BID_ALERTS;
-                }
-                $saveArgs['sms_flags'] = 0;
-
+            if (isset($_REQUEST['timezone'])) {
                 $timezone = mysql_real_escape_string(trim($_REQUEST['timezone']));
-                $saveArgs['timezone'] = 0;
+                $saveArgs = array('timezone' => 0);
 
                 $notifications = 0;
                 $my_bids_notify = !empty($_REQUEST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
@@ -94,18 +70,17 @@ class SettingsController extends Controller {
 
                     $sql = "
                         INSERT INTO " . USERS . "
-                        (`id`, `username`, `nickname`, `timezone`, `country`, `phone`, `int_code`, `smsaddr`, `sms_flags`, `notifications`, `is_active`, `confirm`)
-                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$phone', '$int_code', '$smsaddr', '$sms_flags', '$notifications', '1', '1')";
+                        (`id`, `username`, `nickname`, `timezone`, `country`, `notifications`, `is_active`, `confirm`)
+                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$notifications', '1', '1')";
                     mysql_unbuffered_query($sql);
                     $_SESSION['new_user'] = '';
                     $saveArgs = array();
                 } else {
-                      // we need to check if phone/country/timezone or city settings have changed
+                      // we need to check if settings have changed
                       // so as to send correct message in mail
-                    if ($user->getCity() != $_REQUEST['city'] || $user->getCountry() != $_REQUEST['country']
-                        || $user->getPhone() != $_REQUEST['phone'] || $user->getTimezone() != $_REQUEST['timezone']){
-                          $messages[] = "Your country/phone settings have been updated.";
-                      }
+                    if ($user->getCity() != $_REQUEST['city'] || $user->getCountry() != $_REQUEST['country'] || $user->getTimezone() != $_REQUEST['timezone']) {
+                          $messages[] = "Your settings have been updated.";
+                    }
                 }
             }
 
