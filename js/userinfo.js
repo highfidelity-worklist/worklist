@@ -4,7 +4,7 @@ stats.setUserId(userInfo.user_id);
 stats.showJobs('activeJobs', 0);
 stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
 
-$(document).ready(function(){
+$(document).ready(function() {
     UserInfo.init();
     $('#sent-notify').dialog({
         modal: false,
@@ -22,6 +22,72 @@ $(document).ready(function(){
         }
     });
 });
+
+$(function () {
+    if ($('#fees-week').length > 0) {
+        $('#fees-week').parents("tr").click(function() {
+            var author = "Guest";
+            if($('#user').length > 0) {
+                author = $('#user').html();
+            }
+            var t = 'Weekly fees for '+author;
+            $('#wFees').dialog({
+                autoOpen: false,
+                title: t,
+                show: 'fade',
+                hide: 'fade'
+            });
+            $('#wFees').dialog( "option", "title", t );
+            $('#wFees').html('<img src="images/loader.gif" />');
+            $('#wFees').dialog('open');
+            $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
+                if (json.error == 1) {
+                    $('#wFees').html('Some error occured or you are not logged in.');
+                } else {
+                  $('#wFees').html(json.output);
+                }
+            });
+        });
+    }
+
+    if($('#fees-month').length > 0){
+        $('#fees-month').parents("tr").click(function() {
+            var author = "Guest";
+            if ($('#user').length > 0) {
+                author = $('#user').html();
+            }
+            var t = 'Monthly fees for '+author;
+            $('#wFees').dialog({
+                autoOpen: false,
+                title: t,
+                show: 'fade',
+                hide: 'fade'
+            });
+            $('#wFees').dialog("option", "title", t);
+            $('#wFees').html('<img src="images/loader.gif" />');
+            $('#wFees').dialog('open');
+            $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
+                if (json.error == 1) {
+                    $('#wFees').html('Some error occured or you are not logged in.');
+                } else {
+                    $('#wFees').html(json.output);
+                }
+            });
+        });
+    }
+
+    $('#welcomeInside .earningsBtn').click(function() {
+        $.get('api.php?action=getFeeSums', function(data) {
+            var sum = eval('('+data+')');
+            if (typeof sum != 'object') {
+                return false;
+            }
+            $('#fees-week').html ('$'+sum.week);
+            $('#fees-month').html ('$'+sum.month);
+        });
+    });
+});
+
  
 var UserInfo = {
     init: function() {
@@ -466,8 +532,8 @@ var UserInfo = {
             url: 'api.php',
             data: {
                 action: 'getBonusHistory', 
-                uid: current_id, 
-                rid: user_id, 
+                uid: user_id, 
+                rid: UserInfo.user_id, 
                 page: page
             },
             dataType: 'json',

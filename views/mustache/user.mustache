@@ -1,0 +1,406 @@
+<script type="text/javascript">
+    // This global variable user_id should not be used anymore, replace it by userInfo.user_id .
+    // All the variables should be included in the object userInfo
+    // To have a smooth migration, the variable is kept for the moment.
+    var admin = {{currentUser.is_payer}};
+    var userInfo = {
+        manager: {{manager}},
+        referred_by: {{referred_by}},
+        user_id: {{userId}},
+        nickName: '{{user.getNickName}}',
+        tab: '{{tab}}'
+    };
+</script>
+<div id="tabs" class="tabs-bottom">
+    <div class="top-profile-bar"></div>
+    {{#currentUser.is_runner}}
+    <ul>
+        <li><a href="#tabs-1">Profile</a></li>
+        <li><a href="#tabs-2">Admin</a></li>
+        {{#user.getIs_runner}}
+            <li><a href="#tabs-3">Runner</a></li>
+        {{/user.getIs_runner}}
+        <li><a href="#tabs-4">Sandbox</a></li>
+        <li><a href="api.php?action=userNotes&method=getNote&userId={{user.getId}}">My Notes</a></li>
+        <li><a href="api.php?action=budgetHistory&inDiv=tabs&id={{user.getId}}&num=100" id="tabBudgetHistory">Budget History</a></li>
+    </ul>
+    {{/currentUser.is_runner}}
+    {{^currentUser.is_runner}}
+    <ul>
+        <li><a href="#tabs-1">User Info</a></li>
+        {{#user.getIs_runner}}
+        <li><a href="#tabs-3">Runner</a></li>
+        {{/user.getIs_runner}}
+        {{#reqUserId}}
+        <li><a href="api.php?action=userNotes&method=getNote&userId={{user.getId}}">My Notes</a></li>
+        {{/reqUserId}}
+        <li><a href="api.php?action=budgetHistory&inDiv=tabs&id={{user.getId}}&num=100">Budget History</a></li>
+    </ul>
+    <input type="hidden" name="userid" id="userid" value="{{user.getId}}" />
+    {{/currentUser.is_runner}}
+    <div id="tabs-1">
+        
+        <div class = "left-column">
+            
+            <div class="common-info">
+                <div id="user-avatar">
+                    <img id="avatar" src="{{& userAvatarUrl}}" title="Profile Picture - {{user.getNickname}}" />
+                    <div class="userName" id="userName">{{user.getNickname}}</div>
+                    <div class="profileInfoFavorite" id="profileInfoFavorite">
+                        <div class="{{favoriteClass}}" title="{{favoriteTitle}}">&nbsp;</div>
+                        <span class="profileFavoriteText" data-favorite_count="{{favorite_count}}"></span>
+                    </div>        
+                    {{& profileInfoFavorite}}
+                </div>
+                <p class="info-label title-label-small" id="user-location">
+                    Location:<br />
+                    {{#user.getCity}}
+                        <a class="userInfoLink" href="{{& gMapSearch}}{{user.getCity}}{{countryName}}&z=6" target="_blank" 
+                          title="See location on Google Maps">{{user.getCity}}</a>
+                    {{/user.getCity}}
+                    {{#countryCodeUrl}}
+                        <a class="userInfoLink" href="{{& ciaGovBase}}{{countryCodeUrl}}.html" target="_blank" 
+                          title="{{countryName}}">{{user.getCountry}}</a>
+                    {{/countryCodeUrl}}
+                </p>
+                <p class="info-label title-label-small" id="user-age">Worklist age:<br />
+                    <span id="info-joined">{{joined}}</span>
+                </p>
+                <p class="info-label title-label-small" id="info-currenttime" title="{{timezone}}">
+                    Local Time:<br />
+                    <span>{{localTime}}</span>
+                </p>
+                <p class="small-text"><br />
+                    <span id="info-timezone">&nbsp;</span>
+                </p>
+                <p class="totals">
+                    <span>Total jobs:</span>
+                    {{#userStats.getTotalJobsCount}}
+                        <a href = "#" id = "total-jobs">{{userStats.getTotalJobsCount}}</a>
+                    {{/userStats.getTotalJobsCount}}
+                    {{^userStats.getTotalJobsCount}}
+                        0
+                    {{/userStats.getTotalJobsCount}}
+                    <br />
+                    <span>Total earned:</span>
+                    {{totalEarnings}}
+                    <span>Last 30 days:</span>
+                    {{latestEarnings}}<br />
+                </p>
+            </div><!-- end of common info div-->
+            
+                        
+            <p class = "info-label title-label-medium">Strengths<br />
+                <span id="info-skills">{{user.getSkills}}</span>
+            </p>
+
+            <div class='reviewTitle title-label-big' >
+                Reviews
+            {{^ownProfile}}
+            <div class='reviewAddLink'>
+                <a href='javascript:;'>Add your review</a>
+            </div>
+            <div class='reviewEditLink'>
+                <a href='javascript:;'>Edit your review</a>
+            </div>
+            {{/ownProfile}}
+            </div>
+            <div class='reviewsList'>
+                {{& reviewsList}}
+            </div>
+            <p class = "info-label about title-label-big">
+                About
+            </p>
+            <span id="info-about">{{user.getAbout}}</span>
+        </div><!-- end of left-column -->
+
+        <div class = "right-column">
+            <div class="button-row">
+                {{#reqUserId}} 
+                <span id="info-budget">
+                    <input type="submit" {{#disableGiveBudget}}disabled="disabled" class="button-disabled disableable"{{/disableGiveBudget}}
+                      title="Remaining budget you can give: ${{reqUser.getBudget}}" id="give" value="Give Budget" />
+                </span>
+                <span id="btn-bonus">
+                    <input type="submit" {{#disablePayBonus}}disabled="disabled" class="button-disabled disableable"{{/disablePayBonus}}
+                      title="Remaining budget you can give: ${{reqUser.getBudget}}" id="pay_bonus" value="Pay Bonus" name="pay_bonus" />
+                </span>
+                {{/reqUserId}} 
+            </div>
+
+            <p class = "profileContactFavorite">Contact info:
+                <span id="info-contactway">{{user.getContactway}}</span>
+            </p>
+
+            {{#reqUserId}}{{^ownProfile}}
+            <p class = "info-label title-label-medium">Send Message <span>(user will be sent message via email)</span><br />
+                <div id="profile-pingtask" title="Ping about task" class="popup-body">
+                    <form name="popup-form" id="popup-form-edit" action="" method="post">
+                        <input type="hidden" name="itemid" value="0" />
+                        <input type="hidden" name="bidder" value="0" />
+                        <textarea id="ping-msg" name="ping-msg" rows="3"></textarea>
+                        <input type="checkbox" id="send-mail" name="send_mail" checked="checked" class="hidden" />
+                        <input type="submit" id="send-ping-btn" value="Send Message" class="floatRight" />
+                        <p>
+                            <div><input type="checkbox" id="copy-me" name="copy_me" checked="checked" /> Copy me in email</div>
+                            <div><input type="checkbox" id="echo-journal" name="echo_journal" checked="checked" /> Echo to public chat</div>
+                        </p>
+                        <div class="clear"></div>
+                    </form>
+                </div>
+            </p>
+            {{/ownProfile}}{{/reqUserId}} 
+
+            <p class = "info-label title-label-medium jobs">Active jobs</p>
+
+            <div id="jobs-table">
+                <table>
+                    <thead>
+                        <tr class = "table-hdng">
+                            <th>Job ID & Summary</th>
+                            <th class="status">Status</th>
+                            <th class="sandbox">Sandbox</th>
+                            <th class="unfollow">Un-Follow</th>
+                        </tr>
+                    </thead>
+                    <tbody><tr><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class = "info-label title-label-medium completed-jobs">Last 5 completed jobs</p>
+            <div id="completed-jobs-table">
+                <table>
+                    <thead>
+                        <tr class = "table-hdng">
+                            <th>Job ID & Summary</th>
+                            <th class="cost">Cost</th>
+                            <th class="time">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody><tr><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div><!-- end of right-column -->
+    </div><!-- end of tabs-1 -->
+    <div class="clear"></div>
+    {{#currentUser.is_runner}}
+    <div id="tabs-2" class="clear">
+        <div id="admin-left">
+            <p class = "info-label title-label-small">Email<br />
+                <span id="info-email"><a href="mailto:{{user.getUsername}}">{{user.getUsername}}</a></span>
+            </p>
+            <form id="roles" method="post" action="">
+                <p class="info-label title-label-small">Roles<br />
+                    <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" {{#user.isRunner}}checked="checked"{{/user.isRunner}} /><label for="isrunner" class="info-label">Runner</label>
+                    <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" {{#user.isPayer}}checked="checked"{{/user.isPayer}} /><label for="ispayer" class="info-label">Payer</label>
+                </p>
+                <p class="info-label title-label-small">Payment Information<br />
+                    <label for="isw9approved" class="info-label">W9</label>
+                    <select id="w9status" name="w9status" {{^user.isUsCitizen}}disabled="disabled"{{/user.isUsCitizen}}>
+                        <option value="awaiting-receipt" {{#w9_statusAwaitingReceipt}}selected="selected"{{/w9_statusAwaitingReceipt}}>Awaiting Receipt</option>
+                        <option value="pending-approval" {{#w9_statusPendingApproval}}selected="selected"{{/w9_statusPendingApproval}}>Pending Approval</option>
+                        <option value="approved" {{#w9_statusApproved}}selected="selected"{{/w9_statusApproved}}>Approved</option>
+                        <option value="rejected" {{#w9_statusRejected}}selected="selected"{{/w9_statusRejected}}>Rejected</option>
+                        <option value="not-applicable" {{#w9_statusNotApplicable}}selected="selected"{{/w9_statusNotApplicable}}>Not Applicable</option>
+                    </select>
+                    <input type="checkbox" id="isw2employee" 
+                      name="isw2employee" {{#user.getHas_W2}}checked="checked"{{/user.getHas_W2}} />
+                    <label for="isw2employee" class="info-label">W2 Employee</label>
+                    <input type="checkbox" id="ispaypalverified" 
+                      name="ispaypalverified" {{#user.getPaypal_verified}}checked="checked"{{/user.getPaypal_verified}}/>
+                    <label for="ispaypalverified" class="info-label">PayPal Verified</label>
+                </p>
+                <p class="info-label title-label-small">Preferred Payment Method<br />
+                    <span id="info-payway">{{user.getPayway}}</span>
+                </p>
+                <p class="info-label title-label-small">PayPal E-Mail<br />
+                    <span id="info-paypal">{{user.getPaypal_email}}</span>
+                </p>
+                <input type="hidden" name="userid" id="userid" value="{{user.getId}}" />
+            </form>
+        </div><!-- end of admin-left -->
+        <div id="admin-right">
+            <form method="post" action="" name="userDropdownOptions" id="userDropdownOptions">
+                {{#currentUser.is_payer}}
+                <p class="info-label title-label-small">Annual Salary<br />
+                    <input type="text" id="annual_salary" name="annual_salary" value="{{Annual_Salary}}" />
+                    <input class="admin-submit" type="button" id="save_salary" value="Save salary"  name="save_salary"/>
+                </p>
+                {{/currentUser.is_payer}}
+                <p class="info-label title-label-small">Manager<br />
+                    {{& managerUserSelectbox}}
+                </p>
+                <p class="info-label title-label-small">Referred By<br />
+                    {{& referrerUserSelectbox}}
+                </p>
+                <p class="info-label title-label-small">Status<br />
+                    <select id="isactive" name="isactive" style="width: auto;">
+                        <option value="0" {{#userIsInactive}}selected="selected"{{/userIsInactive}}>inactive</option>
+                        <option value="1" {{#userIsActive}}selected="selected"{{/userIsActive}}>active</option>
+                        <option value="2" {{#userIsSecured}}selected="selected"{{/userIsSecured}}>secured</option>
+                    </select>
+                </p>
+                <p class = "info-label title-label-small">Found Us On:<br />
+                    <span>{{user.getFindus}}</span>
+                </p>
+            </form>
+                <p class = "info-label title-label-small">User last seen: <br />
+                <span>{{lastSeen}}</span>
+                </p>
+        </div><!-- end of admin-right -->
+    </div><!-- end of tab 2 -->
+    <div id="tabs-4" style="clear: both;">
+        <form method="post" action="" id="sandboxForm">
+            <div style="clear: both; float: right;">
+                <input id="create_sandbox" type="submit" name="create_sandbox" value="Create SB" {{#has_sandbox}}style="display: none;"{{/has_sandbox}} />
+            </div>
+            <p id="unixusername-field" class="info-label title-label-small">UNIX Username: <br />
+                <input name="unixusername" id="unixusername" type="text" size="15" value = "{{user.getUnixusername}}" /><br />
+            </p>
+            <p id="projects-field" class="info-label title-label-small">Projects to check-out :</p>
+            {{& projectsList}}
+        </form>
+    </div><!-- end of tab 4 -->
+    {{/currentUser.is_runner}}
+    {{#user.getIs_runner}}
+    <div id="tabs-3" style="clear:both">
+        <div id="admin-left">
+            <div class="runnerStatistics">
+                <div id="stats-panel">
+                    <table width="100%" class="table-runner-stats">
+                        <caption class="table-caption" >
+                            <b>Jobs as Runner</b>
+                        </caption>
+                        <thead>
+                            <tr class="table-hdng">
+                                <td>Total/Active Jobs</td>
+                                <td>Avg. Job Run Time</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="row-role-list-live">
+                                <td>
+                                {{#userStats.getRunnerTotalJobsCount}}
+                                    <a href = "#" id = "runner-total-jobs">{{userStats.getRunnerTotalJobsCount}}</a>
+                                {{/userStats.getRunnerTotalJobsCount}}
+                                {{^userStats.getRunnerTotalJobsCount}}
+                                    0
+                                {{/userStats.getRunnerTotalJobsCount}}
+                                {{#userStats.getRunnerActiveJobsCount}}
+                                    <a href = "#" id = "runner-active-jobs">{{userStats.getRunnerActiveJobsCount}}</a>
+                                {{/userStats.getRunnerActiveJobsCount}}
+                                {{^userStats.getRunnerActiveJobsCount}}
+                                    0
+                                {{/userStats.getRunnerActiveJobsCount}}
+                                </td>
+                                <td>{{userStats.getAvgJobRunTime}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>                
+        </div>
+        <div id="admin-right">
+            <div id="runnersAccordion">
+                <h3><a href="#">Who has worked for Runner</a><h3>  
+                <div class="runnerWorkers" >
+                    <table width="100%" class="table-runner-workers" id="runner-workers">
+                        <caption class="table-caption" >
+                            <br/>
+                        </caption>
+                        <thead>
+                            <tr class="table-hdng">
+                                <th>Username</th>
+                                <th># of Jobs</th>
+                                <th>Total Earned</th>
+                            </tr>
+                        </thead>
+                        <tbody class="runnerWorkerContent">
+                            {{& runnerWorkers}}
+                        </tbody>
+                    </table>
+                </div>
+                <h3><a href="#">Projects worked on by Runner</a><h3>  
+                <div class="runnerProjects" >
+                    <table width="100%" class="table-runner-projects" id="runner-projects">
+                        <caption class="table-caption" >
+                            <br/>
+                        </caption>
+                        <thead>
+                            <tr class="table-hdng">
+                                <th>Project Name</th>
+                                <th># of Jobs</th>
+                                <th>Project Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="runnerProjectContent">
+                            {{& runnerProjects}}
+                        </tbody>
+                    </table>
+                </div>                                                          
+            </div>
+        </div>          
+    </div> <!-- end of tabs-3-->
+    {{/user.getIs_runner}}
+</div><!--end of div "tabs" -->
+
+<!-- popup div's -->
+<div id="budget-dialog" title="Budget details" class="hidden" data-userid = "{{user.getId}}">
+</div>
+<div id="budget-update-dialog" title="Budget update" class="hidden" data-userid = "{{user.getId}}">
+    <div class="content"></div>
+</div>
+<div id="reject-w9" title="Reject W9" class="hidden">
+    <form method="post" action = "">
+        <label for="reject-reason" class="info-label">Reason: </label><br/>
+        <textarea id="reject-reason" name="reason"></textarea><br/>
+        <span style="float: right;"><span id="charCount">100</span> characters remaining</span>
+        <input type = "hidden" id = "budget-receiver" name="receiver_id" value = "{{user.getId}}" />
+    </form>
+</div><!-- end of reject w9 div -->
+
+<div id="pay-bonus" class="hidden" title="Pay Bonus" style="text-align: left;">
+    <form method="post" action = "">
+        <div class="leftBonusArea">
+            <label for="bonus-amount" class="info-label">Amount: </label><br/>
+            <input type="text" id="bonus-amount" name="amount" /><br/>
+        </div>
+        <div class="rightBonusArea">
+            <label for="budget-source" class="info-label">Source: </label><br/>
+            <select id="budget-source-combo-bonus" name="budget-source-combo-bonus" class="project-dropdown hidden">
+            <option value="0" selected="selected">Select a budget</option>
+            {{& reqUser.getBudgetCombo}}
+            </select>
+            <span id="validationMessage"></span>
+        </div>
+        <div class="clearBonusArea">
+        <label for="bonus-reason" class="info-label">Reason: </label><br/>
+            <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/>
+            <input type = "hidden" id = "bonus-receiver" name="receiver_id" value = "{{user.getId}}" />
+        <input type="submit" value="Pay Bonus" />
+    </form>
+
+    <!-- Add the bonus history table -->
+    {{#currentUser.is_runner}}
+    <hr/>
+    <table class="bonus-history table-bonus-history">
+    <thead>
+        <tr style="cursor:arrow;" class="table-hdng">
+            <th width="95px">Date</th>
+            <th width="50px">Amount</th>
+            <th width="80px">Receiver</th>
+            <th width="300px">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    </table>
+    {{/currentUser.is_runner}}
+
+</div><!-- end of pay bonus div -->
+<div class="hidden" id="loading">
+    <img src="images/loader.gif" alt = "" /><span>Please wait..</span>
+</div>
