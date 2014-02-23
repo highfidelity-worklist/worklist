@@ -1,6 +1,5 @@
 <?php
 
-require_once('lib/Sms.php');
 require_once('models/DataObject.php');
 require_once('models/Budget.php');
 require_once('models/Users_Favorite.php');
