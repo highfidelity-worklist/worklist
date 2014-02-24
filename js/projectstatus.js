@@ -6,6 +6,6 @@ $(function() {
             GitHub.handleUserConnect();
         }        
     } else {
-        $('#project-status').html('<h3>Something went wrong! <?php echo $errorOut; ?></h3>');
+        $('#project-status').html('<h3>Something went wrong! ' + errorOut + '</h3>');
     }
 });
