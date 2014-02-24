@@ -253,6 +253,8 @@ if(validateAction()) {
             case 'budgetHistory':
                 budgetHistory();
                 break;
+            case 'timeline':
+                timeline();
             default:
                 die("Invalid action.");
         }
@@ -3806,5 +3808,35 @@ function budgetHistory() {
     <?php 
     if ($page == 1) {
         echo "</div>";
+    }
+}
+
+function timeline() {
+    require_once('models/Timeline.php');
+
+    $timeline = new Timeline();
+    if ($_POST["method"] == "getHistoricalData") {
+        if (isset($_POST["project"])) {
+            $project = $_POST["project"];
+        }
+        if ($project) {
+            $objectData = $timeline->getHistoricalData($project);
+        } else {
+            $objectData = $timeline->getHistoricalData();
+        }
+        echo json_encode($objectData);
+    } else if ($_POST["method"] == "getDistinctLocations") {
+        $objectData = $timeline->getDistinctLocations();
+        echo json_encode($objectData);
+    } else if ($_POST["method"] == "storeLatLong") {
+        $location = $_POST["location"];
+        $latlong = $_POST["latlong"];
+        $timeline->insertLocationData($location, $latlong);
+    } else if ($_REQUEST["method"] == "getLatLong") {
+        $objectData = $timeline->getLocationData();
+        echo json_encode($objectData);
+    } else if ($_POST["method"] == "getListOfMonths"){
+        $months = $timeline->getListOfMonths();
+        echo json_encode($months);
     }
 }

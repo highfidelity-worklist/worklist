@@ -39,6 +39,7 @@ class Dispatcher {
         $dispatcher->get('/signup', array('Signup'));
         $dispatcher->post('/signup', array('Signup'));
         $dispatcher->get('/team', array('Team'));
+        $dispatcher->get('/timeline', array('Timeline'));
         $dispatcher->get('/user/:id', array('User'));
         $dispatcher->post('/user/:id', array('User'));
         $dispatcher->get('/welcome', array('Welcome'));
