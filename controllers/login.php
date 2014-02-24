@@ -62,7 +62,7 @@ class LoginController extends Controller {
                     }
                 } else {
                     $error->setError('Oops. That email address or password doesn\'t seem to be working.
-                        Need to <a href="forgot.php">recover your password</a>?');
+                        Need to <a href="./forgot">recover your password</a>?');
                 }
             }
         }

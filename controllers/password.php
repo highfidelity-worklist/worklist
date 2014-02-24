@@ -24,7 +24,7 @@ class PasswordController extends Controller {
                     $body .= "<p>You have successfully updated your password with ".SERVER_NAME.".";
                     $body .= "</p><p>Love,<br/>Philip and Ryan</p>";
                     if (!send_email($to, $subject, $body)) {
-                        error_log("password.php: send_email failed");
+                        error_log("PasswordController: send_email failed");
                     }
                 } else {
                     $msg[] = array("text" => "Failed to update your password");

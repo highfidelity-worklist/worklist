@@ -139,7 +139,7 @@ class PaymentsController extends Controller {
             
             case 'pay':
                 //collect confirmed payees and run paypal transaction
-                include_once("paypal-password.php");
+                include_once("../paypal-password.php");
                 if (checkAdmin($_POST['password']) == '1') { 
                     error_log("Made it Admin!");
                     if(empty($_POST['pp_api_username']) || empty($_POST['pp_api_password']) || empty($_POST['pp_api_signature'])){

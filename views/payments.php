@@ -110,7 +110,7 @@ class PaymentsView extends View {
                     $fee_rows .= '<td>'.strftime("%m-%d-%Y", strtotime($ind_fees["date"])).'</td>';
                     $fee_rows .= '<td onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["id"].'</td>';
                     $fee_rows .= '<td align="left" onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.
-                        '<a class="worklist-item" id="worklist-"'.$ind_fees["worklist_id"].'" href="workitem.php?job_id='.
+                        '<a class="worklist-item" id="worklist-"'.$ind_fees["worklist_id"].'" href="./'.
                         $ind_fees["worklist_id"].'" target="_blank">#'.$ind_fees["worklist_id"].'</a></td>';
                     //$fee_rows .= '<td onclick="toggleBox(\'payfee'.$payee["id"].'\')">'.$payee["mechanic_nick"].'</td>';
                     $fee_rows .= '<td align="left">'.$fund_projects[$ind_fees["project_id"]].'</td>';

@@ -23,9 +23,9 @@ class TeamView extends View {
 	    if($showUser) {
 	        $tab = "";
 	        if($showUserTab) {
-	            $tab = "&tab=" . $_REQUEST['tab'];
+	            $tab = "?tab=" . $_REQUEST['tab'];
 	        }
-	        $this->showUserLink = "userinfo.php?id=" . $showUser . $tab;
+	        $this->showUserLink = "./user/" . $showUser . $tab;
 	    }
 
 		return parent::render();

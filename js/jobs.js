@@ -518,7 +518,7 @@ function additionalRowUpdates(workitemId) {
 
         $(".creator, .runner, .mechanic", $(".who", selfRow)).addClass("linkTaskWho").click(
             function() {
-                window.open('userinfo.php?id=' + $(this).attr("title"), '_blank');
+                window.open('./user/' + $(this).attr("title"), '_blank');
             }
         );
     });

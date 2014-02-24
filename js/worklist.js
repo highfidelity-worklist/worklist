@@ -208,7 +208,7 @@ $(function() {
     newHash = getPosFromHash();
     if (newHash['userid'] && newHash['userid'] != -1) {
         setTimeout(function(){
-            window.open('userinfo.php?id=' + newHash['userid'], '_blank');
+            window.open('./user/' + newHash['userid'], '_blank');
         },2000);
     }
     
@@ -235,7 +235,7 @@ function sendInviteForm(){
   var name = $('input[name="invite"]', $("#invite-people")).val();
   $.ajax({
     type: "POST",
-    url: "workitem.php?job_id=" + worklist_id,
+    url: "./" + worklist_id,
     data: "invite=" + name + "&invite-people=Invite",
     dataType: "json",
     success: function(json) {

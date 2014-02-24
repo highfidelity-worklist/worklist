@@ -29,7 +29,7 @@ class ConfirmationController extends Controller {
             }
             
             if ($user->isPaypalVerified()) {
-                error_log("Trying to change user " . (int) $_REQUEST['userId'] . " paypal address on confirmation.php");
+                error_log("Trying to change user " . (int) $_REQUEST['userId'] . " paypal address on ConfirmationController");
                 exit(0);
             }
             
@@ -55,7 +55,7 @@ class ConfirmationController extends Controller {
             $confirm_txt = "An email containing a confirmation link was sent to your payment email address. 
                     Please click on that link to verify your payment email address and activate your account.";
             if (! send_email($paypal_email, $subject, $body, $plain)) { 
-                error_log("signup.php: send_email failed");
+                error_log("ConfirmationController: send_email failed");
                 $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
             }
 

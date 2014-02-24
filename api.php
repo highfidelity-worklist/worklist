@@ -1745,7 +1745,7 @@ function getMultipleBidList() {
                                 $data .= '
                                         <tr>
                                             <td>
-                                                <a href="userinfo.php?id=' . $bid['bidder_id'] . '" target="_blank">
+                                                <a href="./user/' . $bid['bidder_id'] . '" target="_blank">
                                                    ' . $bid['nickname'] . '
                                                 </a>
                                             </td>
@@ -1842,7 +1842,7 @@ function getProjects() {
         });
     }
 
-    // Prepare data for printing in projects.php
+    // Prepare data for printing in projects
     $json = json_encode($projectsOnPage);
     echo $json;
 }

@@ -281,7 +281,7 @@ class BudgetInfo {
             $subject = "Closed - Seed Budget ";
         }
         $subject .= $options["budget_id"] . " (For " . $options["reason"] . ")";
-        $link = SECURE_SERVER_URL . "team.php?showUser=" . $options["receiver_id"] . "&tab=tabBudgetHistory";
+        $link = SECURE_SERVER_URL . "team?showUser=" . $options["receiver_id"] . "&tab=tabBudgetHistory";
         $body = '<p>Hello ' . $options["receiver_nickname"] . '</p>';
         $body .= '<p>Your budget has been closed out:</p>';
         $body .= "<p>Budget " . $options["budget_id"] . " for " . $options["reason"] . "</p>";

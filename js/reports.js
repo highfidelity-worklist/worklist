@@ -93,7 +93,7 @@ function AppendRow(json, odd) {
     row += '<td>' + pre + 'Bonus' + post + '</td>'; // Id
     }
     if (json[0] != 0) {
-    pre = '<a href="workitem.php?job_id='+json[0]+'">';
+    pre = '<a href="./'+json[0]+'">';
     post = '</a>';
     row += '<td>' + pre + json[0] + post + '</td>'; // Id
     }
@@ -582,7 +582,7 @@ $(document).ready(function(){
 
     // Show PayPal Payment Run page
     $('#pp-masspay-button').click(function() {
-        var new_window = window.open('view-payments.php', '_blank');
+        var new_window = window.open('./payments', '_blank');
         new_window.focus();
         return false;
     });
@@ -610,7 +610,7 @@ $(document).ready(function(){
         }
         if(currentTab == 0) {
             location.href = 
-                'reports.php?reload=false&view=details&user=' + $('select[name=user]').val()
+                './reports?reload=false&view=details&user=' + $('select[name=user]').val()
               + '&status=' + $('select[name=status]').val()
               + '&project_id=' + $('select[name=project]').val()
               + '&runner=' + $('select[name=runner]').val()
@@ -626,7 +626,7 @@ $(document).ready(function(){
               + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
         } else if(currentTab == 1) {
             location.href = 
-                'reports.php?reload=false&view=chart&user=' + $('select[name=user]').val()
+                './reports?reload=false&view=chart&user=' + $('select[name=user]').val()
               + '&status=' + $('select[name=status]').val()
               + '&project_id=' + $('select[name=project]').val()
               + '&runner=' + $('select[name=runner]').val()
@@ -642,7 +642,7 @@ $(document).ready(function(){
               + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
         } else if(currentTab == 2) {
             location.href = 
-                'reports.php?reload=false&view=payee&user=' + $('select[name=user]').val()
+                './reports?reload=false&view=payee&user=' + $('select[name=user]').val()
               + '&status=' + $('select[name=status]').val()
               + '&project_id=' + $('select[name=project]').val()
               + '&runner=' + $('select[name=runner]').val()

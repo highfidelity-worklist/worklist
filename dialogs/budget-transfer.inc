@@ -22,7 +22,7 @@ $details = $user->getBudgetTransfersDetails();
             <td><?php echo $transfer['reason'];?></td>
             <td><?php echo $transfer['transfer_date'];?></td>
             <td>
-                <a href="userinfo.php?id=<?php echo $transfer['receiver_id']; ?>" target="blank">
+                <a href="./user/<?php echo $transfer['receiver_id']; ?>" target="blank">
                     <?php echo $transfer['nickname']; ?>
                 </a>
             </td>

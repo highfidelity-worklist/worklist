@@ -168,12 +168,12 @@ function postComment() {
                 var newcomment =
                     '<li id="comment-' + data.id + '" class="depth-' + depth + ' ' + color + ' ' + order + '">' +
                         '<div class="comment">' +
-                            '<a href="userinfo.php?id=' + data.userid + '" target="_blank">' +
+                            '<a href="./user/' + data.userid + '" target="_blank">' +
                                 '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
                             '</a>' +
                             '<div class="comment-container">' +
                                 '<div class="comment-info">' +
-                                    '<a class="author profile-link" href="userinfo.php?id=' + data.userid +'" target="_blank">' +
+                                    '<a class="author profile-link" href="./user/' + data.userid +'" target="_blank">' +
                                         data.nickname +
                                     '</a>' +
                                     '<span class="date">' +
@@ -427,7 +427,7 @@ $(document).ready(function(){
         position: ['top'],
         open: function() {
             $('#button_settings').click(function() {
-                document.location.href = 'settings.php#payment-info';
+                document.location.href = './settings#payment-info';
             });
         }
     });
@@ -594,7 +594,7 @@ $(document).ready(function(){
         <?php if (!empty($user_id) || $user_id < 0): ?>
             setFollowingText(isFollowing);
         <?php else: ?>  
-            $('#followingLogin').html('<a href="login.php">Login to follow this task.</a>');
+            $('#followingLogin').html('<a href="./login">Login to follow this task.</a>');
         <?php endif; ?>
     })(jQuery);
     
@@ -710,7 +710,7 @@ $(document).ready(function(){
             $('#popup-bid-info form input[type="button"]').remove();
 
             $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
-            $('#popup-bid-info #info-email').html('<a href="userinfo.php?id=' + bidData.bidder_id +'" target="_blank">' + bidData.nickname + '</a>');
+            $('#popup-bid-info #info-email').html('<a href="./user/' + bidData.bidder_id +'" target="_blank">' + bidData.nickname + '</a>');
             $('#popup-bid-info #info-bid-created').text(bidData.bid_created);
             if (bidData.bid_accepted.length > 0) {
                 $('#popup-bid-info #info-bid-accepted').text(bidData.bid_accepted);
@@ -816,7 +816,7 @@ $(document).ready(function(){
         // row has bid data attached so user is a bidder or a runner
         // - see table creation routine
         if (feeData.id){
-            $('#popup-fee-info #info-fee-email').html('<a href="userinfo.php?id=' + feeData.user_id + '" target="_blank">' + feeData.nickname + '</a>');
+            $('#popup-fee-info #info-fee-email').html('<a href="./user/' + feeData.user_id + '" target="_blank">' + feeData.nickname + '</a>');
             $('#popup-fee-info #info-fee-created').text(feeData.fee_created);
             $('#popup-fee-info #info-fee-amount').text(feeData.amount);
             $('#popup-fee-info #info-fee-notes').html(feeData.desc);
@@ -1314,7 +1314,7 @@ $(function() {
 
     $('.CreatorPopup').click(function(event) {
         var bidderId=$(this).attr("bidderId");
-        window.open('userinfo.php?id=' + bidderId, '_blank');
+        window.open('./user/' + bidderId, '_blank');
         event.stopPropagation();
     });
 
@@ -1387,7 +1387,7 @@ $(function() {
 });
 
 function sendToLogin(){
-    window.location = '<?php echo SERVER_URL; ?>login.php?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>';
+    window.location = '<?php echo SERVER_URL; ?>login?redir=<?php echo urlencode(Utils::currentPageUrl()); ?>';
 }
 
 function setFollowingText(isFollowing){

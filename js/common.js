@@ -577,7 +577,7 @@ $(document).ready(function() {
                             alert(json.error);
                         } else {
                             $('#popup-addproject').dialog('close');
-                            window.location.href = worklistUrl + 'projectStatus.php?project=' + $(':input[name="name"]', addForm).val();
+                            window.location.href = worklistUrl + 'projectStatus?project=' + $(':input[name="name"]', addForm).val();
                             return;
                         }
                     }
@@ -610,7 +610,7 @@ $(document).ready(function() {
             });
         } else {
             $('#signup').click(function() {
-                document.location = 'signup.php';
+                document.location = './signup';
             });
         }
     });

@@ -92,7 +92,7 @@ function isJSON(json) {
 function confirm_or_clean_phone(values) {
     $.ajax({
         type: "POST",
-        url: 'settings.php',
+        url: './settings',
         data: values,
         async:   false,
 
@@ -156,7 +156,7 @@ function GetPhoneValidation() {
         //ajax call to get phone confirm string
         $.ajax({
             type: "POST",
-            url: 'settings.php',
+            url: './settings',
             data: values,
             async:   false,
 
@@ -256,7 +256,7 @@ function saveSettings(type) {
 
     $.ajax({
         type: "POST",
-        url: 'settings.php',
+        url: './settings',
         data: values,
         success: function(json) {
 

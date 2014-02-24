@@ -128,7 +128,7 @@ var UserInfo = {
 
             $.ajax({
                 type: 'post',
-                url: 'userinfo.php',
+                url: './user/' + userInfo.user_id,
                 dataType: 'json',
                 data: {
                     value: $(this).val(),
@@ -149,7 +149,7 @@ var UserInfo = {
 
             $.ajax({
                 type: 'post',
-                url: 'userinfo.php',
+                url: './user/' + userInfo.user_id,
                 dataType: 'json',
                 data: {
                     value: value,
@@ -172,7 +172,7 @@ var UserInfo = {
                 click: function() {
                     $.ajax({
                         type: 'post',
-                        url: 'userinfo.php',
+                        url: './user/' + userInfo.user_id,
                         dataType: 'json',
                         data: {
                             value: 'rejected',
@@ -212,7 +212,7 @@ var UserInfo = {
 
             $.ajax({
                 type: 'post',
-                url: 'userinfo.php',
+                url: './user/' + userInfo.user_id,
                 dataType: 'json',
                 data: {
                     value: $('#annual_salary').val(),
@@ -344,7 +344,7 @@ var UserInfo = {
                 projects = projects.slice(0, -1)        
                 $.ajax({
                     type: "POST",
-                    url: 'userinfo.php',
+                    url: './user/' + userInfo.user_id,
                     dataType: 'json',
                     data: {
                         action: "create-sandbox",

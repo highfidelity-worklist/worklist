@@ -5,7 +5,7 @@ $emailTemplates = array(
 /*
 changed_pass
     notification of changed password
-    used in: resetpass.php
+    used in: resetpass
 
 replacement data:
     app_name - human-reqadable application name
@@ -24,7 +24,7 @@ replacement data:
 /*
 recovery
     email for password recovery
-    used in: forgot.php
+    used in: forgot
 
 replacement data:
     url - link to reset password
@@ -45,7 +45,7 @@ replacement data:
 /*
 feedback
     feedback received from feedback slidout
-    used in: feedback.php
+    used in: feedback
 
 replacement data:
     app_name - human-reqadable application name
@@ -65,7 +65,7 @@ replacement data:
 /*
 bonus
     inform user they have received a bonus
-    used in: pay-bonus.php
+    used in: pay-bonus
 
 replacement data:
     amount - the amount of bonus received
@@ -81,7 +81,7 @@ replacement data:
 /*
 welcome
     send confirmed user a welcome email
-    used in: confirmation.php
+    used in: confirmation
 
 replacement data:
     nickname - nickname of the receiving user
@@ -111,7 +111,7 @@ replacement data:
 /*
 trusted
     send approved user a notification email
-    used in: userinfo.php
+    used in: userinfo
 */
 'trusted' => array(
     'subject' => 'You have been Trusted!',
@@ -127,7 +127,7 @@ trusted
 /*
 w9-approved
     send approved user a notification email
-    used in: userinfo.php
+    used in: userinfo
 */
 'w9-approved' => array(
     'subject' => 'Your W9 has been approved',
@@ -138,7 +138,7 @@ w9-approved
 /*
 w9-rejected
     send user a notification email that their w9 was rejected
-    used in: userinfo.php
+    used in: userinfo
 
 replacement data:
     reason - the reason that the w9 was rejected, as entered by the user
@@ -205,7 +205,7 @@ replacement data:
                <p>1. Your GitHub repository URL is: <a href="{github_repo_url}">{github_repo_url}</a></p>
                <p>2. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
                <p>3. Your project is set to allow anybody to code review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
-               <p>4. More information about Worklist.net and being a project founder can be found on our Help page <a href="' . WORKLIST_URL . 'help.php">here</a>.</p>
+               <p>4. More information about Worklist.net and being a project founder can be found on our Help page <a href="' . WORKLIST_URL . 'help">here</a>.</p>
                <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
 ),
 

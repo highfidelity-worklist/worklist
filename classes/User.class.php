@@ -413,7 +413,7 @@ class User {
                 if ($remainingFunds <= 0 && $budgetDepletedMessage == true) {
                     $runnerNickname = $this->getNickname();                    
                     $subject = "Depleted - Budget " . $budget_id . " (For " . $budget->reason . ")";
-                    $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId() . "&tab=tabBudgetHistory";
+                    $link = SECURE_SERVER_URL . "team?showUser=".$this->getId() . "&tab=tabBudgetHistory";
                     $body  = '<p>Hi ' . $runnerNickname . '</p>';
                     $body .= "<p>Budget " . $budget_id . " for " . $budget->reason . "<br/> is now depleted.</p>";
                     $body .= '<p>If your budget has gone under 0.00, you will need to ask the user who ' .

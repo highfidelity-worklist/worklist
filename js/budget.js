@@ -367,7 +367,7 @@ var Budget = {
     
     displayHistory: function(user_id) {
         $('#budgetPopup').dialog('close');
-        window.open('userinfo.php?id=' + user_id + '&tab=tabBudgetHistory', '_blank');
+        window.open('./user/' + user_id + '&tab=tabBudgetHistory', '_blank');
     },
         
     /**
@@ -551,7 +551,7 @@ var Budget = {
                         '    </td>' + 
                         '    <td>' + data[i].notes + '</td>' +
                         '    <td>' +
-                        '        <a href="userinfo.php?id=' + data[i].receiver_id + '" target="_blank">' + data[i].who + '</a>' +
+                        '        <a href="./user/' + data[i].receiver_id + '" target="_blank">' + data[i].who + '</a>' +
                         '    </td>' +
                         '    <td>$' + data[i].amount + '</td>' +
                         '    <td>' + data[i].created + '</td>' +
@@ -564,7 +564,7 @@ var Budget = {
                     var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
                     var who_link = '';
                     for (var z = 0; z < who.length; z++) {
-                        who[z] = '<a href="userinfo.php?id=' + data[i].ids[z] + '" target="_blank">' + who[z] + '</a> ';
+                        who[z] = '<a href="./user/' + data[i].ids[z] + '" target="_blank">' + who[z] + '</a> ';
                         if (z < who.length - 1) {
                             who[z] += ', ';
                         }

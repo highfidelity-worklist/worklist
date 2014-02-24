@@ -59,7 +59,7 @@ class UserController extends Controller {
                             switch ($value) {
                                 case 'approved':
                                     if (! sendTemplateEmail($updateUser->getUsername(), 'w9-approved')) { 
-                                        error_log("userinfo.php: send_email failed on w9 approved notification");
+                                        error_log("UserController: send_email failed on w9 approved notification");
                                     }
 
                                     break;
@@ -69,7 +69,7 @@ class UserController extends Controller {
                                     $data['reason'] = strip_tags($_POST['reason']);
                                     
                                     if (! sendTemplateEmail($updateUser->getUsername(), 'w9-rejected', $data)) { 
-                                        error_log("userinfo.php: send_email failed on w9 rejected notification");
+                                        error_log("UserController: send_email failed on w9 rejected notification");
                                     }
                                     break;
                                 

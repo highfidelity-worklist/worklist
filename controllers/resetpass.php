@@ -24,7 +24,7 @@ class ResetPassController extends Controller {
                     }
 
                 } else {
-                    $msg = 'The link to reset your password has expired or is invalid. <a href="forgot.php">Please try again.</a>';
+                    $msg = 'The link to reset your password has expired or is invalid. <a href="./forgot">Please try again.</a>';
                 }
 
             } else {

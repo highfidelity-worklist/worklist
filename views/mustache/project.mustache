@@ -104,7 +104,7 @@
                 <a href="mailto:{{project.getContactInfo}}">{{project.getContactInfo}}</a>
             </div>
             <div id="projectRunner"><span>Project started by</span>
-                <a href='userinfo.php?id={{project.getOwnerId}}' target="_blank">
+                <a href='./user/{{project.getOwnerId}}' target="_blank">
                     <span>{{project_user.getNickname}}</span>
                 </a>
             </div>
@@ -136,7 +136,7 @@
                 <h3>Project contributors</h3>
                 <p id="projectContributors">
                     {{#project.getContributors}}
-                        <a href="userinfo.php?id={{id}}" target="_blank">{{nickname}}</a>
+                        <a href="./user/{{id}}" target="_blank">{{nickname}}</a>
                     {{/project.getContributors}}
                 </p>
             </li>
@@ -393,7 +393,7 @@
                                 <tbody>
                                 {{#project.getPaymentStats}}
                                     <tr class="payment">
-                                        <td><a href="userinfo.php?id={{id}}" target="_blank">{{nickname}}</a></td>
+                                        <td><a href="./user/{{id}}" target="_blank">{{nickname}}</a></td>
                                         <td>
                                             <a id="worklist-{{worklist_id}}" class="payment-joblink" 
                                               target="_blank"

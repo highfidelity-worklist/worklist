@@ -989,7 +989,7 @@ function checkLogin() {
         if (!empty($_POST)) {
             handleUnloggedPost();
         }
-        header("location:login.php?expired=1&redir=" . urlencode($_SERVER['REQUEST_URI']));
+        Utils::redirect('./login?expired=1&redir=' . urlencode($_SERVER['REQUEST_URI']));
         exit;
     }
 }
@@ -1189,14 +1189,14 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
     $review = $oReview[0]['feeRange'] . " " . $oReview[0]['review'];
     $reviewee = new User();
     $reviewee->findUserById($reviewee_id);
-    $worklist_link = SERVER_URL . "jobs";
+    $worklist_link = WORKLIST_URL;
     
     $to = $reviewee->getNickname() . ' <' . $reviewee->getUsername() . '>';
     $body  = "<p>" . $review . "</p>";
     $nickname = $reviewee->getNickname();
     $headers = array();
     if ($type == "new") {
-        $userinfo_link = SERVER_URL . 'userinfo.php?id=' . $reviewee->getId();
+        $userinfo_link = WORKLIST_URL . 'user/?id=' . $reviewee->getId();
         $headers['From'] = 'worklist<donotreply@worklist.net>';
         $subject = 'New Peer Review';
         $journal = $nickname . " received a new review: " . $review;
@@ -1204,7 +1204,7 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
         $body  .= '<p>You have received a review from one of your peers in the Worklist.</p><br />';
         $body  .= '<p>To see your current user reviews, click <a href="' . $userinfo_link . '">here</a>.</p>';
         $body  .= '<p><a href="' . $userinfo_link . '">' . $userinfo_link . '</a></p><br />';
-        $body  .= '<p><a href="' . SERVER_URL . '"jobs>worklist' . '</a></p>';
+        $body  .= '<p><a href="' . WORKLIST_URL . '"jobs>worklist' . '</a></p>';
     } else if ($type == "update") {
         $subject = "A review of you has been updated";
         $journal = "A review of " . $nickname . " has been updated: ". $review;
@@ -1214,7 +1214,7 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
     }
     
     if (!send_email($to, $subject, $body, null, $headers)) { 
-        error_log("review.php: send_email failed"); 
+        error_log("sendReviewNotification: send_email failed"); 
     }
     sendJournalNotification($journal);
 }

@@ -122,7 +122,7 @@
         <div class="second-line"></div>
         {{^editing}}
         <div id="quick-status">
-            <span class="info-label"><a href="help.php#ff5" target="_blank">Job status:</a></span>
+            <span class="info-label"><a href="./help#ff5" target="_blank">Job status:</a></span>
             {{#canChangeStatus}}
             <form id="searchForm" method="post" action="">
                 <input type="hidden" id="status-switch" name="status-switch" value="1" />
@@ -196,7 +196,7 @@
                       title="{{#currentUser.id}}Ping Creator{{/currentUser.id}}{{^currentUser.id}}Log in to Ping Creator{{/currentUser.id}}">
                         <a href="#">Job creator:</a>
                     </span>
-                    <a href="userinfo.php?id={{worklist.creator_id}}" target="_blank">{{worklist.creator_nickname}}</a>
+                    <a href="./user/{{worklist.creator_id}}" target="_blank">{{worklist.creator_nickname}}</a>
                 </div>
                 <div id="runnerBox">
                     {{#editing}}
@@ -226,7 +226,7 @@
                             </span>
                         </li>
                         <li>
-                            <span class="info-label"><a href="help.php#ff5" target="_blank">Status</a></span>
+                            <span class="info-label"><a href="./help#ff5" target="_blank">Status</a></span>
                             <span class="info-data">
                                 {{& statusInfo}}
                             </span>
@@ -341,12 +341,12 @@
                         <ul>
                             <li id="comment-{{id}} ?>" class="depth-{{depth}} {{#isDescOrder}}{{#depth}}desc{{/depth}}{{/isDescOrder}}">
                                 <div class="comment">
-                                    <a href="userinfo.php?id={{comment.getUser.getId}}" target="_blank">
+                                    <a href="./user/{{comment.getUser.getId}}" target="_blank">
                                         <img class="picture profile-link" src="{{& comment.getUser.getAvatar}}" title="Profile Picture - {{comment.getUser.getNickname}}" />
                                     </a>
                                     <div class="comment-container">
                                         <div class="comment-info">
-                                            <a class="author profile-link" href="userinfo.php?id={{comment.getUser.getId}}" target="_blank">
+                                            <a class="author profile-link" href="./user/{{comment.getUser.getId}}" target="_blank">
                                                 {{comment.getUser.getNickname}}
                                             </a>
                                             <span class="date">{{comment.getRelativeDate}}</span>

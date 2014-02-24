@@ -18,8 +18,8 @@ class SettingsController extends Controller {
         $messages = array();
         $errors = 0;
         $error = new Error();
-        $settings_link = SECURE_SERVER_URL . "settings.php";
-        $worklist_link = SERVER_URL . "jobs";
+        $settings_link = SECURE_SERVER_URL . "settings";
+        $worklist_link = SECURE_SERVER_URL . "jobs";
         $returned_json = array();
 
 
@@ -146,7 +146,7 @@ class SettingsController extends Controller {
                 // generate email for confirm to new email address
                 $subject = "Your email has changed.";
 
-                $link = SECURE_SERVER_URL . "confirmation.php?emstr=" . base64_encode($username);
+                $link = WORKLIST_URL . "confirmation?emstr=" . base64_encode($username);
 
                 $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
                 $body .= '<p>Please confirm your new email address in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
@@ -165,7 +165,7 @@ class SettingsController extends Controller {
                 $returned_json['confirm_email'] = $confirm_email;
 
                 if (! send_email($username, $subject, $body, $plain)) {
-                   error_log("settings.php: send_email failed");
+                   error_log("SettingsController: send_email failed");
                     $confirm_txt = "There was an issue sending email. Please try again or notify ". SUPPORT_EMAIL;
                 }
 
@@ -182,7 +182,7 @@ class SettingsController extends Controller {
                 $plain .= 'See you in the Worklist' . "\n\n";
 
                 if (! send_email($_SESSION['username'], $subject, $body, $plain)) {
-                    error_log("settings.php: send_email failed");
+                    error_log("SettingsController: send_email failed");
                     $confirm_txt = 'There was an issue sending email. Please try again or notify ' . SUPPORT_EMAIL;
                 }
                 $messages[] = "We receieved your request to modify your email.";
@@ -229,7 +229,7 @@ class SettingsController extends Controller {
                 // generate email
                 $subject = "Your payment details have changed";
 
-                $link = SECURE_SERVER_URL . "confirmation.php?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
+                $link = SECURE_SERVER_URL . "confirmation?pp=" . $paypal_hash . "&ppstr=" . base64_encode($paypal_email);
 
                 $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
                 $body .= '<p>Please confirm your payment email address to activate payments on your account and enable you to start placing bids in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
@@ -241,7 +241,7 @@ class SettingsController extends Controller {
 
                 $confirm_txt = "An email containing a confirmation link was sent to your payment email address. Please click on that link to verify your payment email address and activate your account.";
                 if (! send_email($paypal_email, $subject, $body, $plain)) {
-                    error_log("signup.php: send_email failed");
+                    error_log("SettingsController: send_email failed");
                     $confirm_txt = 'There was an issue sending email. Please try again or notify ' . SUPPORT_EMAIL ;
                 }
 
@@ -294,7 +294,7 @@ class SettingsController extends Controller {
                 $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
                 $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
 
-                if(!send_email($to, $subject, $body)) { error_log("settings.php: send_email failed"); }
+                if(!send_email($to, $subject, $body)) { error_log("SettingsController: send_email failed"); }
 
                 $msg="Account updated successfully!";
             }

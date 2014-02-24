@@ -122,7 +122,7 @@ $(document).ready(function() {
         select:function(event, ui) {
             $("#query").val("");
             $("#search_user-id").val(ui.item.id);
-            window.open('userinfo.php?id=' + ui.item.id, '_blank');
+            window.open('./user/' + ui.item.id, '_blank');
 
             return false;
         }
@@ -183,7 +183,7 @@ function fillUserlist(npage) {
             $('tr.row-userlist-live').click(function(){
                 var match = $(this).attr('class').match(/useritem-\d+/);
                 var userid = match[0].substr(9);
-                window.open('userinfo.php?id=' + userid, '_blank');
+                window.open('./user/' + userid, '_blank');
                 return false;
             });
 

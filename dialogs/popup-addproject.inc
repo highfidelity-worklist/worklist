@@ -13,7 +13,7 @@
                     class="LV_validation_message LV_invalid upload"></span>
                     <input type="hidden" value="" name="logoProject" />
                     <span class="help">
-                        <strong>You want to add a project?</strong> Awesome. See our <a href="help.php">Help page</a> for more details,
+                        <strong>You want to add a project?</strong> Awesome. See our <a href="./help">Help page</a> for more details,
                         then fill out this form to get yourself started. Later, you'll be able to choose version control options or
                         change any of the info you enter here.
                     </span>
@@ -62,7 +62,7 @@
                 </div>
             </form>
          <?php } else {?>
-            Click <a href="settings.php">here</a> to verify your paypal address before submitting your new project.
+            Click <a href="./settings">here</a> to verify your paypal address before submitting your new project.
     <?php }?>
     <?php else: ?>
     <img style="display: none;" id="projectLogoAdd" />
