@@ -102,4 +102,6 @@ $(document).ready(function() {
         $(this).unbind('click');
         $('#paymentForm').submit();
     });
+
+    updateTotalFees('0');
 });
