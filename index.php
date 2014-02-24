@@ -4,7 +4,8 @@ require_once("config.php");
 
 class Dispatcher {
     public function run() {
-        $path = '/' . $_GET['url'];
+        $url = isset($_GET['url']) ? $_GET['url'] : '';
+        $path = '/' . $url;
         $dispatcher = new Pux\Mux;
 
         $dispatcher->get('/addjob', array('AddJob'));
