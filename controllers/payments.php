@@ -116,9 +116,6 @@ class PaymentsController extends Controller {
                 ";
         }
 
-
-        $rowclass = 'rowodd';
-
         $action = (isset($_POST["action"])) ? $_POST["action"] : '';
 
         // Initialize empty arrays if no fees or bonuses were selected
