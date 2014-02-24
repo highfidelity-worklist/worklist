@@ -42,7 +42,6 @@ class Dispatcher {
         $dispatcher->get('/user/:id', array('User'));
         $dispatcher->post('/user/:id', array('User'));
         $dispatcher->get('/welcome', array('Welcome'));
-        #$dispatcher->get('/', array(''));
         $dispatcher->get('/:id', array('Job'), array(
             'require' => array('id' => '\d+')
         ));
