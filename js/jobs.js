@@ -105,6 +105,7 @@ $(document).ready(function() {
 
 function AppendPagination(page, cPages, table)    {
     // support for moving rows between pages
+    var selfLink = './?page=';
     if (table == 'worklist') {
         // preparing dialog
         $('#pages-dialog select').remove();
