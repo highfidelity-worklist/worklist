@@ -21,6 +21,8 @@ class Dispatcher {
         $dispatcher->get('/logout', array('Logout'));
         $dispatcher->get('/password', array('Password'));
         $dispatcher->post('/password', array('Password'));
+        $dispatcher->get('/payments', array('Payments'));
+        $dispatcher->post('/payments', array('Payments'));
         $dispatcher->get('/privacy', array('Privacy'));
         $dispatcher->get('/projectstatus', array('ProjectStatus'));
         $dispatcher->get('/projects', array('Projects'));
