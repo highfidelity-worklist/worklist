@@ -59,6 +59,7 @@ class JobView extends View {
         $this->is_project_founder = $this->read('is_project_founder');
         $this->promptForReviewUrl =  (int) $this->read('promptForReviewUrl');
 
+        $this->reviewer = $this->read('reviewer');
 
         return parent::render();
     }
@@ -743,5 +744,34 @@ class JobView extends View {
         $workitem = $this->workitem;
         $user = $this->user;
         return (int) ($this->action == "edit" && ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])));
+    }
+
+    public function crFee() {
+        return number_format($this->read('crFee'), 2);
+    }
+
+    public function statusSuggested() {
+        return $this->worklist['status'] == "Suggested";
+    }
+
+    public function statusSuggestedAny() {
+        return $this->worklist['status'] == "Suggested" || $this->worklist['status'] == "SuggestedWithBid";
+    }
+
+    public function canFeeOthers() {
+        return ($this->currentUser['is_runner'] || $this->is_project_founder || $this->is_project_runner);
+    }
+
+    public function userSelectBox() {
+        $filter = new Agency_Worklist_Filter();
+        return $filter->getUserSelectbox(1, false, 'mechanicFee', 'mechanicFee');
+    }
+
+    public function showBidderStatistics() {
+        return ($this->user->getIs_admin() == 1 && $this->currentUser['is_runner'] || $this->is_project_founder || $this->is_project_runner);
+    }
+
+    public function showBudgetSelect() {
+        return ($this->currentUser['is_runner'] || $this->is_project_founder || $this->workitem->getIsRelRunner());
     }
 }

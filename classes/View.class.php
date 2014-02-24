@@ -10,6 +10,7 @@
 use \Mustache\Mustache;
 
 class View extends AppObject {
+    public $name = '';
     public $layout = 'common';
     public $header = 'header';
     public $footer = 'footer';
@@ -34,7 +35,20 @@ class View extends AppObject {
         'is_runner' => false,
         'runner_id' => 0,
         'is_admin' => false,
-        'is_payer' => false
+        'is_payer' => false,
+        'can' => array(
+            'addProject' => false
+        ),
+        'budget' => array(
+            'feeSums' => .0,
+            'totalManaged' => .0,
+            'remainingFunds' => .0,
+            'allocated' => .0,
+            'submitted' => .0,
+            'paid' => .0,
+            'transfered' => .0,
+            'transfersDetails' => array()
+        )
     );
 
     public $config = array(
@@ -75,11 +89,25 @@ class View extends AppObject {
      * Constructor method
      */
     public function __construct() {
+        $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
         $user_id = getSessionUserId();
         $user = new User();
         if ($user_id) {
             initUserById($user_id);
             $user->findUserById($user_id);
+            $this->user['budget'] = array(
+                'feeSums' => Fee::getSums(),
+                'totalManaged' => money_format('$ %i', $user->getTotalManaged()),
+                'remainingFunds' => money_format('$ %i', $user->setRemainingFunds()),
+                'allocated' => money_format('$ %i', $user->getAllocated()),
+                'submitted' => money_format('$ %i', $user->getSubmitted()),
+                'paid' => money_format('$ %i', $user->getPaid()),
+                'transfered' => money_format('$ %i', $user->getTransfered()),
+                'transfersDetails' => $user->getBudgetTransfersDetails()
+            );
+            $this->user['can'] = array(
+                'addProject' => ($user->getIs_admin() || $user->isRunner() || $user->isPaypalVerified())
+            );
         }
 
         $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
@@ -166,8 +194,10 @@ class View extends AppObject {
      */
     public function renderHeader() {
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $this->layout;
+        $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
         $mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader($base)
+            'loader' => new Mustache_Loader_FilesystemLoader($base),
+            'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
         ));
         $template = $mustache->loadTemplate($this->header);
         return $template->render($this);
@@ -178,8 +208,10 @@ class View extends AppObject {
      */
     public function renderNavBar() {
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $this->layout;
+        $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
         $mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader($base)
+            'loader' => new Mustache_Loader_FilesystemLoader($base),
+            'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
         ));
         $template = $mustache->loadTemplate($this->navbar);
         return $template->render($this);
@@ -190,8 +222,10 @@ class View extends AppObject {
      */
     public function renderFooter() {
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $this->layout;
+        $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
         $mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader($base)
+            'loader' => new Mustache_Loader_FilesystemLoader($base),
+            'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
         ));
         $template = $mustache->loadTemplate($this->footer);
         return $template->render($this);
@@ -199,11 +233,12 @@ class View extends AppObject {
         
     public function render() {
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache';
-        $template = strtolower(preg_replace('/View$/', '', get_class($this)));
+        $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
         $mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader($base)
+            'loader' => new Mustache_Loader_FilesystemLoader($base),
+            'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
         ));
-        $template = $mustache->loadTemplate($template);
+        $template = $mustache->loadTemplate($this->name);
         $ret = $this->renderHeader() . $template->render($this) . $this->renderFooter();
         return $ret;
     }

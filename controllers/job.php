@@ -11,9 +11,8 @@ class JobController extends Controller {
         $this->write('statusListMechanic', $statusListMechanic);
         $this->write('statusListCreator', array("Suggested", "Pass"));
 
-        $get_variable = 'job_id';
         if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL); }
-        if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER_URL . "jobs?$get_variable="); }
+        if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER_URL); }
         $worklist_id = intval($job_id);
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
         $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
@@ -1217,6 +1216,7 @@ class JobController extends Controller {
         //code review fees
         $project = new Project();
         $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
+        $crFee = 0;
         if (count($project_roles) != 0) {
             $crRole = $project_roles[0];
             if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
@@ -1225,10 +1225,8 @@ class JobController extends Controller {
                    $crFee = $crRole['min_amount']; 
                 }
             }
-        } else {
-            $crFee = 0;
         }
-
+        $this->write('crFee', $crFee);
 
         $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
@@ -1289,6 +1287,10 @@ class JobController extends Controller {
         } else {
             $this->write('displayDialogAfterDone', false);
         }
+
+        $reviewer = new User();
+        $reviewer->findUserById($workitem->getCReviewerId());
+        $this->write('reviewer', $reviewer);
 
         $this->write('order_by', $order_by);
         $this->write('action', $action);

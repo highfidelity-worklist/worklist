@@ -1,0 +1,51 @@
+<div id="budgetPopup" style="display:none;">
+  <div id="be-block" >
+        <label class="info-label" >Your Fees</label>   
+        <table>
+            <tr>
+                <td class="be-table_cell1">this week:</td>
+                <td class="be-table_cell2"><a href="#feesToolTip" class="feesum" id="fees-week">${{currentUser.budget.feeSums.week}}</a></td>
+            </tr>
+            <tr>
+                <td class="be-table_cell1">this month:</td>
+                <td class="be-table_cell2"><a href="#feesToolTip" class="feesum" id="fees-month">${{currentUser.budget.feeSums.month}}</a></td>
+            </tr>
+        </table>
+        {{#currentUser.id}}{{#currentUser.is_runner}}
+        <br />
+        <label class="info-label" >Budget</label>   
+        <table>
+            <tr onclick="Budget.displayHistory(<? echo $_SESSION['userid'] ?>);">
+                <td class="be-table_cell1 iToolTip budgetManaged1"><strong>Total Funds Managed (lifetime):</strong></td>
+                <td class="be-table_cell2 iToolTip budgetManaged1"><strong>
+                {{currentUser.budget.totalManaged}}</strong></td>
+            </tr>
+            <tr onclick="Budget.displayHistory(<? echo $_SESSION['userid'] ?>);">
+                <td class="be-table_cell1 iToolTip budgetRemaining1"><strong>Remaining Funds (from budgets):</strong></td>
+                <td class="be-table_cell2 iToolTip budgetRemaining1"><strong>
+                {{currentUser.budget.remainingFunds}}</strong></td>
+            </tr>
+            <tr>
+                <td onclick="Budget.budgetExpand(0)" class="be-table_cell1 iToolTip budgetAllocated1">Allocated:</td>
+                <td onclick="Budget.budgetExpand(0)" class="be-table_cell2 iToolTip budgetAllocated1">
+                {{currentUser.budget.allocated}}</td>
+            </tr>
+            <tr>
+                <td onclick="Budget.budgetExpand(1)" class="be-table_cell1 iToolTip budgetSubmitted1">Submitted:</td>
+                <td onclick="Budget.budgetExpand(1)" class="be-table_cell2 iToolTip budgetSubmitted1">
+                {{currentUser.budget.submited}}</td>
+            </tr>
+            <tr>
+                <td onclick="Budget.budgetExpand(2)" class="be-table_cell1 iToolTip budgetPaid1">Paid:</td>
+                <td onclick="Budget.budgetExpand(2)" class="be-table_cell2 iToolTip budgetPaid1">
+                {{currentUser.budget.paid}}</td>
+            </tr>
+            <tr>
+                <td onclick="Budget.showBudgetTransferDialog()" class="be-table_cell1 iToolTip budgetTransfered1">Transferred:</td>
+                <td onclick="Budget.showBudgetTransferDialog()" class="be-table_cell2 iToolTip budgetTransfered1">
+                {{currentUser.budget.transferred}}</td>
+            </tr>
+        {{/currentUser.is_runner}}{{/currentUser.id}}
+        </table>
+    </div>
+</div>
