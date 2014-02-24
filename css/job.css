@@ -289,7 +289,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 #jobStatusFilter .ui-combobox-list li:hover{
-    background: #AA1E00;
+    background: #009999;
     color: #FFFFFF;
     cursor: pointer;
 }
@@ -595,7 +595,7 @@ a:hover{
 .skills-label {
     float: left;
     width: 100%;
-    color: #993300;
+    color: #007F7C;
     font-size: 14px;
     margin-bottom: 2px;
     font-weight: normal;
@@ -606,7 +606,7 @@ a:hover{
 .creatorName a,
 .skills-label a {
     text-decoration: none;
-    color: #993300 !important;
+    color: #007F7C !important;
 }
 
 .changeRunner {
@@ -632,7 +632,7 @@ a:hover{
 }
 
 .title {
-    color: #993300 !important;
+    color: #007F7C !important;
 
     margin-left: 12px;
 }
@@ -770,7 +770,7 @@ a:hover{
 }
 
 #info-top .ui-combobox-list li.ui-state-hover {
-    background: #AA1E00 !important;
+    background: #009999 !important;
     color: #FFFFFF;
 }
 
@@ -793,7 +793,7 @@ a:hover{
 
 #edit_review_url {
     cursor: pointer;
-    color: #993300;
+    color: #007F7C;
 }
 
 #edit_review_url:hover {
@@ -939,7 +939,7 @@ a:hover{
     background-color: #FFFFFF;
     border: 1px solid #D3D3D3;
     cursor: auto;
-    color: #AA1E00;
+    color: #009999;
     font-size: 15px;
     font-weight: bold;
     height: 25px;

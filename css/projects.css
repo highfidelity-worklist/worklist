@@ -27,7 +27,7 @@ h1 {
 }
 
 #add-project {
-    color: #993300;
+    color: #007F7C;
     float: right;
     font-size: 20px;
     text-decoration: none;
@@ -83,7 +83,7 @@ h1 {
 #projects > article h2 a {
     font-size: 26px;
     font-family: 'Cabin', sans-serif;
-    color: #993300;
+    color: #007F7C;
     text-decoration: none;
     padding-bottom: 0;
     margin-bottom: 8px;
@@ -267,7 +267,7 @@ h1 {
     padding: 0 18px;
     height: 44px;
     width: 134px;
-    background-color: #993300 !important;
+    background-color: #007F7C !important;
 }
 
 #popup-addproject .help {
@@ -285,7 +285,7 @@ h1 {
 }
 
 #popup-addproject .help a {
-    color: #993300 !important;
+    color: #007F7C !important;
     font-weight: bold;
 }
 

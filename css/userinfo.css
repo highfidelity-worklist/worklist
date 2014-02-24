@@ -101,7 +101,7 @@ p.small-text{
 }
 
 .title-label-big {
-    color: #993300;
+    color: #007F7C;
     font-size: 18px;
     margin: 30px 22px 0 0;
     line-height: 17px;
@@ -127,7 +127,7 @@ p.small-text{
     margin: 0 auto;
 }
 .title-label-medium {
-    color: #993300;
+    color: #007F7C;
     font-size: 18px;
     margin: 23px 22px 0 0;
     line-height: 19px;
@@ -161,7 +161,7 @@ p.small-text{
 }
 
 .title-label-small {
-    color: #993300;
+    color: #007F7C;
     font-size: 14px;
     margin: 21px 24px 0 0;
     line-height: 17px;
@@ -550,7 +550,7 @@ p.bottom {
     position: absolute;
     left: 100px;
     top: 0;
-    color: #993300;
+    color: #007F7C;
     font-size: 45px;
     line-height: 50px;
     vertical-align: top;

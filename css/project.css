@@ -13,7 +13,7 @@ a:hover {
 }
 
 a:active {
-    color: #993300;
+    color: #007F7C;
 }
 
 #center {
@@ -24,7 +24,7 @@ a:active {
 }
 
 h2, h3 {
-    color: #993300;
+    color: #007F7C;
 }
 
 .leftCol {
@@ -173,7 +173,7 @@ td.noroles {
 }
 
 #projectUrlLabel {
-    color: #993300;
+    color: #007F7C;
     font-size: 1.1em;
 }
 

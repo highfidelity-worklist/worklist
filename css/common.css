@@ -743,7 +743,7 @@ input[type=password]:focus {
 }
 
 a#addJobButton {
-    background-color: #AA1E00;
+    background-color: #009999;
     background-image: none;
     border-radius: 7px 7px 7px 7px;
     color: #FFFFFF;
