@@ -14,7 +14,7 @@
             <tr><td>{{id}}</td>
             <td>{{reason}}</td>
             <td>{{transfer_date}}</td>
-            <td><a href="./user/<?php echo $transfer['receiver_id']; ?>" target="blank">{{nickname}}</a></td>
+            <td><a href="./user/{{receiver_id}}" target="blank">{{nickname}}</a></td>
             <td>{{amount_granted}}</td></tr>
         {{/currentUser.budget.transfersDetails}}
 	    </tbody>

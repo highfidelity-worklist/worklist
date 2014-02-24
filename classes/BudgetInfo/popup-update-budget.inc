@@ -35,7 +35,7 @@ MapToolTips();
                 $i = 1;
                 foreach ($sources as $source) { ?>
                     <tr class="<?php echo ($i % 2 ? 'rowodd' : 'roweven'); ?>"  
-                        onclick="Budget.displayHistory('<?php echo $source["giver_id"]; ?>');"                        
+                        onclick="Budget.displayHistoryFromParent('<?php echo $source["giver_id"]; ?>');"                        
                     >
                     <?php
                         if ($budget->seed == 0) {

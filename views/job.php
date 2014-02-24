@@ -48,15 +48,15 @@ class JobView extends View {
         $this->action = $this->read('action');
         $this->action_error = $this->read('action_error');
         $this->classEditable = $this->read('classEditable');
-        $this->allowEdit = $this->read('allowEdit');
-        $this->userHasRights = $this->read('userHasRights');
-        $this->isGitHubConnected = $this->read('isGitHubConnected');
+        $this->allowEdit = (int) $this->read('allowEdit');
+        $this->userHasRights = (int) $this->read('userHasRights');
+        $this->isGitHubConnected = (int) $this->read('isGitHubConnected');
         $this->taskPosts = $this->read('taskPosts');
         $this->message = $this->read('message');
-        $this->currentUserHasBid = $this->read('currentUserHasBid');
-        $this->has_budget = $this->read('has_budget');
-        $this->is_project_runner = $this->read('is_project_runner');
-        $this->is_project_founder = $this->read('is_project_founder');
+        $this->currentUserHasBid = (int) $this->read('currentUserHasBid');
+        $this->has_budget = (int) $this->read('has_budget');
+        $this->is_project_runner = (int) $this->read('is_project_runner');
+        $this->is_project_founder = (int) $this->read('is_project_founder');
         $this->promptForReviewUrl =  (int) $this->read('promptForReviewUrl');
 
         $this->reviewer = $this->read('reviewer');
@@ -762,9 +762,14 @@ class JobView extends View {
         return ($this->currentUser['is_runner'] || $this->is_project_founder || $this->is_project_runner);
     }
 
-    public function userSelectBox() {
+    public function userFeeSelectBox() {
         $filter = new Agency_Worklist_Filter();
         return $filter->getUserSelectbox(1, false, 'mechanicFee', 'mechanicFee');
+    }
+
+    public function userTipSelectBox() {
+        $filter = new Agency_Worklist_Filter();
+        echo $filter->getUserSelectbox(1, false, 'mechanicTip', 'mechanicTip');
     }
 
     public function showBidderStatistics() {
@@ -773,5 +778,16 @@ class JobView extends View {
 
     public function showBudgetSelect() {
         return ($this->currentUser['is_runner'] || $this->is_project_founder || $this->workitem->getIsRelRunner());
+    }
+
+    public function maxTip() {
+        $max_tip = 0;
+        foreach ($this->read('fees') as $fee) {
+            if ($fee['desc'] == 'Accepted Bid') {
+                $max_tip = $fee['amount'];
+                break;
+            }
+        }
+        return $maxTip;
     }
 }

@@ -14,13 +14,13 @@
     var ping_bid_id = 0;
     var sandbox_url = '{{worklist.sandbox}}';
     var order_by = '{{order_by}}';
-    var mechanic_id = 0{{worklist.mechanic_id}};
-    var workitem_id = 0{{worklist.id}};
+    var mechanic_id = {{worklist.mechanic_id}};
+    var workitem_id = {{worklist.id}};
     var already_bid = {{currentUserHasBid}};
-    var has_budget = 0{{has_budget}};
+    var has_budget = {{has_budget}};
     var isFollowing = {{userIsFollowing}};
-    var is_project_founder = 0{{is_project_founder}};
-    var is_project_runner = 0{{is_project_runner}};
+    var is_project_founder = {{is_project_founder}};
+    var is_project_runner = {{is_project_runner}};
     var showAcceptBidButton = {{showAcceptBidButton}};
     var hasAcceptedBids = {{hasAcceptedBids}};
     var insufficientRightsToEdit = {{insufficientRightsToEdit}};
@@ -590,3 +590,11 @@
 {{> review-url-dialog}}
 {{> popup-paid}}
 {{> budget-expanded}}
+{{> popup-invite-people}}
+{{> popup-runner-job-edit}}
+{{#userIsMechanic}}
+    {{> popup-addtip}}
+{{/userIsMechanic}}
+{{#userIsEligible}}
+    {{> popup-ineligible}}
+{{/userIsEligible}}

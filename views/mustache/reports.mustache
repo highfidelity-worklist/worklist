@@ -2,7 +2,7 @@
     var currentTab = {{showTab}}; // 0 for details and 1 for chart
     var current_order = {{filterDirAsc}};
     var current_sortkey = '{{filter.getOrder}}';
-    var page = 0{{filter.getPage}} ? 0{{filter.getPage}} : 1;
+    var page = {{#filter.getPage}}{{filter.getPage}}{{/filter.getPage}}{{^filter.getPage}}1{{/filter.getPage}};
     var activeUsers = {{activeUsers}};
     var activeRunners = {{activeRunners}};
     var activeProjects = {{activeProjects}};

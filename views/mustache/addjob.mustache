@@ -59,7 +59,14 @@
             <div id="attachments"></div>
             <input type="hidden" name="files" value="" />
             <div class="uploadnotice"></div>
-            <?php require_once('dialogs/file-templates.inc'); ?>
+            <script type="text/html" id="uploadDocument">
+                <div class="attachment">
+                    <span><#= title #></span>
+                    <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
+                        <i class="icon-remove"></i>
+                    </span>
+                </div>
+            </script>
         </div>
         
         <fieldset id="buttons">

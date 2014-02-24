@@ -1,3 +1,0 @@
-<div id="popup-review-started" class="popup-body" title = "Code Review Already Started">
-    This Job is already being reviewed by another mechanic.
-</div>

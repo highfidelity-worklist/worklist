@@ -1,27 +1,13 @@
-<?php
-    if (isset($fees)) {
-        $max_tip = 0;
-        foreach ($fees as $fee) {
-            if ($fee['desc'] == 'Accepted Bid') {
-                $max_tip = $fee['amount'];
-                break;
-            }
-        }
-        
-        if (! $max_tip) {
-           echo '<h1>No fee to tip from!</h1>';
-        } else {
-?>
+{{^maxTip}}
+<h1>No fee to tip from!</h1>';
+{{/maxTip}}
+{{#maxTip}}
     <div id="popup-addtip" class="popup-body" title = "Add Tip">
         <form name="popup-form" id="popup-form-addtip" action="" method="post">
             <div class="field">
                 <label for="mechanic_id">Pay To</label>
-<?php
-    $filter = new Agency_Worklist_Filter();
-    echo $filter->getUserSelectbox(1, false, 'mechanicTip', 'mechanicTip');
-?>
-                    <input type='hidden' name='mechanic_id' id='mechanic_id' value='<?php echo !empty($_SESSION['userid']) ? $_SESSION['userid'] : ''; ?>' />
-                
+                {{& userTipSelectbox}}
+                <input type='hidden' name='mechanic_id' id='mechanic_id' value='{{currentUser.id}}' />
                 <br/>
             </div>
             <input type="hidden" name="itemid" value="" />
@@ -42,7 +28,7 @@
                 var tip_amount = new LiveValidation('tip_amount', { onlyOnSubmit: true });
                     tip_amount.add(Validate.Presence, {failureMessage: "Can't be empty!" });
                     tip_amount.add(Validate.Format, {pattern: regex, failureMessage: "Invalid Input!" });
-                    tip_amount.add(Validate.Numericality, {maximum: <?php echo $max_tip; ?>, tooHighMessage: "Tip cannot exceed the accepted bid!" });
+                    tip_amount.add(Validate.Numericality, {maximum: {{max_tip}}, tooHighMessage: "Tip cannot exceed the accepted bid!" });
 
                 var tip_desc = new LiveValidation('tip_desc', {onlyOnSubmit: true });
                     tip_desc.add( Validate.Presence, {failureMessage: "Can't be empty!" });
@@ -73,8 +59,4 @@
             </div>
         </form>
     </div>
-<?php
-        }
-    }
-?>    
-    <!-- end of popup-addfee -->
+{{/maxTip}}

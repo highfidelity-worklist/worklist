@@ -1,7 +1,6 @@
 <?php
 
 class BudgetInfo {
-    
     public function __construct() {
     }
     
@@ -16,7 +15,7 @@ class BudgetInfo {
         } else {
             echo "You have to be logged in to access user info!";
         }
-        include("dialogs/popup-give-budget.inc");
+        include(dirname(__FILE__) . "/BudgetInfo/popup-give-budget.inc");
         exit(0);
     }
     
@@ -32,7 +31,7 @@ class BudgetInfo {
         $budget_id = (int) $_REQUEST['budgetId'];
         $budget = new Budget();
         if ($budget->loadById($budget_id)) {
-            include("dialogs/popup-add-funds.inc");
+            include(dirname(__FILE__) . "/BudgetInfo/popup-add-funds.inc");
         } else {
             echo 'Invalid budget id';
         }
@@ -70,7 +69,7 @@ class BudgetInfo {
             //$transfered = 0;
             $remaining = $budget->amount - $allocated - $submitted - $paid - $transfered;
             ob_start();
-            include("dialogs/popup-update-budget.inc");
+            include(dirname(__FILE__) . "/BudgetInfo/popup-update-budget.inc");
             $html = ob_get_contents();
             ob_end_clean();
             $this->respond(true, 'Returning data', array(

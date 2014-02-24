@@ -1,9 +1,0 @@
-    <div id="popup-withdraw-bid" class="popup-body" title = "Withdraw Bid">
-            <form name = "popup-form" id = "popup-form" action="" method="post">
-		    <input type="hidden" name="bid_id" value="" />   
-                <p class="info-label">Why is this bid being withdrawn?<br />
-                <textarea name="withdraw_bid_reason" size="48" /></textarea>
-                </p>
-                <br/><input type="submit" id="withdraw_bid" name="withdraw_bid" value="Withdraw Bid" />
-            </form>
-    </div>
