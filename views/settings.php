@@ -17,7 +17,7 @@ class SettingsView extends View {
     );
 
     public function render() {
-        $this->new_user = $this->read('new_user');
+        $this->new_user = (int) $this->read('new_user');
         $this->user = $this->read('user');
 
         return parent::render();
@@ -63,4 +63,17 @@ class SettingsView extends View {
         $notifications = !$this->read('new_user') ? $userInfo['notifications'] : 0;
         return Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS);
     }
+
+    public function ppConfirmed() {
+        return (int) isset($_REQUEST['ppconfirmed']);
+    }
+
+    public function emConfirmed() {
+        return (int) isset($_REQUEST['emconfirmed']);
+    }
+
+    public function uploadApiKey() {
+        return API_KEY;
+    }
+
 }

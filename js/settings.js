@@ -321,48 +321,51 @@ function ChangePaymentMethod() {
 }
 $(document).ready(function () {
     $('#phone').data('last_confirmed_phone', $('#phone').val());
-<?php if (isset($_REQUEST['ppconfirmed']) || isset($_REQUEST['emconfirmed'])) : ?>
-    $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
+    if (ppConfirmed || emConfirmed) {
+        $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
 
-    <?php if (isset($_REQUEST['ppconfirmed'])){  ?>
-        var $title = 'Your Paypal address was confirmed';
-        var $content = 'Thank you for confirming your Paypal address.<br/><br/>You can now bid on items in the Worklist!<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
-    <?php } else { ?>
-        var $title = 'Your email change is confirmed.';
-        var $content = 'Thank you for confirming your changed email address.<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
-    <?php } ?>
-
-    $('#popup-confirmed').dialog({
-        dialogClass: "white-theme",
-        modal: true,
-        title: $title,
-        autoOpen: true,
-        width: 300,
-        position: ['top'],
-        open: function() {
-            $('#popup-confirmed .content').html($content);
-            $('#popup-confirmed .closeButton').click(function() {
-                $('#popup-confirmed').dialog('close');
-            });
+        if (ppconfirmed) {
+            var $title = 'Your Paypal address was confirmed';
+            var $content = 'Thank you for confirming your Paypal address.<br/><br/>You can now bid on items in the Worklist!<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
+        } else {
+            var $title = 'Your email change is confirmed.';
+            var $content = 'Thank you for confirming your changed email address.<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
         }
-    });
-<?php endif; ?>
+
+        $('#popup-confirmed').dialog({
+            dialogClass: "white-theme",
+            modal: true,
+            title: $title,
+            autoOpen: true,
+            width: 300,
+            position: ['top'],
+            open: function() {
+                $('#popup-confirmed .content').html($content);
+                $('#popup-confirmed .closeButton').click(function() {
+                    $('#popup-confirmed').dialog('close');
+                });
+            }
+        });
+    }
     var pictureUpload = new AjaxUpload('profilepicture', {
         action: 'api.php',
         name: 'profile',
-        data: { action: 'uploadProfilePicture', api_key: '<?php echo API_KEY; ?>', userid: '<?php echo $_SESSION['userid']; ?>' },
+        data: { 
+            action: 'uploadProfilePicture', 
+            api_key: uploadApiKey, 
+            userid: user_id
+        },
         autoSubmit: true,
         hoverClass: 'imageHover',
         responseType: 'json',
         onSubmit: validateUploadImage,
         onComplete: completeUploadImage
     });
-    var user = <?php echo('"' . $_SESSION['userid'] . '"'); ?>;
 
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',
         name: 'Filedata',
-        data: { action: 'w9Upload', userid: user },
+        data: { action: 'w9Upload', userid: user_id },
         autoSubmit: true,
         responseType: 'json',
         onSubmit: validateNames,
@@ -377,16 +380,14 @@ $(document).ready(function () {
         autoOpen: false,
         position: ['top'],
         open: function() {
-            <?php if (empty($_SESSION['new_user'])) {
-                $firstName = $userInfo['first_name'];
-                $lastName = $userInfo['last_name'];
-            } else {
-                $firstName = "";
-                $lastName = "";
+            var firstName = "";
+            var lastName = "";
+            if (!new_user) {
+                firstName = $userInfo['first_name'];
+                lastName = $userInfo['last_name'];
             }
-            ?>
-            $("#last_name").val('<?php echo $lastName ?>');
-            $("#first_name").val('<?php echo $firstName ?>');
+            $("#last_name").val(lastName);
+            $("#first_name").val(firstName);
             $(".uploadnotice-w9").html('');
             $(".LV_validation_message").html('');
         }
@@ -401,7 +402,7 @@ $(document).ready(function () {
         url: 'jsonserver.php',
         data: {
             action: 'isUSCitizen',
-            userid: user
+            userid: user_id
         },
         dataType: 'json',
         success: function(data) {
