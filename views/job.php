@@ -21,12 +21,12 @@ class JobView extends View {
         'js/ajaxupload/ajaxupload.js',
         'js/datepicker.js',
         'js/timepicker.js',
-        'js/jobs.js',
         'js/review.js',
         'js/favorites.js',
         'js/projects.js',
         'js/github.js',
-        'js/skills.js'
+        'js/skills.js',
+        'js/job.js'
     );
 
     public function render() {
@@ -53,6 +53,12 @@ class JobView extends View {
         $this->isGitHubConnected = $this->read('isGitHubConnected');
         $this->taskPosts = $this->read('taskPosts');
         $this->message = $this->read('message');
+        $this->currentUserHasBid = $this->read('currentUserHasBid');
+        $this->has_budget = $this->read('has_budget');
+        $this->is_project_runner = $this->read('is_project_runner');
+        $this->is_project_founder = $this->read('is_project_founder');
+        $this->promptForReviewUrl =  (int) $this->read('promptForReviewUrl');
+
 
         return parent::render();
     }
@@ -672,5 +678,70 @@ class JobView extends View {
                 '</td>' .
             '</tr>';
 
+    }
+
+    public function userIsFollowing() {
+        return (int) $this->workitem->isUserFollowing($this->currentUser['id']);
+    }
+
+    public function showAcceptBidButton() {
+        $worklist = $this->worklist;
+        $is_project_runner = $this->read('is_project_runner');
+        $user = $this->user;
+        return (int) (
+            $is_project_runner 
+          || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']) 
+          || (isset($worklist['runner_id']) && $this->currentUser['id'] == $worklist['runner_id'])
+        );
+    }
+
+    public function hasAcceptedBids() {
+        return (int) $this->workitem->hasAcceptedBids();
+    }
+
+    public function insufficientRightsToEdit() {
+        $worklist = $this->worklist;
+        return (int) (
+            (!$worklist['status'] == 'Suggested' || !$worklist['status'] == 'SuggestedWithBid') 
+          && !$worklist['creator_id'] == $this->currentUser['id']
+        );
+    }
+
+    public function showPingBidderButton() {
+        $worklist = $this->worklist;
+        $is_project_runner = $this->read('is_project_runner');
+        $user = $this->user;
+
+        return (int) (
+            ($worklist['status'] == 'Bidding' && ($is_project_runner || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']))
+          ||(isset($worklist['runner_id']) && $user_id == $worklist['runner_id']))
+        );
+    }
+
+    public function showWithdrawOrDeclineButtons() {
+        $worklist = $this->worklist;
+        return (int) (
+             $worklist['status'] != 'Done' 
+          && $worklist['status'] != 'Working' 
+          && $worklist['status'] != 'Functional' 
+          && $worklist['status'] != 'Review' 
+          && $worklist['status'] != 'Completed'
+        );
+    }
+
+    public function showReviewUrlPopup() {
+        $workitem = $this->workitem;
+        $worklist = $this->worklist;
+        $user = $this->user;
+        return (int) (
+            ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']) || ($worklist['mechanic_id'] == $this->currentUser['id'])) &&
+            (strcasecmp($worklist['status'], 'Done') != 0 && strcasecmp($worklist['status'], 'Completed') != 0)
+        );
+    }
+
+    public function canReassignRunner() {
+        $workitem = $this->workitem;
+        $user = $this->user;
+        return (int) ($this->action == "edit" && ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])));
     }
 }

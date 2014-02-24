@@ -1,3 +1,38 @@
+<script type="text/javascript">
+    GitHub.isConnected = '{{isGitHubConnected}}';
+    WorklistProject.repo_type = '{{workitem_project.getRepo_type}}';
+    GitHub.applicationKey = '{{workitem_project.getGithubId}}';
+    var project_id = {{worklist.project_id}};
+    var project_name = '{{worklist.project_name}}';
+    var filterName = '.worklist';
+    var user_id = {{currentUser.id}};
+    var workitem_id = {{worklist.id}};
+    var budget_id = {{worklist.budget_id}};
+    var imageArray = new Array();
+    var documentsArray = new Array();
+    var ping_who = '';
+    var ping_bid_id = 0;
+    var sandbox_url = '{{worklist.sandbox}}';
+    var order_by = '{{order_by}}';
+    var mechanic_id = 0{{worklist.mechanic_id}};
+    var workitem_id = 0{{worklist.id}};
+    var already_bid = {{currentUserHasBid}};
+    var has_budget = 0{{has_budget}};
+    var isFollowing = {{userIsFollowing}};
+    var is_project_founder = 0{{is_project_founder}};
+    var is_project_runner = 0{{is_project_runner}};
+    var showAcceptBidButton = {{showAcceptBidButton}};
+    var hasAcceptedBids = {{hasAcceptedBids}};
+    var insufficientRightsToEdit = {{insufficientRightsToEdit}};
+    var showPingBidderButton = {{showPingBidderButton}};
+    var showWithdrawOrDeclineButtons = {{showWithdrawOrDeclineButtons}};
+    var job_status = '{{worklist.status}}';
+    var promptForReviewUrl = {{promptForReviewUrl}};
+    var showReviewUrlPopup = {{showReviewUrlPopup}};
+    var action = '{{action}}';
+    var loginRedirectUrl = '{{loginRedirectUrl}}';
+    var canReassignRunner = {{canReassignRunner}};
+</script>
 <script type="text/html" id="uploadedFiles">
     <div id="accordion">
         <h3>Images (<span class="imageCount"><#= images.length #></span>)</h3>
@@ -57,22 +92,6 @@
         </span>
     </div>
 </script>
-<script type="text/javascript">
-    GitHub.isConnected = '{{isGitHubConnected}}';
-    WorklistProject.repo_type = '{{workitem_project.getRepo_type}}';
-    GitHub.applicationKey = '{{workitem_project.getGithubId}}';
-    var project_id = {{worklist.project_id}};
-    var filterName = '.worklist';
-    var user_id = {{currentUser.id}};
-    var workitem_id = {{worklist.id}};
-    var budget_id = {{worklist.budget_id}};
-    var imageArray = new Array();
-    var documentsArray = new Array();
-    var ping_who = '';
-    var ping_bid_id = 0;
-    worklistUrl = '{{app.url}}';
-    Workitem.sandbox_url = '{{worklist.sandbox}}';
-</script>
 <div class="first-line"></div>
 <div id="info-top">
     <div class="info-summ-big">
@@ -104,7 +123,7 @@
 <div id="info-top" class="info-summ-big-text">
     <span class="cabin">
     #{{worklist.id}}
-    {{#workitem.getBugJobId}}}
+    {{#workitem.getBugJobId}}
         bug of 
         <a href="./{{workitem.getBugJobId}}?action=view&order=order_by" 
           class="worklist-item" id="workitem-{{workitem.getBugJobId}}">

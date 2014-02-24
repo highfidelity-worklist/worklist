@@ -1297,6 +1297,9 @@ class JobController extends Controller {
         $this->write('comments', Comment::findCommentsForWorkitem($worklist['id']));
         $this->write('taskPosts', $this->getTaskPosts($worklist['id']));
         $this->write('message', isset($message) ? $message : '');
+        $this->write('currentUserHasBid', $currentUserHasBid);
+        $this->write('has_budget', $has_budget);
+        $this->write('promptForReviewUrl', $promptForReviewUrl);
         
         parent::run();
     }
