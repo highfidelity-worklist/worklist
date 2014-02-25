@@ -4,12 +4,7 @@ class JobView extends View {
     public $title = '%d: %s - Worklist';
 
     public $stylesheets = array(
-        'css/worklist.css',
-        'css/job.css',
-        'css/review.css',
-        'css/favorites.css',
-        'css/userinfo.css',
-        'css/budget.css'
+        'css/job.css'
     );
 
     public $scripts = array(
@@ -30,6 +25,8 @@ class JobView extends View {
     );
 
     public function render() {
+        $this->layout = new NewWorklistLayout();
+
         $worklist = $this->worklist = $this->read('worklist');
         $this->workitem = $this->read('workitem');
         $this->user = $this->read('user');
