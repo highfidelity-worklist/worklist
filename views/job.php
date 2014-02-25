@@ -4,8 +4,13 @@ class JobView extends View {
     public $title = '%d: %s - Worklist';
 
     public $stylesheets = array(
-        'css/job.css'
-    );
+        'css/workitem.css',
+        'css/worklist.css',
+        'css/review.css',
+        'css/favorites.css',
+        'css/userinfo.css',
+        'css/budget.css'
+   );
 
     public $scripts = array(
         'js/jquery/jquery.template.js',
@@ -21,12 +26,10 @@ class JobView extends View {
         'js/projects.js',
         'js/github.js',
         'js/skills.js',
-        'js/job.js'
+        'js/workitem.js'
     );
 
     public function render() {
-        $this->layout = new NewWorklistLayout();
-
         $worklist = $this->worklist = $this->read('worklist');
         $this->workitem = $this->read('workitem');
         $this->user = $this->read('user');

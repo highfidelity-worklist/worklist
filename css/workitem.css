@@ -304,10 +304,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 
 .top-bar {
-    background-color: #e1e8ea;
-    padding: 14px 0;
-    margin-top: 13px !important;
-    height: 16px;
     font-size: 14px;
 }
 
@@ -331,30 +327,11 @@ a:hover{
     text-decoration: underline;
 }
 
-.first-line {
-    position: absolute;
-    height: 20px;
-    width: 50%;
-    border-bottom: 2px solid #e1e8ea;
-    margin-left: -475px;
-    top: 34px;
-}
-
 .sections {
     font-weight: bold;
     font-size: 17px;
     float: left;
     width: 100%;
-}
-
-.second-line {
-    position: relative;
-    height: 44px;
-    width: 50%;
-    margin-left: -428px;
-    top: -24px;
-    background-color: #E1E8EA;
-    float: left;
 }
 
 #info-top {

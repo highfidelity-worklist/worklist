@@ -872,7 +872,7 @@ a#addJobButton:hover {
     top: 6px;
 }
 
-#center .buttonContainer {
+.buttonContainer {
     display: inline-block;
     text-align:right;
     background-color: #608E96;
