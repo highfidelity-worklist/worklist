@@ -192,7 +192,8 @@ color:#98AAB2;
 }
 #popup-bid{
     z-index: 1200;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     font-size: 13px;
     color: #666666;
 }
@@ -713,7 +714,7 @@ input.button-disabled ,
     width: auto;
     text-align: center;
     text-decoration: none;
-    font: 16px/100% Arial, Helvetica, sans-serif;
+    font: 16px/100% proxima-nova, Helvetica, sans-serif;
     height: auto;
     padding: 5px 10px;
     text-shadow: 0 1px 1px rgba(0,0,0,.3);
@@ -900,7 +901,7 @@ a#addJobButton {
     padding-top: 6px; 
     width: 401px; 
     float: left; 
-    font-family: arial;
+    font-family: proxima-nova;
     padding-left: 25px;
     color: #666666;
 }
@@ -920,7 +921,7 @@ a#addJobButton {
     color: #999999;
 }
 .bid_notes_textarea {
-    font-family: arial !important; 
+    font-family: proxima-nova !important; 
     width: 415px !important; 
     float: left; 
     margin-right: 19px; 
@@ -928,7 +929,7 @@ a#addJobButton {
     margin-top: 0;
 }
 #bid_notes_decsription {
-    font-family: arial; 
+    font-family: proxima-nova; 
     color: #666666;
 }
 #bid_done_container {
@@ -945,7 +946,7 @@ a#addJobButton {
 }
 #bid_done_explanation {
     margin-top: 3px; 
-    font-family: arial;
+    font-family: proxima-nova;
     width: 247px;
     color: #666666;
 }
@@ -983,7 +984,7 @@ a#addJobButton {
     padding-top: 17px; 
     width: 435px; 
     float: left; 
-    font-family: arial;
+    font-family: proxima-nova;
     color: #666666;
 }
 

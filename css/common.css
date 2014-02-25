@@ -9,10 +9,9 @@
 
 /* Common / Shortcut styles */
 @font-face {
-    font-family: 'Cabin';
+    font-family: proxima-nova;
     font-style: normal;
-    font-weight: 400;
-    src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
+    font-weight: bold;
 }
 
 .floatLeft {
@@ -40,133 +39,6 @@
 }
 
 /* Table Styles */
-
-table {
-    border-width: 1px;
-    border-spacing: 0px;
-    border-style: solid;
-    border-color: #aaa;
-    border-collapse: collapse;
-    background-color: white;
-    width: 100%;
-    font-family: helvetica, arial, sans-serif;
-}
-
-.table-popup {
-    font-size: 12px;
-    border: none;
-}
-
-.table-popup td {
-    font-size: 14px;
-    background: #FFFFFF !important;
-    padding: 7px 5px;
-    border-left: solid 1px #FFFFFF;
-    border-right: none;
-    border-bottom: none;
-    border-top: solid 2px #FFFFFF;
-}
-
-.table-worklist{
-    font-size: 14px;
-    border: none;
-}
-
-.table-popup table {
-    border: none;
-}
-
-.table-worklist tbody tr {
-    height: 28px;
-}
-
-.table-popup tbody tr {
-    height: 18px;
-}
-
-.table-popup tr:nth-child(even){
-    background-color: #eeeeee;
-}
-
-.table-popup .table-hdng {
-    height: 28px;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-table td, table th {
-    border-width: 1px;
-    padding: 5px;
-    border-style: solid;
-    border-color: #aaa;
-}
-
-table thead tr:hover {
-    background: url('../images/tbg.jpg') repeat-x bottom left;
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#E0E0E0),
-        color-stop(0.5, #FFFFFF),
-        to(#E0E0E0)
-    );
-    background-image: -moz-linear-gradient(
-        center bottom,
-        #E0E0E0,
-        #FFFFFF,
-        #E0E0E0
-    );
-}
-
-.table-worklist th, .table-worklist td, .table-popup th, .table-popup td {
-    border: none;
-}
-
-table tr:hover {
-    background: #FFD;
-}
-
-.worklist-pagination-row:hover, .feelist-total-row:hover, .bidlist-pagination-row:hover {
-    background-color: white;
-}
-
-.table-hdng {
-    height: 20px;
-    background: url('../images/tbg.jpg') repeat-x bottom left;
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        from(#E0E0E0),
-        color-stop(0.5, #FFFFFF),
-        to(#E0E0E0)
-    );
-    background-image: -moz-linear-gradient(
-        center bottom,
-        #E0E0E0,
-        #FFFFFF,
-        #E0E0E0
-    );
-}
-
-.table-worklist .table-hdng, .table-popup .table-hdng {
-    background: none;
-    background-image: none;
-}
-
-.table-hdng td, .table-hdng th {
-    color: #999999;
-    font-size: 12px;
-    font-weight: bold;
-    padding-bottom: 2px;
-}
-
-.rowodd {
-    background-color: #fff;
-}
-.roweven {
-    background: url('../images/evenrow2.jpg') #fff repeat-x top left;
-}
 
 /* Dialogs */
 

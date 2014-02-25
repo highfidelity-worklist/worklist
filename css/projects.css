@@ -17,7 +17,8 @@
 }
 
 h1 {
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     margin-top: 30px;
     margin-bottom: 20px;
     font-size: 20px;
@@ -32,7 +33,8 @@ h1 {
     font-size: 20px;
     text-decoration: none;
     width: 150px;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     text-align: right;
 }
 
@@ -42,7 +44,8 @@ h1 {
 }
 
 #all-projects {
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     font-size: 20px;
     color: #666666;
 }
@@ -82,7 +85,8 @@ h1 {
 #projects > article h2,
 #projects > article h2 a {
     font-size: 26px;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     color: #007F7C;
     text-decoration: none;
     padding-bottom: 0;

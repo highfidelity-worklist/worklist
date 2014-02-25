@@ -9,7 +9,8 @@
 }
 
 #addJob fieldset > label {
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     font-size: 1.1em;
     display: block;
     text-align: left;

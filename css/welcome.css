@@ -25,7 +25,8 @@
 #welcomeRightTop, #welcomeRightBottom {
     float: left;
     font-size: 14pt;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
 }
 
 #welcomeRightTop {

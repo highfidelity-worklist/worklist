@@ -1,8 +1,7 @@
 @font-face {
-  font-family: 'Cabin';
+  font-family: proxima-nova;
   font-style: normal;
-  font-weight: 400;
-  src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
+  font-weight: bold;
 }
 
 #left, #right {
@@ -86,9 +85,9 @@ p.small-text{
 #info-currenttime span {
     font-size: 45px;
     line-height: 48px;
-    font-weight: normal;
+    font-weight: bold;
     letter-spacing: -2px;
-    font-family: Cabin;
+    font-family:proxima-nova;
 }
 
 #tabs .info-label {
@@ -556,7 +555,8 @@ p.bottom {
     vertical-align: top;
     padding: 6px 11px;
     width: 293px;
-    font-family: Cabin;
+    font-family:proxima-nova;
+    font-weight: bold;
 }
 
 .profileContactFavorite {

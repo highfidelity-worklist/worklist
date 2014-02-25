@@ -11,7 +11,8 @@ section#signup {
     background-color: #FFFFFF;
     color: #565656;
     margin: auto;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
 }
 
 section#login {
@@ -103,7 +104,7 @@ section#signup {
     background-color: #983300;
     border-radius: 5px;
     color: #FFFFFF;
-    font: 24px normal 'Cabin', sans-serif;
+    font: 24px bold proxima-nova, sans-serif;
     height: 2.1em;
     padding: 0 23px;
     width: auto;

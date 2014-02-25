@@ -1,8 +1,7 @@
 @font-face {
-  font-family: 'Cabin';
+  font-family: proxima-nova;
   font-style: normal;
-  font-weight: 400;
-  src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
+  font-weight: bold;
 }
 
 .warn {
@@ -176,7 +175,8 @@ span.info-whisper {
     margin-top: 12px !important;
     padding-left: 3px;
     line-height: 36px;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
 }
 
 .divider {
@@ -250,7 +250,8 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .cabin {
     margin-left: -2px;
     font-size: 30px;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     float: left;
 }
 
@@ -280,7 +281,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     height: 25px !important;
     padding: 0 9px;
     width: 165px;
-    font-family: Arial !important;
+    font-family: proxima-nova !important;
 }
 
 #jobStatusFilter {
@@ -744,7 +745,7 @@ a:hover{
     position: absolute;
     top: 5px;
     float: left;
-    font-family: Arial, Helvetica !important;
+    font-family: proxima-nova, Helvetica !important;
 }
 
 #info-top #container-project_id {
@@ -1267,7 +1268,7 @@ a:hover{
     font-size: 13px;
     width: 405px !important;
     height: 52px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: proxima-nova, Helvetica, sans-serif;
 }
 
 .commentform, .comments {
