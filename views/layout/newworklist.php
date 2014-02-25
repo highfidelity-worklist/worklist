@@ -5,6 +5,7 @@ class NewWorklistLayout extends Layout {
         '//use.typekit.net/xyu1mnf.js',
         'css/bootstrap/css/bootstrap.min.css',
         'css/font-awesome/css/font-awesome.min.css',
+        'css/newworklist.css',
         'css/menu.css'
     );
 
