@@ -56,6 +56,7 @@ class View extends AppObject {
     );
     
     public static $default_stylesheets = array(
+        '//use.typekit.net/xyu1mnf.js',
         'css/bootstrap/css/bootstrap.min.css',
         'css/jquery/jquery.combobox.css',
         'css/jquery/jquery-ui.css',
