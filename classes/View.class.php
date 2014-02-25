@@ -11,10 +11,7 @@ use \Mustache\Mustache;
 
 class View extends AppObject {
     public $name = '';
-    public $layout = 'common';
-    public $header = 'header';
-    public $footer = 'footer';
-    public $navbar = 'navbar';
+    public $layout = null;
     public $title = 'Worklist';
     public $app = array(
         'version' => -1,
@@ -53,34 +50,6 @@ class View extends AppObject {
 
     public $config = array(
         'ajaxRefresh' => AJAX_REFRESH
-    );
-    
-    public static $default_stylesheets = array(
-        '//use.typekit.net/xyu1mnf.js',
-        'css/bootstrap/css/bootstrap.min.css',
-        'css/jquery/jquery.combobox.css',
-        'css/jquery/jquery-ui.css',
-        'css/font-awesome/css/font-awesome.min.css',
-        'css/tooltip.css',
-        'css/common.css',
-        'css/menu.css'
-    );
-    public static $default_scripts = array(
-        'js/jquery/jquery-1.7.1.min.js',
-        'js/jquery/jquery.class.js',
-        'js/jquery/jquery-ui-1.8.12.min.js',
-        'js/jquery/jquery.watermark.min.js',
-        'js/jquery/jquery.livevalidation.js',
-        'js/jquery/jquery.scrollTo-min.js',
-        'js/jquery/jquery.combobox.js',
-        'js/jquery/jquery.autogrow.js',
-        'js/jquery/jquery.tooltip.min.js',
-        'js/bootstrap/bootstrap.min.js',
-        'js/common.js',
-        'js/utils.js',
-        'js/userstats.js',
-        'js/worklist.js',
-        'js/budget.js'
     );
     
     public $stylesheets = array();
@@ -155,6 +124,37 @@ class View extends AppObject {
         return true;
     }
 
+
+    /**
+     * Outputs stylesheets references to the view/layout
+     */
+    public function styleTags() {
+        $layout = $this->layout;
+        if (!is_null($layout)) {
+            $stylesheets = array_merge($layout->stylesheets, $this->stylesheets);
+        }
+        $ret = '';
+        foreach ($stylesheets as $path) {
+            $ret .= sprintf('<link rel="stylesheet" href="%s">', $path);
+        }
+        return $ret;
+    }
+
+    /**
+     * Outputs scripts references to the view/layout
+     */
+    public function scriptTags() {
+        $layout = $this->layout;
+        if (!is_null($layout)) {
+            $scripts = array_merge($layout->scripts, $this->scripts);
+        }
+        $ret = '';
+        foreach ($scripts as $path) {
+            $ret .= sprintf('<script type="text/javascript" src="%s"></script>', $path);
+        }
+        return $ret;
+    }    
+
     /**
      * Removes an existing script from the view
      */
@@ -165,74 +165,12 @@ class View extends AppObject {
         unset($this->scripts[$path]);
         return true;
     }
-
-    /**
-     * Outputs scripts references to the view
-     */
-    public function getScriptMetaTags() {
-        $scripts = array_merge(self::$default_scripts, $this->scripts);
-        $ret = '';
-        foreach ($scripts as $path) {
-            $ret .= sprintf('<script type="text/javascript" src="%s"></script>', $path);
-        }
-        return $ret;
-    }
-    
-    /**
-     * Outputs stylesheets references to the view
-     */
-    public function getStyleMetaTags() {
-        $stylesheets = array_merge(self::$default_stylesheets, $this->stylesheets);
-        $ret = '';
-        foreach ($stylesheets as $path) {
-            $ret .= sprintf('<link rel="stylesheet" href="%s">', $path);
-        }
-        return $ret;
-    }
-    
-    /**
-     * Includes the content/php logic of the header file
-     */
-    public function renderHeader() {
-        $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $this->layout;
-        $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
-        $mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader($base),
-            'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
-        ));
-        $template = $mustache->loadTemplate($this->header);
-        return $template->render($this);
-    }
-    
-    /**
-     * Includes the content/php logic of the navbar file
-     */
-    public function renderNavBar() {
-        $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $this->layout;
-        $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
-        $mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader($base),
-            'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
-        ));
-        $template = $mustache->loadTemplate($this->navbar);
-        return $template->render($this);
-    }
-    
-    /**
-     * Includes the content/php logic of the footer file
-     */
-    public function renderFooter() {
-        $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $this->layout;
-        $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
-        $mustache = new Mustache_Engine(array(
-            'loader' => new Mustache_Loader_FilesystemLoader($base),
-            'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
-        ));
-        $template = $mustache->loadTemplate($this->footer);
-        return $template->render($this);
-    }
         
     public function render() {
+        $layout = $this->layout;
+        if (is_null($layout) && class_exists('DefaultLayout')) {
+            $layout = $this->layout = new DefaultLayout();
+        }
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache';
         $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
         $mustache = new Mustache_Engine(array(
@@ -240,7 +178,7 @@ class View extends AppObject {
             'partials_loader' => new Mustache_Loader_FilesystemLoader($partials)
         ));
         $template = $mustache->loadTemplate($this->name);
-        $ret = $this->renderHeader() . $template->render($this) . $this->renderFooter();
-        return $ret;
+        $content = $this->content = $template->render($this);
+        return is_null($layout) ? $content : $layout->render($this);
     }
 }

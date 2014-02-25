@@ -4,6 +4,9 @@ function worklist_autoloader($class) {
     if ($class != 'View' && substr($class, -4) == 'View') {
         $fileName = strtolower(substr($class, 0, -4));
         $file = VIEWS_DIR . DIRECTORY_SEPARATOR . $fileName . '.php';
+    } elseif ($class != 'Layout' && substr($class, -6) == 'Layout') {
+        $fileName = strtolower(substr($class, 0, -6));
+        $file = VIEWS_DIR . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $fileName . '.php';
     } else if ($class != 'Controller' && substr($class, -10) == 'Controller') {
         $fileName = strtolower(substr($class, 0, -10));
         $file = CONTROLLERS_DIR . DIRECTORY_SEPARATOR . $fileName . '.php';

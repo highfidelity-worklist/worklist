@@ -1,8 +1,6 @@
 <?php
 
 class TimelineView extends View {
-	public $layout = 'emptybody';
-
 	public $title = '';
 
 	public $stylesheets = array(
@@ -15,4 +13,9 @@ class TimelineView extends View {
         'js/markerclusterer/markerclusterer.js',
         'js/timeline.js'
 	);
+
+	public function render() {
+		$this->layout = new EmptyBodyLayout();
+		return parent::render();
+	}
 }

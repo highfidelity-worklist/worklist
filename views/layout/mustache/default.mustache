@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <base href="{{app.url}}" />
+    <meta name="copyright" content="Copyright (c) 2014 HighFidelity inc. All Rights Reserved. http://highfidelity.io" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/worklist_favicon.png" />
+    {{& styleTags}}
+    <script type="text/javascript">
+        var userId = user_id = {{currentUser.id}};
+        var is_runner = {{currentUser.is_runner}};
+        var is_admin = {{currentUser.is_admin}};
+        var is_payer = {{currentUser.is_payer}};
+        var worklistUrl = '{{app.url}}';
+        var selfLink = '{{app.self_url}}';
+        var sessionusername = '{{currentUser.username}}';
+        var ajaxRefresh = {{config.ajaxRefresh}} * 1000;
+    </script>
+    {{& scriptTags}}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="{{app.metadata.title}}" />
+    <meta name="description" content="{{app.metadata.description}}" />
+    <meta property="og:description" content="{{app.metadata.description}}" />
+    <meta property="og:image" content="{{app.metadata.image}}" />
+    <title>{{title}}</title>
+</head>
+<body>
+    {{> navbar}}
+    <div class="container">
+        {{& content}}
+    </div>
+    {{> footer}}
+    {{> popup-budget}}
+    {{> popup-fees.inc}}
+    {{> budget-expanded}}
+    {{> budget-transfer}}
+    {{> popup-addproject}}
+    {{> popup-stats}}
+    {{> footer-analytics}}
+</body>
