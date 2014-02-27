@@ -9,6 +9,7 @@ class LogoutController extends Controller {
 		unset($_SESSION['confirm_string']);
 		unset($_SESSION['nickname']);
 		unset($_SESSION['running']);
+		unset($_SESSION['access_token']);
 		if (isset($_COOKIE[session_name()])) {
 		    setcookie(session_name(), '', time() - 42000, '/');
 		}
