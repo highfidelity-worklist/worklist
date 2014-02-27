@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="col-sm-4 col-md-3 sidebar">
+        <h4>Ready for <strong>Code Review</strong></h4>
+        <ul id="need-review">
+        </ul>
+        <a href="./addjob">Add job</a>
+        <p id="biddingJobs">
+            There <span>are</span> <a href="./jobs?project=&user=0&status=bidding">no jobs</a> you can bid on
+        </p>
+    </div>
+    <div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
+        <h3>System Notifications</h3>
+        <ul id="entries">
+            {{#entries}}{{#visible}}
+            <li entryid="{{id}}" userid="{{user_id}}">
+                <h4 class="date">{{date}}<h4>
+                <h4 class="author">{{author}}<h4>
+
+                <p>{{entry}}</p>
+            </li>
+            {{/visible}}{{/entries}}
+        </ul>
+    </div>
+</div>

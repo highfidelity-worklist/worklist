@@ -2,16 +2,16 @@
 
 function worklist_autoloader($class) {
     if ($class != 'View' && substr($class, -4) == 'View') {
-        $fileName = strtolower(substr($class, 0, -4));
+        $fileName = substr($class, 0, -4);
         $file = VIEWS_DIR . DIRECTORY_SEPARATOR . $fileName . '.php';
     } elseif ($class != 'Layout' && substr($class, -6) == 'Layout') {
-        $fileName = strtolower(substr($class, 0, -6));
+        $fileName = substr($class, 0, -6);
         $file = VIEWS_DIR . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . $fileName . '.php';
     } else if ($class != 'Controller' && substr($class, -10) == 'Controller') {
-        $fileName = strtolower(substr($class, 0, -10));
+        $fileName = substr($class, 0, -10);
         $file = CONTROLLERS_DIR . DIRECTORY_SEPARATOR . $fileName . '.php';
     } else if ($class != 'Model' && substr($class, -5) == 'Model') {
-        $fileName = strtolower(substr($class, 0, -5));
+        $fileName = substr($class, 0, -5);
         $file = MODELS_DIR . DIRECTORY_SEPARATOR . $fileName . '.php';
     } else {
         $file = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'classes') . 
