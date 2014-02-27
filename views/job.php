@@ -51,7 +51,6 @@ class JobView extends View {
         $this->allowEdit = (int) $this->read('allowEdit');
         $this->userHasRights = (int) $this->read('userHasRights');
         $this->isGitHubConnected = (int) $this->read('isGitHubConnected');
-        $this->taskPosts = $this->read('taskPosts');
         $this->message = $this->read('message');
         $this->currentUserHasBid = (int) $this->read('currentUserHasBid');
         $this->has_budget = (int) $this->read('has_budget');
@@ -803,5 +802,23 @@ class JobView extends View {
 
     public function addBidMsg() {
         return ($this->isGitProject() && $this->read('isGitHubConnected')) ? 'Authorize GitHub app' : 'Add my bid';
+    }
+
+    public function taskPosts() {
+        $posts = $this->read('taskPosts');
+        $ret = '';
+        $now = 0;
+        foreach($posts as $post) {
+            if (!$now) {
+                $now = strtotime($post->now());
+            }
+            $time = strtotime($post->date);
+            $ret .= 
+                '<div class="entry ' . $post->author . '" id="entry-' . $post->id . '">'
+              .     '<h5 class="date" time="' . $time . '">' . relativeTime($time - $now) . '</h5>'
+              .     '<div class="entry-text">' . linkify($post->entry, $post->author) . '</div>'
+              . '</div>';
+        }
+        return $ret;
     }
 }

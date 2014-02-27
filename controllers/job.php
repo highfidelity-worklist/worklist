@@ -1528,17 +1528,8 @@ class JobController extends Controller {
     }
 
     function  getTaskPosts($item_id) {
-        return '';
-        
-        //global $chat;
-        //$query = $item_id;
-        //$response = new AjaxResponse($chat);
-        //try {
-        //    $data = $response->latestFromTask($item_id);
-        //} catch(Exception $e) {
-        //    $data['error'] = $e->getMessage();
-        //}
-        //return $data['html'];
+        $entry = new EntryModel();
+        return $entry->latestFromTask($item_id);
     }
 }
 
