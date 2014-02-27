@@ -15,6 +15,7 @@ class Dispatcher {
         $dispatcher->get('/feeds', array('Feeds'));
         $dispatcher->get('/forgot', array('Forgot'));
         $dispatcher->post('/forgot', array('Forgot'));
+        $dispatcher->get('/github', array('Login', 'githubAuth'));
         $dispatcher->get('/help', array('Help'));
         $dispatcher->get('/jobs', array('Jobs'));
         $dispatcher->get('/login', array('Login'));
@@ -43,9 +44,8 @@ class Dispatcher {
         $dispatcher->get('/user/:id', array('User'));
         $dispatcher->post('/user/:id', array('User'));
         $dispatcher->get('/welcome', array('Welcome'));
-        $dispatcher->get('/:id', array('Job'), array(
-            'require' => array('id' => '\d+')
-        ));
+        $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
+        $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));
         $dispatcher->get('/:project', array('Project'));
 
         try {
