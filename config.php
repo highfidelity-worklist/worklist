@@ -1280,8 +1280,12 @@ $timezoneTable = array(
     "+1200" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka"
 );
 
+defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'd075a674622a63de2415');
+defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '6c256ada7f5849ef392907f56b55cc501d4b9e2e');
+
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
 
+defineOnce('MODELS_DIR', dirname(__FILE__) . '/models');
 defineOnce('VIEWS_DIR', dirname(__FILE__) . '/views');
 defineOnce('CONTROLLERS_DIR', dirname(__FILE__) . '/controllers');
 defineOnce('MUSTACHE_DIR', VIEWS_DIR . '/mustache');
