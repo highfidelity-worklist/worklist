@@ -5,6 +5,7 @@
 include ("config.php");
 
 try {
+    Session::check();
 	$server = new JsonServer();
 	$server->run();
 	echo($server->getOutput());
