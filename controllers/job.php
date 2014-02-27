@@ -503,7 +503,7 @@ class JobController extends Controller {
                 $notes = (!empty($_REQUEST['review-notes'])) ? $_REQUEST['review-notes'] : null;
                 
                 $status_review = $_REQUEST['quick-status-review'];
-                $status_error = false;
+                $status_error = '';
 
                 if(! empty($status_review) && $workitem->getStatus() != $status_review) {
                     $old_status = $workitem->getStatus();
@@ -530,7 +530,7 @@ class JobController extends Controller {
                 }
                 $workitem->setSandbox($sandbox);
                 $workitem->save();
-                if ($status_error === false) {
+                if (!$status_error) {
                     $new_update_message = " sandbox url : $sandbox ";
                     if(!empty($status_review)) {
                         $new_update_message .= " Status set to $status_review. ";
@@ -1283,9 +1283,9 @@ class JobController extends Controller {
         global $displayDialogAfterDone;
         if ($displayDialogAfterDone == true && $worklist['mechanic_id'] > 0) {
             $_SESSION['displayDialogAfterDone'] = false;
-            $this->write('displayDialogAfterDone', true);
+            $this->write('displayDialogAfterDone', 1);
         } else {
-            $this->write('displayDialogAfterDone', false);
+            $this->write('displayDialogAfterDone', 0);
         }
 
         $reviewer = new User();
@@ -1302,7 +1302,9 @@ class JobController extends Controller {
         $this->write('currentUserHasBid', $currentUserHasBid);
         $this->write('has_budget', $has_budget);
         $this->write('promptForReviewUrl', $promptForReviewUrl);
-        
+        $this->write('status_error', $status_error);        
+        $this->write('{{userinfotoshow}}', (isset($_REQUEST['userinfotoshow']) && isset($_SESSION['userid'])) ? $_REQUEST['userinfotoshow'] : 0);
+
         parent::run();
     }
 

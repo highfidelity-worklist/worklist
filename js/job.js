@@ -8,6 +8,101 @@ $(function() {
     if($("#is_bug").is ( ":checked" )) {
         $("#bug_job_id").keyup();
     }
+
+    if (status_error) {
+        openNotifyOverlay(status_error, false);    
+    }
+    applyPopupBehavior();
+
+    // if user is a runner and workitem is Functional, run sandbox up-to-date check
+    if (job_status == 'Functional' && is_runner) {
+        var html = "<span>Checking sandbox...";
+        openNotifyOverlay(html, true);
+
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                workitem: workitem_id,
+                userid: user_id,
+                action: 'validateFunctionalReview'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success != true) {
+                    $('<div id="functionalCheck"><div class="content"></div></div>')
+                        .appendTo('body')
+                        .hide();
+                    $('#functionalCheck .content').html(data.data);
+                    $('#functionalCheck').dialog({
+                        modal: true,
+                        resizable: false,
+                        dialogClass: 'white-theme',
+                        width: 'auto',
+                        height: 'auto',
+                        buttons: {
+                            'Ok': function() {
+                                $(this).dialog('close');
+                            }
+                        },
+                        close: function() {
+                            $('#functionalCheck').remove();
+                        }
+                    });
+                    $('#functionalCheck').dialog('open');
+                }
+            }
+        });
+    }
+
+    $('#invite-people').dialog({
+        autoOpen: false,
+        dialogClass: 'white-theme',
+        resizable: false,
+        modal: true,
+        show: 'fade',
+        hide: 'fade',
+        width: 'auto',
+        height: 'auto',
+        open: function() {  
+            var autoArgs = autocompleteMultiple('getuserslist');
+            $("#invite").bind("keydown", autoArgs.bind);
+            $("#invite").autocomplete(autoArgs, null);               
+        }
+            
+    });
+    $("#invite-link").click(function() {
+        $('#invite-people').dialog('open');
+    });
+
+    if (displayDialogAfterDone && mechanic_id > 0) {
+        WReview.displayInPopup({
+            'user_id': mechanic_id,
+            'nickname': mechanic_nickname,
+            'withTrust': true,
+            'notify_now': 0
+        });
+    }
+
+    if (user_id) {
+        $.get('api.php?action=getSkills', function(data) {
+            var skillsData = eval(data);
+            var autoArgsSkills = autocompleteMultiple('getskills', skillsData);
+            $("#skills-edit").bind("keydown", autoArgsSkills.bind);
+            $("#skills-edit").autocomplete(autoArgsSkills);               
+        });
+    }
+    makeWorkitemTooltip(".worklist-item");
+
+    $('#workitem-form').submit(function() {
+        return saveWorkitem();
+    });
+
+    //if the page was loaded with request to display userinfo automatically then do it.
+    if (userinfotoshow){
+        window.open('userinfo.php?id=' + userinfotoshow, '_blank');
+    }
+
 });
 
 var Workitem = {
@@ -118,6 +213,7 @@ function reply(id) {
         postComment();
     });
     runDisableable();
+    return false;
 }
 
 function postComment() {

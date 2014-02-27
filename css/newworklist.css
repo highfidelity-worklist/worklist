@@ -1,3 +1,104 @@
-html > body {
-	font-family: proxima-nova;
+body {
+  font-family: proxima-nova;
+  padding-top: 61px; /* Move down content because of the fixed top navbar */
 }
+
+/*
+ * Global add-ons
+ */
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/*
+ * Main content
+ */
+.main {
+  padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}
+
+
+
+/** legacy css copied from common.css, still needed in order to hide dialogs **/
+#wFees,
+#feesToolTip,
+.popup-body {
+    display: none;
+}
+
+#footer {
+    margin: 10px auto;
+    padding: 0 44px;
+    text-align: center;
+    font-size: 10px;
+    color: #98AAB2;
+    line-height: 58px;
+    max-width: 873px;
+}
+
+#footer:before {
+    display: block;
+    content: ' ';
+    clear: both;
+}
+
+#footer a {
+    color: #98AAB2;
+}
+
+#footer .loves {
+    margin: 0;
+    padding: 0px;
+    text-align: right;
+    float: right;
+    width: 70px;
+}
+
+#footer .lefticon {
+    text-align: left;
+    margin: -5px 0 0 5px;
+    float: left;
+    padding-top: -3px;
+    width: 80px;
+    height: 53px
+}
+
+#footer .copyText{
+    width: 400px;
+    display: inline;
+}
+
+#stats-area {
+    color: #98AAB2;
+    float: right;
+    font-size: 12px;
+    font-weight: bold;
+    height: 15px;
+    text-align: right;
+}
+
+#stats-text {
+    display: none;
+}
+
+#stats-area a {
+    cursor: hand;
+}
+
+#nav a,
+#welcome a,
+#stats-area a {
+    color: #6f6f6f;
+    text-decoration: none;
+}
+

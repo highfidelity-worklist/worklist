@@ -26,7 +26,7 @@ class JobView extends View {
         'js/projects.js',
         'js/github.js',
         'js/skills.js',
-        'js/workitem.js'
+        'js/job.js'
     );
 
     public function render() {
@@ -58,6 +58,10 @@ class JobView extends View {
         $this->is_project_runner = (int) $this->read('is_project_runner');
         $this->is_project_founder = (int) $this->read('is_project_founder');
         $this->promptForReviewUrl =  (int) $this->read('promptForReviewUrl');
+        $this->status_error =  (int) $this->read('status_error');
+        $this->displayDialogAfterDone =  (int) $this->read('displayDialogAfterDone');
+        $this->userinfotoshow =  (int) $this->read('userinfotoshow');
+
 
         $this->reviewer = $this->read('reviewer');
 
@@ -406,12 +410,8 @@ class JobView extends View {
         return count($this->read('activeBids'));
     }
 
-    public function canCommentDesc() {
-        return empty($this->currentUser['id']) && ($this->worklist['status'] != 'Done') && $this->order_by == "DESC";
-    }
-
-    public function canCommentAsc() {
-        return empty($this->currentUser['id']) && ($this->worklist['status'] != 'Done') && $this->order_by == "ASC";
+    public function canComment() {
+        return $this->currentUser['id'] && ($this->worklist['status'] != 'Done');
     }
 
     public function comments() {
@@ -474,7 +474,9 @@ class JobView extends View {
 
     public function canBid() {
         $worklist = $this->worklist;
-        return $worklist['status'] == 'Bidding' || $worklist['status'] == 'SuggestedWithBid' || ($worklist['status'] == 'Suggested' && $worklist['creator_id']== $this->currentUser['id']);
+        return $worklist['status'] == 'Bidding' 
+          || $worklist['status'] == 'SuggestedWithBid' 
+          || ($worklist['status'] == 'Suggested' && $worklist['creator_id'] == $this->currentUser['id']);
     }
 
     public function userIsEligible() {
@@ -530,7 +532,7 @@ class JobView extends View {
                             ? "-" . $bid['id'] . ' clickable'
                             : '';
                 $row_class .= $expired_class;
-                $ret .= '<tr class="' . $row_class; '">';
+                $ret .= '<tr class="' . $row_class . '">';
 
                 // store bid info into jquery metadata so we won't have to fetch it again on user click
                 // but only if user is runner or creator 15-MAR-2011 <godka>
@@ -549,7 +551,7 @@ class JobView extends View {
                             "time_to_complete: '{$bid['time_to_complete']}', " .
                             "done_in: '{$bid['done_in']}', " .
                             "bidder_id: {$bid['bidder_id']}, " .
-                            "notes:\"" .  replaceEncodedNewLinesWithBr($notes) . "\"}" .
+                            "notes: '" .  replaceEncodedNewLinesWithBr($notes) . "'}" .
                         "</script>";
                 }
                 $ret .= 
@@ -569,6 +571,9 @@ class JobView extends View {
 
                 $ret .= '</tr>';
             }
+        }
+        if (!$ret) {
+            $ret = '<tr><td style="text-align: center;" colspan="3"><span class="table-back"><span>No bids yet.</span></span></td></tr>';
         }
         return $ret;
     }
@@ -678,7 +683,7 @@ class JobView extends View {
                     '</div>' .
                 '</td>' .
             '</tr>';
-
+        return $ret;
     }
 
     public function userIsFollowing() {
@@ -789,5 +794,14 @@ class JobView extends View {
             }
         }
         return $maxTip;
+    }
+
+    public function mechanicNickname() {
+        $row = $this->workitem->getUserDetails($this->worklist['mechanic_id']);
+        return empty($row) ? '' : $nickname = $row['nickname'];
+    }
+
+    public function addBidMsg() {
+        return ($this->isGitProject() && $this->read('isGitHubConnected')) ? 'Authorize GitHub app' : 'Add my bid';
     }
 }

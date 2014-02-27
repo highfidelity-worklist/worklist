@@ -889,7 +889,7 @@ a#addJobButton:hover {
     color: #FFFFFF !important;
     background: none !important;
     font-size: 13px !important;
-    border-left: 1px solid #83a8a6 !important;
+    border: 0 none;
     padding: 1px 0 0 8px !important;
     width: auto !important;
     position: relative;

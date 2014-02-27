@@ -96,10 +96,10 @@
     background: #FFF;
 }
 
-.moneyZone table tbody td .table-back{
+.moneyZone table tbody td .table-back {
     background: #E1E8EA;
     display: inline-block;
-    height: 18px;
+    height: 30px;
     padding: 6px 0;
     width: 100%;
     word-break: break-all;
@@ -278,7 +278,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #searchForm > div {
     float: left;
-    height: 25px !important;
+    height: 30px !important;
     padding: 0 9px;
     width: 165px;
     font-family: proxima-nova !important;
@@ -346,9 +346,13 @@ a:hover{
 
 #left-panel {
     float:left;
-    width: 490px !important;
-    margin:0 !important;
-    padding:0!important;
+    width: 50%;
+}
+
+@media (min-width: 1080px) {
+    #left-panel {
+        width: 60% !important;
+    }
 }
 
 #left-panel .buttonContainer.view-sandbox {
@@ -361,8 +365,8 @@ a:hover{
 
 #left-panel .buttonContainer{
     padding-left: 0 !important;
-    float: left !important;
-    margin: 12px 5px !important;
+    float: right;
+    margin: 25px 5px !important;
 }
 
 #left-panel .buttonContainer .smbutton{
@@ -547,7 +551,7 @@ a:hover{
 
 #creatorBox, #runnerBox, #mechanicBox, .keyPeople{
     float: left;
-    width: 130px;
+    width: 30%;
     font-weight: bold;
     font-size: 14px;
     line-height: 15px;
@@ -825,7 +829,7 @@ a:hover{
     color: #FFFFFF !important;
     background: none !important;
     font-size: 13px !important;
-    border-left: 1px solid #83a8a6 !important;
+    border: 0 none;
     padding: 1px 0 0 8px !important;
     width: auto !important;
     position: relative;
@@ -996,7 +1000,7 @@ a:hover{
     width: 100%;
     float: left;
     padding: 3px 0;
-    height: 15px;
+    height: 30px;
 }
 
 .moneyZone .table-hdng td .table-back span{
@@ -1151,9 +1155,13 @@ a:hover{
     text-decoration: underline;
 }
 
-
 .depth-0 .comment-container {
-    width: 424px;
+    width: 80%;
+}
+@media (min-width: 1080px) {
+    .depth-0 .comment-container {
+        width: 90%;
+    }
 }
 
 .depth-1 {
@@ -1161,7 +1169,12 @@ a:hover{
 }
 
 .depth-1 .comment-container {
-    width: 359px;
+    width: 70%;
+}
+@media (min-width: 1080px) {
+    .depth-1 .comment-container {
+        width: 88%;
+    }
 }
 
 .depth-2 {
@@ -1169,7 +1182,12 @@ a:hover{
 }
 
 .depth-2 .comment-container {
-    width: 294px;
+    width: 60%;
+}
+@media (min-width: 1080px) {
+    .depth-2 .comment-container {
+        width: 85%;
+    }
 }
 
 .depth-3 {
@@ -1177,7 +1195,12 @@ a:hover{
 }
 
 .depth-3 .comment-container {
-    width: 229px;
+    width: 40%;
+}
+@media (min-width: 1080px) {
+    .depth-3 .comment-container {
+        width: 75%;
+    }
 }
 
 .depth-4 {
