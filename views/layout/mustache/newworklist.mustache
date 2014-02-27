@@ -25,11 +25,13 @@
     <title>{{title}}</title>
 </head>
 <body>
-    {{> navbar}}
-    <div class="container">
+    {{> fixed-navbar}}
+    <div class="container-fluid">
         {{& content}}
     </div>
-    {{> footer}}
+    {{#renderFooter}}
+        {{> footer}}
+    {{/renderFooter}}
     {{> popup-budget}}
     {{> popup-fees}}
     {{> budget-expanded}}

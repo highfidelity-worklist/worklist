@@ -1,5 +1,5 @@
 <div id="popup-bid" class="popup-body">
-    <form name="popup-form" action="" method="post" >
+    <form name="popup-form" action="./{{worklist.id}}" method="post" >
         <input type="hidden" name="job_id" value="{{worklist.id}}" />
         {{#currentUser.id}}
             <input type='hidden' name='mechanic_id' id='mechanic_id' value='{{currentUser.id}}' />
