@@ -17,6 +17,11 @@
         var ajaxRefresh = {{config.ajaxRefresh}} * 1000;
     </script>
     {{& scriptTags}}
+    <script type="text/javascript">
+        $(function() {
+            NewWorklist.init();
+        });
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:title" content="{{app.metadata.title}}" />
     <meta name="description" content="{{app.metadata.description}}" />

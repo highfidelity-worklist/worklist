@@ -20,6 +20,7 @@ class NewWorklistLayout extends Layout {
         'js/jquery/jquery.autogrow.js',
         'js/jquery/jquery.tooltip.min.js',
         'js/bootstrap/bootstrap.min.js',
+        'js/newworklist.js',
         'js/common.js',
         'js/utils.js',
         'js/userstats.js',
