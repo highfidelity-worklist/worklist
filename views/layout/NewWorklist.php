@@ -2,7 +2,6 @@
 
 class NewWorklistLayout extends Layout {	
     public $stylesheets = array(
-        '//use.typekit.net/xyu1mnf.js',
         'css/bootstrap/css/bootstrap.min.css',
         'css/font-awesome/css/font-awesome.min.css',
         'css/newworklist.css',
@@ -10,6 +9,7 @@ class NewWorklistLayout extends Layout {
     );
 
     public $scripts = array(
+        '//use.typekit.net/xyu1mnf.js',
         'js/jquery/jquery-1.7.1.min.js',
         'js/jquery/jquery.class.js',
         'js/jquery/jquery-ui-1.8.12.min.js',

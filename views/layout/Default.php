@@ -2,7 +2,6 @@
 
 class DefaultLayout extends Layout {	
     public $stylesheets = array(
-        '//use.typekit.net/xyu1mnf.js',
         'css/bootstrap/css/bootstrap.min.css',
         'css/jquery/jquery.combobox.css',
         'css/jquery/jquery-ui.css',
@@ -13,6 +12,7 @@ class DefaultLayout extends Layout {
     );
 
     public $scripts = array(
+        '//use.typekit.net/xyu1mnf.js',
         'js/jquery/jquery-1.7.1.min.js',
         'js/jquery/jquery.class.js',
         'js/jquery/jquery-ui-1.8.12.min.js',
