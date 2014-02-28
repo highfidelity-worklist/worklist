@@ -168,7 +168,10 @@ class View extends AppObject {
         
     public function render() {
         $layout = $this->layout;
-        if (is_null($layout) && class_exists('DefaultLayout')) {
+        if (is_string($layout) && class_exists($layout . 'Layout')) {
+            $layoutClass = $layout . 'Layout';
+            $layout = $this->layout = new $layoutClass();
+        } elseif (is_null($layout) && class_exists('DefaultLayout')) {
             $layout = $this->layout = new DefaultLayout();
         }
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache';
