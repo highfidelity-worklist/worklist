@@ -3,30 +3,19 @@ body {
   padding-top: 61px; /* Move down content because of the fixed top navbar */
 }
 
-/*
- * Global add-ons
- */
-.sub-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+/* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
+@media (min-width: 960px) {
+    body > .container-fluid {
+        max-width: 920px;
+    }
 }
 
-/*
- * Main content
- */
-.main {
-  padding: 20px;
+/* let's set some margins on the main container for smaller sizes */
+@media (max-width: 960px) {
+    body > .container-fluid {
+        margin: 10px 10%;
+    }
 }
-@media (min-width: 768px) {
-  .main {
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-}
-.main .page-header {
-  margin-top: 0;
-}
-
 
 
 /** legacy css copied from common.css, still needed in order to hide dialogs **/

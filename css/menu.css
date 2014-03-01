@@ -7,19 +7,6 @@ body > nav.navbar {
     background: none rgb(51, 51, 51); /* flat background */
 }
 
-/* navbar links borders */
-body > nav.navbar ul.nav:first-child li:first-child {
-    border-left: 1px solid #515151;
-}
-body > nav.navbar ul.nav:first-child li {
-    border-right: 1px solid #515151;
-}
-
-/* links at the right side of the navbar will only have a left-border except for the first one */
-body > nav.navbar ul.nav:last-child li:nth-child(n+2) {
-    border-left: 1px solid #515151;
-}
-
 /* our brand link is actually a logo image */
 body > nav.navbar a.navbar-brand {
     display: inline-block;
@@ -47,44 +34,54 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     background-color: #282828;
 }
 
-/* iconic links styling */
-body > nav.navbar ul.nav:first-child li a {
-    display: inline-block;
-    padding-top: 35px;
-    padding-bottom: 5px;
-    width: 80px;
-    text-align: center;
-    background-repeat: no-repeat;
-    background-position: center 8px;
-}
+@media (min-width: 768px) {
+    /* navbar links borders */
+    body > nav.navbar ul.nav:first-child li:first-child {
+        border-left: 1px solid #515151;
+    }
+    body > nav.navbar ul.nav:first-child li {
+        border-right: 1px solid #515151;
+    }
 
-body > nav.navbar ul.nav a[href$="/jobs"] {
-    background-image: url(../images/tmp/jobs.png);
-}
+    /* links at the right side of the navbar will only have a left-border except for the first one */
+    body > nav.navbar ul.nav:last-child li:nth-child(n+2) {
+        border-left: 1px solid #515151;
+    }
 
-body > nav.navbar ul.nav a[href$="/projects"] {
-    background-image: url(../images/tmp/projects.png);
-}
+    /* iconic links styling */
+    body > nav.navbar ul.nav:first-child li a {
+        display: inline-block;
+        padding-top: 35px;
+        padding-bottom: 5px;
+        width: 80px;
+        text-align: center;
+        background-repeat: no-repeat;
+        background-position: center 8px;
+    }
 
-body > nav.navbar ul.nav a[href$="/status"] {
-    background-image: url(../images/tmp/status.png);
-}
+    body > nav.navbar ul.nav a[href$="/jobs"] {
+        background-image: url(../images/tmp/jobs.png);
+    }
 
-body > nav.navbar ul.nav a[href$="/team"] {
-    background-image: url(../images/tmp/team.png);
-}
+    body > nav.navbar ul.nav a[href$="/projects"] {
+        background-image: url(../images/tmp/projects.png);
+    }
 
-body > nav.navbar ul.nav a[href$="/help"] {
-    background-image: url(../images/tmp/help.png);
-}
+    body > nav.navbar ul.nav a[href$="/status"] {
+        background-image: url(../images/tmp/status.png);
+    }
 
-/* default navbar dropdown is thiner than desired height  */
-body .navbar-nav > li > a {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
+    body > nav.navbar ul.nav a[href$="/team"] {
+        background-image: url(../images/tmp/team.png);
+    }
 
-/*
-body > nav.navbar + .container-fluid {
-    margin-top: 62px;
-}*/
+    body > nav.navbar ul.nav a[href$="/help"] {
+        background-image: url(../images/tmp/help.png);
+    }
+
+    /* default navbar dropdown is thiner than desired height  */
+    body .navbar-nav > li > a {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+}
