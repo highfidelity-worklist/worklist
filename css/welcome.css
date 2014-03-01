@@ -1,0 +1,34 @@
+h2, h3 {
+    color: #007F7C;
+}
+
+body > nav.navbar + .container-fluid {
+    font-size: 2.35em;
+}
+
+@media (max-width: 1024px) {
+    body > nav.navbar + .container-fluid {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 768px) {
+    body > nav.navbar + .container-fluid {
+        font-size: 1.3em;
+    }
+}
+
+h2 {
+    font-size: 150%;
+}
+
+h3 {
+    font-size: 80%;
+    font-weight: bold;
+}
+
+
+h2 > strong {
+    display: block;
+}
+
