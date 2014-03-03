@@ -1,14 +1,14 @@
-h2, h3 {
-    color: #007F7C;
+body > nav.navbar + .container-fluid {
+    font-size: 1.9em;
 }
 
-body > nav.navbar + .container-fluid {
-    font-size: 2.35em;
+body > nav.navbar + .container-fluid > .row {
+    margin: 0 5%;
 }
 
 @media (max-width: 1024px) {
     body > nav.navbar + .container-fluid {
-        font-size: 1.8em;
+        font-size: 1.7em;
     }
 }
 
@@ -19,16 +19,72 @@ body > nav.navbar + .container-fluid {
 }
 
 h2 {
-    font-size: 150%;
+    font-size: 170%;
 }
 
 h3 {
     font-size: 80%;
     font-weight: bold;
+    margin-bottom: 20px
 }
-
 
 h2 > strong {
     display: block;
 }
 
+p {
+    margin: 15px 0 30px;
+}
+
+table th,
+table td {
+    font-size: 80%;
+}
+
+/* columns width settings */
+table tr > td:nth-child(n+1) {
+    width: 56%;
+}
+table tr > td:nth-child(n+2) {
+    width: 33%;
+}
+
+/* table headers styling */
+table th {
+    color: #afaca3;
+    font-weight: normal;
+}
+
+table tr + tr {
+    border-top: 1px solid #e0e0e0;
+}
+
+h2, 
+h3,
+table td,
+table td > a {
+    color: #007F7C;
+}
+
+table td {
+    color: #007F7C;
+    padding: 3px 0;
+}
+
+#github {
+    margin: 20px 0;
+    background-color: #edebe8;
+    padding: 20px;
+    text-align: center;
+}
+
+#github > a {
+    background: transparent url(../images/githubmark.png) 20px center no-repeat;
+    background-size: 48px 48px;
+    display: inline-block;
+    margin: 0 auto;
+    background-color: #009b9b;
+    color: #edebe8;
+    padding: 15px 20px 15px 80px;
+    border-radius: 10px;
+}

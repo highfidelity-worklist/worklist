@@ -10,10 +10,24 @@
         source collaborators. As use of the virtual world grows, Worklist
         will also host paid projects run by other teams.
     </p>
+    {{#areBiddingJobs}}
     <h3>Here are some of the jobs you can bid on now:</h3>
-    <ul>
-    </ul>
-    <section id="github">
-        <a href="./github?action=login">login with github</a>
-    </section>
+    <table>
+        <tr>
+            <th>Description</th>
+            <th>Skills</th>
+            <th>Project</th>
+        </tr>
+        {{#biddingJobs}}
+        <tr>
+            <td><a href="./{{id}}">{{summary}}</a></td>
+            <td>{{skills}}</td>
+            <td><a href="./{{project}}">{{project}}</a></td>
+        </tr>
+        {{/biddingJobs}}
+    </table>
+    {{/areBiddingJobs}}
 </div>
+<section id="github">
+    <a href="./github?action=login">Log in with GitHub</a>
+</section>
