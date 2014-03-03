@@ -8,7 +8,8 @@ class DefaultLayout extends Layout {
         'css/font-awesome/css/font-awesome.min.css',
         'css/tooltip.css',
         'css/common.css',
-        'css/menu.css'
+        'css/menu.css',
+        'css/footer.css'
     );
 
     public $scripts = array(

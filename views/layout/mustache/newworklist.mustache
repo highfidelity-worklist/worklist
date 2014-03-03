@@ -31,12 +31,10 @@
 </head>
 <body>
     {{> fixed-navbar}}
-    <div class="container-fluid">
+    <section class="container-fluid">
         {{& content}}
-    </div>
-    {{#renderFooter}}
-        {{> footer}}
-    {{/renderFooter}}
+    </section>
+    {{> footer}}
     {{> popup-budget}}
     {{> popup-fees}}
     {{> budget-expanded}}

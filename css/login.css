@@ -115,14 +115,6 @@ section#signup {
 #login button {
     background-color: #983300 !important;
 }
-/**
- * Responsive
- */
-@media only screen and (min-width: 0px) and (max-width: 880px) {
-    #footer {
-        display: none;
-    }
-}
 
 @media screen and (max-width: 530px) {
     #login h1 {

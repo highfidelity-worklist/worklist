@@ -1,0 +1,45 @@
+/* single line footer by default */
+#footer {
+    max-width: 360px;
+    min-height: 32px;
+    padding: 5px 0 0 35px;
+    margin: 10px auto;
+    background: transparent url(../images/hifi-logo-notext.png) center left no-repeat;
+    background-size: 32px 32px;
+    text-align: center;
+}
+
+#footer p,
+#footer ul,
+#footer li {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+/* list styling */
+#footer ul,
+#footer li {
+    list-style-type: none;
+}
+
+#footer li:before {
+    content : '• ';
+}
+
+/* normal text color */
+#footer p,
+#footer li {
+    color: #9f9f9f;
+}
+
+/* links and list bullets colors */
+#footer li:before,
+#footer a {
+    color: #666;
+}
+
+/* first 3 links in footer are only shown when using the newworklist layout, hidden by default */
+#footer li:nth-child(-n+3) {
+    display: none;
+}

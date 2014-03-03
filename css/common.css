@@ -669,48 +669,6 @@ input[type=password]:focus {
     border: 2px solid #876F6D;
 }
 
-#footer {
-    margin: 10px auto;
-    padding: 0 44px;
-    text-align: center;
-    font-size: 10px;
-    color: #98AAB2;
-    line-height: 58px;
-    max-width: 873px;
-}
-
-#footer:before {
-    display: block;
-    content: ' ';
-    clear: both;
-}
-
-#footer a {
-    color: #98AAB2;
-}
-
-#footer .loves {
-    margin: 0;
-    padding: 0px;
-    text-align: right;
-    float: right;
-    width: 70px;
-}
-
-#footer .lefticon {
-    text-align: left;
-    margin: -5px 0 0 5px;
-    float: left;
-    padding-top: -3px;
-    width: 80px;
-    height: 53px
-}
-
-#footer .copyText{
-    width: 400px;
-    display: inline;
-}
-
 #stats-area {
     color: #98AAB2;
     float: right;

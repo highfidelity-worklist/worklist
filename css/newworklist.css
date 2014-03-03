@@ -17,54 +17,33 @@ body {
     }
 }
 
+/* multiline-centered footer with logo by default */
+section#footer {
+    max-width: 400px;
+    padding: 35px 0 0 0;
+    background-position: top center;
+}
+
+/* no styling on the first item from the links list */
+section#footer li:first-child:before {
+    content : '';
+}
+
+/* reverting footer paragraph as block */
+section#footer p {
+    display: block;
+}
+
+/* displaying first 3 links on this layout's footer (hidden on footer.css) */
+section#footer li:nth-child(-n+3) {
+    display: inline-block;
+}
 
 /** legacy css copied from common.css, still needed in order to hide dialogs **/
 #wFees,
 #feesToolTip,
 .popup-body {
     display: none;
-}
-
-#footer {
-    margin: 10px auto;
-    padding: 0 44px;
-    text-align: center;
-    font-size: 10px;
-    color: #98AAB2;
-    line-height: 58px;
-    max-width: 873px;
-}
-
-#footer:before {
-    display: block;
-    content: ' ';
-    clear: both;
-}
-
-#footer a {
-    color: #98AAB2;
-}
-
-#footer .loves {
-    margin: 0;
-    padding: 0px;
-    text-align: right;
-    float: right;
-    width: 70px;
-}
-
-#footer .lefticon {
-    text-align: left;
-    margin: -5px 0 0 5px;
-    float: left;
-    padding-top: -3px;
-    width: 80px;
-    height: 53px
-}
-
-#footer .copyText{
-    width: 400px;
-    display: inline;
 }
 
 #stats-area {

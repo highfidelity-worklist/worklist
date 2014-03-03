@@ -1,26 +1,10 @@
-<div id="footer">
-    <div class="lefticon" style="padding-top:10px;">
-        <a href="{{app.feeds_url}}" title="Rss & Atom Feeds" style="text-decoration:none;">
-            <img alt="rss feed" title="rss feed" src="images/rss20.png" />
-            <img alt="atom feed" title="atom feed" src="images/atom20.png" />
-        </a>
-        <a title="Twitter Feed" href="https://twitter.com/worklistnet" target="_blank">
-            <img alt="follow us on twitter" title="follow us on twitter" src="images/twitter.png" />
-        </a>
-    </div>
-    <div class="copyText">&copy; 2014
-        <a href="http://highfidelity.io" target="_blank">HighFidelity, Inc.</a>
-        <a href="privacy" target="_blank">Privacy Policy</a>
-        <a href="mailto:contact@worklist.net" target="_blank">Contact Us</a>
-        <a href="http://svn.worklist.net/" target="_blank">View the source code</a> 
-        version: {{app.version}}
-        <div id="stats-area">
-            <span id='stats-text'>
-                <a href="./jobs?status=bidding&project=0&user=0" class="iToolTip jobsBidding actionBidding">
-                    <span id="count_b"></span> jobs</a> bidding, 
-                <a href="./jobs?status=underway&project=0&user=0" class="iToolTip jobsBidding actionUnderway">
-                    <span id="count_w"></span> jobs</a> underway
-            </span>
-        </div>
-    </div>
-</div>
+<section id="footer">
+    <p>&copy; 2014 <a href="http://highfidelity.io" target="_blank">High Fidelity Inc.</a></p>
+    <ul>
+        <li><a title="Twitter Feed" href="https://twitter.com/worklistnet" target="_blank">Worklist Twitter</a></li>
+        <li><a title="Follow us on Twitter" href="https://twitter.com/highfidelityinc" target="_blank">Hifi Twitter</a></li>
+        <li><a href="{{app.feeds_url}}" title="Rss & Atom Feeds">RSS</a></li>
+        <li><a href="./privacy">Privacy Policy</a></li>
+        <li>Version {{app.version}}</li>
+    </ul>
+</section>
