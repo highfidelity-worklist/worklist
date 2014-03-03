@@ -1,8 +1,8 @@
 /* single line footer by default */
 #footer {
-    max-width: 360px;
+    max-width: 375px;
     min-height: 32px;
-    padding: 5px 0 0 35px;
+    padding: 6px 0 0 35px;
     margin: 10px auto;
     background: transparent url(../images/hifi-logo-notext.png) center left no-repeat;
     background-size: 32px 32px;
