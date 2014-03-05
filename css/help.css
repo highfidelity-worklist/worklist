@@ -10,12 +10,15 @@ body > nav.navbar + .container-fluid {
     padding: 10px 0;
 }
 
-body > nav.navbar + .container-fluid h2,
-body > nav.navbar + .container-fluid h3,
-body > nav.navbar + .container-fluid h4,
-body > nav.navbar + .container-fluid ul,
-body > nav.navbar + .container-fluid p {
-    padding: 15px 8%;
+body > nav.navbar + .container-fluid > h2,
+body > nav.navbar + .container-fluid > h3,
+body > nav.navbar + .container-fluid > h4,
+body > nav.navbar + .container-fluid > p {
+    padding: 15px 8% 0;
+}
+
+body > nav.navbar + .container-fluid > ul {
+    padding: 3px 10% 0;
 }
 
 h2 {
@@ -28,3 +31,17 @@ h2 {
 h3 {
     color: #009b9b;
 }
+
+h3 + ul li > a,
+h4 a,
+h4 a[name]:hover,
+h4 a[name]:active {
+    color: #000;
+    text-decoration: none;
+}
+
+h4 a[name]:hover,
+h4 a[name]:active {
+    cursor: default;
+}
+
