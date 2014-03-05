@@ -1,5 +1,5 @@
 body {
-  font-family: proxima-nova;
+  font-family: proxima-nova, sans-serif;
   padding-top: 61px; /* Move down content because of the fixed top navbar */
 }
 
