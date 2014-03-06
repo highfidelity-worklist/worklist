@@ -10,6 +10,17 @@ body {
     }
 }
 
+@media (min-height: 400px) {
+    .main > h3:first-child {
+        white-space: pre-line;
+        position: fixed;
+        left: 0;
+        top: 40px;
+        padding: 15px 30px;
+        background: #fff;
+    }
+}
+
 /* let's set some margins on the main container for smaller sizes */
 @media (max-width: 960px) {
     body > .container-fluid {

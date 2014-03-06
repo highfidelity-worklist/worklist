@@ -5,7 +5,7 @@ class EntryModel extends Model {
 
     public function latest($minutes_ago = 0, $max_limit = 0, $offset = 0) {
         $cond = $minutes_ago ? 'DATESUB(NOW(), ' + $minutes_ago + ' minutes) < date' : '';
-        return $this->loadMany($cond, 'date ASC', $max_limit, $offset);
+        return array_reverse($this->loadMany($cond, 'date DESC', $max_limit, $offset));
     }
 
     public function latestFromTask($job_id, $order = 'date DESC', $max_limit = 0, $offset = 0) {
