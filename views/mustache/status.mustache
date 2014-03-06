@@ -21,7 +21,12 @@
             {{#entries}}{{#visible}}
             <li entryid="{{id}}" userid="{{user_id}}" author="{{author}}">
                 <h4>{{date}}</h4>
-                {{& markdownEntry}}
+                {{#oldFormatEntry}}
+                    {{& entry}}
+                {{/oldFormatEntry}}
+                {{^oldFormatEntry}}
+                    {{& markdownEntry}}
+                {{/oldFormatEntry}}
             </li>
             {{/visible}}{{/entries}}
         </ul>

@@ -36,4 +36,8 @@ class EntryModel extends Model {
     public function markdownEntry() {
         return Markdown::defaultTransform($this->entry);
     }
+
+    public function oldFormatEntry() {
+        return strtotime($this->date) < strtotime('2014-03-07 00:00:00');
+    }
 }
