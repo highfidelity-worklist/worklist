@@ -19,7 +19,7 @@
         </h3>
         <ul id="entries">
             {{#entries}}{{#visible}}
-            <li entryid="{{id}}" userid="{{user_id}}" author="{{author}}">
+            <li entryid="{{id}}" class="{{^oldFormatEntry}}markdown{{/oldFormatEntry}}">
                 <h4>{{date}}</h4>
                 {{#oldFormatEntry}}
                     {{& entry}}

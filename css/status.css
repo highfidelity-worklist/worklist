@@ -91,7 +91,7 @@ section#footer {
     padding-left: 45px;
 }
 
-#entries li:before {
+#entries li.markdown:before {
     float: left;
     width: 20px;
     height: 20px;
@@ -99,7 +99,8 @@ section#footer {
     content: '';
     display: inline-block;
     margin-left: -40px;
-    margin-top: 20px;
+    margin-top: 15px;
+    background-color: #f5f5f5;
 }
 
 #entries li {
@@ -112,6 +113,7 @@ section#footer {
     margin: 0;
 }
 
-#entries p {
-    font-size: 1.5em;
+#entries li > p {
+    font-size: 1.1em;
+    margin: 0;
 }
