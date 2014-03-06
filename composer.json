@@ -2,7 +2,8 @@
     "require": {
         "mustache/mustache": "*",
         "corneltek/pux": "*",
-        "twilio/twilio-php": "*"
+        "twilio/twilio-php": "*",
+        "michelf/php-markdown": "*"
     },
     "repositories": [
         {

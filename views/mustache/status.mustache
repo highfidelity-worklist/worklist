@@ -14,14 +14,14 @@
         </section>
     </div>
     <div class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">
-        <h3 class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3 main">System 
+        <h3 class="col-sm-8 col-sm-offset-4 col-md-9 col-md-offset-3">System 
             Notifications
         </h3>
         <ul id="entries">
             {{#entries}}{{#visible}}
-            <li entryid="{{id}}" userid="{{user_id}}">
+            <li entryid="{{id}}" userid="{{user_id}}" author="{{author}}">
                 <h4>{{date}}</h4>
-                <p>{{entry}}</p>
+                {{& markdownEntry}}
             </li>
             {{/visible}}{{/entries}}
         </ul>

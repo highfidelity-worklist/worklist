@@ -43,7 +43,7 @@ class UserController extends Controller {
                 switch ($field) {
                     case 'salary':
                         $updateUser->setAnnual_salary($value);
-                        sendJournalNotification("A new salary has been set for " . $updateUser->getNickname());
+                        sendJournalNotification("A new salary has been set for @" . $updateUser->getNickname());
                         break;
 
                     case 'ispayer':

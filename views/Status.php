@@ -23,6 +23,6 @@ class StatusView extends View {
     }
 
     public function entries() {
-        return $this->read('entries');
+        return array_reverse($this->read('entries'));
     }
 }

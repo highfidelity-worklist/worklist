@@ -1,11 +1,13 @@
 <?php
 
+use \Michelf\Markdown;
+
 class EntryModel extends Model {
     protected $table = 'entries';
 
     public function latest($minutes_ago = 0, $max_limit = 0, $offset = 0) {
         $cond = $minutes_ago ? 'DATESUB(NOW(), ' + $minutes_ago + ' minutes) < date' : '';
-        return array_reverse($this->loadMany($cond, 'date DESC', $max_limit, $offset));
+        return $this->loadMany($cond, 'date DESC', $max_limit, $offset);
     }
 
     public function latestFromTask($job_id, $order = 'date DESC', $max_limit = 0, $offset = 0) {
@@ -31,4 +33,7 @@ class EntryModel extends Model {
         return false;
     }
 
+    public function markdownEntry() {
+        return Markdown::defaultTransform($this->entry);
+    }
 }
