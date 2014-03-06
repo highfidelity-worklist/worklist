@@ -13,10 +13,6 @@ body {
   margin: 0 auto;
   background-color: #fff;
 }
-#form-login #form-login-heading,
-#form-login .checkbox {
-  margin-bottom: 10px;
-}
 #form-login .form-control {
   position: relative;
   height: auto;
@@ -48,7 +44,7 @@ body {
 }
 
 #form-login > h2 {
-    font-size: 1.4em;
+    font-size: 1.6em;
     font-weight: bold;
     color: #007f7c;
 }

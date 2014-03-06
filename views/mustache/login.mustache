@@ -1,13 +1,5 @@
-<!--
-<form class="form-signin" role="form">
-    <h2 class="form-signin-heading">Please sign in</h2>
-    <input type="email" class="form-control" placeholder="Email address" required autofocus>
-    <input type="password" class="form-control" placeholder="Password" required>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-</form>
--->
 <form class="form-signin" role="form" id="form-login" method="post" action="">
-    <h2 class="form-signin-heading">Login to Worklist</h2>
+    <h2>Login to Worklist</h2>
     {{#failed}}
         {{#errors}}
             <p class="error">{{&msg}}</p>
@@ -28,4 +20,4 @@
         <button type="submit" id="Login" name="Login" value="Login">Login</button>
         or <a href="./forgot" title="Reset your password">recover password</a>
     </fielsdset>
-</fo|rm>
+</form>
