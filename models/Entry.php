@@ -38,6 +38,6 @@ class EntryModel extends Model {
     }
 
     public function oldFormatEntry() {
-        return strtotime($this->date) < strtotime('2014-03-07 00:00:00');
+        return strtotime($this->date) < strtotime('2014-03-06 00:00:00');
     }
 }
