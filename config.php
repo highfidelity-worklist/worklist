@@ -17,10 +17,6 @@ function defineOnce($key, $value) {
     }
 }
 
-require_once('Zend/Config.php');
-require_once('Zend/Config/Ini.php');
-require_once('Zend/Registry.php');
-
 if (file_exists(dirname(__FILE__).'/server.local.php')) {
     include_once(dirname(__FILE__).'/server.local.php');
 } else {
@@ -40,6 +36,10 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
         'rm ' . dirname(__FILE__) . '/server.local.phpe <br/><br/> '
         );
 }
+
+require_once('Zend/Config.php');
+require_once('Zend/Config/Ini.php');
+require_once('Zend/Registry.php');
 
 defineOnce('MYSQL_DEBUG_LEVEL', 0);
 defineOnce('MYSQL_DEBUG_MESSAGE_DEFAULT', 'General database error');
@@ -1280,10 +1280,11 @@ $timezoneTable = array(
     "+1200" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka"
 );
 
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
+date_default_timezone_set('America/Los_Angeles');
+
 defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'd075a674622a63de2415');
 defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '6c256ada7f5849ef392907f56b55cc501d4b9e2e');
-
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
 
 defineOnce('MODELS_DIR', dirname(__FILE__) . '/models');
 defineOnce('VIEWS_DIR', dirname(__FILE__) . '/views');
@@ -1294,6 +1295,9 @@ defineOnce('CACHE_DIR', TEMP_DIR . '/cache');
 
 defineOnce('DEFAULT_CONTROLLER_NAME', 'Home');
 defineOnce('DEFAULT_CONTROLLER_METHOD', 'run');
+
+defineOnce('GITHUB_API_TOKEN', 'a8490439510623316834ea6cdc736a32a76f3709');
+defineOnce('GITHUB_REPO', 'highfidelity/hifi');
 
 require_once('vendor/autoload.php');
 require_once('functions.php');
