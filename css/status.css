@@ -2,21 +2,16 @@ body {
     overflow-x: hidden;
 }
 
-/* max-width on fluid container from newworklist is not the desired behavior on status*/
+/* max-width on fluid container from NewWorklist is not the desired behavior on status */
 @media (min-width: 960px) {
     body > .container-fluid {
         max-width: none;
     }
 }
 
-
-#need-review h4 {
+.sidebar h3:first-child,
+.main h3:first-child {
     font-weight: bold;
-}
-
-#need-review h4 > strong {
-    display: block;
-    color: #ff5582;
 }
 
 /* won't display the footer on status */
@@ -40,12 +35,83 @@ section#footer {
     left: 0;
     z-index: 1000;
     display: block;
-    padding: 20px;
+    padding: 0;
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
     background-color: #dde4e6;
     border-right: 1px solid #eee;
+    box-shadow: inset 0px 0px 15px -7px #333;
   }
+  .sidebar > section {
+    padding: 0 20px; 
+  }
+}
+
+/* review jobs section */
+#need-review h3 {
+    margin: 15px 0;
+}
+
+#need-review h3 > strong {
+    color: #ff5582;
+}
+
+#need-review ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#need-review li {
+    color: #666666;
+    line-height: .9em;
+    margin-bottom: 7px;
+}
+
+#need-review li > a {
+    display: block;
+    color: #333333;
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 1em;
+}
+
+#need-review li > a,
+#need-review li > a:hover,
+#need-review li > a:active {
+    text-decoration: none;
+}
+
+#need-review > ul + a {
+    color: #007f7c;
+    border-bottom: 1px solid #a6cbcc;
+    line-height: .9em;
+    font-size: 1.1em;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+#need-review > ul a {
+    text-decoration: none;
+    border-color: #007f7c;
+}
+
+/* add job button styling */
+#biddingJobs > p:first-child > a {
+    background-color: #009b9b;
+    color: #fff;
+    font-weight: bold;
+    padding: 7px 15px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* "There are X jobs you can bid on" paragraph styling */
+#biddingJobs > p + p {
+    font-size: 0.9em;
+    margin: 0;
+    padding: 5px 0;
+    line-height: .9em;
+    font-size: 1em;
 }
 
 
@@ -81,8 +147,15 @@ section#footer {
 }
 
 @media (min-height: 400px) {
-    .main > h3:first-child {
+    .sidebar h3:first-child,
+    .main h3:first-child {
         white-space: pre-line;
+    }
+}
+
+@media (max-width: 768px) {
+    .main > h3:first-child {
+        display: none;
     }
 }
 

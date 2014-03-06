@@ -34,13 +34,12 @@ function fillBiddingReviewDrawers(json) {
         for (var i = 0; i < need_review.length; i++) {
             workitem = need_review[i];
             var li = $('<li>');
+            $('<span>#' + workitem.id + '</span> ').appendTo(li);
             $('<a>').attr(
                 {
                     class: 'workitem-' + workitem.id,
                     href: './' + workitem.id
-                })
-                .append('<span>#' + workitem.id + '</span> ' + workitem.summary)
-                .appendTo(li);
+                }).text(workitem.summary).appendTo(li);
             $('#need-review ul').append(li);
         }
         if (parseInt(review) > 7) {
@@ -50,12 +49,12 @@ function fillBiddingReviewDrawers(json) {
                     target: '_blank'
                 })
                 .text('View them all')
-                .appendTo('#need-review ul');
+                .insertAfter('#need-review ul');
         }
         $('#need-review ul').show();
     }  else {
         $('#need-review ul').hide();
     }
-    $('#biddingJobs a').text(bidding);
+    $('#biddingJobs p > a').text(bidding);
     $('#biddingJobs p > span').text(parseInt(bidding) == 1 ? 'is' : 'are');
 }
