@@ -22,17 +22,7 @@
             Notifications
         </h3>
         <ul id="entries">
-            {{#entries}}{{#visible}}
-            <li entryid="{{id}}" class="{{^oldFormatEntry}}markdown{{/oldFormatEntry}}">
-                <h4>{{date}}</h4>
-                {{#oldFormatEntry}}
-                    {{& entry}}
-                {{/oldFormatEntry}}
-                {{^oldFormatEntry}}
-                    {{& markdownEntry}}
-                {{/oldFormatEntry}}
-            </li>
-            {{/visible}}{{/entries}}
+            {{& entries}}
         </ul>
     </div>
 </div>

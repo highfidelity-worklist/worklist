@@ -3,7 +3,9 @@
         "mustache/mustache": "*",
         "corneltek/pux": "*",
         "twilio/twilio-php": "*",
-        "michelf/php-markdown": "*"
+        "michelf/php-markdown": "*",
+        "knplabs/github-api": "*",
+        "kriswallsmith/Buzz": "*"
     },
     "repositories": [
         {
