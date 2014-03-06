@@ -1,34 +1,31 @@
-<section id="login">
-    <h1>Login to Worklist</h1>
+<!--
+<form class="form-signin" role="form">
+    <h2 class="form-signin-heading">Please sign in</h2>
+    <input type="email" class="form-control" placeholder="Email address" required autofocus>
+    <input type="password" class="form-control" placeholder="Password" required>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+</form>
+-->
+<form class="form-signin" role="form" id="form-login" method="post" action="">
+    <h2 class="form-signin-heading">Login to Worklist</h2>
     {{#failed}}
-       <div class="errors">
         {{#errors}}
             <p class="error">{{&msg}}</p>
         {{/errors}}
-        </div>
     {{/failed}}
-    <form id="form-login" action="" method="post">
-        <input type="hidden" name="redir" value="{{redir}}" />
+    <input type="hidden" name="redir" value="{{redir}}" />
+    <fieldset>
         <label for="username">Email</label>
-        <input type="text" id="form[username]" name="username" class="text-field" size="40" />
+        <input type="text" id="form[username]" name="username" class="form-control" size="40" />
+    </fieldset>
 
-        <div class="clear"></div>
-
+    <fieldset>
         <label for="password">Password</label>
-        <input id="form[password]" type="password" name="password" class="text-field" />
-        <div class="clear"></div>
+        <input id="form[password]" type="password" name="password" class="form-control" />
+    </fieldset>
 
-        <p class="actions">
-            <input type="submit" id="Login" name="Login" value="Login" />
-            or <a href="./forgot" title="Reset your password">recover password</a>
-        </p>
-    </form>
-    <p>
-        <a href="./github?action=login" title="Login with github">Login with your github account</a>
-    </p>
-    <div class="clear"></div>
-</section>
-
-<section id="signup">
-    <p>New to the Worklist? <a href="./signup" title="Sign up to worklist">Sign up now.</a></p>
-</section>
+    <fieldset>
+        <button type="submit" id="Login" name="Login" value="Login">Login</button>
+        or <a href="./forgot" title="Reset your password">recover password</a>
+    </fielsdset>
+</fo|rm>

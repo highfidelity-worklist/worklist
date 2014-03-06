@@ -1,17 +1,12 @@
 <?php
 
 class LoginView extends View {
+    public $layout = 'NewWorklist';
+
     public $title = 'Login | Worklist';
 
     public $stylesheets = array(
-        'css/worklist.css',
         'css/login.css'
-    );
-
-    public $scripts = array(
-        'js/jquery/jquery.timeago.js',
-        'js/jquery/jquery.metadata.js',
-        'js/ajaxupload/ajaxupload.js'
     );
 
     public function render() {
