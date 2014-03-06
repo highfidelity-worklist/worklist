@@ -27,8 +27,8 @@ function fillBiddingReviewDrawers(json) {
     var bidding = (json.bidding == 0 || json.bidding == null) ? 'no jobs' : (json.bidding == 1 ? '1 job' : json.bidding + ' jobs');
     var review = (json.review == 0 || json.review == null) ? 'no jobs' : (json.review == 1 ? '1 job' : json.review + ' jobs');
     
-    $('#need-review li').remove();
-    $('#need-review + a').remove();
+    $('#need-review ul li').remove();
+    $('#need-review ul + a').remove();
     if (parseInt(review) > 0 && json.need_review) {
         var need_review = json.need_review;
         for (var i = 0; i < need_review.length; i++) {
@@ -41,7 +41,7 @@ function fillBiddingReviewDrawers(json) {
                 })
                 .append('<span>#' + workitem.id + '</span> ' + workitem.summary)
                 .appendTo(li);
-            $('#need-review').append(li);
+            $('#need-review ul').append(li);
         }
         if (parseInt(review) > 7) {
             $('<a>').attr(
@@ -50,12 +50,12 @@ function fillBiddingReviewDrawers(json) {
                     target: '_blank'
                 })
                 .text('View them all')
-                .appendTo('#need-review');
+                .appendTo('#need-review ul');
         }
-        $('#need-review').show();
+        $('#need-review ul').show();
     }  else {
-        $('#need-review').hide();
+        $('#need-review ul').hide();
     }
     $('#biddingJobs a').text(bidding);
-    $('#biddingJobs span').text(parseInt(bidding) == 1 ? 'is' : 'are');
+    $('#biddingJobs p > span').text(parseInt(bidding) == 1 ? 'is' : 'are');
 }

@@ -1645,7 +1645,7 @@ class User {
 		error_log('update_satus ' . $status);
         if (isset($_SESSION['userid'])){
             if ($status != "") {
-                $journal_message =  $_SESSION['nickname'] . ' is ' . $status;
+                $journal_message =  '@' . $_SESSION['nickname'] . ' is *' . $status . '*';
 
             // Insert new status to the database
                 $insert = "INSERT INTO " . USER_STATUS . "(id, status, timeplaced) VALUES(" . $_SESSION['userid'] . ", '" .  mysql_real_escape_string($status) . "', NOW())";
@@ -1711,6 +1711,7 @@ class User {
         if (!$result = mysql_query($sql)) {
             return null;
         }
+        $ret = array();
         while($row = mysql_fetch_assoc($result)) {
             $ret[] = $row;
         }

@@ -1,7 +1,5 @@
 <?php
-/*
- * 
- */
+
 class GitHubProject
 {
     private $github_id;
@@ -131,15 +129,14 @@ class GitHubProject
                 $pullRequestStatus = $payload->pull_request->merged == 'true' 
                     ? "closed and merged"
                     : "closed but not merged";
-                $message = "
-                    Job #{$jobNumber} - Pull request {$pullRequestNumber}
-                    ({$pullRequestURL}) has been {$pullRequestStatus} into {$pullRequestBase}";
+                $message = 
+                    "#{$jobNumber} - Pull request {$pullRequestNumber}\n\n" .
+                    "({$pullRequestURL}) has been {$pullRequestStatus} into {$pullRequestBase}";
 
                 sendJournalNotification($message);
                 
                 if ($payload->pull_request->merged == 'true') {
-                    $journal_message = 
-                        "Job #{$jobNumber} has been automatically set to Completed";
+                    $journal_message = "Job #" . $jobNumber . ' has been automatically set to *Completed*';
                     sendJournalNotification($journal_message);
                     $workItem->setStatus('Completed');
                     $workItem->addFeesToCompletedJob(true);

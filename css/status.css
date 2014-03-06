@@ -2,6 +2,28 @@ body {
     overflow-x: hidden;
 }
 
+/* max-width on fluid container from newworklist is not the desired behavior on status*/
+@media (min-width: 960px) {
+    body > .container-fluid {
+        max-width: none;
+    }
+}
+
+
+#need-review h4 {
+    font-weight: bold;
+}
+
+#need-review h4 > strong {
+    display: block;
+    color: #ff5582;
+}
+
+/* won't display the footer on status */
+section#footer {
+    display: none;
+}
+
 /*
  * Sidebar
  */
@@ -27,4 +49,69 @@ body {
 }
 
 
+/*
+ * Main content
+ */
 
+.main {
+  padding: 0px 10px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}
+
+.main > h3:first-child {
+    position: fixed;
+    left: 0;
+    top: 40px;
+    padding: 15px 30px;
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 85%, rgba(255,255,255,0) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(85%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 );
+}
+
+@media (min-height: 400px) {
+    .main > h3:first-child {
+        white-space: pre-line;
+    }
+}
+
+#entries {
+    list-style-type: none;
+    padding-left: 45px;
+}
+
+#entries li:before {
+    float: left;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    content: '';
+    display: inline-block;
+    margin-left: -40px;
+    margin-top: 20px;
+}
+
+#entries li {
+    margin-top: 20px;
+}
+
+#entries h4 {
+    color: #828282;
+    font-size: 1em;
+    margin: 0;
+}
+
+#entries p {
+    font-size: 1.5em;
+}

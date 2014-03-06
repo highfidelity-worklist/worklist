@@ -124,7 +124,7 @@ class SettingsController extends Controller {
                         'messsage' => $errormsg
                     )));
                 } else {
-                    sendJournalNotification("The new nickname for user '" . $oldNickname . "' is: '" . $nickname . "'");
+                    sendJournalNotification("The new nickname for *" . $oldNickname . "* is @" . $nickname);
                 }
             }
 

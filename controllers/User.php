@@ -101,9 +101,9 @@ class UserController extends Controller {
                             $manager = new User();
                             $manager->findUserById($value);
                             // Send journal notification
-                            sendJournalNotification("The manager for " . $updateUser->getNickname() . " is now set to " . $manager->getNickname());
+                            sendJournalNotification("The manager for @" . $updateUser->getNickname() . " is now set to @" . $manager->getNickname());
                         } else {
-                            sendJournalNotification("The manager for " . $updateUser->getNickname() . " has been removed");
+                            sendJournalNotification("The manager for @" . $updateUser->getNickname() . " has been removed");
                         }
                         break;
 
@@ -114,9 +114,9 @@ class UserController extends Controller {
                             $referrer->findUserById($value);
 
                             // Send journal notification
-                            sendJournalNotification("The referrer for " . $updateUser->getNickname() . " is now set to " . $referrer->getNickname());
+                            sendJournalNotification("The referrer for @" . $updateUser->getNickname() . " is now set to @" . $referrer->getNickname());
                         } else {
-                            sendJournalNotification("The referrer for " . $updateUser->getNickname() . " has been removed");
+                            sendJournalNotification("The referrer for @" . $updateUser->getNickname() . " has been removed");
                         }
                         break;
 

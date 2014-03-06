@@ -477,7 +477,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     // Journal notification
     if($mechanic_id == $_SESSION['userid'])
     {
-        $journal_message = $_SESSION['nickname'] . " added a fee of \$$fee_amount to item #$itemid: $summary. ";
+        $journal_message = '@' . $_SESSION['nickname'] . " added a fee of \$$fee_amount to #$itemid\n\n **" . $summary. '**';
     }
     else
     {
@@ -492,7 +492,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
             $nickname = "unknown-{$mechanic_id}";
         }
 
-        $journal_message = $_SESSION['nickname'] . " on behalf of {$nickname} added a fee of \$$fee_amount to item #$itemid:  $summary. ";
+        $journal_message = '@' . $_SESSION['nickname'] . " on behalf of @{$nickname} added a fee of \$$fee_amount to #$itemid\n\n**" . $summary. '**';
     }
 
     return $journal_message;
@@ -751,8 +751,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $user = getUserById($bid->bidder_id);
 
         // Journal message
-        $message  = 'A bid was deleted from item #' . $job['id'] . ': ';
-        $message .= $job['summary'] . '.';
+        $message  = 'A bid was deleted from #' . $job['id'] . "\n\n**" . $job['summary'] . '**.';
 
         // Journal notification
         sendJournalNotification($message);
@@ -820,10 +819,10 @@ function deleteFee($fee_id) {
 
         if ($user !== false) {
             // Journal message
-            $message  = $_SESSION['nickname'] . ' deleted a fee from ';
-            $message .= $user->nickname . ' on item #';
-            $message .= $fee->worklist_id . ': ';
-            $message .= $summary . '. ';
+            $message  = '@' . $_SESSION['nickname'] . ' deleted a fee from @';
+            $message .= $user->nickname . ' on #';
+            $message .= $fee->worklist_id . "\n\n**";
+            $message .= $summary . '**. ';
     
             // Journal notification
             sendJournalNotification($message);
@@ -1207,7 +1206,7 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
         $userinfo_link = WORKLIST_URL . 'user/?id=' . $reviewee->getId();
         $headers['From'] = 'worklist<donotreply@worklist.net>';
         $subject = 'New Peer Review';
-        $journal = $nickname . " received a new review: " . $review;
+        $journal = '@' . $nickname . " received a new review: " . $review;
         $body  = '<p>Hello ' . $nickname . ',</p><br />';
         $body  .= '<p>You have received a review from one of your peers in the Worklist.</p><br />';
         $body  .= '<p>To see your current user reviews, click <a href="' . $userinfo_link . '">here</a>.</p>';
@@ -1215,10 +1214,10 @@ function sendReviewNotification($reviewee_id, $type, $oReview) {
         $body  .= '<p><a href="' . WORKLIST_URL . '"jobs>worklist' . '</a></p>';
     } else if ($type == "update") {
         $subject = "A review of you has been updated";
-        $journal = "A review of " . $nickname . " has been updated: ". $review;
+        $journal = "A review of @" . $nickname . " has been updated: ". $review;
     } else {
         $subject = "One of your reviews has been deleted";
-        $journal = "One review of " . $nickname . " has been deleted: ". $review;
+        $journal = "One review of @" . $nickname . " has been deleted: ". $review;
     }
     
     if (!send_email($to, $subject, $body, null, $headers)) { 

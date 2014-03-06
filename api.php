@@ -605,7 +605,7 @@ function autoPassSuggestedJobs() {
             );
             
             //sendJournalnotification
-            $journal_message = "Otto updated item #" . $workitem->getId() . ": " . $workitem->getSummary() . ". Status set to " . $status;
+            $journal_message = "#" . $workitem->getId() . " updated by @Otto \n\n**" . $workitem->getSummary() . "**. Status set to *" . $status . "*";
             sendJournalNotification(stripslashes($journal_message));            
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
@@ -1169,7 +1169,7 @@ function addProject() {
         }
         $project->save();
         
-        $journal_message = $nick . ' added project ##' . $name;
+        $journal_message = '@' $nick . ' added project #' . $name;
         if (!empty($journal_message)) {
             //sending journal notification
             sendJournalNotification($journal_message);
@@ -1223,11 +1223,9 @@ function addWorkitem() {
 
         if (! empty($_POST['itemid'])) {
             $workitem->loadById($_POST['itemid']);
-            $journal_message .= $nick . " updated ";
         } else {
             $workitem->setCreatorId($creator_id);
             $workitem_added = true;
-            $journal_message .= $nick . " added ";
         }
         $workitem->setSummary($summary);
 
@@ -1293,8 +1291,9 @@ function addWorkitem() {
         }
         
         if (empty($_POST['itemid'])) {
+            $journal_message .= '#' . $bid_fee_itemid ' created by @' . $nick . ' ' . $bugJournalMessage;
             $bid_fee_itemid = $workitem->getId();
-            $journal_message .= " item #$bid_fee_itemid$bugJournalMessage: $summary. Status set to $status ";
+            $journal_message .= "\n\n**" . $summary . '**. Status set to *' . $status . '*';
             if (!empty($_POST['files'])) {
                 $files = explode(',', $_POST['files']);
                 foreach ($files as $file) {
@@ -1303,8 +1302,9 @@ function addWorkitem() {
                 }
             }
         } else {
+            $journal_message .= '#' . $bid_fee_itemid ' updated by @' . $nick ;
             $bid_fee_itemid = $itemid;
-            $journal_message .=  "item #$itemid: $summary: Status set to $status ";
+            $journal_message .=  "\n\n**" . $summary . '**. Status set to *' $status . '*';
         }
         $journal_message .=  "$related. ";
         if (!empty($_POST['invite'])) {
@@ -1398,7 +1398,7 @@ function setFavorite() {
                     } else {
                         $message = "{$count} people";
                     }
-                    $journal_message = "{$nick} is now trusted by {$message}!";
+                    $journal_message = '@' . $nick . ' is now trusted by ' . $message . '!';
                     //sending journal notification
                     sendJournalNotification(stripslashes($journal_message));
                 }
@@ -2852,7 +2852,7 @@ function payBonus() {
                 $receiver_email = $receiver->username;
 
                 sendTemplateEmail( $receiver_email, 'bonus_received', array('amount' => $stringAmount, 'reason' => $reason));
-                if (sendJournalNotification($receiver->nickname . ' received a bonus of $' . $stringAmount) == 'ok') {
+                if (sendJournalNotification('@' . $receiver->nickname . ' received a bonus of $' . $stringAmount) == 'ok') {
                 } else {
                     // journal notification failed
                 }
@@ -3003,7 +3003,7 @@ function pingTask() {
 
         // Compose journal message
         if ($send_chat) {
-            $out_msg = $nickname . " sent a ping to " . $receiver_nick . " about item #" .$item_id;
+            $out_msg = '@' . $nickname . ' sent a ping to @' . $receiver_nick . ' about #' .$item_id;
             $out_msg .= ": " . $msg;
 
             // Send to journal
@@ -3085,7 +3085,7 @@ function pingTask() {
 
         if ($send_chat) {
             // Compose journal message
-            $out_msg = $nickname." sent a ping to " . $receiver_nick;
+            $out_msg = '@' . $nickname.' sent a ping to @' . $receiver_nick;
             $out_msg .= ": ".$msg;
 
             // Send to journal
@@ -3401,7 +3401,7 @@ function updateBudget() {
         }
         $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
         if (mysql_unbuffered_query($query2)) {
-            $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
+            $journal_message = '@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) .
             " for " . $reason . ".";
             sendJournalNotification($journal_message);            
             if ($add_funds_to_budget == false) {

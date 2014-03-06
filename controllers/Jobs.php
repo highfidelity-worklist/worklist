@@ -93,10 +93,8 @@ class JobsController extends Controller {
 
             if (!empty($_POST['itemid']) && ($_POST['status']) != 'Draft') {
                 $workitem->loadById($_POST['itemid']);
-                $journal_message .= $nick . " updated ";
             } else {
                 $workitem->setCreatorId($creator_id);
-                $journal_message .= $nick . " added ";
             }
             $workitem->setSummary($summary);
 
@@ -115,6 +113,14 @@ class JobsController extends Controller {
             $workitem->is_bug = isset($is_bug) ? true : false;
             $workitem->save();
 
+            $journal_message .= '#' . $workitem->getId();
+            if (!empty($_POST['itemid']) && ($_POST['status']) != 'Draft') {
+                $journal_message .= " updated ";
+            } else {
+                $journal_message .= " added ";
+            }
+            $journal_message .= 'by @' . $nick;
+
             Notification::statusNotify($workitem);
             if (is_bug) {
                 $bug_journal_message = " (bug of job #".$bug_job_id.")";
@@ -123,7 +129,7 @@ class JobsController extends Controller {
 
             if (empty($_POST['itemid']))  {
                 $bid_fee_itemid = $workitem->getId();
-                $journal_message .= " item #$bid_fee_itemid: $summary. ";
+                $journal_message .= "\n\n*" . $summary . '*';
                 if (!empty($_POST['files'])) {
                     $files = explode(',', $_POST['files']);
                     foreach ($files as $file) {
@@ -133,7 +139,7 @@ class JobsController extends Controller {
                 }
             } else {
                 $bid_fee_itemid = $itemid;
-                $journal_message .=  "item #$itemid$bug_journal_message: $summary. ";
+                $journal_message .=  $bug_journal_message . "\n\n*" . $summary . '*';
             }
 
             if (! empty($_POST['invite'])) {
