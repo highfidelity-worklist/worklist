@@ -173,7 +173,8 @@ body {
 #entries li[type="worklist"]:before {
     background-color: #999;
 }
-#entries li[type="worklist"] em {
+#entries li[type="worklist"] em,
+#entries li[type="worklist"] a[href^="./"] {
     color: #999;
 }
 
@@ -191,9 +192,13 @@ body {
 }
 
 #entries li a {
-    color: #666;
     text-decoration: none;
     font-weight: bold;
+}
+
+#entries li a,
+#entries li[type="worklist"] a[href^="./user/"] {
+    color: #666;
 }
 
 #entries li > p {
