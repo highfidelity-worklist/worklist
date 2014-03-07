@@ -104,7 +104,7 @@ class StatusView extends View {
             case 'IssueCommentEvent':
                 $author = self::markdownMention($actor['login'], true);
                 $issue_number = $payload['issue']['number'];
-                $issue_url = $payload['issue']['html_url']; 
+                $issue_url = $payload['issue']['html_url'];
                 $issue_title = trim($payload['issue']['title']);
                 $action = ' commented on [#' . $issue_number . '](' . $issue_url . ')';
                 $ret .= $author . $action . "\n\n**" . $issue_title . '**';

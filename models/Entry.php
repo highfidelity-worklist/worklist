@@ -4,7 +4,7 @@ class EntryModel extends Model {
     protected $table = 'entries';
 
     public function latest($minutes_ago = 0, $max_limit = 0, $offset = 0) {
-        $cond = $minutes_ago ? 'DATESUB(NOW(), ' + $minutes_ago + ' minutes) < date' : '';
+        $cond = $minutes_ago ? 'DATE_SUB(NOW(), INTERVAL ' . $minutes_ago . ' MINUTE) < date' : '';
         return $this->loadMany($cond, 'date DESC', $max_limit, $offset);
     }
 
