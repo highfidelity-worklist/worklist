@@ -1,34 +1,30 @@
 <?php
 
 class UserView extends View {
+    public $layout = 'NewWorklist';
     public $title = "%s's profile - Worklist";
 
     public $stylesheets = array(
-        'css/budgetHistory.css',
-        'css/worklist.css',
         'css/userinfo.css',
-        'css/userNotes.css',
-        'css/review.css',
-        'css/favorites.css',
-        'css/budget.css'
+        'css/user.css'
     );
 
     public $scrips = array(
         'js/jquery/jquery.blockUI.js',
         'js/paginator.js',
-        'js/this->userNotes.js',
+        'js/userNotes.js',
         'js/review.js',
         'js/favorites.js',
         'js/userinfo.js'
     );
 
     public function render() {
-        $this->title = sprintf($this->title, $this->currentUser['nickname']);
-        $this->manager = $this->read('manager');
-        $this->referred_by = $this->write('referred_by');
-        $this->userId = $this->write('userId', $userId);
-        $this->tab = $this->read('tab');
+        $this->userId = $this->read('userId');
         $this->user = $this->read('user');
+        $this->title = sprintf($this->title, $this->user->getNickname());
+        $this->manager = $this->read('manager');
+        $this->referred_by = $this->read('referred_by');
+        $this->tab = $this->read('tab');
         $this->reqUserId = $this->read('reqUserId');
         $this->userStats = $this->read('userStats');
         $this->favorite_count = $this->read('favorite_count');

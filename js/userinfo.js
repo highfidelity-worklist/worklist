@@ -1,8 +1,4 @@
 var available = 0;
-stats.setUserId(userInfo.user_id);
-
-stats.showJobs('activeJobs', 0);
-stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
 
 $(document).ready(function() {
     UserInfo.init();
@@ -13,7 +9,6 @@ $(document).ready(function() {
         height: 60,
         position: ['middle'],
         resizable: false,
-        dialogClass: 'white-theme',
         open: function() {
             $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
             setTimeout(function() {
@@ -21,6 +16,9 @@ $(document).ready(function() {
             }, 3000);
         }
     });
+    stats.setUserId(userInfo.user_id);
+    stats.showJobs('activeJobs', 0);
+    stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');    
 });
 
 $(function () {
@@ -75,17 +73,6 @@ $(function () {
             });
         });
     }
-
-    $('#welcomeInside .earningsBtn').click(function() {
-        $.get('api.php?action=getFeeSums', function(data) {
-            var sum = eval('('+data+')');
-            if (typeof sum != 'object') {
-                return false;
-            }
-            $('#fees-week').html ('$'+sum.week);
-            $('#fees-month').html ('$'+sum.month);
-        });
-    });
 });
 
  
@@ -102,7 +89,7 @@ var UserInfo = {
 
         WLFavorites.init( "profileInfoFavorite",userInfo.user_id, userInfo.nickName );
         // setup the variables needed to call the getFavoriteText function
-        var favCount = $('.profileInfoFavorite span').attr('data-favorite_count');
+        var favCount = $('.profileInfoFavorite span').attr('data-favorite-count');
         var isMyFav = false;
         if ($('.profileInfoFavorite .favorite_user').hasClass('myfavorite')) {
             isMyFav = true;
@@ -261,14 +248,12 @@ var UserInfo = {
             $('#send-ping-btn').attr("disabled", "disabled");
             var msg = $('#ping-msg').val();
             // always send email
-            var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
             var data = {
                 'action': 'pingTask',
                 'userid' : userInfo.user_id, 
                 'msg' : msg, 
-                'mail' : mail, 
                 'journal' : journal, 
                 'cc' : cc
             };

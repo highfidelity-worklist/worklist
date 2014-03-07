@@ -2954,8 +2954,6 @@ function pingTask() {
     $nickname = $user->nickname;
     $email = $user->username;
     $msg = $_REQUEST['msg'];
-    // send mail is hardcoded to on
-    $send_mail = true;
     $send_chat = isset($_REQUEST['journal']) ? (int) $_REQUEST['journal'] : false;
     $send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
 
@@ -3025,7 +3023,7 @@ function pingTask() {
         }
         
         // Send mail
-        if ($send_mail && $who != 'bidder') {
+        if ($who != 'bidder') {
             $mail_subject = $nickname." sent you a ping for item #".$item_id;
             $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
             $mail_msg .= "<a href='./" . $item_id . "?action=view'>#" . $item_id . "</a>";
@@ -3044,7 +3042,7 @@ function pingTask() {
             if (Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
                 notify_sms_by_object($user, $mail_subject, $msg);
             }
-        } else if ($send_mail && $who == 'bidder') {
+        } else if ($who == 'bidder') {
             $project = new Project();
             $project->loadById($item['project_id']);
             $project_name = $project->getName();
@@ -3092,29 +3090,16 @@ function pingTask() {
             sendJournalNotification( $out_msg );
         }
 
-        if( $send_mail )    {
-            $mail_subject = $nickname." sent you a ping.";
-            $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
-            $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
+        $mail_subject = $nickname." sent you a ping.";
+        $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
+        $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-            $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
-            if ($send_cc) {
-                $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
-            }
-            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
-                error_log("pingtask.php:!id: send_email failed");
-            }
-
-            // sms
-            try {
-                $user = new User();
-                $user->findUserById($receiver->id);
-                //TODO: $user->notifications is a protected field, shouldn't be accessed from instance - stojce
-                if(Notification::isNotified($user->notifications, Notification::PING_NOTIFICATIONS)) {
-                    notify_sms_by_object($user, $mail_subject, $msg);
-                }
-            } catch (Sms_Backend_Exception $e) {
-            }
+        $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
+        if ($send_cc) {
+            $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
+        }
+        if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
+            error_log("pingtask.php:!id: send_email failed");
         }
     }
     echo json_encode(array());

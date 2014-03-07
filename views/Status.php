@@ -4,16 +4,9 @@ use \Michelf\Markdown;
 
 class StatusView extends View {
     public $layout = 'NewWorklist';
-
     public $title = "Status - Worklist";
-
-    public $stylesheets = array(
-        'css/status.css'
-    );
-
-    public $scripts = array(
-        'js/status.js'
-    );
+    public $stylesheets = array('css/status.css');
+    public $scripts = array('js/status.js');
 
     public function render() {
         return parent::render();
@@ -81,6 +74,7 @@ class StatusView extends View {
         $ret = $entry->entry;
 
         // will only process new entries since #19490 deployment
+        // @todo, remove this condition once history is removed/older
         if (strtotime($entry->date) > strtotime('2014-03-06 00:00:00')) {
             // linkify mentions and tasks references
             $ret = $ret;
