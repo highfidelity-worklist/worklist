@@ -145,17 +145,24 @@ body {
     .main h3:first-child {
         white-space: pre-line;
     }
+    ul#entries {
+        margin-top: 80px;
+    }
 }
 
 @media (max-width: 768px) {
     .main > h3:first-child {
         display: none;
     }
+    ul#entries {
+        margin-top: 5px;
+    }
 }
 
 #entries {
     list-style-type: none;
     padding-left: 45px;
+    margin-top: 50px;
 }
 
 #entries li:before {
