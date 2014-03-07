@@ -158,11 +158,6 @@ body {
     padding-left: 45px;
 }
 
-#entries li em {
-    font-style: normal;
-    font-weight: bold;
-}
-
 #entries li:before {
     float: left;
     width: 20px;
@@ -182,10 +177,12 @@ body {
     color: #666;
 }
 
+
 #entries li[type^="github"]:before {
     background-color: #007f7c;
 }
-#entries li[type^="github"] em {
+#entries li[type^="github"] em,
+#entries li[type^="github"] a[href^="https://github.com/highfidelity/"] {
     color: #007f7c;
 }
 
@@ -193,16 +190,29 @@ body {
     margin-top: 20px;
 }
 
-#entries h4 {
-    color: #828282;
-    font-size: 1em;
-    margin: 0;
+#entries li a {
+    color: #666;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 #entries li > p {
     font-size: 1.1em;
     margin: 0;
 }
+
+#entries li em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+#entries li h4 {
+    color: #828282;
+    font-size: 1em;
+    margin: 0;
+}
+
+
 
 /* won't display the footer on status */
 section#footer {

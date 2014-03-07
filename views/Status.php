@@ -40,11 +40,7 @@ class StatusView extends View {
                 $id = $entry->id;
                 $type = 'worklist';
                 $date = $entry->date;
-                if (strtotime($entry->date) < strtotime('2014-03-06 00:00:00')) {
-                    $content = $entry->entry;
-                } else {
-                    $content = self::markdown($entry->entry);
-                }                
+                $content = self::formatWorklistEntry($entry);
             } else { // github event
                 if (!preg_match('/^(PullRequest(ReviewComment)?|IssueComment)Event$/', $entry['type'])) {
                     continue;
@@ -81,27 +77,51 @@ class StatusView extends View {
         return ($time_a == $time_b) ? 0 : ($time_a > $time_b ? +1 : -1);
     }
 
+    static function formatWorklistEntry($entry) {
+        $ret = $entry->entry;
+
+        // will only process new entries since #19490 deployment
+        if (strtotime($entry->date) > strtotime('2014-03-06 00:00:00')) {
+            // linkify mentions and tasks references
+            $ret = $ret;
+            $mention_regex = '/(^|\s)@(\w+)/';
+            $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
+            $ret = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
+            $ret = preg_replace($task_regex, '\1[\2](./\2)', $ret);
+            // proccesed entries are returned as markdown-processed html
+            $ret = self::markdown($ret);
+        }
+
+        return $ret;
+    }
+
     static function formatGithubEntry($entry) {
         $ret = '*GIT*: ';
         extract($entry);
         switch($type) {
             case 'PullRequestEvent':
-                $ret .= 
-                        '@' . $actor['login'] . ' ' . $payload['action'] . ' [#'
-                     . $payload['number'] . '](' . $payload['pull_request']['html_url'] . ')'
-                     . "\n\n**" . $payload['pull_request']['title'] . '**';
+                $author = self::markdownMention($actor['login'], true);
+                $pullreq_number = $payload['number'];
+                $pullreq_url = $payload['pull_request']['html_url'];
+                $pullreq_title = $payload['pull_request']['title'];
+                $action = ' ' . $payload['action'] . ' [#' . $payload['number'] . '](' . $pullreq_url . ')';
+                $ret .= $author . $action . "\n\n**" . $pullreq_title . '**';
                 break;
             case 'IssueCommentEvent':
-                $ret .= 
-                        '@' . $actor['login'] . ' commented on [#'
-                     . $payload['issue']['number'] . '](' . $payload['issue']['html_url'] . ')'
-                     . "\n\n**" . $payload['issue']['title'] . '**';
+                $author = self::markdownMention($actor['login'], true);
+                $issue_number = $payload['issue']['number'];
+                $issue_url = $payload['issue']['html_url'];
+                $issue_title = $payload['issue']['title'];
+                $action = ' commented on [#' . $issue_number . '](' . $issue_url . ')';
+                $ret .= $author . $action . "\n\n**" . $issue_title . '**';
                 break;
             case 'PullRequestReviewCommentEvent':
-                $pr_number = preg_replace('^https?:\/\/.+\/pulls\/', '', $payload['comment']['pull_request_url']);
-                $ret .= 
-                        '@' . $actor['login'] . ' commented on [#'
-                     . $pr_number . '](' . $payload['comment']['html_url'] . ')';
+                $author = self::markdownMention($actor['login'], true);
+                $comment_url = $payload['comment']['html_url'];
+                $pullreq_url = $payload['comment']['pull_request_url'];
+                $pullreq_number = (int) preg_replace('/.+\/pulls\//', '', $pullreq_url);
+                $action = ' commented on [#' . $pullreq_number . '](' . $comment_url . ')';
+                $ret .= $author . $action;
                 break;
         }
         return self::markdown($ret);
@@ -109,5 +129,10 @@ class StatusView extends View {
 
     static function markdown($text) {
         return Markdown::defaultTransform($text);
+    }
+
+    static function markdownMention($username, $github = false) {
+        $url = ($github ? 'http://github.com/' : './') . $username;
+        return '[' . $username . '](' . $url . ')';
     }
 }
