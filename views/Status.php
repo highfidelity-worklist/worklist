@@ -97,15 +97,15 @@ class StatusView extends View {
                 $author = self::markdownMention($actor['login'], true);
                 $pullreq_number = $payload['number'];
                 $pullreq_url = $payload['pull_request']['html_url'];
-                $pullreq_title = $payload['pull_request']['title'];
+                $pullreq_title = trim($payload['pull_request']['title']);
                 $action = ' ' . $payload['action'] . ' [#' . $payload['number'] . '](' . $pullreq_url . ')';
                 $ret .= $author . $action . "\n\n**" . $pullreq_title . '**';
                 break;
             case 'IssueCommentEvent':
                 $author = self::markdownMention($actor['login'], true);
                 $issue_number = $payload['issue']['number'];
-                $issue_url = $payload['issue']['html_url'];
-                $issue_title = $payload['issue']['title'];
+                $issue_url = $payload['issue']['html_url']; 
+                $issue_title = trim($payload['issue']['title']);
                 $action = ' commented on [#' . $issue_number . '](' . $issue_url . ')';
                 $ret .= $author . $action . "\n\n**" . $issue_title . '**';
                 break;
