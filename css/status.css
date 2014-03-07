@@ -171,10 +171,10 @@ body {
 }
 
 #entries li[type="worklist"]:before {
-    background-color: #666;
+    background-color: #999;
 }
 #entries li[type="worklist"] em {
-    color: #666;
+    color: #999;
 }
 
 
