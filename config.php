@@ -1297,7 +1297,7 @@ defineOnce('DEFAULT_CONTROLLER_NAME', 'Home');
 defineOnce('DEFAULT_CONTROLLER_METHOD', 'run');
 
 defineOnce('GITHUB_API_TOKEN', 'a8490439510623316834ea6cdc736a32a76f3709');
-defineOnce('GITHUB_REPO', 'highfidelity/hifi');
+defineOnce('GITHUB_ORGANIZATION', 'highfidelity');
 
 require_once('vendor/autoload.php');
 require_once('functions.php');
