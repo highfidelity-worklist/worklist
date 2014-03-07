@@ -1281,7 +1281,7 @@ $timezoneTable = array(
 );
 
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
-date_default_timezone_set('America/Los_Angeles');
+date_default_timezone_set('UTC');
 
 defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'd075a674622a63de2415');
 defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '6c256ada7f5849ef392907f56b55cc501d4b9e2e');
