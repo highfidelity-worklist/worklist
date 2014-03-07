@@ -87,20 +87,20 @@ class StatusView extends View {
         switch($type) {
             case 'PullRequestEvent':
                 $ret .= 
-                        '@' . $actor['login'] . ' ' . $payload['action'] . ' [Pull Request #'
+                        '@' . $actor['login'] . ' ' . $payload['action'] . ' [#'
                      . $payload['number'] . '](' . $payload['pull_request']['html_url'] . ')'
                      . "\n\n**" . $payload['pull_request']['title'] . '**';
                 break;
             case 'IssueCommentEvent':
                 $ret .= 
-                        '@' . $actor['login'] . ' ' . $payload['action'] . ' [issue #'
+                        '@' . $actor['login'] . ' commented on [#'
                      . $payload['issue']['number'] . '](' . $payload['issue']['html_url'] . ')'
                      . "\n\n**" . $payload['issue']['title'] . '**';
                 break;
             case 'PullRequestReviewCommentEvent':
                 $pr_number = preg_replace('^https?:\/\/.+\/pulls\/', '', $payload['comment']['pull_request_url']);
                 $ret .= 
-                        '@' . $actor['login'] . ' commented on [Pull Request #'
+                        '@' . $actor['login'] . ' commented on [#'
                      . $pr_number . '](' . $payload['comment']['html_url'] . ')';
                 break;
         }

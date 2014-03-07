@@ -31,8 +31,7 @@ body {
     z-index: 1000;
     display: block;
     padding: 0;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    overflow: hidden;
     background-color: #dde4e6;
     border-right: 1px solid #eee;
     box-shadow: inset 0px 0px 15px -7px #333;
