@@ -11,18 +11,18 @@ class StatusController extends Controller {
             ))
         );
         $this->client->authenticate($this->token, '', Github\Client::AUTH_HTTP_TOKEN);
-        $this->write('pullreqs', $this->listRepoPullRequests(GITHUB_REPO));
+        $this->write('gh_events', $this->listGithubEvents(GITHUB_ORGANIZATION));
 
         $entry = new EntryModel();
         $this->write('entries', $entry->latest(60 * 24 * 30, 50));
         parent::run();
     }
 
-    protected function listRepoPullRequests($repo, $state = 'all') {
+    protected function listGithubEvents($org) {
         try {
-            list($owner, $repo) = explode('/', $repo);
-            $pullreqs = $this->client->api('pull_request')->all($owner, $repo, $state);
-            return $pullreqs;
+            $response = $this->client->getHttpClient()->get('orgs/' . $org . '/events');
+            $events = Github\HttpClient\Message\ResponseMediator::getContent($response);
+            return $events;
         } catch(Exception $e) {
             return false;
         }

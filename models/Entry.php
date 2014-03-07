@@ -1,7 +1,5 @@
 <?php
 
-use \Michelf\Markdown;
-
 class EntryModel extends Model {
     protected $table = 'entries';
 
@@ -31,13 +29,5 @@ class EntryModel extends Model {
             return $this->insert();
         }
         return false;
-    }
-
-    public function markdownEntry() {
-        return Markdown::defaultTransform($this->entry);
-    }
-
-    public function oldFormatEntry() {
-        return strtotime($this->date) < strtotime('2014-03-06 00:00:00');
     }
 }

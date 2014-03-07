@@ -14,11 +14,6 @@ body {
     font-weight: bold;
 }
 
-/* won't display the footer on status */
-section#footer {
-    display: none;
-}
-
 /*
  * Sidebar
  */
@@ -164,7 +159,12 @@ section#footer {
     padding-left: 45px;
 }
 
-#entries li.markdown:before {
+#entries li em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+#entries li:before {
     float: left;
     width: 20px;
     height: 20px;
@@ -173,7 +173,21 @@ section#footer {
     display: inline-block;
     margin-left: -40px;
     margin-top: 15px;
-    background-color: #f5f5f5;
+    background-color: transparent;
+}
+
+#entries li[type="worklist"]:before {
+    background-color: #666;
+}
+#entries li[type="worklist"] em {
+    color: #666;
+}
+
+#entries li[type^="github"]:before {
+    background-color: #007f7c;
+}
+#entries li[type^="github"] em {
+    color: #007f7c;
 }
 
 #entries li {
@@ -189,4 +203,9 @@ section#footer {
 #entries li > p {
     font-size: 1.1em;
     margin: 0;
+}
+
+/* won't display the footer on status */
+section#footer {
+    display: none;
 }
