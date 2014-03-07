@@ -144,15 +144,21 @@ class UserController extends Controller {
             }
         }
 
+        $user = new User();
         if ($id) {
-            $userId = (int) $id;
+            if (is_numeric($id)) {
+                $userId = (int) $id;
+                $user->findUserById($userId);
+            } else {
+                $user->findUserByNickname($id);
+                $userId = $user->getId();
+            }
         } else {
             $userId = getSessionUserId(); 
+            $user->findUserById($userId);
         }
         $this->write('userId', $userId);
 
-        $user = new User();
-        $user->findUserById($userId);
         $this->write('Annual_Salary', $user->getAnnual_salary() > 0 ? $user->getAnnual_salary() : '');
         $userStats = new UserStats($userId);
         $this->write('manager', $user->getManager());
