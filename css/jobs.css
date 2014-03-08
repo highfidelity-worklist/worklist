@@ -1042,13 +1042,17 @@ input#query,
     background-color: #007F7C;
     padding: 4px 10px;
     color: #fff;
-    font-size: 1.2em;
+    font-size: 1em;
     border: 0;
     display: inline-block;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;
+}
+
+#buttons {
+    padding: 0;
 }
 
 /*

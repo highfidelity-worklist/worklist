@@ -2,13 +2,13 @@
     <div class="col-md-3">
       <input type="text" id="query" name="query" alt="Search" size="20" value="{{filter.getQuery}}" />
     </div>
-    <div class="col-md-7" id="filters">
+    <div class="col-md-8" id="filters">
       {{& projectSelect}}
       {{& userSelect}}
       {{& statusSelect}}
     </div>
     {{#currentUser.id}}
-    <div id="buttons" class="col-md-2">
+    <div id="buttons" class="col-md-1">
         <p>
             <button href="./addjob" id="addJobButton" title="Suggest a Feature or Report a Bug">
                 Add job
