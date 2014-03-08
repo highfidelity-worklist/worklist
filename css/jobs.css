@@ -1,0 +1,1312 @@
+/* max-width on fluid container from NewWorklist is not the desired behavior on status */
+@media (min-width: 1024px) {
+    body > .container-fluid {
+        max-width: 1024px;
+    }
+}
+
+
+#confirmation{
+    display: none;
+}
+
+.font-14 {
+    font-size: 14px;
+}
+
+.popup-body {
+    display: none;
+}
+
+.popup-body,
+.user-info
+{
+    padding: 0 8px;
+    text-align: left;
+}
+
+.popup-body input[type="text"], .popup-body textarea,
+.user-info input[type="text"], .user-info textarea,
+.user-info select
+{
+    font-size: 14px;
+    font-family: helvetica, arial, sans-serif;
+    width: 370px;
+}
+
+.popup-body #bid_fee_desc {
+    width:270px;
+}
+
+.popup-body #bid_fee_amount {
+    width:70px;
+}
+
+.bugJobSummary {
+    display: block;
+    margin: 0;
+    padding: 5px;
+    border-style: none;
+    z-index: 3000;
+    float: right;
+    width: 200px
+}
+
+.popup-body input.date,
+.user-info input.date {
+    width: 130px;
+}
+.popup-body input.money,
+.user-info input.money {
+    width: 50px;
+}
+
+.popup-body p, .user-info p
+{
+    margin: 0 0 2px;
+}
+
+.popup-body .popup-delete-summary {
+    padding: 4px;
+}
+
+.table-userlist tr:hover{
+    cursor: pointer;
+}
+.table-userlist thead tr:hover{
+    cursor: default;
+}
+
+.linkTaskWho {
+    text-decoration: none;
+    cursor: pointer;
+}
+.linkTaskWho:hover {
+    cursor: pointer;
+    color: #98AAB2;
+}
+
+.roweven {
+    background-color: #eeeeee;
+    background-image: none;
+}
+
+.rowown,
+.roweven.rowown {
+    background: #FFCC99;
+}
+
+.rowbidon,
+.roweven.rowbidon {
+    background: #99E566;
+}
+
+.rowbidexpired,
+.roweven.rowbidexpired {
+    background: #FF8080;
+}
+
+.rowrunner,
+.roweven.rowrunner {
+    background: #B1E1F3;    
+}
+
+.rowmechanic,
+.roweven.rowmechanic {
+    background: #FFFF6C;
+}
+
+.rowbidexpired a,
+.rowrunner a,
+.rowmechanic a {
+    color:#000;
+}
+.workitem-selected {
+    background: #FFD;
+}
+
+.info-label{
+    font-weight: bold;
+}
+.info-label span{
+    font-weight:normal;
+}
+.info-label textarea {
+    height: 110px;
+}
+
+.info-label textarea,
+.info-label input[type=text] {
+    width: 370px;
+}
+
+#editContainer {
+    width: 380px;
+    border: 0;
+    margin-top: 5px;
+}
+
+#editContainer p,
+#editContainer #buttonHolder,
+#editContainer .accordion {
+    margin-left: -88px !important;
+    width: 100%;
+}
+
+#bid-signup{
+text-align: center;
+}
+#bid-signup a{
+color:#98AAB2;
+}
+.right-button,
+.right-note {
+    float: right;
+    margin-right: 5px;
+}
+.left-button {
+    float: left;
+    margin-left: 5px;
+}
+.required-field {
+    color: #ff0000;
+    font-weight: bold;
+    font-size: larger;
+}
+.left-col{
+    float: left;
+    margin-left: 30px;
+    width: 45%;
+}
+
+.right-col{
+    float: left;
+    margin-left: 30px;
+}
+#popup-bid{
+    z-index: 1200;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    color: #666666;
+}
+#ui-datepicker-div,
+#ui-timepicker-div
+{
+    z-index: 1100; 
+}
+
+#sharethis_0    {
+    position:absolute;
+    margin-top: 3px;
+    margin-left: 20px;
+}
+
+/* Paypal Reports */
+#pp-filter-box {
+    float:right;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border: 2px #DCD998 solid;
+    background-color:#FFD;
+    padding:8px 8px 19px 8px;
+    height:95px;
+    margin-bottom: 20px;
+}
+
+#pp-filter-rrbox {
+    float:right;
+    text-align:right;
+    margin-top:20px;
+}
+
+#pp-filter-rbox {
+    float:right;
+    text-align:right;
+    margin-top:20px;
+    margin-right:8px;
+}
+
+#pp-filter-lbox {
+    float:right;
+/*    text-align:right;*/
+    margin-right:8px;
+}
+
+#job_id {
+    width:69px;
+}
+#wFees {
+    display: none;
+}
+.feesum {
+  cursor: pointer;
+}
+
+#loader_img_title {
+    border: 2px #DCD998 solid;
+    background-color:#FFD;
+    color: gray;
+    font-size: 16px;
+    padding:10px;
+    margin:10px;
+}
+
+.second-line {
+    margin-top:10px;
+    margin-bottom:5px;
+}
+
+.clickable { cursor:pointer; }
+
+#search-filter-section select {
+    text-align: left;
+    width:100px;
+}
+#search-filter-section  td.textAlignReport div div{
+    text-align: left;
+}
+
+
+td.textAlignReport {
+    text-align: right;
+    padding-top:4px;
+    margin:1px;
+    width:210px;
+}
+
+.report-label,
+#search-filter-section td.textAlignReport div div.report-label {
+    float: left;
+    width: 35%;
+    text-align: right;
+    padding: 5px 5px 0 0;
+}
+
+.report-input-item {
+    float: left;
+}
+
+.report-item-clear {
+    clear: both;
+    height: 1px;
+}
+
+#search-filter-wrap-reports {
+    width: 720px;
+}
+
+#searchForm  div > p {
+    margin-bottom: 0 !important;
+}
+
+#add {
+    font-weight: bold;
+    color: #6F6F6F;
+    font-size: 12px;
+}
+
+.floatLeft{
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+.hidden {
+    display: none;
+}
+#ping-msg {
+    height: 100px;
+    width: 322px;
+}
+#send-ping-btn {
+    margin-top: 8px;
+}
+
+.taskProject span,
+.taskSummaryCell {
+    cursor: pointer;
+}
+
+.table-worklist td > div,
+.table-worklist td > a > div {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    float: left;
+    position: relative;
+}
+
+.taskProject {
+    width: 92px;
+}
+
+.taskSummary {
+    width: 640px;
+    font-weight: bold;
+}
+
+.taskSummary .taskID {
+    font-weight: normal;
+}
+
+.taskStatus {
+    width: 92px;
+}
+
+.taskWho {
+    width: 104px;
+}
+
+.taskAge {
+    width: 62px;
+    font-size: .7em;
+}
+
+.taskWho,
+.taskAge {
+    color: #999999;
+}
+
+.taskComments {
+    width: 20px;
+}
+
+.table-worklist td div > span:last-child:after,
+.fading,
+.fadingblue {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    content: "";
+    height: 1.7em;
+}
+
+.ui-combobox > .fading {
+    right: 32px;
+    height: 2em;
+}
+
+.taskComments > span:last-child:after,
+.taskAge > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0) 100%) transparent !important;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,0)))  transparent !important;
+    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
+    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
+    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
+    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
+}
+
+.fading,
+.table-worklist td div > span:last-child:after,
+.table-worklist tr:hover > td div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
+}
+
+.fadingblue {
+    background: -moz-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(230, 243, 244, 0)), color-stop(100%, rgba(230, 243, 244, 1))) transparent;
+    background: -webkit-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: -o-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: -ms-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+    background: linear-gradient(to right, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
+}
+
+.rowown > td div > span:last-child:after,
+.roweven.rowown > td div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,204,153,0) 0%, rgba(255,204,153,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,204,153,0)), color-stop(100%,rgba(255,204,153,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
+}
+
+.rowbidon > td div > span:last-child:after,
+.roweven.rowbidon > td div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(153,229,102,0) 0%, rgba(153,229,102,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(153,229,102,0)), color-stop(100%,rgba(153,229,102,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
+}
+
+.rowbidexpired > td div > span:last-child:after,
+.roweven.rowbidexpired > td div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,128,128,0) 0%, rgba(255,128,128,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,128,128,0)), color-stop(100%,rgba(255,128,128,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
+}
+
+.rowrunner > td div > span:last-child:after,
+.roweven.rowrunner > td div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(177,225,243,0) 0%, rgba(177,225,243,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(177,225,243,0)), color-stop(100%,rgba(177,225,243,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
+}
+
+.rowmechanic > td div > span:last-child:after,
+.roweven.rowmechanic > td div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(255,255,108,0) 0%, rgba(255,255,108,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,108,0)), color-stop(100%,rgba(255,255,108,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
+}
+
+.roweven > td div > span:last-child:after {
+    background: -moz-linear-gradient(left,  rgba(238,238,238,0) 0%, rgba(238,238,238,1) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(238,238,238,0)), color-stop(100%,rgba(238,238,238,1)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+    background: linear-gradient(to right,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
+}
+
+.taskSummaryCell a,
+.taskProject span > a {
+    text-decoration: none;
+}
+
+.taskProject span > a {
+    color: #999999;
+}
+
+.taskSummaryCell a {
+    color: #222222;
+}
+
+.job-status {
+    color: #999999;
+    text-transform: capitalize;
+}
+
+.taskSummary > span {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.noMargin {
+    margin: 0;
+}
+/*roles section*/
+.buttonContainer-save {
+    margin:15px 0px 20px -8px;
+}
+
+.detailContainer {
+    width: 50%;
+}
+
+.descriptionHolder,
+.detailContainer {
+    margin-left: -25px;
+}
+
+table.tablesorter thead tr .header {
+    background-image: url(../images/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-position-x: 100%;
+    background-position-y: 50%;
+    cursor: pointer;
+}
+
+table.tablesorter thead tr .headerSortDown {
+    background-image: url(../images/desc.gif);
+}
+
+table.tablesorter thead tr .headerSortUp {
+    background-image: url(../images/asc.gif);
+}
+
+#for_view li .notestext a,
+.comment a {
+    color: rgb(0, 118, 252);
+}
+.reply-lnk a {
+    color: rgb(152, 170, 178);
+}
+#for_view li .notestext a:hover,
+.comment a:hover {
+    text-decoration:none;
+}
+
+input.button-disabled ,
+.button-disabled {
+    cursor: default;
+    opacity: 0.5;
+    -moz-opacity: 0.5;
+    -webkit-opacity: 0.5;
+}
+#phone-confirm-form {
+    width: 253px;
+}
+#login-form, #phone-confirm-form {
+    border: 1px solid black;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 32px;
+}
+
+#login-form, #phone-confirm-form {
+    background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;
+}
+
+#login-form h2, #phone-confirm-form h2 {
+    color: #000;
+    margin-top: 8px;
+}
+
+#loginFormHolder, #confirmPhoneFormHolder {
+    position: relative;
+    width: 420px;
+    height: 180px;
+}
+#login-form .LV_validation_message, 
+#phone-confirm-form .LV_validation_message {
+    text-align: left;
+}
+
+#login-form .LV_valid,
+#phone-confirm-form .LV_valid {
+    padding-left: 0px;
+}
+
+.profile-link{
+    cursor: pointer;
+}
+
+#more-accordion #more-panel {
+    margin: 0;
+    width: 386px;
+    padding-top: 6px;
+}
+
+#more-panel.ui-accordion-content {
+    margin-top: 5px;
+    padding: 0px;
+    background-color: #FFFFDD;
+}
+#more-panel.ui-widget-content {
+    background-image: none;
+}
+
+
+#w2checkbox {
+    padding-top:5px;
+}
+
+#paypal_email {
+    width: 200px;
+}
+
+#savePayPalEmailDialog,
+#saveLaterDialog {
+    text-align:justify;
+}
+
+.okButton {
+    float: right;
+    margin-top: 20px;
+}
+
+.loading {
+    font-style: italic;
+}
+
+.past-due {
+    color: #000000;
+}
+
+.onlyActiveCheckbox {
+    margin: 0;
+    position: 'relative';
+    top: '1px';
+}
+
+#internal {
+    margin-left: 0px;
+}
+
+|.table-worklist .comments-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 0 -685px transparent;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.table-worklist a:hover,
+.table-worklist .linkTaskWho > a:hover {
+    color: #aa1e00 !important;
+}
+
+.table-worklist tr:hover {
+    background-image: none;
+    background-color: transparent;
+}
+
+.table-worklist tr td:first-child {
+  padding-left: 10px;
+}
+
+.table-worklist .table-hdng {
+    height: 28px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.table-worklist .worklist-pagination-row > td > span {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.table-worklist .worklist-pagination-row .page,
+.table-worklist .worklist-pagination-row .previous,
+.table-worklist .worklist-pagination-row .next {
+    padding: 3px;
+}
+
+.table-worklist .worklist-pagination-row a {
+    text-decoration: none;
+}
+
+.table-worklist .worklist-pagination-row .inactive {
+    color: #888888;
+}
+#bid_amount_conatiner {
+    width: 100%; 
+    margin-bottom: 4px; 
+    margin-top: 23px;
+}
+.bid_amount_p {
+    padding-right: 28px;
+}
+#bid_notes .bid_amount_heading, .bid_amount_heading {
+    font-weight: bold; 
+    font-size:18px !important; 
+    color: #666666 !important;
+    font-family: cabin; 
+}
+.bid_amount_textfield {
+    width: 73px !important; 
+    margin-top: 6px; 
+}
+#place_bid_usd {
+    float: left; 
+    margin-top: 26px;
+    position: relative;
+}
+#bid_amount_description {
+    padding-top: 6px; 
+    width: 401px; 
+    float: left; 
+    font-family: proxima-nova;
+    padding-left: 25px;
+    color: #666666;
+}
+.place_bid_divider {
+    width: 109%; 
+    height: 5px; 
+    background-color: #E8EFF0; 
+    position: relative; 
+    left: -22px;
+}
+#bid_notes {
+    width: 100%; 
+    padding-top: 17px; 
+    margin-bottom: 19px; 
+}
+.bid_notes_required {
+    color: #999999;
+}
+.bid_notes_textarea {
+    font-family: proxima-nova !important; 
+    width: 415px !important; 
+    float: left; 
+    margin-right: 19px; 
+    height: 180px !important; 
+    margin-top: 0;
+}
+#bid_notes_decsription {
+    font-family: proxima-nova; 
+    color: #666666;
+}
+#bid_done_container {
+    width: 100%; 
+    margin-bottom: 22px;
+}
+#bidDone {
+    width: 100%;
+}
+#bid_done_description {
+    width: 247px; 
+    float: left; 
+    margin-right: 44px;
+}
+#bid_done_explanation {
+    margin-top: 3px; 
+    font-family: proxima-nova;
+    width: 247px;
+    color: #666666;
+}
+#time_slider_container {
+    float: left; 
+    padding-top: 12px;
+}
+#right_border {
+    width: 281px; 
+    height: 12px; 
+    position: relative; 
+    top: 12px; 
+    border-left: 1px solid grey; 
+    border-right: 1px solid grey
+}
+#submit_bid_button {
+    padding-top: 9px; 
+    padding-bottom: 19px; 
+    width: 109%; 
+    background-color: #E8EFF0; 
+    position: relative; 
+    left: -22px
+}
+#submit_bid_btn_holder {
+    padding-left: 22px; 
+    padding-right: 14px; 
+    float: left; 
+}
+.place_bid_button {
+    height: 44px !important; 
+    font-size: 18px !important;
+}
+
+#submit_bid_description {
+    padding-top: 17px; 
+    width: 435px; 
+    float: left; 
+    font-family: proxima-nova;
+    color: #666666;
+}
+
+.sandboxlink {
+    max-width: 340px;
+    overflow: hidden;
+}
+
+.relative {
+    position: relative;
+}
+
+select + div, 
+select, 
+input {
+    font-size: 1em;
+}
+
+
+#search {
+    background-color: #dde4e6;
+}
+
+#search select + div,
+#search select,
+#query {
+    margin-bottom: 13px;
+    font-family: proxima-nova, sans-serif;
+    font-size: 1em;
+    line-height: 1.45em;
+}
+
+input#query {
+    width: 240px;
+} 
+
+#projectCombo_chosen {
+    width: 180px;
+}
+#projectCombo_chosen:before {
+    content: 'Which project?';
+}
+
+#userCombo_chosen:before {
+    content: 'Users involved';
+}
+
+#statusCombo_chosen {
+    width: 250px !important;
+}
+#statusCombo_chosen:before {
+    content: 'Job status';
+}
+
+#filters > .chosen-container {
+    margin-top: 25px;
+}
+
+input#query,
+#addJobButton {
+    margin-top: 45px;
+}
+
+#filters > .chosen-container-single .chosen-single,
+#filters > .chosen-container-multi .chosen-choices {
+    border-radius: 0px;
+    height: 35px !important;
+}
+
+#search .chosen-container-single .chosen-search input[type=text] {
+    margin: 0;
+    border-right: 0px;
+    border-left: 0px;
+    line-height: 1.9em;
+    height: 40px;
+    position: inherit;
+    background: 0 none;
+}
+
+#search .chosen-container-single.chosen-container-active.chosen-with-drop .chosen-single,
+#search .chosen-container-single .chosen-drop,
+#search .chosen-container-single .chosen-search input[type=text] {
+    border-color: #e0e0e0;
+}
+
+#search .chosen-container-single .chosen-single,
+#search .chosen-container-single .chosen-search input[type=text] {
+    background-color: #ffffff;
+}
+
+#search .chosen-container-single .chosen-single,
+#search .chosen-container-multi .chosen-choices,
+#search .chosen-container-single .chosen-search input[type=text],
+#search .chosen-container-single .chosen-drop {
+    box-shadow: none;
+}
+
+#search .chosen-container-single .chosen-drop {
+    border-radius: 0;
+}
+
+#search .chosen-container-single .chosen-search {
+    padding: 0;
+    position: relative;
+}
+
+#search .chosen-container-single .chosen-search:before {
+    font-family: FontAwesome;
+    content: "\f002";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #007F7c;
+    margin-top: 11px;
+    margin-right: 10px;
+    float: right;
+}
+
+
+#search .chosen-container-single .chosen-single, 
+#search .chosen-container-single .chosen-search input[type="text"] {
+    background: none repeat scroll 0% 0% transparent;
+}
+
+#search .chosen-container-single .chosen-single > span:first-child,
+#search .chosen-container-multi .chosen-choices .search-field > input.default {
+    color: #007F7c;
+    font-weight: bold;
+}
+
+#search .chosen-container-single .chosen-single div {
+    width: 30px;
+    padding: 2px 0;
+}
+
+#search .chosen-container-single .chosen-single div b {
+    background: none transparent;
+}
+
+#search .chosen-container-single .chosen-single div b:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #007F7c;
+    padding: 2px 6px;
+    border-left: 1px solid #ccc;
+}
+
+#search .chosen-container-single.chosen-with-drop .chosen-single div b:before {
+    content: "\f077";    
+}
+
+#query,
+#search .chosen-container-single .chosen-single,
+#search .chosen-container-multi .chosen-choices {
+    padding: 6px 10px 8px;
+    background: none #fff;
+    border: 0 none;
+}
+
+
+#search .chosen-container-multi .chosen-choices li.search-choice {
+    margin: 0 1px;
+    font-size: .8em;
+    background: none #fff;
+    border-radius: 0;
+    border-color: #007F7c;
+}
+
+#search .chosen-container-multi .chosen-choices .search-field > input {
+    height: 23px;
+    line-height: 1.3em;
+}
+
+#search .chosen-container .chosen-results {
+    overflow-y: hidden;
+    margin: 0;
+}
+
+#search .chosen-container .chosen-results li {
+    margin: 0 0 0 -5px;
+    line-height: 1.2em;
+}
+
+#search .chosen-container .chosen-results li.highlighted {
+    background: none #007F7c;
+}
+
+#search select,
+#query,
+#search button {
+    font-family: proxima-nova, sans-serif;
+}
+
+#search select,
+#search .chosen-container-single .chosen-single,
+#query {
+    border: 1px solid #e0e0e0;
+}
+
+#search .chosen-container-single.chosen-container-active .chosen-single,
+#query:focus {
+    border-color: #007F7c;
+}
+
+#query:focus,
+#query.valid {
+    color: #007F7c;
+    outline: none;
+}
+
+#query.error,
+#search select.error {
+    outline: none;
+}
+
+#query.error,
+#search select.error,
+#search select.error + div > .chosen-single {
+    color: #007F7C;
+}
+
+#query.error,
+#search select.error,
+#search select.error + div > .chosen-single {
+    border-color: #007F7C;
+}
+
+#search button { 
+    background-color: #007F7C;
+    padding: 4px 10px;
+    color: #fff;
+    font-size: 1.2em;
+    border: 0;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/*
+a#addJobButton, a#addJobButton:hover {
+    text-decoration: none;
+}
+a#addJobButton {
+    background-color: #099;
+    background-image: none;
+    border-radius: 7px;
+    color: #FFF;
+    font-size: 10pt;
+    font-weight: bold;
+    padding: 5px 15px;
+    font-family: Arial,Helvetica,sans-serif;
+    display: inline-block;
+}*/
+
+
+/*
+
+
+
+
+
+
+
+#searchbar {
+    position: relative;
+    float: right;
+    width: 100%;
+    margin-bottom: 7px;
+    background-color: #E1E8EA;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#searchbar .input_box {
+    background-image: none;
+    width: 305px;
+    margin: 0px;
+}
+#searchbar .input_box {
+    border: 0px none;
+    display: inline-block;
+    margin: 0px 0px 0px 10px;
+    padding: 2px;
+    top: 10px;
+    width: 220px;
+}
+#searchForm > div {
+    float: left;
+    height: 70px;
+    padding: 0px;
+}
+
+
+
+
+
+
+#searchbar .searchDiv {
+    display: inline-block;
+    border: 1px solid #CCC;
+    margin: 22px -4px 10px 10px;
+    background: url('../images/primaryIcons-WL.png') no-repeat scroll 8px -320px #FFF;
+    padding-left: 30px;
+    position: relative;
+    width: 255px;
+    height: 34px;
+}
+
+
+
+
+
+#searchbar #query {
+    background-color: #FFF;
+    position: absolute;
+    top: 3px;
+    padding: 0px;
+    margin: 0px;
+    height: 28px;
+    font-weight: bold;
+    border: 0px none;
+}
+#searchbar #query {
+    width: 165px;
+    font-size: 13pt;
+}
+#searchbar .input_box input {
+    border: 0px none;
+    color: #2C3549;
+    font-size: 13px;
+    margin: 0px;
+    padding: 4px;
+    width: 130px;
+    position: relative;
+    top: -10px;
+    background: none repeat scroll 0px 0px transparent !important;
+}
+
+
+
+
+
+
+#searchbar .crossSearch {
+    background: url('../images/primaryIcons-WL.png') no-repeat scroll 3px -385px #FFF;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    position: absolute;
+    top: 4px;
+}
+#searchbar .crossSearch {
+    left: 197px;
+}
+#searchbar *, .table-worklist * {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
+
+
+
+
+
+
+#searchbar .commentsDiv {
+    display: inline-block;
+    border-left: 1px solid #CCC;
+    height: 35px;
+    width: 60px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+
+
+
+
+
+#searchbar .commentsDiv label {
+    top: 6px;
+    left: 7px;
+    position: absolute;
+}
+#searchbar *, .table-worklist * {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
+
+
+
+
+
+#searchbar .comment {
+    background: url('../images/primaryIcons-WL.png') no-repeat scroll 0px -362px transparent;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    float: left;
+    padding-right: 5px;
+}
+
+
+
+
+#searchbar #search_comments {
+    width: 20px;
+    float: left;
+    margin-top: 6px;
+    position: static;
+    padding: 0px;
+}
+#searchbar .input_box input {
+    border: 0px none;
+    color: #2C3549;
+    font-size: 13px;
+    margin: 0px;
+    padding: 4px;
+    width: 130px;
+    position: relative;
+    top: -10px;
+    background: none repeat scroll 0px 0px transparent !important;
+}
+#searchbar .input_box input {
+    border: 0px none;
+    color: #2C3549;
+    font-size: 13px;
+    margin: 0px;
+    padding: 4px;
+    width: 130px;
+    position: relative;
+    top: -10px;
+    background: none repeat scroll 0px 0px transparent !important;
+}
+
+
+
+
+
+
+#projectFilter {
+    width: 193px;
+}
+#projectFilter, #userFilter, #jobStatusFilter {
+    padding-top: 12px;
+    display: inline-block;
+}
+
+
+
+#projectFilter label, #userFilter label, #jobStatusFilter label {
+    display: block;
+    text-align: left;
+    height: 15px;
+    margin: 1px 0px 2px 3px;
+    color: #646464;
+    font-size: 9pt;
+}
+
+
+
+
+
+#searchForm #buttons {
+    float: right;
+    margin-left: 2px;
+    width: 110px;
+    position: relative;
+    border-left: 2px solid #FFF;
+}
+
+
+
+
+a#addJobButton, a#addJobButton:hover {
+    text-decoration: none;
+}
+a#addJobButton {
+    background-color: #099;
+    background-image: none;
+    border-radius: 7px;
+    color: #FFF;
+    font-size: 10pt;
+    font-weight: bold;
+    padding: 5px 15px;
+    font-family: Arial,Helvetica,sans-serif;
+    display: inline-block;
+}

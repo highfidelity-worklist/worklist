@@ -218,9 +218,9 @@ $(function() {
 // function to bind hide and show events for the active only divs 
 // bind to the showing and hiding of project and user lists
 $(function() {
-
+/*
     if ($('#userCombo').length !== 0) {
-        createActiveFilter('#userCombo', 'users', 1);
+        //createActiveFilter('#userCombo', 'users', 1);
     }
     $('#for_view select[name=status], #searchbar select[name=status]').comboBox();
 
@@ -228,7 +228,7 @@ $(function() {
     if ($('#container-statusCombo > .fading').length == 0) {
         $('#container-statusCombo').append('<div class="fading"></div>');
     }
-      
+*/
 });
 
 function sendInviteForm(){

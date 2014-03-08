@@ -1,67 +1,42 @@
+<form class="row" id="search">
+    <div class="col-md-3">
+      <input type="text" id="query" name="query" alt="Search" size="20" value="{{filter.getQuery}}" />
+    </div>
+    <div class="col-md-7" id="filters">
+      {{& projectSelect}}
+      {{& userSelect}}
+      {{& statusSelect}}
+    </div>
+    {{#currentUser.id}}
+    <div id="buttons" class="col-md-2">
+        <p>
+            <button href="./addjob" id="addJobButton" title="Suggest a Feature or Report a Bug">
+                Add job
+            </button>
+        </p>
+    </div>
+    {{/currentUser.id}}
+</form>
+<section class="row">
+    <table class="table-worklist">
+        <thead>
+            <tr class="table-hdng">
+                <td class="clickable project-col">Project</td>
+                <td><span class="clickable">Job ID</span> &amp; <span class="clickable">Summary</span></td>
+                <td class="clickable status-col">Status</td>
+                <td class="clickable who-col">Who</td>
+                <td class="clickable age-col" id="defaultsort">Age</td>
+                <td class="clickable comments-col"><div class="comments-icon" title="Comments"></div></td>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
+</section>
 <script type="text/javascript">
     var page = {{page}};
     var dir = '{{filter.getDir}}';
     var sort = '{{filter.getSort}}';
     var only_needs_review_jobs = {{review_only}};
 </script>
-
-<div id="searchbar">
-    <form method="get" action="" id="searchForm" >
-      <div class="input_box">
-        <div class="searchDiv">
-          <input type="text" id="query" name="query" alt="Search" size="20"
-            value="{{filter.getQuery}}" />
-          <div class="crossSearch" id="search_reset" title="Clear Search Parameters"></div>
-          <div class="commentsDiv">
-            <label for="search_comments">
-              <div id="search_comment" class="comment" title="Toggle include comments"></div>
-              <input type="checkbox" name="search_comments" id="search_comments" /> 
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="filters">
-        <div id="projectFilter">
-          <label>Which project?</label>
-          {{& projectSelect}}
-        </div>
-        
-        <div id="userFilter">
-          <label>Users involved</label>
-          {{& userSelect}}
-        </div>
-
-        <div id="jobStatusFilter">
-          <label>Job status</label>
-          {{& statusSelect}}
-        </div>
-      </div>
-
-    {{#currentUser.id}}
-    <div id="buttons">
-        <p>
-            <a href="./addjob" id="addJobButton" title="Suggest a Feature or Report a Bug" target="_blank">
-                Add job
-            </a>
-        </p>
-    </div>
-    {{/currentUser.id}}
-
-    </form>
-</div>
-
-<table class="table-worklist">
-    <thead>
-        <tr class="table-hdng">
-            <td class="clickable project-col">Project</td>
-            <td><span class="clickable">Job ID</span> &amp; <span class="clickable">Summary</span></td>
-            <td class="clickable status-col">Status</td>
-            <td class="clickable who-col">Who</td>
-            <td class="clickable age-col" id="defaultsort">Age</td>
-            <td class="clickable comments-col"><div class="comments-icon" title="Comments"></div></td>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-<span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>

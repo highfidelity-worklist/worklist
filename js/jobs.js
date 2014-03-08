@@ -93,9 +93,13 @@ $(document).ready(function() {
     //setTimeout(MapToolTips, 800);
 
     // bind on creation of newList
+    /*
     if ($('#projectCombo').length !== 0) {
         createActiveFilter('#projectCombo', 'projects', 1);
     }
+    */
+
+    $('#filters > select').chosen();
 
     if(getQueryVariable('status') != null) {
         if (timeoutId) clearTimeout(timeoutId);
@@ -360,28 +364,10 @@ function GetWorklist(npage, update, reload) {
         save_filter = true,
         mobile_filter = false;
     
-    if ($('#projectFilter').is(':visible')) {
-        search_project = $('.projectComboList .ui-combobox-list-selected').attr('val');
-    } else {
-        search_project = 'All';
-        reload = undefined;
-        save_filter = false;
-    }
+    search_project = $('select[name="project"]').val();
+    search_user = $('select[name="user"]').val();
     
-    if ($('#userFilter').is(':visible')) {
-        search_user = $('.userComboList .ui-combobox-list-selected').attr('val');
-    } else {
-        reload = undefined;
-        save_filter = false;
-        if (userId) {
-            search_user = '' + userId;
-        } else {
-            search_user = 'ALL';
-        }            
-    }
-    
-    search_status = ($('#statusCombo').val() || []).join("/");
-    if (!$('#jobStatusFilter').is(':visible') || (search_status == 'Review' && only_needs_review_jobs)) {
+    if (search_status == 'Review' && only_needs_review_jobs) {
         reload = undefined;
         save_filter = false;
         if (search_status == 'Review' && only_needs_review_jobs) {
@@ -392,6 +378,8 @@ function GetWorklist(npage, update, reload) {
         } else {
             search_status = 'Bidding';
         }
+    } else {
+        search_status = ($('select[name="status"]').val() || []).join("/");
     }
     
     $.ajax({

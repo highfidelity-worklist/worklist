@@ -1,24 +1,14 @@
 <?php
 
 class JobsView extends View {
+    public $layout = 'NewWorklist';
     public $title = 'Jobs - Worklist';
-
     public $stylesheets = array(
-        'css/worklist.css'
+        'css/chosen/chosen.min.css',
+        'css/jobs.css'
     );
-
     public $scripts = array(
-        'js/jquery/jquery.tablednd_0_5.js',
-        'js/jquery/jquery.template.js',
-        'js/jquery/jquery.metadata.js',
-        'js/jquery/jquery.jeditable.min.js',
-        'js/jquery/jquery.tablesorter_desc.js',
-        'js/ajaxupload/ajaxupload.js',
-        'js/paginator.js',
-        'js/timepicker.js',
-        'js/paginator.js',
-        'js/skills.js',
-        'js/uploadFiles.js',
+        'js/chosen/chosen.jquery.min.js',
         'js/jobs.js'
     );
 
@@ -70,8 +60,8 @@ class JobsView extends View {
             );
         }
 
-        $box = '<select id="statusCombo" name="status" multiple="multiple">';
-        $box .= '<option value="ALL"' . (($filter->inStatus("ALL") || ($filter->inStatus(""))) ? ' selected="selected"' : '') .' > ' . $allDisplay . '</option>';
+        $box = '<select id="statusCombo" name="status" multiple="multiple" data-placeholder="All status">';
+        //$box .= '<option value="ALL"' . (($filter->inStatus("ALL") || ($filter->inStatus(""))) ? ' selected="selected"' : '') .' > ' . $allDisplay . '</option>';
         
         foreach ($status_array as $status) {
             $selected = '';
