@@ -41,7 +41,7 @@ class StatusController extends Controller {
     static function olderGithubEventDate($events) {
         $reverse_events = array_reverse($events);
         foreach($reverse_events as $event) {
-            if (!preg_match('/^(PullRequest(ReviewComment)?|IssueComment)Event$/', $event['type'])) {
+            if (!preg_match('/^(Fork|PullRequest(ReviewComment)?|IssueComment)Event$/', $event['type'])) {
                 continue;
             }
             return $event['created_at'];

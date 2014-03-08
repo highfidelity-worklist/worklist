@@ -35,7 +35,7 @@ class StatusView extends View {
                 $date = $entry->date;
                 $content = self::formatWorklistEntry($entry);
             } else { // github event
-                if (!preg_match('/^(PullRequest(ReviewComment)?|IssueComment)Event$/', $entry['type'])) {
+                if (!preg_match('/^(Fork|PullRequest(ReviewComment)?|IssueComment)Event$/', $entry['type'])) {
                     continue;
                 }                
                 $id = $entry['id'];
@@ -93,6 +93,13 @@ class StatusView extends View {
         $ret = '*GIT*: ';
         extract($entry);
         switch($type) {
+            case 'ForkEvent':
+                $author = self::markdownMention($actor['login'], true);
+                $fork_name = $payload['forkee']['full_name'];
+                $fork_url = $payload['forkee']['html_url'];
+                $action = ' forked [' . $fork_name . '](' . $fork_url . ')';
+                $ret .= $author . $action;
+                break;
             case 'PullRequestEvent':
                 $author = self::markdownMention($actor['login'], true);
                 $pullreq_number = $payload['number'];
