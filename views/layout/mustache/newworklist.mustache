@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <base href="{{app.url}}" />
-    <meta name="copyright" content="Copyright (c) 2014 HighFidelity inc. All Rights Reserved. http://highfidelity.io" />
-    <link rel="shortcut icon" type="image/x-icon" href="images/worklist_favicon.png" />
+    {{> meta/copyright}}
+    {{> meta/favicon}}
     {{& styleTags}}
     <script type="text/javascript">
         var userId = user_id = {{currentUser.id}};
@@ -22,15 +22,12 @@
             NewWorklist.init();
         });
     </script>
+    {{> meta/opengraph}}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="{{app.metadata.title}}" />
-    <meta name="description" content="{{app.metadata.description}}" />
-    <meta property="og:description" content="{{app.metadata.description}}" />
-    <meta property="og:image" content="{{app.metadata.image}}" />
     <title>{{title}}</title>
 </head>
 <body>
-    {{> fixed-navbar}}
+    {{> navbar/fixed}}
     <section class="container-fluid">
         {{& content}}
     </section>
