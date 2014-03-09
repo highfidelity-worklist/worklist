@@ -211,4 +211,11 @@ class Model extends AppObject {
         return $row['ret'];
     }
 
+    public function timezoneOffset() {
+        $sql = 'SELECT TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), NOW()) as ret;';
+        $result = mysql_query($sql);
+        $row = mysql_fetch_assoc($result);
+        return (int) $row['ret'];
+    }
+
 }

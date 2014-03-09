@@ -8,6 +8,8 @@ class StatusView extends View {
     public $stylesheets = array('css/status.css');
     public $scripts = array('js/status.js');
 
+    static $tz_offset = 0; // current server's timezone offset
+
     public function render() {
         return parent::render();
     }
@@ -21,18 +23,19 @@ class StatusView extends View {
         $worklist_entries = array_reverse($this->read('entries'));
         $gh_events = $this->read('gh_events');
         $entries = array_merge($worklist_entries, $gh_events);
+        self::$tz_offset = Model::timezoneOffset();
         usort($entries, array('StatusView', 'sortEntries'));
         $ret = '';
         $now = 0;
 
         foreach($entries as $entry) {
             if (!$now) {
-                $now = strtotime(Model::now());
+                $now = strtotime(Model::now()) + self::$tz_offset;
             }
             if (get_class($entry) == 'EntryModel') {
                 $id = $entry->id;
                 $type = 'worklist';
-                $date = $entry->date;
+                $date = strtotime($entry->date);
                 $content = self::formatWorklistEntry($entry);
             } else { // github event
                 if (!preg_match('/^(Fork|PullRequest(ReviewComment)?|IssueComment)Event$/', $entry['type'])) {
@@ -40,14 +43,13 @@ class StatusView extends View {
                 }                
                 $id = $entry['id'];
                 $type = 'github' . preg_replace('/Event$/', '', $entry['type']);
-                $date = $entry['created_at'];
+                $date = strtotime($entry['created_at']) + self::$tz_offset;
                 $content = self::formatGithubEntry($entry);
             }
-            $time = strtotime($date);
 
             $ret .= 
                   '<li entryid="' . $id . '" date="' . $date  . '" type="' . $type .  '">'
-                .     '<h4>' . relativeTime($time - $now) . '</h4>'
+                .     '<h4>' . relativeTime($date - $now) . '</h4>'
                 .     $content
                 . '</li>';
         }
@@ -56,18 +58,16 @@ class StatusView extends View {
 
     static function sortEntries($a, $b) {
         if (get_class($a) == 'EntryModel') {
-            $date_a = $a->date;
+            $date_a = strtotime($a->date);
         } else { // github event
-            $date_a = $a['created_at'];
+            $date_a = strtotime($a['created_at']) + self::$tz_offset;
         }
         if (get_class($b) == 'EntryModel') {
-            $date_b = $b->date;
+            $date_b = strtotime($b->date);
         } else { // github event
-            $date_b = $b['created_at'];
+            $date_b = strtotime($b['created_at']) + self::$tz_offset;
         }
-        $time_a = strtotime($date_a);
-        $time_b = strtotime($date_b);
-        return ($time_a == $time_b) ? 0 : ($time_a > $time_b ? +1 : -1);
+        return ($date_a == $date_b) ? 0 : ($date_a > $date_b ? +1 : -1);
     }
 
     static function formatWorklistEntry($entry) {
