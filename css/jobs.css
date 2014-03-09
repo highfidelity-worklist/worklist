@@ -1,7 +1,15 @@
-/* max-width on fluid container from NewWorklist is not the desired behavior on status */
 @media (min-width: 1024px) {
     body > .container-fluid {
         max-width: 1024px;
+    }
+}
+
+body {
+    font-size: 14px;
+}
+@media (max-width: 1024px) {
+    body {
+        font-size: 11px;
     }
 }
 
@@ -73,41 +81,6 @@
     color: #98AAB2;
 }
 
-.roweven {
-    background-color: #eeeeee;
-    background-image: none;
-}
-
-.rowown,
-.roweven.rowown {
-    background: #FFCC99;
-}
-
-.rowbidon,
-.roweven.rowbidon {
-    background: #99E566;
-}
-
-.rowbidexpired,
-.roweven.rowbidexpired {
-    background: #FF8080;
-}
-
-.rowrunner,
-.roweven.rowrunner {
-    background: #B1E1F3;    
-}
-
-.rowmechanic,
-.roweven.rowmechanic {
-    background: #FFFF6C;
-}
-
-.rowbidexpired a,
-.rowrunner a,
-.rowmechanic a {
-    color:#000;
-}
 .workitem-selected {
     background: #FFD;
 }
@@ -294,14 +267,6 @@ td.textAlignReport {
     font-size: 12px;
 }
 
-.floatLeft{
-    float: left;
-}
-
-.floatRight {
-    float: right;
-}
-
 .clear {
     clear: both;
 }
@@ -322,51 +287,150 @@ td.textAlignReport {
 }
 
 .table-worklist td {
-    padding: 4px 0;
-}
-
-.table-worklist td > div,
-.table-worklist td > a > div {
-    display: inline-block;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: hidden;    
+}
+
+.table-worklist td:nth-child(n+2):before {
+    content: ' ';
+    width: 80px;
+    height: 1.5em;
+    position: absolute;
     float: left;
-    position: relative;
+    margin-left: -80px;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
-.taskProject {
-    width: 92px;
+.table-striped > tbody > tr:nth-child(2n+1) > td:nth-child(n+2):before {
+    background: -moz-linear-gradient(left, rgba(249,249,249,0) 0%, rgba(249,249,249,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(249,249,249,0)), color-stop(100%,rgba(249,249,249,1)));
+    background: -webkit-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
+    background: -o-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
+    background: -ms-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
+    background: linear-gradient(to right, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
 }
 
-.taskSummary {
-    width: 640px;
+.table-striped > tbody > tr.rowown:nth-child(n+1) > td {
+    background-color: #ffcc99;
+}
+.table-striped > tbody > tr.rowown:nth-child(n+1) > td:before {
+    background: -moz-linear-gradient(left, rgba(255,204,153,0) 0%, rgba(255,204,153,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,204,153,0)), color-stop(100%,rgba(255,204,153,1)));
+    background: -webkit-linear-gradient(left, rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%);
+    background: linear-gradient(to right, rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%);
+}
+
+.table-striped > tbody > tr.rowbidon:nth-child(n+1) > td {
+    background-color: #99e566;
+}
+.table-striped > tbody > tr.rowbidon:nth-child(n+1) > td:before {
+    background: -moz-linear-gradient(left, rgba(153,229,102,0) 0%, rgba(153,229,102,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(153,229,102,0)), color-stop(100%,rgba(153,229,102,1)));
+    background: -webkit-linear-gradient(left, rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%);
+    background: -o-linear-gradient(left, rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%);
+    background: -ms-linear-gradient(left, rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%);
+    background: linear-gradient(to right, rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%);
+}
+
+.table-striped > tbody > tr.rowbidexpired:nth-child(n+1) > td {
+    background-color: #ff8080;
+}
+.table-striped > tbody > tr.rowbidexpired:nth-child(n+1) > td:before {
+    background: -moz-linear-gradient(left, rgba(255,128,128,0) 0%, rgba(255,128,128,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,128,128,0)), color-stop(100%,rgba(255,128,128,1)));
+    background: -webkit-linear-gradient(left, rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%);
+    background: linear-gradient(to right, rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%);
+}
+
+.table-striped > tbody > tr.rowrunner:nth-child(n+1) > td {
+    background-color: #b1e1f3;
+}
+.table-striped > tbody > tr.rowrunner:nth-child(n+1) > td:before {
+    background: -moz-linear-gradient(left, rgba(177,225,243,0) 0%, rgba(177,225,243,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(177,225,243,0)), color-stop(100%,rgba(177,225,243,1)));
+    background: -webkit-linear-gradient(left, rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%);
+    background: -o-linear-gradient(left, rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%);
+    background: -ms-linear-gradient(left, rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%);
+    background: linear-gradient(to right, rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%);
+}
+
+.table-striped > tbody > tr.rowmechanic:nth-child(n+1) > td {
+    background-color: #ffff6c;
+}
+.table-striped > tbody > tr.rowmechanic:nth-child(n+1) > td:before {
+    background: -moz-linear-gradient(left, rgba(255,255,108,0) 0%, rgba(255,255,108,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,108,0)), color-stop(100%,rgba(255,255,108,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%);
+}
+
+.table-worklist tbody tr.row-worklist-live {
+    cursor: pointer;
+}
+
+/* worklist table column sizes */
+.table-worklist tr > td:nth-child(1) {
+    width: 5%;
+}
+.table-worklist tr > td:nth-child(2) {
+    width: 50%;
+}
+.table-worklist tr > td:nth-child(3) {
+    width: 10%;
+}
+.table-worklist tr > td:nth-child(4) {
+    width: 15%;
+}
+.table-worklist tr > td:nth-child(5) {
+    width: 10%;
+}
+
+.table-worklist tr > td a {
+    color: #666;
+}
+
+.table-worklist tr > td:nth-child(2) > a {
+    font-weight: normal;
+    color: #333;
+}
+
+.table-worklist tr > td:nth-child(2) > a + h4 {
+    display: inline-block;
+    font-size: 1em;
+    margin-right: 5px;
     font-weight: bold;
 }
-
-.taskSummary .taskID {
+.table-worklist tr > td:nth-child(2) > a + h4:before {
+    content: ' - ';
     font-weight: normal;
 }
 
-.taskStatus {
-    width: 92px;
-}
-
-.taskWho {
-    width: 104px;
+.table-worklist tr > td:nth-child(2) > h4,
+.table-worklist tr > td:nth-child(2) > h4 + p {
+    padding: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    display: inline-block;
 }
 
 .taskAge {
-    width: 62px;
     font-size: .7em;
 }
 
 .taskWho,
 .taskAge {
     color: #999999;
-}
-
-.taskComments {
-    width: 20px;
 }
 
 .table-worklist td div > span:last-child:after,
@@ -383,95 +447,6 @@ td.textAlignReport {
 .ui-combobox > .fading {
     right: 32px;
     height: 2em;
-}
-
-.taskComments > span:last-child:after,
-.taskAge > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0) 100%) transparent !important;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,0)))  transparent !important;
-    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
-    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
-    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
-    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent !important;
-}
-
-.fading,
-.table-worklist td div > span:last-child:after,
-.table-worklist tr:hover > td div > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)))  transparent;
-    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
-    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
-    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
-    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%) transparent;
-}
-
-.fadingblue {
-    background: -moz-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(230, 243, 244, 0)), color-stop(100%, rgba(230, 243, 244, 1))) transparent;
-    background: -webkit-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
-    background: -o-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
-    background: -ms-linear-gradient(left, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
-    background: linear-gradient(to right, rgba(230, 243, 244, 0) 0%, rgba(230, 243, 244, 1) 100%) transparent;
-}
-
-.rowown > td div > span:last-child:after,
-.roweven.rowown > td div > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(255,204,153,0) 0%, rgba(255,204,153,1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,204,153,0)), color-stop(100%,rgba(255,204,153,1)))  transparent;
-    background: -webkit-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
-    background: -o-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
-    background: -ms-linear-gradient(left,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
-    background: linear-gradient(to right,  rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%) transparent;
-}
-
-.rowbidon > td div > span:last-child:after,
-.roweven.rowbidon > td div > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(153,229,102,0) 0%, rgba(153,229,102,1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(153,229,102,0)), color-stop(100%,rgba(153,229,102,1)))  transparent;
-    background: -webkit-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
-    background: -o-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
-    background: -ms-linear-gradient(left,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
-    background: linear-gradient(to right,  rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%) transparent;
-}
-
-.rowbidexpired > td div > span:last-child:after,
-.roweven.rowbidexpired > td div > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(255,128,128,0) 0%, rgba(255,128,128,1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,128,128,0)), color-stop(100%,rgba(255,128,128,1)))  transparent;
-    background: -webkit-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
-    background: -o-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
-    background: -ms-linear-gradient(left,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
-    background: linear-gradient(to right,  rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%) transparent;
-}
-
-.rowrunner > td div > span:last-child:after,
-.roweven.rowrunner > td div > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(177,225,243,0) 0%, rgba(177,225,243,1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(177,225,243,0)), color-stop(100%,rgba(177,225,243,1)))  transparent;
-    background: -webkit-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
-    background: -o-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
-    background: -ms-linear-gradient(left,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
-    background: linear-gradient(to right,  rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%) transparent;
-}
-
-.rowmechanic > td div > span:last-child:after,
-.roweven.rowmechanic > td div > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(255,255,108,0) 0%, rgba(255,255,108,1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,108,0)), color-stop(100%,rgba(255,255,108,1)))  transparent;
-    background: -webkit-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
-    background: -o-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
-    background: -ms-linear-gradient(left,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
-    background: linear-gradient(to right,  rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%) transparent;
-}
-
-.roweven > td div > span:last-child:after {
-    background: -moz-linear-gradient(left,  rgba(238,238,238,0) 0%, rgba(238,238,238,1) 100%) transparent;
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(238,238,238,0)), color-stop(100%,rgba(238,238,238,1)))  transparent;
-    background: -webkit-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
-    background: -o-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
-    background: -ms-linear-gradient(left,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
-    background: linear-gradient(to right,  rgba(238,238,238,0) 0%,rgba(238,238,238,1) 100%) transparent;
 }
 
 .taskSummaryCell a,
@@ -670,6 +645,10 @@ input.button-disabled ,
     border-bottom: 1px solid #e5e5e5;
 }
 
+table.table-worklist > tbody > tr.worklist-pagination-row > td {
+    background: transparent none;
+}
+
 .table-worklist .worklist-pagination-row > td > span {
     display: inline-block;
     margin-top: 5px;
@@ -822,6 +801,14 @@ input {
     background-color: #dde4e6;
 }
 
+
+@media (max-width: 768px) {
+    #search {
+        position: relative;
+        padding-bottom: 5px;
+    } 
+}
+
 #search select + div,
 #search select,
 #query > fieldset > input {
@@ -830,10 +817,30 @@ input {
     font-size: 1em;
     line-height: 1.45em;
 }
+@media (max-width: 768px) {
+    #search select + div,
+    #search select,
+    #query > fieldset > input {
+        margin-bottom: 0;
+    }
+}
 
 #query > fieldset > input[type="text"] {
     width: 165px;
     padding-left: 23px;
+}
+
+@media (max-width: 1024px) {
+    #query > fieldset > input[type="text"] {
+        width: 60%;
+        padding-left: 23px;
+    }
+}
+@media (max-width: 1024px) {
+    #query > fieldset > input[type="text"] {
+        width: 60%;
+        padding-left: 23px;
+    }
 }
 
 #query > fieldset:before {
@@ -863,6 +870,16 @@ input {
     background: transparent none;
     color: #666;
 }
+@media (max-width: 1024px) {
+    #query > fieldset > input[type="text"] + button {
+        margin-left: -30px;
+    }
+}
+@media (max-width: 768px) {
+    #query > fieldset > input[type="text"] + button {
+        display: none;
+    }
+}
 
 #query > fieldset > input[type="text"] + button:focus {
     color: #007F7c;
@@ -872,6 +889,7 @@ input {
     display: inline-block;
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 #query fieldset > input[type="checkbox"] {
@@ -891,6 +909,22 @@ input {
     width: 62px;
     height: 32px;
     margin-left: -20px;
+}
+@media (max-width: 1024px) {
+    #query fieldset > input[type="checkbox"] + label {
+        height: 29px;
+        width: 52px;
+        margin-left: -21px;
+        background-position: 0px -359px;
+    }
+}
+@media (max-width: 768px) {
+    #query fieldset > input[type="checkbox"] + label {
+        height: 29px;
+        width: 70px;
+        margin-left: -20px;
+        background-position: 10px -359px;
+    }
 }
 
 #query fieldset > input[type="checkbox"] + label:after {
@@ -915,36 +949,79 @@ input {
     border-color: #007F7c;
 }
 
-#projectCombo_chosen {
-    width: 180px;
+#search .chosen-container:before {
+    color: #666;
 }
+
 #projectCombo_chosen:before {
     content: 'Which project?';
-    color: #666;
+}
+#projectCombo_chosen {
+    width: 100% !important;
+}
+@media (max-width: 1024px) {
+    #projectCombo_chosen:before {
+        content: '';
+    }
 }
 
 #userCombo_chosen:before {
     content: 'Users involved';
 }
-
-#statusCombo_chosen {
-    width: 250px !important;
+#userCombo_chosen {
+    width: 100% !important;
 }
+@media (max-width: 1024px) {
+    #userCombo_chosen:before {
+        display: none;
+    }
+}
+
 #statusCombo_chosen:before {
     content: 'Job status';
 }
+#statusCombo_chosen {
+    width: 100% !important;
+}
+@media (max-width: 1024px) {
+    #statusCombo_chosen:before {
+        display: none;
+    }
+    #statusCombo_chosen {
+        width: 100% !important;
+    }
+}
 
-#filters > .chosen-container {
+.filter > .chosen-container {
     margin-top: 25px;
 }
+@media (max-width: 768px) {
+    .filter > .chosen-container {
+        margin-top: 5px;
+    }
+}
+
 
 #query > fieldset,
 #addJobButton {
     margin-top: 45px;
 }
 
-#filters > .chosen-container-single .chosen-single,
-#filters > .chosen-container-multi .chosen-choices {
+@media (max-width: 1024px) {
+    #query > fieldset,
+    #addJobButton {
+        margin-top: 28px;
+    }
+}
+@media (max-width: 768px) {
+    #query > fieldset,
+    #addJobButton {
+        margin-top: 5px;
+    }
+}
+
+.filter > .chosen-container-single .chosen-single,
+.filter > .chosen-container-multi .chosen-choices {
     border-radius: 0px;
     height: 35px !important;
 }
@@ -1041,6 +1118,12 @@ input {
     font-weight: bold;
     margin-top: -4px;
 }
+@media (max-width: 1024px) {
+    #search .chosen-container-multi .chosen-choices:before {
+        padding: 6px 1px 6px 6px;
+        margin-top: -3px;
+    }    
+}
 
 #search .chosen-container-multi.chosen-with-drop .chosen-choices:before,
 #search .chosen-container-single.chosen-with-drop .chosen-single div b:before {
@@ -1126,6 +1209,7 @@ input {
     border-color: #007F7C;
 }
 
+
 #addJobButton { 
     background-color: #007F7C;
     padding: 4px 10px;
@@ -1139,6 +1223,15 @@ input {
     font-weight: bold;
 }
 
+
 #buttons {
     padding: 0;
+}
+
+@media (max-width: 768px) {
+    #buttons {
+        position: absolute;
+        top: 0;
+        right: 5px;
+    } 
 }

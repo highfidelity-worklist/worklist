@@ -1,5 +1,5 @@
 <form class="row" id="search">
-    <div id="query" class="col-md-3">
+    <div id="query" class="col-sm-3 col-md-3">
       <fieldset>
         <input type="text" name="query" alt="Search" size="20" value="{{getQuery}}" />
         <button href="#" class="glyphicon glyphicon-remove" title="Clear Search Parameters"></button>
@@ -7,13 +7,17 @@
         <label for="search_comments"></label>
       </fieldset>
     </div>
-    <div class="col-md-8" id="filters">
+    <div class="col-sm-2 col-md-2 filter">
       {{& projectSelect}}
+    </div>
+    <div class="col-sm-2 col-md-2 filter">
       {{& userSelect}}
+    </div>
+    <div class="col-sm-3 col-md-4 filter">
       {{& statusSelect}}
     </div>
     {{#currentUser.id}}
-    <div id="buttons" class="col-md-1">
+    <div id="buttons" class="colsm-2 col-md-1">
         <p>
             <button href="./addjob" id="addJobButton" title="Suggest a Feature or Report a Bug">
                 Add job
@@ -23,15 +27,15 @@
     {{/currentUser.id}}
 </form>
 <section class="row">
-    <table class="table-worklist">
+    <table class="table table-striped table-worklist">
         <thead>
-            <tr class="table-hdng">
-                <td class="clickable project-col">Project</td>
-                <td><span class="clickable">Job ID</span> &amp; <span class="clickable">Summary</span></td>
-                <td class="clickable status-col">Status</td>
-                <td class="clickable who-col">Who</td>
-                <td class="clickable age-col" id="defaultsort">Age</td>
-                <td class="clickable comments-col"><div class="comments-icon" title="Comments"></div></td>
+            <tr>
+                <th class="clickable project-col">Project</th>
+                <th><span class="clickable">Job ID</span> &amp; <span class="clickable">Summary</span></th>
+                <th class="clickable status-col">Status</th>
+                <th class="clickable who-col">Who</th>
+                <th class="clickable age-col" id="defaultsort">Age</th>
+                <th class="clickable comments-col"><div class="comments-icon" title="Comments"></div></th>
             </tr>
         </thead>
         <tbody>

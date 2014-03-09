@@ -10,7 +10,6 @@ var affectedHeader = false;
 var directions = {"ASC":"images/arrow-up.png","DESC":"images/arrow-down.png"};
 var lastId;
 
-var topIsOdd = true;
 var timeoutId;
 var workitem = 0;
 var workitems;
@@ -36,7 +35,7 @@ $(document).ready(function() {
 
     dirDiv = $("#direction");
     dirImg = $("#direction img");
-    hdr = $(".table-hdng");
+    hdr = $(".table-worklist > thead > tr");
     if (sort != 'delta') {
         hdr.find(".clickable").each(function() {
             if ($(this).text().toLowerCase() == unescape(sort.toLowerCase())) {
@@ -87,18 +86,7 @@ $(document).ready(function() {
         return false;
     });
 
-    //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
-    // function commented for remove tooltip
-    //setTimeout(MapToolTips, 800);
-
-    // bind on creation of newList
-    /*
-    if ($('#projectCombo').length !== 0) {
-        createActiveFilter('#projectCombo', 'projects', 1);
-    }
-    */
-
-    $('#filters > select').chosen();
+    $('.filter > select').chosen();
 
     if(getQueryVariable('status') != null) {
         if (timeoutId) clearTimeout(timeoutId);
@@ -150,19 +138,13 @@ function AppendPagination(page, cPages, table)    {
     $('.table-' + table).append(pagination);
 }
 // see getWorklist in api.php for json column mapping
-function AppendRow (json, odd, prepend, moreJson, idx) {
+function AppendRow (json, prepend, moreJson, idx) {
     var row;
-    row = '<tr id="workitem-' + json[0] + '" class="row-worklist-live iToolTip hoverJobRow ';
+    row = '<tr job="' + json[0] + '" id="workitem-' + json[0] + '" class="row-worklist-live ';
 
     // disable dragging for all rows except with "BIDDING" status
     if (json[2] != 'Bidding') {
         row += ' nodrag ';
-    }
-
-    if (odd) {
-        row += ' rowodd';
-    } else {
-        row += 'roweven';
     }
 
     // Check if the user is either creator, runner, mechanic and assigns the rowown class
@@ -187,13 +169,11 @@ function AppendRow (json, odd, prepend, moreJson, idx) {
     var project_link = worklistUrl + '' + json[17];
     row +=
         '<td class="clickable not-workitem project-col" onclick="location.href=\'' + project_link + '\'">' +
-            '<div class="taskProject" id="' + json[16] + '">' +
-                '<span><a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a></span>' +
-            '</div>' +
+            '<a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a>' +
         '</td>';
     //If job is a bug, add reference to original job
     if( json[18] > 0) {
-        extraStringBug = '<small> (bug of '+json[18]+ ') </small>';
+        extraStringBug = '<p> (bug of <a href="./' + json[18] + '">#' + json[18] + '</a>) </p>';
     } else {
         extraStringBug = '';
     }
@@ -201,39 +181,35 @@ function AppendRow (json, odd, prepend, moreJson, idx) {
     // Displays the ID of the task in the first row
     // 26-APR-2010 <Yani>
     var workitemId = 'workitem-' + json[0];
-    row += '<td>' + 
-             '<div id="' + workitemId + '" class="taskSummary">' +
-               '<span>' +
-                 '<span class="taskID">#' + json[0] + '</span> - ' +
-                 json[1] + extraStringBug +
-               '</span>' +
-             '</div>' +
-           '</td>';
+    row += 
+        '<td>' + 
+            '<a href="./' + json[0] + '">#' + json[0] + '</a> ' + 
+            '<h4>' + json[1] + '</h4>' + extraStringBug + 
+        '</td>';
+
     var bidCount = '';
     if ((json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') && json[10] > 0) {
         bidCount = ' (' + json[10] + ')';
     }
-    row += '<td class="status-col"><div class="taskStatus"><span>' + json[2] + bidCount + '</span></td>';
+    row += '<td class="status-col">' + json[2] + bidCount + '</td>';
 
     var who = '',
-        createTagWho = function (id, nickname, type) {
-            return '<span class="' + type + '" title="' + id + '">' + nickname + '</span>';
+        createTagWho = function (id, nickname) {
+            return '<a href="./user/' + id + '" title="' + nickname + '\'s profile">' + nickname + '</a>';
         };
     if (json[3] == json[4]) {
         // creator nickname can't be null, so not checking here
-        who += createTagWho(json[9],json[3],"creator");
+        who += createTagWho(json[9],json[3]);
     } else {
-        var runnerNickname = json[4] != null ? ', ' + createTagWho(json[13], json[4], "runner") : '';
-        who += createTagWho(json[9], json[3], "creator") + runnerNickname;
+        var runnerNickname = json[4] != null ? ', ' + createTagWho(json[13], json[4]) : '';
+        who += createTagWho(json[9], json[3]) + runnerNickname;
     }
     if (json[5] != null){
-        who += ', ' + createTagWho(json[14], json[5], "mechanic");
+        who += ', ' + createTagWho(json[14], json[5]);
     }
 
     row += '<td class="who not-workitem who-col">' + 
-             '<div class="taskWho">' +
                who + 
-             '</div>' +
            '</td>';
     
     if (json[2] == 'Working' && json[11] != null) {
@@ -247,66 +223,50 @@ function AppendRow (json, odd, prepend, moreJson, idx) {
             strAge = strAge + ' from now';
         }
         row += '<td class="age-col">' +
-                 '<div class="taskAge">' + 
-                   '<span>' +
-                     strAge
-                   '</span>' +
-                 '</div>' +
+                 strAge
                '</td>';
     } else if (json[2] == 'Done' ) {
-if (json[6] != null){
-        row += '<td class="age-col">' +
-                 '<div class="taskAge">' + 
-                   '<span>' +
+        if (json[6] != null){
+            row += '<td class="age-col">' +
                      RelativeTime(json[6], true) +
-                   '</span>' +
-                 '</div>' +
-                '</td>';
+                    '</td>';
         } else {
-        row += '<td class="age-col">' +
-                 '<div class="taskAge">' + 
-                   '<span>' +
-                     'unknown'
-                   '</span>' +
-                 '</div>' +
-               '</td>';
+            row += '<td class="age-col">unknown</td>';
         }
     } else {
         row += '<td class="age-col">' +
-                 '<div class="taskAge">' + 
-                   '<span>' +
-                     RelativeTime(json[6], true) +
-                   '</span>' +
-                 '</div>' +
+                 RelativeTime(json[6], true) +
                '</td>';
     }
 
     // Comments
     comments = (json[12] == 0) ? "" : json[12];
     row += '<td class="age-col">' + 
-             '<div class="taskComments">' + 
-               '<span>' +
-                 comments +
-               '<span>' +
-             '</div>' +
+             comments +
            '</td>';
 
     row += '</tr>';
+    $row = $(row);
+    $('a', $row).on('click', function(e) {
+        e.stopPropagation();
+        return true;
+    });
+    $row.on('click', function() {
+        console.log($(this).attr('job'));
+        window.location.href = './' + $(this).attr('job');
+    });
     if (prepend) {
         // animate in each row
-        $(row).hide().prependTo('.table-worklist tbody').fadeIn(300);
+        $row.hide().prependTo('.table-worklist tbody').fadeIn(300);
         $('#workitem-' + json[0]).removeAttr('style');
         setTimeout(function(){
             if (moreJson && idx-- > 1) {
-                topIsOdd = !topIsOdd;
-                AppendRow(moreJson[idx], topIsOdd, true, moreJson, idx);
+                AppendRow(moreJson[idx], true, moreJson, idx);
             }
         }, 300);
     } else {
-        $('.table-worklist tbody').append(row);
+        $row.appendTo('.table-worklist tbody');
     }
-    // Apply additional styling
-    additionalRowUpdates(workitemId);
 }
 
 function Change(obj, evt)    {
@@ -435,18 +395,15 @@ function GetWorklist(npage, update, reload) {
             }
             
             // Output the worklist rows.
-            var odd = topIsOdd;
             for (var i = lastFirst; i < json.length; i++) {
-                AppendRow(json[i], odd);
-                odd = !odd;
+                AppendRow(json[i]);
             }
 
             AppendPagination(page, cPages, 'worklist');
 
             if (update && lastFirst > 1) {
                 // Update the view by scrolling in the new entries from the top.
-                topIsOdd = !topIsOdd;
-                AppendRow(json[lastFirst-1], topIsOdd, true, json, lastFirst-1);
+                AppendRow(json[lastFirst-1], true, json, lastFirst-1);
             }
             lastId = json[1][0];
 
@@ -462,7 +419,7 @@ function GetWorklist(npage, update, reload) {
         },
         error: function(xhdr, status, err) {
             $('.row-worklist-live').remove();
-            $('.table-worklist').append('<tr class="row-worklist-live rowodd"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
+            $('.table-worklist').append('<tr class="row-worklist-live"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
 //              Ticket #11560, hide the waiting message as soon as there is an error
             loaderImg.hide("loadRunning");
 //              Ticket #11596, fix done with 11517
@@ -480,36 +437,6 @@ function GetWorklist(npage, update, reload) {
 
     timeoutId = setTimeout("GetWorklist("+page+", true, true)", ajaxRefresh);
     lockGetWorklist = 0;
-}
-
-
-function additionalRowUpdates(workitemId) {
-    // Apply only once to new rows, either on an update or original load.
-    var rowQuery = 'tr.row-worklist-live';
-    var taskQuery = '.taskSummary';
-    if (workitemId != undefined) {
-        rowQuery += '#' + workitemId;
-        taskQuery = '#' + workitemId + taskQuery;
-    }
-    // Buid the workitem anchors
-    $(rowQuery).each(function() {
-        var selfRow = $(this);
-        $(".taskSummary", selfRow).parent().addClass("taskSummaryCell");
-        $('.taskSummary', selfRow).wrap('<a href="' + buildHref(SetWorkItem(selfRow)) + '"></a>');
-        $("td:not(.not-workitem)", selfRow).click(function(e) {
-            if (! (e.ctrlKey || e.shiftKey || e.altKey)) {
-                window.location.href = buildHref(SetWorkItem(selfRow));
-            }
-        }).addClass("clickable");
-
-        $(".creator, .runner, .mechanic", $(".who", selfRow)).addClass("linkTaskWho").click(
-            function() {
-                window.open('./user/' + $(this).attr("title"), '_blank');
-            }
-        );
-    });
-    // Add the hover over tooltip
-    makeWorkitemTooltip(taskQuery);
 }
 
 // Is this function below needed or used somewhere?
