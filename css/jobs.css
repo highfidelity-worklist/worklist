@@ -5,19 +5,6 @@
     }
 }
 
-
-#confirmation{
-    display: none;
-}
-
-.font-14 {
-    font-size: 14px;
-}
-
-.popup-body {
-    display: none;
-}
-
 .popup-body,
 .user-info
 {
@@ -332,6 +319,10 @@ td.textAlignReport {
 .taskProject span,
 .taskSummaryCell {
     cursor: pointer;
+}
+
+.table-worklist td {
+    padding: 4px 0;
 }
 
 .table-worklist td > div,
@@ -833,22 +824,103 @@ input {
 
 #search select + div,
 #search select,
-#query {
+#query > fieldset > input {
     margin-bottom: 13px;
     font-family: proxima-nova, sans-serif;
     font-size: 1em;
     line-height: 1.45em;
 }
 
-input#query {
-    width: 240px;
-} 
+#query > fieldset > input[type="text"] {
+    width: 165px;
+    padding-left: 23px;
+}
+
+#query > fieldset:before {
+    font-family: FontAwesome;
+    content: "\f002";
+    position: absolute;
+    color: #000;
+    margin: 5px 7px;
+    color: #007F7c;
+}
+
+
+#query > fieldset > * {
+    vertical-align: top;
+}
+
+#query > fieldset > input[type="text"],
+#query > fieldset > input[type="text"] + button {
+    display: inline-block;
+}
+
+#query > fieldset > input[type="text"] + button {
+    margin-left: -40px;
+    font-size: 1.5em;
+    top: 7px;
+    border: 0 none;
+    background: transparent none;
+    color: #666;
+}
+
+#query > fieldset > input[type="text"] + button:focus {
+    color: #007F7c;
+}
+
+#query > fieldset {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+#query fieldset > input[type="checkbox"] {
+    opacity: 0;
+    width: 10px;
+    height: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+#query fieldset > input[type="checkbox"] + label {
+    display: inline-block;
+    background: url('../images/primaryIcons-WL.png') no-repeat scroll 3px -359px transparent;
+    border-width: 1px 1px 1px 0; 
+    border-style: solid;
+    border-color: #ccc;
+    width: 62px;
+    height: 32px;
+    margin-left: -20px;
+}
+
+#query fieldset > input[type="checkbox"] + label:after {
+    content: '\00a0';
+    width: 22px;
+    border-radius: 5px;    
+    font-family: FontAwesome;
+    display: inline-block;
+    float: right;
+    margin: 4px;
+    border: 1px solid #ccc;
+    padding: 0 3px;
+    background-color: #fff;
+    color: #999;
+}
+
+#query fieldset > input[type="checkbox"]:checked + label:after {
+    content: '\f00c';
+}
+
+#query > fieldset > input[type="checkbox"]:focus + label:after {
+    border-color: #007F7c;
+}
 
 #projectCombo_chosen {
     width: 180px;
 }
 #projectCombo_chosen:before {
     content: 'Which project?';
+    color: #666;
 }
 
 #userCombo_chosen:before {
@@ -866,7 +938,7 @@ input#query {
     margin-top: 25px;
 }
 
-input#query,
+#query > fieldset,
 #addJobButton {
     margin-top: 45px;
 }
@@ -888,11 +960,13 @@ input#query,
 }
 
 #search .chosen-container-single.chosen-container-active.chosen-with-drop .chosen-single,
-#search .chosen-container-single .chosen-drop,
+#search .chosen-container-multi.chosen-container-active.chosen-with-drop .chosen-choices,
+#search .chosen-container .chosen-drop,
 #search .chosen-container-single .chosen-search input[type=text] {
     border-color: #e0e0e0;
 }
 
+#search .chosen-container-multi .chosen-choices,
 #search .chosen-container-single .chosen-single,
 #search .chosen-container-single .chosen-search input[type=text] {
     background-color: #ffffff;
@@ -947,33 +1021,43 @@ input#query,
     background: none transparent;
 }
 
-#search .chosen-container-single .chosen-single div b:before {
+#search .chosen-container-single .chosen-single div b:before,
+#search .chosen-container-multi .chosen-choices:before {
     font-family: FontAwesome;
     content: "\f078";
     display: inline-block;
     font-size: 1em;
     box-sizing: border-box;
-    color: #007F7c;
-    padding: 2px 6px;
+    color: #666;
     border-left: 1px solid #ccc;
 }
+#search .chosen-container-single .chosen-single div b:before {
+    padding: 2px 6px;
+}
 
+#search .chosen-container-multi .chosen-choices:before {
+    padding: 4px 0px 3px 6px;
+    float: right;
+    font-weight: bold;
+    margin-top: -4px;
+}
+
+#search .chosen-container-multi.chosen-with-drop .chosen-choices:before,
 #search .chosen-container-single.chosen-with-drop .chosen-single div b:before {
     content: "\f077";    
 }
 
-#query,
+#query > fieldset > input,
 #search .chosen-container-single .chosen-single,
 #search .chosen-container-multi .chosen-choices {
-    padding: 6px 10px 8px;
+    padding: 5px 10px 7px;
     background: none #fff;
     border: 0 none;
 }
 
-
 #search .chosen-container-multi .chosen-choices li.search-choice {
     margin: 0 1px;
-    font-size: .8em;
+    font-size: .7em;
     background: none #fff;
     border-radius: 0;
     border-color: #007F7c;
@@ -999,46 +1083,50 @@ input#query,
 }
 
 #search select,
-#query,
-#search button {
+#query > fieldset > input,
+#addJobButton {
     font-family: proxima-nova, sans-serif;
 }
 
 #search select,
 #search .chosen-container-single .chosen-single,
-#query {
-    border: 1px solid #e0e0e0;
+#search .chosen-container-multi .chosen-choices,
+#query > fieldset > input {
+    border: 1px solid #ccc;
 }
 
+#search .chosen-container-multi.chosen-container-active .chosen-choices,
 #search .chosen-container-single.chosen-container-active .chosen-single,
-#query:focus {
+#query > fieldset > input:focus {
     border-color: #007F7c;
 }
 
-#query:focus,
-#query.valid {
+#query > fieldset > input:focus,
+#query > fieldset > input.valid {
     color: #007F7c;
     outline: none;
 }
 
-#query.error,
+#query > fieldset > input.error,
 #search select.error {
     outline: none;
 }
 
-#query.error,
+#query > fieldset > input.error,
 #search select.error,
+#search select.error + div > .chosen-choices,
 #search select.error + div > .chosen-single {
     color: #007F7C;
 }
 
-#query.error,
+#query > fieldset > input.error,
 #search select.error,
+#search select.error + div > .chosen-choices,
 #search select.error + div > .chosen-single {
     border-color: #007F7C;
 }
 
-#search button { 
+#addJobButton { 
     background-color: #007F7C;
     padding: 4px 10px;
     color: #fff;
@@ -1053,264 +1141,4 @@ input#query,
 
 #buttons {
     padding: 0;
-}
-
-/*
-a#addJobButton, a#addJobButton:hover {
-    text-decoration: none;
-}
-a#addJobButton {
-    background-color: #099;
-    background-image: none;
-    border-radius: 7px;
-    color: #FFF;
-    font-size: 10pt;
-    font-weight: bold;
-    padding: 5px 15px;
-    font-family: Arial,Helvetica,sans-serif;
-    display: inline-block;
-}*/
-
-
-/*
-
-
-
-
-
-
-
-#searchbar {
-    position: relative;
-    float: right;
-    width: 100%;
-    margin-bottom: 7px;
-    background-color: #E1E8EA;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#searchbar .input_box {
-    background-image: none;
-    width: 305px;
-    margin: 0px;
-}
-#searchbar .input_box {
-    border: 0px none;
-    display: inline-block;
-    margin: 0px 0px 0px 10px;
-    padding: 2px;
-    top: 10px;
-    width: 220px;
-}
-#searchForm > div {
-    float: left;
-    height: 70px;
-    padding: 0px;
-}
-
-
-
-
-
-
-#searchbar .searchDiv {
-    display: inline-block;
-    border: 1px solid #CCC;
-    margin: 22px -4px 10px 10px;
-    background: url('../images/primaryIcons-WL.png') no-repeat scroll 8px -320px #FFF;
-    padding-left: 30px;
-    position: relative;
-    width: 255px;
-    height: 34px;
-}
-
-
-
-
-
-#searchbar #query {
-    background-color: #FFF;
-    position: absolute;
-    top: 3px;
-    padding: 0px;
-    margin: 0px;
-    height: 28px;
-    font-weight: bold;
-    border: 0px none;
-}
-#searchbar #query {
-    width: 165px;
-    font-size: 13pt;
-}
-#searchbar .input_box input {
-    border: 0px none;
-    color: #2C3549;
-    font-size: 13px;
-    margin: 0px;
-    padding: 4px;
-    width: 130px;
-    position: relative;
-    top: -10px;
-    background: none repeat scroll 0px 0px transparent !important;
-}
-
-
-
-
-
-
-#searchbar .crossSearch {
-    background: url('../images/primaryIcons-WL.png') no-repeat scroll 3px -385px #FFF;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    position: absolute;
-    top: 4px;
-}
-#searchbar .crossSearch {
-    left: 197px;
-}
-#searchbar *, .table-worklist * {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
-}
-
-
-
-
-
-
-#searchbar .commentsDiv {
-    display: inline-block;
-    border-left: 1px solid #CCC;
-    height: 35px;
-    width: 60px;
-    position: absolute;
-    right: 0px;
-    top: 0px;
-}
-
-
-
-
-
-
-#searchbar .commentsDiv label {
-    top: 6px;
-    left: 7px;
-    position: absolute;
-}
-#searchbar *, .table-worklist * {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
-}
-
-
-
-
-
-#searchbar .comment {
-    background: url('../images/primaryIcons-WL.png') no-repeat scroll 0px -362px transparent;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    float: left;
-    padding-right: 5px;
-}
-
-
-
-
-#searchbar #search_comments {
-    width: 20px;
-    float: left;
-    margin-top: 6px;
-    position: static;
-    padding: 0px;
-}
-#searchbar .input_box input {
-    border: 0px none;
-    color: #2C3549;
-    font-size: 13px;
-    margin: 0px;
-    padding: 4px;
-    width: 130px;
-    position: relative;
-    top: -10px;
-    background: none repeat scroll 0px 0px transparent !important;
-}
-#searchbar .input_box input {
-    border: 0px none;
-    color: #2C3549;
-    font-size: 13px;
-    margin: 0px;
-    padding: 4px;
-    width: 130px;
-    position: relative;
-    top: -10px;
-    background: none repeat scroll 0px 0px transparent !important;
-}
-
-
-
-
-
-
-#projectFilter {
-    width: 193px;
-}
-#projectFilter, #userFilter, #jobStatusFilter {
-    padding-top: 12px;
-    display: inline-block;
-}
-
-
-
-#projectFilter label, #userFilter label, #jobStatusFilter label {
-    display: block;
-    text-align: left;
-    height: 15px;
-    margin: 1px 0px 2px 3px;
-    color: #646464;
-    font-size: 9pt;
-}
-
-
-
-
-
-#searchForm #buttons {
-    float: right;
-    margin-left: 2px;
-    width: 110px;
-    position: relative;
-    border-left: 2px solid #FFF;
-}
-
-
-
-
-a#addJobButton, a#addJobButton:hover {
-    text-decoration: none;
-}
-a#addJobButton {
-    background-color: #099;
-    background-image: none;
-    border-radius: 7px;
-    color: #FFF;
-    font-size: 10pt;
-    font-weight: bold;
-    padding: 5px 15px;
-    font-family: Arial,Helvetica,sans-serif;
-    display: inline-block;
 }

@@ -56,16 +56,16 @@ $(document).ready(function() {
 
     reattachAutoUpdate();
 
-    $('#query').keypress(function(event) {
+    $('#query input[type="text"]').keypress(function(event) {
         if (event.keyCode == '13') {
             event.preventDefault();
-            $("#searchForm").submit();
+            $("#search").submit();
         }
     });
 
-    $("#search_reset").click(function(e){
+    $('#query input[type="text"] + button').click(function(e){
         e.preventDefault();
-        $("#query").val('');
+        $('#query input[type="text"]').val('');
         affectedHeader = false;
         resetOrder = true;
         sort = 'null';
@@ -82,8 +82,7 @@ $(document).ready(function() {
         GetWorklist(1, false);
     });
 
-    $("#searchForm").submit(function(){
-        var query = $('#query').val();
+    $("#search").submit(function(){
         GetWorklist(1, false);
         return false;
     });
@@ -366,20 +365,19 @@ function GetWorklist(npage, update, reload) {
     
     search_project = $('select[name="project"]').val();
     search_user = $('select[name="user"]').val();
-    
+
+    search_status = '';    
     if (search_status == 'Review' && only_needs_review_jobs) {
         reload = undefined;
         save_filter = false;
-        if (search_status == 'Review' && only_needs_review_jobs) {
-            search_status = 'Needs-Review';
-        } else if (userId) {
-            search_status = 'Bidding/Working/Functional/SvnHold/Review/Completed';
-            mobile_filter = true;
-        } else {
-            search_status = 'Bidding';
-        }
+        search_status = 'Needs-Review';
+    } else if ($('select[name="status"]').val()) {
+        search_status = ($('select[name="status"]').val()).join("/");
+    } else if (userId) {
+        search_status = 'ALL';
+        mobile_filter = true;
     } else {
-        search_status = ($('select[name="status"]').val() || []).join("/");
+        search_status = 'Biding';
     }
     
     $.ajax({
@@ -395,7 +393,7 @@ function GetWorklist(npage, update, reload) {
             dir: dir,
             user: search_user,
             inComment: $('#search_comments').is(':checked') ? 1 : 0,
-            query: $("#query").val(),
+            query: $('#query input[type="text"]').val(),
             reload: ((reload == undefined) ? false : true),
             save: save_filter,
             mobile: mobile_filter
@@ -404,7 +402,7 @@ function GetWorklist(npage, update, reload) {
         success: function(json) {
             if (json[0] == "redirect") {
                 lockGetWorklist = 0;
-                $("#query").val('');
+                $('#query input[type="text"]').val('');
                 window.location.href = buildHref( json[1] );
                 return false;
             }

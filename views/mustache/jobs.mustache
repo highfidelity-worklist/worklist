@@ -1,6 +1,11 @@
 <form class="row" id="search">
-    <div class="col-md-3">
-      <input type="text" id="query" name="query" alt="Search" size="20" value="{{filter.getQuery}}" />
+    <div id="query" class="col-md-3">
+      <fieldset>
+        <input type="text" name="query" alt="Search" size="20" value="{{getQuery}}" />
+        <button href="#" class="glyphicon glyphicon-remove" title="Clear Search Parameters"></button>
+        <input type="checkbox" id="search_comments" name="search_comments"></input>
+        <label for="search_comments"></label>
+      </fieldset>
     </div>
     <div class="col-md-8" id="filters">
       {{& projectSelect}}
