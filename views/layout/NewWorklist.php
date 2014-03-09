@@ -4,6 +4,7 @@ class NewWorklistLayout extends Layout {
     public $stylesheets = array(
         'css/bootstrap/css/bootstrap.min.css',
         'css/font-awesome/css/font-awesome.min.css',
+        'css/chosen/chosen.min.css',
         'css/newworklist.css',
         'css/menu.css',
         'css/footer.css'
@@ -21,6 +22,7 @@ class NewWorklistLayout extends Layout {
         'js/jquery/jquery.autogrow.js',
         'js/jquery/jquery.tooltip.min.js',
         'js/bootstrap/bootstrap.min.js',
+        'js/chosen/chosen.jquery.min.js',
         'js/newworklist.js',
         'js/common.js',
         'js/utils.js',

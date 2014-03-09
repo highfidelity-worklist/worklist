@@ -1021,7 +1021,6 @@ input {
     }
 }
 
-
 #query > fieldset,
 #addJobButton {
     margin-top: 45px;
@@ -1040,149 +1039,10 @@ input {
     }
 }
 
-.filter > .chosen-container-single .chosen-single,
-.filter > .chosen-container-multi .chosen-choices {
-    border-radius: 0px;
-    height: 35px !important;
-}
-
-#search .chosen-container-single .chosen-search input[type=text] {
-    margin: 0;
-    border-right: 0px;
-    border-left: 0px;
-    line-height: 1.9em;
-    height: 40px;
-    position: inherit;
-    background: 0 none;
-}
-
-#search .chosen-container-single.chosen-container-active.chosen-with-drop .chosen-single,
-#search .chosen-container-multi.chosen-container-active.chosen-with-drop .chosen-choices,
-#search .chosen-container .chosen-drop,
-#search .chosen-container-single .chosen-search input[type=text] {
-    border-color: #e0e0e0;
-}
-
-#search .chosen-container-multi .chosen-choices,
-#search .chosen-container-single .chosen-single,
-#search .chosen-container-single .chosen-search input[type=text] {
-    background-color: #ffffff;
-}
-
-#search .chosen-container-single .chosen-single,
-#search .chosen-container-multi .chosen-choices,
-#search .chosen-container-single .chosen-search input[type=text],
-#search .chosen-container-single .chosen-drop {
-    box-shadow: none;
-}
-
-#search .chosen-container-single .chosen-drop {
-    border-radius: 0;
-}
-
-#search .chosen-container-single .chosen-search {
-    padding: 0;
-    position: relative;
-}
-
-#search .chosen-container-single .chosen-search:before {
-    font-family: FontAwesome;
-    content: "\f002";
-    display: inline-block;
-    font-size: 1em;
-    box-sizing: border-box;
-    color: #007F7c;
-    margin-top: 11px;
-    margin-right: 10px;
-    float: right;
-}
-
-
-#search .chosen-container-single .chosen-single, 
-#search .chosen-container-single .chosen-search input[type="text"] {
-    background: none repeat scroll 0% 0% transparent;
-}
-
-#search .chosen-container-single .chosen-single > span:first-child,
-#search .chosen-container-multi .chosen-choices .search-field > input.default {
-    color: #007F7c;
-    font-weight: bold;
-}
-
-#search .chosen-container-single .chosen-single div {
-    width: 30px;
-    padding: 2px 0;
-}
-
-#search .chosen-container-single .chosen-single div b {
-    background: none transparent;
-}
-
-#search .chosen-container-single .chosen-single div b:before,
-#search .chosen-container-multi .chosen-choices:before {
-    font-family: FontAwesome;
-    content: "\f078";
-    display: inline-block;
-    font-size: 1em;
-    box-sizing: border-box;
-    color: #666;
-    border-left: 1px solid #ccc;
-}
-#search .chosen-container-single .chosen-single div b:before {
-    padding: 2px 6px;
-}
-
-#search .chosen-container-multi .chosen-choices:before {
-    padding: 4px 0px 3px 6px;
-    float: right;
-    font-weight: bold;
-    margin-top: -4px;
-}
-@media (max-width: 1024px) {
-    #search .chosen-container-multi .chosen-choices:before {
-        padding: 6px 1px 6px 6px;
-        margin-top: -3px;
-    }    
-}
-
-#search .chosen-container-multi.chosen-with-drop .chosen-choices:before,
-#search .chosen-container-single.chosen-with-drop .chosen-single div b:before {
-    content: "\f077";    
-}
-
-#query > fieldset > input,
-#search .chosen-container-single .chosen-single,
-#search .chosen-container-multi .chosen-choices {
+#query > fieldset > input {
     padding: 5px 10px 7px;
     background: none #fff;
     border: 0 none;
-}
-
-#search .chosen-container-multi .chosen-choices li.search-choice {
-    margin: 0 1px;
-    font-size: .7em;
-    background: none #fff;
-    border-radius: 0;
-    border-color: #007F7c;
-}
-
-#search .chosen-container-multi .chosen-choices .search-field > input {
-    height: 23px;
-    line-height: 1.3em;
-}
-
-#search .chosen-container .chosen-results {
-    overflow-y: hidden;
-    margin: 0;
-}
-
-#search .chosen-container .chosen-results li {
-    margin: 0 0 0 -5px;
-    line-height: 1.2em;
-}
-
-#search .chosen-container .chosen-results li.highlighted {
-    background: none #007F7c;
 }
 
 #search select,
@@ -1192,14 +1052,10 @@ input {
 }
 
 #search select,
-#search .chosen-container-single .chosen-single,
-#search .chosen-container-multi .chosen-choices,
 #query > fieldset > input {
     border: 1px solid #ccc;
 }
 
-#search .chosen-container-multi.chosen-container-active .chosen-choices,
-#search .chosen-container-single.chosen-container-active .chosen-single,
 #query > fieldset > input:focus {
     border-color: #007F7c;
 }

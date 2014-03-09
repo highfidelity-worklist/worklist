@@ -4,11 +4,9 @@ class JobsView extends View {
     public $layout = 'NewWorklist';
     public $title = 'Jobs - Worklist';
     public $stylesheets = array(
-        'css/chosen/chosen.min.css',
         'css/jobs.css'
     );
     public $scripts = array(
-        'js/chosen/chosen.jquery.min.js',
         'js/jobs.js'
     );
 

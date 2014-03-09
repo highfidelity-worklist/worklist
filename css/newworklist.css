@@ -43,7 +43,173 @@ section#footer li:nth-child(-n+3) {
     display: inline-block;
 }
 
-/** legacy css copied from common.css, still needed in order to hide dialogs **/
+/**
+ * chosen dropdown common styling 
+ */
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices {
+    border-radius: 0px;
+    height: 35px !important;
+}
+
+body .chosen-container-single .chosen-search input[type=text] {
+    margin: 0;
+    border-right: 0px;
+    border-left: 0px;
+    line-height: 1.9em;
+    height: 40px;
+    position: inherit;
+    background: 0 none;
+}
+
+body .chosen-container-single.chosen-container-active.chosen-with-drop .chosen-single,
+body .chosen-container-multi.chosen-container-active.chosen-with-drop .chosen-choices,
+body .chosen-container .chosen-drop,
+body .chosen-container-single .chosen-search input[type=text] {
+    border-color: #e0e0e0;
+}
+
+body .chosen-container-multi .chosen-choices,
+body .chosen-container-single .chosen-single,
+body .chosen-container-single .chosen-search input[type=text] {
+    background-color: #ffffff;
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices,
+body .chosen-container-single .chosen-search input[type=text],
+body .chosen-container-single .chosen-drop {
+    box-shadow: none;
+}
+
+body .chosen-container-single .chosen-drop {
+    border-radius: 0;
+}
+
+body .chosen-container-single .chosen-search {
+    padding: 0;
+    position: relative;
+}
+
+body .chosen-container-single .chosen-search:before {
+    font-family: FontAwesome;
+    content: "\f002";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #007F7c;
+    margin-top: 11px;
+    margin-right: 10px;
+    float: right;
+}
+
+
+body .chosen-container-single .chosen-single, 
+body .chosen-container-single .chosen-search input[type="text"] {
+    background: none repeat scroll 0% 0% transparent;
+}
+
+body .chosen-container-single .chosen-single > span:first-child,
+body .chosen-container-multi .chosen-choices .search-field > input.default {
+    color: #007F7c;
+    font-weight: bold;
+}
+
+body .chosen-container-single .chosen-single div {
+    width: 30px;
+    padding: 2px 0;
+}
+
+body .chosen-container-single .chosen-single div b {
+    background: none transparent;
+}
+
+body .chosen-container-single .chosen-single div b:before,
+body .chosen-container-multi .chosen-choices:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #666;
+    border-left: 1px solid #ccc;
+}
+body .chosen-container-single .chosen-single div b:before {
+    padding: 2px 6px;
+}
+
+body .chosen-container-multi .chosen-choices:before {
+    padding: 4px 0px 3px 6px;
+    float: right;
+    font-weight: bold;
+    margin-top: -4px;
+}
+@media (max-width: 1024px) {
+    body .chosen-container-multi .chosen-choices:before {
+        padding: 6px 1px 6px 6px;
+        margin-top: -3px;
+    }    
+}
+
+body .chosen-container-multi.chosen-with-drop .chosen-choices:before,
+body .chosen-container-single.chosen-with-drop .chosen-single div b:before {
+    content: "\f077";    
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices {
+    padding: 5px 10px 7px;
+    border: 0 none;
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices,
+body .chosen-container-single.chosen-with-drop .chosen-single,
+body .chosen-container-multi.chosen-with-drop .chosen-choices {
+    background: none #fff;
+}
+
+body .chosen-container-multi .chosen-choices li.search-choice {
+    margin: 0 1px;
+    font-size: .7em;
+    background: none #fff;
+    border-radius: 0;
+    border-color: #007F7c;
+}
+
+body .chosen-container-multi .chosen-choices .search-field input.default {
+    height: 23px;
+    line-height: 1.3em;
+}
+
+body .chosen-container .chosen-results {
+    overflow-y: hidden;
+    margin: 0;
+}
+
+body .chosen-container .chosen-results li {
+    margin: 0 0 0 -5px;
+    line-height: 1.2em;
+}
+
+body .chosen-container .chosen-results li.highlighted {
+    background: none #007F7c;
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices {
+    border: 1px solid #ccc;
+}
+
+body .chosen-container-multi.chosen-container-active .chosen-choices,
+body .chosen-container-single.chosen-container-active .chosen-single {
+    border-color: #007F7c;
+}
+
+/** 
+ * some legacy css rules copied from common.css, 
+ * still needed in order to hide dialogs 
+ **/
 #wFees,
 #feesToolTip,
 .popup-body {
