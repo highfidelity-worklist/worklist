@@ -107,11 +107,12 @@
     top: 270px !important;
 }
 
+/*
 #project,
 #bug {
     width: 45%;
     display: inline-block; 
-}
+}*/
 
 #bug {
     text-align: right;

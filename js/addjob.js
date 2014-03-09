@@ -85,60 +85,8 @@ $(function() {
         }
     });
     
-    // to add a custom stuff we bind on events
-    $('#itemProjectCombo').bind({
-        'beforeshow newlist': function(e, o) {
-            var div = $('<div/>').attr('id', 'projectPopupActiveBox');
-
-            // now we add a function which gets called on click
-            div.click(function(e) {
-                // we hide the list and remove the active state
-                activeProjectsFlag = 1 - activeProjectsFlag;
-                o.list.hide();
-                o.container.removeClass('ui-state-active');
-                var filterName = filterName || '.worklist';
-                // we send an ajax request to get the updated list
-                $.ajax({
-                    type: 'POST',
-                    url: 'api.php',
-                    data: {
-                        action: 'refreshFilter',
-                        name: filterName,
-                        active: activeProjectsFlag,
-                        filter: 'projects'
-                    },
-                    dataType: 'json',
-                    // on success we update the list
-                    success: $.proxy(o.setupNewList, o)
-                });
-            });
-            $('.itemProjectCombo').append(div);
-            
-            // setup the label and checkbox to put in the div
-            var label = $('<label/>').css('color', '#ffffff').attr('for', 'onlyActive');
-            var checkbox = $('<input/>').attr({
-                type: 'checkbox',
-                id: 'onlyActive'
-            }).css({
-                margin: 0,
-                position: 'relative',
-                top: '1px',
-            });
-
-            // we need to update the checkbox status
-            if (activeProjectsFlag) {
-                checkbox.prop('checked', true);
-            } else {
-                checkbox.prop('checked', false);
-            }
-
-            // put the label + checkbox in the div
-            label.text(' Active only');
-            label.prepend(checkbox);
-            $('#projectPopupActiveBox').html(label);
-        }
-    }).comboBox();
-    $('#itemStatusCombo').comboBox();
+    $('#itemProjectCombo').chosen();
+    $('#itemStatusCombo').chosen();
     
     var imageArray = new Array();
     var documentsArray = new Array();
@@ -166,7 +114,7 @@ $(function() {
         });
 
         var bugJobId;
-        if($('#addJob form input[name="is_bug"]').is(':checked')) {
+        if($('#addJob input[name="is_bug"]').is(':checked')) {
             bugJobId = new LiveValidation('bug_job_id');
             bugJobId.add( Validate.Custom, {
                 against: function(value, args) {
@@ -190,7 +138,7 @@ $(function() {
             failureMessage: "You have to choose a project!"
         });
         
-        if($('#addJob form input[name="is_bug"]').is(':checked')) { 
+        if($('#addJob input[name="is_bug"]').is(':checked')) { 
             massValidation = LiveValidation.massValidate([itemProject, summary, bugJobId],true);
         } else {
             massValidation = LiveValidation.massValidate([itemProject, summary],true);
