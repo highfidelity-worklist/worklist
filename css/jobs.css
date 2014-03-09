@@ -381,19 +381,45 @@ td.textAlignReport {
 
 /* worklist table column sizes */
 .table-worklist tr > td:nth-child(1) {
-    width: 5%;
+    max-width: 60px;
 }
 .table-worklist tr > td:nth-child(2) {
-    width: 50%;
+    max-width: 350px; 
 }
 .table-worklist tr > td:nth-child(3) {
-    width: 10%;
+    max-width: 60px;
 }
 .table-worklist tr > td:nth-child(4) {
-    width: 15%;
+    max-width: 90px;
 }
 .table-worklist tr > td:nth-child(5) {
-    width: 10%;
+    max-width: 60px;
+}
+@media (max-width: 768px) {
+    .table-worklist tr > td:nth-child(1),
+    .table-worklist tr > td:nth-child(2),
+    .table-worklist tr > td:nth-child(3) {
+        max-width: auto; 
+    }
+    .table-worklist tr > td:nth-child(1),
+    .table-worklist tr > td:nth-child(3) {
+        min-width: 50px; 
+    }
+    .table-worklist tr > td:nth-child(2) {
+        min-width: 100px; 
+    }
+    .table-worklist tr > th:nth-child(4),
+    .table-worklist tr > td:nth-child(4) {
+        display: none;
+    }
+    .table-worklist tr > th:nth-child(5),
+    .table-worklist tr > td:nth-child(5) {
+        display: none;
+    }
+    .table-worklist tr > th:nth-child(6),
+    .table-worklist tr > td:nth-child(6) {
+        display: none;
+    }
 }
 
 .table-worklist tr > td a {
@@ -832,13 +858,7 @@ input {
 
 @media (max-width: 1024px) {
     #query > fieldset > input[type="text"] {
-        width: 60%;
-        padding-left: 23px;
-    }
-}
-@media (max-width: 1024px) {
-    #query > fieldset > input[type="text"] {
-        width: 60%;
+        width: 50%;
         padding-left: 23px;
     }
 }
@@ -913,7 +933,7 @@ input {
 @media (max-width: 1024px) {
     #query fieldset > input[type="checkbox"] + label {
         height: 29px;
-        width: 52px;
+        width: 47px;
         margin-left: -21px;
         background-position: 0px -359px;
     }
