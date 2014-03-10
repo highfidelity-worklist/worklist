@@ -288,7 +288,7 @@ td.textAlignReport {
 
 .table-worklist td {
     white-space: nowrap;
-    overflow: hidden;    
+    overflow: hidden;
 }
 
 .table-worklist td:nth-child(n+2):before,
@@ -391,6 +391,11 @@ td.textAlignReport {
 
 .table-worklist tbody tr.row-worklist-live {
     cursor: pointer;
+    border: 0 none;
+}
+
+.table-worklist tbody tr td {
+    border: 0 none;
 }
 
 /* worklist table column sizes */
