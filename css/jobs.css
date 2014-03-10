@@ -291,12 +291,12 @@ td.textAlignReport {
     overflow: hidden;    
 }
 
-.table-worklist td:nth-child(n+2):before {
+.table-worklist td:nth-child(n+2):before,
+.table-worklist tbody tr:after {
     content: ' ';
     width: 80px;
     height: 1.5em;
     position: absolute;
-    float: left;
     margin-left: -80px;
     background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
@@ -306,7 +306,16 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
-.table-striped > tbody > tr:nth-child(2n+1) > td:nth-child(n+2):before {
+.table-worklist td:nth-child(n+2):before {
+    float: left;    
+}
+
+.table-worklist tbody tr:after {
+    margin-top: 8px;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td:nth-child(n+2):before,
+.table-striped > tbody > tr:nth-child(2n+1):after {
     background: -moz-linear-gradient(left, rgba(249,249,249,0) 0%, rgba(249,249,249,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(249,249,249,0)), color-stop(100%,rgba(249,249,249,1)));
     background: -webkit-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
@@ -318,7 +327,8 @@ td.textAlignReport {
 .table-striped > tbody > tr.rowown:nth-child(n+1) > td {
     background-color: #ffcc99;
 }
-.table-striped > tbody > tr.rowown:nth-child(n+1) > td:before {
+.table-striped > tbody > tr.rowown:nth-child(n+1) > td:before,
+.table-striped > tbody > tr.rowown:after {
     background: -moz-linear-gradient(left, rgba(255,204,153,0) 0%, rgba(255,204,153,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,204,153,0)), color-stop(100%,rgba(255,204,153,1)));
     background: -webkit-linear-gradient(left, rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%);
@@ -330,7 +340,8 @@ td.textAlignReport {
 .table-striped > tbody > tr.rowbidon:nth-child(n+1) > td {
     background-color: #99e566;
 }
-.table-striped > tbody > tr.rowbidon:nth-child(n+1) > td:before {
+.table-striped > tbody > tr.rowbidon:nth-child(n+1) > td:before,
+.table-striped > tbody > tr.rowbidon:after {
     background: -moz-linear-gradient(left, rgba(153,229,102,0) 0%, rgba(153,229,102,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(153,229,102,0)), color-stop(100%,rgba(153,229,102,1)));
     background: -webkit-linear-gradient(left, rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%);
@@ -342,7 +353,8 @@ td.textAlignReport {
 .table-striped > tbody > tr.rowbidexpired:nth-child(n+1) > td {
     background-color: #ff8080;
 }
-.table-striped > tbody > tr.rowbidexpired:nth-child(n+1) > td:before {
+.table-striped > tbody > tr.rowbidexpired:nth-child(n+1) > td:before,
+.table-striped > tbody > tr.rowbidexpired:after {
     background: -moz-linear-gradient(left, rgba(255,128,128,0) 0%, rgba(255,128,128,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,128,128,0)), color-stop(100%,rgba(255,128,128,1)));
     background: -webkit-linear-gradient(left, rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%);
@@ -354,7 +366,8 @@ td.textAlignReport {
 .table-striped > tbody > tr.rowrunner:nth-child(n+1) > td {
     background-color: #b1e1f3;
 }
-.table-striped > tbody > tr.rowrunner:nth-child(n+1) > td:before {
+.table-striped > tbody > tr.rowrunner:nth-child(n+1) > td:before,
+.table-striped > tbody > tr.rowrunner:after {
     background: -moz-linear-gradient(left, rgba(177,225,243,0) 0%, rgba(177,225,243,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(177,225,243,0)), color-stop(100%,rgba(177,225,243,1)));
     background: -webkit-linear-gradient(left, rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%);
@@ -366,7 +379,8 @@ td.textAlignReport {
 .table-striped > tbody > tr.rowmechanic:nth-child(n+1) > td {
     background-color: #ffff6c;
 }
-.table-striped > tbody > tr.rowmechanic:nth-child(n+1) > td:before {
+.table-striped > tbody > tr.rowmechanic:nth-child(n+1) > td:before,
+.table-striped > tbody > tr.rowmechanic:after {
     background: -moz-linear-gradient(left, rgba(255,255,108,0) 0%, rgba(255,255,108,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,108,0)), color-stop(100%,rgba(255,255,108,1)));
     background: -webkit-linear-gradient(left, rgba(255,255,108,0) 0%,rgba(255,255,108,1) 100%);
