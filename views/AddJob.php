@@ -17,7 +17,7 @@ class AddJobView extends View {
         $this->projects = array();
         foreach ($projects as $project) {
             $this->projects[] = array(
-                'id'        => $project['id'],
+                'id'        => $project['project_id'],
                 'name'      => $project['name'],
                 'current'   => ($project['name'] == $current) ? true : false
             );

@@ -1,7 +1,7 @@
-<form method="post">
+<form method="post" id="addJob">
     <div class="row">
         <div class="col-xs-5 col-sm-7 col-md-8">
-            <select name="itemProject" data-placeholder="Select project">
+            <select id="itemProjectCombo" name="itemProject" data-placeholder="Select project">
                 <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
                     Select project
                 </option>
@@ -16,11 +16,12 @@
             <input type="checkbox" name="is_bug" id="is_bug" {{#bug_of}}checked="checked"{{/bug_of}} />
             <label for="is_bug">This is a bug</label>
             <input type="text" class="form-control" id="bug_job_id" name="bug_job_id" value="{{bug_of}}" />
+            <p bug-job-id="0"></p>
         </div>
     </div>
     <div class="row">
         <label for="summary">Job title</label>
-        <input type="text" name="summary" class="form-control" 
+        <input type="text" id="summary" name="summary" class="form-control" 
           value="{{#bug_of}}[BUG] {{/bug_of}}" placeholder="enter summary" />
     </div>
     <div class="row">
@@ -34,8 +35,8 @@
           placeholder="separate by commas, ex: C, Linux, Software Architecture" />
     </div>
     <div class="row">
-        <label for="ivite">Invite Worklist users</label>
-        <input id="ivite" type="text" name="invite" class="invite form-control"
+        <label for="invite">Invite Worklist users</label>
+        <input id="invite" type="text" name="invite" class="invite form-control"
           placeholder="separate by commas" />
     </div>
     <div class="row">

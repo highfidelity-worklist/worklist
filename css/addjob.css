@@ -80,11 +80,51 @@ form > .row:first-child input[type="checkbox"]:checked + label:before {
 }
 
 
-#bug_job_id {
+#bug_job_id,
+#bug_job_id + p,
+#bug_job_id + span + p {
     display: none; /* bug job id field will only be shown when current task is marked as bug */
+}
+
+#bug_job_id {
     float: right;
     font-size: 1.2em;
     font-weight: bold
+}
+
+#bug_job_id + span,
+#bug_job_id + p {
+    margin-top: 20px;
+    text-align: right;
+    width: 350px;
+    font-size: 0.8em;
+    height: 20px;
+    margin-top: 40px;
+    right: 0;
+}
+
+#bug_job_id + p {
+    color: #007F7c;
+}
+
+#bug_job_id + span,
+#bug_job_id + p,
+#bug_job_id + p:after {
+    position: absolute;
+}
+
+#bug_job_id + p:after {
+    content: ' ';
+    margin: -3px 0 0 -80px;
+    height: 25px;
+    display: inline-block;
+    width: 80px;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
 form > .row:first-child input[type="checkbox"]:checked + label:after {
@@ -94,7 +134,8 @@ form > .row:first-child input[type="checkbox"]:checked + label:after {
     width: 40px;
 }
 
-form > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
+form > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id,
+form > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id + p {
     display: inline-block;
 }
 
@@ -126,9 +167,12 @@ form > .row:first-child input[type="checkbox"]:checked + label {
     }
 }
 
+form > .row {
+    padding: 15px 0 10px;
+}
+
 form > .row > label {
     color: #666;
-    margin: 15px 0 0;
 }
 
 form > .row > label small {
@@ -151,4 +195,16 @@ form > .row:last-child .chosen-container:before {
     form > .row:last-child .chosen-container {
         width: 180px !important;
     }
+}
+
+/**
+ * validation messages 
+ */
+.LV_validation_message {
+    position: absolute;
+    font-size: .8em;
+    color: #ff5582;
+}
+form > .row:first-child select + .LV_validation_message {
+    margin-top: 35px;
 }
