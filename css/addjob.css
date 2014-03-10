@@ -266,6 +266,7 @@ body > .container-fluid {
 }
 
 #addJob .attachment span {
+    margin-right: -5px;
     padding: 2px 5px;
     background-color: #e9eeef;
     font-size: 12px;
