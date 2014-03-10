@@ -167,7 +167,7 @@
     {{#editing}}
         <input type="hidden" name="save_workitem" value="save_workitem" />
         <input type="hidden" name="action" value="save_workitem" />
-        <span class="info-label" id="edit-project-label">Project:&nbsp;</span>
+        <span class="info-label" id="edit-project-label">Project:</span>
         {{#canEditProject}}
             {{& editableProjectSelect}}
         {{/canEditProject}}
@@ -185,7 +185,7 @@
         {{#worklist.project_id}}
             <a href="{{& projectUrl}}" target="_blank">{{worklist.project_name}}</a>
             {{#worklist.p_website}}
-                <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>";
+                <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>
             {{/worklist.p_website}}
         {{/worklist.project_id}}
         {{^worklist.project_id}}
