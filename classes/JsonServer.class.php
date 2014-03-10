@@ -351,7 +351,7 @@ class JsonServer
                 $journal_message = 
                     '@' . $current_user->getNickname() . ' uploaded an [attachment](' . 
                     $file->getUrl() . ') to **#' . $workitem . "**\n\n" . 
-                    '**' $workitem_attached->getSummary() . '**';
+                    '**' . $workitem_attached->getSummary() . '**';
                 sendJournalNotification($journal_message);
             }
             return $this->setOutput(array(
