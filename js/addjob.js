@@ -101,7 +101,7 @@ $(function() {
                 summary: $("input[name='summary']").val(),
                 files: $("input[name='files']").val(),
                 invite: $("input[name='invite']").val(),
-                notes: $("input[name='notes']").val(),
+                notes: $("textarea[name='notes']").val(),
                 page: $("input[name='page']").val(),
                 project_id: $("select[name='itemProject']").val(),
                 status: $("select[name='status']").val(),
