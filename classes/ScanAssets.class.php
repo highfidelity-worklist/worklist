@@ -5,8 +5,6 @@ class ScanAssets {
     public function scanAll() {
         error_reporting(E_ALL | E_STRICT);
         set_time_limit(15*60);
-        date_default_timezone_set('UTC');
-        require_once(dirname(__FILE__).'/config.php');
         $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
         if (!$con) {
             die('Could not connect: ' . mysql_error());
@@ -80,7 +78,6 @@ class ScanAssets {
     //This method gets passed a filename directly
     public function _scanFile($file_name) {
         set_time_limit(15*60);
-        date_default_timezone_set('UTC');
         
         // Get the full path and prepare it for the command line. 
         $safe_path = escapeshellarg($file_name); 
@@ -102,8 +99,6 @@ class ScanAssets {
     //This method finds the filename by id in the database
     public function scanFile($id) {
         set_time_limit(15*60);
-        date_default_timezone_set('UTC');
-        require_once(dirname(__FILE__).'/config.php');
         
         $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
         if (!$con) {
