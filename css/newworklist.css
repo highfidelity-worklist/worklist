@@ -43,6 +43,20 @@ section#footer li:nth-child(-n+3) {
     display: inline-block;
 }
 
+/*
+ * Form controls styling
+ */
+.form-control {
+    border-radius: 0;
+    color: #007F7c;
+}
+
+.form-control:focus {
+    border-color: #007F7c;
+    box-shadow: none;
+}
+
+
 /**
  * chosen dropdown common styling 
  */
