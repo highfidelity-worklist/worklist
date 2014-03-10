@@ -5,6 +5,8 @@ class NewWorklistLayout extends Layout {
         'css/bootstrap/css/bootstrap.min.css',
         'css/font-awesome/css/font-awesome.min.css',
         'css/chosen/chosen.min.css',
+        'css/smoothness/lm.ui.css',
+        'css/smoothness/white-theme.lm.ui.css',
         'css/newworklist.css',
         'css/menu.css',
         'css/footer.css'

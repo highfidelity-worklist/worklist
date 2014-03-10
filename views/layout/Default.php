@@ -6,6 +6,8 @@ class DefaultLayout extends Layout {
         'css/jquery/jquery.combobox.css',
         'css/jquery/jquery-ui.css',
         'css/font-awesome/css/font-awesome.min.css',
+        'css/smoothness/lm.ui.css',
+        'css/smoothness/white-theme.lm.ui.css',
         'css/tooltip.css',
         'css/common.css',
         'css/menu.css',
