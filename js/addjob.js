@@ -85,8 +85,8 @@ $(function() {
         }
     });
     
-    $('#itemProjectCombo').chosen();
-    $('#itemStatusCombo').chosen();
+    $('select[name="itemProject"]').chosen();
+    $('select[name="status"]').chosen();
     
     var imageArray = new Array();
     var documentsArray = new Array();

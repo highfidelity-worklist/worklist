@@ -1,344 +1,154 @@
-#addJob {
+body > .container-fluid {
     font-size: 16px;
-    max-width: 945px;
-    margin: 1.5em auto; 
 }
 
-#addJob fieldset {
-    border: 0 none;
+@media (max-width: 768px) {
+    body > .container-fluid {
+        font-size: 12px;
+    }
 }
 
-#addJob fieldset > label {
-    font-family: proxima-nova, sans-serif;
-    font-weight: bold;
-    font-size: 1.1em;
-    display: block;
-    text-align: left;
-    color: #608e96;
-    padding-bottom: 0.3em;
+/* make some room at top of the form */
+form > .row:first-child {
+    padding-top: 30px;
 }
 
-#addJob fieldset > input[type=text],
-#addJob fieldset > textarea {
-    font-size: 1.2em;
-    border: 1px solid #d1cfcf;
-    width: 95%;
-    padding: 1%;
+/* no padding-left for the wraping element of the project dropdown  */
+form > .row:first-child > div:first-child {
+    padding-left: 0;
 }
 
-
-#addJob fieldset > input[type=text]:focus,
-#addJob fieldset > textarea:focus {
-    border-color: #608e96;
-    outline: none;
-}
-
-#addJob fieldset > input[type=text]:hover,
-#addJob fieldset > textarea:hover {
-    outline: 1px solid #608e96;
-}
-
-#itemProjectCombo {
-    width: 210px;
-}
-
-#itemStatusCombo {
-    width: 210px;
-}
-
-#container-itemProjectCombo,
-#container-itemStatusCombo,
-.itemProjectComboList,
-.itemStatusComboList {
-    width: 235px !important;
-}
-
-.ui-combobox-textbox {
-    width: 205px !important;
-}
-
-#addJob .ui-combobox-textbox {
-    color: #aa1e00;
-    font-weight: bold;
-    font-size: 1.1em !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-    text-indent: 9px;
-    padding-bottom: 6px !important;
-    position: relative;
-    top: -2px;
-}
-
-#addJob div.ui-state-default {
-    background: none #ffffff !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-#addJob div.ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
-    right: 4px;
-    height: 22px;
-    width: 26px;
-}
-
-#addJob .ui-combobox-list-selected {
-    background-color: transparent;
-    font-weight: bold;
-}
-
-#addJob .ui-combobox-list li.ui-state-hover {
-    background-color: #aa1e00;
-    color: #ffffff;
-}
-
-#addJob .ui-combobox-list {
-    border-radius: 0;
-    margin-top: 1px !important;
-}
-
-#addJob .ui-combobox-list li {
-    padding: 0 5px 0 4px;
-    line-height: 2.5em;
-}
-
-#projectPopupActiveBox {
-    border-radius: 0 0 5px 5px;
-    top: 270px !important;
-}
-
-/*
-#project,
-#bug {
-    width: 45%;
-    display: inline-block; 
-}*/
-
-#bug {
+form > .row:first-child > div:last-child {
     text-align: right;
-    position: relative;
 }
 
-#bug fieldset,
-#buttons fieldset {
-    display: inline-block;
-}
-
-#addJob input#bug_job_id {
-    color: #aa1e00;
-    font-size: 0.9em;
-    padding: 5px 2px;
-    width: 65px;
-}
-
-#bug > p {
+form > .row:first-child .chosen-container:before,
+form > .row:last-child .chosen-container:before {
     position: absolute;
-    right: 20px;
-    margin: 0;
-    bottom: 0;
+    margin-top: -20px;
+    font-size: 0.9em;
     color: #666;
-}
-
-fieldset#project > label,
-#bug fieldset > label,
-#buttons fieldset > label,
-fieldset > label > small {
-    color: #707070;
-    font-size: .75em;
-}
-
-#bug fieldset > label[for=is_bug],
-#is_bug {
-    display: inline-block;
-}
-
-textarea#notes {
-    height: 7em;
-}
-
-#upload-section {
-    height: 38px;
-    margin: 0 5px;
-}
-
-#attachments {
-    display: inline-block;
-    margin: 5px;
-}
-
-#uploadButtonDiv {
-    display: inline-block;
-    text-align: right;
-    background-color: #608e96;
-    border-radius: 4px;
-    height: 27px;
-    padding: 1px 14px 0 5px;
-    margin: 5px;
-    position: relative;
-    vertical-align: top;
-}
-
-#addJob .attachment {
-    margin: 6px 3px;
-    float: left;
-}
-
-#addJob .attachment span {
-    padding: 2px 5px;
-    background-color: #e9eeef;
-    font-size: 12px;
-    color: #608E96;
-    border-left: solid 1px #cbcbcb;
-    border-bottom: solid 1px #cbcbcb;
-    border-top: solid 1px #cbcbcb;
-}
-
-#addJob .attachment .removeAttachment {
     cursor: pointer;
-    border-right: solid 1px #cbcbcb;
-    color: #000000;
+}
+form > .row:first-child .chosen-container:before {
+    content: 'Job is for this project:';
 }
 
-#buttons {
-    background-color: #e8eff0;
-    margin: 20px 0;
-    padding: 10px 5px;
-    position: relative;
-    width: 98%;
+form > .row:first-child input[type="checkbox"] {
+    opacity: 0;
 }
 
-#save > input[type=submit] {
-    margin-top: 10px;
-    background: none #aa1e00;
-    font-weight: normal;
-    border-radius: 5px;
-    color: #ffffff;
-    font-size: 1.1em;
-    height: 2.2em;
-    font-family: Arial,sans-serif;
+form > .row:first-child input[type="checkbox"] + label {
+    line-height: 2.2em
 }
 
-#save {
-    text-align: right;
-    width: 96%;
+@media (max-width: 768px) {
+    form > .row:first-child input[type="checkbox"] + label {
+        line-height: 3em
+    }
 }
 
-#buttons fieldset + #save {
+/* let's use 'styleable' controls instead of checkboxes */
+form > .row:first-child input[type="checkbox"] + label:before {
+    content: '\00a0';
+    width: 27px;
+    line-height: 1em;
+    border-radius: 5px;    
+    font-family: FontAwesome;
+    display: inline-block;
+    border: 1px solid #ccc;
+    top: 4px;
+    position: absolute;
+    margin-left: -33px;
+    color: #999;
+    font-size: 1.3em;
+    padding: 2px;
+}
+@media (max-width: 768px) {
+    form > .row:first-child input[type="checkbox"] + label:before {
+        width: 22px;
+        top: 6px;
+        margin-left: -25px;
+    }
+}
+form > .row:first-child input[type="checkbox"]:focus + label:before {
+    border-color: #007F7c;
+}
+
+form > .row:first-child input[type="checkbox"]:checked + label:before {
+    content: '\f00c';
+}
+
+
+#bug_job_id {
+    display: none; /* bug job id field will only be shown when current task is marked as bug */
     float: right;
-    width: auto;
+    font-size: 1.2em;
+    font-weight: bold
 }
 
-@media screen and (max-width: 770px) {
-    #addJob {
-        font-size: 15px;
-        max-width: 750px;
-        margin: 1em auto; 
-    }
+form > .row:first-child input[type="checkbox"]:checked + label:after {
+    content: ' of # ';
+    display: inline-block;
+    padding: 0 5px;
+    width: 40px;
+}
 
-    #itemProjectCombo {
-        width: 150px;
-    }
-    
-    #itemStatusCombo {
-        width: 150px;
-    }
+form > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
+    display: inline-block;
+}
 
-    #container-itemProjectCombo,
-    #container-itemStatusCombo,
-    .itemProjectComboList,
-    .itemStatusComboList {
-        width: 175px !important;
-    }
-    
-    .ui-combobox-textbox {
-        width: 145px !important;
-    }
-    
-    #projectPopupActiveBox {
-        margin-top: -7px;
-    }
-    
-    #bug {
-        width: auto;
-        float: right;
-        margin-right: 18px;
-        padding: 0;
-        display: inline-block;
-    }
+form > .row:first-child input[type="checkbox"] + label {
+    margin-right: 130px;
+    cursor: pointer;
+}
+form > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
+    width: 90px;
+}
+form > .row:first-child input[type="checkbox"]:checked + label {
+    margin-right: 0;
+}
 
-    textarea#notes {
-        height: 5em;
+@media (max-width: 1024px) {
+    form > .row:first-child input[type="checkbox"] + label {
+        margin-right: 120px;
+    }
+    form > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
+        width: 80px;
+    }
+}
+@media (max-width: 768px) {
+    form > .row:first-child input[type="checkbox"] + label {
+        margin-right: 110px;
+    }
+    form > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
+        width: 70px;
     }
 }
 
-@media screen and (max-width: 530px) {
-    #addJob {
-        font-size: 14px;
-        max-width: 520px;
-        margin: 0.5em auto; 
-    }
-    
-    #addJob fieldset > input[type=text],
-    #addJob fieldset > textarea {
-        font-size: 0.9em;
-    }
+form > .row > label {
+    color: #666;
+    margin: 15px 0 0;
+}
 
-    #itemStatusCombo {
-        width: 120px;
-    }
+form > .row > label small {
+    font-size: .9em;
+    font-weight: normal;
+}
 
-    #container-itemStatusCombo {
-        width: 145px;
-    }
-    
-    #bug {
-        margin: 3px 15px 0 0;
-        text-align: center;
-    }
-    
-    #bug fieldset {
-        display: block;
-        padding: 0;
-    }
-    
-    #bug label[for=bug_job_id] {
-        display: none;
-    }
-    
-    #addJob input#bug_job_id {
-        width: 50px;
-        font-size: 0.8em;
-    }
-    
-    #bug > p {
-        float: right;
-        right: 5px;
-        text-align: right;
-        bottom: -20px;
-        width: 250px;
-        font-size: .7em;
-        height: 15px;
-        overflow: hidden;
-    }
-    
-    fieldset#project > label, 
-    #bug fieldset > label, 
-    #buttons fieldset > label, 
-    fieldset > label > small {
-        font-size: 0.65em;
-    }
-    
-    #buttons > fieldset {
-        display: inline;
-        width: auto;
-        vertical-align: top;
-    }
-    
-    #buttons fieldset + #save > input[type="submit"] {
-        width: auto;
-    }
-    
-    textarea#notes {
-        height: 4em;
+form > .row:last-child {
+    background-color: #E8EFF0;
+    padding: 30px 20px;
+}
+
+form > .row:last-child .chosen-container {
+    width: 250px !important;
+}
+form > .row:last-child .chosen-container:before {
+    content: 'Set the status of this job to:';
+}
+@media (max-width: 768px) {
+    form > .row:last-child .chosen-container {
+        width: 180px !important;
     }
 }

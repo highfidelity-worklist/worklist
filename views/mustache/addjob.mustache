@@ -1,56 +1,44 @@
-<form action="#" method="post" id="addJob">
-    <input type="hidden" name="itemid" value="0" />
-    <input type="hidden" name="files" value="" />
-    
-    <fieldset id="project">
-        <label for="itemProjectCombo">Job is for this project ...</label>
-        <select id="itemProjectCombo" name="itemProject">
-            <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
-                Select project
-            </option>
-            {{#projects}}
-                <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
-                    {{name}}
+<form method="post">
+    <div class="row">
+        <div class="col-xs-5 col-sm-7 col-md-8">
+            <select name="itemProject" data-placeholder="Select project">
+                <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
+                    Select project
                 </option>
-            {{/projects}}
-        </select>
-    </fieldset>
-    
-    <fieldset id="bug">
-        <fieldset>
+                {{#projects}}
+                    <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
+                        {{name}}
+                    </option>
+                {{/projects}}
+            </select>
+        </div>
+        <div class="col-xs-7 col-sm-5 col-md-4">
             <input type="checkbox" name="is_bug" id="is_bug" {{#bug_of}}checked="checked"{{/bug_of}} />
-            <label for="is_bug" class="small-label">This is a bug</label>
-        </fieldset>
-        <fieldset>
-            <label for="bug_job_id" class="small-label">Bug of job # ... </label>
-            <input type="text" id="bug_job_id" name="bug_job_id" value="{{bug_of}}" />
-        </fieldset>
-        <p title="0"></p>
-    </fieldset>
-    
-    <fieldset id="title">
+            <label for="is_bug">This is a bug</label>
+            <input type="text" class="form-control" id="bug_job_id" name="bug_job_id" value="{{bug_of}}" />
+        </div>
+    </div>
+    <div class="row">
         <label for="summary">Job title</label>
-        <input type="text" name="summary" id="summary" class="text-field" value="{{#bug_of}}[BUG] {{/bug_of}}" />
-    </fieldset>
-    
-    <fieldset id="content">
-        <label for="notes">Full description<small> (Describe the work necessary to successfully complete this job.)</small></label>
-        <textarea name="notes" id="notes"></textarea>
-    </fieldset>
-    
-    <fieldset>
-        <label for="skills">Skills necessary <small> (separate by commas ... ex: C, Linux, Software Architecture)</small></label>
-        <input type="text" id="skills" name="skills" class="text-field" value="" />
-    </fieldset>
-    
-    <fieldset>
-        <label for="ivite" id="label-for-invite">
-            Invite Worklist users <small>(separate by commas)</small>
-        </label>
-        <input id="ivite" type="text" name="invite" class="invite" />
-    </fieldset>
-    
-    <div id="upload-section">
+        <input type="text" name="summary" class="form-control" 
+          value="{{#bug_of}}[BUG] {{/bug_of}}" placeholder="enter summary" />
+    </div>
+    <div class="row">
+        <label for="notes">Full description</label>
+        <textarea class="form-control" name="notes" id="notes" 
+          placeholder="describe the work necessary to successfully complete this job"></textarea>
+    </div>
+    <div class="row">
+        <label for="skills">Skills necessary </label>
+        <input type="text" id="skills" name="skills" class="form-control"
+          placeholder="separate by commas, ex: C, Linux, Software Architecture" />
+    </div>
+    <div class="row">
+        <label for="ivite">Invite Worklist users</label>
+        <input id="ivite" type="text" name="invite" class="invite form-control"
+          placeholder="separate by commas" />
+    </div>
+    <div class="row">
         <div id="addaccordion" class="clear"></div>
         <div id="uploadButtonDiv" class="uploadbutton fileUploadButton">
             <span class="smbutton">Attach files</span>
@@ -67,26 +55,120 @@
             </div>
         </script>
     </div>
-    
-    <fieldset id="buttons">
-        {{#currentUser.is_runner}}
-            <fieldset id="initial-status">
-                <label for="itemStatusCombo" class="small-label">Set the status of this job to:</label>
-                <select id="itemStatusCombo" name="status">
+    <div class="row">
+        <div class="col-xs-9 col-sm-8 col-md-10">
+            {{#currentUser.is_runner}}
+                <select name="status">
                     <option value="Draft">Draft</option>
                     <option value="Suggested">Suggested</option>
                     <option value="Bidding" selected="selected">Bidding</option>
                     <option value="Working">Working</option>
                     <option value="Done">Done</option>
                 </select>
-            </fieldset>
-        {{/currentUser.is_runner}}
-        {{^currentUser.is_runner}}
-            <input type="hidden" id="status" name="status" value="Suggested" />
-        {{/ currentUser.is_runner}}
-        
-        <fieldset id="save">
+            {{/currentUser.is_runner}}
+            {{^currentUser.is_runner}}
+                <input type="hidden" id="status" name="status" value="Suggested" />
+            {{/ currentUser.is_runner}}
+        </div>
+        <div class="col-xs-3 col-sm-4 col-md-2">                
             <input type="submit" name="save_item" value="Add job">
-        </fieldset>
-    </fieldset>
+        </div>
+    </div>
 </form>
+
+<!--
+<div id="addJob">
+    <form action="#" method="post">
+        <input type="hidden" name="itemid" value="0" />
+        <input type="hidden" name="files" value="" />
+        
+        <fieldset id="project">
+            <label for="itemProjectCombo">Job is for this project ...</label>
+            <select id="itemProjectCombo" name="itemProject">
+                <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
+                    Select project
+                </option>
+                {{#projects}}
+                    <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
+                        {{name}}
+                    </option>
+                {{/projects}}
+            </select>
+        </fieldset>
+        
+        <fieldset id="bug">
+            <fieldset>
+                <input type="checkbox" name="is_bug" id="is_bug" {{#bug_of}}checked="checked"{{/bug_of}} />
+                <label for="is_bug" class="small-label">This is a bug</label>
+            </fieldset>
+            <fieldset>
+                <label for="bug_job_id" class="small-label">Bug of job # ... </label>
+                <input type="text" id="bug_job_id" name="bug_job_id" value="{{bug_of}}" />
+            </fieldset>
+            <p title="0"></p>
+        </fieldset>
+        
+        <fieldset id="title">
+            <label for="summary">Job title</label>
+            <input type="text" name="summary" id="summary" class="text-field" value="{{#bug_of}}[BUG] {{/bug_of}}" />
+        </fieldset>
+        
+        <fieldset id="content">
+            <label for="notes">Full description<small> (Describe the work necessary to successfully complete this job.)</small></label>
+            <textarea name="notes" id="notes"></textarea>
+        </fieldset>
+        
+        <fieldset>
+            <label for="skills">Skills necessary <small> (separate by commas ... ex: C, Linux, Software Architecture)</small></label>
+            <input type="text" id="skills" name="skills" class="text-field" value="" />
+        </fieldset>
+        
+        <fieldset>
+            <label for="ivite" id="label-for-invite">
+                Invite Worklist users <small>(separate by commas)</small>
+            </label>
+            <input id="ivite" type="text" name="invite" class="invite" />
+        </fieldset>
+        
+        <div id="upload-section">
+            <div id="addaccordion" class="clear"></div>
+            <div id="uploadButtonDiv" class="uploadbutton fileUploadButton">
+                <span class="smbutton">Attach files</span>
+            </div>
+            <div id="attachments"></div>
+            <input type="hidden" name="files" value="" />
+            <div class="uploadnotice"></div>
+            <script type="text/html" id="uploadDocument">
+                <div class="attachment">
+                    <span><#= title #></span>
+                    <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
+                        <i class="icon-remove"></i>
+                    </span>
+                </div>
+            </script>
+        </div>
+        
+        <fieldset id="buttons">
+            {{#currentUser.is_runner}}
+                <fieldset id="initial-status">
+                    <label for="itemStatusCombo" class="small-label">Set the status of this job to:</label>
+                    <select id="itemStatusCombo" name="status">
+                        <option value="Draft">Draft</option>
+                        <option value="Suggested">Suggested</option>
+                        <option value="Bidding" selected="selected">Bidding</option>
+                        <option value="Working">Working</option>
+                        <option value="Done">Done</option>
+                    </select>
+                </fieldset>
+            {{/currentUser.is_runner}}
+            {{^currentUser.is_runner}}
+                <input type="hidden" id="status" name="status" value="Suggested" />
+            {{/ currentUser.is_runner}}
+            
+            <fieldset id="save">
+                <input type="submit" name="save_item" value="Add job">
+            </fieldset>
+        </fieldset>
+    </form>
+</div>
+-->
