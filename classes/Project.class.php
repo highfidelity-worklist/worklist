@@ -1244,10 +1244,8 @@ class Project {
     function getOwnerCompany() {
         if (!$this->getInternal()) {
             return $this->getName();
-        } else if ($this->getFundId() == 1 || $this->getFundId() == 3) {
-            return "CoffeeandPower Inc.";
         } else {
-            return "Below92";
+            return "High Fidelity Inc.";
         }
     }
 

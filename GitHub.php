@@ -2,7 +2,7 @@
 
 /**
  * @author:     Leonardo Murillo
- * @copyright:  (c)2012 Below92 Inc.
+ * @copyright:  (c)2012 High Fidelity Inc.
  * 
  * GitHub Callback Handler, use this for processing any responses
  * from the GitHub API.

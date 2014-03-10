@@ -102,9 +102,9 @@ replacement data:
         <br/>
         Thanks for joining and we hope to see you in the Journal soon!<br/><br/>
         Cheers,<br/><br/>
-        Coffee & Power Inc<br/><br/>
+        High Fidelity Inc<br/><br/>
         p.s. Follow our continuing adventures...<br/>
-        Twitter: <a href="http://twitter.com/worklistnet">http://twitter.com/worklistnet</a>
+        Twitter: <a href="http://twitter.com/theworklist">http://twitter.com/worklistnet</a>
     '
 ),
 

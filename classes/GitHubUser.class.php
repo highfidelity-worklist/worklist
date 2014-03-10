@@ -5,7 +5,7 @@
  * Objects required for the handling of GitHub integration
  * 
  * @author      Leonardo Murillo (leonardo@murillodigital.com)
- * @copyright   2010-2012 Below92 Inc.
+ * @copyright   2010-2012 High Fidelity Inc.
  *  
  */
 

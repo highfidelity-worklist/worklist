@@ -1,7 +1,8 @@
 /**
- * Coffee And Power
- * Copyright (c) 2010 LoveMachine, LLc.
- * All rights reserved.
+ * Copyright (c) 2014, High Fidelity Inc.
+ * All Rights Reserved. 
+ *
+ * http://highfidelity.io
  */
 
 var userNotes = {

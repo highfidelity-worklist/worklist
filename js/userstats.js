@@ -1,10 +1,8 @@
 /**
- * vim:ts=4:et
- * 
- * Copyright (c) 2013, CoffeeandPower Inc.
+ * Copyright (c) 2014, High Fidelity Inc.
  * All Rights Reserved. 
  *
- * http://www.worklist.net
+ * http://highfidelity.io
  */
 
 if (typeof stats == "undefined") {
