@@ -1291,8 +1291,8 @@ function addWorkitem() {
         }
         
         if (empty($_POST['itemid'])) {
-            $journal_message .= '**#' . $bid_fee_itemid . '** created by @' . $nick . ' ' . $bugJournalMessage;
             $bid_fee_itemid = $workitem->getId();
+            $journal_message .= '**#' . $bid_fee_itemid . '** created by @' . $nick . ' ' . $bugJournalMessage;
             $journal_message .= "\n\n**" . $summary . '**. Status set to *' . $status . '*';
             if (!empty($_POST['files'])) {
                 $files = explode(',', $_POST['files']);
@@ -1302,8 +1302,8 @@ function addWorkitem() {
                 }
             }
         } else {
-            $journal_message .= '#' . $bid_fee_itemid . ' updated by @' . $nick ;
             $bid_fee_itemid = $itemid;
+            $journal_message .= '#' . $bid_fee_itemid . ' updated by @' . $nick ;
             $journal_message .=  "\n\n**" . $summary . '**. Status set to *' . $status . '*';
         }
         $journal_message .=  "$related. ";
