@@ -185,30 +185,30 @@ function scrollToLastComment() {
 }
 
 function reply(id) {
-    var commentForm = $('.commentform');
+    var commentForm = $('#commentform');
     var clone = commentForm.clone();
     commentForm.remove();
     clone.insertAfter($('#comment-' + id));
     commentMargin = $('#comment-' + id).css('margin-left');
     leftMargin = 64 + "px";
     clone.css({'margin-left':leftMargin});
-    $('.commentform input[name=comment_id]').val(id);
-    $('.commentform input[name=newcomment]').val('Reply');
-    $('.commentform .buttonContainer').removeClass('hidden');
-    $('.commentform form input[name=cancel]').click(function(event) {
+    $('#commentform input[name=comment_id]').val(id);
+    $('#commentform input[name=newcomment]').val('Reply');
+    $('#commentform .buttonContainer').removeClass('hidden');
+    $('#commentform input[name=cancel]').click(function(event) {
         event.preventDefault();
-        $('.commentform').remove();
+        $('#commentform').remove();
         clone.css({'margin-left':'0'});
         clone.insertAfter($('.commentZone ul'));
         $(this).parent().addClass('hidden');
-        $('.commentform input[name=newcomment]').val('Comment');
-        $('.commentform input[name=comment_id]').val('');
-        $('.commentform form input[name=newcomment]').click(function(event) {
+        $('#commentform input[name=newcomment]').val('Comment');
+        $('#commentform input[name=comment_id]').val('');
+        $('#commentform input[name=newcomment]').click(function(event) {
             event.preventDefault();
             postComment();
         });
     });
-    $('.commentform form input[name=newcomment]').click(function(event) {
+    $('#commentform input[name=newcomment]').click(function(event) {
         event.preventDefault();
         postComment();
     });
@@ -217,16 +217,16 @@ function reply(id) {
 }
 
 function postComment() {
-    var id = $('.commentform input[name=comment_id]').val();
-    var my_comment = $('.commentform form textarea[name=comment]').val();
+    var id = $('#commentform input[name=comment_id]').val();
+    var my_comment = $('#commentform textarea[name=comment]').val();
 
     var color = 'imOdd';
-    $('.commentform form textarea[name=comment]').val('');
-    $('.commentform input[name=comment_id]').val('');
-    $('.commentform input[name=newcomment]').val('Comment');
-    $('.commentform input[name=cancel]').parent().addClass('hidden');
-    $('.commentform').css({'margin-left':0});
-    var commentForm = $('.commentform');
+    $('#commentform textarea[name=comment]').val('');
+    $('#commentform input[name=comment_id]').val('');
+    $('#commentform input[name=newcomment]').val('Comment');
+    $('#commentform input[name=cancel]').parent().addClass('hidden');
+    $('#commentform').css({'margin-left':0});
+    var commentForm = $('#commentform');
     var clone = commentForm.clone();
     commentForm.remove();
 
@@ -294,13 +294,13 @@ function postComment() {
                 }
             }
             $('.commentZone ul').append(clone);
-            $('.commentform form input[name=newcomment]').click(function(event) {
+            $('#commentform input[name=newcomment]').click(function(event) {
                 event.preventDefault();
                 postComment();
             });
             var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
             $('div.commentZone li').width(thinnestComment);
-            $('div.commentform textarea').width(thinnestComment);
+            $('div#commentform textarea').width(thinnestComment);
             $('#commentZone').css({'opacity':'1'});
             $('.commentZone ul li').each(function (i) {
                 if (color == 'imEven') {
@@ -577,7 +577,7 @@ $(document).ready(function(){
         });
     }
 
-   $('.commentform form input[name=newcomment]').click(function(event) {
+   $('#commentform input[name=newcomment]').click(function(event) {
         event.preventDefault();
         postComment();
     });
@@ -1416,7 +1416,7 @@ $(function() {
     // applies the same size as the thinnest to all comments the show'em
     var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
     $('div.commentZone li').width(thinnestComment);
-    $('div.commentform textarea').width(thinnestComment);
+    $('div#commentform textarea').width(thinnestComment);
     $('#commentZone').css({'opacity':'1'});
 
     //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php

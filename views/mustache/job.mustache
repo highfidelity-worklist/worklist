@@ -1,100 +1,3 @@
-<script type="text/javascript">
-    GitHub.isConnected = '{{isGitHubConnected}}';
-    WorklistProject.repo_type = '{{workitem_project.getRepo_type}}';
-    GitHub.applicationKey = '{{workitem_project.getGithubId}}';
-    var project_id = {{worklist.project_id}};
-    var project_name = '{{worklist.project_name}}';
-    var filterName = '.worklist';
-    var user_id = {{currentUser.id}};
-    var workitem_id = {{worklist.id}};
-    var budget_id = {{worklist.budget_id}};
-    var imageArray = new Array();
-    var documentsArray = new Array();
-    var ping_who = '';
-    var ping_bid_id = 0;
-    var sandbox_url = '{{worklist.sandbox}}';
-    var mechanic_id = {{worklist.mechanic_id}};
-    var mechanic_nickname = '{{mechanic_nickname}}';
-    var workitem_id = {{worklist.id}};
-    var already_bid = {{currentUserHasBid}};
-    var has_budget = {{has_budget}};
-    var isFollowing = {{userIsFollowing}};
-    var is_project_founder = {{is_project_founder}};
-    var is_project_runner = {{is_project_runner}};
-    var showAcceptBidButton = {{showAcceptBidButton}};
-    var hasAcceptedBids = {{hasAcceptedBids}};
-    var insufficientRightsToEdit = {{insufficientRightsToEdit}};
-    var showPingBidderButton = {{showPingBidderButton}};
-    var showWithdrawOrDeclineButtons = {{showWithdrawOrDeclineButtons}};
-    var job_status = '{{worklist.status}}';
-    var promptForReviewUrl = {{promptForReviewUrl}};
-    var showReviewUrlPopup = {{showReviewUrlPopup}};
-    var action = '{{action}}';
-    var loginRedirectUrl = '{{loginRedirectUrl}}';
-    var canReassignRunner = {{canReassignRunner}};
-    var status_error = '{{status_error}}';
-    var displayDialogAfterDone = {{displayDialogAfterDone}};
-    var userinfotoshow = {{userinfotoshow}};
-</script>
-<script type="text/html" id="uploadedFiles">
-    <div id="accordion">
-        <h3>Images (<span class="imageCount"><#= images.length #></span>)</h3>
-        <div class="fileimagecontainer">
-            <# if (images.length > 0) { #>
-                <# for(var i=0; i < images.length; i++) {
-                var image = images[i];
-                #>
-                <div class="filesIcon">
-                    <a class="attachment" href="<#= image.url #>" data-error_message="<#= image.error #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
-                </div>
-                <div class="filesDescription">
-                    <# if (image.can_delete == true) { #>
-                    <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Delete</a>
-                    <# } #>
-                    <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
-                    <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
-                </div>
-                <div class="clear"></div>
-                <# } #>
-            <# } #>
-        </div>
-        <h3>Documents (<span class="documentCount"><#= documents.length #></span>)</h3>
-        <div class="filedocumentcontainer">
-            <# if (documents.length > 0) { #>
-                <# for(var i=0; i < documents.length; i++) {
-                var doc = documents[i];
-                #>
-                <div class="filesIcon">
-                    <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
-                </div>
-                <div class="documents filesDescription">
-                    <# if (doc.can_delete == true) { #>
-                    <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Delete</a>
-                    <# } #>
-                    <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
-                    <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
-                </div>
-                <div class="clear"></div>
-                <# } #>
-            <# } #>
-        </div>
-    </div>
-    {{#canUpload}}
-    <div id="uploadButtonDiv" class="buttonContainer uploadbutton fileUploadButton">
-        <span class="smbutton">Attach files</span>
-    </div>
-    <div class="uploadnotice"></div>
-    {{/canUpload}}
-</script>
-<!-- js template for file uploads -->
-<script type="text/html" id="uploadDocument">
-    <div class="attachment">
-        <span><#= title #></span>
-        <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-            <i class="icon-remove"></i>
-        </span>
-    </div>
-</script>
 <div id="info-top">
     <div class="info-summ-big">
         <div class="info-ID">
@@ -562,3 +465,101 @@
 {{#userIsEligible}}
     {{> popup-ineligible}}
 {{/userIsEligible}}
+
+<script type="text/javascript">
+    GitHub.isConnected = '{{isGitHubConnected}}';
+    WorklistProject.repo_type = '{{workitem_project.getRepo_type}}';
+    GitHub.applicationKey = '{{workitem_project.getGithubId}}';
+    var project_id = {{worklist.project_id}};
+    var project_name = '{{worklist.project_name}}';
+    var filterName = '.worklist';
+    var user_id = {{currentUser.id}};
+    var workitem_id = {{worklist.id}};
+    var budget_id = {{worklist.budget_id}};
+    var imageArray = new Array();
+    var documentsArray = new Array();
+    var ping_who = '';
+    var ping_bid_id = 0;
+    var sandbox_url = '{{worklist.sandbox}}';
+    var mechanic_id = {{worklist.mechanic_id}};
+    var mechanic_nickname = '{{mechanic_nickname}}';
+    var workitem_id = {{worklist.id}};
+    var already_bid = {{currentUserHasBid}};
+    var has_budget = {{has_budget}};
+    var isFollowing = {{userIsFollowing}};
+    var is_project_founder = {{is_project_founder}};
+    var is_project_runner = {{is_project_runner}};
+    var showAcceptBidButton = {{showAcceptBidButton}};
+    var hasAcceptedBids = {{hasAcceptedBids}};
+    var insufficientRightsToEdit = {{insufficientRightsToEdit}};
+    var showPingBidderButton = {{showPingBidderButton}};
+    var showWithdrawOrDeclineButtons = {{showWithdrawOrDeclineButtons}};
+    var job_status = '{{worklist.status}}';
+    var promptForReviewUrl = {{promptForReviewUrl}};
+    var showReviewUrlPopup = {{showReviewUrlPopup}};
+    var action = '{{action}}';
+    var loginRedirectUrl = '{{loginRedirectUrl}}';
+    var canReassignRunner = {{canReassignRunner}};
+    var status_error = '{{status_error}}';
+    var displayDialogAfterDone = {{displayDialogAfterDone}};
+    var userinfotoshow = {{userinfotoshow}};
+</script>
+<script type="text/html" id="uploadedFiles">
+    <div id="accordion">
+        <h3>Images (<span class="imageCount"><#= images.length #></span>)</h3>
+        <div class="fileimagecontainer">
+            <# if (images.length > 0) { #>
+                <# for(var i=0; i < images.length; i++) {
+                var image = images[i];
+                #>
+                <div class="filesIcon">
+                    <a class="attachment" href="<#= image.url #>" data-error_message="<#= image.error #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
+                </div>
+                <div class="filesDescription">
+                    <# if (image.can_delete == true) { #>
+                    <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Delete</a>
+                    <# } #>
+                    <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
+                    <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
+                </div>
+                <div class="clear"></div>
+                <# } #>
+            <# } #>
+        </div>
+        <h3>Documents (<span class="documentCount"><#= documents.length #></span>)</h3>
+        <div class="filedocumentcontainer">
+            <# if (documents.length > 0) { #>
+                <# for(var i=0; i < documents.length; i++) {
+                var doc = documents[i];
+                #>
+                <div class="filesIcon">
+                    <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+                </div>
+                <div class="documents filesDescription">
+                    <# if (doc.can_delete == true) { #>
+                    <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Delete</a>
+                    <# } #>
+                    <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
+                    <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
+                </div>
+                <div class="clear"></div>
+                <# } #>
+            <# } #>
+        </div>
+    </div>
+    {{#canUpload}}
+    <div id="uploadButtonDiv" class="buttonContainer uploadbutton fileUploadButton">
+        <span class="smbutton">Attach files</span>
+    </div>
+    <div class="uploadnotice"></div>
+    {{/canUpload}}
+</script>
+<!-- js template for file uploads -->
+<script type="text/html" id="uploadDocument">
+    <div class="attachment">
+        <span><#= title #></span>
+        <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
+            <i class="icon-remove"></i>
+        </span>
+    </div>
+</script>
