@@ -298,12 +298,6 @@ td.textAlignReport {
     height: 1.5em;
     position: absolute;
     margin-left: -80px;
-    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
 .table-worklist td:nth-child(n+2):before {
@@ -314,8 +308,20 @@ td.textAlignReport {
     margin-top: 8px;
 }
 
-.table-striped > tbody > tr:nth-child(2n+1) > td:nth-child(n+2):before,
-.table-striped > tbody > tr:nth-child(2n+1):after {
+/* normal even rows overflow fading */
+.table-striped > tbody > tr:nth-child(even) > td:nth-child(n+2):before,
+.table-striped > tbody > tr:nth-child(even):after {
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+}
+
+/* normal odd rows overflow fading */
+.table-striped > tbody > tr:nth-child(odd) > td:nth-child(n+2):before,
+.table-striped > tbody > tr:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(249,249,249,0) 0%, rgba(249,249,249,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(249,249,249,0)), color-stop(100%,rgba(249,249,249,1)));
     background: -webkit-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
@@ -324,10 +330,13 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
 }
 
-.table-striped > tbody > tr.rowown:nth-child(n+1) > td {
+/* owned jobs rows background */
+.table-striped > tbody > tr.rowown > td {
     background-color: #ffcc99;
 }
-.table-striped > tbody > tr.rowown:nth-child(n+1) > td:before,
+
+/* owned jobs overflow fading */
+.table-striped > tbody > tr.rowown > td:nth-child(n+2):before,
 .table-striped > tbody > tr.rowown:after {
     background: -moz-linear-gradient(left, rgba(255,204,153,0) 0%, rgba(255,204,153,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,204,153,0)), color-stop(100%,rgba(255,204,153,1)));
@@ -337,10 +346,13 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,204,153,0) 0%,rgba(255,204,153,1) 100%);
 }
 
-.table-striped > tbody > tr.rowbidon:nth-child(n+1) > td {
+/* jobs with bid rows background */
+.table-striped > tbody > tr.rowbidon: > td:nth-child(n+2) {
     background-color: #99e566;
 }
-.table-striped > tbody > tr.rowbidon:nth-child(n+1) > td:before,
+
+/* jobs with bid overflow fading */
+.table-striped > tbody > tr.rowbidon > td:nth-child(n+2):before,
 .table-striped > tbody > tr.rowbidon:after {
     background: -moz-linear-gradient(left, rgba(153,229,102,0) 0%, rgba(153,229,102,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(153,229,102,0)), color-stop(100%,rgba(153,229,102,1)));
@@ -350,10 +362,13 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(153,229,102,0) 0%,rgba(153,229,102,1) 100%);
 }
 
-.table-striped > tbody > tr.rowbidexpired:nth-child(n+1) > td {
+/* jobs with bid expired rows background */
+.table-striped > tbody > tr.rowbidexpired > td {
     background-color: #ff8080;
 }
-.table-striped > tbody > tr.rowbidexpired:nth-child(n+1) > td:before,
+
+/* jobs with bid expired overflow fading */
+.table-striped > tbody > tr.rowbidexpired > td:nth-child(n+2):before,
 .table-striped > tbody > tr.rowbidexpired:after {
     background: -moz-linear-gradient(left, rgba(255,128,128,0) 0%, rgba(255,128,128,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,128,128,0)), color-stop(100%,rgba(255,128,128,1)));
@@ -363,10 +378,13 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,128,128,0) 0%,rgba(255,128,128,1) 100%);
 }
 
-.table-striped > tbody > tr.rowrunner:nth-child(n+1) > td {
+/* jobs as runner rows background */
+.table-striped > tbody > tr.rowrunner > td {
     background-color: #b1e1f3;
 }
-.table-striped > tbody > tr.rowrunner:nth-child(n+1) > td:before,
+
+/* jobs as runner overflow fading */
+.table-striped > tbody > tr.rowrunner > td:nth-child(n+2):before,
 .table-striped > tbody > tr.rowrunner:after {
     background: -moz-linear-gradient(left, rgba(177,225,243,0) 0%, rgba(177,225,243,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(177,225,243,0)), color-stop(100%,rgba(177,225,243,1)));
@@ -376,10 +394,13 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(177,225,243,0) 0%,rgba(177,225,243,1) 100%);
 }
 
-.table-striped > tbody > tr.rowmechanic:nth-child(n+1) > td {
+/* jobs as mechanic background */
+.table-striped > tbody > tr.rowmechanic > td {
     background-color: #ffff6c;
 }
-.table-striped > tbody > tr.rowmechanic:nth-child(n+1) > td:before,
+
+/* jobs as mechanic overflow fading */
+.table-striped > tbody > tr.rowmechanic > td:nth-child(n+2):before,
 .table-striped > tbody > tr.rowmechanic:after {
     background: -moz-linear-gradient(left, rgba(255,255,108,0) 0%, rgba(255,255,108,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,108,0)), color-stop(100%,rgba(255,255,108,1)));
@@ -1059,7 +1080,7 @@ input {
 }
 
 #query > fieldset > input {
-    padding: 5px 10px 7px;
+    padding: 7px 10px 5px;
     background: none #fff;
     border: 0 none;
 }
