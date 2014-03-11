@@ -56,6 +56,17 @@ section#footer li:nth-child(-n+3) {
     box-shadow: none;
 }
 
+input[type="button"],
+input[type="submit"] {
+    display: inline-block;
+    background-color: #608e96;
+    border-radius: 5px;
+    padding: 5px 15px;
+    border: 0;
+    color: #fff;
+    font-weight: bold;
+    margin: 0 2px;
+}
 
 /**
  * chosen dropdown common styling 
