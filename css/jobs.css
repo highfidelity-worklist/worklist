@@ -347,7 +347,7 @@ td.textAlignReport {
 }
 
 /* jobs with bid rows background */
-.table-striped > tbody > tr.rowbidon: > td:nth-child(n+2) {
+.table-striped > tbody > tr.rowbidon > td:nth-child(n+2) {
     background-color: #99e566;
 }
 
