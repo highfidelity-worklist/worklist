@@ -1,6 +1,7 @@
 <?php
 
 class JobView extends View {
+    public $layout = 'NewWorklist';
     public $title = '%d: %s - Worklist';
 
     public $stylesheets = array(
@@ -9,7 +10,8 @@ class JobView extends View {
         'css/review.css',
         'css/favorites.css',
         'css/userinfo.css',
-        'css/budget.css'
+        'css/budget.css',
+        'css/job.css'
    );
 
     public $scripts = array(
@@ -524,7 +526,7 @@ class JobView extends View {
                 $canSeeBid = $user->getIs_admin() == 1 || $is_project_runner || $user->isRunnerOfWorkitem($workitem) ||
                              $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $workitem->getIsRelRunner());
                 $row_class = "";
-                $row_class .= ($user_id) ? 'row-bidlist-live ' : '' ;
+                $row_class .= ($this->currentUser['id']) ? 'row-bidlist-live ' : '' ;
                 $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
                 $row_class .= 'biditem';
                 $row_class .= ($canSeeBid)
@@ -606,80 +608,62 @@ class JobView extends View {
                         "desc:\"" .  replaceEncodedNewLinesWithBr($fee['desc']) . "\"}" .
                     '</script>' .
                     '<td class="nickname who">' .
-                        '<span class="table-back">' .
-                            '<span>' .
-                                '<a href="./user/' . $fee['user_id'] . '" target="_blank" title="' . $fee['nickname'] . '">' .
-                                    getSubNickname($fee['nickname'], 8) .
-                                '</a>' .
-                            '</span>' .
-                        '</span>' .
+                        '<a href="./user/' . $fee['user_id'] . '" target="_blank" title="' . $fee['nickname'] . '">' .
+                            getSubNickname($fee['nickname'], 8) .
+                        '</a>' .
                     '</td>' .
                     '<td class="fee">' .
-                        '<span class="table-back money">' .
-                            '<span class="moneyPaddingSmall">' .
-                                '$' . $fee['amount'] . 
-                            '</span>' .
-                        '</span>' .
+                        '$' . $fee['amount'] . 
                     '</td>' .
-                    '<td class="pre fee-description what"><span class="table-back"><div class="arrow"></div></span></td>' .
+                    '<td class="pre fee-description what"><div class="arrow"></div></td>' .
                     '<td class="when">' .
-                        '<span class="table-back">' .
-                            '<span>' . date( "M j", mktime(0, 0, 0, $date[0], $date[1], $date[2])) . '</span>' .
-                        '</span>' .
+                        date( "M j", mktime(0, 0, 0, $date[0], $date[1], $date[2])) .
                     '</td>' .
                     '<td class="paid">' .
-                        '<span class="table-back">' .
-                            '<span>' .
-                                (
-                                    $this->currentUser['is_payer']
-                                        ?
-                                            '<a href="#" class = "paid-link" id="feeitem-' . $fee['id'] . '">' .
-                                                ($fee['paid'] == 0 ? "No" : "Yes") .
-                                            '</a>'
-                                        :
-                                            $fee['paid'] == 0 ? "No" : "Yes"
-                                ) .
-                                (
+                        (
+                            $this->currentUser['is_payer']
+                                ?
+                                    '<a href="#" class = "paid-link" id="feeitem-' . $fee['id'] . '">' .
+                                        ($fee['paid'] == 0 ? "No" : "Yes") .
+                                    '</a>'
+                                :
+                                    $fee['paid'] == 0 ? "No" : "Yes"
+                        ) .
+                        (
+                            (
+                                 $worklist['status'] != 'Done'
+                              && (
                                     (
-                                         $worklist['status'] != 'Done'
-                                      && (
-                                            (
-                                                 $workitem->getIsRelRunner() 
-                                              || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])
-                                              || $this->currentUser['id'] == $workitem->getRunnerId() 
-                                              || $this->currentUser['id'] == $fee['user_id']
-                                            ) 
-                                          && ($this->currentUser['id'] && empty($fee['paid']))
-                                        )
-                                    )
-                                        ? '<a href="#" id="wd-' . $fee['id'] . '" class="wd-link" title="Delete Entry">delete</a>' : ''
-                                ) .
-                            '</span>' .
-                        '</span>' .
+                                         $workitem->getIsRelRunner() 
+                                      || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])
+                                      || $this->currentUser['id'] == $workitem->getRunnerId() 
+                                      || $this->currentUser['id'] == $fee['user_id']
+                                    ) 
+                                  && ($this->currentUser['id'] && empty($fee['paid']))
+                                )
+                            )
+                                ? '<a href="#" id="wd-' . $fee['id'] . '" class="wd-link" title="Delete Entry">delete</a>' : ''
+                        ) .
                     '</td>' .
                 '</tr>' .
                 '<tr>' .
                     '<td colspan="5" class="bid-notes">' .
-                        '<span><b>' . $feeDesc . '</b><br /><br />' .
+                        '<p>' . $feeDesc . '</p>' .
                         (
                             (
                                  ($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done')
                               && ($fee['desc'] == 'Accepted Bid')
                             )
-                                ? '<b>Bid Notes:</b> ' . preg_replace("/\r?\n/", "<br />", $fee['bid_notes']) : ''
+                                ? '<p><strong>Bid Notes:</strong> ' . preg_replace("/\r?\n/", "<br />", $fee['bid_notes']) . '</p>' : ''
                         ) .
-                        '</span>' . 
-                        '<div class="end-line"></div>' .
                     '</td>' .
                 '</tr>';
         }
         $ret .=
             '<tr id="job-total">' .
                 '<td colspan="5">' .
-                    '<div class="noteWrapper">' .
-                        '<span class="label">Job Total :</span>' .
+                        '<h5>Job Total :</h5>' .
                         '<span class="data">$ ' . number_format($feeTotal, 2)  . '</span>' .
-                    '</div>' .
                 '</td>' .
             '</tr>';
         return $ret;

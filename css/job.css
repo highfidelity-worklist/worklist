@@ -1,0 +1,19 @@
+.table-bids h4,
+.table-bids h5,
+.table-fees h4,
+.table-fees h5 {
+    display: inline-block;
+}
+
+.table-bids h4 + span,
+.table-bids h5 + span,
+.table-fees h4 + span,
+.table-fees h5 + span {
+    float: right;
+}
+
+.table-bids > caption,
+.table-fees > caption {
+    text-align: left;
+}
+

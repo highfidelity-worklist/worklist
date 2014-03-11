@@ -1,7 +1,7 @@
 @font-face {
-  font-family: proxima-nova;
-  font-style: normal;
-  font-weight: bold;
+    font-family: proxima-nova;
+    font-style: normal;
+    font-weight: bold;
 }
 
 .warn {
@@ -35,111 +35,8 @@
     table-layout: fixed;
 }
 
-.moneyZone table td, .moneyZone table th {
-    border-width: 0px;
-    padding: 0 1px 0 0;
-}
-
-.moneyZone table tbody td.bid-notes {
-    border: 1px solid #cccccc !important;
-    font-size: 11px;
-    border-bottom: none !important;
-}
-
-.moneyZone table tbody tr:hover td.bid-notes span {
-    background: #FFFFFF;
-    cursor: auto;
-}
-
-.moneyZone table tbody td.bid-notes span{
-    padding: 12px;
-    float: left;
-    word-break: break-all;
-}
-
-
-.moneyZone table tbody td.bid-notes .end-line {
-    border-bottom: 1px solid #CCC !important;
-    position: relative;
-    width: 351px;
-    margin-bottom: -14px;
-    float: left;
-    bottom: 1px;
-}
-
-.moneyZone table tbody tr:hover td span {
-    background: #E6F3F4;
-    cursor: pointer;
-}
-
-.moneyZone table tbody tr:active td span {
-    background: #E6F3F4;
-    cursor: pointer;
-}
-
-.moneyZone .table-bids tbody tr{
-    border-top: 3px solid white !important;
-}
-
-.moneyZone table tbody tr {
-    background: #FFF;
-    border: 1px solid #E1E8EA !important;
-    border-left: none !important;
-    border-bottom: none !important;
-}
-
-.moneyZone table tbody tr.row-feelist-live {
-    border-top: 3px solid white !important;
-}
-
-.moneyZone table tbody tr:hover{
-    background: #FFF;
-}
-
-.moneyZone table tbody td .table-back {
-    background: #E1E8EA;
-    display: inline-block;
-    height: 30px;
-    padding: 6px 0;
-    width: 100%;
-    word-break: break-all;
-}
-
-.moneyZone table tbody td .table-back span {
-    padding: 0 0 0 6px;
-}
-
-.moneyZone table  td.who {
-    width: 80px;
-}
-
-.moneyZone table td.fee {
-    width: 70px;
-}
-
-.moneyZone table td.what {
-    width: 55px;
-}
-
-.moneyZone table  td.when {
-    width: 55px;
-}
-
-.moneyZone table td.paid {
-    width: 70px;
-}
-
-.moneyZone table tbody td.when .table-back{
-    padding-left: 2px;
-    width: 55px;
-}
-
-.moneyZone table tbody td.when .table-back span {
-    padding: 6px;
-}
-
-.moneyZone table tbody td span a{
-    color: #000000;
+.moneyZone table tr td {
+    border: 0 none;
 }
 
 .wd-link {
@@ -227,7 +124,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .info-comments{
     font-weight:bold;
     margin: 0 10px 4px 0;
-    float:left;
     font-size: 18px;
 }
 
@@ -247,7 +143,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
 }
 
-.cabin {
+.info-summ-big-text {
     margin-left: -2px;
     font-size: 30px;
     font-family: proxima-nova, sans-serif;
@@ -304,6 +200,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 
 .top-bar {
+    background-color: #e1e8ea;
+    padding: 14px 0;
+    margin-top: 13px !important;
+    height: 50px;
     font-size: 14px;
 }
 
@@ -327,11 +227,30 @@ a:hover{
     text-decoration: underline;
 }
 
+.first-line {
+    position: absolute;
+    height: 20px;
+    width: 50%;
+    border-bottom: 2px solid #e1e8ea;
+    margin-left: -475px;
+    top: 34px;
+}
+
 .sections {
     font-weight: bold;
     font-size: 17px;
     float: left;
     width: 100%;
+}
+
+.second-line {
+    position: relative;
+    height: 44px;
+    width: 50%;
+    margin-left: -428px;
+    top: -24px;
+    background-color: #E1E8EA;
+    float: left;
 }
 
 #info-top {
@@ -346,13 +265,9 @@ a:hover{
 
 #left-panel {
     float:left;
-    width: 50%;
-}
-
-@media (min-width: 1080px) {
-    #left-panel {
-        width: 60% !important;
-    }
+    width: 490px !important;
+    margin:0 !important;
+    padding:0!important;
 }
 
 #left-panel .buttonContainer.view-sandbox {
@@ -365,8 +280,8 @@ a:hover{
 
 #left-panel .buttonContainer{
     padding-left: 0 !important;
-    float: right;
-    margin: 25px 5px !important;
+    float: left !important;
+    margin: 12px 5px !important;
 }
 
 #left-panel .buttonContainer .smbutton{
@@ -551,7 +466,7 @@ a:hover{
 
 #creatorBox, #runnerBox, #mechanicBox, .keyPeople{
     float: left;
-    width: 30%;
+    width: 130px;
     font-weight: bold;
     font-size: 14px;
     line-height: 15px;
@@ -726,7 +641,7 @@ a:hover{
     position: absolute;
     top: 5px;
     float: left;
-    font-family: proxima-nova, Helvetica !important;
+    font-family: proxima-nova,sans-serif !important;
 }
 
 #info-top #container-project_id {
@@ -752,7 +667,7 @@ a:hover{
 }
 
 #info-top .ui-combobox-list li.ui-state-hover {
-    background: #009999 !important;
+    background: #AA1E00 !important;
     color: #FFFFFF;
 }
 
@@ -818,28 +733,6 @@ a:hover{
     border: none !important;
 }
 
-.table-caption {
-    clear: both;
-    height: 26px;
-    padding: 0;
-}
-
-
-#btnAcceptMultiple {
-    color: #FFFFFF !important;
-    background: none !important;
-    font-size: 13px !important;
-    border: 0 none;
-    padding: 1px 0 0 8px !important;
-    width: auto !important;
-    position: relative;
-    height: 28px !important;
-    top: -1px;
-    margin: 0 !important;
-    letter-spacing: 1px !important;
-    right: -2px;
-}
-
 .bidbutton {
     background-image: url('../images/primaryIcons-WL.png') !important;
     background-position: 8px -985px !important;
@@ -867,7 +760,7 @@ a:hover{
 }
 
 .buttonContainer input {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
     font-size: 12px;
 }
 
@@ -921,7 +814,7 @@ a:hover{
     background-color: #FFFFFF;
     border: 1px solid #D3D3D3;
     cursor: auto;
-    color: #009999;
+    color: #AA1E00;
     font-size: 15px;
     font-weight: bold;
     height: 25px;
@@ -1036,7 +929,7 @@ a:hover{
 
 .popup-body input[type="text"], .popup-body textarea, .popup-body select {
     font-size: 14px;
-    font-family: helvetica, arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
     width: 370px;
 }
 
@@ -1155,13 +1048,9 @@ a:hover{
     text-decoration: underline;
 }
 
+
 .depth-0 .comment-container {
-    width: 80%;
-}
-@media (min-width: 1080px) {
-    .depth-0 .comment-container {
-        width: 90%;
-    }
+    width: 424px;
 }
 
 .depth-1 {
@@ -1169,12 +1058,7 @@ a:hover{
 }
 
 .depth-1 .comment-container {
-    width: 70%;
-}
-@media (min-width: 1080px) {
-    .depth-1 .comment-container {
-        width: 88%;
-    }
+    width: 359px;
 }
 
 .depth-2 {
@@ -1182,12 +1066,7 @@ a:hover{
 }
 
 .depth-2 .comment-container {
-    width: 60%;
-}
-@media (min-width: 1080px) {
-    .depth-2 .comment-container {
-        width: 85%;
-    }
+    width: 294px;
 }
 
 .depth-3 {
@@ -1195,12 +1074,7 @@ a:hover{
 }
 
 .depth-3 .comment-container {
-    width: 40%;
-}
-@media (min-width: 1080px) {
-    .depth-3 .comment-container {
-        width: 75%;
-    }
+    width: 229px;
 }
 
 .depth-4 {
@@ -1233,46 +1107,12 @@ a:hover{
     margin-bottom:2px !important;
 }
 
-.commentform{
-    margin-bottom:25px;
-}
-
-.commentform .button-container {
-    background: #EFEFEF;
-    border: 1px solid #D6D6D6;
-    padding: 12px;
-    margin-top: -4px;
-    width: 405px;
-    height: 21px;
-}
-
-.commentform .button-container .smbutton {
-    border: none !important;
-}
-
-.commentform .button-container .hidden {
-    display: none !important;
-}
-
-.commentform .button-container .buttonContainer {
-    padding-left: 6px;
-    float: left;
-    margin: 12px 4px 0;
-}
-
-.commentform textarea {
-    clear:right;
-    margin: 0;
-    padding: 12px;
+#commentform textarea {
     border: 1px solid #D6D6D6;
     font-size: 13px;
     width: 405px !important;
     height: 52px;
-    font-family: proxima-nova, Helvetica, sans-serif;
-}
-
-.commentform, .comments {
-    border-bottom:none!important;
+    font-family: proxima-nova, sans-serif;
 }
 
 <!-- [if IE]
@@ -1292,7 +1132,6 @@ a:hover{
     width: 100%;
     margin:0!important;
     padding:0!important;
-    float: left;
     border-top: 1px solid #d6d6d6;
     min-height: 50px;
 }
@@ -1515,7 +1354,7 @@ input.button-disabled ,
 #active-jobs,
 #user-stats span {
     font-weight:bold;
-    font-family:helvetica,arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
     font-size:12px;
 }
 
@@ -1637,17 +1476,6 @@ a.profile-link {
 #ping-msg {
     width: 322px;
     height: 100px;
-}
-
-.table-caption .noteWrapper {
-    float:left;
-    padding-left: 9px;
-}
-
-.table-caption .note {
-    font-size: 10px;
-    color: #876F6D;
-    font-weight: normal;
 }
 
 #cancelstartcodereview,
@@ -1796,16 +1624,6 @@ div.mechanic_id ul {
 
 .textJustify {
     text-align: justify;
-}
-
-#uploadButtonDiv {
-}
-
-.table-fees .table-caption {
-    white-space: nowrap;
-}
-
-.table-fees .table-hdng td:first-child{
 }
 
 .table-fees .table-hdng td:last-child{

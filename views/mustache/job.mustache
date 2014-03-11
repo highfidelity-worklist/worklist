@@ -124,7 +124,6 @@
     </div>
 </div>
 <div id="info-top" class="info-summ-big-text">
-    <span class="cabin">
     #{{worklist.id}}
     {{#workitem.getBugJobId}}
         bug of 
@@ -133,7 +132,6 @@
           {{workitem.getBugJobId}}
         </a>
     {{/workitem.getBugJobId}}
-    </span>
     <span class="divider">&nbsp;</span>
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
@@ -147,7 +145,7 @@
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
-            <select id="statusCombo" name="quick-status" class="project-dropdown hidden">
+            <select id="statusCombo" name="quick-status" class="project-dropdown">
                 <option value="{{worklist.status}}" selected="selected">{{worklist.status}}</option>
                 {{& editableStatusSelect}}
             </select>
@@ -302,8 +300,7 @@
                     {{/worklist.mechanic_id}}
                 </ul>
                 {{#canEditAndEditing}}
-                <div class="buttonContainer">
-                    <input type="submit" class="smbutton" value="Save" name="save_workitem" id="save_workitem" />
+                    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
                 </div>
                 {{/canEditAndEditing}}
             {{/editing}}
@@ -326,9 +323,7 @@
                                 </div>
                             </div>
                             {{#canViewDiff}}
-                            <div class="buttonContainer view-sandbox">
-                                 <input type="submit" class="smbutton" id="view-sandbox" value="View diff" />
-                            </div>
+                                <input type="submit" id="view-sandbox" value="View diff" />
                             {{/canViewDiff}}
                         {{/worklist.sandbox}}
                         {{^worklist.sandbox}}
@@ -366,19 +361,15 @@
                 {{/comments}}
                 </ul>
                 {{#canComment}}
-                <div class="commentform"> <a name="commentform"></a>
-                    <form action="" method="post">
-                        <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
-                        <input type="hidden" name="user_id" value="{{currentUser.id}}" />
-                        <input type="hidden" name="comment_id" value="" />
-                        <textarea name="comment" class="expand100-300" cols="20" rows="4" size="33"></textarea>
-                        <br />
-                        <div class="button-container">
-                            <div class="buttonContainer"><input type="submit" class="smbutton" name="newcomment" value="Comment" class="disableable" /></div>
-                            <div class="buttonContainer hidden"><input type="submit" class="smbutton" name="cancel" value="Cancel" class="disableable" /></div>
-                        </div>
-                    </form>
-                </div>
+                <a name="commentform"></a>
+                <form action="" method="post" id="commentform">
+                    <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
+                    <input type="hidden" name="user_id" value="{{currentUser.id}}" />
+                    <input type="hidden" name="comment_id" value="" />
+                    <textarea name="comment" class="form-control" cols="20" rows="4" size="33"></textarea>
+                    <input type="submit" name="newcomment" value="Comment" />
+                    </div>
+                </form>
                 {{/canComment}}
                 <div id="scrollerPointer"></div>        
             </div> <!-- End of div commentZone -->
@@ -415,61 +406,61 @@
                 <span>Time for a code review!</span>
                 The code written for this job is ready to be reviewed.<br />
                 <b><u>View the diff</u></b> to see the code, then start the review ...
-                <div class="buttonContainer feebutton">
-                    {{^workitem.getCRStarted}}
-                        {{#userHasRights}}
-                            <input class="iToolTip cR smbutton" type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"/>
-                        {{/userHasRights}}
-                        {{^userHasRights}}
-                            <input class="iToolTip cRDisallowed smbutton" type="submit" value="Start Code Review" onClick="return false;"/>
-                        {{/userHasRights}}
-                    {{/workitem.getCRStarted}}
-                    {{#workitem.getCRStarted}}
-                        {{^workitem.getCRCompleted}}
-                            {{#canEndReview}}
-                                <input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return showEndReviewForm();"/>
-                            {{/canEndReview}}
-                        {{/workitem.getCRCompleted}}
-                    {{/workitem.getCRStarted}}
-                    <div id="review-pointer"></div>
-                </div>
+                {{^workitem.getCRStarted}}
+                    {{#userHasRights}}
+                        <input class="iToolTip cR" type="submit" value="Start Code Review" 
+                          onClick="return CheckCodeReviewStatus();"/>
+                    {{/userHasRights}}
+                    {{^userHasRights}}
+                        <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" 
+                          onClick="return false;"/>
+                    {{/userHasRights}}
+                {{/workitem.getCRStarted}}
+                {{#workitem.getCRStarted}}
+                    {{^workitem.getCRCompleted}}
+                        {{#canEndReview}}
+                            <input class="iToolTip endCr" type="submit" value="End Code Review" 
+                              onClick="return showEndReviewForm();"/>
+                        {{/canEndReview}}
+                    {{/workitem.getCRCompleted}}
+                {{/workitem.getCRStarted}}
+                <div id="review-pointer"></div>
             </div>
         {{/canReview}}
         <div id="for_view">
             <div class="moneyZone">
                 <div id="bid-panel">
-                    <table width="100%" class="table-bids">
+                    <table class="table table-bids">
                         <caption class="table-caption" >
-                            <div class="noteWrapper"><span class="sections">Bids</span></div>
-                            {{#currentUser.id}}
-                                {{#canBid}}
-                                    <div class="buttonContainer bidbutton">
+                            <h4>Bids</h4>
+                            <span>
+                                {{#currentUser.id}}
+                                    {{#canBid}}
                                         {{#userIsEligible}}
-                                        <input type="submit" class="smbutton" onClick="return showConfirmForm('bid');"
-                                          value="{{addBidMsg}}" />
+                                            <input type="submit" value="{{addBidMsg}}"
+                                              onClick="return showConfirmForm('bid');" />
                                         {{/userIsEligible}}
                                         {{^userIsEligible}}
-                                        <input type="submit" class="smbutton" value="Add my bid" onClick="return showIneligible('bid');" />
+                                            <input type="submit" class="smbutton" value="Add my bid" 
+                                              onClick="return showIneligible('bid');" />
                                         {{/userIsEligible}}
-                                    </div>
-                                    {{#canAcceptBids}}
-                                        <div class="buttonContainer bidbutton">
-                                            <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple" onClick="javascript:AcceptMultipleBidOpen();"/>
-                                        </div>
-                                    {{/canAcceptBids}}
-                                {{/canBid}}
-                            {{/currentUser.id}}
-                            {{^currentUser.id}}
-                                <div class="buttonContainer bidbutton ">
-                                    <input style="cursor:pointer;" class="smbutton" type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
-                                </div>
-                            {{/currentUser.id}}
+                                        {{#canAcceptBids}}
+                                            <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple"
+                                              onClick="javascript:AcceptMultipleBidOpen();"/>
+                                        {{/canAcceptBids}}
+                                     {{/canBid}}
+                                {{/currentUser.id}}
+                                {{^currentUser.id}}
+                                    <input style="cursor:pointer;" type="button" value="Login to Bid" 
+                                      onClick="sendToLogin(); return false;" />
+                                {{/currentUser.id}}
+                            </span>
                         </caption>
                         <thead>
-                            <tr class="table-hdng">
-                                <td><span class="table-back"><span>Who</span></span></td>
-                                <td><span class="table-back"><span class="moneyPaddingSmall">Amount</span></span></td>
-                                <td class="money"><span class="table-back"><span class="moneyPaddingSmall">Done in ...</span></span></td>
+                            <tr>
+                                <td>Who</td>
+                                <td>Amount</td>
+                                <td class="money">Done in ...</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -479,38 +470,36 @@
                 </div>
                 {{#currentUser.id}}
                 <div id="fee-panel" >
-                    <table width="100%" class="table-fees" cellpadding="0" cellspacing="0">
-                        <caption class="table-caption" >
-                            <div class="noteWrapper"><span class="sections">Fees</span></div>
-                            {{^statusDone}}
-                                {{#userIsMechanic}}
-                                    <div class="buttonContainer feebutton"><input class="iToolTip addTip smbutton" type="submit" value="Tip User" /></div>
-                                {{/userIsMechanic}}
-                                <div class="buttonContainer feebutton">
+                    <table class="table table-striped table-fees">
+                        <caption>
+                            <h4>Fees</h4>
+                            <span>
+                                {{^statusDone}}
+                                    {{#userIsMechanic}}
+                                        <input class="iToolTip addTip" type="submit" value="Tip User" />
+                                    {{/userIsMechanic}}
                                     {{#userIsEligible}}
-                                        <input class="iToolTip addFee smbutton" type="submit" value="Add a Fee" onClick="return showConfirmForm('fee');"/>
+                                        <input class="iToolTip addFee" type="submit" value="Add a Fee"
+                                          onClick="return showConfirmForm('fee');"/>
                                     {{/userIsEligible}}
                                     {{^userIsEligible}}
-                                        <input class="iToolTip addFee smbutton" type="submit" value="Add a Fee" onClick="return showIneligible('fee');"/>
+                                        <input class="iToolTip addFee" type="submit" value="Add a Fee" 
+                                          onClick="return showIneligible('fee');"/>
                                     {{/userIsEligible}}
-                                </div>
-                            {{/statusDone}}
+                                {{/statusDone}}
+                            </span>
                         </caption>
                         <thead>
-                            <tr class="table-hdng">
-                                <td class="who"><span class="table-back"><span>Who</span></span></td>
-                                <td class="fee"><span class="table-back"><span class="moneyPaddingSmall">Amount</span></span></td>
-                                <td class="what"><span class="table-back"><span>What</span></span></td>
-                                <td class="when"><span class="table-back"><span>When</span></span></td>
-                                <td class="paid"><span class="table-back"><span>Paid</span></span></td>
+                            <tr>
+                                <td class="who">Who</td>
+                                <td class="fee">Amount</td>
+                                <td class="what">What</td>
+                                <td class="when">When</td>
+                                <td class="paid">Paid</td>
                             </tr>
                         </thead>
                         <tbody>
-                            {{^fees}}
-                                <tr>
-                                    <td style="text-align: center;" colspan="5"><span class="table-back"><span>No fees yet.</span></span></td>
-                                </tr>
-                            {{/fees}}
+                            {{^fees}}<tr><td colspan="5">No fees yet.</td></tr>{{/fees}}
                             {{& feesList}}
                         </tbody>
                     </table>
@@ -524,9 +513,7 @@
                 {{/currentUser.id}}
                 {{^currentUser.id}}
                     {{#canBid}}
-                    <div class="buttonContainer feebutton">
-                        <input style="cursor:pointer;" type="button" class="smbutton" value="Login to Bid" onClick="sendToLogin(); return false;" />
-                    </div>
+                        <input type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
                     {{/canBid}}
                 {{/currentUser.id}}
             </div> <!-- End of div moneyZone -->

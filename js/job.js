@@ -3,8 +3,8 @@ $(function() {
 
      Workitem.init();
 
-    $('#statusCombo').comboBox();
-    $('#project_id').comboBox();
+    $('#statusCombo').chosen();
+    $('#project_id').chosen();
     if($("#is_bug").is ( ":checked" )) {
         $("#bug_job_id").keyup();
     }
