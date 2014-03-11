@@ -42,6 +42,7 @@ class JobController extends Controller {
             $workitem->loadById($worklist_id);
         } catch(Exception $e) {
             $error  = $e->getMessage();
+            $this->view = null;
             die($error);
         }
 
@@ -74,10 +75,6 @@ class JobController extends Controller {
         }
 
         $view_bid_id = 0;
-        $order_by = isset($_REQUEST['order']) ? $_REQUEST['order'] : 'ASC';
-        if ($order_by != "DESC") {
-            $order_by = "ASC";
-        }
 
         if (isset($_REQUEST['withdraw_bid'])) {
             $action = "withdraw_bid";
@@ -343,13 +340,6 @@ class JobController extends Controller {
                     $comment,
                     $parent_comment);
 
-                if ($_POST['order_by'] != "DESC") {
-                    $order_by = "ASC";
-                } else {
-                    $order_by = "DESC";
-                }
-
-                
                 // Send journal notification
                 if ($workitem->getStatus() != 'Draft') {
                     $related = getRelated($comment);
@@ -1106,7 +1096,7 @@ class JobController extends Controller {
         }
 
         if ($redirectToDefaultView) {
-            $postProcessUrl = WORKITEM_URL . $worklist_id . "?order=" . $order_by;
+            $postProcessUrl = WORKITEM_URL . $worklist_id;
             if ($workitem->getStatus() == 'Done') {
                 $displayDialogAfterDone = true;
             }
@@ -1121,10 +1111,9 @@ class JobController extends Controller {
             //$postProcessUrl = WORKITEM_URL . $worklist_id . "?msg=" . $journal_message;
         }
 
-        // if a post process URL was set, redirect and die
+        // if a post process URL was set, redirect
         if(isset($postProcessUrl) && ! empty($postProcessUrl)) {
-            header("Location: " . $postProcessUrl);
-            die();
+            Utils::redirect("Location: " . $postProcessUrl);
         }
 
         // handle the makeshift error I made..
@@ -1292,7 +1281,6 @@ class JobController extends Controller {
         $reviewer->findUserById($workitem->getCReviewerId());
         $this->write('reviewer', $reviewer);
 
-        $this->write('order_by', $order_by);
         $this->write('action', $action);
         $this->write('action_error', isset($action_error) ? $action_error : '');
 

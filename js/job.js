@@ -238,7 +238,6 @@ function postComment() {
             worklist_id: workitem_id,
             user_id: user_id,
             newcomment: '1',
-            order_by: order_by,
             comment: my_comment,
             comment_id: id
         },
@@ -246,7 +245,6 @@ function postComment() {
         success: function(data) {
             var depth;
             var elementClass;
-            var order = '';
             if (data.success) {
                 $('#no_comments').hide();
                 if (id != '') {
@@ -255,14 +253,11 @@ function postComment() {
                 } else {
                     depth = 0;
                 }
-                if (order_by == 'DESC' && depth > 0) {
-                    order = 'desc';
-                }
                 var replyLink = (depth < 6) ? '<div class="reply-lnk">' +
                         '<a href="#commentform" onClick="reply(' + data.id + '); return false;">Reply</a>' +
                     '</div>' : '';
                 var newcomment =
-                    '<li id="comment-' + data.id + '" class="depth-' + depth + ' ' + color + ' ' + order + '">' +
+                    '<li id="comment-' + data.id + '" class="depth-' + depth + ' ' + color + '">' +
                         '<div class="comment">' +
                             '<a href="./user/' + data.userid + '" target="_blank">' +
                                 '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
@@ -286,31 +281,19 @@ function postComment() {
                         '</div>'
                      '</li>';
 
-                if (order_by == 'DESC') {
-                    if (id == '') {
-                        $('.commentZone ul').prepend(newcomment);
-                    } else {
-                        $(newcomment).insertBefore($('#comment-' + id).prevUntil('li[class*="' + (depth -1) + '"]').andSelf().filter(":first"));
-                    }
+                if (id == '') {
+                    $('.commentZone ul').append(newcomment);
                 } else {
-                    if (id == '') {
-                        $('.commentZone ul').append(newcomment);
-                    } else {
-                        var cond = new Array();
-                        var depthtmp = depth -1;
-                        while (depthtmp > -1) {
-                            cond.push('li[class*="depth-' + (depthtmp) + '"]');
-                            depthtmp--;
-                        }
-                        $(newcomment).insertAfter($('#comment-' + id).nextUntil(cond.join(',')).andSelf().filter(":last"));
+                    var cond = new Array();
+                    var depthtmp = depth -1;
+                    while (depthtmp > -1) {
+                        cond.push('li[class*="depth-' + (depthtmp) + '"]');
+                        depthtmp--;
                     }
+                    $(newcomment).insertAfter($('#comment-' + id).nextUntil(cond.join(',')).andSelf().filter(":last"));
                 }
             }
-            if (order_by == 'DESC') {
-                $('.commentZone ul').prepend(clone);
-            } else {
-                $('.commentZone ul').append(clone);
-            }
+            $('.commentZone ul').append(clone);
             $('.commentform form input[name=newcomment]').click(function(event) {
                 event.preventDefault();
                 postComment();
@@ -387,7 +370,8 @@ $(document).ready(function(){
         }
     });
     Budget.initCombo();
-    $("#popupSelectBudget #confirm_budget").click(function() {
+    $("#popupSelectBudget #confirm_budget").click(function(event) {
+        event.preventDefault();
         var budget = new LiveValidation('budget-source-combo', {
             onlyOnSubmit: true ,
             onInvalid : function() {
@@ -1272,12 +1256,7 @@ $(function() {
     $.loggedin = (user_id > 0);
 
     $(".editable").attr("title","Switch to Edit Mode").click(function() {
-        window.location.href = "./" + workitem_id + "?action=edit&order=" + order_by;
-    });
-
-    $(".info-comments-order").attr("title", "Reverse Comments Order").click(function() {
-            window.location.href = './' + workitem_id + '?action=' + action + '&order' + order_by + ';';
-            return false;
+        window.location.href = "./" + workitem_id + "?action=edit";
     });
 
     $('#commentZone').css({'opacity':'0'});
