@@ -1,8 +1,12 @@
 <?php
 
+use \Michelf\Markdown;
+
 class JobView extends View {
     public $layout = 'NewWorklist';
     public $title = '%d: %s - Worklist';
+
+    static $tz_offset = 0; // current server's timezone offset
 
     public $stylesheets = array(
         'css/workitem.css',
@@ -11,6 +15,7 @@ class JobView extends View {
         'css/favorites.css',
         'css/userinfo.css',
         'css/budget.css',
+        'css/entries.css',
         'css/job.css'
    );
 
@@ -28,6 +33,7 @@ class JobView extends View {
         'js/projects.js',
         'js/github.js',
         'js/skills.js',
+        'js/entries.js',
         'js/job.js'
     );
 
@@ -596,7 +602,6 @@ class JobView extends View {
         foreach($fees as $fee) {
             $feeTotal += (float) $fee['amount'];
             $date = explode("/", $fee['date']);
-            $feeDesc = truncateText(replaceEncodedNewLinesWithBr($fee['desc']));
             $ret = 
                 '<tr class="row-feelist-live">' .
                     '<script type="data">' .
@@ -605,7 +610,7 @@ class JobView extends View {
                         "user_id: '{$fee['user_id']}', " .
                         "amount: '{$fee['amount']}', " .
                         "fee_created: '{$fee['date']}', " .
-                        "desc:\"" .  replaceEncodedNewLinesWithBr($fee['desc']) . "\"}" .
+                        "desc:\"" .  $fee['desc'] . "\"}" .
                     '</script>' .
                     '<td class="nickname who">' .
                         '<a href="./user/' . $fee['user_id'] . '" target="_blank" title="' . $fee['nickname'] . '">' .
@@ -645,19 +650,15 @@ class JobView extends View {
                                 ? '<a href="#" id="wd-' . $fee['id'] . '" class="wd-link" title="Delete Entry">delete</a>' : ''
                         ) .
                     '</td>' .
-                '</tr>' .
-                '<tr>' .
-                    '<td colspan="5" class="bid-notes">' .
-                        '<p>' . $feeDesc . '</p>' .
-                        (
-                            (
-                                 ($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done')
-                              && ($fee['desc'] == 'Accepted Bid')
-                            )
-                                ? '<p><strong>Bid Notes:</strong> ' . preg_replace("/\r?\n/", "<br />", $fee['bid_notes']) . '</p>' : ''
-                        ) .
-                    '</td>' .
                 '</tr>';
+            if ($fee['desc'] == 'Accepted Bid' && ($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done')) {
+                $ret .=
+                    '<tr>' .
+                        '<td colspan="5" class="bid-notes">' .
+                            '<p><strong>Bid Notes:</strong>' . $fee['bid_notes'] . '</p>' .
+                        '</td>' .
+                    '</tr>';
+            }
         }
         $ret .=
             '<tr id="job-total">' .
@@ -788,21 +789,49 @@ class JobView extends View {
         return ($this->isGitProject() && $this->read('isGitHubConnected')) ? 'Authorize GitHub app' : 'Add my bid';
     }
 
-    public function taskPosts() {
-        $posts = $this->read('taskPosts');
+    public function taskEntries() {
+        $entries = $this->read('taskEntries');
         $ret = '';
         $now = 0;
-        foreach($posts as $post) {
+        self::$tz_offset = Model::timezoneOffset();
+        foreach($entries as $entry) {
             if (!$now) {
-                $now = strtotime($post->now());
+                $now = strtotime(Model::now());
             }
-            $time = strtotime($post->date);
+            $id = $entry->id;
+            $type = 'worklist';
+            $date = strtotime($entry->date);
+            $content = self::formatEntry($entry);
+
             $ret .= 
-                '<div class="entry ' . $post->author . '" id="entry-' . $post->id . '">'
-              .     '<h5 class="date" time="' . $time . '">' . relativeTime($time - $now) . '</h5>'
-              .     '<div class="entry-text">' . linkify($post->entry, $post->author) . '</div>'
-              . '</div>';
+                  '<li entryid="' . $id . '" date="' . $date  . '" type="' . $type .  '">'
+                .     '<h4>' . relativeTime($date - $now) . '</h4>'
+                .     $content
+                . '</li>';
         }
+        return $ret;
+    }
+
+    /**
+     * same than StatusView::formatWorklistEntry
+     * @todo: integrate with StatusView::formatWorklistEntry
+     */
+    static function formatEntry($entry) {
+        $ret = $entry->entry;
+
+        // will only process new entries since #19490 deployment
+        // @todo, remove this condition once history is removed/older
+        if (strtotime($entry->date) > strtotime('2014-03-06 00:00:00')) {
+            // linkify mentions and tasks references
+            $ret = $ret;
+            $mention_regex = '/(^|\s)@(\w+)/';
+            $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
+            $ret = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
+            $ret = preg_replace($task_regex, '\1[\2](./\2)', $ret);
+            // proccesed entries are returned as markdown-processed html
+            $ret = Markdown::defaultTransform($ret);
+        }
+
         return $ret;
     }
 }

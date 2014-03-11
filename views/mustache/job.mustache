@@ -267,7 +267,7 @@
                             <div class="budget-label">Budget</div>
                                 {{#isRunnerOfWorkitem}}
                                 <span id="budget-source-combo-area">
-                                    <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
+                                    <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown">
                                         {{^worklist.budget_id}}<option value="0" selected="selected">Select a budget</option>{{& getBudgetCombo}}{{/worklist.budget_id}}
                                     </select>
                                 </span>
@@ -366,7 +366,9 @@
                     <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
                     <input type="hidden" name="user_id" value="{{currentUser.id}}" />
                     <input type="hidden" name="comment_id" value="" />
-                    <textarea name="comment" class="form-control" cols="20" rows="4" size="33"></textarea>
+                    <div class="form-group">
+                        <textarea name="comment" class="form-control"></textarea>
+                    </div>
                     <input type="submit" name="newcomment" value="Comment" />
                     </div>
                 </form>
@@ -520,7 +522,9 @@
             <div id="uploadPanel"> </div>
             <div id="journalPanel">
                 <h3>Activity</h3>
-                <div id="journalChat">{{& taskPosts}}</div>
+                <ul id="entries">
+                    {{& taskEntries}}
+                </ul>
             </div>
         </div> <!-- End of for_view -->
     </div> <!-- End of div right-panel-->

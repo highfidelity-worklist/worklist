@@ -1,8 +1,54 @@
+#info-top {
+    margin-top: 10px;
+    width: 200%;
+    float: left;
+    margin-left: -100%;
+    padding-left: 100%;
+}
+
+#commentform {
+    background-color: #efefef;
+    border-width: 1px;
+}
+
+#commentform,
+#commentform textarea {
+    border-color: #D6D6D6;
+    border-style: solid;
+    padding-bottom: 10px;
+}
+
+#commentform textarea {
+    font-size: 13px;
+    font-family: proxima-nova, sans-serif;
+    border-width: 0 0 1px;
+}
+
+#commentform .form-group {
+    margin-bottom: 10px;
+}
+
+#commentform input[type="submit"] {
+    margin-left: 10px;
+}
+
+
+table.table-bids thead tr td,
+table.table-fees thead tr td {
+    color: #999;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+
 .table-bids h4,
 .table-bids h5,
 .table-fees h4,
 .table-fees h5 {
     display: inline-block;
+}
+
+.table-fees .bid-notes p {
+    white-space: pre-line;
 }
 
 .table-bids h4 + span,

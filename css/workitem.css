@@ -58,7 +58,7 @@ span.info-whisper {
 
 .info-summ-big{
     clear:both;
-    height: 32px;
+    height: 38px;
     margin-top: 12px;
     font-size: 13px;
     border-bottom: 2px solid #e1e8ea;
@@ -159,19 +159,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 857px;
 }
 
-.ui-combobox-textbox {
-    margin-left: 5px;
-}
-
-#info-top  .ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
-    position: absolute;
-    top: 3px;
-    right: 4px;
-    height: 22px;
-    width: 26px;
-}
-
 #searchForm > div {
     float: left;
     height: 30px !important;
@@ -184,20 +171,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     padding-top: 0;
     width: 363px;
 }
-
-#jobStatusFilter .ui-combobox-list li:hover{
-    background: #009999;
-    color: #FFFFFF;
-    cursor: pointer;
-}
-
-#jobStatusFilter label {
-    text-align: left;
-    height: 15px;
-    color: #646464;
-    float: left;
-}
-
 
 .top-bar {
     background-color: #e1e8ea;
@@ -250,12 +223,6 @@ a:hover{
     margin-left: -428px;
     top: -24px;
     background-color: #E1E8EA;
-    float: left;
-}
-
-#info-top {
-    margin-top: 10px;
-    width: 100%;
     float: left;
 }
 
@@ -632,53 +599,6 @@ a:hover{
     margin-left: -12px;
     font-size: 14px;
     width: 437px;
-}
-
-#info-top .ui-combobox-textbox {
-    color: #aa1e00;
-    font-weight: bold;
-    font-size: 11pt !important;
-    position: absolute;
-    top: 5px;
-    float: left;
-    font-family: proxima-nova,sans-serif !important;
-}
-
-#info-top #container-project_id {
-    background: none #FFFFFF !important;
-    border-radius: 0px !important;
-    height: 20px;
-    padding-top: 3px;
-    position: relative;
-    float: left;
-    height: 27px !important;
-    padding: 0 9px;
-    width: 165px;
-}
-
-#info-top #container-project_id ul{
-    left: -1px !important;
-    top: 21px;
-}
-
-#info-top .ui-combobox-list-selected {
-    background: #FFFFFF !important;
-    font-weight: bold;
-}
-
-#info-top .ui-combobox-list li.ui-state-hover {
-    background: #AA1E00 !important;
-    color: #FFFFFF;
-}
-
-
-#info-top .ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
-    position: absolute !important;
-    top: 3px !important;
-    right: 4px;
-    height: 22px;
-    width: 26px;
 }
 
 .functional-label {
@@ -1107,14 +1027,6 @@ a:hover{
     margin-bottom:2px !important;
 }
 
-#commentform textarea {
-    border: 1px solid #D6D6D6;
-    font-size: 13px;
-    width: 405px !important;
-    height: 52px;
-    font-family: proxima-nova, sans-serif;
-}
-
 <!-- [if IE]
 #right-panel .moneyZone{
     display:block;
@@ -1319,10 +1231,6 @@ a:hover{
 #summary, 
 #edit-notes {
     width: 425px;
-}
-
-#for_view ul.ui-combobox-list li {
-    margin-bottom: 0;
 }
 
 input.button-disabled ,

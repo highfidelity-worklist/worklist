@@ -5,8 +5,14 @@ use \Michelf\Markdown;
 class StatusView extends View {
     public $layout = 'NewWorklist';
     public $title = "Status - Worklist";
-    public $stylesheets = array('css/status.css');
-    public $scripts = array('js/status.js');
+    public $stylesheets = array(
+        'css/entries.css',
+        'css/status.css'
+    );
+    public $scripts = array(
+        'js/entries.js'
+        'js/status.js'
+    );
 
     static $tz_offset = 0; // current server's timezone offset
 
@@ -30,7 +36,7 @@ class StatusView extends View {
 
         foreach($entries as $entry) {
             if (!$now) {
-                $now = strtotime(Model::now()) + self::$tz_offset;
+                $now = strtotime(Model::now());
             }
             if (get_class($entry) == 'EntryModel') {
                 $id = $entry->id;
@@ -70,6 +76,10 @@ class StatusView extends View {
         return ($date_a == $date_b) ? 0 : ($date_a > $date_b ? +1 : -1);
     }
 
+    /**
+     * same than JobView::formatEntry
+     * @todo: integrate with JobView::formatEntry
+     */
     static function formatWorklistEntry($entry) {
         $ret = $entry->entry;
 
@@ -83,7 +93,7 @@ class StatusView extends View {
             $ret = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
             $ret = preg_replace($task_regex, '\1[\2](./\2)', $ret);
             // proccesed entries are returned as markdown-processed html
-            $ret = self::markdown($ret);
+            $ret = Markdown::defaultTransform($ret);
         }
 
         return $ret;
@@ -125,11 +135,7 @@ class StatusView extends View {
                 $ret .= $author . $action;
                 break;
         }
-        return self::markdown($ret);
-    }
-
-    static function markdown($text) {
-        return Markdown::defaultTransform($text);
+        return Markdown::defaultTransform($ret);
     }
 
     static function markdownMention($username, $github = false) {

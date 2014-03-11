@@ -1297,7 +1297,7 @@ class JobController extends Controller {
         $this->write('action_error', isset($action_error) ? $action_error : '');
 
         $this->write('comments', Comment::findCommentsForWorkitem($worklist['id']));
-        $this->write('taskPosts', $this->getTaskPosts($worklist['id']));
+        $this->write('taskEntries', $this->getTaskPosts($worklist['id']));
         $this->write('message', isset($message) ? $message : '');
         $this->write('currentUserHasBid', $currentUserHasBid);
         $this->write('has_budget', $has_budget);
