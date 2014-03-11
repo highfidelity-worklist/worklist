@@ -10,7 +10,7 @@ class StatusView extends View {
         'css/status.css'
     );
     public $scripts = array(
-        'js/entries.js'
+        'js/entries.js',
         'js/status.js'
     );
 
