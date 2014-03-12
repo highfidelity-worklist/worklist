@@ -1,10 +1,9 @@
 <?php
 
 class SettingsView extends View {
+    public $layout = 'NewWorklist';
     public $title = 'Account Settings - Worklist';
-
     public $stylesheets = array(
-        'css/worklist.css',
         'css/settings.css'
     );
 
@@ -13,7 +12,8 @@ class SettingsView extends View {
         'js/skills.js',
         'js/userSkills.js',
         'js/sendlove.js',
-        'js/utils.js'
+        'js/utils.js',
+        'js/settings.js'
     );
 
     public function render() {

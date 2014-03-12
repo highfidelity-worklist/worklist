@@ -1,105 +1,128 @@
-#account-info, #personal-info, #payment-info {
-    border: 5px solid #EAEFF0;
-    padding: 8px;
-    margin-bottom: 6px;
-    margin-left: 32px;
-    margin-right: 32px;
-}
-
-#account-info table {
-    border: none;
-}
-#account-info tr:hover {
-    background: inherit;
-}
-#account-info td {
-    border: none;
-    padding: 0px;
-}
-
-#w9-dialog #first_name,
-#w9-dialog #last_name {
-    width: 176px;
-}
-
-div.uploadnotice-w9 div {
-    padding: 0.7em;
-    margin: 0.7em 0;
-    display: block;
-}
-
-#w9-dialog>div {
-    margin-bottom: 10px;
-}
-
-#account-info {
-    margin-top: 24px;
-}
-
-#account-info h2, #personal-info h2, #payment-info h2 {
-    color: #000;
-    margin-top: 8px;
-}
-
-#formHolder{
-    position: relative;
-    width: 780px;
-}
-#formRight{
-    width: 120px;
-    position: absolute;
-    right: 10px;
-    top: 0;
-}
-
-#smsOptions,
-#emailOptions {
-    border: 1px solid #666666;
-    padding: 10px;
-    overflow: hidden;
-}
-
-#smsOptions .floatLeft,
-#emailOptions .floatLeft {
-    padding: 3px 10px;
-}
-
-
-.floatLeft {
-    float: left;
-}
-#phoneconfirmstr {
-    width:150px;
-}
-
-#profilepicture {
-    border: 2px solid rgb(209, 207, 207);
-    padding: 10px;
-    width: 100px;
-    height: 100px;
-}
-
-#phone_prefix {
-    display: inline-block;
-    text-align: right;
-    width: 35px;
+#settings h2 {
     font-weight: bold;
 }
 
-#phone_wrapper {
+#settings h2,
+#settings h3 {
+    border-bottom: 2px solid #999;
+    padding-bottom: 5px;
+}
+
+#settings h2,
+#settings h3,
+#settings > .row > section > label {
+    color: #007f7c;
+}
+
+#settings > .row {
+    margin-bottom: 20px;
+}
+
+#settings > .row > section > label,
+#settings > .row p > a {
+    color: #007f7c;
+}
+
+#settings > .row p > a {
+    text-decoration: underline;
+}
+
+#settings > .row > section > label {
+    font-weight: bold;
+    margin: 15px 0 0;
+    font-size: 1.2em;
+}
+
+#settings input[type=text],
+#settings textarea {
+    color: #333;
+}
+
+#settings > .row p {
+    padding: 15px 10px;
+}
+
+#settings label + ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#settings > .row > section > p:nth-child(odd),
+#settings label + ul > li:nth-child(odd) {
+    background-color: #d6d6d6;
+}
+
+#settings > .row p:nth-child(even) > a {
+    font-weight: bold;
+}
+
+
+
+#addJob > .row:first-child input[type="checkbox"] {
+    opacity: 0;
+}
+
+#addJob > .row:first-child input[type="checkbox"] + label {
+    line-height: 2.2em
+}
+
+@media (max-width: 768px) {
+    #addJob > .row:first-child input[type="checkbox"] + label {
+        line-height: 3em
+    }
+}
+
+/* let's use 'styleable' controls instead of checkboxes */
+#settings input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+}
+#settings input[type="checkbox"] + label {
+    line-height: 2.2em;
+    padding-left: 40px;
+    font-weight: normal;
+}
+@media (max-width: 768px) {
+    #settings input[type="checkbox"] + label {
+        line-height: 3em
+    }
+}
+#settings input[type="checkbox"] + label:before {
+    content: '\00a0';
+    width: 23px;
+    line-height: 1em;
+    border-radius: 5px;    
+    font-family: FontAwesome;
     display: inline-block;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    padding: 7px 7px 4px 7px;
-    margin: 0 2px;
+    border: 1px solid #ccc;
+    margin: 8px 5px 0 -35px;
+    color: #999;
+    font-size: 1.3em;
+    padding: 2px;
+    background-color: #fff;
+}
+#settings input[type="checkbox"]:focus + label:before {
+    border-color: #007F7c;
+}
+#settings input[type="checkbox"]:checked + label:before {
+    content: '\f00c';
 }
 
-#phone_wrapper.active {
-    border: 2px solid rgb(209, 207, 207);
-    padding: 5px 5px 2px 5px;
+#settings input[type="submit"] {
+    font-size: 1.8em;
+    padding: 8px 16px;
 }
 
-#phone_wrapper .LV_validation_message {
-    display: none;
+/**
+ * validation messages 
+ */
+.LV_validation_message {
+    position: absolute;
+    font-size: .8em;
+    color: #ff5582;
 }
+#settings > .row  select + .LV_validation_message {
+    margin-top: 35px;
+}
+

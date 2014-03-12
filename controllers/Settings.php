@@ -24,25 +24,25 @@ class SettingsController extends Controller {
 
 
         // process updates to user's settings
-        if (isset($_REQUEST['save_account'])) {
+        if (isset($_POST['save']) && $_POST['save']) {
 
             $updateNickname = false;
             $updatePassword = false;
 
-            if (isset($_REQUEST['timezone'])) {
-                $timezone = mysql_real_escape_string(trim($_REQUEST['timezone']));
+            if (isset($_POST['timezone'])) {
+                $timezone = mysql_real_escape_string(trim($_POST['timezone']));
                 $saveArgs = array('timezone' => 0);
 
                 $notifications = 0;
-                $my_bids_notify = !empty($_REQUEST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
-                $ping_notify = !empty($_REQUEST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
-                $review_notify = !empty($_REQUEST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
-                $bidding_notify = !empty($_REQUEST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
-                $my_review_notify = !empty($_REQUEST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
-                $my_completed_notify = !empty($_REQUEST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
-                $self_email_notify = !empty($_REQUEST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
-                $bidding_email_notify = !empty($_REQUEST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
-                $review_email_notify = !empty($_REQUEST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
+                $my_bids_notify = !empty($_POST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
+                $ping_notify = !empty($_POST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
+                $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
+                $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
+                $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
+                $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
+                $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
+                $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
+                $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
 
                 $notifications = Notification::setFlags(
                     $review_notify,
@@ -78,14 +78,14 @@ class SettingsController extends Controller {
                 } else {
                       // we need to check if settings have changed
                       // so as to send correct message in mail
-                    if ($user->getCity() != $_REQUEST['city'] || $user->getCountry() != $_REQUEST['country'] || $user->getTimezone() != $_REQUEST['timezone']) {
+                    if ($user->getCity() != $_POST['city'] || $user->getCountry() != $_POST['country'] || $user->getTimezone() != $_POST['timezone']) {
                           $messages[] = "Your settings have been updated.";
                     }
                 }
             }
 
             // has the nickname changed? update the database
-            $nickname = trim($_REQUEST['nickname']);
+            $nickname = trim($_POST['nickname']);
             if($nickname != $_SESSION['nickname']) {
                 $oldNickname = $_SESSION['nickname'];
                 $user = new User();
@@ -129,7 +129,7 @@ class SettingsController extends Controller {
             }
 
             // has the email changed? send confirm.
-            $username = trim($_REQUEST['username']);
+            $username = trim($_POST['username']);
             if ($username != $_SESSION['username']) {
                 //we need to check if the username exists
                 if ( $user->findUserByUsername($username)) {
@@ -188,27 +188,21 @@ class SettingsController extends Controller {
                 $messages[] = "We receieved your request to modify your email.";
             }
 
-        } else if (isset($_REQUEST['save_personal'])) {
-            $about = isset($_REQUEST['about']) ? strip_tags(substr($_REQUEST['about'], 0, 150)) : "";
-            $skills = isset($_REQUEST['skills']) ? strip_tags($_REQUEST['skills']) : "";
-            $contactway = isset($_REQUEST['contactway']) ? strip_tags($_REQUEST['contactway']) : "";
+            $about = isset($_POST['about']) ? strip_tags(substr($_POST['about'], 0, 150)) : "";
+            $skills = isset($_POST['skills']) ? strip_tags($_POST['skills']) : "";
+            $contactway = isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : "";
 
-            $saveArgs = array('about'=>1, 'skills'=>1, 'contactway'=>1);
+            $saveArgs = array_merge($saveArgs, array('about'=>1, 'skills'=>1, 'contactway'=>1));
             $messages[] = "Your personal information has been updated.";
-        } else if (isset($_REQUEST['save_payment'])) {
+
             $paypal = 0;
             $paypal_email = '';
             // defaulting to paypal at this stage
             $payway = 'paypal';
-            if ($_REQUEST['paytype'] == 'paypal') {
-                $paypal = 1;
-                $payway = "paypal";
-                $paypal_email = isset($_REQUEST['paypal_email']) ? mysql_real_escape_string($_REQUEST['paypal_email']) : "";
-            } else if ($_REQUEST['paytype'] == 'other') {
-                $payway = '';
-            }
+            $paypal = 1;
+            $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
 
-            $saveArgs = array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1);
+            $saveArgs = array_merge($saveArgs, array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1));
             $messages[] = "Your payment information has been updated.";
 
             if (!$user->getW9_accepted() && $user->getCountry() == 'US') {
@@ -250,67 +244,67 @@ class SettingsController extends Controller {
                 $user->setPaypal_email($paypal_email);
                 $user->save();
             }
-        } else if (isset($_REQUEST['save_w9Name'])) {
-            $first_name = isset($_REQUEST['first_name']) ? mysql_real_escape_string($_REQUEST['first_name']) : "";
-            $last_name = isset($_REQUEST['last_name']) ? mysql_real_escape_string($_REQUEST['last_name']) : "";
-            $saveArgs = array('first_name'=>1, 'last_name'=>1);
-        }
 
-        // do we have data to update?
-        if (!empty($saveArgs)) {
+            $first_name = isset($_POST['first_name']) ? mysql_real_escape_string($_POST['first_name']) : "";
+            $last_name = isset($_POST['last_name']) ? mysql_real_escape_string($_POST['last_name']) : "";
+            $saveArgs = array_merge($saveArgs, array('first_name'=>1, 'last_name'=>1));
 
-            $sql = "UPDATE `" . USERS . "` SET ";
-            foreach ($saveArgs as $arg => $esc) {
+            // do we have data to update?
+            if (!empty($saveArgs)) {
 
-                if ($esc) {
-                    $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+                $sql = "UPDATE `" . USERS . "` SET ";
+                foreach ($saveArgs as $arg => $esc) {
+
+                    if ($esc) {
+                        $$arg = mysql_real_escape_string(htmlspecialchars($$arg));
+                    }
+
+                    if (is_int($$arg) || ($arg == "w9_accepted" && $$arg == 'NOW()')) {
+                        $sql .= "`$arg` = " . $$arg . ",";
+                    } else {
+                        $sql .= "`$arg` = '" . $$arg ."',";
+                    }
                 }
 
-                if (is_int($$arg) || ($arg == "w9_accepted" && $$arg == 'NOW()')) {
-                    $sql .= "`$arg` = " . $$arg . ",";
-                } else {
-                    $sql .= "`$arg` = '" . $$arg ."',";
+                $sql = rtrim($sql, ',');
+                $sql .= " WHERE id = {$_SESSION['userid']}";
+                $res = mysql_query($sql);
+
+                if (!$res) {
+                    error_log("Error in saving settings: " . mysql_error() . ':' . $sql);
+                    die("Error in saving settings. " );
                 }
-            }
 
-            $sql = rtrim($sql, ',');
-            $sql .= " WHERE id = {$_SESSION['userid']}";
-            $res = mysql_query($sql);
+                // Email user
+                if (!empty($messages)) {
+                    $to = $_SESSION['username'];
+                    $subject = "Settings";
+                    $body  = "<p>Congratulations!</p>";
+                    $body .= "<p>You have successfully updated your settings with Worklist <br/>";
+                    foreach ($messages as $msg) {
+                        $body .= "&nbsp;&nbsp;$msg<br/>";
+                    }
+                    $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
+                    $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
 
-            if (!$res) {
-                error_log("Error in saving settings: " . mysql_error() . ':' . $sql);
-                die("Error in saving settings. " );
-            }
+                    if(!send_email($to, $subject, $body)) { error_log("SettingsController: send_email failed"); }
 
-        // Email user
-            if (!empty($messages)) {
-                $to = $_SESSION['username'];
-                $subject = "Settings";
-                $body  = "<p>Congratulations!</p>";
-                $body .= "<p>You have successfully updated your settings with Worklist <br/>";
-                foreach ($messages as $msg) {
-                    $body .= "&nbsp;&nbsp;$msg<br/>";
+                    $msg="Account updated successfully!";
                 }
-                $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
-                $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
-
-                if(!send_email($to, $subject, $body)) { error_log("SettingsController: send_email failed"); }
-
-                $msg="Account updated successfully!";
-            }
 
 
-            if (isset($_REQUEST['timezone'])) {
-              $_SESSION['timezone'] = trim($_REQUEST['timezone']);
-            }
+                if (isset($_POST['timezone'])) {
+                  $_SESSION['timezone'] = trim($_POST['timezone']);
+                }
 
-            if (isset($confirm_txt) && ! empty($confirm_txt)) {
-                echo $confirm_txt;
+                if (isset($confirm_txt) && ! empty($confirm_txt)) {
+                    echo $confirm_txt;
+                    exit;
+                }
+                echo json_encode($returned_json);
+                // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions
                 exit;
             }
-            echo json_encode($returned_json);
-            // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions
-            exit;
         }
 
         // getting userInfo to prepopulate fields

@@ -60,7 +60,7 @@ function completeUpload(file, data) {
                         '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
                         '<strong>Info:</strong> ' + data.message + '</p>' +
                     '</div>';
-        saveSettings('w9Name');
+        saveSettings();
     } else {
         // Restore the styling of upload button
         $('#formupload').attr('value', 'Fail');
@@ -89,167 +89,40 @@ function isJSON(json) {
     json = json.replace(/(?:^|:|,)(?:\s*\[)+/g, '');
     return (/^[\],:{}\s]*$/.test(json))
 }
-function confirm_or_clean_phone(values) {
-    $.ajax({
-        type: "POST",
-        url: './settings',
-        data: values,
-        async:   false,
-
-        success: function(json) {
-
-            var phone_confirm_json = isJSON(json) ? jQuery.parseJSON(json) : null;
-
-            if(values.confirm_phone) {
-
-                if(phone_confirm_json && phone_confirm_json.phone_validated == true) {
-                    $('#phone').data('last_confirmed_phone', $('#phone').val());
-                    $('#popup-confirmphone').dialog('close');
-                    Utils.infoDialog('Phone Confirmed', "Congratulations! You have successfully confirmed your phone.");
-                    if($("#username").val() != sessionusername) {
-                        alert('Please note that you have also modified your email.' +
-                                ' \n After clicking on the confirm link in your email, \n please send yourself a test sms.' +
-                        ' Thank you!');
-                        $("#Confirm").removeData('email_edited');
-                    }
-
-                } else if(phone_confirm_json && !phone_confirm_json.phone_validated){
-                    alert('Your phone confirm code does not match. Please try again.');
-                }else {
-                    alert('There was an error confirming your phone. Please try again.');
-                }
-             } else if(values.clean_phone) {
-                if(phone_confirm_json.phone_cleaned) {
-                    $('#phone').val('');
-                    $('#phone').data('last_confirmed_phone','');
-                    $('#popup-confirmphone').dialog('close');
-                    Utils.infoDialog('Phone Reset', "You have successfully reset your phone settings.");
-                } else {
-                    alert("There was an error cleaning your phone settings. Please try again.");
-                }
-            }
-        },
-
-        error: function(xhdr, status, err) {
-            $('#msg-'+type).text('We were unable to save your settings. Please try again.');
-        }
-    });
-
-}
-
-function DisplayConfirmPhoneDialog() {
-    var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 800,
-        width: 390, show: 'fade', hide: 'fade', resizable: false };
-    $('#popup-confirmphone').dialog(dialog_options);
-    $('#popup-confirmphone').dialog('open');
-}
-function GetPhoneValidation() {
-    //if the phone was edited, we need to confirm it
-    if($("#phone_edit").val() && jQuery.trim($('#phone').val()).length > 0 && $("#phone").val()
-        != $("#phone").data('watermarkText') && $('#phone').data('last_confirmed_phone') !=
-         $('#phone').val()) {
-        var phone_value = $('#int_code').val() + $('#phone').val();
-        values = {
-                setConfirmString: 1,
-                phone: phone_value
-        };
-        //ajax call to get phone confirm string
-        $.ajax({
-            type: "POST",
-            url: './settings',
-            data: values,
-            async:   false,
-
-            success: function(json) {
-                var settings_json = isJSON(json) ? jQuery.parseJSON(json) : null;
-
-                // check if phone is valid
-                if(settings_json && settings_json.phoneInvalid) {
-                    alert('You have entered an invalid phone number.');
-                    return;
-                }
-
-                DisplayConfirmPhoneDialog();
-
-            },
-
-            error: function(xhdr, status, err) {
-                alert('There was an error confirming your phone. Please try again.');
-            }
-        });
-    } else {
-        saveSettings('account');
-    }
-
-}
-function saveSettings(type) {
-
+function saveSettings() {
     var values;
-    if (type == 'account') {
-        var massValidation = LiveValidation.massValidate( [ nickname, city, username ], true);
-        // we need to account for the value of the watermark for the phone. There may be a bug in the plugin
-        // so we adjust the phone no accordingly Teddy 25/Feb/13
-        var phone_value = $('#int_code').val() + $('#phone').val();
-        if($('#phone').val() == $("#phone").data('watermarkText')) {
-            phone_value = '';
-        }
-
-        if (massValidation) {
-            values = {
-                int_code: $('#int_code').val(),
-                phone: phone_value,
-                phone_edit: $('#phone_edit').val(),
-                country: $('#country').val(),
-                city: $('#city').val(),
-                smsaddr: ($('#smsaddr').val()),
-                timezone: $('#timezone').val(),
-                journal_alerts: $('#journal_alerts').prop('checked') ? 1 : 0,
-                bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
-                nickname: $('#nickname').val(),
-                save_account: 1,
-                username: $('#username').val(),
-                my_bids_notify: $('input[name="my_bids_notify"]').prop('checked') ? 1 : 0,
-                ping_notify: $('input[name="ping_notify"]').prop('checked') ? 1 : 0,
-                review_notify: $('input[name="review_notify"]').prop('checked') ? 1 : 0,
-                bidding_notify: $('input[name="bidding_notify"]').prop('checked') ? 1 : 0,
-                my_review_notify: $('input[name="my_review_notify"]').prop('checked') ? 1 : 0,
-                my_completed_notify: $('input[name="my_completed_notify"]').prop('checked') ? 1 : 0,
-                self_email_notify: $('input[name="self_email_notify"]').prop('checked') ? 1 : 0,
-                bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
-                review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0
-            };
-        } else {
-            // Validation failed. We use openNotifyOverlay to display messages
-            var errorHtml = createMultipleNotifyHtmlMessages(LiveValidation.massValidateErrors);
-            openNotifyOverlay(errorHtml, null, null, true);
-            return false;
-        }
-    } else if (type == 'personal') {
+    var massValidation = LiveValidation.massValidate( [ nickname, city, username, paypal, w9_accepted ], true);
+    if (massValidation) {
         values = {
+            save: 1,
+            city: $('#city').val(),
+            timezone: $('#timezone').val(),
+            bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
+            nickname: $('#nickname').val(),
+            username: $('#username').val(),
+            my_bids_notify: $('input[name="my_bids_notify"]').prop('checked') ? 1 : 0,
+            ping_notify: $('input[name="ping_notify"]').prop('checked') ? 1 : 0,
+            review_notify: $('input[name="review_notify"]').prop('checked') ? 1 : 0,
+            bidding_notify: $('input[name="bidding_notify"]').prop('checked') ? 1 : 0,
+            my_review_notify: $('input[name="my_review_notify"]').prop('checked') ? 1 : 0,
+            my_completed_notify: $('input[name="my_completed_notify"]').prop('checked') ? 1 : 0,
+            self_email_notify: $('input[name="self_email_notify"]').prop('checked') ? 1 : 0,
+            bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
+            review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0,
             about: $("#about").val(),
             skills: $("#skills").val(),
             contactway: $("#contactway").val(),
-            save_personal: 1
-        }
-    } else if (type == 'payment') {
-        var massValidation = LiveValidation.massValidate( [ paypal, w9_accepted ]);
-        if (massValidation) {
-            values = {
-                paytype: $("#paytype").val(),
-                paypal_email: $("#paypal_email").val(),
-                payway: $("#payway").val(),
-                save_payment: 1,
-                w9_accepted: $('#w9_accepted').is(':checked')
-            }
-        } else {
-            return false;
-        }
-    } else if (type == 'w9Name') {
-        values = {
+            paypal_email: $("#paypal_email").val(),
+            payway: $("#payway").val(),
+            w9_accepted: $('#w9_accepted').is(':checked'),
             first_name: $("#first_name").val(),
             last_name: $("#last_name").val(),
-            save_w9Name: 1
-        }
+        };
+    } else {
+        // Validation failed. We use openNotifyOverlay to display messages
+        var errorHtml = createMultipleNotifyHtmlMessages(LiveValidation.massValidateErrors);
+        openNotifyOverlay(errorHtml, null, null, true);
+        return false;
     }
 
     $('.error').text('');
@@ -265,7 +138,7 @@ function saveSettings(type) {
             if (settings_json && settings_json.error) {
                 console.log(settings_json);
                 if (settings_json.error == 1) {
-                    message = "There was an error updating your information.<br/>Please try again or contact a Runner for assistance.<br/>Reason for failure: " + settings_json.message;
+                    message = "There was an error updating your information.<br/>Please try again or contact an admin for assistance.<br/>Reason for failure: " + settings_json.message;
                 } else {
                     message = json.message;
                 }
@@ -284,43 +157,9 @@ function saveSettings(type) {
     });
 }
 
+$(function () {
+    $('#timezone').chosen();
 
-function smsSendTestMessage() {
-    var int_code = $('#int_code').val();
-    var phone = $('#phone').val();
-    if (int_code != '' && phone != '') {
-        $.ajax({
-            type: "POST",
-            url: 'jsonserver.php',
-            data: {
-                action: 'sendTestSMS',
-                phone: int_code + phone
-            },
-            dataType: 'json'
-        });
-        alert('Test SMS Sent to: ' + int_code + phone);
-    } else {
-        alert('Please enter a valid telephone number.');
-    }
-    return false;
-}
-function ChangePaymentMethod() {
-    var paytype = $('#paytype').val();
-    paypal.enable();
-    // validation disabled: payway.enable();
-    if (paytype == 'paypal') {
-        $('#paytype-paypal').show();
-        $('#paytype-other').hide();
-    } else if (paytype == 'other') {
-        $('#paytype-paypal').hide();
-        $('#paytype-other').show();
-    } else {
-        $('#paytype-paypal').hide();
-        $('#paytype-other').hide();
-    }
-}
-$(document).ready(function () {
-    $('#phone').data('last_confirmed_phone', $('#phone').val());
     if (ppConfirmed || emConfirmed) {
         $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
 
@@ -411,77 +250,41 @@ $(document).ready(function () {
             }
         }
     });
-    $('#popup-confirmphone').bind('dialogclose', function(event) {
-        // If the dialog closed and phone is not confirmed,
-        // then we need to revert back to old phone number in the #phone field
-        if($('#phone').data('last_confirmed_phone') != $('#phone').val()) {
-            $('#phone').val($('#phone').data('last_confirmed_phone'));
-            $("#phone_edit").val('0');
-        }
-        saveSettings('account');
-    });
-    $("#Confirm").click(function() {
-
-            values = {
-                phone: $('#int_code').val() + $('#phone').val(),
-                confirm_phone: 1,
-                $phoneconfirmstr: $("#phoneconfirmstr").val()
-            };
-            confirm_or_clean_phone(values);
+    $("#settings").submit(function(event) {
+        event.preventDefault();
+        saveSettings();
         return false;
     });
 
-    $("#clean_phone_span").click(function() {
-        values = {
-            clean_phone: 1
-        };
-        confirm_or_clean_phone(values);
-    });
-
-    $("#send-test").click(smsSendTestMessage);
-    $("#save_account").click(function() {
-        GetPhoneValidation();
-        return false;
-    });
-    $("#save_personal").click(function() {
-        saveSettings('personal');
-        return false;
-    });
-    $("#save_payment").click(function() {
-        saveSettings('payment');
-        return false;
-    });
-
-    nickname = new LiveValidation('nickname', {validMessage: "You have an OK Nickname." });
+    nickname = new LiveValidation('nickname', {validMessage: ' ' });
     nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );
     nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
     nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
 
-    username = new LiveValidation('username', {validMessage: "Valid email address."});
+    username = new LiveValidation('username', {validMessage: ' '});
     username.add( Validate.Email );
     username.add(Validate.Length, { minimum: 4, maximum: 50 } );
     username.add(Validate.Exclusion, { within: [ 'username' ], failureMessage: "You must set your Email!" });
 
-    about = new LiveValidation('about');
+    about = new LiveValidation('about', {validMessage: ' '});
     about.add(Validate.Length, { minimum: 0, maximum: 150 } );
 
-    paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
+    paypal = new LiveValidation('paypal_email', {validMessage: ' '});
     paypal.add(Validate.Email);
     // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal
     // email, which removes their paypal verification and prevents them from bidding
     // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
 
-    firstname = new LiveValidation('first_name', {validMessage: "First Name looks good", onlyOnBlur: true});
+    firstname = new LiveValidation('first_name', {validMessage: ' ', onlyOnBlur: true});
     firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
     firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
 
-    lastname = new LiveValidation('last_name', {validMessage: "Last Name looks good", onlyOnBlur: true});
+    lastname = new LiveValidation('last_name', {validMessage: ' ', onlyOnBlur: true});
     lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
     lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
 
-    w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
+    w9_accepted = new LiveValidation('w9_accepted', {validMessage: ' ', insertAfterWhatNode: 'w9_accepted_label'});
     w9_accepted.displayMessageWhenEmpty = true;
     w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
-    
-    setTimeout('ChangePaymentMethod()', 2000);
+
 });

@@ -14,17 +14,12 @@ body > .container-fluid {
 }
 
 /* no padding-left for the wraping element of the project dropdown  */
-#addJob > .row:first-child > div:first-child {
-    padding-left: 0;
-}
-
-#addJob > .row:first-child > div:last-child {
-    text-align: right;
+#addJob > .row:first-child > div:first-child {r
 }
 
 #addJob > .row:first-child .chosen-container:before,
 #addJob > .row:last-child .chosen-container:before {
-    position: absolute;
+    position: absolute;tt
     margin-top: -20px;
     font-size: 0.9em;
     color: #666;
@@ -34,21 +29,18 @@ body > .container-fluid {
     content: 'Job is for this project:';
 }
 
+/* let's use 'styleable' controls instead of checkboxes */
 #addJob > .row:first-child input[type="checkbox"] {
     opacity: 0;
 }
-
 #addJob > .row:first-child input[type="checkbox"] + label {
     line-height: 2.2em
 }
-
 @media (max-width: 768px) {
     #addJob > .row:first-child input[type="checkbox"] + label {
         line-height: 3em
     }
 }
-
-/* let's use 'styleable' controls instead of checkboxes */
 #addJob > .row:first-child input[type="checkbox"] + label:before {
     content: '\00a0';
     width: 27px;
@@ -195,7 +187,6 @@ body > .container-fluid {
     }
 }
 
-
 #addJob input[type=submit] {
     background: none #007F7c;
     font-weight: bold;
@@ -206,22 +197,28 @@ body > .container-fluid {
     border: 0;
 }
 
-
 /**
  * Attachments styling
  */
+.uploadbutton,
 #attachments {
     display: inline-block;
+    vertical-align: middle;
+}
+
+#attachments {
     margin: 5px;
 }
 
 #addJob .attachment {
     margin: 6px 3px;
-    float: left;
+}
+
+#addJob .attachment span:first-child {
+    margin-right: -5px;
 }
 
 #addJob .attachment span {
-    margin-right: -5px;
     padding: 2px 5px;
     background-color: #e9eeef;
     font-size: 12px;

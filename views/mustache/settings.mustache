@@ -1,9 +1,106 @@
+<form role="form" id="settings" method="post">
+    <h2>Settings</h2>
+    <div class="row">
+        <section class="col-md-6">
+            <label for="nickname">Nickname</label>
+            <input name="nickname" type="text" id="nickname" class="form-control" value="{{currentUser.nickname}}" />
+            <label for="username">Email</label>
+            <input type="text" id="username" name="username" class="form-control" value="{{currentUser.username}}" />
+            <label for="paypal_email">Paypal Email</label>
+            <input type="text" id="paypal_email" name="paypal_email" class="form-control" value="{{userInfo.paypal_email}}" />
+        </section>
+        <section class="col-md-6">
+            <label for="profilepicture">Photo</label>
+            <img id="profilepicture" src="{{& picture}}" />
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <p><a href="./password">Change password</a></p>
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <label>Email notifications</label>
+            <ul>
+                <li>
+                    <input type="checkbox" name="bidding_email_notify" id="bidding_email_notify" 
+                      value="1" {{#receivesBiddingJobsAlerts}}checked="checked"{{/receivesBiddingJobsAlerts}}>
+                    <label for="bidding_email_notify">New Jobs set to bidding</label>
+                </li>
+                <li>
+                    <input type="checkbox" name="review_email_notify" id="review_email_notify" 
+                      value="1" {{#receivesReviewJobsAlerts}}checked="checked"{{/receivesReviewJobsAlerts}} />
+                    <label for="review_email_notify">Any job set to review</label>
+                </li>
+                <li>
+                    <input type="checkbox" name="self_email_notify" id="self_email_notify" 
+                      value="1" {{#receivesSelfActionsAlerts}}checked="checked"{{/receivesSelfActionsAlerts}} />
+                    <label for="self_email_notify">Receive email notifications from my actions</label>
+                </li>
+            </ul>
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <label for="timezone">What timezone are you in?</label>
+            {{& timezoneSelectBox}}            
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <label for="about">What do should we know about you?</label>
+            <textarea id="about" name="about" class="form-control">{{userInfo.about}}</textarea>
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <label for="skills">Pick 3 skills you think are your strongest</label>
+            <input type="text" id="skills" name="skills" class="form-control" value="{{userInfo.skills}}" />
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <label for="contactway">Skype name</label>
+            <input type="text" id="contactway" name="contactway" class="form-control" value="{{userInfo.contactway}}" />
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <h3>For United States citizens</h3>
+            <p>
+                All US Citizens must submit a W-9 to be paid by Worklist.
+                <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank">
+                    Download W-9 Here
+                </a>.
+                Remember, you need a valid US mailing address to receive your 1099 tax documents at the end of the year.
+                If you move, it’s up to you to let us know your new address.
+            </p>
+            <p>
+                <input type="checkbox" name="w9_accepted" id="w9_accepted" 
+                  {{#user.getW9_accepted}}checked="checked" disabled="disabled"{{/user.getW9_accepted}} />
+                <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you'll do your part!</label>
+            </p>
+        </section>
+        <section class="col-md-6">
+            <h3>W-9</h3>
+            <p>All US Citizens must submit a signed W-9 before we'll pay you.</p>
+            <input class="uploadbutton" id="uploadw9" type="button" value="Upload W9" />
+        </section>
+    </div>
+    <div class="row">
+        <p><input type="submit" id="save" value="Save changes" name="save" /></p>
+    </div>
+</form>
+
+{{> popup-w9 }}
 <script type="text/javascript">
      var ppConfirmed = {{ppConfirmed}};
      var emConfirmed = {{emConfirmed}};
      var uploadApiKey = '{{uploadApiKey}}';
      var new_user = {{new_user}};
 </script>
+<!--
 <h1 class="header">Edit Account Settings</h1>
 
 <div id="account-info" class="settings">
@@ -150,3 +247,4 @@
 
 </div>
 {{/new_user}}
+-->
