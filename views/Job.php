@@ -6,11 +6,8 @@ class JobView extends View {
     public $layout = 'NewWorklist';
     public $title = '%d: %s - Worklist';
 
-    static $tz_offset = 0; // current server's timezone offset
-
     public $stylesheets = array(
         'css/workitem.css',
-        'css/worklist.css',
         'css/review.css',
         'css/favorites.css',
         'css/userinfo.css',
@@ -793,7 +790,6 @@ class JobView extends View {
         $entries = $this->read('taskEntries');
         $ret = '';
         $now = 0;
-        self::$tz_offset = Model::timezoneOffset();
         foreach($entries as $entry) {
             if (!$now) {
                 $now = strtotime(Model::now());

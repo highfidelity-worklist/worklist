@@ -14,8 +14,6 @@ class StatusView extends View {
         'js/status.js'
     );
 
-    static $tz_offset = 0; // current server's timezone offset
-
     public function render() {
         return parent::render();
     }
@@ -29,7 +27,6 @@ class StatusView extends View {
         $worklist_entries = array_reverse($this->read('entries'));
         $gh_events = $this->read('gh_events');
         $entries = array_merge($worklist_entries, $gh_events);
-        self::$tz_offset = Model::timezoneOffset();
         usort($entries, array('StatusView', 'sortEntries'));
         $ret = '';
         $now = 0;
@@ -49,7 +46,7 @@ class StatusView extends View {
                 }                
                 $id = $entry['id'];
                 $type = 'github' . preg_replace('/Event$/', '', $entry['type']);
-                $date = strtotime($entry['created_at']) + self::$tz_offset;
+                $date = strtotime($entry['created_at']);
                 $content = self::formatGithubEntry($entry);
             }
 
@@ -66,12 +63,12 @@ class StatusView extends View {
         if (get_class($a) == 'EntryModel') {
             $date_a = strtotime($a->date);
         } else { // github event
-            $date_a = strtotime($a['created_at']) + self::$tz_offset;
+            $date_a = strtotime($a['created_at']);
         }
         if (get_class($b) == 'EntryModel') {
             $date_b = strtotime($b->date);
         } else { // github event
-            $date_b = strtotime($b['created_at']) + self::$tz_offset;
+            $date_b = strtotime($b['created_at']);
         }
         return ($date_a == $date_b) ? 0 : ($date_a > $date_b ? +1 : -1);
     }
