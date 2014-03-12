@@ -1098,97 +1098,21 @@ a:hover{
     display: none;
 }
 
-/* journalChat styles */
-#journalPanel {
+/* status entries styling */
+#statusPanel {
     width: 100%;
     margin-top: 40px;
     font-size: 12px;
 }
 
-#journalPanel h3{
+#statusPanel h3{
    font-size: 18px;
    margin: 0 0 5px 0;
 }
 
-#journalChat {
-    border-top: 1px solid #d6d6d6;
-    padding-top: 6px;
-}
-
-#journalChat .entry {
-    margin-bottom:8px;
-}
-
-#journalChat .entry-author {
-    font-weight:bold;
-    margin-right:7px;
-}
-
-#journalChat .entry.worklist .entry-author {
-    color: #6699cc;
-}
-
-#journalChat h2, #journalChat div {
-    font-size: 13px;
-}
-
-#journalChat h2 {
-    padding: 3px 0;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
-
-/* color entries */
-#journalChat .entry h2 {
-    color: #444;
-}
-
-#journalChat .entry h2 span.entry-date {
-    font-size: 11px;
-    color: #666666;
-}
-
-#journalChat .entry h2.extra {
-    background-color: #E5E5E5;
-}
-
-#journalChat .entry h2.other {
-}
-
-#journalChat .entry h2.extra.other {
-    background-color: #E6DFC6;
-}
-
-#journalChat .entry.sendlove h2 {
-    background-color:#D24B3F;
-    color: #601710;
-}
-
-#journalChat .entry.svn h2 {
-    color: #336666;
-}
-
-#journalChat .entry.worklist .entry-text {
-    font-size: 14px;
-    line-height: 18px;
-}
-
-#journalChat .entry.bot h2 {
-    background-color:#D98D4B;
-    color: #54371D;
-}
-
-#wFees {
-  display: none;
-}
 
 .feesum {
     cursor: pointer;
-}
-
-#left, #right {
-    background: none;
 }
 
 #for_view {

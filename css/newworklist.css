@@ -230,33 +230,3 @@ body .chosen-container-multi.chosen-container-active .chosen-choices,
 body .chosen-container-single.chosen-container-active .chosen-single {
     border-color: #007F7c;
 }
-
-/** 
- * some legacy css rules copied from common.css, 
- * still needed in order to hide dialogs 
- **/
-#wFees,
-#feesToolTip,
-.popup-body {
-    display: none;
-}
-
-#stats-area {
-    color: #98AAB2;
-    float: right;
-    font-size: 12px;
-    font-weight: bold;
-    height: 15px;
-    text-align: right;
-}
-
-#stats-text {
-    display: none;
-}
-
-#stats-area a {
-    cursor: hand;
-    color: #6f6f6f;
-    text-decoration: none;
-}
-

@@ -124,8 +124,16 @@
     font-weight: bold;
 }
 
+/* let's not use the default status color for usernames and external links on entries */
 #entries li a,
-#entries li[type="worklist"] > p > a[href^="./user/"] {
+#entries li[type="worklist"].statusDraft > p > a[href^="./user/"],
+#entries li[type="worklist"].statusSuggested > p > a[href^="./user/"],
+#entries li[type="worklist"].statusSuggestedWithBid > p > a[href^="./user/"],
+#entries li[type="worklist"].statusBidding > p > a[href^="./user/"],
+#entries li[type="worklist"].statusFunctional > p > a[href^="./user/"],
+#entries li[type="worklist"].statusReview > p > a[href^="./user/"],
+#entries li[type="worklist"].statusCompleted > p > a[href^="./user/"],
+#entries li[type="worklist"].statusDone > p > a[href^="./user/"] {
     color: #666;
 }
 

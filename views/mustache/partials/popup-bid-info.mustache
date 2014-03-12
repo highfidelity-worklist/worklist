@@ -1,5 +1,5 @@
-    <div id="popup-bid-info" class="popup-body" title = "Bid Info">
-        <form name = "popup-form" id = "popup-form" action="" method="post">
+<div id="popup-bid-info" class="popup-body" title = "Bid Info">
+    <form name = "popup-form" id = "popup-form" action="" method="post">
         <input type="hidden" name="bid_id" value="" />
         <input type="hidden" id="budget_id" name="budget_id" value="" />
         <table border="0" style="border-width:0px">
@@ -61,21 +61,21 @@
         {{/showBidderStatistics}}
         <div style="clear:both"></div>
         <div id="popup-bid-info-buttons"></div>
-        </form>
-    </div>
-        {{#showBudgetSelect}}
-        <div id="popupSelectBudget" class="hidden" title="Select a budget">
-                <span id="budget-source-combo-area">
-                    <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown">
-                        <option value="0" selected="selected">Select a budget</option>
-                        {{& getBudgetCombo}}
-                    </select>
-                </span>
-            <div class="popup-buttons">
-                <span>
-                    <input type="button" id="cancel_budget" value="Cancel">
-                    <input type="button" id="confirm_budget"  value="OK">
-                </span>
-            </div>
+    </form>
+</div>
+{{#showBudgetSelect}}
+    <div id="popupSelectBudget" title="Select a budget">
+            <span id="budget-source-combo-area">
+                <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown">
+                    <option value="0" selected="selected">Select a budget</option>
+                    {{& user.getBudgetCombo}}
+                </select>
+            </span>
+        <div class="popup-buttons">
+            <span>
+                <input type="button" id="cancel_budget" value="Cancel">
+                <input type="button" id="confirm_budget"  value="OK">
+            </span>
         </div>
-        {{/showBudgetSelect}}
+    </div>
+{{/showBudgetSelect}}

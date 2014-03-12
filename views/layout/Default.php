@@ -2,12 +2,13 @@
 
 class DefaultLayout extends Layout {	
     public $stylesheets = array(
+        'css/legacy/common.css',
+        'css/legacy/smoothness/lm.ui.css',
+        'css/legacy/smoothness/white-theme.lm.ui.css',
         'css/bootstrap/css/bootstrap.min.css',
         'css/jquery/jquery.combobox.css',
         'css/jquery/jquery-ui.css',
         'css/font-awesome/css/font-awesome.min.css',
-        'css/smoothness/lm.ui.css',
-        'css/smoothness/white-theme.lm.ui.css',
         'css/tooltip.css',
         'css/common.css',
         'css/menu.css',

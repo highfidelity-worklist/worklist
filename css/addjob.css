@@ -215,51 +215,6 @@ body > .container-fluid {
     margin: 5px;
 }
 
-#uploadButtonDiv {
-    display: inline-block;
-    text-align: right;
-    background-color: #608e96;
-    border-radius: 4px;
-    height: 27px;
-    padding: 1px 14px 0 20px;
-    margin: 5px;
-    position: relative;
-    vertical-align: top;
-}
-
-.uploadbutton {
-    background-image: url("../images/primaryIcons-WL.png") !important;
-    background-position: 7px -1013px !important;
-    background-repeat: no-repeat !important;
-    padding-left: 28px !important;
-    line-height: 15px;
-    line-height: 15px;
-}
-
-.uploadbutton .smbutton {
-    padding: 5px 0px 3px 9px !important;
-    right: -2px !important;
-    top: -3px;
-}
-.smbutton {
-    color: rgb(255, 255, 255) !important;
-    background: none repeat scroll 0% 0% transparent !important;
-    font-size: 13px !important;
-    border-left: 1px solid rgb(131, 168, 166) !important;
-    padding: 1px 0px 0px 8px !important;
-    width: auto !important;
-    position: relative;
-    height: 28px !important;
-    top: -1px;
-    margin: 0px !important;
-    letter-spacing: 1px !important;
-    right: -2px;
-}
-
-.fileUploadButton {
-    line-height: 32px;
-}
-
 #addJob .attachment {
     margin: 6px 3px;
     float: left;
