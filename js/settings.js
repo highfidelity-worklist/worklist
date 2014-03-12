@@ -91,11 +91,10 @@ function isJSON(json) {
 }
 function saveSettings() {
     var values;
-    var massValidation = LiveValidation.massValidate( [ nickname, city, username, paypal, w9_accepted ], true);
+    var massValidation = LiveValidation.massValidate( [ nickname, username, paypal, w9_accepted ], true);
     if (massValidation) {
         values = {
             save: 1,
-            city: $('#city').val(),
             timezone: $('#timezone').val(),
             bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
             nickname: $('#nickname').val(),
