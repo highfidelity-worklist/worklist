@@ -301,9 +301,10 @@ class SettingsController extends Controller {
                     echo $confirm_txt;
                     exit;
                 }
+                $this->view = null;
                 echo json_encode($returned_json);
                 // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions
-                exit;
+                die;
             }
         }
 
