@@ -479,38 +479,3 @@ function showTestFlightForm(project_id) {
     return false;
 }
 
-
-function addProjectDetails(json) {
-    var project = '';
-    var image_filename;
-    var description = '';
-    var link = '';
-
-    link = encodeURIComponent(json.name);
-
-    if (json.logo === null || json.logo === "") {
-        image_filename = 'images/emptyLogo.png';
-    } else {
-        image_filename = 'uploads/' + json.logo;
-    }
-
-    if (json.description.length > 500) {
-        description = json.description.substring(0, 500) + '... <a href="' + link + '">[ read more ]</a>';
-    } else {
-        description = json.description;
-    }
-
-    project += '<article id="project-' + json.project_id + '">';
-    project += '<a href="' + link + '"><img src="' + image_filename + '" border="1" width="48" height="48"  title="Last commit: ' + json.last_commit + '" /></a>';
-
-    project += '<h2><div><a href="' + link + '">' + json.name + '</a><span class="fading">&nbsp;</span></div></h2>';
-    project += '<section class="description">' + description + '</section>';
-    project += '<ul class="stats">';
-    project += '<li><a href="./jobs?status=bidding&project=' + json.name + '"><strong>' + json.bCount + ' jobs in bidding</strong></a></li>';
-    project += '<li><a href="./jobs?status=completed&project=' + json.name + '">' + json.cCount+ ' jobs completed</a></li>';
-    project += '<li>$' + json.feesCount + ' spent</li>';
-    project += '</ul>';
-    project += '</article>';
-
-    $('#projects').append(project);
-}
