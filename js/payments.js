@@ -95,6 +95,7 @@ $(document).ready(function() {
     $('#fund_id').change(function() {
         $('#fundForm').submit();
     });
+    $('#fund_id').chosen();
 
     $('#commit-btn').click(function(e) {
         $(this).attr('disabled', true);
@@ -103,5 +104,15 @@ $(document).ready(function() {
         $('#paymentForm').submit();
     });
 
+    $('#invertSelection').click(function() {
+        toggleCBs('toggle');        
+    });
+    $('#selectAll').click(function() {
+        toggleCBs('select');        
+    });
+    $('#selectNone').click(function() {
+        toggleCBs('unselect');        
+    });
+    
     updateTotalFees('0');
 });

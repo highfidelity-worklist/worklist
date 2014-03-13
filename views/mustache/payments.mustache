@@ -1,52 +1,51 @@
-<div class="floatLeft">
-    <h1>PayPal MassPay Run</h1>
-</div>
-<div class="clear"></div>
-{{#alert_msg}}<h2>{{alert_msg}}</h2>{{/alert_msg}}
+<h2>PayPal MassPay Run</h2>
+{{#alert_msg}}<p>{{alert_msg}}</p>{{/alert_msg}}
 {{^actionPay}}
-<div id="select-fund">
     <form id="fundForm" method="POST" action="./payments">
         <label id="label-fund" for="fund_id">Fund:</label>
         {{& fundSelectBox}}
     </form>
-</div>
-<div id="select-actions">
-    Actions: [<a href="javascript:void(0);" onClick="toggleCBs('toggle');">Invert Selection</a>]
-    | [<a href="javascript:void(0);" onClick="toggleCBs('select');">Select All</a>]
-    | [<a href="#" onClick="toggleCBs('unselect');">Select None</a>]
-</div>
-<div class="clear"></div>
-<form id="paymentForm" action="./payments?{{& order}}" method="POST">
-<table id="payments-table">
-    <thead><tr class="table-hdng">
-        <th>Pay</th>
-        <th>Mechanic</th>
-        <th>Fee/Bonus&nbsp;ID</th>
-        <th>Task&nbsp;ID</th>
-        <th>Project</th>
-        <th>Amount</th>
-        <th width="200">Job Summary</th>
-        <th width="350">Description</th>
-    </tr></thead>
-    <tbody>
-    <input type="hidden" id="action" name="action" value="{{^actionDefined}}pay{{/actionDefined}}{{#actionDefined}}confirm{{/actionDefined}}" />
-    {{& paymentsTableRows}}
-</table>
-<div id="submit-btns">
-    {{#actionConfirm}}
-        Password: <input type="password" name="password" id="password" />
-        <br>Paypal API Username: <input type="text" name="pp_api_username" id="pp_api_username" />
-        <br>Paypal API Password: <input type="password" name="pp_api_password" id="pp_api_password" />
-        <br>Paypal API Signature: <input type="password" name="pp_api_signature" id="pp_api_signature" /><br>
-    {{/actionConfirm}}
-    <input class="disableable" type="submit" id="commit-btn" name="commit"
-      value="{{#actionSet}}Pay Now{{/actionSet}}{{^actionSet}}Confirm{{/actionSet}}" />
-        Total Selected: 
-        $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
-    <input type="hidden" name="fund_id" value="{{fund_id}}" />
-</div>
-</form>
+    <form id="paymentForm" action="./payments?{{& order}}" method="POST">
+        <p>
+            Actions:
+            <input type="button" value="Invert Selection" id="invertSelection" />
+            <input type="button" value="Select All" id="selectAll" />
+            <input type="button" value="Select None" id="selectNone" />
+        </p>          
+        <input type="hidden" id="action" name="action" 
+          value="{{^actionDefined}}pay{{/actionDefined}}{{#actionDefined}}confirm{{/actionDefined}}" />
+        <table class="table table-striped" id="payments-table">
+            <thead>
+                <tr>
+                    <th>Pay</th>
+                    <th>Mechanic</th>
+                    <th>Fee/Bonus ID</th>
+                    <th>Task ID</th>
+                    <th>Project</th>
+                    <th>Amount</th>
+                    <th>Job Summary</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{& paymentsTableRows}}
+            </tbody>
+        </table>
+        <p id="submit-btns">
+            {{#actionConfirm}}
+                Password: <input type="password" name="password" id="password" />
+                <br>Paypal API Username: <input type="text" name="pp_api_username" id="pp_api_username" />
+                <br>Paypal API Password: <input type="password" name="pp_api_password" id="pp_api_password" />
+                <br>Paypal API Signature: <input type="password" name="pp_api_signature" id="pp_api_signature" /><br>
+            {{/actionConfirm}}
+            <input class="disableable" type="submit" id="commit-btn" name="commit"
+              value="{{#actionSet}}Pay Now{{/actionSet}}{{^actionSet}}Confirm{{/actionSet}}" />
+                Total Selected: 
+                $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
+            <input type="hidden" name="fund_id" value="{{fund_id}}" />
+        </p>
+    </form>
 {{/actionPay}}
 {{#actionPay}}
-   {{& paymentResults}}
+   {& paymentResults}}
 {{/actionPay}}

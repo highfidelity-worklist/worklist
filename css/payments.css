@@ -1,3 +1,12 @@
+#fundForm {
+    float: left;
+}
+
+#paymentForm > p {
+    text-align: right;
+}
+
+/*
 div.debug { border: solid 1px #84142B; margin: 10px; }
 
 div#select-actions {
@@ -50,3 +59,4 @@ div#submit-btns input#total-selected-fees {
     width: 50px;
 }
 
+*/
