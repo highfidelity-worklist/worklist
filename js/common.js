@@ -650,9 +650,9 @@ $(function () {
     // @TODO: This only needs to run on certain pages, settings -- lithium
     $('#username').watermark('Email address', {useNative: false});
     $('#password').watermark('Password', {useNative: false});
-    $('#oldpassword').watermark('Current Password', {useNative: false});
-    $('#newpassword').watermark('New Password', {useNative: false});
-    $('#confirmpassword').watermark('Confirm Password', {useNative: false});
+    //$('#oldpassword').watermark('Current Password', {useNative: false});
+    //$('#newpassword').watermark('New Password', {useNative: false});
+    //$('#confirmpassword').watermark('Confirm Password', {useNative: false});
     $('#nickname').watermark('Nickname', {useNative: false});
     $('#about').watermark('Tell us about yourself', {useNative: false});
     $('#contactway').watermark('Skype, email, phone, etc.', {useNative: false});

@@ -66,6 +66,7 @@ input[type="submit"] {
     color: #fff;
     font-weight: bold;
     margin: 0 2px;
+    margin-top: 5px;
 }
 
 label[for] {

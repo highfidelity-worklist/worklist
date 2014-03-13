@@ -1,15 +1,10 @@
 <?php
 
 class PasswordView extends View {
+    public $layout = 'NewWorklist';
     public $title = 'Change Password - Worklist';
-
-    public $stylesheets = array(
-        'css/worklist.css'
-    );
-
-    public $scripts = array(
-        'js/password.js'
-    );
+    public $stylesheets = array(); // no specific styling
+    public $scripts = array('js/password.js');
 
     public function render() {
         $this->msg = $this->read('msg');
