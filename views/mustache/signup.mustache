@@ -3,50 +3,65 @@
 <form action="" name="signup" id="signupForm" method="post">
     <div class="row">
         <section class="col-md-6">
-            <label for="username">Email</label>
-            <input type="text" id="username" name="username" class="form-control" value="{{input.username}}" />
-
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" class="form-control" />
-
-            <label for="confirmpassword">Confirm Password</label>
-            <input type="password" id="confirmpassword" name="confirmpassword" class="form-control" />
-
-            <label for="nickname">Nickname </label>
-            <input type="text" id="nickname" name="nickname" class="form-control" value="{{input.nickname}}" />
-
-            <label for="country">Country</label>
-            <div>{{& countrySelectBox}}</div>
-
-            <label for="City">City</label>
-            <input type="text" id="city" name="city" class="form-control" value="{{input.city}}" />
-
-            <label for="timezone">What timezone are you in?</label>
-            <div>{{& timezoneSelectBox}}</div>
+            <div class="row">
+                <label for="username">Email</label>
+                <input type="text" id="username" name="username" class="form-control" value="{{input.username}}" />
+            </div>
+            <div class="row">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" />
+            </div>
+            <div class="row">
+                <label for="confirmpassword">Confirm Password</label>
+                <input type="password" id="confirmpassword" name="confirmpassword" class="form-control" />
+            </div>
+            <div class="row">
+                <label for="nickname">Nickname </label>
+                <input type="text" id="nickname" name="nickname" class="form-control" value="{{input.nickname}}" />
+            </div>
+            <div class="row">
+                <label for="country">Country</label>
+                <div>{{& countrySelectBox}}</div>
+            </div>
+            <div class="row">
+                <label for="City">City</label>
+                <input type="text" id="city" name="city" class="form-control" value="{{input.city}}" />
+            </div>
+            <div class="row">
+                <label for="timezone">What timezone are you in?</label>
+                <div>{{& timezoneSelectBox}}</div>
+            </div>
         </section>
         <section class="col-md-6">
-            <label for="about">What do we need to know about you?</label>
-            <textarea id="about" name="about" class="form-control">{{input.about}}</textarea>
-
-            <label for="findus">How did you find us?</label>
-            <input type="text" id="findus" name="findus" class="form-control" value="{{input.findus}}" />
-
-            <label for="contactway">What is the preferred way to contact you?</label>
-            <input type="text" id="contactway" name="contactway" class="form-control" value="{{input.contactway}}" />
-
-            <label for="skills">Pick three skills you think are your strongest</label>
-            <input type="text" id="skills" name="skills" class="form-control" value="{{input.skills}}" />
-
-            <input type="checkbox" name="bidding_notify" id="bidding_notify" 
-              class="wlcheckbox" {{#input.bidding_notify}}checked="checked"{{/input.bidding_notify}} />
-            <label>Notify me when a new job is set to bidding</label>
-            <input type="checkbox" name="review_notify" id="review_notify" 
-              class="wlcheckbox" {{#input.review_notify}}checked="checked"{{/input.review_notify}} />
-            <label>Notify me when any job is set to review</label>
+            <div class="row">
+                <label for="about">What do we need to know about you?</label>
+                <textarea id="about" name="about" class="form-control">{{input.about}}</textarea>
+            </div>
+            <div class="row">
+                <label for="findus">How did you find us?</label>
+                <input type="text" id="findus" name="findus" class="form-control" value="{{input.findus}}" />
+            </div>
+            <div class="row">
+                <label for="contactway">What is the preferred way to contact you?</label>
+                <input type="text" id="contactway" name="contactway" class="form-control" value="{{input.contactway}}" />
+            </div>
+            <div class="row">
+                <label for="skills">Pick three skills you think are your strongest</label>
+                <input type="text" id="skills" name="skills" class="form-control" value="{{input.skills}}" />
+            </div>
+            <div class="row">
+                <input type="checkbox" name="bidding_notify" id="bidding_notify" 
+                  class="wlcheckbox" {{#input.bidding_notify}}checked="checked"{{/input.bidding_notify}} />
+                <label>Notify me when a new job is set to bidding</label>
+            </div>
+            <div class="row">
+                <input type="checkbox" name="review_notify" id="review_notify" 
+                  class="wlcheckbox" {{#input.review_notify}}checked="checked"{{/input.review_notify}} />
+                <label>Notify me when any job is set to review</label>
+            </div>
         </section>
     </div>
-
-    <div class="signupContainer">
+    <div class="col-md-offset-10 col-md-2">
         <p><input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" /></p>
     </div>
 </form>

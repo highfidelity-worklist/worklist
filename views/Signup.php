@@ -5,7 +5,7 @@ class SignupView extends View {
     public $title = 'Sign Up to the Worklist';
 
     public $stylesheets = array(
-        'css/worklist.css'
+        'css/signup.css'
     );
 
     public $scripts = array(

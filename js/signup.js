@@ -1,12 +1,12 @@
 $(function() {
     $('#country, #timezone').chosen();
 
-    var username = new LiveValidation('username', {validMessage: "Valid email address."});
+    var username = new LiveValidation('username', {validMessage: ' '});
     username.add( Validate.Email );
     username.add(Validate.Length, { minimum: 4, maximum: 50 } );
-    var password = new LiveValidation('password',{ validMessage: "You have an OK password." });
+    var password = new LiveValidation('password',{ validMessage: ' ' });
     password.add(Validate.Length, { minimum: 5, maximum: 255 } );
-    var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
+    var confirmpassword = new LiveValidation('confirmpassword', {validMessage: ' '});
     confirmpassword.add(Validate.Custom1, { match: 'password'} );
     var about = new LiveValidation('about');
     about.add(Validate.Length, { minimum: 0, maximum: 150 } );
