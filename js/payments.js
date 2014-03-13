@@ -113,6 +113,6 @@ $(document).ready(function() {
     $('#selectNone').click(function() {
         toggleCBs('unselect');        
     });
-    
+
     updateTotalFees('0');
 });
