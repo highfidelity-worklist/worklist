@@ -13,9 +13,6 @@ body > .container-fluid {
     padding-top: 30px;
 }
 
-/* no padding-left for the wraping element of the project dropdown  */
-#addJob > .row:first-child > div:first-child {r
-}
 
 #addJob > .row:first-child .chosen-container:before,
 #addJob > .row:last-child .chosen-container:before {
