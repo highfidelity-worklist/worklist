@@ -37,39 +37,6 @@ h2, h3 {
     float: right;
 }
 
-table {
-    border-collapse: separate;
-    border-color: #d6d6d6;
-    font-size: 1em;
-}
-
-table tr:hover {
-    background: none;
-}
-
-table td, 
-table th {
-    border: none;
-}
-
-table thead tr,
-table thead tr:hover {
-    background: none #ffffff;
-    color: #999999;
-    font-weight: bold;
-}
-
-
-tr.rowodd, 
-tr.rowodd:hover {
-    background: none #efefef;
-}
-
-tr.roweven, 
-tr.roweven:hover {
-    background: none #ffffff;
-}
-
 td.noroles {
     text-align: center;
 }
@@ -170,12 +137,13 @@ td.noroles {
 
 #projectUrl {
     float: right;
-    width: 338px;
+    width: 345px;
 }
 
 #projectUrlLabel {
     color: #007F7C;
     font-size: 1.1em;
+    margin-left: 20px;
 }
 
 #projectHeader .rightCol {
@@ -184,8 +152,7 @@ td.noroles {
 
 #projectUrl > div,
 #projectHeader .rightCol > div {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding: 0;
     border-top: 2px solid #E1E8EA;
     border-bottom: 2px solid #E1E8EA;
 }
@@ -230,6 +197,16 @@ td.noroles {
     list-style-type: none;
     padding-left: 0;
     margin-top: 0;
+}
+
+#projectCodeReviewRights h3 + ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#projectCodeReviewRights h3 + ul > li:nth-child(odd) {
+    background-color: #d6d6d6;
 }
 
 #projectContent h3 {
@@ -420,7 +397,8 @@ li#projectAverageBid {
 #projectAverageBid,
 #projectAverageJobTime {
     float: left;
-    margin: 0 50px 0 25px;
+    margin: 0 15px;
+    font-size: .8em;
 }
 
 #projectAverageBid h3,
@@ -493,44 +471,6 @@ li#projectAverageBid {
     border-bottom: none;
 }
 
-#projectRunners .runnerRemove,
-#projectCodeReviewRights .codeReviewerRemove  {
-    width: 20px;
-    text-align: center;
-}
-
-#projectRunners .runnerName,
-#projectCodeReviewRights .codeReviewerName {
-    width: 120px;
-}
-
-#projectRunners .runnerJobCount,
-#projectCodeReviewRights .codeReviewerJobCount {
-    width: 60px;
-    font-size: 12px;
-}
-
-#projectRunners .runnerLastActivity,
-#projectCodeReviewRights .codeReviewerLastActivity {
-    width: 120px;
-    font-size: .8em;
-}
-
-#projectRunners .runnerPing {
-    width: 60px;
-}
-
-tr.runner > td > input[type="submit"],
-tr.codeReviewer > td > input[type="submit"]  {
-    font-size: .8em;
-    padding: 0 10px;
-    height: 1.6em;
-}
-
-#projectRunners .buttonContainer,
-#projectCodeReviewRights .buttonContainer {
-    width: 380px;
-}
 
 #projectCodeReviewRights h3 > span {
     color: #999999;
@@ -545,21 +485,6 @@ tr.codeReviewer > td > input[type="submit"]  {
     content: '';
     float: none;
     clear: both;
-}
-
-#projectContent table {
-    width: auto;
-    margin-top: 5px;
-}
-
-#projectContent thead td,
-#projectContent thead th {
-    padding-top: 8px;
-}
-
-#projectContent td,
-#projectContent th {
-    padding: 6px 10px;
 }
 
 .roleTitle {

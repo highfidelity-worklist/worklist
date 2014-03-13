@@ -83,8 +83,6 @@ function validateCodeReviews(control) {
 };
 
 $(document).ready(function() {
-    populateProjectListing();
-
     $('.accordion').accordion({
         clearStyle: true,
         collapsible: true,
@@ -98,9 +96,6 @@ $(document).ready(function() {
         validateCodeReviews(this);
     });
 
-});
-
-$(document).ready(function() {
     // get the project files
     $.ajax({
         type: 'post',
@@ -153,7 +148,7 @@ $(document).ready(function() {
                         for(var i=0; i < runners.length; i++) {
                             var runner = runners[i];
                             html =
-                                '<tr class="runner row' + ((i+1) % 2 ? 'odd' : 'even') + '">' +
+                                '<tr class="runner">' +
                                     ((is_admin || is_owner) ? '<td class="runnerRemove">' + (runner.owner ? '' : '<input type="checkbox" name="runner' + runner.id + '" />') + '</td>' : '') +
                                     '<td class="runnerName"><a href="./user/' + runner.id + '" target="_blank">' + runner.nickname + '</a></td>' +
                                     '<td class="runnerJobCount">' + runner.totalJobCount + '</td>' +
@@ -240,22 +235,25 @@ $(document).ready(function() {
             },
             dataType: 'json',
             success: function(data) {
-                $('#projectCodeReviewRights tbody').html('');
+                $('#projectCodeReviewers tbody').html('');
                 if (data.success) {
                     codeReviewers = data.data.codeReviewers;
                     var html = '';
                     if (codeReviewers.length > 0) {
+                        $('#projectCodeReviewers').css({display: 'block'});
                         for(var i=0; i < codeReviewers.length; i++) {
                             var codeReviewer = codeReviewers[i];
                             html =
-                                '<tr class="codeReviewer row' + ((i+1) % 2 ? 'odd' : 'even') + '">' +
+                                '<tr class="codeReviewer">' +
                                     ((is_admin || is_owner) ? '<td class="codeReviewerRemove">' + (codeReviewer.owner ? '' : '<input type="checkbox" name="codereviewer' + codeReviewer.id + '" />') + '</td>' : '') +
                                     '<td class="codeReviewerName"><a href="./user/' + codeReviewer.id + '" target="_blank">' + codeReviewer.nickname + '</a></td>' +
                                     '<td class="codeReviewerJobCount">' + codeReviewer.totalJobCount + '</td>' +
                                     '<td class="codeReviewerLastActivity">' + (codeReviewer.lastActivity ? codeReviewer.lastActivity : '') + '</td>' +
                                 '</tr>'
-                            $('#projectCodeReviewRights tbody').append(html);
+                            $('#projectCodeReviewers tbody').append(html);
                         }
+                    } else {
+                        $('#projectCodeReviewers').css({display: 'none'});
                     }
                 }
             }
@@ -481,68 +479,6 @@ function showTestFlightForm(project_id) {
     return false;
 }
 
-
-function populateProjectListing() {
-    $.ajax({
-        type: "GET",
-        url: 'api.php?action=getProjects',
-        dataType: 'json',
-        success: function(json) {
-
-            // Clear all contents on screen
-            $('#projects').empty();
-
-            for (var i = 0; i < json.length; i++) {
-                addProjectDetails(json[i]);
-            }
-
-            setTimeout(function() {
-                $('#projects').infinitescroll({
-                    animate: true,
-                    dataType: 'json',
-                    debug: true,
-                    appendCallback: false,
-                    navSelector: '#page-nav',
-                    nextSelector: '#page-nav a',
-                    itemSelector: '#projects article',
-                    extraScrollPx: 350,
-                    loading: {
-                        msgText: 'Loading the next set of projects...',
-                        finishedMsg: 'No more pages to load'
-                    }
-                }, function(json, opts) {
-                    for (var i = 0; i < json.length; i++) {
-                        addProjectDetails(json[i]);
-                    }
-                });
-
-                // kill scroll binding
-                $(window).unbind('.infscr');
-
-                // hook up the manual click guy.
-                $('#all-projects').on('click', function(event) {
-                    event.preventDefault();
-                    $('#projects').infinitescroll('retrieve');
-                    $(this).text('More');
-                    return false;
-                });
-            }, 1);
-
-            // remove the paginator when we're done.
-            /*
-            $(document).ajaxError(function(e, xhr, opt){
-                if (xhr.status == 404) {
-                    $('a#next').remove();
-                }
-            });
-            */
-
-        },
-        error: function() {
-            alert("error in populateProjectListing");
-        }
-    })
-}
 
 function addProjectDetails(json) {
     var project = '';

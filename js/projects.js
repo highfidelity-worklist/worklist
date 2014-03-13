@@ -2,6 +2,7 @@ var WorklistProject = {
     repo_type: false,
 
     init: function() {
+        WorklistProject.populateProjectListing();
         if (this.repo_type == 'git') {
             WorklistProject.sendEmails();
         } else {
@@ -121,5 +122,68 @@ var WorklistProject = {
                 }
             }
         });
+    },
+
+    populateProjectListing: function() {
+        $.ajax({
+            type: "GET",
+            url: 'api.php?action=getProjects',
+            dataType: 'json',
+            success: function(json) {
+
+                // Clear all contents on screen
+                $('#projects').empty();
+
+                for (var i = 0; i < json.length; i++) {
+                    addProjectDetails(json[i]);
+                }
+
+                setTimeout(function() {
+                    $('#projects').infinitescroll({
+                        animate: true,
+                        dataType: 'json',
+                        debug: true,
+                        appendCallback: false,
+                        navSelector: '#page-nav',
+                        nextSelector: '#page-nav a',
+                        itemSelector: '#projects article',
+                        extraScrollPx: 350,
+                        loading: {
+                            msgText: 'Loading the next set of projects...',
+                            finishedMsg: 'No more pages to load'
+                        }
+                    }, function(json, opts) {
+                        for (var i = 0; i < json.length; i++) {
+                            addProjectDetails(json[i]);
+                        }
+                    });
+
+                    // kill scroll binding
+                    $(window).unbind('.infscr');
+
+                    // hook up the manual click guy.
+                    $('#all-projects').on('click', function(event) {
+                        event.preventDefault();
+                        $('#projects').infinitescroll('retrieve');
+                        $(this).text('More');
+                        return false;
+                    });
+                }, 1);
+
+                // remove the paginator when we're done.
+                /*
+                $(document).ajaxError(function(e, xhr, opt){
+                    if (xhr.status == 404) {
+                        $('a#next').remove();
+                    }
+                });
+                */
+
+            },
+            error: function() {
+                alert("error in populateProjectListing");
+            }
+        })
     }
 };
+

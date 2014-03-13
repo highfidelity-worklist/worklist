@@ -1170,7 +1170,7 @@ class Project {
             $jobs = array();
             if (mysql_num_rows($result) > 0) {
                 while ($row = mysql_fetch_assoc($result)) {
-                    $jobs[$row['id']] = $row;
+                    $jobs[] = $row;
                 }
             } else {
                 return false;

@@ -1,11 +1,9 @@
 <?php
 
 class ProjectView extends View {
+    public $layout = 'NewWorklist';
     public $title = 'Project: %s - Worklist';
-
-    public $stylesheets = array(
-        'css/project.css'
-    );
+    public $stylesheets = array('css/project.css');
 
     public $scripts = array(
         'js/jquery/jquery.tablednd_0_5.js',
