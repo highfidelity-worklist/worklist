@@ -1,6 +1,7 @@
 <?php
 
 class SignupView extends View {
+    public $layout = 'NewWorklist';
     public $title = 'Sign Up to the Worklist';
 
     public $stylesheets = array(
@@ -48,6 +49,7 @@ class SignupView extends View {
             $ret .= '<option value="' . $code . '" ' . $selected . '>' . $cname . '</option>';
         }
         $ret .= '</select>';
+        return $ret;
     }
 
     public function timezoneSelectBox() {

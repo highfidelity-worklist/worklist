@@ -1,127 +1,55 @@
-<script type="text/javascript">
-    var errorFlag = {{#errorFlag}}true{{/errorFlag}}{{^errorFlag}}false{{/errorFlag}};
-</script>
-<div id="filter" onClick="closebox()"></div>
-<div id="box">
-    <p align="center">Email Confirmation</p>
-    <p><font style="color: #624100; font-size: 12px; font-family: Verdana;">{{confirm_txt}}</font></p>
-    <p>&nbsp;</p>
-    <p align="center"><strong><a href="#" onClick="closebox()">Close</a></strong></p>
-</div>
 <h1>Create a New Account</h1>
-<p>
-    <i>Sign up for Worklist to make bids on jobs or create new projects.</i>
-</p>
 {{#errorFlag}}{{#errorMessage}}<p class="LV_invalid">{{text}}</p>{{/errorMessage}}{{/errorFlag}}
 <form action="" name="signup" id="signupForm" method="post">
-    <div class="left-col">
-        <div class="LVspace">
-            <p>
-                <label for="username">Email </label>
-                <br />
-                <span class="required-bullet">*</span>
-                <input type="text" id="username" name="username" class="text-field" size="35" value="{{input.username}}" />
-            </p>
-        </div>
-        <script type="text/javascript">
-            var username = new LiveValidation('username', {validMessage: "Valid email address."});
-            username.add( Validate.Email );
-            username.add(Validate.Length, { minimum: 4, maximum: 50 } );
-        </script>
-        <div class="LVspace">
-            <p>
-                <label for="password">Password </label>
-                <br />
-                <span class="required-bullet">*</span>
-                <input type="password" id="password" name="password" class="text-field" size="35" />
-            </p>
-        </div>
-        <script type="text/javascript">
-            var password = new LiveValidation('password',{ validMessage: "You have an OK password." });
-            password.add(Validate.Length, { minimum: 5, maximum: 255 } );
-        </script>
+    <div class="row">
+        <section class="col-md-6">
+            <label for="username">Email</label>
+            <input type="text" id="username" name="username" class="form-control" value="{{input.username}}" />
 
-        <div class="LVspace">
-            <p>
-                <label>Confirm Password</label> <br />
-                <span class="required-bullet">*</span>
-                <input name="confirmpassword" id="confirmpassword" type="password" class="text-field" size="35" />
-            </p>
-        </div>
-        <script type="text/javascript">
-            var confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
-            confirmpassword.add(Validate.Custom1, { match: 'password'} );
-        </script>
-        <div class="LVspace">
-            <p>
-                <label for="nickname">Nickname </label>
-                <br />
-                <span class="required-bullet">*</span>
-                <input type="text" id="nickname" name="nickname" class="text-field" size="35" value="{{input.nickname}}" />
-            </p>
-        </div>
-        <div id="sms-country">
-            <p><label>Country<br />
-            <span class="required-bullet">*</span> 
-            {{& countrySelectBox}}
-            </label><br/>
-            </p>
-        </div>
-        <div id="cityDiv">
-            <p><label for="City">City</label><br />
-            <span class="required-bullet">*</span> <input type="text" id="city" name="city" class="text-field"
-                size="35"
-                value="{{input.city}}" />
-            </p>
-        </div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" />
 
-        <div class="LVspace height50">
-            <p>
-                <label for="timezone">What timezone are you in?</label><br />
-                   <span class="required-bullet"> &nbsp;</span>
-                   {{& timezoneSelectBox}}
-            </p>
-        </div>
+            <label for="confirmpassword">Confirm Password</label>
+            <input type="password" id="confirmpassword" name="confirmpassword" class="form-control" />
+
+            <label for="nickname">Nickname </label>
+            <input type="text" id="nickname" name="nickname" class="form-control" value="{{input.nickname}}" />
+
+            <label for="country">Country</label>
+            <div>{{& countrySelectBox}}</div>
+
+            <label for="City">City</label>
+            <input type="text" id="city" name="city" class="form-control" value="{{input.city}}" />
+
+            <label for="timezone">What timezone are you in?</label>
+            <div>{{& timezoneSelectBox}}</div>
+        </section>
+        <section class="col-md-6">
+            <label for="about">What do we need to know about you?</label>
+            <textarea id="about" name="about" class="form-control">{{input.about}}</textarea>
+
+            <label for="findus">How did you find us?</label>
+            <input type="text" id="findus" name="findus" class="form-control" value="{{input.findus}}" />
+
+            <label for="contactway">What is the preferred way to contact you?</label>
+            <input type="text" id="contactway" name="contactway" class="form-control" value="{{input.contactway}}" />
+
+            <label for="skills">Pick three skills you think are your strongest</label>
+            <input type="text" id="skills" name="skills" class="form-control" value="{{input.skills}}" />
+
+            <input type="checkbox" name="bidding_notify" id="bidding_notify" 
+              class="wlcheckbox" {{#input.bidding_notify}}checked="checked"{{/input.bidding_notify}} />
+            <label>Notify me when a new job is set to bidding</label>
+            <input type="checkbox" name="review_notify" id="review_notify" 
+              class="wlcheckbox" {{#input.review_notify}}checked="checked"{{/input.review_notify}} />
+            <label>Notify me when any job is set to review</label>
+        </section>
     </div>
-    <!-- end of left-col div -->
-    <div class="right-col">
-        <div class="LVspacehg">
-        <p><label for="about">What do we need to know about you?</label><br />
-        <textarea id="about" name="about" cols="35" rows="4">{{input.about}}</textarea>
-        </p>
-        </div>
-        <script type="text/javascript">
-                var about = new LiveValidation('about');
-                about.add(Validate.Length, { minimum: 0, maximum: 150 } );
-        </script>
-        <div class="LVspace">
-        <p><label for="findus">How did you find us?</label><br />
-        <input type="text" id="findus" name="findus" class="text-field"
-            size="35"
-            value="{{input.findus}}" />
-        </p>
-        </div>
-        <div class="LVspace">
-        <p><label for="contactway">What is the preferred way to contact you?</label><br />
-        <input type="text" id="contactway" name="contactway" class="text-field"
-            size="35"
-            value="{{input.contactway}}" />
-        </p>
-        </div>
 
-        <div class="LVspace">
-            <p>
-                <label for="skills">Pick three skills you think are your strongest</label><br />
-                <input type="text" id="skills" name="skills" class="text-field" size="35" value="{{input.skills}}" />
-            </p>
-        </div>
-
-        <input type="checkbox" name="bidding_notify" id="bidding_notify" {{#input.bidding_notify}}checked="checked"{{/input.bidding_notify}} />
-        Notify me when a new job is set to bidding<br />
-        <input type="checkbox" name="review_notify" id="review_notify" {{#input.review_notify}}checked="checked"{{/input.review_notify}} />
-        Notify me when any job is set to review<br/><br />
-    </div>
     <div class="signupContainer">
         <p><input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" /></p>
     </div>
 </form>
+<script type="text/javascript">
+    var errorFlag = {{#errorFlag}}true{{/errorFlag}}{{^errorFlag}}false{{/errorFlag}};
+</script>

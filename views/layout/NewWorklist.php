@@ -26,11 +26,12 @@ class NewWorklistLayout extends Layout {
         'js/jquery/jquery.tooltip.min.js',
         'js/bootstrap/bootstrap.min.js',
         'js/chosen/chosen.jquery.min.js',
-        'js/newworklist.js',
+        'js/common.js',
         'js/common.js',
         'js/utils.js',
         'js/userstats.js',
         'js/worklist.js',
-        'js/budget.js'
+        'js/budget.js',
+        'js/newworklist.js'
     );
 }
