@@ -1,0 +1,20 @@
+#signupForm .row {
+    padding: 15px 15px 10px;
+}
+
+#signupForm > .row > label {
+    color: #608a92;
+    font-weight: normal;
+    margin: 0;
+    font-size: 1.3em;
+}
+
+
+/**
+ * validation messages 
+ */
+.LV_validation_message {
+    position: absolute;
+    font-size: .8em;
+    color: #ff5582;
+}
