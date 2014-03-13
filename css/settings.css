@@ -49,28 +49,22 @@
 }
 
 #settings > .row > section > p:nth-child(odd),
-#settings label + ul > li:nth-child(odd) {
+#settings label + ul > li:nth-child(odd),
+#settings label[for="profilepicture"] + p {
     background-color: #d6d6d6;
+}
+
+#settings label[for="profilepicture"] + p {
+    padding: 0;
+}
+
+#settings label[for="profilepicture"] + p > img {
+    width: 100px;
+    height: 100px;
 }
 
 #settings > .row p:nth-child(even) > a {
     font-weight: bold;
-}
-
-
-
-#addJob > .row:first-child input[type="checkbox"] {
-    opacity: 0;
-}
-
-#addJob > .row:first-child input[type="checkbox"] + label {
-    line-height: 2.2em
-}
-
-@media (max-width: 768px) {
-    #addJob > .row:first-child input[type="checkbox"] + label {
-        line-height: 3em
-    }
 }
 
 /* let's use 'styleable' controls instead of checkboxes */
@@ -113,6 +107,7 @@
     font-size: 1.8em;
     padding: 8px 16px;
 }
+
 
 /**
  * validation messages 
