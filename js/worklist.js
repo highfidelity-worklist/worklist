@@ -204,7 +204,6 @@ var getPosFromHash = function(){
 
 $(function() {
     $('#share-this').hide();
-    $("#query").DefaultValue("Search...");
     newHash = getPosFromHash();
     if (newHash['userid'] && newHash['userid'] != -1) {
         setTimeout(function(){

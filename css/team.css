@@ -1,0 +1,71 @@
+#message {
+    text-align: center;
+    display: none;
+    font-size: 1.3em;
+}
+
+#searchbar {
+    background-color: #E1E8EA;
+    padding: 20px 30px;
+}
+
+.myfavorite {
+    background-image: url("../images/otherSprite.png");
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    margin-right: 5px;
+}
+
+.ln-letters,
+.ln-pages {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+}
+
+.ln-letters > li,
+.ln-pages > li {
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.ln-letters a {
+    border: none;
+}
+
+.ln-letters a,
+.ln-letters a:hover,
+.ln-pages a:hover {
+    background-color: #ffffff;
+}
+
+.ln-letters a:active,
+.ln-pages a:active {
+    color: #009999;
+}
+
+.ln-letters a.ln-selected, 
+.ln-pages a.ln-selected {
+    font-weight: bold;
+    background-color: #EAEAEA;
+}
+
+.ln-letters a,
+.ln-pages a {
+    border: none;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 1px 3px;
+
+}
+
+.ln-pages > span > span {
+    color: #cccccc;
+}
+
+.ln-letters a:hover,
+.ln-pages a:hover {
+    text-decoration: underline;
+}

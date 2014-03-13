@@ -2217,7 +2217,7 @@ function getUserList() {
     if($letter == "all"){
       $letter = ".*";
     }
-    if($letter == "_"){ //numbers
+    if($letter == "0-9"){ //numbers
       $letter = "[^A-Za-z]";
     }
 

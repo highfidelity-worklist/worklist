@@ -1,3 +1,4 @@
+var current_letter = 'all';
 var current_sortkey = 'earnings30';
 var current_order = false;
 var sfilter = '30'; // Default value for the filter
@@ -13,15 +14,14 @@ $(document).ready(function() {
 
     fillUserlist(current_page);
 
-    $('.ln-letters a').click(function(){
-        var classes = $(this).attr('class').split(' ');
-        current_letter = classes[0];
+    $('.ln-letters li').click(function(event){
+        event.preventDefault();
+        current_letter = ($(this).text().toLowerCase());
         fillUserlist(1);
-        return false;
     });
 
     //table sorting thing
-    $('.table-userlist thead tr th').hover(function(e){
+    $('#table-userlist thead tr th').hover(function(e){
         if(!$('div', this).hasClass('show-arrow')){
             if($(this).data('direction')){
                 $('div', this).addClass('arrow-up');
@@ -36,11 +36,11 @@ $(document).ready(function() {
         }
     });
 
-    $('.table-userlist thead tr th').data('direction', false); //false == desc order
-    $('.table-userlist thead tr th').click(function(e){
-        $('.table-userlist thead tr th div').removeClass('show-arrow');
-        $('.table-userlist thead tr th div').removeClass('arrow-up');
-        $('.table-userlist thead tr th div').removeClass('arrow-down');
+    $('#table-userlist thead tr th').data('direction', false); //false == desc order
+    $('#table-userlist thead tr th').click(function(e){
+        $('#table-userlist thead tr th div').removeClass('show-arrow');
+        $('#table-userlist thead tr th div').removeClass('arrow-up');
+        $('#table-userlist thead tr th div').removeClass('arrow-down');
         $('div', this).addClass('show-arrow');
         var direction = $(this).data('direction');
 
@@ -56,7 +56,7 @@ $(document).ready(function() {
         current_order = $(this).data('direction');
         fillUserlist(current_page);
 
-        $('.table-userlist thead tr th').data('direction', false); //reseting to default other rows
+        $('#table-userlist thead tr th').data('direction', false); //reseting to default other rows
         $(this).data('direction',!direction); //switching on current
     }); //end of table sorting
 
@@ -134,9 +134,7 @@ $(document).ready(function() {
     if (showUserLink) {
         window.open(showUserLink, '_blank');
     }
-    
-    $("#query").DefaultValue("Search team...");
-    $('#days').comboBox();
+    $('#days').chosen();
 });
 
 function fillUserlist(npage) {
@@ -188,7 +186,7 @@ function fillUserlist(npage) {
             });
 
             if (cPages > 1) { //showing pagination only if we have more than one page
-                $('.ln-pages').html('<span>' + outputPagination(page, cPages) + '</span>');
+                $('.ln-pages').html(outputPagination(page, cPages));
                 $('.ln-pages a').click(function() {
                     page = $(this).attr('href').match(/page=\d+/)[0].substr(5);
                     fillUserlist(page);
@@ -224,12 +222,12 @@ function AppendUserRow(json, odd) {
     row += ' useritem-' + json.id + '">';
     row += '<td class="name-col">' + (is_myfavorite ? favorite_div : '') + json.nickname + '</td>';
     row += '<td class="age">'+ json.joined + '</td>';
-    row += '<td class="jobs money moneyPadding">' + json.jobs_count + '</td>';
-    row += '<td class="money moneyPadding">' + json.budget + '</td>';
-    row += '<td class="money moneyPadding">$' +addCommas(json.earnings.toFixed(2)) + '</td>';
-    row += '<td class="money moneyPadding">$' + addCommas(json.earnings30) + '</td>';
-    row += '<td class="money moneyPadding">(' + (Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100*100)/100)+ '%) $' + addCommas(json.rewarder) +  '</td>';
-    $('.table-userlist tbody').append(row);
+    row += '<td class="jobs money">' + json.jobs_count + '</td>';
+    row += '<td class="money">' + json.budget + '</td>';
+    row += '<td class="money">$' +addCommas(json.earnings.toFixed(2)) + '</td>';
+    row += '<td class="money">$' + addCommas(json.earnings30) + '</td>';
+    row += '<td class="money">(' + (Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100*100)/100)+ '%) $' + addCommas(json.rewarder) +  '</td>';
+    $('#table-userlist tbody').append(row);
 
     var favorite_user_id = json.id;
     var favorite_user_nickname = json.nickname;
@@ -275,4 +273,31 @@ function addCommas(nStr) {
         x1 = x1.replace(rgx, '$1' + ',' + '$2');
     }
     return x1 + x2;
+}
+
+function outputPagination(page, cPages) {
+    var previousLink = page > 1 
+            ? '<li><a href="#?page=' + (page - 1) + '">Previous</a></li>' 
+            : '<li>Previous</li> ',
+        nextLink = page < cPages 
+            ? '<li><a href="#?page=' + (page + 1) + '" class = "ln-last">Next</a></li>' 
+            : '<li>Next</li>';
+    var pagination = previousLink;
+    var fromPage = 1;
+    if (cPages > 10 && page > 6) {
+        if (page + 4 <= cPages) {
+            fromPage = page - 6;
+        } else {
+            fromPage = cPages - 10;
+        }
+    }
+    for (var i = fromPage; (i <= (fromPage +10) && i <= cPages); i++) {
+        var sel = '';
+        if (i == page) {
+            sel = ' class="ln-selected"';
+        }
+        pagination += '<li><a href="#?page=' + i + '"' + sel + '>' + i + '</a></li>';
+    }
+    pagination += nextLink;
+    return pagination;
 }
