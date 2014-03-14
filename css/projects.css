@@ -1,31 +1,13 @@
 /*
-* Copyright (c) 2011, LoveMachine Inc.
+* Copyright (c) 2011, High Fidelity Inc.
 * All Rights Reserved.
 * 
-* http://www.lovemachineinc.com
+* http://highfidelity.io
 * 
 * Development History:
 * 2011-07-30   #14907      Leo
 *
 */
-
-/**
- * Overrides for project page
- */
-#outside {
-    text-align: center;
-}
-
-h1 {
-    font-family: proxima-nova, sans-serif;
-    font-weight: bold;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-size: 20px;
-    padding: 0;
-    color: #141414;
-    text-align: left;
-}
 
 #add-project {
     color: #007F7C;
@@ -52,11 +34,6 @@ h1 {
 
 #projects {
     color: #666666;
-    /*
-    margin: 25px auto;
-    clear: both;
-    display: table;
-    */
     text-align: center;
 }
 
@@ -139,7 +116,6 @@ h1 {
         text-align: center;
     }
     
-    h1,
     #add-project,
     #all-projects {
         font-size: 16px;
@@ -147,7 +123,6 @@ h1 {
 }
 
 @media screen and (max-width: 380px) {
-    h1,
     #add-project,
     #all-projects {
         font-size: 14px;

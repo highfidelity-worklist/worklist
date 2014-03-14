@@ -1,10 +1,10 @@
 <?php
 
 class ProjectsView extends View {
+    public $layout = 'NewWorklist';
     public $title = 'Projects - Worklist';
 
     public $stylesheets = array(
-        'css/worklist.css',
         'css/projects.css'
     );
     
@@ -13,7 +13,7 @@ class ProjectsView extends View {
         'js/jquery/jquery.metadata.js',
         'js/jquery/jquery.infinitescroll.min.js',
         'js/ajaxupload/ajaxupload.js',
-        'js/project.js',
+        'js/projects.js',
         'js/github.js'
     );
 }
