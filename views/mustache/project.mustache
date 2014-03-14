@@ -27,7 +27,9 @@
             var doc = documents[i];
             #>
             <div class="filesIcon">
-                <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+                <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" >
+                    <img width="32px" height="32px" src="<#= doc.icon #>" />
+                </a>
             </div>
             <div class="documents filesDescription">
                 <# if (doc.can_delete == true) { #>
@@ -97,7 +99,7 @@
                 <a href="mailto:{{project.getContactInfo}}">{{project.getContactInfo}}</a>
             </div>
             <div id="projectRunner"><span>Project started by</span>
-                <a href='./user/{{project.getOwnerId}}' target="_blank">
+                <a href='./user/{{project.getOwnerId}}'>
                     <span>{{project_user.getNickname}}</span>
                 </a>
             </div>
@@ -129,7 +131,7 @@
                 <h3>Project contributors</h3>
                 <p id="projectContributors">
                     {{#project.getContributors}}
-                        <a href="./user/{{id}}" target="_blank">{{nickname}}</a>
+                        <a href="./user/{{id}}">{{nickname}}</a>
                     {{/project.getContributors}}
                 </p>
             </li>
@@ -298,7 +300,7 @@
             <li>
                 <h3>Repository</h3>
                 <p id="projectRepository">
-                    We use <a href="http://en.wikipedia.org/wiki/Apache_Subversion" target="_blank">svn</a>
+                    We use <a href="http://en.wikipedia.org/wiki/Apache_Subversion">svn</a>
                     or <a href="http://en.wikipedia.org/wiki/Git_(software)" target="_blank">git</a>
                     for <a href="http://en.wikipedia.org/wiki/Distributed_development" target="_blank">distributed development</a>.
                     Each project has its own repository. The repository for this project is:
@@ -342,8 +344,7 @@
                     {{#projectActiveJobs}}
                         <tr class="job">
                             <td class="projectJobLink">
-                                <a id="worklist-{{id}}" target="_blank" 
-                                  href="./{{id}}'">
+                                <a id="worklist-{{id}}" href="./{{id}}'">
                                     {{id}} <span>{{summary}}</span>
                                 </a>
                             </td>
@@ -363,7 +364,7 @@
                     </tbody>
                 </table>
                 <p id="viewHistory">
-                    <a href="./jobs?project={{project.getName}}&user=&status=0" target="_blank">
+                    <a href="./jobs?project={{project.getName}}&user=&status=0">
                         View history of jobs
                     </a> for the {{project.getName}} project 
                 </p>
@@ -385,11 +386,9 @@
                                 <tbody>
                                 {{#project.getPaymentStats}}
                                     <tr class="payment">
-                                        <td><a href="./user/{{id}}" target="_blank">{{nickname}}</a></td>
+                                        <td><a href="./user/{{id}}">{{nickname}}</a></td>
                                         <td>
-                                            <a id="worklist-{{worklist_id}}" class="payment-joblink" 
-                                              target="_blank"
-                                              href="./{{worklist_id}}">
+                                            <a id="worklist-{{worklist_id}}" class="payment-joblink" href="./{{worklist_id}}">
                                                 #{{worklist_id}}
                                             </a>
                                         </td>

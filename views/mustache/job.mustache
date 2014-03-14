@@ -43,7 +43,7 @@
 <div id="info-top" class="top-bar">
     {{^editing}}
     <div id="quick-status">
-        <span class="info-label"><a href="./help#ff5" target="_blank">Job status:</a></span>
+        <span class="info-label"><a href="./help#ff5">Job status:</a></span>
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
@@ -83,7 +83,7 @@
     {{^editing}}
         <div class="project-label">Project:</div>
         {{#worklist.project_id}}
-            <a href="{{& projectUrl}}" target="_blank">{{worklist.project_name}}</a>
+            <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
             {{#worklist.p_website}}
                 <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>
             {{/worklist.p_website}}
@@ -117,7 +117,7 @@
                   title="{{#currentUser.id}}Ping Creator{{/currentUser.id}}{{^currentUser.id}}Log in to Ping Creator{{/currentUser.id}}">
                     <a href="#">Job creator:</a>
                 </span>
-                <a href="./user/{{worklist.creator_id}}" target="_blank">{{worklist.creator_nickname}}</a>
+                <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </div>
             <div id="runnerBox">
                 {{#editing}}
@@ -147,7 +147,7 @@
                         </span>
                     </li>
                     <li>
-                        <span class="info-label"><a href="./help#ff5" target="_blank">Status</a></span>
+                        <span class="info-label"><a href="./help#ff5">Status</a></span>
                         <span class="info-data">
                             {{& statusInfo}}
                         </span>
@@ -241,12 +241,12 @@
                 {{#comments}}
                     <li id="comment-{{id}}" class="depth-{{depth}}">
                         <div class="comment">
-                            <a href="./user/{{comment.getUser.getId}}" target="_blank">
+                            <a href="./user/{{comment.getUser.getId}}">
                                 <img class="picture profile-link" src="{{& comment.getUser.getAvatar}}" title="Profile Picture - {{comment.getUser.getNickname}}" />
                             </a>
                             <div class="comment-container">
                                 <div class="comment-info">
-                                    <a class="author profile-link" href="./user/{{comment.getUser.getId}}" target="_blank">
+                                    <a class="author profile-link" href="./user/{{comment.getUser.getId}}">
                                         {{comment.getUser.getNickname}}
                                     </a>
                                     <span class="date">{{comment.getRelativeDate}}</span>
@@ -531,7 +531,7 @@
                 var doc = documents[i];
                 #>
                 <div class="filesIcon">
-                    <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+                    <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
                 </div>
                 <div class="documents filesDescription">
                     <# if (doc.can_delete == true) { #>

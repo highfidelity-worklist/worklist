@@ -25,7 +25,9 @@
     var doc = documents[i];
     #>
     <div class="filesIcon">
-        <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" target="_blank"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+        <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>">
+            <img width="32px" height="32px" src="<#= doc.icon #>" />
+        </a>
     </div>
     <div class="documents filesDescription">
         <# if (doc.can_delete == true) { #>
