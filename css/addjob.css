@@ -16,7 +16,7 @@ body > .container-fluid {
 
 #addJob > .row:first-child .chosen-container:before,
 #addJob > .row:last-child .chosen-container:before {
-    position: absolute;tt
+    position: absolute;
     margin-top: -20px;
     font-size: 0.9em;
     color: #666;
@@ -76,7 +76,6 @@ body > .container-fluid {
 }
 
 #bug_job_id {
-    float: right;
     font-size: 1.2em;
     font-weight: bold
 }
