@@ -337,7 +337,7 @@ function GetWorklist(npage, update, reload) {
         search_status = 'ALL';
         mobile_filter = true;
     } else {
-        search_status = 'Biding';
+        search_status = 'Bidding';
     }
     
     $.ajax({
