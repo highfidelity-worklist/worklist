@@ -11,7 +11,7 @@ class Dispatcher {
         $dispatcher->get('/addjob', array('AddJob'));
         $dispatcher->get('/confirmation', array('Confirmation'));
         $dispatcher->post('/confirmation', array('Confirmation'));
-        $dispatcher->get('/feedlist', array('Feedlist'));
+        $dispatcher->get('/feedlist', array('FeedList'));
         $dispatcher->get('/feeds', array('Feeds'));
         $dispatcher->get('/forgot', array('Forgot'));
         $dispatcher->post('/forgot', array('Forgot'));

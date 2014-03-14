@@ -1,4 +1,4 @@
 <?php
 
-class FeedlistController extends Controller {
+class FeedListController extends Controller {
 }
