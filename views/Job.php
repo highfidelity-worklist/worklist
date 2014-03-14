@@ -27,7 +27,6 @@ class JobView extends View {
         'js/timepicker.js',
         'js/review.js',
         'js/favorites.js',
-        'js/projects.js',
         'js/github.js',
         'js/skills.js',
         'js/entries.js',
