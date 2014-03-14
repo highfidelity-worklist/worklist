@@ -17,9 +17,17 @@ body {
     }
 }
 
+/* navigation bar shadow */
 nav.navbar {
     box-shadow: 0 0px 6px #333;
 }
+
+/* navigation signup link color */
+nav.navbar .navbar-right > li > a[href="./signup"] {
+    color: #fff;
+    font-weight: bold;
+}
+
 
 /* multiline-centered footer with logo by default */
 section#footer {
