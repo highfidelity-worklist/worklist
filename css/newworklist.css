@@ -17,6 +17,17 @@ body {
     }
 }
 
+/* global links styling */
+a {
+    color: #333333;    
+}
+a:hover {
+    color: #009999;
+}
+a:active {
+    color: #007F7C;
+}
+
 /* navigation bar shadow */
 nav.navbar {
     box-shadow: 0 0px 6px #333;
