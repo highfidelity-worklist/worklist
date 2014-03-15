@@ -212,7 +212,7 @@ class JobView extends View {
         }
         $ret .= 
             '</select>' .
-            '<div class="buttonContainer"><input type="button" class="smbutton" name="changerunner" value="Change Runner" /></div>' .
+            '<div class="buttonContainer"><input type="button" class="smbutton" name="changerunner" value="Change Designer" /></div>' .
             '<div class="buttonContainer"><input type="button" class="smbutton" name="cancel" value="Cancel" /></div>' .
             '</span>';
         return $ret;
@@ -223,13 +223,13 @@ class JobView extends View {
         $ret = '';
         if ($worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] != '') {
             $ret .= 
-                '<span id="pingRunner" class="runnerName" title="' . (isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner") .'">' .
-                '<a href="#">Runner:</a></span>' .
+                '<span id="pingRunner" class="runnerName" title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") .'">' .
+                '<a href="#">Designer:</a></span>' .
                 '<a href="./user/' . $worklist['runner_id'] . '" target="_blank">' . 
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
                 '</a>';
         } else {
-            $ret .= '<span class="runnerName" title="Ping Runner">Runner:</span> Not funded';
+            $ret .= '<span class="runnerName" title="Ping Designer">Designer:</span> Not funded';
         }
         return $ret;
     }
@@ -247,12 +247,12 @@ class JobView extends View {
             }
         }
         if ($mech == '') {
-            $mech = '<span class="mechanicName">Mechanic:</span>Not assigned';
+            $mech = '<span class="mechanicName">Developer:</span>Not assigned';
         } else {
-            $tooltip = isset($_SESSION['userid']) ? "Ping Mechanic" : "Log in to Ping Mechanic";
+            $tooltip = isset($_SESSION['userid']) ? "Ping Developer" : "Log in to Ping Developer";
             $mech = 
                 '<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" >' . 
-                  '<a href="#">Mechanic:</a>' . 
+                  '<a href="#">Developer:</a>' . 
                 '</span>' . 
                 '<a id="ping-btn" href="./user/' . $worklist['mechanic_id'] . '" target="_blank">' . $mech . '</a>';
         }

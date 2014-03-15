@@ -279,10 +279,10 @@ class Notification {
                       . 'Project: ' . $project_name . '<br />'
                       . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                       if($workitem->getRunner() != '') {
-                          $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                          $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                       }
                       if($workitem->getMechanic() != '') {
-                          $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                          $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                       }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -299,10 +299,10 @@ class Notification {
                         . 'Project: ' . $project_name . '<br/>'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                         if($workitem->getRunner() != '') {
-                            $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                            $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                         }
                         if($workitem->getMechanic() != '') {
-                            $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                            $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -314,14 +314,14 @@ class Notification {
                 if ($workitem->getStatus() != 'Draft') {
                     $headers['From'] = '"' . $project_name . '-fee deleted" ' . $from_address;
                     $body = "<p>Your fee has been deleted by: ".$_SESSION['nickname']."<br/><br/>";
-                    $body .= "If you think this has been done in error, please contact the job Runner.</p>";
+                    $body .= "If you think this has been done in error, please contact the job Designer.</p>";
                     $body .= 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
-                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
                     if($workitem->getMechanic() != '') {
-                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
                     $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                     . 'You can view the job <a href="' .  WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -335,10 +335,10 @@ class Notification {
                 . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                        if($workitem->getRunner() != '') {
-                           $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                           $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                        }
                        if($workitem->getMechanic() != '') {
-                           $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                           $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                        }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -352,10 +352,10 @@ class Notification {
                 . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                         if($workitem->getRunner() != '') {
-                            $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                            $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                         }
                         if($workitem->getMechanic() != '') {
-                            $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                            $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
 
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
@@ -414,10 +414,10 @@ class Notification {
                     . 'Project: ' . $project_name . '<br />'
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
-                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
                     if($workitem->getMechanic() != '') {
-                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
                 $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />';
 
@@ -437,10 +437,10 @@ class Notification {
                     . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
-                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
                     if($workitem->getMechanic() != '') {
-                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />';
                 $urlacceptbid  = '<br /><a href="./';
@@ -482,11 +482,11 @@ class Notification {
                     . 'Project: ' . $project_name . '<br />'
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
 
-                    . 'Runner: ';
+                    . 'Designer: ';
                 if ($workitem->getRunnerId()) $body .= $workitem->getRunner()->getNickname();
                 $body.= '<br />'
 
-                    . 'Mechanic: ';
+                    . 'Developer: ';
                 if ($workitem->getMechanicId()) $body .= $workitem->getMechanic()->getNickname();
 
                 $body.= '<br /><br />'
@@ -520,10 +520,10 @@ class Notification {
                         . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
-                        $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
                     if($workitem->getMechanic() != '') {
-                        $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
                     $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
                         . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -536,10 +536,10 @@ class Notification {
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if($workitem->getRunner() != '') {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                   $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                   $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You are welcome to bid the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -551,10 +551,10 @@ class Notification {
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if($workitem->getRunner() != '') {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                    $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                    $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -566,10 +566,10 @@ class Notification {
                 $body.= '<br/><br/>Project: ' . $project_name;
                 $body.= '<br/>Creator: ' . $workitem->getCreator()->getNickname();
 
-                $body.= '<br/>Runner: ';
+                $body.= '<br/>Designer: ';
                 if ($workitem->getRunnerId()) $body.= $workitem->getRunner()->getNickname();
 
-                $body.= '<br/>Mechanic: ';
+                $body.= '<br/>Developer: ';
                 if ($workitem->getMechanicId()) $body.= $workitem->getMechanic()->getNickname();
 
                 $body.= '<br><br>Notes:<br>' .$workitem->getNotes();
@@ -590,10 +590,10 @@ class Notification {
                 $body .= '<br/><p>Project: ' . $project_name . "";
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname(). "";
                 if($workitem->getRunner() != '') {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . "";
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . "";
                 }
                 if($workitem->getMechanic() != '') {
-                   $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . "</p><br/>";
+                   $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . "</p><br/>";
                 }
                 $body .= '<br><br><a href="' . WORKLIST_URL . $itemId . '">View new item</a>.';
             break;
@@ -602,10 +602,10 @@ class Notification {
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if($workitem->getRunner() != '') {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                    $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                    $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -616,10 +616,10 @@ class Notification {
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if($workitem->getRunner() != '') {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 if($workitem->getMechanic() != '') {
-                $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
                 $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
                 . 'You are welcome to bid the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
@@ -714,8 +714,8 @@ class Notification {
                 $body .= '<br>';
                 $body .= '<p>Project: '.$project_name.'<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
-                $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '</p>';
+                $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
+                $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . '</p>';
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job <a href="'. WORKLIST_URL . $itemId . '">here</a>.' . '<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
@@ -727,8 +727,8 @@ class Notification {
                 $body .= "The done by time has now passed.</p>";
                 $body .= '<p>Project: ' . $project_name . '<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
-                $body .= 'Mechanic: ' . $workitem->getMechanic()->getNickname() . '</p>';
+                $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
+                $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . '</p>';
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
@@ -744,7 +744,7 @@ class Notification {
                 $body .= '<p>Project: ' . $project_name . '<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if ($workitem->getRunnerId()) {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
@@ -775,7 +775,7 @@ class Notification {
                 $body .= '<p>Project: ' . $project_name . '<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if ($workitem->getRunnerId()) {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
@@ -791,7 +791,7 @@ class Notification {
                 $body .= '<p>Project: ' . $project_name . '<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if ($workitem->getRunnerId()) {
-                    $body .= 'Runner: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
                 $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
                 $body .= '<p>You can view the job ';
