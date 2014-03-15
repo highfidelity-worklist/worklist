@@ -43,7 +43,12 @@
 <div id="info-top" class="top-bar">
     {{^editing}}
     <div id="quick-status">
-        <span class="info-label"><a href="./help#ff5">Job status:</a></span>
+        <span class="info-label">
+            <a href="./help#ff5">Job status:</a>
+            {{^canChangeStatus}}
+                <strong>{{worklist.status}}</strong>
+            {{/canChangeStatus}}
+        </span>
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
@@ -52,13 +57,6 @@
                 {{& editableStatusSelect}}
             </select>
         </form>
-        {{/canChangeStatus}}
-        {{^canChangeStatus}}
-            <form id="searchForm" method="post" action="" _lpchecked="1">
-                <div class="ui-state-default ui-corner-all ui-combobox statusCombo" style="display: inline-block; " id="container-statusCombo">
-                    <input type="text" class="ui-state-default ui-combobox-textbox" style="width: 198px; " readonly="readonly" value="{{worklist.status}}">
-                </div>
-            </form>
         {{/canChangeStatus}}
     </div>
     {{/editing}}

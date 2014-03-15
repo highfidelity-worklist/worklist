@@ -96,7 +96,7 @@ class JobView extends View {
         $worklist = $this->worklist;
         $user = $this->user;
         $is_runner = $this->currentUser['is_runner'];
-        return (
+        return $this->currentUser['id'] && (
             (   !$this->workitem->getIsRelRunner() 
                 || ($user->getIs_admin() == 1 && $is_runner) 
                 || ($worklist['mechanic_id'] == $this->currentUser['id']) &&
