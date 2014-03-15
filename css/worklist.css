@@ -3,16 +3,6 @@
     All Rights Reserved. 
     http://www.lovemachineinc.com
 */
-* :focus { outline: 0; }
-
-a:active {
-    color: #000000;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 #confirmation{
     display: none;
 }

@@ -4,18 +4,6 @@
     http://www.lovemachineinc.com
 */
 
-a {
-    color: #333333;    
-}
-
-a:hover {
-    color: #608E96;
-}
-
-a:active {
-    color: #007F7C;
-}
-
 #center {
     width: 902px;
     padding-left: 15px;

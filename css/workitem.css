@@ -182,20 +182,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-top: 6px;
 }
 
-a {
-    text-decoration: none;
-    color: #333;
-}
-
-a:active{
-    color: #aaa;
-    text-decoration: underline;
-}
-
-a:hover{
-    text-decoration: underline;
-}
-
 .first-line {
     position: absolute;
     height: 20px;
@@ -1323,15 +1309,9 @@ a.profile-link {
     float: left;
 }
 
-a:hover {
-    cursor: pointer;
-    text-decoration: underline !important;
-    color: #608e96 !important;
-}
-
 #following:hover,
 #invite-link:hover,
-switchmode:hover {
+.switchmode:hover {
     cursor: pointer;
     text-decoration: underline !important;
     color: #608e96 !important;
