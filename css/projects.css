@@ -346,7 +346,7 @@ input.LV_invalid_field {
     clear: both;
     font-size: 12px !important;
     font-weight: normal;
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
 }
 
 #custom-github-info {

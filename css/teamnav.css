@@ -9,7 +9,7 @@ h1 {
 }
 
 #newUserStats {
-    font-family: helvetica,arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
     float: right;
     width: 300px;
     margin-top: 20px;
@@ -325,7 +325,7 @@ div#center {
 #query, 
 #filters_box .ui-combobox-textbox,
 #filters_box .ui-combobox-list li {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
 }
 
 #search-filter-wrap .crossSearch {

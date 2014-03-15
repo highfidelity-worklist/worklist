@@ -151,10 +151,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
 }
 
-.cabin a {
-    text-decoration: underline;
-}
-
 #center {
     width: 857px;
 }

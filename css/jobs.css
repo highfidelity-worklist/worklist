@@ -25,7 +25,7 @@ body {
 .user-info select
 {
     font-size: 14px;
-    font-family: helvetica, arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
     width: 370px;
 }
 
@@ -811,7 +811,7 @@ table.table-worklist > tbody > tr.worklist-pagination-row > td {
     font-weight: bold; 
     font-size:18px !important; 
     color: #666666 !important;
-    font-family: cabin; 
+    font-family: proxima-nova,sans-serif; 
 }
 .bid_amount_textfield {
     width: 73px !important; 

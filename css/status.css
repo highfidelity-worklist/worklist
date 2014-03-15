@@ -91,7 +91,7 @@ body {
 
 /* add job button styling */
 #biddingJobs > p:first-child > a {
-    background-color: #009b9b;
+    background-color: #009999;
     color: #fff;
     font-weight: bold;
     padding: 7px 15px;

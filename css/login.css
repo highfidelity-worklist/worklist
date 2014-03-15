@@ -50,13 +50,13 @@ body {
 }
 
 #form-login > h2:first-child + p {
-    background-color: #009b9b;
+    background-color: #009999;
     color: #fff;
 }
 
 #form-login button[type="submit"] {
     border: 0 none;
-    background-color: #009b9b;
+    background-color: #009999;
     color: #fff;
     font-weight: bold;
     padding: 7px 15px;
@@ -70,7 +70,7 @@ body {
 }
 
 #form-login fieldset > a {
-    color: #009b9b;
+    color: #009999;
 }
 
 #form-login > fieldset > label {
@@ -85,5 +85,5 @@ body {
 /* let's not show the box shadow inherited from bootstrap this time */
 #form-login > fieldset > input:focus {
     box-shadow: none;
-    border-color: #009b9b;
+    border-color: #009999;
 }

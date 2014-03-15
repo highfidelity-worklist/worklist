@@ -8,7 +8,7 @@ body {
     width: 100%;
     border-spacing: 0px;
     border-collapse: collapse;
-    font-family: helvetica, arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
 }
 .budgetTable th{
     text-align: left;
@@ -54,7 +54,7 @@ body {
 td,
 th {
     padding: 3px;
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
     font-size: 13 px;
     border-width: 1px;
     border-style: solid;
@@ -90,6 +90,6 @@ table thead tr{
 }
 
 .pages{
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
     font-size: 13 px;
 }
