@@ -63,3 +63,21 @@ table.table-fees thead tr td {
     text-align: left;
 }
 
+section#footer {
+    max-width: 375px;
+    padding: 6px 0 0 35px;
+    background-position: center left;
+}
+
+section#footer li:first-child:before {
+    content : '• ';
+}
+
+section#footer p,
+section#footer li:nth-child(-n+3) {
+    display: inline-block;
+}
+
+section#footer li:nth-child(-n+3) {
+    display: none;
+}

@@ -28,27 +28,9 @@ nav.navbar .navbar-right > li > a[href="./signup"] {
     font-weight: bold;
 }
 
-
-/* multiline-centered footer with logo by default */
-section#footer {
-    max-width: 400px;
-    padding: 35px 0 0 0;
-    background-position: top center;
-}
-
-/* no styling on the first item from the links list */
-section#footer li:first-child:before {
-    content : '';
-}
-
-/* reverting footer paragraph as block */
-section#footer p {
-    display: block;
-}
-
-/* displaying first 3 links on this layout's footer (hidden on footer.css) */
-section#footer li:nth-child(-n+3) {
-    display: inline-block;
+/* navigation signup link color */
+nav.navbar .navbar-right > li > a[href="./login"] {
+    color: #007F7c;
 }
 
 /*
