@@ -1217,3 +1217,88 @@ input {
         right: 5px;
     } 
 }
+
+td.statusDraft > i,
+td.statusSuggested > i,
+td.statusSuggestedWithBid > i,
+td.statusBidding > i,
+td.statusWorking > i,
+td.statusFunctional > i,
+td.statusReview > i,
+td.statusNeedsReview > i,
+td.statusInReview > i,
+td.statusReviewed > i,
+td.statusCompleted > i,
+td.statusPass > i,
+td.statusDone > i {
+    content: ' ';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 10px;
+    margin: -2px 5px 0 0;
+    vertical-align: middle;
+}
+
+td.statusDraft {
+    color: #eddfb4;
+}
+td.statusDraft > i {
+    background-color: #eddfb4;
+}
+td.statusSuggested,
+td.statusSuggestedWithBid {
+    color: #ffcc66;
+}
+td.statusSuggested > i,
+td.statusSuggestedWithBid > i {
+    background-color: #ffcc66;
+}
+td.statusBidding {
+    color: #ff9900;
+}
+td.statusBidding > i {
+    background-color: #ff9900;
+}
+td.statusWorking {
+    color: #22bc7a;
+}
+td.statusWorking > i {
+    background-color: #22bc7a;
+}
+td.statusFunctional {
+    color: #1c658e;
+}
+td.statusFunctional > i {
+    background-color: #1c658e;
+}
+td.statusReview,
+td.statusNeedsReview,
+td.statusInReview,
+td.statusReviewed {
+    color: #ff5582;
+}
+td.statusReview > i,
+td.statusNeedsReview > i,
+td.statusInReview > i,
+td.statusReviewed > i {
+    background-color: #ff5582;
+}
+td.statusCompleted {
+    color: #999999;
+}
+td.statusCompleted > i {
+    background-color: #999999;
+}
+td.statusPass {
+    color: #cccccc;
+}
+td.statusPass > i {
+    background-color: #cccccc;
+}
+td.statusDone {
+    color: #000000;
+}
+td.statusDone > i {
+    background-color: #000000;
+}

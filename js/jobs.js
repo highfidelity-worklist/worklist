@@ -191,7 +191,8 @@ function AppendRow (json, prepend, moreJson, idx) {
     if ((json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') && json[10] > 0) {
         bidCount = ' (' + json[10] + ')';
     }
-    row += '<td class="status-col">' + json[2] + bidCount + '</td>';
+    colStatus = json[2].replace(/\s/g, '');
+    row += '<td class="status-col status' + colStatus + '"><i></i>' + json[2] + bidCount + '</td>';
 
     var who = '',
         createTagWho = function (id, nickname) {
@@ -333,13 +334,11 @@ function GetWorklist(npage, update, reload) {
         search_status = 'Needs-Review';
     } else if ($('select[name="status"]').val()) {
         search_status = ($('select[name="status"]').val()).join("/");
-    } else if (userId) {
+    } else {
         search_status = 'ALL';
         mobile_filter = true;
-    } else {
-        search_status = 'Bidding';
     }
-    
+
     $.ajax({
         type: "POST",
         url: 'api.php',
