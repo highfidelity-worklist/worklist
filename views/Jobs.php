@@ -139,7 +139,7 @@ class JobsView extends View {
             $box .= '<option value="' . $status . '"' . $selected . '>' . $status . '</option>';
         }
         
-        $box .= '<option value="CheckDone">Done</option>';
+        //$box .= '<option value="CheckDone">Done</option>';
         $box .= '</select>';
         return $box;
     }
