@@ -397,7 +397,7 @@ class JobController extends Controller {
             } else {
                 $workitem->setCRStarted(1);
                 $workitem->save();
-                $journal_message = '@' . $_SESSION['nickname'] . ' has started a code review for **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**';
+                $journal_message = '@' . $_SESSION['nickname'] . ' has started a review for **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**';
                 
                 $options = array(
                     'type' => 'code-review-started',
@@ -427,9 +427,9 @@ class JobController extends Controller {
                     }
                 } 
                 if($crfee_desc == '') {
-                    $crfee_desc = 'Code Review';
+                    $crfee_desc = 'Review';
                 } else {
-                    $crfee_desc = 'Code Review - '. $crfee_desc;
+                    $crfee_desc = 'Review - '. $crfee_desc;
                 }
                 $journal_message = AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $workitem->getCReviewerId(), $is_expense, $is_rewarder);
                 sendJournalNotification($journal_message);
@@ -1202,7 +1202,7 @@ class JobController extends Controller {
             }
         }
 
-        //code review fees
+        //review fees
         $project = new Project();
         $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
         $crFee = 0;
@@ -1402,7 +1402,7 @@ class JobController extends Controller {
 
                     try {
                         $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
-                        $comment = "Code review available here:\n$result";
+                        $comment = "Review available here:\n$result";
                         $rt = $this->addComment($workitem->getId(), $user->getId(), $comment);
                     } catch (Exception $ex) {
                         error_log("Could not paste diff: \n$ex");
@@ -1414,7 +1414,7 @@ class JobController extends Controller {
 
                 if (!$pullResults['error'] && !isset($pullResults['data']['errors'])) {
                     $codeReviewURL = $pullResults['data']['html_url'] . '/files';
-                    $comment = "Code review available here:\n" . $codeReviewURL;
+                    $comment = "Review available here:\n" . $codeReviewURL;
                 } else {
                     $comment = $pullResults['error'] 
                         ? "We had problems making your request to GitHub\n" 

@@ -557,8 +557,8 @@ class JsonServer
         $user_id = $this->getRequest()->getParam('userid');
         $workItemToCheckCodeReview = new WorkItem($workitem_id);
          
-        // This loop waits its turn to check for code review. Shared memory is used for this
-        // 2nd, third etc code reviewers code will halt here
+        // This loop waits its turn to check for review. Shared memory is used for this
+        // 2nd, third etc reviewers code will halt here
         do {
             $sem_id = shmop_open($workitem_id, "n", 0644, 10);
         } while ($sem_id === false);
@@ -574,9 +574,9 @@ class JsonServer
         shmop_delete($sem_id); // Delete shared memory
         
         if ($status === null) {
-            return $this->setOutput(array('success' => false, 'data' => nl2br('Code review not available right now')));
+            return $this->setOutput(array('success' => false, 'data' => nl2br('Review not available right now')));
         } else if ($status === true || (int)$status == 0) {
-            $journal_message = '@' . $user->getNickname() . ' has started a code review for **#' . $workitem_id . "**\n\n**" . 
+            $journal_message = '@' . $user->getNickname() . ' has started a review for **#' . $workitem_id . "**\n\n**" . 
                 $workItem->getSummary() . '**';
             sendJournalNotification($journal_message);
             
@@ -646,7 +646,7 @@ class JsonServer
         $workitem->setCRStarted(0);
         $workitem->setCReviewerId(0);
         $workitem->save();
-        $journal_message = '@' . $user->getNickname() . ' has canceled their code review for **#' . $workitem_id . "**\n\n**" . $workitem->getSummary() . '**';
+        $journal_message = '@' . $user->getNickname() . ' has canceled their review for **#' . $workitem_id . "**\n\n**" . $workitem->getSummary() . '**';
         sendJournalNotification($journal_message);
         
         $options = array(
@@ -944,7 +944,7 @@ class JsonServer
     }
     
     /**
-     * Allows you to add a code reviewer to the project
+     * Allows you to add a reviewer to the project
      */
     protected function actionAddCodeReviewerToProject() {
         $project = new Project();
@@ -965,7 +965,7 @@ class JsonServer
                 throw new Exception('Not a user in our system');
             }
             if ($project->isProjectCodeReviewer($user->getId())) {
-                throw new Exception('Entered user is already a Code Reviewer for this project');
+                throw new Exception('Entered user is already a Reviewer for this project');
             }
     
             if (! $project->addCodeReviewer($user->getId())) {
@@ -990,7 +990,7 @@ class JsonServer
     
             return $this->setOutput(array(
                 'success' => true,
-                'data' => 'Code Reviewer added successfully'
+                'data' => 'Reviewer added successfully'
             ));
         } catch (Exception $e) {
             $error = $e->getMessage();

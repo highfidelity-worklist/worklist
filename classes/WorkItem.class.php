@@ -1362,7 +1362,7 @@ class WorkItem {
             try {
                 $returnValue = $this->authorizeSandbox();
             } catch (Exception $ex) {
-                //log error and allow code review
+                //log error and allow review
                 error_log($ex->getMessage());
             }
         }
@@ -1380,7 +1380,7 @@ class WorkItem {
             try {
                 $returnValue = $this->authorizeSandbox();
             } catch (Exception $ex) {
-                //log error and allow code review
+                //log error and allow review
                 error_log($ex->getMessage());
             }
 
@@ -1408,7 +1408,7 @@ class WorkItem {
         // and accepted bid
         if ($this->hasAcceptedBids()) {
             $reviewer_fee = 0;
-            $reviewer_fee_desc = '/^Code Review - comment/';
+            $reviewer_fee_desc = '/^Review - comment/';
             $reviewer_fee_added = false;
 
 
@@ -1436,7 +1436,7 @@ class WorkItem {
                             $reviewer_fee = $reviewer_role['min_amount'];
                         }
                         // add the fee
-                        $reviewer_fee_detail = 'Code Review - comment';
+                        $reviewer_fee_detail = 'Review - comment';
                         AddFee($this->getId(), 
                                $reviewer_fee, 
                                $fee_category, 

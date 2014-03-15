@@ -305,23 +305,23 @@
         {{/editing}}
         {{#canReview}}
             <div class="code-review">
-                <span>Time for a code review!</span>
+                <span>Time for a review!</span>
                 The code written for this job is ready to be reviewed.<br />
                 <b><u>View the diff</u></b> to see the code, then start the review ...
                 {{^workitem.getCRStarted}}
                     {{#userHasRights}}
-                        <input class="iToolTip cR" type="submit" value="Start Code Review" 
+                        <input class="iToolTip cR" type="submit" value="Start Review" 
                           onClick="return CheckCodeReviewStatus();"/>
                     {{/userHasRights}}
                     {{^userHasRights}}
-                        <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" 
+                        <input class="iToolTip cRDisallowed" type="submit" value="Start Review" 
                           onClick="return false;"/>
                     {{/userHasRights}}
                 {{/workitem.getCRStarted}}
                 {{#workitem.getCRStarted}}
                     {{^workitem.getCRCompleted}}
                         {{#canEndReview}}
-                            <input class="iToolTip endCr" type="submit" value="End Code Review" 
+                            <input class="iToolTip endCr" type="submit" value="End Review" 
                               onClick="return showEndReviewForm();"/>
                         {{/canEndReview}}
                     {{/workitem.getCRCompleted}}

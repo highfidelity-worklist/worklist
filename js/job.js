@@ -1088,7 +1088,7 @@ function CheckCodeReviewStatus() {
         dataType: 'json',
         success: function(data) {
 
-                //now check the returned data. if code review has already been started show dialog
+                //now check the returned data. if review has already been started show dialog
                 if(data[0].code_review_started == 1 ) {
                     $('#popup-review-started').dialog('open');
                 }
@@ -1105,7 +1105,7 @@ function CheckCodeReviewStatus() {
 
 function showReviewForm() {
     if (WorklistProject.repo_type == 'svn') {
-        openNotifyOverlay("Authorizing sandbox for code review ...", false);
+        openNotifyOverlay("Authorizing sandbox for review ...", false);
     }
     $.ajax({
         type: 'post',

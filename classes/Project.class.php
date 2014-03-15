@@ -835,7 +835,7 @@ class Project {
         return mysql_query($query) ? 1 : 0;
     }  
     /**
-     * Allows you to add a code reviewer to the project
+     * Allows you to add a reviewer to the project
      * @param $codeReviewer_id
      * @return number
      */
@@ -918,7 +918,7 @@ class Project {
     }
     
     /**
-     * Get the Code Reviewers for current project
+     * Get the Reviewers for current project
      * @return unknown|boolean
      */
     public function getCodeReviewers() {
@@ -990,7 +990,7 @@ class Project {
     }
 
     /**
-     * Get the last activity of the code reviewer on the current project
+     * Get the last activity of the reviewer on the current project
      * @param $userId
      * @return boolean|string
      */

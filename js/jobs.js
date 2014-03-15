@@ -28,7 +28,7 @@ $(document).ready(function() {
     var box_h = $('select[name=user]').height() +1;
     $('#userbox').css('margin-top', '-'+box_h+'px');
 
-    // Validate code review input
+    // Validate review input
     $(':checkbox').change(function() {
         validateCodeReviews();
     });

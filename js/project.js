@@ -89,7 +89,7 @@ $(document).ready(function() {
         active: true
     });
 
-    // Validate code review input
+    // Validate review input
     // @TODO: The :checkbox selector is too broad, we might
     // have additional checkboxes in the future..   - lithium
     $('.code_review_chks, #cr_users_specified_field').change(function(){
@@ -223,7 +223,7 @@ $(document).ready(function() {
     });
 
     $("#addcodereviewer-textbox").autocomplete({source: autocompleteUserSource});
-    // Get the project code reviewers
+    // Get the project reviewers
     getProjectCodeReviewers = function() {
         $('#projectCodeReviewRights tbody').html('Loading ...');
         $.ajax({
@@ -262,7 +262,7 @@ $(document).ready(function() {
     getProjectCodeReviewers();
 
     $('#addcodereviewer-form').submit(function(event) {
-        openNotifyOverlay('<span>Adding Code Reviewer to your project...</span>', false);
+        openNotifyOverlay('<span>Adding Reviewer to your project...</span>', false);
         $.ajax({
             type: 'post',
             url: 'jsonserver.php',
@@ -291,7 +291,7 @@ $(document).ready(function() {
     
     $('#removecodereviewer').click(function(event) {
         openNotifyOverlay(
-            '<span>Removing selected user(s) as Code reviewer(s) for this project. ', true);
+            '<span>Removing selected user(s) as reviewer(s) for this project. ', true);
         var codeReviewers = '';
         $('#projectCodeReviewRights input[name^=codereviewer]:checked').each(function() {
             var codeReviewer = parseInt($(this).attr('name').substring(12));
@@ -372,7 +372,7 @@ $(document).ready(function() {
             $('#popup-edit-role').dialog('open');
     });
 
-    //popup for adding Project Runner and code reviewers
+    //popup for adding Project Runner and reviewers
     $('#add-runner, #add-codereviewer').dialog({
         autoOpen: false,
         dialogClass: 'white-theme',
