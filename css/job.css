@@ -6,6 +6,11 @@
     padding-left: 100%;
 }
 
+#info-top .title:before {
+    content: '- ';
+    color: #333;
+}
+
 #commentform {
     background-color: #efefef;
     border-width: 1px;
