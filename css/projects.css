@@ -77,7 +77,7 @@
 
 #projects > article h3:before {
     content: '\00a0';
-    width: 75px;
+    width: 35px;
     background: #000;
     position: absolute;
     right: 0;
