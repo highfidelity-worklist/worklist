@@ -11,13 +11,14 @@
 
 #add-project {
     color: #007F7C;
-    float: right;
     font-size: 20px;
     text-decoration: none;
-    width: 150px;
     font-family: proxima-nova, sans-serif;
     font-weight: bold;
     text-align: right;
+    display: block;
+    float: right;
+    margin-top: -35px;
 }
 
 #add-project span {
@@ -49,35 +50,49 @@
     text-align: left;
     vertical-align: middle;
     width: 234px;
+    position: relative;
 }
 
 #projects > article img {
-    margin-bottom: 15px;
     width: 48px;
     height: 48px;
     border-radius: 3px;
     box-shadow: 0 0 5px #CCCCCC;
 }
 
-#projects > article h2,
-#projects > article h2 a {
-    font-size: 26px;
-    font-family: proxima-nova, sans-serif;
-    font-weight: bold;
-    color: #007F7C;
-    text-decoration: none;
+#projects > article h3 {
     padding-bottom: 0;
     margin-bottom: 8px;
     overflow: hidden;
-    max-width: 255px;
-}
-
-#projects > article h2 div {
     position: relative;
 }
 
+#projects > article h3 a {
+    font-size: 26px;
+    font-weight: bold;
+    color: #007F7C;
+    text-decoration: none;
+    max-width: 255px;
+}
+
+#projects > article h3:before {
+    content: '\00a0';
+    width: 75px;
+    background: #000;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+}
+
 #projects section.description {
-    height: 126px;
+    max-height: 180px;
     font-size: 16px;
     overflow: hidden;
     font-size: 14px;
@@ -85,8 +100,28 @@
 }
 
 #projects article .stats {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
     list-style-type: none;
-    padding-left: 0;
+}
+
+#projects article .stats:before {
+    content: '\00a0';
+    left: 0;
+    width: 100%;
+    display: block;
+    position: absolute;
+    margin-top: -50px;
+    height: 50px;
+    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
 #projects article .stats li {

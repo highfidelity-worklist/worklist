@@ -209,7 +209,7 @@ var WorklistProject = {
         project += '<article id="project-' + json.project_id + '">';
         project += '<a href="' + link + '"><img src="' + image_filename + '" border="1" width="48" height="48"  title="Last commit: ' + json.last_commit + '" /></a>';
 
-        project += '<h2><div><a href="' + link + '">' + json.name + '</a><span class="fading">&nbsp;</span></div></h2>';
+        project += '<h3><a href="' + link + '">' + json.name + '</a></h3>';
         project += '<section class="description">' + description + '</section>';
         project += '<ul class="stats">';
         project += '<li><a href="./jobs?status=bidding&project=' + json.name + '"><strong>' + json.bCount + ' jobs in bidding</strong></a></li>';
