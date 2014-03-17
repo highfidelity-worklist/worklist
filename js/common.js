@@ -317,6 +317,9 @@ function validateUploadImage(file, extension) {
 
 // main common.js initialization
 $(function() {
+    if ($('#sent-notify').length == 0) {
+        $('<div>').attr({id: 'sent-notify'}).css({display: 'none'}).appendTo('body');
+    }
     $('#sent-notify').dialog({
         modal: false,
         autoOpen: false,
