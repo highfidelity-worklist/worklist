@@ -596,10 +596,11 @@ class JobView extends View {
         $user = $this->user;
  
         $feeTotal = 0;
+        $ret = '';
         foreach($fees as $fee) {
             $feeTotal += (float) $fee['amount'];
             $date = explode("/", $fee['date']);
-            $ret = 
+            $ret .= 
                 '<tr class="row-feelist-live">' .
                     '<script type="data">' .
                         "{id: {$fee['id']}, " .
@@ -630,7 +631,7 @@ class JobView extends View {
                                     '</a>'
                                 :
                                     $fee['paid'] == 0 ? "No" : "Yes"
-                        ) .
+                        ) . ' ' .
                         (
                             (
                                  $worklist['status'] != 'Done'

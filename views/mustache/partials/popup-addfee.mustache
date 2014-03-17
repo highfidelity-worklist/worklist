@@ -1,5 +1,5 @@
     <div id="popup-addfee" class="popup-body" title = "Add Fee">
-        <form name="popup-form" id="popup-form-addfee" action="" method="post">
+        <form name="popup-form" id="popup-form-addfee" action="./{{worklist.id}}" method="post">
             {{#canFeeOthers}}
                 <div class="clear">
                     <p class="info-label"><label for="mechanic_id">Pay To</label>
@@ -44,9 +44,6 @@
                     }
                     $('#add_fee').click(function() {
                         $('#add_fee').attr('disabled', 'disabled');
-                    });
-                    $('#popup-form-addfee').submit(function() {
-                        return false;
                     });
                     if ($('#mechanicFee').length !== 0) {
                         $('#popup-addfee #mechanic_id').val($('#popup-addfee .mechanicFeeList li.ui-combobox-list-selected').attr('val'));
