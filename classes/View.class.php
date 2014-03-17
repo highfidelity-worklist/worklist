@@ -33,6 +33,7 @@ class View extends AppObject {
         'runner_id' => 0,
         'is_admin' => false,
         'is_payer' => false,
+        'is_paypal_verified' => false,
         'can' => array(
             'addProject' => false
         ),
@@ -45,6 +46,9 @@ class View extends AppObject {
             'paid' => .0,
             'transfered' => .0,
             'transfersDetails' => array()
+        ),
+        'can' => array(
+            'addProject' => false
         )
     );
 
@@ -75,7 +79,7 @@ class View extends AppObject {
                 'transfered' => money_format('$ %i', $user->getTransfered()),
                 'transfersDetails' => $user->getBudgetTransfersDetails()
             );
-            $this->user['can'] = array(
+            $this->currentUser['can'] = array(
                 'addProject' => ($user->getIs_admin() || $user->isRunner() || $user->isPaypalVerified())
             );
         }

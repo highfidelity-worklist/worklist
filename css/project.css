@@ -1,4 +1,4 @@
-/*  
+</*  
     Copyright (c) 2009-2010, LoveMachine Inc.
     All Rights Reserved. 
     http://www.lovemachineinc.com
@@ -524,4 +524,8 @@ li#projectAverageBid {
 
 #codeReviewers, #project_runners_table {
     width: 402px !important;
+}
+
+.container-fluid .table > thead > tr > th {
+    color: #999;
 }
