@@ -68,6 +68,23 @@ table.table-fees thead tr td {
     text-align: left;
 }
 
+.table-fees td.who {
+    width: 27%;
+}
+.table-fees td.fee {
+    width: 20%;
+}
+.table-fees td.what {
+    width: 18%;
+}
+.table-fees td.when {
+    width: 20%;
+}
+.table-fees td.paid {
+    width: 15%;
+}
+
+/* inline footer */
 section#footer {
     max-width: 410px;
     padding: 6px 0 0 35px;

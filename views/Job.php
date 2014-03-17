@@ -618,7 +618,7 @@ class JobView extends View {
                     '<td class="fee">' .
                         '$' . $fee['amount'] . 
                     '</td>' .
-                    '<td class="pre fee-description what"><div class="arrow"></div></td>' .
+                    '<td class="pre fee-description what">&nbsp;</td>' .
                     '<td class="when">' .
                         date( "M j", mktime(0, 0, 0, $date[0], $date[1], $date[2])) .
                     '</td>' .
@@ -653,7 +653,8 @@ class JobView extends View {
                 $ret .=
                     '<tr>' .
                         '<td colspan="5" class="bid-notes">' .
-                            '<p><strong>Bid Notes:</strong>' . $fee['bid_notes'] . '</p>' .
+                            '<p><strong>Bid Notes:</strong>
+                            ' . $fee['bid_notes'] . '</p>' .
                         '</td>' .
                     '</tr>';
             }

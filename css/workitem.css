@@ -1110,13 +1110,18 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     line-height: 19px;
 }
 
-#page-content table .arrow{
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 11px -1037px;
-    background-repeat: no-repeat;
-    float: left;
-    width: 100%;
-    padding: 13px 0;
+#page-content table td.what {
+    text-align: center;
+} 
+
+#page-content table tbody tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
+    content: '\00a0';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    margin: -10px 0 0 -170px;
+    background-color: #fff;
+    transform: rotate(45deg);
 }
 
 #for_view .notestext a, .comment a {
