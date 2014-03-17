@@ -1,7 +1,9 @@
 var NewWorklist = {
     init: function() {
         // proxima-nova fonts
-        Typekit.load();
+        if (typeof Typekit != 'undefined') {
+            Typekit.load();
+        }
 
         $(document).ajaxSend(function(event, request, settings) {
             if ($('#ajaxSpin').length > 0) {
