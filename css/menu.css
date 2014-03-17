@@ -44,7 +44,7 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     }
 
     /* links at the right side of the navbar will only have a left-border except for the first one */
-    body > nav.navbar ul.nav:last-child li:nth-child(n+2) {
+    body > nav.navbar ul.nav:last-child > li:nth-child(n+2) {
         border-left: 1px solid #515151;
     }
 

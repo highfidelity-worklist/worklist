@@ -76,16 +76,6 @@ span.info-whisper {
     font-weight: bold;
 }
 
-.divider {
-    border-bottom: 2px solid;
-    position: relative;
-    top: -14px;
-    left: 6px;
-    overflow: hidden;
-    width: 4px;
-    float: left;
-}
-
 .info-label{
     font-weight: bold;
     float: left;
