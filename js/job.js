@@ -760,6 +760,7 @@ $(document).ready(function(){
 
         $('.wd-link').click(function(e) {
             e.stopPropagation();
+            e.preventDefault();
             var fee_id = $(this).attr('id').substr(3);
             $('#withdraw .fee_id').val(fee_id);
             $('#withdraw').submit();
