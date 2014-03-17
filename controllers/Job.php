@@ -25,13 +25,12 @@ class JobController extends Controller {
         } else {
             $user->setId(0);
         }
+        $this->write('user', $user);
 
         // TODO: Would be good to take out all the checks for isset($_SESSION['userid'] etc. and have them use $user instead, check $user->getId() > 0.
         if (empty($worklist_id)) {
+            $this->view = null;
             return;
-        } else {
-            // feed links will be made specific to the workitem
-            $inWorkItem = true;
         }
         //Set an empty variable for $journal_message to avoid errors/warnings with .=
         $journal_message = null;
@@ -45,6 +44,7 @@ class JobController extends Controller {
             $this->view = null;
             die($error);
         }
+        $this->write('workitem', $workitem);
 
         // we need to be able to grant runner rights to a project founder for all jobs for their project
         $workitem_project = Project::getById($workitem->getProjectId());
@@ -52,6 +52,7 @@ class JobController extends Controller {
         if($workitem_project->getOwnerId() == $_SESSION['userid']){
             $is_project_founder = true;
         }
+        $this->write('workitem_project', $workitem_project);
         $this->write('is_project_founder', $is_project_founder);
 
         $this->write('isGitHubConnected', $user->isGithub_connected($workitem_project->getGithubId()));
@@ -63,13 +64,10 @@ class JobController extends Controller {
         }
         $this->write('is_project_runner', $is_project_runner);
 
-        $redirectToDefaultView = false;
-        $redirectToWorklistView = false;
         $promptForReviewUrl = true;
         $runner_budget = $user->getBudget();
 
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
-
         if ($workitem->getStatus() == 'Done' && $action == 'edit') {
             $action = 'view';
         }
@@ -125,6 +123,7 @@ class JobController extends Controller {
             $action_error = '';
             $action = $workitem->validateAction($action, $action_error);
         }
+        $this->write('action', $action);
 
         // Save WorkItem was requested. We only support Update here
         $notifyEmpty = true;
@@ -302,7 +301,6 @@ class JobController extends Controller {
                 $notifyEmpty = false;
             }
 
-             $redirectToDefaultView = true;
              if ($workitem->getStatus() != 'Draft') {
                 $journal_message .= '**#' . $worklist_id . '** updated by @' . $_SESSION['nickname'] .
                                     $bugJournalMessage  ."\n\n**". $workitem->getSummary() . '**' .
@@ -717,9 +715,6 @@ class JobController extends Controller {
             } else {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
             }
-
-            $redirectToDefaultView = true;
-            // echo 'redirect is set to true ' . $redirectToDefaultView;
         }
 
         // Edit Bid
@@ -779,8 +774,6 @@ class JobController extends Controller {
                     Notification::sendShortSMS($runner, 'Updated', $journal_message, WORKITEM_URL . $worklist_id);
                 }
             }
-
-            $redirectToDefaultView = true;
         }
         // Request submitted from Add Fee popup
         if ($action == "add_fee") {
@@ -829,7 +822,6 @@ class JobController extends Controller {
                         Notification::sendShortSMS($runner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
                     }
                 }
-                $redirectToDefaultView = true;
             }
         }
 
@@ -872,8 +864,6 @@ class JobController extends Controller {
                 $data['tipped_nickname'] = $recipient->getNickname();
                 Notification::workitemNotifyHipchat($options, $data);
             }
-            
-            $redirectToDefaultView = true;
         }
 
         // Accept a bid
@@ -881,7 +871,6 @@ class JobController extends Controller {
             if (!isset($_REQUEST['bid_id']) ||
                 !isset($_REQUEST['budget_id'])) {
                 $_SESSION['workitem_error'] = "Missing parameter to accept a bid!";
-                $redirectToDefaultView = true;
             } else {
 
                 $bid_id = intval($_REQUEST['bid_id']);
@@ -890,7 +879,6 @@ class JobController extends Controller {
                 $budget = new Budget();
                 if (!$budget->loadById($budget_id) ) {
                     $_SESSION['workitem_error'] = "Invalid budget!";
-                    $redirectToDefaultView = true;
                 }
                 // only runners can accept bids        
                 if (($is_project_runner || $workitem->getRunnerId() == $_SESSION['userid'] || ($user->getIs_admin() == 1
@@ -944,19 +932,15 @@ class JobController extends Controller {
                             //send sms notification to bidder
                             Notification::sendShortSMS($bidder, 'Accepted', $journal_message, WORKITEM_URL . $worklist_id);
 
-                            $redirectToDefaultView = true;
-
                             // Send email to not accepted bidders
                             $this->sendMailToDiscardedBids($worklist_id);
                         } else {
                             $overBudget = money_format('%i', $bid_amount - $remainingFunds);
                             $_SESSION['workitem_error'] = "Failed to accept bid. Accepting this bid would make you " . $overBudget . " over your budget!";
-                            $redirectToDefaultView = true;
                         }
                     }
                     else {
                         $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
-                        $redirectToDefaultView = true;
                     }
                 } else {
                     if ($workitem->getIsRelRunner() || $workitem->getRunnerId() == $_SESSION['userid']) {
@@ -965,7 +949,6 @@ class JobController extends Controller {
                         } else {
                             $_SESSION['workitem_error'] = "Accept Bid Failed, unknown task state!";
                         }
-                        $redirectToDefaultView = true;
                     }
                 }
             }
@@ -975,7 +958,6 @@ class JobController extends Controller {
         if ($action=='accept_multiple_bid') {
             if (!isset($_REQUEST['budget_id'])) {
                 $_SESSION['workitem_error'] = "Missing budget to accept a bid!";
-                $redirectToDefaultView = true;
             } else {
                 $bid_id = $_REQUEST['chkMultipleBid'];
                 $mechanic_id = $_REQUEST['mechanic'];
@@ -983,7 +965,6 @@ class JobController extends Controller {
                 $budget = new Budget();
                 if (!$budget->loadById($budget_id) ) {
                     $_SESSION['workitem_error'] = "Invalid budget!";
-                    $redirectToDefaultView = true;
                 }
                 if (count($bid_id) > 0) {
                 //only runners can accept bids
@@ -1035,7 +1016,6 @@ class JobController extends Controller {
                             }
                             // Send email to not accepted bidders
                             $this->sendMailToDiscardedBids($worklist_id);
-                            $redirectToDefaultView = true;
 
                             $runner = new User();
                             $runner->findUserById($workitem->getRunnerId());
@@ -1043,7 +1023,6 @@ class JobController extends Controller {
                         } else {
                             $overBudget = money_format('%i', $total - $remainingFunds);
                             $_SESSION['workitem_error'] = "Failed to accept bids. Accepting this bids would make you " . $overBudget . " over your budget!";
-                            $redirectToDefaultView = true;
                         }
                     }
                 }
@@ -1068,7 +1047,6 @@ class JobController extends Controller {
                 $runner->findUserById($fee->runner_id);
                 $runner->updateBudget($fee->amount, $workitem->getBudget_id());
             }
-            $redirectToDefaultView = true;
         }
 
         //Decline a bid
@@ -1093,29 +1071,10 @@ class JobController extends Controller {
             $redirectToDefaultView = true;
         }
 
-        if ($action == false) {
-            $redirectToDefaultView = $redirectToWorklistView = $postProcessUrl = false;
-        }
-
-        if ($redirectToDefaultView) {
-            $postProcessUrl = WORKITEM_URL . $worklist_id;
-            if ($workitem->getStatus() == 'Done') {
-                $displayDialogAfterDone = true;
-            }
-        }
-        if ($redirectToWorklistView) {
-            $postProcessUrl = WORKLIST_REDIRECT_URL . $worklist_id;
-        }
-
         // we have a Journal message, send it to Journal - except for DRAFTS
         if(isset($journal_message) && $workitem->getStatus() != 'Draft') {
             sendJournalNotification($journal_message);
             //$postProcessUrl = WORKITEM_URL . $worklist_id . "?msg=" . $journal_message;
-        }
-
-        // if a post process URL was set, redirect
-        if(isset($postProcessUrl) && ! empty($postProcessUrl)) {
-            Utils::redirect("Location: " . $postProcessUrl);
         }
 
         // handle the makeshift error I made..
@@ -1131,6 +1090,8 @@ class JobController extends Controller {
 
         //get workitem from db
         $worklist = $workitem->getWorkItem($worklist_id);
+        $this->write('worklist', $worklist);
+
         //get bids
         $bids = $workitem->getBids($worklist_id);
         // get only those bids that have not expired, used to determine whether
@@ -1261,10 +1222,6 @@ class JobController extends Controller {
         $this->write('hideFees', $hideFees);
 
 
-        $this->write('worklist', $worklist);
-        $this->write('workitem', $workitem);
-        $this->write('user', $user);
-        $this->write('workitem_project', $workitem_project);
         $this->write('bids', $bids);
 
         $this->write('userHasRights', $this->hasRights($user_id, $workitem));
@@ -1283,7 +1240,6 @@ class JobController extends Controller {
         $reviewer->findUserById($workitem->getCReviewerId());
         $this->write('reviewer', $reviewer);
 
-        $this->write('action', $action);
         $this->write('action_error', isset($action_error) ? $action_error : '');
 
         $this->write('comments', Comment::findCommentsForWorkitem($worklist['id']));
