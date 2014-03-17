@@ -376,6 +376,7 @@ class JobController extends Controller {
             } else {
                 $json = json_encode(array('success' => false));
             }
+            $this->view = null;
             echo $json;
             ob_end_flush();
             exit;
@@ -387,6 +388,7 @@ class JobController extends Controller {
             $people = explode(',', $_REQUEST['invite']);
             $nonExistingPeople = invitePeople($people, $workitem);
             $json = json_encode($nonExistingPeople);
+            $this->view = null;
             echo $json;
             exit;
            

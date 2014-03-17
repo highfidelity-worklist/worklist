@@ -266,7 +266,7 @@ function postComment() {
                                 '<div class="comment-info">' +
                                     '<a class="author profile-link" href="./user/' + data.userid +'" target="_blank">' +
                                         data.nickname +
-                                    '</a>' +
+                                    '</a> ' +
                                     '<span class="date">' +
                                         data.date +
                                     '</span>' +
