@@ -56,9 +56,7 @@
         </span>
     </div>
 </script>
-{{#edit_mode}}
 <form name="project-form" id="project-form" action="./{{project.getName}}" method="post">
-{{/edit_mode}}
 <div id="projectHeader">
     <div class="leftCol">
         <div id="projectLogo{{#edit_mode}}Edit{{/edit_mode}}">
@@ -189,12 +187,12 @@
                     <tbody>
                     </tbody>
                 </table>
-                {{#adminOrOwner}}
+                {{#edit_mode}}{{#adminOrOwner}}
                     <div class="buttonContainer">
-                        <input type="submit" id="addrunner" value="Add" />
-                        <input type="submit" id="removerunner" value="Remove" />
+                        <input type="button" id="addrunner" value="Add" />
+                        <input type="button" id="removerunner" value="Remove" />
                     </div>
-                {{/adminOrOwner}}
+                {{/adminOrOwner}}{{/edit_mode}}
             </li>
             <li id="projectCodeReviewRights">
                 <h3>Code Reviews <span>are allowed from</span></h3>
@@ -241,12 +239,12 @@
                     <tbody>
                     </tbody>
                 </table>
-                {{#adminOrOwner}}
+                {{#edit_mode}}{{#adminOrOwner}}
                     <div class="buttonContainer">
-                        <input type="submit" id="addcodereviewer" value="Add" />
-                        <input type="submit" id="removecodereviewer" value="Remove" />
+                        <input type="button" id="addcodereviewer" value="Add" />
+                        <input type="button" id="removecodereviewer" value="Remove" />
                     </div>
-                {{/adminOrOwner}}
+                {{/adminOrOwner}}{{/edit_mode}}
             </li>
             <li id="hipchat">
                 <h3>HipChat</h3>
@@ -424,16 +422,17 @@
     {{/edit_mode}}
     {{^edit_mode}}
         <div id="buttonHolder">
-            <input class="left-button" type="submit" id="edit_project" name="edit" value="Edit project details">
+            <input type="submit" id="edit_project" name="edit" value="Edit project details">
         </div>
     {{/edit_mode}}
 {{/runnerOrPayerOrOwner}}
 </div>
-{{#edit_mode}}
 </form>
-{{/edit_mode}}
+{{> popup-addrunner}}
+{{> popup-addcodereviewer}}
 <script type="text/javascript">
     var projectid = {{project_id}};
+    var projectName = '{{project.getName}}';
     var edit_mode = {{#edit_mode}}true{{/edit_mode}}{{^edit_mode}}false{{/edit_mode}};
     var is_owner = {{#is_owner}}true{{/is_owner}}{{^is_owner}}false{{/is_owner}};
 </script>

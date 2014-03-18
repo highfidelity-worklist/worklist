@@ -412,12 +412,12 @@ $(document).ready(function() {
 
     if (edit_mode) {
         $('#cancel_project_edit').click(function() {
-            location.href = '?action=view';
+            location.href = './' + projectName + '?action=view';
             return false;
         });
     } else {
         $('#edit_project').click(function() {
-            location.href = '?action=edit';
+            location.href = './' + projectName + '?action=edit';
             return false;
         });
     }

@@ -4,7 +4,7 @@ class ProjectController extends Controller {
     public function run($project_name) {
         if (empty($project_name)) {
             $this->view = null;
-            Utils::redirect('projects');
+            Utils::redirect('./projects');
         }
 
         $projectName = mysql_real_escape_string($project_name);

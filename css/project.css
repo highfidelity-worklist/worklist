@@ -300,16 +300,7 @@ p#projectFundingSource {
 #projectRoles .buttonContainer,
 #projectRunners .buttonContainer,
 #projectCodeReviewRights .buttonContainer {
-    background-color: transparent;
-    border-bottom: 1px solid #D6D6D6;
-    border-left: 1px solid #D6D6D6;
-    border-right: 1px solid #D6D6D6;
-    float: left;
-    margin: 0;
-    padding: 10px;
-    position: static;
-    top: 0;
-    border-radius: 0px;
+    text-align: right;
 }
 
 #projectRoles .buttonContainer,
@@ -492,13 +483,6 @@ li#projectAverageBid {
     margin-bottom: 10px;
 }
 
-#modeSwitch {
-    position: absolute !important;
-    top: 10px !important;
-    right: 0 !important;
-    background-color: transparent !important;
-}
-
 .LV_validation_message {
     display: none;
 }
@@ -523,7 +507,7 @@ li#projectAverageBid {
 }
 
 #codeReviewers, #project_runners_table {
-    width: 402px !important;
+    margin-bottom: 0;
 }
 
 .container-fluid .table > thead > tr > th {
