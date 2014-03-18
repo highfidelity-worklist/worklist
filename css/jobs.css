@@ -285,7 +285,7 @@ td.textAlignReport {
 .table-worklist td:nth-child(n+2):before,
 .table-worklist tbody tr:after {
     content: ' ';
-    width: 30px;
+    width: 35px;
     height: 1.5em;
     position: absolute;
     margin-left: -35px;
