@@ -181,12 +181,6 @@ var Workitem = {
     
 }
 
-function scrollToLastComment() {
-    var scrolltoposition = $('div[id=scrollerPointer]').offset().top - $(window).height();
-    $('body,html').animate({scrollTop: scrolltoposition}, 800);
-    return false;
-}
-
 function reply(id) {
     var commentForm = $('#commentform');
     var clone = commentForm.clone();

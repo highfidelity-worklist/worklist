@@ -236,7 +236,10 @@
             {{/editing}}
 
             <div class="commentZone" id="commentZone">
-                <div class="info-comments">Comments</div>
+                <div class="row">
+                    <h3 class="info-comments col-md-8">Comments</h3>
+                    <a href="./{{worklist.id}}#recent" class="col-md-3">See most recent</a>
+                </div>
                 <ul>
                 {{#comments}}
                     <li id="comment-{{id}}" class="depth-{{depth}}">
@@ -276,7 +279,7 @@
                     </div>
                 </form>
                 {{/canComment}}
-                <div id="scrollerPointer"></div>        
+                <a name="recent"></a>        
             </div> <!-- End of div commentZone -->
         </div>  <!-- End of div for_view -->
     </div> <!-- End of div left-panel -->
