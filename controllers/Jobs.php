@@ -156,7 +156,8 @@ class JobsController extends Controller {
         // Prevent reposts on refresh
         if (! empty($_POST)) {
             unset($_POST);
-            header('Location: ' . APP_BASE . 'jobs');
+            $this->view = null;
+            Utils::redirect('./jobs');
             exit();
         }
 
