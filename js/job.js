@@ -6,7 +6,8 @@ $(function() {
     $('#statusCombo').chosen();
     $('#project_id').chosen();
     if (action == 'edit') {
-        $('select[name="runner"]').chosen({width: '180px'});
+        $('select[name="runner"]').chosen({width: 'auto'});
+        $('select[name="status"]').chosen({width: 'auto'});
     }
     if($("#is_bug").is ( ":checked" )) {
         $("#bug_job_id").keyup();

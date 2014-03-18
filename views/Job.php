@@ -10,7 +10,6 @@ class JobView extends View {
         'css/workitem.css',
         'css/review.css',
         'css/favorites.css',
-        'css/userinfo.css',
         'css/budget.css',
         'css/entries.css',
         'css/job.css'
@@ -292,7 +291,7 @@ class JobView extends View {
 
         $ret = '';
         if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) || ($this->currentUser['id'] == $worklist['runner_id'])) {
-            $ret .= '<select id="status" name="status" class="hidden">';
+            $ret .= '<select id="status" name="status">';
             foreach ($statusListRunner as $status) {
                 $ret .= '<option value="' . $status . '"' . ($status == $worklist['status'] ? ' selected="selected"' : '') .'>' . $status . '</option>';
             }
@@ -303,7 +302,7 @@ class JobView extends View {
                 $ret .= '<option value="' . $status . '"' . ($status == $worklist['status'] ? ' selected="selected"' : '') . '>' . $status . '</option>';
             }
             $ret .= '</select>';
-        } else if ($$worklist['creator_id'] == $this->currentUser['id']) {
+        } else if ($worklist['creator_id'] == $this->currentUser['id']) {
             $ret .= '<select id="status" name="status">';
             foreach ($statusListCreator as $status) {
                 $ret .= '<option value="' . $status . '" ' . ($status == $worklist['status'] ? ' selected="selected"' : '') . '>' .  $status . '</option>';
