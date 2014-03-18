@@ -812,7 +812,7 @@ a#addJobButton {
 
 .table-worklist a:hover,
 .table-worklist .linkTaskWho > a:hover {
-    color: #aa1e00 !important;
+    color: #009999 !important;
 }
 
 .table-worklist tr:hover {
