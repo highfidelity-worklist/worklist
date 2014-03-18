@@ -69,7 +69,8 @@ table.table-fees thead tr td {
 }
 
 .table-fees td.who {
-    width: 27%;
+    width: 20%;
+    overflow: hidden;
 }
 .table-fees td.fee {
     width: 20%;
@@ -81,7 +82,7 @@ table.table-fees thead tr td {
     width: 20%;
 }
 .table-fees td.paid {
-    width: 15%;
+    width: 22%;
 }
 
 /* inline footer */
