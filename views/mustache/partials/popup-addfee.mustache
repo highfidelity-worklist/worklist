@@ -46,13 +46,14 @@
                         $('#add_fee').attr('disabled', 'disabled');
                     });
                     if ($('#mechanicFee').length !== 0) {
-                        $('#popup-addfee #mechanic_id').val($('#popup-addfee .mechanicFeeList li.ui-combobox-list-selected').attr('val'));
+                        $('#popup-addfee #mechanic_id').val($('#mechanicFee').val());
                     }
                     return true;
                 });
                 $(function() {
                     if ($('#mechanicFee').length !== 0) {
-                        createActiveFilter('#mechanicFee', 'users', 1);
+                        //createActiveFilter('#mechanicFee', 'users', 1);
+                        $('#mechanicFee').chosen({width: 'auto'});
                     }
                 });
             </script>
