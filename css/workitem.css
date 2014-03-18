@@ -525,13 +525,11 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .code-review {
-    height: 100px;
     border-bottom: 2px solid #e1e8ea;
     font-size: 14px;
     padding: 9px 0 9px 9px;
     line-height: 21px;
     margin-bottom: 8px;
-    float: left;
 }
 
 .code-review span {

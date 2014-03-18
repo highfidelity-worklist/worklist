@@ -262,7 +262,7 @@ $(document).ready(function() {
     getProjectCodeReviewers();
 
     $('#addcodereviewer-form').submit(function(event) {
-        openNotifyOverlay('<span>Adding Reviewer to your project...</span>', false);
+        openNotifyOverlay('<span>Adding Code Reviewer to your project...</span>', false);
         $.ajax({
             type: 'post',
             url: 'jsonserver.php',
@@ -291,7 +291,7 @@ $(document).ready(function() {
     
     $('#removecodereviewer').click(function(event) {
         openNotifyOverlay(
-            '<span>Removing selected user(s) as reviewer(s) for this project. ', true);
+            '<span>Removing selected user(s) as code reviewer(s) for this project. ', true);
         var codeReviewers = '';
         $('#projectCodeReviewRights input[name^=codereviewer]:checked').each(function() {
             var codeReviewer = parseInt($(this).attr('name').substring(12));

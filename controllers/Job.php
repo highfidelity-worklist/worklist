@@ -427,9 +427,9 @@ class JobController extends Controller {
                     }
                 } 
                 if($crfee_desc == '') {
-                    $crfee_desc = 'Review';
+                    $crfee_desc = 'Code Review';
                 } else {
-                    $crfee_desc = 'Review - '. $crfee_desc;
+                    $crfee_desc = 'Code Review - '. $crfee_desc;
                 }
                 $journal_message = AddFee($itemid, $crfee_amount, $fee_category, $crfee_desc, $workitem->getCReviewerId(), $is_expense, $is_rewarder);
                 sendJournalNotification($journal_message);
@@ -1360,7 +1360,7 @@ class JobController extends Controller {
 
                     try {
                         $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
-                        $comment = "Review available here:\n$result";
+                        $comment = "Code Review available here:\n$result";
                         $rt = $this->addComment($workitem->getId(), $user->getId(), $comment);
                     } catch (Exception $ex) {
                         error_log("Could not paste diff: \n$ex");
@@ -1372,7 +1372,7 @@ class JobController extends Controller {
 
                 if (!$pullResults['error'] && !isset($pullResults['data']['errors'])) {
                     $codeReviewURL = $pullResults['data']['html_url'] . '/files';
-                    $comment = "Review available here:\n" . $codeReviewURL;
+                    $comment = "Code Review available here:\n" . $codeReviewURL;
                 } else {
                     $comment = $pullResults['error'] 
                         ? "We had problems making your request to GitHub\n" 

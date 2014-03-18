@@ -574,9 +574,9 @@ class JsonServer
         shmop_delete($sem_id); // Delete shared memory
         
         if ($status === null) {
-            return $this->setOutput(array('success' => false, 'data' => nl2br('Review not available right now')));
+            return $this->setOutput(array('success' => false, 'data' => nl2br('Code Review not available right now')));
         } else if ($status === true || (int)$status == 0) {
-            $journal_message = '@' . $user->getNickname() . ' has started a review for **#' . $workitem_id . "**\n\n**" . 
+            $journal_message = '@' . $user->getNickname() . ' has started a code review for **#' . $workitem_id . "**\n\n**" . 
                 $workItem->getSummary() . '**';
             sendJournalNotification($journal_message);
             
@@ -646,7 +646,7 @@ class JsonServer
         $workitem->setCRStarted(0);
         $workitem->setCReviewerId(0);
         $workitem->save();
-        $journal_message = '@' . $user->getNickname() . ' has canceled their review for **#' . $workitem_id . "**\n\n**" . $workitem->getSummary() . '**';
+        $journal_message = '@' . $user->getNickname() . ' has canceled their code review for **#' . $workitem_id . "**\n\n**" . $workitem->getSummary() . '**';
         sendJournalNotification($journal_message);
         
         $options = array(
@@ -965,7 +965,7 @@ class JsonServer
                 throw new Exception('Not a user in our system');
             }
             if ($project->isProjectCodeReviewer($user->getId())) {
-                throw new Exception('Entered user is already a Reviewer for this project');
+                throw new Exception('Entered user is already a Code Reviewer for this project');
             }
     
             if (! $project->addCodeReviewer($user->getId())) {
@@ -990,7 +990,7 @@ class JsonServer
     
             return $this->setOutput(array(
                 'success' => true,
-                'data' => 'Reviewer added successfully'
+                'data' => 'Code Reviewer added successfully'
             ));
         } catch (Exception $e) {
             $error = $e->getMessage();

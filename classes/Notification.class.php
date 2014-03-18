@@ -710,7 +710,7 @@ class Notification {
             case 'code-review-completed':
                 $headers['From'] = '"' . $project_name . '-review complete" ' . $from_address;
                 $body = '<p>Hello,</p>';
-                $body .= '<p>The review on task '.$itemLink.' has been completed by ' . $_SESSION['nickname'] . '</p>';
+                $body .= '<p>The code review on task '.$itemLink.' has been completed by ' . $_SESSION['nickname'] . '</p>';
                 $body .= '<br>';
                 $body .= '<p>Project: '.$project_name.'<br />';
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
@@ -971,7 +971,7 @@ class Notification {
             
             case 'code-review-completed':
                 $nick = $data['nick'];
-                $message = "{$nick} has completed their review for {$itemLink}";
+                $message = "{$nick} has completed their code review for {$itemLink}";
             break;
             
             case 'workitem-update':
@@ -990,12 +990,12 @@ class Notification {
             
             case 'code-review-started':
                 $nick = $data['nick'];
-                $message = "{$nick} has started a review for {$itemLink}";
+                $message = "{$nick} has started a code review for {$itemLink}";
             break;
             
             case 'code-review-canceled':
                 $nick = $data['nick'];
-                $message = "{$nick} has canceled their review for {$itemLink}";
+                $message = "{$nick} has canceled their code review for {$itemLink}";
             break;
             
             case 'ping':

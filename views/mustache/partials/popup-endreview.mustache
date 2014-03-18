@@ -1,7 +1,7 @@
 <div id="popup-endreview" class="popup-body" title = "End Review">
     <ul>
-        <li>To finish the review, enter (optional) notes and Review fee, then click the 'Finish Review'</li>
-        <li>Click the 'Abort Review' button if you are not able to complete the review.</li>
+        <li>To finish the review, enter (optional) notes and Review fee, then click the 'Finish Code Review'</li>
+        <li>Click the 'Abort Code Review' button if you are not able to complete the review.</li>
         <li>Click 'Cancel' to close this dialog if you are not finished.</li>
     </ul>
     <form name="popup-form" id="popup-form-endreview" action="" method="post">
@@ -19,7 +19,7 @@
             <label class="enterNotes" for="crfee_desc">Notes (optional):</label>
             <input type="text" name="crfee_desc" id="crfee_desc" class="text-field iToolTip enterNotes" 
                 size="48" /><br />
-                <span class="info-whisper">(Enter detailed review info in Comments Section)</span>
+                <span class="info-whisper">(Enter detailed code review info in Comments Section)</span>
         </div>
 
         <script type="text/javascript">
@@ -40,8 +40,8 @@
                         if (data.success) {
                             var buttonElement = $('.endCr');
                             buttonElement.remove();
-                            var startcrButton = '<input class="iToolTip cR smbutton" type="submit" value="Start Review" ' +
-                                'onclick="return CheckCodeReviewStatus();" alt="">';
+                            var startcrButton = '<input class="iToolTip cR smbutton" type="submit" value="Start Code Review"' +
+                                ' onclick="return CheckCodeReviewStatus();" alt="">';
                             $('#review-pointer').before(startcrButton);
                             $('#popup-endreview').dialog('close');
                             MapToolTips();
@@ -60,8 +60,8 @@
         </script>
         <div class="buttonContainer">
             <input type="button" name="cancel" id="cancelendreview" value="Cancel" onClick="closeDialog();"/>
-            <input type="button" class="wide" name="cancel_codereview" value="Abort Review" onClick="cancelReview();" />
-            <input type="submit" class="wide" name="finish_codereview" value="Finish Review" />
+            <input type="button" class="wide" name="cancel_codereview" value="Abort Code Review" onClick="cancelReview();" />
+            <input type="submit" class="wide" name="finish_codereview" value="Finish Code Review" />
         </div>
     </form>
 </div><!-- end of popup-endreview -->

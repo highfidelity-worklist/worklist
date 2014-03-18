@@ -197,7 +197,7 @@
                 {{/adminOrOwner}}
             </li>
             <li id="projectCodeReviewRights">
-                <h3>Reviews <span>are allowed from</span></h3>
+                <h3>Code Reviews <span>are allowed from</span></h3>
                 <ul>
                     <li>
                         <input id="cr_anyone_field" name="cr_anyone" type="checkbox" class="wlcheckbox code_review_chks"
@@ -227,7 +227,7 @@
                         <input id="cr_users_specified_field" name="cr_users_specified" type="checkbox" class="wlcheckbox"
                           {{^edit_mode}}disabled="disabled"{{/edit_mode}} value="1" 
                           {{#project.getCrUsersSpecified}}checked="checked"{{/project.getCrUsersSpecified}} />
-                        <label for="cr_users_specified_field">Use only reviewers listed below</label>
+                        <label for="cr_users_specified_field">Use only code reviewers listed below</label>
                     </li>
                 </ul>
                 <table class="table table-striped" id="projectCodeReviewers">

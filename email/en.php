@@ -174,7 +174,7 @@ replacement data:
                <p>4. A working copy of your site can be viewed at <a href="http://staging.worklist.net/{project_name}">http://staging.worklist.net/{project_name}</a></p>
                <p>5. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
                <p>6. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
-               <p>7. Your project is set to allow anybody to review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
+               <p>7. Your project is set to allow anybody to code review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
                <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
 ),
     
@@ -193,7 +193,7 @@ replacement data:
                <p>4. A working copy of your site can be viewed at <a href="http://staging.worklist.net/{project_name}">http://staging.worklist.net/{project_name}</a></p>
                <p>5. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
                <p>6. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
-               <p>7. Your project is set to allow anybody to review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
+               <p>7. Your project is set to allow anybody to code review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
                <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
 ),
 
@@ -204,7 +204,7 @@ replacement data:
                Details:</p>
                <p>1. Your GitHub repository URL is: <a href="{github_repo_url}">{github_repo_url}</a></p>
                <p>2. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
-               <p>3. Your project is set to allow anybody to review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
+               <p>3. Your project is set to allow anybody to code review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
                <p>4. More information about Worklist.net and being a project founder can be found on our Help page <a href="' . WORKLIST_URL . 'help">here</a>.</p>
                <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
 ),
@@ -281,10 +281,10 @@ replacement data:
     
 ),
 'project-codereviewer-added' => array(
-   'subject' => 'Added as a Reviewer to Project',
+   'subject' => 'Added as a Code Reviewer to Project',
    'body' =>
        '<p>Hi {nickname}</p>
-       <p>Congrats! You have been granted Review rights for the following project:<br />
+       <p>Congrats! You have been granted Code Review rights for the following project:<br />
        <a href="{projectUrl}">{projectName}</a><br />
        Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
        <p>Please contact the project founder with any questions.</p>
@@ -312,10 +312,10 @@ replacement data:
         <p>- Worklist.net</p>'
 ),
 'project-codereview-removed' => array(
-        'subject' => 'Review rights removed for Project',
+        'subject' => 'Code Review rights removed for Project',
         'body' =>
         '<p>Hi {nickname}</p>
-        <p>Your Review rights have been removed for the following project:<br />
+        <p>Your Code Review rights have been removed for the following project:<br />
         <a href="{projectUrl}">{projectName}</a><br />
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>

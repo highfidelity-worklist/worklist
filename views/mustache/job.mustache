@@ -45,14 +45,14 @@
         <span class="info-label">
             <a href="./help#ff5">Job status:</a>
             {{^canChangeStatus}}
-                <strong>{{worklist.status}}</strong>
+                <strong>{{currentStatus}}</strong>
             {{/canChangeStatus}}
         </span>
         {{#canChangeStatus}}
-        <form id="searchForm" method="post" action="">
+        <form id="searchForm" method="post" action="">rt
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
             <select id="statusCombo" name="quick-status" class="project-dropdown">
-                <option value="{{worklist.status}}" selected="selected">{{worklist.status}}</option>
+                <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
                 {{& editableStatusSelect}}
             </select>
         </form>
@@ -311,23 +311,23 @@
         {{/editing}}
         {{#canReview}}
             <div class="code-review">
-                <span>Time for a review!</span>
-                The code written for this job is ready to be reviewed.<br />
-                <b><u>View the diff</u></b> to see the code, then start the review ...
+                <h4>Time for a code review!</h4>
+                The code written for this job is ready to be reviewed.
+                <strong>View the diff</strong> to see the code, then start the review ...
                 {{^workitem.getCRStarted}}
                     {{#userHasRights}}
-                        <input class="iToolTip cR" type="submit" value="Start Review" 
+                        <input class="iToolTip cR" type="submit" value="Start Code Review" 
                           onClick="return CheckCodeReviewStatus();"/>
                     {{/userHasRights}}
                     {{^userHasRights}}
-                        <input class="iToolTip cRDisallowed" type="submit" value="Start Review" 
+                        <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" 
                           onClick="return false;"/>
                     {{/userHasRights}}
                 {{/workitem.getCRStarted}}
                 {{#workitem.getCRStarted}}
                     {{^workitem.getCRCompleted}}
                         {{#canEndReview}}
-                            <input class="iToolTip endCr" type="submit" value="End Review" 
+                            <input class="iToolTip endCr" type="submit" value="End Code Review" 
                               onClick="return showEndReviewForm();"/>
                         {{/canEndReview}}
                     {{/workitem.getCRCompleted}}

@@ -1106,7 +1106,7 @@ function CheckCodeReviewStatus() {
 
 function showReviewForm() {
     if (WorklistProject.repo_type == 'svn') {
-        openNotifyOverlay("Authorizing sandbox for review ...", false);
+        openNotifyOverlay("Authorizing sandbox for code review ...", false);
     }
     $.ajax({
         type: 'post',

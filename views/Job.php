@@ -127,14 +127,16 @@ class JobView extends View {
             //mechanics
             foreach ($statusListMechanic as $status) {
                 if ($status != $worklist['status']) {
-                    $ret .= '<option value="' . $status . '">' . $status  . '</option>';
+                    $printStatus = $status == 'Review' ? 'Code Review' : $status;
+                    $ret .= '<option value="' . $status . '">' . $printStatus  . '</option>';
                 }
             }
         } else if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) { 
             //runners and admins
             foreach ($statusListRunner as $status) {
                 if ( $status != $worklist['status'] ) {
-                    $ret .= '<option value="' .  $status . '">' . $status . '</option>';
+                    $printStatus = $status == 'Review' ? 'Code Review' : $status;
+                    $ret .= '<option value="' .  $status . '">' . $printStatus . '</option>';
                 }
             }
         } else if (
@@ -146,7 +148,8 @@ class JobView extends View {
             //creator
             foreach ($statusListCreator as $status) {
                 if (!($status == 'Suggested' && $worklist['status'] == 'SuggestedWithBid') && $status != $worklist['status']) {
-                    $ret .= '<option value="' . $status . '">' . $status . '</option>';
+                    $printStatus = $status == 'Review' ? 'Code Review' : $status;
+                    $ret .= '<option value="' . $status . '">' . $printStatus . '</option>';
                 }
             }
         }
@@ -833,5 +836,9 @@ class JobView extends View {
         }
 
         return $ret;
+    }
+
+    function currentStatus() {
+        return $this->worklist['status'] == 'Review' ? 'Code Review' : $this->worklist['status'];
     }
 }
