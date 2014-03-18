@@ -1089,12 +1089,12 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-align: center;
 } 
 
-#page-content table tbody tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
+tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
     content: '\00a0';
     width: 20px;
     height: 20px;
     position: absolute;
-    margin: -10px 0 0 -170px;
+    margin: -10px 0 0 -185px;
     background-color: #fff;
     transform: rotate(45deg);
 }
