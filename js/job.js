@@ -5,6 +5,9 @@ $(function() {
 
     $('#statusCombo').chosen();
     $('#project_id').chosen();
+    if (action == 'edit') {
+        $('select[name="runner"]').chosen({width: '180px'});
+    }
     if($("#is_bug").is ( ":checked" )) {
         $("#bug_job_id").keyup();
     }
@@ -369,7 +372,8 @@ $(document).ready(function(){
 
         }
     });
-    Budget.initCombo();
+    //Budget.initCombo();
+    $('#budget-source-combo').chosen({width: 'auto'});
     $("#popupSelectBudget #confirm_budget").click(function(event) {
         event.preventDefault();
         var budget = new LiveValidation('budget-source-combo', {
@@ -390,8 +394,9 @@ $(document).ready(function(){
     });
     $("#popupSelectBudget #cancel_budget").click(function() {
         $("#budget_id, #budget_id_multiple_bid").val("");
-        var val1 = $($('#budget-source-combo option').get(0)).attr("value");
-        $('#budget-source-combo').comboBox({action:"val", param: [val1]});
+        //var val1 = $($('#budget-source-combo option').get(0)).attr("value");
+        //$('#budget-source-combo').comboBox({action:"val", param: [val1]});
+        $('#budget-source-combo').chosen();
         $('#popupSelectBudget').dialog("close");
     });
 
@@ -938,8 +943,9 @@ function ResetPopup() {
 
 function selectBudget(id) {
     $("#budget_id, #budget_id_multiple_bid").val("");
-    var val1 = $($('#budget-source-combo option').get(0)).attr("value");
-    $('#budget-source-combo').comboBox({action:"val", param: [val1]});
+    //var val1 = $($('#budget-source-combo option').get(0)).attr("value");
+    //$('#budget-source-combo').comboBox({action:"val", param: [val1]});
+    $('#budget-source-combo').chosen();
     $('#popupSelectBudget').data("clickon", id).dialog('open');
 }
 
@@ -1375,7 +1381,7 @@ $(function() {
                             $('#runnerBox').css('width', '400px');
                             $('#runnerBox #ping-r-btn').css('display', 'none');
                             $('#runnerBox span.changeRunner').fadeIn(1000, function() {
-                                $('#runnerBox span.changeRunner div input[name=changerunner]').click(function() {
+                                $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
                                     $(this).unbind('click');
                                     var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val();
                                     $.ajax({
@@ -1398,7 +1404,7 @@ $(function() {
                                         }
                                     });
                                 });
-                                $('#runnerBox span.changeRunner div input[name=cancel]').click(function() {
+                                $('#runnerBox span.changeRunner input[name=cancel]').click(function() {
                                     $('#runnerBox span.changeRunner').fadeOut(1000, function() {
                                         $('#runnerBox span.changeRunner').css('display', 'none');
                                         $('#runnerBox').css('width', '130px');

@@ -619,7 +619,7 @@ class User {
                     $selected = "";
                 }
                 $ret .= '<option value="' . $row['id'] . '" ' . $selected . ' data-amount="' . $row['remaining'] . '">' . 
-                        $row['id'] . "|" . $row['reason'] . "|" . $row['remaining'] . '</option>\n';
+                        $row['reason'] . ' ($' . $row['remaining'] . ")</option>\n";
             }
         }
         return $ret;

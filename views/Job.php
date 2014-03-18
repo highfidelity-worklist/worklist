@@ -66,6 +66,8 @@ class JobView extends View {
         $this->displayDialogAfterDone =  (int) $this->read('displayDialogAfterDone');
         $this->userinfotoshow =  (int) $this->read('userinfotoshow');
 
+        $this->erroneous = $this->read('erroneous');
+        $this->the_errors = $this->read('the_errors');
 
         $this->reviewer = $this->read('reviewer');
 
@@ -213,8 +215,8 @@ class JobView extends View {
         }
         $ret .= 
             '</select>' .
-            '<div class="buttonContainer"><input type="button" class="smbutton" name="changerunner" value="Change Designer" /></div>' .
-            '<div class="buttonContainer"><input type="button" class="smbutton" name="cancel" value="Cancel" /></div>' .
+            '<input type="button" class="smbutton" name="changerunner" value="Change Designer" />' .
+            '<input type="button" class="smbutton" name="cancel" value="Cancel" />' .
             '</span>';
         return $ret;
     }

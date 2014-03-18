@@ -230,18 +230,17 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 
-#left-panel ul{
+#for_view > ul,
+#commentZone > ul {
     list-style:none!important;
     width:100%;
     margin:0!important;
     padding:0!important;
+    border-top: 1px solid #d6d6d6;
+    min-height: 50px;
 }
 
-#left-panel li {
-    padding:1px 0px 5px 0px;
-}
-
-#for_view ul li {
+#for_view > ul > li {
     margin-bottom: 20px;
 }
 
@@ -590,10 +589,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .budget-label {
     font-weight: bold;
-    margin: 0px 7px 0px 0px;
-    float: left;
-    width: 48px;
-    padding-top: 10px;
+    display: inline-block;
 }
 
 .budgetArea {
@@ -1007,15 +1003,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     border:2px #DCD998 solid;
     padding:0px 8px 19px 8px;
     background-color: #FFFFDD;
-}
-
-#left-panel ul{
-    list-style:none!important;
-    width: 100%;
-    margin:0!important;
-    padding:0!important;
-    border-top: 1px solid #d6d6d6;
-    min-height: 50px;
 }
 
 #left-panel ul #no_comments{

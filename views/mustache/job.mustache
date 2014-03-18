@@ -167,7 +167,10 @@
                                 {{#isRunnerOfWorkitem}}
                                 <span id="budget-source-combo-area">
                                     <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown">
-                                        {{^worklist.budget_id}}<option value="0" selected="selected">Select a budget</option>{{& getBudgetCombo}}{{/worklist.budget_id}}
+                                        {{^worklist.budget_id}}
+                                            <option value="0" selected="selected">Select a budget</option>
+                                            {{& getBudgetCombo}}
+                                        {{/worklist.budget_id}}
                                     </select>
                                 </span>
                                 {{/isRunnerOfWorkitem}}
