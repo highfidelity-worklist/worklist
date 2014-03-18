@@ -308,33 +308,33 @@
                 <div class="skills-label">Skills this job requires:</div>
                 {{#skillsCount}}{{commaSeparatedSkills}}{{/skillsCount}}{{^skillsCount}}Thou shalt find out in the missive ...{{/skillsCount}}
             </div>
+            {{#canReview}}
+                <div class="code-review">
+                    <h4>Time for a code review!</h4>
+                    The code written for this job is ready to be reviewed.
+                    <strong>View the diff</strong> to see the code, then start the review ...
+                    {{^workitem.getCRStarted}}
+                        {{#userHasRights}}
+                            <input class="iToolTip cR" type="submit" value="Start Code Review" 
+                              onClick="return CheckCodeReviewStatus();"/>
+                        {{/userHasRights}}
+                        {{^userHasRights}}
+                            <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" 
+                              onClick="return false;"/>
+                        {{/userHasRights}}
+                    {{/workitem.getCRStarted}}
+                    {{#workitem.getCRStarted}}
+                        {{^workitem.getCRCompleted}}
+                            {{#canEndReview}}
+                                <input class="iToolTip endCr" type="submit" value="End Code Review" 
+                                  onClick="return showEndReviewForm();"/>
+                            {{/canEndReview}}
+                        {{/workitem.getCRCompleted}}
+                    {{/workitem.getCRStarted}}
+                    <div id="review-pointer"></div>
+                </div>
+            {{/canReview}}
         {{/editing}}
-        {{#canReview}}
-            <div class="code-review">
-                <h4>Time for a code review!</h4>
-                The code written for this job is ready to be reviewed.
-                <strong>View the diff</strong> to see the code, then start the review ...
-                {{^workitem.getCRStarted}}
-                    {{#userHasRights}}
-                        <input class="iToolTip cR" type="submit" value="Start Code Review" 
-                          onClick="return CheckCodeReviewStatus();"/>
-                    {{/userHasRights}}
-                    {{^userHasRights}}
-                        <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" 
-                          onClick="return false;"/>
-                    {{/userHasRights}}
-                {{/workitem.getCRStarted}}
-                {{#workitem.getCRStarted}}
-                    {{^workitem.getCRCompleted}}
-                        {{#canEndReview}}
-                            <input class="iToolTip endCr" type="submit" value="End Code Review" 
-                              onClick="return showEndReviewForm();"/>
-                        {{/canEndReview}}
-                    {{/workitem.getCRCompleted}}
-                {{/workitem.getCRStarted}}
-                <div id="review-pointer"></div>
-            </div>
-        {{/canReview}}
         <div id="for_view">
             <div class="moneyZone">
                 <div id="bid-panel">
