@@ -1089,6 +1089,13 @@ input {
 #statusCombo_chosen {
     width: 100% !important;
 }
+
+#statusCombo_chosen.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+    height: 20px;
+    line-height: 20px;
+    padding: 0;
+}
+
 @media (max-width: 1024px) {
     #statusCombo_chosen:before {
         display: none;
