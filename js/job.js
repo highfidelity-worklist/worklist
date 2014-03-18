@@ -107,6 +107,37 @@ $(function() {
         window.open('userinfo.php?id=' + userinfotoshow, '_blank');
     }
 
+    //lookup and show job summary on bug_job_id change
+    $("#bug_job_id").keyup(function() {
+        var id=$("#bug_job_id").val();
+        if(id.length) {
+            $.ajax({
+                url: 'api.php',
+                dataType: 'json',
+                data: {
+                    action: 'getJobInformation',
+                    itemid: id
+                },
+                type: 'POST',
+                success: function(json) {
+                    if (!json || json === null) {
+                        alert("json null in getjobinformation");
+                        return;
+                    }
+                    if (json.error) {
+                        alert(json.error);
+                    } else {
+                        if(json.returnString.length > 0) {
+                            $('#bugJobSummary').attr('title', id);
+                        } else {
+                            $('#bugJobSummary').attr('title', 0);
+                        }
+                    }
+                }
+            });
+        }
+    });
+
 });
 
 var Workitem = {

@@ -233,54 +233,52 @@
                         {{/worklist.sandbox}}
                     </div>
                 {{/worklist.mechanic_id}}
-            {{/editing}}
-
-            <div class="commentZone" id="commentZone">
-                <div class="row">
-                    <h3 class="info-comments col-md-8">Comments</h3>
-                    <a href="./{{worklist.id}}#recent" class="col-md-3">See most recent</a>
-                </div>
-                <ul>
-                {{#comments}}
-                    <li id="comment-{{id}}" class="depth-{{depth}}">
-                        <div class="comment">
-                            <a href="./user/{{comment.getUser.getId}}">
-                                <img class="picture profile-link" src="{{& comment.getUser.getAvatar}}" title="Profile Picture - {{comment.getUser.getNickname}}" />
-                            </a>
-                            <div class="comment-container">
-                                <div class="comment-info">
-                                    <a class="author profile-link" href="./user/{{comment.getUser.getId}}">
-                                        {{comment.getUser.getNickname}}
-                                    </a>
-                                    <span class="date">{{comment.getRelativeDate}}</span>
-                                </div>
-                                <div class="comment-text">
-                                  {{comment.getCommentWithLinks}}
-                                  {{#currentUser.id}}{{^statusDone}}
-                                    <div class="reply-lnk"><a href="#commentform" onClick="return reply({{id}});">Reply</a></div>
-                                  {{/statusDone}}{{/currentUser.id}}
+                <div class="commentZone" id="commentZone">
+                    <div class="row">
+                        <h3 class="info-comments col-md-8">Comments</h3>
+                        <a href="./{{worklist.id}}#recent" class="col-md-3">See most recent</a>
+                    </div>
+                    <ul>
+                    {{#comments}}
+                        <li id="comment-{{id}}" class="depth-{{depth}}">
+                            <div class="comment">
+                                <a href="./user/{{comment.getUser.getId}}">
+                                    <img class="picture profile-link" src="{{& comment.getUser.getAvatar}}" title="Profile Picture - {{comment.getUser.getNickname}}" />
+                                </a>
+                                <div class="comment-container">
+                                    <div class="comment-info">
+                                        <a class="author profile-link" href="./user/{{comment.getUser.getId}}">
+                                            {{comment.getUser.getNickname}}
+                                        </a>
+                                        <span class="date">{{comment.getRelativeDate}}</span>
+                                    </div>
+                                    <div class="comment-text">
+                                      {{comment.getCommentWithLinks}}
+                                      {{#currentUser.id}}{{^statusDone}}
+                                        <div class="reply-lnk"><a href="#commentform" onClick="return reply({{id}});">Reply</a></div>
+                                      {{/statusDone}}{{/currentUser.id}}
+                                    </div>
                                 </div>
                             </div>
+                        </li>
+                    {{/comments}}
+                    </ul>
+                    {{#canComment}}
+                    <a name="commentform"></a>
+                    <form action="" method="post" id="commentform">
+                        <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
+                        <input type="hidden" name="user_id" value="{{currentUser.id}}" />
+                        <input type="hidden" name="comment_id" value="" />
+                        <div class="form-group">
+                            <textarea name="comment" class="form-control"></textarea>
                         </div>
-                    </li>
-                {{/comments}}
-                </ul>
-                {{#canComment}}
-                <a name="commentform"></a>
-                <form action="" method="post" id="commentform">
-                    <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
-                    <input type="hidden" name="user_id" value="{{currentUser.id}}" />
-                    <input type="hidden" name="comment_id" value="" />
-                    <div class="form-group">
-                        <textarea name="comment" class="form-control"></textarea>
-                    </div>
-                    <input type="submit" name="newcomment" value="Comment" />
-                    <input type="button" name="cancel" value="Cancel" />
-                    </div>
-                </form>
-                {{/canComment}}
-                <a name="recent"></a>        
-            </div> <!-- End of div commentZone -->
+                        <input type="submit" name="newcomment" value="Comment" />
+                        <input type="button" name="cancel" value="Cancel" />
+                    </form>
+                    {{/canComment}}
+                    <a name="recent"></a>        
+                </div> <!-- End of div commentZone -->
+            {{/editing}}
         </div>  <!-- End of div for_view -->
     </div> <!-- End of div left-panel -->
     <div id="right-panel">
@@ -294,8 +292,10 @@
                 <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
                 {{/skillsCount}}
                 <div class="floatLeft">
-                    <label id="bugLabel"><input type="checkbox" name="is_bug" id="is_bug" {{#isBug}}checked="checked"{{/isBug}}/> Bug</label> (If known, linked to Job #)
-                    <input type="text" id="bug_job_id" name="bug_job_id" class="text-field bug_job_id" size="48" 
+                    <input type="checkbox" name="is_bug" id="is_bug" {{#isBug}}checked="checked"{{/isBug}}
+                      class="wlcheckbox" /> 
+                    <label for="is_bug" id="bugLabel">Bug</label> (If known, linked to Job #)
+                    <input type="text" id="bug_job_id" name="bug_job_id" class="bug_job_id"
                       value="{{#workitem.getBugJobId}}{{workitem.getBugJobId}}{{/workitem.getBugJobId}}" />
                 </div>
                 <div class="bugJobSummary" id="bugJobSummary" title="{{workitem.getBugJobId}}">

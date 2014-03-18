@@ -152,7 +152,7 @@ class JobController extends Controller {
 
             // code to add specifics to journal update messages
             $new_update_message='';
-            $is_bug = !empty($_REQUEST['is_bug'])? 1 : 0;
+            $is_bug = empty($_REQUEST['is_bug'])? 0 : 1;
             $budget_id = !empty($_REQUEST['budget-source-combo'])? (int) $_REQUEST['budget-source-combo'] : 0;
             // First check to see if this is marked as a bug
             if ($workitem->getIs_bug() != $is_bug) {
@@ -230,7 +230,7 @@ class JobController extends Controller {
             }
             // project
 
-            if ($workitem->getProjectId() != $project_id) {
+            if ($project_id && $workitem->getProjectId() != $project_id) {
                 $workitem->setProjectId($project_id);
                 if ($workitem->getStatus() != 'Draft') {
                     $new_update_message .= "Project changed. ";

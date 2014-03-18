@@ -445,7 +445,7 @@ class JobView extends View {
     }
 
     public function isBug() {
-        return $this->workitem->getBugJobId()>0 || $this->workitem->getIs_bug() == 1;
+        return $this->workitem->getBugJobId() > 0 || $this->workitem->getIs_bug() == 1;
     }
 
     public function canReview() {
