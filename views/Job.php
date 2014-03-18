@@ -115,6 +115,7 @@ class JobView extends View {
         $worklist = $this->worklist;
         $user = $this->user;
         $is_runner = $this->currentUser['is_runner'];
+        $statusListMechanic = $this->read('statusListMechanic');
         $statusListRunner = $this->read('statusListRunner');
         $statusListCreator = $this->read('statusListCreator');
 
