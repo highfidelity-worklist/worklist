@@ -550,7 +550,7 @@ class JobController extends Controller {
                       $notifyEmpty = true;
                     }
 
-                    $journal_message = '@' . $_SESSION['nickname'] . ' updated **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**.  ' . $new_update_message;
+                    $journal_message = '**#' . $worklist_id . '** updated by @' . $_SESSION['nickname'] . "\n\n**" . $workitem->getSummary() . "**. " . $new_update_message;
                 }
 
                 $promptForReviewUrl = false;
