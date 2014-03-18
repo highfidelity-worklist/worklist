@@ -47,6 +47,7 @@ class Dispatcher {
         $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
         $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));
         $dispatcher->get('/:project', array('Project'));
+        $dispatcher->post('/:project', array('Project'));
 
         try {
             $route = $dispatcher->dispatch($path);
