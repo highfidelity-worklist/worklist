@@ -583,7 +583,7 @@ input[type=text], input[type=password], textarea {
 }
 
 #searchForm .ui-combobox-textbox {
-    color: #aa1e00;
+    color: #009999;
     font-weight: bold;
     font-size: 11pt !important;
     position: absolute;
