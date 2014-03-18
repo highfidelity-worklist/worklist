@@ -240,7 +240,6 @@ $(document).ready(function() {
                     codeReviewers = data.data.codeReviewers;
                     var html = '';
                     if (codeReviewers.length > 0) {
-                        $('#projectCodeReviewers').css({display: 'block'});
                         for(var i=0; i < codeReviewers.length; i++) {
                             var codeReviewer = codeReviewers[i];
                             html =
