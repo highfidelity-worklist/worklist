@@ -15,7 +15,8 @@ body > .container-fluid {
 
 
 #addJob > .row:first-child .chosen-container:before,
-#addJob > .row:last-child .chosen-container:before {
+#addJob > .row:last-child .chosen-container:before,
+#addJob > .row:first-child > div:last-child:after {
     position: absolute;
     margin-top: -20px;
     font-size: 0.9em;
@@ -26,58 +27,25 @@ body > .container-fluid {
     content: 'Job is for this project:';
 }
 
-/* let's use 'styleable' controls instead of checkboxes */
-#addJob > .row:first-child input[type="checkbox"] {
-    opacity: 0;
-}
-#addJob > .row:first-child input[type="checkbox"] + label {
-    line-height: 2.2em
-}
-@media (max-width: 768px) {
-    #addJob > .row:first-child input[type="checkbox"] + label {
-        line-height: 3em
-    }
-}
-#addJob > .row:first-child input[type="checkbox"] + label:before {
-    content: '\00a0';
-    width: 27px;
-    line-height: 1em;
-    border-radius: 5px;    
-    font-family: FontAwesome;
-    display: inline-block;
-    border: 1px solid #ccc;
-    top: 4px;
-    position: absolute;
-    margin-left: -33px;
-    color: #999;
-    font-size: 1.3em;
-    padding: 2px;
-}
-@media (max-width: 768px) {
-    #addJob > .row:first-child input[type="checkbox"] + label:before {
-        width: 22px;
-        top: 6px;
-        margin-left: -25px;
-    }
-}
-#addJob > .row:first-child input[type="checkbox"]:focus + label:before {
-    border-color: #007F7c;
+#addJob > .row:first-child > div:last-child {
+    text-align: right;
 }
 
-#addJob > .row:first-child input[type="checkbox"]:checked + label:before {
-    content: '\f00c';
-}
-
-
-#bug_job_id,
-#bug_job_id + p,
-#bug_job_id + span + p {
-    display: none; /* bug job id field will only be shown when current task is marked as bug */
+label[for="bug_job_id"] {
+    color: #666;
 }
 
 #bug_job_id {
     font-size: 1.2em;
-    font-weight: bold
+    font-weight: bold;
+    display: inline-block;
+    width: 90px;
+    margin-left: 5px;
+}
+#addJob > .row:first-child > div:last-child:after {
+    content: 'Bug of job #';
+    right: 0;
+    margin-right: 20px;
 }
 
 #bug_job_id + span,
@@ -87,7 +55,7 @@ body > .container-fluid {
     width: 350px;
     font-size: 0.8em;
     height: 20px;
-    margin-top: 40px;
+    margin-top: 10px;
     right: 0;
 }
 
@@ -113,46 +81,6 @@ body > .container-fluid {
     background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
     background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
     background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-}
-
-#addJob > .row:first-child input[type="checkbox"]:checked + label:after {
-    content: ' of # ';
-    display: inline-block;
-    padding: 0 5px;
-    width: 40px;
-}
-
-#addJob > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id,
-#addJob > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id + p {
-    display: inline-block;
-}
-
-#addJob > .row:first-child input[type="checkbox"] + label {
-    margin-right: 130px;
-    cursor: pointer;
-}
-#addJob > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
-    width: 90px;
-}
-#addJob > .row:first-child input[type="checkbox"]:checked + label {
-    margin-right: 0;
-}
-
-@media (max-width: 1024px) {
-    #addJob > .row:first-child input[type="checkbox"] + label {
-        margin-right: 120px;
-    }
-    #addJob > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
-        width: 80px;
-    }
-}
-@media (max-width: 768px) {
-    #addJob > .row:first-child input[type="checkbox"] + label {
-        margin-right: 110px;
-    }
-    #addJob > .row:first-child input[type="checkbox"]:checked + label + #bug_job_id {
-        width: 70px;
-    }
 }
 
 #addJob > .row {

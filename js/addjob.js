@@ -1,20 +1,6 @@
 $(function() {    
     var submitIsRunning;
 
-    //Checkbox is_bug click event
-    $("#is_bug").click(function(){
-        if ( !$(this).is ( ":checked" ) ) {
-            if (/^\[BUG\]/i.test($('#summary').val())) {
-                $('#summary').val($('#summary').val().substring(5).trim());
-            }
-        } else {
-            //Enable bug_job_id textbox
-            if (!/^(\[?)BUG/i.test($('#summary').val())) {
-                $('#summary').val('[BUG] ' + $('#summary').val().trim());
-            }
-        }
-    });
-
     $("#bug_job_id").blur(function() {
         $("#bug_job_id").keyup();
     });
@@ -42,13 +28,24 @@ $(function() {
                         if(json.returnString.length > 0) {
                             $('#bug_job_id + p').html(json.returnString);
                             $("#bug_job_id + p").attr("bug-job-id" , id);
+                            //Enable bug_job_id textbox
+                            if (!/^(\[?)BUG/i.test($('#summary').val())) {
+                                $('#summary').val('[BUG] ' + $('#summary').val().trim());
+                            }
                         } else {
                             $('#bug_job_id + p').html("Item doesn't exist");
                             $("#bug_job_id + p").attr("bug-job-id" , 0);
+                            if (/^\[BUG\]/i.test($('#summary').val())) {
+                                $('#summary').val($('#summary').val().substring(5).trim());
+                            }
                         }
                     }
                 }
             });
+        } else {
+            if (/^\[BUG\]/i.test($('#summary').val())) {
+                $('#summary').val($('#summary').val().substring(5).trim());
+            }
         }
     });
     
@@ -106,7 +103,6 @@ $(function() {
                 project_id: $("select[name='itemProject']").val(),
                 status: $("select[name='status']").val(),
                 skills: $("input[name='skills']").val(),
-                is_bug: $("input[name='is_bug']").prop('checked'),
                 bug_job_id: $("input[name='bug_job_id']").val(),
                 fileUpload: $('#addaccordion').data('fileUpload')
             },

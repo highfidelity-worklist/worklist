@@ -1,6 +1,6 @@
 <form method="post" id="addJob">
     <div class="row">
-        <div class="col-xs-5 col-sm-7 col-md-8">
+        <div class="col-xs-6 col-sm-8 col-md-9">
             <select id="itemProjectCombo" name="itemProject" data-placeholder="Select project">
                 <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
                     Select project
@@ -12,9 +12,8 @@
                 {{/projects}}
             </select>
         </div>
-        <div class="col-xs-7 col-sm-5 col-md-4">
-            <input type="checkbox" name="is_bug" id="is_bug" {{#bug_of}}checked="checked"{{/bug_of}} />
-            <label for="is_bug">This is a bug</label>
+        <div class="col-xs-6 col-sm-4 col-md-3">
+            <label for="bug_job_id">This is a bug</label>
             <input type="text" class="form-control" id="bug_job_id" name="bug_job_id" value="{{bug_of}}" />
             <p bug-job-id="0"></p>
         </div>

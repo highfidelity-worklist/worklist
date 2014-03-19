@@ -1206,9 +1206,9 @@ function addWorkitem() {
     $invite = $_REQUEST['invite'];
     $is_expense = $_REQUEST['is_expense'];
     $is_rewarder = $_REQUEST['is_rewarder'];
-    $is_bug = $_REQUEST['is_bug'];
-    $bug_job_id = $_REQUEST['bug_job_id'];
     $fileUpload = $_REQUEST['fileUpload'];
+    $bug_job_id = $_REQUEST['bug_job_id'];
+    $is_bug = false;
 
     if (!$user->getIs_runner() || !preg_match('/^(Draft|Suggested|Bidding|Working|Done)$/', $status)) {
         $status = 'Suggested';
@@ -1221,6 +1221,16 @@ function addWorkitem() {
         $workitem_added = true;
     }
     $workitem->setSummary($summary);
+
+    try {
+        $bugof_workitem = new WorkItem();
+        $bugof_workitem->loadById($bug_job_id);
+        $is_bug = true;
+    } catch(Exception $e) {
+        // do not set as bug
+        $bug_job_id = 0;
+    }
+    
 
     //If this item is a bug add original item id 
     $workitem->setBugJobId($bug_job_id);
