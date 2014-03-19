@@ -623,7 +623,7 @@ input[type=text], input[type=password], textarea {
 }
 
 #searchForm .ui-combobox-list li.ui-state-hover {
-    background-color: #aa1e00;
+    background-color: #009999;
     color: #ffffff;
 }
 

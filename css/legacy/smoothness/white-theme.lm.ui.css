@@ -271,7 +271,7 @@ input[type=submit].wide {
 
 #for_view .ui-combobox-textbox,
 .white-theme .ui-combobox-textbox {
-    color: #AA1E00;
+    color: #009999;
     font-weight: bold;
     font-size: 1.1em !important;
     font-family: Arial, Helvetica, sans-serif !important;
@@ -305,7 +305,7 @@ input[type=submit].wide {
 
 #for_view .ui-combobox-list li.ui-state-hover,
 .white-theme .ui-combobox-list li.ui-state-hover {
-    background-color: #AA1E00;
+    background-color: #009999;
     color: #FFFFFF;
 }
 
