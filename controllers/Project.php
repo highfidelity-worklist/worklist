@@ -121,7 +121,7 @@ class ProjectController extends Controller {
 
         $this->write('project', $project);
         $this->write('project_user', $project_user);
-        $this->write('edit_mode', $edit_mode ? 'true' : 'false');
+        $this->write('edit_mode', $edit_mode);
         $this->write('is_owner', $is_owner ? 'true' : 'false');
 
         parent::run();

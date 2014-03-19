@@ -436,6 +436,6 @@
 <script type="text/javascript">
     var projectid = {{project_id}};
     var projectName = '{{project.getName}}';
-    var edit_mode = {{edit_mode}};
+    var edit_mode = {{#edit_mode}}true{{/edit_mode}}{{^edit_mode}}false{{/edit_mode}};
     var is_owner = {{is_owner}};
 </script>
