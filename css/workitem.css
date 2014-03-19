@@ -1623,11 +1623,12 @@ h1.newProject {
 }
 
 #submit_bid_description {
-    padding-top: 17px; 
+    padding-top: 10px; 
     width: 435px; 
     float: left; 
     font-family: proxima-nova;
     color: #666666;
+    font-size: .9em;
 }
 
 .sandboxlink {
