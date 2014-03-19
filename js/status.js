@@ -54,6 +54,6 @@ function fillBiddingReviewDrawers(json) {
     }  else {
         $('#need-review ul').hide();
     }
-    $('#biddingJobs p > a').text(bidding);
+    $('#biddingJobs p > span + a').text(bidding);
     $('#biddingJobs p > span').text(parseInt(bidding) == 1 ? 'is' : 'are');
 }

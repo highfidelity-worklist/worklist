@@ -108,6 +108,24 @@ body {
     font-size: 1em;
 }
 
+a[href="https://gitter.im/highfidelity/hifi"] {
+    display: inline-block;
+    width: 180px;
+    height: 120px;
+    border: 1px solid #007f7c;
+    border-radius: 10px;
+    margin: 15px;
+    font-size: 1.7em;
+    line-height: 1.2em;
+    font-weight: bold;
+    color: #007f7c;
+    padding: 60px 10px 10px;
+    background: transparent url(../images/tmp/chat_icon.png) 15px 18px no-repeat;
+}
+
+a[href="https://gitter.im/highfidelity/hifi"]:hover {
+    text-decoration: none;
+}
 
 /*
  * Main content
