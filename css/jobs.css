@@ -661,10 +661,6 @@ input.button-disabled ,
     margin-right: 32px;
 }
 
-#login-form, #phone-confirm-form {
-    background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;
-}
-
 #login-form h2, #phone-confirm-form h2 {
     color: #000;
     margin-top: 8px;

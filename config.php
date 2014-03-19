@@ -234,8 +234,6 @@ if (!defined('QS_VAR'))         define('QS_VAR', 'page');
 
 if (!defined('STR_FWD'))        define('STR_FWD', '&nbsp;&nbsp;Next');
 if (!defined('STR_BWD'))        define('STR_BWD', 'Prev&nbsp;&nbsp;');
-if (!defined('IMG_FWD'))        define('IMG_FWD', 'images/left.png');
-if (!defined('IMG_BWD'))        define('IMG_BWD', 'images/right.png');
 
 if (!defined("TESTFLIGHT_API_TOKEN"))    define("TESTFLIGHT_API_TOKEN", "c5ae8c56e6ac6e6d5aefceb711070261_MTA5MzE3");
 
