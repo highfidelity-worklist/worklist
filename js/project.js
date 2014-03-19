@@ -251,8 +251,6 @@ $(document).ready(function() {
                                 '</tr>'
                             $('#projectCodeReviewers tbody').append(html);
                         }
-                    } else {
-                        $('#projectCodeReviewers').css({display: 'none'});
                     }
                 }
             }
@@ -380,7 +378,6 @@ $(document).ready(function() {
         show: 'fade',
         hide: 'fade',
         width: 480,
-        height: 200
     });
     
     $('#addrunner').click(function() {
@@ -403,11 +400,38 @@ $(document).ready(function() {
     });
     
     // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
-    $('#popup-addrole').dialog({ autoOpen: false, dialogClass: 'white-theme', modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
-    $('#popup-role-info').dialog({ autoOpen: false, dialogClass: 'white-theme', modal: true, maxWidth: 600, width: 350, show: 'fade', hide: 'fade' });
-    $('#popup-edit-role').dialog({ autoOpen: false, dialogClass: 'white-theme', modal: true, maxWidth: 600, width: 250, show: 'fade', hide: 'fade' });
-
-    $('#popup-testflight').dialog({ autoOpen: false, maxWidth: 600, width: 410, show: 'fade', hide: 'fade' });
+    $('#popup-addrole').dialog({ 
+        autoOpen: false, 
+        modal: true, 
+        maxWidth: 600, 
+        width: 300, 
+        show: 'fade', 
+        hide: 'fade'
+    });
+    $('#popup-role-info').dialog({ 
+        autoOpen: false, 
+        modal: true, 
+        maxWidth: 600, 
+        width: 350, 
+        show: 'fade', 
+        hide: 'fade'
+    });
+    $('#popup-edit-role').dialog({ 
+        autoOpen: false, 
+        dialogClass: 'white-theme', 
+        modal: true, 
+        maxWidth: 600, 
+        width: 250, 
+        show: 'fade', 
+        hide: 'fade' 
+    });
+    $('#popup-testflight').dialog({ 
+        autoOpen: false, 
+        maxWidth: 600, 
+        width: 410, 
+        show: 'fade', 
+        hide: 'fade'
+    });
 
     if (edit_mode) {
         $('#cancel_project_edit').click(function() {
