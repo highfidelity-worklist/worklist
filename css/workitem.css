@@ -1533,16 +1533,17 @@ h1.newProject {
 }
 #place_bid_usd {
     float: left; 
-    margin-top: 26px;
+    margin-top: 40px;
     position: relative;
 }
 #bid_amount_description {
-    padding-top: 6px; 
+    padding-top: 20px; 
     width: 401px; 
     float: left; 
     font-family: proxima-nova;
     padding-left: 25px;
     color: #666666;
+    font-size: .9em;
 }
 .place_bid_divider {
     width: 109%; 
@@ -1570,6 +1571,7 @@ h1.newProject {
 #bid_notes_decsription {
     font-family: proxima-nova; 
     color: #666666;
+    font-size: .8em;
 }
 #bid_done_container {
     width: 100%; 
@@ -1579,15 +1581,16 @@ h1.newProject {
     width: 100%;
 }
 #bid_done_description {
-    width: 247px; 
+    width: 220px; 
     float: left; 
     margin-right: 44px;
 }
 #bid_done_explanation {
     margin-top: 3px; 
     font-family: proxima-nova;
-    width: 247px;
+    width: 220px;
     color: #666666;
+    font-size: .9em;
 }
 #time_slider_container {
     float: left; 
