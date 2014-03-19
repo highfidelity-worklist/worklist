@@ -165,6 +165,6 @@ class JobsController extends Controller {
 
         $this->write('filter', $filter);
         $this->write('req_status', isset($_GET['status']) ? $_GET['status'] : '');
-        $this->write('review_only', (isset($_GET['status']) ? $_GET['status'] == 'needs-review' : 0));
+        $this->write('review_only', (isset($_GET['status']) &&  $_GET['status'] == 'needs-review') ? 'true' : 'false');
     }
 }
