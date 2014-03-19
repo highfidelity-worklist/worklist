@@ -187,12 +187,12 @@
                     <tbody>
                     </tbody>
                 </table>
-                {{#edit_mode}}
+                {{#adminOrOwner}}
                     <div class="buttonContainer">
                         <input type="button" id="addrunner" value="Add" />
                         <input type="button" id="removerunner" value="Remove" />
                     </div>
-                {{/edit_mode}}
+                {{/adminOrOwner}}
             </li>
             <li id="projectCodeReviewRights">
                 <h3>Code Reviews <span>are allowed from</span></h3>
@@ -239,12 +239,12 @@
                     <tbody>
                     </tbody>
                 </table>
-                {{#edit_mode}}
+                {{#adminOrOwner}}
                     <div class="buttonContainer">
                         <input type="button" id="addcodereviewer" value="Add" />
                         <input type="button" id="removecodereviewer" value="Remove" />
                     </div>
-                {{/edit_mode}}
+                {{/adminOrOwner}}
             </li>
             <li id="hipchat">
                 <h3>HipChat</h3>
