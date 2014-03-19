@@ -668,7 +668,7 @@ class Notification {
                 } else {
                     $body .= "<p>You have been invited at the Worklist to bid on ";
                 }                
-                $body .= "<a href='./" . WORKLIST_URL . $itemId . "'>" . $workitem -> getSummary() . "</a>.</p>\n";
+                $body .= "<a href='" . WORKLIST_URL . $itemId . "'>#" . $itemId . ': ' . $workitem->getSummary() . "</a>.</p>\n";
                 $body .= "<p>Description:</p>";
                 $body .= "<p>------------------------------</p>\n";
                 $body .= "<p>" . $workitem -> getNotes() . "</p>\n";
