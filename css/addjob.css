@@ -13,6 +13,12 @@ body > .container-fluid {
     padding-top: 30px;
 }
 
+#addJob > .row:first-child > div:first-child {
+    padding-left: 0;
+}
+#addJob > .row:first-child > div:last-child {
+    padding-right: 0;
+}
 
 #addJob > .row:first-child .chosen-container:before,
 #addJob > .row:last-child .chosen-container:before,
