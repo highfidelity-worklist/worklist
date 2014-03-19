@@ -65,8 +65,7 @@
 </div>
 {{#showBudgetSelect}}
     <div id="popupSelectBudget" title="Select a budget">
-        <select id="budget-source-combo" name="budget-source-combo">
-            <option value="0" selected="selected">Select a budget</option>
+        <select id="budget-source-combo" name="budget-source-combo" data-placeholder="Select a budget">
             {{& user.getBudgetCombo}}
         </select>
         <div class="popup-buttons">

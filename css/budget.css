@@ -70,6 +70,6 @@
     overflow: auto;
 }
 
-#popupSelectBudget{
-    height: 300px;
+#budget_source_combo_chosen {
+    margin-bottom: 80px;
 }

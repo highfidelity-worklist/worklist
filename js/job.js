@@ -398,13 +398,16 @@ $(document).ready(function(){
         modal: true,
         width: 470,
         resizable: false,
-        height: 300,
+        height: 350,
         open: function(event, ui) {
 
         }
     });
     //Budget.initCombo();
-    $('#budget-source-combo').chosen({width: 'auto'});
+    $('#budget-source-combo').chosen({
+        width: '300px',
+        disable_search: true
+    });
     $("#popupSelectBudget #confirm_budget").click(function(event) {
         event.preventDefault();
         var budget = new LiveValidation('budget-source-combo', {
