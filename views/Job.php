@@ -565,24 +565,20 @@ class JobView extends View {
                 }
                 $ret .= 
                      '<td>'
-                    .  '<span class="table-back">'
-                    .    '<span>'
-                    .      (
-                            $canSeeBid 
-                              ? '<a href="#" bidderId="' . $bid['bidder_id'] . '" class="CreatorPopup">' . getSubNickname($bid['nickname']) . '</a>' 
-                              : $bid['nickname']
-                            )
-                    .    '</span>'
-                    .  '</span>'
+                    . (
+                        $canSeeBid 
+                          ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . getSubNickname($bid['nickname']) . '</a>' 
+                          : $bid['nickname']
+                      )
                     .'</td>'
-                    .'<td class="money"><span class="table-back"><span class="moneyPaddingSmall">$ ' . $bid['bid_amount'] . '</span></span></td>'
-                    .'<td class="money"><span class="table-back"><span class="moneyPaddingSmall">' .$bid['done_in'] . '</span></span></td>';
+                    .'<td class="money">$ ' . $bid['bid_amount'] . '</td>'
+                    .'<td class="money">' .$bid['done_in'] . '</td>';
 
                 $ret .= '</tr>';
             }
         }
         if (!$ret) {
-            $ret = '<tr><td style="text-align: center;" colspan="3"><span class="table-back"><span>No bids yet.</span></span></td></tr>';
+            $ret = '<tr><td colspan="3">No bids yet.</td></tr>';
         }
         return $ret;
     }

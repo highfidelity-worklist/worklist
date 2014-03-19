@@ -1392,10 +1392,9 @@ $(function() {
         return false;
     });
 
-    $('.CreatorPopup').click(function(event) {
-        var bidderId=$(this).attr("bidderId");
-        window.open('./user/' + bidderId, '_blank');
+    $('.table-bids tbody td > a[href^="./user/"]').click(function(event) {
         event.stopPropagation();
+        return true;
     });
 
     // Reassign runner
