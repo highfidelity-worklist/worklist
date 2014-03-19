@@ -3015,7 +3015,7 @@ function pingTask() {
         if ($who != 'bidder') {
             $mail_subject = $nickname." sent you a ping for item #".$item_id;
             $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
-            $mail_msg .= "<a href='./" . $item_id . "?action=view'>#" . $item_id . "</a>";
+            $mail_msg .= "<a href='" . WORKLIST_URL . $item_id . "'>#" . $item_id . "</a>";
             $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
             $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
             if ($send_cc) {
