@@ -398,7 +398,7 @@ $(document).ready(function(){
         modal: true,
         width: 470,
         resizable: false,
-        height: 250,
+        height: 300,
         open: function(event, ui) {
 
         }
