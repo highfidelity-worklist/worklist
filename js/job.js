@@ -833,7 +833,7 @@ $(document).ready(function(){
                     runDisableable();
                 }
 
-                if((bidData.bidder_id == user_id) && hasAcceptedBids) {
+                if((bidData.bidder_id == user_id) && !hasAcceptedBids) {
                     $('#popup-bid-info-buttons').append('<input type="button" name="edit" id="edit" value="Edit" onClick="return ConfirmEditBid()" style="padding-left:20px;padding-right:20px;">');
                 }
 
