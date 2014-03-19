@@ -140,7 +140,7 @@ class JobView extends View {
                 }
             }
         } else if (
-             $worklist['creator_id']== $user_id 
+             $worklist['creator_id']== $this->currentUser['id'] 
           && $worklist['status'] != 'Working' 
           && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' 
           && $worklist['status'] != 'Completed' && $worklist['status'] != 'Done' 
