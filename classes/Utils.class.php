@@ -45,6 +45,8 @@ class Utils{
         // user just logged  in, let's update the last seen date in session
         // date will be checked against db in initUserById
         $_SESSION['last_seen'] = date('Y-m-d');
+        
+        initSessionDataByUserId($id);
     }
     
     public static function getVersion() {
