@@ -594,6 +594,7 @@ $(document).ready(function() {
 
 // tooltip plugin and dictionary
 function MapToolTips() {
+    return;
     var tooltipPhraseBook = {
         "menuWorklist": "Explore jobs or add new ones.",
         "menuJournal": "Chat",
