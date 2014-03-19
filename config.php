@@ -1303,7 +1303,8 @@ defineOnce('GITHUB_ORGANIZATION', 'highfidelity');
 
 require_once('vendor/autoload.php');
 require_once('functions.php');
-Sanitize::filterInput();
+
+//Sanitize::filterInput();
 
 function shutdown() {
     foreach (get_declared_classes() as $class) {
