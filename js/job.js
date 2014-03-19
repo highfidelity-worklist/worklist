@@ -138,6 +138,11 @@ $(function() {
         }
     });
 
+    $('#invite-form').on('submit', function(event) {
+        event.preventDefault();
+        sendInviteForm();
+        return false;
+    });
 });
 
 var Workitem = {
@@ -1470,4 +1475,44 @@ function setFollowingText(isFollowing){
         $('#following').attr('title', 'Click to receive updates for this job');
         $('#following').html('Follow this job');
     }
+}
+
+function sendInviteForm(){
+  var name = $('input[name="invite"]', $("#invite-people")).val();
+  $.ajax({
+    type: "POST",
+    url: "./" + workitem_id,
+    data: "invite=" + name + "&invite-people=Invite",
+    dataType: "json",
+    success: function(json) {
+ 
+        if (!json.length) {
+            $("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
+            $('input[name="invite"]').val('');
+            $('#invite-people').dialog('close');
+            $("#sent-notify").dialog("open");
+            setTimeout(function() {
+                $("#sent-notify").dialog("close"); 
+            }, 2000);
+            
+        } else {
+            alert("Some of the users you sent do not exist. Please correct those shown and try again.");
+            $('#invite').val('');
+            // we need to enter unsent items back into text field
+            for (var i = 0; i < json.length; i++) {
+                if(i != 0) {
+                    $('#invite').val($('#invite').val() + ',' + json[i]);
+                } else {
+                    $('#invite').val($('#invite').val() + json[i]);
+                }
+                
+            }
+        }
+        
+    },
+    error: function(xhdr, status, err) {
+      $("#sent-notify").html("<span>Error sending invitation</span>");
+    }
+  });
+  return false;
 }
