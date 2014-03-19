@@ -110,7 +110,7 @@ initialize: function(element, optionsObj){
  this.form = this.element.form;
  // options
    var options = optionsObj || {};
-   this.validMessage = options.validMessage || 'Thankyou!';
+   this.validMessage = options.validMessage || '';
    var node = options.insertAfterWhatNode || this.element;
    this.insertAfterWhatNode = node.nodeType ? node : document.getElementById(node);
  this.onValid = options.onValid || function(){ this.insertMessage(this.createMessageSpan()); this.addFieldClass(); };

@@ -45,15 +45,15 @@
             </div>
 
             <script type="text/javascript">
-                var paypal = new LiveValidation('paypal_email', {validMessage: "Valid email address."});
+                var paypal = new LiveValidation('paypal_email');
                 paypal.add(Validate.Email);
                 paypal.add(Validate.Presence);
 
-                var firstname = new LiveValidation('first_name', {validMessage: "First Name looks good", onlyOnBlur: true});
+                var firstname = new LiveValidation('first_name', {onlyOnBlur: true});
                 firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
                 firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
                 
-                var lastname = new LiveValidation('last_name', {validMessage: "Last Name looks good", onlyOnBlur: true}); 
+                var lastname = new LiveValidation('last_name', {onlyOnBlur: true}); 
                 lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
                 lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
                 

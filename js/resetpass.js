@@ -3,10 +3,10 @@ var password;
 var confirmpassword;
 
 $(function() {
-    password = new LiveValidation('password',{ validMessage: "You have an OK password.", onlyOnBlur: true });
+    password = new LiveValidation('password',{ onlyOnBlur: true });
     password.add(Validate.Length, { minimum: 5, maximum: 255 } );
 
-    confirmpassword = new LiveValidation('confirmpassword', {validMessage: "Passwords Match."});
+    confirmpassword = new LiveValidation('confirmpassword');
     //confirmpassword.add(Validate.Length, { minimum: 5, maximum: 12 } );
     confirmpassword.add(Validate.Confirmation, { match: 'password'} );
 

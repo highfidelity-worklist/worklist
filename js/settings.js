@@ -255,34 +255,34 @@ $(function () {
         return false;
     });
 
-    nickname = new LiveValidation('nickname', {validMessage: ' ' });
+    nickname = new LiveValidation('nickname');
     nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );
     nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
     nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
 
-    username = new LiveValidation('username', {validMessage: ' '});
+    username = new LiveValidation('username');
     username.add( Validate.Email );
     username.add(Validate.Length, { minimum: 4, maximum: 50 } );
     username.add(Validate.Exclusion, { within: [ 'username' ], failureMessage: "You must set your Email!" });
 
-    about = new LiveValidation('about', {validMessage: ' '});
+    about = new LiveValidation('about');
     about.add(Validate.Length, { minimum: 0, maximum: 150 } );
 
-    paypal = new LiveValidation('paypal_email', {validMessage: ' '});
+    paypal = new LiveValidation('paypal_email');
     paypal.add(Validate.Email);
     // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal
     // email, which removes their paypal verification and prevents them from bidding
     // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
 
-    firstname = new LiveValidation('first_name', {validMessage: ' ', onlyOnBlur: true});
+    firstname = new LiveValidation('first_name', {onlyOnBlur: true});
     firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
     firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
 
-    lastname = new LiveValidation('last_name', {validMessage: ' ', onlyOnBlur: true});
+    lastname = new LiveValidation('last_name', {onlyOnBlur: true});
     lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
     lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
 
-    w9_accepted = new LiveValidation('w9_accepted', {validMessage: ' ', insertAfterWhatNode: 'w9_accepted_label'});
+    w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
     w9_accepted.displayMessageWhenEmpty = true;
     w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
 

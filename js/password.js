@@ -1,10 +1,10 @@
 
 $(function() {
-    var oldpasword = new LiveValidation('oldpassword', {validMessage: ' '});
+    var oldpasword = new LiveValidation('oldpassword');
     summary.add(Validate.Presence, {failureMessage: "You must enter the job title!"});
-    var newpassword = new LiveValidation('newpassword',{ validMessage: ' ', onlyOnBlur: true });
+    var newpassword = new LiveValidation('newpassword',{onlyOnBlur: true });
     newpassword.add(Validate.Length, { minimum: 5, maximum: 255 } );
-    var confirmpassword = new LiveValidation('confirmpassword', {validMessage: ' '});
+    var confirmpassword = new LiveValidation('confirmpassword');
     confirmpassword.add(Validate.Confirmation, { match: 'newpassword'} );
 
     $('form#password').submit(function(event) {

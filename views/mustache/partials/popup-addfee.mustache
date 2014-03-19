@@ -31,11 +31,11 @@
                 // see http://regexlib.com/REDetails.aspx?regexp_id=318
                 // but without  dollar sign 22-NOV-2010 <krumch>
                 var regex = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-                var fee_amount = new LiveValidation('fee_amount', { onlyOnSubmit: true });
+                var fee_amount = new LiveValidation('fee_amount', {onlyOnSubmit: true});
                     fee_amount.add(Validate.Presence, { failureMessage: "Can't be empty!" });
                     fee_amount.add(Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
 
-                var fee_desc = new LiveValidation('fee_desc', { onlyOnSubmit: true });
+                var fee_desc = new LiveValidation('fee_desc', {onlyOnSubmit: true});
                     fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
                 $('#popup-form-addfee').submit(function() {
                     var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);

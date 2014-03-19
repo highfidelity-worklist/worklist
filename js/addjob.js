@@ -76,10 +76,10 @@ $(function() {
         }
         submitIsRunning = true;
 
-        var summary = new LiveValidation('summary', {validMessage: ' '});
+        var summary = new LiveValidation('summary');
         summary.add(Validate.Presence, {failureMessage: "You must enter the job title!"});
 
-        var itemProject = new LiveValidation('itemProjectCombo', {validMessage: ' '});
+        var itemProject = new LiveValidation('itemProjectCombo');
         itemProject.add(Validate.Exclusion, {
             within: ['select'], 
             partialMatch: true,
