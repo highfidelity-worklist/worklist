@@ -811,10 +811,13 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-align: left;
 }
 
-.popup-body input[type="text"], .popup-body textarea, .popup-body select {
+.popup-body input[type="text"], 
+.popup-body textarea, 
+.popup-body select {
     font-size: 14px;
     font-family: proxima-nova, sans-serif;
     width: 370px;
+    font-weight: normal;
 }
 
 #popup-bid .notes,
