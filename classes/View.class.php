@@ -17,9 +17,9 @@ class View extends AppObject {
         'version' => -1,
         'url' => WORKLIST_URL,
         'metadata' => array(
-            'title' => 'Worklist - A community of independent software developers',
-            'image' => 'images/worklist_logo_large.png',
-            'description' => 'Worklist is a software development forum to rapidly prototype and build software and websites using a global network of developers, designers and testers.'
+            'title' => "Worklist: High Fidelity's exoskeleton for rapid software development.",
+            'image' => 'images/hifi-logo-notext.png',
+            'description' => 'High Fidelity is an open source virtual world platform. We are building the software with a mix of full-time developers, part time developers who are paid here on the worklist, and open source collaborators. As use of the virtual world grows, Worklist will also host paid projects run by other teams.'
         ),
         'self_url' => '',
         'feeds_url' => 'feedlist'
