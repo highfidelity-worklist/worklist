@@ -143,6 +143,8 @@ $(function() {
         sendInviteForm();
         return false;
     });
+
+    Entries.formatWorklistStatus();
 });
 
 var Workitem = {

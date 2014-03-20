@@ -51,7 +51,7 @@ class StatusView extends View {
             }
 
             $ret .= 
-                  '<li entryid="' . $id . '" date="' . $date  . '" type="' . $type .  '">'
+                  '<li entryid="' . $id . '" date="' . $date . '" type="' . $type . '">'
                 .     '<h4>' . relativeTime($date - $now) . '</h4>'
                 .     $content
                 . '</li>';

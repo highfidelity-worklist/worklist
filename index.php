@@ -35,6 +35,7 @@ class Dispatcher {
         $dispatcher->get('/resetpass', array('ResetPass'));
         $dispatcher->post('/resetpass', array('ResetPass'));
         $dispatcher->get('/status', array('Status'));
+        $dispatcher->post('/status', array('Status', 'api'));
         $dispatcher->get('/settings', array('Settings'));
         $dispatcher->post('/settings', array('Settings'));
         $dispatcher->get('/signup', array('Signup'));
