@@ -14,9 +14,7 @@ class StatusController extends Controller {
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            if (!$this->client->authenticate($this->token, '', Github\Client::AUTH_HTTP_TOKEN)) {
-                throw new Exception("StatusController: github authentication failed", 1);
-            }
+            $this->client->authenticate($this->token, '', Github\Client::AUTH_HTTP_TOKEN);
 
             // first: request github for 3 pages with 30 events data each 
             $gh_events = array_merge(
