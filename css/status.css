@@ -76,12 +76,24 @@ body {
 }
 
 #need-review > ul + a {
-    color: #007f7c;
-    border-bottom: 1px solid #a6cbcc;
     line-height: .9em;
     font-size: 1.1em;
-    display: inline-block;
     margin-bottom: 15px;
+    display: inline-block;
+    border-bottom: 1px solid #a6cbcc;
+}
+
+#need-review > ul + a,
+#biddingJobs p:last-child > a {
+    color: #007f7c;
+}
+
+#biddingJobs p:last-child {
+    line-height: 1.2em;
+}
+
+#biddingJobs p:last-child > a {
+    text-decoration: underline;
 }
 
 #need-review > ul a {

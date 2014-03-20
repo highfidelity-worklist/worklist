@@ -42,11 +42,7 @@ function fillBiddingReviewDrawers(json) {
             $('#need-review ul').append(li);
         }
         if (parseInt(review) > 7) {
-            $('<a>').attr(
-                {
-                    href: './jobs?project=&user=0&status=needs-review',
-                    target: '_blank'
-                })
+            $('<a>').attr({href: './jobs?project=&user=0&status=needs-review'})
                 .text('View them all')
                 .insertAfter('#need-review ul');
         }
