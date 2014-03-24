@@ -70,7 +70,7 @@ class StatusView extends View {
         } else { // github event
             $date_b = strtotime($b['created_at']);
         }
-        return ($date_a == $date_b) ? 0 : ($date_a > $date_b ? +1 : -1);
+        return ($date_a == $date_b) ? 0 : ($date_a > $date_b ? -1 : +1);
     }
 
     /**

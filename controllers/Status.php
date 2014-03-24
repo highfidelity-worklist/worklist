@@ -23,7 +23,7 @@ class StatusController extends Controller {
                 $this->listGithubEvents(GITHUB_ORGANIZATION, 3)
             );
 
-            // then: find out $minutes_ago based on the last event in order to 
+            // then: find out $seconds_ago based on the last event in order to 
             // use as date limit when looking for worklist entries
             $fromTime = strtotime(self::olderGithubEventDate($gh_events));
             $toTime = strtotime(Model::now());
@@ -32,12 +32,12 @@ class StatusController extends Controller {
             $fromTime = strtotime('10 days ago');
             $toTime = strtotime(Model::now());
         }
-        $minutes_ago = round(abs($toTime - $fromTime) / 60, 2);
+        $seconds_ago = abs($toTime - $fromTime);
         $this->write('gh_events', $gh_events);
 
         // and, finally: fetches worklist data
         $entry = new EntryModel();
-        $this->write('entries', $entry->latest($minutes_ago, 90));
+        $this->write('entries', $entry->latest($seconds_ago, 90));
 
         // alright, ready to go :)
         parent::run();
@@ -81,11 +81,15 @@ class StatusController extends Controller {
         $entry = new EntryModel();
         $ret = array();
 
-        // this is a 30 sec timeout long poll, so let's loop up to 25 times
+        // this is a 30 seconds timeout long poll, so let's loop up to 25 times
         // with 1 sec delays at the end of each iteration 
+        $fromTime = (int) $since;
         for ($i = 0; $i < 25; $i++) {
+            $toTime = strtotime(Model::now());
+            $seconds_ago = abs($toTime - $fromTime);
+
             // we are searching for new worklist entries
-            $entries = $entry->latestSince($since);
+            $entries = $entry->latest($seconds_ago, 90);
             if ($entries) {
                 $now = 0;
                 foreach($entries as $entry) {
@@ -93,7 +97,7 @@ class StatusController extends Controller {
                         $now = strtotime(Model::now());
                     }
                     $date = strtotime($entry->date);
-                    $relativeDate = relativeTime($entry->date - $now);
+                    $relativeDate = relativeTime($date - $now);
 
                     $mention_regex = '/(^|\s)@(\w+)/';
                     $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
@@ -119,7 +123,7 @@ class StatusController extends Controller {
 
     /**
      * returns the older date from the latest status-renderable github event, used 
-     * when requesting for worklist entries (when setting a $minutes_ago date limit)
+     * when requesting for worklist entries (when setting a $seconds_ago date limit)
      */
     static function olderGithubEventDate($events) {
         $reverse_events = array_reverse($events);

@@ -3,14 +3,9 @@
 class EntryModel extends Model {
     protected $table = 'entries';
 
-    public function latest($minutes_ago = 0, $max_limit = 0, $offset = 0) {
-        $cond = $minutes_ago ? 'DATE_SUB(NOW(), INTERVAL ' . $minutes_ago . ' MINUTE) < date' : '';
+    public function latest($seconds_ago = 0, $max_limit = 0, $offset = 0) {
+        $cond = $seconds_ago ? 'DATE_SUB(NOW(), INTERVAL ' . $seconds_ago . ' SECOND) < date' : '';
         return $this->loadMany($cond, 'date DESC', $max_limit, $offset);
-    }
-
-    public function latestSince($id, $max_limit = 0, $offset = 0) {
-        $cond = 'id > ' . ((int) $id);
-        return $this->loadMany($cond, 'date DESC', $max_limit, $offset);        
     }
 
     public function latestFromTask($job_id, $order = 'date DESC', $max_limit = 0, $offset = 0) {

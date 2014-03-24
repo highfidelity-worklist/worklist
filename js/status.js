@@ -1,16 +1,16 @@
 Status = {
-    lastEntryWorklist: 0,
+    recentWorklistEntryDate: 0,
 
     init: function() {
         // Collect Bidding Jobs info
         Status.getBiddingReviewDrawers();
-        Status.scrollBottom();
+        Status.scrollTop();
         Status.longPoll();
         Entries.formatWorklistStatus();
     },
 
-    scrollBottom: function() {
-        window.scrollTo(0, $('#entries').outerHeight());
+    scrollTop: function() {
+        window.scrollTo(0, 0);
     },
 
     getBiddingReviewDrawers: function() {
@@ -61,9 +61,33 @@ Status = {
         $('#biddingJobs p > span').text(parseInt(bidding) == 1 ? 'is' : 'are');
     },
 
+    findRecentWorklistEntryDate: function() {
+        var recent = 0;
+        $('#entries li[type="worklist"]').each(function() {
+            var currentEntryDate = $(this).attr('date');
+            if (currentEntryDate > recent) {
+                recent = currentEntryDate;
+            }
+        });
+        return recent;
+    },
+
+    findRecentGithubEntryDate: function() {
+        var recent = 0;
+        $('#entries li[type^="github"]').each(function() {
+            var currentEntryDate = $(this).attr('date');
+            if (currentEntryDate > recent) {
+                recent = currentEntryDate;
+            }
+        });
+        return recent;
+    },
     longPoll: function() {
-        if (!Status.lastEntryWorklist) {
-            Status.lastEntryWorklist = $('#entries li[type="worklist"]:last-child').attr('entryid');
+        if (!Status.recentWorklistEntryDate) {
+            Status.recentWorklistEntryDate = Status.findRecentWorklistEntryDate();
+        }
+        if (!Status.recentWorklistEntryDate) {
+            Status.recentWorklistEntryDate = Status.findRecentGithubEntryDate();
         }
         $.ajax({ 
             url: "./status", 
@@ -71,13 +95,13 @@ Status = {
             type: "post", 
             complete: function() {
                 // start a new longpoll after 500 ms so we give some time advantage on the success 
-                // event to update Status.lastWorklistEntry and then use it on next request
+                // event to update recent entries date and then use it on next request
                 setTimeout(Status.longPoll, 500);
             },
             timeout: 30000,
             data: {
                 action: 'worklist_longpoll',
-                since: Status.lastEntryWorklist
+                since: Status.recentWorklistEntryDate
             },
             success: function(response) {
                 if (!response.success) {
@@ -85,18 +109,22 @@ Status = {
                 }
                 var entries = response.data;
                 ret = '';
-                for(var i = 0; i < entries.length; i++) {
+                for(var i = entries.length-1; i >= 0 ; i--) {
                     var entry = entries[i];
-                    Status.lastEntryWorklist = entry.id;
+                    if (Status.recentWorklistEntryDate < entry.date) {
+                        Status.recentWorklistEntryDate = entry.date
+                    }
                     ret += 
                           '<li entryid="' + entry.id + '" date="' + entry.date + '" type="worklist">'
                         +     '<h4>' + entry.relativeDate + '</h4>'
                         +     entry.content
                         + '</li>';
                 }
-                $(ret).appendTo('#entries');
+                $(ret).prependTo('#entries');
                 Entries.formatWorklistStatus();
-                Status.scrollBottom();
+                if (entries.length) {
+                    Status.scrollTop();
+                }
             }
         });
     }

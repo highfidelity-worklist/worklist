@@ -12,6 +12,8 @@ body {
 .sidebar h3:first-child,
 .main h3:first-child {
     font-weight: bold;
+    font-size: 1.4em;
+    line-height: 1.4em;
 }
 
 /*
