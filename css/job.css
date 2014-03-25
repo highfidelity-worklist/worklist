@@ -74,6 +74,9 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
     margin: -11px 0 0 -190px;
     background-color: #fff;
     transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
     border-top: 1px solid #ddd;
     border-left: 1px solid #dddddd;
 }
