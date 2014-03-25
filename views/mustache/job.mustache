@@ -338,7 +338,7 @@
         <div id="for_view">
             <div class="moneyZone">
                 <div id="bid-panel">
-                    <table class="table table-bids">
+                    <table class="table table-striped table-bids">
                         <caption class="table-caption" >
                             <h4>Bids</h4>
                             <span>
@@ -407,7 +407,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{^fees}}<tr><td colspan="5">No fees yet.</td></tr>{{/fees}}
                             {{& feesList}}
                         </tbody>
                     </table>

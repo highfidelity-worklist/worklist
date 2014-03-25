@@ -583,9 +583,6 @@ class JobView extends View {
     }
 
     function feesList() {
-        if (!$this->fees) {
-            return '';
-        }
         $fees = $this->fees;
         $workitem = $this->workitem;
         $worklist = $this->worklist;
@@ -655,13 +652,17 @@ class JobView extends View {
                         '</td>' .
                     '</tr>';
         }
-        $ret .=
-            '<tr id="job-total">' .
-                '<td colspan="5">' .
-                        '<h5>Job Total :</h5>' .
-                        '<span class="data">$ ' . number_format($feeTotal, 2)  . '</span>' .
-                '</td>' .
-            '</tr>';
+        if ($ret) {
+            $ret .=
+                '<tr id="job-total">' .
+                    '<td colspan="5">' .
+                            '<h5>Job Total :</h5>' .
+                            '<span class="data">$ ' . number_format($feeTotal, 2)  . '</span>' .
+                    '</td>' .
+                '</tr>';            
+        } else {
+            $ret = '<tr><td colspan="5">No fees yet.</td></tr>';
+        }
         return $ret;
     }
 

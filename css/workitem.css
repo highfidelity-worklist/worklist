@@ -673,43 +673,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     background-image:none;
 }
 
-#fee-panel #job-total .noteWrapper {
-    background-color: #E1E8EA;
-    border-top: 3px solid white !important;
-    padding: 14px 10px;
-    text-align: right;
-}
-
-#fee-panel #job-total span.label {
-    cursor: auto;
-    font-size: 14px; 
-    font-weight: bold;
-}
-
-#fee-panel #job-total:hover td span.label {
-    background-color: #E1E8EA;
-}
-
-#fee-panel #job-total span.label:hover {
-    background-color: #E1E8EA;
-}
-
-#fee-panel #job-total span.data {
-    background-color: #FFFFFF;
-    border: 1px solid #D3D3D3;
-    cursor: auto;
-    color: #009999;
-    font-size: 15px;
-    font-weight: bold;
-    height: 25px;
-    padding: 5px 9px;
-}
-
-#fee_desc,
-#tip_desc {
-    width:280px;
-}
-
 #edit_workitem_form ul li {
     float:left;
     list-style: none!important;
@@ -1088,20 +1051,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     line-height: 19px;
 }
 
-#page-content table td.what {
-    text-align: center;
-} 
-
-tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
-    content: '\00a0';
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    margin: -10px 0 0 -185px;
-    background-color: #fff;
-    transform: rotate(45deg);
-}
-
 #for_view .notestext a, .comment a {
     color: #336666;
     text-decoration: underline;
@@ -1257,15 +1206,6 @@ a.profile-link {
 
 .past-due {
     color: #FF0000;
-}
-
-.expired_warn {
-    background-color: #FF8080;
-    color: #640101;
-}
-
-.expired_warn a {
-    color: #640101;
 }
 
 #ping-msg {

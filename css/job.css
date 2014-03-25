@@ -45,6 +45,39 @@ table.table-fees thead tr td {
     border-bottom: 1px solid #ccc;
 }
 
+table.table-bids tr td[colspan="3"],
+table.table-fees tr td[colspan="5"] {
+    padding: 5px 10px;
+}
+
+tr.row-feelist-live {
+    border-bottom: 1px solid #dddddd;
+}
+
+table.table-bids thead tr td.expired_warn:nth-child(odd) > td {
+    background-color: #FF8080;
+}
+
+table.table-bids thead tr td.expired_warn:nth-child(even) > td {
+    background-color: #f7afaf;
+}
+
+table.table-fees td.what {
+    text-align: center;
+}
+
+table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
+    content: '\00a0';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    margin: -11px 0 0 -190px;
+    background-color: #fff;
+    transform: rotate(45deg);
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #dddddd;
+}
+
 .table-bids h4,
 .table-bids h5,
 .table-fees h4,
@@ -83,6 +116,16 @@ table.table-fees thead tr td {
 }
 .table-fees td.paid {
     width: 22%;
+}
+
+.table-fees tr#job-total .data {
+    background-color: #FFFFFF;
+    border: 1px solid #dddddd;
+    cursor: auto;
+    color: #009999;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 5px 9px;
 }
 
 /* inline footer */
