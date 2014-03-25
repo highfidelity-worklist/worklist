@@ -44,6 +44,88 @@ nav.navbar .navbar-right > li > a[href="./login"] {
     color: #007F7c;
 }
 
+/* loading bar */
+body.onAjax nav.navbar > .container-fluid:after {
+    content: ' ';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #007F7c;
+    animation: moveLoadingBar 3s ease-in-out infinite;
+    -o-animation: moveLoadingBar 3s ease-in-out infinite;
+    -moz-animation: moveLoadingBar 3s ease-in-out infinite;
+    -webkit-animation: moveLoadingBar 3s ease-in-out infinite;
+    background: -moz-linear-gradient(left,  rgba(0,127,124,0) 0%, rgba(0,127,124,1) 25%, rgba(0,127,124,1) 50%, rgba(0,127,124,1) 75%, rgba(0,127,124,0) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,127,124,0)), color-stop(25%,rgba(0,127,124,1)), color-stop(50%,rgba(0,127,124,1)), color-stop(75%,rgba(0,127,124,1)), color-stop(100%,rgba(0,127,124,0)));
+    background: -webkit-linear-gradient(left,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    background: -o-linear-gradient(left,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    background: -ms-linear-gradient(left,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    background: linear-gradient(to right,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00007f7c', endColorstr='#00007f7c',GradientType=1 );
+}
+
+@keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+@-o-keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+@-webkit-keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+@-moz-keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
 /*
  * Form controls styling
  */

@@ -209,7 +209,6 @@ function GetReport(npage, reload, sort) {
         },
         dataType: 'json',
         success: function(json) {
-            $("#loader_img").css("display","none");
             page = json[0][1]|0;
             var cPages = json[0][2]|0;
 
@@ -257,7 +256,6 @@ function GetReport(npage, reload, sort) {
                 '   <td colspan="8" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td>' +
                 '</tr>');
             $('#again').click(function(e){
-                $("#loader_img").css("display","none");
                 if (timeoutId) clearTimeout(timeoutId);
                 GetReport(page);
                 e.stopPropagation();
@@ -313,7 +311,6 @@ function GetPayeeReport(npage, reload, sort) {
         dataType: 'json',
         success: function(json) {
 
-            $('#loader_img').css('display','none');
             page = json[0][1]|0;
             var cPages = json[0][2]|0;
 
@@ -344,7 +341,6 @@ function GetPayeeReport(npage, reload, sort) {
                 '   <td colspan="4" align="center">Oops! We couldn\'t find any payee report.  <a id="again-payee" href="#">Please try again.</a></td>' +
                 '</tr>');
             $('#again-payee').click(function(e){
-                $("#loader_img").css("display","none");
                 if (timeoutId) clearTimeout(timeoutId);
                 GetPayeeReport(page);
                 e.stopPropagation();
@@ -418,7 +414,6 @@ function setupTimelineChart(reload) {
             } ,
             error: function(xhdr, status, err) {
                  $('#again').click(function(e){
-                    $("#loader_img").css("display","none");
                     if (timeoutId) clearTimeout(timeoutId);
                     e.stopPropagation();
                     return false;

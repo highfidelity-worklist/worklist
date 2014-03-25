@@ -317,7 +317,6 @@ function GetWorklist(npage, update, reload) {
     if (timeoutId) {
         clearTimeout(timeoutId);
     }
-    loaderImg.show("loadRunning", "Loading, please wait ...");
     var search_status = '',
         search_user = '0',
         search_project = '0',
@@ -366,7 +365,6 @@ function GetWorklist(npage, update, reload) {
                 return false;
             }
 
-            loaderImg.hide("loadRunning");
             if (affectedHeader) {
                 affectedHeader.append(dirDiv);
                 dirImg.attr('src',directions[dir.toUpperCase()]);
@@ -420,11 +418,9 @@ function GetWorklist(npage, update, reload) {
             $('.row-worklist-live').remove();
             $('.table-worklist').append('<tr class="row-worklist-live"><td colspan="5" align="center">Oops! We couldn\'t find any work items.  <a id="again" href="#">Please try again.</a></td></tr>');
 //              Ticket #11560, hide the waiting message as soon as there is an error
-            loaderImg.hide("loadRunning");
 //              Ticket #11596, fix done with 11517
 //              $('#again').click(function(){
             $('#again').click(function(e){
-//                  loaderImg.hide("loadRunning");
                 if (timeoutId) clearTimeout(timeoutId);
                 GetWorklist(page, false);
                 e.stopPropagation();

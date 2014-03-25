@@ -195,15 +195,6 @@ color:#98AAB2;
   cursor: pointer;
 }
 
-#loader_img_title {
-    border: 2px #DCD998 solid;
-    background-color:#FFD;
-    color: gray;
-    font-size: 16px;
-    padding:10px;
-    margin:10px;
-}
-
 .second-line {
     margin-top:10px;
     margin-bottom:5px;

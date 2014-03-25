@@ -5,49 +5,6 @@ jQuery.fn.center = function () {
     return this;
 }
 
-/*
-show a message with a wait image
-several asynchronus calls can be made with different messages
-*/
-var loaderImg = function($)
-{
-    var aLoading = new Array(),
-        _removeLoading = function(id) {
-            for (var j=0; j < aLoading.length; j++) {
-                if (aLoading[j].id == id) {
-                    if (aLoading[j].onHide) {
-                        aLoading[j].onHide();
-                    }
-                    aLoading.splice(j, 1);
-                }
-            }
-        },
-        _show = function(id,title,callback) {
-            aLoading.push({ id: id, title: title, onHide: callback});
-            $("#loader_img_title").append("<div class='" + id + "'>" + title + "</div>");
-            if (aLoading.length == 1) {
-                $("#ajaxSpin").css("display", "none");
-                $("#loader_img").css("display", "block");
-            }
-            $("#loader_img_title").center();
-        },
-        _hide = function(id) {
-            _removeLoading(id);
-            if (aLoading.length == 0) {
-                $("#loader_img").css("display", "none");
-                $("#loader_img_title div").remove();
-            } else {
-                $("#loader_img_title ." + id).remove();
-                $("#loader_img_title").center();
-            }
-        };
-    
-    return {
-        show: _show,
-        hide: _hide
-    };
-
-}(jQuery); // end of function loaderImg
 
 var favoriteUsers = [];
 function getFavoriteUsers() 
@@ -337,22 +294,6 @@ $(function() {
             }
         }
     });
-    
-    $(document).ajaxSend(function(event, request, settings) {
-        if ($('#ajaxSpin').length > 0) {
-            return
-        };
-        if ($("#loader_img").css('display') != "block") {
-            $('<figure id="ajaxSpin"><img src="images/loader.gif" /></figure>').appendTo('body');
-        }
-    });
-    
-    var clearAjaxSpin = function() {
-        $('#ajaxSpin').remove();
-    };
-    
-    $(document).ajaxComplete(clearAjaxSpin);
-
 });
 
 /* We replaced the jquery.autocomplete.js because it was obsolete and unsupported. 

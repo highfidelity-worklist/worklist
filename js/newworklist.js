@@ -6,18 +6,13 @@ var NewWorklist = {
         }
 
         $(document).ajaxSend(function(event, request, settings) {
-            if ($('#ajaxSpin').length > 0) {
-                return
-            };
-            if ($("#loader_img").css('display') != "block") {
-                $('<figure id="ajaxSpin"><img src="images/loader.gif" /></figure>').appendTo('body');
+            if (settings.url == './status' && settings.type.toUpperCase() == 'POST') {
+                return;
             }
+            $('body').addClass('onAjax');
+        });    
+        $(document).ajaxComplete(function(event, request, settings) {
+            $('body').removeClass('onAjax');
         });
-        
-        var clearAjaxSpin = function() {
-            $('#ajaxSpin').remove();
-        };
-        
-        $(document).ajaxComplete(clearAjaxSpin);        
     }
 }

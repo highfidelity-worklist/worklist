@@ -27,43 +27,6 @@ function ToolTip() {
         }
     });
 }
-var loaderImg = function($) {
-    var aLoading = new Array(),
-        _removeLoading = function(id) {
-            for (var j=0; j < aLoading.length; j++) {
-                if (aLoading[j].id == id) {
-                    if (aLoading[j].onHide) {
-                        aLoading[j].onHide();
-                    }
-                    aLoading.splice(j,1);
-                }
-            }
-        },
-        _show = function(id,title,callback) {
-            aLoading.push({ id : id, title : title, onHide : callback});
-            $("#loader_img_title").append("<div class='"+id+"'>"+title+"</div>");
-            if (aLoading.length == 1) {
-                $("#loader_img").css("display","block");
-            }
-            $("#loader_img_title").center();
-        },
-        _hide = function(id) {
-            _removeLoading(id);
-            if (aLoading.length == 0) {
-                $("#loader_img").css("display","none");
-                $("#loader_img_title div").remove();
-            } else {
-                $("#loader_img_title ."+id).remove();
-                $("#loader_img_title").center();
-            }
-        };
-
-return {
-    show : _show,
-    hide : _hide
-};
-
-}(jQuery);
 
 function validateCodeReviews(control) {
     if (!$('#cr_anyone_field').is(':checked') && !$('#cr_3_favorites_field').is(':checked') && 
