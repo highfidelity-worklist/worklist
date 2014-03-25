@@ -477,7 +477,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     // Journal notification
     if($mechanic_id == $_SESSION['userid'])
     {
-        $journal_message = '@' . $_SESSION['nickname'] . " added a fee of \$$fee_amount to #$itemid\n\n **" . $summary. '**';
+        $journal_message = '@' . $_SESSION['nickname'] . ' added a fee of $' . $fee_amount . ' to **#' . $itemid . "**\n\n **" . $summary. '**';
     }
     else
     {
@@ -492,7 +492,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
             $nickname = "unknown-{$mechanic_id}";
         }
 
-        $journal_message = '@' . $_SESSION['nickname'] . " on behalf of @{$nickname} added a fee of \$$fee_amount to #$itemid\n\n**" . $summary. '**';
+        $journal_message = '@' . $_SESSION['nickname'] . ' on behalf of @' . $nickname . ' added a fee of $' . $fee_amount . ' to **#' . $itemid. "**\n\n**" . $summary. '**';
     }
 
     return $journal_message;
@@ -820,9 +820,7 @@ function deleteFee($fee_id) {
         if ($user !== false) {
             // Journal message
             $message  = '@' . $_SESSION['nickname'] . ' deleted a fee from @';
-            $message .= $user->nickname . ' on #';
-            $message .= $fee->worklist_id . "\n\n**";
-            $message .= $summary . '**. ';
+            $message .= $user->nickname . ' on **#' . $fee->worklist_id . "**\n\n**" . $summary . '**. ';
     
             // Journal notification
             sendJournalNotification($message);
