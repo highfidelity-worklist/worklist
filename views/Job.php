@@ -644,16 +644,16 @@ class JobView extends View {
                                 ? '<a href="#" id="wd-' . $fee['id'] . '" class="wd-link" title="Delete Entry">delete</a>' : ''
                         ) .
                     '</td>' .
-                '</tr>';
-            if ($fee['desc'] == 'Accepted Bid' && ($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done')) {
-                $ret .=
-                    '<tr>' .
-                        '<td colspan="5" class="bid-notes">' .
-                            '<p><strong>Bid Notes:</strong>
-                            ' . $fee['bid_notes'] . '</p>' .
+                '</tr>' .
+                '<tr>' .
+                    '<td colspan="5" class="bid-notes">' .
+                        '<p>' . $fee['desc'] . '</p>' .
+                        (
+                            ($fee['desc'] == 'Accepted Bid' && ($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done'))
+                                ? "<p><strong>Bid Notes:</strong>\n" . $fee['bid_notes'] . '</p>' : ''
+                        ) .
                         '</td>' .
                     '</tr>';
-            }
         }
         $ret .=
             '<tr id="job-total">' .
