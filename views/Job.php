@@ -822,7 +822,7 @@ class JobView extends View {
             $mention_regex = '/(^|\s)@(\w+)/';
             $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
             $ret = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
-            $ret = preg_replace($task_regex, '\1[\2](./\2)', $ret);
+            $ret = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $ret);
             // proccesed entries are returned as markdown-processed html
             $ret = Markdown::defaultTransform($ret);
         }
