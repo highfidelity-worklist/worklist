@@ -102,7 +102,7 @@ class StatusController extends Controller {
                     $mention_regex = '/(^|\s)@(\w+)/';
                     $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
                     $content = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
-                    $content = preg_replace($task_regex, '\1[\2](./\2)', $content);
+                    $content = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $content);
                     // proccesed entries are returned as markdown-processed html
                     $content = Markdown::defaultTransform($content);
 
