@@ -11,7 +11,7 @@ var NewWorklist = {
             }
             $('body').addClass('onAjax');
         });    
-        $(document).ajaxComplete(function(event, request, settings) {
+        $(document).ajaxComplete(function() {
             $('body').removeClass('onAjax');
         });
     }
