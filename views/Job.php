@@ -517,65 +517,60 @@ class JobView extends View {
         $ret = '';
         foreach($bids as $bid) {
             $biddings = array();
-            if ($user->getId() == $bid['bidder_id'] && $bid['expires'] <= 0) {
-                $biddings['0'] = $bid;
-            } else if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
-                $biddings = array();
+
+            if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
+                continue;
+            }
+
+            if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
+                $expired_class = ' expired_warn';
             } else {
-                $biddings['0'] = $bid;
+                $expired_class = '';
             }
+            $canSeeBid = $user->getIs_admin() == 1 || $is_project_runner || $user->isRunnerOfWorkitem($workitem) ||
+                         $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $workitem->getIsRelRunner());
+            $row_class = "";
+            $row_class .= ($this->currentUser['id']) ? 'row-bidlist-live ' : '' ;
+            $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
+            $row_class .= 'biditem';
+            $row_class .= ($canSeeBid)
+                        ? "-" . $bid['id'] . ' clickable'
+                        : '';
+            $row_class .= $expired_class;
+            $ret .= '<tr class="' . $row_class . '">';
 
-            foreach($biddings as $key=>$bid) {
-                if ($user->getId() == $bid['bidder_id'] && $bid['expires'] < 0) {
-                    $expired_class = ' expired_warn';
-                } else {
-                    $expired_class = '';
-                }
-                $canSeeBid = $user->getIs_admin() == 1 || $is_project_runner || $user->isRunnerOfWorkitem($workitem) ||
-                             $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $workitem->getIsRelRunner());
-                $row_class = "";
-                $row_class .= ($this->currentUser['id']) ? 'row-bidlist-live ' : '' ;
-                $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
-                $row_class .= 'biditem';
-                $row_class .= ($canSeeBid)
-                            ? "-" . $bid['id'] . ' clickable'
-                            : '';
-                $row_class .= $expired_class;
-                $ret .= '<tr class="' . $row_class . '">';
+            // store bid info into jquery metadata so we won't have to fetch it again on user click
+            // but only if user is runner or creator 15-MAR-2011 <godka>
+            $notes = addcslashes(preg_replace("/\r?\n/", "<br />", $bid['notes']),"\\\'\"&\n\r<>");
 
-                // store bid info into jquery metadata so we won't have to fetch it again on user click
-                // but only if user is runner or creator 15-MAR-2011 <godka>
-                $notes = addcslashes(preg_replace("/\r?\n/", "<br />", $bid['notes']),"\\\'\"&\n\r<>");
-
-                if ($canSeeBid) {
-                    $ret .= 
-                        "<script type='data'>".
-                            "{id: {$bid['id']}, " .
-                            "nickname: '{$bid['nickname']}', " .
-                            "email: '{$bid['email']}', " .
-                            "amount: '{$bid['bid_amount']}', " .
-                            "bid_accepted: '{$bid['bid_accepted']}', " .
-                            "bid_created: '{$bid['bid_created']}', " .
-                            "bid_expires: '" . ($bid['expires'] ? relativeTime($bid['expires']) : "Never") . "', " .
-                            "time_to_complete: '{$bid['time_to_complete']}', " .
-                            "done_in: '{$bid['done_in']}', " .
-                            "bidder_id: {$bid['bidder_id']}, " .
-                            "notes: '" .  replaceEncodedNewLinesWithBr($notes) . "'}" .
-                        "</script>";
-                }
+            if ($canSeeBid) {
                 $ret .= 
-                     '<td>'
-                    . (
-                        $canSeeBid 
-                          ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . getSubNickname($bid['nickname']) . '</a>' 
-                          : $bid['nickname']
-                      )
-                    .'</td>'
-                    .'<td class="money">$ ' . $bid['bid_amount'] . '</td>'
-                    .'<td class="money">' .$bid['done_in'] . '</td>';
-
-                $ret .= '</tr>';
+                    "<script type='data'>".
+                        "{id: {$bid['id']}, " .
+                        "nickname: '{$bid['nickname']}', " .
+                        "email: '{$bid['email']}', " .
+                        "amount: '{$bid['bid_amount']}', " .
+                        "bid_accepted: '{$bid['bid_accepted']}', " .
+                        "bid_created: '{$bid['bid_created']}', " .
+                        "bid_expires: '" . ($bid['expires'] ? relativeTime($bid['expires']) : "Never") . "', " .
+                        "time_to_complete: '{$bid['time_to_complete']}', " .
+                        "done_in: '{$bid['done_in']}', " .
+                        "bidder_id: {$bid['bidder_id']}, " .
+                        "notes: '" .  replaceEncodedNewLinesWithBr($notes) . "'}" .
+                    "</script>";
             }
+            $ret .= 
+                 '<td>'
+                . (
+                    $canSeeBid 
+                      ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . getSubNickname($bid['nickname']) . '</a>' 
+                      : $bid['nickname']
+                  )
+                .'</td>'
+                .'<td class="money">$ ' . $bid['bid_amount'] . '</td>'
+                .'<td class="money">' .$bid['done_in'] . '</td>';
+
+            $ret .= '</tr>';
         }
         if (!$ret) {
             $ret = '<tr><td colspan="3">No bids yet.</td></tr>';
