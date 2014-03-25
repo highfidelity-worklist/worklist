@@ -111,7 +111,7 @@ class StatusView extends View {
                 $author = self::markdownMention($actor['login'], true);
                 $pullreq_number = $payload['number'];
                 $pullreq_url = $payload['pull_request']['html_url'];
-                $pullreq_title = trim($payload['pull_request']['title']);
+                $pullreq_title = self::markdownEscape(trim($payload['pull_request']['title']));
                 $action = ' ' . $payload['action'] . ' [#' . $payload['number'] . '](' . $pullreq_url . ')';
                 $ret .= $author . $action . "\n\n**" . $pullreq_title . '**';
                 break;
@@ -119,7 +119,7 @@ class StatusView extends View {
                 $author = self::markdownMention($actor['login'], true);
                 $issue_number = $payload['issue']['number'];
                 $issue_url = $payload['issue']['html_url'];
-                $issue_title = trim($payload['issue']['title']);
+                $issue_title = self::markdownEscape(trim($payload['issue']['title']));
                 $action = ' commented on [#' . $issue_number . '](' . $issue_url . ')';
                 $ret .= $author . $action . "\n\n**" . $issue_title . '**';
                 break;
@@ -138,5 +138,19 @@ class StatusView extends View {
     static function markdownMention($username, $github = false) {
         $url = ($github ? 'http://github.com/' : './') . $username;
         return '[' . $username . '](' . $url . ')';
+    }
+
+    /**
+     * Adds escape backslashes to characters that are used for markdown syntax,
+     * useful for wraping text we don't need to be parsed as markdown.
+     *
+     * It only takes care of asterisk and underscores chars (used for <em> and <strong>)
+     *
+     * @todo: review the markdown syntax and complete this regular expression
+     */
+    static function markdownEscape($text) {
+        $pattern = '/(\*|_)/';
+        $replacement = '\\\\$1';
+        return preg_replace($pattern, $replacement, $text);
     }
 }
