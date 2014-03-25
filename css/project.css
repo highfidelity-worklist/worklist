@@ -1,4 +1,4 @@
-</*  
+/*  
     Copyright (c) 2009-2010, LoveMachine Inc.
     All Rights Reserved. 
     http://www.lovemachineinc.com
@@ -23,40 +23,17 @@ h2, h3 {
 .rightCol {
     width: 450px;
     float: right;
+    position: relative;
 }
 
 td.noroles {
     text-align: center;
 }
 
-#left, 
-#right {
-    display: none;
-}
-
-.buttonContainer {
-    text-align: left;
-}
-
-.buttonContainer input[type="button"],
-.buttonContainer input[type="submit"],
-.runner input[type="submit"],
-.codeReviewer input[type="submit"],
-#modeSwitch input[type="submit"],
-.popup-body input[type="button"],
-.popup-body input[type="submit"],
-#uploadButtonDiv {
-    background: none #608E96;
-    border: medium none;
-    border-radius: 3px;
-    color: #FFFFFF;
-    font-family: proxima-nova,sans-serif;
-    font-weight: bold;
-    padding: 0 20px;
-    width: auto;
-}
-#addcodereviewer-textbox{
-    width: 130px;
+#modeSwitch {
+    position: absolute;
+    top: -40px;
+    right: 0px;
 }
 
 #projectCodeReviewers .codeReviewerName,

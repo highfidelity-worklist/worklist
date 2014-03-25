@@ -92,6 +92,22 @@
         </div>
     </div>
     <div class="rightCol">
+        <section id="modeSwitch">
+        {{#runnerOrPayerOrOwner}}
+            {{#edit_mode}}
+                <div id="buttonHolder">
+                    <input class="left-button" type="submit" id="cancel_project_edit" name="cancel" value="Cancel">
+                    <input class="right-button" type="submit" id="save_project" name="save_project" value="Save project details">
+                    <input type="hidden" value="" name="logoProject">
+                </div>
+            {{/edit_mode}}
+            {{^edit_mode}}
+                <div id="buttonHolder">
+                    <input type="submit" id="edit_project" name="edit" value="Edit project details">
+                </div>
+            {{/edit_mode}}
+        {{/runnerOrPayerOrOwner}}
+        </section>
         <div>
             <div id="contactInfo"><span>Contact Info:</span> 
                 <a href="mailto:{{project.getContactInfo}}">{{project.getContactInfo}}</a>
@@ -410,22 +426,6 @@
             </li>
         </ul>
     </div>
-</div>
-<div id="modeSwitch" class="buttonContainer">
-{{#runnerOrPayerOrOwner}}
-    {{#edit_mode}}
-        <div id="buttonHolder">
-            <input class="left-button" type="submit" id="cancel_project_edit" name="cancel" value="Cancel">
-            <input class="right-button" type="submit" id="save_project" name="save_project" value="Save project details">
-            <input type="hidden" value="" name="logoProject">
-        </div>
-    {{/edit_mode}}
-    {{^edit_mode}}
-        <div id="buttonHolder">
-            <input type="submit" id="edit_project" name="edit" value="Edit project details">
-        </div>
-    {{/edit_mode}}
-{{/runnerOrPayerOrOwner}}
 </div>
 </form>
 {{> popup-addrole}}
