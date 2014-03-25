@@ -54,11 +54,11 @@ tr.row-feelist-live {
     border-bottom: 1px solid #dddddd;
 }
 
-table.table-bids thead tr td.expired_warn:nth-child(odd) > td {
+table.table-bids thead tr.expired_warn:nth-child(odd) > td {
     background-color: #FF8080;
 }
 
-table.table-bids thead tr td.expired_warn:nth-child(even) > td {
+table.table-bids thead tr.expired_warn:nth-child(even) > td {
     background-color: #f7afaf;
 }
 
