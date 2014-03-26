@@ -26,6 +26,7 @@ class ProjectView extends View {
             $this->scripts[] = 'js/uploadFiles.js';
         }
         $project = $this->project = $this->read('project');
+        $this->project_user = $this->read('project_user');
         $this->project_id = $project->getProjectId();
         $this->project_logo = ($project->getLogo() ? 'uploads/' . $project->getLogo() : 'images/emptyLogo.png');
         $this->edit_mode = $this->read('edit_mode');

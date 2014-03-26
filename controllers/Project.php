@@ -23,6 +23,7 @@ class ProjectController extends Controller {
         //get the project owner
         $project_user = new User();
         $project_user->findUserById($project->getOwnerId());
+        $this->write('project_user', $project_user);
 
         $userId = getSessionUserId();
         if ($userId > 0) {
@@ -120,7 +121,6 @@ class ProjectController extends Controller {
         }
 
         $this->write('project', $project);
-        $this->write('project_user', $project_user);
         $this->write('edit_mode', $edit_mode);
         $this->write('is_owner', $is_owner);
 

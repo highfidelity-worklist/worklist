@@ -106,7 +106,7 @@ td.noroles {
 
 #projectHeader h2,
 #projectUrl > div {
-    padding-left: 19px;
+    padding-left: 5px;
 }
 
 #projectUrl {
@@ -117,7 +117,7 @@ td.noroles {
 #projectUrlLabel {
     color: #007F7C;
     font-size: 1.1em;
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 #projectHeader .rightCol {
@@ -139,6 +139,10 @@ td.noroles {
 #projectRunner,
 #projectInternal {
     float: right;
+}
+
+#projectInternal {
+    margin-top: -5px;
 }
 
 #website {
@@ -295,10 +299,6 @@ p#projectFundingSource {
     cursor: default;
 }
 
-#projectRoles .buttonContainer {
-    width: 360px;
-}
-
 #projectRepositoryUrl:before {
     content: '';
     display: block;
@@ -361,9 +361,9 @@ li#projectAverageBid {
 
 #projectAverageBid,
 #projectAverageJobTime {
-    float: left;
-    margin: 0 15px;
-    font-size: .8em;
+    padding-left: 160px;
+    margin: 0px;
+    font-size: 1.0em;
 }
 
 #projectAverageBid h3,
@@ -441,10 +441,6 @@ li#projectAverageBid {
     color: #999999;
 }
 
-#projectCodeReviewRights > div {
-    margin: 5px 0;
-}
-
 #projectCodeReviewRights label:after {
     display: block;
     content: '';
@@ -498,4 +494,18 @@ li#projectAverageBid {
 
 .container-fluid .table > thead > tr > th {
     color: #999;
+}
+
+body table.table {
+    margin-bottom: 0;
+}
+
+table,
+table + div.buttonContainer {
+    border: 1px solid #dddddd;
+    margin: 0;
+}
+
+table + div.buttonContainer {
+    padding: 5px 15px;
 }
