@@ -31,56 +31,56 @@ class SettingsController extends Controller {
 
             if (isset($_POST['timezone'])) {
                 $timezone = mysql_real_escape_string(trim($_POST['timezone']));
-                $saveArgs = array('timezone' => 0);
+                $saveArgs['timezone'] = 0;
+            }
 
-                $notifications = 0;
-                $my_bids_notify = !empty($_POST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
-                $ping_notify = !empty($_POST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
-                $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
-                $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
-                $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
-                $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
-                $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
-                $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
-                $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
+            $notifications = 0;
+            $my_bids_notify = !empty($_POST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
+            $ping_notify = !empty($_POST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
+            $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
+            $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
+            $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
+            $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
+            $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
+            $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
+            $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
 
-                $notifications = Notification::setFlags(
-                    $review_notify,
-                    $bidding_notify,
-                    $my_review_notify,
-                    $my_completed_notify,
-                    $my_bids_notify,
-                    $ping_notify,
-                    $self_email_notify,
-                    $bidding_email_notify,
-                    $review_email_notify
-                );
+            $notifications = Notification::setFlags(
+                $review_notify,
+                $bidding_notify,
+                $my_review_notify,
+                $my_completed_notify,
+                $my_bids_notify,
+                $ping_notify,
+                $self_email_notify,
+                $bidding_email_notify,
+                $review_email_notify
+            );
 
-                $saveArgs['notifications'] = 0;
+            $saveArgs['notifications'] = 0;
 
-                // if user is new - create an entry for him
-                // clear $saveArgs so it won't be updated for the second time
-                // @TODO: Follow-up. Is this for the first creation of user in the worklist database (as opposed to
-                // logon db?  -- lithium
-                if (!empty($_SESSION['new_user'])) {
+            // if user is new - create an entry for him
+            // clear $saveArgs so it won't be updated for the second time
+            // @TODO: Follow-up. Is this for the first creation of user in the worklist database (as opposed to
+            // logon db?  -- lithium
+            if (!empty($_SESSION['new_user'])) {
 
-                    $user_id = (int) $_SESSION['userid'];
-                    $username = $_SESSION['username'];
-                    $nickname = $_SESSION['nickname'];
+                $user_id = (int) $_SESSION['userid'];
+                $username = $_SESSION['username'];
+                $nickname = $_SESSION['nickname'];
 
-                    $sql = "
-                        INSERT INTO " . USERS . "
-                        (`id`, `username`, `nickname`, `timezone`, `country`, `notifications`, `is_active`, `confirm`)
-                        VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$notifications', '1', '1')";
-                    mysql_unbuffered_query($sql);
-                    $_SESSION['new_user'] = '';
-                    $saveArgs = array();
-                } else {
-                      // we need to check if settings have changed
-                      // so as to send correct message in mail
-                    if ($user->getCity() != $_POST['city'] || $user->getCountry() != $_POST['country'] || $user->getTimezone() != $_POST['timezone']) {
-                          $messages[] = "Your settings have been updated.";
-                    }
+                $sql = "
+                    INSERT INTO " . USERS . "
+                    (`id`, `username`, `nickname`, `timezone`, `country`, `notifications`, `is_active`, `confirm`)
+                    VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$notifications', '1', '1')";
+                mysql_unbuffered_query($sql);
+                $_SESSION['new_user'] = '';
+                $saveArgs = array();
+            } else {
+                  // we need to check if settings have changed
+                  // so as to send correct message in mail
+                if ($user->getTimezone() != $_POST['timezone']) {
+                      $messages[] = "Your timezone has been updated.";
                 }
             }
 
@@ -192,8 +192,17 @@ class SettingsController extends Controller {
             $skills = isset($_POST['skills']) ? strip_tags($_POST['skills']) : "";
             $contactway = isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : "";
 
-            $saveArgs = array_merge($saveArgs, array('about'=>1, 'skills'=>1, 'contactway'=>1));
-            $messages[] = "Your personal information has been updated.";
+            if ($about != $user->getAbout()) {
+                $saveArgs['about'] = 1;
+                $messages[] = "Your personal information (about) has been updated.";
+            }
+            if ($skills != $user->getSkills()) {
+                $saveArgs['skills'] = 1;
+                $messages[] = "Your skills has been updated.";
+            }
+            if ($contactway != $user->getContactway()) {
+                $saveArgs['contactway'] = 1;
+            }
 
             $paypal = 0;
             $paypal_email = '';
@@ -202,8 +211,10 @@ class SettingsController extends Controller {
             $paypal = 1;
             $paypal_email = isset($_POST['paypal_email']) ? mysql_real_escape_string($_POST['paypal_email']) : "";
 
-            $saveArgs = array_merge($saveArgs, array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1));
-            $messages[] = "Your payment information has been updated.";
+            if ($paypal_email != $user->getPaypal_email()) {
+                $saveArgs = array_merge($saveArgs, array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1));
+                $messages[] = "Your payment information has been updated.";                
+            }
 
             if (!$user->getW9_accepted() && $user->getCountry() == 'US') {
                 $w9_accepted = 'NOW()';
@@ -247,7 +258,9 @@ class SettingsController extends Controller {
 
             $first_name = isset($_POST['first_name']) ? mysql_real_escape_string($_POST['first_name']) : "";
             $last_name = isset($_POST['last_name']) ? mysql_real_escape_string($_POST['last_name']) : "";
-            $saveArgs = array_merge($saveArgs, array('first_name'=>1, 'last_name'=>1));
+            if ($first_name != $user->getFirst_name() || $last_name != $user->getLast_name()) {
+                $saveArgs = array_merge($saveArgs, array('first_name'=>1, 'last_name'=>1));
+            }
 
             // do we have data to update?
             if (!empty($saveArgs)) {
@@ -279,13 +292,16 @@ class SettingsController extends Controller {
                 if (!empty($messages)) {
                     $to = $_SESSION['username'];
                     $subject = "Settings";
-                    $body  = "<p>Congratulations!</p>";
-                    $body .= "<p>You have successfully updated your settings with Worklist <br/>";
+                    $body  = 
+                        '<p>Congratulations!</p>' .
+                        '<p>You have successfully updated your settings with Worklist: <ul>';
                     foreach ($messages as $msg) {
-                        $body .= "&nbsp;&nbsp;$msg<br/>";
+                        $body .= '<li>'. $msg . '</li>';
                     }
-                    $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
-                    $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
+                    $body .= 
+                        '</ul>' .
+                        '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>' .
+                        '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
 
                     if(!send_email($to, $subject, $body)) { error_log("SettingsController: send_email failed"); }
 
@@ -302,6 +318,14 @@ class SettingsController extends Controller {
                     exit;
                 }
                 $this->view = null;
+
+                // reset session data
+                $user->findUserById($userId);
+                $id = $user->getId();
+                $username = $user->getUsername();
+                $nickname = $user->getNickname();
+                Utils::setUserSession($user->getId(), $user->getUsername(), $user->getNickname(), $user->getIs_admin());
+
                 echo json_encode($returned_json);
                 // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions
                 die;
