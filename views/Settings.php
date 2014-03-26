@@ -40,9 +40,10 @@ class SettingsView extends View {
     }
 
     public function picture() {
-        return !$this->new_user 
-            ? APP_IMAGE_URL . $this->userInfo['picture'] 
-            : 'thumb.php?src=images/no_picture.png&w=100&h=100&zc=0';
+        $userInfo = $this->read('userInfo');
+        return $this->new_user 
+            ? 'thumb.php?src=images/no_picture.png&w=100&h=100&zc=0'
+            : APP_IMAGE_URL . $userInfo['picture'];
 
     }
     
