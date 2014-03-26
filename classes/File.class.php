@@ -49,6 +49,17 @@ class File {
     }
 
     /**
+     * This method finds a file by its url
+     *
+     * @param string $url
+     * @return File $this
+     */
+    public function findFileByUrl($url) {
+        $where = sprintf("`url` = '%s'", $url);
+        return $this->loadFiles($where);
+    }
+
+    /**
      * @return the $id
      */
     public function getId() {

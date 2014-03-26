@@ -42,6 +42,7 @@ class Dispatcher {
         $dispatcher->post('/signup', array('Signup'));
         $dispatcher->get('/team', array('Team'));
         $dispatcher->get('/timeline', array('Timeline'));
+        $dispatcher->get('/uploads/:filename', array('Upload'), array('require' => array('filename' => '.+')));
         $dispatcher->get('/user/:id', array('User'));
         $dispatcher->post('/user/:id', array('User'));
         $dispatcher->get('/welcome', array('Welcome'));
