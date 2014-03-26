@@ -85,41 +85,13 @@ body {
     border-bottom: 1px solid #a6cbcc;
 }
 
-#need-review > ul + a,
-#biddingJobs p:last-child > a {
+#need-review > ul + a {
     color: #007f7c;
-}
-
-#biddingJobs p:last-child {
-    line-height: 1.2em;
-}
-
-#biddingJobs p:last-child > a {
-    text-decoration: underline;
 }
 
 #need-review > ul a {
     text-decoration: none;
     border-color: #007f7c;
-}
-
-/* add job button styling */
-#biddingJobs > p:first-child > a {
-    background-color: #009999;
-    color: #fff;
-    font-weight: bold;
-    padding: 7px 15px;
-    border-radius: 5px;
-    display: inline-block;
-}
-
-/* "There are X jobs you can bid on" paragraph styling */
-#biddingJobs > p + p {
-    font-size: 0.9em;
-    margin: 0;
-    padding: 5px 0;
-    line-height: .9em;
-    font-size: 1em;
 }
 
 a[href="https://gitter.im/highfidelity/hifi"] {
