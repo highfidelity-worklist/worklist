@@ -13,7 +13,7 @@ var WLFavorites = {
             WLFavorites.setFavorite(favorite_user_id, newVal, containerID, null, fav_user_nickname);
         });
         
-        var favCount = $('.profileFavoriteText').attr('data-favorite_count');
+        var favCount = $('.profileFavoriteText').attr('data-favorite-count');
         var isMyFav = false;
         if ($('.favorite_user').hasClass('myfavorite')) {
             isMyFav = true;
@@ -45,9 +45,9 @@ var WLFavorites = {
                     alert(message);
                     return;
                 }
-                var fav = parseInt($('.profileFavoriteText').attr('data-favorite_count'));
+                var fav = parseInt($('.profileFavoriteText').attr('data-favorite-count'));
                 if (newVal == 1) {
-                    $('.profileFavoriteText').attr('data-favorite_count', fav + 1);
+                    $('.profileFavoriteText').attr('data-favorite-count', fav + 1);
                     var favText = WLFavorites.getFavoriteText(fav + 1, true, 'Trusted ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")
@@ -55,7 +55,7 @@ var WLFavorites = {
                         .addClass("myfavorite")
                         .attr("title", "Remove " + fav_user_nickname + " from your trusted by. (don't worry it's anonymous)");
                 } else {
-                    $('.profileFavoriteText').attr('data-favorite_count', fav - 1);
+                    $('.profileFavoriteText').attr('data-favorite-count', fav - 1);
                     var favText = WLFavorites.getFavoriteText(fav - 1, false, 'Trusted ');
                     $('.profileFavoriteText').html(favText);
                     $(".favorite_user, .favorite_count")

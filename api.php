@@ -3539,16 +3539,12 @@ function budgetHistory() {
     } else {
         $total = 1;
     }
-    echo '<div id="BudgetHistory">';
     if ( $count['total'] == 0){
         echo "This user hasn't been assigned any budget yet.";
         exit(0);
     }
-    if ($page == 1) {
-        echo "<div id=\"budgetHistoryContent\">";
-    }
     ?>
-    <table>
+    <table class="table table-striped">
       <thead>
         <tr class="table-hdng">
           <th class="date">Created</th>
@@ -3608,21 +3604,15 @@ function budgetHistory() {
     ?>
 
     </table>
-    <div class="pages">
-    <?php 
-        for ($i = 1; $i <= $totalPages; $i++) {
-            if ($i == $page) {
-                echo $i . ' ';
-            } else {
-                echo '<a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a> ';
-            }
+    <div class="pages"><?php 
+    for ($i = 1; $i <= $totalPages; $i++) {
+        if ($i == $page) {
+            echo $i . ' ';
+        } else {
+            echo '<a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a> ';
         }
-    ?>
-    </div>
-    <?php 
-    if ($page == 1) {
-        echo "</div>";
     }
+    echo '</div>';
 }
 
 function timeline() {

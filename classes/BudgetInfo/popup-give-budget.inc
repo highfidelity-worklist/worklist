@@ -1,4 +1,4 @@
-<div id="give-budget" class="hidden" title="Give Budget" style="text-align: left;">
+<div id="give-budget" title="Give Budget">
     <form method="post" action = "">
         <div class="currentBudgetArea" >
             <label for="budget-current" class="info-label">Total Available Funds (all budgets): </label>
@@ -21,7 +21,7 @@
         <label for="budget-source" class="info-label">Source: </label>
             <input type="text" id="budget-source" name="budget-source"/>
             <span id="budget-source-combo-area">
-                <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown hidden">
+                <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown">
                 <option value="0" selected="selected">Select a budget</option>
                 <?php echo $user->getBudgetCombo(); ?>
                 </select>

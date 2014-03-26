@@ -1,5 +1,5 @@
 <section class="row">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs" id="profile-nav">
     {{#currentUser.is_runner}}
         <li class="active"><a href="#profile" data-toggle="tab">Profile</a></li>
         <li><a href="#admin" data-toggle="tab">Admin</a></li>
@@ -18,9 +18,13 @@
         {{/user.getIs_runner}}
         {{#reqUserId}}
             <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
-            <li><a href="api.php?action=userNotes&method=getNote&userId={{user.getId}}">My Notes</a></li>
+            <!--<li><a href="api.php?action=userNotes&method=getNote&userId={{user.getId}}">My Notes</a></li>-->
         {{/reqUserId}}
-        <li><a href="#budgethistory" data-toggle="tab">Budget History</a></li>
+        <li>
+            <a href="#budgetHistory" data-toggle="tab">Budget History</a>
+            <!--<a href="api.php?action=budgetHistory&inDiv=tabs&id={{user.getId}}&num=100">Budget History</a>-->
+        </li>
+
     {{/currentUser.is_runner}}
     </ul>
     <div class="tab-content">
@@ -67,8 +71,8 @@
                                     0
                                 {{/userStats.getTotalJobsCount}}
                             </p>
-                            <p class="totals"><span>Total earned:</span> {{totalEarnings}}</p>
-                            <p class="totals"><span>Last 30 days:</span> {{latestEarnings}}</p>
+                            <p class="totals"><span>Total earned:</span> ${{totalEarnings}}</p>
+                            <p class="totals"><span>Last 30 days:</span> ${{latestEarnings}}</p>
                         </div>
                     </div>
                 </div>
@@ -136,9 +140,9 @@
                 <p class = "info-label title-label-medium jobs">Active jobs</p>
 
                 <div id="jobs-table">
-                    <table>
+                    <table class="table table-striped">
                         <thead>
-                            <tr class = "table-hdng">
+                            <tr>
                                 <th>Job ID & Summary</th>
                                 <th class="status">Status</th>
                                 <th class="sandbox">Sandbox</th>
@@ -152,9 +156,9 @@
 
                 <p class = "info-label title-label-medium completed-jobs">Last 5 completed jobs</p>
                 <div id="completed-jobs-table">
-                    <table>
+                    <table class="table table-striped">
                         <thead>
-                            <tr class = "table-hdng">
+                            <tr>
                                 <th>Job ID & Summary</th>
                                 <th class="cost">Cost</th>
                                 <th class="time">Time</th>
@@ -325,12 +329,10 @@
                 {{& projectsList}}
             </form>
         </div>
-        <!--
         <div class="tab-pane" id="mynotes">
         </div>
         <div class="tab-pane" id="budgethistory">
         </div>
-        -->
     </div>
 </section>
 <script type="text/javascript">
@@ -348,21 +350,21 @@
 </script>
 
 <!-- popup div's -->
-<div id="budget-dialog" title="Budget details" class="hidden" data-userid = "{{user.getId}}">
+<div id="budget-dialog" title="Budget details" data-userid = "{{user.getId}}" class="hidden">>
 </div>
-<div id="budget-update-dialog" title="Budget update" class="hidden" data-userid = "{{user.getId}}">
+<div id="budget-update-dialog" title="Budget update" data-userid = "{{user.getId}}" class="hidden">>
     <div class="content"></div>
 </div>
-<div id="reject-w9" title="Reject W9" class="hidden">
+<div id="reject-w9" title="Reject W9" class="hidden">>
     <form method="post" action = "">
         <label for="reject-reason" class="info-label">Reason: </label><br/>
         <textarea id="reject-reason" name="reason"></textarea><br/>
         <span style="float: right;"><span id="charCount">100</span> characters remaining</span>
-        <input type = "hidden" id = "budget-receiver" name="receiver_id" value = "{{user.getId}}" />
+        <input type="hidden" id="budget-receiver" name="receiver_id" value="{{user.getId}}" />
     </form>
 </div><!-- end of reject w9 div -->
 
-<div id="pay-bonus" class="hidden" title="Pay Bonus" style="text-align: left;">
+<div id="pay-bonus" title="Pay Bonus" class="hidden">
     <form method="post" action = "">
         <div class="leftBonusArea">
             <label for="bonus-amount" class="info-label">Amount: </label><br/>
@@ -370,7 +372,7 @@
         </div>
         <div class="rightBonusArea">
             <label for="budget-source" class="info-label">Source: </label><br/>
-            <select id="budget-source-combo-bonus" name="budget-source-combo-bonus" class="project-dropdown hidden">
+            <select id="budget-source-combo-bonus" name="budget-source-combo-bonus" class="project-dropdown">
             <option value="0" selected="selected">Select a budget</option>
             {{& reqUser.getBudgetCombo}}
             </select>
@@ -379,7 +381,7 @@
         <div class="clearBonusArea">
         <label for="bonus-reason" class="info-label">Reason: </label><br/>
             <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/>
-            <input type = "hidden" id = "bonus-receiver" name="receiver_id" value = "{{user.getId}}" />
+            <input type="hidden" id="bonus-receiver" name="receiver_id" value="{{user.getId}}" />
         <input type="submit" value="Pay Bonus" />
     </form>
 
@@ -401,6 +403,3 @@
     {{/currentUser.is_runner}}
 
 </div><!-- end of pay bonus div -->
-<div class="hidden" id="loading">
-    <img src="images/loader.gif" alt = "" /><span>Please wait..</span>
-</div>

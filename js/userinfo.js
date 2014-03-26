@@ -18,7 +18,31 @@ $(document).ready(function() {
     });
     stats.setUserId(userInfo.user_id);
     stats.showJobs('activeJobs', 0);
-    stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');    
+    stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
+
+    $('#profile-nav a').click(function (event) {
+        event.preventDefault();
+        $(this).tab('show');
+        if ($(this).attr('href') == '#budgethistory') {
+            //<a href="api.php?action=budgetHistory&inDiv=tabs&id={{user.getId}}&num=100">Budget History</a>
+            $.ajax({
+                type: 'post',
+                url: 'api.php',
+                dataType: 'html',
+                data: {
+                    action: 'budgetHistory',
+                    inDiv: 'tabs',
+                    id: userInfo.user_id,
+                    num: 100
+                },
+                success: function(data) {
+                    //console.log(data)
+                    $('#budgethistory').html(data);
+                }
+            });
+        }
+    })
+
 });
 
 $(function () {
@@ -223,13 +247,6 @@ var UserInfo = {
             }
         });
 
-        $("#loading").ajaxStart(function() {
-            $(this).show();
-        });
-        $("#loading").ajaxStop(function(){
-            $(this).hide();
-        });
-       
         $('#popup-pingtask').dialog({
             autoOpen: false, 
             width: 50, 
