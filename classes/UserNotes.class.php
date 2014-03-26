@@ -1,5 +1,7 @@
 <?php
 
+require_once('models/Note.php');
+
 class UserNotes {
     
     public function __construct() {
@@ -21,9 +23,9 @@ class UserNotes {
         $userId = (int) $_REQUEST['userId'];
         $note = new Note();
         if ($note->loadById($authorId,$userId) ){
-            echo "<textarea class='userNotes'>" . $note->note . "</textarea>";
+            echo '<textarea class="form-control userNotes">' . $note->note . '</textarea>';
         }else{
-            echo "<textarea class='userNotes'></textarea>";
+            echo '<textarea class="form-control userNotes"></textarea>';
         }       
         
         echo '<script type="text/javascript">$(".userNotes").autogrow();</script>';

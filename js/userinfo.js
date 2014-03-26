@@ -24,7 +24,6 @@ $(document).ready(function() {
         event.preventDefault();
         $(this).tab('show');
         if ($(this).attr('href') == '#budgethistory') {
-            //<a href="api.php?action=budgetHistory&inDiv=tabs&id={{user.getId}}&num=100">Budget History</a>
             $.ajax({
                 type: 'post',
                 url: 'api.php',
@@ -38,6 +37,21 @@ $(document).ready(function() {
                 success: function(data) {
                     //console.log(data)
                     $('#budgethistory').html(data);
+                }
+            });
+        } else if ($(this).attr('href') == '#mynotes') {
+            $.ajax({
+                type: 'post',
+                url: 'api.php',
+                dataType: 'html',
+                data: {
+                    action: 'userNotes',
+                    method: 'getNote',
+                    userId: userInfo.user_id
+                },
+                success: function(data) {
+                    //console.log(data)
+                    $('#mynotes').html(data);
                 }
             });
         }
@@ -125,7 +139,7 @@ var UserInfo = {
         $('.profileInfoFavorite span').html(favText);
 
         // master function to handle change in dropdowns
-        $('select', '#tabs-2').change(function() {
+        $('select', '#admin').change(function() {
             var value = $(this).val();
             var field = $(this).attr('id');
             if (field == 'w9status') {
@@ -152,7 +166,7 @@ var UserInfo = {
         });
 
         // master function to handle checkbox changes
-        $('input[type=checkbox]', '#tabs-2').click(function() {
+        $('input[type=checkbox]', '#admin').click(function() {
             // get the checkbox value
             var value = $(this).is(':checked') ? 1 : 0;
             // and the id of the field being changed
@@ -233,18 +247,6 @@ var UserInfo = {
                 success: function() {
                 }
             });
-        });
-
-        $("#tabs").tabs({
-            cache: true,
-            ajaxOptions: {
-                cache: true,
-                success: function() {
-                },                
-                error: function( xhr, status, index, anchor ) {
-                    $(anchor.hash).html("Couldn't load this tab." );
-                }
-            }
         });
 
         $('#popup-pingtask').dialog({

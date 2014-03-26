@@ -90,9 +90,9 @@ class View extends AppObject {
         $this->currentUser['id'] = $user_id;
         $this->currentUser['username'] = $user_id ? $user->getUsername() : '';
         $this->currentUser['nickname'] = $user_id ? $user->getNickname() : '';
-        $this->currentUser['is_runner'] = empty($_SESSION['is_runner']) ? 'false' : 'true';
-        $this->currentUser['is_payer'] = empty($_SESSION['is_payer']) ? 'false' : 'true';
-        $this->currentUser['is_admin'] = empty($_SESSION['is_admin']) ? 'false' : 'true';
+        $this->currentUser['is_runner'] = empty($_SESSION['is_runner']) ? false : true;
+        $this->currentUser['is_payer'] = empty($_SESSION['is_payer']) ? false : true;
+        $this->currentUser['is_admin'] = empty($_SESSION['is_admin']) ? false : true;
     }
     
     /**
