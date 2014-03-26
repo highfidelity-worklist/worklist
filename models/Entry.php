@@ -8,7 +8,7 @@ class EntryModel extends Model {
         return $this->loadMany($cond, 'date DESC', $max_limit, $offset);
     }
 
-    public function latestFromTask($job_id, $order = 'date DESC', $max_limit = 0, $offset = 0) {
+    public function latestFromTask($job_id, $order = 'date ASC', $max_limit = 0, $offset = 0) {
         $cond = "entry REGEXP '#" . $job_id . "[^0-9]?'";
         return $this->loadMany($cond, $order, $max_limit, $offset);
     }

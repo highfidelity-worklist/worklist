@@ -233,35 +233,13 @@
                         {{/worklist.sandbox}}
                     </div>
                 {{/worklist.mechanic_id}}
-                <div class="commentZone" id="commentZone">
+                <div id="commentZone">
                     <div class="row">
-                        <h3 class="info-comments col-md-8">Comments</h3>
-                        <a href="./{{worklist.id}}#recent" class="col-md-3">See most recent</a>
+                        <h3 class="info-comments col-md-7">Comments &amp; Activity</h3>
+                        <a href="./{{worklist.id}}#recent" class="col-md-4">See most recent</a>
                     </div>
-                    <ul>
-                    {{#comments}}
-                        <li id="comment-{{id}}" class="depth-{{depth}}">
-                            <div class="comment">
-                                <a href="./user/{{comment.getUser.getId}}">
-                                    <img class="picture profile-link" src="{{& comment.getUser.getAvatar}}" title="Profile Picture - {{comment.getUser.getNickname}}" />
-                                </a>
-                                <div class="comment-container">
-                                    <div class="comment-info">
-                                        <a class="author profile-link" href="./user/{{comment.getUser.getId}}">
-                                            {{comment.getUser.getNickname}}
-                                        </a>
-                                        <span class="date">{{comment.getRelativeDate}}</span>
-                                    </div>
-                                    <div class="comment-text">
-                                      {{comment.getCommentWithLinks}}
-                                      {{#currentUser.id}}{{^statusDone}}
-                                        <div class="reply-lnk"><a href="#commentform" onClick="return reply({{id}});">Reply</a></div>
-                                      {{/statusDone}}{{/currentUser.id}}
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    {{/comments}}
+                    <ul id="entries">
+                        {{& taskEntries}}
                     </ul>
                     {{#canComment}}
                     <a name="commentform"></a>
@@ -277,7 +255,7 @@
                     </form>
                     {{/canComment}}
                     <a name="recent"></a>        
-                </div> <!-- End of div commentZone -->
+                </div>
             {{/editing}}
         </div>  <!-- End of div for_view -->
     </div> <!-- End of div left-panel -->
@@ -425,12 +403,6 @@
                 {{/currentUser.id}}
             </div> <!-- End of div moneyZone -->
             <div id="uploadPanel"> </div>
-            <div id="statusPanel">
-                <h3>Activity</h3>
-                <ul id="entries">
-                    {{& taskEntries}}
-                </ul>
-            </div>
         </div> <!-- End of for_view -->
     </div> <!-- End of div right-panel-->
 </div> <!-- End of div pageContent -->

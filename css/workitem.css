@@ -204,7 +204,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #left-panel {
     float:left;
-    width: 490px !important;
+    width: 520px !important;
     margin:0 !important;
     padding:0!important;
 }
@@ -230,8 +230,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 
-#for_view > ul,
-#commentZone > ul {
+#for_view > ul {
     list-style:none!important;
     width:100%;
     margin:0!important;
@@ -824,30 +823,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width:32px;
 }
 
-.commentZone ul {
-    list-style:none!important;
-    padding:0px!important;
-    margin:0px 0px 0px 10px!important;
-}
-
-.commentZone li {
-    list-style:none!important;
-    padding: 0 !important;
-    margin-bottom: 21px;
-    width: auto !important;
-}
-
-.commentZone li.imOdd {
-}
-
-.commentZone li.imEven {
-}
-
 .comment-container {
-    float: right;
-    position: relative;
-    top: -2px;
-    left: -1px;
+    float: left;
+    margin-left: 10px;
 }
 
 .comment-info {
@@ -858,7 +836,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .comment-text {
     margin-bottom: 4px;
-    float: left;
     font-size: 14px;
     line-height: 18px;
     width: 100%;
@@ -898,57 +875,36 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-decoration: underline;
 }
 
-
-.depth-0 .comment-container {
-    width: 424px;
+#entries li[id^="comment-"] .comment > a > img {
+    border-radius: 30px
 }
 
-.depth-1 {
-    margin-left: 65px;
+.depth-0  {
+    margin-left: -55px;
 }
 
-.depth-1 .comment-container {
-    width: 359px;
+.depth-1  {
+    margin-left: -15px;
 }
 
 .depth-2 {
-    margin-left: 130px;
-}
-
-.depth-2 .comment-container {
-    width: 294px;
+    margin-left: 25px;
 }
 
 .depth-3 {
-    margin-left: 195px;
-}
-
-.depth-3 .comment-container {
-    width: 229px;
+    margin-left: 65px;
 }
 
 .depth-4 {
-    margin-left: 260px;
-}
-
-.depth-4 .comment-container {
-    width: 164px;
+    margin-left: 105px;
 }
 
 .depth-5 {
-    margin-left: 335px;
-}
-
-.depth-5 .comment-container {
-    width: 99px;
+    margin-left: 145px;
 }
 
 .depth-6 {
-    margin-left: 400px;
-}
-
-.depth-6 .comment-container {
-    width: 34px;
+    margin-left: 185px;
 }
 
 
@@ -987,13 +943,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .info-invite input[type=text]{
     margin-top:8px!important;
     width:240px;
-}
-
-.commentZone{
-    width: 100%;
-    margin-top: 40px;
-    font-size: 12px;
-    float: left;
 }
 
 /* bid info popup (accepting, withdrawing bids)*/

@@ -235,7 +235,7 @@ function reply(id) {
         event.preventDefault();
         $('#commentform').remove();
         clone.css({'margin-left':'0'});
-        clone.insertAfter($('.commentZone ul'));
+        clone.insertAfter($('#commentZone ul'));
         $(this).parent().addClass('hidden');
         $('#commentform input[name=newcomment]').val('Comment');
         $('#commentform input[name=comment_id]').val('');
@@ -318,7 +318,7 @@ function postComment() {
                      '</li>';
 
                 if (id == '') {
-                    $('.commentZone ul').append(newcomment);
+                    $('#commentZone ul').append(newcomment);
                 } else {
                     var cond = new Array();
                     var depthtmp = depth -1;
@@ -329,24 +329,10 @@ function postComment() {
                     $(newcomment).insertAfter($('#comment-' + id).nextUntil(cond.join(',')).andSelf().filter(":last"));
                 }
             }
-            $('.commentZone ul').append(clone);
+            $('#commentZone ul').append(clone);
             $('#commentform input[name=newcomment]').click(function(event) {
                 event.preventDefault();
                 postComment();
-            });
-            var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
-            $('div.commentZone li').width(thinnestComment);
-            $('div#commentform textarea').width(thinnestComment);
-            $('#commentZone').css({'opacity':'1'});
-            $('.commentZone ul li').each(function (i) {
-                if (color == 'imEven') {
-                    $(this).removeClass('imOdd');
-                    $(this).addClass('imEven');
-                } else {
-                    $(this).removeClass('imEven');
-                    $(this).addClass('imOdd');
-                }
-                color = (color == 'imEven') ? 'imOdd' : 'imEven';
             });
         }
     });
@@ -1302,7 +1288,6 @@ $(function() {
         window.location.href = "./" + workitem_id + "?action=edit";
     });
 
-    $('#commentZone').css({'opacity':'0'});
     // Call via Ajax to ping the user in the journal
     // and in email.
     $('#send-ping-btn').click(function()    {
@@ -1454,12 +1439,6 @@ $(function() {
             }
         })(jQuery);
     }
-
-    // applies the same size as the thinnest to all comments the show'em
-    var thinnestComment = $('div.commentZone li').thinnestSize() - 14;
-    $('div.commentZone li').width(thinnestComment);
-    $('div#commentform textarea').width(thinnestComment);
-    $('#commentZone').css({'opacity':'1'});
 
     //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
     setTimeout(MapToolTips, 800);

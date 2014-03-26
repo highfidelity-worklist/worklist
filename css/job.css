@@ -11,6 +11,15 @@
     color: #333;
 }
 
+#commentZone > .row:first-child {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+}
+
+#commentZone > .row:first-child > h3 + a {
+    text-align: right;
+}
+
 #commentform {
     background-color: #efefef;
     border-width: 1px;

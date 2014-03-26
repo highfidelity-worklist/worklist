@@ -786,23 +786,112 @@ class JobView extends View {
     }
 
     public function taskEntries() {
-        $entries = $this->read('taskEntries');
+        // we don't need comments from status entries cause 
+        // we are mixing them with real comments
+        $worklist_entries = self::removeCommentsEntries($this->read('entries'));
+
+        // let's group reply comments so they get rendered toghether, no matter their
+        // date according to the rest of the entries of other groups (only the first 
+        // level comment date is taken for orfering)
+        $comments = self::groupComments($this->read('comments'));
+
+        $entries = array_merge($worklist_entries, $comments);
+        usort($entries, array('JobView', 'sortEntries'));
         $ret = '';
         $now = 0;
         foreach($entries as $entry) {
             if (!$now) {
                 $now = strtotime(Model::now());
             }
-            $id = $entry->id;
-            $type = 'worklist';
-            $date = strtotime($entry->date);
-            $content = self::formatEntry($entry);
+            if (get_class($entry) == 'EntryModel') {
+                $id = $entry->id;
+                $type = 'worklist';
+                $date = strtotime($entry->date);
+                $content = self::formatEntry($entry);
 
-            $ret .= 
-                  '<li entryid="' . $id . '" date="' . $date  . '" type="' . $type .  '">'
-                .     '<h4>' . relativeTime($date - $now) . '</h4>'
-                .     $content
-                . '</li>';
+                $ret .= 
+                      '<li entryid="' . $id . '" date="' . $date  . '" type="' . $type .  '">'
+                    .     '<h4>' . relativeTime($date - $now) . '</h4>'
+                    .     $content
+                    . '</li>';
+            } else {
+                foreach($entry['content'] as $comment) {
+                    $commentObj = $comment['comment'];
+                    $ret .=
+                        '<li id="comment-' . $comment['id'] . '" class="depth-' . $comment['depth'] . '">' .
+                        '    <div class="comment">' .
+                        '        <a href="./user/' . $commentObj->getUser()->getId() . '">' .
+                        '            <img class="picture profile-link" src="' . $commentObj->getUser()->getAvatar() . '" title="Profile Picture - ' . $commentObj->getUser()->getNickname() . '" />' .
+                        '        </a>' .
+                        '        <div class="comment-container">' .
+                        '            <div class="comment-info">' .
+                        '                <a class="author profile-link" href="./user/' . $commentObj->getUser()->getId() . '">' .
+                        '                    ' . $commentObj->getUser()->getNickname() .
+                        '                </a>' .
+                        '                <span class="date">' . $commentObj->getRelativeDate() . '</span>' .
+                        '            </div>' .
+                        '            <div class="comment-text">' .
+                        '              ' . $commentObj->getCommentWithLinks() .
+                        (
+                            ($this->currentUser['id'] && !$this->statusDone())
+                                ? '<div class="reply-lnk"><a href="#commentform" onClick="return reply(' . $comment['id'] . ');">Reply</a></div>' 
+                                : ''
+                        ) . 
+                        '            </div>' .
+                        '        </div>' .
+                        '    </div>' .
+                        '</li>';
+                }
+            }
+        }
+        return $ret;
+    }
+
+    static function sortEntries($a, $b) {
+        if (get_class($a) == 'EntryModel') {
+            $date_a = strtotime($a->date);
+        } else { // comment group
+            $date_a = strtotime($a['date']);
+        }
+        if (get_class($b) == 'EntryModel') {
+            $date_b = strtotime($b->date);
+        } else { // comment group
+            $date_b = strtotime($b['date']);
+        }
+        return ($date_a == $date_b) ? 0 : ($date_a > $date_b ? +1 : -1);
+    }
+
+    static function groupComments($commentsList) {
+        $ret = array();
+        $currentGroup = array();
+        foreach($commentsList as $comment) {
+            if ($comment['depth'] == 0) {
+                if (!empty($currentGroup)) {
+                    $ret[] = $currentGroup;
+                }
+                $currentGroup = array(
+                    'date' => $comment['comment']->getDate(), 
+                    'content' => array()
+                );
+            }
+            $currentGroup['content'][] = $comment;
+        }
+        $ret[] = $currentGroup;
+        return $ret;
+    }
+
+    /**
+     * Gets rid of comments entries from a given list
+     */
+    static function removeCommentsEntries($entries) {
+        //print_r($entries); die;
+        $pattern = '/^@\w+\sposted\sa\scomment\son\s\*\*#\d+\*\*\n\n.*/';
+        $ret = array();
+        foreach($entries as $entry) {
+            if (preg_match($pattern, $entry->entry)) {
+                continue;
+            }
+            $ret[] = $entry;
         }
         return $ret;
     }
