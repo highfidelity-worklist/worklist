@@ -30,7 +30,7 @@
 #settings > .row > section > label {
     font-weight: bold;
     margin: 15px 0 0;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 #settings input[type=text],
@@ -92,7 +92,7 @@
     border: 1px solid #ccc;
     margin: 8px 5px 0 -35px;
     color: #999;
-    font-size: 1.3em;
+    font-size: 1.1em;
     padding: 2px;
     background-color: #fff;
 }
@@ -104,7 +104,7 @@
 }
 
 #settings input[type="submit"] {
-    font-size: 1.8em;
+    font-size: 1.2em;
     padding: 8px 16px;
 }
 
