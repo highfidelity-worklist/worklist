@@ -444,7 +444,7 @@ class JobController extends Controller {
                     Notification::sendShortSMS($myRunner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
                 }
                 
-                $journal_message = '@' . $_SESSION['nickname'] . ' has completed their review for **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**';
+                $journal_message = '@' . $_SESSION['nickname'] . ' has completed their code review for **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**';
                 
                 $options = array(
                     'type' => 'code-review-completed',
@@ -1003,7 +1003,7 @@ class JobController extends Controller {
                                     $bid_info = $workitem->acceptBid($bid, $budget_id, $is_mechanic);
                                     // Journal notification
                                     $journal_message .= '@' . $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". 
-                                        $bid_info['nickname'] . " " . ($is_mechanic ? ' as MECHANIC ' : '') . 
+                                        $bid_info['nickname'] . " " . ($is_mechanic ? ' as Developer ' : '') . 
                                         "on **#".$bid_info['worklist_id']."**\n\n**" . $bid_info['summary'] . 
                                         "**. Status set to *Working*.";
                                     // mail notification

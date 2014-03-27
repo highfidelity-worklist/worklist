@@ -202,7 +202,7 @@ class JobView extends View {
         if ($worklist['runner_nickname'] != 'Not funded') {
             $ret .= 
                 '<a href="./user/' . $worklist['runner_id'] . '" target="_blank" id="ping-r-btn"' .
-                ' title="' . (isset($_SESSION['userid']) ? "Ping Runner" : "Log in to Ping Runner") . '"' .
+                ' title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") . '"' .
                 ' data-user-id="' . $worklist['runner_id'] . '">' .
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
                 '</a>';
