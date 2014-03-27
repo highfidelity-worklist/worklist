@@ -73,14 +73,6 @@ $(document).ready(function() {
         return false;
     });
 
-    $("#search_comments").change(function(e) {
-        affectedHeader = false;
-        resetOrder = true;
-        sort = 'null';
-        dir = 'asc';
-        GetWorklist(1, false);
-    });
-
     $("#search").submit(function(){
         GetWorklist(1, false);
         return false;
@@ -350,7 +342,7 @@ function GetWorklist(npage, update, reload) {
             sort: sort,
             dir: dir,
             user: search_user,
-            inComment: $('#search_comments').is(':checked') ? 1 : 0,
+            inComment: 0,
             query: $('#query input[type="text"]').val(),
             reload: ((reload == undefined) ? false : true),
             save: save_filter,

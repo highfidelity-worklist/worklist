@@ -925,7 +925,6 @@ input {
 }
 
 #query > fieldset > input[type="text"] {
-    width: 165px;
     padding-left: 23px;
 }
 
