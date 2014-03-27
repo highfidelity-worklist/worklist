@@ -3,37 +3,37 @@
  */
 
 body {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #efefef;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #efefef;
 }
 
 #form-login {
-  max-width: 350px;
-  margin: 0 auto;
-  background-color: #fff;
+    max-width: 350px;
+    margin: 0 auto;
+    background-color: #fff;
 }
 #form-login .form-control {
-  position: relative;
-  height: auto;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-  padding: 10px;
-  font-size: 16px;
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
 }
 #form-login .form-control:focus {
-  z-index: 2;
+    z-index: 2;
 }
 #form-login input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
 }
 #form-login input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 #form-login > h2,
@@ -86,4 +86,17 @@ body {
 #form-login > fieldset > input:focus {
     box-shadow: none;
     border-color: #009999;
+}
+
+#form-login a[href="./forgot"] {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#form-login a[href="./forgot"]:hover {
+    text-decoration: none;
+}
+
+section#footer {
+    display: none;
 }
