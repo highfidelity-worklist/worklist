@@ -1,6 +1,6 @@
 <script type="text/javascript">
     var current_letter = '{{cur_letter}}';
-    var runner =  {{currentUser.is_runner}};
+    var runner = {{#currentUser.is_runner}}true{{/currentUser.is_runner}}{{^currentUser.is_runner}}false{{/currentUser.is_runner}};
     var current_page = {{cur_page}};
     var showUserLink = '{{showUserLink}}';
 </script>
