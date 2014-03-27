@@ -387,16 +387,13 @@ var UserInfo = {
         $('#pay_bonus').click(function(e) {
             // clear form input fields
             $('#pay-bonus form input[type="text"]').val('');
-            $('#pay-bonus').dialog('open').dialog('option', 'position', 'top', 0);
+            $('#pay-bonus').dialog('open');
             
             var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
            
             bonus_amount = new LiveValidation('bonus-amount', {onlyOnSubmit: true });
             bonus_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
             bonus_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
-            while(!$('#pay-bonus').is(':visible')) {
-                sleep(0);
-            }
             bonus_budget = new LiveValidation('budget-source-combo-bonus', {
                 onlyOnSubmit: true ,
                 insertAfterWhatNode: "validationMessage"

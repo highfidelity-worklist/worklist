@@ -2,58 +2,10 @@ var Budget = {
     initCombo: function(id, idBlur) {
         if (!id) {
             id = '#budget-source-combo';
-            classCombo = 'budget-source-combo';
-            idBlur = "#budget-amount";
         } else {
-            classCombo = id;
             id = '#' + id;
         }
-        if ($(id).data("initComboDone") !== true) {
-            $(id).bind({
-                'beforeshow newlist': function(e, o) {
-                    $("ul." + classCombo + "List li").each(function() {
-                        var amount = 0,
-                            title = "",
-                            id = "";
-                        var pos = $(this).text().lastIndexOf("|");
-                        if (pos != -1) {
-                            amount = $(this).text().substr(pos + 1);
-                            id = $(this).text().substr(0, pos);
-                            pos = id.lastIndexOf("|");
-                            if (pos != -1) {
-                                title = id.substr(pos + 1);
-                                id = id.substr(0, pos);
-                            }
-                            $(this).attr("title", title).html("<div class='comboListID'>" + id + "</div>" + 
-                                    "<div class='comboListTitle'>" + title + "</div>" + 
-                                    "<div class='comboListAmount'>$" + amount + "</div>");
-                        } else {
-                            $(this).attr("title", title).html("<div class='comboListID'>&nbsp;</div>" + 
-                                    "<div class='comboListTitle'>" + $(this).text() + "</div>" + 
-                                    "<div class='comboListAmount'></div>");
-                            }
-                        $(this).data("amount", amount);
-                        $(this).addClass("comboListClear");
-                    });
-                }
-            }).comboBox();
-            $(id).data("initComboDone", true);
-            setTimeout(function() {
-                var val1 = $($(id + ' option').get(1)).attr("value");
-                $(id).comboBox({action: "val", param: [val1]});
-                val1 = $($(id + ' option[selected]').get(0)).attr("value");
-                $(id).comboBox({action: "val", param: [val1]});
-            }, 20);
-        }
-        $(idBlur).blur(function(){ 
-            var targetAmount = parseFloat($(idBlur).val());
-            $("ul." + classCombo + "List li").removeClass("redBudget");
-            $("ul." + classCombo + "List li").each(function(){
-                if (parseFloat($(this).data("amount")) < targetAmount) {
-                    $(this).addClass("redBudget");
-                }
-            });
-        });
+        $(id).chosen();
     },
     init : function() {
         
