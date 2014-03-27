@@ -1,22 +1,31 @@
 <section class="row">
     <div class="col-md-6">
         <h3>I'm a new user</h3>
-        <form role="form" action="./signup" method="post" class="form form-inline">
+        <form role="form" action="./signup" method="post">
             <input type="hidden" name="sign_up" value="1" />
             <input type="hidden" name="github_auth_link" value="1" />
+            <label for="username">Email</label>
             <input type="text" id="username" name="username" class="form-control" value="{{input.username}}" />
-            <input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" />
+            <div class="row">
+                <div class="col-md-offset-8 col-md-4">
+                    <input type="submit" value="Sign Up" alt="Sign Up" name="sign_up" />
+                </div>
+            </div>
         </form>
     </div>
     <div class="col-md-6">
         <h3>I already have a worklist account</h3>
-        <form role="form" action="./login" method="post"  class="form-inline">
+        <form role="form" action="./login" method="post" >
             <input type="hidden" name="redir" value="./github?action=login" />
+            <label for="username">Email</label>
             <input type="text" id="form[username]" name="username" class="form-control" />
+            <label for="username">Password</label>
             <input id="form[password]" type="password" name="password" class="form-control" />
             <div class="row">
-                <input type="submit" id="Login" name="Login" value="Login" />
-            </divZ
+                <div class="col-md-offset-8 col-md-4">
+                    <input type="submit" id="Login" name="Login" value="Login" />
+                </div>
+            </div>
         </form>
     </div>
 </div>
