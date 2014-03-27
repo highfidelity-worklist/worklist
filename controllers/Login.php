@@ -94,105 +94,86 @@ class LoginController extends Controller {
 
     public function githubAuth() {
         $this->view = null;
-
-        $username = isset($_REQUEST['username']) ? trim($_REQUEST['username']) : '';
-        $authorizeURL = 'https://github.com/login/oauth/authorize';
-        $tokenURL = 'https://github.com/login/oauth/access_token';
-        $apiURLBase = 'https://api.github.com/';
+        $authorizeURL = GITHUB_AUTHORIZE_URL;
+        $tokenURL = GITHUB_TOKEN_URL;
+        $apiURLBase = GITHUB_API_URL;
 
         // When Github redirects the user back here, there will be a "code" and "state" parameter in the query string
         if (isset($_GET['code']) && $_GET['code']) {
             // Verify the state matches our stored state
-            if (isset($_GET['state']) && $_SESSION['state'] == $_GET['state']) {
+            if (isset($_GET['state']) && $_SESSION['github_auth_state'] == $_GET['state']) {
                 // Exchange the auth code for a token
-                $token = $this->apiRequest($tokenURL, array(
+                $response = $this->apiRequest($tokenURL, array(
                     'client_id' => GITHUB_OAUTH2_CLIENT_ID,
                     'client_secret' => GITHUB_OAUTH2_CLIENT_SECRET,
                     'redirect_uri' => WORKLIST_URL . 'github',
-                    'state' => $_SESSION['state'],
+                    'state' => $_SESSION['github_auth_state'],
                     'code' => $_GET['code']
                 ));
-                if (isset($token->access_token)) {
-                    $_SESSION['access_token'] = $token->access_token;
+                if (isset($response->access_token)) {
+                    $_SESSION['github_auth_access_token'] = $response->access_token;
                 } else {
-                    error_log(print_r($token, true));
+                    error_log(print_r($response, true));
                 }
             }
         }
          
-        if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+        if (isset($_SESSION['github_auth_access_token']) && $_SESSION['github_auth_access_token']) {
+            $access_token = $_SESSION['github_auth_access_token'];
             $gh_user = $this->apiRequest($apiURLBase . 'user');
-            //error_log(print_r($gh_user, true));
-            if (!isset($gh_user->email)) {
-                $username = $gh_user->login . '@github';
+            //print_r($gh_user); die;
+            if (!$gh_user) {
+                // maybe a wrong access token
+                Utils::redirect('./');
+                die;                
             }
-            $username = $gh_user->email;
-            $user = new User();
-            if ($username && $user->findUserByUsername($username)) {
-                if ($user->isActive()) {
-                    $id = $user->getId();
-                    $username = $user->getUsername();
-                    $nickname = $user->getNickname();
-                    $admin = $user->getIs_admin();
-                    Utils::setUserSession($id, $username, $nickname, $admin);
-                } else {
-                    die('User is deactivated');
+
+            $userId = getSessionUserId();
+            $user = new GitHubUser($userId);
+            if ($user->getId()) {
+                // user is already logged in in worklist, let's just check if credentials are
+                // already stored and save them in case they're not
+                if (! $user->linkedToAuthToken($access_token)) {
+                    // credentials not stored in db
+                    $user->storeCredentials($access_token);
                 }
+                Utils::redirect('./');
             } else {
-                $testNickname = new User();
-                $nickname = $gh_user->login;
-                if ($testNickname->findUserByNickname($nickname)) {
-                    $nickname = preg_replace('[^a-zA-Z0-9]', '', $gh_user->name);
-                }
-                while ($testNickname->findUserByNickname($nickname)) {
-                    $rand = mt_rand(1, 99999);
-                    $nickname = $gh_user->login . $rand;
-                    if ($testNickname->findUserByNickname($nickname)) {
-                        $nickname = preg_replace('[^a-zA-Z0-9]', '', $gh_user->name) . $rand;
+                // user not logged in in worklist, let's check whether he already has a 
+                // github-linked account in worklist
+                if ($user->findUserByAuthToken($access_token)) {
+                    // already linked account, let's log him in
+                    if ($user->isActive()) {
+                        $id = $user->getId();
+                        $username = $user->getUsername();
+                        $nickname = $user->getNickname();
+                        $admin = $user->getIs_admin();
+
+                        Utils::setUserSession($id, $username, $nickname, $admin);
+                        Utils::redirect('./');
                     }
+                    return;
+                } else {
+                    // unknown token, taking to the signup page
+                    $this->view = new GithubAuthView();
+                    parent::run();
+                    return;
                 }
-                $send_email = true;
-
-                $newUser = array();
-                $newUser['username'] = $username;
-                $newUser['password'] = '';
-                $newUser['nickname'] = $nickname;
-                $newUser['added'] = "NOW()";
-
-                $sql = "INSERT INTO ".USERS." ";
-                $columns = "(";
-                $values = "VALUES (";
-                foreach($newUser as $name => $value) {
-                    $columns .= "`" . $name . "`,";
-                    if ($name == "added") {
-                        $values .= "NOW(),";
-                    } else {
-                        $values .= "'" . mysql_real_escape_string($value) . "',";
-                    }
-                }
-
-                $columns = substr($columns, 0, (strlen($columns) - 1)) . ")";
-                $values = substr($values, 0, (strlen($values) - 1)) . ")";
-                $sql .= $columns . " " . $values;
-                $res = mysql_query($sql);
-                $user_id = mysql_insert_id();
-
-                Utils::setUserSession($user_id, $username, $nickname, false);
             }
-            Utils::redirect('./');
+            return;
         }
 
         // Start the login process by sending the user to Github's authorization page
         if (isset($_GET['action']) && $_GET['action'] == 'login') {
             // Generate a random hash and store in the session for security
-            $_SESSION['state'] = hash('sha256', microtime(TRUE).rand().$_SERVER['REMOTE_ADDR']);
-            unset($_SESSION['access_token']);
+            $_SESSION['github_auth_state'] = hash('sha256', microtime(TRUE).rand().$_SERVER['REMOTE_ADDR']);
+            unset($_SESSION['github_auth_access_token']);
          
             $params = array(
                 'client_id' => GITHUB_OAUTH2_CLIENT_ID,
                 'redirect_uri' => WORKLIST_URL . 'github',
                 'scope' => 'user',
-                'state' => $_SESSION['state']
+                'state' => $_SESSION['github_auth_state']
             );
          
             // Redirect the user to Github's authorization page
@@ -204,8 +185,8 @@ class LoginController extends Controller {
 
     private function apiRequest($url, $post=FALSE, $headers=array()) {
         $headers[] = 'Accept: application/json';
-        if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-            $headers[] = 'Authorization: bearer ' . $_SESSION['access_token'];
+        if (isset($_SESSION['github_auth_access_token']) && $_SESSION['github_auth_access_token']) {
+            $headers[] = 'Authorization: bearer ' . $_SESSION['github_auth_access_token'];
         }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url); 

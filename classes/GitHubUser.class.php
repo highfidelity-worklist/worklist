@@ -17,6 +17,33 @@ class GitHubUser extends User
     public function __construct($userID) {
         $this->findUserById((int)$userID);
     }
+
+    public function findUserByAuthToken($token, $github_id = GITHUB_OAUTH2_CLIENT_ID) {
+        $cond = 
+            '`id` = (
+                SELECT t.user_id 
+                FROM `' . USERS_AUTH_TOKENS . "` t
+                WHERE t.github_id = '%s' 
+                  AND t.auth_token = '%s' 
+            )";
+        $where = sprintf($cond, $github_id, $token);
+        return $this->loadUser($where);       
+    }
+
+    public function linkedToAuthToken($token, $github_id = GITHUB_OAUTH2_CLIENT_ID) {
+        $sql = '
+            SELECT COUNT(*) as c 
+            FROM `' . USERS_AUTH_TOKENS . "`
+            WHERE  user_id = %d 
+              AND github_id = '%s' 
+              AND auth_token = '%s'";
+        $result = mysql_query(sprintf($sql, $this->id, $github_id, $token));
+        if ($row = mysql_fetch_assoc($result)) {
+            return $result['c'] != 0;
+        } else {
+            return null;
+        }
+    }
     
     public function processConnectResponse($gitHubId, $gitHubSecret) {
         $error = isset($_REQUEST['error']) ? true : false;
@@ -40,7 +67,7 @@ class GitHubUser extends User
         }
     }
     
-    public function storeCredentials($gitHubToken, $gitHubId) {
+    public function storeCredentials($gitHubToken, $gitHubId = GITHUB_OAUTH2_CLIENT_ID) {
         $sql = "INSERT INTO `" . USERS_AUTH_TOKENS . "` (`user_id`, `github_id`, `auth_token`)
             VALUES ('" . (int)$this->id . "',
             '" . mysql_real_escape_string($gitHubId) . "',

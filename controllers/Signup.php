@@ -39,54 +39,83 @@ class SignupController extends Controller {
         $minimal_POST['username'] = $username = isset($_POST['username']) ? strtolower(trim($_POST['username'])) : '';
 
         $error = new Error();
-        if(isset($minimal_POST['sign_up'])) {
-            if(empty($username) || empty($_REQUEST["nickname"]) || (! empty($_GET['authtype']) && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && empty($minimal_POST['confirmpassword']))){
-                $error->setError("Please fill all required fields.");
+        if (isset($minimal_POST['sign_up'])) {
+            $gh_user = null;
+            $access_token = '';
+            if (isset($_POST['github_auth_link']) && $_SESSION['github_auth_access_token']) {
+                $access_token = $_SESSION['github_auth_access_token'];
+                $gh_user = $this->apiRequest(GITHUB_API_URL . 'user');
+                if (!$gh_user) {
+                    $error->setError("Unable to read user credentials from github.");
+                }
             }
-            $about = isset($minimal_POST['about']) ? $minimal_POST['about'] : "";
-            if(strlen($about) > 150){
-                $error->setError("Text in field can't be more than 150 characters!");
+            if (!$gh_user) {
+                if(empty($username) || empty($_REQUEST["nickname"]) || (! empty($_GET['authtype']) && empty($minimal_POST['password'])) || (! empty($_GET['authtype']) && empty($minimal_POST['confirmpassword']))){
+                    $error->setError("Please fill all required fields.");
+                }
+                $about = isset($minimal_POST['about']) ? $minimal_POST['about'] : "";
+                if(strlen($about) > 150){
+                    $error->setError("Text in field can't be more than 150 characters!");
+                }                
             }
-
             if(! $error->getErrorFlag()) {
-                $send_confirm_email = false;
-                $minimal_POST = array_merge($minimal_POST, array_map('htmlspecialchars', array_intersect_key($minimal_POST, $fields_to_htmlescape)));
-                unset($minimal_POST['confirmpassword']);
-                unset($minimal_POST['sign_up']);
-                $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
-                $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
-
-                if(! isset($minimal_POST['paypal'])){
-                    $minimal_POST['paypal_email'] = '';
-                }
-
-                foreach ($minimal_POST as $key => $value) {
-                    if (! isset($params[$key])) {
-                        $params[$key] = $value;
-                    }
-                }
-
-                $newUser = array();
-                foreach($_POST as $key => $value){
-                    if(Utils::registerKey($key)){
-                        $newUser[$key] = $value;
-                    }
-                }
-
-                $newUser['username'] = $minimal_POST['username'];
-                $newUser['password'] = '{crypt}' . Utils::encryptPassword($minimal_POST['password']);
-                $newUser['nickname'] = $minimal_POST['nickname'];
-                $newUser['confirm_string'] = uniqid();
-                $newUser['added'] = "NOW()";
-                $newUser['notifications'] = Notification::setFlags($review_notify, $bidding_notify);
-                $newUser['w9_status'] = $_POST['country'] == 'US' ? 'awaiting-receipt' : 'not-applicable';
-
                 // test nickname
                 $testNickname = new User();
+
+                if (!$gh_user) {
+                    $send_confirm_email = false;
+                    $minimal_POST = array_merge($minimal_POST, array_map('htmlspecialchars', array_intersect_key($minimal_POST, $fields_to_htmlescape)));
+                    unset($minimal_POST['confirmpassword']);
+                    unset($minimal_POST['sign_up']);
+                    $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
+                    $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
+
+                    if(! isset($minimal_POST['paypal'])){
+                        $minimal_POST['paypal_email'] = '';
+                    }
+
+                    foreach ($minimal_POST as $key => $value) {
+                        if (! isset($params[$key])) {
+                            $params[$key] = $value;
+                        }
+                    }
+
+                    $newUser = array();
+                    foreach($_POST as $key => $value){
+                        if(Utils::registerKey($key)){
+                            $newUser[$key] = $value;
+                        }
+                    }
+
+                    $newUser['username'] = $minimal_POST['username'];
+                    $newUser['password'] = '{crypt}' . Utils::encryptPassword($minimal_POST['password']);
+                    $newUser['nickname'] = $minimal_POST['nickname'];
+                    $newUser['confirm_string'] = uniqid();
+                    $newUser['added'] = "NOW()";
+                    $newUser['notifications'] = Notification::setFlags($review_notify, $bidding_notify);
+                    $newUser['w9_status'] = $_POST['country'] == 'US' ? 'awaiting-receipt' : 'not-applicable';                    
+                } else {
+                    $nickname = $gh_user->login;
+                    if ($testNickname->findUserByNickname($nickname)) {
+                        $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $gh_user->name);
+                    }
+                    while ($testNickname->findUserByNickname($nickname)) {
+                        $rand = mt_rand(1, 99999);
+                        $nickname = $gh_user->login . $rand;
+                        if ($testNickname->findUserByNickname($nickname)) {
+                            $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $gh_user->name) . $rand;
+                        }
+                    }
+                    $newUser['username'] = $minimal_POST['username'];
+                    $newUser['nickname'] = $nickname;
+                    $newUser['confirm_string'] = uniqid();
+                    $newUser['added'] = "NOW()";
+                    $newUser['w9_status'] = 'not-applicable';
+                }
+
                 if ($testNickname->findUserByNickname($newUser['nickname'])) {
                     $error->setError('Nickname already in use.');
                 } else {
-
                     $sql = "INSERT INTO ".USERS." ";
                     $columns = "(";
                     $values = "VALUES (";
@@ -106,6 +135,12 @@ class SignupController extends Controller {
                     $sql .= $columns." ".$values;
                     $res = mysql_query($sql);
                     $user_id = mysql_insert_id();
+
+                    if ($gh_user) {
+                        if ($github_user = New GitHubUser($user_id)) {
+                            $github_user->storeCredentials($access_token);
+                        }
+                    }
 
                     // Email user
                     $subject = "Registration";
@@ -162,4 +197,20 @@ class SignupController extends Controller {
         ));
         parent::run();
     }
+
+    private function apiRequest($url, $post=FALSE, $headers=array()) {
+        $headers[] = 'Accept: application/json';
+        if (isset($_SESSION['github_auth_access_token']) && $_SESSION['github_auth_access_token']) {
+            $headers[] = 'Authorization: bearer ' . $_SESSION['github_auth_access_token'];
+        }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        if ($post) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge($headers, array('User-Agent: Worklist.net')));
+        $response = curl_exec($ch);
+        return json_decode($response);
+    }        
 }

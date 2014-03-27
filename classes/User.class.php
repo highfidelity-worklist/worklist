@@ -1453,7 +1453,7 @@ class User {
         $this->filter = $filter;
     }
 
-    private function loadUser($where)
+    protected function loadUser($where)
     {
         // now we build the sql query
         $sql = 'SELECT * FROM `' . USERS . '` WHERE ' . $where . ' LIMIT 1;';
