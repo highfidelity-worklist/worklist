@@ -49,16 +49,6 @@ class Utils{
         initSessionDataByUserId($id);
     }
     
-    public static function getVersion() {
-        if (file_exists(dirname(dirname(__FILE__)) . '/version.txt')) {
-            $data = file_get_contents(dirname(dirname(__FILE__)) . '/version.txt');
-            $version = trim($data);
-            return $version;
-        } else {
-            return 0;
-        }
-    }
-
     function currentPageUrl() {
         $pageURL = 'http';
         if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") { $pageURL .= "s"; }

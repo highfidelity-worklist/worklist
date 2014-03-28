@@ -21,7 +21,7 @@ class GitHubProject
         $message = false;
         $data = false;
         $postString = '';
-        $headers = array('Accept: application/json', 'User-Agent: worklist/' . Utils::getVersion());
+        $headers = array('Accept: application/json', 'User-Agent: Worklist.net');
         
         // Define variables required for API
         if ($path == 'login/oauth/access_token') {

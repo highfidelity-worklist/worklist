@@ -14,7 +14,6 @@ class View extends AppObject {
     public $layout = null;
     public $title = 'Worklist';
     public $app = array(
-        'version' => -1,
         'url' => WORKLIST_URL,
         'metadata' => array(
             'title' => "Worklist: High Fidelity's exoskeleton for rapid software development.",
@@ -85,7 +84,6 @@ class View extends AppObject {
         }
 
         $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
-        $this->app['version'] = Utils::getVersion();
         $this->app['self_url'] = $_SERVER['PHP_SELF'];
         $this->currentUser['id'] = $user_id;
         $this->currentUser['username'] = $user_id ? $user->getUsername() : '';
