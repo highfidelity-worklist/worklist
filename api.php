@@ -1051,7 +1051,7 @@ function checkRemovableProjects() {
         $db->query($sql_remove_project_users);
 
         // Remove project runners
-        $report_message .= '<p> Runners removed for project id ' . $row['project_id'] . ':</p>';
+        $report_message .= '<p> Designers removed for project id ' . $row['project_id'] . ':</p>';
         $sql_get_project_runners = "SELECT * FROM " . PROJECT_RUNNERS . " WHERE project_id = " . $row['project_id'];
         $result_temp = $db->query($sql_get_project_runners);
         while ($row_temp = mysql_fetch_assoc($result_temp)) {
@@ -2934,7 +2934,7 @@ function payCheck() {
               "</a>: <a href='./" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . $fee_pay['worklist_id'] . "</a><br/>";
             $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
             $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
-            $body .= "Contact the job Runner with any questions<br/><br/>Worklist.net<br/>";
+            $body .= "Contact the job Designer with any questions<br/><br/>Worklist.net<br/>";
 
             if(!send_email($userData['username'], $subject, $body)) { error_log("paycheck: send_email failed"); }
         }
@@ -3046,7 +3046,7 @@ function pingTask() {
             $project->loadById($item['project_id']);
             $project_name = $project->getName();
             $mail_subject = "#" . $item_id . " - " . $item['summary'];
-            $mail_msg = "<p>The Runner for #" . $item_id . " sent a reply to your bid.</p>";
+            $mail_msg = "<p>The Designer for #" . $item_id . " sent a reply to your bid.</p>";
             $mail_msg .= "<p>Message from " . $nickname . ":<br/>" . $msg . "</p>";
             $mail_msg .= "<p>Your bid info:</p>";
             $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";

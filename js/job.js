@@ -1261,12 +1261,12 @@ function AcceptMultipleBidOpen(){
                     $('<div id="popup-mechanic-required"><div class="content"></div></div>').appendTo('body');
                     $('#popup-mechanic-required').dialog({
                         modal: true,
-                        title: 'Failed to specify mechanic',
+                        title: 'Failed to specify developer',
                         autoOpen: true,
                         width: 300,
                         position: ['top'],
                         open: function() {
-                            $('#popup-mechanic-required .content').html('<p>You must pick which user will be the main mechanic for this task.</p><input class="closeButton" type="button" value="Close" />');
+                            $('#popup-mechanic-required .content').html('<p>You must pick which user will be the main developer for this task.</p><input class="closeButton" type="button" value="Close" />');
                             $('#popup-mechanic-required .closeButton').click(function() {
                                 $('#popup-mechanic-required').dialog('close');
                             });
@@ -1348,9 +1348,9 @@ $(function() {
 
         ping_who = 'mechanic';
         ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Mechanic about the task');
+        $('#popup-pingtask form h5').html('Ping the Developer about the task');
         $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Mechanic about the task');
+        $('#popup-pingtask').dialog('option', 'title', 'Ping the Developer about the task');
         return false;
     });
 
@@ -1362,9 +1362,9 @@ $(function() {
 
         ping_who = 'runner';
         ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Runner about the task');
+        $('#popup-pingtask form h5').html('Ping the Designer about the task');
         $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Runner about the task');
+        $('#popup-pingtask').dialog('option', 'title', 'Ping the Designer about the task');
         return false;
     });
 

@@ -128,7 +128,7 @@ $(document).ready(function() {
     
     $("#addrunner-textbox").autocomplete({source: autocompleteUserSource});
     $('#addRunner-form').submit(function(event) {
-        openNotifyOverlay('<span>Adding runner to your project...</span>', false);
+        openNotifyOverlay('<span>Adding designer to your project...</span>', false);
         $.ajax({
             type: 'post',
             url: 'jsonserver.php',
@@ -156,9 +156,9 @@ $(document).ready(function() {
     });
 
     $('#removerunner').click(function(event) {
-        Utils.infoDialog('Removing Runner','Removing selected user(s) as Runner(s) for this project. ' +
-            'If this user has active jobs for which they are the Runner, you will need to ' +
-            'change the Runner status to an eligible Runner.' );
+        Utils.infoDialog('Removing Designer','Removing selected user(s) as Designer(s) for this project. ' +
+            'If this user has active jobs for which they are the Designer, you will need to ' +
+            'change the Designer status to an eligible Designer.' );
         
         var runners = '';
         $('#projectRunners input[name^=runner]:checked').each(function() {

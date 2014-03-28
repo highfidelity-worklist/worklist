@@ -230,7 +230,7 @@ function makeWorkitemTooltip(className){
                     msg += '<div class="tip-entry">';
 
                     if (json.runner) {
-                        msg += '<div class = "tip-entry FL no-border">Runner: ' + json.runner + '</div>';
+                        msg += '<div class = "tip-entry FL no-border">Designer: ' + json.runner + '</div>';
                     }
 
                     if (json.creator) {
@@ -238,7 +238,7 @@ function makeWorkitemTooltip(className){
                     }
 
                     if (json.mechanic) {
-                        msg += '<div class="tip-entry FL no-border">Mechanic: ' + json.mechanic + '</div>';
+                        msg += '<div class="tip-entry FL no-border">Developer: ' + json.mechanic + '</div>';
                     }
 
                     msg += '</div>';

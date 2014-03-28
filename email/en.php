@@ -268,9 +268,9 @@ replacement data:
 'functional-howto' => array(
     'subject' => 'Job #{branch_name} is ready for functional review',
     'body' => '<p>Hi {runner}!</p>
-               <p>Job #{branch_name} is ready for functional review. Please follow these instructions to checkout and test the work done by the mechanic:</p>
+               <p>Job #{branch_name} is ready for functional review. Please follow these instructions to checkout and test the work done by the developer:</p>
                <ul>
-               <li>Clone the mechanics fork: git clone {users_fork}</li>
+               <li>Clone the developer\'\s fork: git clone {users_fork}</li>
                <li>Checkout the branch created for this job: git checkout {branch_name}</li>
                <li>Use this branch to make your build</li>
                </ul>
@@ -291,10 +291,10 @@ replacement data:
        <p>- Worklist.net</p>'
 ),
 'project-runner-added' => array(
-    'subject' => 'Added as a Runner to Project',
+    'subject' => 'Added as a Designer to Project',
     'body' =>
         '<p>Hi {nickname}</p>
-        <p>Congrats! You have been granted Runner rights for the following project:<br />
+        <p>Congrats! You have been granted Designer rights for the following project:<br />
         <a href="{projectUrl}">{projectName}</a><br />
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>
@@ -302,10 +302,10 @@ replacement data:
 ),
 
 'project-runner-removed' => array(
-    'subject' => 'Runner rights removed for Project',
+    'subject' => 'Designer rights removed for Project',
     'body' => 
         '<p>Hi {nickname}</p>
-        <p>Your Runner rights have been removed for the following project:<br />
+        <p>Your Designer rights have been removed for the following project:<br />
         <a href="{projectUrl}">{projectName}</a><br />
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>
