@@ -1,10 +1,8 @@
 /**
- * vim:ts=4:et
- * 
- * Copyright (c) 2013, CoffeeandPower Inc.
+ * Copyright (c) 2014, High Fidelity Inc.
  * All Rights Reserved. 
  *
- * http://www.worklist.net
+ * http://highfidelity.io
  */
 
 if (typeof stats == "undefined") {
@@ -56,7 +54,7 @@ $(function(){
         return false;
     });
 
-    $("#welcome .following").click(function(){
+    $("nav .following").click(function(){
         stats.stats_page = 1;
         $('#jobs-popup').dialog({
             title: "Jobs I am Following",
@@ -185,8 +183,8 @@ var stats = {
             if (popup != 0) {
                 var toAppend = '<tr>'
                             + '<td class="workitem" id="workitem-' + jsonjob.id + '"><a href = "' + worklistUrl
-                            + 'workitem.php?job_id=' + jsonjob.id
-                            + '&action=view" target = "_blank">#'+ jsonjob.id + '</a></td>'
+                            + jsonjob.id
+                            + '" target = "_blank">#'+ jsonjob.id + '</a></td>'
                             + '<td>' + jsonjob.summary + '</td>'
                             + '<td>' + jsonjob.creator_nickname + '</td>'
                             + '<td>' + runner_nickname + '</td>'
@@ -210,8 +208,8 @@ var stats = {
 
                     toAppend += '">'
                             + '<td class="workitem" id="workitem-' + jsonjob.id + '"><a href = "' + worklistUrl
-                            + 'workitem.php?job_id=' + jsonjob.id
-                            + '&action=view" target = "_blank">#'+ jsonjob.id + ' - <span>' + jsonjob.summary + '</span></a></td>';
+                            + jsonjob.id
+                            + '" target = "_blank">#'+ jsonjob.id + ' - <span>' + jsonjob.summary + '</span></a></td>';
 
                 if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                     toAppend += '<td>' + jsonjob.status + '</td>';
@@ -251,8 +249,8 @@ var stats = {
             var runner_nickname = jsonjob.runner_nickname != null ? jsonjob.runner_nickname : '----';
             var toAppend = '<tr>'
                         + '<td><a href = "' + worklistUrl
-                        + 'workitem.php?job_id=' + jsonjob.worklist_id
-                        + '&action=view" target = "_blank">#'+ jsonjob.worklist_id + '</a></td>'
+                        + jsonjob.worklist_id
+                        + '" target = "_blank">#'+ jsonjob.worklist_id + '</a></td>'
                         + '<td>$' + jsonjob.amount + '</td>'
                         + '<td>' + jsonjob.summary + '</td>'
                         + '<td>' + jsonjob.creator_nickname + '</td>'

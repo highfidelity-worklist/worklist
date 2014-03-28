@@ -1,10 +1,6 @@
 var available = 0;
-stats.setUserId(userInfo.user_id);
 
-stats.showJobs('activeJobs', 0);
-stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
-
-$(document).ready(function(){
+$(document).ready(function() {
     UserInfo.init();
     $('#sent-notify').dialog({
         modal: false,
@@ -13,7 +9,6 @@ $(document).ready(function(){
         height: 60,
         position: ['middle'],
         resizable: false,
-        dialogClass: 'white-theme',
         open: function() {
             $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
             setTimeout(function() {
@@ -21,7 +16,103 @@ $(document).ready(function(){
             }, 3000);
         }
     });
+    stats.setUserId(userInfo.user_id);
+    stats.showJobs('activeJobs', 0);
+    stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
+
+    $('#profile-nav a').click(function (event) {
+        event.preventDefault();
+        $(this).tab('show');
+        if ($(this).attr('href') == '#budgethistory') {
+            $.ajax({
+                type: 'post',
+                url: 'api.php',
+                dataType: 'html',
+                data: {
+                    action: 'budgetHistory',
+                    inDiv: 'tabs',
+                    id: userInfo.user_id,
+                    num: 100
+                },
+                success: function(data) {
+                    //console.log(data)
+                    $('#budgethistory').html(data);
+                }
+            });
+        } else if ($(this).attr('href') == '#mynotes') {
+            $.ajax({
+                type: 'post',
+                url: 'api.php',
+                dataType: 'html',
+                data: {
+                    action: 'userNotes',
+                    method: 'getNote',
+                    userId: userInfo.user_id
+                },
+                success: function(data) {
+                    //console.log(data)
+                    $('#mynotes').html(data);
+                }
+            });
+        }
+    })
+
 });
+
+$(function () {
+    if ($('#fees-week').length > 0) {
+        $('#fees-week').parents("tr").click(function() {
+            var author = "Guest";
+            if($('#user').length > 0) {
+                author = $('#user').html();
+            }
+            var t = 'Weekly fees for '+author;
+            $('#wFees').dialog({
+                autoOpen: false,
+                title: t,
+                show: 'fade',
+                hide: 'fade'
+            });
+            $('#wFees').dialog( "option", "title", t );
+            $('#wFees').html('<img src="images/loader.gif" />');
+            $('#wFees').dialog('open');
+            $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
+                if (json.error == 1) {
+                    $('#wFees').html('Some error occured or you are not logged in.');
+                } else {
+                  $('#wFees').html(json.output);
+                }
+            });
+        });
+    }
+
+    if($('#fees-month').length > 0){
+        $('#fees-month').parents("tr").click(function() {
+            var author = "Guest";
+            if ($('#user').length > 0) {
+                author = $('#user').html();
+            }
+            var t = 'Monthly fees for '+author;
+            $('#wFees').dialog({
+                autoOpen: false,
+                title: t,
+                show: 'fade',
+                hide: 'fade'
+            });
+            $('#wFees').dialog("option", "title", t);
+            $('#wFees').html('<img src="images/loader.gif" />');
+            $('#wFees').dialog('open');
+            $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
+                if (json.error == 1) {
+                    $('#wFees').html('Some error occured or you are not logged in.');
+                } else {
+                    $('#wFees').html(json.output);
+                }
+            });
+        });
+    }
+});
+
  
 var UserInfo = {
     init: function() {
@@ -36,7 +127,7 @@ var UserInfo = {
 
         WLFavorites.init( "profileInfoFavorite",userInfo.user_id, userInfo.nickName );
         // setup the variables needed to call the getFavoriteText function
-        var favCount = $('.profileInfoFavorite span').attr('data-favorite_count');
+        var favCount = $('.profileInfoFavorite span').attr('data-favorite-count');
         var isMyFav = false;
         if ($('.profileInfoFavorite .favorite_user').hasClass('myfavorite')) {
             isMyFav = true;
@@ -48,7 +139,7 @@ var UserInfo = {
         $('.profileInfoFavorite span').html(favText);
 
         // master function to handle change in dropdowns
-        $('select', '#tabs-2').change(function() {
+        $('select', '#admin').change(function() {
             var value = $(this).val();
             var field = $(this).attr('id');
             if (field == 'w9status') {
@@ -62,7 +153,7 @@ var UserInfo = {
 
             $.ajax({
                 type: 'post',
-                url: 'userinfo.php',
+                url: './user/' + userInfo.user_id,
                 dataType: 'json',
                 data: {
                     value: $(this).val(),
@@ -75,7 +166,7 @@ var UserInfo = {
         });
 
         // master function to handle checkbox changes
-        $('input[type=checkbox]', '#tabs-2').click(function() {
+        $('input[type=checkbox]', '#admin').click(function() {
             // get the checkbox value
             var value = $(this).is(':checked') ? 1 : 0;
             // and the id of the field being changed
@@ -83,7 +174,7 @@ var UserInfo = {
 
             $.ajax({
                 type: 'post',
-                url: 'userinfo.php',
+                url: './user/' + userInfo.user_id,
                 dataType: 'json',
                 data: {
                     value: value,
@@ -106,7 +197,7 @@ var UserInfo = {
                 click: function() {
                     $.ajax({
                         type: 'post',
-                        url: 'userinfo.php',
+                        url: './user/' + userInfo.user_id,
                         dataType: 'json',
                         data: {
                             value: 'rejected',
@@ -146,7 +237,7 @@ var UserInfo = {
 
             $.ajax({
                 type: 'post',
-                url: 'userinfo.php',
+                url: './user/' + userInfo.user_id,
                 dataType: 'json',
                 data: {
                     value: $('#annual_salary').val(),
@@ -158,25 +249,6 @@ var UserInfo = {
             });
         });
 
-        $("#tabs").tabs({
-            cache: true,
-            ajaxOptions: {
-                cache: true,
-                success: function() {
-                },                
-                error: function( xhr, status, index, anchor ) {
-                    $(anchor.hash).html("Couldn't load this tab." );
-                }
-            }
-        });
-
-        $("#loading").ajaxStart(function() {
-            $(this).show();
-        });
-        $("#loading").ajaxStop(function(){
-            $(this).hide();
-        });
-       
         $('#popup-pingtask').dialog({
             autoOpen: false, 
             width: 50, 
@@ -195,14 +267,12 @@ var UserInfo = {
             $('#send-ping-btn').attr("disabled", "disabled");
             var msg = $('#ping-msg').val();
             // always send email
-            var mail = 1;
             var journal = $('#echo-journal').is(':checked') ? 1 : 0;
             var cc = $('#copy-me').is(':checked') ? 1 : 0;
             var data = {
                 'action': 'pingTask',
                 'userid' : userInfo.user_id, 
                 'msg' : msg, 
-                'mail' : mail, 
                 'journal' : journal, 
                 'cc' : cc
             };
@@ -278,7 +348,7 @@ var UserInfo = {
                 projects = projects.slice(0, -1)        
                 $.ajax({
                     type: "POST",
-                    url: 'userinfo.php',
+                    url: './user/' + userInfo.user_id,
                     dataType: 'json',
                     data: {
                         action: "create-sandbox",
@@ -290,8 +360,7 @@ var UserInfo = {
                         if(json.error) {
                             alert("Sandbox Creation failed:"+json.error);
                         } else {
-                        alert("Sandbox created successfully");
-                            $('#popup-user-info').dialog('close');
+                            alert("Sandbox created successfully");
                         }
                     }
                 });
@@ -318,19 +387,13 @@ var UserInfo = {
         $('#pay_bonus').click(function(e) {
             // clear form input fields
             $('#pay-bonus form input[type="text"]').val('');
-            $('#pay-bonus').dialog('open').dialog('option', 'position', 'top', 0);
-            $('#pay-bonus').bind('dialogclose', function(event, ui) {
-                parent.resizeIframeDlg();
-            });
+            $('#pay-bonus').dialog('open');
             
             var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
            
             bonus_amount = new LiveValidation('bonus-amount', {onlyOnSubmit: true });
             bonus_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
             bonus_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
-            while(!$('#pay-bonus').is(':visible')) {
-                sleep(0);
-            }
             bonus_budget = new LiveValidation('budget-source-combo-bonus', {
                 onlyOnSubmit: true ,
                 insertAfterWhatNode: "validationMessage"
@@ -470,8 +533,8 @@ var UserInfo = {
             url: 'api.php',
             data: {
                 action: 'getBonusHistory', 
-                uid: current_id, 
-                rid: user_id, 
+                uid: user_id, 
+                rid: UserInfo.user_id, 
                 page: page
             },
             dataType: 'json',
@@ -489,7 +552,6 @@ var UserInfo = {
                 } else if(json[0][0] == 0 || (json.length > 0 && json[0][2] == 0)) {
                     $('.bonus-history').append(footer);
                 }
-                parent.resizeIframeDlg();
             }
         });
     }

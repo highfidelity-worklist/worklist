@@ -1,39 +1,24 @@
 /*
-* Copyright (c) 2011, LoveMachine Inc.
+* Copyright (c) 2011, High Fidelity Inc.
 * All Rights Reserved.
 * 
-* http://www.lovemachineinc.com
+* http://highfidelity.io
 * 
 * Development History:
 * 2011-07-30   #14907      Leo
 *
 */
 
-/**
- * Overrides for project page
- */
-#outside {
-    text-align: center;
-}
-
-h1 {
-    font-family: 'Cabin', sans-serif;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-size: 20px;
-    padding: 0;
-    color: #141414;
-    text-align: left;
-}
-
 #add-project {
-    color: #993300;
-    float: right;
+    color: #007F7C;
     font-size: 20px;
     text-decoration: none;
-    width: 150px;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     text-align: right;
+    display: block;
+    float: right;
+    margin-top: -35px;
 }
 
 #add-project span {
@@ -42,18 +27,14 @@ h1 {
 }
 
 #all-projects {
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     font-size: 20px;
     color: #666666;
 }
 
 #projects {
     color: #666666;
-    /*
-    margin: 25px auto;
-    clear: both;
-    display: table;
-    */
     text-align: center;
 }
 
@@ -62,41 +43,56 @@ h1 {
     border-radius: 6px;
     box-shadow: 0 0 5px #CCCCCC;
     display: inline-block;
-    height: 310px;
+    height: 360px;
     margin: 10px;
     margin: 0 10px 25px 0;
     padding: 22px 25px 20px 25px;
     text-align: left;
     vertical-align: middle;
     width: 234px;
+    position: relative;
 }
 
 #projects > article img {
-    margin-bottom: 15px;
     width: 48px;
     height: 48px;
     border-radius: 3px;
     box-shadow: 0 0 5px #CCCCCC;
 }
 
-#projects > article h2,
-#projects > article h2 a {
-    font-size: 26px;
-    font-family: 'Cabin', sans-serif;
-    color: #993300;
-    text-decoration: none;
+#projects > article h3 {
     padding-bottom: 0;
     margin-bottom: 8px;
     overflow: hidden;
-    max-width: 255px;
-}
-
-#projects > article h2 div {
     position: relative;
 }
 
+#projects > article h3 a {
+    font-size: 26px;
+    font-weight: bold;
+    color: #007F7C;
+    text-decoration: none;
+    max-width: 255px;
+}
+
+#projects > article h3:before {
+    content: '\00a0';
+    width: 35px;
+    background: #000;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+}
+
 #projects section.description {
-    height: 126px;
+    max-height: 180px;
     font-size: 16px;
     overflow: hidden;
     font-size: 14px;
@@ -104,8 +100,28 @@ h1 {
 }
 
 #projects article .stats {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
     list-style-type: none;
-    padding-left: 0;
+}
+
+#projects article .stats:before {
+    content: '\00a0';
+    left: 0;
+    width: 100%;
+    display: block;
+    position: absolute;
+    margin-top: -50px;
+    height: 50px;
+    background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
 #projects article .stats li {
@@ -135,7 +151,6 @@ h1 {
         text-align: center;
     }
     
-    h1,
     #add-project,
     #all-projects {
         font-size: 16px;
@@ -143,7 +158,6 @@ h1 {
 }
 
 @media screen and (max-width: 380px) {
-    h1,
     #add-project,
     #all-projects {
         font-size: 14px;
@@ -267,7 +281,7 @@ h1 {
     padding: 0 18px;
     height: 44px;
     width: 134px;
-    background-color: #993300 !important;
+    background-color: #007F7C !important;
 }
 
 #popup-addproject .help {
@@ -285,7 +299,7 @@ h1 {
 }
 
 #popup-addproject .help a {
-    color: #993300 !important;
+    color: #007F7C !important;
     font-weight: bold;
 }
 
@@ -367,7 +381,7 @@ input.LV_invalid_field {
     clear: both;
     font-size: 12px !important;
     font-weight: normal;
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
 }
 
 #custom-github-info {

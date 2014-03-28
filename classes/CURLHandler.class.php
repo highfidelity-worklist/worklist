@@ -79,7 +79,7 @@ class CURLHandler {
             // let's give it a timeout of 2 seconds (enough to reach the server)
             curl_setopt($curlInterface, CURLOPT_TIMEOUT, 2);
         }
-        error_log("Curl invoked:".$url);
+        //error_log("Curl invoked:".$url);
         $result = curl_exec($curlInterface);
         
         if($result === false ){

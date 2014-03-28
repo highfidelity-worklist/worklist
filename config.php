@@ -17,10 +17,6 @@ function defineOnce($key, $value) {
     }
 }
 
-require_once('Zend/Config.php');
-require_once('Zend/Config/Ini.php');
-require_once('Zend/Registry.php');
-
 if (file_exists(dirname(__FILE__).'/server.local.php')) {
     include_once(dirname(__FILE__).'/server.local.php');
 } else {
@@ -40,6 +36,10 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
         'rm ' . dirname(__FILE__) . '/server.local.phpe <br/><br/> '
         );
 }
+
+require_once('Zend/Config.php');
+require_once('Zend/Config/Ini.php');
+require_once('Zend/Registry.php');
 
 defineOnce('MYSQL_DEBUG_LEVEL', 0);
 defineOnce('MYSQL_DEBUG_MESSAGE_DEFAULT', 'General database error');
@@ -234,8 +234,6 @@ if (!defined('QS_VAR'))         define('QS_VAR', 'page');
 
 if (!defined('STR_FWD'))        define('STR_FWD', '&nbsp;&nbsp;Next');
 if (!defined('STR_BWD'))        define('STR_BWD', 'Prev&nbsp;&nbsp;');
-if (!defined('IMG_FWD'))        define('IMG_FWD', 'images/left.png');
-if (!defined('IMG_BWD'))        define('IMG_BWD', 'images/right.png');
 
 if (!defined("TESTFLIGHT_API_TOKEN"))    define("TESTFLIGHT_API_TOKEN", "c5ae8c56e6ac6e6d5aefceb711070261_MTA5MzE3");
 
@@ -374,6 +372,10 @@ defineOnce('HIPCHAT_API_MESSAGE_URL', "https://api.hipchat.com/v1/rooms/message?
 
 //Tower api settings
 defineOnce('TOWER_API_URL', " https://a-tower.below92.com/");
+
+// Google Analytics settings
+defineOnce('GOOGLE_ANALYTICS_TOKEN', '1/kTlFYUDNtShl_ejOORk1v8fAKhmj3FmIam1i-NTMyqE');
+defineOnce('GOOGLE_ANALYTICS_PROFILE_ID', '46390018');
 
 $countryurllist = array(
     'AF'=>'Afghanistan',                                                        
@@ -1276,6 +1278,42 @@ $timezoneTable = array(
     "+1200" => "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka"
 );
 
+defineOnce('DEFAULT_TIMEZONE', 'UTC');
+
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
+date_default_timezone_set(DEFAULT_TIMEZONE);
+
+defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'd075a674622a63de2415');
+defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '6c256ada7f5849ef392907f56b55cc501d4b9e2e');
+
+defineOnce('GITHUB_AUTHORIZE_URL', 'https://github.com/login/oauth/authorize');
+defineOnce('GITHUB_TOKEN_URL', 'https://github.com/login/oauth/access_token');
+
+defineOnce('MODELS_DIR', dirname(__FILE__) . '/models');
+defineOnce('VIEWS_DIR', dirname(__FILE__) . '/views');
+defineOnce('CONTROLLERS_DIR', dirname(__FILE__) . '/controllers');
+defineOnce('MUSTACHE_DIR', VIEWS_DIR . '/mustache');
+defineOnce('TEMP_DIR', dirname(__FILE__) . '/tmp');
+defineOnce('CACHE_DIR', TEMP_DIR . '/cache');
+
+defineOnce('DEFAULT_CONTROLLER_NAME', 'Home');
+defineOnce('DEFAULT_CONTROLLER_METHOD', 'run');
+
+defineOnce('GITHUB_API_TOKEN', 'a8490439510623316834ea6cdc736a32a76f3709');
+defineOnce('GITHUB_ORGANIZATION', 'highfidelity');
+
+require_once('vendor/autoload.php');
 require_once('functions.php');
 
-Sanitize::filterInput();
+//Sanitize::filterInput();
+
+function shutdown() {
+    foreach (get_declared_classes() as $class) {
+        if ($class == 'Dispatcher') {
+            $controller = new $class();
+            $controller->run();
+            break;
+        }
+    }
+}
+register_shutdown_function('shutdown');

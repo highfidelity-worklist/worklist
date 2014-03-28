@@ -9,7 +9,7 @@ h1 {
 }
 
 #newUserStats {
-    font-family: helvetica,arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
     float: right;
     width: 300px;
     margin-top: 20px;
@@ -195,16 +195,16 @@ div#center {
     width: 96px;
     background: none #ffffff !important;
     border-radius: 0px !important;
-    height: 20px;
+    height: 30px;
     padding-top: 3px;
     position: relative;
     float: right;
-    margin: -5px 0 0 10px;
+    margin: 0 0 0 10px;
     font-size: 13px;
 }
 
 #filters_box .ui-combobox-list li.ui-state-hover {
-    background-color: #aa1e00;
+    background-color: #009999;
     color: #ffffff;
 }
 
@@ -325,7 +325,7 @@ div#center {
 #query, 
 #filters_box .ui-combobox-textbox,
 #filters_box .ui-combobox-list li {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
 }
 
 #search-filter-wrap .crossSearch {
@@ -350,7 +350,7 @@ div#center {
 
 #team .ln-letters a:active,
 #team .ln-pages a:active {
-    color: #AA1E00;
+    color: #009999;
 }
 
 #team .ln-letters a.ln-selected, 

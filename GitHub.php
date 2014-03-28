@@ -2,7 +2,7 @@
 
 /**
  * @author:     Leonardo Murillo
- * @copyright:  (c)2012 Below92 Inc.
+ * @copyright:  (c)2012 High Fidelity Inc.
  * 
  * GitHub Callback Handler, use this for processing any responses
  * from the GitHub API.
@@ -14,7 +14,6 @@
  */
 
 require_once ("config.php");
-require_once 'chat.class.php';
 require_once 'models/DataObject.php';
 require_once 'models/Budget.php';
 

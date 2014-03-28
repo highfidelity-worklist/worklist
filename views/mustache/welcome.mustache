@@ -1,0 +1,33 @@
+<div class="row">
+    <h2>
+        <strong>Worklist is High Fidelity's exoskeleton</strong>
+        for rapid software development.
+    </h2>
+    <p>
+        High Fidelity is an open source virtual world platform. We are
+        building the software with a mix of full-time developers, part
+        time developers who are paid here on the worklist, and open
+        source collaborators. As use of the virtual world grows, Worklist
+        will also host paid projects run by other teams.
+    </p>
+    {{#areBiddingJobs}}
+    <h3>Here are some of the jobs you can bid on now:</h3>
+    <table>
+        <tr>
+            <th>Description</th>
+            <th>Skills</th>
+            <th>Project</th>
+        </tr>
+        {{#biddingJobs}}
+        <tr>
+            <td><a href="./{{id}}">{{summary}}</a></td>
+            <td>{{skills}}</td>
+            <td><a href="./{{project}}">{{project}}</a></td>
+        </tr>
+        {{/biddingJobs}}
+    </table>
+    {{/areBiddingJobs}}
+</div>
+<section id="github">
+    <a href="./github?action=login">Log in with GitHub</a>
+</section>

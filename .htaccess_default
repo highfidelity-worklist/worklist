@@ -1,11 +1,8 @@
-RewriteEngine On
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  #RewriteBase /~unixusername/sandboxdir/
 
-RewriteRule ^([0-9]+)$ /worklist/workitem.php?job_id=$1 [QSA,L]
-
-# remove trailing slash from projects
-RewriteRule ^(.+)/$ /worklist/$1 [L,R=301]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /worklist/project.php?project=$1 [L,QSA]
-
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>

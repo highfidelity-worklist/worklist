@@ -1,404 +1,90 @@
-#welcomeContent {
-    font-family: helvetica, arial, sans-serif;
-    font-weight: 400; 
-    font-size: 20pt;
-    color: #666666;
-    margin-left: 40px;
+body > nav.navbar + .container-fluid {
+    font-size: 1.9em;
 }
 
-#welcomeTop {
-    margin-top: 40px;
-    height: 130px;
+body > nav.navbar + .container-fluid > .row {
+    margin: 0 5%;
 }
 
-#welcomeLeftTop, #welcomeLeftBottom {
-    float: left;
-    width: 600px;
+@media (max-width: 1024px) {
+    body > nav.navbar + .container-fluid {
+        font-size: 1.7em;
+    }
 }
 
-#welcomeLeftBottom {
-    margin-top: 10px;
-    padding-left: 40px;
-    font-size: 18pt;
+@media (max-width: 768px) {
+    body > nav.navbar + .container-fluid {
+        font-size: 1.3em;
+    }
 }
 
-#welcomeRightTop, #welcomeRightBottom {
-    float: left;
-    font-size: 14pt;
-    font-family: 'Cabin', sans-serif;
+h2 {
+    font-size: 170%;
 }
 
-#welcomeRightTop {
-    position: relative;
-    height: 100%;
-    width: 150px;
+h3 {
+    font-size: 80%;
+    font-weight: bold;
+    margin-bottom: 20px
 }
 
-#welcomeRightTop > div {
-    position: absolute;
-    bottom: 0px;
+h2 > strong {
+    display: block;
 }
 
-.welcomeRed {
-    color: rgb(153, 51, 0);
+p {
+    margin: 15px 0 30px;
 }
 
-.welcomeBold {
-    font-weight: 700; 
+table th,
+table td {
+    font-size: 80%;
 }
 
-.welcomeItalic {
-    font-style: italic;
+/* columns width settings */
+table tr > td:nth-child(n+1) {
+    width: 56%;
+}
+table tr > td:nth-child(n+2) {
+    width: 33%;
 }
 
-#welcomeLeftTop {
-    font-size: 36pt;
-    padding-left: 40px;
+/* table headers styling */
+table th {
+    color: #afaca3;
+    font-weight: normal;
 }
 
-#welcomeMiddle {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    height: 4px;
+table tr + tr {
+    border-top: 1px solid #e0e0e0;
 }
 
-#welcomeBottom {
-    height: 130px;
+h2, 
+h3,
+table td,
+table td > a {
+    color: #007F7C;
 }
 
-#welcomeLeftMiddle {
-    float: left;
-    width: 640px;
+table td {
+    color: #007F7C;
+    padding: 3px 0;
 }
 
-#welcomeLeftMiddleLine {
-    float: left;
-    width: 118px;
-    height: 4px;
-    background-color: #e8e5dd;
-}
-
-#welcomeRightMiddle {
-    float: left;
-    height: 4px;
-    width: 118px;
-    background-color: #e8e5dd;
-}
-
-#welcomeRightTopArrow, #welcomeRightBottomArrow {
-    background: no-repeat url('../images/primaryIcons-WL.png') 0 -570px;
-    height: 26px;
-    width: 26px;
-    margin-right: 4px;
-}
-#welcomeRightTopArrow {
-    margin-top: 25px;
-}
-
-#welcomeRightBottomArrow {
-    margin-top: 50px;
-}
-#welcomeRightTop > div > div, #welcomeRightBottom > div > div {
-    float: left;
-}
-
-#welcomeContent a {
-    color: #333333; 
-}
-
-#developer {
-    padding-top: 20px;
-    padding-left: 40px;
-    padding-bottom: 26px;
-    border-left: 4px solid #e8e5dd;
-    border-bottom: 4px solid #e8e5dd;
-    width: 740px;
-}
-
-#developerBottom {
-    clear: both;
-    font-size: 18pt;
-}
-
-#developerMiddle {
-    padding-left: 10px;
-    padding-top: 20px;
-}
-
-#developerMiddle > div {
-    height: 100px;
-    width: 100px;
-    float: left;
-}
-
-#developerMiddle1 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -0px;
-    margin-right: 76px;
-}
-
-#developerMiddle2 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -150px;
-    margin-right: 10px;
-}
-
-#developerMiddle3 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -300px;
-    margin-right: 50px;
-}
-
-#developerMiddle4 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -405px;
-}
-
-#collaborate {
-    padding-top: 20px;
-    padding-left: 40px;
-    padding-bottom: 26px;
-    border-bottom: 4px solid #e8e5dd;
-    width: 740px;
-    height: 330px;
-    font-size: 18pt;
-}
-
-#collaborateLeft {
-    float: left;
-    width: 250px;
-    margin-right: 50px;
-    font-size: 19pt;
-    line-height: 1.4;
-}
-
-#collaborateMiddle {
-    float: left;
-    width: 210px;
-    margin-right: 40px;
-    font-size: 16pt;
-    line-height: 1.4;
-}
-
-#collaborateRight {
-    float: left;
-    width: 180px;
-}
-
-#collaborateLeft1 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -540px;
-    width: 180px;
-    height: 120px;
-}
-
-#collaborateMiddle1 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -680px;
-    width: 180px;
-    height: 122px;
-}
-
-#collaborateMiddle3 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -1050px;
-    width: 180px;
-    height: 90px;
-}
-
-#collaborateRight1 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -840px;
-    width: 210px;
-    height: 120px;
-    margin-top: 80px;
-    padding-top: 80px;
+#github {
+    margin: 20px 0;
+    background-color: #edebe8;
+    padding: 20px;
     text-align: center;
 }
 
-#collaborateRight1 a {
-    font-weight: bold;
-}
-
-#collaborateRight1 > div {
-    margin-top: 6px;
-}
-
-#collaborateArrow {
-    background: no-repeat url('../images/primaryIcons-WL.png') 0px -630px;
-    width: 50px;
-    height: 50px;
-    position: relative;
-    top: -170px;
-    left: 80px;
-    -moz-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg); 
-    -o-transform: rotate(90deg); 
-}
-
-#fast {
-    padding-top: 16px;
-    padding-left: 40px;
-    padding-bottom: 16px;
-    border-bottom: 4px solid #e8e5dd;
-    width: 740px;
-    height: 60px;
-    font-size: 19pt;
-}
-
-#welcomeContent #collaborateRight1 > a {
-    color: rgb(153, 51, 0);
-}
-
-#collaborateArrowRight {
-    background: no-repeat url('../images/primaryIcons-WL.png') 0px -630px;
-    width: 50px;
-    height: 50px;
-	float:left;
-}
-
-#developerEnd {
-    padding-top: 30px;
-    padding-left: 40px;
-    width: 740px;
-    height: 80px;
-    font-size: 28pt;
-}
-
-#developerEnd > div {
-    float: left;
-}
-
-#welcomeContent #developerEnd  a {
-    color: rgb(153, 51, 0);
-}
-
-#entrepreneur {
-    padding-top: 20px;
-    padding-left: 40px;
-    padding-bottom: 26px;
-    margin-top: 70px;
-    border: 4px solid #e8e5dd;
-    width: 740px;
-}
-
-#entrepreneurBottom {
-    clear: both;
-    font-size: 18pt;
-}
-
-#entrepreneurMiddle {
-    padding-left: 10px;
-    padding-top: 20px;
-}
-
-#entrepreneurMiddle > div {
-    height: 100px;
-    width: 100px;
-    float: left;
-}
-
-#entrepreneurMiddle1 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -1310px;
-    margin-right: 10px;
-    margin-left: 70px;
-}
-
-#entrepreneurMiddle2 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -1430px;
-    margin-left: 90px;
-}
-
-#entrepreneurMiddle3 {
-    background: no-repeat url('../images/primaryIcons-WL.png') -600px -1190px;
-    margin-left: 150px;
-}
-
-#entrepreneur2 {
-    padding-top: 20px;
-    padding-left: 40px;
-    padding-bottom: 26px;
-    margin-top: 4px;
-    border-bottom: 4px solid #e8e5dd;
-    width: 740px;
-    height: 280px;
-}
-
-#entrepreneur2Left {
-    float: left;
-    width: 390px;
-}
-
-#entrepreneur2Right {
-    float: left;
-    width: 320px;
-    margin-left: 30px;
-}
-
-.bullet {
-    background: no-repeat url('../images/primaryIcons-WL.png') -0px -600px;
-    float: left;
-    clear: both;
-    width: 16px;
-    height: 16px;
-    margin-top: 10px;
-    margin-right: 14px;
-    margin-bottom: 90px;
-}
-
-.bulletText {
-    float: left;
-    width: 330px;
-    font-size: 19pt;
-    font-family: helvetica, arial, sans-serif;
-}
-
-.bulletTextRight {
-    float: left;
-    width: 290px;
-    font-size: 19pt;
-    font-family: helvetica, arial, sans-serif;
-}
-
-.getstarted {
-    /*clear: both;*/
-    /*padding-top: 24px;*/
-	width:240px;
-	float:left;
-	padding-top:8px;
-}
-
-#entrepreneur3 {
-    padding-top: 20px;
-    padding-left: 40px;
-}
-
-#welcomeContent #entrepreneur3  a {
-    color: rgb(153, 51, 0);
-}
-
-#entrepreneur3 > div {
-    float: left;
-    font-size: 28pt;
-}
-
-#left, #right, #center {
-    background: none;
-}
-
-#right {
-    display: none;
-}
-
-body {
-    background: none;
-}
-
-#container {
-    background: url('../images/45degreee_fabric_light.jpg');
-}
-
-.getstartedContainer {
-	width:600px;
-}
-
-.signupnow {
-	float:left;
-	padding-top:8px;
-}
-
-.signupnowContainer {
-	display:inline;
+#github > a {
+    background: transparent url(../images/githubmark.png) 20px center no-repeat;
+    background-size: 48px 48px;
+    display: inline-block;
+    margin: 0 auto;
+    background-color: #009999;
+    color: #edebe8;
+    padding: 15px 20px 15px 80px;
+    border-radius: 10px;
 }

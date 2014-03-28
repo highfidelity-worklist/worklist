@@ -1,0 +1,78 @@
+/**
+ * Heklp styling
+ *
+ * @todo: Most of this styling rules were copied to help.css, please review 
+ *        and consider creating a new layout that ncludes common rules for this 
+ *        kind of views
+ */
+
+body {
+    background-color: #dde4e6;
+}
+
+body > nav.navbar + .container-fluid {
+    background-color: #fff;
+    -moz-box-shadow: 0px 0 8px #666;
+    -webkit-box-shadow: 0px 0 8px #666;
+    box-shadow: 0px 0 8px #666;
+    padding: 10px 0 40px;
+}
+
+body > nav.navbar + .container-fluid > h2,
+body > nav.navbar + .container-fluid > h3,
+body > nav.navbar + .container-fluid > h4,
+body > nav.navbar + .container-fluid > p {
+    padding: 15px 8% 0;
+}
+
+body > nav.navbar + .container-fluid > h4 + p {
+    padding-top: 0;
+}
+
+body > nav.navbar + .container-fluid > ul {
+    padding: 3px 10% 0;
+}
+
+h2 {
+    color: #007f7c;
+    font-size: 4.5em;
+    font-weight: bold;
+    border-bottom: 1px solid #dde4e6;
+}
+
+h3 {
+    color: #009999;
+}
+
+body > nav.navbar + .container-fluid > h3 + ul li > a,
+body > nav.navbar + .container-fluid > h4 a,
+body > nav.navbar + .container-fluid > h4 a[name]:hover,
+body > nav.navbar + .container-fluid > h4 a[name]:active {
+    color: #000;
+    text-decoration: none;
+}
+
+h4 a[name]:hover,
+h4 a[name]:active {
+    cursor: default;
+}
+
+/* Q and A letters for questions and answers */
+body > nav.navbar + .container-fluid > h4:before {
+    content: 'Q. ';
+}
+
+body > nav.navbar + .container-fluid > h4 + p:before {
+    content: 'A. ';
+    font-weight: bold;
+}
+
+body > nav.navbar + .container-fluid > h4:before,
+body > nav.navbar + .container-fluid > h4 + p:before {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+body > nav.navbar + .container-fluid > p + p {
+    padding-top: 0;
+}

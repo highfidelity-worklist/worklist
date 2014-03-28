@@ -1,11 +1,9 @@
 <?php
 /**
- * vim:ts=4:et
- * 
- * Copyright (c) 2013, CoffeeandPower Inc.
+ * Copyright (c) 2014, High Fidelity Inc.
  * All Rights Reserved. 
  *
- * http://www.worklist.net
+ * http://highfidelity.io
  */
 
 require_once ("config.php");
@@ -13,7 +11,6 @@ require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 require_once ("models/Budget.php");
-require_once ("lib/Agency/Worklist/Filter.php");
 
 Session::check();
 
@@ -43,9 +40,6 @@ if(validateAction()) {
                 break;
             case 'getTaskPosts':
                 getTaskPosts();
-                break;
-            case 'getLatestForNickname':
-                getLatestForNickname();
                 break;
             case 'uploadProfilePicture':
                 uploadProfilePicture();
@@ -195,7 +189,9 @@ if(validateAction()) {
                 getSkills();
                 break;
             case 'getStats':
-                getStats();
+                $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
+                $interval =  isset($_REQUEST['req'])? $_REQUEST['req'] : 30;
+                echo json_encode(getStats($req, $interval));
                 break;
             case 'getUserItem':
                 getUserItem();
@@ -257,6 +253,8 @@ if(validateAction()) {
             case 'budgetHistory':
                 budgetHistory();
                 break;
+            case 'timeline':
+                timeline();
             default:
                 die("Invalid action.");
         }
@@ -293,30 +291,6 @@ function validateAPIKey() {
     } else {
         return true;
     }
-}
-
-// Created for Worklist Job #13424 [danbrown]
-function getLatestForNickname() {
-
-    // If we haven't specified the nickname, break out.
-    if (!isset($_REQUEST['nickname'])) return false;
-
-    // If we haven't specified the number of posts to return, or if it exceeds 100 or is less than one, default to 20.
-    if (!isset($_REQUEST['num']) || !is_numeric($_REQUEST['num']) || $_REQUEST['num'] < 1 || $_REQUEST['num'] > 100) {
-        $_REQUEST['num'] = 20;
-    }
-
-    require_once('chat.class.php');
-
-    $response = new AjaxResponse($chat);
-
-    try {
-                $data = $response->latestForNickname($_REQUEST['nickname'],round($_REQUEST['num']));
-    } catch (Exception $e) {
-        $data['error'] = $e->getMessage();
-    }
-
-    echo $data['html'];
 }
 
 /*
@@ -374,8 +348,6 @@ function uploadProfilePicture() {
     $tempFile = $_FILES['profile']['tmp_name'];
     $imgName = strtolower($_REQUEST['userid'] . '.' . $ext);
     $path = APP_IMAGE_PATH . $imgName;
-
-    require_once('lib/S3/S3.php');
 
     try {
         File::s3Upload($tempFile, $path);
@@ -631,7 +603,7 @@ function autoPassSuggestedJobs() {
             );
             
             //sendJournalnotification
-            $journal_message = "Otto updated item #" . $workitem->getId() . ": " . $workitem->getSummary() . ". Status set to " . $status;
+            $journal_message = "**#" . $workitem->getId() . "** updated by @Otto \n\n**" . $workitem->getSummary() . "**. Status set to *" . $status . "*";
             sendJournalNotification(stripslashes($journal_message));            
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
@@ -1195,7 +1167,7 @@ function addProject() {
         }
         $project->save();
         
-        $journal_message = $nick . ' added project ##' . $name;
+        $journal_message = '@' . $nick . ' added project *' . $name . '*';
         if (!empty($journal_message)) {
             //sending journal notification
             sendJournalNotification($journal_message);
@@ -1215,131 +1187,132 @@ function addWorkitem() {
     $workitem = new WorkItem();
 
     $userId = getSessionUserId();
-    if ($userId > 0) {
-        initUserById($userId);
-        $user = new User();
-        $user->findUserById( $userId );
-        $nick = $user->getNickname();
-    }
-
-    if ($userId > 0 ) {
-        $args = array(
-            'itemid',
-            'summary',
-            'project_id',
-            'skills',
-            'status',
-            'notes',
-            'invite',
-            'is_expense',
-            'is_rewarder',
-            'is_bug',
-            'bug_job_id',
-            'fileUpload'
-        );
-
-        foreach ($args as $arg) {
-            // Removed mysql_real_escape_string, because we should 
-            // use it in sql queries, not here. Otherwise it can be applied twice sometimes
-            $$arg = !empty($_REQUEST[$arg])?$_REQUEST[$arg]:'';
-        }
-
-
-        $creator_id = $userId;
-
-        if (! empty($_POST['itemid'])) {
-            $workitem->loadById($_POST['itemid']);
-            $journal_message .= $nick . " updated ";
-        } else {
-            $workitem->setCreatorId($creator_id);
-            $workitem_added = true;
-            $journal_message .= $nick . " added ";
-        }
-        $workitem->setSummary($summary);
-
-        //If this item is a bug add original item id 
-        $workitem->setBugJobId($bug_job_id);
-        // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
-        if ($status == 'Bidding' && $user->getIs_runner() == 1) {
-            $runner_id = $userId;
-        } else {
-            $runner_id = 0;
-        }
-
-        $skillsArr = explode(', ', $skills);
-
-        $workitem->setRunnerId($runner_id);
-        $workitem->setProjectId($project_id);
-        $workitem->setStatus($status);
-        $workitem->setNotes($notes);
-        $workitem->setWorkitemSkills($skillsArr);
-        $workitem->setIs_bug($is_bug == 'true' ? 1 : 0);
-        $workitem->save();
-        $related = getRelated($notes);
-        Notification::massStatusNotify($workitem);
-
-        // if files were uploaded, update their workitem id
-        $file = new File();
-        // update images first
-        if (isset($fileUpload['images'])) {
-            foreach ($fileUpload['images'] as $image) {
-                $file->findFileById($image);
-                $file->setWorkitem($workitem->getId());
-                $file->save();
-            }
-        }
-        // update documents
-        if (isset($fileUpload['documents'])) {
-            foreach ($fileUpload['documents'] as $document) {
-                $file->findFileById($document);
-                $file->setWorkitem($workitem->getId());
-                $file->save();
-            }
-        }
-
-        if($is_bug && $bug_job_id > 0) {
-            //Load information about original job and notify
-            //users with fees and runner
-            Notification::workitemNotify(array(
-                'type' => 'bug_found',
-                'workitem' => $workitem,
-                'recipients' => array('runner', 'usersWithFeesBug')
-            ));
-            Notification::workitemSMSNotify(array(
-                'type' => 'bug_found',
-                'workitem' => $workitem,
-                'recipients' => array(
-                    'runner', 
-                    'usersWithFeesBug'
-                )
-            ));
-            $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
-        } else {
-            $bugJournalMessage= "";
-        }
-        
-        if (empty($_POST['itemid'])) {
-            $bid_fee_itemid = $workitem->getId();
-            $journal_message .= " item #$bid_fee_itemid$bugJournalMessage: $summary. Status set to $status ";
-            if (!empty($_POST['files'])) {
-                $files = explode(',', $_POST['files']);
-                foreach ($files as $file) {
-                    $sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . (int)$file;
-                    mysql_query($sql);
-                }
-            }
-        } else {
-            $bid_fee_itemid = $itemid;
-            $journal_message .=  "item #$itemid: $summary: Status set to $status ";
-        }
-        $journal_message .=  "$related. ";
-        if (!empty($_POST['invite'])) {
-            $people = explode(',', $_POST['invite']);
-            invitePeople($people, $workitem);
-        }
-    } else {
+    if (!$userId > 0 ) {
         echo json_encode(array('error' => "Invalid parameters !"));
         return;
+    }
+
+    initUserById($userId);
+    $user = new User();
+    $user->findUserById( $userId );
+    $nick = $user->getNickname();
+
+    $itemid = $_REQUEST['itemid'];
+    $summary = $_REQUEST['summary'];
+    $project_id = $_REQUEST['project_id'];
+    $skills = $_REQUEST['skills'];
+    $status = $_REQUEST['status'];
+    $notes = $_REQUEST['notes'];
+    $invite = $_REQUEST['invite'];
+    $is_expense = $_REQUEST['is_expense'];
+    $is_rewarder = $_REQUEST['is_rewarder'];
+    $fileUpload = $_REQUEST['fileUpload'];
+    $bug_job_id = $_REQUEST['bug_job_id'];
+    $is_bug = false;
+
+    if (!$user->getIs_runner() || !preg_match('/^(Draft|Suggested|Bidding|Working|Done)$/', $status)) {
+        $status = 'Suggested';
+    }
+
+    if (! empty($_POST['itemid'])) {
+        $workitem->loadById($_POST['itemid']);
+    } else {
+        $workitem->setCreatorId($userId);
+        $workitem_added = true;
+    }
+    $workitem->setSummary($summary);
+
+    try {
+        $bugof_workitem = new WorkItem();
+        $bugof_workitem->loadById($bug_job_id);
+        $is_bug = true;
+    } catch(Exception $e) {
+        // do not set as bug
+        $bug_job_id = 0;
+    }
+    
+
+    //If this item is a bug add original item id 
+    $workitem->setBugJobId($bug_job_id);
+    // not every runner might want to be assigned to the item he created - only if he sets status to 'BIDDING'
+    if ($status == 'Bidding' && $user->getIs_runner() == 1) {
+        $runner_id = $userId;
+    } else {
+        $runner_id = 0;
+    }
+
+    $skillsArr = explode(', ', $skills);
+
+    $workitem->setRunnerId($runner_id);
+    $workitem->setProjectId($project_id);
+    $workitem->setStatus($status);
+    $workitem->setNotes($notes);
+    $workitem->setWorkitemSkills($skillsArr);
+    $workitem->setIs_bug($is_bug == 'true' ? 1 : 0);
+    $workitem->save();
+    $related = getRelated($notes);
+    Notification::massStatusNotify($workitem);
+
+    // if files were uploaded, update their workitem id
+    $file = new File();
+    // update images first
+    if (isset($fileUpload['images'])) {
+        foreach ($fileUpload['images'] as $image) {
+            $file->findFileById($image);
+            $file->setWorkitem($workitem->getId());
+            $file->save();
+        }
+    }
+    // update documents
+    if (isset($fileUpload['documents'])) {
+        foreach ($fileUpload['documents'] as $document) {
+            $file->findFileById($document);
+            $file->setWorkitem($workitem->getId());
+            $file->save();
+        }
+    }
+
+    if($is_bug && $bug_job_id > 0) {
+        //Load information about original job and notify
+        //users with fees and runner
+        Notification::workitemNotify(array(
+            'type' => 'bug_found',
+            'workitem' => $workitem,
+            'recipients' => array('runner', 'usersWithFeesBug')
+        ));
+        Notification::workitemSMSNotify(array(
+            'type' => 'bug_found',
+            'workitem' => $workitem,
+            'recipients' => array(
+                'runner', 
+                'usersWithFeesBug'
+            )
+        ));
+        $bugJournalMessage= " (bug of **#" . $workitem->getBugJobId() ."**)";
+    } else {
+        $bugJournalMessage= "";
+    }
+    
+    if (empty($_POST['itemid'])) {
+        $bid_fee_itemid = $workitem->getId();
+        $journal_message .= '**#' . $bid_fee_itemid . '** created by @' . $nick . ' ' . $bugJournalMessage;
+        $journal_message .= "\n\n**" . $summary . '**. Status set to *' . $status . '*';
+        if (!empty($_POST['files'])) {
+            $files = explode(',', $_POST['files']);
+            foreach ($files as $file) {
+                $sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . (int)$file;
+                mysql_query($sql);
+            }
+        }
+    } else {
+        $bid_fee_itemid = $itemid;
+        $journal_message .= '#' . $bid_fee_itemid . ' updated by @' . $nick ;
+        $journal_message .=  "\n\n**" . $summary . '**. Status set to *' . $status . '*';
+    }
+    $journal_message .=  "$related. ";
+    if (!empty($_POST['invite'])) {
+        $people = explode(',', $_POST['invite']);
+        invitePeople($people, $workitem);
     }
 
     // don't send any journal notifications for DRAFTS
@@ -1407,7 +1380,7 @@ function setFavorite() {
             $favorite_user->findUserById($favorite_user_id);
             if ($newVal == 1) {
                                     
-                $resetUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $favorite_user_id ;
+                $resetUrl = SECURE_SERVER_URL . 'jobs#userid=' . $favorite_user_id ;
                 $resetUrl = '<a href="' . $resetUrl . '" title="Your profile">' . $resetUrl . '</a>';
                 $data = array();
                 $data['link'] = $resetUrl;
@@ -1420,11 +1393,11 @@ function setFavorite() {
                 $count = $users_favorites->getUserFavoriteCount($favorite_user_id);
                 if ($count > 0) {
                     if ($count == 1) {
-                        $message = "{$count} person";
+                        $message = "**{$count}** person";
                     } else {
-                        $message = "{$count} people";
+                        $message = "**{$count}** people";
                     }
-                    $journal_message = "{$nick} is now trusted by {$message}!";
+                    $journal_message = '@' . $nick . ' is now trusted by ' . $message . '!';
                     //sending journal notification
                     sendJournalNotification(stripslashes($journal_message));
                 }
@@ -1775,7 +1748,7 @@ function getMultipleBidList() {
                                 $data .= '
                                         <tr>
                                             <td>
-                                                <a href="userinfo.php?id=' . $bid['bidder_id'] . '" target="_blank">
+                                                <a href="./user/' . $bid['bidder_id'] . '" target="_blank">
                                                    ' . $bid['nickname'] . '
                                                 </a>
                                             </td>
@@ -1872,7 +1845,7 @@ function getProjects() {
         });
     }
 
-    // Prepare data for printing in projects.php
+    // Prepare data for printing in projects
     $json = json_encode($projectsOnPage);
     echo $json;
 }
@@ -2166,178 +2139,6 @@ function getSkills() {
     echo json_encode($data);    
 }
 
-function getStats() {
-    $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
-
-    if( $req == 'currentlink' ) {
-        $query_b = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'Bidding'" );
-        $query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'Working' or status = 'Review' or status = 'Functional'" );
-        $count_b = mysql_num_rows( $query_b );
-        $count_w = mysql_num_rows( $query_w );
-        echo json_encode(array(
-                            'count_b' => $count_b, 
-                            'count_w' => $count_w
-                            ));
-        
-    } else if( $req == 'Bidding' ) {
-        $query_b = mysql_query("SELECT id FROM ".WORKLIST." WHERE status = 'Bidding'");
-        $results_b = array();
-        while ($row = mysql_fetch_array($query_b, MYSQL_NUM)) {
-            $results_b[] = $row[0];
-        }
-        echo json_encode( $results_b );
-
-    } else if( $req == 'current' ) {
-        $query_b = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'Bidding'");
-        $query_w = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'Working'");
-        $count_b = mysql_num_rows( $query_b );
-        $count_w = mysql_num_rows( $query_w );
-        $res = array( $count_b, $count_w );
-        echo json_encode( $res );
-    
-    } else if( $req == 'fees' ) {
-        // Get Average Fees in last 7 days
-        $query = mysql_query( "SELECT AVG(amount) FROM ".FEES." LEFT JOIN ".WORKLIST." ON
-                    ".FEES.".worklist_id = ".WORKLIST.".id WHERE date > DATE_SUB(NOW(),
-                    INTERVAL 7 DAY) AND status = 'Done' AND `" . FEES . "`.`withdrawn` = 0" );
-
-        $rt = mysql_fetch_assoc( $query );
-        echo json_encode( $rt );
-    
-    } else if( $req == 'feeslist' ) {
-        // Get Fees by person in last X days
-        $interval = !empty($_REQUEST['interval']) ? intval($_REQUEST['interval']) : 30;
-        $query = mysql_query("SELECT nickname, SUM(amount) as total FROM ".FEES." ".
-                    "LEFT JOIN ".WORKLIST." ON ".FEES.".worklist_id = ".WORKLIST.".id ".
-                    "LEFT JOIN ".USERS." ON ".FEES.".user_id = ".USERS.".id ".
-                    "WHERE date >= DATE_SUB(NOW(), INTERVAL $interval DAY) AND status = 'Done' AND `" . FEES . "`.`withdrawn` = 0 ".
-                    "GROUP BY user_id ORDER BY total DESC");
-
-        $tmpList = array();
-        $feeList = array();
-        while ($query && ($rt = mysql_fetch_assoc($query))) {
-            $tmpList[] = array($rt['nickname'], $rt['total']);
-        }
-
-        $total = 0;
-        for ($i = 0; $i < count($tmpList); $i++) {
-            $total += $tmpList[$i][1];
-        }
-        $top10 = 0;
-        for ($i = 0; $i < 10 && $i < count($tmpList); $i++) {
-            $top10 += $tmpList[$i][1];
-            $feeList[$i] = $tmpList[$i];
-            $feeList[$i][2] = number_format($tmpList[$i][1] * 100 / $total, 2);
-        }
-        if (count($tmpList) > 10) {
-            $feeList[10] = array('Other', number_format($total - $top10, 2), number_format(($total - $top10) * 100 / $total, 2));
-        }
-        echo json_encode($feeList);
-
-    } else if( $req == 'table' ) {
-        // Get jobs done in last 7 days
-        $fees_q = mysql_query( "SELECT `".WORKLIST."`.`id`,`summary`,`nickname` as nick,
-                      (SELECT SUM(`amount`) FROM `".FEES."`
-                       LEFT JOIN `".BIDS."` ON `".FEES."`.`bid_id`=`".BIDS."`.id
-                       LEFT JOIN `".USERS."` ON `".USERS."`.`id`=`".FEES."`.`user_id`
-                       WHERE `".BIDS."`.`worklist_id`=`".WORKLIST."`.`id`
-                       AND `".USERS."`.`nickname`=`nick`) AS total,
-                    TIMESTAMPDIFF(SECOND,`bid_done`,NOW()) as `delta`,`user_paid`
-                    FROM `".BIDS."`
-                    LEFT JOIN `".USERS."` ON `".BIDS."`.`bidder_id` = `".USERS."`.`id` LEFT JOIN `".WORKLIST."`
-                    ON `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`
-                    LEFT JOIN `".FEES."` ON `".FEES."`.`bid_id`=`".BIDS."`.`id`
-                    WHERE `status`='Done'
-                    AND `bid_done` > DATE_SUB(NOW(), INTERVAL 7 DAY)
-                    AND `accepted`='1'
-                    ORDER BY `delta` ASC;" );
-        $fees = array();
-        // Prepare json
-        while( $row = mysql_fetch_assoc( $fees_q ) )    {
-            $fees[] = array( $row['id'], $row['summary'], $row['nick'], $row['total'], $row['delta'], $row['user_paid'] );
-        }
-
-        echo json_encode( $fees );
-        
-    } else if( $req == 'runners' )  {
-        // Get Top 10 runners
-        $info_q = mysql_query( "SELECT nickname AS nick, (SELECT COUNT(*) FROM ".FEES." LEFT JOIN ".USERS." ON
-                    ".USERS.".id = ".FEES.".user_id WHERE ".USERS.".nickname=nick AND
-                    ".USERS.".is_runner=1) AS fee_no, (SELECT COUNT(*) FROM ".FEES." LEFT JOIN
-                    ".USERS." ON ".USERS.".id=".FEES.".user_id LEFT JOIN ".WORKLIST." ON
-                    ".WORKLIST.".id=".FEES.".worklist_id WHERE ".WORKLIST.".status='Working'
-                    AND ".USERS.".nickname=nick) AS working_no FROM ".USERS." ORDER BY fee_no DESC" );
-
-        $info = array();
-        // Get user nicknames
-        while( $row = mysql_fetch_assoc( $info_q ) )    {
-            if( count( $info ) < 10 )   {
-                if( !empty( $row['nick'] ) )    {
-                    $info[] = array( $row['nick'],$row['fee_no'],$row['working_no'] );
-                }
-            }
-        }
-        echo json_encode( $info );
-    
-    } else if( $req == 'mechanics' ) {
-        // Get Top 10 mechanics
-        $info_q = mysql_query( "SELECT nickname AS nick, (SELECT COUNT(*) FROM ".BIDS." LEFT JOIN ".USERS." ON
-                    ".USERS.".id = ".BIDS.".bidder_id WHERE ".USERS.".nickname=nick
-                    AND `".BIDS."`.`accepted`='1') AS bid_no,
-                    (SELECT COUNT(*) FROM ".WORKLIST." LEFT JOIN ".USERS." ON 
-                    ".WORKLIST.".mechanic_id=".USERS.".id WHERE ".USERS.".nickname=nick AND
-                    ".WORKLIST.".status='Working') AS work_no FROM ".USERS." ORDER BY work_no DESC" );
-
-        $info = array();
-        // Get user nicknames
-        while( $row = mysql_fetch_assoc( $info_q ) )    {
-            if( count( $info ) < 10 )   {
-                if( !empty( $row['nick'] ) )    {
-                    $info[] = array( $row['nick'],$row['bid_no'],$row['work_no'] );
-                }
-            }
-        }
-        echo json_encode( $info );
-    
-    } else if( $req == 'feeadders' ) {
-        // Get the top 10 fee adders
-        $info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".FEES." LEFT JOIN ".USERS." ON
-                    ".USERS.".id = ".FEES.".user_id WHERE ".USERS.".nickname=nick) AS fee_no,
-                    (SELECT AVG(amount) FROM ".FEES." LEFT JOIN ".USERS." ON
-                    ".USERS.".id=".FEES.".user_id WHERE ".USERS.".nickname=nick) AS amount
-                    FROM ".USERS." ORDER BY fee_no DESC" );
-
-        $info = array();
-        while( $row = mysql_fetch_assoc( $info_q ) )    {
-            if( count( $info ) < 10 )   {
-                if( !empty( $row['nick'] ) )    {
-                    $info[] = array( $row['nick'],$row['fee_no'],$row['amount'] );
-                }
-            }
-        }
-        echo json_encode( $info );
-
-    } else if( $req == 'pastdue' ) {
-        // Get the top 10 mechanics with "Past due" fees
-        $info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".BIDS." LEFT JOIN ".USERS." ON
-                    ".USERS.".id=".BIDS.".bidder_id LEFT JOIN ".WORKLIST." ON
-                    ".WORKLIST.".id=".BIDS.".worklist_id WHERE ".USERS.".nickname=nick
-                    AND ".WORKLIST.".status='Working' AND `".BIDS."`.`accepted`='1'
-                    AND bid_done < NOW()) AS past_due
-                    FROM ".USERS." ORDER BY past_due DESC" );
-
-        $info = array();
-        while( $row = mysql_fetch_assoc( $info_q ) )    {
-            if( count( $info ) < 10 )   {
-                if( !empty( $row['nick'] ) )    {
-                    $info[] = array( $row['nick'],$row['past_due'] );
-                }
-            }
-        }
-        echo json_encode( $info );
-    }
-}
-
 function getUserItem() {
     $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'item';
 
@@ -2417,7 +2218,7 @@ function getUserList() {
     if($letter == "all"){
       $letter = ".*";
     }
-    if($letter == "_"){ //numbers
+    if($letter == "0-9"){ //numbers
       $letter = "[^A-Za-z]";
     }
 
@@ -2938,7 +2739,7 @@ function getWorklist() {
               LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
               LEFT JOIN `" . USERS . "` AS mu ON `" . WORKLIST . "`.`mechanic_id` = `mu`.`id`
               LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id` AND `" . FEES . "`.`withdrawn` = 0
-              LEFT JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id`
+              INNER JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id`
               $commentsjoin
               $where
               ";
@@ -3050,7 +2851,7 @@ function payBonus() {
                 $receiver_email = $receiver->username;
 
                 sendTemplateEmail( $receiver_email, 'bonus_received', array('amount' => $stringAmount, 'reason' => $reason));
-                if (sendJournalNotification($receiver->nickname . ' received a bonus of $' . $stringAmount) == 'ok') {
+                if (sendJournalNotification('@' . $receiver->nickname . ' received a bonus of $' . $stringAmount) == 'ok') {
                 } else {
                     // journal notification failed
                 }
@@ -3129,7 +2930,8 @@ function payCheck() {
 
             $subject = "Worklist.net paid you " . $total_fee_pay ." for ". $summary;
             $body  = "Your Fee was marked paid.<br/>";
-            $body .= "Job <a href='" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . "</a>: <a href='" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . "workitem.php?job_id=" . $fee_pay['worklist_id'] . "</a><br/>";
+            $body .= "Job <a href='./" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . 
+              "</a>: <a href='./" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . $fee_pay['worklist_id'] . "</a><br/>";
             $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
             $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
             $body .= "Contact the job Runner with any questions<br/><br/>Worklist.net<br/>";
@@ -3151,8 +2953,6 @@ function pingTask() {
     $nickname = $user->nickname;
     $email = $user->username;
     $msg = $_REQUEST['msg'];
-    // send mail is hardcoded to on
-    $send_mail = true;
     $send_chat = isset($_REQUEST['journal']) ? (int) $_REQUEST['journal'] : false;
     $send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
 
@@ -3200,7 +3000,7 @@ function pingTask() {
 
         // Compose journal message
         if ($send_chat) {
-            $out_msg = $nickname . " sent a ping to " . $receiver_nick . " about item #" .$item_id;
+            $out_msg = '@' . $nickname . ' sent a ping to @' . $receiver_nick . ' about **#' . $item_id . '**';
             $out_msg .= ": " . $msg;
 
             // Send to journal
@@ -3222,10 +3022,10 @@ function pingTask() {
         }
         
         // Send mail
-        if ($send_mail && $who != 'bidder') {
+        if ($who != 'bidder') {
             $mail_subject = $nickname." sent you a ping for item #".$item_id;
             $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
-            $mail_msg .= "<a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a>";
+            $mail_msg .= "<a href='" . WORKLIST_URL . $item_id . "'>#" . $item_id . "</a>";
             $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
             $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
             if ($send_cc) {
@@ -3241,7 +3041,7 @@ function pingTask() {
             if (Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
                 notify_sms_by_object($user, $mail_subject, $msg);
             }
-        } else if ($send_mail && $who == 'bidder') {
+        } else if ($who == 'bidder') {
             $project = new Project();
             $project->loadById($item['project_id']);
             $project_name = $project->getName();
@@ -3251,7 +3051,7 @@ function pingTask() {
             $mail_msg .= "<p>Your bid info:</p>";
             $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";
             $mail_msg .= "<p>Notes: " . $bid_info['notes'] . "</p>";
-            $mail_msg .= "<p>You can view the job here. <a href='" . WORKLIST_URL . "workitem.php?job_id=" . $item_id . "&action=view'>#" . $item_id . "</a></p>";
+            $mail_msg .= "<p>You can view the job here. <a href='./" . $item_id . "?action=view'>#" . $item_id . "</a></p>";
             $mail_msg .= "<p><a href=\"www.worklist.net\">www.worklist.net</a></p>";
             $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', '
                 X-tag' => 'ping, task', 
@@ -3282,36 +3082,23 @@ function pingTask() {
 
         if ($send_chat) {
             // Compose journal message
-            $out_msg = $nickname." sent a ping to " . $receiver_nick;
+            $out_msg = '@' . $nickname.' sent a ping to @' . $receiver_nick;
             $out_msg .= ": ".$msg;
 
             // Send to journal
             sendJournalNotification( $out_msg );
         }
 
-        if( $send_mail )    {
-            $mail_subject = $nickname." sent you a ping.";
-            $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
-            $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
+        $mail_subject = $nickname." sent you a ping.";
+        $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
+        $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
 
-            $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
-            if ($send_cc) {
-                $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
-            }
-            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
-                error_log("pingtask.php:!id: send_email failed");
-            }
-
-            // sms
-            try {
-                $user = new User();
-                $user->findUserById($receiver->id);
-                //TODO: $user->notifications is a protected field, shouldn't be accessed from instance - stojce
-                if(Notification::isNotified($user->notifications, Notification::PING_NOTIFICATIONS)) {
-                    notify_sms_by_object($user, $mail_subject, $msg);
-                }
-            } catch (Sms_Backend_Exception $e) {
-            }
+        $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
+        if ($send_cc) {
+            $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
+        }
+        if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
+            error_log("pingtask.php:!id: send_email failed");
         }
     }
     echo json_encode(array());
@@ -3598,7 +3385,7 @@ function updateBudget() {
         }
         $query2 = " UPDATE `" . USERS . "` SET `is_runner` = 1 WHERE `id` = $receiver_id AND `is_runner` = 0 ";
         if (mysql_unbuffered_query($query2)) {
-            $journal_message = $giver->getNickname() . " budgeted " . $receiver->getNickname() . " $" . number_format($amount, 2) .
+            $journal_message = '@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) .
             " for " . $reason . ".";
             sendJournalNotification($journal_message);            
             if ($add_funds_to_budget == false) {
@@ -3639,12 +3426,12 @@ function visitQuery() {
      * Google Analytics API Token 
      * New tokens can be created by calling auth.php in the subdir resources
      */
-    $token = '1/kTlFYUDNtShl_ejOORk1v8fAKhmj3FmIam1i-NTMyqE';
+    $token = GOOGLE_ANALYTICS_TOKEN;
     /* site ids can be obtained from analytics 
      * by logging into the profile, it's currently
      * called Profile ID on screen
      */
-    $ids = '46390018';
+    $ids = GOOGLE_ANALYTICS_PROFILE_ID;
 
     $jobid = (int) $_GET['jobid'];
     if ($jobid > 0) {
@@ -3752,16 +3539,12 @@ function budgetHistory() {
     } else {
         $total = 1;
     }
-    echo '<div id="BudgetHistory">';
     if ( $count['total'] == 0){
         echo "This user hasn't been assigned any budget yet.";
         exit(0);
     }
-    if ($page == 1) {
-        echo "<div id=\"budgetHistoryContent\">";
-    }
     ?>
-    <table>
+    <table class="table table-striped">
       <thead>
         <tr class="table-hdng">
           <th class="date">Created</th>
@@ -3821,19 +3604,43 @@ function budgetHistory() {
     ?>
 
     </table>
-    <div class="pages">
-    <?php 
-        for ($i = 1; $i <= $totalPages; $i++) {
-            if ($i == $page) {
-                echo $i . ' ';
-            } else {
-                echo '<a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a> ';
-            }
+    <div class="pages"><?php 
+    for ($i = 1; $i <= $totalPages; $i++) {
+        if ($i == $page) {
+            echo $i . ' ';
+        } else {
+            echo '<a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a> ';
         }
-    ?>
-    </div>
-    <?php 
-    if ($page == 1) {
-        echo "</div>";
+    }
+    echo '</div>';
+}
+
+function timeline() {
+    require_once('models/Timeline.php');
+
+    $timeline = new Timeline();
+    if ($_POST["method"] == "getHistoricalData") {
+        if (isset($_POST["project"])) {
+            $project = $_POST["project"];
+        }
+        if ($project) {
+            $objectData = $timeline->getHistoricalData($project);
+        } else {
+            $objectData = $timeline->getHistoricalData();
+        }
+        echo json_encode($objectData);
+    } else if ($_POST["method"] == "getDistinctLocations") {
+        $objectData = $timeline->getDistinctLocations();
+        echo json_encode($objectData);
+    } else if ($_POST["method"] == "storeLatLong") {
+        $location = $_POST["location"];
+        $latlong = $_POST["latlong"];
+        $timeline->insertLocationData($location, $latlong);
+    } else if ($_REQUEST["method"] == "getLatLong") {
+        $objectData = $timeline->getLocationData();
+        echo json_encode($objectData);
+    } else if ($_POST["method"] == "getListOfMonths"){
+        $months = $timeline->getListOfMonths();
+        echo json_encode($months);
     }
 }

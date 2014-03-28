@@ -1,269 +1,87 @@
-/* Menu */
-#search-filter-wrap .input_box {
-    background-image: none;
-    width: 305px;
-    margin: 0;
+/**
+ * override default bootstrap navbar with customs settings
+ */
+
+body > nav.navbar {
+    border-radius: 0px; /* squared corners */
+    background: none rgb(51, 51, 51); /* flat background */
 }
 
-#search-filter-wrap .searchDiv {
+/* our brand link is actually a logo image */
+body > nav.navbar a.navbar-brand {
     display: inline-block;
-    border: 1px solid #cccccc;
-    background-color: #ffffff;
-    margin: 24px -4px 10px 10px;
-    background: #ffffff no-repeat url('../images/primaryIcons-WL.png') 8px -320px;
-    padding-left: 30px;
-    position: relative;
-}
-
-#search-filter-wrap #query {
-    background-color: #ffffff;
-    position: absolute;
-    top: 3px;
-    padding: 0;
-    margin: 0;
-    height: 28px;
-    font-weight: bold;
-    border: 0;
-}
-
-#search-filter-wrap .crossSearch {
-    background: no-repeat url('../images/primaryIcons-WL.png') 3px -385px;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    background-color: #ffffff;
-    position: absolute;
-    top: 4px;
-}
-
-#search-filter-wrap .commentsDiv {
-    display: inline-block;
-    border-left: 1px solid #cccccc;
-    height: 34px;
-    width: 60px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    background-color: #e1e8ea;
-}
-
-#search-filter-wrap .comment {
-    background: no-repeat url('../images/primaryIcons-WL.png') 0 -362px;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    float: left;
-    padding-right: 5px;
-}
-
-#search-filter-wrap .commentsDiv label {
-    top: 6px;
-    left: 7px;
-    position: absolute;
-}
-
-#search-filter-wrap #search_comments {
-    width: 20px;
-    float: left;
-    margin-top: 6px;
-    position: static;
-    padding: 0; 
+    width: 120px;
+    height: 32px;
+    margin-top: 14px;
+    text-indent: -9999px;
+    background: transparent url(../images/tmp/navbar_logo.png) center center no-repeat;
 
 }
 
-#search-filter-wrap-reports {
-    float: right;
-    padding-bottom: 10px;
-    font-size: 1.2em;
+/*navbar links colors and background */
+body > nav.navbar-inverse .navbar-nav > .li > a {
+    color: #515151;    
 }
 
-#search-filter-section td {
-    white-space: nowrap;
+/* navbar active links bg are too dark for us, let's make them a bit lighter */
+body > nav.navbar-inverse .navbar-nav > .open > a, 
+body > nav.navbar-inverse .navbar-nav > .open > a:hover, 
+body > nav.navbar-inverse .navbar-nav > .open > a:focus,
+body > nav.navbar-inverse .navbar-nav > .active > a, 
+body > nav.navbar-inverse .navbar-nav > .active > a:hover, 
+body > nav.navbar-inverse .navbar-nav > .active > a:focus {
+    color: #ddd;
+    background-color: #282828;
 }
 
-/* resets the style for the <p> tag in the status part */
-#welcome {
-    margin: auto;
-    width: 100% ;
-    heigth: 50px;
-    text-align: left;
-    font-weight: bold;
-    color: #98AAB2 ;
-    font-size: 12px;
-    z-index: 50;
-    background-color: #333333;
-    padding: 0;
-    position: relative;
-    -moz-box-shadow: 0px 0px 5px 0px #000000;
-    -webkit-box-shadow: 0px 0px 5px 0px #000000;
-    box-shadow:  0px 0px 5px 0px #000000;
+@media (min-width: 768px) {
+    /* navbar links borders */
+    body > nav.navbar ul.nav:first-child li:first-child {
+        border-left: 1px solid #515151;
+    }
+    body > nav.navbar ul.nav:first-child li {
+        border-right: 1px solid #515151;
+    }
+
+    /* links at the right side of the navbar will only have a left-border except for the first one */
+    body > nav.navbar ul.nav:last-child > li:nth-child(n+2) {
+        border-left: 1px solid #515151;
+    }
+
+    /* iconic links styling */
+    body > nav.navbar ul.nav:first-child li a {
+        display: inline-block;
+        padding-top: 35px;
+        padding-bottom: 5px;
+        width: 80px;
+        text-align: center;
+        background-repeat: no-repeat;
+        background-position: center 8px;
+    }
+
+    body > nav.navbar ul.nav a[href$="/jobs"] {
+        background-image: url(../images/tmp/jobs.png);
+    }
+
+    body > nav.navbar ul.nav a[href$="/projects"] {
+        background-image: url(../images/tmp/projects.png);
+    }
+
+    body > nav.navbar ul.nav a[href$="/status"] {
+        background-image: url(../images/tmp/status.png);
+    }
+
+    body > nav.navbar ul.nav a[href$="/team"] {
+        background-image: url(../images/tmp/team.png);
+    }
+
+    body > nav.navbar ul.nav a[href$="/help"] {
+        background-image: url(../images/tmp/help.png);
+    }
+
+    /* default navbar dropdown is thiner than desired height  */
+    body .navbar-nav > li > a {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
 }
-
-#welcomeInside {
-    width: 945px;
-    height: 46px;
-    margin: auto;
-    font-size: 12px;
-}
-
-#welcomeInside .leftMenu {
-    margin-top: 10px;
-    float: left;
-}
-
-#welcomeInside .rightMenu {
-    margin-top: 10px;
-    float: right;
-}
-
-#welcomeInside .following {
-    display: inline-block;
-    vertical-align: top;
-    padding-top: 4px;
-}
-
-#welcomeInside .headerButton {
-    display: inline-block;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    padding-left: 35px;
-    height: 30px;
-    font-size: 12px;
-    line-height: 25px;
-}
-
-#welcomeInside .following,
-#welcomeInside .headerButton {
-    color: #888888;
-}
-
-#welcomeInside .headerUserName {
-    color: #888888;
-    display: inline-block;
-    vertical-align: top;
-    padding-top: 4px;
-}
-
-#welcomeInside .headerButtonSeparator {
-    display: inline-block;
-    width: 21px;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 11px -298px;
-    background-repeat: no-repeat;
-    height: 30px;
-    position: relative;
-    top: -18px;
-}
-
-#welcomeInside .loggedIn .headerButtonSeparator {
-    top: -30px;
-    width: 11px;
-    background-position: 6px -298px;
-}
-
-#welcomeInside .loggedOut {
-    margin-right: 10px;
-}
-
-#welcomeInside a:hover .headerButton,
-#welcomeInside a.headerUserName:hover,
-#welcomeInside a.following:hover {
-    color: #ffffff;
-    text-decoration: none !important;
-}
-
-#welcomeInside a:active .headerButton,
-#welcomeInside a.following:active {
-    color: #ffffff;
-    text-decoration: none !important;
-    opacity: 0.5;
-}
-
-#welcomeInside .worklistBtn {
-    background-position: 0 -59px;
-}
-
-#welcomeInside .chatBtn {
-    background-position: 0 -89px;
-    padding-left: 38px;
-}
-
-#welcomeInside .teamBtn {
-    background-position: 0 -119px;
-}
-
-#welcomeInside .reportsBtn {
-    background-position: 0 -149px;
-    padding-left: 25px;
-    margin-left: 4px;
-}
-
-#welcomeInside .worklistBtn:hover {
-    background-position: -356px -59px;
-}
-
-
-#welcomeInside .chatBtn:hover {
-    background-position: -356px -89px;
-    padding-left: 38px;
-}
-
-#welcomeInside .teamBtn:hover {
-    background-position: -356px -119px;
-}
-
-#welcomeInside .reportsBtn:hover {
-    background-position: -356px -149px;
-    padding-left: 25px;
-    margin-left: 4px;
-}
-
-#welcomeInside .projectsBtn,
-#welcomeInside .wikiBtn,
-#welcomeInside .loginBtn {
-    background-image: none;
-    padding-left: 5px;
-}
-
-#welcomeInside .helpBtn {
-    background-position: 0 -179px;
-    padding-left: 30px;
-}
-
-#welcomeInside .earningsBtn {
-    background-position: 8px -209px;
-}
-
-#welcomeInside .settingsBtn {
-    background-position: 8px -239px;
-}
-
-#welcomeInside .logoutBtn {
-    background-position: 8px -268px;
-}
-
-#welcomeInside .helpBtn:hover {
-    background-position: -356px -179px;
-}
-
-#welcomeInside .earningsBtn:hover {
-    background-position: -348px -209px;
-}
-
-#welcomeInside .settingsBtn:hover {
-    background-position: -348px -239px;
-}
-
-#welcomeInside .logoutBtn:hover {
-    background-position: -348px -268px;
-}
-
-.filters {
-    display: inline-block;
-}
-
-.filters .ui-combobox {
-    margin: 0 2px;
-}
-

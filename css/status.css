@@ -1,0 +1,174 @@
+body {
+    overflow-x: hidden;
+}
+
+/* max-width on fluid container from NewWorklist is not the desired behavior on status */
+@media (min-width: 960px) {
+    body > .container-fluid {
+        max-width: none;
+    }
+}
+
+.sidebar h3:first-child,
+.main h3:first-child {
+    font-weight: bold;
+    font-size: 1.4em;
+    line-height: 1.4em;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+}
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 61px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    background-color: #dde4e6;
+    border-right: 1px solid #eee;
+    box-shadow: inset 0px 0px 15px -7px #333;
+  }
+  .sidebar > section {
+    padding: 0 20px; 
+  }
+}
+
+/* review jobs section */
+#need-review h3 {
+    margin: 15px 0;
+}
+
+#need-review h3 > strong {
+    color: #ff5582;
+}
+
+#need-review ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#need-review li {
+    color: #666666;
+    line-height: .9em;
+    margin-bottom: 7px;
+}
+
+#need-review li > a {
+    display: block;
+    color: #333333;
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 1em;
+}
+
+#need-review li > a,
+#need-review li > a:hover,
+#need-review li > a:active {
+    text-decoration: none;
+}
+
+#need-review > ul + a {
+    line-height: .9em;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    display: inline-block;
+    border-bottom: 1px solid #a6cbcc;
+}
+
+#need-review > ul + a {
+    color: #007f7c;
+}
+
+#need-review > ul a {
+    text-decoration: none;
+    border-color: #007f7c;
+}
+
+a[href="https://gitter.im/highfidelity/hifi"] {
+    display: inline-block;
+    width: 180px;
+    height: 120px;
+    border: 1px solid #007f7c;
+    border-radius: 10px;
+    margin: 15px;
+    font-size: 1.7em;
+    line-height: 1.2em;
+    font-weight: bold;
+    color: #007f7c;
+    padding: 60px 10px 10px;
+    background: transparent url(../images/tmp/chat_icon.png) 15px 18px no-repeat;
+}
+
+a[href="https://gitter.im/highfidelity/hifi"]:hover {
+    text-decoration: none;
+}
+
+/*
+ * Main content
+ */
+
+.main {
+  padding: 0px 10px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}
+
+.main > h3:first-child {
+    position: fixed;
+    left: 0;
+    top: 40px;
+    padding: 15px 30px;
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 85%, rgba(255,255,255,0) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(85%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,1) 85%,rgba(255,255,255,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#00ffffff',GradientType=0 );
+}
+
+@media (min-height: 400px) {
+    .sidebar h3:first-child,
+    .main h3:first-child {
+        white-space: pre-line;
+    }
+    ul#entries {
+        margin-top: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main > h3:first-child {
+        display: none;
+    }
+    ul#entries {
+        margin-top: 5px;
+    }
+}
+
+#entries {
+    margin-top: 50px;
+}
+
+
+/* won't display the footer on status */
+section#footer {
+    display: none;
+}

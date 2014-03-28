@@ -1,0 +1,46 @@
+
+/* single line footer by default */
+#footer {
+    min-height: 32px;
+    margin: 10px auto;
+    background: transparent url(../images/hifi-logo-notext.png) top center no-repeat;
+    background-size: 32px 32px;
+    text-align: center;
+    max-width: 450px;
+    padding: 35px 0 0 0;
+
+}
+
+#footer p,
+#footer ul,
+#footer li {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+/* list styling */
+#footer ul,
+#footer li {
+    list-style-type: none;
+}
+
+#footer li:nth-child(n+2):before {
+    content : '• ';
+}
+
+/* normal text color */
+#footer p,
+#footer li {
+    color: #9f9f9f;
+}
+
+/* links and list bullets colors */
+#footer li:before,
+#footer a {
+    color: #666;
+}
+
+#footer li:nth-child(-n+3) {
+    display: inline-block;
+}

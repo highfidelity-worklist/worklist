@@ -5,49 +5,6 @@ jQuery.fn.center = function () {
     return this;
 }
 
-/*
-show a message with a wait image
-several asynchronus calls can be made with different messages
-*/
-var loaderImg = function($)
-{
-    var aLoading = new Array(),
-        _removeLoading = function(id) {
-            for (var j=0; j < aLoading.length; j++) {
-                if (aLoading[j].id == id) {
-                    if (aLoading[j].onHide) {
-                        aLoading[j].onHide();
-                    }
-                    aLoading.splice(j, 1);
-                }
-            }
-        },
-        _show = function(id,title,callback) {
-            aLoading.push({ id: id, title: title, onHide: callback});
-            $("#loader_img_title").append("<div class='" + id + "'>" + title + "</div>");
-            if (aLoading.length == 1) {
-                $("#ajaxSpin").css("display", "none");
-                $("#loader_img").css("display", "block");
-            }
-            $("#loader_img_title").center();
-        },
-        _hide = function(id) {
-            _removeLoading(id);
-            if (aLoading.length == 0) {
-                $("#loader_img").css("display", "none");
-                $("#loader_img_title div").remove();
-            } else {
-                $("#loader_img_title ." + id).remove();
-                $("#loader_img_title").center();
-            }
-        };
-    
-    return {
-        show: _show,
-        hide: _hide
-    };
-
-}(jQuery); // end of function loaderImg
 
 var favoriteUsers = [];
 function getFavoriteUsers() 
@@ -76,47 +33,6 @@ jQuery.fn.centerDialog = function() {
 
     });
 };
-
-function resizeIframeDlg() {
-    var bonus_h = $('#user-info').children().contents().find('#pay-bonus').is(':visible') ?
-                  $('#user-info').children().contents().find('#pay-bonus').closest('.ui-dialog').height() : 0;
-
-    var dlg_h = $('#user-info').children()
-                               .contents()
-                               .find('html body')
-                               .height();
-
-    var height = bonus_h > dlg_h ? bonus_h+35 : dlg_h+30;
-
-    $('#user-info').animate({height: height});
-}
-
-function outputPagination(page, cPages) {
-    var previousLink = page > 1 
-            ? '<a href="#?page=' + (page - 1) + '">Previous</a> ' 
-            : '<span>Previous</span> ',
-        nextLink = page < cPages 
-            ? '<a href="#?page=' + (page + 1) + '" class = "ln-last">Next</a> ' 
-            : '<span class="ln-last">Next</span>';
-    var pagination = previousLink;
-    var fromPage = 1;
-    if (cPages > 10 && page > 6) {
-        if (page + 4 <= cPages) {
-            fromPage = page - 6;
-        } else {
-            fromPage = cPages - 10;
-        }
-    }
-    for (var i = fromPage; (i <= (fromPage +10) && i <= cPages); i++) {
-        var sel = '';
-        if (i == page) {
-            sel = ' class="ln-selected"';
-        }
-        pagination += '<a href="#?page=' + i + '"' + sel + '>' + i + '</a>';
-    }
-    pagination += nextLink;
-    return pagination;
-}
 
 function RelativeTime(x, shortMode) {
     var plural = '';
@@ -161,7 +77,6 @@ function RelativeTime(x, shortMode) {
 
 // Code for stats
 $(function() {
-    $('#popup-user-info').dialog({ autoOpen: false, show: 'fade', hide: 'fade'});
     if (('#stats-text').length > 0) {
         $.ajax({
             type: "POST",
@@ -359,6 +274,9 @@ function validateUploadImage(file, extension) {
 
 // main common.js initialization
 $(function() {
+    if ($('#sent-notify').length == 0) {
+        $('<div>').attr({id: 'sent-notify'}).css({display: 'none'}).appendTo('body');
+    }
     $('#sent-notify').dialog({
         modal: false,
         autoOpen: false,
@@ -376,28 +294,6 @@ $(function() {
             }
         }
     });
-    
-    $(document).ajaxSend(function(event, request, settings) {
-        if ($('#ajaxSpin').length > 0) {
-            return
-        };
-        var showAjaxSpin = true;
-        switch(settings.url) {
-            case 'aj.php':
-                showAjaxSpin = false;
-                break;
-        }
-        if (showAjaxSpin && $("#loader_img").css('display') != "block") {
-            $('<figure id="ajaxSpin"><img src="images/loader.gif" /></figure>').appendTo('body');
-        }
-    });
-    
-    var clearAjaxSpin = function() {
-        $('#ajaxSpin').remove();
-    };
-    
-    $(document).ajaxComplete(clearAjaxSpin);
-
 });
 
 /* We replaced the jquery.autocomplete.js because it was obsolete and unsupported. 
@@ -472,3 +368,360 @@ function autocompleteMultiple(status, datasource) {
     return autocompleteArguments;
     
 }
+
+//Code for Add Project
+$(document).ready(function() {
+    $('#add-project').click(function() {
+        $('#popup-addproject').dialog({ 
+            autoOpen: false, 
+            dialogClass: 'white-theme',
+            show: 'fade', 
+            hide: 'fade',
+            maxWidth: 555, 
+            width: 555,
+            resizable: false
+        });
+        $('#popup-addproject').data('title.dialog', 'Add Project');
+        $('#popup-addproject').dialog('open');
+        if (user_id) {
+            // clear the form
+            $('input[type="text"]', '#popup-addproject').val('');
+            $('textarea', '#popup-addproject').val('');
+            $('.LV_validation_message', '#popup-addproject').hide();
+
+            // focus the submit button
+            $('#save_project').focus();
+
+            var optionsLiveValidation = { onlyOnSubmit: true };
+
+            var project_name = new LiveValidation('name', optionsLiveValidation);
+            var project_description = new LiveValidation('description', optionsLiveValidation);
+            var github_repo_url = new LiveValidation('githubRepoURL', optionsLiveValidation),
+                vGithubClientId =  new LiveValidation('githubClientId', optionsLiveValidation),
+                vGithubClientSecret =  new LiveValidation('githubClientSecret', optionsLiveValidation);
+
+            project_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+            project_name.add(Validate.Format, { failureMessage: 'Alphanumeric only', pattern: new RegExp(/^[A-Za-z0-9]*$/) });
+            project_name.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
+            project_name.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
+
+            project_description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+            var regex_url = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+            github_repo_url.add(Validate.Format, { pattern: regex_url, failureMessage: "Repo URL is not valid" });
+            var gitHubValidator = [Validate.Presence, { failureMessage: "Can't be empty!" }];
+
+            github_repo_url.add(gitHubValidator[0], gitHubValidator[1]);
+            vGithubClientId.add(gitHubValidator[0], gitHubValidator[1]);
+            vGithubClientSecret.add(gitHubValidator[0], gitHubValidator[1]);
+
+            $('#checkGitHub').unbind('click').click( function () {
+                // if checked
+                if (this.checked) {
+                    $('#github-info').show();
+                    github_repo_url.enable();
+                } else {
+                    $('#github-info').hide();
+                    github_repo_url.disable();
+                }
+            });
+
+            $('#checkDefaultGitHub').unbind('click').click( function () {
+                // if checked
+                if (this.checked) {
+                    $('#custom-github-info').hide();
+                    vGithubClientId.disable();
+                    vGithubClientSecret.disable();
+                } else {
+                    $('#custom-github-info').show();
+                    vGithubClientId.enable();
+                    vGithubClientSecret.enable();
+                }
+            });
+
+            $('#cancel').click(function() {
+                $('#popup-addproject').dialog('close');
+            });
+
+            $('#save_project').click(function() {
+                var validateFields = new Array(
+                    project_name,
+                    project_description,
+                    github_repo_url,
+                    vGithubClientId,
+                    vGithubClientSecret
+                );
+
+                $(this).attr('disabled', 'disabled');
+                if (!LiveValidation.massValidate(validateFields)) {
+                    $(this).removeAttr('disabled');
+                    $(".error-submit").css('display', 'block');
+                    $("#name_container span.LV_validation_message").css('margin-top', '-70px');
+                    $("#name_container span.LV_validation_message").css('margin-bottom', '55px');
+                    descriptionHeight = parseInt($("#description").css('height'));
+                    marginTop = descriptionHeight + 51;
+                    marginBottom = descriptionHeight + 37;
+                    $("#description_container span.LV_validation_message").css('margin-top', '-' + marginTop + 'px');
+                    $("#description_container span.LV_validation_message").css('margin-bottom', marginBottom + 'px');
+                    $("#github_container span.LV_validation_message").css('margin-top', '-68px');
+                    $("#github_container span.LV_validation_message").css('margin-left', '160px');
+                    $("#github_container span.LV_validation_message").css('margin-bottom', '54px');
+                    return false;
+                }
+                var addForm = $("#popup-addproject");
+                $.ajax({
+                    url: 'api.php',
+                    dataType: 'json',
+                    data: {
+                        action: 'addProject',
+                        name: $(':input[name="name"]', addForm).val(),
+                        description: $(':input[name="description"]', addForm).val(),
+                        logo: $(':input[name="logoProject"]', addForm).val(),
+                        website: $(':input[name="website"]', addForm).val(),
+                        checkGitHub: $(':input[name="checkGitHub"]', addForm).prop('checked'),
+                        github_repo_url: $(':input[name="githubRepoURL"]', addForm).val(),
+                        defaultGithubApp: $('#checkDefaultGitHub').is(':checked'),
+                        githubClientId: $('#githubClientId').val(),
+                        githubClientSecret: $('#githubClientSecret').val()
+                    },
+                    type: 'POST',
+                    success: function(json){
+                        if ( !json || json === null ) {
+                            alert("json null in addproject");
+                            $(this).removeAttr('disabled');
+                            return;
+                        }
+                        if ( json.error ) {
+                            alert(json.error);
+                        } else {
+                            $('#popup-addproject').dialog('close');
+                            window.location.href = worklistUrl + 'projectStatus?project=' + $(':input[name="name"]', addForm).val();
+                            return;
+                        }
+                    }
+                });
+            
+                $(this).removeAttr('disabled');
+                return false;
+            });
+
+            new AjaxUpload('projectLogoAdd', {
+                action: 'jsonserver.php',
+                name: 'logoFile',
+                data: {
+                    action: 'logoUpload',
+                    projectid: '',
+                },
+                autoSubmit: true,
+                responseType: 'json',
+                onSubmit: validateUploadImage,
+                onComplete: function(file, data) {
+                    $('span.LV_validation_message.upload').css('display', 'none').empty();
+                    if (!data.success) {
+                        $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
+                    } else if (data.success == true) {
+                        $("#projectLogo").addClass('no-border');
+                        $("#projectLogo").attr("src", data.url);
+                        $('input[name=logoProject]').val(data.fileName);
+                    }
+                }
+            });
+        } else {
+            $('#signup').click(function() {
+                document.location = './signup';
+            });
+        }
+    });
+});
+
+// tooltip plugin and dictionary
+function MapToolTips() {
+    return;
+    var tooltipPhraseBook = {
+        "menuWorklist": "Explore jobs or add new ones.",
+        "menuJournal": "Chat",
+        "menuLove": "Show appreciation for cool things people have done",
+        "menuRewarder": "Give earned points\/money to other teammates.",
+        "menuReports": "Audit all the work and money flow.",
+        "jobsBidding": "See more stats on jobs and team members.",
+        "hoverJobRow": "View, edit, or make a bid on this job.",
+        "cR": "Start a code review on this job.",
+        "endCr": "End a code review on this job.",
+        "cRDisallowed": "You are not authorized to Code Review this job.",
+        "cRSetToFunctional": "Set this job to Functional then to Code Review to enable Code Review.",
+        "endCrDisallowed": "You are not authorized to End Code Review on this job",
+        "addFee": "Add a fee you would like to be paid for work done on this job.",
+        "addBid": "Make an offer to do this job.",
+        "changeSBurl": "Click to change your sandbox url.",
+        "budgetRemaining1": "Funds still available to use towards jobs for all my budgets",
+        "budgetAllocated1": "Funds linked to fees in active jobs (Working, Functional, Review, Completed) for all my budgets",
+        "budgetSubmitted1": "Funds linked to fees in Done'd jobs that are not yet paid for all my budgets",
+        "budgetPaid1": "Funds linked to fees that have been Paid through system for all my budgets",
+        "budgetTransfered1": "Funds granted to others via giving budget for all my budgets",
+        "budgetManaged1": "Total amount of budget funds granted to me since joining Worklist",
+        "budgetSave": "Save changes made to title or notes",
+        "budgetClose": "Reconcile &amp; close this open budget",
+        "budgetRemaining2": "Funds still available to use towards jobs",
+        "budgetAllocated2": "Funds linked to fees in active jobs (Working, Functional, Review, Completed)",
+        "budgetSubmitted2": "Funds linked to fees in Done'd jobs that are not yet paid",
+        "budgetPaid2": "Funds linked to fees that have been Paid through system",
+        "budgetTransfered2": "Funds granted to others via giving budget",
+        "enterAmount": "Enter the amount you want to be paid if this job is accepted and done.",
+        "enterNotes": "Enter detailed code review info in Comments Section.",
+        "enterCrAmount": "Recommended review fee based on project settings.",
+        "addProj": "Add a new project to the Worklist."
+    };
+    $.each(tooltipPhraseBook, function(k,v) {
+        $('.iToolTip.' + k).attr('title', v);
+    });
+    $('.iToolTip.hoverJobRow').each(function(a,b) {
+        var jobId = $(this).attr('id');
+        var jobIdNum = jobId.substring(jobId.lastIndexOf('-') + 1, jobId.length);
+        var tit = tooltipPhraseBook.hoverJobRow;
+        $(this).attr('title',(tit + ' #' + jobIdNum));
+    });
+    $('.iToolTip').tooltip({
+        track: false,
+        delay: 600,
+        showURL: false,
+        showBody: " - ",
+        fade: 150,
+        positionLeft: true
+    });
+};
+
+$(function () {
+    // initialize growing textareas
+    $("textarea[class*=expand]").autogrow();
+    // @TODO: This only needs to run on certain pages, settings -- lithium
+    $('#username').watermark('Email address', {useNative: false});
+    $('#password').watermark('Password', {useNative: false});
+    //$('#oldpassword').watermark('Current Password', {useNative: false});
+    //$('#newpassword').watermark('New Password', {useNative: false});
+    //$('#confirmpassword').watermark('Confirm Password', {useNative: false});
+    $('#nickname').watermark('Nickname', {useNative: false});
+    $('#about').watermark('Tell us about yourself', {useNative: false});
+    $('#contactway').watermark('Skype, email, phone, etc.', {useNative: false});
+    $('#payway').watermark('Paypal, check, etc.', {useNative: false});
+    $('.skills-watermark').watermark('Your skills', {useNative: false});
+    $('#findus').watermark('Google, Yahoo, others..', {useNative: false});
+    $('#phoneconfirmstr').watermark('Phone confirm string', {useNative: false});
+    // @TODO: This looks specific to masspay -- lithium
+    $('#pp_api_username').watermark('API Username', {useNative: false});
+    $('#pp_api_password').watermark('API Password', {useNative: false});
+    $('#pp_api_signature').watermark('API Signature', {useNative: false});
+
+    if ($('#fees-week').length > 0) {
+        $('#fees-week').parents("tr").click(function() {
+            var author = "Guest";
+            if($('#user').length > 0) {
+                author = $('#user').html();
+            }
+            var t = 'Weekly fees for '+author;
+            $('#wFees').dialog({
+                autoOpen: false,
+                title: t,
+                dialogClass: 'white-theme',
+                show: 'fade',
+                hide: 'fade'
+            });
+            $('#wFees').dialog( "option", "title", t );
+            $('#wFees').addClass('table-popup');
+            $('#wFees').html('<img src="images/loader.gif" />');
+            $('#wFees').dialog('open');
+            $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
+                if (json.error == 1) {
+                    $('#wFees').html('Some error occured or you are not logged in.');
+                } else {
+                  $('#wFees').html(json.output);
+                }
+            });
+        });
+    }
+
+    if($('#fees-month').length > 0){
+        $('#fees-month').parents("tr").click(function() {
+            var author = "Guest";
+            if ($('#user').length > 0) {
+                author = $('#user').html();
+            }
+            var t = 'Monthly fees for '+author;
+            $('#wFees').dialog({
+                autoOpen: false,
+                title: t,
+                dialogClass: 'white-theme',
+                show: 'fade',
+                hide: 'fade'
+            });
+            $('#wFees').dialog("option", "title", t);
+            $('#wFees').addClass('table-popup');
+            $('#wFees').html('<img src="images/loader.gif" />');
+            $('#wFees').dialog('open');
+            $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
+                if (json.error == 1) {
+                    $('#wFees').html('Some error occured or you are not logged in.');
+                } else {
+                    $('#wFees').html(json.output);
+                }
+            });
+        });
+    }
+
+    $('a.feesum').tooltip({
+        delay: 300,
+        showURL: false,
+        fade: 150,
+        bodyHandler: function() {
+            return $($(this).attr("href")).html();
+        },
+        positionLeft: false
+    });
+});
+
+var updateFeeSumsTimes = setInterval(function () {
+    $.get('api.php?action=getFeeSums', function(data) {
+        var sum = eval('('+data+')');
+        if (typeof sum != 'object') {
+            return false;
+        }
+        $('#fees-week').html ('$'+sum.week);
+        $('#fees-month').html ('$'+sum.month);
+    });
+}, ajaxRefresh);
+
+$(function() {
+    if ($("#budgetPopup").length > 0) {
+        $("#budgetPopup").dialog({
+            title: "Earning & Budget",
+            autoOpen: false,
+            width: 340,
+            position: ['center',60],
+            modal: true
+        });
+        $("nav a.budget").click(function(){
+            $("#budgetPopup").dialog("open");
+        });
+    }    
+});
+
+/* get analytics info for this page */
+$(function() {
+    $.analytics = $('#analytics');
+    if ($.analytics.length) {
+        var jobid=$.analytics.attr('data');
+        $.ajax({
+            url: 'api.php?action=visitQuery&jobid=' + jobid,
+            dataType: 'json',
+            success: function(json) {
+                if(parseInt(json.visits)+parseInt(json.views) == 0)
+                {
+                    $.analytics.hide();
+                    return;
+                }
+                var p = $('<p>').html('Page views');
+                p.append($('<span>').html(' Unique: ' + json.visits))
+                p.append($('<span>').html(' Total: ' + json.views));
+                $.analytics.append(p);
+            }
+        });
+    }
+});

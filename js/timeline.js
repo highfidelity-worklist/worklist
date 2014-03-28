@@ -9,6 +9,17 @@ function init(framesPerSecond,canvasId) {
     circles = new Array;
     canvas = null;
     context = null;
+    tweakSizes(canvasId);
+    framesPerSecond = framesPerSecond;
+    intervalValue = 1000 / framesPerSecond;
+    canvas = document.getElementById(canvasId);
+    context = canvas.getContext('2d');
+    initializeMap();
+    $(window).on('resize', function() {
+        tweakSizes(canvasId);
+    });
+};
+function tweakSizes(canvasId) {
     viewportWidth = $(window).width();
     viewportHeight = $(window).height();
     dollarHeight = $("#dollar-amount").height();
@@ -27,19 +38,17 @@ function init(framesPerSecond,canvasId) {
     $("#" + canvasId).css({
         'top':  dollarHeight + 'px',
         'position': 'absolute'
-    })
-    framesPerSecond = framesPerSecond;
-    intervalValue = 1000 / framesPerSecond;
-    canvas = document.getElementById(canvasId);
-    context = canvas.getContext('2d');
-    initializeMap();
-};
+    })    
+}
 function collectData() {
     $.ajax({
         type: "POST",
-        data: "action=getHistoricalData",
+        url: "api.php",
+        data: {
+            "action": "timeline",
+            "method": "getHistoricalData"
+        },
         dataType: "json",
-        url: "timeline.php",
         success: function(data) {
             var latlng = new google.maps.LatLng(16, -12);
             var myOptions = {
@@ -162,9 +171,12 @@ function collectData() {
 function getLatLong() {
     $.ajax({
         type: "POST",
-        data: "action=getDistinctLocations",
+        url: "api.php",
+        data: {
+            action: "timeline",
+            method: "getDistinctLocations"
+        },
         dataType: "json",
-        url: "timeline.php",
         success: function(data) {
             addressGeoLatLong = new Array();
             addressGeoAddress = new Array();
@@ -176,9 +188,14 @@ function getLatLong() {
                     var this_location = geoCode(this_address);
                     $.ajax({
                         type: "POST",
-                        data: "action=storeLatLong&location=" + this_address + "&latlong=" + this_location,
+                        url: "api.php",
+                        data: {
+                            "action": "timeline",
+                            "method": "storeLatLong",
+                            "location": this_address,
+                            "latlong": this_location
+                        },
                         dataType: "json",
-                        url: "timeline.php"
                     })
                     /* */ 
                     counter++;
@@ -195,9 +212,12 @@ function getLatLong() {
 function buildLocationArray() {
     $.ajax({
         type: "POST",
-        data: "action=getLatLong",
+        url: "api.php",
+        data: {
+            "action": "timeline",
+            "method": "getLatLong"
+        },
         dataType: "json",
-        url: "timeline.php",
         success: function(data) {
             addressGeoLatLong = new Array();
             addressGeoAddress = new Array();
@@ -254,9 +274,12 @@ function timeInMotion(currentPosition,totalPositions,jqSelector) {
 function displayMonthsInTimeline() {
     $.ajax({
         type: "POST",
-        data: "action=getListOfMonths",
+        url: "api.php",
+        data: {
+            "action": "timeline",
+            "method": "getListOfMonths"
+        },
         dataType: "json",
-        url: "timeline.php",
         success: function(data) {
             var totalMonths = data.length;
             var viewportWidth = $(window).width();

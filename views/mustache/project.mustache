@@ -1,0 +1,444 @@
+<script type="text/html" id="uploadedFiles">
+    <div id="accordion">
+        <h3>Images (<span class="imageCount"><#= images.length #></span>)</h3>
+        <div class="fileimagecontainer">
+        <# if (images.length > 0) { #>
+            <# for(var i=0; i < images.length; i++) {
+            var image = images[i];
+            #>
+            <div class="filesIcon">
+                <a class="attachment" href="<#= image.url #>" data-error_message="<#= image.error #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
+            </div>
+            <div class="filesDescription">
+                <# if (image.can_delete == true) { #>
+                <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Delete</a>
+                <# } #>
+                <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
+                <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
+            </div>
+            <div class="clear"></div>
+            <# } #>
+        <# } #>
+        </div>
+        <h3>Documents (<span class="documentCount"><#= documents.length #></span>)</h3>
+        <div class="filedocumentcontainer">
+        <# if (documents.length > 0) { #>
+            <# for(var i=0; i < documents.length; i++) {
+            var doc = documents[i];
+            #>
+            <div class="filesIcon">
+                <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" >
+                    <img width="32px" height="32px" src="<#= doc.icon #>" />
+                </a>
+            </div>
+            <div class="documents filesDescription">
+                <# if (doc.can_delete == true) { #>
+                <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Delete</a>
+                <# } #>
+                <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
+                <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
+            </div>
+            <div class="clear"></div>
+            <# } #>
+        <# } #>
+        </div>
+    </div>
+    {{#currentUser.id}}
+    <input type="button" class="uploadbutton" value="Attach files" />
+    <div class="uploadnotice"></div>
+    {{/currentUser.id}}
+</script>
+<script type="text/html" id="uploadDocument">
+    <div class="attachment">
+        <span><#= title #></span>
+        <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
+            <i class="icon-remove"></i>
+        </span>
+    </div>
+</script>
+<form name="project-form" id="project-form" action="./{{project.getName}}" method="post">
+<div id="projectHeader">
+    <div class="leftCol">
+        <div id="projectLogo{{#edit_mode}}Edit{{/edit_mode}}">
+            <img src="{{project_logo}}" />
+            {{#edit_mode}}
+                <input clas="wlcheckbox" type="checkbox" name="noLogo" id="removeLogo" value="1" />
+                <label for="removeLogo">Remove logo</label>
+            {{/edit_mode}}
+        </div>
+        <h2>{{project.getName}}</h2>
+        <div id="projectUrl">
+            <div>
+                <span id="projectUrlLabel">URL:</span>
+                <span id="projectUrlField">
+                {{#edit_mode}}
+                    <input name="website" id="website" type="text" value="{{project.getWebsite}}" />
+                {{/edit_mode}}
+                {{^edit_mode}}
+                    {{#project.getWebsite}}
+                        {{& project.getWebsiteLink}}
+                    {{/project.getWebsite}}
+                {{/edit_mode}}
+                </span>
+                {{#currentUser.is_admin}}
+                    <div id="projectInternal">
+                        <input class="wlcheckbox" type="checkbox" name="internal" id="internal" 
+                          {{^edit_mode}}disabled="disabled"{{/edit_mode}} 
+                          {{#project.getInternal}}checked="checked"{{/project.getInternal}} />
+                        <label for="internal">Internal project</label>
+                    </div>
+                {{/currentUser.is_admin}}
+            </div>
+        </div>
+    </div>
+    <div class="rightCol">
+        <section id="modeSwitch">
+        {{#runnerOrPayerOrOwner}}
+            {{#edit_mode}}
+                <div id="buttonHolder">
+                    <input class="left-button" type="submit" id="cancel_project_edit" name="cancel" value="Cancel">
+                    <input class="right-button" type="submit" id="save_project" name="save_project" value="Save project details">
+                    <input type="hidden" value="" name="logoProject">
+                </div>
+            {{/edit_mode}}
+            {{^edit_mode}}
+                <div id="buttonHolder">
+                    <input type="submit" id="edit_project" name="edit" value="Edit project details">
+                </div>
+            {{/edit_mode}}
+        {{/runnerOrPayerOrOwner}}
+        </section>
+        <div>
+            <div id="contactInfo"><span>Contact Info:</span> 
+                <a href="mailto:{{project.getContactInfo}}">{{project.getContactInfo}}</a>
+            </div>
+            <div id="projectRunner"><span>Project started by</span>
+                <a href='./user/{{project.getOwnerId}}'>
+                    <span>{{project_user.getNickname}}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="projectContent">
+    <span class="LV_validation_message LV_invalid upload"></span>
+    <div class="leftCol">
+        <ul>
+            <li id="projectDescription">
+                <h3>Description</h3>
+                {{#edit_mode}}
+                    <textarea name="description" id="description" />{{& project.getDescription}}</textarea>
+                {{/edit_mode}}
+                {{^edit_mode}}
+                    <p>{{& projectDescription}}</p>
+                {{/edit_mode}}
+                <p id="projectTotalFees">
+                    In total, <strong>${{projectTotalFees}}</strong>
+                    has been funded for the development of {{project.getName}} project.
+                </p>
+                <p id="projectFundingSource">
+                    The funding source associated with this project is
+                    <strong>{{project.getFundName}}</strong>
+                </p>
+            </li>
+            <li>
+                <h3>Project team members</h3>
+                <p id="projectContributors">
+                    {{#project.getContributors}}
+                        <a href="./user/{{id}}">{{nickname}}</a>
+                    {{/project.getContributors}}
+                </p>
+            </li>
+            {{#runnerOrPayerOrOwner}}
+                <li id="projectRoles">
+                    <h3>Team member roles</h3>
+                    <div id="for_view">
+                        <div id="roles-panel">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Role</th>
+                                        <th>% of fees</th>
+                                        <th>Min amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {{^projectRoles}}
+                                    <tr>
+                                        <td class="norecords" colspan="3">No roles added.</td>
+                                    </tr>
+                                {{/projectRoles}}
+                                {{#projectRoles}}
+                                    <tr class="role roleitem-{{id}}">
+                                        <script type="data">
+                                            {
+                                                id: '{{id}}', 
+                                                role_title: '{{role_title}}', 
+                                                percentage: '{{percentage}}', 
+                                                min_amount: '{{min_amount}}'
+                                            }
+                                        </script>
+                                        <td class="roleTitle"><div><span>{{role_title}}</span></div></td>
+                                        <td class="rolePercentage">{{percentage}}</td>
+                                        <td class="roleAmmount">{{min_amount}}</td>
+                                    </tr>
+                                {{/projectRoles}}
+                                </tbody>
+                            </table>
+                            <div class="buttonContainer">
+                                <input type="submit" value="Add Role" onClick="return showAddRoleForm('bid');" /
+                                > 
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {{/runnerOrPayerOrOwner}}
+            <li id="projectRunners">
+                <h3>Project designers</h3>
+                <table class="table table-striped" id="project_runners_table">
+                    <thead>
+                        <tr>
+                            <th {{#adminOrOwner}}colspan="2"{{/adminOrOwner}}>Who</th>
+                            <th># of Jobs</th>
+                            <th>Last Activity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                {{#adminOrOwner}}
+                    <div class="buttonContainer">
+                        <input type="button" id="addrunner" value="Add" />
+                        <input type="button" id="removerunner" value="Remove" />
+                    </div>
+                {{/adminOrOwner}}
+            </li>
+            <li id="projectCodeReviewRights">
+                <h3>Code Reviews <span>are allowed from</span></h3>
+                <ul>
+                    <li>
+                        <input id="cr_anyone_field" name="cr_anyone" type="checkbox" class="wlcheckbox code_review_chks"
+                          {{^edit_mode}}disabled="disabled"{{/edit_mode}} value="1" 
+                          {{#project.getCrAnyone}}checked="checked"{{/project.getCrAnyone}} />
+                        <label for="cr_anyone_field">Anyone</label>
+                    </li>
+                    <li>
+                        <input id="cr_3_favorites_field" name="cr_3_favorites" type="checkbox" class="wlcheckbox code_review_chks"
+                          {{^edit_mode}}disabled="disabled"{{/edit_mode}} value="1" 
+                          {{#project.getCrFav}}checked="checked"{{/project.getCrFav}} />
+                        <label for="cr_3_favorites_field">Anyone who is trusted by more than [3] people</label>
+                    </li>
+                    <li>
+                        <input id="cr_project_admin_field" name="cr_project_admin" type="checkbox" class="wlcheckbox code_review_chks"
+                          {{^edit_mode}}disabled="disabled"{{/edit_mode}} value="1" 
+                          {{#project.getCrAdmin}}checked="checked"{{/project.getCrAdmin}} />
+                        <label for="cr_project_admin_field">Anyone who is trusted by the project admin</label>
+                    </li>
+                    <li>
+                        <input id="cr_job_runner_field" name="cr_job_runner" type="checkbox" class="wlcheckbox code_review_chks"
+                          {{^edit_mode}}disabled="disabled"{{/edit_mode}} value="1" 
+                          {{#project.getCrRunner}}checked="checked"{{/project.getCrRunner}} />
+                        <label for="cr_job_runner_field">Anyone who is trusted by the job manager</label>
+                    </li>
+                    <li>
+                        <input id="cr_users_specified_field" name="cr_users_specified" type="checkbox" class="wlcheckbox"
+                          {{^edit_mode}}disabled="disabled"{{/edit_mode}} value="1" 
+                          {{#project.getCrUsersSpecified}}checked="checked"{{/project.getCrUsersSpecified}} />
+                        <label for="cr_users_specified_field">Use only code reviewers listed below</label>
+                    </li>
+                </ul>
+                <table class="table table-striped" id="projectCodeReviewers">
+                    <thead>
+                        <tr>
+                            <th {{#adminOrOwner}}colspan="2"{{/adminOrOwner}}>Who</th>
+                            <th># of Jobs</th>
+                            <th>Last Activity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                {{#adminOrOwner}}
+                    <div class="buttonContainer">
+                        <input type="button" id="addcodereviewer" value="Add" />
+                        <input type="button" id="removecodereviewer" value="Remove" />
+                    </div>
+                {{/adminOrOwner}}
+            </li>
+            <li id="hipchat">
+                <h3>HipChat</h3>
+                <div>
+                    <div>
+                        <input type="checkbox" class="wlcheckbox" name="hipchat_enabled" id="hipchat_enabled"
+                            {{^edit_mode}}disabled="disabled"{{/edit_mode}}
+                            {{#project.getHipchatEnabled}}checked="checked"{{/project.getHipchatEnabled}} />
+                        <label for="hipchat_enabled">Enabled</label>
+                    </div>
+                    {{#edit_mode}}
+                        <div>
+                            <label for="hipchat_notification_token">Notification Token</label>
+                            <input type="text" name="hipchat_notification_token" id="hipchat_notification_token" value="{{project.getHipchatNotificationToken}}" />
+                        </div>
+                        <div>
+                            <label for="hipchat_room">Room</label>
+                            <input type="text" id="hipchat_room" name="hipchat_room" value="{{project.getHipchatRoom}}" />                        
+                        </div>
+                        <div>
+                            <label for="hipchat_color">Message Color</label>
+                            {{& projectHipChatColorSelect}}
+                        </div>
+                    {{/edit_mode}}
+                </div>
+            </li>  
+            <li id="projectTestFlight">
+                <h3>TestFlight</h3>
+                <div>
+                    <input type="checkbox" class="wlcheckbox" name="testflight_enabled" id="testflight_enabled"
+                        {{^edit_mode}}disabled="disabled"{{/edit_mode}}
+                        {{#project.getTestFlightEnabled}}checked="checked"{{/project.getTestFlightEnabled}} />
+                    <label for="testflight_enabled">Enabled</label>
+                </div>
+                {{#edit_mode}}
+                    <label for="testflight_team_token">Team token</label>
+                    <input name="testflight_team_token" id="testflight_team_token" type="text" value="{{project.getTestFlightTeamToken}}" />
+                {{/edit_mode}}
+                {{^edit_mode}}
+                    {{#showTestFlightButton}}
+                        <div class="buttonContainer">
+                            <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
+                        </div>
+                    {{/showTestFlightButton}}
+                {{/edit_mode}}
+            </li>
+        </ul>
+    </div>
+    <div class="rightCol">
+        <ul>
+            <li>
+                <h3>Repository</h3>
+                <p id="projectRepository">
+                    We use <a href="http://en.wikipedia.org/wiki/Apache_Subversion">svn</a>
+                    or <a href="http://en.wikipedia.org/wiki/Git_(software)" target="_blank">git</a>
+                    for <a href="http://en.wikipedia.org/wiki/Distributed_development" target="_blank">distributed development</a>.
+                    Each project has its own repository. The repository for this project is:
+                    <a id="projectRepositoryUrl" target="_blank" href="{{project.getRepoUrl}}">
+                        {{project.getRepoUrl}}
+                    </a>                        
+                </p>
+            </li>
+            <li id="projectTotalJobs">
+                <h3>Total jobs:</h3>
+                <span id="total_jobs_stats">{{project.getTotalJobs}}</span>
+            </li>
+            <li id="projectAverageBid">
+                <h3>Average bid:</h3>
+                <span id="avg_bid_per_job_stats" title="Average amount of accepted Bid per Job">
+                    ${{projectAvgBidFeeFormated}}
+                </span>
+            </li>
+            <li id="projectAverageJobTime">
+                <h3>Average job time:</h3>
+                <span id="avg_job_time_stats" title="Average time from Bid Accept to being Paid">
+                    {{project.getAvgJobTime}}
+                </span>
+            </li>
+            <li id="projectActiveJobs">
+                {{#projectActiveJobsCount}}
+                    <h3>{{projectActiveJobsCountText}}</h3>
+                {{/projectActiveJobsCount}}
+                {{^projectActiveJobsCount}}
+                    <h3>no active jobs</h3>
+                {{/projectActiveJobsCount}}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Job ID & Summary</th>
+                            <th>Status</th>
+                            <th>Sandbox</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {{#projectActiveJobs}}
+                        <tr class="job">
+                            <td class="projectJobLink">
+                                <a id="worklist-{{id}}" href="./{{id}}">
+                                    #{{id}} <span>{{summary}}</span>
+                                </a>
+                            </td>
+                            <td class="projectJobStatus">{{status}}</td>
+                            <td class="projectJobSandbox">
+                                {{#sandbox}}
+                                    <a href="{{sandbox}}" target="_blank">View</a>
+                                {{/sandbox}}
+                            </td>
+                        </tr>
+                    {{/projectActiveJobs}}
+                    {{^projectActiveJobs}}
+                        <tr>
+                            <td class="norecords" colspan="3">No records found.</td>
+                        </tr>
+                    {{/projectActiveJobs}}
+                    </tbody>
+                </table>
+                <p id="viewHistory">
+                    <a href="./jobs?project={{project.getName}}&user=&status=underway">
+                        View history of jobs
+                    </a> for the {{project.getName}} project 
+                </p>
+            </li>
+            {{#is_owner}}
+                <li id="projectPayments">
+                    <h3>Payment summary</h3>
+                    <div id="for_view">
+                        <div id="payment-panel">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Payee</th>
+                                        <th>Job#</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {{#project.getPaymentStats}}
+                                    <tr class="payment">
+                                        <td><a href="./user/{{id}}">{{nickname}}</a></td>
+                                        <td>
+                                            <a id="worklist-{{worklist_id}}" class="payment-joblink" href="./{{worklist_id}}">
+                                                #{{worklist_id}}
+                                            </a>
+                                        </td>
+                                        <td>${{amount}}</td>
+                                        <td>{{#paid}}PAID{{/paid}}{{^paid}}UNPAID{{/paid}}</td>
+                                    </tr>
+                                {{/project.getPaymentStats}}
+                                {{^project.getPaymentStats}}
+                                    <tr>
+                                        <td class="norecords" colspan="4">No records found.</td>
+                                    </tr>
+                                {{/project.getPaymentStats}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+            {{/is_owner}}
+            <li>
+                <div id="uploadPanel"></div>
+            </li>
+        </ul>
+    </div>
+</div>
+</form>
+{{> popup-addrole}}
+{{> popup-role-info}}
+{{> popup-testflight}}
+{{> popup-addrunner}}
+{{> popup-addcodereviewer}}
+<script type="text/javascript">
+    var projectid = {{project_id}};
+    var projectName = '{{project.getName}}';
+    var edit_mode = {{#edit_mode}}true{{/edit_mode}}{{^edit_mode}}false{{/edit_mode}};
+    var is_owner = {{#is_owner}}true{{/is_owner}}{{^is_owner}}false{{/is_owner}};
+</script>

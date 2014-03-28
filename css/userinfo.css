@@ -1,12 +1,7 @@
 @font-face {
-  font-family: 'Cabin';
+  font-family: proxima-nova;
   font-style: normal;
-  font-weight: 400;
-  src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
-}
-
-#left, #right {
-    background: none;
+  font-weight: bold;
 }
 
 .hidden {
@@ -86,12 +81,12 @@ p.small-text{
 #info-currenttime span {
     font-size: 45px;
     line-height: 48px;
-    font-weight: normal;
+    font-weight: bold;
     letter-spacing: -2px;
-    font-family: Cabin;
+    font-family:proxima-nova;
 }
 
-#tabs .info-label {
+.info-label {
     font-weight: normal;
     border-bottom: 2px solid #E1E8EA;
 }
@@ -100,8 +95,9 @@ p.small-text{
     border: none !important;
 }
 
-.title-label-big {
-    color: #993300;
+.title-label-big,
+body > .container-fluid h3 {
+    color: #007F7C;
     font-size: 18px;
     margin: 30px 22px 0 0;
     line-height: 17px;
@@ -113,27 +109,18 @@ p.small-text{
     margin-left: -1px !important;
 }
 
-#jobs-table,
-#completed-jobs-table {
-    margin-top: -1px !important;
-    float: left;
-    width: 449px;
-    border: 1px solid #d6d6d6;
-}
-
 #BudgetHistory {
     border: 1px solid #d6d6d6;
     display: table;
     margin: 0 auto;
 }
 .title-label-medium {
-    color: #993300;
+    color: #007F7C;
     font-size: 18px;
     margin: 23px 22px 0 0;
     line-height: 19px;
     padding-bottom: 5px;
     border: none;
-    float: left;
     border-bottom: none !important;
 }
 
@@ -160,16 +147,17 @@ p.small-text{
     margin-top: -3px;
 }
 
-.title-label-small {
-    color: #993300;
+
+#globalinfo > div > .info-label:first-child {
+    color: #007F7C;
     font-size: 14px;
-    margin: 21px 24px 0 0;
+    margin-top: 21px;
     line-height: 17px;
-    padding-bottom: 12px;
+    padding-bottom: 12px;    
 }
 
-.title-label-small a,
-.title-label-small span{
+#globalinfo > div > .info-label:first-child a,
+#globalinfo > div > .info-label:first-child span{
     font-weight: bold;
     color: #333;
 }
@@ -180,7 +168,6 @@ p.small-text{
 }
 
 .totals {
-    float: left;
     margin: 3px 0px;
     line-height: 22px;
     font-size: 14px;
@@ -209,6 +196,7 @@ p.small-text{
     background: #ffffff;
     height: 100px;
     width: 100px;
+    float: left;
 }
 
 #user-stats tbody tr td {
@@ -236,36 +224,6 @@ p.small-text{
     padding: 0 0 0 1px;
 }
 
-div.left-column {
-    float: left;
-    width: 437px;
-    overflow-y:auto;
-}
-
-div.right-column {
-    float: right;
-    height: 100%;
-    padding-left: 2px;
-    width: 455px;
-}
-
-#admin-left, #admin-middle, #admin-right {
-    float: left;
-}
-
-#admin-left {
-    margin-right: 0.5em;
-}
-
-#admin-right{
-    margin-left: 0.5em;
-}
-
-#admin-left, #admin-right {
-    width: 439px;
-    height: 100%;
-}
-
 .admin-submit {
     margin-top: 0 !important;
     float: right !important;
@@ -275,27 +233,12 @@ div.right-column {
     width: 120px;
 }
 
-#admin-left p.info-label {
-}
 p.bottom {
-    position: absolute;
     bottom: 40px;
 }
 
 #loading{
-    position: absolute;
     top: 6em;
-}
-
-#tabs {
-    margin: 0 40px 0 3px;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-}
-
-.tabs-bottom {
-    position: relative;
 }
 
 .reviewTitle {
@@ -327,7 +270,6 @@ p.bottom {
     height: auto !important;
     overflow-y: auto !important;
     padding: 10px 0 20px 0 !important;
-    font-style: italic;
     font-size: 12px;
     width: 415px;
     border-top: 2px solid #E1E8EA;
@@ -337,7 +279,6 @@ p.bottom {
     height: auto !important;
     overflow-y: auto !important;
     padding: 10px 0 20px 0;
-    font-style: italic;
     font-size: 12px;
     width: 415px;
     border-top: 2px solid #E1E8EA;
@@ -359,61 +300,6 @@ p.bottom {
     line-height: 19px;
 }
 
-.tabs-bottom .ui-tabs-panel {
-    overflow: auto;
-    padding:4px !important;
-    margin-top: 94px;
-    padding: 0 !important;
-}
-
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
-    height: 20px;
-    border-bottom: 1px solid #fff !important;
-    padding: 1px 0 !important;
-}
-
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected a{
-    color: #608e96;
-}
-
-.top-profile-bar {
-    float: left;
-    width: 902px;
-    border-bottom: 1px solid #d6d6d6;
-    position: absolute;
-    top: -38px;
-}
-
-.tabs-bottom .ui-tabs-nav {
-    position: absolute !important;
-    left: 0;
-    top: 0;
-    right:0;
-    border-radius: 0;
-    background: none;
-    border: none;
-    padding: 0 !important;
-    margin-top: -70px !important;
-}
-
-.tabs-bottom .ui-tabs-nav li:last-child {
-    border-right: 2px solid #E1E8EA !important;
-}
-
-.tabs-bottom .ui-tabs-nav li {
-    border: 2px solid #E1E8EA !important;
-    border-radius: 0;
-    background: none;
-    margin: 0 !important;
-    border-right: none !important;
-    padding: 1px 0 !important;
-    height: 27px !important;
-}
-
-.tabs-bottom .ui-tabs-nav li a{
-    color: #999;
-}
-
 .button-row {
     float: right;
     text-align: right;
@@ -422,100 +308,27 @@ p.bottom {
     margin-right: 1px;
 }
 
-.right-column table,
-#BudgetHistory table {
-    border: none !important;
-}
-
-.right-column table td,
-.right-column table th,
-#BudgetHistory table th,
-#BudgetHistory table td {
-    border: none !important;
-}
-
-.right-column table td,
-#BudgetHistory table td {
-    font-size: 12px;
-    padding-left: 8px;
-    height: 19px;
-}
-
-.right-column table tr.rowodd:hover,
-#BudgetHistory table tr.rowodd:hover {
-    background: #fff;
-}
-
-.right-column table tr.roweven:hover,
-#BudgetHistory table tr.roweven:hover {
-    background: #efefef;
-}
-
-.right-column table td a,
-#BudgetHistory table td a {
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.right-column table td span {
-    font-weight: bold;
-}
-
-.right-column table th,
-#BudgetHistory table th {
-    padding-top: 9px;
-    padding-left: 8px;
-}
-
-.right-column table th.status,
-#BudgetHistory table th.status {
-    padding-right: 0;
-    width: 50px;
-}
-
-.right-column table th.sandbox,
-.right-column table td.sandbox,
-#BudgetHistory table th.sandbox,
-#BudgetHistory table td.sandbox{
-    padding-left: 0;
-}
-
-.right-column table th:first-child {
-    width: 310px;
-}
-
-.right-column .table-hdng,
-.table-budget-history,
-#BudgetHistory .table-hdng{
-    height: 28px;
-    background: none;
-}
-
-.right-column #ping-msg {
+#ping-msg {
     height: 72px !important;
-    width: 439px;
+    width: 100%;
     border: none;
     border-bottom: 1px solid #d6d6d6;
 }
 
-.right-column #profile-pingtask {
+#profile-pingtask {
     padding: 0;
     display: block;
-    float: left;
     border: 1px solid #d6d6d6;
-    margin: -3px 0 0 -1px;
-    width: 450px;
+    margin-bottom: 15px;
     background: #efefef;
-    height: 131px;
 }
 
-.right-column #profile-pingtask p {
-    float: right;
-    padding: 9px 18px 0 0;
+#profile-pingtask p {
+    padding: 9px 12px;
     font-size: 12px;
 }
 
-.right-column #profile-pingtask #send-ping-btn {
+#send-ping-btn {
     margin: 0;
     background: #608e96;
     color: #fff;
@@ -524,8 +337,9 @@ p.bottom {
     border-radius: 4px;
     margin-top: 5px;
     height: 28px;
+    border: 0;
+    display: inline-block;
 }
-
 
 #info-budget input,
 #btn-bonus input {
@@ -535,6 +349,7 @@ p.bottom {
     font-size: 12px;
     text-decoration: underline;
     color: #608e96;
+    border: 0 none;
 }
 
 .button-row span {
@@ -547,20 +362,19 @@ p.bottom {
 }
 
 .userName {
-    position: absolute;
-    left: 100px;
-    top: 0;
-    color: #993300;
+    color: #007F7C;
     font-size: 45px;
     line-height: 50px;
     vertical-align: top;
     padding: 6px 11px;
     width: 293px;
-    font-family: Cabin;
+    font-family:proxima-nova;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 45px;
 }
 
 .profileContactFavorite {
-    margin: 3px 0 -5px -1px;
     color: #666;
     font-size: 12px;
     line-height: 22px;
@@ -568,19 +382,20 @@ p.bottom {
     padding: 6px 0;
     border-bottom: 2px solid #E1E8EA;
     border-top: 2px solid #e1e8ea;
-    width: 451px;
+    width: 100%;
     font-weight: bold;
-    float: left;
 }
 
 .profileContactFavorite span{
     font-weight: normal;
 }
 
+.profileContactFavorite,
 .profileInfoFavorite {
-    position: absolute;
-    left: 100px;
-    top: 62px;
+    margin-top: 61px;
+}
+
+.profileInfoFavorite {
     color: #666;
     font-size: 12px;
     line-height: 22px;
@@ -588,8 +403,12 @@ p.bottom {
     padding: 6px 11px;
     border-bottom: 2px solid #E1E8EA;
     border-top: 2px solid #e1e8ea;
-    width: 293px;
+    width: 310px;
     font-weight: bold;
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 
 .profileInfoFavorite>img {

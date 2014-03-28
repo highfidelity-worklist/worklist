@@ -1,8 +1,9 @@
 <?php
 /**
- * Coffee And Power
- * Copyright (c) 2011 LoveMachine, LLc.
- * All rights reserved.
+ * Copyright (c) 2014, High Fidelity Inc.
+ * All Rights Reserved. 
+ *
+ * http://highfidelity.io
  */
 
 require_once('models/DataObject.php');

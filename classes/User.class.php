@@ -413,7 +413,7 @@ class User {
                 if ($remainingFunds <= 0 && $budgetDepletedMessage == true) {
                     $runnerNickname = $this->getNickname();                    
                     $subject = "Depleted - Budget " . $budget_id . " (For " . $budget->reason . ")";
-                    $link = SECURE_SERVER_URL . "team.php?showUser=".$this->getId() . "&tab=tabBudgetHistory";
+                    $link = SECURE_SERVER_URL . "team?showUser=".$this->getId() . "&tab=tabBudgetHistory";
                     $body  = '<p>Hi ' . $runnerNickname . '</p>';
                     $body .= "<p>Budget " . $budget_id . " for " . $budget->reason . "<br/> is now depleted.</p>";
                     $body .= '<p>If your budget has gone under 0.00, you will need to ask the user who ' .
@@ -619,7 +619,7 @@ class User {
                     $selected = "";
                 }
                 $ret .= '<option value="' . $row['id'] . '" ' . $selected . ' data-amount="' . $row['remaining'] . '">' . 
-                        $row['id'] . "|" . $row['reason'] . "|" . $row['remaining'] . '</option>\n';
+                        $row['reason'] . ' ($' . $row['remaining'] . ")</option>\n";
             }
         }
         return $ret;
@@ -1453,7 +1453,7 @@ class User {
         $this->filter = $filter;
     }
 
-    private function loadUser($where)
+    protected function loadUser($where)
     {
         // now we build the sql query
         $sql = 'SELECT * FROM `' . USERS . '` WHERE ' . $where . ' LIMIT 1;';
@@ -1550,8 +1550,6 @@ class User {
        //Don't look for resizeds since we already looked in the db
        if (strpos($imageName,'w:')) { error_log("S3: don't look for thumbnails $imageName"); return false; }
 
-       require_once(APP_PATH . "/lib/S3/S3.php");
-
        S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
 
        try {
@@ -1647,7 +1645,7 @@ class User {
 		error_log('update_satus ' . $status);
         if (isset($_SESSION['userid'])){
             if ($status != "") {
-                $journal_message =  $_SESSION['nickname'] . ' is ' . $status;
+                $journal_message =  '@' . $_SESSION['nickname'] . ' is *' . $status . '*';
 
             // Insert new status to the database
                 $insert = "INSERT INTO " . USER_STATUS . "(id, status, timeplaced) VALUES(" . $_SESSION['userid'] . ", '" .  mysql_real_escape_string($status) . "', NOW())";
@@ -1713,6 +1711,7 @@ class User {
         if (!$result = mysql_query($sql)) {
             return null;
         }
+        $ret = array();
         while($row = mysql_fetch_assoc($result)) {
             $ret[] = $row;
         }

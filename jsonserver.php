@@ -3,9 +3,9 @@
 //  All Rights Reserved. 
 //  http://www.lovemachineinc.com
 include ("config.php");
-require_once ("lib/Sms.php");
 
 try {
+    Session::check();
 	$server = new JsonServer();
 	$server->run();
 	echo($server->getOutput());

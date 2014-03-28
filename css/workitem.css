@@ -1,8 +1,7 @@
 @font-face {
-  font-family: 'Cabin';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Cabin Regular'), local('Cabin-Regular'), url(cabin-font.woff) format('woff');
+    font-family: proxima-nova;
+    font-style: normal;
+    font-weight: bold;
 }
 
 .warn {
@@ -36,111 +35,8 @@
     table-layout: fixed;
 }
 
-.moneyZone table td, .moneyZone table th {
-    border-width: 0px;
-    padding: 0 1px 0 0;
-}
-
-.moneyZone table tbody td.bid-notes {
-    border: 1px solid #cccccc !important;
-    font-size: 11px;
-    border-bottom: none !important;
-}
-
-.moneyZone table tbody tr:hover td.bid-notes span {
-    background: #FFFFFF;
-    cursor: auto;
-}
-
-.moneyZone table tbody td.bid-notes span{
-    padding: 12px;
-    float: left;
-    word-break: break-all;
-}
-
-
-.moneyZone table tbody td.bid-notes .end-line {
-    border-bottom: 1px solid #CCC !important;
-    position: relative;
-    width: 351px;
-    margin-bottom: -14px;
-    float: left;
-    bottom: 1px;
-}
-
-.moneyZone table tbody tr:hover td span {
-    background: #E6F3F4;
-    cursor: pointer;
-}
-
-.moneyZone table tbody tr:active td span {
-    background: #E6F3F4;
-    cursor: pointer;
-}
-
-.moneyZone .table-bids tbody tr{
-    border-top: 3px solid white !important;
-}
-
-.moneyZone table tbody tr {
-    background: #FFF;
-    border: 1px solid #E1E8EA !important;
-    border-left: none !important;
-    border-bottom: none !important;
-}
-
-.moneyZone table tbody tr.row-feelist-live {
-    border-top: 3px solid white !important;
-}
-
-.moneyZone table tbody tr:hover{
-    background: #FFF;
-}
-
-.moneyZone table tbody td .table-back{
-    background: #E1E8EA;
-    display: inline-block;
-    height: 18px;
-    padding: 6px 0;
-    width: 100%;
-    word-break: break-all;
-}
-
-.moneyZone table tbody td .table-back span {
-    padding: 0 0 0 6px;
-}
-
-.moneyZone table  td.who {
-    width: 80px;
-}
-
-.moneyZone table td.fee {
-    width: 70px;
-}
-
-.moneyZone table td.what {
-    width: 55px;
-}
-
-.moneyZone table  td.when {
-    width: 55px;
-}
-
-.moneyZone table td.paid {
-    width: 70px;
-}
-
-.moneyZone table tbody td.when .table-back{
-    padding-left: 2px;
-    width: 55px;
-}
-
-.moneyZone table tbody td.when .table-back span {
-    padding: 6px;
-}
-
-.moneyZone table tbody td span a{
-    color: #000000;
+.moneyZone table tr td {
+    border: 0 none;
 }
 
 .wd-link {
@@ -162,7 +58,7 @@ span.info-whisper {
 
 .info-summ-big{
     clear:both;
-    height: 32px;
+    height: 38px;
     margin-top: 12px;
     font-size: 13px;
     border-bottom: 2px solid #e1e8ea;
@@ -176,17 +72,8 @@ span.info-whisper {
     margin-top: 12px !important;
     padding-left: 3px;
     line-height: 36px;
-    font-family: 'Cabin', sans-serif;
-}
-
-.divider {
-    border-bottom: 2px solid;
-    position: relative;
-    top: -14px;
-    left: 6px;
-    overflow: hidden;
-    width: 4px;
-    float: left;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
 }
 
 .info-label{
@@ -227,7 +114,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .info-comments{
     font-weight:bold;
     margin: 0 10px 4px 0;
-    float:left;
     font-size: 18px;
 }
 
@@ -247,40 +133,24 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
 }
 
-.cabin {
+.info-summ-big-text {
     margin-left: -2px;
     font-size: 30px;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     float: left;
-}
-
-.cabin a {
-    text-decoration: underline;
 }
 
 #center {
     width: 857px;
 }
 
-.ui-combobox-textbox {
-    margin-left: 5px;
-}
-
-#info-top  .ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
-    position: absolute;
-    top: 3px;
-    right: 4px;
-    height: 22px;
-    width: 26px;
-}
-
 #searchForm > div {
     float: left;
-    height: 25px !important;
+    height: 30px !important;
     padding: 0 9px;
     width: 165px;
-    font-family: Arial !important;
+    font-family: proxima-nova,sans-serif !important;
 }
 
 #jobStatusFilter {
@@ -288,25 +158,11 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 363px;
 }
 
-#jobStatusFilter .ui-combobox-list li:hover{
-    background: #AA1E00;
-    color: #FFFFFF;
-    cursor: pointer;
-}
-
-#jobStatusFilter label {
-    text-align: left;
-    height: 15px;
-    color: #646464;
-    float: left;
-}
-
-
 .top-bar {
     background-color: #e1e8ea;
     padding: 14px 0;
     margin-top: 13px !important;
-    height: 16px;
+    height: 50px;
     font-size: 14px;
 }
 
@@ -314,20 +170,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
     width: 173px;
     margin-top: 6px;
-}
-
-a {
-    text-decoration: none;
-    color: #333;
-}
-
-a:active{
-    color: #aaa;
-    text-decoration: underline;
-}
-
-a:hover{
-    text-decoration: underline;
 }
 
 .first-line {
@@ -356,19 +198,13 @@ a:hover{
     float: left;
 }
 
-#info-top {
-    margin-top: 10px;
-    width: 100%;
-    float: left;
-}
-
 .project_website {
     font-size: 11px;
 }
 
 #left-panel {
     float:left;
-    width: 490px !important;
+    width: 520px !important;
     margin:0 !important;
     padding:0!important;
 }
@@ -394,18 +230,16 @@ a:hover{
 }
 
 
-#left-panel ul{
+#for_view > ul {
     list-style:none!important;
     width:100%;
     margin:0!important;
     padding:0!important;
+    border-top: 1px solid #d6d6d6;
+    min-height: 50px;
 }
 
-#left-panel li {
-    padding:1px 0px 5px 0px;
-}
-
-#for_view ul li {
+#for_view > ul > li {
     margin-bottom: 20px;
 }
 
@@ -595,7 +429,7 @@ a:hover{
 .skills-label {
     float: left;
     width: 100%;
-    color: #993300;
+    color: #007F7C;
     font-size: 14px;
     margin-bottom: 2px;
     font-weight: normal;
@@ -606,7 +440,7 @@ a:hover{
 .creatorName a,
 .skills-label a {
     text-decoration: none;
-    color: #993300 !important;
+    color: #007F7C !important;
 }
 
 .changeRunner {
@@ -632,9 +466,7 @@ a:hover{
 }
 
 .title {
-    color: #993300 !important;
-
-    margin-left: 12px;
+    color: #007F7C !important;
 }
 
 .github {
@@ -692,13 +524,11 @@ a:hover{
 }
 
 .code-review {
-    height: 100px;
     border-bottom: 2px solid #e1e8ea;
     font-size: 14px;
     padding: 9px 0 9px 9px;
     line-height: 21px;
     margin-bottom: 8px;
-    float: left;
 }
 
 .code-review span {
@@ -737,53 +567,6 @@ a:hover{
     width: 437px;
 }
 
-#info-top .ui-combobox-textbox {
-    color: #aa1e00;
-    font-weight: bold;
-    font-size: 11pt !important;
-    position: absolute;
-    top: 5px;
-    float: left;
-    font-family: Arial, Helvetica !important;
-}
-
-#info-top #container-project_id {
-    background: none #FFFFFF !important;
-    border-radius: 0px !important;
-    height: 20px;
-    padding-top: 3px;
-    position: relative;
-    float: left;
-    height: 27px !important;
-    padding: 0 9px;
-    width: 165px;
-}
-
-#info-top #container-project_id ul{
-    left: -1px !important;
-    top: 21px;
-}
-
-#info-top .ui-combobox-list-selected {
-    background: #FFFFFF !important;
-    font-weight: bold;
-}
-
-#info-top .ui-combobox-list li.ui-state-hover {
-    background: #AA1E00 !important;
-    color: #FFFFFF;
-}
-
-
-#info-top .ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
-    position: absolute !important;
-    top: 3px !important;
-    right: 4px;
-    height: 22px;
-    width: 26px;
-}
-
 .functional-label {
     font-weight: bold;
     float: left;
@@ -793,7 +576,7 @@ a:hover{
 
 #edit_review_url {
     cursor: pointer;
-    color: #993300;
+    color: #007F7C;
 }
 
 #edit_review_url:hover {
@@ -803,10 +586,7 @@ a:hover{
 
 .budget-label {
     font-weight: bold;
-    margin: 0px 7px 0px 0px;
-    float: left;
-    width: 48px;
-    padding-top: 10px;
+    display: inline-block;
 }
 
 .budgetArea {
@@ -836,28 +616,6 @@ a:hover{
     border: none !important;
 }
 
-.table-caption {
-    clear: both;
-    height: 26px;
-    padding: 0;
-}
-
-
-#btnAcceptMultiple {
-    color: #FFFFFF !important;
-    background: none !important;
-    font-size: 13px !important;
-    border-left: 1px solid #83a8a6 !important;
-    padding: 1px 0 0 8px !important;
-    width: auto !important;
-    position: relative;
-    height: 28px !important;
-    top: -1px;
-    margin: 0 !important;
-    letter-spacing: 1px !important;
-    right: -2px;
-}
-
 .bidbutton {
     background-image: url('../images/primaryIcons-WL.png') !important;
     background-position: 8px -985px !important;
@@ -885,7 +643,7 @@ a:hover{
 }
 
 .buttonContainer input {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
     font-size: 12px;
 }
 
@@ -912,43 +670,6 @@ a:hover{
 
 #fee-panel.ui-widget-content {
     background-image:none;
-}
-
-#fee-panel #job-total .noteWrapper {
-    background-color: #E1E8EA;
-    border-top: 3px solid white !important;
-    padding: 14px 10px;
-    text-align: right;
-}
-
-#fee-panel #job-total span.label {
-    cursor: auto;
-    font-size: 14px; 
-    font-weight: bold;
-}
-
-#fee-panel #job-total:hover td span.label {
-    background-color: #E1E8EA;
-}
-
-#fee-panel #job-total span.label:hover {
-    background-color: #E1E8EA;
-}
-
-#fee-panel #job-total span.data {
-    background-color: #FFFFFF;
-    border: 1px solid #D3D3D3;
-    cursor: auto;
-    color: #AA1E00;
-    font-size: 15px;
-    font-weight: bold;
-    height: 25px;
-    padding: 5px 9px;
-}
-
-#fee_desc,
-#tip_desc {
-    width:280px;
 }
 
 #edit_workitem_form ul li {
@@ -1018,7 +739,7 @@ a:hover{
     width: 100%;
     float: left;
     padding: 3px 0;
-    height: 15px;
+    height: 30px;
 }
 
 .moneyZone .table-hdng td .table-back span{
@@ -1052,10 +773,13 @@ a:hover{
     text-align: left;
 }
 
-.popup-body input[type="text"], .popup-body textarea, .popup-body select {
+.popup-body input[type="text"], 
+.popup-body textarea, 
+.popup-body select {
     font-size: 14px;
-    font-family: helvetica, arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
     width: 370px;
+    font-weight: normal;
 }
 
 #popup-bid .notes,
@@ -1099,30 +823,9 @@ a:hover{
     width:32px;
 }
 
-.commentZone ul {
-    list-style:none!important;
-    padding:0px!important;
-    margin:0px 0px 0px 10px!important;
-}
-
-.commentZone li {
-    list-style:none!important;
-    padding: 0 !important;
-    margin-bottom: 21px;
-    width: auto !important;
-}
-
-.commentZone li.imOdd {
-}
-
-.commentZone li.imEven {
-}
-
 .comment-container {
-    float: right;
-    position: relative;
-    top: -2px;
-    left: -1px;
+    float: left;
+    margin-left: 10px;
 }
 
 .comment-info {
@@ -1133,7 +836,6 @@ a:hover{
 
 .comment-text {
     margin-bottom: 4px;
-    float: left;
     font-size: 14px;
     line-height: 18px;
     width: 100%;
@@ -1173,105 +875,42 @@ a:hover{
     text-decoration: underline;
 }
 
-
-.depth-0 .comment-container {
-    width: 424px;
+#entries li[id^="comment-"] .comment > a > img {
+    border-radius: 30px
 }
 
-.depth-1 {
-    margin-left: 65px;
+.depth-0  {
+    margin-left: -55px;
 }
 
-.depth-1 .comment-container {
-    width: 359px;
+.depth-1  {
+    margin-left: -15px;
 }
 
 .depth-2 {
-    margin-left: 130px;
-}
-
-.depth-2 .comment-container {
-    width: 294px;
+    margin-left: 25px;
 }
 
 .depth-3 {
-    margin-left: 195px;
-}
-
-.depth-3 .comment-container {
-    width: 229px;
+    margin-left: 65px;
 }
 
 .depth-4 {
-    margin-left: 260px;
-}
-
-.depth-4 .comment-container {
-    width: 164px;
+    margin-left: 105px;
 }
 
 .depth-5 {
-    margin-left: 335px;
-}
-
-.depth-5 .comment-container {
-    width: 99px;
+    margin-left: 145px;
 }
 
 .depth-6 {
-    margin-left: 400px;
-}
-
-.depth-6 .comment-container {
-    width: 34px;
+    margin-left: 185px;
 }
 
 
 .desc {
     margin-top:0px !important;
     margin-bottom:2px !important;
-}
-
-.commentform{
-    margin-bottom:25px;
-}
-
-.commentform .button-container {
-    background: #EFEFEF;
-    border: 1px solid #D6D6D6;
-    padding: 12px;
-    margin-top: -4px;
-    width: 405px;
-    height: 21px;
-}
-
-.commentform .button-container .smbutton {
-    border: none !important;
-}
-
-.commentform .button-container .hidden {
-    display: none !important;
-}
-
-.commentform .button-container .buttonContainer {
-    padding-left: 6px;
-    float: left;
-    margin: 12px 4px 0;
-}
-
-.commentform textarea {
-    clear:right;
-    margin: 0;
-    padding: 12px;
-    border: 1px solid #D6D6D6;
-    font-size: 13px;
-    width: 405px !important;
-    height: 52px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.commentform, .comments {
-    border-bottom:none!important;
 }
 
 <!-- [if IE]
@@ -1284,16 +923,6 @@ a:hover{
     border:2px #DCD998 solid;
     padding:0px 8px 19px 8px;
     background-color: #FFFFDD;
-}
-
-#left-panel ul{
-    list-style:none!important;
-    width: 100%;
-    margin:0!important;
-    padding:0!important;
-    float: left;
-    border-top: 1px solid #d6d6d6;
-    min-height: 50px;
 }
 
 #left-panel ul #no_comments{
@@ -1314,13 +943,6 @@ a:hover{
 .info-invite input[type=text]{
     margin-top:8px!important;
     width:240px;
-}
-
-.commentZone{
-    width: 100%;
-    margin-top: 40px;
-    font-size: 12px;
-    float: left;
 }
 
 /* bid info popup (accepting, withdrawing bids)*/
@@ -1346,97 +968,21 @@ a:hover{
     display: none;
 }
 
-/* journalChat styles */
-#journalPanel {
+/* status entries styling */
+#statusPanel {
     width: 100%;
     margin-top: 40px;
     font-size: 12px;
 }
 
-#journalPanel h3{
+#statusPanel h3{
    font-size: 18px;
    margin: 0 0 5px 0;
 }
 
-#journalChat {
-    border-top: 1px solid #d6d6d6;
-    padding-top: 6px;
-}
-
-#journalChat .entry {
-    margin-bottom:8px;
-}
-
-#journalChat .entry-author {
-    font-weight:bold;
-    margin-right:7px;
-}
-
-#journalChat .entry.worklist .entry-author {
-    color: #6699cc;
-}
-
-#journalChat h2, #journalChat div {
-    font-size: 13px;
-}
-
-#journalChat h2 {
-    padding: 3px 0;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
-
-/* color entries */
-#journalChat .entry h2 {
-    color: #444;
-}
-
-#journalChat .entry h2 span.entry-date {
-    font-size: 11px;
-    color: #666666;
-}
-
-#journalChat .entry h2.extra {
-    background-color: #E5E5E5;
-}
-
-#journalChat .entry h2.other {
-}
-
-#journalChat .entry h2.extra.other {
-    background-color: #E6DFC6;
-}
-
-#journalChat .entry.sendlove h2 {
-    background-color:#D24B3F;
-    color: #601710;
-}
-
-#journalChat .entry.svn h2 {
-    color: #336666;
-}
-
-#journalChat .entry.worklist .entry-text {
-    font-size: 14px;
-    line-height: 18px;
-}
-
-#journalChat .entry.bot h2 {
-    background-color:#D98D4B;
-    color: #54371D;
-}
-
-#wFees {
-  display: none;
-}
 
 .feesum {
     cursor: pointer;
-}
-
-#left, #right {
-    background: none;
 }
 
 #for_view {
@@ -1452,15 +998,6 @@ a:hover{
     word-wrap: break-word;
     font-size: 14px;
     line-height: 19px;
-}
-
-#page-content table .arrow{
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 11px -1037px;
-    background-repeat: no-repeat;
-    float: left;
-    width: 100%;
-    padding: 13px 0;
 }
 
 #for_view .notestext a, .comment a {
@@ -1479,10 +1016,6 @@ a:hover{
 #summary, 
 #edit-notes {
     width: 425px;
-}
-
-#for_view ul.ui-combobox-list li {
-    margin-bottom: 0;
 }
 
 input.button-disabled ,
@@ -1514,7 +1047,7 @@ input.button-disabled ,
 #active-jobs,
 #user-stats span {
     font-weight:bold;
-    font-family:helvetica,arial,sans-serif;
+    font-family: proxima-nova,sans-serif;
     font-size:12px;
 }
 
@@ -1624,29 +1157,9 @@ a.profile-link {
     color: #FF0000;
 }
 
-.expired_warn {
-    background-color: #FF8080;
-    color: #640101;
-}
-
-.expired_warn a {
-    color: #640101;
-}
-
 #ping-msg {
     width: 322px;
     height: 100px;
-}
-
-.table-caption .noteWrapper {
-    float:left;
-    padding-left: 9px;
-}
-
-.table-caption .note {
-    font-size: 10px;
-    color: #876F6D;
-    font-weight: normal;
 }
 
 #cancelstartcodereview,
@@ -1666,15 +1179,9 @@ a.profile-link {
     float: left;
 }
 
-a:hover {
-    cursor: pointer;
-    text-decoration: underline !important;
-    color: #608e96 !important;
-}
-
 #following:hover,
 #invite-link:hover,
-switchmode:hover {
+.switchmode:hover {
     cursor: pointer;
     text-decoration: underline !important;
     color: #608e96 !important;
@@ -1797,16 +1304,6 @@ div.mechanic_id ul {
     text-align: justify;
 }
 
-#uploadButtonDiv {
-}
-
-.table-fees .table-caption {
-    white-space: nowrap;
-}
-
-.table-fees .table-hdng td:first-child{
-}
-
 .table-fees .table-hdng td:last-child{
     width: 81px;
     padding-right: 0;
@@ -1905,4 +1402,132 @@ h1.newProject {
 .ui-menu .ui-menu-item a.ui-state-active {
     text-decoration:none !important;
     color: #000 !important;
+}
+
+
+#bid_amount_conatiner {
+    width: 100%; 
+    margin-bottom: 4px; 
+    margin-top: 23px;
+}
+.bid_amount_p {
+    padding-right: 28px;
+}
+#bid_notes .bid_amount_heading, .bid_amount_heading {
+    font-weight: bold; 
+    font-size:18px !important; 
+    color: #666666 !important;
+    font-family: proxima-nova,sans-serif; 
+}
+.bid_amount_textfield {
+    width: 73px !important; 
+    margin-top: 6px; 
+}
+#place_bid_usd {
+    float: left; 
+    margin-top: 40px;
+    position: relative;
+}
+#bid_amount_description {
+    padding-top: 20px; 
+    width: 401px; 
+    float: left; 
+    font-family: proxima-nova;
+    padding-left: 25px;
+    color: #666666;
+    font-size: .9em;
+}
+.place_bid_divider {
+    width: 109%; 
+    height: 5px; 
+    background-color: #E8EFF0; 
+    position: relative; 
+    left: -22px;
+}
+#bid_notes {
+    width: 100%; 
+    padding-top: 17px; 
+    margin-bottom: 19px; 
+}
+.bid_notes_required {
+    color: #999999;
+}
+.bid_notes_textarea {
+    font-family: proxima-nova !important; 
+    width: 415px !important; 
+    float: left; 
+    margin-right: 19px; 
+    height: 180px !important; 
+    margin-top: 0;
+}
+#bid_notes_decsription {
+    font-family: proxima-nova; 
+    color: #666666;
+    font-size: .8em;
+}
+#bid_done_container {
+    width: 100%; 
+    margin-bottom: 22px;
+}
+#bidDone {
+    width: 100%;
+}
+#bid_done_description {
+    width: 220px; 
+    float: left; 
+    margin-right: 44px;
+}
+#bid_done_explanation {
+    margin-top: 3px; 
+    font-family: proxima-nova;
+    width: 220px;
+    color: #666666;
+    font-size: .9em;
+}
+#time_slider_container {
+    float: left; 
+    padding-top: 12px;
+}
+#right_border {
+    width: 281px; 
+    height: 12px; 
+    position: relative; 
+    top: 12px; 
+    border-left: 1px solid grey; 
+    border-right: 1px solid grey
+}
+#submit_bid_button {
+    padding-top: 9px; 
+    padding-bottom: 19px; 
+    width: 109%; 
+    background-color: #E8EFF0; 
+    position: relative; 
+    left: -22px
+}
+#submit_bid_btn_holder {
+    padding-left: 22px; 
+    padding-right: 14px; 
+    float: left; 
+}
+.place_bid_button {
+    height: 44px !important; 
+    font-size: 18px !important;
+}
+
+#submit_bid_description {
+    padding-top: 10px; 
+    width: 435px; 
+    float: left; 
+    font-family: proxima-nova;
+    color: #666666;
+    font-size: .9em;
+}
+
+.sandboxlink {
+    max-width: 340px;
+    overflow: hidden;
+}
+
+.relative {
+    position: relative;
 }

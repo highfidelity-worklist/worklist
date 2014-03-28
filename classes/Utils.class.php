@@ -45,9 +45,9 @@ class Utils{
         // user just logged  in, let's update the last seen date in session
         // date will be checked against db in initUserById
         $_SESSION['last_seen'] = date('Y-m-d');
+        
+        initSessionDataByUserId($id);
     }
-
-
     
     public static function getVersion() {
         if (file_exists(dirname(dirname(__FILE__)) . '/version.txt')) {
@@ -138,7 +138,7 @@ class Utils{
 
     public static function redirect($url) {
         header('Location: ' . $url);
-        exit;
+        die;
     }
     
     /**

@@ -1,2 +1,0 @@
-    <div id="popup-multiple-bid-info" class="popup-body" title = "Bid Info">
-    </div>

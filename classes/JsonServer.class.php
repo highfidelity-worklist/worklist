@@ -28,7 +28,7 @@ class JsonServer
      * Get the output
      *
      * @return (string) $this->output
-     /*/
+     */
     public function getOutput()
     {
         if ($this->output === null) {
@@ -349,8 +349,9 @@ class JsonServer
                 $current_user = new User();
                 $current_user->findUserById($_SESSION['userid']);
                 $journal_message = 
-                    $current_user->getNickname() . ' uploaded an attachment to #' . $workitem . ': ' . 
-                    $workitem_attached->getSummary() . ' - ' . $file->getUrl();
+                    '@' . $current_user->getNickname() . ' uploaded an [attachment](' . 
+                    $file->getUrl() . ') to **#' . $workitem . "**\n\n" . 
+                    '**' . $workitem_attached->getSummary() . '**';
                 sendJournalNotification($journal_message);
             }
             return $this->setOutput(array(
@@ -556,10 +557,10 @@ class JsonServer
         $user_id = $this->getRequest()->getParam('userid');
         $workItemToCheckCodeReview = new WorkItem($workitem_id);
          
-        // This loop waits its turn to check for code review. Shared memory is used for this
-		// 2nd, third etc code reviewers code will halt here
+        // This loop waits its turn to check for review. Shared memory is used for this
+        // 2nd, third etc reviewers code will halt here
         do {
-        	$sem_id = shmop_open($workitem_id, "n", 0644, 10);
+            $sem_id = shmop_open($workitem_id, "n", 0644, 10);
         } while ($sem_id === false);
         
         $workItem = new WorkItem($workitem_id);
@@ -573,9 +574,10 @@ class JsonServer
         shmop_delete($sem_id); // Delete shared memory
         
         if ($status === null) {
-            return $this->setOutput(array('success' => false, 'data' => nl2br('Code review not available right now')));
+            return $this->setOutput(array('success' => false, 'data' => nl2br('Code Review not available right now')));
         } else if ($status === true || (int)$status == 0) {
-            $journal_message = $user->getNickname() . " has started a code review for #$workitem_id: " . $workItem->getSummary();
+            $journal_message = '@' . $user->getNickname() . ' has started a code review for **#' . $workitem_id . "**\n\n**" . 
+                $workItem->getSummary() . '**';
             sendJournalNotification($journal_message);
             
             $options = array(
@@ -623,8 +625,8 @@ class JsonServer
             $comment->save();
             
             $journalMessage = str_replace("\n", '', $message);
-            sendJournalNotification("Otto could not authorize sandbox for #$workitem_id: " . $workItem->getSummary() . $journalMessage . 
-            " Status set to SvnHold");
+            sendJournalNotification("@Otto could not authorize sandbox for **#" . $workitem_id . "**\n\n**" . 
+                $workItem->getSummary() . '** ' . $journalMessage . ' Status set to *SvnHold*');
 
             return $this->setOutput(array(
                     'success' => false, 
@@ -644,7 +646,7 @@ class JsonServer
         $workitem->setCRStarted(0);
         $workitem->setCReviewerId(0);
         $workitem->save();
-        $journal_message = $user->getNickname() . " has canceled their code review for #$workitem_id: " . $workitem->getSummary();
+        $journal_message = '@' . $user->getNickname() . ' has canceled their code review for **#' . $workitem_id . "**\n\n**" . $workitem->getSummary() . '**';
         sendJournalNotification($journal_message);
         
         $options = array(
@@ -863,7 +865,7 @@ class JsonServer
                     $user->findUserById($runner);
                     $founder = new User();
                     $founder->findUserById($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),
@@ -914,7 +916,7 @@ class JsonServer
                     $user->findUserById($codeReviewer);
                     $founder = new User();
                     $founder->findUserById($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),
@@ -942,7 +944,7 @@ class JsonServer
     }
     
     /**
-     * Allows you to add a code reviewer to the project
+     * Allows you to add a reviewer to the project
      */
     protected function actionAddCodeReviewerToProject() {
         $project = new Project();
@@ -971,7 +973,7 @@ class JsonServer
             }
     
             $founder->findUserById($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),
@@ -983,7 +985,7 @@ class JsonServer
                 error_log("JsonServer:actionAddCodeReviewerToProject: send email to user failed");
             }
             // Add a journal notification
-            $journal_message = $user->getNickname() . ' has been granted Code Review rights for project: ##' . $project->getName() . '##';
+            $journal_message = '@' . $user->getNickname() . ' has been granted *Review* rights for project **' . $project->getName() . '**';
             sendJournalNotification($journal_message);
     
             return $this->setOutput(array(
@@ -1026,7 +1028,7 @@ class JsonServer
             }
             
             $founder->findUserById($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'worklist.php#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),
@@ -1038,7 +1040,7 @@ class JsonServer
                 error_log("JsonServer:actionAddRunnerToProject: send email to user failed");
             }
             // Add a journal notification
-            $journal_message = $user->getNickname() . ' has been granted Runner rights for project: ##' . $project->getName() . '##';
+            $journal_message = '@' . $user->getNickname() . ' has been granted Runner rights for project **' . $project->getName() . '**';
             sendJournalNotification($journal_message);
             
             return $this->setOutput(array(
@@ -1265,7 +1267,7 @@ class JsonServer
                     if(!send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeMechanic: send_email failed"); }
                 }
 
-                sendJournalNotification($this->getUser()->getNickname() . ' updated Job #' . $workitem->getId() . ': ' . $workitem->getSummary() . '. Runner reassigned to ' . $workitem->getRunner()->getNickname());
+                sendJournalNotification('**#' . $workitem->getId() . '** updated by @' . $this->getUser()->getNickname() . "\n\n**" . $workitem->getSummary() . '**. Runner reassigned to @' . $workitem->getRunner()->getNickname());
 
                 return $this->setOutput(array(
                     'success' => true,

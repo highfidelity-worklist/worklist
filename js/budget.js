@@ -2,58 +2,10 @@ var Budget = {
     initCombo: function(id, idBlur) {
         if (!id) {
             id = '#budget-source-combo';
-            classCombo = 'budget-source-combo';
-            idBlur = "#budget-amount";
         } else {
-            classCombo = id;
             id = '#' + id;
         }
-        if ($(id).data("initComboDone") !== true) {
-            $(id).bind({
-                'beforeshow newlist': function(e, o) {
-                    $("ul." + classCombo + "List li").each(function() {
-                        var amount = 0,
-                            title = "",
-                            id = "";
-                        var pos = $(this).text().lastIndexOf("|");
-                        if (pos != -1) {
-                            amount = $(this).text().substr(pos + 1);
-                            id = $(this).text().substr(0, pos);
-                            pos = id.lastIndexOf("|");
-                            if (pos != -1) {
-                                title = id.substr(pos + 1);
-                                id = id.substr(0, pos);
-                            }
-                            $(this).attr("title", title).html("<div class='comboListID'>" + id + "</div>" + 
-                                    "<div class='comboListTitle'>" + title + "</div>" + 
-                                    "<div class='comboListAmount'>$" + amount + "</div>");
-                        } else {
-                            $(this).attr("title", title).html("<div class='comboListID'>&nbsp;</div>" + 
-                                    "<div class='comboListTitle'>" + $(this).text() + "</div>" + 
-                                    "<div class='comboListAmount'></div>");
-                            }
-                        $(this).data("amount", amount);
-                        $(this).addClass("comboListClear");
-                    });
-                }
-            }).comboBox();
-            $(id).data("initComboDone", true);
-            setTimeout(function() {
-                var val1 = $($(id + ' option').get(1)).attr("value");
-                $(id).comboBox({action: "val", param: [val1]});
-                val1 = $($(id + ' option[selected]').get(0)).attr("value");
-                $(id).comboBox({action: "val", param: [val1]});
-            }, 20);
-        }
-        $(idBlur).blur(function(){ 
-            var targetAmount = parseFloat($(idBlur).val());
-            $("ul." + classCombo + "List li").removeClass("redBudget");
-            $("ul." + classCombo + "List li").each(function(){
-                if (parseFloat($(this).data("amount")) < targetAmount) {
-                    $(this).addClass("redBudget");
-                }
-            });
-        });
+        $(id).chosen();
     },
     init : function() {
         
@@ -304,7 +256,6 @@ var Budget = {
                             inDiv: "tabs", 
                             id: $('#budget-receiver').val()
                         });
-                        window.top.$('#user-info').data("budget_update_done", true);
                      } else {
                         alert(json.message);
                     }
@@ -368,14 +319,9 @@ var Budget = {
     
     displayHistory: function(user_id) {
         $('#budgetPopup').dialog('close');
-        window.open('userinfo.php?id=' + user_id + '&tab=tabBudgetHistory', '_blank');
+        window.open('./user/' + user_id + '&tab=tabBudgetHistory', '_blank');
     },
-    
-    displayHistoryFromParent: function(user_id) {
-        window.parent.$('#user-info').dialog('close');
-        window.parent.open('userinfo.php?id=' + user_id + '&tab=tabBudgetHistory', '_blank');
-    },
-    
+        
     /**
     * Show a dialog with expanded info on the selected @section
     * Sections:
@@ -557,7 +503,7 @@ var Budget = {
                         '    </td>' + 
                         '    <td>' + data[i].notes + '</td>' +
                         '    <td>' +
-                        '        <a href="userinfo.php?id=' + data[i].receiver_id + '" target="_blank">' + data[i].who + '</a>' +
+                        '        <a href="./user/' + data[i].receiver_id + '" target="_blank">' + data[i].who + '</a>' +
                         '    </td>' +
                         '    <td>$' + data[i].amount + '</td>' +
                         '    <td>' + data[i].created + '</td>' +
@@ -565,12 +511,12 @@ var Budget = {
                     $('#table-budget-transferred').append(row);
 
                 } else {
-                    var link = '<a href="workitem.php?job_id=' + data[i].id + '&method=view" target="_blank">';
+                    var link = '<a href="./' + data[i].id + '" target="_blank">';
                     // Separate "who" names into an array so we can add the userinfo for each one
                     var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
                     var who_link = '';
                     for (var z = 0; z < who.length; z++) {
-                        who[z] = '<a href="userinfo.php?id=' + data[i].ids[z] + '" target="_blank">' + who[z] + '</a> ';
+                        who[z] = '<a href="./user/' + data[i].ids[z] + '" target="_blank">' + who[z] + '</a> ';
                         if (z < who.length - 1) {
                             who[z] += ', ';
                         }

@@ -1,0 +1,29 @@
+{
+    "require": {
+        "mustache/mustache": "*",
+        "corneltek/pux": "*",
+        "twilio/twilio-php": "*",
+        "michelf/php-markdown": "*",
+        "knplabs/github-api": "*",
+        "kriswallsmith/Buzz": "*"
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "twilio/twilio-php",
+                "version": "0.1",
+                "source": {
+                    "url": "https://github.com/twilio/twilio-php",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "files": ["Services/Twilio.php"]
+                }
+            }
+        }
+    ],
+    "minimum-stability": "dev"
+}
+

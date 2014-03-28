@@ -1,0 +1,49 @@
+<form class="row" id="search">
+    <div id="query" class="col-sm-3 col-md-3">
+      <fieldset>
+        <input type="text" name="query" placeholder="Search" size="20" value="{{getQuery}}" />
+        <button href="#" class="glyphicon glyphicon-remove" title="Clear Search Parameters"></button>
+      </fieldset>
+    </div>
+    <div class="col-sm-2 col-md-2 filter">
+      {{& projectSelect}}
+    </div>
+    <div class="col-sm-2 col-md-2 filter">
+      {{& userSelect}}
+    </div>
+    <div class="col-sm-3 col-md-4 filter">
+      {{& statusSelect}}
+    </div>
+    {{#currentUser.id}}
+    <div id="buttons" class="colsm-2 col-md-1">
+        <p>
+            <a href="./addjob" id="addJobButton" title="Suggest a Feature or Report a Bug">
+                Add job
+            </a>
+        </p>
+    </div>
+    {{/currentUser.id}}
+</form>
+<section class="row">
+    <table class="table table-striped table-worklist">
+        <thead>
+            <tr>
+                <th class="clickable project-col">Project</th>
+                <th><span class="clickable">Job ID</span> &amp; <span class="clickable">Summary</span></th>
+                <th class="clickable status-col">Status</th>
+                <th class="clickable who-col">Who</th>
+                <th class="clickable age-col" id="defaultsort">Age</th>
+                <th class="clickable comments-col"><div class="comments-icon" title="Comments"></div></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <span id="direction" style="display: none; float: right;"><img src="images/arrow-up.png" /></span>
+</section>
+<script type="text/javascript">
+    var page = {{page}};
+    var dir = '{{filter.getDir}}';
+    var sort = '{{filter.getSort}}';
+    var only_needs_review_jobs = {{review_only}};
+</script>

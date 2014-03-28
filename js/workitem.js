@@ -12,10 +12,10 @@ var Workitem = {
     init: function() {
         $("#view-sandbox").click(function() {
             if (WorklistProject.repo_type == 'git') {
-                window.open(Workitem.sandbox_url, '_blank');
+                window.open(sandbox_url, '_blank');
             } else {
                 Workitem.openDiffPopup({
-                    sandbox_url: Workitem.sandbox_url,
+                    sandbox_url: sandbox_url,
                     workitem_id: workitem_id
                 });
             }

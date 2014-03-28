@@ -49,6 +49,17 @@ class File {
     }
 
     /**
+     * This method finds a file by its url
+     *
+     * @param string $url
+     * @return File $this
+     */
+    public function findFileByUrl($url) {
+        $where = sprintf("`url` = '%s'", $url);
+        return $this->loadFiles($where);
+    }
+
+    /**
      * @return the $id
      */
     public function getId() {
@@ -393,8 +404,6 @@ class File {
     // $source_filename must be a full path   (ie. '/tmp/uploads/whatever.jpg')
     // $dest_filename   can be a path as well (ie. 'images/happyface.png')
     public static function s3Upload($source_filename, $dest_filename, $public = true) {
-        require_once(APP_PATH . "/lib/S3/S3.php");
-
         S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
         if (S3::putObject(
             S3::inputFile($source_filename),
@@ -409,7 +418,6 @@ class File {
     }
 
     public static function s3Remove($uri) {
-        require_once(APP_PATH . "/lib/S3/S3.php");
         // get just the URI component, strip the base_url
         $uri = str_replace(S3_URL_BASE, '', $uri);
         S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
@@ -424,7 +432,6 @@ class File {
     }
 
     public static function s3AuthenticatedURL($uri) {
-        require_once(APP_PATH . "/lib/S3/S3.php");
         S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
 
         //Save logging status

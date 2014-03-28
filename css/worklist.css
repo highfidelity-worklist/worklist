@@ -3,16 +3,6 @@
     All Rights Reserved. 
     http://www.lovemachineinc.com
 */
-* :focus { outline: 0; }
-
-a:active {
-    color: #000000;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 #confirmation{
     display: none;
 }
@@ -37,7 +27,7 @@ a:hover {
 .user-info select
 {
     font-size: 14px;
-    font-family: helvetica, arial, sans-serif;
+    font-family: proxima-nova, sans-serif;
     width: 370px;
 }
 
@@ -192,7 +182,8 @@ color:#98AAB2;
 }
 #popup-bid{
     z-index: 1200;
-    font-family: 'Cabin', sans-serif;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
     font-size: 13px;
     color: #666666;
 }
@@ -200,225 +191,6 @@ color:#98AAB2;
 #ui-timepicker-div
 {
     z-index: 1100; 
-}
-
-.input_box {
-    background:transparent url(../images/input_bg.gif) no-repeat scroll 0 0;
-    border: 0 none;
-    display: inline-block;
-    margin: 0 0 0 10px;
-    padding: 2px;
-    top: 10px;
-    width: 220px;
-}
-.input_box input {
-    border: 0 none;
-    color: #2C3549;
-    font-size: 13px;
-    margin: 0;
-    padding: 4px;
-    width: 130px;
-    position: relative;
-    top: -10px;
-    background: none repeat scroll 0 0 transparent !important;
-}
-.input_box form {
-    display: inline;
-    margin: 0;
-    padding: 0;
-}
-.input_box input[type="text"]:active,
-.input_box input[type="text"]:hover,
-.input_box input[type="text"]:focus {
-    border:medium none;
-}
-.searchIcon {
-    position: relative; 
-    top: -3px;
-}
-
-#search-filter-wrap {
-    float: left;
-    top: 0;
-}
-
-#search-filter-wrap .searchDiv {
-    width: 255px;
-    height: 34px;
-}
-
-#search-filter-wrap #query {
-    width: 165px;
-    font-size: 13pt;
-}
-
-#search-filter-wrap .crossSearch {
-    left: 197px;
-}
-
-#search-head {
-    position: relative;
-    float: right;
-    width: 100%;
-    margin-bottom: 7px;
-}
-
-#search-head *, 
-.table-worklist * {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-}
-
-.table-worklist tr td:first-child {
-  padding-left: 10px;
-}
-
-#searchForm > div {
-    float: left;
-    height: 70px;
-    padding: 0;
-    background-color: #e1e8ea;
-}
-
-#searchForm #buttons {
-    float: right;
-    margin-left: 2px;
-    width: 102px;
-    position: relative;
-}
-
-#projectFilter label,
-#userFilter label,
-#jobStatusFilter label {
-    display: block;
-    text-align: left;
-    height: 15px;
-    margin: 1px 0 2px 3px;
-    color: #646464;
-    font-size: 9pt;
-}
-
-#projectFilter,
-#userFilter,
-#jobStatusFilter {
-    padding-top: 12px;
-    display: inline-block;
-}
-
-#projectFilter {
-    width: 193px;
-}
-
-#userFilter {
-    width: 152px;
-}
-
-#jobStatusFilter {
-    width: 183px;
-}
-
-#searchForm .ui-combobox-list {
-    margin-left: 2px;
-    margin-top: 0 !important;
-    left: -3px !important;
-    max-height: 250px;
-    top: 28px;
-}
-
-#projectFilter .ui-combobox-list {
-    width: 182px !important;
-}
-
-#userFilter .ui-combobox-list {
-    width: 142px !important;
-}
-
-#jobStatusFilter .ui-combobox-list {
-    width: 169px !important;
-}
-
-#searchForm .ui-combobox-list li {
-    overflow: hidden;
-}
-
-#projectFilter .ui-combobox-list li {
-    width: 155px;
-}
-
-#userFilter .ui-combobox-list li {
-    width: 114px;
-}
-
-#searchForm .ui-combobox-textbox {
-    color: #aa1e00;
-    font-weight: bold;
-    font-size: 11pt !important;
-    position: absolute;
-    top: 5px;
-}
-
-#projectFilter .ui-combobox-textbox {
-    width: 145px !important;
-}
-
-#userFilter .ui-combobox-textbox {
-    width: 105px !important;
-}
-
-#jobStatusFilter .ui-combobox-textbox {
-    width: 132px !important;
-}
-
-#searchForm .ui-combobox { 
-    background: none #ffffff !important;
-    border-radius: 0px !important;
-    height: 20px;
-    padding-top: 3px;
-    position: relative;
-}
-
-#projectFilter .ui-combobox {
-    width: 172px !important;
-}
-
-#userFilter .ui-combobox {
-    width: 132px !important;
-}
-
-#jobStatusFilter .ui-combobox {
-    width: 159px !important;
-}
-
-#searchForm .ui-combobox-list li.ui-state-hover {
-    background-color: #aa1e00;
-    color: #ffffff;
-}
-
-#searchForm .ui-combobox-list li.ui-combobox-list-selected {
-    background-color: #ffffff;
-    color: #646464;
-    font-weight: bold;
-}
-
-#searchForm .ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 7px -725px transparent !important;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    height: 20px;
-    width: 26px;
-}
-
-#searchForm .activeBox {
-    border-radius: 0 0 5px 5px;
-}
-
-#searchForm .activeBox:after {
-    content: "";
-    height: 252px;
-    position: absolute;
-    right: 17px;
-    top: -253px;
-    width: 20px;
 }
 
 #sharethis_0    {
@@ -469,15 +241,6 @@ color:#98AAB2;
   cursor: pointer;
 }
 
-#loader_img_title {
-    border: 2px #DCD998 solid;
-    background-color:#FFD;
-    color: gray;
-    font-size: 16px;
-    padding:10px;
-    margin:10px;
-}
-
 .second-line {
     margin-top:10px;
     margin-bottom:5px;
@@ -485,15 +248,11 @@ color:#98AAB2;
 
 .clickable { cursor:pointer; }
 
-div#quick-links{
-  margin-top: 5px;
-}
-
-#search-head select[name=user] {
+#searchbar select[name=user] {
     width:100px;
 }
 
-#search-head select[name=status] {
+#searchbar select[name=status] {
     width: 150px;
 }
 #search-filter-section select {
@@ -809,10 +568,6 @@ input.button-disabled ,
     margin-right: 32px;
 }
 
-#login-form, #phone-confirm-form {
-    background: #FFF url(../images/lm_gradient1.jpg) no-repeat top center;
-}
-
 #login-form h2, #phone-confirm-form h2 {
     color: #000;
     margin-top: 8px;
@@ -936,7 +691,7 @@ input.button-disabled ,
     width: auto;
     text-align: center;
     text-decoration: none;
-    font: 16px/100% Arial, Helvetica, sans-serif;
+    font: 16px/100% proxima-nova, Helvetica, sans-serif;
     height: auto;
     padding: 5px 10px;
     text-shadow: 0 1px 1px rgba(0,0,0,.3);
@@ -1044,7 +799,7 @@ a#addJobButton {
 
 .table-worklist a:hover,
 .table-worklist .linkTaskWho > a:hover {
-    color: #aa1e00 !important;
+    color: #009999 !important;
 }
 
 .table-worklist tr:hover {
@@ -1095,307 +850,4 @@ a#addJobButton {
 
 .table-worklist .worklist-pagination-row .inactive {
     color: #888888;
-}
-#bid_amount_conatiner {
-    width: 100%; 
-    margin-bottom: 4px; 
-    margin-top: 23px;
-}
-.bid_amount_p {
-    padding-right: 28px;
-}
-#bid_notes .bid_amount_heading, .bid_amount_heading {
-    font-weight: bold; 
-    font-size:18px !important; 
-    color: #666666 !important;
-    font-family: cabin; 
-}
-.bid_amount_textfield {
-    width: 73px !important; 
-    margin-top: 6px; 
-}
-#place_bid_usd {
-    float: left; 
-    margin-top: 26px;
-    position: relative;
-}
-#bid_amount_description {
-    padding-top: 6px; 
-    width: 401px; 
-    float: left; 
-    font-family: arial;
-    padding-left: 25px;
-    color: #666666;
-}
-.place_bid_divider {
-    width: 109%; 
-    height: 5px; 
-    background-color: #E8EFF0; 
-    position: relative; 
-    left: -22px;
-}
-#bid_notes {
-    width: 100%; 
-    padding-top: 17px; 
-    margin-bottom: 19px; 
-}
-.bid_notes_required {
-    color: #999999;
-}
-.bid_notes_textarea {
-    font-family: arial !important; 
-    width: 415px !important; 
-    float: left; 
-    margin-right: 19px; 
-    height: 180px !important; 
-    margin-top: 0;
-}
-#bid_notes_decsription {
-    font-family: arial; 
-    color: #666666;
-}
-#bid_done_container {
-    width: 100%; 
-    margin-bottom: 22px;
-}
-#bidDone {
-    width: 100%;
-}
-#bid_done_description {
-    width: 247px; 
-    float: left; 
-    margin-right: 44px;
-}
-#bid_done_explanation {
-    margin-top: 3px; 
-    font-family: arial;
-    width: 247px;
-    color: #666666;
-}
-#time_slider_container {
-    float: left; 
-    padding-top: 12px;
-}
-#right_border {
-    width: 281px; 
-    height: 12px; 
-    position: relative; 
-    top: 12px; 
-    border-left: 1px solid grey; 
-    border-right: 1px solid grey
-}
-#submit_bid_button {
-    padding-top: 9px; 
-    padding-bottom: 19px; 
-    width: 109%; 
-    background-color: #E8EFF0; 
-    position: relative; 
-    left: -22px
-}
-#submit_bid_btn_holder {
-    padding-left: 22px; 
-    padding-right: 14px; 
-    float: left; 
-}
-.place_bid_button {
-    height: 44px !important; 
-    font-size: 18px !important;
-}
-
-#submit_bid_description {
-    padding-top: 17px; 
-    width: 435px; 
-    float: left; 
-    font-family: arial;
-    color: #666666;
-}
-
-.sandboxlink {
-    max-width: 340px;
-    overflow: hidden;
-}
-
-.relative {
-    position: relative;
-}
-
-@media only screen and (max-width: 970px) {
-    #outside, 
-    #worklist #container {
-        width: 640px;
-        padding: 0;
-        margin: 0 auto;
-    }
-    
-    #search-filter-wrap .input_box {
-        width: 230px;
-    }
-    
-    #search-filter-wrap .searchDiv {
-        width: 187px;
-    }
-    
-    #search-filter-wrap .crossSearch {
-        left: 129px;
-    }
-    
-    #projectFilter .ui-combobox {
-        width: 137px !important;
-    }
-    
-    #projectFilter .ui-combobox-textbox {
-        width: 110px !important;
-    }
-    
-    #projectFilter .ui-combobox-list {
-        width: 147px !important;
-    }
-    
-    #projectFilter .ui-combobox-list li {
-        width: 120px;
-    }
-    
-    #projectFilter {
-        width: 153px;
-    }
-    
-    #searchForm > .filters > div > label {
-        display: none;
-    }
-    
-    #searchForm > .filters > div > .ui-combobox {
-        margin-top: 18px;
-    }
-    
-    #jobStatusFilter .ui-combobox {
-        width: 139px !important;
-    }
-    
-    #jobStatusFilter .ui-combobox-textbox {
-        width: 112px !important;
-    }
-    
-    #jobStatusFilter .ui-combobox-list {
-        width: 149px !important;
-    }
-    
-    #jobStatusFilter {
-        width: 156px;
-    }
-        
-    #userFilter {
-        display: none;
-    }
-    
-    #searchForm #buttons {
-        width: 92px;
-    }
-    
-    a#addJobButton {
-        margin-left: 5px;
-    }
-    
-    .taskSummary {
-        width: 415px;
-    }
-
-    .who-col,
-    .age-col, 
-    .comments-col {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 640px) {
-    #outside, 
-    #worklist #container {
-        width: 450px;
-        padding: 0;
-        margin: 0 auto;
-    }
-    
-    .taskSummary {
-        width: 415px;
-    }
-
-    #center {
-        margin: 10px;
-        overflow: hidden;
-    }
-
-    #search-filter-wrap {
-        width: 100%;
-        background-color: #E1E8EA;
-    }
-
-    #search-filter-wrap .input_box {
-        width: auto;
-    }
-
-    #search-filter-wrap #search_comments {
-        margin-top: 3px;
-    }
-
-    #search-filter-wrap .searchDiv {
-        margin: 17px 10px;
-        background-image: none;
-        padding-left: 5px;
-    }
-
-    #searchForm div > p {
-        margin: 0;
-    }
-
-    #search-filter-wrap #search_reset {
-        display: none;
-    }
-
-    #searchForm #buttons {
-        width: auto;
-    }
-
-    a#addJobButton {
-        margin: 20px 5px 7px 5px;
-    }
-
-    .project-col, 
-    .status-col, 
-    .who-col, 
-    .age-col, 
-    .comments-col, 
-    .filters {
-        display: none;
-    }
-
-    #tooltip[style] {
-        left: 0 !important;
-        width: 100% !important;
-    }
-}
-
-@media only screen and (max-width: 450px) {
-    #outside, 
-    #worklist #container {
-        width: 300px;
-    }
-    
-    .taskSummary {
-        width: 275px;
-    }
-
-    #center {
-        margin: 10px 2px;
-    }
-
-    #search-filter-wrap .searchDiv {
-        width: 165px;
-    }
-
-    #search-filter-wrap #query {
-        width: 75px;
-    }
-
-    #search-filter-wrap #search_reset {
-        left: 83px;
-    }
 }

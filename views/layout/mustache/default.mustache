@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <base href="{{app.url}}" />
+    {{> meta/copyright}}
+    {{> meta/favicon}}
+    {{& styleTags}}
+    <script type="text/javascript">
+        var userId = user_id = {{currentUser.id}};
+        var is_runner = {{#currentUser.is_runner}}true{{/currentUser.is_runner}}{{^currentUser.is_runner}}false{{/currentUser.is_runner}};
+        var is_admin = {{#currentUser.is_admin}}true{{/currentUser.is_admin}}{{^currentUser.is_admin}}false{{/currentUser.is_admin}};
+        var is_payer = {{#currentUser.is_payer}}true{{/currentUser.is_payer}}{{^currentUser.is_payer}}false{{/currentUser.is_payer}};
+        var worklistUrl = '{{app.url}}';
+        var selfLink = '{{app.self_url}}';
+        var sessionusername = '{{currentUser.username}}';
+        var ajaxRefresh = {{config.ajaxRefresh}} * 1000;
+    </script>
+    {{& scriptTags}}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{> meta/opengraph}}
+    <title>{{title}}</title>
+</head>
+<body>
+    {{> navbar/default}}
+    <div class="container">
+        {{& content}}
+    </div>
+    {{> footer}}
+    {{> popup-budget}}
+    {{> popup-fees}}
+    {{> budget-expanded}}
+    {{> budget-transfer}}
+    {{> popup-addproject}}
+    {{> popup-stats}}
+    {{> popups-userstats}}
+    {{> footer-analytics}}
+</body>

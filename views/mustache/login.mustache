@@ -1,0 +1,23 @@
+<form class="form-signin" role="form" id="form-login" method="post" action="">
+    <h2>Login to Worklist</h2>
+    {{#failed}}
+        {{#errors}}
+            <p class="error">{{&msg}}</p>
+        {{/errors}}
+    {{/failed}}
+    <input type="hidden" name="redir" value="{{redir}}" />
+    <fieldset>
+        <label for="username">Email</label>
+        <input type="text" id="form[username]" name="username" class="form-control" size="40" />
+    </fieldset>
+
+    <fieldset>
+        <label for="password">Password</label>
+        <input id="form[password]" type="password" name="password" class="form-control" />
+    </fieldset>
+
+    <fieldset>
+        <button type="submit" id="Login" name="Login" value="Login">Login</button>
+        or <a href="./forgot" title="Reset your password">recover password</a>
+    </fielsdset>
+</form>

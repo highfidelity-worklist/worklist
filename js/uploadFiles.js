@@ -19,7 +19,7 @@
                 }
 
                 // initiate the upload
-                var uploadButton = $this.next('.fileUploadButton');
+                var uploadButton = $this.next('.fileUploadButton, .uploadbutton');
 
                 new AjaxUpload(uploadButton, {
                     action: 'jsonserver.php',

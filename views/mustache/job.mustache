@@ -1,0 +1,537 @@
+<div id="info-top">
+    <div class="info-summ-big">
+        <div class="info-ID">
+            <span id="following"><span id="followingLogin"></span></span>
+        </div>
+        <span id="invite-link" title="Invite people" href="javascript">Invite someone</span>
+        {{#canEditAndNotEditing}}
+            {{#statusDone}}
+                <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
+            {{/statusDone}}
+            {{^statusDone}}
+                <span class="switchmode" id="switchmode_edit">
+                    <a title="Switch to Edit Mode" href="./{{worklist.id}}?action=edit">
+                        Edit
+                    </a>
+                </span>
+            {{/statusDone}}
+        {{/canEditAndNotEditing}}
+        {{#editing}}
+            <span class="switchmode" id="switchmode_edit">
+                <a title="Switch to View Mode" href="./{{worklist.id}}?action=view">
+                    View
+                </a>
+            </span>
+        {{/editing}}
+    </div>
+</div>
+<div id="info-top" class="info-summ-big-text">
+    #{{worklist.id}}
+    {{#workitem.getBugJobId}}
+        bug of 
+        <a href="./{{workitem.getBugJobId}}?action=view" 
+          class="worklist-item" id="workitem-{{workitem.getBugJobId}}">
+          {{workitem.getBugJobId}}
+        </a>
+    {{/workitem.getBugJobId}}
+    <span class="title {{classEditable}}">{{worklist.summary}}</span>
+</div>
+{{#editing}}
+    <form id="workitem-form" method="post" action="">
+{{/editing}}
+<div id="info-top" class="top-bar">
+    {{^editing}}
+    <div id="quick-status">
+        <span class="info-label">
+            <a href="./help#ff5">Job status:</a>
+            {{^canChangeStatus}}
+                <strong>{{currentStatus}}</strong>
+            {{/canChangeStatus}}
+        </span>
+        {{#canChangeStatus}}
+        <form id="searchForm" method="post" action="">
+            <input type="hidden" id="status-switch" name="status-switch" value="1" />
+            <select id="statusCombo" name="quick-status" class="project-dropdown">
+                <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
+                {{& editableStatusSelect}}
+            </select>
+        </form>
+        {{/canChangeStatus}}
+    </div>
+    {{/editing}}
+    {{& jobBudget}}
+    <div class="project {{#isGitProject}} github{{/isGitProject}}">
+    {{#editing}}
+        <input type="hidden" name="save_workitem" value="save_workitem" />
+        <input type="hidden" name="action" value="save_workitem" />
+        <span class="info-label" id="edit-project-label">Project:</span>
+        {{#canEditProject}}
+            {{& editableProjectSelect}}
+        {{/canEditProject}}
+        {{^canEditProject}}
+            {{#worklist.project_id}}
+             <a href="{{& projectUrl}}" class="edit-project">{{worklist.project_name}}</a>
+             {{/worklist.project_id}}
+        {{/canEditProject}}
+        {{^canEditProject}}
+            <span>Not assigned</span>
+        {{/canEditProject}}
+    {{/editing}}
+    {{^editing}}
+        <div class="project-label">Project:</div>
+        {{#worklist.project_id}}
+            <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
+            {{#worklist.p_website}}
+                <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>
+            {{/worklist.p_website}}
+        {{/worklist.project_id}}
+        {{^worklist.project_id}}
+            <span>Not assigned</span>
+        {{/worklist.project_id}}
+    {{/editing}}
+        {{#isGitProject}}
+        <div class="project-github">
+            <h1>Requires GitHub</h1>
+        </div>
+        {{/isGitProject}}
+    </div>
+    <div style="clear:both; float:none">&nbsp;</div>
+</div>
+{{#erroneous}}
+<div style='color: red; text-align: center;'>{{the_errors}}</div>
+{{/erroneous}}
+<div>
+    {{#action_error}}
+    <div id="action-error" class="LV_invalid">Error performing requested action: {{action_error}}</div>
+    {{/action_error}}
+    <div style="clear:both; float:none;"> </div>
+</div>
+<div id="page-content">
+    <div id="left-panel">
+        <div class="people-info">
+            <div id="creatorBox">
+                <span id="pingCreator" class="creatorName" 
+                  title="{{#currentUser.id}}Ping Creator{{/currentUser.id}}{{^currentUser.id}}Log in to Ping Creator{{/currentUser.id}}">
+                    <a href="#">Job creator:</a>
+                </span>
+                <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
+            </div>
+            <div id="runnerBox">
+                {{#editing}}
+                    <span class="runnerName">Designer:</span>
+                    {{& editableRunnerBox}}
+                {{/editing}}
+                {{^editing}}
+                    {{& nonEditableRunnerBox}}
+                {{/editing}}
+            </div>
+            <div id="mechanicBox">
+                {{& mechanicBox}}
+            </div>
+        </div>
+        <div id="for_view">
+            {{#editing}}
+                <ul style="margin:0; padding:0; border:none;">
+                    <li>
+                        <span class="info-label">Summary</span>
+                        <span class="info-data">
+                        {{#canEditSummary}}
+                        <input type="text" size="30" class="text-field" id="summary" name="summary" value="{{worklist.summary}}"/>
+                        {{/canEditSummary}}
+                        {{^canEditSummary}}
+                        <span class="info-summ">{{worklist.summary}}</span>
+                        {{/canEditSummary}}
+                        </span>
+                    </li>
+                    <li>
+                        <span class="info-label"><a href="./help#ff5">Status</a></span>
+                        <span class="info-data">
+                            {{& statusInfo}}
+                        </span>
+                    </li>
+                    <li>
+                        <span class="sections">Notes</span>
+                            <span id="info-notes">
+                            {{#canEditNotes}}
+                                <textarea name="notes" id="edit-notes" class="expandable" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
+                            {{/canEditNotes}}
+                            {{^canEditNotes}}
+                                {{& notesHtml}}
+                            {{/canEditNotes}}
+                            </span>
+                    </li>
+                    {{#canSeeBudgetArea}}
+                    <li>
+                        <div class="budgetArea">
+                            <div class="budget-label">Budget</div>
+                                {{#isRunnerOfWorkitem}}
+                                <span id="budget-source-combo-area">
+                                    <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown">
+                                        {{^worklist.budget_id}}
+                                            <option value="0" selected="selected">Select a budget</option>
+                                            {{& getBudgetCombo}}
+                                        {{/worklist.budget_id}}
+                                    </select>
+                                </span>
+                                {{/isRunnerOfWorkitem}}
+                                {{^isRunnerOfWorkitem}}
+                                    {{#worklist.budget_id}}{{worklist.budget_reason}}{{/worklist.budget_id}}{{^worklist.budget_id}}<span>Not assigned</span>{{/worklist.budget_id}}
+                                {{/isRunnerOfWorkitem}}
+                                <div style="clear: both;"></div>
+                        </div>
+                    </li>
+                    {{/canSeeBudgetArea}}
+                    <!-- Edit: Sandbox textarea -->
+                    {{#worklist.mechanic_id}}
+                    <li>
+                        <div class="sandbox-container">
+                            <span class="functional-label" >Sandbox:</span><br />
+                            {{#canEditSandboxUrlOnEdit}}
+                            <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="{{worklist.sandbox}}" />
+                            {{/canEditSandboxUrlOnEdit}}
+                            {{^canEditSandboxUrlOnEdit}}
+                                {{#worklist.sandbox}}
+                                <a href="{{& worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                                {{/worklist.sandbox}}
+                                {{^worklist.sandbox}}
+                                <span>Not assigned</span>
+                                {{/worklist.sandbox}}
+                            {{/canEditSandboxUrlOnEdit}}
+                        </div>
+                    </li>
+                    {{/worklist.mechanic_id}}
+                </ul>
+                {{#canEditAndEditing}}
+                    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
+                </div>
+                {{/canEditAndEditing}}
+            {{/editing}}
+            {{^editing}}
+                <span class="sections">Notes</span>
+                <p class="notestext">{{& notesHtmlWithLinks}}</p>
+                <!-- View: Sandbox textarea -->
+                {{#worklist.mechanic_id}}
+                    <div class="sandbox-container">
+                        {{#canEditSandboxUrl}}
+                            <span class="iToolTip changeSBurl functional-label" id="edit_review_url">Sandbox:</span><br />
+                        {{/canEditSandboxUrl}}
+                        {{^canEditSandboxUrl}}
+                            <span class="functional-label">Sandbox:</span><br />
+                        {{/canEditSandboxUrl}}
+                        {{#worklist.sandbox}}
+                            <div class="sandboxlink">
+                                <div class="relative">
+                                    <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                                </div>
+                            </div>
+                            {{#canViewDiff}}
+                                <input type="submit" id="view-sandbox" value="View diff" />
+                            {{/canViewDiff}}
+                        {{/worklist.sandbox}}
+                        {{^worklist.sandbox}}
+                            <span>Not assigned</span>
+                        {{/worklist.sandbox}}
+                    </div>
+                {{/worklist.mechanic_id}}
+                <div id="commentZone">
+                    <div class="row">
+                        <h3 class="info-comments col-md-7">Comments &amp; Activity</h3>
+                        <a href="./{{worklist.id}}#recent" class="col-md-4">See most recent</a>
+                    </div>
+                    <ul id="entries">
+                        {{& taskEntries}}
+                    </ul>
+                    {{#canComment}}
+                    <a name="commentform"></a>
+                    <form action="" method="post" id="commentform">
+                        <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
+                        <input type="hidden" name="user_id" value="{{currentUser.id}}" />
+                        <input type="hidden" name="comment_id" value="" />
+                        <div class="form-group">
+                            <textarea name="comment" class="form-control"></textarea>
+                        </div>
+                        <input type="submit" name="newcomment" value="Comment" />
+                        <input type="button" name="cancel" value="Cancel" />
+                    </form>
+                    {{/canComment}}
+                    <a name="recent"></a>        
+                </div>
+            {{/editing}}
+        </div>  <!-- End of div for_view -->
+    </div> <!-- End of div left-panel -->
+    <div id="right-panel">
+        {{#editing}}
+            <div class="skills">
+                <span class="skills-label">Skills this job requires:</span><br/>
+                {{#skillsCount}}
+                <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="{{commaSeparatedSkills}}," /></span>
+                {{/skillsCount}}
+                {{^skillsCount}}
+                <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
+                {{/skillsCount}}
+                <div class="floatLeft">
+                    <input type="checkbox" name="is_bug" id="is_bug" {{#isBug}}checked="checked"{{/isBug}}
+                      class="wlcheckbox" /> 
+                    <label for="is_bug" id="bugLabel">Bug</label> (If known, linked to Job #)
+                    <input type="text" id="bug_job_id" name="bug_job_id" class="bug_job_id"
+                      value="{{#workitem.getBugJobId}}{{workitem.getBugJobId}}{{/workitem.getBugJobId}}" />
+                </div>
+                <div class="bugJobSummary" id="bugJobSummary" title="{{workitem.getBugJobId}}">
+                </div>
+                <div class="clear"></div>
+            </div>
+        {{/editing}}
+        {{^editing}}
+            <div class="skills">
+                <div class="skills-label">Skills this job requires:</div>
+                {{#skillsCount}}{{commaSeparatedSkills}}{{/skillsCount}}{{^skillsCount}}Thou shalt find out in the missive ...{{/skillsCount}}
+            </div>
+            {{#canReview}}
+                <div class="code-review">
+                    <h4>Time for a code review!</h4>
+                    The code written for this job is ready to be reviewed.
+                    <strong>View the diff</strong> to see the code, then start the review ...
+                    {{^workitem.getCRStarted}}
+                        {{#userHasRights}}
+                            <input class="iToolTip cR" type="submit" value="Start Code Review" 
+                              onClick="return CheckCodeReviewStatus();"/>
+                        {{/userHasRights}}
+                        {{^userHasRights}}
+                            <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" 
+                              onClick="return false;"/>
+                        {{/userHasRights}}
+                    {{/workitem.getCRStarted}}
+                    {{#workitem.getCRStarted}}
+                        {{^workitem.getCRCompleted}}
+                            {{#canEndReview}}
+                                <input class="iToolTip endCr" type="submit" value="End Code Review" 
+                                  onClick="return showEndReviewForm();"/>
+                            {{/canEndReview}}
+                        {{/workitem.getCRCompleted}}
+                    {{/workitem.getCRStarted}}
+                    <div id="review-pointer"></div>
+                </div>
+            {{/canReview}}
+        {{/editing}}
+        <div id="for_view">
+            <div class="moneyZone">
+                <div id="bid-panel">
+                    <table class="table table-striped table-bids">
+                        <caption class="table-caption" >
+                            <h4>Bids</h4>
+                            <span>
+                                {{#currentUser.id}}
+                                    {{#canBid}}
+                                        {{#userIsEligible}}
+                                            <input type="submit" value="{{addBidMsg}}"
+                                              onClick="return showConfirmForm('bid');" />
+                                        {{/userIsEligible}}
+                                        {{^userIsEligible}}
+                                            <input type="submit" class="smbutton" value="Add my bid" 
+                                              onClick="return showIneligible('bid');" />
+                                        {{/userIsEligible}}
+                                        {{#canAcceptBids}}
+                                            <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple"
+                                              onClick="javascript:AcceptMultipleBidOpen();"/>
+                                        {{/canAcceptBids}}
+                                     {{/canBid}}
+                                {{/currentUser.id}}
+                                {{^currentUser.id}}
+                                    <input style="cursor:pointer;" type="button" value="Login to Bid" 
+                                      onClick="sendToLogin(); return false;" />
+                                {{/currentUser.id}}
+                            </span>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <td>Who</td>
+                                <td>Amount</td>
+                                <td class="money">Done in ...</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{& bidsList}}
+                        </tbody>
+                    </table>
+                </div>
+                {{#currentUser.id}}
+                <div id="fee-panel" >
+                    <table class="table table-striped table-fees">
+                        <caption>
+                            <h4>Fees</h4>
+                            <span>
+                                {{^statusDone}}
+                                    {{#userIsMechanic}}
+                                        <input class="iToolTip addTip" type="submit" value="Tip User" />
+                                    {{/userIsMechanic}}
+                                    {{#userIsEligible}}
+                                        <input class="iToolTip addFee" type="submit" value="Add a Fee"
+                                          onClick="return showConfirmForm('fee');"/>
+                                    {{/userIsEligible}}
+                                    {{^userIsEligible}}
+                                        <input class="iToolTip addFee" type="submit" value="Add a Fee" 
+                                          onClick="return showIneligible('fee');"/>
+                                    {{/userIsEligible}}
+                                {{/statusDone}}
+                            </span>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <td class="who">Who</td>
+                                <td class="fee">Amount</td>
+                                <td class="what">What</td>
+                                <td class="when">When</td>
+                                <td class="paid">Paid</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{& feesList}}
+                        </tbody>
+                    </table>
+                    <br />
+                    <form id="withdraw" method="post" action="./{{worklist.id}}" >
+                        <input type="hidden" name="action" value="withdraw_bid" />
+                        <input type="hidden" class="fee_id" name="fee_id" value="" />
+                    </form>
+                    <div style="clear: both"></div>
+                </div> <!-- End of div fee-panel -->
+                {{/currentUser.id}}
+                {{^currentUser.id}}
+                    {{#canBid}}
+                        <input type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
+                    {{/canBid}}
+                {{/currentUser.id}}
+            </div> <!-- End of div moneyZone -->
+            <div id="uploadPanel"> </div>
+        </div> <!-- End of for_view -->
+    </div> <!-- End of div right-panel-->
+</div> <!-- End of div pageContent -->
+{{#editing}}
+    </form>
+{{/editing}}
+{{#message}}
+    <div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
+        <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong>{{message}}</p>
+    </div>
+{{/message}}
+{{> popup-edit-bid-info}}
+{{> popup-place-bid}}
+{{> popup-addfee}}
+{{> popup-startreview}}
+{{> popup-endreview}}
+{{> code-review-already-started}}
+{{> popup-pingtask}}
+{{> popup-bid-info}}
+{{> popup-multiple-bid-info}}
+{{> popup-confirmation}}
+{{> popup-fees}}
+{{> popup-fee-info}}
+{{> popup-withdraw-bid}}
+{{> popup-decline-bid}}
+{{> review-url-dialog}}
+{{> popup-paid}}
+{{> popup-invite-people}}
+{{> popup-runner-job-edit}}
+{{#userIsMechanic}}
+    {{> popup-addtip}}
+{{/userIsMechanic}}
+{{#userIsEligible}}
+    {{> popup-ineligible}}
+{{/userIsEligible}}
+
+<script type="text/javascript">
+    WorklistProject.repo_type = '{{workitem_project.getRepo_type}}';
+    GitHub.isConnected = '{{isGitHubConnected}}';
+    GitHub.applicationKey = '{{workitem_project.getGithubId}}';
+    var project_id = {{worklist.project_id}};
+    var project_name = '{{worklist.project_name}}';
+    var filterName = '.worklist';
+    var user_id = {{currentUser.id}};
+    var workitem_id = {{worklist.id}};
+    var budget_id = {{worklist.budget_id}};
+    var imageArray = new Array();
+    var documentsArray = new Array();
+    var ping_who = '';
+    var ping_bid_id = 0;
+    var sandbox_url = '{{worklist.sandbox}}';
+    var mechanic_id = {{worklist.mechanic_id}};
+    var mechanic_nickname = '{{mechanic_nickname}}';
+    var workitem_id = {{worklist.id}};
+    var already_bid = {{currentUserHasBid}};
+    var has_budget = {{has_budget}};
+    var isFollowing = {{userIsFollowing}};
+    var is_project_founder = {{is_project_founder}};
+    var is_project_runner = {{is_project_runner}};
+    var showAcceptBidButton = {{showAcceptBidButton}};
+    var hasAcceptedBids = {{hasAcceptedBids}};
+    var insufficientRightsToEdit = {{insufficientRightsToEdit}};
+    var showPingBidderButton = {{showPingBidderButton}};
+    var showWithdrawOrDeclineButtons = {{showWithdrawOrDeclineButtons}};
+    var job_status = '{{worklist.status}}';
+    var promptForReviewUrl = {{promptForReviewUrl}};
+    var showReviewUrlPopup = {{showReviewUrlPopup}};
+    var action = '{{action}}';
+    var loginRedirectUrl = '{{loginRedirectUrl}}';
+    var canReassignRunner = {{canReassignRunner}};
+    var status_error = {{status_error}};
+    var displayDialogAfterDone = {{displayDialogAfterDone}};
+    var userinfotoshow = {{userinfotoshow}};
+    var origStatus = '{{worklist.status}}';
+</script>
+<script type="text/html" id="uploadedFiles">
+    <div id="accordion">
+        <h3>Images (<span class="imageCount"><#= images.length #></span>)</h3>
+        <div class="fileimagecontainer">
+            <# if (images.length > 0) { #>
+                <# for(var i=0; i < images.length; i++) {
+                var image = images[i];
+                #>
+                <div class="filesIcon">
+                    <a class="attachment" href="<#= image.url #>" data-error_message="<#= image.error #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
+                </div>
+                <div class="filesDescription">
+                    <# if (image.can_delete == true) { #>
+                    <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Delete</a>
+                    <# } #>
+                    <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
+                    <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
+                </div>
+                <div class="clear"></div>
+                <# } #>
+            <# } #>
+        </div>
+        <h3>Documents (<span class="documentCount"><#= documents.length #></span>)</h3>
+        <div class="filedocumentcontainer">
+            <# if (documents.length > 0) { #>
+                <# for(var i=0; i < documents.length; i++) {
+                var doc = documents[i];
+                #>
+                <div class="filesIcon">
+                    <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>"><img width="32px" height="32px" src="<#= doc.icon #>" /></a>
+                </div>
+                <div class="documents filesDescription">
+                    <# if (doc.can_delete == true) { #>
+                    <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Delete</a>
+                    <# } #>
+                    <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
+                    <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
+                </div>
+                <div class="clear"></div>
+                <# } #>
+            <# } #>
+        </div>
+    </div>
+    {{#canUpload}}
+    <input type="button" id="uploadButtonDiv" class="uploadbutton" value="Attach files" />
+    <div class="uploadnotice"></div>
+    {{/canUpload}}
+</script>
+<!-- js template for file uploads -->
+<script type="text/html" id="uploadDocument">
+    <div class="attachment">
+        <span><#= title #></span>
+        <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
+            <i class="icon-remove"></i>
+        </span>
+    </div>
+</script>

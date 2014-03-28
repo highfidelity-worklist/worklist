@@ -1,0 +1,29 @@
+body > .container-fluid > .row {
+    margin: 20px 0;
+}
+
+.tab-pane {
+    padding: 20px;
+}
+
+body .nav-tabs > li > a {
+    border-radius: 0;
+    border-color: #ddd;
+    padding: 5px 15px;
+}
+
+body .nav-tabs > li:nth-child(n+2) > a {
+    border-left: 0 none;
+}
+
+body .nav-tabs > li > a {
+    margin-right: 0;
+}
+
+table {
+    width: 100%;
+}
+
+#profile-pingtask form > p {
+    display: inline-block;
+}

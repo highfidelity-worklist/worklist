@@ -248,7 +248,7 @@ class Login {
             }else{
                 if($this->checkToken($result->token) && $token == $result->token){
                     $this->updateToken($result->token);
-                    $resetUrl = SECURE_SERVER_URL . 'resetpass.php?un=' . base64_encode($result->username) . '&amp;token=' . $result->confirm_string;
+                    $resetUrl = SECURE_SERVER_URL . 'resetpass?un=' . base64_encode($result->username) . '&amp;token=' . $result->confirm_string;
                     $resetUrl = '<a href="' . $resetUrl . '" title="Password Recovery">' . $resetUrl . '</a>';
                     sendTemplateEmail($result->username, 'recovery', array('url' => $resetUrl));
                     $this->getResponse()->addParams($result);

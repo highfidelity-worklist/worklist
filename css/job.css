@@ -1,0 +1,161 @@
+#info-top {
+    margin-top: 10px;
+    width: 200%;
+    float: left;
+    margin-left: -100%;
+    padding-left: 100%;
+}
+
+#info-top .title:before {
+    content: '- ';
+    color: #333;
+}
+
+#commentZone > .row:first-child {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+}
+
+#commentZone > .row:first-child > h3 + a {
+    text-align: right;
+}
+
+#commentform {
+    background-color: #efefef;
+    border-width: 1px;
+}
+
+#commentform,
+#commentform textarea {
+    border-color: #D6D6D6;
+    border-style: solid;
+    padding-bottom: 10px;
+}
+
+#commentform textarea {
+    font-size: 13px;
+    font-family: proxima-nova, sans-serif;
+    border-width: 0 0 1px;
+}
+
+#commentform .form-group {
+    margin-bottom: 10px;
+}
+
+#commentform input[type="submit"] {
+    margin-left: 10px;
+}
+
+
+table.table-bids thead tr td,
+table.table-fees thead tr td {
+    color: #999;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+
+table.table-bids tr td[colspan="3"],
+table.table-fees tr td[colspan="5"] {
+    padding: 5px 10px;
+}
+
+tr.row-feelist-live {
+    border-bottom: 1px solid #dddddd;
+}
+
+table.table-bids tr.expired_warn:nth-child(odd) > td {
+    background-color: #FF8080;
+}
+
+table.table-bids tr.expired_warn:nth-child(even) > td {
+    background-color: #f7afaf;
+}
+
+table.table-fees td.what {
+    text-align: center;
+}
+
+table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
+    content: '\00a0';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    margin: -11px 0 0 -190px;
+    background-color: #fff;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #dddddd;
+}
+
+.table-bids h4,
+.table-bids h5,
+.table-fees h4,
+.table-fees h5 {
+    display: inline-block;
+}
+
+.table-fees .bid-notes p {
+    white-space: pre-line;
+}
+
+.table-bids h4 + span,
+.table-bids h5 + span,
+.table-fees h4 + span,
+.table-fees h5 + span {
+    float: right;
+}
+
+.table-bids > caption,
+.table-fees > caption {
+    text-align: left;
+}
+
+.table-fees td.who {
+    width: 20%;
+    overflow: hidden;
+}
+.table-fees td.fee {
+    width: 20%;
+}
+.table-fees td.what {
+    width: 18%;
+}
+.table-fees td.when {
+    width: 20%;
+}
+.table-fees td.paid {
+    width: 22%;
+}
+
+.table-fees tr#job-total .data {
+    background-color: #FFFFFF;
+    border: 1px solid #dddddd;
+    cursor: auto;
+    color: #009999;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 5px 9px;
+}
+
+/* inline footer */
+section#footer {
+    max-width: 370px;
+    padding: 6px 0 0 35px;
+    background-position: center left;
+}
+
+section#footer li:first-child:before {
+    content : '• ';
+}
+
+section#footer p,
+section#footer li:nth-child(-n+3) {
+    display: inline-block;
+}
+
+section#footer li:nth-child(-n+3) {
+    display: none;
+}

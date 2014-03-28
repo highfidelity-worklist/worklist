@@ -56,7 +56,7 @@ class ProjectRepoUtil {
     *
     */
     private function notifyJournal($repository, $project) {
-        $journal_message = "Repository created for " . $project . " (" . $repository . ")";
+        $journal_message = "Repository created for #" . $project . " (" . $repository . ")";
 
         //sending journal notification
         sendJournalNotification($journal_message);

@@ -204,109 +204,32 @@ var getPosFromHash = function(){
 
 $(function() {
     $('#share-this').hide();
-    $("#query").DefaultValue("Search...");
-    if ($("#budgetPopup").length > 0) {
-        $("#budgetPopup").dialog({
-            title: "Earning & Budget",
-            dialogClass: 'white-theme',
-            autoOpen: false,
-            width: 340,
-            position: ['center',60],
-            modal: true
-        });
-        $("#welcome .budget").click(function(){
-            $("#budgetPopup").dialog("open");
-        });
-    }
-
     newHash = getPosFromHash();
     if (newHash['userid'] && newHash['userid'] != -1) {
         setTimeout(function(){
-            window.open('userinfo.php?id=' + newHash['userid'], '_blank');
+            window.open('./user/' + newHash['userid'], '_blank');
         },2000);
     }
     
-});
-
-/* get analytics info for this page */
-$(function() {
-    $.analytics = $('#analytics');
-    if ($.analytics.length) {
-        var jobid=$.analytics.attr('data');
-        $.ajax({
-            url: 'api.php?action=visitQuery&jobid=' + jobid,
-            dataType: 'json',
-            success: function(json) {
-                if(parseInt(json.visits)+parseInt(json.views) == 0)
-                {
-                    $.analytics.hide();
-                    return;
-                }
-                var p = $('<p>').html('Page views');
-                p.append($('<span>').html(' Unique: ' + json.visits))
-                p.append($('<span>').html(' Total: ' + json.views));
-                $.analytics.append(p);
-            }
-        });
-    }
 });
 
 
 // function to bind hide and show events for the active only divs 
 // bind to the showing and hiding of project and user lists
 $(function() {
-
+/*
     if ($('#userCombo').length !== 0) {
-        createActiveFilter('#userCombo', 'users', 1);
+        //createActiveFilter('#userCombo', 'users', 1);
     }
-    $('#for_view select[name=status], #search-filter-wrap select[name=status]').comboBox();
+    $('#for_view select[name=status], #searchbar select[name=status]').comboBox();
 
     // add fading effect to the status combobox selected item shown as the list caption
     if ($('#container-statusCombo > .fading').length == 0) {
         $('#container-statusCombo').append('<div class="fading"></div>');
     }
-      
+*/
 });
 
-function sendInviteForm(){
-  var name = $('input[name="invite"]', $("#invite-people")).val();
-  $.ajax({
-    type: "POST",
-    url: "workitem.php?job_id=" + worklist_id,
-    data: "invite=" + name + "&invite-people=Invite",
-    dataType: "json",
-    success: function(json) {
- 
-        if (!json.length) {
-            $("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
-            $('input[name="invite"]').val('');
-            $('#invite-people').dialog('close');
-            $("#sent-notify").dialog("open");
-            setTimeout(function() {
-                $("#sent-notify").dialog("close"); 
-            }, 2000);
-            
-        } else {
-            alert("Some of the users you sent do not exist. Please correct those shown and try again.");
-            $('#invite').val('');
-            // we need to enter unsent items back into text field
-            for (var i = 0; i < json.length; i++) {
-                if(i != 0) {
-                    $('#invite').val($('#invite').val() + ',' + json[i]);
-                } else {
-                    $('#invite').val($('#invite').val() + json[i]);
-                }
-                
-            }
-        }
-        
-    },
-    error: function(xhdr, status, err) {
-      $("#sent-notify").html("<span>Error sending invitation</span>");
-    }
-  });
-  return false;
-}
 function applyPopupBehavior() {
 
     $('a.attachment').unbind('click');    
@@ -390,14 +313,6 @@ function applyPopupBehavior() {
         }
     });
 }
-
-// function to add an inline message above the job listing
-// call with the html you want in the inline message
-function addInlineMessage(html) {
-    $('#inlineMessage').append(html);
-    $('#inlineMessage').show();
-}
-
 
 $(function() {
     runDisableable();

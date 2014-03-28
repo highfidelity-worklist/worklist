@@ -1,0 +1,1277 @@
+@media (min-width: 1024px) {
+    body > .container-fluid {
+        max-width: 1024px;
+    }
+}
+
+body {
+    font-size: 14px;
+}
+@media (max-width: 1024px) {
+    body {
+        font-size: 11px;
+    }
+}
+
+.popup-body,
+.user-info
+{
+    padding: 0 8px;
+    text-align: left;
+}
+
+.popup-body input[type="text"], .popup-body textarea,
+.user-info input[type="text"], .user-info textarea,
+.user-info select
+{
+    font-size: 14px;
+    font-family: proxima-nova, sans-serif;
+    width: 370px;
+}
+
+.popup-body #bid_fee_desc {
+    width:270px;
+}
+
+.popup-body #bid_fee_amount {
+    width:70px;
+}
+
+.bugJobSummary {
+    display: block;
+    margin: 0;
+    padding: 5px;
+    border-style: none;
+    z-index: 3000;
+    float: right;
+    width: 200px
+}
+
+.popup-body input.date,
+.user-info input.date {
+    width: 130px;
+}
+.popup-body input.money,
+.user-info input.money {
+    width: 50px;
+}
+
+.popup-body p, .user-info p
+{
+    margin: 0 0 2px;
+}
+
+.popup-body .popup-delete-summary {
+    padding: 4px;
+}
+
+.table-userlist tr:hover{
+    cursor: pointer;
+}
+.table-userlist thead tr:hover{
+    cursor: default;
+}
+
+.workitem-selected {
+    background: #FFD;
+}
+
+.info-label{
+    font-weight: bold;
+}
+.info-label span{
+    font-weight:normal;
+}
+.info-label textarea {
+    height: 110px;
+}
+
+.info-label textarea,
+.info-label input[type=text] {
+    width: 370px;
+}
+
+#editContainer {
+    width: 380px;
+    border: 0;
+    margin-top: 5px;
+}
+
+#editContainer p,
+#editContainer #buttonHolder,
+#editContainer .accordion {
+    margin-left: -88px !important;
+    width: 100%;
+}
+
+#bid-signup{
+text-align: center;
+}
+#bid-signup a{
+color:#98AAB2;
+}
+.right-button,
+.right-note {
+    float: right;
+    margin-right: 5px;
+}
+.left-button {
+    float: left;
+    margin-left: 5px;
+}
+.required-field {
+    color: #ff0000;
+    font-weight: bold;
+    font-size: larger;
+}
+.left-col{
+    float: left;
+    margin-left: 30px;
+    width: 45%;
+}
+
+.right-col{
+    float: left;
+    margin-left: 30px;
+}
+#popup-bid{
+    z-index: 1200;
+    font-family: proxima-nova, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    color: #666666;
+}
+#ui-datepicker-div,
+#ui-timepicker-div
+{
+    z-index: 1100; 
+}
+
+#sharethis_0    {
+    position:absolute;
+    margin-top: 3px;
+    margin-left: 20px;
+}
+
+/* Paypal Reports */
+#pp-filter-box {
+    float:right;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border: 2px #DCD998 solid;
+    background-color:#FFD;
+    padding:8px 8px 19px 8px;
+    height:95px;
+    margin-bottom: 20px;
+}
+
+#pp-filter-rrbox {
+    float:right;
+    text-align:right;
+    margin-top:20px;
+}
+
+#pp-filter-rbox {
+    float:right;
+    text-align:right;
+    margin-top:20px;
+    margin-right:8px;
+}
+
+#pp-filter-lbox {
+    float:right;
+/*    text-align:right;*/
+    margin-right:8px;
+}
+
+#job_id {
+    width:69px;
+}
+#wFees {
+    display: none;
+}
+.feesum {
+  cursor: pointer;
+}
+
+.second-line {
+    margin-top:10px;
+    margin-bottom:5px;
+}
+
+.clickable { cursor:pointer; }
+
+#search-filter-section select {
+    text-align: left;
+    width:100px;
+}
+#search-filter-section  td.textAlignReport div div{
+    text-align: left;
+}
+
+
+td.textAlignReport {
+    text-align: right;
+    padding-top:4px;
+    margin:1px;
+    width:210px;
+}
+
+.report-label,
+#search-filter-section td.textAlignReport div div.report-label {
+    float: left;
+    width: 35%;
+    text-align: right;
+    padding: 5px 5px 0 0;
+}
+
+.report-input-item {
+    float: left;
+}
+
+.report-item-clear {
+    clear: both;
+    height: 1px;
+}
+
+#search-filter-wrap-reports {
+    width: 720px;
+}
+
+#searchForm  div > p {
+    margin-bottom: 0 !important;
+}
+
+#add {
+    font-weight: bold;
+    color: #6F6F6F;
+    font-size: 12px;
+}
+
+.clear {
+    clear: both;
+}
+.hidden {
+    display: none;
+}
+#ping-msg {
+    height: 100px;
+    width: 322px;
+}
+#send-ping-btn {
+    margin-top: 8px;
+}
+
+.taskProject span,
+.taskSummaryCell {
+    cursor: pointer;
+}
+
+.table-worklist td {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.table-worklist td:nth-child(n+2):before,
+.table-worklist tbody tr:after {
+    content: ' ';
+    width: 35px;
+    height: 1.5em;
+    position: absolute;
+    margin-left: -35px;
+}
+
+.table-worklist td:nth-child(n+2):before {
+    float: left;    
+}
+
+.table-worklist tbody tr:after {
+    margin-top: 8px;
+}
+
+/* normal even rows overflow fading */
+.table-striped > tbody > tr:nth-child(even) > td:nth-child(n+2):before,
+.table-striped > tbody > tr:nth-child(even):after {
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+}
+
+/* normal odd rows overflow fading */
+.table-striped > tbody > tr:nth-child(odd) > td:nth-child(n+2):before,
+.table-striped > tbody > tr:nth-child(odd):after {
+    background: -moz-linear-gradient(left, rgba(249,249,249,0) 0%, rgba(249,249,249,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(249,249,249,0)), color-stop(100%,rgba(249,249,249,1)));
+    background: -webkit-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
+    background: -o-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
+    background: -ms-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
+    background: linear-gradient(to right, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
+}
+
+/* owned jobs odd rows background */
+.table-striped > tbody > tr.rowown:nth-child(odd) > td {
+    background-color: #ffe6cc;
+}
+/* owned jobs odd rows overflow fading */
+.table-striped > tbody > tr.rowown:nth-child(odd) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowown:nth-child(odd):after {
+    background: -moz-linear-gradient(left, rgba(255,230,204,0) 0%, rgba(255,230,204,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,230,204,0)), color-stop(100%,rgba(255,230,204,1)));
+    background: -webkit-linear-gradient(left, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
+    background: linear-gradient(to right, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
+}
+/* owned jobs even rows background */
+.table-striped > tbody > tr.rowown:nth-child(even) > td {
+    background-color: #f7dec6;
+}
+/* owned jobs even rows overflow fading */
+.table-striped > tbody > tr.rowown:nth-child(even) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowown:nth-child(even):after {
+    background: -moz-linear-gradient(left, rgba(247,222,198,0) 0%, rgba(247,222,198,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,222,198,0)), color-stop(100%,rgba(247,222,198,1)));
+    background: -webkit-linear-gradient(left, rgba(247,222,198,0) 0%,rgba(247,222,198,1) 100%);
+    background: -o-linear-gradient(left, rgba(247,222,198,0) 0%,rgba(247,222,198,1) 100%);
+    background: -ms-linear-gradient(left, rgba(247,222,198,0) 0%,rgba(247,222,198,1) 100%);
+    background: linear-gradient(to right, rgba(247,222,198,0) 0%,rgba(247,222,198,1) 100%);
+}
+
+/* jobs with bid odd rows background */
+.table-striped > tbody > tr.rowbidon:nth-child(odd) > td {
+    background-color: #b5e595;
+}
+/* jobs with bid odd rows overflow fading */
+.table-striped > tbody > tr.rowbidon:nth-child(odd) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowbidon:nth-child(odd):after {
+    background: -moz-linear-gradient(left, rgba(181,229,149,0) 0%, rgba(181,229,149,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(181,229,149,0)), color-stop(100%,rgba(181,229,149,1)));
+    background: -webkit-linear-gradient(left, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
+    background: -o-linear-gradient(left, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
+    background: -ms-linear-gradient(left, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
+    background: linear-gradient(to right, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
+}
+/* jobs with bid even rows background */
+.table-striped > tbody > tr.rowbidon:nth-child(even) > td {
+    background-color: #aedb8e;
+}
+/* jobs with bid even rows overflow fading */
+.table-striped > tbody > tr.rowbidon:nth-child(even) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowbidon:nth-child(even):after {
+    background: -moz-linear-gradient(left, rgba(174,219,142,0) 0%, rgba(174,219,142,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(174,219,142,0)), color-stop(100%,rgba(174,219,142,1)));
+    background: -webkit-linear-gradient(left, rgba(174,219,142,0) 0%,rgba(174,219,142,1) 100%);
+    background: -o-linear-gradient(left, rgba(174,219,142,0) 0%,rgba(174,219,142,1) 100%);
+    background: -ms-linear-gradient(left, rgba(174,219,142,0) 0%,rgba(174,219,142,1) 100%);
+    background: linear-gradient(to right, rgba(174,219,142,0) 0%,rgba(174,219,142,1) 100%);
+}
+
+/* jobs with bid expired odd rows background */
+.table-striped > tbody > tr.rowbidexpired:nth-child(odd) > td {
+    background-color: #ffb3b3;
+}
+/* jobs with bid expired odd rows overflow fading */
+.table-striped > tbody > tr.rowbidexpired:nth-child(odd) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowbidexpired:nth-child(odd):after {
+    background: -moz-linear-gradient(left, rgba(255,179,179,0) 0%, rgba(255,179,179,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,179,179,0)), color-stop(100%,rgba(255,179,179,1)));
+    background: -webkit-linear-gradient(left, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
+    background: linear-gradient(to right, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
+}
+/* jobs with bid expired even rows background */
+.table-striped > tbody > tr.rowbidexpired:nth-child(even) > td {
+    background-color: #f7afaf;
+}
+/* jobs with bid expired even rows overflow fading */
+.table-striped > tbody > tr.rowbidexpired:nth-child(even) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowbidexpired:nth-child(even):after {
+    background: -moz-linear-gradient(left, rgba(247,175,175,0) 0%, rgba(247,175,175,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,175,175,0)), color-stop(100%,rgba(247,175,175,1)));
+    background: -webkit-linear-gradient(left, rgba(247,175,175,0) 0%,rgba(247,175,175,1) 100%);
+    background: -o-linear-gradient(left, rgba(247,175,175,0) 0%,rgba(247,175,175,1) 100%);
+    background: -ms-linear-gradient(left, rgba(247,175,175,0) 0%,rgba(247,175,175,1) 100%);
+    background: linear-gradient(to right, rgba(247,175,175,0) 0%,rgba(247,175,175,1) 100%);
+}
+
+/* jobs as runner odd rows background */
+.table-striped > tbody > tr.rowrunner:nth-child(odd) > td {
+    background-color: #e2eef3;
+}
+/* jobs as runner odd rows overflow fading */
+.table-striped > tbody > tr.rowrunner:nth-child(odd) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowrunner:nth-child(odd):after {
+    background: -moz-linear-gradient(left, rgba(226,238,243,0) 0%, rgba(226,238,243,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(226,238,243,0)), color-stop(100%,rgba(226,238,243,1)));
+    background: -webkit-linear-gradient(left, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
+    background: -o-linear-gradient(left, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
+    background: -ms-linear-gradient(left, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
+    background: linear-gradient(to right, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
+}
+/* jobs as runner rows background */
+.table-striped > tbody > tr.rowrunner:nth-child(even) > td {
+    background-color: #dae6ea;
+}
+/* jobs as runner even rows overflow fading */
+.table-striped > tbody > tr.rowrunner:nth-child(even) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowrunner:nth-child(even):after {
+    background: -moz-linear-gradient(left, rgba(218,230,234,0) 0%, rgba(218,230,234,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(218,230,234,0)), color-stop(100%,rgba(218,230,234,1)));
+    background: -webkit-linear-gradient(left, rgba(218,230,234,0) 0%,rgba(218,230,234,1) 100%);
+    background: -o-linear-gradient(left, rgba(218,230,234,0) 0%,rgba(218,230,234,1) 100%);
+    background: -ms-linear-gradient(left, rgba(218,230,234,0) 0%,rgba(218,230,234,1) 100%);
+    background: linear-gradient(to right, rgba(218,230,234,0) 0%,rgba(218,230,234,1) 100%);
+}
+
+/* jobs as mechanic odd rows background */
+.table-striped > tbody > tr.rowmechanic:nth-child(odd) > td {
+    background-color: #ffff9e;
+}
+/* jobs as mechanic odd rows overflow fading */
+.table-striped > tbody > tr.rowmechanic:nth-child(odd) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowmechanic:nth-child(odd):after {
+    background: -moz-linear-gradient(left, rgba(255,255,158,0) 0%, rgba(255,255,158,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,158,0)), color-stop(100%,rgba(255,255,158,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
+}
+/* jobs as mechanic even rows background */
+.table-striped > tbody > tr.rowmechanic:nth-child(even) > td {
+    background-color: #f7f79c;
+}
+/* jobs as mechanic even rows overflow fading */
+.table-striped > tbody > tr.rowmechanic:nth-child(even) > td:nth-child(n+2):before,
+.table-striped > tbody > tr.rowmechanic:nth-child(even):after {
+    background: -moz-linear-gradient(left, rgba(247,247,156,0) 0%, rgba(247,247,156,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,247,156,0)), color-stop(100%,rgba(247,247,156,1)));
+    background: -webkit-linear-gradient(left, rgba(247,247,156,0) 0%,rgba(247,247,156,1) 100%);
+    background: -o-linear-gradient(left, rgba(247,247,156,0) 0%,rgba(247,247,156,1) 100%);
+    background: -ms-linear-gradient(left, rgba(247,247,156,0) 0%,rgba(247,247,156,1) 100%);
+    background: linear-gradient(to right, rgba(247,247,156,0) 0%,rgba(247,247,156,1) 100%);
+}
+
+.table-worklist tbody tr.row-worklist-live {
+    cursor: pointer;
+    border: 0 none;
+}
+
+.table-worklist tbody tr td {
+    border: 0 none;
+}
+
+/* worklist table column sizes */
+.table-worklist tr > td:nth-child(1) {
+    max-width: 60px;
+}
+.table-worklist tr > td:nth-child(2) {
+    max-width: 350px; 
+}
+.table-worklist tr > td:nth-child(3) {
+    max-width: 60px;
+}
+.table-worklist tr > td:nth-child(4) {
+    max-width: 90px;
+}
+.table-worklist tr > td:nth-child(5) {
+    max-width: 60px;
+}
+@media (max-width: 768px) {
+    .table-worklist tr > td:nth-child(1),
+    .table-worklist tr > td:nth-child(2),
+    .table-worklist tr > td:nth-child(3) {
+        max-width: auto; 
+    }
+    .table-worklist tr > td:nth-child(1),
+    .table-worklist tr > td:nth-child(3) {
+        min-width: 50px; 
+    }
+    .table-worklist tr > td:nth-child(2) {
+        min-width: 100px; 
+    }
+    .table-worklist tr > th:nth-child(4),
+    .table-worklist tr > td:nth-child(4) {
+        display: none;
+    }
+    .table-worklist tr > th:nth-child(5),
+    .table-worklist tr > td:nth-child(5) {
+        display: none;
+    }
+    .table-worklist tr > th:nth-child(6),
+    .table-worklist tr > td:nth-child(6) {
+        display: none;
+    }
+}
+
+.table-worklist tr > td a {
+    color: #666;
+}
+
+.table-worklist tr > td:nth-child(2) > a {
+    font-weight: normal;
+    color: #333;
+}
+
+.table-worklist tr > td:nth-child(2) > a + h4 {
+    display: inline-block;
+    font-size: 1em;
+    margin-right: 5px;
+    font-weight: bold;
+}
+.table-worklist tr > td:nth-child(2) > a + h4:before {
+    content: ' - ';
+    font-weight: normal;
+}
+
+.table-worklist tr > td:nth-child(2) > h4,
+.table-worklist tr > td:nth-child(2) > h4 + p {
+    padding: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    display: inline-block;
+}
+
+.taskAge {
+    font-size: .7em;
+}
+
+.taskWho,
+.taskAge {
+    color: #999999;
+}
+
+.table-worklist td div > span:last-child:after,
+.fading,
+.fadingblue {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    content: "";
+    height: 1.7em;
+}
+
+.ui-combobox > .fading {
+    right: 32px;
+    height: 2em;
+}
+
+.taskSummaryCell a,
+.taskProject span > a {
+    text-decoration: none;
+}
+
+.taskProject span > a {
+    color: #999999;
+}
+
+.taskSummaryCell a {
+    color: #222222;
+}
+
+.job-status {
+    color: #999999;
+    text-transform: capitalize;
+}
+
+.taskSummary > span {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.noMargin {
+    margin: 0;
+}
+/*roles section*/
+.buttonContainer-save {
+    margin:15px 0px 20px -8px;
+}
+
+.detailContainer {
+    width: 50%;
+}
+
+.descriptionHolder,
+.detailContainer {
+    margin-left: -25px;
+}
+
+table.tablesorter thead tr .header {
+    background-image: url(../images/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-position-x: 100%;
+    background-position-y: 50%;
+    cursor: pointer;
+}
+
+table.tablesorter thead tr .headerSortDown {
+    background-image: url(../images/desc.gif);
+}
+
+table.tablesorter thead tr .headerSortUp {
+    background-image: url(../images/asc.gif);
+}
+
+#for_view li .notestext a,
+.comment a {
+    color: rgb(0, 118, 252);
+}
+.reply-lnk a {
+    color: rgb(152, 170, 178);
+}
+#for_view li .notestext a:hover,
+.comment a:hover {
+    text-decoration:none;
+}
+
+input.button-disabled ,
+.button-disabled {
+    cursor: default;
+    opacity: 0.5;
+    -moz-opacity: 0.5;
+    -webkit-opacity: 0.5;
+}
+#phone-confirm-form {
+    width: 253px;
+}
+#login-form, #phone-confirm-form {
+    border: 1px solid black;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 32px;
+}
+
+#login-form h2, #phone-confirm-form h2 {
+    color: #000;
+    margin-top: 8px;
+}
+
+#loginFormHolder, #confirmPhoneFormHolder {
+    position: relative;
+    width: 420px;
+    height: 180px;
+}
+#login-form .LV_validation_message, 
+#phone-confirm-form .LV_validation_message {
+    text-align: left;
+}
+
+#login-form .LV_valid,
+#phone-confirm-form .LV_valid {
+    padding-left: 0px;
+}
+
+.profile-link{
+    cursor: pointer;
+}
+
+#more-accordion #more-panel {
+    margin: 0;
+    width: 386px;
+    padding-top: 6px;
+}
+
+#more-panel.ui-accordion-content {
+    margin-top: 5px;
+    padding: 0px;
+    background-color: #FFFFDD;
+}
+#more-panel.ui-widget-content {
+    background-image: none;
+}
+
+
+#w2checkbox {
+    padding-top:5px;
+}
+
+#paypal_email {
+    width: 200px;
+}
+
+#savePayPalEmailDialog,
+#saveLaterDialog {
+    text-align:justify;
+}
+
+.okButton {
+    float: right;
+    margin-top: 20px;
+}
+
+.loading {
+    font-style: italic;
+}
+
+.past-due {
+    color: #000000;
+}
+
+.onlyActiveCheckbox {
+    margin: 0;
+    position: 'relative';
+    top: '1px';
+}
+
+#internal {
+    margin-left: 0px;
+}
+
+|.table-worklist .comments-icon {
+    background: url("../images/primaryIcons-WL.png") no-repeat scroll 0 -685px transparent;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.table-worklist tr td:first-child {
+  padding-left: 10px;
+}
+
+.table-worklist .table-hdng {
+    height: 28px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+table.table-worklist > tbody > tr.worklist-pagination-row > td {
+    background: transparent none;
+}
+
+.table-worklist .worklist-pagination-row > td > span {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.table-worklist .worklist-pagination-row .page,
+.table-worklist .worklist-pagination-row .previous,
+.table-worklist .worklist-pagination-row .next {
+    padding: 3px;
+}
+
+.table-worklist .worklist-pagination-row a {
+    text-decoration: none;
+}
+
+.table-worklist .worklist-pagination-row .inactive {
+    color: #888888;
+}
+#bid_amount_conatiner {
+    width: 100%; 
+    margin-bottom: 4px; 
+    margin-top: 23px;
+}
+.bid_amount_p {
+    padding-right: 28px;
+}
+#bid_notes .bid_amount_heading, .bid_amount_heading {
+    font-weight: bold; 
+    font-size:18px !important; 
+    color: #666666 !important;
+    font-family: proxima-nova,sans-serif; 
+}
+.bid_amount_textfield {
+    width: 73px !important; 
+    margin-top: 6px; 
+}
+#place_bid_usd {
+    float: left; 
+    margin-top: 26px;
+    position: relative;
+}
+#bid_amount_description {
+    padding-top: 6px; 
+    width: 401px; 
+    float: left; 
+    font-family: proxima-nova;
+    padding-left: 25px;
+    color: #666666;
+}
+.place_bid_divider {
+    width: 109%; 
+    height: 5px; 
+    background-color: #E8EFF0; 
+    position: relative; 
+    left: -22px;
+}
+#bid_notes {
+    width: 100%; 
+    padding-top: 17px; 
+    margin-bottom: 19px; 
+}
+.bid_notes_required {
+    color: #999999;
+}
+.bid_notes_textarea {
+    font-family: proxima-nova !important; 
+    width: 415px !important; 
+    float: left; 
+    margin-right: 19px; 
+    height: 180px !important; 
+    margin-top: 0;
+}
+#bid_notes_decsription {
+    font-family: proxima-nova; 
+    color: #666666;
+}
+#bid_done_container {
+    width: 100%; 
+    margin-bottom: 22px;
+}
+#bidDone {
+    width: 100%;
+}
+#bid_done_description {
+    width: 247px; 
+    float: left; 
+    margin-right: 44px;
+}
+#bid_done_explanation {
+    margin-top: 3px; 
+    font-family: proxima-nova;
+    width: 247px;
+    color: #666666;
+}
+#time_slider_container {
+    float: left; 
+    padding-top: 12px;
+}
+#right_border {
+    width: 281px; 
+    height: 12px; 
+    position: relative; 
+    top: 12px; 
+    border-left: 1px solid grey; 
+    border-right: 1px solid grey
+}
+#submit_bid_button {
+    padding-top: 9px; 
+    padding-bottom: 19px; 
+    width: 109%; 
+    background-color: #E8EFF0; 
+    position: relative; 
+    left: -22px
+}
+#submit_bid_btn_holder {
+    padding-left: 22px; 
+    padding-right: 14px; 
+    float: left; 
+}
+.place_bid_button {
+    height: 44px !important; 
+    font-size: 18px !important;
+}
+
+#submit_bid_description {
+    padding-top: 17px; 
+    width: 435px; 
+    float: left; 
+    font-family: proxima-nova;
+    color: #666666;
+}
+
+.sandboxlink {
+    max-width: 340px;
+    overflow: hidden;
+}
+
+.relative {
+    position: relative;
+}
+
+select + div, 
+select, 
+input {
+    font-size: 1em;
+}
+
+
+#search {
+    background-color: #dde4e6;
+}
+
+
+@media (max-width: 768px) {
+    #search {
+        position: relative;
+        padding-bottom: 5px;
+    } 
+}
+
+#search select + div,
+#search select,
+#query > fieldset > input {
+    margin-bottom: 13px;
+    font-family: proxima-nova, sans-serif;
+    font-size: 1em;
+    line-height: 1.45em;
+}
+@media (max-width: 768px) {
+    #search select + div,
+    #search select,
+    #query > fieldset > input {
+        margin-bottom: 0;
+    }
+}
+
+#query > fieldset > input[type="text"] {
+    padding-left: 23px;
+}
+
+@media (max-width: 1024px) {
+    #query > fieldset > input[type="text"] {
+        width: 50%;
+        padding-left: 23px;
+    }
+}
+
+#query > fieldset:before {
+    font-family: FontAwesome;
+    content: "\f002";
+    position: absolute;
+    color: #000;
+    margin: 5px 7px;
+    color: #007F7c;
+}
+
+
+#query > fieldset > * {
+    vertical-align: top;
+}
+
+#query > fieldset > input[type="text"],
+#query > fieldset > input[type="text"] + button {
+    display: inline-block;
+}
+
+#query > fieldset > input[type="text"] + button {
+    margin-left: -40px;
+    font-size: 1.5em;
+    top: 7px;
+    border: 0 none;
+    background: transparent none;
+    color: #666;
+}
+@media (max-width: 1024px) {
+    #query > fieldset > input[type="text"] + button {
+        margin-left: -30px;
+    }
+}
+@media (max-width: 768px) {
+    #query > fieldset > input[type="text"] + button {
+        display: none;
+    }
+}
+
+#query > fieldset > input[type="text"] + button:focus {
+    color: #007F7c;
+}
+
+#query > fieldset {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#query fieldset > input[type="checkbox"] {
+    opacity: 0;
+    width: 10px;
+    height: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+#query fieldset > input[type="checkbox"] + label {
+    display: inline-block;
+    background: url('../images/primaryIcons-WL.png') no-repeat scroll 3px -359px transparent;
+    border-width: 1px 1px 1px 0; 
+    border-style: solid;
+    border-color: #ccc;
+    width: 62px;
+    height: 32px;
+    margin-left: -20px;
+}
+@media (max-width: 1024px) {
+    #query fieldset > input[type="checkbox"] + label {
+        height: 29px;
+        width: 47px;
+        margin-left: -21px;
+        background-position: 0px -359px;
+    }
+}
+@media (max-width: 768px) {
+    #query fieldset > input[type="checkbox"] + label {
+        height: 29px;
+        width: 70px;
+        margin-left: -20px;
+        background-position: 10px -359px;
+    }
+}
+
+#query fieldset > input[type="checkbox"] + label:after {
+    content: '\00a0';
+    width: 22px;
+    border-radius: 5px;    
+    font-family: FontAwesome;
+    display: inline-block;
+    float: right;
+    margin: 4px;
+    border: 1px solid #ccc;
+    padding: 0 3px;
+    background-color: #fff;
+    color: #999;
+}
+
+#query fieldset > input[type="checkbox"]:checked + label:after {
+    content: '\f00c';
+}
+
+#query > fieldset > input[type="checkbox"]:focus + label:after {
+    border-color: #007F7c;
+}
+
+#search .chosen-container:before {
+    color: #666;
+}
+
+#projectCombo_chosen:before {
+    content: 'Which project?';
+}
+#projectCombo_chosen {
+    width: 100% !important;
+}
+@media (max-width: 1024px) {
+    #projectCombo_chosen:before {
+        content: '';
+    }
+}
+
+#userCombo_chosen:before {
+    content: 'Users involved';
+}
+#userCombo_chosen {
+    width: 100% !important;
+}
+@media (max-width: 1024px) {
+    #userCombo_chosen:before {
+        display: none;
+    }
+}
+
+#statusCombo_chosen:before {
+    content: 'Job status';
+}
+#statusCombo_chosen {
+    width: 100% !important;
+}
+
+#statusCombo_chosen.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+    height: 20px;
+    line-height: 20px;
+    padding: 0;
+}
+
+@media (max-width: 1024px) {
+    #statusCombo_chosen:before {
+        display: none;
+    }
+    #statusCombo_chosen {
+        width: 100% !important;
+    }
+}
+
+.filter > .chosen-container {
+    margin-top: 25px;
+}
+@media (max-width: 768px) {
+    .filter > .chosen-container {
+        margin-top: 5px;
+    }
+}
+
+#query > fieldset,
+#addJobButton {
+    margin-top: 45px;
+}
+
+@media (max-width: 1024px) {
+    #query > fieldset,
+    #addJobButton {
+        margin-top: 28px;
+    }
+}
+@media (max-width: 768px) {
+    #query > fieldset,
+    #addJobButton {
+        margin-top: 5px;
+    }
+}
+
+#query > fieldset > input {
+    padding: 7px 10px 5px;
+    background: none #fff;
+    border: 0 none;
+}
+
+#search select,
+#query > fieldset > input,
+#addJobButton {
+    font-family: proxima-nova, sans-serif;
+}
+
+#search select,
+#query > fieldset > input {
+    border: 1px solid #ccc;
+}
+
+#query > fieldset > input:focus {
+    border-color: #007F7c;
+}
+
+#query > fieldset > input:focus,
+#query > fieldset > input.valid {
+    color: #007F7c;
+    outline: none;
+}
+
+#query > fieldset > input.error,
+#search select.error {
+    outline: none;
+}
+
+#query > fieldset > input.error,
+#search select.error,
+#search select.error + div > .chosen-choices,
+#search select.error + div > .chosen-single {
+    color: #007F7C;
+}
+
+#query > fieldset > input.error,
+#search select.error,
+#search select.error + div > .chosen-choices,
+#search select.error + div > .chosen-single {
+    border-color: #007F7C;
+}
+
+
+#addJobButton { 
+    background-color: #007F7C;
+    padding: 4px 10px;
+    color: #fff;
+    font-size: 1em;
+    border: 0;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+#buttons {
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    #buttons {
+        position: absolute;
+        top: 0;
+        right: 5px;
+    } 
+}
+
+td.statusDraft > i,
+td.statusSuggested > i,
+td.statusSuggestedWithBid > i,
+td.statusBidding > i,
+td.statusWorking > i,
+td.statusFunctional > i,
+td.statusReview > i,
+td.statusNeedsReview > i,
+td.statusInReview > i,
+td.statusReviewed > i,
+td.statusCompleted > i,
+td.statusPass > i,
+td.statusDone > i {
+    content: ' ';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 10px;
+    margin: -2px 5px 0 0;
+    vertical-align: middle;
+}
+
+td.statusDraft {
+    color: #eddfb4;
+}
+td.statusDraft > i {
+    background-color: #eddfb4;
+}
+td.statusSuggested,
+td.statusSuggestedWithBid {
+    color: #ffcc66;
+}
+td.statusSuggested > i,
+td.statusSuggestedWithBid > i {
+    background-color: #ffcc66;
+}
+td.statusBidding {
+    color: #ff9900;
+}
+td.statusBidding > i {
+    background-color: #ff9900;
+}
+td.statusWorking {
+    color: #22bc7a;
+}
+td.statusWorking > i {
+    background-color: #22bc7a;
+}
+td.statusFunctional {
+    color: #1c658e;
+}
+td.statusFunctional > i {
+    background-color: #1c658e;
+}
+td.statusReview,
+td.statusNeedsReview,
+td.statusInReview,
+td.statusReviewed {
+    color: #ff5582;
+}
+td.statusReview > i,
+td.statusNeedsReview > i,
+td.statusInReview > i,
+td.statusReviewed > i {
+    background-color: #ff5582;
+}
+td.statusCompleted {
+    color: #999999;
+}
+td.statusCompleted > i {
+    background-color: #999999;
+}
+td.statusPass {
+    color: #cccccc;
+}
+td.statusPass > i {
+    background-color: #cccccc;
+}
+td.statusDone {
+    color: #000000;
+}
+td.statusDone > i {
+    background-color: #000000;
+}

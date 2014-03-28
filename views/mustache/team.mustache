@@ -1,0 +1,76 @@
+<script type="text/javascript">
+    var current_letter = '{{cur_letter}}';
+    var runner = {{#currentUser.is_runner}}true{{/currentUser.is_runner}}{{^currentUser.is_runner}}false{{/currentUser.is_runner}};
+    var current_page = {{cur_page}};
+    var showUserLink = '{{showUserLink}}';
+</script>
+<h1>Team Members</h1>
+<form id="searchbar" class="row">
+    <div class="col-md-4">
+        <input type="text" id="query" name="query" placeholder="Search team..." value="" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        {{#currentUser.id}}
+            <input type="checkbox" class="wlcheckbox" id="filter-by-myfavorite" />
+            <label for="filter-by-myfavorite">Trusted by Me</label>
+        {{/currentUser.id}}
+    </div>
+    <div class="col-md-5">
+        <input type="checkbox" class="wlcheckbox" id="filter-by-fees" />
+        <label for="filter-by-fees">Has fees in the last</label>
+        <select name="days" id="days">
+            <option value="7">7 days</option>
+            <option value="30" selected="selected">30 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+            <option value="360">1 year</option>
+        </select>
+    </div>
+</form>
+<p id="message">No results</p>
+<table class="table table-striped" id="table-userlist">
+    <thead>
+        <tr class="table-hdng">
+            <th class="sort {sortkey: 'nickname'} clickable">Nickname<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'added'} clickable age">Age<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'jobs_count'} clickable jobs">Jobs<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'budget'} clickable money">Budget<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'earnings'} clickable money">Total Earnings<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'earnings30'} clickable money">30 Day Earnings<div class = "arrow"><div/></th>
+            <th class="sort {sortkey: 'rewarder'} clickable money">(%) Bonus $<div class = "arrow"><div/></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<ul class="ln-letters">
+    <li><a href="#">ALL</a></li>
+    <li><a href="#">0-9</a></li>
+    <li><a href="#">A</a></li>
+    <li><a href="#">B</a></li>
+    <li><a href="#">C</a></li>
+    <li><a href="#">D</a></li>
+    <li><a href="#">E</a></li>
+    <li><a href="#">F</a></li>
+    <li><a href="#">G</a></li>
+    <li><a href="#">H</a></li>
+    <li><a href="#">I</a></li>
+    <li><a href="#">J</a></li>
+    <li><a href="#">K</a></li>
+    <li><a href="#">L</a></li>
+    <li><a href="#">M</a></li>
+    <li><a href="#">N</a></li>
+    <li><a href="#">O</a></li>
+    <li><a href="#">P</a></li>
+    <li><a href="#">Q</a></li>
+    <li><a href="#">R</a></li>
+    <li><a href="#">S</a></li>
+    <li><a href="#">T</a></li>
+    <li><a href="#">U</a></li>
+    <li><a href="#">V</a></li>
+    <li><a href="#">W</a></li>
+    <li><a href="#">X</a></li>
+    <li><a href="#">Y</a></li>
+    <li><a href="#">Z</a></li>
+</ul>
+<ul class="ln-pages"></ul>

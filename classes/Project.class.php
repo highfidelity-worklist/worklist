@@ -1,13 +1,5 @@
 <?php
-//  vim:ts=4:et
 
-/** 
- * Project
- *
- * @package Project
- * @version $Id$
- */
-require_once('lib/Project/Exception.php');
 /**
  * Project
  *
@@ -74,7 +66,7 @@ class Project {
             $project_id = $row['project_id'];
             $this->load($project_id);
         } else {
-            throw new Project_Exception('There is no project by that name (' . $name . ')');
+            throw new Exception('There is no project by that name (' . $name . ')');
         }
     }
 
@@ -86,13 +78,13 @@ class Project {
             $project_id = $row['project_id'];
             $this->load($project_id);
         } else {
-            throw new Project_Exception('There is no project with that repository');
+            throw new Exception('There is no project with that repository');
         }
     }
 
     protected function load($project_id = null) {
         if ($project_id === null && ! $this->project_id) {
-            throw new Project_Exception('Missing project id.');
+            throw new Exception('Missing project id.');
         } elseif ($project_id === null) {
             $project_id = $this->project_id;
         }
@@ -132,12 +124,12 @@ class Project {
         $res = mysql_query($query);
 
         if (!$res) {
-            throw new Project_Exception('MySQL error.');
+            throw new Exception('MySQL error.');
         }
 
         $row = mysql_fetch_assoc($res);
         if (! $row) {
-            throw new Project_Exception('Invalid project id.');
+            throw new Exception('Invalid project id.');
         }
 
         $this->setProjectId($row['project_id'])
@@ -197,7 +189,7 @@ class Project {
         
         $res = mysql_query($query);
         if (!$res) {
-            throw new Project_Exception('MySQL error.');
+            throw new Exception('MySQL error.');
         }
         $row = mysql_fetch_row($res);
         return (boolean)$row[0];
@@ -843,7 +835,7 @@ class Project {
         return mysql_query($query) ? 1 : 0;
     }  
     /**
-     * Allows you to add a code reviewer to the project
+     * Allows you to add a reviewer to the project
      * @param $codeReviewer_id
      * @return number
      */
@@ -926,7 +918,7 @@ class Project {
     }
     
     /**
-     * Get the Code Reviewers for current project
+     * Get the Reviewers for current project
      * @return unknown|boolean
      */
     public function getCodeReviewers() {
@@ -956,7 +948,7 @@ class Project {
             }
             return $code_reviewers;
         } else {
-            return false;
+            return array();
         }
     }
     /* 
@@ -998,7 +990,7 @@ class Project {
     }
 
     /**
-     * Get the last activity of the code reviewer on the current project
+     * Get the last activity of the reviewer on the current project
      * @param $userId
      * @return boolean|string
      */
@@ -1155,7 +1147,7 @@ class Project {
             $contributors = array();
             if (mysql_num_rows($result) > 0) {
                 while ($row = mysql_fetch_assoc($result)) {
-                    $contributors[$row['id']] = $row;
+                    $contributors[] = $row;
                 }
             } else {
                 return false;
@@ -1178,7 +1170,7 @@ class Project {
             $jobs = array();
             if (mysql_num_rows($result) > 0) {
                 while ($row = mysql_fetch_assoc($result)) {
-                    $jobs[$row['id']] = $row;
+                    $jobs[] = $row;
                 }
             } else {
                 return false;
@@ -1252,10 +1244,8 @@ class Project {
     function getOwnerCompany() {
         if (!$this->getInternal()) {
             return $this->getName();
-        } else if ($this->getFundId() == 1 || $this->getFundId() == 3) {
-            return "CoffeeandPower Inc.";
         } else {
-            return "Below92";
+            return "High Fidelity Inc.";
         }
     }
 

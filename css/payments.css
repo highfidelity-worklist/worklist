@@ -1,52 +1,7 @@
-div.debug { border: solid 1px #84142B; margin: 10px; }
-
-div#select-actions {
-    font-weight: bold; 
-    color: #777; 
-    text-align: right; 
-    margin: 5px 10px 5px 0;
-    float: right;
-}
-
-#select-fund {
-    font-weight: bold;
-    font-size: 12px;
+#fundForm {
     float: left;
-    color: #777777;
-    margin-top: 3px;
-}
-#select-fund label {
-    font-size: 12px;
-    color: #777777;
 }
 
-select#fund_id {
-    font-weight: bold;
-    font-size: smaller;
-    color: #98AAB2;
-}
-
-table#payments-table { 
-    width: 820px; 
-    margin: 5px auto; 
-}
-
-table#payments-table td {
-    vertical-align: top;
-}
-
-table#payments-table td.fee-row input {
-    margin-left: 15px;
-}
-
-div#submit-btns {
-    width: 820px;
-    text-align: right; 
-    margin: 5px auto;
-}
-
-div#submit-btns input#total-selected-fees {
+#paymentForm > p {
     text-align: right;
-    width: 50px;
 }
-

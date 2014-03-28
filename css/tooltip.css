@@ -30,8 +30,8 @@
 }
 
 #tooltip .head {
-    font-family: 'Cabin';
-    color: #993300 !important;
+    font-family: proxima-nova;
+    color: #007F7C !important;
     font-size: 18px;
     font-weight: bold;
     border-bottom: solid 2px #666666;

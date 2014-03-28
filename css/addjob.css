@@ -1,184 +1,151 @@
-#addJob {
+body > .container-fluid {
     font-size: 16px;
-    max-width: 945px;
-    margin: 1.5em auto; 
 }
 
-#addJob fieldset {
-    border: 0 none;
+@media (max-width: 768px) {
+    body > .container-fluid {
+        font-size: 12px;
+    }
 }
 
-#addJob fieldset > label {
-    font-family: 'Cabin', sans-serif;
-    font-size: 1.1em;
-    display: block;
-    text-align: left;
-    color: #608e96;
-    padding-bottom: 0.3em;
+/* make some room at top of the form */
+#addJob > .row:first-child {
+    padding-top: 30px;
 }
 
-#addJob fieldset > input[type=text],
-#addJob fieldset > textarea {
-    font-size: 1.2em;
-    border: 1px solid #d1cfcf;
-    width: 95%;
-    padding: 1%;
+#addJob > .row:first-child > div:first-child {
+    padding-left: 0;
+}
+#addJob > .row:first-child > div:last-child {
+    padding-right: 0;
 }
 
-
-#addJob fieldset > input[type=text]:focus,
-#addJob fieldset > textarea:focus {
-    border-color: #608e96;
-    outline: none;
-}
-
-#addJob fieldset > input[type=text]:hover,
-#addJob fieldset > textarea:hover {
-    outline: 1px solid #608e96;
-}
-
-#itemProjectCombo {
-    width: 210px;
-}
-
-#itemStatusCombo {
-    width: 210px;
-}
-
-#container-itemProjectCombo,
-#container-itemStatusCombo,
-.itemProjectComboList,
-.itemStatusComboList {
-    width: 235px !important;
-}
-
-.ui-combobox-textbox {
-    width: 205px !important;
-}
-
-#addJob .ui-combobox-textbox {
-    color: #aa1e00;
-    font-weight: bold;
-    font-size: 1.1em !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-    text-indent: 9px;
-    padding-bottom: 6px !important;
-    position: relative;
-    top: -2px;
-}
-
-#addJob div.ui-state-default {
-    background: none #ffffff !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-#addJob div.ui-state-default .ui-icon {
-    background: url("../images/primaryIcons-WL.png") no-repeat scroll 6px -724px transparent !important;
-    right: 4px;
-    height: 22px;
-    width: 26px;
-}
-
-#addJob .ui-combobox-list-selected {
-    background-color: transparent;
-    font-weight: bold;
-}
-
-#addJob .ui-combobox-list li.ui-state-hover {
-    background-color: #aa1e00;
-    color: #ffffff;
-}
-
-#addJob .ui-combobox-list {
-    border-radius: 0;
-    margin-top: 1px !important;
-}
-
-#addJob .ui-combobox-list li {
-    padding: 0 5px 0 4px;
-    line-height: 2.5em;
-}
-
-#projectPopupActiveBox {
-    border-radius: 0 0 5px 5px;
-    margin-top: -5px;
-}
-
-#project,
-#bug {
-    width: 45%;
-    display: inline-block; 
-}
-
-#bug {
-    text-align: right;
-    position: relative;
-}
-
-#bug fieldset,
-#buttons fieldset {
-    display: inline-block;
-}
-
-#addJob input#bug_job_id {
-    color: #aa1e00;
-    font-size: 0.9em;
-    padding: 5px 2px;
-    width: 65px;
-}
-
-#bug > p {
+#addJob > .row:first-child .chosen-container:before,
+#addJob > .row:last-child .chosen-container:before,
+#addJob > .row:first-child > div:last-child:after {
     position: absolute;
-    right: 20px;
-    margin: 0;
-    bottom: 0;
+    margin-top: -20px;
+    font-size: 0.9em;
+    color: #666;
+    cursor: pointer;
+}
+#addJob > .row:first-child .chosen-container:before {
+    content: 'Job is for this project:';
+}
+
+#addJob > .row:first-child > div:last-child {
+    text-align: right;
+}
+
+label[for="bug_job_id"] {
     color: #666;
 }
 
-fieldset#project > label,
-#bug fieldset > label,
-#buttons fieldset > label,
-fieldset > label > small {
-    color: #707070;
-    font-size: .75em;
-}
-
-#bug fieldset > label[for=is_bug],
-#is_bug {
+#bug_job_id {
+    font-size: 1.2em;
+    font-weight: bold;
     display: inline-block;
+    width: 90px;
+    margin-left: 5px;
+}
+#addJob > .row:first-child > div:last-child:after {
+    content: 'Bug of job #';
+    right: 0;
+    margin-right: 20px;
 }
 
-textarea#notes {
-    height: 7em;
+#bug_job_id + span,
+#bug_job_id + p {
+    margin-top: 20px;
+    text-align: right;
+    width: 350px;
+    font-size: 0.8em;
+    height: 20px;
+    margin-top: 10px;
+    right: 0;
 }
 
-#upload-section {
-    height: 38px;
-    margin: 0 5px;
+#bug_job_id + p {
+    color: #007F7c;
+}
+
+#bug_job_id + span,
+#bug_job_id + p,
+#bug_job_id + p:after {
+    position: absolute;
+}
+
+#bug_job_id + p:after {
+    content: ' ';
+    margin: -3px 0 0 -80px;
+    height: 25px;
+    display: inline-block;
+    width: 80px;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+}
+
+#addJob > .row {
+    padding: 15px 0 10px;
+}
+
+#addJob > .row > label {
+    color: #608a92;
+    font-weight: normal;
+    margin: 0;
+    font-size: 1.3em;
+}
+
+#addJob > .row:last-child {
+    background-color: #E8EFF0;
+    padding: 30px 20px;
+}
+
+#addJob > .row:last-child .chosen-container {
+    width: 250px !important;
+}
+#addJob > .row:last-child .chosen-container:before {
+    content: 'Set the status of this job to:';
+}
+@media (max-width: 768px) {
+    #addJob > .row:last-child .chosen-container {
+        width: 180px !important;
+    }
+}
+
+#addJob input[type=submit] {
+    background: none #007F7c;
+    font-weight: bold;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 1.1em;
+    height: 2.2em;
+    border: 0;
+}
+
+/**
+ * Attachments styling
+ */
+.uploadbutton,
+#attachments {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 #attachments {
-    display: inline-block;
     margin: 5px;
-}
-
-#uploadButtonDiv {
-    display: inline-block;
-    text-align: right;
-    background-color: #608e96;
-    border-radius: 4px;
-    height: 27px;
-    padding: 1px 14px 0 5px;
-    margin: 5px;
-    position: relative;
-    vertical-align: top;
 }
 
 #addJob .attachment {
     margin: 6px 3px;
-    float: left;
+}
+
+#addJob .attachment span:first-child {
+    margin-right: -5px;
 }
 
 #addJob .attachment span {
@@ -197,146 +164,14 @@ textarea#notes {
     color: #000000;
 }
 
-#buttons {
-    background-color: #e8eff0;
-    margin: 20px 0;
-    padding: 10px 5px;
-    position: relative;
-    width: 98%;
+/**
+ * validation messages 
+ */
+.LV_validation_message {
+    position: absolute;
+    font-size: .8em;
+    color: #ff5582;
 }
-
-#save > input[type=submit] {
-    margin-top: 10px;
-    background: none #aa1e00;
-    font-weight: normal;
-    border-radius: 5px;
-    color: #ffffff;
-    font-size: 1.1em;
-    height: 2.2em;
-    font-family: Arial,sans-serif;
-}
-
-#save {
-    text-align: right;
-    width: 96%;
-}
-
-#buttons fieldset + #save {
-    float: right;
-    width: auto;
-}
-
-@media screen and (max-width: 770px) {
-    #addJob {
-        font-size: 15px;
-        max-width: 750px;
-        margin: 1em auto; 
-    }
-
-    #itemProjectCombo {
-        width: 150px;
-    }
-    
-    #itemStatusCombo {
-        width: 150px;
-    }
-
-    #container-itemProjectCombo,
-    #container-itemStatusCombo,
-    .itemProjectComboList,
-    .itemStatusComboList {
-        width: 175px !important;
-    }
-    
-    .ui-combobox-textbox {
-        width: 145px !important;
-    }
-    
-    #projectPopupActiveBox {
-        margin-top: -7px;
-    }
-    
-    #bug {
-        width: auto;
-        float: right;
-        margin-right: 18px;
-        padding: 0;
-        display: inline-block;
-    }
-
-    textarea#notes {
-        height: 5em;
-    }
-}
-
-@media screen and (max-width: 530px) {
-    #addJob {
-        font-size: 14px;
-        max-width: 520px;
-        margin: 0.5em auto; 
-    }
-    
-    #addJob fieldset > input[type=text],
-    #addJob fieldset > textarea {
-        font-size: 0.9em;
-    }
-
-    #itemStatusCombo {
-        width: 120px;
-    }
-
-    #container-itemStatusCombo {
-        width: 145px;
-    }
-    
-    #bug {
-        margin: 3px 15px 0 0;
-        text-align: center;
-    }
-    
-    #bug fieldset {
-        display: block;
-        padding: 0;
-    }
-    
-    #bug label[for=bug_job_id] {
-        display: none;
-    }
-    
-    #addJob input#bug_job_id {
-        width: 50px;
-        font-size: 0.8em;
-    }
-    
-    #bug > p {
-        float: right;
-        right: 5px;
-        text-align: right;
-        bottom: -20px;
-        width: 250px;
-        font-size: .7em;
-        height: 15px;
-        overflow: hidden;
-    }
-    
-    fieldset#project > label, 
-    #bug fieldset > label, 
-    #buttons fieldset > label, 
-    fieldset > label > small {
-        font-size: 0.65em;
-    }
-    
-    #buttons > fieldset {
-        display: inline;
-        width: auto;
-        vertical-align: top;
-    }
-    
-    #buttons fieldset + #save > input[type="submit"] {
-        width: auto;
-    }
-    
-    textarea#notes {
-        height: 4em;
-    }
+#addJob > .row:first-child select + .LV_validation_message {
+    margin-top: 35px;
 }

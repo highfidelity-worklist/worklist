@@ -1,0 +1,42 @@
+#date-fields {
+float:top;
+margin-left:10px;
+margin-top:20px;
+}
+#date-fields label {
+  float: left;
+  width: 2em;
+  margin-right: 1em;
+}
+.text-field-sm {
+  width:80px;
+}
+.report-left-label {
+    text-align: right;
+    width:8em;
+}
+.start-date-label {
+width:8em;
+}
+#search-filter-section {
+list-style:none;
+margin-bottom:1em;
+background-color: #FFFFDD;
+border: 2px solid #DCD998;
+-moz-box-sizing:none;
+}
+#search-filter-section table, #search-filter-section table td #search-filter-section table th{
+border: none;
+}
+
+#search-filter-section td, #search-filter-section th {
+    border: none;
+}
+
+td.redtext {
+    color: red;
+}
+
+td.greenText {
+    color: #009900;
+}

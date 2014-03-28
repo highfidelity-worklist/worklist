@@ -3,55 +3,6 @@
     text-align: left;
 }
 
-#budget-source-combo-area .ui-combobox-list,
-#pay-bonus .ui-combobox-list,
-#budgetInWorkitem .ui-combobox-list,
-#update-budget .ui-combobox-list,
-#popupSelectBudget .ui-combobox-list,
-#give-budget .ui-combobox-list {
-    max-height: 150px;
-}
-
-#budget-source-combo-area select[name="budget-source-combo"] {
-    width: 338px;
-    margin: 10px;
-}
-
-#pay-bonus select[name="budget-source-combo-bonus"] {
-    width: 340px;
-    margin: 10px;
-}
-
-#budgetInWorkitem select[name="budget-source-combo"] {
-    width: 340px;
-    margin: 10px;
-}
-
-#update-budget select[name="budget-source-combo"],
-#give-budget select[name="budget-source-combo"] {
-    width: 340px;
-    margin: 10px;
-}
-
-#popupSelectBudget select[name="budget-source-combo"] {
-    width: 338px;
-    margin: 10px;
-}
-
-#budget-source-combo-area .ui-combobox-list li,
-#pay-bonus .ui-combobox-list li,
-#budgetInWorkitem .ui-combobox-list li,
-#update-budget .ui-combobox-list li,
-#popupSelectBudget .ui-combobox-list li,
-#give-budget .ui-combobox-list li {
-    height: 16px;
-}
-
-#budgetInWorkitem .ui-icon-carat-1-s,
-#update-budget .ui-icon-carat-1-s {
-    background-position: -64px 0 !important;
-}
-
 #popupSelectBudget .budget-source {
     margin-top: 6px;
     margin-bottom: 116px;
@@ -76,10 +27,6 @@
     display: none;
 }
 
-#budget-source-combo {
-    display: none;
-}
-
 .budget-source  span{
     margin-top: 6px;
 }
@@ -92,11 +39,6 @@
 
 .currentBudgetArea {
     margin-top: 10px;
-}
-
-.redBudget,
-.comboListClear.redBudget.ui-state-hover {
-    color: red;
 }
 
 .comboListID {
@@ -122,12 +64,12 @@
     white-space: nowrap;
 }
 
-.comboListClear {
-    clear: both;
-}
-
 #update-budget .budget-source {
     min-height: 34px;
     max-height: 80px;
     overflow: auto;
+}
+
+#budget_source_combo_chosen {
+    margin-bottom: 80px;
 }
