@@ -343,9 +343,14 @@
 <!-- popup div's -->
 <div id="budget-dialog" title="Budget details" data-userid = "{{user.getId}}">
 </div>
+<!--
 <div id="budget-update-dialog" title="Budget update" data-userid = "{{user.getId}}">
     <div class="content"></div>
 </div>
+-->
+{{> popup-update-budget}}
+{{> popup-add-funds}}
+
 <div id="reject-w9" title="Reject W9">
     
     <form method="post" action = "">
