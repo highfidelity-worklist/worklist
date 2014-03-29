@@ -1,0 +1,6 @@
+composer.phar
+composer.lock
+vendor/
+server.local.php
+uploads/
+.htaccess
