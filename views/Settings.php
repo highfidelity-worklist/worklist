@@ -18,7 +18,7 @@ class SettingsView extends View {
 
     public function render() {
         $this->new_user = (int) $this->read('new_user');
-        $this->user = $this->read('user');
+        $this->userInfo = $this->read('userInfo');
 
         return parent::render();
     }
