@@ -27,23 +27,32 @@
                     <th>Description</th>
                 </tr>
             </thead>
-            <tbody>
-                {{& paymentsTableRows}}
-            </tbody>
+            {{& paymentsTableRows}}
         </table>
-        <p id="submit-btns">
-            {{#actionConfirm}}
-                Password: <input type="password" name="password" id="password" />
-                <br>Paypal API Username: <input type="text" name="pp_api_username" id="pp_api_username" />
-                <br>Paypal API Password: <input type="password" name="pp_api_password" id="pp_api_password" />
-                <br>Paypal API Signature: <input type="password" name="pp_api_signature" id="pp_api_signature" /><br>
-            {{/actionConfirm}}
-            <input class="disableable" type="submit" id="commit-btn" name="commit"
-              value="{{#actionConfirm}}Pay Now{{/actionConfirm}}{{^actionConfirm}}Confirm{{/actionConfirm}}" />
-                Total Selected: 
-                $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
-            <input type="hidden" name="fund_id" value="{{fund_id}}" />
-        </p>
+        <div class="row">
+            <div id="submit-btns" class="col-md-offset-6 col-md-6">
+                {{#actionConfirm}}
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" class="form-control" />
+
+                    <label for="pp_api_username">Paypal API Username:</label>
+                    <input type="text" name="pp_api_username" id="pp_api_username" class="form-control" />
+
+                    <label for="pp_api_password">Paypal API Password:</label>
+                    <input type="password" name="pp_api_password" id="pp_api_password" class="form-control" />
+
+                    <label for="pp_api_signature">Paypal API Signature:</label> 
+                    <input type="password" name="pp_api_signature" id="pp_api_signature" class="form-control" />
+                {{/actionConfirm}}
+                <fieldset>
+                    <label for="total-selected-fees">Total Selected:</label>
+                    <input type="text" id="total-selected-fees" disabled="disabled" value="0.00" class="form-control" />
+                    <input type="hidden" name="fund_id" value="{{fund_id}}" />
+                    <input class="disableable" type="submit" id="commit-btn" name="commit"
+                      value="{{#actionConfirm}}Pay Now{{/actionConfirm}}{{^actionConfirm}}Confirm{{/actionConfirm}}" />
+                </fieldset>
+            </div>
+        </div>
     </form>
 {{/actionPay}}
 {{#actionPay}}

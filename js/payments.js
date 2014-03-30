@@ -60,8 +60,7 @@ function updateTotalFees(resA) {
             totalFees = totalFees + fee;
         }
     });
-    console.log(totalFees);
-    $('#total-selected-fees').val(totalFees.toFixed(2));
+    $('#total-selected-fees').val('$' + totalFees.toFixed(2));
     
 }
 
