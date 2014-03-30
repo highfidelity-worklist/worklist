@@ -630,7 +630,7 @@ class JsonServer
 
             return $this->setOutput(array(
                     'success' => false, 
-                    'data' => 'Sandbox verification failed. Alerting mechanic to resolve.'
+                    'data' => 'Sandbox verification failed. Alerting developer to resolve.'
                 )
             );
         }
@@ -969,7 +969,7 @@ class JsonServer
             }
     
             if (! $project->addCodeReviewer($user->getId())) {
-                throw new Exception('Could not add the user as a runner for this project');
+                throw new Exception('Could not add the user as a designer for this project');
             }
     
             $founder->findUserById($project->getOwnerId());
@@ -1020,11 +1020,11 @@ class JsonServer
                 throw new Exception('Not a user in our system');
             }
             if ($project->isProjectRunner($user->getId())) {
-                throw new Exception('Entered user is already a runner for this project');
+                throw new Exception('Entered user is already a designer for this project');
             }
 
             if (! $project->addRunner($user->getId())) {
-                throw new Exception('Could not add the user as a runner for this project');
+                throw new Exception('Could not add the user as a designer for this project');
             }
             
             $founder->findUserById($project->getOwnerId());
@@ -1040,12 +1040,12 @@ class JsonServer
                 error_log("JsonServer:actionAddRunnerToProject: send email to user failed");
             }
             // Add a journal notification
-            $journal_message = '@' . $user->getNickname() . ' has been granted Runner rights for project **' . $project->getName() . '**';
+            $journal_message = '@' . $user->getNickname() . ' has been granted Designer rights for project **' . $project->getName() . '**';
             sendJournalNotification($journal_message);
             
             return $this->setOutput(array(
                 'success' => true,
-                'data' => 'Runner added successfully'
+                'data' => 'Designer added successfully'
             ));
         } catch (Exception $e) {
             $error = $e->getMessage();
@@ -1246,12 +1246,12 @@ class JsonServer
                 $project->loadById($workitem->getProjectId());
                 $project_name = $project->getName();
                 $from_address = '<noreply-' . $project_name . '@worklist.net>';
-                $headers = array('From' => '"' . $project_name . '-runner changed" ' . $from_address);
+                $headers = array('From' => '"' . $project_name . '-designer changed" ' . $from_address);
 
                 // This should eventually be moved to Notification->workitemNotify - dans
                 $subject = '#' . $workitem->getId() . ' '. $workitem->getSummary();
                 $body = "<p>Hi there,</p>";
-                $body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Runner " . $runner->getNickname() . ".</p>";
+                $body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Designer " . $runner->getNickname() . ".</p>";
                 $body .= "<p>See you in the Workroom!</p>";
 
                 if ($oldRunner) {
@@ -1276,7 +1276,7 @@ class JsonServer
             } else {
                 return $this->setOutput(array(
                     'success' => false,
-                    'message' => 'The user specified is not allowed runner for this project!'
+                    'message' => 'The user specified is not allowed designer for this project!'
                 ));
             }
         } else {
