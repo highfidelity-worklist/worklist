@@ -345,6 +345,12 @@ replacement data:
         <p>Pease email <a href="mailto:' . SUPPORT_EMAIL . '">' . SUPPORT_EMAIL . '</a> with any issues or concerns.</p>
         <p></p>
         <p>- Worklist.net</p>'
+),
+'user-signups' => array(
+    'subject' => 'New Worklist users in last {hours} hrs',
+    'body' => '
+        <p>New users (in last {hours}hrs):</p>
+        {userList}
+    '
 )
-
 );

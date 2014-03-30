@@ -255,6 +255,11 @@ if(validateAction()) {
                 break;
             case 'timeline':
                 timeline();
+                break;
+            case 'newUserNotification':
+                validateAPIKey();
+                sendNewUserNotification();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -3642,5 +3647,50 @@ function timeline() {
     } else if ($_POST["method"] == "getListOfMonths"){
         $months = $timeline->getListOfMonths();
         echo json_encode($months);
+    }
+}
+
+function sendNewUserNotification() {
+
+    $db = new Database();
+    $recipient = 'grayson@highfidelity.io';
+
+    /**
+     * The email is to be sent Monday to Friday, therefore on a Monday
+     * we want to capture new signups since the previous Friday morning
+     */
+    $interval = 1;
+    if (date('N') === 1) {
+        $interval = 3;
+    }
+
+    $sql = "
+        SELECT * FROM " . USERS . "
+        WHERE
+            added > DATE_SUB(NOW(), INTERVAL {$interval} DAY)";
+
+    $result_temp = $db->query($sql);
+
+    $data = '<ol>';
+
+    while ($row_temp = mysql_fetch_assoc($result_temp)) {
+        $data .= sprintf('<li><a href="%suserinfo.php?id=%d">%s</a> / <a href="mailto:%s">%s</a></li>',
+            SERVER_URL,
+            $row_temp['id'],
+            $row_temp['nickname'],
+            $row_temp['username'],
+            $row_temp['username']
+        );
+    }
+
+    $data .= '</ol>';
+    
+    $mergeData = array(
+        'userList' => $data,
+        'hours' => $interval * 25
+    );
+
+    if (! sendTemplateEmail($recipient, 'user-signups', $mergeData)) {
+        error_log('sendNewUserNotification cron: Failed to send email report'); 
     }
 }
