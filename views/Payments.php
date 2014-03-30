@@ -72,16 +72,20 @@ class PaymentsView extends View {
         $ret = '';
         foreach ($payee_totals as $payee) {
             $ret .= '
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="'.$payee["mechanic_id"].'fees" onclick="javascript:toggleCBGroup(\'fees'.$payee["mechanic_id"].'\', this);" rel="0" />
-                        </td>
-                        <td colspan="4" align="left">
-                            <a href="javascript:void(0);" onclick="toggleVis(\'indfees'.$payee["mechanic_id"].'\')">'.$payee["mechanic_nick"].'</a>
-                        </td>
-                        <td align="right" onclick="toggleBox(\'payfee'.$payee["mechanic_id"].'\')">'.$payee["total_amount"].'</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                  <tr>
+                    <td>
+                      <input type="checkbox" name="'.$payee["mechanic_id"].'fees" 
+                        onclick="javascript:toggleCBGroup(\'fees'.$payee["mechanic_id"].'\', this);" 
+                        rel="' . $payee["total_amount"] . '" />
+                    </td>
+                    <td colspan="4" align="left">
+                      <a href="javascript:void(0);" onclick="toggleVis(\'indfees'.$payee["mechanic_id"].'\')">
+                        '.$payee["mechanic_nick"].'
+                      </a>
+                    </td>
+                      <td align="right" onclick="toggleBox(\'payfee'.$payee["mechanic_id"].'\')">'.$payee["total_amount"].'</td>
+                      <td>&nbsp;</td>
+                      <td>&nbsp;</td>
                     </tr>';
 
             $fee_rows = '';

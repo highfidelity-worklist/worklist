@@ -27,25 +27,10 @@ function toggleCBGroup(classname, check) {
 }
 
 function toggleCBs(option) {
-    //toggle all checkboxes
-    var checklist = document.getElementsByTagName("input");
-    for (i = 0; i < checklist.length; i++) {
-    if ( checklist[i].getAttribute("type") == 'checkbox' ) {
-        if (option=='toggle') {
-            if (checklist[i].checked) {   
-                checklist[i].checked = false;
-            } else {
-                checklist[i].checked = true;
-            }
-        } 
-        if (option=='select') {
-            checklist[i].checked = true;
-        }
-        if (option=='unselect') {
-            checklist[i].checked = false;
-        }
-    }   
-    }
+    $('#paymentForm input[type="checkbox"]').each(function() {
+        var element = $(this)[0];
+        element.checked = (option=='select' ? true : (option=='unselect' ? false : !element.checked));
+    });
     
     //update Fees Total
     updateTotalFees('1');
@@ -64,22 +49,19 @@ function toggleBox(box) {
 }
 
 function updateTotalFees(resA) {
-    
     if (resA == '1') {
         resetAction();
     }
     var totalFees = 0.00;
-    var checklist = document.getElementsByTagName("input");
-    for (i = 0; i < checklist.length; i++) {
-        if (checklist[i].getAttribute("type") == 'checkbox') {
-        if (checklist[i].checked) {
-        var fee = parseFloat(checklist[i].getAttribute("rel")); 
+    $('#paymentForm input[type="checkbox"]').each(function() {
+        var element = $(this)[0];
+        if (element.checked) {
+            var fee = parseFloat(element.getAttribute("rel")); 
             totalFees = totalFees + fee;
-            }
         }
-    }
-    var totalBox = document.getElementById("total-selected-fees");
-    totalBox.value = totalFees.toFixed(2);
+    });
+    console.log(totalFees);
+    $('#total-selected-fees').val(totalFees.toFixed(2));
     
 }
 

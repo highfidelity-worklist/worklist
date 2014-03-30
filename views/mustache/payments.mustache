@@ -13,7 +13,7 @@
             <input type="button" value="Select None" id="selectNone" />
         </p>          
         <input type="hidden" id="action" name="action" 
-          value="{{^actionDefined}}pay{{/actionDefined}}{{#actionDefined}}confirm{{/actionDefined}}" />
+          value="{{^actionDefined}}confirm{{/actionDefined}}{{#actionDefined}}pay{{/actionDefined}}" />
         <table class="table table-bordered" id="payments-table">
             <thead>
                 <tr>
@@ -39,7 +39,7 @@
                 <br>Paypal API Signature: <input type="password" name="pp_api_signature" id="pp_api_signature" /><br>
             {{/actionConfirm}}
             <input class="disableable" type="submit" id="commit-btn" name="commit"
-              value="{{#actionSet}}Pay Now{{/actionSet}}{{^actionSet}}Confirm{{/actionSet}}" />
+              value="{{#actionConfirm}}Pay Now{{/actionConfirm}}{{^actionConfirm}}Confirm{{/actionConfirm}}" />
                 Total Selected: 
                 $<input type="text" id="total-selected-fees" disabled="disabled" value="0.00" />
             <input type="hidden" name="fund_id" value="{{fund_id}}" />
@@ -47,5 +47,5 @@
     </form>
 {{/actionPay}}
 {{#actionPay}}
-   {& paymentResults}}
+   {{& paymentResults}}
 {{/actionPay}}

@@ -1364,14 +1364,14 @@ function rewardUser($giverId, $receiverId, $points) {
     Date: 2010-04-01 [Happy April Fool's!]
 ********************************************************/    
 function PPHttpPost($methodName_, $nvpStr_, $credentials) {
-    $environment = 'live'; // 'sandbox' or 'beta-sandbox' or 'live'
+    $environment = PAYPAL_ENVIRONMENT; 
     $pp_user = $credentials['pp_api_username'];
     $pp_pass = $credentials['pp_api_password'];
     $pp_signature = $credentials['pp_api_signature'];
 
     $API_Endpoint = "https://api-3t.paypal.com/nvp";
     if("sandbox" === $environment || "beta-sandbox" === $environment) {
-        $API_Endpoint = "https://api-3t.$environment.paypal.com/nvp";
+        $API_Endpoint = "https://api.$environment.paypal.com/nvp";
     }
     $version = urlencode('51.0');
 
@@ -1854,4 +1854,27 @@ function getStats($req = 'table', $interval = 30) {
         }
         return $info;
     }
+}
+
+function saveAdmin($pass, $oldpass = '') {
+    if (checkAdmin($oldpass) == '1') {
+        $sql = "UPDATE ".PAYPAL_ADMINS." SET `password` = '".md5($pass)."' WHERE (password = '".md5($oldpass)."')";
+    } else {
+        $sql = "";
+    }
+
+    if ($sql != "") {
+        $result = mysql_query($sql);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function checkAdmin($pass) {
+    //checks admin login.  
+    $sql = "SELECT * FROM ".PAYPAL_ADMINS." WHERE `password` = '".md5($pass)."'";
+    $result = mysql_query($sql);
+    //if successful, this will be 1, otherwise 0
+    return mysql_num_rows($result);
 }
