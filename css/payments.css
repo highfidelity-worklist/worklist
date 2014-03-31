@@ -2,6 +2,10 @@
     float: left;
 }
 
+#paymentForm > p {
+    text-align: right;
+}
+
 #total-selected-fees {
     display: inline-block;
     width: 100px;
