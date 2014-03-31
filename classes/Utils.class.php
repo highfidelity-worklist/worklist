@@ -23,25 +23,11 @@ class Utils{
         return in_array($key, self::$keys);
     }
 
-    public static function checkForNewUser($user_id){
-
-        // check if user is in out database
-        $query = "SELECT `id` FROM " . USERS . " WHERE id='" . intval($_SESSION['userid']) . "'";
-        $res = mysql_query($query);
-
-        // empty result
-        if (!mysql_num_rows($res) > 0){
-            return true;
-        }
-        return false;
-    }
-
     public static function setUserSession($id, $username, $nickname, $admin) {
         $_SESSION["userid"]   = $id;
         $_SESSION["username"] = $username;
         $_SESSION["nickname"] = $nickname;
         $_SESSION["admin"]    = $admin;
-        $_SESSION["new_user"] = self::checkForNewUser($id);
         // user just logged  in, let's update the last seen date in session
         // date will be checked against db in initUserById
         $_SESSION['last_seen'] = date('Y-m-d');
@@ -99,7 +85,6 @@ class Utils{
     public static function encryptPassword($clearText) {
         switch (true) {
         case (defined('CRYPT_SHA512') && CRYPT_SHA512 == 1):
-            error_log('got here');
             $salt = '$6$' . self::randomString(16);
             break;
 
@@ -121,8 +106,6 @@ class Utils{
             break;
         }
         
-        error_log('encrypting with ' . $salt . ' for password: ' . $clearText);
-        error_log(crypt($clearText, $salt));
         return crypt($clearText, $salt);
     }
 

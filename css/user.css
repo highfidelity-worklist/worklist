@@ -27,3 +27,11 @@ table {
 #profile-pingtask form > p {
     display: inline-block;
 }
+
+#budgethistory > div {
+    text-align: center;
+}
+
+#budgethistory .pagination {
+    margin: 0 auto;
+}

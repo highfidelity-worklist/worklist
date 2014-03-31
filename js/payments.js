@@ -1,5 +1,4 @@
 function toggleVis(el) {
-    
     var element = document.getElementById(el)
     if (element.style.display == 'none') {
         element.style.display = '';
@@ -21,8 +20,31 @@ function toggleCBGroup(classname, check) {
             }
         } 
     }
-    
     //update Fees Total
+    updateTotalFees('1');
+}
+
+function toggleCBParent(classname, check) {
+    var name = classname.substr(4) + 'fees';
+    $('input[name="' + name + '"]')[0].checked = check.checked;
+}
+
+function toggleCBChild(classname, check) {
+    var checklist = document.getElementsByTagName("input");
+    var checkedCount = 0;
+    var childCount = 0;
+    for (i = 0; i < checklist.length; i++) {
+        if ( (checklist[i].getAttribute("type") == 'checkbox') && (checklist[i].className == classname) ) {
+            childCount++;
+            if (checklist[i].checked) {   
+                checkedCount++;
+            }
+        } 
+    }
+    if (checkedCount == childCount || checkedCount == 0) {
+        toggleCBParent(classname, check);
+    }
+
     updateTotalFees('1');
 }
 
@@ -53,7 +75,7 @@ function updateTotalFees(resA) {
         resetAction();
     }
     var totalFees = 0.00;
-    $('#paymentForm input[type="checkbox"]').each(function() {
+    $('#paymentForm tbody[id] input[type="checkbox"]').each(function() {
         var element = $(this)[0];
         if (element.checked) {
             var fee = parseFloat(element.getAttribute("rel")); 
@@ -61,7 +83,6 @@ function updateTotalFees(resA) {
         }
     });
     $('#total-selected-fees').val('$' + totalFees.toFixed(2));
-    
 }
 
 function resetAction() {

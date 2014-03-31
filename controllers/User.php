@@ -17,6 +17,7 @@ class UserController extends Controller {
             $reqUser->findUserById($reqUserId);
             $budget = $reqUser->getBudget();
         }
+        $this->write('reqUser', $reqUser);
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
         $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
         $this->write('filter', new Agency_Worklist_Filter($_REQUEST));
@@ -158,6 +159,7 @@ class UserController extends Controller {
             $user->findUserById($userId);
         }
         $this->write('userId', $userId);
+        $this->write('user', $user);
 
         $this->write('Annual_Salary', $user->getAnnual_salary() > 0 ? $user->getAnnual_salary() : '');
         $userStats = new UserStats($userId);
@@ -219,9 +221,6 @@ class UserController extends Controller {
         $favorite_count = $users_favorite->getUserFavoriteCount($userId);
         $this->write('favorite_count', $favorite_count);
         $this->write('favorite_enabled', $favorite_enabled);
-
-        $this->write('user', $user);
-        $this->write('reqUser', $reqUser);
         parent::run();
     }
 }

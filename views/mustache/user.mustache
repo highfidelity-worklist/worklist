@@ -3,18 +3,18 @@
     {{#currentUser.is_runner}}
         <li class="active"><a href="#profile" data-toggle="tab">Profile</a></li>
         <li><a href="#admin" data-toggle="tab">Admin</a></li>
-        {{#user.getIs_runner}}
+        {{#profileUser.getIs_runner}}
             <li><a href="#runner" data-toggle="tab">Designer</a></li>
-        {{/user.getIs_runner}}
+        {{/profileUser.getIs_runner}}
         <li><a href="#sandbox" data-toggle="tab">Sandbox</a></li>
         <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
         <li><a href="#budgethistory" data-toggle="tab">Budget History</a></li>
     {{/currentUser.is_runner}}
     {{^currentUser.is_runner}}
         <li class="active"><a href="#profile" data-toggle="tab">User Info</a></li>
-        {{#user.getIs_runner}}
+        {{#profileUser.getIs_runner}}
             <li><a href="#runner" data-toggle="tab">Designer</a></li>
-        {{/user.getIs_runner}}
+        {{/profileUser.getIs_runner}}
         {{#reqUserId}}
             <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
         {{/reqUserId}}
@@ -29,8 +29,8 @@
             <div class="col-md-6">
                 <div class="common-info">
                     <div id="user-avatar">
-                        <img id="avatar" src="{{& userAvatarUrl}}" title="{{user.getNickname}}'s picture" />
-                        <div class="userName" id="userName">{{user.getNickname}}</div>
+                        <img id="avatar" src="{{& userAvatarUrl}}" title="{{profileUser.getNickname}}'s picture" />
+                        <div class="userName" id="userName">{{profileUser.getNickname}}</div>
                         <div class="profileInfoFavorite" id="profileInfoFavorite">
                             <div class="{{favoriteClass}}" title="{{favoriteTitle}}">&nbsp;</div>
                             <span class="profileFavoriteText" data-favorite-count="{{favorite_count}}"></span>
@@ -41,13 +41,13 @@
                         <div class="col-md-6">
                             <p class="info-label" id="user-location">
                                 Location:<br />
-                                {{#user.getCity}}
-                                    <a class="userInfoLink" href="{{& gMapSearch}}{{user.getCity}}{{countryName}}&z=6" target="_blank" 
-                                      title="See location on Google Maps">{{user.getCity}}</a>
-                                {{/user.getCity}}
+                                {{#profileUser.getCity}}
+                                    <a class="userInfoLink" href="{{& gMapSearch}}{{profileUser.getCity}}{{countryName}}&z=6" target="_blank" 
+                                      title="See location on Google Maps">{{profileUser.getCity}}</a>
+                                {{/profileUser.getCity}}
                                 {{#countryCodeUrl}}
                                     <a class="userInfoLink" href="{{& ciaGovBase}}{{countryCodeUrl}}.html" target="_blank" 
-                                      title="{{countryName}}">{{user.getCountry}}</a>
+                                      title="{{countryName}}">{{profileUser.getCountry}}</a>
                                 {{/countryCodeUrl}}
                             </p>
                             <p class="info-label" id="info-currenttime" title="{{timezone}}">
@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <p class="info-label title-label-medium">Strengths<br />
-                    <span id="info-skills">{{user.getSkills}}</span>
+                    <span id="info-skills">{{profileUser.getSkills}}</span>
                 </p>
 
                 <div class='reviewTitle title-label-big'>
@@ -94,7 +94,7 @@
                 <p class="info-label about title-label-big">
                     About
                 </p>
-                <span id="info-about">{{user.getAbout}}</span>
+                <span id="info-about">{{profileUser.getAbout}}</span>
             </div><!-- end of left-column -->
             <div class="col-md-6">
                 <div class="button-row">
@@ -111,7 +111,7 @@
                 </div>
 
                 <p class = "profileContactFavorite">Contact info:
-                    <span id="info-contactway">{{user.getContactway}}</span>
+                    <span id="info-contactway">{{profileUser.getContactway}}</span>
                 </p>
 
                 {{#reqUserId}}{{^ownProfile}}
@@ -171,17 +171,17 @@
             <div class="row">
                 <div class="col-md-6">
                     <h3>Email</h3>
-                    <p id="info-email"><a href="mailto:{{user.getUsername}}">{{user.getUsername}}</a></p>
+                    <p id="info-email"><a href="mailto:{{profileUser.getUsername}}">{{profileUser.getUsername}}</a></p>
                     <form id="roles" method="post" action="">
                         <h3>Roles</h3>
                         <p>
-                            <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" {{#user.isRunner}}checked="checked"{{/user.isRunner}} /><label for="isrunner" class="info-label">Designer</label>
-                            <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" {{#user.isPayer}}checked="checked"{{/user.isPayer}} /><label for="ispayer" class="info-label">Payer</label>
+                            <input type="checkbox" name="isrunner" value="isrunner" id="isrunner" {{#profileUser.isRunner}}checked="checked"{{/profileUser.isRunner}} /><label for="isrunner" class="info-label">Designer</label>
+                            <input type="checkbox" name="ispayer" value="ispayer" id="ispayer" {{#profileUser.isPayer}}checked="checked"{{/profileUser.isPayer}} /><label for="ispayer" class="info-label">Payer</label>
                         </p>
                         <h3>Payment Information</h3>
                         <p>
                             <label for="isw9approved" class="info-label">W9</label>
-                            <select id="w9status" name="w9status" {{^user.isUsCitizen}}disabled="disabled"{{/user.isUsCitizen}}>
+                            <select id="w9status" name="w9status" {{^profileUser.isUsCitizen}}disabled="disabled"{{/profileUser.isUsCitizen}}>
                                 <option value="awaiting-receipt" {{#w9_statusAwaitingReceipt}}selected="selected"{{/w9_statusAwaitingReceipt}}>Awaiting Receipt</option>
                                 <option value="pending-approval" {{#w9_statusPendingApproval}}selected="selected"{{/w9_statusPendingApproval}}>Pending Approval</option>
                                 <option value="approved" {{#w9_statusApproved}}selected="selected"{{/w9_statusApproved}}>Approved</option>
@@ -189,21 +189,21 @@
                                 <option value="not-applicable" {{#w9_statusNotApplicable}}selected="selected"{{/w9_statusNotApplicable}}>Not Applicable</option>
                             </select>
                             <input type="checkbox" id="isw2employee" 
-                              name="isw2employee" {{#user.getHas_W2}}checked="checked"{{/user.getHas_W2}} />
+                              name="isw2employee" {{#profileUser.getHas_W2}}checked="checked"{{/profileUser.getHas_W2}} />
                             <label for="isw2employee" class="info-label">W2 Employee</label>
                             <input type="checkbox" id="ispaypalverified" 
-                              name="ispaypalverified" {{#user.getPaypal_verified}}checked="checked"{{/user.getPaypal_verified}}/>
+                              name="ispaypalverified" {{#profileUser.getPaypal_verified}}checked="checked"{{/profileUser.getPaypal_verified}}/>
                             <label for="ispaypalverified" class="info-label">PayPal Verified</label>
                         </p>
                         <h3>Preferred Payment Method</h3>
                         <p>
-                            <span id="info-payway">{{user.getPayway}}</span>
+                            <span id="info-payway">{{profileUser.getPayway}}</span>
                         </p>
                         <h3>PayPal E-Mail</h3>
                         <p>
-                            <span id="info-paypal">{{user.getPaypal_email}}</span>
+                            <span id="info-paypal">{{profileUser.getPaypal_email}}</span>
                         </p>
-                        <input type="hidden" name="userid" id="userid" value="{{user.getId}}" />
+                        <input type="hidden" name="userid" id="userid" value="{{profileUser.getId}}" />
                     </form>
                 </div>
                 <div class="col-md-6">
@@ -231,7 +231,7 @@
                         </select>
                         <h3>Found Us On:</h3>
                         <p>
-                            <span>{{user.getFindus}}</span>
+                            <span>{{profileUser.getFindus}}</span>
                         </p>
                     </form>
                         <p class = "info-label title-label-small">User last seen: <br />
@@ -313,7 +313,7 @@
         <div class="tab-pane" id="sandbox">
             <form method="post" action="" class="form form-inline" id="sandboxForm">
                 <label for="unixusername">UNIX Username</label>
-                <input name="unixusername" id="unixusername" class="form-control" type="text" value="{{user.getUnixusername}}" />
+                <input name="unixusername" id="unixusername" class="form-control" type="text" value="{{profileUser.getUnixusername}}" />
                 <input id="create_sandbox" type="submit" name="create_sandbox" 
                   value="Create SB" {{#has_sandbox}}style="display: none;"{{/has_sandbox}} />
                 <p id="projects-field" class="info-label title-label-small">Projects to check-out :</p>
@@ -335,21 +335,18 @@
         manager: {{manager}},
         referred_by: {{referred_by}},
         user_id: {{userId}},
-        nickName: '{{user.getNickName}}',
+        nickName: '{{profileUser.getNickName}}',
         tab: '{{tab}}'
     };
 </script>
 
 <!-- popup div's -->
-<div id="budget-dialog" title="Budget details" data-userid = "{{user.getId}}">
+<div id="budget-dialog" title="Budget details" data-userid = "{{profileUser.getId}}">
 </div>
-<!--
-<div id="budget-update-dialog" title="Budget update" data-userid = "{{user.getId}}">
-    <div class="content"></div>
-</div>
--->
-{{> popup-update-budget}}
-{{> popup-add-funds}}
+
+{{> budget/give-modal}}
+{{> budget/update-modal}}
+{{> budget/addfunds-modal}}
 
 <div id="reject-w9" title="Reject W9">
     
@@ -357,7 +354,7 @@
         <label for="reject-reason" class="info-label">Reason: </label><br/>
         <textarea id="reject-reason" name="reason"></textarea><br/>
         <span style="float: right;"><span id="charCount">100</span> characters remaining</span>
-        <input type="hidden" id="budget-receiver" name="receiver_id" value="{{user.getId}}" />
+        <input type="hidden" name="receiver_id" value="{{profileUser.getId}}" />
     </form>
 </div><!-- end of reject w9 div -->
 <div id="pay-bonus" title="Pay Bonus">
@@ -377,7 +374,7 @@
         <div class="clearBonusArea">
         <label for="bonus-reason" class="info-label">Reason: </label><br/>
             <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/>
-            <input type="hidden" id="bonus-receiver" name="receiver_id" value="{{user.getId}}" />
+            <input type="hidden" id="bonus-receiver" name="receiver_id" value="{{profileUser.getId}}" />
         <input type="submit" value="Pay Bonus" />
     </form>
 

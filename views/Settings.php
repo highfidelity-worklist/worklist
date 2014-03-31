@@ -17,8 +17,8 @@ class SettingsView extends View {
     );
 
     public function render() {
-        $this->new_user = (int) $this->read('new_user');
         $this->user = $this->read('user');
+        $this->userInfo = $this->read('userInfo');
 
         return parent::render();
     }
@@ -30,7 +30,7 @@ class SettingsView extends View {
         $ret = '<select id="timezone" name="timezone">';
         foreach($timezoneTable as $key => $value) {
             $selected = '';
-            if (empty($_SESSION['new_user']) && $key == $userInfo['timezone']) {
+            if ($key == $userInfo['timezone']) {
                 $selected = 'selected = "selected"';
             }
             $ret .= '<option value = "'.$key.'" '.$selected.'>'.$value.'</option>';
@@ -41,27 +41,25 @@ class SettingsView extends View {
 
     public function picture() {
         $userInfo = $this->read('userInfo');
-        return $this->new_user 
-            ? 'thumb.php?src=images/no_picture.png&w=100&h=100&zc=0'
-            : APP_IMAGE_URL . $userInfo['picture'];
+        return APP_IMAGE_URL . $userInfo['picture'];
 
     }
     
     public function receivesBiddingJobsAlerts() {
         $userInfo = $this->read('userInfo');
-        $notifications = !$this->read('new_user') ? $userInfo['notifications'] : 0;
+        $notifications = $userInfo['notifications'];
         return Notification::isNotified($notifications, Notification::BIDDING_EMAIL_NOTIFICATIONS);
     }
 
     public function receivesReviewJobsAlerts() {
         $userInfo = $this->read('userInfo');
-        $notifications = !$this->read('new_user') ? $userInfo['notifications'] : 0;
+        $notifications = $userInfo['notifications'];
         return Notification::isNotified($notifications, Notification::REVIEW_EMAIL_NOTIFICATIONS);
     }
 
     public function receivesSelfActionsAlerts() {
         $userInfo = $this->read('userInfo');
-        $notifications = !$this->read('new_user') ? $userInfo['notifications'] : 0;
+        $notifications = $userInfo['notifications'];
         return Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS);
     }
 

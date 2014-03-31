@@ -3546,16 +3546,16 @@ function budgetHistory() {
     ?>
     <table class="table table-striped">
       <thead>
-        <tr class="table-hdng">
-          <th class="date">Created</th>
-          <th class="id">ID #</th>
-          <th class="giver">Grantor</th>
-          <th class="amount">Amount</th>
+        <tr>
+          <th>Created</th>
+          <th>ID #</th>
+          <th>Grantor</th>
+          <th>Amount</th>
           <?php if (!empty($id) && $userId == $id) { ?>
-          <th class="amount">Remaining</th>
+          <th>Remaining</th>
           <?php } ?>
-          <th class="for">For</th>
-          <th class="active">Active</th>
+          <th>For</th>
+          <th>Active</th>
         </tr>
       </thead>
 
@@ -3582,7 +3582,7 @@ function budgetHistory() {
                 
     ?>
 
-        <tr class="<?php echo ($i % 2 ? 'roweven' : 'rowodd') . $classBudgetRow; ?>"  data-budgetid="<?php echo $row['budget_id']; ?>"
+        <tr class="<?php echo $classBudgetRow; ?>" data-budgetid="<?php echo $row['budget_id']; ?>"
             <?php echo (!empty($notes)) ? $notes : $row['budget_id'] ; ?>
         >
             <td><span><?php echo $row['date']; ?></span></td>
@@ -3604,15 +3604,15 @@ function budgetHistory() {
     ?>
 
     </table>
-    <div class="pages"><?php 
+    <div><ul class="pagination"><?php 
     for ($i = 1; $i <= $totalPages; $i++) {
         if ($i == $page) {
-            echo $i . ' ';
+            echo '<li><a href="#">' . $i . '</a></li>';
         } else {
-            echo '<a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a> ';
+            echo '<li><a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a></li>';
         }
     }
-    echo '</div>';
+    echo '</ul></div>';
 }
 
 function timeline() {
