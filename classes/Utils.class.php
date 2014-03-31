@@ -121,8 +121,6 @@ class Utils{
             break;
         }
         
-        error_log('encrypting with ' . $salt . ' for password: ' . $clearText);
-        error_log(crypt($clearText, $salt));
         return crypt($clearText, $salt);
     }
 
