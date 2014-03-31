@@ -13,4 +13,4 @@
 /.htaccess
 
 # commonly used for error logging on sandboxes
-/errors.log
+/php.errors
