@@ -10,7 +10,7 @@ var Budget = {
                     receiver_id: $('#userid').val(),
                     reason: $('#budget-reason').val(),
                     amount: parseFloat($('#budget-give-modal input[name="amount"]').val().replace('$', '')),
-                    budget_seed: $('#budget-seed').is(':checked') ? 1 : 0,
+                    budget_seed: $('#budget-give-modal input[name="budget-seed"]').is(':checked') ? 1 : 0,
                     budget_source: $('#budget-give-modal input[name="budget-source"]').val(),
                     budget_source_combo: $('#budget-give-modal select[name="budget-source-combo"]').val(),
                     budget_note: $('#budget-note').val(),
@@ -125,18 +125,18 @@ var Budget = {
     },
     
     initAddFunds: function() {
-        var budget_seed = $("#budget-seed").val() != 0 ? 1 : 0;
+        var budget_seed = $('#add-funds-modal input[name="budget-seed"]').val() != 0 ? 1 : 0;
         if (budget_seed) {
             $('#add-funds-modal input[name="budget-source"]').show();
-            $('#add-funds-modal input[name="budget-source-combo-area"]').hide();
+            $('#add-funds-modal #budget-source-combo-area').hide();
         } else {
             $('#add-funds-modal input[name="budget-source"]').hide();
-            $('#add-funds-modal input[name="budget-source-combo-area"]').show();
+            $('#add-funds-modal #budget-source-combo-area').show();
         }
         $('#add-funds-modal select[name="budget-source-combo"]').chosen({width: 'auto'});
         $("#amountToAdd").blur(function(){ 
             var amountToAdd = parseFloat($("#amountToAdd").val()),
-                budgetAmount = parseFloat($('#budget-update-modal input[name="amount"').val().replace('$', ''));
+                budgetAmount = parseFloat($('#budget-update-modal input[name="amount"]').val().replace('$', ''));
             if (!isNaN(amountToAdd + budgetAmount)) {
                 $("#newBudgetTotal").html(amountToAdd + budgetAmount);
             } else {
@@ -196,6 +196,7 @@ var Budget = {
         $('#addFundsButton').click(function(){
             $('#budget-update-modal').modal('hide');
             $('#add-funds-modal').modal('show');
+            $('#newBudgetTotal').html('0');
             $.ajax({
                 type: "POST",
                 url: 'api.php',
@@ -210,7 +211,6 @@ var Budget = {
                         data = json.params;
                         $("#budget-seed").val(data.seed == 1 ? 1 : 0);
                         $('#add_funds_to').val(data.budget_id);
-                        Budget.initAddFunds();
                      } else {
                         alert(json.message);
                     }
@@ -315,6 +315,7 @@ var Budget = {
                         } else {
                             $('#budget-sources-table').hide();
                         }
+                        $('#budget-sources-table > table > tbody > tr').remove();
                         for(var i=0; i< data.sources.length; i++) {
                             var source = data.sources[i];
                             html = 
@@ -648,6 +649,7 @@ var Budget = {
 $(function() {
     Budget.initBudgetList();
     Budget.initUpdateDialog();
+    Budget.initAddFunds();
     Budget.init();
     $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
     $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
