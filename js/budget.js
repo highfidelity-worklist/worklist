@@ -9,7 +9,7 @@ var Budget = {
                     action: 'updateBudget',
                     receiver_id: $('#userid').val(),
                     reason: $('#budget-reason').val(),
-                    amount: parseFloat($('#budget-amount').val().replace('$', '')),
+                    amount: parseFloat($('#budget-give-modal input[name="amount"]').val().replace('$', '')),
                     budget_seed: $('#budget-seed').is(':checked') ? 1 : 0,
                     budget_source: $('#budget-give-modal input[name="budget-source"]').val(),
                     budget_source_combo: $('#budget-give-modal select[name="budget-source-combo"]').val(),
@@ -136,7 +136,7 @@ var Budget = {
         $('#add-funds-modal select[name="budget-source-combo"]').chosen({width: 'auto'});
         $("#amountToAdd").blur(function(){ 
             var amountToAdd = parseFloat($("#amountToAdd").val()),
-                budgetAmount = parseFloat($("#budget-amount").val().replace('$', ''));
+                budgetAmount = parseFloat($('#budget-update-modal input[name="amount"').val().replace('$', ''));
             if (!isNaN(amountToAdd + budgetAmount)) {
                 $("#newBudgetTotal").html(amountToAdd + budgetAmount);
             } else {
@@ -295,7 +295,7 @@ var Budget = {
             Budget.budgetExpand(3, budgetId);
         });
         $("tr.budgetRow").live("click",function() {
-            $('#budget-update-modal').data("budgetId", $(this).data("budgetid"));
+            $('#budget-update-modal').data("budgetId", $(this).attr('data-budgetid'));
             $.ajax({
                 type: "POST",
                 url: 'api.php',
@@ -308,8 +308,8 @@ var Budget = {
                 success: function(json) {
                     if (json && json.succeeded) {
                         data = json.params;
-                        $('#budget-amount').val('$' + data.amount);
-                        $('#budget-reason').val(data.reason).attr({disabled: data.closed == 1});
+                        $('#budget-update-modal input[name="amount"]').val('$' + data.amount);
+                        $('#budget-update-modal input[name="budget-reason"]').val(data.reason).attr({disabled: data.closed == 1});
                         if ((data.req_user_authorized && data.seed == 1) || data.seed == 0) {
                             $('#budget-sources-table').show();
                         } else {

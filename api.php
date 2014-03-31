@@ -3582,7 +3582,7 @@ function budgetHistory() {
                 
     ?>
 
-        <tr class="<?php echo ($i % 2 ? 'roweven' : 'rowodd') . $classBudgetRow; ?>"  data-budgetid="<?php echo $row['budget_id']; ?>"
+        <tr class="<?php echo $classBudgetRow; ?>" data-budgetid="<?php echo $row['budget_id']; ?>"
             <?php echo (!empty($notes)) ? $notes : $row['budget_id'] ; ?>
         >
             <td><span><?php echo $row['date']; ?></span></td>
