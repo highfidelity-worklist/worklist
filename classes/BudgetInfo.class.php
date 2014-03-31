@@ -31,9 +31,13 @@ class BudgetInfo {
         $budget_id = (int) $_REQUEST['budgetId'];
         $budget = new Budget();
         if ($budget->loadById($budget_id)) {
-            include(dirname(__FILE__) . "/BudgetInfo/popup-add-funds.inc");
+            $this->respond(true, 'Returning data', array(
+                'budget_id' => $budget_id,
+                'seed' => $budget->seed
+            ));
+
         } else {
-            echo 'Invalid budget id';
+            $this->respond(true, 'Invalid budget id');
         }
         exit(0);
      }
@@ -54,26 +58,25 @@ class BudgetInfo {
         $budget = new Budget();
         if ($budget->loadById($budget_id)) {
             $sources = $budget->loadSources();
-/*            $sourceBudgetReason = "";
-            if ($budget->seed != 1 && $budget->source_budget_id > 0) {
-                $budgetSeed = new Budget();
-                if ($budgetSeed->loadById($budget->source_budget_id)) {
-                    $sourceBudgetReason = $budgetSeed->reason;
-                }
-            }*/
             $budgetClosed = !$budget->active;
             $allocated = $budget->getAllocatedFunds();
             $submitted = $budget->getSubmittedFunds();
             $paid = $budget->getPaidFunds();
             $transfered = $budget->getTransferedFunds();
-            //$transfered = 0;
             $remaining = $budget->amount - $allocated - $submitted - $paid - $transfered;
-            ob_start();
-            include(dirname(__FILE__) . "/BudgetInfo/popup-update-budget.inc");
-            $html = ob_get_contents();
-            ob_end_clean();
             $this->respond(true, 'Returning data', array(
-                'html' => $html
+                'amount' => $budget->amount,
+                'closed' => $budgetClosed,
+                'reason' => $budget->reason,
+                'req_user_authorized' => strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false,
+                'seed' => $budget->seed,
+                'sources' => $sources,
+                'notes' => $budget->notes,
+                'remaining' => money_format('%i', $remaining),
+                'allocated' => money_format('%i', $allocated),
+                'submitted' => money_format('%i', $submitted),
+                'paid' => money_format('%i', $paid),
+                'transferred' => money_format('%i', $transfered)                
             ));
         } else {
             $this->respond(true, 'Invalid budget id');

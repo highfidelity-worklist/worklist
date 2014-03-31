@@ -190,25 +190,8 @@ table tr:hover {
     top:5px;
 }
 
-#be-table {
-    border: none;
-    padding:2px;
-}
-
 #be-block .margin25 {
     margin-top: 25px;
-}
-
-.be-table_cell1 {
-    border: none;
-    padding:2px;
-}
-
-.be-table_cell2 {
-    border: none;
-    text-align: right;
-    padding:2px;
-    width: 100px;
 }
 
 #be-search,

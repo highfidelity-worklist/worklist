@@ -130,11 +130,12 @@ class LoginController extends Controller {
 
             $userId = getSessionUserId();
             $user = new GitHubUser($userId);
+            $testUser = new GitHubUser($userId);
             if ($user->getId()) {
                 // user is already logged in in worklist, let's just check if credentials are
                 // already stored and save them in case they're not
-                if (! $user->linkedToAuthToken($access_token)) {
-                    // credentials not stored in db
+                if (! $user->linkedToAuthToken($access_token) && !$testUser->findUserByAuthToken($access_token)) {
+                    // credentials not stored in db and not used by any other user
                     $user->storeCredentials($access_token);
                 }
                 Utils::redirect('./');

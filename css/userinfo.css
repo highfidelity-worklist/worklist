@@ -4,19 +4,6 @@
   font-weight: bold;
 }
 
-.hidden {
-    display: none;
-}
-
-.rowodd {
-    background-color: #ffffff;
-}
-
-.roweven {
-    background-color: #EEE !important;
-    background-image: none !important;
-}
-
 .userInfoLink {
     color: #000;
     text-decoration: none;
@@ -520,4 +507,8 @@ p.bottom {
 #bonus-amount {
     margin: 0;
     padding: 0.4em 0.35em !important;
+}
+
+body .white-theme .ui-dialog-content label {
+    font-size: 0.8em !important;
 }

@@ -341,12 +341,17 @@
 </script>
 
 <!-- popup div's -->
-<div id="budget-dialog" title="Budget details" data-userid = "{{user.getId}}" class="hidden">
+<div id="budget-dialog" title="Budget details" data-userid = "{{user.getId}}">
 </div>
-<div id="budget-update-dialog" title="Budget update" data-userid = "{{user.getId}}" class="hidden">
+<!--
+<div id="budget-update-dialog" title="Budget update" data-userid = "{{user.getId}}">
     <div class="content"></div>
 </div>
-<div id="reject-w9" title="Reject W9" class="hidden">
+-->
+{{> popup-update-budget}}
+{{> popup-add-funds}}
+
+<div id="reject-w9" title="Reject W9">
     
     <form method="post" action = "">
         <label for="reject-reason" class="info-label">Reason: </label><br/>

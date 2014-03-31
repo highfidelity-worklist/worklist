@@ -6,38 +6,8 @@ Session::check();
 checkLogin();
 
 if (empty($_SESSION['is_payer'])) {
-   header("Location:reports.php");
+   header("Location:./reports");
 }
-
-
-//open db connection
-$db = @mysql_connect (DB_SERVER, DB_USER, DB_PASSWORD) or die ('I cannot connect to the database because: ' . mysql_error());
-$db = @mysql_select_db(DB_NAME);
- 
-
-function saveAdmin($pass, $oldpass = '') {
-    if (checkAdmin($oldpass) == '1') {
-        $sql = "UPDATE ".PAYPAL_ADMINS." SET `password` = '".md5($pass)."' WHERE (password = '".md5($oldpass)."')";
-    } else {
-        $sql = "";
-    }
-
-    if ($sql != "") {
-        $result = mysql_query($sql);
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function checkAdmin($pass) {
-//checks admin login.  
-$sql = "SELECT * FROM ".PAYPAL_ADMINS." WHERE `password` = '".md5($pass)."'";
-$result = mysql_query($sql);
-//if successful, this will be 1, otherwise 0
-return mysql_num_rows($result);
-}
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_POST['action'] == 'check') {

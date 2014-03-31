@@ -348,8 +348,10 @@ class Notification {
             case 'bid_accepted':
                 $headers['From'] = '"' . $project_name . '-bid accepted" ' . $from_address;
                 $body = 'Your bid was accepted for ' . $itemLink . '<br/><br />'
+                        . 'If this job requires you to create code, please read through and then follow our coding '
+                        . 'standards which are found <a href="https://github.com/highfidelity/hifi/wiki/Coding-Standard">here</a>.<br/><br/>'
                         . 'Promised by: ' . $_SESSION['nickname'] . '<br /><br />'
-                . 'Project: ' . $project_name . '<br />'
+                        . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                         if($workitem->getRunner() != '') {
                             $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';

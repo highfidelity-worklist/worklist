@@ -22,6 +22,7 @@ class UserView extends View {
     public function render() {
         $this->userId = $this->read('userId');
         $this->user = $this->read('user');
+        $this->reqUser = $this->read('reqUser');
         $this->title = sprintf($this->title, $this->user->getNickname());
         $this->manager = $this->read('manager');
         $this->referred_by = $this->read('referred_by');
