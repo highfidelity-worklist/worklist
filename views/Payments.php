@@ -118,7 +118,7 @@ class PaymentsView extends View {
                         <tr>
                             <td class="fee-row"><input type="checkbox" class="fees' . $payee["mechanic_id"].'" 
                               name="payfee[]" id="payfee'.$ind_fees["id"].'" value="'.$ind_fees["id"].'" 
-                              onclick="updateTotalFees(\'1\');" rel="'.$ind_fees["amount"].'"' .
+                              onclick="toggleCBChild(\'fees'.$payee["mechanic_id"].'\', this);" rel="'.$ind_fees["amount"].'"' .
                               ($checked ? ' checked="checked"' : '') . ' /></td>
                             <td>'.strftime("%m-%d-%Y", strtotime($ind_fees["date"])).'</td>
                             <td onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["id"].'</td>
@@ -164,7 +164,7 @@ class PaymentsView extends View {
                             <tr>
                                 <td class="fee-row"><input type="checkbox" class="fees'.$payee["mechanic_id"].'" 
                                   name="paybonus[]" id="paybonus'.$ind_bonus["id"].'" value="'.$ind_bonus["id"].'" 
-                                  onclick="updateTotalFees(\'1\');" rel="'.$ind_bonus["amount"].'"' .
+                                  onclick="toggleCBChild(\'fees'.$payee["mechanic_id"].'\', this);" rel="'.$ind_bonus["amount"].'"' .
                                   ($checked ? ' checked="checked"' : '') . ' /></td>
                                 <td>'.strftime("%m-%d-%Y", strtotime($ind_bonus["date"])).'</td>
                                 <td onclick="toggleBox(\'paybonus'.$ind_bonus["id"].'\')">'.$ind_bonus["id"].'</td>
