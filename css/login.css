@@ -54,7 +54,7 @@ body {
     color: #fff;
 }
 
-#form-login button[type="submit"] {
+#form-login button[type="submit"], #form-login a#github {
     border: 0 none;
     background-color: #009999;
     color: #fff;

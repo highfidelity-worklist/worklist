@@ -1,5 +1,10 @@
 <form class="form-signin" role="form" id="form-login" method="post" action="">
     <h2>Login to Worklist</h2>
+
+    <fieldset>
+        <a id="github" class="icon-github" href="./github?action=login"> Log in with GitHub</a>
+    </fieldset>
+
     {{#failed}}
         {{#errors}}
             <p class="error">{{&msg}}</p>
