@@ -68,7 +68,7 @@ class View extends AppObject {
         if ($user_id) {
             initUserById($user_id);
             $user->findUserById($user_id);
-            $this->user['budget'] = array(
+            $this->currentUser['budget'] = array(
                 'feeSums' => Fee::getSums(),
                 'totalManaged' => money_format('$ %i', $user->getTotalManaged()),
                 'remainingFunds' => money_format('$ %i', $user->setRemainingFunds()),
@@ -76,7 +76,8 @@ class View extends AppObject {
                 'submitted' => money_format('$ %i', $user->getSubmitted()),
                 'paid' => money_format('$ %i', $user->getPaid()),
                 'transfered' => money_format('$ %i', $user->getTransfered()),
-                'transfersDetails' => $user->getBudgetTransfersDetails()
+                'transfersDetails' => $user->getBudgetTransfersDetails(),
+                'available' => $user->getBudget()
             );
             $this->currentUser['can'] = array(
                 'addProject' => ($user->getIs_admin() || $user->isRunner() || $user->isPaypalVerified())

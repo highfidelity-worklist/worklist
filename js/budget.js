@@ -1,27 +1,18 @@
 var Budget = {
-    initCombo: function(id, idBlur) {
-        if (!id) {
-            id = '#budget-source-combo';
-        } else {
-            id = '#' + id;
-        }
-        $(id).chosen({
-            width: 'auto'
-        });
-    },
     init : function() {
-        $('#give-budget form input[type="submit"]').click(function() {
-            $('#give-budget form input[type="submit"]').attr("disabled", "disabled");
+        $('#budget-give-modal form button[type="submit"]').click(function(event) {
+            event.preventDefault();
+            $('#budget-give-modal form button[type="submit"]').attr("disabled", "disabled");
             $.ajax({
                 url: 'api.php',
                 data: {
                     action: 'updateBudget',
-                    receiver_id: $('#budget-receiver').val(),
+                    receiver_id: $('#userid').val(),
                     reason: $('#budget-reason').val(),
                     amount: parseFloat($('#budget-amount').val().replace('$', '')),
                     budget_seed: $('#budget-seed').is(':checked') ? 1 : 0,
-                    budget_source: $('#budget-source').val(),
-                    budget_source_combo: $('#budget-source-combo').val(),
+                    budget_source: $('#budget-give-modal input[name="budget-source"]').val(),
+                    budget_source_combo: $('#budget-give-modal select[name="budget-source-combo"]').val(),
                     budget_note: $('#budget-note').val(),
                     add_funds_to: 0
                 },
@@ -29,14 +20,14 @@ var Budget = {
                 type: "POST",
                 cache: false,
                 success: function(json) {
-                    $('#give-budget form input[type="submit"]').removeAttr('disabled');
+                    $('#budget-give-modal form button[type="submit"]').removeAttr('disabled');
                     if (json.success) {
-                        $('#give-budget').dialog('close');
+                        $('#budget-give-modal').modal('hide');
                         setTimeout(function() {
                             alert(json.message);
                             Budget.budgetHistory({
                                 inDiv: "tabs", 
-                                id: $('#budget-receiver').val(), 
+                                id: $('#userid').val(), 
                                 page: 1 
                             });
                         }, 50);
@@ -65,15 +56,22 @@ var Budget = {
             $('#budget-dialog').dialog('open');
             return false;
         });
-        $("#budget-seed").click(function(){
-            if ($(this).is(':checked')) {
-                $("#budget-source").show();
-                $("#budget-source-combo-area").hide();
-            } else {
-                $("#budget-source").hide();
-                $("#budget-source-combo-area").show();
-            }
-        });
+        if ($('#budget-give-modal input[name="budget-seed"]').length == 0) {
+            $('#budget-give-modal input[name="budget-source"]').hide();
+            $('#budget-give-modal #budget-source-combo-area').show();
+        } else {
+            var toggleSeedBudget = function() {
+                if ($(this).is(':checked')) {
+                    $('#budget-give-modal input[name="budget-source"]').show();
+                    $('#budget-give-modal #budget-source-combo-area').hide();
+                } else {
+                    $('#budget-give-modal input[name="budget-source"]').hide();
+                    $('#budget-give-modal #budget-source-combo-area').show();
+                }
+            };
+            $('#budget-give-modal input[name="budget-seed"]').click(toggleSeedBudget);
+            toggleSeedBudget();
+        }
         $('#budget-dialog').dialog({
             autoOpen: false,
             modal: true,
@@ -92,7 +90,7 @@ var Budget = {
                 $('#budget-dialog').load("api.php?action=budgetHistory&inDiv=budget-dialog&id=" + $('#budget-dialog').data("userid") + "&page=1" + fromUserid);
             }
         });
-        Budget.initCombo();
+        $('#budget-source-combo').chosen({width: 'auto'});
     },
     
     budgetHistory: function(options) {
@@ -107,43 +105,56 @@ var Budget = {
         if (!options.fromUserid) {
             options.fromUserid = "";
         }
-        $("#" + options.inDiv + " #budgetHistoryContent").data("lastPage", options.page);
-        $("#" + options.inDiv + " #budgetHistoryContent").load("api.php?action=budgetHistory&inDiv=" + options.inDiv + "&id=" + options.id + "&page=" + options.page + options.fromUserid);
+        $("#" + options.inDiv + " #budgethistory").data("lastPage", options.page);
+        $.ajax({
+            type: 'post',
+            url: 'api.php',
+            dataType: 'html',
+            data: {
+                action: 'budgetHistory',
+                inDiv: options.inDiv,
+                id: options.id,
+                page: options.page,
+                fromUserid: options.fromUserid
+            },
+            success: function(data) {
+                $('#budgethistory').html(data);
+            }
+        });
+
     },
     
     initAddFunds: function() {
         var budget_seed = $("#budget-seed").val() != 0 ? 1 : 0;
-        console.log(budget_seed);
         if (budget_seed) {
-            $("#add-funds-modal #budget-source").show();
-            $("#add-funds-modal #budget-source-combo-area").hide();
+            $('#add-funds-modal input[name="budget-source"]').show();
+            $('#add-funds-modal input[name="budget-source-combo-area"]').hide();
         } else {
-            $("#add-funds-modal #budget-source").hide();
-            $("#add-funds-modal #budget-source-combo-area").show();
+            $('#add-funds-modal input[name="budget-source"]').hide();
+            $('#add-funds-modal input[name="budget-source-combo-area"]').show();
         }
-    
-        Budget.initCombo('budget-source-combo', '#amountToAdd');
+        $('#add-funds-modal select[name="budget-source-combo"]').chosen({width: 'auto'});
         $("#amountToAdd").blur(function(){ 
             var amountToAdd = parseFloat($("#amountToAdd").val()),
-                budgetAmount = parseFloat($("#budget-amount").val());
+                budgetAmount = parseFloat($("#budget-amount").val().replace('$', ''));
             if (!isNaN(amountToAdd + budgetAmount)) {
                 $("#newBudgetTotal").html(amountToAdd + budgetAmount);
             } else {
                 $("#newBudgetTotal").html("");
             }
         });
-        $('#add-funds-modal form input[type="submit"]').click(function() {
-            $('#add-funds-modal form input[type="submit"]').attr("disabled", "disabled");
+        $('#add-funds-modal form button[type="submit"]').click(function() {
+            $('#add-funds-modal form button[type="submit"]').attr("disabled", "disabled");
             $.ajax({
                 url: 'api.php',
                 data: {
                     action: 'updateBudget',
-                    receiver_id: $('#budget-receiver').val(),
+                    receiver_id: $('#userid').val(),
                     reason: "",
                     amount: $('#amountToAdd').val(),
                     budget_seed: budget_seed,
-                    budget_source: $('#budget-source').val(),
-                    budget_source_combo: $('#budget-source-combo').val(),
+                    budget_source: $('#add-funds-modal input[name="budget-source"]').val(),
+                    budget_source_combo: $('#add-funds-modal select[name="budget-source-combo"]').val(),
                     budget_note: "",
                     add_funds_to: $('#add_funds_to').val()
                 },
@@ -151,7 +162,7 @@ var Budget = {
                 type: "POST",
                 cache: false,
                 success: function(json) {
-                    $('#add-funds-modal form input[type="submit"]').removeAttr('disabled');
+                    $('#add-funds-modal form button[type="submit"]').removeAttr('disabled');
                     if (json.success) {
                         $('#add-funds-modal').modal('hide');
                         $('#budget-update-modal').modal("hide");
@@ -159,7 +170,7 @@ var Budget = {
                             alert(json.message);
                             Budget.budgetHistory({
                                 inDiv: "tabs", 
-                                id: $('#budget-receiver').val(), 
+                                id: $('#userid').val(), 
                                 page: 1 
                             });
                         }, 50);
@@ -185,9 +196,6 @@ var Budget = {
         $('#addFundsButton').click(function(){
             $('#budget-update-modal').modal('hide');
             $('#add-funds-modal').modal('show');
-            //$('#add-funds-modal').dialog("destroy").remove();
-            //$('#addFundsArea, #budget-source-combo').remove();
-            //$("body").append("<div id='addFundsArea'></div>");
             $.ajax({
                 type: "POST",
                 url: 'api.php',
@@ -230,7 +238,7 @@ var Budget = {
                         $('#budget-update-modal').modal("hide");
                         Budget.budgetHistory({
                             inDiv: "tabs", 
-                            id: $('#budget-receiver').val()
+                            id: $('#userid').val()
                         });
                      } else {
                         alert(json.message);
@@ -256,7 +264,7 @@ var Budget = {
                         $('#budget-update-modal').modal("hide");
                         Budget.budgetHistory({
                             inDiv: "tabs", 
-                            id: $('#budget-receiver').val()
+                            id: $('#userid').val()
                         });
                      } else {
                         alert(json.message);
@@ -288,7 +296,6 @@ var Budget = {
         });
         $("tr.budgetRow").live("click",function() {
             $('#budget-update-modal').data("budgetId", $(this).data("budgetid"));
-            //Budget.createBudgetUpdateDialog();
             $.ajax({
                 type: "POST",
                 url: 'api.php',
@@ -339,14 +346,13 @@ var Budget = {
                             $('#updateButton').show();
                             $('#closeButton').hide();
                         }
-                        Budget.initUpdateDialog()
                     } else {
-                        $('#budget-update-model').modal("hide");
+                        $('#budget-update-modal').modal("hide");
                         alert(json.message);
                     }
                 },
                 error: function(json) {
-                    $('#budget-update-modal').dialog("hide");
+                    $('#budget-update-modal').modal("hide");
                     alert('error in getUpdateView');
                 }
             });
@@ -641,6 +647,8 @@ var Budget = {
 
 $(function() {
     Budget.initBudgetList();
+    Budget.initUpdateDialog();
+    Budget.init();
     $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
     $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
     $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });

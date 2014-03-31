@@ -21,9 +21,9 @@ class UserView extends View {
 
     public function render() {
         $this->userId = $this->read('userId');
-        $this->user = $this->read('user');
+        $this->profileUser = $this->read('user');
         $this->reqUser = $this->read('reqUser');
-        $this->title = sprintf($this->title, $this->user->getNickname());
+        $this->title = sprintf($this->title, $this->profileUser->getNickname());
         $this->manager = $this->read('manager');
         $this->referred_by = $this->read('referred_by');
         $this->tab = $this->read('tab');
@@ -89,7 +89,7 @@ class UserView extends View {
     public function countryCodeUrl() {
         global $countrylist, $countryurllist;
         // CCF = Country Code Fetched from user
-        $CCF = $this->user->getCountry();
+        $CCF = $this->profileUser->getCountry();
         $ret = '';
         if ($CCF != "") {
             if (array_key_exists($CCF, $countrylist)) {
@@ -105,7 +105,7 @@ class UserView extends View {
     public function countryName() {
         global $countrylist;
         // CCF = Country Code Fetched from user
-        $CCF = $this->user->getCountry();
+        $CCF = $this->profileUser->getCountry();
         $ret = '';
         if ($CCF != "") {
             if (array_key_exists($CCF, $countrylist)) {
@@ -116,16 +116,16 @@ class UserView extends View {
     }
 
     public function joined() {
-        return formatableRelativeTime(strtotime($this->user->getAdded(), 2));
+        return formatableRelativeTime(strtotime($this->profileUser->getAdded(), 2));
     }
 
     public function localTime() {
-        return convertTimeZoneToLocalTime($this->user->getTimezone(), 1);
+        return convertTimeZoneToLocalTime($this->profileUser->getTimezone(), 1);
     }
 
     public function timezone() {
         global $timezoneTable;
-        return $timezoneTable[$this->user->getTimezone()];
+        return $timezoneTable[$this->profileUser->getTimezone()];
     }
 
     public function totalEarnings() {
@@ -138,7 +138,7 @@ class UserView extends View {
     }
 
     public function ownProfile() {
-        return $this->reqUserId > 0 && $this->user->getId() == $_SESSION['userid'];
+        return $this->reqUserId > 0 && $this->profileUser->getId() == $_SESSION['userid'];
     }
 
     public function reviewsList() {
@@ -175,33 +175,33 @@ class UserView extends View {
         $reqUser = $this->read('reqUser');
         $reqUserId = $this->read('reqUserId');
         return 
-             (!$reqUser->isRunner() || $reqUserId == $this->user->getId()) 
+             (!$reqUser->isRunner() || $reqUserId == $this->profileUser->getId()) 
           &&  strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") === false;
     }
 
     public function disablePayBonus() {
         $reqUserId = $this->read('reqUserId');
-        return $reqUserId == $this->user->getId() || ! $this->currentUser['is_runner'];
+        return $reqUserId == $this->profileUser->getId() || ! $this->currentUser['is_runner'];
     }
 
     public function w9StatusAwaitingReceipt() {
-        return $this->user->getW9_status() == 'awaiting-receipt';
+        return $this->profileUser->getW9_status() == 'awaiting-receipt';
     }
 
     public function w9StatusPendingApproval() {
-        return $this->user->getW9_status() == 'pending-approval';
+        return $this->profileUser->getW9_status() == 'pending-approval';
     }
 
     public function w9StatusApproved() {
-        return $this->user->getW9_status() == 'approved';
+        return $this->profileUser->getW9_status() == 'approved';
     }
 
     public function w9StatusRejected() {
-        return $this->user->getW9_status() == 'rejected';
+        return $this->profileUser->getW9_status() == 'rejected';
     }
 
     public function w9StatusNotApplicable11() {
-        return $this->user->getW9_status() == 'not-applicable';
+        return $this->profileUser->getW9_status() == 'not-applicable';
     }
 
     public function managerUserSelectbox () {
@@ -213,19 +213,19 @@ class UserView extends View {
     }
 
     public function userIsInactive() {
-        return $this->user->getIs_active() == 0;
+        return $this->profileUser->getIs_active() == 0;
     }
 
     public function userIsActive() {
-        return $this->user->getIs_active() == 1;        
+        return $this->profileUser->getIs_active() == 1;        
     }
 
     public function userIsSecured() {
-        return $this->user->getIs_active() == 2;
+        return $this->profileUser->getIs_active() == 2;
     }
 
     public function lastSeend() {
-        return relativeTime($this->user->getTimeLastSeen(), false);
+        return relativeTime($this->profileUser->getTimeLastSeen(), false);
     }
 
     public function projectsList() {
@@ -234,7 +234,7 @@ class UserView extends View {
             $ret .= 
                 '<div class="quarter-column">' .
                   '<input ';
-            if (($this->has_sandbox) && $this->user->isProjectCheckedOut($project['id'])) { 
+            if (($this->has_sandbox) && $this->profileUser->isProjectCheckedOut($project['id'])) { 
                 $ret .= 'checked="checked"  disabled="disabled" '; 
             }
             $ret .= 'type="checkbox" id="' . $project['id'] . '" />';
@@ -271,5 +271,9 @@ class UserView extends View {
             }
         }
         return $ret;
+    }
+
+    public function budgetAuthorized() {
+        return (strpos(BUDGET_AUTHORIZED_USERS, "," . $this->reqUserId . ",") !== false);
     }
 }

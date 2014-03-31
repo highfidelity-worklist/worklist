@@ -199,7 +199,7 @@ input.wlcheckbox[type="checkbox"]:checked + label:before {
     content: '\f00c';
 }
 
-.modal-body > form > .row {
+.modal-content form .row {
     margin-bottom: 15px;
 }
 
