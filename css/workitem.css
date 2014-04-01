@@ -840,7 +840,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     line-height: 18px;
     max-width: 450px;
     word-wrap: break-word;
-    overflow: hidden;
 }
 
 .comment {
