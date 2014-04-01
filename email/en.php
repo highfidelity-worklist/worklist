@@ -13,12 +13,14 @@ replacement data:
 
 'changed_pass' => array(
 
-'subject' =>
-"Worklist Password Changed",
+'subject' => 'Worklist password changed!',
 
 'body' =>
-"<p>Change is good!</p>
-<p>You have successfully changed your password with {app_name}</p>",
+'<p>Change is good!</p>
+<p>You have successfully changed your password with {app_name}</p>
+<p>
+Worklist / High Fidelity</p>
+',
 ),
 
 /*
@@ -32,15 +34,14 @@ replacement data:
 
 'recovery' => array(
 
-'subject' =>
-"Worklist Password Reset",
+'subject' => 'Worklist: reset your password',
 
 'body' =>
-"<p>Hi,</p>
+'<p>Hi,</p>
 <p>Please click on the link below or copy and paste the url in browser to reset your password.<br/>
 {url}</p>
 <p>Cheers,<br/>
-High Fidelity<br/><br/></p>",
+Worklist / High Fidelity</p>',
 ),
 
 /*
@@ -55,12 +56,11 @@ replacement data:
 
 'feedback' => array(
 
-'subject' =>
-"Feedback for {app_name}.",
+'subject' => 'Feedback for {app_name}.',
 
 'body' =>
-"<p>You received feedback for {app_name} from {sender}!</p>
-<p>{message}<p/>",
+'<p>You received feedback for {app_name} from {sender}!</p>
+<p>{message}<p/>',
 ),
 
 /*
@@ -88,7 +88,7 @@ replacement data:
     nickname - nickname of the receiving user
 */
 'welcome' => array(
-    'subject' => 'Get Started with Worklist',
+    'subject' => 'Getting started with Worklist',
     'body' => '
         Thank you for joining Worklist, {nickname}!<br/><br/>
         We\'re excited to have you join us as we build a new virtual world platform.<br/><br/>
@@ -102,7 +102,7 @@ replacement data:
         <br/>
         <br/>
         Cheers,<br/>
-        The High Fidelity Team<br/><br/>
+        Worklist / High Fidelity<br/><br/>
         P.S. Follow our continuing adventures: <a href="http://twitter.com/theworklist">@theworklist</a>
     '
 ),
@@ -131,12 +131,12 @@ w9-approved
     used in: userinfo
 */
 'w9-approved' => array(
-    'subject' => 'Worklist: Your W9 has been approved',
+    'subject' => 'Worklist: your W-9 has been approved',
     'body' => '<p>Hello,</p>
-               <p>Your W9 form has been approved.</p>
+               <p>Your W-9 form has been approved.</p>
             <p>       
         Cheers,<br/>
-        High Fidelity Team</p>'
+        Worklist / High Fidelity</p>'
 ),
 
 /*
@@ -154,7 +154,7 @@ replacement data:
                <p>{reason}</p>
         <p>
         Regards,<br/>
-        High Fidelity</p>'
+        Worklist / High Fidelity</p>'
 ),
 
 /*
@@ -167,7 +167,7 @@ replacement data:
  *     database_user: Name of mysql username
  */
 'project-created-newsb' => array(
-    'subject' => 'New project {project_name} added to the Worklist!',
+    'subject' => 'New project {project_name} added to Worklist!',
     'body' => '<p>Hi {nickname}!</p>
                <p>Your project {project_name} has been created on Worklist, with a sample \'Hello World\' index page with data from your database.<br/>
                The setup includes:</p>
@@ -186,7 +186,7 @@ replacement data:
 ),
     
 'project-created-existingsb' => array(
-    'subject' => 'New project {project_name} added to the Worklist!',
+    'subject' => 'New project {project_name} added to Worklist!',
     'body' => '<p>Hi {nickname}!</p>
                <p>Your project {project_name} has been created on Worklist, with a sample \'Hello World\' index page with data from your database.<br/>
                The setup includes:</p>
