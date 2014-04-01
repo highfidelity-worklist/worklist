@@ -75,7 +75,7 @@ replacement data:
 'bonus_received' => array(
     'subject' => 'Bonus payment of ${amount}',
     'body' => '
-        <p>You received a bonus of ${amount}, and note:</p>
+        <p>You received a bonus of ${amount} and note:</p>
         <p>{reason}</p>'
 ),
 
@@ -103,7 +103,7 @@ replacement data:
         <br/>
         Cheers,<br/>
         Worklist / High Fidelity<br/><br/>
-        P.S. Follow our continuing adventures: <a href="http://twitter.com/theworklist">@theworklist</a>
+        P.S. Follow our continuing adventures: <a href="http://twitter.com/theworklist">@theworklist</a> and <a href="http://twitter.com/highfidelityinc">@highfidelityinc</a>
     '
 ),
 
@@ -115,14 +115,13 @@ trusted
 'trusted' => array(
     'subject' => 'You have been Trusted!',
     'body' => '<p>Congrats!</p>
-               <p>You have been trusted by one of your peers in the Worklist!</p>
+               <p>You have been trusted by one of your peers on Worklist!</p>
 <p></p>
-<p>See your User Profile here:<br/>
-{link}
+<p>See your User Profile here: {link}
 </p>
 <p>
 Cheers,<br>
-High Fidelity</p>'
+Worklist / High Fidelity</p>'
 ),
 
 /*
@@ -205,7 +204,7 @@ replacement data:
 ),
 
 'project-created-github' => array(
-    'subject' => 'New project {project_name} added to the Worklist!',
+    'subject' => 'New project {project_name} added to Worklist!',
     'body' => '<p>Hi {nickname}!</p>
                <p>Your project {project_name} has been created on Worklist and is linked to your GitHub space.<br/><br/>
                Details:</p>
@@ -273,7 +272,7 @@ replacement data:
 ),
 
 'functional-howto' => array(
-    'subject' => 'Job #{branch_name} is ready for functional review',
+    'subject' => 'Worklist: #{branch_name} is ready for functional review',
     'body' => '<p>Hi {runner}!</p>
                <p>Job #{branch_name} is ready for functional review. Please follow these instructions to checkout and test the work done by the developer:</p>
                <ul>
@@ -281,35 +280,41 @@ replacement data:
                <li>Checkout the branch created for this job: git checkout {branch_name}</li>
                <li>Use this branch to make your build</li>
                </ul>
-               <p>If you have any questions, please get ahold of an O-Team Member for assistance.</p>'
+               <p>If you have any questions, please ask them in our <a href="http://gitter.im/highfidelity/worklist">public chat room</a>.</p>
+               <p>
+               Cheers,<br/>
+               Worklist / High Fidelity</p>'
 ),
     
 'commit-howto' => array(
     
 ),
 'project-codereviewer-added' => array(
-   'subject' => 'Added as a Code Reviewer to Project',
+   'subject' => 'Worklist: Added as a Code Reviewer to Project',
    'body' =>
        '<p>Hi {nickname}</p>
        <p>Congrats! You have been granted Code Review rights for the following project:<br />
        <a href="{projectUrl}">{projectName}</a><br />
        Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
        <p>Please contact the project founder with any questions.</p>
-       <p>- Worklist.net</p>'
+       <p>Cheers,<br/>
+       Worklist / High Fidelity</p>'
 ),
 'project-runner-added' => array(
-    'subject' => 'Added as a Designer to Project',
+    'subject' => 'Worklist: Added as a Designer to Project',
     'body' =>
         '<p>Hi {nickname}</p>
         <p>Congrats! You have been granted Designer rights for the following project:<br />
         <a href="{projectUrl}">{projectName}</a><br />
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>
-        <p>- Worklist.net</p>'
+        <p>
+        Cheers,<br/>
+        Worklist / High Fidelity</p>'
 ),
 
 'project-runner-removed' => array(
-    'subject' => 'Designer rights removed for Project',
+    'subject' => 'Worklist: Designer rights removed for project',
     'body' => 
         '<p>Hi {nickname}</p>
         <p>Your Designer rights have been removed for the following project:<br />
@@ -319,7 +324,7 @@ replacement data:
         <p>- Worklist.net</p>'
 ),
 'project-codereview-removed' => array(
-        'subject' => 'Code Review rights removed for Project',
+        'subject' => 'Worklist: Code Review rights removed for Project',
         'body' =>
         '<p>Hi {nickname}</p>
         <p>Your Code Review rights have been removed for the following project:<br />
@@ -329,7 +334,7 @@ replacement data:
         <p>- Worklist.net</p>'
 ),
 'project-inactive' => array(
-    'subject' => 'Project set as inactive',
+    'subject' => 'Worklist: Project set as inactive',
     'body' => 
         '<p>Hi {owner}!</p>
         <p>Your project, <a href="{projectUrl}">{projectName}</a> has not shown any activity in 90+ days.</p>
@@ -338,8 +343,8 @@ replacement data:
         <p>Once a job reaches working status, your project will automatically be reactivated again!</p>
         <p></p>
         <p>Please email <a href="mailto:' . SUPPORT_EMAIL . '">' . SUPPORT_EMAIL . '</a> with any issues or concerns.</p>
-        <p></p>
-        <p>- Worklist.net</p>'
+        <p>Cheers,<br/>
+        <p>Worklist / High Fidelity</p>'
 ),
 'project-removed' => array(
     'subject' => 'Your project was removed',
