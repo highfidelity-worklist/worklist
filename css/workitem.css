@@ -838,9 +838,8 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-bottom: 4px;
     font-size: 14px;
     line-height: 18px;
-    width: 100%;
+    max-width: 450px;
     word-wrap: break-word;
-    overflow: hidden;
 }
 
 .comment {
