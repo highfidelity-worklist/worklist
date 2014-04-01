@@ -14,7 +14,6 @@ class View extends AppObject {
     public $layout = null;
     public $title = 'Worklist';
     public $app = array(
-        'version' => -1,
         'url' => WORKLIST_URL,
         'metadata' => array(
             'title' => "Worklist: High Fidelity's exoskeleton for rapid software development.",
@@ -69,7 +68,7 @@ class View extends AppObject {
         if ($user_id) {
             initUserById($user_id);
             $user->findUserById($user_id);
-            $this->user['budget'] = array(
+            $this->currentUser['budget'] = array(
                 'feeSums' => Fee::getSums(),
                 'totalManaged' => money_format('$ %i', $user->getTotalManaged()),
                 'remainingFunds' => money_format('$ %i', $user->setRemainingFunds()),
@@ -77,7 +76,8 @@ class View extends AppObject {
                 'submitted' => money_format('$ %i', $user->getSubmitted()),
                 'paid' => money_format('$ %i', $user->getPaid()),
                 'transfered' => money_format('$ %i', $user->getTransfered()),
-                'transfersDetails' => $user->getBudgetTransfersDetails()
+                'transfersDetails' => $user->getBudgetTransfersDetails(),
+                'available' => $user->getBudget()
             );
             $this->currentUser['can'] = array(
                 'addProject' => ($user->getIs_admin() || $user->isRunner() || $user->isPaypalVerified())
@@ -85,7 +85,6 @@ class View extends AppObject {
         }
 
         $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
-        $this->app['version'] = Utils::getVersion();
         $this->app['self_url'] = $_SERVER['PHP_SELF'];
         $this->currentUser['id'] = $user_id;
         $this->currentUser['username'] = $user_id ? $user->getUsername() : '';

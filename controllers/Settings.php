@@ -59,29 +59,8 @@ class SettingsController extends Controller {
 
             $saveArgs['notifications'] = 0;
 
-            // if user is new - create an entry for him
-            // clear $saveArgs so it won't be updated for the second time
-            // @TODO: Follow-up. Is this for the first creation of user in the worklist database (as opposed to
-            // logon db?  -- lithium
-            if (!empty($_SESSION['new_user'])) {
-
-                $user_id = (int) $_SESSION['userid'];
-                $username = $_SESSION['username'];
-                $nickname = $_SESSION['nickname'];
-
-                $sql = "
-                    INSERT INTO " . USERS . "
-                    (`id`, `username`, `nickname`, `timezone`, `country`, `notifications`, `is_active`, `confirm`)
-                    VALUES ('$user_id', '$username', '$nickname', '$timezone', '$country', '$notifications', '1', '1')";
-                mysql_unbuffered_query($sql);
-                $_SESSION['new_user'] = '';
-                $saveArgs = array();
-            } else {
-                  // we need to check if settings have changed
-                  // so as to send correct message in mail
-                if ($user->getTimezone() != $_POST['timezone']) {
-                      $messages[] = "Your timezone has been updated.";
-                }
+            if ($user->getTimezone() != $_POST['timezone']) {
+                  $messages[] = "Your timezone has been updated.";
             }
 
             // has the nickname changed? update the database
@@ -99,17 +78,15 @@ class SettingsController extends Controller {
                 }
 
 
-                if (!$_SESSION['new_user']) {
-                    $sql = "
-                        UPDATE " . USERS . "
-                        SET nickname = '" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
+                $sql = "
+                    UPDATE " . USERS . "
+                    SET nickname = '" . mysql_real_escape_string($nickname) . "' WHERE id ='" . $_SESSION['userid'] . "'";
 
-                    if (mysql_query($sql)) {
-                        $_SESSION['nickname'] = $nickname;
-                        $messages[] = "Your nickname is now '$nickname'.";
-                    } else {
-                        $error->setError("Error updating nickname in Worklist");
-                    }
+                if (mysql_query($sql)) {
+                    $_SESSION['nickname'] = $nickname;
+                    $messages[] = "Your nickname is now '$nickname'.";
+                } else {
+                    $error->setError("Error updating nickname in Worklist");
                 }
 
                 if ($error->getErrorFlag()) {
@@ -334,15 +311,12 @@ class SettingsController extends Controller {
 
         // getting userInfo to prepopulate fields
         $userInfo = array();
-        if(empty($_SESSION['new_user'])) {
-            $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
-            $rs = mysql_query($qry);
-            if ($rs) {
-                $userInfo = mysql_fetch_array($rs);
-            }
+        $qry = "SELECT * FROM ".USERS." WHERE id='".$_SESSION['userid']."'";
+        $rs = mysql_query($qry);
+        if ($rs) {
+            $userInfo = mysql_fetch_array($rs);
         }
 
-        $this->write('new_user', (bool) $_SESSION['new_user']);
         $this->write('nickname', $_SESSION['nickname']);
         $this->write('userInfo', $userInfo);
         parent::run();

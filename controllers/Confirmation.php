@@ -73,7 +73,7 @@ class ConfirmationController extends Controller {
             // verify the email belongs to a user
             if (! $user->findUserByUsername($email)) {
                 $this->view = null;
-                Utils::redirect('signup');
+                Utils::redirect('./signup');
             } else {
                 $data = array(
                     "username" => base64_decode($_REQUEST['str']),
@@ -109,13 +109,13 @@ class ConfirmationController extends Controller {
             if (! $user->findUserByPPUsername($paypal_email, $hash)) {
                 // hacking attempt, or some other error
                 $this->view = null;
-                Utils::redirect('login');
+                Utils::redirect('./login');
             } else {
                 $user->setPaypal_verified(true);
                 $user->setPaypal_hash('');
                 $user->save();
                 $this->view = null;
-                Utils::redirect('settings?ppconfirmed');
+                Utils::redirect('./settings?ppconfirmed');
             }
         } elseif (isset($_REQUEST['emstr'])) {
             // new email address confirmation
@@ -130,10 +130,9 @@ class ConfirmationController extends Controller {
             $user->save();
             $_SESSION['username'] = $new_email; 
             $this->view = null;
-            Utils::redirect('settings?emconfirmed');
+            Utils::redirect('./settings?emconfirmed');
         }
 
-        $this->write('userCountry', $user->getCountry());
         parent::run();
     }
 }

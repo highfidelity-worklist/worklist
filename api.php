@@ -255,6 +255,11 @@ if(validateAction()) {
                 break;
             case 'timeline':
                 timeline();
+                break;
+            case 'newUserNotification':
+                validateAPIKey();
+                sendNewUserNotification();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -1051,7 +1056,7 @@ function checkRemovableProjects() {
         $db->query($sql_remove_project_users);
 
         // Remove project runners
-        $report_message .= '<p> Runners removed for project id ' . $row['project_id'] . ':</p>';
+        $report_message .= '<p> Designers removed for project id ' . $row['project_id'] . ':</p>';
         $sql_get_project_runners = "SELECT * FROM " . PROJECT_RUNNERS . " WHERE project_id = " . $row['project_id'];
         $result_temp = $db->query($sql_get_project_runners);
         while ($row_temp = mysql_fetch_assoc($result_temp)) {
@@ -2934,7 +2939,7 @@ function payCheck() {
               "</a>: <a href='./" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . $fee_pay['worklist_id'] . "</a><br/>";
             $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
             $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
-            $body .= "Contact the job Runner with any questions<br/><br/>Worklist.net<br/>";
+            $body .= "Contact the job Designer with any questions<br/><br/>Worklist.net<br/>";
 
             if(!send_email($userData['username'], $subject, $body)) { error_log("paycheck: send_email failed"); }
         }
@@ -3046,7 +3051,7 @@ function pingTask() {
             $project->loadById($item['project_id']);
             $project_name = $project->getName();
             $mail_subject = "#" . $item_id . " - " . $item['summary'];
-            $mail_msg = "<p>The Runner for #" . $item_id . " sent a reply to your bid.</p>";
+            $mail_msg = "<p>The Designer for #" . $item_id . " sent a reply to your bid.</p>";
             $mail_msg .= "<p>Message from " . $nickname . ":<br/>" . $msg . "</p>";
             $mail_msg .= "<p>Your bid info:</p>";
             $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";
@@ -3546,16 +3551,16 @@ function budgetHistory() {
     ?>
     <table class="table table-striped">
       <thead>
-        <tr class="table-hdng">
-          <th class="date">Created</th>
-          <th class="id">ID #</th>
-          <th class="giver">Grantor</th>
-          <th class="amount">Amount</th>
+        <tr>
+          <th>Created</th>
+          <th>ID #</th>
+          <th>Grantor</th>
+          <th>Amount</th>
           <?php if (!empty($id) && $userId == $id) { ?>
-          <th class="amount">Remaining</th>
+          <th>Remaining</th>
           <?php } ?>
-          <th class="for">For</th>
-          <th class="active">Active</th>
+          <th>For</th>
+          <th>Active</th>
         </tr>
       </thead>
 
@@ -3582,7 +3587,7 @@ function budgetHistory() {
                 
     ?>
 
-        <tr class="<?php echo ($i % 2 ? 'roweven' : 'rowodd') . $classBudgetRow; ?>"  data-budgetid="<?php echo $row['budget_id']; ?>"
+        <tr class="<?php echo $classBudgetRow; ?>" data-budgetid="<?php echo $row['budget_id']; ?>"
             <?php echo (!empty($notes)) ? $notes : $row['budget_id'] ; ?>
         >
             <td><span><?php echo $row['date']; ?></span></td>
@@ -3604,15 +3609,15 @@ function budgetHistory() {
     ?>
 
     </table>
-    <div class="pages"><?php 
+    <div><ul class="pagination"><?php 
     for ($i = 1; $i <= $totalPages; $i++) {
         if ($i == $page) {
-            echo $i . ' ';
+            echo '<li><a href="#">' . $i . '</a></li>';
         } else {
-            echo '<a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a> ';
+            echo '<li><a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a></li>';
         }
     }
-    echo '</div>';
+    echo '</ul></div>';
 }
 
 function timeline() {
@@ -3642,5 +3647,50 @@ function timeline() {
     } else if ($_POST["method"] == "getListOfMonths"){
         $months = $timeline->getListOfMonths();
         echo json_encode($months);
+    }
+}
+
+function sendNewUserNotification() {
+
+    $db = new Database();
+    $recipient = 'grayson@highfidelity.io';
+
+    /**
+     * The email is to be sent Monday to Friday, therefore on a Monday
+     * we want to capture new signups since the previous Friday morning
+     */
+    $interval = 1;
+    if (date('N') === 1) {
+        $interval = 3;
+    }
+
+    $sql = "
+        SELECT * FROM " . USERS . "
+        WHERE
+            added > DATE_SUB(NOW(), INTERVAL {$interval} DAY)";
+
+    $result_temp = $db->query($sql);
+
+    $data = '<ol>';
+
+    while ($row_temp = mysql_fetch_assoc($result_temp)) {
+        $data .= sprintf('<li><a href="%suserinfo.php?id=%d">%s</a> / <a href="mailto:%s">%s</a></li>',
+            SERVER_URL,
+            $row_temp['id'],
+            $row_temp['nickname'],
+            $row_temp['username'],
+            $row_temp['username']
+        );
+    }
+
+    $data .= '</ol>';
+    
+    $mergeData = array(
+        'userList' => $data,
+        'hours' => $interval * 25
+    );
+
+    if (! sendTemplateEmail($recipient, 'user-signups', $mergeData)) {
+        error_log('sendNewUserNotification cron: Failed to send email report'); 
     }
 }

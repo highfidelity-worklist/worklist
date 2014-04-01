@@ -1,5 +1,4 @@
 function toggleVis(el) {
-    
     var element = document.getElementById(el)
     if (element.style.display == 'none') {
         element.style.display = '';
@@ -21,31 +20,39 @@ function toggleCBGroup(classname, check) {
             }
         } 
     }
-    
     //update Fees Total
     updateTotalFees('1');
 }
 
-function toggleCBs(option) {
-    //toggle all checkboxes
+function toggleCBParent(classname, check) {
+    var name = classname.substr(4) + 'fees';
+    $('input[name="' + name + '"]')[0].checked = check.checked;
+}
+
+function toggleCBChild(classname, check) {
     var checklist = document.getElementsByTagName("input");
+    var checkedCount = 0;
+    var childCount = 0;
     for (i = 0; i < checklist.length; i++) {
-    if ( checklist[i].getAttribute("type") == 'checkbox' ) {
-        if (option=='toggle') {
+        if ( (checklist[i].getAttribute("type") == 'checkbox') && (checklist[i].className == classname) ) {
+            childCount++;
             if (checklist[i].checked) {   
-                checklist[i].checked = false;
-            } else {
-                checklist[i].checked = true;
+                checkedCount++;
             }
         } 
-        if (option=='select') {
-            checklist[i].checked = true;
-        }
-        if (option=='unselect') {
-            checklist[i].checked = false;
-        }
-    }   
     }
+    if (checkedCount == childCount || checkedCount == 0) {
+        toggleCBParent(classname, check);
+    }
+
+    updateTotalFees('1');
+}
+
+function toggleCBs(option) {
+    $('#paymentForm input[type="checkbox"]').each(function() {
+        var element = $(this)[0];
+        element.checked = (option=='select' ? true : (option=='unselect' ? false : !element.checked));
+    });
     
     //update Fees Total
     updateTotalFees('1');
@@ -64,23 +71,18 @@ function toggleBox(box) {
 }
 
 function updateTotalFees(resA) {
-    
     if (resA == '1') {
         resetAction();
     }
     var totalFees = 0.00;
-    var checklist = document.getElementsByTagName("input");
-    for (i = 0; i < checklist.length; i++) {
-        if (checklist[i].getAttribute("type") == 'checkbox') {
-        if (checklist[i].checked) {
-        var fee = parseFloat(checklist[i].getAttribute("rel")); 
+    $('#paymentForm tbody[id] input[type="checkbox"]').each(function() {
+        var element = $(this)[0];
+        if (element.checked) {
+            var fee = parseFloat(element.getAttribute("rel")); 
             totalFees = totalFees + fee;
-            }
         }
-    }
-    var totalBox = document.getElementById("total-selected-fees");
-    totalBox.value = totalFees.toFixed(2);
-    
+    });
+    $('#total-selected-fees').val('$' + totalFees.toFixed(2));
 }
 
 function resetAction() {

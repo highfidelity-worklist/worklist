@@ -90,21 +90,19 @@ replacement data:
     'subject' => 'Get Started with Worklist',
     'body' => '
         Thank you for joining Worklist, {nickname}!<br/><br/>
-        Worklist offers fast pay for your work, an open codebase,
-        and great community. We\'re excited to have you join us as we
-        create a new way to get things done.<br/><br/>
+        We\'re excited to have you join us as we build a new virtual world platform.<br/><br/>
         Three things to help you get started:<br/><br/>
-           - Browse the source code*: <a href="http://svn.worklist.net">http://svn.worklist.net</a><br/>
-          - Get in the Journal to chat with us: <a href="' . JOURNAL_URL . '">' . JOURNAL_URL . '</a><br/>
-           - Bid on a project on our Worklist: <a href="' . WORKLIST_URL . '">' . WORKLIST_URL . '</a><br/>
+          - Browse the source code for our various projects (the primary one is hifi): <a href="https://github.com/highfidelity/">http://github.com/highfidelity</a><br/>
+          - Join us in our <a href="http://gitter.im/highfidelity/hifi">public chat room</a>.<br/>
+          - Check out our <a href="https://github.com/highfidelity/hifi/wiki/Coding-Standard">coding standards</a>.
         <br/>
-        Don\'t worry, you\'ll get a custom sandbox and support getting our codebase set up once your bid is accepted.
         <br/>
-        Thanks for joining and we hope to see you in the Journal soon!<br/><br/>
+        Thanks for joining, and we hope to see you committing code soon!
+        <br/>
+        <br/>
         Cheers,<br/><br/>
-        High Fidelity Inc<br/><br/>
-        p.s. Follow our continuing adventures...<br/>
-        Twitter: <a href="http://twitter.com/theworklist">http://twitter.com/worklistnet</a>
+        The High Fidelity Team<br/><br/>
+        P.S. Follow our continuing adventures: <a href="http://twitter.com/theworklist">@theworklist</a>
     '
 ),
 
@@ -268,9 +266,9 @@ replacement data:
 'functional-howto' => array(
     'subject' => 'Job #{branch_name} is ready for functional review',
     'body' => '<p>Hi {runner}!</p>
-               <p>Job #{branch_name} is ready for functional review. Please follow these instructions to checkout and test the work done by the mechanic:</p>
+               <p>Job #{branch_name} is ready for functional review. Please follow these instructions to checkout and test the work done by the developer:</p>
                <ul>
-               <li>Clone the mechanics fork: git clone {users_fork}</li>
+               <li>Clone the developer\'s fork: git clone {users_fork}</li>
                <li>Checkout the branch created for this job: git checkout {branch_name}</li>
                <li>Use this branch to make your build</li>
                </ul>
@@ -291,10 +289,10 @@ replacement data:
        <p>- Worklist.net</p>'
 ),
 'project-runner-added' => array(
-    'subject' => 'Added as a Runner to Project',
+    'subject' => 'Added as a Designer to Project',
     'body' =>
         '<p>Hi {nickname}</p>
-        <p>Congrats! You have been granted Runner rights for the following project:<br />
+        <p>Congrats! You have been granted Designer rights for the following project:<br />
         <a href="{projectUrl}">{projectName}</a><br />
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>
@@ -302,10 +300,10 @@ replacement data:
 ),
 
 'project-runner-removed' => array(
-    'subject' => 'Runner rights removed for Project',
+    'subject' => 'Designer rights removed for Project',
     'body' => 
         '<p>Hi {nickname}</p>
-        <p>Your Runner rights have been removed for the following project:<br />
+        <p>Your Designer rights have been removed for the following project:<br />
         <a href="{projectUrl}">{projectName}</a><br />
         Project Founder: <a href="{projectFounderUrl}">{projectFounder}</a></p>
         <p>Please contact the project founder with any questions.</p>
@@ -345,6 +343,12 @@ replacement data:
         <p>Pease email <a href="mailto:' . SUPPORT_EMAIL . '">' . SUPPORT_EMAIL . '</a> with any issues or concerns.</p>
         <p></p>
         <p>- Worklist.net</p>'
+),
+'user-signups' => array(
+    'subject' => 'New Worklist users in last {hours} hrs',
+    'body' => '
+        <p>New users (in last {hours}hrs):</p>
+        {userList}
+    '
 )
-
 );

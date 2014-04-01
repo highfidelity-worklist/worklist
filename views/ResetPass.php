@@ -1,14 +1,11 @@
 <?php
 
 class ResetPassView extends View {
+    public $layout = 'NewWorklist';
     public $title = 'Recover Password - Worklist';
 
-    public $stylesheet = array(
-        'css/worklist.css'
-    );
-
     public $scripts = array(
-        'js/resetpass.css'
+        'js/resetpass.js'
     );
 
     public function render() {

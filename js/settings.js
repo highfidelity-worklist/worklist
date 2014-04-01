@@ -218,12 +218,6 @@ $(function () {
         autoOpen: false,
         position: ['top'],
         open: function() {
-            var firstName = "";
-            var lastName = "";
-            if (!new_user) {
-                firstName = $userInfo['first_name'];
-                lastName = $userInfo['last_name'];
-            }
             $("#last_name").val(lastName);
             $("#first_name").val(firstName);
             $(".uploadnotice-w9").html('');

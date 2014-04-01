@@ -139,7 +139,7 @@ class PaymentsController extends Controller {
             
             case 'pay':
                 //collect confirmed payees and run paypal transaction
-                include_once("../paypal-password.php");
+                //include_once("../paypal-password.php");
                 if (checkAdmin($_POST['password']) == '1') { 
                     error_log("Made it Admin!");
                     if(empty($_POST['pp_api_username']) || empty($_POST['pp_api_password']) || empty($_POST['pp_api_signature'])){
@@ -282,7 +282,7 @@ class PaymentsController extends Controller {
         $this->write('fund_projects', $fund_projects);
         $this->write('sql_get_fund_projects', $sql_get_fund_projects);
         $this->write('input', array(
-            'action' => isset($_POST['action']) ? isset($_POST['action']) : '',
+            'action' => isset($_POST['action']) ? $_POST['action'] : '',
             'order' => isset($_GET["order"]) ? 'order='.$_GET["order"] : ''
         ));
         parent::run();

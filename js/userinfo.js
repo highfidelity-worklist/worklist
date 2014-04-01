@@ -35,7 +35,6 @@ $(document).ready(function() {
                     num: 100
                 },
                 success: function(data) {
-                    //console.log(data)
                     $('#budgethistory').html(data);
                 }
             });
@@ -50,13 +49,13 @@ $(document).ready(function() {
                     userId: userInfo.user_id
                 },
                 success: function(data) {
-                    //console.log(data)
                     $('#mynotes').html(data);
                 }
             });
         }
-    })
+    });
 
+    
 });
 
 $(function () {
@@ -307,28 +306,7 @@ var UserInfo = {
         });
 
         $('#give').click(function(){
-            $('#give-budget').dialog("destroy").remove();
-            $('#budget-area, #budget-source-combo').remove();
-            $("body").append("<div id='budget-area'></div>");
-            $("#budget-area").load('api.php',
-                {
-                    action: "budgetInfo",
-                    method: "getView"
-                }, function() {
-                    $('#give-budget').dialog({ 
-                        dialogClass: 'white-theme',
-                        autoOpen: true, 
-                        resizable: false,
-                        width: 500,
-                        show: 'fade', 
-                        hide: 'fade',
-                        open: function() {
-                            Budget.init();
-                        }
-                    });
-                }
-            );
-            return false;
+            $('#budget-give-modal').modal('show');
         });           
        
         $('#create_sandbox').click(function(){
@@ -378,10 +356,8 @@ var UserInfo = {
             dialogClass: 'white-theme',
             resizable: false,
             hide: 'fade',
-            open: function() {
-                Budget.initCombo("budget-source-combo-bonus", "#bonus-amount");
-            }
         });
+        $('#budget-source-combo-bonus').chosen({width: 'auto'});
         var bonus_amount;
        
         $('#pay_bonus').click(function(e) {
