@@ -6,7 +6,6 @@
         {{#profileUser.getIs_runner}}
             <li><a href="#runner" data-toggle="tab">Designer</a></li>
         {{/profileUser.getIs_runner}}
-        <li><a href="#sandbox" data-toggle="tab">Sandbox</a></li>
         <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
         <li><a href="#budgethistory" data-toggle="tab">Budget History</a></li>
     {{/currentUser.is_runner}}
@@ -309,16 +308,6 @@
                     </div>                                                          
                 </div>
             </div>
-        </div>
-        <div class="tab-pane" id="sandbox">
-            <form method="post" action="" class="form form-inline" id="sandboxForm">
-                <label for="unixusername">UNIX Username</label>
-                <input name="unixusername" id="unixusername" class="form-control" type="text" value="{{profileUser.getUnixusername}}" />
-                <input id="create_sandbox" type="submit" name="create_sandbox" 
-                  value="Create SB" {{#has_sandbox}}style="display: none;"{{/has_sandbox}} />
-                <p id="projects-field" class="info-label title-label-small">Projects to check-out :</p>
-                {{& projectsList}}
-            </form>
         </div>
         <div class="tab-pane" id="mynotes">
         </div>
