@@ -12,7 +12,7 @@ body {
     max-width: 350px;
     margin: 0 auto;
     background-color: #fff;
-    padding-top: 36px;
+    padding-top: 37px;
 }
 #form-login .form-control {
     position: relative;
@@ -40,7 +40,7 @@ body {
 #form-login > p,
 #form-login > label,
 #form-login > fieldset {
-    padding: 15px 30px 10px;
+    padding: 0 30px 10px;
 }
 
 #form-login > p.error {
@@ -61,6 +61,7 @@ body {
 #form-login > fieldset,
 #form-login > fieldset > label {
     color: #666666;
+    font-size: 13px;
 }
 
 #form-login fieldset > a {
@@ -101,7 +102,16 @@ section#footer {
     padding-bottom: 26px;
 }
 
-#form-login h5 {
+#form-login h6 {
     color: #666666;
     font-weight: bold;
+}
+
+.alt-login-title {
+    margin-left: 30px;
+    padding-top: 13px;
+}
+
+fieldset.last {
+    padding-bottom: 2px !important;
 }
