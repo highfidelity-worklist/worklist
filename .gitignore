@@ -14,6 +14,3 @@
 
 # commonly used for error logging on sandboxes
 /php.errors
-
-.idea
-composer.phar
