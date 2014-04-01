@@ -522,36 +522,6 @@ class JsonServer
         ));
     }
 
-    protected function actionValidateFunctionalReview() {
-        $workitem_id = $this->getRequest()->getParam('workitem');
-        $user_id = $this->getRequest()->getParam('userid');
-        $workitem = new WorkItem($workitem_id);
-
-        $status = $workitem->validateFunctionalReview();
-        $message = '';
-        if ($status & 4) { //sandbox not updated
-            $message .= " - Sandbox is not up-to-date\n";
-        }
-        if ($status & 8) { //sandbox has conflicts
-            $message .= " - Sandbox contains conflicted files\n";
-        }
-        if ($status & 16) { //sandbox has not-included files
-            $message .= " - Sandbox contains 'not-included' files\n";
-        }
-
-        if ($status === true || $status == (int) 0) {
-            return $this->setOutput(array(
-                'success' => true,
-                'data' => $message
-            ));
-        }
-
-        return $this->setOutput(array(
-            'success' => false, 
-            'data' => 'Sandbox verification failed. ' . $message
-        ));
-    }
-
     protected function actionStartCodeReview() {
         $workitem_id = $this->getRequest()->getParam('workitem');
         $user_id = $this->getRequest()->getParam('userid');

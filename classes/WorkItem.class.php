@@ -1309,54 +1309,18 @@ class WorkItem {
         return '';
     }
 
-    public function validateFunctionalReview() {
-        $project = new Project($this->getProjectId());
-        $returnValue = true;
-        if ($project->getRepo_type() == 'svn') {
-            try {
-                $returnValue = $this->authorizeSandbox();
-            } catch (Exception $ex) {
-                //log error and allow review
-                error_log($ex->getMessage());
-            }
-        }
-        return $returnValue;
-    }
-
     public function startCodeReview($reviewer_id) {
         if ($this->status != 'Review' || $this->code_review_started != 0) {
             return null; // CR is only allowed for REVIEW items without the CR started
         }
-        $returnValue = true;
-        
-        $project = new Project($this->getProjectId());
-        if ($project->getRepo_type() == 'svn') {
-            try {
-                $returnValue = $this->authorizeSandbox();
-            } catch (Exception $ex) {
-                //log error and allow review
-                error_log($ex->getMessage());
-            }
 
-            // set the task as CR started only if sb authorized
-            if ($returnValue === true) {
-                $this->setCRStarted(1);
-                $this->setCReviewerId($reviewer_id);
-                $this->save();
-            }
-        } else {
-            $this->setCRStarted(1);
-            $this->setCReviewerId($reviewer_id);
-            $this->save();
-        }
-        return $returnValue;
-        
+        $this->setCRStarted(1);
+        $this->setCReviewerId($reviewer_id);
+        $this->save();
+
+        return true;
     }
 
-    public function authorizeSandbox() {
-        return (int)SandBoxUtil::authorizeCodeReview($this->getSandboxPath());
-    }
-    
     public function addFeesToCompletedJob($include_review = false) {
         // workitem is DONE, calculate the creator fee based on project roles
         // and accepted bid
