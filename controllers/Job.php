@@ -1405,13 +1405,7 @@ class JobController extends Controller {
             $senderEmail = 'Worklist <contact@worklist.net>';
             sendTemplateEmail($runnerEmail, $emailTemplate, $data, $senderEmail);
         } else if ($newStatus =='Functional' && ! ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 ))) {
-            $status = $workitem->validateFunctionalReview();
-
-            if ($status === true || $status == 0) {
-                return true;
-            }
-            
-            return $status;
+            return true;
         } 
 
         if ($newStatus == 'Working') {
