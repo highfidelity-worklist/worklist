@@ -18,7 +18,7 @@ class JobsView extends View {
     }
 
     public function projectSelect() {
-        return $this->filter->getProjectSelectbox('All projects', false);
+        return $this->filter->getProjectSelectbox('All projects', true);
     }
 
     public function userSelect() {
