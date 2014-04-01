@@ -12,6 +12,7 @@ body {
     max-width: 350px;
     margin: 0 auto;
     background-color: #fff;
+    padding-top: 37px;
 }
 #form-login .form-control {
     position: relative;
@@ -36,25 +37,18 @@ body {
     border-top-right-radius: 0;
 }
 
-#form-login > h2,
 #form-login > p,
 #form-login > label,
 #form-login > fieldset {
-    padding: 15px 30px 10px;
+    padding: 0 30px 10px;
 }
 
-#form-login > h2 {
-    font-size: 1.6em;
-    font-weight: bold;
-    color: #007f7c;
-}
-
-#form-login > h2:first-child + p {
+#form-login > p.error {
     background-color: #009999;
     color: #fff;
 }
 
-#form-login button[type="submit"] {
+#form-login button[type="submit"], #form-login a#github {
     border: 0 none;
     background-color: #009999;
     color: #fff;
@@ -67,6 +61,7 @@ body {
 #form-login > fieldset,
 #form-login > fieldset > label {
     color: #666666;
+    font-size: 13px;
 }
 
 #form-login fieldset > a {
@@ -99,4 +94,24 @@ body {
 
 section#footer {
     display: none;
+}
+
+#form-login > #github-login-pane {
+    padding-left: 30px;
+    border-bottom: solid 1px #dddddd;
+    padding-bottom: 26px;
+}
+
+#form-login h6 {
+    color: #666666;
+    font-weight: bold;
+}
+
+.alt-login-title {
+    margin-left: 30px;
+    padding-top: 13px;
+}
+
+fieldset.last {
+    padding-bottom: 2px !important;
 }

@@ -1,5 +1,11 @@
 <form class="form-signin" role="form" id="form-login" method="post" action="">
-    <h2>Login to Worklist</h2>
+
+    <div id="github-login-pane">
+        <h6>Recommended:</h6>
+        <a id="github" class="icon-github" href="./github?action=login"> Log in with GitHub</a>
+    </div>
+
+    <h6 class="alt-login-title">Alternatively, use Worklist login:</h6>
     {{#failed}}
         {{#errors}}
             <p class="error">{{&msg}}</p>
@@ -11,7 +17,7 @@
         <input type="text" id="form[username]" name="username" class="form-control" size="40" />
     </fieldset>
 
-    <fieldset>
+    <fieldset class="last">
         <label for="password">Password</label>
         <input id="form[password]" type="password" name="password" class="form-control" />
     </fieldset>
@@ -19,5 +25,5 @@
     <fieldset>
         <button type="submit" id="Login" name="Login" value="Login">Login</button>
         or <a href="./forgot" title="Reset your password">recover password</a>
-    </fielsdset>
+    </fieldset>
 </form>
