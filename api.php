@@ -3674,7 +3674,7 @@ function sendNewUserNotification() {
     $data = '<ol>';
 
     while ($row_temp = mysql_fetch_assoc($result_temp)) {
-        $data .= sprintf('<li><a href="%suserinfo.php?id=%d">%s</a> / <a href="mailto:%s">%s</a></li>',
+        $data .= sprintf('<li><a href="%suser/%d">%s</a> / <a href="mailto:%s">%s</a></li>',
             SERVER_URL,
             $row_temp['id'],
             $row_temp['nickname'],
