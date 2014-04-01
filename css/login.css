@@ -50,12 +50,20 @@ body {
 
 #form-login button[type="submit"], #form-login a#github {
     border: 0 none;
-    background-color: #009999;
+    background-color: #608e96;
     color: #fff;
     font-weight: bold;
     padding: 7px 15px;
     border-radius: 5px;
     display: inline-block;
+}
+
+#form-login button[type="submit"]:hover,
+#form-login button[type="submit"]:focus,
+#form-login a#github:hover,
+#form-login a#github:focus {
+    background-color: #007F7c;
+    text-decoration: none;
 }
 
 #form-login > fieldset,
