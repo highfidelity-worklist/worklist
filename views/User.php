@@ -200,7 +200,7 @@ class UserView extends View {
         return $this->profileUser->getW9_status() == 'rejected';
     }
 
-    public function w9StatusNotApplicable11() {
+    public function w9StatusNotApplicable() {
         return $this->profileUser->getW9_status() == 'not-applicable';
     }
 
