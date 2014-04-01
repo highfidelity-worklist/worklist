@@ -1,8 +1,17 @@
 <form class="form-signin" role="form" id="form-login" method="post" action="">
-    <h2>Login to Worklist</h2>
+
+    <div id="github-login-pane">
+        <fieldset>
+            <h5>Recommended:</h5>
+        </fieldset>
+
+        <fieldset>
+            <a id="github" class="icon-github" href="./github?action=login"> Log in with GitHub</a>
+        </fieldset>
+    </div>
 
     <fieldset>
-        <a id="github" class="icon-github" href="./github?action=login"> Log in with GitHub</a>
+        <h5>Alternatively, use Worklist login:</h5>
     </fieldset>
 
     {{#failed}}
