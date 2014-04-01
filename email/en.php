@@ -39,7 +39,8 @@ replacement data:
 "<p>Hi,</p>
 <p>Please click on the link below or copy and paste the url in browser to reset your password.<br/>
 {url}</p>
-<p>Worklist</p>",
+<p>Cheers,<br/>
+High Fidelity<br/><br/></p>",
 ),
 
 /*
@@ -94,13 +95,13 @@ replacement data:
         Three things to help you get started:<br/><br/>
           - Browse the source code for our various projects (the primary one is hifi): <a href="https://github.com/highfidelity/">http://github.com/highfidelity</a><br/>
           - Join us in our <a href="http://gitter.im/highfidelity/hifi">public chat room</a>.<br/>
-          - Check out our <a href="https://github.com/highfidelity/hifi/wiki/Coding-Standard">coding standards</a>.
+          - Check out our C++ <a href="https://github.com/highfidelity/hifi/wiki/Coding-Standard">coding standards</a> for the hifi project.
         <br/>
         <br/>
         Thanks for joining, and we hope to see you committing code soon!
         <br/>
         <br/>
-        Cheers,<br/><br/>
+        Cheers,<br/>
         The High Fidelity Team<br/><br/>
         P.S. Follow our continuing adventures: <a href="http://twitter.com/theworklist">@theworklist</a>
     '
@@ -119,7 +120,9 @@ trusted
 <p>See your User Profile here:<br/>
 {link}
 </p>
-<p>- Worklist.net</p>'
+<p>
+Cheers,<br>
+High Fidelity</p>'
 ),
 
 /*
@@ -128,9 +131,12 @@ w9-approved
     used in: userinfo
 */
 'w9-approved' => array(
-    'subject' => 'Your W9 has been approved',
+    'subject' => 'Worklist: Your W9 has been approved',
     'body' => '<p>Hello,</p>
-               <p>Your W9 form has been approved.</p>'
+               <p>Your W9 form has been approved.</p>
+            <p>       
+        Cheers,<br/>
+        High Fidelity Team</p>'
 ),
 
 /*
@@ -145,7 +151,10 @@ replacement data:
     'subject' => 'Your W9 has been rejected',
     'body' => '<p>Hello,</p>
                <p>Your W9 form has been rejected because:</p>
-               <p>{reason}'
+               <p>{reason}</p>
+        <p>
+        Regards,<br/>
+        High Fidelity</p>'
 ),
 
 /*
