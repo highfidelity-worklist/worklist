@@ -955,54 +955,8 @@ class WorkItem {
             if (!$branchStatus['error']) {
                 $bid_info['sandbox'] = $branchStatus['branch_url'];
             }
-        } else {
-            // If the project has a repository, give the user a checkout
-            $repository = $this->getRepository();
-            $job_id     = $this->id;
-
-            if ($repository) {
-                // We don't want to fail user signup if sandboxes are not online
-                // so we will not create unixusername until needed
-                if ($bidder->getHas_sandbox()) {
-                    $new_user = false;
-                } else {
-                    $bidder->setUnixusername(User::generateUnixusername($bidder->getNickname()));
-                    $new_user = true;
-                }
-
-                $bid_info['sandbox'] = "http://" . SANDBOX_SERVER .
-                    "/~" . $bidder->getUnixusername() . "/" .
-                    $repository."_".$job_id."/";
-
-                // Provide bidder with sandbox & checkout if they don't already have one
-                // If the sandbox flag is 0, they are a new user and need one setup
-                $sandboxUtil = new SandBoxUtil;
-                try {
-                    $sandboxUtil->createSandbox(
-                        $bidder->getUsername(),
-                        $bidder->getNickname(),
-                        $bidder->getUnixusername(),
-                        $this->getRepository(),
-                        $job_id,
-                        $new_user);
-                } catch (Exception $e) {
-                    $error_email_body = "Error creating sandbox for user: " .
-                        $bidder->getUsername()."\n. " .
-                        "Script returned error: ".$e->getMessage();
-                    send_email("ops@lovemachineinc.com", "Sandbox creation error",
-                                $error_email_body);
-                    $bid_info['sandbox'] = "N/A";
-                }
-
-                if ($new_user) {
-                    $bidder->setHas_sandbox(1);
-                    $bidder->save();
-                }
-            } else {
-                $bid_info['sandbox'] = "N/A";
-            }
         }
-
+        
         $bid_info['bid_done'] = strtotime('+' . $bid_info['bid_done_in'], time());
 
         // Adding transaction wrapper around steps
@@ -1355,54 +1309,18 @@ class WorkItem {
         return '';
     }
 
-    public function validateFunctionalReview() {
-        $project = new Project($this->getProjectId());
-        $returnValue = true;
-        if ($project->getRepo_type() == 'svn') {
-            try {
-                $returnValue = $this->authorizeSandbox();
-            } catch (Exception $ex) {
-                //log error and allow review
-                error_log($ex->getMessage());
-            }
-        }
-        return $returnValue;
-    }
-
     public function startCodeReview($reviewer_id) {
         if ($this->status != 'Review' || $this->code_review_started != 0) {
             return null; // CR is only allowed for REVIEW items without the CR started
         }
-        $returnValue = true;
-        
-        $project = new Project($this->getProjectId());
-        if ($project->getRepo_type() == 'svn') {
-            try {
-                $returnValue = $this->authorizeSandbox();
-            } catch (Exception $ex) {
-                //log error and allow review
-                error_log($ex->getMessage());
-            }
 
-            // set the task as CR started only if sb authorized
-            if ($returnValue === true) {
-                $this->setCRStarted(1);
-                $this->setCReviewerId($reviewer_id);
-                $this->save();
-            }
-        } else {
-            $this->setCRStarted(1);
-            $this->setCReviewerId($reviewer_id);
-            $this->save();
-        }
-        return $returnValue;
-        
+        $this->setCRStarted(1);
+        $this->setCReviewerId($reviewer_id);
+        $this->save();
+
+        return true;
     }
 
-    public function authorizeSandbox() {
-        return (int)SandBoxUtil::authorizeCodeReview($this->getSandboxPath());
-    }
-    
     public function addFeesToCompletedJob($include_review = false) {
         // workitem is DONE, calculate the creator fee based on project roles
         // and accepted bid
