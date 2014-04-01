@@ -182,11 +182,11 @@
                         <p>
                             <label for="isw9approved" class="info-label">W9</label>
                             <select id="w9status" name="w9status" {{^profileUser.isUsCitizen}}disabled="disabled"{{/profileUser.isUsCitizen}}>
-                                <option value="awaiting-receipt" {{#w9_statusAwaitingReceipt}}selected="selected"{{/w9_statusAwaitingReceipt}}>Awaiting Receipt</option>
-                                <option value="pending-approval" {{#w9_statusPendingApproval}}selected="selected"{{/w9_statusPendingApproval}}>Pending Approval</option>
-                                <option value="approved" {{#w9_statusApproved}}selected="selected"{{/w9_statusApproved}}>Approved</option>
-                                <option value="rejected" {{#w9_statusRejected}}selected="selected"{{/w9_statusRejected}}>Rejected</option>
-                                <option value="not-applicable" {{#w9_statusNotApplicable}}selected="selected"{{/w9_statusNotApplicable}}>Not Applicable</option>
+                                <option value="awaiting-receipt" {{#w9statusAwaitingReceipt}}selected="selected"{{/w9statusAwaitingReceipt}}>Awaiting Receipt</option>
+                                <option value="pending-approval" {{#w9statusPendingApproval}}selected="selected"{{/w9statusPendingApproval}}>Pending Approval</option>
+                                <option value="approved" {{#w9statusApproved}}selected="selected"{{/w9statusApproved}}>Approved</option>
+                                <option value="rejected" {{#w9statusRejected}}selected="selected"{{/w9statusRejected}}>Rejected</option>
+                                <option value="not-applicable" {{#w9statusNotApplicable}}selected="selected"{{/w9statusNotApplicable}}>Not Applicable</option>
                             </select>
                             <input type="checkbox" id="isw2employee" 
                               name="isw2employee" {{#profileUser.getHas_W2}}checked="checked"{{/profileUser.getHas_W2}} />
