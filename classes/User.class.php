@@ -228,7 +228,6 @@ class User {
      * @return (boolean)
      */
     public function isW9Approved() {
-        // Quick and dirty fix to disable W9 checking - leo@lovemachineinc.com
         if ($this->getW9_status() === 'approved') {
             return true;
         }
