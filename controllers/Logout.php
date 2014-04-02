@@ -16,11 +16,7 @@ class LogoutController extends Controller {
 
 		session_destroy();
 
-		if (array_key_exists('HTTP_REFERER', $_SERVER)) {
-		    $url = $_SERVER['HTTP_REFERER'];
-		} else {
-		    $url = './login';
-		}
+	    $url = './login';
 		Utils::redirect($url);		
 	}
 }

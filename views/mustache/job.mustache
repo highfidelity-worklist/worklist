@@ -213,7 +213,7 @@
                 {{#worklist.mechanic_id}}
                     <div class="sandbox-container">
                         {{#canEditSandboxUrl}}
-                            <span class="iToolTip changeSBurl functional-label" id="edit_review_url">Sandbox:</span><br />
+                            <span class="functional-label" id="edit_review_url" title="Click to change your sandbox url." data-toggle="tooltip">Sandbox:</span><br />
                         {{/canEditSandboxUrl}}
                         {{^canEditSandboxUrl}}
                             <span class="functional-label">Sandbox:</span><br />
@@ -293,19 +293,19 @@
                     <strong>View the diff</strong> to see the code, then start the review ...
                     {{^workitem.getCRStarted}}
                         {{#userHasRights}}
-                            <input class="iToolTip cR" type="submit" value="Start Code Review" 
-                              onClick="return CheckCodeReviewStatus();"/>
+                            <input type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"
+                              title="Start a code review on this job." data-toggle="tooltip" />
                         {{/userHasRights}}
                         {{^userHasRights}}
-                            <input class="iToolTip cRDisallowed" type="submit" value="Start Code Review" 
-                              onClick="return false;"/>
+                            <input type="submit" value="Start Code Review" onClick="return false;"
+                              title="You are not authorized to Code Review this job." data-toggle="tooltip" />
                         {{/userHasRights}}
                     {{/workitem.getCRStarted}}
                     {{#workitem.getCRStarted}}
                         {{^workitem.getCRCompleted}}
                             {{#canEndReview}}
-                                <input class="iToolTip endCr" type="submit" value="End Code Review" 
-                                  onClick="return showEndReviewForm();"/>
+                                <input type="submit" value="End Code Review" onClick="return showEndReviewForm();"
+                                  title="End a code review on this job." data-toggle="tooltip" />
                             {{/canEndReview}}
                         {{/workitem.getCRCompleted}}
                     {{/workitem.getCRStarted}}
@@ -362,16 +362,12 @@
                             <span>
                                 {{^statusDone}}
                                     {{#userIsMechanic}}
-                                        <input class="iToolTip addTip" type="submit" value="Tip User" />
+                                        <input type="submit" value="Tip User" 
+                                          title="Tip a user" data-toggle="tooltip" />
                                     {{/userIsMechanic}}
-                                    {{#userIsEligible}}
-                                        <input class="iToolTip addFee" type="submit" value="Add a Fee"
-                                          onClick="return showConfirmForm('fee');"/>
-                                    {{/userIsEligible}}
-                                    {{^userIsEligible}}
-                                        <input class="iToolTip addFee" type="submit" value="Add a Fee" 
-                                          onClick="return showIneligible('fee');"/>
-                                    {{/userIsEligible}}
+                                    <input type="submit" value="Add a Fee" data-toggle="tooltip"
+                                      title="Add a fee you would like to be paid for work done on this job." 
+                                      onClick="return {{#userIsEligible}}showConfirmForm('fee');{{/userIsEligible}}{{^userIsEligible}}showIneligible('fee'){{/userIsEligible}}" />
                                 {{/statusDone}}
                             </span>
                         </caption>

@@ -1,5 +1,5 @@
 <?php
- 
+
 class ReportsView extends View {
     public $layout = 'NewWorklist';
     

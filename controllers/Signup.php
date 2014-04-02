@@ -145,17 +145,26 @@ class SignupController extends Controller {
                     // Email user
                     $subject = "Registration";
                     $link = SECURE_SERVER_URL . "confirmation?cs=" . $newUser['confirm_string'] . "&str=" . base64_encode($newUser['username']);
-                    $body = "<p>You are only one click away from completing your registration with the Worklist!</p>";
-                    $body .= "<p><a href=\"".$link."\">Click here to verify your email address and activate your account.</a></p>";
+                    $body = 
+                        '<p>' . $newUser['nickname'] . ': </p>' .
+                        '<p>You are one click away from an account on Worklist:</p>' . 
+                        '<p><a href="' . $link . '">Click to verify your email address</a> and activate your account.</p>'.
+                        '<p>Welcome aboard, <br /> Worklist / High Fidelity</p>';
 
-                    $plain = "You are only one click away from completing your registration!\n\n";
-                    $plain .= "Click the link below or copy into your browser's window to verify your email address and activate your account.\n";
-                    $plain .= $link."\n\n";
-                    $confirm_txt = "An email containing a confirmation link was sent to your email address. Please click on that link to verify your email address and activate your account.";
+                    $plain = 
+                        $newUser['nickname'] . "\n\n" .
+                        "You are one click away from an account on Worklist: \n\n" .
+                        'Click/copy following URL to verify your email address activate your account:' . $link . "\n\n" .
+                        "Welcome aboard, \n Worklist / High Fidelity\n";
+
+                    $confirm_txt = 
+                        "An email containing a confirmation link was sent to your email address. " . 
+                        "Please click on that link to verify your email address and activate your account.";
 
                     if(!send_email($newUser['username'], $subject, $body, $plain)) {
                         error_log("SignupController: send_email failed");
-                        $confirm_txt = "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
+                        $confirm_txt = 
+                            "There was an issue sending email. Please try again or notify admin@lovemachineinc.com";
                     }
 
                     // paypal email

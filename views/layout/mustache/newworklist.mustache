@@ -28,6 +28,11 @@
 </head>
 <body>
     {{> navbar/fixed}}
+    {{#jumbotron}}
+    <div class="jumbotron">
+        {{& jumbotron}}
+    </div>
+    {{/jumbotron}}
     <section class="container-fluid">
         {{& content}}
     </section>

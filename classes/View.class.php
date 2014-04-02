@@ -51,6 +51,8 @@ class View extends AppObject {
         )
     );
 
+    public $jumbotron = '';
+
     public $config = array(
         'ajaxRefresh' => AJAX_REFRESH
     );
