@@ -699,16 +699,6 @@ class Notification {
                 $body .= "<p>Hope to see you soon.</p>\n";
             break;
 
-            case 'sb_authorization_failed':
-                $headers['From'] = '"' . $project_name . '-sandbox" ' . $from_address;
-                $body = 'Authorizing sandbox for job ';
-                $body .= '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
-                $body .= ' has failed with the following error message: <br /><br />';
-                $body .= "Sandbox is not authorized:<br />";
-                $body .= $data['message'];
-                $body .= '<br /><br /><a href="http://www.worklist.net">www.worklist.net</a>';
-            break;
-            
             case 'code-review-completed':
                 $headers['From'] = '"' . $project_name . '-review complete" ' . $from_address;
                 $body = '<p>Hello,</p>';

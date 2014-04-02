@@ -577,16 +577,7 @@ class JsonServer
             
             $user_is_mechanic = $workItem->getMechanic()->getId() == $user_id;
             require_once('Notification.class.php');
-            Notification::workitemNotify(
-                array(
-                    'type' => 'sb_authorization_failed',
-                    'workitem' => $workItem,
-                    'recipients' => array('mechanic'),
-                    'emails' => ($user_is_mechanic ? array() : array($user->getUsername()))
-                ),
-                array('message' => nl2br($message))
-            );
-
+            
             //post comment
             $comment = new Comment();
             $comment->setWorklist_id((int)$workitem_id);
