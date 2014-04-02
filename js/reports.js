@@ -1,3 +1,4 @@
+
 var timeoutId;
 var ttlPaid = 0;
 var paid_list = [];
@@ -174,8 +175,10 @@ function AppendTotals(pageTotal, grandTotal) {
 }
 
 function GetReport(npage, reload, sort) {
-    _fromDate = $("#start-date").datepicker('getDate');
-    _toDate = $("#end-date").datepicker('getDate');
+    from = $("#start-date").val().split("/");
+    to = $("#end-date").val().split("/");
+    _fromDate = new Date(from[2], from[0] - 1, from[1])
+    _toDate = new Date(to[2], to[0] - 1, to[1])
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
     }
@@ -268,8 +271,10 @@ function GetReport(npage, reload, sort) {
 }
 
 function GetPayeeReport(npage, reload, sort) {
-    _fromDate = $('#start-date').datepicker('getDate');
-    _toDate = $('#end-date').datepicker('getDate');
+    from = $("#start-date").val().split("/");
+    to = $("#end-date").val().split("/");
+    _fromDate = new Date(from[2], from[0] - 1, from[1])
+    _toDate = new Date(to[2], to[0] - 1, to[1])
     var defaultSort = 'total_fees';
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
@@ -425,8 +430,10 @@ function setupTimelineChart(reload) {
 }
 
 function loadTimelineChart() {
-    _fromDate = $("#start-date").datepicker('getDate');
-    _toDate = $("#end-date").datepicker('getDate');
+    from = $("#start-date").val().split("/");
+    to = $("#end-date").val().split("/");
+    _fromDate = new Date(from[2], from[0] - 1, from[1])
+    _toDate = new Date(to[2], to[0] - 1, to[1])
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
     }
@@ -582,21 +589,15 @@ $(document).ready(function(){
         return false;
     });
 
-    $('.text-field-sm').datepicker({
-        changeMonth: true,
-        changeYear: true,
-        maxDate: 0,
-        showOn: 'button',
-        dateFormat: 'mm/dd/yy',
-        buttonImage: 'images/Calendar.gif',
-        buttonImageOnly: true
-    });
+    $('#start-date, #end-date').datepicker({format: 'mm/dd/yyyy'});
 
     $('#refreshReport').click(function() {
         paid_list = [];
         if (timeoutId) clearTimeout(timeoutId);
-        _fromDate = $("#start-date").datepicker('getDate');
-        _toDate = $("#end-date").datepicker('getDate');
+        from = $("#start-date").val().split("/");
+        to = $("#end-date").val().split("/");
+        _fromDate = new Date(from[2], from[0] - 1, from[1])
+        _toDate = new Date(to[2], to[0] - 1, to[1])
         if(_fromDate != null) {
             fromDate = fmtDate(_fromDate);
         }
@@ -656,20 +657,9 @@ $(document).ready(function(){
 
     $('#tabs').tabs('select', currentTab);
 
-    $('#type-status, #paid-status, #sort-by, select[name=status], select[name=fund]').bind({
-        'beforeshow newlist': function(e, o) {
-            o.list.css("z-index","100")
-    }}).comboBox();
+    $( '#userCombo, #type-status, #paid-status, #sort-by, select[name=status], ' +
+       'select[name=fund], #mechanic_id, #runnerCombo, #projectCombo'
+    ).chosen({width: '60%'});
+    $('#sort-by').chosen();
 });
 
-$(function() {
-    if ($('#mechanic_id').length !== 0) {
-        createActiveFilter('#mechanic_id', 'users', activeUsers);
-    }
-    if ($('#runnerCombo').length !== 0) {
-        createActiveFilter('#runnerCombo', 'runners', activeRunners);
-    }
-    if ($('#projectCombo').length !== 0) {
-        createActiveFilter('#projectCombo', 'projects', activeProjects);
-    }
-});
