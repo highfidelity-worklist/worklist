@@ -14,7 +14,6 @@ class ConfirmationController extends Controller {
 
             // verify the email belongs to a user
             if ($user->findUserByUsername($email) && substr($user->getConfirm_string(), 0, 10) == $confirm_string) {
-                echo $confirm_string;
                 $sql = "
                     UPDATE " . USERS . "
                     SET
