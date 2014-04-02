@@ -35,24 +35,7 @@ class LoginController extends Controller {
                 if ($user->findUserByUsername($username)) {
                     if ($user->isActive()) {
                         if ($user->authenticate($password)) {
-                            $id = $user->getId();
-                            $username = $user->getUsername();
-                            $nickname = $user->getNickname();
-                            $admin = $user->getIs_admin();
-
-                            Utils::setUserSession($id, $username, $nickname, $admin);
-                            $this->view  = null;
-                            if ($_POST['redir']) {
-                                $_SESSION['redirectFromLogin'] = true;
-                                Utils::redirect(urldecode($_POST['redir']));
-                            } else { 
-                                if (!empty($_POST['reauth'])) {
-                                    Utils::redirect(urldecode($_POST['reauth']));
-                                } else {
-                                    Utils::redirect('./');
-                                }
-                            }
-
+                            self::loginUser($user, $_POST['redir'] ? urldecode($_POST['redir']) : './');
                         } else {
                             $error->setError('Invalid password');
                         }
@@ -77,7 +60,7 @@ class LoginController extends Controller {
                        if (!empty($_POST['reauth'])) {
                            header("Location:".urldecode($_POST['reauth']));
                        } else {
-                           header("Location: jobs");
+                           header("Location: ./jobs");
                        }
             }
                 exit;
@@ -199,4 +182,15 @@ class LoginController extends Controller {
         $response = curl_exec($ch);
         return json_decode($response);
     }        
-}
+
+    public static function loginUser($user, $redirect_url = './') {
+        $userObject = User::find($user);
+        $id = $userObject->getId();
+        $username = $userObject->getUsername();
+        $nickname = $userObject->getNickname();
+        $admin = $userObject->getIs_admin();
+        Utils::setUserSession($id, $username, $nickname, $admin);
+        if (is_string($redirect_url)) {
+            Utils::redirect($redirect_url);
+        }
+    }}

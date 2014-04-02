@@ -89,6 +89,34 @@ class User {
     }
 
     /**
+     * This method tries to fetch a user by any expression.
+     *
+     * @param (mixed) $expr Expression, either User object, numbers for ids, email str (usernames) and non emails for nicknames
+     * @return (mixed) Either the User or false.
+     */
+    public static function find($expr)
+    {
+        $user = new User();
+        if (is_object($expr) && get_class($expr) == 'User') {
+            $user = $expr;
+        } else {
+            if (is_numeric($expr)) {
+                 // id 
+                $user->findUserById((int) $expr);
+            } else {
+                if (filter_var($expr, FILTER_VALIDATE_EMAIL)) {
+                    // username
+                    $user->findUserByUsername($expr);
+                } else {
+                    // nickname
+                    $user->findUserByNickname($expr);
+                }
+            }
+        }
+        return $user;
+    }
+
+    /**
      * This method fetches a user by his id.
      *
      * @param (integer) $id Id
