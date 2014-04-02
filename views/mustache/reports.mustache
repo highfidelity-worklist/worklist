@@ -1,8 +1,8 @@
 <form id="reports-filter" class="form-inline">
     <div class="row">
         <div class="col-md-2">
-                <label>Payee</label>
-                {{& userSelectbox}}
+            <label>Fund:</label>
+            {{& fundSelectBox}}
         </div>
         <div class="col-md-4">
             <label for="start-date">Fee between</label>
@@ -31,6 +31,10 @@
     <div class="row">
         <div class="col-md-4">
             <fieldset>            
+                <label>Payee</label>
+                {{& userSelectbox}}
+            </fieldset>            
+            <fieldset>            
                 <label>Paid Status:</label>
                 <select id="paid-status" >
                     <option value="ALL" {{#filterPaidStatusAll}}selected="selected"{{/filterPaidStatusAll}}>ALL</option>
@@ -58,10 +62,6 @@
             <fieldset>            
                 <label>Designer:</label>
                 {{& runnerSelectBox}}
-            </fieldset>
-            <fieldset>            
-                <label>Fund:</label>
-                {{& fundSelectBox}}
             </fieldset>
             <fieldset>            
                 <input id="w2_only" name="w2_only" type="checkbox" class="wlcheckbox" 
