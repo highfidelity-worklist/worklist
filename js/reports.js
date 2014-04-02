@@ -358,22 +358,22 @@ function GetPayeeReport(npage, reload, sort) {
 }
 
 function initializeTabs() {
-    $("#tabs").tabs({selected: 0,
-        select: function(event, ui) {
-            if(ui.index == 0) {
-                currentTab = 0;
-                timeoutId = setTimeout("GetReport("+page+", true)", 50);
-            } else if(ui.index == 1) {
-                currentTab = 1;
-                timeoutId = setTimeout("setupTimelineChart(false)", 50);
-            }
-            else if(ui.index == 2) {
-                currentTab = 2;
-                timeoutId = setTimeout("GetPayeeReport("+page+", true)", 50);
-            }
+    $('#tabs a[data-toggle]').click(function (e) {
+        var tab = $(this).attr('href');
+        console.log(tab);
+        if(tab == '#details') {
+            currentTab = 0;
+            timeoutId = setTimeout("GetReport("+page+", true)", 50);
+        } else if(tab == '#chart') {
+            currentTab = 1;
+            timeoutId = setTimeout("setupTimelineChart(false)", 50);
+        }
+        else if(tab == '#payee') {
+            currentTab = 2;
+            timeoutId = setTimeout("GetPayeeReport("+page+", true)", 50);
         }
     });
-    $( "#tabs" ).tabs( "option", "selected", 1 );
+    $('#tabs a[data-toggle][href="#chart"]').click();
 }
 
 function setupTimelineChart(reload) {
