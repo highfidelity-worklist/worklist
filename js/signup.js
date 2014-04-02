@@ -18,6 +18,5 @@ $(function() {
             window.location = './';
         });
         $('#empty-modal').modal('show');
-
     }
 });

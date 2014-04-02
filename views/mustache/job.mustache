@@ -322,14 +322,9 @@
                             <span>
                                 {{#currentUser.id}}
                                     {{#canBid}}
-                                        {{#userIsEligible}}
-                                            <input type="submit" value="{{addBidMsg}}"
-                                              onClick="return showConfirmForm('bid');" />
-                                        {{/userIsEligible}}
-                                        {{^userIsEligible}}
-                                            <input type="submit" class="smbutton" value="Add my bid" 
-                                              onClick="return showIneligible('bid');" />
-                                        {{/userIsEligible}}
+                                        <input type="submit" value="{{addBidMsg}}" data-toggle="tooltip"
+                                          title="Make an offer to do this job."
+                                          onClick="return {{#userIsEligible}}showConfirmForm('bid'){{/userIsEligible}}{{^userIsEligible}}showIneligible('bid');{{/userIsEligible}};" />
                                         {{#canAcceptBids}}
                                             <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple"
                                               onClick="javascript:AcceptMultipleBidOpen();"/>
@@ -431,9 +426,6 @@
 {{#userIsMechanic}}
     {{> popup-addtip}}
 {{/userIsMechanic}}
-{{#userIsEligible}}
-    {{> popup-ineligible}}
-{{/userIsEligible}}
 
 <script type="text/javascript">
     WorklistProject.repo_type = '{{workitem_project.getRepo_type}}';
