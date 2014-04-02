@@ -17,6 +17,7 @@ class ConfirmationController extends Controller {
                 $sql = "
                     UPDATE " . USERS . "
                     SET
+                        confirm_string = '',
                         confirm = 1,
                         is_active = 1
                     WHERE username = '" . $email . "'";
@@ -39,7 +40,7 @@ class ConfirmationController extends Controller {
                             on your name in the upper right hand corner of the jobs page and choose settings.
                         </p>
                         <p>
-                            You can also chat with us and ask questions in our <a href=https://gitter.im/highfidelity/worklist>Gitter room.</a>.
+                            You can also chat with us and ask questions in our <a href='https://gitter.im/highfidelity/worklist'>Gitter room</a>.
                         </p>
                         <p>
                             Happy Bidding and hope to see you commiting code soon!

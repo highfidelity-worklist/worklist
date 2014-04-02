@@ -377,3 +377,13 @@ body .jumbotron {
 body .jumbotron p {
     font-size: 1.2em;
 }
+
+body .jumbotron a {
+    color: #007F7C;
+}
+body .jumbotron a:hover {
+    color: #009999;
+}
+body .jumbotron a:active {
+    color: #333333;    
+}
