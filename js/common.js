@@ -551,7 +551,7 @@ function MapToolTips() {
         "endCrDisallowed": "You are not authorized to End Code Review on this job",
         "addFee": "",
         "addBid": "Make an offer to do this job.",
-        "changeSBurl": "Click to change your sandbox url.",
+        "changeSBurl": "",
         "budgetRemaining1": "Funds still available to use towards jobs for all my budgets",
         "budgetAllocated1": "Funds linked to fees in active jobs (Working, Functional, Review, Completed) for all my budgets",
         "budgetSubmitted1": "Funds linked to fees in Done'd jobs that are not yet paid for all my budgets",
