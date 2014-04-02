@@ -1,42 +1,36 @@
-#date-fields {
-float:top;
-margin-left:10px;
-margin-top:20px;
+
+#start-date, 
+#end-date {
+    width: 85px;
 }
-#date-fields label {
-  float: left;
-  width: 2em;
-  margin-right: 1em;
+
+#reports-filter > .row:first-child input,
+#reports-filter > .row:first-child .chosen-container {
+    font-size: .8em;
 }
-.text-field-sm {
-  width:80px;
+
+#reports-filter > .row {
+    margin-top: 10px;
+    margin-bottom: 20px
 }
-.report-left-label {
+
+#reports-filter > .row:last-child fieldset {
     text-align: right;
-    width:8em;
-}
-.start-date-label {
-width:8em;
-}
-#search-filter-section {
-list-style:none;
-margin-bottom:1em;
-background-color: #FFFFDD;
-border: 2px solid #DCD998;
--moz-box-sizing:none;
-}
-#search-filter-section table, #search-filter-section table td #search-filter-section table th{
-border: none;
 }
 
-#search-filter-section td, #search-filter-section th {
-    border: none;
+#reports-filter > .row:last-child fieldset {
+    margin-top: 5px;
 }
 
-td.redtext {
-    color: red;
+#reports-filter > .row:last-child fieldset label {
+    width: 35%;
+    text-align: right;
+    float: left;
+    padding-top: 8px;
 }
 
-td.greenText {
-    color: #009900;
+#reports-filter > .row:last-child fieldset:last-child label {
+    float: none;
+    text-align: right;
+    padding: 0;
 }

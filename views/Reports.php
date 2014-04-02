@@ -2,11 +2,10 @@
 
 class ReportsView extends View {
     public $layout = 'NewWorklist';
+    
     public $title = 'Reports - Worklist';
 
     public $stylesheets = array(
-        'css/teamnav.css',
-        'css/worklist.css',
         'css/datepicker.css',
         'css/reports.css'
     );

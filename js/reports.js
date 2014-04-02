@@ -1,3 +1,4 @@
+
 var timeoutId;
 var ttlPaid = 0;
 var paid_list = [];
@@ -174,8 +175,10 @@ function AppendTotals(pageTotal, grandTotal) {
 }
 
 function GetReport(npage, reload, sort) {
-    _fromDate = $("#start-date").datepicker('getDate');
-    _toDate = $("#end-date").datepicker('getDate');
+    from = $("#start-date").val().split("/");
+    to = $("#end-date").val().split("/");
+    _fromDate = new Date(from[2], from[0] - 1, from[1]);
+    _toDate = new Date(to[2], to[0] - 1, to[1]);
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
     }
@@ -268,8 +271,10 @@ function GetReport(npage, reload, sort) {
 }
 
 function GetPayeeReport(npage, reload, sort) {
-    _fromDate = $('#start-date').datepicker('getDate');
-    _toDate = $('#end-date').datepicker('getDate');
+    from = $("#start-date").val().split("/");
+    to = $("#end-date").val().split("/");
+    _fromDate = new Date(from[2], from[0] - 1, from[1]);
+    _toDate = new Date(to[2], to[0] - 1, to[1]);
     var defaultSort = 'total_fees';
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
@@ -353,28 +358,28 @@ function GetPayeeReport(npage, reload, sort) {
 }
 
 function initializeTabs() {
-    $("#tabs").tabs({selected: 0,
-        select: function(event, ui) {
-            if(ui.index == 0) {
-                currentTab = 0;
-                timeoutId = setTimeout("GetReport("+page+", true)", 50);
-            } else if(ui.index == 1) {
-                currentTab = 1;
-                timeoutId = setTimeout("setupTimelineChart(false)", 50);
-            }
-            else if(ui.index == 2) {
-                currentTab = 2;
-                timeoutId = setTimeout("GetPayeeReport("+page+", true)", 50);
-            }
+    $('#tabs a[data-toggle]').click(function (e) {
+        var tab = $(this).attr('href');
+        console.log(tab);
+        if(tab == '#details') {
+            currentTab = 0;
+            timeoutId = setTimeout("GetReport("+page+", true)", 50);
+        } else if(tab == '#chart') {
+            currentTab = 1;
+            timeoutId = setTimeout("setupTimelineChart(false)", 50);
+        }
+        else if(tab == '#payee') {
+            currentTab = 2;
+            timeoutId = setTimeout("GetPayeeReport("+page+", true)", 50);
         }
     });
-    $( "#tabs" ).tabs( "option", "selected", 1 );
+    $('#tabs a[data-toggle][href="#chart"]').click();
 }
 
 function setupTimelineChart(reload) {
     var chartPanelId = 'timeline-chart';
     $('#'+chartPanelId).empty();
-    LoveChart.initialize(chartPanelId, 780, 300, 30);
+    LoveChart.initialize(chartPanelId, 585, 225, 30);
     LoveChart.forceWeeklyLabels(false);
     LoveChart.fetchData = function (from, to, username, callback) {
         if (from.getTime() > to.getTime()) {
@@ -425,8 +430,10 @@ function setupTimelineChart(reload) {
 }
 
 function loadTimelineChart() {
-    _fromDate = $("#start-date").datepicker('getDate');
-    _toDate = $("#end-date").datepicker('getDate');
+    from = $("#start-date").val().split("/");
+    to = $("#end-date").val().split("/");
+    _fromDate = new Date(from[2], from[0] - 1, from[1]);
+    _toDate = new Date(to[2], to[0] - 1, to[1]);
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
     }
@@ -582,21 +589,15 @@ $(document).ready(function(){
         return false;
     });
 
-    $('.text-field-sm').datepicker({
-        changeMonth: true,
-        changeYear: true,
-        maxDate: 0,
-        showOn: 'button',
-        dateFormat: 'mm/dd/yy',
-        buttonImage: 'images/Calendar.gif',
-        buttonImageOnly: true
-    });
+    $('#start-date, #end-date').datepicker({format: 'mm/dd/yyyy'});
 
     $('#refreshReport').click(function() {
         paid_list = [];
         if (timeoutId) clearTimeout(timeoutId);
-        _fromDate = $("#start-date").datepicker('getDate');
-        _toDate = $("#end-date").datepicker('getDate');
+        from = $("#start-date").val().split("/");
+        to = $("#end-date").val().split("/");
+        _fromDate = new Date(from[2], from[0] - 1, from[1]);
+        _toDate = new Date(to[2], to[0] - 1, to[1]);
         if(_fromDate != null) {
             fromDate = fmtDate(_fromDate);
         }
@@ -616,9 +617,9 @@ $(document).ready(function(){
               + '&end=' + toDate
               + '&paidstatus=' + $('#paid-status').val()
               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
-              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
-              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
-              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
+              + '&activeProjects=0'
+              + '&activeRunners=0'
+              + '&activeUsers=0';
         } else if(currentTab == 1) {
             location.href = 
                 './reports?reload=false&view=chart&user=' + $('select[name=user]').val()
@@ -632,9 +633,9 @@ $(document).ready(function(){
               + '&end=' + toDate
               + '&paidstatus=' + $('#paid-status').val()
               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
-              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
-              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
-              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
+              + '&activeProjects=0'
+              + '&activeRunners=0'
+              + '&activeUsers=0';
         } else if(currentTab == 2) {
             location.href = 
                 './reports?reload=false&view=payee&user=' + $('select[name=user]').val()
@@ -648,28 +649,17 @@ $(document).ready(function(){
               + '&end=' + toDate
               + '&paidstatus=' + $('#paid-status').val()
               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
-              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
-              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
-              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
+              + '&activeProjects=0'
+              + '&activeRunners=0'
+              + '&activeUsers=0';
         }
     });
 
     $('#tabs').tabs('select', currentTab);
 
-    $('#type-status, #paid-status, #sort-by, select[name=status], select[name=fund]').bind({
-        'beforeshow newlist': function(e, o) {
-            o.list.css("z-index","100")
-    }}).comboBox();
+    $( '#userCombo, #type-status, #paid-status, #sort-by, select[name=status], ' +
+       'select[name=fund], #mechanic_id, #runnerCombo, #projectCombo'
+    ).chosen({width: '60%'});
+    $('#sort-by').chosen();
 });
 
-$(function() {
-    if ($('#mechanic_id').length !== 0) {
-        createActiveFilter('#mechanic_id', 'users', activeUsers);
-    }
-    if ($('#runnerCombo').length !== 0) {
-        createActiveFilter('#runnerCombo', 'runners', activeRunners);
-    }
-    if ($('#projectCombo').length !== 0) {
-        createActiveFilter('#projectCombo', 'projects', activeProjects);
-    }
-});
