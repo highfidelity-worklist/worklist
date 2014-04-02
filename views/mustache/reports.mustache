@@ -1,4 +1,4 @@
-<form id="reports-filter" class="form-inline">
+<section id="reports-filter" class="form-inline">
     <div class="row">
         <div class="col-md-2">
             <label>Fund:</label>
@@ -79,20 +79,20 @@
                 <div class="tab-pane" id="details">
                     <form id="reportForm" method="post" action="" />
                         <input type="hidden" id="paid-list" name="paidList" value="" />
-                        <table width="100%" class="table-worklist">
+                        <table class="table table-striped table-worklist">
                             <thead>
-                            <tr class="table-hdng">
-                                {{#currentUser.is_payer}}
-                                <td width="3%"><input type="checkbox" id="report-check-all" value="1" /></td>
-                                <td width="5%">Void Fee</td>
-                                {{/currentUser.is_payer}}
-                                <th width="7%" class="sort {sortkey: 'id'} clickable">ID<div class = "arrow"><div/></th>
-                                <th width="30%" class="sort {sortkey: 'summary'} clickable">Summary<div class = "arrow"><div/></th>
-                                <th width="25%" class="sort {sortkey: 'desc'} clickable">Description<div class = "arrow"><div/></th>
-                                <th width="12%" class="sort {sortkey: 'payee'} clickable">Payee<div class = "arrow"><div/></th>
-                                <th width="15%" class="sort {sortkey: 'paid_date'} clickable">Paid Date<div class = "arrow"><div/></th>
-                                <th width="5%" class="sort {sortkey: 'fee'} clickable">Fee<div class = "arrow"><div/></th>
-                            </tr>
+                                <tr>
+                                    {{#currentUser.is_payer}}
+                                        <td><input type="checkbox" id="report-check-all" value="1" /></td>
+                                        <td>Void Fee</td>
+                                    {{/currentUser.is_payer}}
+                                    <th class="sort {sortkey: 'id'} clickable">ID<div class = "arrow"><div/></th>
+                                    <th class="sort {sortkey: 'summary'} clickable">Summary<div class = "arrow"><div/></th>
+                                    <th class="sort {sortkey: 'desc'} clickable">Description<div class = "arrow"><div/></th>
+                                    <th class="sort {sortkey: 'payee'} clickable">Payee<div class = "arrow"><div/></th>
+                                    <th class="sort {sortkey: 'paid_date'} clickable">Paid Date<div class = "arrow"><div/></th>
+                                    <th class="sort {sortkey: 'fee'} clickable">Fee<div class = "arrow"><div/></th>
+                                </tr>
                             </thead>
                             <tbody>
                             </tbody>
@@ -108,13 +108,13 @@
                 </div>
                 <div class="tab-pane" id="payee">
                     <div id="payee">
-                        <table width="100%" class="table-worklist-payee">
+                        <table class="table table-striped table-worklist-payee">
                             <thead>
-                             <tr class="table-hdng">
-                                <th width="12%" class="sort {sortkey: 'payee'} clickable" >Payee name<div class = "arrow"><div/></th>
-                                <th width="30%" class="sort {sortkey: 'jobs'} clickable" >Jobs<div class = "arrow"><div/></th>
-                                <th width="25%" class="sort {sortkey: 'avg_job'} clickable" >Avg / Job<div class = "arrow"><div/></th>
-                                <th width="12%" class="sort {sortkey: 'total_fees'} clickable" >Total Fees<div class = "arrow"><div/></th>
+                             <tr>
+                                <th class="sort {sortkey: 'payee'} clickable" >Payee name<div class = "arrow"><div/></th>
+                                <th class="sort {sortkey: 'jobs'} clickable" >Jobs<div class = "arrow"><div/></th>
+                                <th class="sort {sortkey: 'avg_job'} clickable" >Avg / Job<div class = "arrow"><div/></th>
+                                <th class="sort {sortkey: 'total_fees'} clickable" >Total Fees<div class = "arrow"><div/></th>
                              </tr>
                             </thead>
                           <tbody>
@@ -125,7 +125,7 @@
             </div>
         </div>
     </div>
-</form>
+</section>
 <script type="text/javascript">
     var currentTab = {{showTab}}; // 0 for details and 1 for chart
     var current_order = {{filterDirAsc}};

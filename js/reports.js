@@ -177,8 +177,8 @@ function AppendTotals(pageTotal, grandTotal) {
 function GetReport(npage, reload, sort) {
     from = $("#start-date").val().split("/");
     to = $("#end-date").val().split("/");
-    _fromDate = new Date(from[2], from[0] - 1, from[1])
-    _toDate = new Date(to[2], to[0] - 1, to[1])
+    _fromDate = new Date(from[2], from[0] - 1, from[1]);
+    _toDate = new Date(to[2], to[0] - 1, to[1]);
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
     }
@@ -273,8 +273,8 @@ function GetReport(npage, reload, sort) {
 function GetPayeeReport(npage, reload, sort) {
     from = $("#start-date").val().split("/");
     to = $("#end-date").val().split("/");
-    _fromDate = new Date(from[2], from[0] - 1, from[1])
-    _toDate = new Date(to[2], to[0] - 1, to[1])
+    _fromDate = new Date(from[2], from[0] - 1, from[1]);
+    _toDate = new Date(to[2], to[0] - 1, to[1]);
     var defaultSort = 'total_fees';
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
@@ -432,8 +432,8 @@ function setupTimelineChart(reload) {
 function loadTimelineChart() {
     from = $("#start-date").val().split("/");
     to = $("#end-date").val().split("/");
-    _fromDate = new Date(from[2], from[0] - 1, from[1])
-    _toDate = new Date(to[2], to[0] - 1, to[1])
+    _fromDate = new Date(from[2], from[0] - 1, from[1]);
+    _toDate = new Date(to[2], to[0] - 1, to[1]);
     if (_fromDate != null) {
         fromDate = fmtDate(_fromDate);
     }
@@ -596,8 +596,8 @@ $(document).ready(function(){
         if (timeoutId) clearTimeout(timeoutId);
         from = $("#start-date").val().split("/");
         to = $("#end-date").val().split("/");
-        _fromDate = new Date(from[2], from[0] - 1, from[1])
-        _toDate = new Date(to[2], to[0] - 1, to[1])
+        _fromDate = new Date(from[2], from[0] - 1, from[1]);
+        _toDate = new Date(to[2], to[0] - 1, to[1]);
         if(_fromDate != null) {
             fromDate = fmtDate(_fromDate);
         }
@@ -617,9 +617,9 @@ $(document).ready(function(){
               + '&end=' + toDate
               + '&paidstatus=' + $('#paid-status').val()
               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
-              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
-              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
-              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
+              + '&activeProjects=0'
+              + '&activeRunners=0'
+              + '&activeUsers=0';
         } else if(currentTab == 1) {
             location.href = 
                 './reports?reload=false&view=chart&user=' + $('select[name=user]').val()
@@ -633,9 +633,9 @@ $(document).ready(function(){
               + '&end=' + toDate
               + '&paidstatus=' + $('#paid-status').val()
               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
-              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
-              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
-              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
+              + '&activeProjects=0'
+              + '&activeRunners=0'
+              + '&activeUsers=0';
         } else if(currentTab == 2) {
             location.href = 
                 './reports?reload=false&view=payee&user=' + $('select[name=user]').val()
@@ -649,9 +649,9 @@ $(document).ready(function(){
               + '&end=' + toDate
               + '&paidstatus=' + $('#paid-status').val()
               + '&w2_only=' + ($('#w2_only').is(':checked') ? 1 : 0)
-              + '&activeProjects=' + ($('#onlyActive-projectCombo').is(':checked') == true ? 1: 0)
-              + '&activeRunners=' + ($('#onlyActive-runnerCombo').is(':checked') == true ? 1: 0)
-              + '&activeUsers=' + ($('#onlyActive-userCombo').is(':checked') == true ? 1: 0);
+              + '&activeProjects=0'
+              + '&activeRunners=0'
+              + '&activeUsers=0';
         }
     });
 
