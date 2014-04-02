@@ -365,3 +365,15 @@ body .chosen-container-multi.chosen-container-active .chosen-choices,
 body .chosen-container-single.chosen-container-active .chosen-single {
     border-color: #007F7c;
 }
+
+/**
+ * Jumbotron messages
+ */
+body .jumbotron {
+    padding-top: 5px;
+    padding-bottom: 15px;
+}
+
+body .jumbotron p {
+    font-size: 1.2em;
+}
