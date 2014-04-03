@@ -6,7 +6,7 @@
 
 #searchbar {
     background-color: #E1E8EA;
-    padding: 20px 30px;
+    padding: 20px 0;
 }
 
 .myfavorite {
@@ -58,7 +58,6 @@
     border-radius: 5px;
     display: inline-block;
     padding: 1px 3px;
-
 }
 
 .ln-pages > span > span {
@@ -68,4 +67,34 @@
 .ln-letters a:hover,
 .ln-pages a:hover {
     text-decoration: underline;
+}
+
+#table-userlist tr:hover{
+    cursor: pointer;
+    color: #007F7C;
+}
+
+#table-userlist thead tr:hover{
+    cursor: default;
+}
+
+#table-userlist .myfavorite {
+    background-position-x: -20px;
+}
+
+#days {
+    width: 100px;
+}
+
+input.wlcheckbox[type="checkbox"] + label {
+    padding-right: 26px;
+}
+
+#query {
+    margin-top: 3px;
+}
+
+.chosen-container {
+    margin-left: 5px;
+    margin-bottom: 3px;
 }

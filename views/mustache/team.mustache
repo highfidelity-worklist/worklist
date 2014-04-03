@@ -9,13 +9,11 @@
     <div class="col-md-4">
         <input type="text" id="query" name="query" placeholder="Search team..." value="" class="form-control" />
     </div>
-    <div class="col-md-3">
+    <div class="col-md-8">
         {{#currentUser.id}}
             <input type="checkbox" class="wlcheckbox" id="filter-by-myfavorite" />
             <label for="filter-by-myfavorite">Trusted by Me</label>
         {{/currentUser.id}}
-    </div>
-    <div class="col-md-5">
         <input type="checkbox" class="wlcheckbox" id="filter-by-fees" />
         <label for="filter-by-fees">Has fees in the last</label>
         <select name="days" id="days">

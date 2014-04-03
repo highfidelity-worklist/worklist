@@ -68,6 +68,7 @@ body {
 .table-userlist tr:hover{
     cursor: pointer;
 }
+
 .table-userlist thead tr:hover{
     cursor: default;
 }
