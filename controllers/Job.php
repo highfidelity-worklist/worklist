@@ -171,7 +171,8 @@ class JobController extends Controller {
                 $workitem->setBudget_id($budget_id);
             }
             // summary
-            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
+            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $_REQUEST['summary']) {
+                $summary = $_REQUEST['summary'];
                 $workitem->setSummary($summary);
                 $new_update_message .= "Summary changed. ";
                 if ($workitem->getStatus() != 'Draft') {
