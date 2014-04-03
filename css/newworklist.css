@@ -277,7 +277,13 @@ body .chosen-container-multi .chosen-choices .search-field > input.default {
 
 body .chosen-container-single .chosen-single div {
     width: 30px;
-    padding: 2px 0;
+    padding: 3px 0 0;
+}
+
+@media (max-width: 1024px) {
+    body .chosen-container-single .chosen-single div {
+        width: 28px;
+    }
 }
 
 body .chosen-container-single .chosen-single div b {
@@ -295,19 +301,17 @@ body .chosen-container-multi .chosen-choices:before {
     border-left: 1px solid #ccc;
 }
 body .chosen-container-single .chosen-single div b:before {
-    padding: 2px 6px;
+    padding: 1px 8px 2px;
 }
 
 body .chosen-container-multi .chosen-choices:before {
-    padding: 4px 0px 3px 6px;
+    padding: 3px 7px 4px 8px;
     float: right;
     font-weight: bold;
-    margin-top: -4px;
 }
 @media (max-width: 1024px) {
     body .chosen-container-multi .chosen-choices:before {
-        padding: 6px 1px 6px 6px;
-        margin-top: -3px;
+        padding: 6px 7px 6px 8px;
     }    
 }
 
@@ -318,7 +322,7 @@ body .chosen-container-single.chosen-with-drop .chosen-single div b:before {
 
 body .chosen-container-single .chosen-single,
 body .chosen-container-multi .chosen-choices {
-    padding: 5px 10px 7px;
+    padding: 3px 0px 3px 10px;
     border: 0 none;
 }
 
@@ -330,11 +334,16 @@ body .chosen-container-multi.chosen-with-drop .chosen-choices {
 }
 
 body .chosen-container-multi .chosen-choices li.search-choice {
-    margin: 0 1px;
+    margin: 3px 1px;
     font-size: .7em;
     background: none #fff;
     border-radius: 0;
     border-color: #007F7c;
+}
+
+
+body .chosen-container-multi .chosen-choices li.search-field {
+    margin: 3px 1px;
 }
 
 body .chosen-container-multi .chosen-choices .search-field input.default {
@@ -345,6 +354,7 @@ body .chosen-container-multi .chosen-choices .search-field input.default {
 body .chosen-container .chosen-results {
     overflow-y: hidden;
     margin: 0;
+    padding: 0 10px;
 }
 
 body .chosen-container .chosen-results li {
@@ -386,4 +396,8 @@ body .jumbotron a:hover {
 }
 body .jumbotron a:active {
     color: #333333;    
+}
+
+button:focus, a:focus {
+    outline: none;
 }
