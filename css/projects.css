@@ -10,20 +10,20 @@
 */
 
 #add-project {
-    color: #007F7C;
-    font-size: 20px;
-    text-decoration: none;
-    font-family: proxima-nova, sans-serif;
+    border: 0 none;
+    background-color: #608e96;
+    color: #fff;
     font-weight: bold;
-    text-align: right;
+    padding: 7px 15px;
+    border-radius: 5px;
     display: block;
     float: right;
-    margin-top: -35px;
+    margin-top: -45px;
 }
 
-#add-project span {
-    color: #141414;
-    font-weight: bold;
+#add-project:hover {
+    background-color: #007F7c;
+    text-decoration: none;
 }
 
 #all-projects {
