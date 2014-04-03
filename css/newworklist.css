@@ -273,6 +273,7 @@ body .chosen-container-single .chosen-single > span:first-child,
 body .chosen-container-multi .chosen-choices .search-field > input.default {
     color: #007F7c;
     font-weight: bold;
+    line-height: 28px;
 }
 
 body .chosen-container-single .chosen-single div {
