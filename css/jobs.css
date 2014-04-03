@@ -273,6 +273,11 @@ td.textAlignReport {
     color: #007F7C;
 }
 
+.table-worklist thead tr:hover{
+    cursor: default;
+    color: #333333;
+}
+
 .table-worklist tr:active {
     color: #888888;
 }
