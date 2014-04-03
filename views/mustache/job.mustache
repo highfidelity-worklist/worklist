@@ -37,7 +37,7 @@
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
 {{#editing}}
-    <form id="workitem-form" method="post" action="">
+    <form id="workitem-form" method="post" action="./{{worklist.id}}">
 {{/editing}}
 <div id="info-top" class="top-bar">
     {{^editing}}

@@ -136,7 +136,6 @@ class JobController extends Controller {
                 'status',
                 'project_id',
                 'sandbox',
-                'skills',
                 'is_bug',
                 'bug_job_id',
                 'budget-source-combo'
@@ -181,9 +180,10 @@ class JobController extends Controller {
             }
 
             if (isset($_REQUEST['skills'])) {
-                $skillsArr = explode(', ', $skills);
+                $skillsArr = explode(',', $_REQUEST['skills']);
                 // remove empty values
                 foreach ($skillsArr as $key => $value) {
+                    $skillsArr[$key] = trim($value);
                     if (empty($value)) {
                         unset($skillsArr[$key]);
                     }
