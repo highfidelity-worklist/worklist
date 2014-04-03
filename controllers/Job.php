@@ -136,7 +136,6 @@ class JobController extends Controller {
                 'status',
                 'project_id',
                 'sandbox',
-                'skills',
                 'is_bug',
                 'bug_job_id',
                 'budget-source-combo'
@@ -172,7 +171,8 @@ class JobController extends Controller {
                 $workitem->setBudget_id($budget_id);
             }
             // summary
-            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
+            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $_REQUEST['summary']) {
+                $summary = $_REQUEST['summary'];
                 $workitem->setSummary($summary);
                 $new_update_message .= "Summary changed. ";
                 if ($workitem->getStatus() != 'Draft') {
@@ -181,9 +181,10 @@ class JobController extends Controller {
             }
 
             if (isset($_REQUEST['skills'])) {
-                $skillsArr = explode(', ', $skills);
+                $skillsArr = explode(',', $_REQUEST['skills']);
                 // remove empty values
                 foreach ($skillsArr as $key => $value) {
+                    $skillsArr[$key] = trim($value);
                     if (empty($value)) {
                         unset($skillsArr[$key]);
                     }
