@@ -19,12 +19,9 @@ $(function() {
     about.add(Validate.Length, { minimum: 0, maximum: 150 } );
 
     if (confirmTxt.length > 0) {
-        $('#empty-modal .modal-title').text('Email confirmation');
-        $('#empty-modal .modal-body').html(confirmTxt);
-        $('#empty-modal .modal-footer > button:last-child').click(function() {
+        Utils.showModal('Email confirmation', confirmTxt, function() {
             window.location = './';
         });
-        $('#empty-modal').modal('show');
     }
 
 

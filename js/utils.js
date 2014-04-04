@@ -1,11 +1,102 @@
-//  vim:ts=4:et
 /**
  * Worklist
- * Copyright (c) 2010 LoveMachine, LLc.
+ * Copyright (c) 2010 High Fidelity inc.
  * All rights reserved.
  */
 
 var Utils = {
+    mustaches: [],
+
+    /**
+     * Returns true when the passed mustache has already loaded, 
+     * false otherwise
+     */
+    mustacheLoaded: function(mustacheTemplate) {
+        for(var i=0; i < Utils.mustaches.length; i++) {
+            if (Utils.mustaches[i].name == mustacheTemplate) {
+                return true;
+            }
+        }
+        return false;
+    },
+    
+    /**
+     * Loads the mustache from the server and stores it locally 
+     */
+    loadMustache: function(mustacheTemplate, fAfter) {
+        if (Utils.mustacheLoaded(mustacheTemplate)) {
+            return;
+        }
+        var tpath = './views/mustache/' + mustacheTemplate + '.mustache';
+        $.get(tpath, function(template) {
+            Utils.mustaches.push({name: mustacheTemplate, template: template});
+            if (typeof fAfter == 'function') {
+                fAfter(template);
+            }
+        }, 'html');
+    },
+    
+    /**
+     * Returns the mustache template if it's loaded, 
+     * otherwise will return an empty string
+     */
+    getMustache: function(mustacheTemplate) {
+        for(var i=0; i < Utils.mustaches.length; i++) {
+            if (Utils.mustaches[i].name == mustacheTemplate) {
+                return Utils.mustaches[i].template;
+            }
+        }
+        return '';
+    },
+    
+    /**
+     * Parses a mustache and calls to a specified callback 
+     * onced parsed if present
+     */
+    parseMustache: function(mustacheTemplate, data, fAfter) {
+        var parsed = '';
+        if (Utils.mustacheLoaded(mustacheTemplate)) {
+            parsed = Mustache.render(Utils.getMustache(mustacheTemplate), data);
+            if (typeof fAfter == 'function') {
+                fAfter(parsed);
+            }
+            return;
+        }
+        Utils.loadMustache(mustacheTemplate, function(template) {
+            parsed = Mustache.render(template, data);
+            if (typeof fAfter == 'function') {
+                fAfter(parsed);
+            }
+        });
+    },
+
+    showModal: function(title, body, onClose) {
+        // generates a random id for the new modal (will use it to be removed on close)
+        var id = 'modal-' + parseInt(Math.random() * (9999 - 99) + 99);
+        while ($('#' + id).length) {
+            var id = 'modal-' + parseInt(Math.random() * (9999 - 99) + 99);
+        }
+
+        var data = {
+            'id': id,
+            'title': title ? title : 'Worklist', 
+            'body': body
+        };
+
+        Utils.parseMustache('partials/empty-modal', data, function(parsed) {
+            $(parsed).appendTo('body');
+            console.log('#' + id, $('#' + id).length);
+            $('#' + id).modal('show');
+            $(id).on('hidden.bs.modal', function() {
+                if (typeof onClose == 'function') {
+                    onClose();
+                }
+                $(id).remove();
+            })
+        });
+    },
+
+
     /**
      * Shows a info dialog with @message
      */

@@ -994,9 +994,8 @@ function showConfirmForm(i) {
 }
 
 function showIneligible(problem) {
-    $('#empty-modal .modal-title').text('Your account is ineligible');
-    $('#empty-modal .modal-body').html(
-        '<p>' +
+    var title = 'Your account is ineligible';
+    var content = '<p>' +
         '    <strong>You are not eligible</strong> to bid or place ' + problem + 's on this item. ' +
         '    Please check your settings and make sure you have:' +
         '</p> ' +
@@ -1004,13 +1003,11 @@ function showIneligible(problem) {
         '    <li>Verified your Paypal address</li>' +
         '    <li>Uploaded your completed <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf">W-9</a> (US citizens only)</li>' +
         '</ul>' +
-        '<br/>'
-    );
-    $('#empty-modal .modal-footer > button:last-child').text('Check settings');
-    $('#empty-modal .modal-footer > button:last-child').click(function() {
+        '<br/>';
+
+    Utils.showModal(title, content, function() {
         window.location = './settings';
     });
-    $('#empty-modal').modal('show');
 }
 
 function doConfirmForm(i) {

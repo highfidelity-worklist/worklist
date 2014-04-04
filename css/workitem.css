@@ -836,21 +836,23 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .comment-text {
     margin-bottom: 4px;
-    font-size: 14px;
     line-height: 18px;
     max-width: 450px;
     word-wrap: break-word;
 }
 
+.comment-info .author,
+.comment-text {
+    font-size: 1.1em;
+}
+
 .comment {
-    font-size:13px;
     overflow:auto;
     margin-top: 12px;
 }
 
-.author {
+.comment-info .author {
     display:inline;
-    font-size:14px;
 }
 
 .date {
@@ -991,11 +993,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .notestext {
-    margin:0;
-    margin-top: 11px;
-    padding-right:5px;
+    margin: 15px 0 45px;
+    padding-right: 5px;
     word-wrap: break-word;
-    font-size: 14px;
+    font-size: 1.1em;
     line-height: 19px;
 }
 
