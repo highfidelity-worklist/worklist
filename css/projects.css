@@ -9,6 +9,11 @@
 *
 */
 
+#title-wrapper {
+    text-align: right;
+    padding-top: 30px;
+}
+
 #add-project {
     border: 0 none;
     background-color: #608e96;
@@ -16,9 +21,6 @@
     font-weight: bold;
     padding: 7px 15px;
     border-radius: 5px;
-    display: block;
-    float: right;
-    margin-top: -45px;
 }
 
 #add-project:hover {
@@ -34,6 +36,7 @@
 }
 
 #projects {
+    padding-top: 30px;
     color: #666666;
     text-align: center;
 }

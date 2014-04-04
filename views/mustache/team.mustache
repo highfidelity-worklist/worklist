@@ -6,10 +6,10 @@
 </script>
 <h1>Team Members</h1>
 <form id="searchbar" class="row">
-    <div class="col-md-4">
+    <div id="search-box">
         <input type="text" id="query" name="query" placeholder="Search team..." value="" class="form-control" />
     </div>
-    <div class="col-md-8">
+    <div id="search-filters">
         {{#currentUser.id}}
             <input type="checkbox" class="wlcheckbox" id="filter-by-myfavorite" />
             <label for="filter-by-myfavorite">Trusted by Me</label>

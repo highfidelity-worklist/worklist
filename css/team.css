@@ -6,7 +6,7 @@
 
 #searchbar {
     background-color: #E1E8EA;
-    padding: 20px 0;
+    padding: 20px 15px;
 }
 
 .myfavorite {
@@ -97,4 +97,32 @@ input.wlcheckbox[type="checkbox"] + label {
 .chosen-container {
     margin-left: 5px;
     margin-bottom: 3px;
+}
+
+#search-box {
+    float: left;
+    width: 410px;
+}
+
+@media screen and (max-width: 960px) {
+    #search-box {
+        width: auto;
+    }
+}
+
+#search-filters {
+    padding-left: 35px;
+    width: 480px;
+    float: left;
+}
+
+@media screen and (max-width: 910px) {
+    #search-box {
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    #search-filters {
+        padding-left: 0;
+        width: auto;
+    }
 }
