@@ -992,7 +992,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-top: 11px;
     padding-right:5px;
     word-wrap: break-word;
-    font-size: 14px;
+    font-size: 1.1em;
     line-height: 19px;
 }
 
