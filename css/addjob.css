@@ -8,6 +8,10 @@ body > .container-fluid {
     }
 }
 
+.form-control {
+    color: #333333;
+}
+
 /* make some room at top of the form */
 #addJob > .row:first-child {
     padding-top: 30px;

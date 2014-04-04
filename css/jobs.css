@@ -269,6 +269,10 @@ td.textAlignReport {
     cursor: pointer;
 }
 
+.table-worklist {
+    font-size: 1.1em;
+}
+
 .table-worklist tr:hover {
     color: #007F7C;
 }
