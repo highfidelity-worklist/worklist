@@ -151,14 +151,7 @@ var WorklistProject = {
 
                     // kill scroll binding
                     $(window).unbind('.infscr');
-
-                    // hook up the manual click guy.
-                    $('#all-projects').on('click', function(event) {
-                        event.preventDefault();
-                        $('#projects').infinitescroll('retrieve');
-                        $(this).text('More');
-                        return false;
-                    });
+                    NewWorklist.init();
                 }, 1);
 
                 // remove the paginator when we're done.
