@@ -142,7 +142,6 @@ body.onAjax nav.navbar > .container-fluid:after {
 input[type="button"],
 input[type="submit"] {
     display: inline-block;
-    background-color: #608e96;
     border-radius: 5px;
     padding: 5px 10px;
     border: 0;
@@ -153,10 +152,19 @@ input[type="submit"] {
     font-size: .9em;
 }
 
+input[type="button"],
+input[type="submit"],
+input.btn-primary,
+button.btn-primary {
+    background-color: #608e96;
+}
+
 input[type="button"]:focus,
 input[type="submit"]:focus,
 input[type="button"]:hover,
-input[type="submit"]:hover {
+input[type="submit"]:hover,
+input.btn-primary:hover,
+button.btn-primary:hover {
     background-color: #007F7c;
 }
 
