@@ -781,7 +781,7 @@ class JobView extends View {
     }
 
     public function addBidMsg() {
-        return ($this->isGitProject() && $this->read('isGitHubConnected')) ? 'Authorize GitHub app' : 'Add my bid';
+        return $this->read('isGitHubConnected') ? 'Authorize GitHub app' : 'Add my bid';
     }
 
     public function taskEntries() {
