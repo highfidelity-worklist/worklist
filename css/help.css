@@ -77,10 +77,10 @@ body > nav.navbar + .container-fluid > p + p {
     padding-top: 0;
 }
 
-a:hover {
+body > .container-fluid a:hover {
     color: #007F7C !important;
 }
 
-a:active {
+body > .container-fluid a:active {
     text-decoration: underline;
 }
