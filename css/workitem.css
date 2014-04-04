@@ -836,7 +836,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .comment-text {
     margin-bottom: 4px;
-    font-size: 14px;
+    font-size: 1.1em;
     line-height: 18px;
     max-width: 450px;
     word-wrap: break-word;
@@ -850,11 +850,11 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .author {
     display:inline;
-    font-size:14px;
+    font-size: 1.1em;
 }
 
 .date {
-    font-size:12px;
+    font-size: 1.1em;
     color:#666;
 }
 
