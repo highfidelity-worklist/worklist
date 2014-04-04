@@ -200,7 +200,7 @@ replacement data:
                <p>5. You can view your development site pointing your web browser to http://dev.worklist.net/~{nickname}/{project_name}</p>
                <p>6. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
                <p>7. Your project is set to allow anybody to code review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
-               <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
+               <p><a href="'.SERVER_URL.'">worklist.net</a></p>'
 ),
 
 'project-created-github' => array(
@@ -212,7 +212,7 @@ replacement data:
                <p>2. To update details specific to your project, or to modify project roles, go to your <a href="' . WORKLIST_URL . '{project_name}">project page</a>.</p>
                <p>3. Your project is set to allow anybody to code review by default, you can change this setting by <a href="' . WORKLIST_URL . '{project_name}?action=edit">editing your project</a>.</p>
                <p>4. More information about Worklist.net and being a project founder can be found on our Help page <a href="' . WORKLIST_URL . 'help">here</a>.</p>
-               <p><a href="'.SERVER_URL.'>www.worklist.net</a></p>'
+               <p><a href="'.SERVER_URL.'">worklist.net</a></p>'
 ),
 
 'ops-project-created' => array(
@@ -253,7 +253,7 @@ replacement data:
                <li>Before code or functional reviews can happen, you must have pushed your progress to your GitHub fork.</li>
                </ol>
                <p>If you have any questions, look for assistance in our Chat.</p>
-               <p>The Worklist</p>'
+               <p>Worklist / High Fidelity</p>'
 ),
 'branch-created-sub' => array(
     'body' => '<br />
@@ -274,13 +274,12 @@ replacement data:
 'functional-howto' => array(
     'subject' => 'Worklist: #{branch_name} is ready for functional review',
     'body' => '<p>Hi {runner}!</p>
-               <p>Job #{branch_name} is ready for functional review. Please follow these instructions to checkout and test the work done by the developer:</p>
+               <p>Job <a href="<a href="' .SERVER_URL. '{branch_name}">#{branch_name}</a> is ready for functional review. Please follow these instructions to checkout and test the work done by the developer:</p>
                <ul>
                <li>Clone the developer\'s fork: git clone {users_fork}</li>
                <li>Checkout the branch created for this job: git checkout {branch_name}</li>
                <li>Use this branch to make your build</li>
                </ul>
-               <p>If you have any questions, please ask them in our <a href="http://gitter.im/highfidelity/worklist">public chat room</a>.</p>
                <p>
                Cheers,<br/>
                Worklist / High Fidelity</p>'
@@ -301,7 +300,7 @@ replacement data:
        Worklist / High Fidelity</p>'
 ),
 'project-runner-added' => array(
-    'subject' => 'Worklist: Added as a Designer to Project',
+    'subject' => 'Worklist: Added as a Designer to the {projectName} project',
     'body' =>
         '<p>Hi {nickname}</p>
         <p>Congrats! You have been granted Designer rights for the following project:<br />
@@ -314,7 +313,7 @@ replacement data:
 ),
 
 'project-runner-removed' => array(
-    'subject' => 'Worklist: Designer rights removed for project',
+    'subject' => 'Worklist: Designer rights removed for the {projectName} project',
     'body' => 
         '<p>Hi {nickname}</p>
         <p>Your Designer rights have been removed for the following project:<br />
@@ -324,7 +323,7 @@ replacement data:
         <p>- Worklist.net</p>'
 ),
 'project-codereview-removed' => array(
-        'subject' => 'Worklist: Code Review rights removed for Project',
+        'subject' => 'Worklist: Code Review rights removed for the {projectName} project',
         'body' =>
         '<p>Hi {nickname}</p>
         <p>Your Code Review rights have been removed for the following project:<br />
@@ -347,7 +346,7 @@ replacement data:
         <p>Worklist / High Fidelity</p>'
 ),
 'project-removed' => array(
-    'subject' => 'Your project was removed',
+    'subject' => 'The {projectName} project was removed',
     'body' => 
         '<p>Hi {owner}!</p>
         <p>Your project, <a href="{projectUrl}">{projectName}</a> was added on {creation_date}. Since that time, no jobs have been added.</p> 
