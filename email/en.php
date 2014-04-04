@@ -274,7 +274,7 @@ replacement data:
 'functional-howto' => array(
     'subject' => 'Worklist: #{branch_name} is ready for functional review',
     'body' => '<p>Hi {runner}!</p>
-               <p>Job <a href="<a href="' .SERVER_URL. '{branch_name}">#{branch_name}</a> is ready for functional review. Please follow these instructions to checkout and test the work done by the developer:</p>
+               <p>Job <a href="' .SERVER_URL. '{branch_name}">#{branch_name}</a> is ready for functional review. Please follow these instructions to checkout and test the work done by the developer:</p>
                <ul>
                <li>Clone the developer\'s fork: git clone {users_fork}</li>
                <li>Checkout the branch created for this job: git checkout {branch_name}</li>
