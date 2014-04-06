@@ -85,9 +85,8 @@ var Utils = {
 
         Utils.parseMustache('partials/empty-modal', data, function(parsed) {
             $(parsed).appendTo('body');
-            console.log('#' + id, $('#' + id).length);
             $('#' + id).modal('show');
-            $(id).on('hidden.bs.modal', function() {
+            $('#' + id).on('hidden.bs.modal', function() {
                 if (typeof onClose == 'function') {
                     onClose();
                 }

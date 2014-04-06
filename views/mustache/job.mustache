@@ -412,7 +412,6 @@
 {{> popup-pingtask}}
 {{> popup-bid-info}}
 {{> popup-multiple-bid-info}}
-{{> popup-confirmation}}
 {{> popup-fees}}
 {{> popup-fee-info}}
 {{> popup-withdraw-bid}}
@@ -431,6 +430,7 @@
     GitHub.applicationKey = '{{workitem_project.getGithubId}}';
     var project_id = {{worklist.project_id}};
     var project_name = '{{worklist.project_name}}';
+    var project_owner = '{{workitem_project.getOwnerCompany}}';
     var filterName = '.worklist';
     var user_id = {{currentUser.id}};
     var workitem_id = {{worklist.id}};

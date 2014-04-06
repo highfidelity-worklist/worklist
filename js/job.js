@@ -477,7 +477,6 @@ $(document).ready(function(){
     // default dialog options
     var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false };
     $('#popup-bid').dialog(dialog_options);
-    $('#popup-confirmation').dialog(dialog_options);
     $('#popup-review-started').dialog(dialog_options);
 
     $('#popup-edit-bid-info').dialog(
@@ -985,8 +984,29 @@ function ConfirmEditBid(){
 
 function showConfirmForm(i) {
     if (GitHub.validate()) {
-        $('#popup-confirmation-type').val(i);
-        $('#popup-confirmation').dialog('open');
+        var html = 
+            "<p>" +
+            "  <strong>I agree that</strong> by adding either a bid or a fee, I accept that" +
+            "  I will not be paid for this work unless " + project_owner +
+            "  and the owner of this job approves payment." +
+            "</p>" +
+            "<p>" +
+            "  Also, by clicking the 'I accept' button, I am contributing all code and work" +
+            "  that I attach to this job or upload to the Worklist servers, including any and" +
+            "  all intellectual property rights related thereto, whether or not I am paid." +
+            "</p>" +
+            "<p>" +
+            "  All intellectual property and code I contribute is solely owned by " +
+            "  " + project_owner + ", and I hereby make all assignments necessary " +
+            "  to accomplish the foregoing." +
+            "</p>";
+        Utils.showModal('', html, function() {
+            if (i == 'bid') {
+                showPlaceBidForm();
+            } else if (i == 'fee') {
+                showFeeForm();
+            }            
+        });
     } else {
         GitHub.handleUserConnect();
     }
@@ -1008,17 +1028,6 @@ function showIneligible(problem) {
     Utils.showModal(title, content, function() {
         window.location = './settings';
     });
-}
-
-function doConfirmForm(i) {
-  if (i == 'bid') {
-      $('#popup-confirmation').dialog('close');
-      showPlaceBidForm();
-  } else if (i == 'fee') {
-      $('#popup-confirmation').dialog('close');
-      showFeeForm();
-  }
-  return false;
 }
 
 function showPlaceBidForm() {
