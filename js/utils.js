@@ -70,29 +70,48 @@ var Utils = {
         });
     },
 
-    showModal: function(title, body, onClose) {
+    modal: function(name, data) {
         // generates a random id for the new modal (will use it to be removed on close)
         var id = 'modal-' + parseInt(Math.random() * (9999 - 99) + 99);
         while ($('#' + id).length) {
             var id = 'modal-' + parseInt(Math.random() * (9999 - 99) + 99);
         }
-
-        var data = {
-            'id': id,
-            'title': title ? title : 'Worklist', 
-            'body': body
+        var defaults = {
+            modal_id: id,
+            title: '',
+            buttons: [],
+            open: function() {},
+            close: function() {}
         };
-
-        Utils.parseMustache('partials/empty-modal', data, function(parsed) {
+        var settings = $.extend({}, defaults, data);
+        // if no buttons arep provided, let's use an 'Ok' one by default
+        if (settings.buttons.length == 0) {
+            settings.buttons = [{
+                content: 'Ok',
+                className: 'btn-primary',
+                dismiss: true
+            }];
+        }
+        var path = 'partials/modal/' + name;
+        Utils.parseMustache(path, settings, function(parsed) {
             $(parsed).appendTo('body');
-            $('#' + id).modal('show');
+            $('#' + id).on('shown.bs.modal', function() {
+                if (typeof settings.open == 'function') {
+                    settings.open();
+                }                
+            });            
             $('#' + id).on('hidden.bs.modal', function() {
-                if (typeof onClose == 'function') {
-                    onClose();
+                if (typeof settings.close == 'function') {
+                    settings.close();
                 }
                 $(id).remove();
-            })
+            });
+            $('#' + id).modal('show');
         });
+    },
+
+    emptyModal: function(data) {
+        Utils.modal('empty', data);
     },
 
 

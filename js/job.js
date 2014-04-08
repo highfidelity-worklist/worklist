@@ -512,7 +512,6 @@ $(document).ready(function(){
     });
     $('#popup-fee-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-multiple-bid-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
-    $('#popup-addfee').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({
         closeOnEscape: false,
         dialogClass: 'white-theme',
@@ -631,7 +630,9 @@ $(document).ready(function(){
                     }
                     var files = $('#uploadedFiles').parseTemplate(data.data);
                     $('#uploadPanel').append(files);
-                    $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
+                    if (user_id) {
+                        $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
+                    }
                     $('#uploadPanel').data('files', data.data);
                     $('#accordion').bind( "accordionchangestart", function(event, ui) {
                         $('#uploadButtonDiv').appendTo(ui.newContent);
@@ -984,28 +985,37 @@ function ConfirmEditBid(){
 
 function showConfirmForm(i) {
     if (GitHub.validate()) {
-        var html = 
-            "<p>" +
-            "  <strong>I agree that</strong> by adding either a bid or a fee, I accept that" +
-            "  I will not be paid for this work unless " + project_owner +
-            "  and the owner of this job approves payment." +
-            "</p>" +
-            "<p>" +
-            "  Also, by clicking the 'I accept' button, I am contributing all code and work" +
-            "  that I attach to this job or upload to the Worklist servers, including any and" +
-            "  all intellectual property rights related thereto, whether or not I am paid." +
-            "</p>" +
-            "<p>" +
-            "  All intellectual property and code I contribute is solely owned by " +
-            "  " + project_owner + ", and I hereby make all assignments necessary " +
-            "  to accomplish the foregoing." +
-            "</p>";
-        Utils.showModal('', html, function() {
-            if (i == 'bid') {
-                showPlaceBidForm();
-            } else if (i == 'fee') {
-                showFeeForm();
-            }            
+        Utils.emptyModal({
+            content: 
+                "<p>" +
+                "  <strong>I agree that</strong> by adding either a bid or a fee, I accept that" +
+                "  I will not be paid for this work unless " + project_owner +
+                "  and the owner of this job approves payment." +
+                "</p>" +
+                "<p>" +
+                "  Also, by clicking the 'I accept' button, I am contributing all code and work" +
+                "  that I attach to this job or upload to the Worklist servers, including any and" +
+                "  all intellectual property rights related thereto, whether or not I am paid." +
+                "</p>" +
+                "<p>" +
+                "  All intellectual property and code I contribute is solely owned by " +
+                "  " + project_owner + ", and I hereby make all assignments necessary " +
+                "  to accomplish the foregoing." +
+                "</p>",
+            buttons: [
+                {
+                    content: 'I accept',
+                    className: 'btn-primary',
+                    dismiss: true
+                }
+            ],
+            close: function() {
+                if (i == 'bid') {
+                    showPlaceBidForm();
+                } else if (i == 'fee') {
+                    showFeeForm();
+                }
+            }
         });
     } else {
         GitHub.handleUserConnect();
@@ -1014,19 +1024,28 @@ function showConfirmForm(i) {
 }
 
 function showIneligible(problem) {
-    var title = 'Your account is ineligible';
-    var content = '<p>' +
-        '    <strong>You are not eligible</strong> to bid or place ' + problem + 's on this item. ' +
-        '    Please check your settings and make sure you have:' +
-        '</p> ' +
-        '<ul>' +
-        '    <li>Verified your Paypal address</li>' +
-        '    <li>Uploaded your completed <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf">W-9</a> (US citizens only)</li>' +
-        '</ul>' +
-        '<br/>';
-
-    Utils.showModal(title, content, function() {
-        window.location = './settings';
+    Utils.emptyModal({
+        title: 'Your account is ineligible',
+        content: 
+            '<p>' +
+            '    <strong>You are not eligible</strong> to bid or place ' + problem + 's on this item. ' +
+            '    Please check your settings and make sure you have:' +
+            '</p> ' +
+            '<ul>' +
+            '    <li>Verified your Paypal address</li>' +
+            '    <li>Uploaded your completed <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf">W-9</a> (US citizens only)</li>' +
+            '</ul>' +
+            '<br/>',
+        buttons: [
+            {
+                content: 'I accept',
+                className: 'btn-primary',
+                dismiss: true
+            }
+        ],
+        close: function() {
+            window.location = './settings';
+        }
     });
 }
 
@@ -1082,8 +1101,38 @@ function pingBidder(id) {
 }
 
 function showFeeForm() {
-  $('#popup-addfee').dialog('open');
-  return false;
+    $.get(
+        './users.json',
+        function(data) {
+            Utils.modal('addfee', {
+                users: data.users,
+                current_nickname: sessionusername,
+                current_id: userId,
+                canFeeOthers: (is_runner || is_project_founder || is_project_runner),
+                open: function() {
+                    $('#mechanicFee').chosen();
+
+                     // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                    // but without  dollar sign 22-NOV-2010 <krumch>
+                    var regex = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    var fee_amount = new LiveValidation('fee_amount', {onlyOnSubmit: true});
+                        fee_amount.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+                        fee_amount.add(Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
+
+                    var fee_desc = new LiveValidation('fee_desc', {onlyOnSubmit: true});
+                        fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    $('form#addfee').submit(function() {
+                        var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);
+                        if (!massValidationFee) {
+                            return false;
+                        }
+                        return true;
+                    });
+               }
+            });
+        },
+        'json'
+    )
 }
 
 function CheckCodeReviewStatus() {

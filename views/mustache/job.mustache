@@ -233,8 +233,12 @@
                 {{/worklist.mechanic_id}}
                 <div id="commentZone">
                     <div class="row">
-                        <h3 class="info-comments col-md-7">Comments &amp; Activity</h3>
-                        <a href="./{{worklist.id}}#recent" class="col-md-4">See most recent</a>
+                        <div class="col-md-9">
+                            <h3 class="info-comments">Comments &amp; Activity</h3>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="./{{worklist.id}}#recent">See most recent</a>
+                        </div>
                     </div>
                     <ul id="entries">
                         {{& taskEntries}}
@@ -405,7 +409,6 @@
 {{/message}}
 {{> popup-edit-bid-info}}
 {{> popup-place-bid}}
-{{> popup-addfee}}
 {{> popup-startreview}}
 {{> popup-endreview}}
 {{> code-review-already-started}}

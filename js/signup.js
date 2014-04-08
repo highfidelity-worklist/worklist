@@ -19,8 +19,12 @@ $(function() {
     about.add(Validate.Length, { minimum: 0, maximum: 150 } );
 
     if (confirmTxt.length > 0) {
-        Utils.showModal('Email confirmation', confirmTxt, function() {
-            window.location = './';
+        Utils.emptyModal({
+            title: 'Email confirmation', 
+            content: confirmTxt, 
+            close: function() {
+                window.location = './';
+            }
         });
     }
 

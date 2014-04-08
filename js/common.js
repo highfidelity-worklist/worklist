@@ -155,7 +155,9 @@ function createMultipleNotifyHtmlMessages(arrayOfMessages) {
 }
 
 function openNotifyOverlay(html, autohide, button, displayRedBorder) {
-    Utils.showModal('', html);
+    Utils.emptyModal({
+        content: html
+    });
     return;
 
     $('#sent-notify').html(html);
