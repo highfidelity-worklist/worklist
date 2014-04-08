@@ -655,10 +655,6 @@ $(document).ready(function(){
     $('.popup-body form input[type="submit"]').click(function(){
         var name = $(this).attr('name');
         switch(name) {
-            case "add_fee_dialog":
-                SimplePopup('#popup-addfee', 'Add Fee', workitem_id, [['input', 'itemid', 'keyId', 'eval']]);
-                $('#popup-addfee').dialog('open');
-                return false;
             case "reset":
                 ResetPopup();
                 return false;
@@ -1105,6 +1101,7 @@ function showFeeForm() {
         './users.json',
         function(data) {
             Utils.modal('addfee', {
+                job_id: workitem_id,
                 users: data.users,
                 current_nickname: sessionusername,
                 current_id: userId,
