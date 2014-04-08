@@ -22,7 +22,6 @@ class JobView extends View {
         'js/jquery/jquery.metadata.js',
         'js/jquery/jquery.blockUI.js',
         'js/ajaxupload/ajaxupload.js',
-        'js/worklist_project.js',
         'js/datepicker.js',
         'js/timepicker.js',
         'js/review.js',
@@ -782,7 +781,7 @@ class JobView extends View {
     }
 
     public function addBidMsg() {
-        return ($this->isGitProject() && $this->read('isGitHubConnected')) ? 'Authorize GitHub app' : 'Add my bid';
+        return $this->read('isGitHubConnected') ? 'Add my bid' : 'Authorize GitHub app';
     }
 
     public function taskEntries() {

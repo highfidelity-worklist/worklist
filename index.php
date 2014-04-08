@@ -47,6 +47,7 @@ class Dispatcher {
         $dispatcher->get('/uploads/:filename', array('Upload'), array('require' => array('filename' => '.+')));
         $dispatcher->get('/user/:id', array('User'));
         $dispatcher->post('/user/:id', array('User'));
+        $dispatcher->get('/users.json', array('User', 'jsonList'));
         $dispatcher->get('/welcome', array('Welcome'));
         $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
         $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));

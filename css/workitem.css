@@ -559,12 +559,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .sandbox-container {
-    margin-top: 15px;
+    margin: 15px 0 25px;
     background-color: #e6f3f4;
     padding: 9px 12px;
-    margin-left: -12px;
     font-size: 14px;
-    width: 437px;
 }
 
 .functional-label {
@@ -841,13 +839,17 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     word-wrap: break-word;
 }
 
-.comment {
+.comment-info .author,
+.comment-text {
     font-size: 1.1em;
+}
+
+.comment {
     overflow:auto;
     margin-top: 12px;
 }
 
-.author {
+.comment-info .author {
     display:inline;
 }
 
@@ -863,7 +865,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .reply-lnk {
-    font-size: 14px;
+    font-size: .9em;
     width:100%;
     margin-top:0;
     text-align: left;
@@ -988,9 +990,8 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .notestext {
-    margin:0;
-    margin-top: 11px;
-    padding-right:5px;
+    margin: 15px 0 25px;
+    padding-right: 5px;
     word-wrap: break-word;
     font-size: 1.1em;
     line-height: 19px;

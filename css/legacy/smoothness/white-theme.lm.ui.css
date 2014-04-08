@@ -207,9 +207,6 @@ input[type=submit].wide {
 
 .white-theme #withdraw_bid input[type=submit] { width: 130px; }
 
-.white-theme #popup-confirmation #button_accept { left: 0px !important; }
-.white-theme #popup-confirmation p { margin-bottom: 1em; }
-
 .white-theme #popup-bid-info-buttons input[type=button] {
     font-size: 1em;
 }

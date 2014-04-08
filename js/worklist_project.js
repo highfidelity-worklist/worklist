@@ -1,6 +1,4 @@
 var WorklistProject = {
-    repo_type: false,
-
     createDb: function() {
         WorklistProject.apiCall('createDatabaseNewProject', 'project=' + projectName + '&username=' + dbuser, function(response) {
             if (response && response['success']) {
@@ -113,96 +111,7 @@ var WorklistProject = {
                 }
             }
         });
-    },
-
-    populateProjectListing: function() {
-        $.ajax({
-            type: "GET",
-            url: 'api.php?action=getProjects',
-            dataType: 'json',
-            success: function(json) {
-
-                // Clear all contents on screen
-                $('#projects').empty();
-
-                for (var i = 0; i < json.length; i++) {
-                    WorklistProject.addProjectDetails(json[i]);
-                }
-
-                setTimeout(function() {
-                    $('#projects').infinitescroll({
-                        animate: true,
-                        dataType: 'json',
-                        debug: true,
-                        appendCallback: false,
-                        navSelector: '#page-nav',
-                        nextSelector: '#page-nav a',
-                        itemSelector: '#projects article',
-                        extraScrollPx: 350,
-                        loading: {
-                            msgText: 'Loading the next set of projects...',
-                            finishedMsg: 'No more pages to load'
-                        }
-                    }, function(json, opts) {
-                        for (var i = 0; i < json.length; i++) {
-                            WorklistProject.addProjectDetails(json[i]);
-                        }
-                    });
-
-                    // kill scroll binding
-                    $(window).unbind('.infscr');
-                    NewWorklist.init();
-                }, 1);
-
-                // remove the paginator when we're done.
-                /*
-                $(document).ajaxError(function(e, xhr, opt){
-                    if (xhr.status == 404) {
-                        $('a#next').remove();
-                    }
-                });
-                */
-
-            },
-            error: function() {
-                alert("error in populateProjectListing");
-            }
-        })
-    },
-
-    addProjectDetails: function(json) {
-        var project = '';
-        var image_filename;
-        var description = '';
-        var link = '';
-
-        link = encodeURIComponent(json.name);
-
-        if (json.logo === null || json.logo === "") {
-            image_filename = 'images/emptyLogo.png';
-        } else {
-            image_filename = 'uploads/' + json.logo;
-        }
-
-        if (json.description.length > 500) {
-            description = json.description.substring(0, 500) + '... <a href="' + link + '">[ read more ]</a>';
-        } else {
-            description = json.description;
-        }
-
-        project += '<article id="project-' + json.project_id + '">';
-        project += '<a href="' + link + '"><img src="' + image_filename + '" border="1" width="48" height="48"  title="Last commit: ' + json.last_commit + '" /></a>';
-
-        project += '<h3><a href="' + link + '">' + json.name + '</a></h3>';
-        project += '<section class="description">' + description + '</section>';
-        project += '<ul class="stats">';
-        project += '<li><a href="./jobs?status=bidding&project=' + json.name + '"><strong>' + json.bCount + ' jobs in bidding</strong></a></li>';
-        project += '<li><a href="./jobs?status=completed&project=' + json.name + '">' + json.cCount+ ' jobs completed</a></li>';
-        project += '<li>$' + json.feesCount + ' spent</li>';
-        project += '</ul>';
-        project += '</article>';
-
-        $('#projects').append(project);
     }
+
 };
 
