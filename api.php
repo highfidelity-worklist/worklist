@@ -607,8 +607,8 @@ function autoPassSuggestedJobs() {
                 $data
             );
             
-            //sendJournalnotification
-            $journal_message = "#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
+            //sendJournalnotification 
+            $journal_message =  "\\#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
             sendJournalNotification(stripslashes($journal_message));            
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
@@ -1300,7 +1300,7 @@ function addWorkitem() {
     
     if (empty($_POST['itemid'])) {
         $bid_fee_itemid = $workitem->getId();
-        $journal_message .= '#' . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick;
+        $journal_message .= '\\#' . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick;
         $journal_message .= ' Status set to ' . $status;
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
@@ -1311,7 +1311,7 @@ function addWorkitem() {
         }
     } else {
         $bid_fee_itemid = $itemid;
-        $journal_message .= '#' . $bid_fee_itemid . ' updated by ' . $nick . 'Status set to ' . $status;
+        $journal_message .= '\\#' . $bid_fee_itemid . ' updated by ' . $nick . 'Status set to ' . $status;
     }
     $journal_message .=  "$related. ";
     if (!empty($_POST['invite'])) {
