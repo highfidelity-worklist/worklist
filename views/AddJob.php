@@ -15,17 +15,23 @@ class AddJobView extends View {
     );
 
     public function render() {
-        $projects = $this->read('projects');
+        $this->first_selected = empty($current);
+        return parent::render();
+    }
+
+    public function projects() {
+        $user = $this->currentUser;
         $current = $this->read('current');
-        $this->projects = array();
+        $activeOnly = !($user['is_runner'] || $user['is_admin'] || $user['is_payer']);
+        $projects = Project::getProjects($activeOnly);
+        $ret = array();
         foreach ($projects as $project) {
-            $this->projects[] = array(
+            $ret[] = array(
                 'id'        => $project['project_id'],
                 'name'      => $project['name'],
                 'current'   => ($project['name'] == $current) ? true : false
             );
         }
-        $this->first_selected = empty($current);
-        return parent::render();
+        return $ret;
     }
 }
