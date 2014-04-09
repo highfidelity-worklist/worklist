@@ -306,7 +306,7 @@ class JobController extends Controller {
             }
 
              if ($workitem->getStatus() != 'Draft') {
-                $journal_message .= '#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
+                $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
                                     $bugJournalMessage .
                                     $new_update_message . $related;
                 
@@ -554,7 +554,7 @@ class JobController extends Controller {
                       $notifyEmpty = true;
                     }
 
-                    $journal_message = '#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
+                    $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                 }
 
                 $promptForReviewUrl = false;
@@ -592,7 +592,7 @@ class JobController extends Controller {
                                 array('changes' => $new_update_message));
                                 $notifyEmpty = true;
                             }
-                            $journal_message = '#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
+                            $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
                     }
                 } else {
