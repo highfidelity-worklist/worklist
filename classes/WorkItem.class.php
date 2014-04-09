@@ -520,7 +520,11 @@ class WorkItem {
             if ($this->status == 'Bidding') {
                 $this->tweetNewJob();
             }
+            if ($this->status == 'Code Review') {
+            $this->status = 'Review';
+            } else {
             $status = mysql_real_escape_string($this->status);
+            }
             if(isset($_SESSION['userid']) && !empty($_SESSION['userid'])) {
                 $user_id = $_SESSION['userid'];
             } else {

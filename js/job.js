@@ -881,6 +881,9 @@ $(document).ready(function(){
             $('.statusComboList li[val=' +  origStatus + ']').click();
             return false;
         }
+        if (job_status == 'Review') {
+            job_status == 'Code Review';
+        }
         if ($(this).val() != null && $(this).val() != job_status) {
             var html = "<span>Changing status from <strong>" + job_status + "</strong> to <strong>"
                 + $(this).val() +"</strong></span>";
