@@ -1224,7 +1224,7 @@ class JsonServer
                     if(!send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeMechanic: send_email failed"); }
                 }
 
-                sendJournalNotification('#' . $workitem->getId() . ' updated by @' . $this->getUser()->getNickname() .'Designer reassigned to @' . $workitem->getRunner()->getNickname());
+                sendJournalNotification(\\'#' . $workitem->getId() . ' updated by @' . $this->getUser()->getNickname() .'Designer reassigned to @' . $workitem->getRunner()->getNickname());
 
                 return $this->setOutput(array(
                     'success' => true,
