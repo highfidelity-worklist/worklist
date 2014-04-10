@@ -1341,11 +1341,21 @@ $(function() {
                 if (json && json.error) {
                     alert("Ping failed:" + json.error);
                 } else {
-                    var msg = "<span>Your ping has been sent.</span>"
+                    var msg = "<span>Your message has been sent.</span>"
                     if ($('#send-ping-btn').val() == 'Send Reply') {
                         msg = "<span>Your reply has been sent.</span>";
                     }
-                    openNotifyOverlay(msg, true);
+                    // openNotifyOverlay(msg, true);
+                    Utils.emptyModal({
+                        content: success_msg,
+                        buttons: [
+                            {
+                                content: 'Ok',
+                                className: 'btn-primary',
+                                dismiss: true
+                            }
+                        ]
+			        });
                 }
                 $('#popup-pingtask').dialog('close');
                 $('#send-ping-btn').removeAttr("disabled");
