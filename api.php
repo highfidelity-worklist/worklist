@@ -3004,8 +3004,7 @@ function pingTask() {
         // Send mail
         if ($who != 'bidder') {
             $mail_subject = $nickname." sent you a message on Worklist for item #".$item_id;
-            $mail_msg = "<p>Dear ".$receiver_nick.",<br/>";
-            $mail_msg .= "<a href='" . WORKLIST_URL .'user/' . $id . "'>#" . $nickname . "</a>";
+            $mail_msg .= "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>#" . $nickname . "</a>";
             $mail_msg .= " sent you a message about item ";
             $mail_msg .= "<a href='" . WORKLIST_URL . $item_id . "'>#" . $item_id . "</a>";
             $mail_msg .= "</p><p>----------<br/>".$msg."<br/>----------</p><p>You can reply via email to: ".$email."</p>";
@@ -3062,10 +3061,9 @@ function pingTask() {
         $receiver_nick = $receiver->nickname;
         $receiver_email = $receiver->username;
 
-        $mail_subject = $nickname." sent you a message:";
-        $mail_msg = "<p>Dear ".$receiver_nick.",<br/>";
-        $mail_msg .= "<a href='" . WORKLIST_URL .'user/' . $id . "'>#" . $nickname . "</a>";
-        $nickname .=" sent you a message: ";
+        $mail_subject = $nickname." sent you a message on Worklist";
+        $mail_msg = "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>#" . $nickname . "</a>";
+        $mail_msg .=" sent you a message: ";
         $mail_msg .= "</p><p>----------<br/>".$msg."<br />----------</p><p>You can reply via email to ".$email."</p>";
 
         $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
