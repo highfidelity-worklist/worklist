@@ -2,20 +2,6 @@ var available = 0;
 
 $(document).ready(function() {
     UserInfo.init();
-    $('#sent-notify').dialog({
-        modal: false,
-        autoOpen: false,
-        width: 250,
-        height: 60,
-        position: ['middle'],
-        resizable: false,
-        open: function() {
-            $("#sent-notify").parent().children('.ui-dialog-titlebar').hide();
-            setTimeout(function() {
-                $("#sent-notify").dialog("close");
-            }, 3000);
-        }
-    });
     stats.setUserId(userInfo.user_id);
     stats.showJobs('activeJobs', 0);
     stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
@@ -284,9 +270,20 @@ var UserInfo = {
                     if (json && json.error) {
                         alert("Ping failed:" + json.error);
                     } else {
-                        $("#sent-notify").html("<span>Your message has been sent.</span>");
-                        $("#sent-notify").dialog("open");
+                        var success_msg = "<p><strong>Your message has been sent.</strong></p>";
+                        
+                        Utils.emptyModal({
+                            content: success_msg,
+                            buttons: [
+                                {
+                                    content: 'Ok',
+                                    className: 'btn-primary',
+                                    dismiss: true
+                                }
+                            ]
+                        });
                     }
+                    $('#ping-msg').val("");
                     $('#send-ping-btn').removeAttr("disabled");
                 }, 
                 error: function() {
