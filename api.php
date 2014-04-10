@@ -607,8 +607,8 @@ function autoPassSuggestedJobs() {
                 $data
             );
             
-            //sendJournalnotification
-            $journal_message = "**#" . $workitem->getId() . "** updated by @Otto \n\n**" . $workitem->getSummary() . "**. Status set to *" . $status . "*";
+            //sendJournalnotification 
+            $journal_message =  "\\#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
             sendJournalNotification(stripslashes($journal_message));            
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
@@ -1293,15 +1293,14 @@ function addWorkitem() {
                 'usersWithFeesBug'
             )
         ));
-        $bugJournalMessage= " (bug of **#" . $workitem->getBugJobId() ."**)";
+        $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
     } else {
         $bugJournalMessage= "";
     }
     
     if (empty($_POST['itemid'])) {
         $bid_fee_itemid = $workitem->getId();
-        $journal_message .= '**#' . $bid_fee_itemid . '** created by @' . $nick . ' ' . $bugJournalMessage;
-        $journal_message .= "\n\n**" . $summary . '**. Status set to *' . $status . '*';
+        $journal_message .= "\\\\#"  . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick . ' Status set to ' . $status;
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
             foreach ($files as $file) {
@@ -1311,8 +1310,7 @@ function addWorkitem() {
         }
     } else {
         $bid_fee_itemid = $itemid;
-        $journal_message .= '#' . $bid_fee_itemid . ' updated by @' . $nick ;
-        $journal_message .=  "\n\n**" . $summary . '**. Status set to *' . $status . '*';
+        $journal_message .= '\\#' . $bid_fee_itemid . ' updated by ' . $nick . 'Status set to ' . $status;
     }
     $journal_message .=  "$related. ";
     if (!empty($_POST['invite'])) {
@@ -2556,7 +2554,7 @@ function getWorklist() {
                          } else {
                              $where .= "status = '$val' OR ";
                          }
-                    } else if ($val == 'Review') {
+                    } else if ($val == 'Code Review') {
                         $where .= "status = 'Review' OR ";
                     } else if ($val == 'Needs-Review') {
                         $where .= "(status = 'Review' AND code_review_started = 0) OR ";
