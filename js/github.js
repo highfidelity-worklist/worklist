@@ -4,14 +4,19 @@ var GitHub = {
     applicationKey: false,
     
     validate: function() {
-        return !(WorklistProject.repo_type == 'git' && !GitHub.isConnected);
+        return GitHub.isConnected;
     },
     
     handleUserConnect: function(autoclose) {
-        if(typeof(autoclose) === 'undefined') autoclose = true;
+        if(typeof(autoclose) === 'undefined') {
+            autoclose = true;
+        }
+        var client_id = GitHub.applicationKey;
+        var redirect_uri = worklistUrl + 'GitHub.php/' + project_id;
+
         var gitHubConnectWindow = window.open(
-            'https://github.com/login/oauth/authorize?client_id=' + GitHub.applicationKey +
-                '&scope=user,repo&redirect_uri=' + worklistUrl + 'GitHub.php/' + project_id,
+             //https://github.com/login/oauth/authorize
+            'https://github.com/login/oauth/authorize?client_id=' + client_id + '&scope=user,repo&redirect_uri=' + redirect_uri,
             'GitHubConnect',
             'width=980,height=450,resizable=no,scrollbars=no,toolbar=no,location=no'
         );

@@ -441,10 +441,7 @@ class Project {
     }
 
     public function getGithubId() {
-        if ($this->getRepo_type() == 'git'){
-            return empty($this->github_id) ? GITHUB_ID : $this->github_id;
-        }
-        return null;
+        return $this->github_id;
     }
 
     public function setGithubId($github_id) {

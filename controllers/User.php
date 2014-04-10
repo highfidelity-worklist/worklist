@@ -223,4 +223,20 @@ class UserController extends Controller {
         $this->write('favorite_enabled', $favorite_enabled);
         parent::run();
     }
+
+    public function jsonList() {
+        $this->view = null;
+        $users = User::getUserList(getSessionUserId(), true);
+        $ret = array();
+        foreach ($users as $user) {
+            $ret[] = array(
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname()
+
+            );
+        }
+        echo json_encode(array('users' => $ret));
+        return;
+    }
+
 }
