@@ -12,7 +12,7 @@ var GitHub = {
             autoclose = true;
         }
         var client_id = GitHub.applicationKey;
-        var redirect_uri = worklistUrl + 'GitHub.php/' + project_id;
+        var redirect_uri = encodeURIComponent(worklistUrl + 'GitHub.php?project=' + project_id);
 
         var gitHubConnectWindow = window.open(
              //https://github.com/login/oauth/authorize
