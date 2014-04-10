@@ -261,8 +261,7 @@ class Notification {
         $revision = isset($options['revision']) ? $options['revision'] : null;
         
         $itemId = $workitem -> getId();
-        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '"">#' . $itemId
-                    . '</a>  ' . $workitem -> getSummary() . ' ';
+        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '"">#' . $itemId . '</a>';
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
         $body = '';
@@ -534,7 +533,7 @@ class Notification {
             break;
 
             case 'new_bidding':
-                $body = "Summary: " . $itemLink . '<br /><br />'
+                $body = "Summary: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if($workitem->getRunner() != '') {
@@ -549,7 +548,7 @@ class Notification {
             break;
 
             case 'new_review':
-                $body = "New item is available for review: " . $itemLink . '<br /><br />'
+                $body = "New item is available for review: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
                 . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 if($workitem->getRunner() != '') {
@@ -699,16 +698,6 @@ class Notification {
                 $body .= "<p>Hope to see you soon.</p>\n";
             break;
 
-            case 'sb_authorization_failed':
-                $headers['From'] = '"' . $project_name . '-sandbox" ' . $from_address;
-                $body = 'Authorizing sandbox for job ';
-                $body .= '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
-                $body .= ' has failed with the following error message: <br /><br />';
-                $body .= "Sandbox is not authorized:<br />";
-                $body .= $data['message'];
-                $body .= '<br /><br /><a href="http://www.worklist.net">www.worklist.net</a>';
-            break;
-            
             case 'code-review-completed':
                 $headers['From'] = '"' . $project_name . '-review complete" ' . $from_address;
                 $body = '<p>Hello,</p>';
@@ -899,7 +888,7 @@ class Notification {
         
         $itemId = $workitem->getId();
         $itemLinkShort = '<a href="' . WORKLIST_URL . $itemId . "'>#{$itemId}</a>";
-        $itemLink = "{$itemLinkShort}{$bugJournalMessage}: ".$workitem->getSummary();
+        $itemLink = "{$itemLinkShort}{$bugJournalMessage}";
         
         $message = null;
         $message_format = 'html';

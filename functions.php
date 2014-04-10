@@ -477,7 +477,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
     // Journal notification
     if($mechanic_id == $_SESSION['userid'])
     {
-        $journal_message = '@' . $_SESSION['nickname'] . ' added a fee of $' . $fee_amount . ' to **#' . $itemid . "**\n\n **" . $summary. '**';
+        $journal_message = '@' . $_SESSION['nickname'] . ' added a fee of $' . $fee_amount . ' to #' . $itemid;
     }
     else
     {
@@ -492,7 +492,7 @@ function AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $i
             $nickname = "unknown-{$mechanic_id}";
         }
 
-        $journal_message = '@' . $_SESSION['nickname'] . ' on behalf of @' . $nickname . ' added a fee of $' . $fee_amount . ' to **#' . $itemid. "**\n\n**" . $summary. '**';
+        $journal_message = '@' . $_SESSION['nickname'] . ' on behalf of @' . $nickname . ' added a fee of $' . $fee_amount . ' to #' . $itemid;
     }
 
     return $journal_message;
@@ -751,7 +751,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $user = getUserById($bid->bidder_id);
 
         // Journal message
-        $message  = 'A bid was deleted from #' . $job['id'] . "\n\n**" . $job['summary'] . '**.';
+        $message  = 'A bid was deleted from #' . $job['id'];
 
         // Journal notification
         sendJournalNotification($message);
@@ -820,7 +820,7 @@ function deleteFee($fee_id) {
         if ($user !== false) {
             // Journal message
             $message  = '@' . $_SESSION['nickname'] . ' deleted a fee from @';
-            $message .= $user->nickname . ' on **#' . $fee->worklist_id . "**\n\n**" . $summary . '**. ';
+            $message .= $user->nickname . ' on #' . $fee->worklist_id;
     
             // Journal notification
             sendJournalNotification($message);

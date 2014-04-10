@@ -76,3 +76,11 @@ body > nav.navbar + .container-fluid > h4 + p:before {
 body > nav.navbar + .container-fluid > p + p {
     padding-top: 0;
 }
+
+body > .container-fluid a:hover {
+    color: #007F7C !important;
+}
+
+body > .container-fluid a:active {
+    text-decoration: underline;
+}

@@ -33,9 +33,10 @@
 }
 
 #commentform textarea {
-    font-size: 13px;
+    font-size: 1.1em;
     font-family: proxima-nova, sans-serif;
     border-width: 0 0 1px;
+    color: #333333;
 }
 
 #commentform .form-group {

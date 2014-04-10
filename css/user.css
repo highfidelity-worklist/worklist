@@ -12,7 +12,8 @@ body .nav-tabs > li > a {
     padding: 5px 15px;
 }
 
-body .nav-tabs > li:nth-child(n+2) > a {
+body .nav-tabs > li:nth-child(n+2) > a,
+body .nav-tabs > li:nth-child(n+2) > a:hover {
     border-left: 0 none;
 }
 

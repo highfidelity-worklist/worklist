@@ -11,7 +11,7 @@ var Workitem = {
     
     init: function() {
         $("#view-sandbox").click(function() {
-            if (WorklistProject.repo_type == 'git') {
+            if (repo_type == 'git') {
                 window.open(sandbox_url, '_blank');
             } else {
                 Workitem.openDiffPopup({

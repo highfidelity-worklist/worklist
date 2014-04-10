@@ -1,13 +1,16 @@
 <?php
-
+/* TODO (joanne)
+ * as time permits we need to compare the journal messages here to those in notification class
+ * and clean out whatever code is no longer in use.
+ */
 require_once('models/DataObject.php');
 require_once('models/Budget.php');
 require_once('models/Users_Favorite.php');
 
 class JobController extends Controller {
     public function run($job_id) {
-        $this->write('statusListRunner', array("Draft", "Suggested", "SuggestedWithBid", "Bidding", "Working", "Functional", "Review", "Completed", "Done", "Pass"));
-        $statusListMechanic = array("Working", "Functional", "Review", "Completed", "Pass");
+        $this->write('statusListRunner', array("Draft", "Suggested", "SuggestedWithBid", "Bidding", "Working", "Functional", "Code Review", "Completed", "Done", "Pass"));
+        $statusListMechanic = array("Working", "Functional", "Code Review", "Completed", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
         $this->write('statusListCreator', array("Suggested", "Pass"));
 
@@ -136,7 +139,6 @@ class JobController extends Controller {
                 'status',
                 'project_id',
                 'sandbox',
-                'skills',
                 'is_bug',
                 'bug_job_id',
                 'budget-source-combo'
@@ -172,7 +174,8 @@ class JobController extends Controller {
                 $workitem->setBudget_id($budget_id);
             }
             // summary
-            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $summary) {
+            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $_REQUEST['summary']) {
+                $summary = $_REQUEST['summary'];
                 $workitem->setSummary($summary);
                 $new_update_message .= "Summary changed. ";
                 if ($workitem->getStatus() != 'Draft') {
@@ -181,9 +184,10 @@ class JobController extends Controller {
             }
 
             if (isset($_REQUEST['skills'])) {
-                $skillsArr = explode(', ', $skills);
+                $skillsArr = explode(',', $_REQUEST['skills']);
                 // remove empty values
                 foreach ($skillsArr as $key => $value) {
+                    $skillsArr[$key] = trim($value);
                     if (empty($value)) {
                         unset($skillsArr[$key]);
                     }
@@ -271,7 +275,7 @@ class JobController extends Controller {
             //if job is a bug, notify to journal
             if($bug_job_id > 0) {
                 $workitem->setIs_bug(1);
-                $bugJournalMessage= " (bug of **#" . $workitem->getBugJobId() ."**)";
+                $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() . ")";
             } elseif (isset($_REQUEST['is_bug']) && $_REQUEST['is_bug'] == 'on') {
                 $bugJournalMessage = " (which is a bug)";
             } elseif (isset($is_bug) && $is_bug == 1) {
@@ -302,8 +306,8 @@ class JobController extends Controller {
             }
 
              if ($workitem->getStatus() != 'Draft') {
-                $journal_message .= '**#' . $worklist_id . '** updated by @' . $_SESSION['nickname'] .
-                                    $bugJournalMessage  ."\n\n**". $workitem->getSummary() . '**' .
+                $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
+                                    $bugJournalMessage .
                                     $new_update_message . $related;
                 
                 $options = array(
@@ -341,7 +345,7 @@ class JobController extends Controller {
                 // Send journal notification
                 if ($workitem->getStatus() != 'Draft') {
                     $related = getRelated($comment);
-                    $journal_message .= '@' . $_SESSION['nickname'] . ' posted a comment on **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '** ' . $related;
+                    $journal_message .= '@' . $_SESSION['nickname'] . ' posted a comment on #' . $worklist_id . $related;
                     
                     $options = array(
                         'type' => 'comment',
@@ -397,7 +401,7 @@ class JobController extends Controller {
             } else {
                 $workitem->setCRStarted(1);
                 $workitem->save();
-                $journal_message = '@' . $_SESSION['nickname'] . ' has started a review for **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**';
+                $journal_message = '@' . $_SESSION['nickname'] . ' has started a code review for #' . $worklist_id;
                 
                 $options = array(
                     'type' => 'code-review-started',
@@ -444,7 +448,7 @@ class JobController extends Controller {
                     Notification::sendShortSMS($myRunner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
                 }
                 
-                $journal_message = '@' . $_SESSION['nickname'] . ' has completed their code review for **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**';
+                $journal_message = '@' . $_SESSION['nickname'] . ' has completed their code review for #' . $worklist_id;
                 
                 $options = array(
                     'type' => 'code-review-completed',
@@ -470,7 +474,7 @@ class JobController extends Controller {
             } else {
                 $workitem->setCRStarted(0);
                 $workitem->save();
-                $journal_message = '@' . $_SESSION['nickname'] . ' has canceled their review for **#' . $worklist_id . "**\n\n**" . $workitem->getSummary() . '**';
+                $journal_message = '@' . $_SESSION['nickname'] . ' has canceled their code review for #' . $worklist_id;
                 
                 $options = array(
                     'type' => 'code-review-canceled',
@@ -523,7 +527,7 @@ class JobController extends Controller {
                 if (!$status_error) {
                     $new_update_message = " sandbox url : $sandbox ";
                     if(!empty($status_review)) {
-                        $new_update_message .= " Status set to *$status_review*. ";
+                        $new_update_message .= " Status set to 'Code Review'. ";
                         $status_change = '-' . ucfirst(strtolower($status_review));
                     } else {
                         $job_changes[] = '-sandbox';
@@ -550,7 +554,7 @@ class JobController extends Controller {
                       $notifyEmpty = true;
                     }
 
-                    $journal_message = '**#' . $worklist_id . '** updated by @' . $_SESSION['nickname'] . "\n\n**" . $workitem->getSummary() . "**. " . $new_update_message;
+                    $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                 }
 
                 $promptForReviewUrl = false;
@@ -588,7 +592,7 @@ class JobController extends Controller {
                                 array('changes' => $new_update_message));
                                 $notifyEmpty = true;
                             }
-                            $journal_message = '**#' . $worklist_id . '** updated by @' . $_SESSION['nickname'] . "\n\n**" . $workitem->getSummary() . "**. " . $new_update_message;
+                            $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
                     }
                 } else {
@@ -656,7 +660,7 @@ class JobController extends Controller {
             if ($user->isEligible()) {
                 $bid_id = $workitem->placeBid($mechanic_id, $username, $worklist_id, $bid_amount, $done_in, $bid_expires, $notes);
                 // Journal notification
-                $journal_message = 'A bid was placed on **#' . $worklist_id . "**\n\n**" . $summary . '**';
+                $journal_message = 'A bid was placed on #' . $worklist_id;
                 //sending email to the runner of worklist item
 
                 $row = $workitem->getRunnerSummary($worklist_id);
@@ -739,9 +743,9 @@ class JobController extends Controller {
                 $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in_edit, $bid_expires_edit, $_SESSION['timezone'], $notes);
 
                 // Journal notification
-                $journal_message = 'Bid updated on **#' . $worklist_id . "**\n\n**" . $summary. "**";
+                $journal_message = 'Bid updated on #' . $worklist_id;
 
-                $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id $summary";
+                $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id";
                 //sending email to the runner of worklist item
                 $row = $workitem->getRunnerSummary($worklist_id);
                 if(!empty($row)) {
@@ -905,8 +909,7 @@ class JobController extends Controller {
                             // Journal notification
                             $journal_message .= '@' . $_SESSION['nickname'] .
                                 " accepted {$bid_info['bid_amount']} from " .
-                                $bid_info['nickname'] . " on **#{$bid_info['worklist_id']}**\n\n**" .
-                                $bid_info['summary'] . "**. Status set to *Working*.";
+                                $bid_info['nickname'] . " on #{$bid_info['worklist_id']}" ." Status set to Working";
                             
                             $options = array(
                                 'type' => 'bid_accepted',
@@ -1004,8 +1007,7 @@ class JobController extends Controller {
                                     // Journal notification
                                     $journal_message .= '@' . $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". 
                                         $bid_info['nickname'] . " " . ($is_mechanic ? ' as Developer ' : '') . 
-                                        "on **#".$bid_info['worklist_id']."**\n\n**" . $bid_info['summary'] . 
-                                        "**. Status set to *Working*.";
+                                        "on #".$bid_info['worklist_id']. " Status set to Working";
                                     // mail notification
                                     Notification::workitemNotify(array('type' => 'bid_accepted',
                                                  'workitem' => $workitem,
@@ -1317,7 +1319,7 @@ class JobController extends Controller {
 
     function changeStatus($workitem, $newStatus, $user) {
 
-        $allowable = array("Draft", "Suggested", "SuggestedWithBid", "Review", "Functional", "Pass", "Completed");
+        $allowable = array("Draft", "Suggested", "SuggestedWithBid", "Code Review", "Functional", "Pass", "Completed");
 
         if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && ($is_runner))) {
             if($newStatus == 'Bidding' && in_array($workitem->getStatus(), $allowable)) {
@@ -1342,7 +1344,7 @@ class JobController extends Controller {
         $repoType = $thisProject->getRepo_type();
         
         // Generate diff and send to pastebin if we're in REVIEW
-        if ($newStatus == "Review") {
+        if ($newStatus == "Code Review") {
             //reset code_review flags
             $workitem->resetCRFlags();
             if ($repoType == 'svn') {

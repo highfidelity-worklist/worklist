@@ -607,8 +607,8 @@ function autoPassSuggestedJobs() {
                 $data
             );
             
-            //sendJournalnotification
-            $journal_message = "**#" . $workitem->getId() . "** updated by @Otto \n\n**" . $workitem->getSummary() . "**. Status set to *" . $status . "*";
+            //sendJournalnotification 
+            $journal_message =  "\\#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
             sendJournalNotification(stripslashes($journal_message));            
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
@@ -1293,15 +1293,14 @@ function addWorkitem() {
                 'usersWithFeesBug'
             )
         ));
-        $bugJournalMessage= " (bug of **#" . $workitem->getBugJobId() ."**)";
+        $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
     } else {
         $bugJournalMessage= "";
     }
     
     if (empty($_POST['itemid'])) {
         $bid_fee_itemid = $workitem->getId();
-        $journal_message .= '**#' . $bid_fee_itemid . '** created by @' . $nick . ' ' . $bugJournalMessage;
-        $journal_message .= "\n\n**" . $summary . '**. Status set to *' . $status . '*';
+        $journal_message .= "\\\\#"  . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick . ' Status set to ' . $status;
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
             foreach ($files as $file) {
@@ -1311,8 +1310,7 @@ function addWorkitem() {
         }
     } else {
         $bid_fee_itemid = $itemid;
-        $journal_message .= '#' . $bid_fee_itemid . ' updated by @' . $nick ;
-        $journal_message .=  "\n\n**" . $summary . '**. Status set to *' . $status . '*';
+        $journal_message .= '\\#' . $bid_fee_itemid . ' updated by ' . $nick . 'Status set to ' . $status;
     }
     $journal_message .=  "$related. ";
     if (!empty($_POST['invite'])) {
@@ -2556,7 +2554,7 @@ function getWorklist() {
                          } else {
                              $where .= "status = '$val' OR ";
                          }
-                    } else if ($val == 'Review') {
+                    } else if ($val == 'Code Review') {
                         $where .= "status = 'Review' OR ";
                     } else if ($val == 'Needs-Review') {
                         $where .= "(status = 'Review' AND code_review_started = 0) OR ";
@@ -2958,7 +2956,6 @@ function pingTask() {
     $nickname = $user->nickname;
     $email = $user->username;
     $msg = $_REQUEST['msg'];
-    $send_chat = isset($_REQUEST['journal']) ? (int) $_REQUEST['journal'] : false;
     $send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
 
     // ping about concrete task
@@ -3002,36 +2999,13 @@ function pingTask() {
             $receiver_nick = $receiver->nickname;
             $receiver_email = $receiver->username;
         }
-
-        // Compose journal message
-        if ($send_chat) {
-            $out_msg = '@' . $nickname . ' sent a ping to @' . $receiver_nick . ' about **#' . $item_id . '**';
-            $out_msg .= ": " . $msg;
-
-            // Send to journal
-            sendJournalNotification($out_msg);
-            
-            $workitem = new WorkItem();
-            $workitem->loadById($item_id);
-            
-            $options = array(
-                'type' => 'ping',
-                'workitem' => $workitem,
-            );
-            $data = array(
-                'nick' => $nickname,
-                'receiver_nick' => $receiver_nick,
-                'msg' => $msg
-            );
-            Notification::workitemNotifyHipchat($options, $data);
-        }
-        
         // Send mail
         if ($who != 'bidder') {
-            $mail_subject = $nickname." sent you a ping for item #".$item_id;
-            $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
+            $mail_subject = $nickname." sent you a message on Worklist for item #".$item_id;
+            $mail_msg .= "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
+            $mail_msg .= " sent you a message about item ";
             $mail_msg .= "<a href='" . WORKLIST_URL . $item_id . "'>#" . $item_id . "</a>";
-            $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
+            $mail_msg .= "</p><p>----------<br/>".$msg."<br/>----------</p><p>You can reply via email to: ".$email."</p>";
             $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
             if ($send_cc) {
                 $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
@@ -3085,18 +3059,10 @@ function pingTask() {
         $receiver_nick = $receiver->nickname;
         $receiver_email = $receiver->username;
 
-        if ($send_chat) {
-            // Compose journal message
-            $out_msg = '@' . $nickname.' sent a ping to @' . $receiver_nick;
-            $out_msg .= ": ".$msg;
-
-            // Send to journal
-            sendJournalNotification( $out_msg );
-        }
-
-        $mail_subject = $nickname." sent you a ping.";
-        $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
-        $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
+        $mail_subject = $nickname." sent you a message on Worklist";
+        $mail_msg = "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
+        $mail_msg .=" sent you a message: ";
+        $mail_msg .= "</p><p>----------<br/>". nl2br($msg)."<br />----------</p><p>You can reply via email to ".$email."</p>";
 
         $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {

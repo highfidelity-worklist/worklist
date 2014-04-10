@@ -112,7 +112,7 @@ var Workitem = {
     
     init: function() {
         $("#view-sandbox").click(function() {
-            if (WorklistProject.repo_type == 'git') {
+            if (repo_type == 'git') {
                 window.open(sandbox_url, '_blank');
             } else {
                 Workitem.openDiffPopup({
@@ -477,7 +477,6 @@ $(document).ready(function(){
     // default dialog options
     var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false };
     $('#popup-bid').dialog(dialog_options);
-    $('#popup-confirmation').dialog(dialog_options);
     $('#popup-review-started').dialog(dialog_options);
 
     $('#popup-edit-bid-info').dialog(
@@ -513,7 +512,6 @@ $(document).ready(function(){
     });
     $('#popup-fee-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-multiple-bid-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
-    $('#popup-addfee').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 400, show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({
         closeOnEscape: false,
         dialogClass: 'white-theme',
@@ -632,7 +630,9 @@ $(document).ready(function(){
                     }
                     var files = $('#uploadedFiles').parseTemplate(data.data);
                     $('#uploadPanel').append(files);
-                    $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
+                    if (user_id) {
+                        $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
+                    }
                     $('#uploadPanel').data('files', data.data);
                     $('#accordion').bind( "accordionchangestart", function(event, ui) {
                         $('#uploadButtonDiv').appendTo(ui.newContent);
@@ -655,10 +655,6 @@ $(document).ready(function(){
     $('.popup-body form input[type="submit"]').click(function(){
         var name = $(this).attr('name');
         switch(name) {
-            case "add_fee_dialog":
-                SimplePopup('#popup-addfee', 'Add Fee', workitem_id, [['input', 'itemid', 'keyId', 'eval']]);
-                $('#popup-addfee').dialog('open');
-                return false;
             case "reset":
                 ResetPopup();
                 return false;
@@ -885,6 +881,9 @@ $(document).ready(function(){
             $('.statusComboList li[val=' +  origStatus + ']').click();
             return false;
         }
+        if (job_status == 'Review') {
+            job_status == 'Code Review';
+        }
         if ($(this).val() != null && $(this).val() != job_status) {
             var html = "<span>Changing status from <strong>" + job_status + "</strong> to <strong>"
                 + $(this).val() +"</strong></span>";
@@ -985,8 +984,38 @@ function ConfirmEditBid(){
 
 function showConfirmForm(i) {
     if (GitHub.validate()) {
-        $('#popup-confirmation-type').val(i);
-        $('#popup-confirmation').dialog('open');
+        Utils.emptyModal({
+            content: 
+                "<p>" +
+                "  <strong>I agree that</strong> by adding either a bid or a fee, I accept that" +
+                "  I will not be paid for this work unless " + project_owner +
+                "  and the owner of this job approves payment." +
+                "</p>" +
+                "<p>" +
+                "  Also, by clicking the 'I accept' button, I am contributing all code and work" +
+                "  that I attach to this job or upload to the Worklist servers, including any and" +
+                "  all intellectual property rights related thereto, whether or not I am paid." +
+                "</p>" +
+                "<p>" +
+                "  All intellectual property and code I contribute is solely owned by " +
+                "  " + project_owner + ", and I hereby make all assignments necessary " +
+                "  to accomplish the foregoing." +
+                "</p>",
+            buttons: [
+                {
+                    content: 'I accept',
+                    className: 'btn-primary',
+                    dismiss: true
+                }
+            ],
+            close: function() {
+                if (i == 'bid') {
+                    showPlaceBidForm();
+                } else if (i == 'fee') {
+                    showFeeForm();
+                }
+            }
+        });
     } else {
         GitHub.handleUserConnect();
     }
@@ -994,34 +1023,29 @@ function showConfirmForm(i) {
 }
 
 function showIneligible(problem) {
-    $('#empty-modal .modal-title').text('Your account is ineligible');
-    $('#empty-modal .modal-body').html(
-        '<p>' +
-        '    <strong>You are not eligible</strong> to bid or place ' + problem + 's on this item. ' +
-        '    Please check your settings and make sure you have:' +
-        '</p> ' +
-        '<ul>' +
-        '    <li>Verified your Paypal address</li>' +
-        '    <li>Uploaded your completed <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf">W-9</a> (US citizens only)</li>' +
-        '</ul>' +
-        '<br/>'
-    );
-    $('#empty-modal .modal-footer > button:last-child').text('Check settings');
-    $('#empty-modal .modal-footer > button:last-child').click(function() {
-        window.location = './settings';
+    Utils.emptyModal({
+        title: 'Your account is ineligible',
+        content: 
+            '<p>' +
+            '    <strong>You are not eligible</strong> to bid or place ' + problem + 's on this item. ' +
+            '    Please check your settings and make sure you have:' +
+            '</p> ' +
+            '<ul>' +
+            '    <li>Verified your Paypal address</li>' +
+            '    <li>Uploaded your completed <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf">W-9</a> (US citizens only)</li>' +
+            '</ul>' +
+            '<br/>',
+        buttons: [
+            {
+                content: 'I accept',
+                className: 'btn-primary',
+                dismiss: true
+            }
+        ],
+        close: function() {
+            window.location = './settings';
+        }
     });
-    $('#empty-modal').modal('show');
-}
-
-function doConfirmForm(i) {
-  if (i == 'bid') {
-      $('#popup-confirmation').dialog('close');
-      showPlaceBidForm();
-  } else if (i == 'fee') {
-      $('#popup-confirmation').dialog('close');
-      showFeeForm();
-  }
-  return false;
 }
 
 function showPlaceBidForm() {
@@ -1076,12 +1100,43 @@ function pingBidder(id) {
 }
 
 function showFeeForm() {
-  $('#popup-addfee').dialog('open');
-  return false;
+    $.get(
+        './users.json',
+        function(data) {
+            Utils.modal('addfee', {
+                job_id: workitem_id,
+                users: data.users,
+                current_nickname: sessionusername,
+                current_id: userId,
+                canFeeOthers: (is_runner || is_project_founder || is_project_runner),
+                open: function() {
+                    $('#mechanicFee').chosen();
+
+                     // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                    // but without  dollar sign 22-NOV-2010 <krumch>
+                    var regex = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    var fee_amount = new LiveValidation('fee_amount', {onlyOnSubmit: true});
+                        fee_amount.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+                        fee_amount.add(Validate.Format, { pattern: regex, failureMessage: "Invalid Input!" });
+
+                    var fee_desc = new LiveValidation('fee_desc', {onlyOnSubmit: true});
+                        fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    $('form#addfee').submit(function() {
+                        var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);
+                        if (!massValidationFee) {
+                            return false;
+                        }
+                        return true;
+                    });
+               }
+            });
+        },
+        'json'
+    )
 }
 
 function CheckCodeReviewStatus() {
-  if (WorklistProject.repo_type == 'svn') {
+  if (repo_type == 'svn') {
     $.ajax({
         type: 'post',
         url: 'api.php',
@@ -1108,9 +1163,6 @@ function CheckCodeReviewStatus() {
 }
 
 function showReviewForm() {
-    if (WorklistProject.repo_type == 'svn') {
-        openNotifyOverlay("Authorizing sandbox for code review ...", false);
-    }
     $.ajax({
         type: 'post',
         url: 'jsonserver.php',
@@ -1292,11 +1344,20 @@ $(function() {
                 if (json && json.error) {
                     alert("Ping failed:" + json.error);
                 } else {
-                    var msg = "<span>Your ping has been sent.</span>"
+                    var msg = "<span>Your message has been sent.</span>";
                     if ($('#send-ping-btn').val() == 'Send Reply') {
                         msg = "<span>Your reply has been sent.</span>";
                     }
-                    openNotifyOverlay(msg, true);
+                    Utils.emptyModal({
+                        content: success_msg,
+                        buttons: [
+                            {
+                                content: 'Ok',
+                                className: 'btn-primary',
+                                dismiss: true
+                            }
+                        ]
+                    });
                 }
                 $('#popup-pingtask').dialog('close');
                 $('#send-ping-btn').removeAttr("disabled");
