@@ -55,7 +55,7 @@ if (array_key_exists('payload', $_POST)) {
  */
 function connectUser() {
     $GitHub = new GitHubUser(getSessionUserId());
-    $projectId = (int) $_GET['project']; //str_replace('/', '', $_SERVER['PATH_INFO']);
+    $projectId= str_replace('/', '', $_SERVER['PATH_INFO']);
     $project = new Project($projectId);
     $connectResponse = $GitHub->processConnectResponse($project->getGithubId(), $project->getGithubSecret());
     print_r($connectResponse);
