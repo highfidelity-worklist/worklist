@@ -149,7 +149,7 @@ class GithubController extends Controller {
             $params = array(
                 'client_id' => GITHUB_OAUTH2_CLIENT_ID,
                 'redirect_uri' => WORKLIST_URL . 'github/login',
-                'scope' => 'user',
+                'scope' => 'user,repo',
                 'state' => $_SESSION['github_auth_state']
             );
          
