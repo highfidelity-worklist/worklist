@@ -270,8 +270,8 @@ var UserInfo = {
                     if (json && json.error) {
                         alert("Ping failed:" + json.error);
                     } else {
-                        var success_msg = "<p><strong>Your message has been sent.</strong></p>"
-                        // openNotifyOverlay(success_msg, true);
+                        var success_msg = "<p><strong>Your message has been sent.</strong></p>";
+                        
                         Utils.emptyModal({
                             content: success_msg,
                             buttons: [
@@ -283,6 +283,7 @@ var UserInfo = {
                             ]
                         });
                     }
+                    $('#ping-msg').val("");
                     $('#send-ping-btn').removeAttr("disabled");
                 }, 
                 error: function() {
