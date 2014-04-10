@@ -281,7 +281,7 @@ var UserInfo = {
                                     dismiss: true
                                 }
                             ]
-				        });
+                        });
                     }
                     $('#send-ping-btn').removeAttr("disabled");
                 }, 

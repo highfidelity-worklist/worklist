@@ -1355,7 +1355,7 @@ $(function() {
                                 dismiss: true
                             }
                         ]
-			        });
+                    });
                 }
                 $('#popup-pingtask').dialog('close');
                 $('#send-ping-btn').removeAttr("disabled");
