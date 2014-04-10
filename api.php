@@ -1300,8 +1300,7 @@ function addWorkitem() {
     
     if (empty($_POST['itemid'])) {
         $bid_fee_itemid = $workitem->getId();
-        $journal_message .= '\\#' . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick;
-        $journal_message .= ' Status set to ' . $status;
+        $journal_message .= "\\\\#"  . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick . ' Status set to ' . $status;
         if (!empty($_POST['files'])) {
             $files = explode(',', $_POST['files']);
             foreach ($files as $file) {
