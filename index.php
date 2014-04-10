@@ -17,7 +17,12 @@ class Dispatcher {
         $dispatcher->get('/feeds', array('Feeds'));
         $dispatcher->get('/forgot', array('Forgot'));
         $dispatcher->post('/forgot', array('Forgot'));
-        $dispatcher->get('/github', array('Login', 'githubAuth'));
+
+        $dispatcher->any('/github(/:method)', array('Github'), array(
+            'require' => array('method' => '\w+'),
+            'default' => array('method' => 'index')
+        ));
+
         $dispatcher->get('/help', array('Help'));
         $dispatcher->get('/jobs', array('Jobs'));
         $dispatcher->get('/login', array('Login'));
