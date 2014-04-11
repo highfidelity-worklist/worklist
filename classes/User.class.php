@@ -91,7 +91,7 @@ class User {
     public static function find($expr)
     {
         $user = new User();
-        if (is_object($expr) && get_class($expr) == 'User') {
+        if (is_object($expr) && (get_class($expr) == 'User' || is_subclass_of($expr, 'User'))) {
             $user = $expr;
         } else {
             if (is_numeric($expr)) {

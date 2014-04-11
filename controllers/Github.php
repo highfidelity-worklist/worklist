@@ -82,7 +82,6 @@ class GithubController extends Controller {
 
     public function login() {
         $this->view = null;
-        $authorizeURL = GITHUB_AUTHORIZE_URL;
         $tokenURL = GITHUB_TOKEN_URL;
         $apiURLBase = GITHUB_API_URL;
 
@@ -101,7 +100,6 @@ class GithubController extends Controller {
                 if (isset($response->access_token) && $response->access_token) {
                     $_SESSION['github_auth_access_token'] = $access_token = $response->access_token;
                     $gh_user = $this->apiRequest($apiURLBase . 'user');
-                    //print_r($gh_user); die;
                     if (!$gh_user) {
                         // maybe a wrong access token
                         Utils::redirect('./');
@@ -139,25 +137,33 @@ class GithubController extends Controller {
                 } else {
                     error_log(print_r($response, true));
                 }
+            } else {
+                // $_GET['state'] doest not match $_SESION['github_auth_state']
+                // let's regenerate the sesion value and try to login again
+                self::generateStateAndLogin();
             }
         } else { 
-            // Start the login process by sending the user to Github's authorization page 
-            // Generate a random hash and store in the session for security
-            $_SESSION['github_auth_state'] = hash('sha256', microtime(TRUE).rand().$_SERVER['REMOTE_ADDR']);
-            unset($_SESSION['github_auth_access_token']);
-         
-            $params = array(
-                'client_id' => GITHUB_OAUTH2_CLIENT_ID,
-                'redirect_uri' => WORKLIST_URL . 'github/login',
-                'scope' => 'user,repo',
-                'state' => $_SESSION['github_auth_state']
-            );
-         
-            // Redirect the user to Github's authorization page
-            $url = $authorizeURL . '?' . http_build_query($params);
-            Utils::redirect($url, false);
+            // this is the begining of the login with github process
+            self::generateStateAndLogin();
         }
-         
+    }
+
+    public static function generateStateAndLogin() {
+        // Start the login process by sending the user to Github's authorization page 
+        // Generate a random hash and store in the session for security
+        $_SESSION['github_auth_state'] = hash('sha256', microtime(TRUE).rand().$_SERVER['REMOTE_ADDR']);
+        unset($_SESSION['github_auth_access_token']);
+     
+        $params = array(
+            'client_id' => GITHUB_OAUTH2_CLIENT_ID,
+            'redirect_uri' => WORKLIST_URL . 'github/login',
+            'scope' => 'user,repo',
+            'state' => $_SESSION['github_auth_state']
+        );
+     
+        // Redirect the user to Github's authorization page
+        $url = GITHUB_AUTHORIZE_URL . '?' . http_build_query($params);
+        Utils::redirect($url, false);
     }
 
     private function apiRequest($url, $post=FALSE, $headers=array()) {
