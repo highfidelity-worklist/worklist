@@ -266,9 +266,6 @@ class JobController extends Controller {
                     Notification::workitemNotify(array('type' => 'bug_found',
                                                     'workitem' => $workitem,
                                                     'recipients' => array('runner', 'usersWithFeesBug')));
-                    Notification::workitemSMSNotify(array('type' => 'bug_found',
-                                                    'workitem' => $workitem,
-                                                    'recipients' => array('runner', 'usersWithFeesBug')));
                 }
             }
             
@@ -444,10 +441,6 @@ class JobController extends Controller {
                 $myRunner->findUserById($workitem->getRunnerId());
                 $myRunner->updateBudget(-$crfee_amount, $workitem->getBudget_id());
 
-                if(Notification::isNotified($myRunner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-                    Notification::sendShortSMS($myRunner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
-                }
-                
                 $journal_message = '@' . $_SESSION['nickname'] . ' has completed their code review for #' . $worklist_id;
                 
                 $options = array(
@@ -527,7 +520,7 @@ class JobController extends Controller {
                 if (!$status_error) {
                     $new_update_message = " sandbox url : $sandbox ";
                     if(!empty($status_review)) {
-                        $new_update_message .= " Status set to 'Code Review'. ";
+                        $new_update_message .= " Status set to Code Review. ";
                         $status_change = '-' . ucfirst(strtolower($status_review));
                     } else {
                         $job_changes[] = '-sandbox';
@@ -669,8 +662,6 @@ class JobController extends Controller {
                     $summary = $row['summary'];
                     $username = $row['username'];
                 }
-
-                $sms_message = "Bid $" . number_format($bid_amount, 2) . " from " . getSubNickname($_SESSION['nickname']) . " done in $done_in on #$worklist_id $summary";
                 
                 $options = array(
                      'type' => 'bid_placed',
@@ -689,12 +680,6 @@ class JobController extends Controller {
                 // notify runner of new bid
                 Notification::workitemNotify($options, $data);
 
-                // sending sms message to the runner
-                $runner = new User();
-                $runner->findUserById($workitem->getRunnerId());
-                if (Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-                    Notification::sendShortSMS($runner, 'Bid', $sms_message, WORKITEM_URL . $worklist_id);
-                }
                 $status=$workitem->loadStatusByBidId($bid_id);
                 if ($status == "SuggestedWithBid") {
                     if ($this->changeStatus($workitem, $status, $user)) {
@@ -745,7 +730,6 @@ class JobController extends Controller {
                 // Journal notification
                 $journal_message = 'Bid updated on #' . $worklist_id;
 
-                $sms_message = "(Bid updated) $" . number_format($bid_amount, 2) . " from " . $_SESSION['username'] . " done in $done_in_edit on #$worklist_id";
                 //sending email to the runner of worklist item
                 $row = $workitem->getRunnerSummary($worklist_id);
                 if(!empty($row)) {
@@ -770,13 +754,7 @@ class JobController extends Controller {
                 // notify runner of new bid
                 Notification::workitemNotify($options, $data);
                 Notification::workitemNotifyHipchat($options, $data);
-
-                // sending sms message to the runner
-                $runner = new User();
-                $runner->findUserById($workitem->getRunnerId());
-                if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-                    Notification::sendShortSMS($runner, 'Updated', $journal_message, WORKITEM_URL . $worklist_id);
-                }
+              
             }
         }
         // Request submitted from Add Fee popup
@@ -817,14 +795,11 @@ class JobController extends Controller {
                     $data['nick'] = $_SESSION['nickname'];
                     Notification::workitemNotifyHipchat($options, $data);
 
-                    // send sms message to runner
+                    // update budget
                     $runner = new User();
                     $runner->findUserById($workitem->getRunnerId());
                     $runner->updateBudget(-$fee_amount, $workitem->getBudget_id());
-
-                    if(Notification::isNotified($runner->getNotifications(), Notification::MY_BIDS_NOTIFICATIONS)) {
-                        Notification::sendShortSMS($runner, 'Fee', $journal_message, WORKITEM_URL . $worklist_id);
-                    }
+                   
                 }
             }
         }
@@ -908,8 +883,8 @@ class JobController extends Controller {
                             
                             // Journal notification
                             $journal_message .= '@' . $_SESSION['nickname'] .
-                                " accepted {$bid_info['bid_amount']} from " .
-                                $bid_info['nickname'] . " on #{$bid_info['worklist_id']}" ." Status set to Working";
+                                " accepted {$bid_info['bid_amount']} from ".
+                                $bid_info['nickname'] . " on #" .$bid_info['worklist_id'] ." Status set to Working";
                             
                             $options = array(
                                 'type' => 'bid_accepted',
@@ -931,10 +906,7 @@ class JobController extends Controller {
                             $runner = new User();
                             $runner->findUserById($workitem->getRunnerId());
                             $runner->updateBudget(-$bid_amount, $workitem->getBudget_id());
-
-                            //send sms notification to bidder
-                            Notification::sendShortSMS($bidder, 'Accepted', $journal_message, WORKITEM_URL . $worklist_id);
-
+                           
                             // Send email to not accepted bidders
                             $this->sendMailToDiscardedBids($worklist_id);
                         } else {

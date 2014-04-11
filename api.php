@@ -1285,14 +1285,7 @@ function addWorkitem() {
             'workitem' => $workitem,
             'recipients' => array('runner', 'usersWithFeesBug')
         ));
-        Notification::workitemSMSNotify(array(
-            'type' => 'bug_found',
-            'workitem' => $workitem,
-            'recipients' => array(
-                'runner', 
-                'usersWithFeesBug'
-            )
-        ));
+        
         $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
     } else {
         $bugJournalMessage= "";
@@ -3013,13 +3006,7 @@ function pingTask() {
             if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
                 error_log('pingtask.php:id: send_email failed');
             }
-
-            // sms
-            $user = new User();
-            $user->findUserById($receiver->id);
-            if (Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
-                notify_sms_by_object($user, $mail_subject, $msg);
-            }
+          
         } else if ($who == 'bidder') {
             $project = new Project();
             $project->loadById($item['project_id']);
@@ -3042,13 +3029,7 @@ function pingTask() {
             if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
                 error_log('pingtask.php:id: send_email failed');
             }
-
-            // sms
-            $user = new User();
-            $user->findUserById($receiver->id);
-            if (Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
-                notify_sms_by_object($user, $mail_subject, $msg);
-            }
+           
         }
 
     } else {
@@ -3364,10 +3345,8 @@ function updateBudget() {
             } else {
                 Notification::notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $add_funds_to_budget);
             }
-            Notification::notifySMSBudget($amount, $reason, $giver, $receiver);
             if ($budget_seed == 1) {
                 Notification::notifySeedBudget($amount, $reason, $source, $giver, $receiver);
-                Notification::notifySMSSeedBudget($amount, $reason, $source, $giver, $receiver);
             }
             $receiver = getUserById($receiver_id);
             $message =  'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname;
