@@ -17,6 +17,12 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    body > .container-fluid {
+        margin: 10px 5px;
+    }
+}
+
 /* global links styling */
 a {
     color: #333333;    
