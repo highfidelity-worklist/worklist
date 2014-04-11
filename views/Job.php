@@ -884,7 +884,7 @@ class JobView extends View {
      */
     static function removeCommentsEntries($entries) {
         //print_r($entries); die;
-        $pattern = '/^@\w+\s+posted\sa\scomment\son\s+\*\*#\d+\*\*\n\n.*/';
+        $pattern = '/^@\w+\s+posted\sa\scomment\son\s+#\d+.*/';
         $ret = array();
         foreach($entries as $entry) {
             if (preg_match($pattern, $entry->entry)) {
