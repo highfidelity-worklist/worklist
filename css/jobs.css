@@ -482,6 +482,7 @@ td.textAlignReport {
 
 .table-worklist tbody tr td {
     border: 0 none;
+    vertical-align: middle;
 }
 
 /* worklist table column sizes */
@@ -524,6 +525,20 @@ td.textAlignReport {
     .table-worklist tr > th:nth-child(6),
     .table-worklist tr > td:nth-child(6) {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-worklist td {
+        white-space: normal;
+    }
+
+    .table-worklist td h4 {
+        white-space: nowrap;
+    }
+
+    .table-worklist tr > td:nth-child(2) {
+        max-width: 200px;
     }
 }
 
@@ -1225,6 +1240,18 @@ input {
         top: 0;
         right: 5px;
     } 
+}
+
+@media (max-width: 480px) {
+
+    td.status-col {
+        width: 15px;
+        text-align: center;
+    }
+
+    td.status-col > span {
+        display: none;
+    }
 }
 
 td.statusDraft > i,
