@@ -1164,28 +1164,6 @@ class JsonServer
         ));
     }
 
-    protected function actionSendTestSMS()
-    {
-        $phone = $this->getRequest()->getParam('phone');
-        try {
-            $user = new User();
-            if($user->findUserById($_SESSION['userid'])) {
-                $user->setPhone($phone);
-                notify_sms_by_object($user, 'Test SMS', 'Test from Worklist', true) 
-                  or error_log("failed to create SMS message");
-            }
-        } catch (Sms_Backend_Exception $e) {
-            return $this->setOutput(array(
-                'success' => false,
-                'message' => 'Failed to send test message !'
-            ));
-        }
-        return $this->setOutput(array(
-            'success' => true,
-            'message' => 'Test message sent!'
-        ));
-    }
-
     protected function actionChangeRunner()
     {
         $workitem = (int)$this->getRequest()->getParam('workitem');

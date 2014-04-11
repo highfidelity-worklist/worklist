@@ -145,7 +145,6 @@ class Notification {
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
-                self::workitemSMSNotify($options);
                 break;
             case 'REVIEW':
                 $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
@@ -163,12 +162,6 @@ class Notification {
                 $options = array('type' => 'new_review',
                     'workitem' => $workitem,
                     'emails' => $emails);
-                self::workitemSMSNotify($options);
-                // Send SMS to users who have "My jobs set to review" checked
-                $options = array('type' => 'my_review',
-                    'workitem' => $workitem,
-                    'emails' => $myEmails);
-                self::workitemSMSNotify($options);
                 break;
             case 'Bidding':
                 $emails = self::getNotificationEmails(self::BIDDING_EMAIL_NOTIFICATIONS);
@@ -180,14 +173,12 @@ class Notification {
                 $options = array('type' => 'new_bidding',
                     'workitem' => $workitem,
                     'emails' => $emails);
-                self::workitemSMSNotify($options);
                 break;
             case 'Completed':
                 $emails= self::getNotificationEmails(self::MY_COMPLETED_NOTIFICATIONS,$workitem);
                 $options = array('type' => 'my_completed',
                     'workitem' => $workitem,
                     'emails' => $emails);
-                self::workitemSMSNotify($options);
                 break;
             case 'SuggestedWithBid':
                 $emails= self::getNotificationEmails(self::MY_BIDS_NOTIFICATIONS,$workitem);
@@ -196,7 +187,6 @@ class Notification {
                 'emails' => $emails);
                 $data = array('notes' => $workitem->getNotes());
                 self::workitemNotify($options, $data);
-                self::workitemSMSNotify($options, $data);             
             break;
         }
     }
@@ -1003,173 +993,6 @@ class Notification {
         }
     }
 
-    /**
-     * This function is similar to workitemNotify but sends messages as sms
-     *
-     * @param Array $options - array of options:
-     * type - type of the message
-     * emails - list of emails of users you want to send sms to
-     * recipients - array of recipients of the message ('creator', 'runner', 'mechanic')
-     * workitem - current workitem object to send info about
-     **/
-    public static function workitemSMSNotify($options) {
-        $recipients = isset($options['recipients']) ? $options['recipients'] : null;
-        $emails = isset($options['emails']) ? $options['emails'] : array();
-        $workitem = $options['workitem'];
-        $project_name = isset($options['project_name']) ? $options['project_name'] : null;
-        $revision = isset($options['revision']) ? $options['revision'] : null;        
-        switch($options['type']) {
-
-            case 'new_bidding':
-                $subject = 'Bidding';
-                $message = $workitem->getId() . ' '.$workitem->getSummary();
-            break;
-
-            case 'new_review':
-                $subject = 'Review';
-                $message = $workitem->getId() . ' '.$workitem->getSummary();
-            break;
-            
-            case 'new_functional':
-                $subject = 'Functional';
-                $message = $workitem->getId() . ' '.$workitem->getSummary();
-            break;
-            
-            case 'my_review':
-                $subject = 'Review';
-                $message = $workitem->getId() . ' '.$workitem->getSummary();
-            break;
-
-            case 'my_completed':
-                $subject = 'Completed';
-                $message = $workitem->getId() . ' '.$workitem->getSummary();
-            break;
-
-            case 'bug_found':
-                $subject = "Bug for #".$workitem->getBugJobId();
-                $message = 'New workitem #' . $workitem->getId();
-            break;
-
-            case 'autotestsuccess':
-                $subject = "Commit Success";
-                $message = 'Commit Success! ' . $project_name . '(v' . $revision . ')';
-            break; 
-            
-            case 'autotestfailure':
-                $subject = "Commit Failed";
-                $message = 'Commit Failed #' . $project_name . '(v' . $revision . ')';
-                $message .= 'See test results here: http://bit.ly/jGfIkj';
-            break;            
-           
-            default:
-                trigger_error("Invalid SMS type. Options argument: ".var_export($options, true), E_USER_WARNING);
-                return false;
-            break; 
-            
-        }
-
-        $current_user = new User();
-        $current_user->findUserById(getSessionUserId());
-
-        $sms_recipients = array();
-        
-        foreach($emails as $email) {
-            //error_log("SMS email (".$options['type']."):".$email);
-
-            // do not send sms to the same user making changes
-            if($email != $current_user->getUsername()) {
-
-                $sms_user = new User();
-                $sms_user->findUserByUsername($email);
-                $sms_recipients[] = $sms_user->getId();
-            }
-        }
-    
-        $current_user = new User();
-        $current_user->findUserById(getSessionUserId());
-        if($recipients) {
-            foreach($recipients as $recipient) {
-                /**
-                 * If there is need to get a new list of users
-                 * just add a get[IDENTIFIER]Id function to
-                 * workitem.class.php that returns a single user id
-                 * an array with user ids
-                 **/
-                $method = 'get' . ucfirst($recipient) . 'Id';
-                $recipientUsers=$workitem->$method();
-                if(!is_array($recipientUsers)) {
-                    $recipientUsers=array($recipientUsers);
-                }
-                foreach($recipientUsers as $recipientUser) {
-                    if($recipientUser>0) {
-                        // check if we already sending email to this user
-                        if(!in_array($recipientUser, $sms_recipients)){
-                            $sms_recipients[] = $recipientUser;
-                        }
-                    }
-                }
-            }
-        }
-
-        if(count($sms_recipients) > 0) {
-            setlocale(LC_CTYPE, "en_US.UTF-8");
-            $esc_subject = escapeshellarg($subject);
-            $esc_message = escapeshellarg($message);
-            $args = '"'.$subject . '" "' . $message . '" ';
-            foreach($sms_recipients as $recipient) {
-                $args .= $recipient . ' ';
-            }
-            $application_path = dirname(dirname(__FILE__)) . '/';
-            exec('php ' . $application_path . 'tools/smsnotifications.php '
-            . $args . ' > /dev/null 2>/dev/null &');
-        }
-    }
-
-
-    /**
-    * Function to send an sms message to given user
-    *
-    * @param User $recipient - user object to send message to
-    * @param String $subject - subject of the message
-    * @param String $message - actual message content
-    * @param String $force_twilio - send trough twilio for verification purposes
-    */
-    public static function sendSMS($recipient, $subject, $message, $force_twilio = false) {
-        notify_sms_by_object($recipient, $subject, $message, $force_twilio);
-        return true;
-    }
-    
-    /**
-     * Function to send short (non-split) SMS with an opional url
-     * which will be shortened before sending the sms
-     * 
-     * @param User $recipient - user object to send message to
-     * @param String $subject - subject of the message
-     * @param String $message - actual message content
-     * @param String $url - url to be shortened and appened
-     */
-    public static function sendShortSMS($recipient, $subject, $message, $url = '', $force_twilio = false) {
-        $max_chars = 110;
-        $chars_left = $max_chars - (strlen(trim($subject)) +1);
-        
-        if (parse_url($url) !== false) {
-            $shortUrl = new ShortUrl($url);
-            $shortUrl = trim($shortUrl->getShortUrl());
-            $chars_left -= strlen($shortUrl) +2;
-        }
-        
-        if (strlen($message) > $chars_left) {
-            $sms_content = substr($message, 0, $chars_left -3) . '...';
-        } else {
-            $sms_content = $message;
-        }
-        
-        if (isset($shortUrl)) {
-            $sms_content .= '. ' . $shortUrl;
-        }
-        
-        return self::sendSMS($recipient, $subject, $sms_content, $force_twilio);
-    }
     
     // get list of past due bids
     public function emailPastDueJobs(){
@@ -1237,7 +1060,6 @@ class Notification {
         'project_name' => $project->getName(),
         'revision' => $revision);
         self::workitemNotify($options);
-        self::workitemSMSNotify($options);   
     }
 
     public static function deployErrorNotification($work_item_id, $error_msg, $commit_revision) {
@@ -1312,27 +1134,6 @@ class Notification {
         }
     }
 
-    public function notifySMSBudget($amount, $reason, $giver, $receiver) {
-        if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
-            return false;
-        }
-        
-        $message = $giver->getNickname() . ' granted you \$' . number_format($amount, 2) . ' of budget for: ' . $reason;
-        
-        setlocale(LC_CTYPE, "en_US.UTF-8");
-        $esc_subject = escapeshellarg('Budget Granted');
-        $esc_message = escapeshellarg($message);
-        $args = '"'.$esc_subject . '" "' . $esc_message . '" ';
-
-        $args .= $receiver->getId() . ' ';
-        
-        $application_path = dirname(dirname(__FILE__)) . '/';
-        exec('php ' . $application_path . 'tools/smsnotifications.php '
-        . $args . ' > /dev/null 2>/dev/null &');
-        
-    }
-
-    
     public function notifySeedBudget($amount, $reason, $source, $giver, $receiver) {
         if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
             return false;
@@ -1362,37 +1163,6 @@ class Notification {
         }
     }
 
-    public function notifySMSSeedBudget($amount, $reason, $source, $giver, $receiver) {
-        if (!$amount || $amount < 0.01 || ! $giver || ! $receiver) {
-            return false;
-        }
-        
-        $message = 'To: ' . $receiver->getNickname() . ' AMT: \$' . number_format($amount, 2) . 
-                    ' RE: ' . $reason;
-        
-        setlocale(LC_CTYPE, "en_US.UTF-8");
-        $esc_subject = escapeshellarg('Seed Budget Granted by ' . $giver->getNickname());
-        $esc_message = escapeshellarg($message);
-        $args = '"'.$esc_subject . '" "' . $esc_message . '" ';
-
-        $application_path = dirname(dirname(__FILE__)) . '/';
-
-        $emailReceiver = new User();
-        $emailReceiverArray = explode(",", BUDGET_AUTHORIZED_USERS);
-        for ($i = 1 ; $i < sizeof($emailReceiverArray) - 1 ; $i++) { 
-            if ($emailReceiver->findUserById($emailReceiverArray[$i])) {
-                $argsSent = $args . $emailReceiver->getId() . ' ';
-                
-                $application_path = dirname(dirname(__FILE__)) . '/';
-                exec('php ' . $application_path . 'tools/smsnotifications.php '
-                    . $args . ' > /dev/null 2>/dev/null &');
-            } else {
-                error_log("Notification:workitem: send_sms failed, invalid receiver id " . 
-                    $emailReceiverArray[$i]);
-            }
-        }
-        
-    }
     // get list of expired bids
     public function emailExpiredBids(){
         $qry = "SELECT w.id worklist_id, b.email bid_email, b.id as bid_id, b.bid_amount, r.username runner_email, u.nickname bidder_nickname

@@ -774,15 +774,11 @@ function withdrawBid($bid_id, $withdraw_reason) {
         	$body .= "<p>Reason: " .nl2br($withdraw_reason)."</p>";
         }
         
-        // Copy text for sms notification
-        $txtbody = $body;
-        
         // Continue adding text to email body
         $item_link = SERVER_URL . $bid->worklist_id;
         $body .= "<p><a href='${item_link}'>View Item</a></p>";
         $body .= "<p>If you think this has been done in error, please contact the job Runner.</p>";
         if (!send_email($recipient->username, $subject, $body)) { error_log("withdrawBid: send_email failed"); }
-        notify_sms_by_object($recipient, $subject, "${txtbody}\n${item_link}");
         
         // Check if there are any active bids remaining
         $res = mysql_query("SELECT count(*) AS active_bids FROM `" . BIDS . "` WHERE `worklist_id` = " . $job['id'] . " AND `withdrawn` = 0 AND (NOW() < `bid_expires` OR `bid_expires`='0000-00-00 00:00:00')");
@@ -839,10 +835,6 @@ function deleteFee($fee_id) {
             );
             Notification::workitemNotifyHipchat($options, $data);
             
-            $subject = "Fee: " . $summary;
-            $sms_message = "Your fee has been deleted by: " . $_SESSION['nickname'] . " for #{$fee->worklist_id}. ";
-            $sms_message .= "If you think this is an error, please contact the Runner."; 
-            notify_sms_by_object($user, "Fee deleted", $sms_message);
         }
     }
 }
@@ -1512,114 +1504,6 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     return true;
 }
 
-/* notify_sms functions
- *
- * Notify by user_id or by user object
- *
- */
-function notify_sms_by_id($user_id, $smssubject, $smsbody)
-{
-    //Fetch phone info using user_id
-    $sql = 'SELECT
-             phone, country, provider, smsaddr
-            FROM
-              '.USERS.'
-            WHERE
-             id = '. mysql_real_escape_string($user_id);
-
-    $res = mysql_query($sql);
-    $phone_info = mysql_fetch_object($res);
-    if (is_object($phone_info)) {
-        if (! notify_sms_by_object($phone_info, $smssubject, $smsbody) ) {
-            error_log("notify_sms_by_id: notify_sms_by_object failed. Not sending SMS. ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
-        } else {
-            return true;
-        }
-    } else {
-        error_log("notify_sms_by_id: Query '${sql}' failed. Not sending SMS." .
-                  " ${smssubject} ${smsbody} Session info: ". var_export($_SESSION));
-    }
-}
-
-function objectToArray($object) {
-    $dump = '$dump = '.var_export($object, true);
-    $dump = preg_replace('/object\([^\)]+\)#[0-9]+ /', 'array', $dump);
-    $dump = preg_replace('/[a-zA-Z_]+::__set_state/', '', $dump);
-    $dump = str_replace(':protected', '', $dump);
-    $dump = str_replace(':private', '', $dump);
-    $dump .= ';';
-    eval($dump);
-    return $dump;
-}
-
-
-function notify_sms_by_object($user_obj, $smssubject, $smsbody, $force_twilio = false)
-{
-    global $smslist;
-    $smsbody    = strip_tags($smsbody);
-
-    if (is_array($user_obj)) {
-        //error_log("smsbyobject already an array");
-        $user_array=$user_obj;
-    } elseif (is_object($user_obj)) {
-        //error_log("smsbyobject convert to array");
-        $user_array=objectToArray($user_obj);
-    } else {
-        error_log("Notify_sms_by_object does not know how to handle \$user_obj:".gettype($user_obj));
-        return false;
-    }
-    $user = new User();
-    $user->findUserById($user_array['id']);
-    if ($user->isTwilioSupported($force_twilio)) {
-        $Twilio = new WLTwilio();
-        $message = html_entity_decode($smssubject . ': ' . $smsbody, ENT_QUOTES);
-        $ret = $Twilio->send_sms($user_array['phone'], $message);
-        if ($ret === null && !$force_twilio) {
-            // Twilio told us that phone number is invalid
-            // lets update the phone_rejected field for user
-            $user->setPhone_rejected(date('Y-m-d H:i'));
-            $user->save();
-        }
-        return $ret;
-    } else {
-        if (array_key_exists('smsaddr',$user_array) && !empty($user_array['smsaddr'])) {
-            $smsaddr = $user_array['smsaddr'];
-        } else {
-            $provider = $user_array['provider'];
-            if ( !empty($provider)) {
-                if ($provider{0} != '+') {
-                    if (   array_key_exists('phone',$user_array)
-                        && !empty($user_array['phone'])
-                        && array_key_exists('country',$user_array)
-                        && !empty($user_array['country'])
-                        && array_key_exists($user_array['country'],$smslist)
-                        && !empty($smslist[$user_array['country']])
-                        && array_key_exists($provider,$smslist[$user_array['country']])
-                        && !empty($smslist[$user_array['country']][$provider]))
-                    {
-                        $smsaddr = str_replace('{n}', $user_array['phone'], $smslist[$user_array['country']][$provider]);
-                    } else {
-                        error_log("Unable to locate SMS path for userid: ".$user_array['id']);
-                        return false;
-                    }
-                } else {
-                    $smsaddr = substr($provider, 1);
-                }
-            } else {
-                return false;
-            }
-        }
-        return send_email($smsaddr,
-            html_entity_decode($smssubject, ENT_QUOTES),
-            '',
-            html_entity_decode($smsbody, ENT_QUOTES),
-            array(
-                "From" => SMS_SENDER,
-                "X-tag" => 'sms',
-            )
-        );
-    }
-}
 
 /*  sendTemplateEmail - send email using email template
  *  $template - name of the template to use, for example 'confirmation'

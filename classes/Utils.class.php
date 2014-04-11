@@ -109,8 +109,9 @@ class Utils{
         return crypt($clearText, $salt);
     }
 
-    public static function redirect($url) {
-        header('Location: ' . $url);
+    public static function redirect($url, $app_relative = true) {
+        $redirect = ($app_relative ? WORKLIST_URL : '') . $url;
+        header('Location: ' . $redirect);
         die;
     }
     

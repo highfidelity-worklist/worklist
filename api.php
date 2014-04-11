@@ -1285,14 +1285,7 @@ function addWorkitem() {
             'workitem' => $workitem,
             'recipients' => array('runner', 'usersWithFeesBug')
         ));
-        Notification::workitemSMSNotify(array(
-            'type' => 'bug_found',
-            'workitem' => $workitem,
-            'recipients' => array(
-                'runner', 
-                'usersWithFeesBug'
-            )
-        ));
+        
         $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() .")";
     } else {
         $bugJournalMessage= "";
@@ -2956,7 +2949,6 @@ function pingTask() {
     $nickname = $user->nickname;
     $email = $user->username;
     $msg = $_REQUEST['msg'];
-    $send_chat = isset($_REQUEST['journal']) ? (int) $_REQUEST['journal'] : false;
     $send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
 
     // ping about concrete task
@@ -3000,36 +2992,13 @@ function pingTask() {
             $receiver_nick = $receiver->nickname;
             $receiver_email = $receiver->username;
         }
-
-        // Compose journal message
-        if ($send_chat) {
-            $out_msg = '@' . $nickname . ' sent a ping to @' . $receiver_nick . ' about #' . $item_id;
-            $out_msg .= ": " . $msg;
-
-            // Send to journal
-            sendJournalNotification($out_msg);
-            
-            $workitem = new WorkItem();
-            $workitem->loadById($item_id);
-            
-            $options = array(
-                'type' => 'ping',
-                'workitem' => $workitem,
-            );
-            $data = array(
-                'nick' => $nickname,
-                'receiver_nick' => $receiver_nick,
-                'msg' => $msg
-            );
-            Notification::workitemNotifyHipchat($options, $data);
-        }
-        
         // Send mail
         if ($who != 'bidder') {
-            $mail_subject = $nickname." sent you a ping for item #".$item_id;
-            $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping about item ";
+            $mail_subject = $nickname." sent you a message on Worklist for item #".$item_id;
+            $mail_msg .= "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
+            $mail_msg .= " sent you a message about item ";
             $mail_msg .= "<a href='" . WORKLIST_URL . $item_id . "'>#" . $item_id . "</a>";
-            $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
+            $mail_msg .= "</p><p>----------<br/>".$msg."<br/>----------</p><p>You can reply via email to: ".$email."</p>";
             $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
             if ($send_cc) {
                 $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
@@ -3037,13 +3006,7 @@ function pingTask() {
             if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
                 error_log('pingtask.php:id: send_email failed');
             }
-
-            // sms
-            $user = new User();
-            $user->findUserById($receiver->id);
-            if (Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
-                notify_sms_by_object($user, $mail_subject, $msg);
-            }
+          
         } else if ($who == 'bidder') {
             $project = new Project();
             $project->loadById($item['project_id']);
@@ -3066,13 +3029,7 @@ function pingTask() {
             if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
                 error_log('pingtask.php:id: send_email failed');
             }
-
-            // sms
-            $user = new User();
-            $user->findUserById($receiver->id);
-            if (Notification::isNotified($user->getNotifications(), Notification::PING_NOTIFICATIONS)) {
-                notify_sms_by_object($user, $mail_subject, $msg);
-            }
+           
         }
 
     } else {
@@ -3083,18 +3040,10 @@ function pingTask() {
         $receiver_nick = $receiver->nickname;
         $receiver_email = $receiver->username;
 
-        if ($send_chat) {
-            // Compose journal message
-            $out_msg = '@' . $nickname.' sent a ping to @' . $receiver_nick;
-            $out_msg .= ": ".$msg;
-
-            // Send to journal
-            sendJournalNotification( $out_msg );
-        }
-
-        $mail_subject = $nickname." sent you a ping.";
-        $mail_msg = "<p>Dear ".$receiver_nick.",<br/>".$nickname." sent you a ping. ";
-        $mail_msg .= "</p><p>Message:<br/>".$msg."</p><p>You can answer to ".$nickname." at: ".$email."</p>";
+        $mail_subject = $nickname." sent you a message on Worklist";
+        $mail_msg = "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
+        $mail_msg .=" sent you a message: ";
+        $mail_msg .= "</p><p>----------<br/>". nl2br($msg)."<br />----------</p><p>You can reply via email to ".$email."</p>";
 
         $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
         if ($send_cc) {
@@ -3396,10 +3345,8 @@ function updateBudget() {
             } else {
                 Notification::notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $add_funds_to_budget);
             }
-            Notification::notifySMSBudget($amount, $reason, $giver, $receiver);
             if ($budget_seed == 1) {
                 Notification::notifySeedBudget($amount, $reason, $source, $giver, $receiver);
-                Notification::notifySMSSeedBudget($amount, $reason, $source, $giver, $receiver);
             }
             $receiver = getUserById($receiver_id);
             $message =  'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname;
