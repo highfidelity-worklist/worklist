@@ -883,7 +883,6 @@ class JobView extends View {
      * Gets rid of comments entries from a given list
      */
     static function removeCommentsEntries($entries) {
-        //print_r($entries); die;
         $pattern = '/^@\w+\s+posted\sa\scomment\son\s+#\d+.*/';
         $ret = array();
         foreach($entries as $entry) {
