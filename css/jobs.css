@@ -956,6 +956,13 @@ input {
     }
 }
 
+@media (max-width: 480px) {
+    #search select {
+        margin: 5px 0;
+        width: 100%;
+    }
+}
+
 #query > fieldset > input[type="text"] {
     padding-left: 23px;
     width: 100%;
