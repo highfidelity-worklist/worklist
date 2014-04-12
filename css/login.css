@@ -46,6 +46,7 @@ body {
 #form-login > p.error {
     background-color: #009999;
     color: #fff;
+    padding: 10px 30px;
 }
 
 #form-login button[type="submit"], #form-login a#github {
