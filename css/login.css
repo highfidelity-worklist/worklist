@@ -53,6 +53,7 @@ body {
     border: 0 none;
     background-color: #608e96;
     color: #fff;
+    font-family: FontAwesome, proxima-nova, sans-serif;
     font-weight: bold;
     padding: 7px 15px;
     border-radius: 5px;
