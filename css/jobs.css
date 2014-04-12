@@ -948,11 +948,13 @@ input {
     font-size: 1em;
     line-height: 1.45em;
 }
+
 @media (max-width: 768px) {
     #search select + div,
     #search select,
     #query > fieldset > input {
-        margin-bottom: 0;
+        width: 100%;
+        margin-bottom: 5px;
     }
 }
 

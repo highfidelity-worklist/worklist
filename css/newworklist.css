@@ -20,6 +20,8 @@ body {
 @media (max-width: 768px) {
     body > .container-fluid {
         margin: 10px 5px;
+        min-width: 310px;
+        overflow: hidden;
     }
 }
 
