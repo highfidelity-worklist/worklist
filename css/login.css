@@ -49,6 +49,17 @@ body {
     padding: 10px 30px;
 }
 
+#form-login > p.error a {
+    color: #fff;
+    font-weight: bold;
+    opacity: inherit;
+    text-decoration: underline;
+}
+
+#form-login > p.error a:hover {
+    opacity: 0.5;
+}
+
 #form-login button[type="submit"], #form-login a#github {
     border: 0 none;
     background-color: #608e96;
@@ -91,15 +102,6 @@ body {
 #form-login > fieldset > input:focus {
     box-shadow: none;
     border-color: #009999;
-}
-
-#form-login a[href="./forgot"] {
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-#form-login a[href="./forgot"]:hover {
-    text-decoration: none;
 }
 
 section#footer {
