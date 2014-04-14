@@ -474,7 +474,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .github {
-    margin-top: -7px !important;
+    margin-top: -7px;
     padding-left: 42px;
     background-image: url('../images/primaryIcons-WL.png');
     background-position: 0 -1138px;
@@ -1544,6 +1544,11 @@ h1.newProject {
 }
 
 @media (max-width: 480px) {
+
+    .project-github h1 {
+        float: right;
+        line-height: 21px;
+    }
 
     .people-info {
         font-size: 13px;
