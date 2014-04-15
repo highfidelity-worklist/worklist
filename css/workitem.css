@@ -1544,6 +1544,30 @@ h1.newProject {
 }
 
 @media (max-width: 480px) {
+    .white-theme .ui-dialog-content {
+        padding: 5px;
+    }
+
+    .white-theme {
+        padding: 5px;
+        max-width: 320px;
+        background-color: #F0F6F8;
+    }
+
+    #popup-edit-bid-info .notes,
+    .white-theme table,
+    #ping-msg,
+    .popup-body textarea {
+        width: 100%;
+    }
+
+    .white-theme .ui-dialog-content {
+        padding: 0 !important;
+    }
+
+    .white-theme #popup-bid-info-buttons input[type=button] {
+        font-size: 0.75em !important;
+    }
 
     .project-github h1 {
         float: right;
