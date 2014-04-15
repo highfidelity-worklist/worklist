@@ -117,7 +117,7 @@ class JobController extends Controller {
 
         if ($action == 'view_bid') {
             $action = "view";
-            $view_bid_id = isset($_REQUEST['bid_id']) ? $_REQUEST['bid_id'] : 0;
+            $this->write('view_bid_id', isset($_REQUEST['bid_id']) ? $_REQUEST['bid_id'] : 0);
         }
 
         // for any other action user has to be logged in
