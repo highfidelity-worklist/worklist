@@ -1559,7 +1559,7 @@ h1.newProject {
     position: relative;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 980px) {
     #left-panel,
     #right-panel {
         width: 100%;
