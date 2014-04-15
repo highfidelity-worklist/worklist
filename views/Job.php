@@ -530,7 +530,7 @@ class JobView extends View {
                          $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $workitem->getIsRelRunner());
             $row_class = "";
             $row_class .= ($this->currentUser['id']) ? 'row-bidlist-live ' : '' ;
-            $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
+            $row_class .= ($this->read('view_bid_id') == $bid['id']) ? ' view_bid_id ' : '' ;
             $row_class .= 'biditem';
             $row_class .= ($canSeeBid)
                         ? "-" . $bid['id'] . ' clickable'
