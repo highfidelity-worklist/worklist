@@ -16,8 +16,7 @@
 
 #action-error {
     font-weight: bold;
-    margin-bottom: 10px;
-    margin: 0 auto 10px auto;
+    margin: 0 auto 10px;
     width: 300px;
     display: block;
 }
@@ -421,7 +420,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 #creatorBox a:hover, #runnerBox a:hover, #mechanicBox a:hover{
-    text-decoration: undeline;
+    text-decoration: underline;
 }
 
 #runnerBox .buttonContainer {
@@ -943,7 +942,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-bottom:2px !important;
 }
 
-<!-- [if IE]
 #right-panel .moneyZone{
     display:block;
     width:390px!important;
