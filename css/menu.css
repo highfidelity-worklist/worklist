@@ -7,15 +7,25 @@ body > nav.navbar {
     background: none rgb(51, 51, 51); /* flat background */
 }
 
-/* our brand link is actually a logo image */
+/* our brand links are actually logo images */
 body > nav.navbar a.navbar-brand {
     display: inline-block;
-    width: 120px;
     height: 32px;
     margin-top: 14px;
     text-indent: -9999px;
-    background: transparent url(../images/tmp/navbar_logo.png) center center no-repeat;
+    background-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
 
+body > nav.navbar a.navbar-brand[href="https://highfidelity.io"] {
+    background-image: url(../images/navbar/hifi.png);
+    width: 60px;
+}
+
+body > nav.navbar a.navbar-brand[href="./"] {
+    background-image: url(../images/navbar/worklist.png);
+    width: 80px;
 }
 
 /*navbar links colors and background */
@@ -60,23 +70,23 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     }
 
     body > nav.navbar ul.nav a[href$="/jobs"] {
-        background-image: url(../images/tmp/jobs.png);
+        background-image: url(../images/navbar/jobs.png);
     }
 
     body > nav.navbar ul.nav a[href$="/projects"] {
-        background-image: url(../images/tmp/projects.png);
+        background-image: url(../images/navbar/projects.png);
     }
 
     body > nav.navbar ul.nav a[href$="/status"] {
-        background-image: url(../images/tmp/status.png);
+        background-image: url(../images/navbar/status.png);
     }
 
     body > nav.navbar ul.nav a[href$="/team"] {
-        background-image: url(../images/tmp/team.png);
+        background-image: url(../images/navbar/team.png);
     }
 
     body > nav.navbar ul.nav a[href$="/help"] {
-        background-image: url(../images/tmp/help.png);
+        background-image: url(../images/navbar/help.png);
     }
 
     /* default navbar dropdown is thiner than desired height  */
