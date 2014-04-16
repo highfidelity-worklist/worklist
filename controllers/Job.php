@@ -67,6 +67,8 @@ class JobController extends Controller {
         }
         $this->write('is_project_runner', $is_project_runner);
 
+        $redirectToDefaultView = false;
+
         $promptForReviewUrl = true;
         $runner_budget = $user->getBudget();
 
@@ -302,7 +304,8 @@ class JobController extends Controller {
                 $notifyEmpty = false;
             }
 
-             if ($workitem->getStatus() != 'Draft') {
+            $redirectToDefaultView = true;
+            if ($workitem->getStatus() != 'Draft') {
                 $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
                                     $bugJournalMessage .
                                     $new_update_message . $related;
@@ -318,7 +321,7 @@ class JobController extends Controller {
                     'related' => $related
                 );
                 Notification::workitemNotifyHipchat($options, $data);
-             }
+            }
         }
 
         if ($action == 'new-comment') {
@@ -704,6 +707,8 @@ class JobController extends Controller {
             } else {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
             }
+
+            $redirectToDefaultView = true;
         }
 
         // Edit Bid
@@ -756,6 +761,7 @@ class JobController extends Controller {
                 Notification::workitemNotifyHipchat($options, $data);
               
             }
+            $redirectToDefaultView = true;
         }
         // Request submitted from Add Fee popup
         if ($action == "add_fee") {
@@ -801,6 +807,7 @@ class JobController extends Controller {
                     $runner->updateBudget(-$fee_amount, $workitem->getBudget_id());
                    
                 }
+                $redirectToDefaultView = true;
             }
         }
 
@@ -843,6 +850,8 @@ class JobController extends Controller {
                 $data['tipped_nickname'] = $recipient->getNickname();
                 Notification::workitemNotifyHipchat($options, $data);
             }
+
+            $redirectToDefaultView = true;
         }
 
         // Accept a bid
@@ -851,7 +860,6 @@ class JobController extends Controller {
                 !isset($_REQUEST['budget_id'])) {
                 $_SESSION['workitem_error'] = "Missing parameter to accept a bid!";
             } else {
-
                 $bid_id = intval($_REQUEST['bid_id']);
                 $budget_id = intval($_REQUEST['budget_id']);
                 
@@ -913,8 +921,7 @@ class JobController extends Controller {
                             $overBudget = money_format('%i', $bid_amount - $remainingFunds);
                             $_SESSION['workitem_error'] = "Failed to accept bid. Accepting this bid would make you " . $overBudget . " over your budget!";
                         }
-                    }
-                    else {
+                    } else {
                         $_SESSION['workitem_error'] = "Failed to accept bid, bid has been deleted!";
                     }
                 } else {
@@ -927,6 +934,7 @@ class JobController extends Controller {
                     }
                 }
             }
+            $redirectToDefaultView = true;
         }
 
         // Accept Multiple  bid
@@ -1001,6 +1009,7 @@ class JobController extends Controller {
                     }
                 }
             }
+            $redirectToDefaultView = true;
         }
         //Withdraw a bid
         if ($action == "withdraw_bid") {
@@ -1021,6 +1030,7 @@ class JobController extends Controller {
                 $runner->findUserById($fee->runner_id);
                 $runner->updateBudget($fee->amount, $workitem->getBudget_id());
             }
+            $redirectToDefaultView = true;
         }
 
         //Decline a bid
@@ -1049,6 +1059,10 @@ class JobController extends Controller {
         if(isset($journal_message) && $workitem->getStatus() != 'Draft') {
             sendJournalNotification($journal_message);
             //$postProcessUrl = WORKITEM_URL . $worklist_id . "?msg=" . $journal_message;
+        }
+
+        if ($redirectToDefaultView) {
+            $this->redirect('./' . $worklist_id);
         }
 
         // handle the makeshift error I made..
