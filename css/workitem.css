@@ -58,7 +58,7 @@ span.info-whisper {
 
 .info-summ-big{
     clear:both;
-    height: 38px;
+    height: 37px;
     margin-top: 12px;
     font-size: 13px;
     border-bottom: 2px solid #e1e8ea;
@@ -559,12 +559,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .sandbox-container {
-    margin-top: 15px;
+    margin: 15px 0 25px;
     background-color: #e6f3f4;
     padding: 9px 12px;
-    margin-left: -12px;
     font-size: 14px;
-    width: 437px;
 }
 
 .functional-label {
@@ -836,25 +834,53 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .comment-text {
     margin-bottom: 4px;
-    font-size: 14px;
     line-height: 18px;
-    max-width: 450px;
     word-wrap: break-word;
 }
 
+#entries > li.depth-0 .comment-text {
+    max-width: 450px;
+}
+
+#entries > li.depth-1 .comment-text {
+    max-width: 400px;
+}
+
+#entries > li.depth-2 .comment-text {
+    max-width: 380px;
+}
+
+#entries > li.depth-3 .comment-text {
+    max-width: 340px;
+}
+
+#entries > li.depth-4 .comment-text {
+    max-width: 300px;
+}
+
+#entries > li.depth-5 .comment-text {
+    max-width: 260px;
+}
+
+#entries > li.depth-6 .comment-text {
+    max-width: 225px;
+}
+
+.comment-info .author,
+.comment-text {
+    font-size: 1.1em;
+}
+
 .comment {
-    font-size:13px;
     overflow:auto;
     margin-top: 12px;
 }
 
-.author {
+.comment-info .author {
     display:inline;
-    font-size:14px;
 }
 
 .date {
-    font-size:12px;
     color:#666;
 }
 
@@ -866,7 +892,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .reply-lnk {
-    font-size: 12px;
+    font-size: .9em;
     width:100%;
     margin-top:0;
     text-align: left;
@@ -991,11 +1017,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .notestext {
-    margin:0;
-    margin-top: 11px;
-    padding-right:5px;
+    margin: 15px 0 25px;
+    padding-right: 5px;
     word-wrap: break-word;
-    font-size: 14px;
+    font-size: 1.1em;
     line-height: 19px;
 }
 

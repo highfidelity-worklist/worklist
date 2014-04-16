@@ -350,8 +350,7 @@ class JsonServer
                 $current_user->findUserById($_SESSION['userid']);
                 $journal_message = 
                     '@' . $current_user->getNickname() . ' uploaded an [attachment](' . 
-                    $file->getUrl() . ') to **#' . $workitem . "**\n\n" . 
-                    '**' . $workitem_attached->getSummary() . '**';
+                    $file->getUrl() . ') to #' . $workitem;
                 sendJournalNotification($journal_message);
             }
             return $this->setOutput(array(
@@ -546,8 +545,7 @@ class JsonServer
         if ($status === null) {
             return $this->setOutput(array('success' => false, 'data' => nl2br('Code Review not available right now')));
         } else if ($status === true || (int)$status == 0) {
-            $journal_message = '@' . $user->getNickname() . ' has started a code review for **#' . $workitem_id . "**\n\n**" . 
-                $workItem->getSummary() . '**';
+            $journal_message = '@' . $user->getNickname() . ' has started a code review for #' . $workitem_id. ' ';
             sendJournalNotification($journal_message);
             
             $options = array(
@@ -586,9 +584,7 @@ class JsonServer
             $comment->save();
             
             $journalMessage = str_replace("\n", '', $message);
-            sendJournalNotification("@Otto could not authorize sandbox for **#" . $workitem_id . "**\n\n**" . 
-                $workItem->getSummary() . '** ' . $journalMessage . ' Status set to *SvnHold*');
-
+            sendJournalNotification("@Otto could not authorize sandbox for #" . $workitem_id . $journalMessage . ' Status set to *SvnHold*');
             return $this->setOutput(array(
                     'success' => false, 
                     'data' => 'Sandbox verification failed. Alerting developer to resolve.'
@@ -607,7 +603,7 @@ class JsonServer
         $workitem->setCRStarted(0);
         $workitem->setCReviewerId(0);
         $workitem->save();
-        $journal_message = '@' . $user->getNickname() . ' has canceled their code review for **#' . $workitem_id . "**\n\n**" . $workitem->getSummary() . '**';
+        $journal_message = '@' . $user->getNickname() . ' has canceled their code review for #' . $workitem_id;
         sendJournalNotification($journal_message);
         
         $options = array(
@@ -1168,28 +1164,6 @@ class JsonServer
         ));
     }
 
-    protected function actionSendTestSMS()
-    {
-        $phone = $this->getRequest()->getParam('phone');
-        try {
-            $user = new User();
-            if($user->findUserById($_SESSION['userid'])) {
-                $user->setPhone($phone);
-                notify_sms_by_object($user, 'Test SMS', 'Test from Worklist', true) 
-                  or error_log("failed to create SMS message");
-            }
-        } catch (Sms_Backend_Exception $e) {
-            return $this->setOutput(array(
-                'success' => false,
-                'message' => 'Failed to send test message !'
-            ));
-        }
-        return $this->setOutput(array(
-            'success' => true,
-            'message' => 'Test message sent!'
-        ));
-    }
-
     protected function actionChangeRunner()
     {
         $workitem = (int)$this->getRequest()->getParam('workitem');
@@ -1228,7 +1202,7 @@ class JsonServer
                     if(!send_email($workitem->getMechanic()->getNickname() . ' <' . $workitem->getMechanic()->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeMechanic: send_email failed"); }
                 }
 
-                sendJournalNotification('**#' . $workitem->getId() . '** updated by @' . $this->getUser()->getNickname() . "\n\n**" . $workitem->getSummary() . '**. Designer reassigned to @' . $workitem->getRunner()->getNickname());
+                sendJournalNotification('\#' . $workitem->getId() . ' updated by @' . $this->getUser()->getNickname() .' Designer reassigned to @' . $workitem->getRunner()->getNickname());
 
                 return $this->setOutput(array(
                     'success' => true,

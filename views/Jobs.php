@@ -38,7 +38,7 @@ class JobsView extends View {
                 "Working", 
                 "Functional", 
                 "SvnHold", 
-                "Review", 
+                "Code Review", 
                 "Completed", 
                 "Done", 
                 "Pass"
@@ -51,7 +51,7 @@ class JobsView extends View {
                 "Working", 
                 "Functional", 
                 "SvnHold", 
-                "Review", 
+                "Code Review", 
                 "Completed", 
                 "Done", 
                 "Pass"
@@ -110,7 +110,7 @@ class JobsView extends View {
                             $selected = ' selected="selected"';
                         }
                         break;
-                    case 'Review':
+                    case 'Code Review':
                         if ($req_status == 'review') { 
                             $selected = ' selected="selected"';
                         }

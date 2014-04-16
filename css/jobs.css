@@ -68,6 +68,7 @@ body {
 .table-userlist tr:hover{
     cursor: pointer;
 }
+
 .table-userlist thead tr:hover{
     cursor: default;
 }
@@ -266,6 +267,23 @@ td.textAlignReport {
 .taskProject span,
 .taskSummaryCell {
     cursor: pointer;
+}
+
+.table-worklist tr:hover {
+    color: #007F7C;
+}
+
+.table-worklist thead tr:hover{
+    cursor: default;
+    color: #333333;
+}
+
+.table-worklist tr:active {
+    color: #888888;
+}
+
+.table-worklist tbody tr {
+    height: 28px;
 }
 
 .table-worklist td {
@@ -895,7 +913,6 @@ input {
     font-size: 1em;
 }
 
-
 #search {
     background-color: #dde4e6;
 }
@@ -926,12 +943,12 @@ input {
 
 #query > fieldset > input[type="text"] {
     padding-left: 23px;
+    width: 100%;
 }
 
 @media (max-width: 1024px) {
     #query > fieldset > input[type="text"] {
-        width: 50%;
-        padding-left: 23px;
+        padding: 8px 23px 8px;
     }
 }
 
@@ -940,36 +957,46 @@ input {
     content: "\f002";
     position: absolute;
     color: #000;
-    margin: 5px 7px;
+    margin: 7px;
     color: #007F7c;
 }
-
+@media (max-width: 1024px) {
+    #query > fieldset:before {
+        margin: 9px 8px;
+    }
+}
 
 #query > fieldset > * {
     vertical-align: top;
 }
 
-#query > fieldset > input[type="text"],
-#query > fieldset > input[type="text"] + button {
-    display: inline-block;
+#query > fieldset {
+    position: relative;
 }
 
 #query > fieldset > input[type="text"] + button {
-    margin-left: -40px;
-    font-size: 1.5em;
-    top: 7px;
+    position: absolute;
+    font-size: 18px;
     border: 0 none;
     background: transparent none;
     color: #666;
+    top: 10px;
+    right: 2px;
 }
+
 @media (max-width: 1024px) {
     #query > fieldset > input[type="text"] + button {
-        margin-left: -30px;
+        font-size: 16px;
+        top: 8px;
     }
 }
+
 @media (max-width: 768px) {
     #query > fieldset > input[type="text"] + button {
         display: none;
+    }
+    #query {
+        margin-right: 60px;
     }
 }
 
@@ -1108,7 +1135,7 @@ input {
 @media (max-width: 1024px) {
     #query > fieldset,
     #addJobButton {
-        margin-top: 28px;
+        margin-top: 25px;
     }
 }
 @media (max-width: 768px) {
@@ -1166,8 +1193,8 @@ input {
 
 
 #addJobButton { 
-    background-color: #007F7C;
-    padding: 4px 10px;
+    background-color: #608e96;
+    padding: 8px 10px 7px;
     color: #fff;
     font-size: 1em;
     border: 0;
@@ -1178,6 +1205,15 @@ input {
     font-weight: bold;
 }
 
+#addJobButton:hover {
+    background-color: #007F7c;
+}
+
+@media (max-width: 1024px) {
+    #addJobButton {
+        padding: 10px;
+    }
+}
 
 #buttons {
     padding: 0;

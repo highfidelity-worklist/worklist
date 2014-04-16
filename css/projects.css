@@ -9,21 +9,23 @@
 *
 */
 
-#add-project {
-    color: #007F7C;
-    font-size: 20px;
-    text-decoration: none;
-    font-family: proxima-nova, sans-serif;
-    font-weight: bold;
+#title-wrapper {
     text-align: right;
-    display: block;
-    float: right;
-    margin-top: -35px;
+    padding-top: 30px;
 }
 
-#add-project span {
-    color: #141414;
+#add-project {
+    border: 0 none;
+    background-color: #608e96;
+    color: #fff;
     font-weight: bold;
+    padding: 7px 15px;
+    border-radius: 5px;
+}
+
+#add-project:hover {
+    background-color: #007F7c;
+    text-decoration: none;
 }
 
 #all-projects {
@@ -34,6 +36,7 @@
 }
 
 #projects {
+    padding-top: 30px;
     color: #666666;
     text-align: center;
 }

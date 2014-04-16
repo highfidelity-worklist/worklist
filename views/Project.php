@@ -12,7 +12,6 @@ class ProjectView extends View {
         'js/jquery/jquery.jeditable.min.js',
         'js/jquery/jquery.tablesorter_desc.js',
         'js/ajaxupload/ajaxupload.js',
-        'js/worklist_project.js',
         'js/paginator.js',
         'js/timepicker.js',
         'js/paginator.js',

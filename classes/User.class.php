@@ -33,14 +33,8 @@ class User {
     protected $journal_nick;
     protected $is_guest;
     protected $int_code;
-    protected $phone;
-    protected $phone_confirm_string;
-    protected $phone_verified;
-    protected $phone_rejected;
-    protected $smsaddr;
     protected $country;
     protected $city;
-    protected $provider;
     protected $has_sandbox;
     protected $unixusername;
     protected $forgot_hash;
@@ -97,7 +91,7 @@ class User {
     public static function find($expr)
     {
         $user = new User();
-        if (is_object($expr) && get_class($expr) == 'User') {
+        if (is_object($expr) && (get_class($expr) == 'User' || is_subclass_of($expr, 'User'))) {
             $user = $expr;
         } else {
             if (is_numeric($expr)) {
@@ -1102,81 +1096,6 @@ class User {
     }
 
     /**
-     * @return the $phone
-     */
-    public function getPhone() {
-        return $this->phone;
-    }
-
-    /**
-     * @param $phone the $phone to set
-     */
-    public function setPhone($phone) {
-        $this->phone = $phone;
-        return $this;
-    }
-
-    /**
-     * @return the $phone_confirm_string
-     */
-    public function getPhone_confirm_string() {
-        return $this->phone_confirm_string;
-    }
-
-    /**
-     * @param $phone_confirm_string the $phone_confirm_string to set
-     */
-    public function setPhone_confirm_string($phone_confirm_string) {
-        $this->phone_confirm_string = $phone_confirm_string;
-        return $this;
-    }
-    
-    /**
-     * @return the $phone_verified
-     */
-    public function getPhone_verified() {
-        return $this->phone_verified;
-    }
-
-    /**
-     * @param $phone_verified the $phone_verified to set
-     */
-    public function setPhone_verified($phone_verified) {
-        $this->phone_verified = $phone_verified;
-        return $this;
-    }
-    
-    /**
-     * @return the $phone_rejected
-     */
-    public function getPhone_rejected() {
-        return $this->phone_rejected;
-    }
-    
-    /**
-     * @param $phone_rejected the $phone_rejected to set
-     */
-    public function setPhone_rejected($phone_rejected) {
-        $this->phone_rejected = $phone_rejected;
-        return $this;
-    }
-    
-    /**
-     * @return the $smsaddr
-     */
-    public function getSmsaddr() {
-        return $this->smsaddr;
-    }
-
-    /**
-     * @param $smsaddr the $smsaddr to set
-     */
-    public function setSmsaddr($smsaddr) {
-        $this->smsaddr = $smsaddr;
-        return $this;
-    }
-
-    /**
      * @return the $country
      */
     public function getCountry() {
@@ -1188,21 +1107,6 @@ class User {
      */
     public function setCountry($country) {
         $this->country = $country;
-        return $this;
-    }
-
-    /**
-     * @return the $provider
-     */
-    public function getProvider() {
-        return $this->provider;
-    }
-
-    /**
-     * @param $provider the $provider to set
-     */
-    public function setProvider($provider) {
-        $this->provider = $provider;
         return $this;
     }
     

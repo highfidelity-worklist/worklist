@@ -228,39 +228,6 @@ function AppendUserRow(json, odd) {
     row += '<td class="money">$' + addCommas(json.earnings30) + '</td>';
     row += '<td class="money">(' + (Math.round((parseFloat(json.rewarder) / (parseFloat(json.earnings) + 0.000001)) * 100*100)/100)+ '%) $' + addCommas(json.rewarder) +  '</td>';
     $('#table-userlist tbody').append(row);
-
-    var favorite_user_id = json.id;
-    var favorite_user_nickname = json.nickname;
-    if (is_myfavorite) {
-        $('tr.favorite.useritem-' + favorite_user_id + ' .favorite_user.myfavorite').click(function (e) {
-            if (!confirm('Are you sure you want to remove ' + favorite_user_nickname + ' as someone you trust?')) {
-                return false;
-            }
-            $.ajax({
-                type: 'POST',
-                url: 'api.php',
-                data: {
-                    action: 'setFavorite',
-                    favorite_user_id: favorite_user_id,
-                    newVal: 0
-                },
-                dataType: 'json',
-                success: function(json) {
-                    if ((json === null) || (json.error)) {
-                        var message="Error returned - f1. ";
-                        if (json !== null) {
-                            message = message + json.error;
-                        }
-                        alert(message);
-                        return;
-                    }
-                }
-            });
-            getFavoriteUsers();
-            fillUserlist(current_page);
-            return false;
-        });
-    }
 }
 
 function addCommas(nStr) {

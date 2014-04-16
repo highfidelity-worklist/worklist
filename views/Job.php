@@ -22,7 +22,6 @@ class JobView extends View {
         'js/jquery/jquery.metadata.js',
         'js/jquery/jquery.blockUI.js',
         'js/ajaxupload/ajaxupload.js',
-        'js/worklist_project.js',
         'js/datepicker.js',
         'js/timepicker.js',
         'js/review.js',
@@ -531,7 +530,7 @@ class JobView extends View {
                          $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $workitem->getIsRelRunner());
             $row_class = "";
             $row_class .= ($this->currentUser['id']) ? 'row-bidlist-live ' : '' ;
-            $row_class .= ($view_bid_id == $bid['id']) ? ' view_bid_id ' : '' ;
+            $row_class .= ($this->read('view_bid_id') == $bid['id']) ? ' view_bid_id ' : '' ;
             $row_class .= 'biditem';
             $row_class .= ($canSeeBid)
                         ? "-" . $bid['id'] . ' clickable'
@@ -782,7 +781,7 @@ class JobView extends View {
     }
 
     public function addBidMsg() {
-        return ($this->isGitProject() && $this->read('isGitHubConnected')) ? 'Authorize GitHub app' : 'Add my bid';
+        return $this->read('isGitHubConnected') ? 'Add my bid' : 'Authorize GitHub app';
     }
 
     public function taskEntries() {
@@ -884,8 +883,7 @@ class JobView extends View {
      * Gets rid of comments entries from a given list
      */
     static function removeCommentsEntries($entries) {
-        //print_r($entries); die;
-        $pattern = '/^@\w+\sposted\sa\scomment\son\s\*\*#\d+\*\*\n\n.*/';
+        $pattern = '/^@.+posted\sa\scomment\son\s+#\d+.*/';
         $ret = array();
         foreach($entries as $entry) {
             if (preg_match($pattern, $entry->entry)) {
