@@ -121,3 +121,9 @@
     margin-top: 35px;
 }
 
+@media (max-width: 480px) {
+
+    #settings input[type="checkbox"] + label {
+        line-height: 1em;
+    }
+}

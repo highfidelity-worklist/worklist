@@ -9,7 +9,6 @@
     font-size: 1.3em;
 }
 
-
 /**
  * validation messages 
  */
@@ -17,4 +16,15 @@
     position: absolute;
     font-size: .8em;
     color: #ff5582;
+}
+
+
+@media (max-width: 480px) {
+    select {
+        width: 100% !important;
+    }
+
+    input.wlcheckbox[type="checkbox"] + label {
+        line-height: 1em;
+    }
 }

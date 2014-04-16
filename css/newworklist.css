@@ -17,6 +17,14 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    body > .container-fluid {
+        margin: 10px 5px;
+        min-width: 310px;
+        overflow: hidden;
+    }
+}
+
 /* global links styling */
 a {
     color: #333333;    
@@ -304,8 +312,6 @@ body .chosen-container-single .chosen-single div b {
     .chosen-container-single .chosen-single abbr,
     .chosen-container-single .chosen-single div b,
     .chosen-container-single .chosen-search input[type=text],
-    .chosen-container-multi .chosen-choices
-    .search-choice .search-choice-close,
     .chosen-container .chosen-results-scroll-down span,
     .chosen-container .chosen-results-scroll-up span {
         background-image: none !important;

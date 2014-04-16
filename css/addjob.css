@@ -52,6 +52,7 @@ label[for="bug_job_id"] {
     width: 90px;
     margin-left: 5px;
 }
+
 #addJob > .row:first-child > div:last-child:after {
     content: 'Bug of job #';
     right: 0;
@@ -178,4 +179,14 @@ label[for="bug_job_id"] {
 }
 #addJob > .row:first-child select + .LV_validation_message {
     margin-top: 35px;
+}
+
+@media (max-width: 480px) {
+    #bug-id-label {
+        display: none;
+    }
+
+    #addJob > .row:first-child select + .LV_validation_message {
+        margin-top: 0;
+    }
 }

@@ -16,8 +16,7 @@
 
 #action-error {
     font-weight: bold;
-    margin-bottom: 10px;
-    margin: 0 auto 10px auto;
+    margin: 0 auto 10px;
     width: 300px;
     display: block;
 }
@@ -65,6 +64,12 @@ span.info-whisper {
     float: left;
     color: #666;
     font-weight: 100;
+}
+
+@media (max-width: 480px) {
+    .info-summ-big {
+        font-size: 12px;
+    }
 }
 
 .info-summ-big-text{
@@ -204,9 +209,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #left-panel {
     float:left;
-    width: 520px !important;
-    margin:0 !important;
-    padding:0!important;
+    width: 520px;
+    margin:0;
+    padding:0;
 }
 
 #left-panel .buttonContainer.view-sandbox {
@@ -401,11 +406,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     overflow: auto;
 }
 
-#creatorBox, #runnerBox, #mechanicBox, .keyPeople{
+#creatorBox, #runnerBox, #mechanicBox {
     float: left;
     width: 130px;
     font-weight: bold;
-    font-size: 14px;
     line-height: 15px;
     padding-top: 1px;
 }
@@ -416,7 +420,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 #creatorBox a:hover, #runnerBox a:hover, #mechanicBox a:hover{
-    text-decoration: undeline;
+    text-decoration: underline;
 }
 
 #runnerBox .buttonContainer {
@@ -430,7 +434,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
     width: 100%;
     color: #007F7C;
-    font-size: 14px;
     margin-bottom: 2px;
     font-weight: normal;
 }
@@ -470,7 +473,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .github {
-    margin-top: -7px !important;
+    margin-top: -7px;
     padding-left: 42px;
     background-image: url('../images/primaryIcons-WL.png');
     background-position: 0 -1138px;
@@ -599,6 +602,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .project-dropdown {
     width: 200px;
+    margin-top: 7px;
 }
 
 #ping-btn{
@@ -938,7 +942,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-bottom:2px !important;
 }
 
-<!-- [if IE]
 #right-panel .moneyZone{
     display:block;
     width:390px!important;
@@ -956,7 +959,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 #right-panel{
-    width: 352px!important;
+    width: 352px;
     float: right;
 }
 
@@ -1259,7 +1262,7 @@ a.profile-link {
 }
 
 .switchmode:hover{
-    background-position: -189px -950px !important;
+    background-position: -189px -950px;
 }
 
 .hidden {
@@ -1554,4 +1557,95 @@ h1.newProject {
 
 .relative {
     position: relative;
+}
+
+@media (max-width: 980px) {
+    #left-panel,
+    #right-panel {
+        width: 100%;
+        float: left;
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .white-theme .ui-dialog-content {
+        padding: 5px;
+    }
+
+    .white-theme {
+        padding: 5px;
+        max-width: 320px;
+        background-color: #F0F6F8;
+    }
+
+    #popup-edit-bid-info .notes,
+    .white-theme table,
+    #ping-msg,
+    .popup-body textarea {
+        width: 100%;
+    }
+
+    .white-theme .ui-dialog-content {
+        padding: 0 !important;
+    }
+
+    .white-theme #popup-bid-info-buttons input[type=button] {
+        font-size: 0.75em !important;
+    }
+
+    .project-github h1 {
+        float: right;
+        line-height: 21px;
+    }
+
+    .people-info {
+        font-size: 13px;
+    }
+
+    #creatorBox, #runnerBox, #mechanicBox {
+        width: 33%;
+    }
+
+    .project, .job-budget {
+        clear: both;
+        margin: 10px 0;
+        width: 100%;
+    }
+
+    .project:after {
+        clear: both;
+        display: block;
+        content: ' ';
+    }
+
+    #following,
+    #invite-link,
+    #switchmode_edit {
+        padding: 10px 5px 7px 25px;
+    }
+
+    #following {
+        background-position: 0px -890px;
+    }
+
+    #following:hover {
+        background-position: -202px -890px;
+    }
+
+    #invite-link {
+        background-position: 6px -920px;
+    }
+
+    #invite-link:hover {
+        background-position: -196px -920px;
+    }
+
+    #switchmode_edit {
+        background-position: 8px -950px;
+    }
+
+    #switchmode_edit:hover {
+        background-position: -194px -950px;
+    }
 }

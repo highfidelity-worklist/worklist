@@ -49,6 +49,14 @@ table tr > td:nth-child(n+2) {
     width: 33%;
 }
 
+@media (max-width: 480px) {
+
+    table tr > th,
+    table tr > td:nth-child(n+2) {
+        display: none;
+    }
+}
+
 /* table headers styling */
 table th {
     color: #afaca3;
