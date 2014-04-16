@@ -43,4 +43,10 @@ class Controller extends AppObject {
             parent::write($key, $value);
         }
     }
+
+    protected function redirect($url) {
+        $this->view = null;
+        Utils::redirect($url);
+        die;
+    }
 }
