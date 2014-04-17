@@ -434,3 +434,9 @@ body .jumbotron a:active {
 button:focus, a:focus {
     outline: none;
 }
+
+@media only screen and (max-width: 450px) {
+    #footer {
+        display: none;
+    }
+}
