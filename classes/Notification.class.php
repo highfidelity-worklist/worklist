@@ -5,14 +5,7 @@
  * subscriptions
  */
 class Notification {
-    const REVIEW_NOTIFICATIONS = 1;
-    const BIDDING_NOTIFICATIONS = 2;
-    const MY_REVIEW_NOTIFICATIONS = 4;
-    const MY_COMPLETED_NOTIFICATIONS = 8;
-    const PING_NOTIFICATIONS = 16;
-    const MY_BIDS_NOTIFICATIONS = 32;
     const SELF_EMAIL_NOTIFICATIONS = 64;
-    const FUNCTIONAL_NOTIFICATIONS = 128;
     const BIDDING_EMAIL_NOTIFICATIONS = 256;
     const REVIEW_EMAIL_NOTIFICATIONS = 512;
     const MY_AUTOTEST_NOTIFICATIONS = 1024;
@@ -37,9 +30,9 @@ class Notification {
      * @param $flag flag to check
      * @return boolean returns true if given flag is set for value
      */
-    public static function isNotified($value, $flag = self::REVIEW_NOTIFICATIONS) {
+    public static function isNotified($value, $flag = self::REVIEW_EMAIL_NOTIFICATIONS) {
             $result = ($value & $flag) === $flag;
-            return (bool) $result;
+            return $result;
     }
 
     /**
@@ -49,33 +42,18 @@ class Notification {
      * @param $flag flag to compare with
      * @return list of users with given flag
      */
-    public static function getNotificationEmails($flag = self::REVIEW_NOTIFICATIONS, $workitem = 0) {
+    public static function getNotificationEmails($flag = self::REVIEW_EMAIL_NOTIFICATIONS, $workitem = 0) {
          
         $result = array();
         
         switch($flag) {
-        case self::FUNCTIONAL_NOTIFICATIONS:
-            $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
-            $sql = "SELECT u.username 
-                FROM `" . USERS . "` u 
-                WHERE u.notifications & $flag != 0 
-                  AND u.id! = " . getSessionUserId() . " 
-                  AND u.id IN({$users}) 
-                  AND u.is_active = 1";
-            $res = mysql_query($sql);
-            if($res) {
-                while($row = mysql_fetch_row($res)) {
-                    $result[] = $row[0];
-                }
-            }
-            break;
         case self::REVIEW_EMAIL_NOTIFICATIONS :
         case self::BIDDING_EMAIL_NOTIFICATIONS :
             $uid = getSessionUserId();
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
-                WHERE ((u.notifications & $flag != 0 && u.id != " . $uid . ") 
-                      OR ((u.notifications & $flag) != 0 AND (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
+                WHERE ((u.notifications & " . self::REVIEW_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") 
+                      OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") AND (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
                   AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
@@ -85,36 +63,6 @@ class Notification {
             }
             break;
 
-        case self::REVIEW_NOTIFICATIONS :
-        case self::BIDDING_NOTIFICATIONS :
-            $sql = "SELECT u.username 
-                FROM `" . USERS . "` u 
-                WHERE u.notifications & $flag != 0 
-                  AND u.is_active = 1";
-            $res = mysql_query($sql);
-            if($res) {
-                while($row = mysql_fetch_row($res)) {
-                    $result[] = $row[0];
-                }
-            }
-            break;
-        case self::MY_REVIEW_NOTIFICATIONS :
-        case self::MY_COMPLETED_NOTIFICATIONS :
-        case self::MY_BIDS_NOTIFICATIONS:
-            $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
-            $sql = "SELECT u.username 
-                FROM `" . USERS . "` u 
-                WHERE u.notifications & $flag != 0 
-                  AND u.id! = " . getSessionUserId() . " 
-                  AND u.id IN({$users}) 
-                  AND u.is_active = 1";
-            $res = mysql_query($sql);
-            if($res) {
-                while($row = mysql_fetch_row($res)) {
-                    $result[] = $row[0];
-                }
-            }
-            break;
         case self::MY_AUTOTEST_NOTIFICATIONS:
             $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
             $sql = "SELECT u.username 
@@ -139,55 +87,21 @@ class Notification {
      */
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
-            case 'Functional':
-                $emails = self::getNotificationEmails(self::FUNCTIONAL_NOTIFICATIONS, $workitem);
-                $options = array('type' => 'new_functional',
-                    'workitem' => $workitem,
-                    'emails' => $emails);
-                self::workitemNotify($options);
-                break;
-            case 'REVIEW':
+            case 'Review':
                 $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
                 $emails=array_unique($emails);
                 $options = array('type' => 'new_review',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
-
-                $emails = self::getNotificationEmails(self::REVIEW_NOTIFICATIONS);
-                $myEmails = self::getNotificationEmails(self::MY_REVIEW_NOTIFICATIONS,$workitem);
-                $myEmails = array_diff($myEmails, $emails); // Remove already existing emails in $emails list
-                $myEmails = array_unique($myEmails);
-                $emails = array_unique($emails);
-                $options = array('type' => 'new_review',
-                    'workitem' => $workitem,
-                    'emails' => $emails);
-                break;
+            break;
             case 'Bidding':
                 $emails = self::getNotificationEmails(self::BIDDING_EMAIL_NOTIFICATIONS);
                 $options = array('type' => 'new_bidding',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
-                $emails = self::getNotificationEmails(self::BIDDING_NOTIFICATIONS);
-                $options = array('type' => 'new_bidding',
-                    'workitem' => $workitem,
-                    'emails' => $emails);
                 break;
-            case 'Completed':
-                $emails= self::getNotificationEmails(self::MY_COMPLETED_NOTIFICATIONS,$workitem);
-                $options = array('type' => 'my_completed',
-                    'workitem' => $workitem,
-                    'emails' => $emails);
-                break;
-            case 'SuggestedWithBid':
-                $emails= self::getNotificationEmails(self::MY_BIDS_NOTIFICATIONS,$workitem);
-                $options = array('type' => 'suggestedwithbid',
-                'workitem' => $workitem,
-                'emails' => $emails);
-                $data = array('notes' => $workitem->getNotes());
-                self::workitemNotify($options, $data);
-            break;
         }
     }
 
