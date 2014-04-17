@@ -1320,7 +1320,6 @@ function addWorkitem() {
             $options = array(
                 'type' => 'workitem-add',
                 'workitem' => $workitem,
-                'recipients' => array('projectRunners')
             );
             $data = array(
                 'notes' => $notes,

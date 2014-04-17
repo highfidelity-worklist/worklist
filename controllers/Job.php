@@ -525,6 +525,12 @@ class JobController extends Controller {
                     if(!empty($status_review)) {
                         $new_update_message .= " Status set to Code Review. ";
                         $status_change = '-' . ucfirst(strtolower($status_review));
+                        Notification::massStatusNotify(array(
+                            'type' => 'new-review',
+                            'workitem' => $workitem,
+                            'status_change' => $status_change,
+                            'job_changes' => $job_changes),
+                            array('changes' => $new_update_message));
                     } else {
                         $job_changes[] = '-sandbox';
                     }
@@ -541,7 +547,8 @@ class JobController extends Controller {
                     $notifyEmpty = false;
                     if ($status_review == 'FUNCTIONAL') {
                         $status_change = '-functional';
-                        Notification::workitemNotify(array('type' => 'modified-functional',
+                        Notification::workitemNotify(array(
+                            'type' => 'modified-functional',
                             'workitem' => $workitem,
                             'status_change' => $status_change,
                             'job_changes' => $job_changes,
@@ -573,6 +580,10 @@ class JobController extends Controller {
 
                         if ($status == 'Done') {
                             $displayDialogAfterDone = true;
+                        }
+                        
+                        if($status == 'Review') {
+                            Notification::workitemNotify(array('type' => 'new-review'));
                         }
 
                         if ($status != 'Draft') {
