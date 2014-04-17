@@ -23,6 +23,10 @@ body {
         min-width: 310px;
         overflow: hidden;
     }
+
+    .navbar-nav {
+        font-size: 14px;
+    }
 }
 
 /* global links styling */
