@@ -89,7 +89,6 @@ class Notification {
         switch($workitem->getStatus()) {
             case 'Review':
                 $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
-                $emails=array_unique($emails);
                 $options = array('type' => 'new_review',
                     'workitem' => $workitem,
                     'emails' => $emails);

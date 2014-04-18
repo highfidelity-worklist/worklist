@@ -526,7 +526,7 @@ class JobController extends Controller {
                         $new_update_message .= " Status set to Code Review. ";
                         $status_change = '-' . ucfirst(strtolower($status_review));
                         Notification::massStatusNotify(array(
-                            'type' => 'new-review',
+                            'type' => 'new_review',
                             'workitem' => $workitem,
                             'status_change' => $status_change,
                             'job_changes' => $job_changes),
@@ -583,7 +583,7 @@ class JobController extends Controller {
                         }
                         
                         if($status == 'Review') {
-                            Notification::workitemNotify(array('type' => 'new-review'));
+                            Notification::massStatusNotify(array('type' => 'new_review'));
                         }
 
                         if ($status != 'Draft') {
