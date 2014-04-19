@@ -523,14 +523,9 @@ class JobController extends Controller {
                 if (!$status_error) {
                     $new_update_message = " sandbox url : $sandbox ";
                     if(!empty($status_review)) {
-                        $new_update_message .= " Status set to Code Review. ";
+                        $new_update_message .= " Status set to {$status_review}. ";
                         $status_change = '-' . ucfirst(strtolower($status_review));
-                        Notification::massStatusNotify(array(
-                            'type' => 'new_review',
-                            'workitem' => $workitem,
-                            'status_change' => $status_change,
-                            'job_changes' => $job_changes),
-                            array('changes' => $new_update_message));
+                        Notification::massStatusNotify($workitem);
                     } else {
                         $job_changes[] = '-sandbox';
                     }
@@ -583,7 +578,7 @@ class JobController extends Controller {
                         }
                         
                         if($status == 'Review') {
-                            Notification::massStatusNotify(array('type' => 'new_review'));
+                            Notification::massStatusNotify($workitem);
                         }
 
                         if ($status != 'Draft') {
