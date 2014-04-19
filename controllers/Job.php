@@ -577,7 +577,7 @@ class JobController extends Controller {
                             $displayDialogAfterDone = true;
                         }
                         
-                        if($status == 'Review') {
+                        if($status == 'Code Review') {
                             Notification::massStatusNotify($workitem);
                         }
 
