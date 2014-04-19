@@ -184,6 +184,7 @@ function reply(id) {
     var clone = commentForm.clone();
     commentForm.remove();
     clone.insertAfter($('#comment-' + id));
+    $('#commentform textarea').height(61).autosize();
     commentMargin = $('#comment-' + id).css('margin-left');
     leftMargin = 64 + "px";
     clone.css({'margin-left':leftMargin});
@@ -199,6 +200,8 @@ function reply(id) {
         clone.css({'margin-left':'0'});
         $('input[name=cancel]', clone).addClass('hidden');
         clone.insertAfter($('#commentZone ul'));
+        $('#commentform textarea').height(61).autosize();
+
         $(this).parent().addClass('hidden');
         $('#commentform input[name=newcomment]').val('Comment');
         $('#commentform input[name=comment_id]').val('');
@@ -296,6 +299,7 @@ function postComment() {
             }
 
             clone.insertAfter($('#commentZone ul'));
+            $('#commentform textarea').height(61).autosize();
             $('#commentform input[name=newcomment]').click(function(event) {
                 event.preventDefault();
                 postComment();
