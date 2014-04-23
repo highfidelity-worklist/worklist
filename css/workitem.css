@@ -944,7 +944,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #right-panel .moneyZone{
     display:block;
-    width:390px!important;
+    width: 390px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border-radius: 6px;
@@ -1565,6 +1565,10 @@ h1.newProject {
         width: 100%;
         float: left;
         margin-top: 30px;
+    }
+
+    #right-panel .moneyZone {
+        width: 100%;
     }
 }
 

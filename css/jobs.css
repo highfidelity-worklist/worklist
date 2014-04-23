@@ -1019,9 +1019,6 @@ input {
     #query > fieldset > input[type="text"] + button {
         display: none;
     }
-    #query {
-        margin-right: 60px;
-    }
 }
 
 #query > fieldset > input[type="text"] + button:focus {
@@ -1175,6 +1172,11 @@ input {
     border: 0 none;
 }
 
+#search select {
+    height: 35px;
+    font-size: 13px;
+}
+
 #search select,
 #query > fieldset > input,
 #addJobButton {
@@ -1233,21 +1235,14 @@ input {
     background-color: #007F7c;
 }
 
-@media (max-width: 1024px) {
-    #addJobButton {
-        padding: 10px;
-    }
-}
-
 #buttons {
     padding: 0;
 }
 
 @media (max-width: 768px) {
     #buttons {
-        position: absolute;
-        top: 0;
-        right: 5px;
+        float: right;
+        padding-right: 15px;
     } 
 }
 

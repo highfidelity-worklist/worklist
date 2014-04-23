@@ -1139,4 +1139,8 @@ a#addJobButton:hover {
     #searchbar #search_reset {
         left: 83px;
     }
+
+    #footer {
+        display: none;
+    }
 }

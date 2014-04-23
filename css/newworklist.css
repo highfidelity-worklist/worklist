@@ -23,6 +23,10 @@ body {
         min-width: 310px;
         overflow: hidden;
     }
+
+    .navbar-nav {
+        font-size: 14px;
+    }
 }
 
 /* global links styling */
@@ -429,4 +433,10 @@ body .jumbotron a:active {
 
 button:focus, a:focus {
     outline: none;
+}
+
+@media only screen and (max-width: 450px) {
+    #footer {
+        display: none;
+    }
 }
