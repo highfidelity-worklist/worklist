@@ -628,28 +628,14 @@ class Project {
         Return an array of all projects containing all fields
     **/    
     public function getProjects($active = false, $selections = array(), $onlyInactive = false) {
-    
-        $where = ' ';
-        if ($active) {
-            // Don't hide projects with no commits if it doesn't have a repo
-            $where = 'WHERE
-                       (active=1
-                      AND
-                       (creation_date >= DATE_SUB(NOW(), INTERVAL 21 DAY))
-                      OR 
-                       project_id IN (SELECT project_id FROM ' . WORKLIST . ' 
-                        WHERE status IN ("Bidding", "Working", "Review", "SVNHold", "Completed")))';
-        } else if ($onlyInactive) {
-            $where = 'WHERE active = 0';
-        }
-
         $query = "
             SELECT
                 " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "
             FROM
-                `" . PROJECTS . "`" .
-            $where . " " . 
-             " ORDER BY name ASC";
+                `" . PROJECTS . "`" ."
+            WHERE 
+                `" . PROJECTS . "`.internal = 1 
+            ORDER BY name ASC";
         
         $result = mysql_query($query);
         
