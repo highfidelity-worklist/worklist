@@ -184,17 +184,24 @@ function reply(id) {
     var clone = commentForm.clone();
     commentForm.remove();
     clone.insertAfter($('#comment-' + id));
+    $('#commentform textarea').height(61).autosize();
     commentMargin = $('#comment-' + id).css('margin-left');
     leftMargin = 64 + "px";
     clone.css({'margin-left':leftMargin});
     $('#commentform input[name=comment_id]').val(id);
     $('#commentform input[name=newcomment]').val('Reply');
-    $('#commentform .buttonContainer').removeClass('hidden');
+    $('#commentform input[name=cancel]').removeClass('hidden');
+
     $('#commentform input[name=cancel]').click(function(event) {
         event.preventDefault();
-        $('#commentform').remove();
+        var commentForm = $('#commentform');
+        var clone = commentForm.clone();
+        commentForm.remove();
         clone.css({'margin-left':'0'});
+        $('input[name=cancel]', clone).addClass('hidden');
         clone.insertAfter($('#commentZone ul'));
+        $('#commentform textarea').height(61).autosize();
+
         $(this).parent().addClass('hidden');
         $('#commentform input[name=newcomment]').val('Comment');
         $('#commentform input[name=comment_id]').val('');
@@ -203,10 +210,12 @@ function reply(id) {
             postComment();
         });
     });
+
     $('#commentform input[name=newcomment]').click(function(event) {
         event.preventDefault();
         postComment();
     });
+
     runDisableable();
     return false;
 }
@@ -219,7 +228,7 @@ function postComment() {
     $('#commentform textarea[name=comment]').val('');
     $('#commentform input[name=comment_id]').val('');
     $('#commentform input[name=newcomment]').val('Comment');
-    $('#commentform input[name=cancel]').parent().addClass('hidden');
+    $('#commentform input[name=cancel]').addClass('hidden');
     $('#commentform').css({'margin-left':0});
     var commentForm = $('#commentform');
     var clone = commentForm.clone();
@@ -288,7 +297,9 @@ function postComment() {
                     $(newcomment).insertAfter($('#comment-' + id).nextUntil(cond.join(',')).andSelf().filter(":last"));
                 }
             }
-            $('#commentZone ul').append(clone);
+
+            clone.insertAfter($('#commentZone ul'));
+            $('#commentform textarea').height(61).autosize();
             $('#commentform input[name=newcomment]').click(function(event) {
                 event.preventDefault();
                 postComment();
@@ -565,6 +576,9 @@ $(document).ready(function(){
         event.preventDefault();
         postComment();
     });
+    
+    $('#commentform input[name=cancel]').addClass('hidden');
+
     $("#switchmode_edit").click(function(event) {
         if (!is_project_runner && insufficientRightsToEdit) {
                  $("#workitem_no_edit").dialog({

@@ -35,23 +35,11 @@ class SettingsController extends Controller {
             }
 
             $notifications = 0;
-            $my_bids_notify = !empty($_POST['my_bids_notify']) ? Notification::MY_BIDS_NOTIFICATIONS : 0;
-            $ping_notify = !empty($_POST['ping_notify']) ? Notification::PING_NOTIFICATIONS : 0;
-            $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
-            $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
-            $my_review_notify = !empty($_POST['my_review_notify']) ? Notification::MY_REVIEW_NOTIFICATIONS : 0;
-            $my_completed_notify = !empty($_POST['my_completed_notify']) ? Notification::MY_COMPLETED_NOTIFICATIONS : 0;
             $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
             $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
             $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
 
             $notifications = Notification::setFlags(
-                $review_notify,
-                $bidding_notify,
-                $my_review_notify,
-                $my_completed_notify,
-                $my_bids_notify,
-                $ping_notify,
                 $self_email_notify,
                 $bidding_email_notify,
                 $review_email_notify

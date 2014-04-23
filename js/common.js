@@ -435,8 +435,6 @@ function MapToolTips() {
 };
 
 $(function () {
-    // initialize growing textareas
-    $("textarea[class*=expand]").autogrow();
     // @TODO: This only needs to run on certain pages, settings -- lithium
     $('#username').watermark('Email address', {useNative: false});
     $('#password').watermark('Password', {useNative: false});
@@ -454,6 +452,8 @@ $(function () {
     $('#pp_api_username').watermark('API Username', {useNative: false});
     $('#pp_api_password').watermark('API Password', {useNative: false});
     $('#pp_api_signature').watermark('API Signature', {useNative: false});
+
+    $('textarea.autogrow').autosize();
 
     if ($('#fees-week').length > 0) {
         $('#fees-week').parents("tr").click(function() {
