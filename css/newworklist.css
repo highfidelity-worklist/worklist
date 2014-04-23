@@ -33,16 +33,12 @@ nav.navbar {
     box-shadow: 0 0px 6px #333;
 }
 
-/* navigation signup link color */
-nav.navbar .navbar-right > li > a[href="./signup"] {
+/* navigation log in link color */
+nav.navbar .navbar-right > li > a[href="./github/login"] {
     color: #fff;
-    font-weight: bold;
+    font-size: 1.4em;
 }
 
-/* navigation signup link color */
-nav.navbar .navbar-right > li > a[href="./login"] {
-    color: #007F7c;
-}
 
 /* loading bar */
 body.onAjax nav.navbar > .container-fluid:after {
@@ -207,7 +203,7 @@ input.wlcheckbox[type="checkbox"]:checked + label:before {
     content: '\f00c';
 }
 
-.modal-content form .row {
+form .row {
     margin-bottom: 15px;
 }
 

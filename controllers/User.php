@@ -6,7 +6,34 @@ require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 
 class UserController extends Controller {
-    public function run($id) {
+    public function run($action, $id) {
+        $method = '';
+        switch($action) {
+            case 'exists':
+                $method = $action;
+                break;
+            default:
+                $method = 'info';
+                break;
+        }
+        $this->$method($id);
+    }
+
+    public function exists($id) {
+        $this->view = null;
+        $user = User::find($id);
+        try {
+            $ret = array(
+                'success' => true,
+                'exists' => ($user->getId() > 0)
+            );
+        } catch(Exception $e) {
+            $ret = array('success' => false);
+        }
+        echo json_encode($ret);
+    }
+
+    public function info($id) {
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
         $this->write('tab', isset($_REQUEST['tab']) ? $_REQUEST['tab'] : "");
 
@@ -223,20 +250,4 @@ class UserController extends Controller {
         $this->write('favorite_enabled', $favorite_enabled);
         parent::run();
     }
-
-    public function jsonList() {
-        $this->view = null;
-        $users = User::getUserList(getSessionUserId(), true);
-        $ret = array();
-        foreach ($users as $user) {
-            $ret[] = array(
-                'id' => $user->getId(),
-                'nickname' => $user->getNickname()
-
-            );
-        }
-        echo json_encode(array('users' => $ret));
-        return;
-    }
-
 }
