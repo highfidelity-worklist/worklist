@@ -627,14 +627,14 @@ class Project {
     /**
         Return an array of all projects containing all fields
     **/    
-    public function getProjects($active = false, $selections = array(), $onlyInactive = false) {
+    public function getProjects($active = true, $selections = array(), $onlyInactive = false) {
         $query = "
             SELECT
                 " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "
             FROM
                 `" . PROJECTS . "`" ."
             WHERE 
-                `" . PROJECTS . "`.internal = 1 
+                `" . PROJECTS . "`.internal = 1  AND `" . PROJECTS . "`.active = 1
             ORDER BY name ASC";
         
         $result = mysql_query($query);
