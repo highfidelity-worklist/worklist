@@ -13,7 +13,7 @@
             </select>
         </div>
         <div class="col-xs-6 col-sm-4 col-md-3">
-            <label for="bug_job_id">This is a bug</label>
+            <label id="bug-id-label" for="bug_job_id">This is a bug</label>
             <input type="text" class="form-control" id="bug_job_id" name="bug_job_id" value="{{bug_of}}" />
             <p bug-job-id="0"></p>
         </div>
@@ -25,7 +25,7 @@
     </div>
     <div class="row">
         <label for="notes">Full description</label>
-        <textarea class="form-control" name="notes" id="notes" 
+        <textarea class="form-control autogrow" name="notes" id="notes" 
           placeholder="describe the work necessary to successfully complete this job"></textarea>
     </div>
     <div class="row">

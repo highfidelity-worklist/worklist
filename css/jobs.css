@@ -482,6 +482,7 @@ td.textAlignReport {
 
 .table-worklist tbody tr td {
     border: 0 none;
+    vertical-align: middle;
 }
 
 /* worklist table column sizes */
@@ -524,6 +525,20 @@ td.textAlignReport {
     .table-worklist tr > th:nth-child(6),
     .table-worklist tr > td:nth-child(6) {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-worklist td {
+        white-space: normal;
+    }
+
+    .table-worklist td h4 {
+        white-space: nowrap;
+    }
+
+    .table-worklist tr > td:nth-child(2) {
+        max-width: 200px;
     }
 }
 
@@ -933,11 +948,20 @@ input {
     font-size: 1em;
     line-height: 1.45em;
 }
+
 @media (max-width: 768px) {
     #search select + div,
     #search select,
     #query > fieldset > input {
-        margin-bottom: 0;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    #search select {
+        margin: 5px 0;
+        width: 100%;
     }
 }
 
@@ -994,9 +1018,6 @@ input {
 @media (max-width: 768px) {
     #query > fieldset > input[type="text"] + button {
         display: none;
-    }
-    #query {
-        margin-right: 60px;
     }
 }
 
@@ -1151,6 +1172,11 @@ input {
     border: 0 none;
 }
 
+#search select {
+    height: 35px;
+    font-size: 13px;
+}
+
 #search select,
 #query > fieldset > input,
 #addJobButton {
@@ -1209,22 +1235,27 @@ input {
     background-color: #007F7c;
 }
 
-@media (max-width: 1024px) {
-    #addJobButton {
-        padding: 10px;
-    }
-}
-
 #buttons {
     padding: 0;
 }
 
 @media (max-width: 768px) {
     #buttons {
-        position: absolute;
-        top: 0;
-        right: 5px;
+        float: right;
+        padding-right: 15px;
     } 
+}
+
+@media (max-width: 480px) {
+
+    td.status-col {
+        width: 15px;
+        text-align: center;
+    }
+
+    td.status-col > span {
+        display: none;
+    }
 }
 
 td.statusDraft > i,

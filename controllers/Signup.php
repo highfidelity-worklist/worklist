@@ -67,8 +67,8 @@ class SignupController extends Controller {
                     $minimal_POST = array_merge($minimal_POST, array_map('htmlspecialchars', array_intersect_key($minimal_POST, $fields_to_htmlescape)));
                     unset($minimal_POST['confirmpassword']);
                     unset($minimal_POST['sign_up']);
-                    $review_notify = !empty($_POST['review_notify']) ? Notification::REVIEW_NOTIFICATIONS : 0;
-                    $bidding_notify = !empty($_POST['bidding_notify']) ? Notification::BIDDING_NOTIFICATIONS : 0;
+                    $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
+                    $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
 
                     if(! isset($minimal_POST['paypal'])){
                         $minimal_POST['paypal_email'] = '';
@@ -92,7 +92,7 @@ class SignupController extends Controller {
                     $newUser['nickname'] = $minimal_POST['nickname'];
                     $newUser['confirm_string'] = uniqid();
                     $newUser['added'] = "NOW()";
-                    $newUser['notifications'] = Notification::setFlags($review_notify, $bidding_notify);
+                    $newUser['notifications'] = Notification::setFlags($review_email_notify, $bidding_email_notify);
                     $newUser['w9_status'] = $_POST['country'] == 'US' ? 'awaiting-receipt' : 'not-applicable';                    
                 } else {
                     $nickname = $gh_user->login;
@@ -201,8 +201,8 @@ class SignupController extends Controller {
             'skills' => (isset($_POST['skills']) ? strip_tags($_POST['skills']) : ""),
             'country' => (isset($_POST['country']) ? strip_tags($_POST['country']) : ""),
             'city' => (isset($userInfo['city']) ? $userInfo['city'] : (isset($_REQUEST['city']) ? $_REQUEST['city'] : '')),
-            'bidding_notify' => (isset($_REQUEST['bidding_notify']) ? $_REQUEST['bidding_notify'] : ''),
-            'review_notify' => (isset($_REQUEST['review_notify']) ? $_REQUEST['review_notify'] : '')
+            'bidding_email_notify' => (isset($_REQUEST['bidding_email_notify']) ? $_REQUEST['bidding_email_notify'] : ''),
+            'review_email_notify' => (isset($_REQUEST['review_email_notify']) ? $_REQUEST['review_email_notify'] : '')
         ));
         parent::run();
     }
