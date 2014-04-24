@@ -14,8 +14,10 @@
  */
 class GitHubUser extends User
 {
-    public function __construct($userID) {
-        $this->findUserById((int)$userID);
+    public function __construct($userId = 0) {
+        if ($userId) {
+            $this->findUserById((int)$userId);
+        }
     }
 
     public function findUserByAuthToken($token, $github_id = GITHUB_OAUTH2_CLIENT_ID) {
@@ -30,21 +32,6 @@ class GitHubUser extends User
         return $this->loadUser($where);       
     }
 
-    public function linkedToAuthToken($token, $github_id = GITHUB_OAUTH2_CLIENT_ID) {
-        $sql = '
-            SELECT COUNT(*) as c 
-            FROM `' . USERS_AUTH_TOKENS . "`
-            WHERE  user_id = %d 
-              AND github_id = '%s' 
-              AND auth_token = '%s'";
-        $result = mysql_query(sprintf($sql, $this->id, $github_id, $token));
-        if ($row = mysql_fetch_assoc($result)) {
-            return $result['c'] != 0;
-        } else {
-            return null;
-        }
-    }
-    
     public function processConnectResponse($gitHubId, $gitHubSecret) {
         $error = isset($_REQUEST['error']) ? true : false;
         $message = $error ? $_REQUEST['error'] : false;
@@ -198,5 +185,25 @@ class GitHubUser extends User
         );
         $pullRequestStatus = $GitHubProject->makeApiRequest($path, 'POST', $token, $params, true);
         return $pullRequestStatus;
+    }
+
+    public static function signup($username, $nickname, $password, $access_token) {
+        $sql = "
+            INSERT 
+            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status)
+            VALUES(
+                '" . mysql_real_escape_string($username) . "', 
+                '" . mysql_real_escape_string($nickname) . "',
+                '{crypt}" . mysql_real_escape_string(Utils::encryptPassword($password)) . "',
+                '" . uniqid() . "',
+                NOW(),
+                'not-applicable'
+            )";
+        $res = mysql_query($sql);
+        $user_id = mysql_insert_id();
+        if ($ret = New GitHubUser($user_id)) {
+            $ret->storeCredentials($access_token);
+        }
+        return $ret;
     }
 }
