@@ -1,0 +1,55 @@
+.navicon-help {
+	background-image: url('../../images/navicons/svg/help2.svg');
+	background-repeat: no-repeat;
+}
+
+/* .navicon-help:before {
+	content: url('../../images/navicons/svg/help.svg');
+} */
+
+.navicon-jobs {
+	background-image: url('../../images/navicons/svg/jobs.svg');
+	background-repeat: no-repeat;
+}
+.navicon-projects {
+	background-image: url('../../images/navicons/svg/projects.svg');
+	background-repeat: no-repeat;
+}
+.navicon-status {
+	background-image: url('../../images/navicons/svg/status.svg');
+	background-repeat: no-repeat;
+}
+.navicon-team {
+	background-image: url('../../images/navicons/svg/team.svg');
+	background-repeat: no-repeat;
+}
+.navicon-worklist {
+	background-image: url('../../images/navicons/svg/worklist.svg');
+	background-repeat: no-repeat;
+}
+.navicon-hifi {
+	background-image: url('../../images/navicons/svg/hifi.svg');
+	background-repeat: no-repeat;
+}
+
+.hifi-logo {
+	display: inline-block;
+	width: 29px;
+	height: 29px;
+	fill: #666666;
+    shape-rendering: geometricPrecision;
+}
+.hifi-logo-icon {
+	fill: #666666;
+    stroke: #666666;
+}
+
+.hifi-logo-icon:hover{
+	fill: white;
+    stroke: white;
+}
+
+.navicon-attach {
+	background-image: url('../../images/wl-icons/svg/attach.svg');
+	background-repeat: no-repeat;
+}
