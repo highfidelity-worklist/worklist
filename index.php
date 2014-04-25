@@ -51,7 +51,7 @@ class Dispatcher {
         $dispatcher->get('/timeline', array('Timeline'));
         $dispatcher->get('/uploads/:filename', array('Upload'), array('require' => array('filename' => '.+')));
 
-        $dispatcher->get('/user(/:method)/:id', array('User'));
+        $dispatcher->get('/user(/:method)/:param', array('User'));
         $dispatcher->post('/user/:id', array('User'));
         //$dispatcher->get('/user/:method/:id', array('User'));
 
