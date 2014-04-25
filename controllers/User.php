@@ -6,17 +6,18 @@ require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 
 class UserController extends Controller {
-    public function run($action, $id) {
+    public function run($action, $param) {
         $method = '';
         switch($action) {
             case 'exists':
+            case 'index':
                 $method = $action;
                 break;
             default:
                 $method = 'info';
                 break;
         }
-        $this->$method($id);
+        $this->$method($param);
     }
 
     public function exists($id) {
@@ -32,6 +33,21 @@ class UserController extends Controller {
         }
         echo json_encode($ret);
     }
+
+    public function index($cond) {
+        $this->view = null;
+        $users = User::getUserList(getSessionUserId(), true);
+        $ret = array();
+        foreach ($users as $user) {
+            $ret[] = array(
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname()
+
+            );
+        }
+        echo json_encode(array('users' => $ret));
+        return;
+}
 
     public function info($id) {
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;

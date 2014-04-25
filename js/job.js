@@ -1115,7 +1115,7 @@ function pingBidder(id) {
 
 function showFeeForm() {
     $.get(
-        './users.json',
+        './user/index/all',
         function(data) {
             Utils.modal('addfee', {
                 job_id: workitem_id,
