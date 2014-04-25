@@ -475,8 +475,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .github {
     margin-top: -7px;
     padding-left: 42px;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 0 -1138px;
+    background-position: -3px 0px;
     background-repeat: no-repeat;
 }
 
@@ -944,7 +943,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #right-panel .moneyZone{
     display:block;
-    width:390px!important;
+    width: 390px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border-radius: 6px;
@@ -1216,26 +1215,15 @@ a.profile-link {
 
 #following {
     padding: 10px 24px 7px 30px;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 1px -890px;
+    background-position: 0px 10px;
     background-repeat: no-repeat;
-}
-
-#following:hover {
-    background-position: -201px -890px;
 }
 
 #invite-link {
     padding: 10px 17px 7px 37px;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 15px -920px;
+    background-position: 10px 10px;
     background-repeat: no-repeat;
 }
-
-#invite-link:hover {
-    background-position: -187px -920px;
-}
-
 
 #following,
 #invite-link{
@@ -1245,8 +1233,7 @@ a.profile-link {
 .switchmode,
 .switchmode-done {
     padding: 10px 15px 7px 31px;
-    background-image: url('../images/primaryIcons-WL.png');
-    background-position: 13px -950px;
+    background-position: 10px 10px;
     background-repeat: no-repeat;
 }
 
@@ -1259,10 +1246,6 @@ a.profile-link {
 .switchmode:hover a{
     text-decoration: underline !important;
     color: #608e96 !important;
-}
-
-.switchmode:hover{
-    background-position: -189px -950px;
 }
 
 .hidden {
@@ -1566,6 +1549,10 @@ h1.newProject {
         float: left;
         margin-top: 30px;
     }
+
+    #right-panel .moneyZone {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1623,22 +1610,6 @@ h1.newProject {
     #invite-link,
     #switchmode_edit {
         padding: 10px 5px 7px 25px;
-    }
-
-    #following {
-        background-position: 0px -890px;
-    }
-
-    #following:hover {
-        background-position: -202px -890px;
-    }
-
-    #invite-link {
-        background-position: 6px -920px;
-    }
-
-    #invite-link:hover {
-        background-position: -196px -920px;
     }
 
     #switchmode_edit {

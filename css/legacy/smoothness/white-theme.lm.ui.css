@@ -130,7 +130,9 @@ input[type=submit].wide {
     margin-left: auto;
     margin-right: auto;
     margin-top: 27%;
-    background: url(./images/dialog-close.png) no-repeat;
+    background-image:  url('./images/dialog-close.png') no-repeat;
+    background-image:  url('./images/dialog-close.svg');
+    background-position: 0
 }
 .white-theme .ui-dialog-content {
     padding: 10px 50px 55px 35px !important;

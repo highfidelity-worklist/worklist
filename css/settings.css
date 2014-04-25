@@ -127,3 +127,15 @@
         line-height: 1em;
     }
 }
+
+.upload-btn {
+    display: inline-block;
+    background-color: #608e96;
+    border-radius: 4px;
+    height: 27px;
+    padding-left: 32px !important;
+    margin: 5px;
+    position: relative;
+    vertical-align: top;
+    background-position: 8px 6px;
+}

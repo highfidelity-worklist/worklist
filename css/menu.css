@@ -19,12 +19,14 @@ body > nav.navbar a.navbar-brand {
 }
 
 body > nav.navbar a.navbar-brand[href="https://highfidelity.io"] {
-    background-image: url(../images/navbar/hifi.png);
     width: 60px;
+    text-indent: 0;
+    padding: 0;
+    padding-top: 2px;
+    text-align: center;
 }
 
 body > nav.navbar a.navbar-brand[href="./"] {
-    background-image: url(../images/navbar/worklist.png);
     width: 80px;
 }
 
@@ -69,24 +71,24 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
         background-position: center 8px;
     }
 
-    body > nav.navbar ul.nav a[href$="/jobs"] {
-        background-image: url(../images/navbar/jobs.png);
+     body > nav.navbar ul.nav a[href$="/jobs"] {
+        background-position-y: 9px !important;
     }
 
     body > nav.navbar ul.nav a[href$="/projects"] {
-        background-image: url(../images/navbar/projects.png);
+        background-position-y: 10px !important;
     }
 
     body > nav.navbar ul.nav a[href$="/status"] {
-        background-image: url(../images/navbar/status.png);
+        background-position-y: 9px !important;
     }
 
     body > nav.navbar ul.nav a[href$="/team"] {
-        background-image: url(../images/navbar/team.png);
+        background-position-y: 12px !important;
     }
 
     body > nav.navbar ul.nav a[href$="/help"] {
-        background-image: url(../images/navbar/help.png);
+        background-position-y: 6px !important;
     }
 
     /* default navbar dropdown is thiner than desired height  */
