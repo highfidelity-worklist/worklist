@@ -1115,7 +1115,7 @@ function pingBidder(id) {
 
 function showFeeForm() {
     $.get(
-        './users.json',
+        './user/index/all',
         function(data) {
             Utils.modal('addfee', {
                 job_id: workitem_id,
@@ -1363,7 +1363,7 @@ $(function() {
                         msg = "<span>Your reply has been sent.</span>";
                     }
                     Utils.emptyModal({
-                        content: success_msg,
+                        content: msg,
                         buttons: [
                             {
                                 content: 'Ok',

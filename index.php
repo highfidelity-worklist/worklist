@@ -50,9 +50,11 @@ class Dispatcher {
         $dispatcher->get('/team', array('Team'));
         $dispatcher->get('/timeline', array('Timeline'));
         $dispatcher->get('/uploads/:filename', array('Upload'), array('require' => array('filename' => '.+')));
-        $dispatcher->get('/user/:id', array('User'));
+
+        $dispatcher->get('/user(/:method)/:param', array('User'));
         $dispatcher->post('/user/:id', array('User'));
-        $dispatcher->get('/users.json', array('User', 'jsonList'));
+        //$dispatcher->get('/user/:method/:id', array('User'));
+
         $dispatcher->get('/welcome', array('Welcome'));
         $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
         $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));

@@ -1,0 +1,32 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="./github/authorize" method="post">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Enter your Worklist password</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            Please enter the password you've been using to sign in the Worklist
+            so far. This might be the last time you have to use it, but you should
+            still remember it as your safe-mode way.
+          </p>
+          <div class="row">
+            <div class="col-md-4"><label for="pass1">Password</label></div>
+            <div class="col-md-8">
+              <input id="pass1" type="password" name="password" 
+                class="form-control" placeholder="Enter your password">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Ok</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
