@@ -47,7 +47,7 @@ class UserController extends Controller {
         }
         echo json_encode(array('users' => $ret));
         return;
-}
+    }
 
     public function info($id) {
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
