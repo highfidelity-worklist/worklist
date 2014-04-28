@@ -106,6 +106,7 @@ class GithubController extends Controller {
                             $this->view = new AuthView();
                             $this->write('access_token', $access_token);
                             $this->write('default_username', isset($gh_user->email) ? $gh_user->email : '');
+                            $this->write('default_location', isset($gh_user->location) ? $gh_user->location : '');
                             parent::run();
                             return;
                         }
@@ -191,11 +192,14 @@ class GithubController extends Controller {
      * Post-AuthView process: create new accounts for new users
      */
     public function signup() {
+        global $countrylist;
+
         $this->view = null;
         $success = false;
         $msg = '';
         try {
             $access_token = isset($_POST["access_token"]) ? trim($_POST["access_token"]) : "";
+            $country = isset($_POST["country"]) ? trim($_POST["country"]) : "";
             $username = isset($_POST["username"]) ? trim($_POST["username"]) : "";
             $password = isset($_POST["password"]) ? $_POST["password"] : "";
             $pass2 = isset($_POST["password2"]) ? $_POST["password2"] : "";
@@ -206,13 +210,15 @@ class GithubController extends Controller {
             $tokenTestUser->findUserByAuthToken($access_token);
             if (empty($access_token)) {
                 throw new Exception("Access token not provided.");
+            } else if (empty($country) || !array_key_exists($country, $countrylist)) {
+                throw new Exception("Invalid country.");
             } else if (empty($username) || !filter_var($username, FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Invalid username.");
             } else if (empty($password) || $password != $pass2) {
                 throw new Exception("Invalid passwords.");
-            } elseif ($usernameTestUser->getId()) {
+            } else if ($usernameTestUser->getId()) {
                 throw new Exception("Username already taken.");
-            } elseif ($tokenTestUser->getId()) {
+            } else if ($tokenTestUser->getId()) {
                 throw new Exception("Access token already in use.");
             }
 
@@ -235,7 +241,7 @@ class GithubController extends Controller {
                 }
             }
 
-            $user = GitHubUser::signup($username, $nickname, $password, $access_token);
+            $user = GitHubUser::signup($username, $nickname, $password, $access_token, $country);
             $success = true;
 
             // Email user

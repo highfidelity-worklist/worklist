@@ -187,17 +187,18 @@ class GitHubUser extends User
         return $pullRequestStatus;
     }
 
-    public static function signup($username, $nickname, $password, $access_token) {
+    public static function signup($username, $nickname, $password, $access_token, $country) {
         $sql = "
             INSERT 
-            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status)
+            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country)
             VALUES(
                 '" . mysql_real_escape_string($username) . "', 
                 '" . mysql_real_escape_string($nickname) . "',
                 '{crypt}" . mysql_real_escape_string(Utils::encryptPassword($password)) . "',
                 '" . uniqid() . "',
                 NOW(),
-                'not-applicable'
+                'not-applicable',
+                '" . mysql_real_escape_string($country) . "'
             )";
         $res = mysql_query($sql);
         $user_id = mysql_insert_id();

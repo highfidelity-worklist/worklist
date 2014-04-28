@@ -1,0 +1,38 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="./github/signup" method="post">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Just a quick form and you're done</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4"><label for="pass1">Country</label></div>
+            <div class="col-md-8">
+              <select name="country"></select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4"><label for="pass1">Safe-mode password</label></div>
+            <div class="col-md-8">
+              <input id="pass1" type="password" name="password" class="form-control" placeholder="Choose a password">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4"><label for="pass2">Repeat password</label></div>
+            <div class="col-md-8">
+              <input id="pass2" type="password" name="password2" class="form-control" placeholder="Enter password again">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Ok</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
