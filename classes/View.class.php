@@ -65,6 +65,12 @@ class View extends AppObject {
      */
     public function __construct() {
         $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
+    }
+
+    /**
+     * Load default views global values/properties
+     */
+    public function loadGlobals() {
         $user_id = getSessionUserId();
         $user = new User();
         if ($user_id) {
@@ -86,7 +92,6 @@ class View extends AppObject {
             );
         }
 
-        $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
         $this->app['self_url'] = $_SERVER['PHP_SELF'];
         $this->currentUser['id'] = $user_id;
         $this->currentUser['username'] = $user_id ? $user->getUsername() : '';
@@ -172,6 +177,8 @@ class View extends AppObject {
     }
         
     public function render() {
+        $this->loadGlobals();
+
         $layout = $this->layout;
         if (is_string($layout) && class_exists($layout . 'Layout')) {
             $layoutClass = $layout . 'Layout';
