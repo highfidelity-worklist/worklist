@@ -608,7 +608,7 @@ function autoPassSuggestedJobs() {
             );
             
             //sendJournalnotification 
-            $journal_message =  "\\#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
+            $journal_message =  "\\\\#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
             sendJournalNotification(stripslashes($journal_message));            
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
