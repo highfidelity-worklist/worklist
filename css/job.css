@@ -143,9 +143,10 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
 
 /* inline footer */
 section#footer {
-    max-width: 370px;
-    padding: 6px 0 0 35px;
-    background-position: center left;
+    max-width: 920px;
+    padding-left: 15px;
+    background: transparent none;
+    text-align: left;
 }
 
 section#footer li:first-child:before {
@@ -157,6 +158,3 @@ section#footer li:nth-child(-n+3) {
     display: inline-block;
 }
 
-section#footer li:nth-child(-n+3) {
-    display: none;
-}
