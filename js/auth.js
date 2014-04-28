@@ -141,6 +141,7 @@ var Auth = {
                 type: 'POST',
                 data: {
                     access_token: $('form#auth input[name="access_token"]').val(),
+                    country: $('select[name="country"]', dialog).val(),
                     username: $('form#auth input[name="username"]').val(),
                     password: $('input[name="password"]', dialog).val(),
                     password2: $('input[name="password2"]', dialog).val(),

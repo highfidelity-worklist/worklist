@@ -211,7 +211,7 @@ class GithubController extends Controller {
             if (empty($access_token)) {
                 throw new Exception("Access token not provided.");
             } else if (empty($country) || !array_key_exists($country, $countrylist)) {
-                throw new Exception("Invalid country.");
+                throw new Exception("Invalid country." . $country);
             } else if (empty($username) || !filter_var($username, FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Invalid username.");
             } else if (empty($password) || $password != $pass2) {
