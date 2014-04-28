@@ -24,6 +24,10 @@ class AuthView extends View {
         return $this->read('default_username');
     }
 
+    public function defaultLocation() {
+        return $this->read('default_location');
+    }
+
     public function accessToken() {
         return $this->read('access_token');
     }

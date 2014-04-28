@@ -96,6 +96,7 @@ function saveSettings() {
         values = {
             save: 1,
             timezone: $('#timezone').val(),
+            country: $('#country').val(),
             bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
             nickname: $('#nickname').val(),
             username: $('#username').val(),
@@ -151,7 +152,7 @@ function saveSettings() {
 }
 
 $(function () {
-    $('#timezone').chosen();
+    $('#timezone, #country').chosen();
 
     if (ppConfirmed || emConfirmed) {
         $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');

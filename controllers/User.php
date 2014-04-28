@@ -11,6 +11,7 @@ class UserController extends Controller {
         switch($action) {
             case 'exists':
             case 'index':
+            case 'countries':
                 $method = $action;
                 break;
             default:
@@ -47,7 +48,7 @@ class UserController extends Controller {
         }
         echo json_encode(array('users' => $ret));
         return;
-}
+    }
 
     public function info($id) {
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
@@ -265,5 +266,17 @@ class UserController extends Controller {
         $this->write('favorite_count', $favorite_count);
         $this->write('favorite_enabled', $favorite_enabled);
         parent::run();
+    }
+
+    public function countries($cond) {
+        global $countrylist;
+        $ret = array();
+        foreach($countrylist as $code => $country) {
+            $ret[] = array(
+                'code' => $code,
+                'name' => $country
+            );
+        }
+        echo json_encode($ret);
     }
 }
