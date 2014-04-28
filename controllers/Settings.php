@@ -47,6 +47,12 @@ class SettingsController extends Controller {
 
             $saveArgs['notifications'] = 0;
 
+            $country = trim($_POST['country']);
+            if ($country != $user->getCountry()) {
+                $messages[] = "Your country has been updated.";
+                $saveArgs['country'] = 1;
+            }
+
             if ($user->getTimezone() != $_POST['timezone']) {
                   $messages[] = "Your timezone has been updated.";
             }
@@ -116,8 +122,8 @@ class SettingsController extends Controller {
                 $body  = '<p>Dear ' . $user->getNickname() . ',</p>';
                 $body .= '<p>Please confirm your new email address in the <a href="' . $worklist_link . '">Worklist</a>.</p>';
                 $body .= '<p><a href=' . $link . '>Click here to confirm your email address</a></p>';
-               $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
-               $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
+                $body .= '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>';
+                $body .= '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
 
 
                 $plain  = 'Dear ' . $user->getNickname() . ',' . "\n\n";
