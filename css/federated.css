@@ -21,13 +21,29 @@ body > nav.navbar + .container-fluid > .row {
 
 p {
     margin: 15px 0 30px;
+    padding-top: 60px;
 }
+
+@media (max-width: 768px) {
+    p {
+        padding-top: 30px;
+    }
+}
+
 
 #github {
     margin: 20px 0;
     background-color: #edebe8;
     padding: 20px;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    #github {
+        padding: 5px;
+        background: transparent;
+    }
+
 }
 
 #github > a {
