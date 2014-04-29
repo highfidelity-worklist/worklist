@@ -661,7 +661,7 @@ $(document).ready(function(){
         if (user_id) {
             setFollowingText(isFollowing);
         } else {  
-            $('#followingLogin').html('<a href="./login">Login to follow this task.</a>');
+            $('#followingLogin').html('<a href="./github/login">Login to follow this task.</a>');
         }
     })(jQuery);
     
@@ -1497,7 +1497,7 @@ $(function() {
 });
 
 function sendToLogin(){
-    window.location = './login?redir=./' + workitem_id;
+    window.location = './github/login?redir=./' + workitem_id;
 }
 
 function setFollowingText(isFollowing){

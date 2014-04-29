@@ -986,7 +986,7 @@ function checkLogin() {
         if (!empty($_POST)) {
             handleUnloggedPost();
         }
-        Utils::redirect('./login?expired=1&redir=' . urlencode($_SERVER['REQUEST_URI']));
+        Utils::redirect('./github/login?expired=1&redir=' . urlencode($_SERVER['REQUEST_URI']));
         exit;
     }
 }
