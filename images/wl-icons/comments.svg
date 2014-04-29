@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 19.389 14.4" height="14.4px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="19.389px" version="1.1" enable-background="new 0 0 19.389 14.4">
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 19.389 14.4" height="14.4px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="19.389px" version="1.1" enable-background="new 0 0 19.389 14.4">
   <path fill="#9A9999" d="M17.431,4.266h-4.605v4.016c0,0.361-0.293,0.653-0.655,0.653H8.309v1.457c0,0.297,0.239,0.537,0.536,0.537  h5.09c-0.058,0.205-0.161,0.46-0.34,0.751c-0.468,0.761-0.965,1.146-0.899,1.28c0.062,0.129,1.271-0.252,2.137-1.072  c0.51-0.483,0.785-0.758,0.933-0.958h1.665c0.296,0,0.537-0.241,0.537-0.538V4.803C17.968,4.506,17.727,4.266,17.431,4.266" />
   <path fill="#9A9999" d="M11.797,1.537H1.958c-0.297,0-0.537,0.241-0.537,0.537v5.858c0,0.297,0.24,0.537,0.537,0.537h1.453  C3.53,8.713,3.842,9.247,4.507,9.882c0.765,0.731,1.93,1.198,2.026,1.087c0.117-0.135-0.371-0.534-0.838-1.295  C5.337,9.092,5.283,8.656,5.279,8.469h6.518c0.297,0,0.536-0.24,0.536-0.537V2.074C12.333,1.778,12.094,1.537,11.797,1.537" />
 </svg>
