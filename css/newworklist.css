@@ -440,3 +440,542 @@ button:focus, a:focus {
         display: none;
     }
 }
+
+
+/* Worklist Icons Classes */
+.wl-icon-arrow-down,
+.wl-icon-arrow-down\:regular {
+    background-image: url('../images/wl-icons/arrow-down.png');
+    background-image: url('../images/wl-icons/arrow-down.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-arrow-down-dims {
+    width: 20px;
+    height: 13px;
+}
+
+.wl-icon-arrow-up,
+.wl-icon-arrow-up\:regular {
+    background-image: url('../images/wl-icons/arrow-up.png');
+    background-image: url('../images/wl-icons/arrow-up.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-arrow-up-dims {
+    width: 25px;
+    height: 18px;
+}
+
+.wl-icon-attach-black,
+.wl-icon-attach-black\:regular {
+    background-image: url('../images/wl-icons/attach-black.png');
+    background-image: url('../images/wl-icons/attach-black.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-attach-black-dims {
+    width: 30px;
+    height: 23px;
+}
+
+.wl-icon-attach,
+.wl-icon-attach\:regular {
+    background-image: url('../images/wl-icons/attach.png');
+    background-image: url('../images/wl-icons/attach.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-attach-dims {
+    width: 19px;
+    height: 15px;
+}
+
+.wl-icon-bar,
+.wl-icon-bar\:regular {
+    background-image: url('../images/wl-icons/bar.png');
+    background-image: url('../images/wl-icons/bar.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-bar-dims {
+    width: 121px;
+    height: 7px;
+}
+
+.wl-icon-chat,
+.wl-icon-chat\:regular {
+    background-image: url('../images/wl-icons/chat.png');
+    background-image: url('../images/wl-icons/chat.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-chat-dims {
+    width: 20px;
+    height: 20px;
+}
+
+.wl-icon-close,
+.wl-icon-close\:regular {
+    background-image: url('../images/wl-icons/close.png');
+    background-image: url('../images/wl-icons/close.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-close-dims {
+    width: 18px;
+    height: 18px;
+}
+
+.wl-icon-comments-dark,
+.wl-icon-comments-dark\:regular {
+    background-image: url('../images/wl-icons/comments-dark.png');
+    background-image: url('../images/wl-icons/comments-dark.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-comments-dark-dims {
+    width: 29px;
+    height: 21px;
+}
+
+.wl-icon-comments,
+.wl-icon-comments\:regular {
+    background-image: url('../images/wl-icons/comments.png');
+    background-image: url('../images/wl-icons/comments.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-comments-dims {
+    width: 19px;
+    height: 14px;
+}
+
+.wl-icon-dialog,
+.wl-icon-dialog\:regular {
+    background-image: url('../images/wl-icons/dialog.png');
+    background-image: url('../images/wl-icons/dialog.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-dialog-dims {
+    width: 45px;
+    height: 36px;
+}
+
+.wl-icon-document-color,
+.wl-icon-document-color\:regular {
+    background-image: url('../images/wl-icons/document-color.png');
+    background-image: url('../images/wl-icons/document-color.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-document-color-dims {
+    width: 32px;
+    height: 41px;
+}
+
+.wl-icon-document,
+.wl-icon-document\:regular {
+    background-image: url('../images/wl-icons/document.png');
+    background-image: url('../images/wl-icons/document.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-document-dims {
+    width: 30px;
+    height: 39px;
+}
+
+.wl-icon-dollar-gray,
+.wl-icon-dollar-gray\:regular {
+    background-image: url('../images/wl-icons/dollar-gray.png');
+    background-image: url('../images/wl-icons/dollar-gray.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-dollar-gray-dims {
+    width: 19px;
+    height: 26px;
+}
+
+.wl-icon-dollar,
+.wl-icon-dollar\:regular {
+    background-image: url('../images/wl-icons/dollar.png');
+    background-image: url('../images/wl-icons/dollar.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-dollar-dims {
+    width: 12px;
+    height: 18px;
+}
+
+.wl-icon-edit,
+.wl-icon-edit\:regular {
+    background-image: url('../images/wl-icons/edit.png');
+    background-image: url('../images/wl-icons/edit.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-edit:hover,
+.wl-icon-edit\:hover {
+    background-image: url('../images/wl-icons/edit~hover.png');
+    background-image: url('../images/wl-icons/edit~hover.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-edit:after {
+    background-image: url('../images/wl-icons/edit~hover.png');
+    background-image: url('../images/wl-icons/edit~hover.svg');
+    display: none;
+}
+
+.wl-icon-edit-dims {
+    width: 14px;
+    height: 14px;
+}
+
+.wl-icon-edit-dims:hover,
+.wl-icon-edit\:hover-dims {
+    width: 14px;
+    height: 14px;
+}
+
+.wl-icon-engine-black,
+.wl-icon-engine-black\:regular {
+    background-image: url('../images/wl-icons/engine-black.png');
+    background-image: url('../images/wl-icons/engine-black.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-engine-black-dims {
+    width: 24px;
+    height: 24px;
+}
+
+.wl-icon-engine-dark,
+.wl-icon-engine-dark\:regular {
+    background-image: url('../images/wl-icons/engine-dark.png');
+    background-image: url('../images/wl-icons/engine-dark.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-engine-dark-dims {
+    width: 24px;
+    height: 24px;
+}
+
+.wl-icon-engine-light,
+.wl-icon-engine-light\:regular {
+    background-image: url('../images/wl-icons/engine-light.png');
+    background-image: url('../images/wl-icons/engine-light.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-engine-light-dims {
+    width: 24px;
+    height: 24px;
+}
+
+.wl-icon-exit,
+.wl-icon-exit\:regular {
+    background-image: url('../images/wl-icons/exit.png');
+    background-image: url('../images/wl-icons/exit.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-exit-dims {
+    width: 16px;
+    height: 26px;
+}
+
+.wl-icon-follow,
+.wl-icon-follow\:regular {
+    background-image: url('../images/wl-icons/follow.png');
+    background-image: url('../images/wl-icons/follow.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-follow:hover,
+.wl-icon-follow\:hover {
+    background-image: url('../images/wl-icons/follow~hover.png');
+    background-image: url('../images/wl-icons/follow~hover.svg');
+    background-repeat: no-repeat;
+}
+.wl-icon-follow:after {
+    background-image: url('../images/wl-icons/follow~hover.png');
+    background-image: url('../images/wl-icons/follow~hover.svg');
+    display: none;
+}
+
+.wl-icon-follow-dims {
+    width: 24px;
+    height: 14px;
+}
+
+.wl-icon-follow-dims:hover,
+.wl-icon-follow\:hover-dims {
+    width: 24px;
+    height: 14px;
+}
+
+.wl-icon-github,
+.wl-icon-github\:regular {
+    background-image: url('../images/wl-icons/github.png');
+    background-image: url('../images/wl-icons/github.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-github-dims {
+    width: 42px;
+    height: 32px;
+}
+
+.wl-icon-help,
+.wl-icon-help\:regular {
+    background-image: url('../images/wl-icons/help.png');
+    background-image: url('../images/wl-icons/help.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-help-dims {
+    width: 27px;
+    height: 28px;
+}
+
+.wl-icon-hifi-black,
+.wl-icon-hifi-black\:regular {
+    background-image: url('../images/wl-icons/hifi-black.png');
+    background-image: url('../images/wl-icons/hifi-black.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-hifi-black-dims {
+    width: 29px;
+    height: 29px;
+}
+
+.wl-icon-hifi,
+.wl-icon-hifi\:regular {
+    background-image: url('../images/wl-icons/hifi.png');
+    background-image: url('../images/wl-icons/hifi.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-hifi:hover,
+.wl-icon-hifi\:hover {
+    background-image: url('../images/wl-icons/hifi~hover.png');
+    background-image: url('../images/wl-icons/hifi~hover.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-hifi:after{
+    background-image: url('../images/wl-icons/hifi~hover.png');
+    background-image: url('../images/wl-icons/hifi~hover.svg');
+    display: none;
+}
+
+.wl-icon-hifi-dims {
+    width: 29px;
+    height: 29px;
+}
+
+.wl-icon-hifi-dims:hover,
+.wl-icon-hifi\:hover-dims {
+    width: 29px;
+    height: 29px;
+}
+
+.wl-icon-invite,
+.wl-icon-invite\:regular {
+    background-image: url('../images/wl-icons/invite.png');
+    background-image: url('../images/wl-icons/invite.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-invite:hover,
+.wl-icon-invite\:hover {
+    background-image: url('../images/wl-icons/invite~hover.png');
+    background-image: url('../images/wl-icons/invite~hover.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-invite:after {
+    background-image: url('../images/wl-icons/invite~hover.png');
+    background-image: url('../images/wl-icons/invite~hover.svg');
+    display: none;
+}
+
+.wl-icon-invite-dims {
+    width: 17px;
+    height: 14px;
+}
+
+.wl-icon-invite-dims:hover,
+.wl-icon-invite\:hover-dims {
+    width: 17px;
+    height: 14px;
+}
+
+.wl-icon-jobs,
+.wl-icon-jobs\:regular {
+    background-image: url('../images/wl-icons/jobs.png');
+    background-image: url('../images/wl-icons/jobs.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-jobs-dims {
+    width: 26px;
+    height: 26px;
+}
+
+.wl-icon-no-dialog,
+.wl-icon-no-dialog\:regular {
+    background-image: url('../images/wl-icons/no-dialog.png');
+    background-image: url('../images/wl-icons/no-dialog.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-no-dialog-dims {
+    width: 29px;
+    height: 21px;
+}
+
+.wl-icon-projects,
+.wl-icon-projects\:regular {
+    background-image: url('../images/wl-icons/projects.png');
+    background-image: url('../images/wl-icons/projects.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-projects-dims {
+    width: 26px;
+    height: 22px;
+}
+
+.wl-icon-remove,
+.wl-icon-remove\:regular {
+    background-image: url('../images/wl-icons/remove.png');
+    background-image: url('../images/wl-icons/remove.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-remove:hover,
+.wl-icon-remove\:hover {
+    background-image: url('../images/wl-icons/remove~hover.png');
+    background-image: url('../images/wl-icons/remove~hover.svg');
+    background-repeat: no-repeat;
+}
+.wl-icon-remove:after {
+    background-image: url('../images/wl-icons/remove~hover.png');
+    background-image: url('../images/wl-icons/remove~hover.svg');
+    display: none;
+}
+
+.wl-icon-remove-dims {
+    width: 18px;
+    height: 18px;
+}
+
+.wl-icon-remove-dims:hover,
+.wl-icon-remove\:hover-dims {
+    width: 18px;
+    height: 18px;
+}
+
+.wl-icon-search,
+.wl-icon-search\:regular {
+    background-image: url('../images/wl-icons/search.png');
+    background-image: url('../images/wl-icons/search.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-search-dims {
+    width: 18px;
+    height: 18px;
+}
+
+.wl-icon-star,
+.wl-icon-star\:regular {
+    background-image: url('../images/wl-icons/star.png');
+    background-image: url('../images/wl-icons/star.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-star-dims {
+    width: 22px;
+    height: 22px;
+}
+
+.wl-icon-status,
+.wl-icon-status\:regular {
+    background-image: url('../images/wl-icons/status.png');
+    background-image: url('../images/wl-icons/status.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-status-dims {
+    width: 24px;
+    height: 24px;
+}
+
+.wl-icon-t-dark,
+.wl-icon-t-dark\:regular {
+    background-image: url('../images/wl-icons/t-dark.png');
+    background-image: url('../images/wl-icons/t-dark.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-t-dark-dims {
+    width: 21px;
+    height: 20px;
+}
+
+.wl-icon-t-light,
+.wl-icon-t-light\:regular {
+    background-image: url('../images/wl-icons/t-light.png');
+    background-image: url('../images/wl-icons/t-light.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-t-light-dims {
+    width: 21px;
+    height: 20px;
+}
+
+.wl-icon-team,
+.wl-icon-team\:regular {
+    background-image: url('../images/wl-icons/team.png');
+    background-image: url('../images/wl-icons/team.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-team-dims {
+    width: 31px;
+    height: 19px;
+}
+
+.wl-icon-tweet,
+.wl-icon-tweet\:regular {
+    background-image: url('../images/wl-icons/tweet.png');
+    background-image: url('../images/wl-icons/tweet.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-tweet-dims {
+    width: 10px;
+    height: 13px;
+}
+
+.wl-icon-worklist,
+.wl-icon-worklist\:regular {
+    background-image: url('../images/wl-icons/worklist.png');
+    background-image: url('../images/wl-icons/worklist.svg');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-worklist-dims {
+    width: 46px;
+    height: 26px;
+}
