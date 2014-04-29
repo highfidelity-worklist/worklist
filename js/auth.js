@@ -93,6 +93,9 @@ var Auth = {
                 .text(countryName)
                 .appendTo('select[name="country"]', dialog);
         }
+        if (!$('select[name="country"] > option[selected="selected"]', dialog).length) {
+            $('select[name="country"] > option[value="US"]', dialog).attr({selected: true});
+        }
         $('select[name="country"]', dialog).chosen();
     },
 

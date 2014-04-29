@@ -1361,7 +1361,7 @@ class JobController extends Controller {
                     }
                 }
             } elseif ($repoType == 'git') {
-                $GitHubUser = new GitHubUser($workitem->getMechanicId());
+                $GitHubUser = new User($workitem->getMechanicId());
                 $pullResults = $GitHubUser->createPullRequest($workitem->getId(), $thisProject);
 
                 if (!$pullResults['error'] && !isset($pullResults['data']['errors'])) {
@@ -1381,13 +1381,12 @@ class JobController extends Controller {
         
         if ($newStatus == 'Functional' && $repoType == 'git') {
             $runner = $workitem->getRunnerId();
-            $GitHubUser = new GitHubUser($runner);
+            $GitHubUser = new User($runner);
             $runnerEmail = $GitHubUser->getUsername();
-            $GitHubBidder = new GitHubUser($workitem->getMechanicId());
+            $GitHubBidder = new User($workitem->getMechanicId());
             $githubDetails = $GitHubBidder->getGitHubUserDetails($thisProject);
             $gitHubUsername = $githubDetails['data']['login'];
-            $GitHubProject = new GitHubProject();
-            $repoDetails = $GitHubProject->extractOwnerAndNameFromRepoURL($thisProject->getRepository());
+            $repoDetails = $thisProject->extractOwnerAndNameFromRepoURL();
             $usersFork = 'https://github.com/' . $gitHubUsername . "/" . $repoDetails['name'] . ".git";
             $emailTemplate = 'functional-howto';
             $data = array(

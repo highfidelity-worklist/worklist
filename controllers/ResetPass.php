@@ -19,8 +19,7 @@ class ResetPassController extends Controller {
                             'app_name' => APP_NAME
                         ));
 
-                        $this->view = null;
-                        Utils::redirect('./login');
+                        Utils::redirect('./');
                     }
 
                 } else {

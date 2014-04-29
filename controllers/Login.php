@@ -75,14 +75,4 @@ class LoginController extends Controller {
         parent::run();
     }
 
-    public static function loginUser($user, $redirect_url = './') {
-        $userObject = User::find($user);
-        $id = $userObject->getId();
-        $username = $userObject->getUsername();
-        $nickname = $userObject->getNickname();
-        $admin = $userObject->getIs_admin();
-        Utils::setUserSession($id, $username, $nickname, $admin);
-        if (is_string($redirect_url)) {
-            Utils::redirect($redirect_url);
-        }
-    }}
+}

@@ -49,8 +49,8 @@ class GithubController extends Controller {
             // I dont think a payload may include multiple events, however, just in case
             // we list the events that we have a handler for, and run each in sequence
             foreach ($eventsInRequest as $key => $value) {
-                $GitHubProject = new GitHubProject();
-                $GitHubProject->$value($payload);
+                $project = new Project();
+                $project->$value($payload);
             }
         }
     }
@@ -82,8 +82,8 @@ class GithubController extends Controller {
                     }
 
                     $userId = getSessionUserId();
-                    $user = new GitHubUser($userId);
-                    $testUser = new GitHubUser();
+                    $user = new User($userId);
+                    $testUser = new User();
                     if ($user->getId()) {
                         // user is already logged in in worklist, let's just check if credentials are
                         // already stored and save them in case they're not
@@ -98,7 +98,7 @@ class GithubController extends Controller {
                         if ($user->findUserByAuthToken($access_token)) {
                             // already linked account, let's log him in
                             if ($user->isActive()) {
-                                LoginController::loginUser($user);
+                                User::login($user);
                             }
                             return;
                         } else {
@@ -128,12 +128,12 @@ class GithubController extends Controller {
      * Code moved from the old /GitHub.php file
      */
     public function connect() {
-        $GitHub = new GitHubUser(getSessionUserId());
+        $GitHub = new User(getSessionUserId());
         $workitem = new WorkItem();
         $workitem->loadById((int) $_GET['job']);
         $projectId = $workitem->getProjectId();
         $project = new Project($projectId);
-        $connectResponse = $GitHub->processConnectResponse($project->getGithubId(), $project->getGithubSecret());
+        $connectResponse = $GitHub->processConnectResponse($project);
         if (!$connectResponse['error']) {
 
             if ($GitHub->storeCredentials($connectResponse['data']['access_token'], $project->getGithubId())) {
@@ -167,7 +167,7 @@ class GithubController extends Controller {
             $access_token = isset($_POST["access_token"]) ? trim($_POST["access_token"]) : "";
             $username = isset($_POST["username"]) ? trim($_POST["username"]) : "";
             $password = isset($_POST["password"]) ? $_POST["password"] : "";
-            $user = new GitHubUser();
+            $user = new User();
 
             if (empty($access_token)) {
                 throw new Exception("Access token not provided.");
@@ -175,8 +175,8 @@ class GithubController extends Controller {
                 throw new Exception("Invalid credentials.");
             }
 
-            LoginController::loginUser($user, false);
-            $testUser = new GitHubUser();
+            User::login($user, false);
+            $testUser = new User();
             if (!$testUser->findUserByAuthToken($access_token)) {
                 // github authorization not used by any other user
                 $user->storeCredentials($access_token);
@@ -205,7 +205,7 @@ class GithubController extends Controller {
             $pass2 = isset($_POST["password2"]) ? $_POST["password2"] : "";
 
             $usernameTestUser = new User();
-            $tokenTestUser = new GitHubUser();
+            $tokenTestUser = new User();
             $usernameTestUser->findUserByUsername($username);
             $tokenTestUser->findUserByAuthToken($access_token);
             if (empty($access_token)) {
@@ -241,7 +241,7 @@ class GithubController extends Controller {
                 }
             }
 
-            $user = GitHubUser::signup($username, $nickname, $password, $access_token, $country);
+            $user = User::signup($username, $nickname, $password, $access_token, $country);
             $success = true;
 
             // Email user
@@ -271,6 +271,10 @@ class GithubController extends Controller {
             $msg = $e->getMessage();
         }
         echo json_encode(array('success' => $success, 'msg' => $msg));
+    }
+
+    public function federated() {
+        $this->view = new FederatedView(); 
     }
 
     /**

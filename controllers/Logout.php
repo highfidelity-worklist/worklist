@@ -16,7 +16,7 @@ class LogoutController extends Controller {
 
 		session_destroy();
 
-	    $url = './login';
+	    $url = './';
 		Utils::redirect($url);		
 	}
 }
