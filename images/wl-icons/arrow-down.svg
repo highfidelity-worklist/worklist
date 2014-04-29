@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="arrow-down-Capa_1" xml:space="preserve" height="13" viewBox="0 0 19.587 13.181" width="20" version="1.1" y="0px" x="0px" enable-background="new 0 0 19.587 13.181"><rect transform="matrix(.7073 -.7069 .7069 .7073 -2.7298 6.5866)" height="11.855" width="2.791" y=".662" x="5.193" fill="#676767"/><rect transform="matrix(.7071 .7071 -.7071 .7071 8.4669 -7.2608)" height="11.855" width="2.79" y=".663" x="11.603" fill="#676767"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 19.587 13.181" height="13.181px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="19.587px" version="1.1" enable-background="new 0 0 19.587 13.181">
+  <rect height="11.855" transform="matrix(0.7073 -0.7069 0.7069 0.7073 -2.7298 6.5866)" x="5.193" y="0.662" fill="#676767" width="2.791" />
+  <rect height="11.855" transform="matrix(0.7071 0.7071 -0.7071 0.7071 8.4669 -7.2608)" x="11.603" y="0.663" fill="#676767" width="2.79" />
+</svg>

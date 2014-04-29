@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="projects-Capa_1" xml:space="preserve" height="22" viewBox="0 0 26 22" width="26" version="1.1" y="0px" x="0px" enable-background="new 0 0 26 22">	<path d="m12 8c0 1.094-0.906 2-2 2h-8c-1.094 0-2-0.906-2-2v-6c0-1.094 0.906-2 2-2h8c1.094 0 2 0.906 2 2v6z" fill="#007F7C"/>	<path d="m12 20c0 1.094-0.906 2-2 2h-8c-1.094 0-2-0.906-2-2v-6c0-1.094 0.906-2 2-2h8c1.094 0 2 0.906 2 2v6z" fill="#009B9B"/>	<path d="m26 8c0 1.094-0.906 2-2 2h-8c-1.094 0-2-0.906-2-2v-6c0-1.094 0.906-2 2-2h8c1.094 0 2 0.906 2 2v6z" fill="#009B9B"/>	<path d="m26 20c0 1.094-0.906 2-2 2h-8c-1.094 0-2-0.906-2-2v-6c0-1.094 0.906-2 2-2h8c1.094 0 2 0.906 2 2v6z" fill="#007F7C"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 26 22" height="22px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="26px" version="1.1" enable-background="new 0 0 26 22">
+  <g>
+    <path fill="#007F7C" d="M12,8c0,1.094-0.906,2-2,2H2c-1.094,0-2-0.906-2-2V2c0-1.094,0.906-2,2-2h8c1.094,0,2,0.906,2,2V8z" />
+    <path fill="#009B9B" d="M12,20c0,1.094-0.906,2-2,2H2c-1.094,0-2-0.906-2-2v-6c0-1.094,0.906-2,2-2h8c1.094,0,2,0.906,2,2V20z" />
+    <path fill="#009B9B" d="M26,8c0,1.094-0.906,2-2,2h-8c-1.094,0-2-0.906-2-2V2c0-1.094,0.906-2,2-2h8c1.094,0,2,0.906,2,2V8z" />
+    <path fill="#007F7C" d="M26,20c0,1.094-0.906,2-2,2h-8c-1.094,0-2-0.906-2-2v-6c0-1.094,0.906-2,2-2h8c1.094,0,2,0.906,2,2V20z" />
+  </g>
+</svg>

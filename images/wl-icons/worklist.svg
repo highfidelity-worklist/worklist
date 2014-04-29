@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="worklist-Capa_1" xml:space="preserve" height="26" viewBox="0 0 46.166 25.755" width="46" version="1.1" y="0px" x="0px" enable-background="new 0 0 46.166 25.755"><g fill="#fff">	<path d="m3.498 0l8.586 25.755h-3.549l-8.553-25.755h3.516z"/>	<path d="m12.016 0l8.588 25.755h-3.55l-8.555-25.755h3.517z"/>	<path d="m25.568 0h3.549l-8.591 25.755h-3.518l8.56-25.755z"/>	<path d="m29.055 0l8.585 25.755h-3.552l-8.551-25.755h3.518z"/>	<path d="m42.605 0h3.549l-8.589 25.755h-3.52l8.56-25.755z"/></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.166 25.755" height="25.755px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="46.166px" version="1.1" enable-background="new 0 0 46.166 25.755">
+  <g>
+    <path fill="#FFFFFF" d="M3.498,0l8.586,25.755H8.535L-0.018,0H3.498z" />
+    <path fill="#FFFFFF" d="M12.016,0l8.588,25.755h-3.55L8.499,0H12.016z" />
+    <path fill="#FFFFFF" d="M25.568,0h3.549l-8.591,25.755h-3.518L25.568,0z" />
+    <path fill="#FFFFFF" d="M29.055,0l8.585,25.755h-3.552L25.537,0H29.055z" />
+    <path fill="#FFFFFF" d="M42.605,0h3.549l-8.589,25.755h-3.52L42.605,0z" />
+  </g>
+</svg>
