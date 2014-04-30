@@ -326,7 +326,7 @@ p.bottom {
     height: 28px;
     border: 0;
     display: inline-block;
-    float: right;
+    float: right; 
 }
 
 #info-budget input,
