@@ -426,7 +426,7 @@ var UserInfo = {
             }
         });        
         
-        if (! admin) {
+        if (! is_payer) {
             $('#ispaypalverified').prop('disabled', true);
             $('#isw9approved').prop('disabled', true);
             $('#isw2employee').prop('disabled', true);

@@ -949,7 +949,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     border-radius: 6px;
     border:2px #DCD998 solid;
     padding:0px 8px 19px 8px;
-    background-color: #FFFFDD;
 }
 
 #left-panel ul #no_comments{

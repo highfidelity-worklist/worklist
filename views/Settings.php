@@ -39,6 +39,22 @@ class SettingsView extends View {
         return $ret;
     }
 
+    public function countrySelectBox() {
+        global $countrylist;
+        $userInfo = $this->read('userInfo');
+
+        $ret = '<select id="country" name="country">';
+        foreach($countrylist as $code => $name) {
+            $selected = '';
+            if ($code == $userInfo['country']) {
+                $selected = 'selected = "selected"';
+            }
+            $ret .= '<option value = "'.$code.'" '.$selected.'>'.$name.'</option>';
+        }
+        $ret .= '</select>';
+        return $ret;
+    }
+
     public function picture() {
         $userInfo = $this->read('userInfo');
         return APP_IMAGE_URL . $userInfo['picture'];

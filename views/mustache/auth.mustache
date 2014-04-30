@@ -1,0 +1,17 @@
+<form id="auth" role="form" action="./github/confirm">
+    <input type="hidden" name="access_token" value="{{accessToken}}" />
+    <input type="hidden" name="location" value="{{defaultLocation}}" />
+    <div class="row">
+        <input type="text" id="username" name="username" class="form-control" value="{{defaultUsername}}" />
+    </div>
+    <div class="row">
+        <div class="col-md-offset-8 col-md-4">
+            <button class="btn btn-primary" type="submit">Continue</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    $(function() {
+        Auth.init();
+    });
+</script>

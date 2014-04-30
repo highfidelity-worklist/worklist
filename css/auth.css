@@ -1,0 +1,9 @@
+form#auth {
+    max-width: 350px;
+    margin: 0 auto 30px;
+}
+
+form#auth .row:last-child > div {
+    text-align: right;
+    padding-right: 0;
+}

@@ -25,8 +25,7 @@ class Dispatcher {
 
         $dispatcher->get('/help', array('Help'));
         $dispatcher->get('/jobs', array('Jobs'));
-        $dispatcher->get('/login', array('Login'));
-        $dispatcher->post('/login', array('Login'));
+        
         $dispatcher->get('/logout', array('Logout'));
         $dispatcher->get('/password', array('Password'));
         $dispatcher->post('/password', array('Password'));
@@ -45,19 +44,21 @@ class Dispatcher {
         $dispatcher->post('/status', array('Status', 'api'));
         $dispatcher->get('/settings', array('Settings'));
         $dispatcher->post('/settings', array('Settings'));
-        $dispatcher->get('/signup', array('Signup'));
-        $dispatcher->post('/signup', array('Signup'));
         $dispatcher->get('/team', array('Team'));
         $dispatcher->get('/timeline', array('Timeline'));
         $dispatcher->get('/uploads/:filename', array('Upload'), array('require' => array('filename' => '.+')));
-        $dispatcher->get('/user/:id', array('User'));
+
+        $dispatcher->get('/user(/:method)/:param', array('User'));
         $dispatcher->post('/user/:id', array('User'));
-        $dispatcher->get('/users.json', array('User', 'jsonList'));
+
         $dispatcher->get('/welcome', array('Welcome'));
         $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
         $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));
         $dispatcher->get('/:project', array('Project'));
         $dispatcher->post('/:project', array('Project'));
+
+        $dispatcher->any('/login', array('Github', 'federated'));
+        $dispatcher->any('/signup', array('Github', 'federated'));
 
         try {
             $route = $dispatcher->dispatch($path);

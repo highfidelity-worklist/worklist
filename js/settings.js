@@ -96,6 +96,7 @@ function saveSettings() {
         values = {
             save: 1,
             timezone: $('#timezone').val(),
+            country: $('#country').val(),
             bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
             nickname: $('#nickname').val(),
             username: $('#username').val(),
@@ -151,7 +152,7 @@ function saveSettings() {
 }
 
 $(function () {
-    $('#timezone').chosen();
+    $('#timezone, #country').chosen();
 
     if (ppConfirmed || emConfirmed) {
         $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
@@ -245,9 +246,9 @@ $(function () {
 
     nickname = new LiveValidation('nickname');
     nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );
-    nickname.add(Validate.Format, {pattern: /[@]/, negate:true});
+    nickname.add(Validate.Format, { pattern: /^[a-zA-Z0-9][a-zA-Z0-9_\-]*$/, failureMessage: "Must consist only of alphanumerics, underscores, or dash characters!" });
     nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
-
+    
     username = new LiveValidation('username');
     username.add( Validate.Email );
     username.add(Validate.Length, { minimum: 4, maximum: 50 } );

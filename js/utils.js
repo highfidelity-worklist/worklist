@@ -97,12 +97,12 @@ var Utils = {
             $(parsed).appendTo('body');
             $('#' + id).on('shown.bs.modal', function() {
                 if (typeof settings.open == 'function') {
-                    settings.open();
-                }                
+                    settings.open(this);
+                }
             });            
             $('#' + id).on('hidden.bs.modal', function() {
                 if (typeof settings.close == 'function') {
-                    settings.close();
+                    settings.close(this);
                 }
                 $(id).remove();
             });
@@ -112,6 +112,10 @@ var Utils = {
 
     emptyModal: function(data) {
         Utils.modal('empty', data);
+    },
+
+    emptyFormModal: function(data) {
+        Utils.modal('empty-form', data);
     },
 
 
