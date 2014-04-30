@@ -67,10 +67,6 @@ if(validateAction()) {
                 validateAPIKey();
                 exec('svnversion > ver');
                 break;
-            case 'jobsPastDue':
-                validateAPIKey();
-                sendPastDueNotification();
-                break;
             case 'sendContactEmail':
                 // @TODO: why do we require an API key for this?
                 // I don't get it. The request is sent via JS, so if we included the API key it would
@@ -466,12 +462,6 @@ function sendBidNotification() {
     require_once('./classes/Notification.class.php');
     $notify = new Notification();
     $notify->emailExpiredBids();
-}
-
-function sendPastDueNotification() {
-    require_once('./classes/Notification.class.php');
-    $notify = new Notification();
-    $notify->emailPastDueJobs();
 }
 
 function processW2Masspay() {
