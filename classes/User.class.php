@@ -78,7 +78,7 @@ class User {
     {
         if (is_array($options)) {
             $this->setOptions($options);
-        } else if (is_int($options) && $options) {
+        } else if (is_numeric($options) && $options) {
             $this->findUserById((int) $options);
         }
         return $this;
