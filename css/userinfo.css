@@ -331,7 +331,7 @@ p.bottom {
 
 #info-budget input,
 #btn-bonus input,
-#user-alljobs {
+#completed-jobs-table + div {
     background: none;
     padding: 0;
     width: auto;
@@ -345,7 +345,7 @@ p.bottom {
     margin: 5px;
 }
 
-#user-alljobs a {
+#completed-jobs-table + div a {
     float: right;
     font-weight: bold;
     color: #608e96;
