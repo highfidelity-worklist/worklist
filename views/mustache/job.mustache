@@ -1,15 +1,15 @@
 <div id="info-top">
     <div class="info-summ-big">
         <div class="info-ID">
-            <span id="following"><span id="followingLogin"></span></span>
+            <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
         </div>
-        <span id="invite-link" title="Invite people" href="javascript">Invite someone</span>
+        <span class="wl-icon-invite" id="invite-link" title="Invite people" href="javascript">Invite someone</span>
         {{#canEditAndNotEditing}}
             {{#statusDone}}
-                <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
+                <span class="switchmode-done wl-icon-star" title="Jobs set to Done status may not be edited">Edit</span>
             {{/statusDone}}
             {{^statusDone}}
-                <span class="switchmode" id="switchmode_edit">
+                <span class="switchmode wl-icon-edit" id="switchmode_edit">
                     <a title="Switch to Edit Mode" href="./{{worklist.id}}?action=edit">
                         Edit
                     </a>
@@ -17,7 +17,7 @@
             {{/statusDone}}
         {{/canEditAndNotEditing}}
         {{#editing}}
-            <span class="switchmode" id="switchmode_edit">
+            <span class="switchmode wl-icon-edit" id="switchmode_edit">
                 <a title="Switch to View Mode" href="./{{worklist.id}}?action=view">
                     View
                 </a>
@@ -60,7 +60,7 @@
     </div>
     {{/editing}}
     {{& jobBudget}}
-    <div class="project {{#isGitProject}} github{{/isGitProject}}">
+    <div class="project {{#isGitProject}} github{{/isGitProject}} wl-icon-github">
     {{#editing}}
         <input type="hidden" name="save_workitem" value="save_workitem" />
         <input type="hidden" name="action" value="save_workitem" />
@@ -511,7 +511,7 @@
         </div>
     </div>
     {{#canUpload}}
-    <input type="button" id="uploadButtonDiv" class="uploadbutton" value="Attach files" />
+    <input type="button" id="uploadButtonDiv" class="wl-icon-attach" value="Attach files" />
     <div class="uploadnotice"></div>
     {{/canUpload}}
 </script>

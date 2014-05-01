@@ -413,11 +413,9 @@ p.bottom {
 
 .favorite_user,
 .favorite_curr_user {
-    background-image: url('../images/otherSprite.png');
-    background-position: -60px 0;
-    background-repeat: no-repeat;
     height: 20px;
     width: 20px;
+    background-size: 20px 20px;
     display: inline-block;
 }
 /* styles needed for favorite label sprite in mission info popup */
