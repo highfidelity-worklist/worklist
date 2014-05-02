@@ -44,8 +44,8 @@ require_once('Zend/Registry.php');
 defineOnce('MYSQL_DEBUG_LEVEL', 0);
 defineOnce('MYSQL_DEBUG_MESSAGE_DEFAULT', 'General database error');
 
-defineOnce('GITHUB_ID', 'c5bb09ca5ee6b0e20634');
-defineOnce('GITHUB_SECRET', 'b03a51691282423fc0769abbaadef4adb337dac1');
+defineOnce('GITHUB_ID', 'abe62566682e14869dd6');
+defineOnce('GITHUB_SECRET', '93eac9e0b7fd4ef6e03526ab711d269237de57ef');
 defineOnce('GITHUB_API_URL', 'https://api.github.com/');
 
 defineOnce('SENDGRID_API_URL','https://sendgrid.com/api/mail.send.json');
