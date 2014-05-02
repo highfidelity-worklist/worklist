@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 9.58 12.92" height="12.92px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="9.58px" version="1.1" enable-background="new 0 0 9.58 12.92">
+  <rect height="9.875" x="17.165" y="4.376" fill="none" width="11.667" />
+  <g>
+    <rect height="10.891" stroke="#333333" x="1.024" y="1.015" fill="none" stroke-miterlimit="10" width="7.531" />
+    <line y1="1.015" y2="11.905" stroke="#333333" fill="none" stroke-miterlimit="10" x1="1.024" x2="8.556" />
+    <line y1="1.015" y2="11.905" stroke="#333333" fill="none" stroke-miterlimit="10" x1="8.556" x2="1.024" />
+  </g>
+</svg>
