@@ -9,7 +9,6 @@ CUSTOM_CONFIG=${WORKLIST_CUSTOM_CONFIG:=""}
 TMP_PATH=${WORKLIST_TMP_PATH:=$CURRENT_PATH/tmp}
 UPLOADS_PATH=${WORKLIST_UPLOADS_PATH:=$CURRENT_PATH/uploads}
 DEBUG_FILE=${WORKLIST_DEBUG_FILE:=$CURRENT_PATH/php.errors}
-NOW=`date +%Y%m%d%H%M%S`
 
 # Make sure tmp exists and everyone has write permisions there
 if [ ! -d  $TMP_PATH ]
