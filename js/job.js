@@ -1022,12 +1022,15 @@ function showConfirmForm(i) {
                     dismiss: true
                 }
             ],
-            close: function() {
-                if (i == 'bid') {
-                    showPlaceBidForm();
-                } else if (i == 'fee') {
-                    showFeeForm();
-                }
+            open: function(modal) {
+                console.log(modal);
+                $('.btn-primary', modal).on('click', function() {
+                    if (i == 'bid') {
+                        showPlaceBidForm();
+                    } else if (i == 'fee') {
+                        showFeeForm();
+                    }                
+                });
             }
         });
     } else {
