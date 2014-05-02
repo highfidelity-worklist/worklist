@@ -195,6 +195,21 @@ $(function () {
         onComplete: completeUploadImage
     });
 
+    var pictureUpload = new AjaxUpload('profilebutton', {
+        action: 'api.php',
+        name: 'profile',
+        data: { 
+            action: 'uploadProfilePicture', 
+            api_key: uploadApiKey, 
+            userid: user_id
+        },
+        autoSubmit: true,
+        hoverClass: 'imageHover',
+        responseType: 'json',
+        onSubmit: validateUploadImage,
+        onComplete: completeUploadImage
+    });
+
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',
         name: 'Filedata',
