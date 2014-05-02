@@ -364,7 +364,7 @@ var Budget = {
     
     displayHistory: function(user_id) {
         $('#budgetPopup').dialog('close');
-        window.open('./user/' + user_id + '&tab=tabBudgetHistory', '_blank');
+        window.location = './user/' + user_id + '&tab=tabBudgetHistory';
     },
         
     /**
@@ -588,10 +588,10 @@ var Budget = {
 			}
         });
         $('#budget-report-export').click(function() {
-            window.open('api.php?action=manageBudget&section='+section+'&method=export', '_blank');
+            window.location = 'api.php?action=manageBudget&section='+section+'&method=export';
         });
         $('#budget-report-export-transferred').click(function() {
-            window.open('api.php?action=manageBudget&section=' + section + '&method=export&budget_id=' + budget_id, '_blank');
+            window.location = 'api.php?action=manageBudget&section=' + section + '&method=export&budget_id=' + budget_id;
         });
     },
 
