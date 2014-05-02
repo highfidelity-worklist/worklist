@@ -363,5 +363,13 @@ replacement data:
         <p>New users (in last {hours}hrs):</p>
         {userList}
     '
+),
+'workitem-mention' => array(
+    'subject' => '{author} mentioned you on #{job_id}',
+    'body' => '
+        {author} mentioned you:<br /><br />
+        {text}<br /><br />
+        {link}
+    '
 )
 );

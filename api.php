@@ -1319,6 +1319,34 @@ function addWorkitem() {
 
             Notification::workitemNotifyHipchat($options, $data);
         }
+
+        // workitem mentions
+        $matches = array();
+        if (preg_match_all(
+            '/@(\w+)/',
+            $workitem->getNotes(),
+            $matches,
+            PREG_SET_ORDER
+        )) {
+
+            $user = new User();
+
+            foreach ($matches as $mention) {
+                // validate the username actually exists
+                if ($recipient = $user->findUserByNickname($mention[1])) {
+                    $emailTemplate = 'workitem-mention';
+                    $data = array(
+                        'job_id' => $workitem->getId(),
+                        'author' => $_SESSION['nickname'],
+                        'text' => $workitem->getNotes(),
+                        'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
+                    );
+
+                    $senderEmail = 'Worklist <contact@worklist.net>';
+                    sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                }
+            }
+        }
     }
 
     // Notify Runners of new suggested task
