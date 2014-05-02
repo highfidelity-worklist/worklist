@@ -1733,7 +1733,7 @@ function getMultipleBidList() {
                                 $data .= '
                                         <tr>
                                             <td>
-                                                <a href="./user/' . $bid['bidder_id'] . '" target="_blank">
+                                                <a href="./user/' . $bid['bidder_id'] . '" >
                                                    ' . $bid['nickname'] . '
                                                 </a>
                                             </td>

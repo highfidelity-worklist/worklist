@@ -82,7 +82,7 @@
         {{#worklist.project_id}}
             <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
             {{#worklist.p_website}}
-                <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>
+                <a class="project_website" href="{{& projectWebsiteUrl}}" >website</a>
             {{/worklist.p_website}}
         {{/worklist.project_id}}
         {{^worklist.project_id}}
@@ -189,7 +189,7 @@
                             {{/canEditSandboxUrlOnEdit}}
                             {{^canEditSandboxUrlOnEdit}}
                                 {{#worklist.sandbox}}
-                                <a href="{{& worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                                <a href="{{& worklist.sandbox}}" >{{worklist.sandbox}}</a>
                                 {{/worklist.sandbox}}
                                 {{^worklist.sandbox}}
                                 <span>Not assigned</span>
@@ -219,7 +219,7 @@
                         {{#worklist.sandbox}}
                             <div class="sandboxlink">
                                 <div class="relative">
-                                    <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                                    <a href="{{worklist.sandbox}}" >{{worklist.sandbox}}</a>
                                 </div>
                             </div>
                             {{#canViewDiff}}

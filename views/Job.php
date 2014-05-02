@@ -200,7 +200,7 @@ class JobView extends View {
         $ret = ' ';
         if ($worklist['runner_nickname'] != 'Not funded') {
             $ret .= 
-                '<a href="./user/' . $worklist['runner_id'] . '" target="_blank" id="ping-r-btn"' .
+                '<a href="./user/' . $worklist['runner_id'] . '"  id="ping-r-btn"' .
                 ' title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") . '"' .
                 ' data-user-id="' . $worklist['runner_id'] . '">' .
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
@@ -230,7 +230,7 @@ class JobView extends View {
             $ret .= 
                 '<span id="pingRunner" class="runnerName" title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") .'">' .
                 '<a href="#">Designer:</a></span>' .
-                '<a href="./user/' . $worklist['runner_id'] . '" target="_blank">' . 
+                '<a href="./user/' . $worklist['runner_id'] . '" >' . 
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
                 '</a>';
         } else {
@@ -259,7 +259,7 @@ class JobView extends View {
                 '<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" >' . 
                   '<a href="#">Developer:</a>' . 
                 '</span>' . 
-                '<a id="ping-btn" href="./user/' . $worklist['mechanic_id'] . '" target="_blank">' . $mech . '</a>';
+                '<a id="ping-btn" href="./user/' . $worklist['mechanic_id'] . '" >' . $mech . '</a>';
         }
         return $mech;
     }
@@ -603,7 +603,7 @@ class JobView extends View {
                         "desc:\"" .  $fee['desc'] . "\"}" .
                     '</script>' .
                     '<td class="nickname who">' .
-                        '<a href="./user/' . $fee['user_id'] . '" target="_blank" title="' . $fee['nickname'] . '">' .
+                        '<a href="./user/' . $fee['user_id'] . '"  title="' . $fee['nickname'] . '">' .
                             getSubNickname($fee['nickname'], 8) .
                         '</a>' .
                     '</td>' .

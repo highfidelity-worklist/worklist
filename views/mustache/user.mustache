@@ -41,11 +41,11 @@
                             <p class="info-label" id="user-location">
                                 Location:<br />
                                 {{#profileUser.getCity}}
-                                    <a class="userInfoLink" href="{{& gMapSearch}}{{profileUser.getCity}}{{countryName}}&z=6" target="_blank" 
+                                    <a class="userInfoLink" href="{{& gMapSearch}}{{profileUser.getCity}}{{countryName}}&z=6"  
                                       title="See location on Google Maps">{{profileUser.getCity}}</a>
                                 {{/profileUser.getCity}}
                                 {{#countryCodeUrl}}
-                                    <a class="userInfoLink" href="{{& ciaGovBase}}{{countryCodeUrl}}.html" target="_blank" 
+                                    <a class="userInfoLink" href="{{& ciaGovBase}}{{countryCodeUrl}}.html"  
                                       title="{{countryName}}">{{profileUser.getCountry}}</a>
                                 {{/countryCodeUrl}}
                             </p>
