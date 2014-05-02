@@ -180,22 +180,8 @@ $(function () {
             }
         });
     }
-    var pictureUpload = new AjaxUpload('profilepicture', {
-        action: 'api.php',
-        name: 'profile',
-        data: { 
-            action: 'uploadProfilePicture', 
-            api_key: uploadApiKey, 
-            userid: user_id
-        },
-        autoSubmit: true,
-        hoverClass: 'imageHover',
-        responseType: 'json',
-        onSubmit: validateUploadImage,
-        onComplete: completeUploadImage
-    });
 
-    var pictureUpload = new AjaxUpload('profilebutton', {
+    var uploadOptions = {
         action: 'api.php',
         name: 'profile',
         data: { 
@@ -208,7 +194,10 @@ $(function () {
         responseType: 'json',
         onSubmit: validateUploadImage,
         onComplete: completeUploadImage
-    });
+    };
+
+    new AjaxUpload('profilepicture', uploadOptions);
+    new AjaxUpload('profilebutton', uploadOptions);
 
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',
