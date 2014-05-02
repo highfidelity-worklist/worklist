@@ -1118,8 +1118,8 @@ function linkify($url, $author = null, $bot = false, $process = true)
 
     // mentions - @username, comments and job descriptions
     $url = preg_replace(
-        '/\s+@(\w+)/',
-        ' <a href="' . WORKLIST_URL . 'user/$1">@$1</a>',
+        '/(^|[^a-z0-9_])@([a-z0-9_]+)/i',
+        '$1<a href="' . WORKLIST_URL . 'user/$2">@$2</a>',
     $url);    
 
     return $url;
