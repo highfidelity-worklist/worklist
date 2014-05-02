@@ -1023,7 +1023,6 @@ function showConfirmForm(i) {
                 }
             ],
             open: function(modal) {
-                console.log(modal);
                 $('.btn-primary', modal).on('click', function() {
                     if (i == 'bid') {
                         showPlaceBidForm();
