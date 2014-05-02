@@ -1283,8 +1283,8 @@ defineOnce('DEFAULT_TIMEZONE', 'UTC');
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
 date_default_timezone_set(DEFAULT_TIMEZONE);
 
-defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'd075a674622a63de2415');
-defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '6c256ada7f5849ef392907f56b55cc501d4b9e2e');
+defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'abe62566682e14869dd6');
+defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '93eac9e0b7fd4ef6e03526ab711d269237de57ef');
 
 defineOnce('GITHUB_AUTHORIZE_URL', 'https://github.com/login/oauth/authorize');
 defineOnce('GITHUB_TOKEN_URL', 'https://github.com/login/oauth/access_token');
