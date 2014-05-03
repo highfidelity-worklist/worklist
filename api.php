@@ -3616,7 +3616,7 @@ function timeline() {
 function sendNewUserNotification() {
 
     $db = new Database();
-    $recipient = 'grayson@highfidelity.io', 'chris@highfidelity.io';
+    $recipient = array('grayson@highfidelity.io', 'chris@highfidelity.io');
 
     /**
      * The email is to be sent Monday to Friday, therefore on a Monday
