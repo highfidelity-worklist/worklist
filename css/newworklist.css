@@ -472,6 +472,10 @@ button:focus, a:focus {
     padding-left: 0 !important;
 }
 
+.no-padding-right {
+    padding-right: 0 !important;
+}
+
 .dd-max-width{
     max-width: 170px;
 }
@@ -490,6 +494,14 @@ button:focus, a:focus {
 .navbar-inverse .navbar-collapse {
     overflow: hidden;
     max-height: none;
+}
+
+.navbar-brand {
+    margin-left: 0 !important;
+}
+
+.navbar-brand.wl-icon-worklist{
+    margin-left: -15px !important;
 }
 
 @media only screen and (max-width: 767px) {
@@ -511,7 +523,16 @@ button:focus, a:focus {
     
     .navbar-brand{
         margin-top: 9px !important;
-        margin-left: -15px;
+    }
+    
+    .navbar-brand.wl-icon-worklist{
+        margin-left: auto;
+        margin-right: auto;
+        width: calc(100% - 125px) !important;
+    }
+    
+    .nav.navbar-nav a{
+        background: none;
     }
 }
 
