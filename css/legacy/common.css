@@ -38,14 +38,15 @@
  */
 #uploadButtonDiv {
     display: inline-block;
-    text-align: right;
     background-color: #608e96;
     border-radius: 4px;
     height: 27px;
-    padding: 1px 14px 0 20px;
+    padding-left: 25px;
     margin: 5px;
     position: relative;
     vertical-align: top;
+    width: 117px;
+    background-position: 8px 6px;
 }
 
 .uploadbutton {

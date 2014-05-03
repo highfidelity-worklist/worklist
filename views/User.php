@@ -57,13 +57,13 @@ class UserView extends View {
         $ret = '';
         if ($reqUser->getId() != $user->getId()) {
             if ( !$reqUser->isRunner() && !array_key_exists('admin',$_SESSION) && !$reqUser->isActive() ) {
-                $ret = "favorite_curr_user";
+                $ret = "favorite_curr_user wl-icon-star";
             } else {
                 $ret = "favorite_user";
                 $ret .= ($favorite_enabled == 1) ? " myfavorite" : " notmyfavorite" ;
             }
         } else {
-            $ret = "favorite_curr_user";
+            $ret = "favorite_curr_user wl-icon-star";
         }
         return $ret;
     }

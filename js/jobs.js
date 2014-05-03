@@ -7,7 +7,7 @@ var lastStatus = 0;
 // This variable needs to be in sync with the PHP filter name
 var filterName = '.worklist';
 var affectedHeader = false;
-var directions = {"ASC":"images/arrow-up.png","DESC":"images/arrow-down.png"};
+var directions = {"ASC":"images/arrow-up.svg","DESC":"images/arrow-down.svg"};
 var lastId;
 
 var timeoutId;
