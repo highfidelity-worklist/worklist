@@ -1,6 +1,7 @@
 body {
   font-family: proxima-nova, sans-serif;
-  padding-top: 61px; /* Move down content because of the fixed top navbar */
+  position: relative; //Fix bootstrap flicker bug
+  //padding-top: 61px; /* Move down content because of the fixed top navbar */
 }
 
 /* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
@@ -435,4 +436,89 @@ button:focus, a:focus {
     #footer {
         display: none;
     }
+}
+
+/* Navbar styles for responsiveness */
+.dropdown-menu {
+    box-shadow: -1px 3px 10px rgba(0,0,0,.75);
+    border-color: black;
+    background-clip: border-box;
+}
+
+.dropdown-menu > li > a {
+    padding: 3px 20px 3px 0px;
+    color: #999;
+}
+
+.dropdown-menu-icon {
+    width: 32px;
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+}
+
+.navbar-nav>li>.dropdown-menu{
+    background-color: #333;
+}
+
+.dropdown-menu .divider {
+    background-color: #000;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-padding-left {
+    padding-left: 0 !important;
+}
+
+.dd-max-width{
+    max-width: 170px;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.container > .navbar-header, 
+.container-fluid > .navbar-header, 
+.container > .navbar-collapse, 
+.container-fluid > .navbar-collapse {
+    margin: 0;
+}
+
+.navbar-inverse .navbar-collapse {
+    overflow: hidden;
+    max-height: none;
+}
+
+@media only screen and (max-width: 767px) {
+    .text-left-xs {
+        text-align: left !important;
+    }
+    
+    .text-center-xs {
+        text-align: center !important;
+    }
+    
+    .text-right-xs {
+        text-align: right !important;
+    }
+    
+    .dd-max-width{
+        max-width: none;
+    }
+    
+    .navbar-brand{
+        margin-top: 9px !important;
+        margin-left: -15px;
+    }
+}
+
+.navbar.affix, .navbar.affix-bottom {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index:10;
 }

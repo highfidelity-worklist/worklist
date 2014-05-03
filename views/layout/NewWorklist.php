@@ -8,6 +8,7 @@ class NewWorklistLayout extends Layout {
         'css/bootstrap/css/bootstrap.min.css',
         'css/bootstrap/css/datepicker.css',
         'css/font-awesome/css/font-awesome.min.css',
+        'css/font-awesome-4.0.3/css/font-awesome.css',
         'css/chosen/chosen.min.css',
         'css/newworklist.css',
         'css/menu.css',

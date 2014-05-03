@@ -16,3 +16,32 @@ var NewWorklist = {
         });
     }
 }
+
+$(document).ready (function (){
+    $('.navbar').affix({
+        offset: {
+        top: function (){ 
+                return $('.navbar').outerHeight();
+            }
+        }
+    });
+    
+    $('.navbar').on('affix.bs.affix', function () {
+        if ($('.dropdown').hasClass('open'))
+            $('.dropdown-toggle').dropdown('toggle');
+        
+        if ($('.navbar-collapse').hasClass('in'))
+            $('.navbar-collapse').collapse('toggle');
+        
+        $('body').css('padding-top', $('.navbar').outerHeight() + 'px');
+         
+        if ($('body').scrollTop() < $('.navbar').outerHeight() * 1.5){
+            $('.navbar').hide();
+            $('.navbar').fadeIn("slow");
+        }
+    });
+
+    $('.navbar').on('affix-top.bs.affix', function () {
+        $('body').css('padding-top', '0px');
+    });
+});
