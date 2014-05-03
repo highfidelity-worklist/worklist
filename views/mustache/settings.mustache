@@ -13,7 +13,7 @@
             <label for="profilepicture">Photo</label>
             <p>
                 <img id="profilepicture" src="{{& picture}}" />
-                <input type="button" class="upload-btn wl-icon-attach" value="Upload new photo" />
+                <input id="profilebutton" type="button" class="upload-btn wl-icon-attach" value="Upload new photo" />
             </p>
         </section>
     </div>
@@ -42,6 +42,12 @@
                     <label for="self_email_notify">Receive email notifications from my actions</label>
                 </li>
             </ul>
+        </section>
+    </div>
+    <div class="row">
+        <section class="col-md-6">
+            <label for="country">What country are you in?</label>
+            {{& countrySelectBox}}            
         </section>
     </div>
     <div class="row">

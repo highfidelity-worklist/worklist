@@ -330,7 +330,8 @@ p.bottom {
 }
 
 #info-budget input,
-#btn-bonus input {
+#btn-bonus input,
+#completed-jobs-table + div {
     background: none;
     padding: 0;
     width: auto;
@@ -342,6 +343,13 @@ p.bottom {
 
 .button-row span {
     margin: 5px;
+}
+
+#completed-jobs-table + div a {
+    float: right;
+    font-weight: bold;
+    color: #608e96;
+    text-decoration: underline;
 }
 
 .quarter-column {

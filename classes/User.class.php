@@ -69,15 +69,17 @@ class User {
     private $auth_tokens = array();
 
     /**
-     * With this constructor you can create a user by passing an array.
+     * With this constructor you can create a user by passing an array or a user id.
      *
-     * @param array $options
+     * @param mixed $options
      * @return User $this
      */
-    public function __construct(array $options = null)
+    public function __construct($options = null)
     {
         if (is_array($options)) {
             $this->setOptions($options);
+        } else if (is_numeric($options) && $options) {
+            $this->findUserById((int) $options);
         }
         return $this;
     }
@@ -1668,6 +1670,197 @@ class User {
         $row = mysql_fetch_assoc($result);
         $this->auth_tokens[$github_id] = $row['auth_token'];
         return $this->auth_tokens[$github_id];
+    }
+
+    public function findUserByAuthToken($token, $github_id = GITHUB_OAUTH2_CLIENT_ID) {
+        $cond = 
+            '`id` = (
+                SELECT t.user_id 
+                FROM `' . USERS_AUTH_TOKENS . "` t
+                WHERE t.github_id = '%s' 
+                  AND t.auth_token = '%s' 
+            )";
+        $where = sprintf($cond, $github_id, $token);
+        return $this->loadUser($where);       
+    }
+
+    public function processConnectResponse(Project $project) {
+        $error = isset($_REQUEST['error']) ? true : false;
+        $message = $error ? $_REQUEST['error'] : false;
+        $data = false;
+        if (!$error) {
+            // We should have a temporal code, lets verify that and get the actual token
+            if (!$error && isset($_REQUEST['code'])) {
+                $params = array(
+                    'code' => $_REQUEST['code'],
+                    'state' => $_REQUEST['state']
+                );
+                return $project->makeApiRequest('login/oauth/access_token', 'POST', false, $params);
+            } else {
+                return array(
+                    'error' => true,
+                    'message' => $message,
+                    'data' => $data);
+            }
+        }
+    }
+    
+    public function storeCredentials($gitHubToken, $gitHubId = GITHUB_OAUTH2_CLIENT_ID) {
+        $sql = "INSERT INTO `" . USERS_AUTH_TOKENS . "` (`user_id`, `github_id`, `auth_token`)
+            VALUES ('" . (int)$this->id . "',
+            '" . mysql_real_escape_string($gitHubId) . "',
+            '" . mysql_real_escape_string($gitHubToken) . "')";
+        $result = mysql_query($sql);
+        if ($result) {
+            return true;
+        }
+
+        // token already exists - update it
+        $sql = "UPDATE `" . USERS_AUTH_TOKENS . "`
+            SET `auth_token` = '" . mysql_real_escape_string($gitHubToken) . "'
+            WHERE `user_id` = " . (int)$this->id . " AND `github_id` = '" . mysql_real_escape_string($gitHubId) . "'";
+        mysql_query($sql);
+        return false;
+    }
+    
+    public function verifyForkExists(Project $project) {
+        $repoDetails = $project->extractOwnerAndNameFromRepoURL();
+        $listOfRepos = $this->getListOfReposForUser($project);
+        if ($listOfRepos === null) {
+            return false;
+        }
+        $userRepos = $listOfRepos['data'];
+        $i = 0;
+        while ($i < count($userRepos)) {
+            if ($userRepos[$i]['name'] == $repoDetails['name'] && $userRepos[$i]['fork'] == '1') {
+                return true;
+            }
+            $i++;
+        }
+        return false;
+    }
+    
+    public function createForkForUser(Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $repoDetails = $project->extractOwnerAndNameFromRepoURL();
+        $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/forks';
+        return $project->makeApiRequest($path, 'POST', $token, false);
+    }
+    
+    public function getListOfReposForUser(Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        if ($token == null) {
+            return null;
+        }
+        return $project->makeApiRequest('user/repos', 'GET', $token, false);
+    }
+    
+    public function getListOfBranchesForUsersRepo(Project $project) {
+        $listOfBranches = array();
+        $latestMasterCommit = false;
+        $data = array();
+        $i = 0;
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $repoDetails = $project->extractOwnerAndNameFromRepoURL();
+        $userDetails = $this->getGitHubUserDetails($project);
+        $gitHubUsername = $userDetails['data']['login'];
+        $path = 'repos/' . $gitHubUsername . '/' . $repoDetails['name'] . '/branches';
+        $rawOutput = $project->makeApiRequest($path, 'GET', $token, false);
+        while ($i < count($rawOutput['data'])) {
+            $listOfBranches[] = $rawOutput['data'][$i]['name'];
+            $i++;
+        }
+        $path2 = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/branches';
+        $rawOutput2 = $project->makeApiRequest($path2, 'GET', $token, false);
+        $ii = 0;
+        while ($ii < count($rawOutput2['data'])) {
+            if ($rawOutput2['data'][$ii]['name'] == 'master') {
+                $latestMasterCommit = $rawOutput2['data'][$ii]['commit']['sha'];
+            }
+            $ii++;
+        }
+        $data['branches'] = $listOfBranches;
+        $data['latest_master_commit'] = $latestMasterCommit;
+        return $data;
+    }
+    
+    public function getGitHubUserDetails(Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        return $project->makeApiRequest('user', 'GET', $token, false);
+    }
+    
+    public function createBranchForUser($branch_name, Project $project) {
+        $branchDetails = array();
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $repoDetails = $project->extractOwnerAndNameFromRepoURL();
+        $listOfBranches = $this->getListOfBranchesForUsersRepo($project);
+        $latestCommit = $listOfBranches['latest_master_commit'];
+        $userDetails = $this->getGitHubUserDetails($project);
+        $gitHubUsername = $userDetails['data']['login'];
+        // Verify whether theres a branch named $branch_name already
+        if (!in_array($branch_name, $listOfBranches['branches'])) {
+            $path = 'repos/' . $gitHubUsername . '/' . $repoDetails['name'] . '/git/refs';
+            $params = array(
+                'ref' => 'refs/heads/' . $branch_name,
+                'sha' => $latestCommit);
+            $branchStatus = $project->makeApiRequest($path, 'POST', $token, $params, true);
+            if (!$branchStatus['error']) {
+                $branchDetails['error'] = false;
+                $branchDetails['data'] = $branchStatus['data'];
+                $branchDetails['branch_url'] = 'https://github.com/' . $gitHubUsername . "/" . $repoDetails['name'] . '/tree/' . $branch_name;
+                return $branchDetails;
+            }
+        }
+        return false;
+    }
+    
+    public function createPullRequest($branch_name, Project $project) {
+        $token = $this->authTokenForGitHubId($project->getGithubId());
+        $repoDetails = $project->extractOwnerAndNameFromRepoURL();
+        $userDetails = $this->getGitHubUserDetails($project);
+        $gitHubUsername = $userDetails['data']['login'];
+        $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/pulls';
+        $params = array(
+            'title' => 'Code Review for Job #' . $branch_name,
+            'body' => 'Code Review for Job #' . $branch_name . " - Workitem available at https://www.worklist.net/" . $branch_name,
+            'head' => $gitHubUsername . ':' . $branch_name,
+            'base' => 'master'
+        );
+        $pullRequestStatus = $project->makeApiRequest($path, 'POST', $token, $params, true);
+        return $pullRequestStatus;
+    }
+
+    public static function signup($username, $nickname, $password, $access_token, $country) {
+        $sql = "
+            INSERT 
+            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country)
+            VALUES(
+                '" . mysql_real_escape_string($username) . "', 
+                '" . mysql_real_escape_string($nickname) . "',
+                '{crypt}" . mysql_real_escape_string(Utils::encryptPassword($password)) . "',
+                '" . uniqid() . "',
+                NOW(),
+                'not-applicable',
+                '" . mysql_real_escape_string($country) . "'
+            )";
+        $res = mysql_query($sql);
+        $user_id = mysql_insert_id();
+        if ($ret = new User($user_id)) {
+            $ret->storeCredentials($access_token);
+        }
+        return $ret;
+    }
+
+    public static function login($user, $redirect_url = './') {
+        $userObject = User::find($user);
+        $id = $userObject->getId();
+        $username = $userObject->getUsername();
+        $nickname = $userObject->getNickname();
+        $admin = $userObject->getIs_admin();
+        Utils::setUserSession($id, $username, $nickname, $admin);
+        if (is_string($redirect_url)) {
+            Utils::redirect($redirect_url);
+        }
     }
 }
 

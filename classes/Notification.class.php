@@ -615,20 +615,6 @@ class Notification {
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
             
-            case 'job_past_due':
-                $headers['From'] = '"' . $project_name . '-pastdue" ' . $from_address;
-                $body = "<p>Job " . $itemLink . "<br />";
-                $body .= "The done by time has now passed.</p>";
-                $body .= '<p>Project: ' . $project_name . '<br />';
-                $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . '</p>';
-                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
-                $body .= '<p>You can view the job ';
-                $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
-                $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
-            break;
-            
             case 'expired_bid':
                 $headers['From'] = '"' . $project_name . '-expired bid" ' . $from_address;
                 $body = "<p>Job " . $itemLink . "<br />";
@@ -905,43 +891,7 @@ class Notification {
             $project->sendHipchat_notification($message, $message_format, $notify);
         }
     }
-
-    
-    // get list of past due bids
-    public function emailPastDueJobs(){
-        $qry = "SELECT w.id worklist_id, b.bid_done, b.id bid_id, b.email bid_email
-            FROM " . WORKLIST . " w 
-              LEFT JOIN " . BIDS . " b ON w.id = b.worklist_id
-              LEFT JOIN " . USERS . " u ON w.runner_id = u.id
-              LEFT JOIN " . USERS . " bu ON bu.id = b.bidder_id
-            WHERE (w.status = 'Working' OR w.status = 'Review' OR w.status = 'Completed')
-              AND b.accepted = 1 
-              AND (b.past_notified = '0000-00-00 00:00:00' OR b.past_notified IS NULL) 
-              AND b.withdrawn = 0
-              AND bu.is_active = 1";
-        $worklist = mysql_query($qry) or (error_log("select past due bids error: " . mysql_error()) && die);
-        $wCount = mysql_num_rows($worklist);
-        if($wCount > 0){
-            while ($row = mysql_fetch_assoc($worklist)) {
-                if (strtotime($row['bid_done']) < time()) {
-                    
-                    $options = array();
-                    $options['recipients'] = array("runner");
-                    $options['emails'] = array($row['bid_email']);
-                    $options['workitem'] = new WorkItem();
-                    $options['workitem']->loadById($row['worklist_id']);
-                    $options['type'] = "job_past_due";
-                    
-                    self::workitemNotify($options);
-                    
-                    // now need to set this notified flag to now date
-                    $bquery = "UPDATE ".BIDS." SET past_notified = NOW() WHERE id = ".$row['bid_id'];
-                    $queryB = mysql_query($bquery)or (error_log("update past due bids error: " . mysql_error()) && die);
-                }
-            }
-        }
-    }
-    
+     
     // HOME PAGE CONTACT/ADD PROJECT FORM EMAIL
     public function emailContactForm($name, $email, $phone, $proj_name, $proj_desc, $website){
         $subject = "Worklist - Add Project Contact Form";

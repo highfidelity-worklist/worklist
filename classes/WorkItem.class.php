@@ -919,46 +919,43 @@ class WorkItem {
 
         
         $project = new Project($this->getProjectId());
-        if ($project->getRepo_type() == 'git') {
-            // This project is connected to GitHub, override the svn standard process
-            $GitHubProject = new GitHubProject();
-            // Get the repo for this project
-            $repository = $this->getRepository();
-            $job_id = $this->getId();
-            // Verify whether the user already has this repo forked on his account
-            // If not create the fork
-            $GitHubUser = new GitHubUser($bid_info['bidder_id']);
-            if (!$GitHubUser->verifyForkExists($project)) {
-                $forkStatus = $GitHubUser->createForkForUser($project);
-                $bidderEmail = $bidder->getUsername();
-                $emailTemplate = 'forked-repo';
-                $data = array(
-                    'project_name' => $forkStatus['data']['full_name'],
-                    'nickname' => $bidder->getNickname(),
-                    'users_fork' => $forkStatus['data']['git_url'],
-                    'master_repo' => str_replace('https://', 'git://', $project->getRepository())
-                );
-                $senderEmail = 'Worklist <contact@worklist.net>';
-                sendTemplateEmail($bidderEmail, $emailTemplate, $data, $senderEmail);
-                sleep(10);
-            }
-            // Create a branch for the user
-            if (!$forkStatus['error']) {
-                $branchStatus = $GitHubUser->createBranchForUser($job_id, $project);
-                $bidderEmail = $bidder->getUsername();
-                $emailTemplate = 'branch-created';
-                $data = array(
-                    'branch_name' => $job_id,
-                    'nickname' => $bidder->getNickname(),
-                    'users_fork' => $forkStatus['data']['git_url'],
-                    'master_repo' => str_replace('https://', 'git://', $project->getRepository())
-                );
+        
+        // Get the repo for this project
+        $repository = $this->getRepository();
+        $job_id = $this->getId();
+        // Verify whether the user already has this repo forked on his account
+        // If not create the fork
+        $GitHubUser = new User($bid_info['bidder_id']);
+        if (!$GitHubUser->verifyForkExists($project)) {
+            $forkStatus = $GitHubUser->createForkForUser($project);
+            $bidderEmail = $bidder->getUsername();
+            $emailTemplate = 'forked-repo';
+            $data = array(
+                'project_name' => $forkStatus['data']['full_name'],
+                'nickname' => $bidder->getNickname(),
+                'users_fork' => $forkStatus['data']['git_url'],
+                'master_repo' => str_replace('https://', 'git://', $project->getRepository())
+            );
+            $senderEmail = 'Worklist <contact@worklist.net>';
+            sendTemplateEmail($bidderEmail, $emailTemplate, $data, $senderEmail);
+            sleep(10);
+        }
+        // Create a branch for the user
+        if (!$forkStatus['error']) {
+            $branchStatus = $GitHubUser->createBranchForUser($job_id, $project);
+            $bidderEmail = $bidder->getUsername();
+            $emailTemplate = 'branch-created';
+            $data = array(
+                'branch_name' => $job_id,
+                'nickname' => $bidder->getNickname(),
+                'users_fork' => $forkStatus['data']['git_url'],
+                'master_repo' => str_replace('https://', 'git://', $project->getRepository())
+            );
 
-                $bid_info = array_merge($data, $bid_info);
-            }
-            if (!$branchStatus['error']) {
-                $bid_info['sandbox'] = $branchStatus['branch_url'];
-            }
+            $bid_info = array_merge($data, $bid_info);
+        }
+        if (!$branchStatus['error']) {
+            $bid_info['sandbox'] = $branchStatus['branch_url'];
         }
         
         $bid_info['bid_done'] = strtotime('+' . $bid_info['bid_done_in'], time());

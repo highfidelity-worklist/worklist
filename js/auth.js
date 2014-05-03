@@ -1,105 +1,102 @@
 var Auth = {
+    emailSubmit_running: false,
+    countries: [],
+
     init: function() {
-        var submitIsRunning = false;
+        $('form#auth').submit(Auth.emailSubmit);
+    },
 
-        $('form#auth').submit(function(event) {
-            event.preventDefault();
-            if (submitIsRunning) {
-                return false;
-            }
-            submitIsRunning = true;
+    emailSubmit: function(event) {
+        event.preventDefault();
+        if (Auth.emailSubmit_running) {
+            return false;
+        }
+        Auth.emailSubmit_running = true;
 
-            var email = new LiveValidation('username', {onlyOnSubmit: true});
-            email.add(Validate.Email, {failureMessage: "You must enter a valid e-mail address!"});
-            massValidation = LiveValidation.massValidate([email]);
+        var email = new LiveValidation('username', {onlyOnSubmit: true});
+        email.add(Validate.Email, {failureMessage: "You must enter a valid e-mail address!"});
+        massValidation = LiveValidation.massValidate([email]);
 
-            if (!massValidation) {
-                submitIsRunning = false;
-                return false;
-            }
+        if (!massValidation) {
+            Auth.emailSubmit_running = false;
+            return false;
+        }
 
-            var username = $('form#auth input[name="username"]').val();
-            $.ajax({
-                url: './user/exists/' + username,
-                dataType: 'json',
-                type: 'GET',
-                error: function() {
-                    submitIsRunning = false;
-                },
-                success: function(data) {
-                    if (!data.success) {
-                        submitIsRunning = false;
-                        return;
-                    }
-                    var content, title;
-                    if (data.exists) {
-                        action = './github/authorize';
-                        title = 'Please enter your Worklist password';
-                        content = 
-                            '<p>' +
-                            '  Please enter the password you\'ve been using to sign in the Worklist' +
-                            '  so far. This might be the last time you have to use it, but you should ' +
-                            '  still remember it as your safe-mode way.' +
-                            '</p>' +
-                            '<div class="row">' +
-                            '  <div class="col-md-4"><label for="pass1">Password</label></div>' +
-                            '  <div class="col-md-8">' +
-                            '    <input id="pass1" type="password" name="password" class="form-control" placeholder="Enter your password">' +
-                            '  </div>' +
-                            '</div>';
-                    } else {
-                        action = './github/signup';
-                        title = 'Safe-mode password';
-                        content = 
-                            '<p>' +
-                            '  Please choose a safe-mode password that will be useful' +
-                            '  in cases of credentials problems.' +
-                            '</p>' +
-                            '<div class="row">' +
-                            '  <div class="col-md-4"><label for="pass1">Password</label></div>' +
-                            '  <div class="col-md-8">' +
-                            '    <input id="pass1" type="password" name="password" class="form-control" placeholder="Choose a password">' +
-                            '  </div>' +
-                            '</div>' +
-                            '<div class="row">' +
-                            '  <div class="col-md-4"><label for="pass2">Repeat password</label></div>' +
-                            '  <div class="col-md-8">' +
-                            '    <input id="pass2" type="password" name="password2" class="form-control" placeholder="Enter password again">' +
-                            '  </div>' +
-                            '</div>';
-                    }
-
-                    Utils.emptyFormModal({
-                        action: action,
-                        title: title,
-                        content: content,
-                        buttons: [
-                            {
-                                content: 'Cancel',
-                                className: 'btn-default',
-                                dismiss: true
-                            },
-                            {
-                                content: 'Ok',
-                                className: 'btn-primary',
-                                dismiss: false
-                            }
-                        ],
-                        open: function(dialog) {
-                            $('form .btn-primary', dialog).click(function() {
-                                $('form', dialog).submit();
-                            });
-                            $('form', dialog).submit(function(event) {
-                                return data.exists ? Auth.authorize(dialog) : Auth.signup(dialog);
-                            });
-                        },
-                        close: function(dialog) {
-                            submitIsRunning = false;
-                        }
-                    });
+        var username = $('form#auth input[name="username"]').val();
+        $.ajax({
+            url: './user/exists/' + username,
+            dataType: 'json',
+            type: 'GET',
+            error: function() {
+                Auth.emailSubmit_running = false;
+            },
+            success: function(data) {
+                if (!data.success) {
+                    Auth.emailSubmit_running = false;
+                    return;
                 }
-            });
+                var modal = 'auth/' + (data.exists ? 'authorize' : 'signup');
+                Utils.modal(modal, {
+                    open: function(dialog) {
+                        if (!data.exists) {
+                            Auth.renderCountryList(dialog);
+                        }
+                        $('form .btn-primary', dialog).click(function() {
+                            $('form', dialog).submit();
+                        });
+                        $('form', dialog).submit(function(event) {
+                            return data.exists ? Auth.authorize(dialog) : Auth.signup(dialog);
+                        });
+                    },
+                    close: function(dialog) {
+                        Auth.emailSubmit_running = false;
+                    }
+                });
+            }
         });
+    },
+
+    loadCountryList: function(fAfter) {
+        $.ajax({
+            url: './user/countries/all',
+            dataType: 'json',
+            type: 'GET',
+            success: function(data) {
+                Auth.countries = data;
+                if (typeof fAfter == 'function') {
+                    fAfter();
+                }
+            }
+        });
+    },
+
+    renderCountryList: function(dialog) {
+        if (!Auth.countries.length) {
+            Auth.loadCountryList(function() {
+                Auth.renderCountryList();
+            });
+            return;
+        }
+        $('select[name="country"] > option', dialog).remove();
+        if (!(defaultCountry = $('form#auth input[name="location"]').val())) {
+            defaultCountry = 'US';
+        }
+        var defaultUpperCase = defaultCountry.toUpperCase().trim();
+        for (var i = 0; i < Auth.countries.length; i++) {
+            var countryCode = Auth.countries[i].code;
+            var countryName = Auth.countries[i].name;
+            $('<option>')
+                .attr({
+                    value: countryCode,
+                    selected: (countryCode.toUpperCase() == defaultUpperCase || countryName.toUpperCase() == defaultUpperCase)
+                })
+                .text(countryName)
+                .appendTo('select[name="country"]', dialog);
+        }
+        if (!$('select[name="country"] > option[selected="selected"]', dialog).length) {
+            $('select[name="country"] > option[value="US"]', dialog).attr({selected: true});
+        }
+        $('select[name="country"]', dialog).chosen();
     },
 
     authorize: function(dialog) {
@@ -147,6 +144,7 @@ var Auth = {
                 type: 'POST',
                 data: {
                     access_token: $('form#auth input[name="access_token"]').val(),
+                    country: $('select[name="country"]', dialog).val(),
                     username: $('form#auth input[name="username"]').val(),
                     password: $('input[name="password"]', dialog).val(),
                     password2: $('input[name="password2"]', dialog).val(),

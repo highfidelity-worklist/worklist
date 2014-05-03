@@ -161,6 +161,11 @@
                         </tbody>
                     </table>
                 </div>
+                <div>
+                    <a href="./jobs?&user={{profileUser.getID}}&status=">
+                        View All Jobs by {{profileUser.getNickname}}
+                    </a> 
+                </div>
             </div><!-- end of right-column -->
         </div>
         <div class="tab-pane" id="admin">
@@ -316,7 +321,6 @@
     // This global variable user_id should not be used anymore, replace it by userInfo.user_id .
     // All the variables should be included in the object userInfo
     // To have a smooth migration, the variable is kept for the moment.
-    var admin = {{#currentUser.is_payer}}true{{/currentUser.is_payer}}{{^currentUser.is_payer}}false{{/currentUser.is_payer}};
     var userInfo = {
         manager: {{manager}},
         referred_by: {{referred_by}},

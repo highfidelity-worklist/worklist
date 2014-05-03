@@ -26,7 +26,7 @@ class ConfirmationController extends Controller {
 
                 // send welcome email
                 sendTemplateEmail($user->getUsername(), 'welcome', array('nickname' => $user->getNickname()), 'Worklist <contact@worklist.net>');
-                LoginController::loginUser($user, false); //Optionally can login with confirm URL
+                User::login($user, false); //Optionally can login with confirm URL
                 $jobs = new JobsController();
                 $jobs->view->jumbotron = 
                     "<h2>Welcome to Worklist!</h2>
@@ -39,7 +39,7 @@ class ConfirmationController extends Controller {
                 $jobs->run();
                 return;
             } else {
-                Utils::redirect('./signup');
+                Utils::redirect('./');
             }
         } elseif (isset($_REQUEST['ppstr'])) {
             // paypal address confirmation
@@ -49,7 +49,7 @@ class ConfirmationController extends Controller {
             // verify the email belongs to a user
             if (! $user->findUserByPPUsername($paypal_email, $hash)) {
                 // hacking attempt, or some other error
-                Utils::redirect('./login');
+                Utils::redirect('./');
             } else {
                 $user->setPaypal_verified(true);
                 $user->setPaypal_hash('');
