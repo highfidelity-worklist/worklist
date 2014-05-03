@@ -86,10 +86,10 @@ if (!defined('SVN_REV_URL'))    define('SVN_REV_URL', 'http://svn.worklist.net/r
 if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
 if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
 
-if (!defined('DB_SERVER'))      define('DB_SERVER', 'mysql.dev.sendlove.us');
-if (!defined('DB_USER'))        define('DB_USER', 'project_cupid');
-if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', 'test30');
-if (!defined('DB_NAME'))        define('DB_NAME', 'worklist_joanne');
+if (!defined('DB_SERVER'))      define('DB_SERVER', 'dev-db.worklist.net');
+if (!defined('DB_USER'))        define('DB_USER', 'dev_worklist');
+if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', 'unsecure');
+if (!defined('DB_NAME'))        define('DB_NAME', 'dev_worklist');
 
 
 //worklist tables
@@ -213,6 +213,28 @@ if (!defined('BOTLIST'))        define('BOTLIST', 'him,me,love,survey,ping,');
 
 if (!defined("SENDLOVE_API_URL")) define("SENDLOVE_API_URL", "https://dev.sendlove.us/love/api.php");
 if (!defined("SENDLOVE_API_KEY")) define("SENDLOVE_API_KEY", "uierbycur4yt73467t6trtycff3rt");
+
+defineOnce('TWITTER_USER', 'user');
+defineOnce('TWITTER_PASS', 'pass');
+defineOnce('TWITTER_2_USER', null);
+defineOnce('TWITTER_2_PASS', null);
+
+defineOnce('TWITTER_CONSUMER_KEY', 'consumer_key');
+defineOnce('TWITTER_CONSUMER_SECRET', 'consumer_secret');
+defineOnce('TWITTER_OAUTH_TOKEN', 'oauth_token');
+defineOnce('TWITTER_OAUTH_SECRET', 'oauth_secret');
+
+////How to use a local gateway
+defineOnce('GOOGLE_HOST', 'localhost');
+defineOnce('GOOGLE_USER', '');
+defineOnce('GOOGLE_PWD', '');
+defineOnce('GOOGLE_PORT', '25');
+defineOnce('GOOGLE_AUTH', false);
+
+defineOnce('S3_ACCESS_KEY', 'AKIAIXRYPAC4HCOWBXMQ');
+defineOnce('S3_SECRET_KEY', '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');
+defineOnce('S3_BUCKET',     'worklist-dev');
+defineOnce('S3_URL_BASE',   'https://'.S3_BUCKET.'.s3.amazonaws.com/');
 
 if (!defined("REWARDER_API_URL")) define("REWARDER_API_URL", "https://dev.sendlove.us/review/api.php");
 if (!defined("REWARDER_API_KEY")) define("REWARDER_API_KEY", "dhfsfdhgdhsfg7g5fyg73ff23545f32fwd");
@@ -1283,8 +1305,8 @@ defineOnce('DEFAULT_TIMEZONE', 'UTC');
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__));
 date_default_timezone_set(DEFAULT_TIMEZONE);
 
-defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'd075a674622a63de2415');
-defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '6c256ada7f5849ef392907f56b55cc501d4b9e2e');
+defineOnce('GITHUB_OAUTH2_CLIENT_ID', 'abe62566682e14869dd6');
+defineOnce('GITHUB_OAUTH2_CLIENT_SECRET', '93eac9e0b7fd4ef6e03526ab711d269237de57ef');
 
 defineOnce('GITHUB_AUTHORIZE_URL', 'https://github.com/login/oauth/authorize');
 defineOnce('GITHUB_TOKEN_URL', 'https://github.com/login/oauth/access_token');

@@ -180,7 +180,8 @@ $(function () {
             }
         });
     }
-    var pictureUpload = new AjaxUpload('profilepicture', {
+
+    var uploadOptions = {
         action: 'api.php',
         name: 'profile',
         data: { 
@@ -193,7 +194,10 @@ $(function () {
         responseType: 'json',
         onSubmit: validateUploadImage,
         onComplete: completeUploadImage
-    });
+    };
+
+    new AjaxUpload('profilepicture', uploadOptions);
+    new AjaxUpload('profilebutton', uploadOptions);
 
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',

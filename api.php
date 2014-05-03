@@ -67,10 +67,6 @@ if(validateAction()) {
                 validateAPIKey();
                 exec('svnversion > ver');
                 break;
-            case 'jobsPastDue':
-                validateAPIKey();
-                sendPastDueNotification();
-                break;
             case 'sendContactEmail':
                 // @TODO: why do we require an API key for this?
                 // I don't get it. The request is sent via JS, so if we included the API key it would
@@ -466,12 +462,6 @@ function sendBidNotification() {
     require_once('./classes/Notification.class.php');
     $notify = new Notification();
     $notify->emailExpiredBids();
-}
-
-function sendPastDueNotification() {
-    require_once('./classes/Notification.class.php');
-    $notify = new Notification();
-    $notify->emailPastDueJobs();
 }
 
 function processW2Masspay() {
@@ -1328,6 +1318,34 @@ function addWorkitem() {
             );
 
             Notification::workitemNotifyHipchat($options, $data);
+        }
+
+        // workitem mentions
+        $matches = array();
+        if (preg_match_all(
+            '/@(\w+)/',
+            $workitem->getNotes(),
+            $matches,
+            PREG_SET_ORDER
+        )) {
+
+            $user = new User();
+
+            foreach ($matches as $mention) {
+                // validate the username actually exists
+                if ($recipient = $user->findUserByNickname($mention[1])) {
+                    $emailTemplate = 'workitem-mention';
+                    $data = array(
+                        'job_id' => $workitem->getId(),
+                        'author' => $_SESSION['nickname'],
+                        'text' => $workitem->getNotes(),
+                        'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
+                    );
+
+                    $senderEmail = 'Worklist <contact@worklist.net>';
+                    sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                }
+            }
         }
     }
 
@@ -3598,7 +3616,7 @@ function timeline() {
 function sendNewUserNotification() {
 
     $db = new Database();
-    $recipient = 'grayson@highfidelity.io';
+    $recipient = array('grayson@highfidelity.io', 'chris@highfidelity.io');
 
     /**
      * The email is to be sent Monday to Friday, therefore on a Monday

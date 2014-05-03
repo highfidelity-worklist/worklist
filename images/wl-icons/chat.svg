@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 19.843 19.843" height="19.843px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="19.843px" version="1.1" enable-background="new 0 0 19.843 19.843">
+  <path fill="#7F8080" d="M18.421,9.921c0,4.694-3.806,8.5-8.5,8.5s-8.5-3.806-8.5-8.5c0-4.694,3.806-8.5,8.5-8.5  S18.421,5.228,18.421,9.921" />
+  <path fill="#343434" d="M17.421,9.921c0,4.143-3.357,7.5-7.5,7.5s-7.5-3.357-7.5-7.5c0-4.143,3.357-7.5,7.5-7.5  S17.421,5.779,17.421,9.921" />
+  <rect height="8" x="12.421" y="5.921" fill="#7F8080" width="1" />
+  <rect height="10" x="8.421" y="4.921" fill="#7F8080" width="1" />
+  <rect height="10" x="10.421" y="4.921" fill="#7F8080" width="1" />
+  <rect height="8" x="6.421" y="5.921" fill="#7F8080" width="1" />
+</svg>
