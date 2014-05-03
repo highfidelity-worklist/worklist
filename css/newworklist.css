@@ -464,19 +464,14 @@ button:focus, a:focus {
     background-color: #000;
 }
 
-.no-padding {
-    padding: 0 !important;
+.navbar > .container-fluid,
+.navbar-collapse > ul.navbar-nav,
+.navbar-collapse > ul.navbar-nav > li.dropdown
+{
+    padding: 0;
 }
 
-.no-padding-left {
-    padding-left: 0 !important;
-}
-
-.no-padding-right {
-    padding-right: 0 !important;
-}
-
-.dd-max-width{
+.navbar-nav.navbar-right{
     max-width: 170px;
 }
 
@@ -496,42 +491,40 @@ button:focus, a:focus {
     max-height: none;
 }
 
-.navbar-brand {
-    margin-left: 0 !important;
+body > nav.navbar a.navbar-brand {
+    margin-left: 0;
+    margin-top: 14px;
 }
 
-.navbar-brand.wl-icon-worklist{
-    margin-left: -15px !important;
+body > nav.navbar a.navbar-brand.wl-icon-worklist {
+    margin-left: -15px;
+    width: 80px
+}
+
+.dropdown > .dropdown-toggle {
+    text-align: right;
 }
 
 @media only screen and (max-width: 767px) {
-    .text-left-xs {
-        text-align: left !important;
+    .dropdown > .dropdown-toggle {
+        text-align: left;
     }
     
-    .text-center-xs {
-        text-align: center !important;
-    }
-    
-    .text-right-xs {
-        text-align: right !important;
-    }
-    
-    .dd-max-width{
+    .navbar-nav.navbar-right {
         max-width: none;
     }
     
-    .navbar-brand{
-        margin-top: 9px !important;
+    body > nav.navbar a.navbar-brand {
+        margin-top: 9px;
     }
     
-    .navbar-brand.wl-icon-worklist{
+    body > nav.navbar a.navbar-brand.wl-icon-worklist {
         margin-left: auto;
         margin-right: auto;
-        width: calc(100% - 125px) !important;
+        width: calc(100% - 125px);
     }
     
-    .nav.navbar-nav a{
+    .nav.navbar-nav a {
         background: none;
     }
 }
