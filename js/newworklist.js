@@ -17,10 +17,10 @@ var NewWorklist = {
     }
 }
 
-$(document).ready (function (){
+$(document).ready (function () {
     $('.navbar').affix({
         offset: {
-        top: function (){ 
+        top: function () { 
                 return $('.navbar').outerHeight();
             }
         }
@@ -35,7 +35,10 @@ $(document).ready (function (){
         
         $('body').css('padding-top', $('.navbar').outerHeight() + 'px');
          
-        if ($('body').scrollTop() < $('.navbar').outerHeight() * 1.5){
+        /* Set a range between navbar height and navbar height and a half
+           to show a nice fade in effect, this will only happens if the user
+           scrolls slowly */
+        if ($('body').scrollTop() < $('.navbar').outerHeight() * 1.5) {
             $('.navbar').hide();
             $('.navbar').fadeIn("slow");
         }
