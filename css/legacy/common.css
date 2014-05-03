@@ -49,7 +49,7 @@
     background-position: 8px 6px;
 }
 
-.uploadbutton {
+.uploadbutton[this-should-be-deprecated] {
     background-image: url("../../images/primaryIcons-WL.png") !important;
     background-position: 7px -1013px !important;
     background-repeat: no-repeat !important;
