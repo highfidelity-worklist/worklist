@@ -39,11 +39,6 @@ class JobView extends View {
         $this->workitem_project = $this->read('workitem_project');
         $this->title = sprintf($this->title, $worklist['id'], $worklist['summary']);
 
-        if ($this->currentUser['id']) {
-            $this->scripts[] = 'js/uploadFiles.js';
-        }
-
-
         $this->bids = $this->read('bids');
         $this->fees = $this->read('fees');
 
