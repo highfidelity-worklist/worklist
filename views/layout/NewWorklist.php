@@ -29,6 +29,7 @@ class NewWorklistLayout extends Layout {
         'js/bootstrap/bootstrap-datepicker.js',
         'js/autosize/jquery.autosize.min.js',
         'js/chosen/chosen.jquery.min.js',
+        'js/uploadFiles.js',
         'js/mustache/mustache.js',
         'js/common.js',
         'js/utils.js',

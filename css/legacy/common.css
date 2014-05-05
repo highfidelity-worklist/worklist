@@ -49,15 +49,6 @@
     background-position: 8px 6px;
 }
 
-.uploadbutton {
-    background-image: url("../../images/primaryIcons-WL.png") !important;
-    background-position: 7px -1013px !important;
-    background-repeat: no-repeat !important;
-    padding-left: 35px !important;
-    line-height: 15px;
-    line-height: 15px;
-}
-
 
 /*
  * Copied from old css/lightbox-hc.css
