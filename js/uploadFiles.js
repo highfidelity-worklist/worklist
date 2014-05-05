@@ -127,7 +127,7 @@
                             }, 100);
 
                         } else {
-                            alert(data.message);
+                             $('#upload-scan-file .content').html('<p>' + data.message + '</p>');
                         }
 
                     }
