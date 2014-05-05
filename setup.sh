@@ -10,9 +10,6 @@ TMP_PATH=${WORKLIST_TMP_PATH:=$CURRENT_PATH/tmp}
 UPLOADS_PATH=${WORKLIST_UPLOADS_PATH:=$CURRENT_PATH/uploads}
 DEBUG_FILE=${WORKLIST_DEBUG_FILE:=$CURRENT_PATH/php.errors}
 
-echo $UPLOADS_PATH
-exit;
-
 # Make sure tmp exists and everyone has write permisions there
 if [ ! -d  $TMP_PATH ]
 then
