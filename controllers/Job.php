@@ -362,6 +362,35 @@ class JobController extends Controller {
                     
                     Notification::workitemNotify($options, $data, false);
                     Notification::workitemNotifyHipchat($options, $data);
+
+                    // workitem mentions
+                    $matches = array();
+                    if (preg_match_all(
+                        '/@(\w+)/',
+                        $comment,
+                        $matches,
+                        PREG_SET_ORDER
+                    )) {
+
+                        $user = new User();
+
+                        foreach ($matches as $mention) {
+                            // validate the username actually exists
+                            if ($recipient = $user->findUserByNickname($mention[1])) {
+                                $emailTemplate = 'workitem-mention';
+                                $data = array(
+                                    'job_id' => $workitem->getId(),
+                                    'author' => $_SESSION['nickname'],
+                                    'text' => $comment,
+                                    'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
+                                );
+
+                                $senderEmail = 'Worklist <contact@worklist.net>';
+                                sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                            }
+                        }
+                    }
+
                 }
                 sendJournalNotification($journal_message);
                 $comment = new Comment();
