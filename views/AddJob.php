@@ -9,7 +9,6 @@ class AddJobView extends View {
     public $scripts = array(
         'js/jquery/jquery.template.js',
         'js/ajaxupload/ajaxupload.js',
-        'js/uploadFiles.js',
         'js/skills.js',
         'js/addjob.js'
     );
