@@ -3,12 +3,15 @@
 CURRENT_PATH=`pwd`
 CURRENT_USER=`whoami`
 SANDBOX_NAME=`pwd | sed "s:^$HOME/public_html/::"`
-SERVER_NAME=${WORKLIST_UPLOADS_PATH:="dev.worklist.net"}
+SERVER_NAME=${WORKLIST_SERVER_NAME:="dev.worklist.net"}
 SERVER_CONFIG=$CURRENT_PATH/server.local.php
 CUSTOM_CONFIG=${WORKLIST_CUSTOM_CONFIG:=""}
 TMP_PATH=${WORKLIST_TMP_PATH:=$CURRENT_PATH/tmp}
 UPLOADS_PATH=${WORKLIST_UPLOADS_PATH:=$CURRENT_PATH/uploads}
 DEBUG_FILE=${WORKLIST_DEBUG_FILE:=$CURRENT_PATH/php.errors}
+
+echo $UPLOADS_PATH
+exit;
 
 # Make sure tmp exists and everyone has write permisions there
 if [ ! -d  $TMP_PATH ]
