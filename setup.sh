@@ -43,7 +43,7 @@ then
 fi
 chmod 777 $DEBUG_FILE
 
-echo "<?php " > /$SERVER_CONFIG
+echo "<?php " > $SERVER_CONFIG
 echo "ini_set('error_log', '$DEBUG_FILE');" >> $SERVER_CONFIG
 echo "define('SANDBOX_USER', '~$CURRENT_USER/');" >> $SERVER_CONFIG
 echo "define('SANDBOX_NAME', '$SANDBOX_NAME/');" >> $SERVER_CONFIG
