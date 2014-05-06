@@ -15,36 +15,35 @@ var NewWorklist = {
             $('body').removeClass('onAjax');
         });
         
-        $(document).ready (function () {
-            $('.navbar').affix({
-                offset: {
-                top: function () { 
-                        return $('.navbar').outerHeight();
-                    }
+        // Navbar responsiveness functions
+        $('.navbar').affix({
+            offset: {
+            top: function () { 
+                    return $('.navbar').outerHeight();
                 }
-            });
+            }
+        });
+        
+        $('.navbar').on('affix.bs.affix', function () {
+            if ($('.dropdown').hasClass('open'))
+                $('.dropdown-toggle').dropdown('toggle');
             
-            $('.navbar').on('affix.bs.affix', function () {
-                if ($('.dropdown').hasClass('open'))
-                    $('.dropdown-toggle').dropdown('toggle');
-                
-                if ($('.navbar-collapse').hasClass('in'))
-                    $('.navbar-collapse').collapse('toggle');
-                
-                $('body').css('padding-top', $('.navbar').outerHeight() + 'px');
-                 
-                /* Set a range between navbar height and navbar height and a half
-                   to show a nice fade in effect, this will only happens if the user
-                   scrolls slowly */
-                if ($('body').scrollTop() < $('.navbar').outerHeight() * 1.5) {
-                    $('.navbar').hide();
-                    $('.navbar').fadeIn("slow");
-                }
-            });
+            if ($('.navbar-collapse').hasClass('in'))
+                $('.navbar-collapse').collapse('toggle');
+            
+            $('body').css('padding-top', $('.navbar').outerHeight() + 'px');
+             
+            /* Set a range between navbar height and navbar height and a half
+               to show a nice fade in effect, this will only happens if the user
+               scrolls slowly */
+            if ($('body').scrollTop() < $('.navbar').outerHeight() * 1.5) {
+                $('.navbar').hide();
+                $('.navbar').fadeIn("slow");
+            }
+        });
 
-            $('.navbar').on('affix-top.bs.affix', function () {
-                $('body').css('padding-top', '0px');
-            });
+        $('.navbar').on('affix-top.bs.affix', function () {
+            $('body').css('padding-top', '0px');
         });
     }
 }
