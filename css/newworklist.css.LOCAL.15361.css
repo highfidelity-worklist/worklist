@@ -1,0 +1,524 @@
+body {
+  font-family: proxima-nova, sans-serif;
+  position: relative; //Fix bootstrap flicker bug
+  //padding-top: 61px; /* Move down content because of the fixed top navbar */
+}
+
+/* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
+@media (min-width: 960px) {
+    body > .container-fluid {
+        max-width: 920px;
+    }
+}
+
+/* let's set some margins on the main container for smaller sizes */
+@media (max-width: 960px) {
+    body > .container-fluid {
+        margin: 10px 10%;
+    }
+}
+
+@media (max-width: 768px) {
+    body > .container-fluid {
+        margin: 10px 5px;
+        min-width: 310px;
+        overflow: hidden;
+    }
+
+    .navbar-nav {
+        font-size: 14px;
+    }
+}
+
+/* global links styling */
+a {
+    color: #333333;    
+}
+a:hover {
+    color: #009999;
+}
+a:active {
+    color: #007F7C;
+}
+
+/* navigation bar shadow */
+nav.navbar {
+    box-shadow: 0 0px 6px #333;
+}
+
+/* navigation log in link color */
+nav.navbar .navbar-right > li > a[href="./github/login"] {
+    color: #fff;
+    font-size: 1.4em;
+}
+
+
+/* loading bar */
+body.onAjax nav.navbar > .container-fluid:after {
+    content: ' ';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #007F7c;
+    animation: moveLoadingBar 3s ease-in-out infinite;
+    -o-animation: moveLoadingBar 3s ease-in-out infinite;
+    -moz-animation: moveLoadingBar 3s ease-in-out infinite;
+    -webkit-animation: moveLoadingBar 3s ease-in-out infinite;
+    background: -moz-linear-gradient(left,  rgba(0,127,124,0) 0%, rgba(0,127,124,1) 25%, rgba(0,127,124,1) 50%, rgba(0,127,124,1) 75%, rgba(0,127,124,0) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,127,124,0)), color-stop(25%,rgba(0,127,124,1)), color-stop(50%,rgba(0,127,124,1)), color-stop(75%,rgba(0,127,124,1)), color-stop(100%,rgba(0,127,124,0)));
+    background: -webkit-linear-gradient(left,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    background: -o-linear-gradient(left,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    background: -ms-linear-gradient(left,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    background: linear-gradient(to right,  rgba(0,127,124,0) 0%,rgba(0,127,124,1) 25%,rgba(0,127,124,1) 50%,rgba(0,127,124,1) 75%,rgba(0,127,124,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00007f7c', endColorstr='#00007f7c',GradientType=1 );
+}
+
+@keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+@-o-keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+@-webkit-keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+@-moz-keyframes moveLoadingBar { 
+    0% {
+        left: 0%;
+        width: 0%;
+    }
+    50% {
+        left: 0%;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0%;
+    }
+}
+
+/*
+ * Form controls styling
+ */
+.form-control {
+    border-radius: 0;
+    color: #007F7c;
+}
+
+.form-control:focus {
+    border-color: #007F7c;
+    box-shadow: none;
+}
+
+input[type="button"],
+input[type="submit"] {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 0;
+    color: #fff;
+    font-weight: bold;
+    margin: 0 2px;
+    margin-top: 5px;
+    font-size: .9em;
+}
+
+input[type="button"],
+input[type="submit"],
+input.btn-primary,
+button.btn-primary {
+    background-color: #608e96;
+}
+
+input[type="button"]:focus,
+input[type="submit"]:focus,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input.btn-primary:hover,
+button.btn-primary:hover {
+    background-color: #007F7c;
+}
+
+label[for] {
+    cursor: pointer;
+}
+
+input.wlcheckbox[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+}
+input.wlcheckbox[type="checkbox"] + label {
+    line-height: 2.2em;
+    padding-left: 40px;
+    font-weight: normal;
+}
+@media (max-width: 768px) {
+    input.wlcheckbox[type="checkbox"] + label {
+        line-height: 3em
+    }
+}
+input.wlcheckbox[type="checkbox"] + label:before {
+    content: '\00a0';
+    width: 23px;
+    line-height: 1em;
+    border-radius: 5px;    
+    font-family: FontAwesome;
+    display: inline-block;
+    border: 1px solid #ccc;
+    margin: 8px 5px 0 -35px;
+    color: #999;
+    font-size: 1.3em;
+    padding: 2px;
+    background-color: #fff;
+}
+input.wlcheckbox[type="checkbox"]:focus + label:before {
+    border-color: #007F7c;
+}
+input.wlcheckbox[type="checkbox"]:checked + label:before {
+    content: '\f00c';
+}
+
+form .row {
+    margin-bottom: 15px;
+}
+
+/**
+ * chosen dropdown common styling 
+ */
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices {
+    border-radius: 0px;
+    height: 35px !important;
+}
+
+body .chosen-container-single .chosen-search input[type=text] {
+    margin: 0;
+    border-right: 0px;
+    border-left: 0px;
+    line-height: 1.9em;
+    height: 40px;
+    position: inherit;
+    background: 0 none;
+}
+
+body .chosen-container-single.chosen-container-active.chosen-with-drop .chosen-single,
+body .chosen-container-multi.chosen-container-active.chosen-with-drop .chosen-choices,
+body .chosen-container .chosen-drop,
+body .chosen-container-single .chosen-search input[type=text] {
+    border-color: #e0e0e0;
+}
+
+body .chosen-container-multi .chosen-choices,
+body .chosen-container-single .chosen-single,
+body .chosen-container-single .chosen-search input[type=text] {
+    background-color: #ffffff;
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices,
+body .chosen-container-single .chosen-search input[type=text],
+body .chosen-container-single .chosen-drop {
+    box-shadow: none;
+}
+
+body .chosen-container-single .chosen-drop {
+    border-radius: 0;
+}
+
+body .chosen-container-single .chosen-search {
+    padding: 0;
+    position: relative;
+}
+
+body .chosen-container-single .chosen-search:before {
+    font-family: FontAwesome;
+    content: "\f002";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #007F7c;
+    margin-top: 11px;
+    margin-right: 10px;
+    float: right;
+}
+
+
+body .chosen-container-single .chosen-single, 
+body .chosen-container-single .chosen-search input[type="text"] {
+    background: none repeat scroll 0% 0% transparent;
+}
+
+body .chosen-container-single .chosen-single > span:first-child,
+body .chosen-container-multi .chosen-choices .search-field > input.default {
+    color: #007F7c;
+    font-weight: bold;
+    line-height: 28px;
+}
+
+body .chosen-container-single .chosen-single div {
+    width: 30px;
+    padding: 3px 0 0;
+}
+
+@media (max-width: 1024px) {
+    body .chosen-container-single .chosen-single div {
+        width: 28px;
+    }
+}
+
+body .chosen-container-single .chosen-single div b {
+    background: none transparent;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio:2), only screen and (min-resolution:144dpi) {
+    .chosen-rtl .chosen-search input[type=text],
+    .chosen-container-single .chosen-single abbr,
+    .chosen-container-single .chosen-single div b,
+    .chosen-container-single .chosen-search input[type=text],
+    .chosen-container .chosen-results-scroll-down span,
+    .chosen-container .chosen-results-scroll-up span {
+        background-image: none !important;
+    }
+}
+
+body .chosen-container-single .chosen-single div b:before,
+body .chosen-container-multi .chosen-choices:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #666;
+    border-left: 1px solid #ccc;
+}
+body .chosen-container-single .chosen-single div b:before {
+    padding: 1px 8px 2px;
+}
+
+body .chosen-container-multi .chosen-choices:before {
+    padding: 3px 7px 4px 8px;
+    float: right;
+    font-weight: bold;
+}
+@media (max-width: 1024px) {
+    body .chosen-container-multi .chosen-choices:before {
+        padding: 6px 7px 6px 8px;
+    }    
+}
+
+body .chosen-container-multi.chosen-with-drop .chosen-choices:before,
+body .chosen-container-single.chosen-with-drop .chosen-single div b:before {
+    content: "\f077";    
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices {
+    padding: 3px 0px 3px 10px;
+    border: 0 none;
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices,
+body .chosen-container-single.chosen-with-drop .chosen-single,
+body .chosen-container-multi.chosen-with-drop .chosen-choices {
+    background: none #fff;
+}
+
+body .chosen-container-multi .chosen-choices li.search-choice {
+    margin: 3px 1px;
+    font-size: .7em;
+    background: none #fff;
+    border-radius: 0;
+    border-color: #007F7c;
+    padding: 4px 20px 2px 5px;
+}
+
+
+body .chosen-container-multi .chosen-choices li.search-field {
+    margin: 3px 1px;
+}
+
+body .chosen-container-multi .chosen-choices .search-field input.default {
+    height: 23px;
+    line-height: 1.3em;
+}
+
+body .chosen-container .chosen-results {
+    overflow-y: hidden;
+    margin: 0;
+    padding: 0 10px;
+}
+
+body .chosen-container .chosen-results li {
+    margin: 0 0 0 -5px;
+    line-height: 1.2em;
+}
+
+body .chosen-container .chosen-results li.highlighted {
+    background: none #007F7c;
+}
+
+body .chosen-container-single .chosen-single,
+body .chosen-container-multi .chosen-choices {
+    border: 1px solid #ccc;
+}
+
+body .chosen-container-multi.chosen-container-active .chosen-choices,
+body .chosen-container-single.chosen-container-active .chosen-single {
+    border-color: #007F7c;
+}
+
+/**
+ * Jumbotron messages
+ */
+body .jumbotron {
+    padding-top: 5px;
+    padding-bottom: 15px;
+}
+
+body .jumbotron p {
+    font-size: 1.2em;
+}
+
+body .jumbotron a {
+    color: #007F7C;
+}
+body .jumbotron a:hover {
+    color: #009999;
+}
+body .jumbotron a:active {
+    color: #333333;    
+}
+
+button:focus, a:focus {
+    outline: none;
+}
+
+@media only screen and (max-width: 450px) {
+    #footer {
+        display: none;
+    }
+}
+
+/* Navbar styles for responsiveness */
+.dropdown-menu {
+    box-shadow: -1px 3px 10px rgba(0,0,0,.75);
+    border-color: black;
+    background-clip: border-box;
+}
+
+.dropdown-menu > li > a {
+    padding: 3px 20px 3px 0px;
+    color: #999;
+}
+
+.dropdown-menu-icon {
+    width: 32px;
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+}
+
+.navbar-nav>li>.dropdown-menu{
+    background-color: #333;
+}
+
+.dropdown-menu .divider {
+    background-color: #000;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-padding-left {
+    padding-left: 0 !important;
+}
+
+.dd-max-width{
+    max-width: 170px;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.container > .navbar-header, 
+.container-fluid > .navbar-header, 
+.container > .navbar-collapse, 
+.container-fluid > .navbar-collapse {
+    margin: 0;
+}
+
+.navbar-inverse .navbar-collapse {
+    overflow: hidden;
+    max-height: none;
+}
+
+@media only screen and (max-width: 767px) {
+    .text-left-xs {
+        text-align: left !important;
+    }
+    
+    .text-center-xs {
+        text-align: center !important;
+    }
+    
+    .text-right-xs {
+        text-align: right !important;
+    }
+    
+    .dd-max-width{
+        max-width: none;
+    }
+    
+    .navbar-brand{
+        margin-top: 9px !important;
+        margin-left: -15px;
+    }
+}
+
+.navbar.affix, .navbar.affix-bottom {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index:10;
+}
