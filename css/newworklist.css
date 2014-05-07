@@ -487,8 +487,8 @@ button:focus, a:focus {
 }
 
 .navbar-inverse .navbar-collapse {
-    overflow: hidden;
-    max-height: none;
+    overflow: auto;
+    max-height: 224px;
 }
 
 body > nav.navbar a.navbar-brand {
