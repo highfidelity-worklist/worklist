@@ -586,7 +586,6 @@ class JobView extends View {
         $ret = '';
         
         foreach($fees as $fee) {
-            error_log(print_r($fee, true));
             $paid = (bool) $fee['paid'];
             $feeTotal += (float) $fee['amount'];
             $date = explode("/", $fee['date']);
