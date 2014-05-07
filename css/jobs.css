@@ -1,15 +1,16 @@
-@media (min-width: 1024px) {
-    body > .container-fluid {
-        max-width: 1024px;
-    }
-}
-
 body {
     font-size: 14px;
 }
-@media (max-width: 1024px) {
-    body {
-        font-size: 11px;
+
+@media (max-width: 960px){
+    body > .container-fluid {
+        margin: 0 8.33%;
+    }
+}
+
+@media (max-width: 480px){
+    body > .container-fluid {
+        margin: 0;
     }
 }
 
@@ -539,6 +540,7 @@ td.textAlignReport {
 
     .table-worklist tr > td:nth-child(2) {
         max-width: 200px;
+        white-space: nowrap;
     }
 }
 
@@ -949,7 +951,7 @@ input {
     line-height: 1.45em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #search select + div,
     #search select,
     #query > fieldset > input {
@@ -972,7 +974,7 @@ input {
 
 @media (max-width: 1024px) {
     #query > fieldset > input[type="text"] {
-        padding: 8px 23px 8px;
+        padding: 7px 24px 6px;
     }
 }
 
@@ -983,11 +985,6 @@ input {
     color: #000;
     margin: 7px;
     color: #007F7c;
-}
-@media (max-width: 1024px) {
-    #query > fieldset:before {
-        margin: 9px 8px;
-    }
 }
 
 #query > fieldset > * {
@@ -1004,7 +1001,7 @@ input {
     border: 0 none;
     background: transparent none;
     color: #666;
-    top: 10px;
+    top: 8px;
     right: 2px;
 }
 
@@ -1142,7 +1139,7 @@ input {
 .filter > .chosen-container {
     margin-top: 25px;
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .filter > .chosen-container {
         margin-top: 5px;
     }
@@ -1157,12 +1154,18 @@ input {
     #query > fieldset,
     #addJobButton {
         margin-top: 25px;
-    }
+    }   
+
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #query > fieldset,
     #addJobButton {
         margin-top: 5px;
+        width: 100%;
+    }
+    
+    #query > fieldset {
+        margin-top: 15px;
     }
 }
 
@@ -1229,6 +1232,8 @@ input {
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;
+    text-align: center;
+    width: 100%;
 }
 
 #addJobButton:hover {
@@ -1236,13 +1241,15 @@ input {
 }
 
 #buttons {
-    padding: 0;
+    padding-left: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #buttons {
-        float: right;
         padding-right: 15px;
+        padding-left: 15px;
+        text-align: center;
+        width: 100%;
     } 
 }
 
@@ -1341,4 +1348,10 @@ td.statusDone {
 }
 td.statusDone > i {
     background-color: #000000;
+}
+
+@media (min-width: 768px){
+    .container-fluid .row .filter {
+    padding-left: 0;
+    }
 }
