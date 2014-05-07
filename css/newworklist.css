@@ -1,6 +1,6 @@
 body {
   font-family: proxima-nova, sans-serif;
-  padding-top: 61px; /* Move down content because of the fixed top navbar */
+  position: relative; // Fix bootstrap flicker bug
 }
 
 /* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
@@ -437,6 +437,105 @@ button:focus, a:focus {
     }
 }
 
+/* Navbar styles for responsiveness */
+.dropdown-menu {
+    box-shadow: -1px 3px 10px rgba(0,0,0,.75);
+    border-color: black;
+    background-clip: border-box;
+}
+
+.dropdown-menu > li > a {
+    padding: 3px 20px 3px 0px;
+    color: #999;
+}
+
+.dropdown-menu-icon {
+    width: 32px;
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+}
+
+.navbar-nav > li > .dropdown-menu{
+    background-color: #333;
+}
+
+.dropdown-menu .divider {
+    background-color: #000;
+}
+
+.navbar > .container-fluid,
+.navbar-collapse > ul.navbar-nav,
+.navbar-collapse > ul.navbar-nav > li.dropdown
+{
+    padding: 0;
+}
+
+.navbar-nav.navbar-right{
+    max-width: 170px;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.container > .navbar-header, 
+.container-fluid > .navbar-header, 
+.container > .navbar-collapse, 
+.container-fluid > .navbar-collapse {
+    margin: 0;
+}
+
+.navbar-inverse .navbar-collapse {
+    overflow: auto;
+    max-height: 224px;
+}
+
+body > nav.navbar a.navbar-brand {
+    margin-left: 0;
+    margin-top: 14px;
+}
+
+body > nav.navbar a.navbar-brand.wl-icon-worklist {
+    margin-left: -15px;
+    width: 80px
+}
+
+.dropdown > .dropdown-toggle {
+    text-align: right;
+}
+
+@media only screen and (max-width: 767px) {
+    .dropdown > .dropdown-toggle {
+        text-align: left;
+    }
+    
+    .navbar-nav.navbar-right {
+        max-width: none;
+    }
+    
+    body > nav.navbar a.navbar-brand {
+        margin-top: 9px;
+    }
+    
+    body > nav.navbar a.navbar-brand.wl-icon-worklist {
+        margin-left: auto;
+        margin-right: auto;
+        width: calc(100% - 125px);
+    }
+    
+    .nav.navbar-nav a {
+        background: none;
+    }
+}
+
+.navbar.affix, 
+.navbar.affix-bottom {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index:10;
+}
 
 /* Worklist Icons Classes */
 .wl-icon-arrow-down,

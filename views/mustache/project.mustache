@@ -52,7 +52,7 @@
     <div class="attachment">
         <span><#= title #></span>
         <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-            <i class="icon-remove"></i>
+            <i class="fa fa-times"></i>
         </span>
     </div>
 </script>
@@ -62,7 +62,7 @@
         <div id="projectLogo{{#edit_mode}}Edit{{/edit_mode}}">
             <img src="{{project_logo}}" />
             {{#edit_mode}}
-                <input clas="wlcheckbox" type="checkbox" name="noLogo" id="removeLogo" value="1" />
+                <input class="wlcheckbox" type="checkbox" name="noLogo" id="removeLogo" value="1" />
                 <label for="removeLogo">Remove logo</label>
             {{/edit_mode}}
         </div>
