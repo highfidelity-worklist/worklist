@@ -584,7 +584,9 @@ class JobView extends View {
  
         $feeTotal = 0;
         $ret = '';
+        
         foreach($fees as $fee) {
+            $paid = (bool) $fee['paid'];
             $feeTotal += (float) $fee['amount'];
             $date = explode("/", $fee['date']);
             $ret .= 
@@ -614,10 +616,10 @@ class JobView extends View {
                             $this->currentUser['is_payer']
                                 ?
                                     '<a href="#" class = "paid-link" id="feeitem-' . $fee['id'] . '">' .
-                                        ($fee['paid'] == 0 ? "No" : "Yes") .
+                                        ($paid ? "Yes" : "No") .
                                     '</a>'
                                 :
-                                    $fee['paid'] == 0 ? "No" : "Yes"
+                                    ($paid ? "Yes" : "No")
                         ) . ' ' .
                         (
                             (
@@ -629,7 +631,7 @@ class JobView extends View {
                                       || $this->currentUser['id'] == $workitem->getRunnerId() 
                                       || $this->currentUser['id'] == $fee['user_id']
                                     ) 
-                                  && ($this->currentUser['id'] && empty($fee['paid']))
+                                  && ($this->currentUser['id'] && !$paid)
                                 )
                             )
                                 ? '<a href="#" id="wd-' . $fee['id'] . '" class="wd-link" title="Delete Entry">delete</a>' : ''
