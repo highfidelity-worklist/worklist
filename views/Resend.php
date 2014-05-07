@@ -4,7 +4,7 @@ class ResendView extends View {
     public $title = 'Recover Password - Worklist';
 
     public $stylesheets = array(
-        'css/worklist.css'
+        'css/legacy/worklist.css'
     );
 
     public $scripts = array(
