@@ -857,6 +857,9 @@ $(document).ready(function(){
                     $('.loader').hide();
                 });
 
+                // calculate the maximum height of the modal based on the window height
+                var maxHeight = $(window).height() - 250;
+                $('#popup-bid-info').css('max-height', maxHeight + 'px');
                 $('#popup-bid-info').dialog('open');
 
             }
