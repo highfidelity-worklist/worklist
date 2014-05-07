@@ -53,7 +53,7 @@ echo "define('SERVER_URL', 'https://' . SERVER_NAME . '/' . APP_LOCATION);" >> $
 echo "define('SECURE_SERVER_URL', SERVER_URL);" >> $SERVER_CONFIG
 echo "define('WORKLIST_URL', SECURE_SERVER_URL);" >> $SERVER_CONFIG
 
-if [[ $CUSTOM_CONFIG && ! -s $CUSTOM_CONFIG ]]
+if [[ $CUSTOM_CONFIG && -s $CUSTOM_CONFIG ]]
 then
   echo "include('$CUSTOM_CONFIG');" >> $SERVER_CONFIG
 fi
