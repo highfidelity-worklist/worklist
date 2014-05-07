@@ -3,7 +3,7 @@
 CURRENT_PATH=`pwd`
 CURRENT_USER=`whoami`
 SANDBOX_NAME=`pwd | sed "s:^$HOME/public_html/::"`
-SERVER_NAME=${WORKLIST_UPLOADS_PATH:="dev.worklist.net"}
+SERVER_NAME=${WORKLIST_SERVER_NAME:="dev.worklist.net"}
 SERVER_CONFIG=$CURRENT_PATH/server.local.php
 CUSTOM_CONFIG=${WORKLIST_CUSTOM_CONFIG:=""}
 TMP_PATH=${WORKLIST_TMP_PATH:=$CURRENT_PATH/tmp}
@@ -43,7 +43,7 @@ then
 fi
 chmod 777 $DEBUG_FILE
 
-echo "<?php " > /$SERVER_CONFIG
+echo "<?php " > $SERVER_CONFIG
 echo "ini_set('error_log', '$DEBUG_FILE');" >> $SERVER_CONFIG
 echo "define('SANDBOX_USER', '~$CURRENT_USER/');" >> $SERVER_CONFIG
 echo "define('SANDBOX_NAME', '$SANDBOX_NAME/');" >> $SERVER_CONFIG
@@ -53,7 +53,7 @@ echo "define('SERVER_URL', 'https://' . SERVER_NAME . '/' . APP_LOCATION);" >> $
 echo "define('SECURE_SERVER_URL', SERVER_URL);" >> $SERVER_CONFIG
 echo "define('WORKLIST_URL', SECURE_SERVER_URL);" >> $SERVER_CONFIG
 
-if [[ $CUSTOM_CONFIG && ! -s $CUSTOM_CONFIG ]]
+if [[ $CUSTOM_CONFIG && -s $CUSTOM_CONFIG ]]
 then
   echo "include('$CUSTOM_CONFIG');" >> $SERVER_CONFIG
 fi

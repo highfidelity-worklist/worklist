@@ -19,7 +19,7 @@
                 }
 
                 // initiate the upload
-                var uploadButton = $this.next('.fileUploadButton, .uploadbutton');
+                var uploadButton = $this.next('.fileUploadButton, .uploadbutton, #uploadButtonDiv');
 
                 new AjaxUpload(uploadButton, {
                     action: 'jsonserver.php',
@@ -127,7 +127,7 @@
                             }, 100);
 
                         } else {
-                            alert(data.message);
+                             $('#upload-scan-file .content').html('<p>' + data.message + '</p>');
                         }
 
                     }

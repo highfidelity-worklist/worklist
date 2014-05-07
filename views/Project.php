@@ -21,9 +21,6 @@ class ProjectView extends View {
     public function render() {
         $project = $this->project = $this->read('project');
         $this->title = sprintf($this->title, $project->getName());
-        if ($this->currentUser['id']) {
-            $this->scripts[] = 'js/uploadFiles.js';
-        }
         $project = $this->project = $this->read('project');
         $this->project_user = $this->read('project_user');
         $this->project_id = $project->getProjectId();
