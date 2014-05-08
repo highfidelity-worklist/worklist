@@ -18,7 +18,7 @@ class WorkitemSandbox extends Ajax {
 
             try {
                 $url = SandBoxUtil::pasteSandboxDiff($username, $workitem_id, $sandbox);
-                $result = '<a href="' . $url . '" >' . $url . '</a>';
+                $result = '<a href="' . $url . '" target="_blank">' . $url . '</a>';
             } catch (Exception $ex) {
                 if (strpos($ex, 'No changes found') !== false) {
                     $result =  '<div class="errorMsg">No changes made yet to sandbox</div>';
