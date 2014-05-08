@@ -63,7 +63,7 @@ $(function() {
 
     //if the page was loaded with request to display userinfo automatically then do it.
     if (userinfotoshow){
-        window.location 'userinfo.php?id=' + userinfotoshow;
+        window.location.href='userinfo.php?id=' + userinfotoshow;
     }
 
     //lookup and show job summary on bug_job_id change
