@@ -347,7 +347,7 @@ class Agency_Worklist_Filter {
         return $this;
     }
     public function getProjectSelectbox($initialMessage = 'ALL',  $active = 1, $projectId = 'projectCombo', $projectName = 'project') {
-        $box = '<select id="' . $projectId . '" name="' . $projectName . '" class="project-dropdown" data-placeholder="Select project">';
+        $box = '<select id="' . $projectId . '" name="' . $projectName . '" class="project-dropdown" data-placeholder="Select project" data-live-search="true">';
         $box .= '<option value="0"' . (($this->getProjectId() == "") ? ' selected="selected"' : '') . '> ' . $initialMessage . '</option>';
         
         $options = '';
@@ -411,7 +411,7 @@ class Agency_Worklist_Filter {
     public function getUserSelectbox($active = 1, $allMessage = false, $id = 'userCombo', $name = 'user') {
         $allDisplay = ($allMessage !== false) ? $allMessage : "All Users";
         $users = User::getUserList(getSessionUserId(), $active);
-        $box = '<select name="' . $name . '" id="' . $id . '" data-placeholder="Select user">';
+        $box = '<select name="' . $name . '" id="' . $id . '" data-placeholder="Select user" data-live-search="true">';
         if ($allMessage !== false) {
             $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allMessage . '</option>';
         }
