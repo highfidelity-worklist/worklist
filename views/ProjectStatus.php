@@ -4,8 +4,8 @@ class ProjectStatusView extends View {
 	public $title = '';
 
 	public $stylesheets = array(
-		'css/worklist.css',
-		'css/workitem.css',
+		'css/legacy/worklist.css',
+		'css/legacy/workitem.css',
 		'css/review.css',
 		'css/favorites.css',
 		'css/userinfo.css',
