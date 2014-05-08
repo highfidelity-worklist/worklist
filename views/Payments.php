@@ -124,7 +124,7 @@ class PaymentsView extends View {
                             <td onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">'.$ind_fees["id"].'</td>
                             <td align="left" onclick="toggleBox(\'payfee'.$ind_fees["id"].'\')">
                                 <a class="worklist-item" id="worklist-"'.$ind_fees["worklist_id"].'" 
-                                  href="./'.$ind_fees["worklist_id"].'" target="_blank">
+                                  href="./'.$ind_fees["worklist_id"].'" >
                                     #'.$ind_fees["worklist_id"].'
                                 </a>
                             </td>
