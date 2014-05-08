@@ -7,7 +7,7 @@ class JobView extends View {
     public $title = '%d: %s - Worklist';
 
     public $stylesheets = array(
-        'css/legacy/workitem.css',
+        'css/workitem.css',
         'css/review.css',
         'css/favorites.css',
         'css/budget.css',
@@ -586,7 +586,6 @@ class JobView extends View {
         $ret = '';
         
         foreach($fees as $fee) {
-            error_log(print_r($fee, true));
             $paid = (bool) $fee['paid'];
             $feeTotal += (float) $fee['amount'];
             $date = explode("/", $fee['date']);

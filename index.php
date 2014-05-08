@@ -1,7 +1,7 @@
 <?php
-#
-# Copyright 2014 - High Fidelity, Inc.
-
+/**
+ * Copyright 2014 - High Fidelity, Inc.
+ */
 require_once("config.php");
  
 class Dispatcher {
