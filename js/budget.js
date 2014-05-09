@@ -364,7 +364,7 @@ var Budget = {
     
     displayHistory: function(user_id) {
         $('#budgetPopup').dialog('close');
-        window.open('./user/' + user_id + '&tab=tabBudgetHistory', '_blank');
+        window.location = './user/' + user_id + '&tab=tabBudgetHistory';
     },
         
     /**
@@ -550,7 +550,7 @@ var Budget = {
                         '    </td>' + 
                         '    <td>' + data[i].notes + '</td>' +
                         '    <td>' +
-                        '        <a href="./user/' + data[i].receiver_id + '" target="_blank">' + data[i].who + '</a>' +
+                        '        <a href="./user/' + data[i].receiver_id + '" >' + data[i].who + '</a>' +
                         '    </td>' +
                         '    <td>$' + data[i].amount + '</td>' +
                         '    <td>' + data[i].created + '</td>' +
@@ -558,12 +558,12 @@ var Budget = {
                     $('#table-budget-transferred').append(row);
 
                 } else {
-                    var link = '<a href="./' + data[i].id + '" target="_blank">';
+                    var link = '<a href="./' + data[i].id + '" >';
                     // Separate "who" names into an array so we can add the userinfo for each one
                     var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
                     var who_link = '';
                     for (var z = 0; z < who.length; z++) {
-                        who[z] = '<a href="./user/' + data[i].ids[z] + '" target="_blank">' + who[z] + '</a> ';
+                        who[z] = '<a href="./user/' + data[i].ids[z] + '" >' + who[z] + '</a> ';
                         if (z < who.length - 1) {
                             who[z] += ', ';
                         }
@@ -588,10 +588,10 @@ var Budget = {
 			}
         });
         $('#budget-report-export').click(function() {
-            window.open('api.php?action=manageBudget&section='+section+'&method=export', '_blank');
+            window.location = 'api.php?action=manageBudget&section='+section+'&method=export';
         });
         $('#budget-report-export-transferred').click(function() {
-            window.open('api.php?action=manageBudget&section=' + section + '&method=export&budget_id=' + budget_id, '_blank');
+            window.location = 'api.php?action=manageBudget&section=' + section + '&method=export&budget_id=' + budget_id;
         });
     },
 

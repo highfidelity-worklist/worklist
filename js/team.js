@@ -122,7 +122,7 @@ $(document).ready(function() {
         select:function(event, ui) {
             $("#query").val("");
             $("#search_user-id").val(ui.item.id);
-            window.open('./user/' + ui.item.id, '_blank');
+            window.location = './user/' + ui.item.id;
 
             return false;
         }
@@ -132,7 +132,7 @@ $(document).ready(function() {
             .append("<a>" + item.nickname + "</font></a>").appendTo(ul);
     }
     if (showUserLink) {
-        window.open(showUserLink, '_blank');
+        window.location = showUserLink;
     }
     $('#days').chosen();
 });
@@ -181,7 +181,7 @@ function fillUserlist(npage) {
             $('tr.row-userlist-live').click(function(){
                 var match = $(this).attr('class').match(/useritem-\d+/);
                 var userid = match[0].substr(9);
-                window.open('./user/' + userid, '_blank');
+                window.location = './user/' + userid;
                 return false;
             });
 

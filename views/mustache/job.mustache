@@ -6,7 +6,7 @@
         <span class="wl-icon-invite" id="invite-link" title="Invite people" href="javascript">Invite someone</span>
         {{#canEditAndNotEditing}}
             {{#statusDone}}
-                <span class="switchmode-done wl-icon-star" title="Jobs set to Done status may not be edited">Edit</span>
+                <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
             {{/statusDone}}
             {{^statusDone}}
                 <span class="switchmode wl-icon-edit" id="switchmode_edit">
@@ -82,7 +82,7 @@
         {{#worklist.project_id}}
             <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
             {{#worklist.p_website}}
-                <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>
+                <a class="project_website" href="{{& projectWebsiteUrl}}" >website</a>
             {{/worklist.p_website}}
         {{/worklist.project_id}}
         {{^worklist.project_id}}
@@ -189,7 +189,7 @@
                             {{/canEditSandboxUrlOnEdit}}
                             {{^canEditSandboxUrlOnEdit}}
                                 {{#worklist.sandbox}}
-                                <a href="{{& worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                                <a href="{{& worklist.sandbox}}" >{{worklist.sandbox}}</a>
                                 {{/worklist.sandbox}}
                                 {{^worklist.sandbox}}
                                 <span>Not assigned</span>
@@ -520,7 +520,7 @@
     <div class="attachment">
         <span><#= title #></span>
         <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-            <i class="icon-remove"></i>
+            <i class="fa fa-times"></i>
         </span>
     </div>
 </script>

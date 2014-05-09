@@ -491,7 +491,7 @@ td.textAlignReport {
     max-width: 60px;
 }
 .table-worklist tr > td:nth-child(2) {
-    max-width: 350px; 
+    max-width: 250px; 
 }
 .table-worklist tr > td:nth-child(3) {
     max-width: 60px;
@@ -1352,6 +1352,14 @@ td.statusDone > i {
 
 @media (min-width: 768px){
     .container-fluid .row .filter {
-    padding-left: 0;
+        padding-left: 0;
     }
+}
+
+.comment-col:before {
+    background: none !important;
+}
+
+tr.worklist-pagination-row:after {
+    background: none !important;
 }

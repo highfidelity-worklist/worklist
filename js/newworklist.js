@@ -14,5 +14,20 @@ var NewWorklist = {
         $(document).ajaxComplete(function() {
             $('body').removeClass('onAjax');
         });
+        
+        // Navbar responsiveness functions
+        $('.navbar').affix({
+            offset: {
+            top: 1 // Set fix 1px before top
+            }
+        });
+        
+        $('.navbar').on('affix.bs.affix', function () {
+            $('body').css('padding-top', $('.navbar').outerHeight() + 'px');
+        });
+
+        $('.navbar').on('affix-top.bs.affix', function () {
+            $('body').css('padding-top', '0px');
+        });
     }
 }

@@ -10,7 +10,8 @@
 }
 
 .myfavorite {
-    background-image: url("../images/otherSprite.png");
+    background-image: url('../images/wl-icons/star-dark.png');
+    background-image: url('../images/wl-icons/star-dark.svg');
     background-repeat: no-repeat;
     display: inline-block;
     height: 20px;
@@ -79,7 +80,7 @@
 }
 
 #table-userlist .myfavorite {
-    background-position-x: -20px;
+    background-size: 20px;
 }
 
 #days {

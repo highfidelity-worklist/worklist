@@ -234,7 +234,7 @@ function AppendRow (json, prepend, moreJson, idx) {
 
     // Comments
     comments = (json[12] == 0) ? "" : json[12];
-    row += '<td class="age-col">' + 
+    row += '<td class="comment-col">' + 
              comments +
            '</td>';
 

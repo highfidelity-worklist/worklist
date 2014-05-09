@@ -1115,6 +1115,13 @@ function linkify($url, $author = null, $bot = false, $process = true)
     $url = nl2br($url);
     $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
     $url = preg_replace_callback($reg, 'decodeDelimitedLinks', $url);
+
+    // mentions - @username, comments and job descriptions
+    $url = preg_replace(
+        '/(^|[^a-z0-9_])@([a-z0-9_]+)/i',
+        '$1<a href="' . WORKLIST_URL . 'user/$2">@$2</a>',
+    $url);    
+
     return $url;
 }
 
