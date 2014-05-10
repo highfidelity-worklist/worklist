@@ -5,6 +5,7 @@ body {
 @media (max-width: 960px){
     body > .container-fluid {
         margin: 0 8.33%;
+        max-width: 850px;
     }
 }
 
