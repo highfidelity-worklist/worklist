@@ -412,7 +412,6 @@
 {{> popup-endreview}}
 {{> code-review-already-started}}
 {{> popup-pingtask}}
-{{> popup-bid-info}}
 {{> popup-multiple-bid-info}}
 {{> popup-fees}}
 {{> popup-fee-info}}
@@ -425,6 +424,21 @@
 {{#userIsMechanic}}
     {{> popup-addtip}}
 {{/userIsMechanic}}
+
+{{#showBudgetSelect}}
+    <div id="popupSelectBudget" title="Select a budget">
+        <select id="budget-source-combo" name="budget-source-combo" data-placeholder="Select a budget">
+            <option value="0" selected="selected"></option>
+            {{& user.getBudgetCombo}}
+        </select>
+        <div class="popup-buttons">
+            <span>
+                <input type="button" id="cancel_budget" value="Cancel">
+                <input type="button" id="confirm_budget"  value="OK">
+            </span>
+        </div>
+    </div>
+{{/showBudgetSelect}}
 
 <script type="text/javascript">
     var repo_type = '{{workitem_project.getRepo_type}}';
@@ -465,6 +479,7 @@
     var displayDialogAfterDone = {{displayDialogAfterDone}};
     var userinfotoshow = {{userinfotoshow}};
     var origStatus = '{{worklist.status}}';
+    var showBidderStatistics = {{#showBidderStatistics}}true{{/showBidderStatistics}}{{^showBidderStatistics}}false{{/showBidderStatistics}};
 </script>
 <script type="text/html" id="uploadedFiles">
     <div id="accordion">

@@ -397,15 +397,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-top:8px;
 }
 
-#popup-bid-info {
-    max-height: 570px;
-}
-
-#popup-bid-info #info-notes {
-    max-height: 243px;
-    overflow: auto;
-}
-
 #creatorBox, #runnerBox, #mechanicBox {
     float: left;
     width: 130px;
@@ -976,20 +967,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     display: block;
 }
 
-#popup-bid-info #left-column, #popup-bid-info #right-column{
-    float: left;
-    margin-bottom: 15px;
-}
-
-#popup-bid-info #left-column{
-    margin-right: 10px;
-}
-
-#popup-bid-info #user-stats{
-    border: none;
-    margin-top: 10px;
-}
-
 .loader{
     display: none;
 }
@@ -1456,10 +1433,6 @@ h1.newProject {
 
     .white-theme .ui-dialog-content {
         padding: 0 !important;
-    }
-
-    .white-theme #popup-bid-info-buttons input[type=button] {
-        font-size: 0.75em !important;
     }
 
     .project-github h1 {

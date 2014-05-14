@@ -510,8 +510,17 @@ class JobView extends View {
         $is_project_runner = $this->read('is_project_runner');
 
         $ret = '';
+        $now = 0;
         foreach($bids as $bid) {
             $biddings = array();
+
+            if (!$now) {
+                $now = strtotime(Model::now());
+            }
+
+            $created = relativeTime(strtotime($bid['bid_created']) - $now, true, true, true, false);
+            $accepted = $bid['bid_accepted'] ? relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, ture, false) : '';
+            $expires = $bid['expires'] ? relativeTime($bid['expires'], true, true, true, false) : 'Never';
 
             if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
                 continue;
@@ -539,17 +548,18 @@ class JobView extends View {
             $notes = addcslashes(preg_replace("/\r?\n/", "<br />", $bid['notes']),"\\\'\"&\n\r<>");
 
             if ($canSeeBid) {
+
                 $ret .= 
                     "<script type='data'>".
                         "{id: {$bid['id']}, " .
                         "nickname: '{$bid['nickname']}', " .
                         "email: '{$bid['email']}', " .
                         "amount: '{$bid['bid_amount']}', " .
-                        "bid_accepted: '{$bid['bid_accepted']}', " .
-                        "bid_created: '{$bid['bid_created']}', " .
-                        "bid_expires: '" . ($bid['expires'] ? relativeTime($bid['expires']) : "Never") . "', " .
+                        "bid_accepted: '" . $accepted . "', " .
+                        "bid_created: '" . $created . "', " .
+                        "bid_expires: '" . $expires . "', " .
                         "time_to_complete: '{$bid['time_to_complete']}', " .
-                        "done_in: '{$bid['done_in']}', " .
+                        "done_in: 'in {$bid['done_in']}', " .
                         "bidder_id: {$bid['bidder_id']}, " .
                         "notes: '" .  replaceEncodedNewLinesWithBr($notes) . "'}" .
                     "</script>";

@@ -1,0 +1,194 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="./{{job_id}}" method="post" id="addbid">
+        <input type="hidden" name="bid_id" value="{{bid.id}}" />
+        <input type="hidden" id="budget_id" name="budget_id" value="" />
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Bid information</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Entered</th>
+                <th>Completed</th>
+                {{#bid.bid_accepted}}
+                  <th>Accepted</th>
+                {{/bid.bid_accepted}}
+                {{^bid.bid_accepted}}
+                  <th>Expires</th>
+                {{/bid.bid_accepted}}
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="./user/{{bid.bidder_id}}">{{bid.nickname}}</a>
+               </td>
+                <td>${{bid.amount}}</td>
+                <td>{{bid.bid_created}}</td>
+                <td>{{bid.done_in}}</td>
+                {{#bid.bid_accepted}}
+                  <td>{{bid.bid_accepted}}</td>
+                {{/bid.bid_accepted}}
+                {{^bid.bid_accepted}}
+                  <td>{{bid.bid_expires}}</td>
+                {{/bid.bid_accepted}}
+                <td>{{& bid.notes}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {{#showStatistics}}
+            <div class="row">
+              <div class="col-md-5">
+                <h4>Last jobs in project</h4>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Job</th>
+                      <th>Summary</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-7">
+                <h4>Bidder jobs &amp; earnings statistics</h4>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Total/Active</th>
+                      <th>Total/30 days $</th>
+                      <th>Bonus $/%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {{/showStatistics}}
+          </div>
+        <div class="modal-footer">
+          {{#canEdit}}
+            <button class="btn btn-primary" data-dismiss="modal" name="edit">Edit</button>
+          {{/canEdit}}
+          {{#canPing}}
+            <button class="btn btn-primary" data-dismiss="modal" name="ping_bidder">Reply</button>
+          {{/canPing}}
+          {{#canWithdraw}}
+            <button class="btn btn-primary" data-dismiss="modal" name="withdraw_bid_accept">Withdraw</button>
+          {{/canWithdraw}}
+          {{#canDecline}}
+            <button class="btn btn-primary" data-dismiss="modal" name="decline_bid_accept">Decline</button>
+          {{/canDecline}}
+          {{#canAccept}}
+            <div class="btn-group dropup">
+              <button type="submit" name="accept_bid" class="btn btn-default">Accept</button>
+              <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Select a budget</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation" class="dropdown-header">Select a budget</li>
+              </ul>
+            </div>
+          {{/canAccept}}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--
+<div id="popup-bid-info" class="popup-body" title = "Bid Info">
+    <form name = "popup-form" id = "popup-form" action="./{{worklist.id}}" method="post">
+        <input type="hidden" name="bid_id" value="" />
+        <input type="hidden" id="budget_id" name="budget_id" value="" />
+        <table border="0" style="border-width:0px">
+            <tr>
+                <td class="bid-info-label" style="width:110px">Bidder</td>
+                <td><span id="info-email"></span></td>
+            </tr>
+            <tr>
+                <td class="bid-info-label">Amount</td>
+                <td>$<span id="info-bid-amount"></span></td>
+            </tr>
+            <tr>
+                <td class="bid-info-label">Bid Entered</td>
+                <td><span id="info-bid-created"></span></td>
+            </tr>
+            <tr>
+                <td class="bid-info-label">Bid Expires</td>
+                <td><span id="info-bid-expires"></span></td>
+            </tr>
+            <tr>
+                <td class="bid-info-label">Functioning in</td>
+                <td><span id="info-bid-done-in"></span> </td>
+            </tr>
+            <tr id="bidAcceptedRow">
+                <td class="bid-info-label">Bid Accepted</td>
+                <td><span id="info-bid-accepted"></span> </td>
+            </tr>
+            <tr>
+                <td class="bid-info-label notes">Notes</td>
+                <td style="text-align:justify;"><div id="info-notes"></div></td>
+            </tr>
+        </table>
+        <div class="clear"></div>
+        {{#showBidderStatistics}}
+        <div class="clear"></div><br />
+        <div id="project_history"></div>
+        <div class="clear"></div><br />
+            <div class = "info-label block bidderStats">
+                Bidder statistics
+                    <img src="images/loader.gif" alt = "" class = "loader" /><span class = "loader">Please wait..</span>
+            </div>
+
+            <table id = "user-stats">
+                <thead>
+                    <tr class = "table-hdng">
+                        <th><span>Total / Active Jobs</span></th>
+                        <th><span>Total / 30 day $</span></th>
+                        <th><span>Bonus $ / %</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href = "#" id = "total-jobs"></a> / <a href = "#" id = "active-jobs"></a></td>
+                        <td ><span id = "total-earnings"></span> / <span id = "latest_earnings"></span></td>
+                        <td><span id = "total-bonus"></span> / <span id = "percent_bonus"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        {{/showBidderStatistics}}
+        <div style="clear:both"></div>
+        <div id="popup-bid-info-buttons"></div>
+    </form>
+</div>
+{{#showBudgetSelect}}
+    <div id="popupSelectBudget" title="Select a budget">
+        <select id="budget-source-combo" name="budget-source-combo" data-placeholder="Select a budget">
+            <option value="0" selected="selected"></option>
+            {{& user.getBudgetCombo}}
+        </select>
+        <div class="popup-buttons">
+            <span>
+                <input type="button" id="cancel_budget" value="Cancel">
+                <input type="button" id="confirm_budget"  value="OK">
+            </span>
+        </div>
+    </div>
+{{/showBudgetSelect}}
+-->

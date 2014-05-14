@@ -219,7 +219,7 @@ var Utils = {
     /**
      * Calculates the relative time
      */
-    relativeTime: function(time, withIn, justNow, withAgo) {
+    relativeTime: function(time, withIn, justNow, withAgo, specific) {
         var secs = Math.abs(time);
         var mins = 60;
         var hour = mins * 60;
@@ -248,17 +248,22 @@ var Utils = {
             }
         }
         var relTime = '';
+        specific = typeof(specific) == 'undefined' ? true : specific;
         for (unit in segments) {
             var cnt = segments[unit];
             if (cnt) {
+                if (relTime.legth) {
+                    relTime += ', ';
+                }
                 relTime += cnt + ' ' + unit;
                 if (cnt > 1) {
                     relTime += 's';
                 }
-                relTime += ', ';
+                if (!specific) {
+                    break;
+                }
             }
         }
-        relTime = relTime.substr(0, relTime.length - 2);
         if (relTime) {
             withAgo = typeof(withAgo) == 'undefined' ? true : withAgo;
             withIn = typeof(withIn) == 'undefined' ? true : withIn;

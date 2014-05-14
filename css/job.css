@@ -147,22 +147,24 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
 .dragdealer {
     position: relative;
     height: 4px;
-    margin-top: 30px;
+    margin-top: 50px;
     background: #EEE;
 }
+
 .dragdealer .handle {
     position: absolute;
-    top: -13px;
+    top: -28px;
     left: 0;
     cursor: pointer;
     width: 60px;
-    height: 30px;
+    height: 60px;
     background: #009999;
     color: #FFF;
     font-size: 14px;
     line-height: 30px;
     text-align: center;
-    border-radius: 5px
+    border-radius: 30px;
+    padding-top: 15px;
 }
 
 .dragdealer .disabled {

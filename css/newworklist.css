@@ -438,29 +438,29 @@ button:focus, a:focus {
 }
 
 /* Navbar styles for responsiveness */
-.dropdown-menu {
+.navbar .dropdown-menu {
     box-shadow: -1px 3px 10px rgba(0,0,0,.75);
     border-color: black;
     background-clip: border-box;
 }
 
-.dropdown-menu > li > a {
+.navbar .dropdown-menu > li > a {
     padding: 3px 20px 3px 0px;
     color: #999;
 }
 
-.dropdown-menu-icon {
+.navbar .dropdown-menu-icon {
     width: 32px;
     font-size: 14px;
     display: inline-block;
     text-align: center;
 }
 
-.navbar-nav > li > .dropdown-menu{
+.navbar .navbar-nav > li > .dropdown-menu{
     background-color: #333;
 }
 
-.dropdown-menu .divider {
+.navbar .dropdown-menu .divider {
     background-color: #000;
 }
 
