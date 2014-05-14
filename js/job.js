@@ -831,7 +831,7 @@ $(document).ready(function(){
                             var html = '';
                             var project_link = '<a href="./' + project_name + '">' + project_name + '</a>';
                             if (!json.joblist.length) {
-                                html = '<p>No prior jobs for '  + project_link + '</p>';
+                                html = '<tr><td colspan="2">No prior jobs for '  + project_link + '</td></tr>';
                                 $('.modal-body > table + .row > div:first-child tbody', modal).html(html);
                             } else {
                                 for (var i = 0; i < (json.joblist.length > 3 ? 3 : json.joblist.length); i++) {
