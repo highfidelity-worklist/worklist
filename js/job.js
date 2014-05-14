@@ -779,21 +779,23 @@ $(document).ready(function(){
                                     return;
                                 }
                                 for(var i = 0; i < json.budgets.length; i++) {
-                                    var item = $('<li>'),
-                                        budget = json.budgets[i],
+                                    var budget = json.budgets[i],
                                         link = $('<a>').attr({
                                             budget: budget.id,
-                                            remaining: budget.id
+                                            reason: budget.reason,
+                                            remaining: budget.remaining
                                         });
                                     link.text(budget.reason + ' ($' + budget.remaining + ')');
-                                    $('.modal-footer .dropup ul', modal).append(item.append(link));
+                                    var item = $('<li>').append(link);
+                                    $('.modal-footer .dropup ul', modal).append(item);
                                 }
                                 $('.modal-footer .dropup ul a', modal).click(function(event) {
                                     var budget = $(this).attr('budget');
                                     $('input[name="budget_id"]', modal).val(budget);
                                     $('button[name="accept"]', modal).html(
-                                        $(this).text() + 
-                                        ' <span class="caret"></span>'
+                                        '<span>' + $(this).attr('reason') + '</span> ' +
+                                        '($' + $(this).attr('remaining') + ') ' +
+                                        '<span class="caret"></span>'
                                     );
                                     if (!$('button[name="accept_bid"]', modal).length) {
                                         var confirm = $('<button>')
@@ -803,7 +805,7 @@ $(document).ready(function(){
                                             })
                                             .addClass('btn btn-primary')
                                             .text('Confirm Accept');
-                                        $('button[name="accept"]', modal).parent().after(confirm);
+                                        $('.modal-footer', modal).append(confirm);
                                     }
                                 })
                             }
