@@ -1,6 +1,6 @@
 body {
   font-family: proxima-nova, sans-serif;
-  position: relative; // Fix bootstrap flicker bug
+  position: relative; /* Fix bootstrap flicker bug */
 }
 
 /* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
@@ -1118,4 +1118,10 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
         background-size: 52px 37px!important;
         background-repeat: no-repeat!important;
     }
+}
+
+/* bootstrap fixes */
+.modal-footer .btn-group + .btn {
+    margin-left: 5px;
+    margin-bottom: 0px;
 }

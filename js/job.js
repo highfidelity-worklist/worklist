@@ -791,9 +791,20 @@ $(document).ready(function(){
                                 $('.modal-footer .dropup ul a', modal).click(function(event) {
                                     var budget = $(this).attr('budget');
                                     $('input[name="budget_id"]', modal).val(budget);
-                                    $('button[name="accept_bid"]', modal).html(
-                                        'Confirm Accept <small>' + $(this).text() + '</small>'
+                                    $('button[name="accept"]', modal).html(
+                                        $(this).text() + 
+                                        ' <span class="caret"></span>'
                                     );
+                                    if (!$('button[name="accept_bid"]', modal).length) {
+                                        var confirm = $('<button>')
+                                            .attr({
+                                                type: 'submit',
+                                                name: 'accept_bid'
+                                            })
+                                            .addClass('btn btn-primary')
+                                            .text('Confirm Accept');
+                                        $('button[name="accept"]', modal).parent().after(confirm);
+                                    }
                                 })
                             }
                         });
