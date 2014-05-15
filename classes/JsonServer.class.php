@@ -1187,7 +1187,7 @@ class JsonServer
                 $subject = '#' . $workitem->getId() . ' '. $workitem->getSummary();
                 $body = "<p>Hi there,</p>";
                 $body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Designer " . $runner->getNickname() . ".</p>";
-                $body .= "<p>See you in the Workroom!</p>";
+                $body .= "<p>See you in the Worklist!</p>";
 
                 if ($oldRunner) {
                     if(!send_email($oldRunner->getNickname() . ' <' . $oldRunner->getUsername() . '>', $subject, $body, null, $headers)) { error_log("JsonServer:changeOldRunner failed"); }
