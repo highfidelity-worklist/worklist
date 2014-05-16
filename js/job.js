@@ -1153,7 +1153,7 @@ function showFeeForm() {
 
                     var fee_desc = new LiveValidation('fee_desc', {onlyOnSubmit: true});
                         fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                    $('form#addfee').submit(function() {
+                    $('form').submit(function() {
                         var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);
                         if (!massValidationFee) {
                             return false;
