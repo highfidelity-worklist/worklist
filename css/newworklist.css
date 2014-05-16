@@ -1122,8 +1122,12 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     }
 }
 
+.modal-content label + select + .chosen-container {
+    display: block;
+}
+
 .modal-footer .btn-group button > span:first-child:not(.caret) {
-    display: inline-block;    
+    display: inline-block;
     vertical-align: middle;
     max-width: 100px;
     overflow: hidden;
