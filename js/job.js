@@ -356,7 +356,6 @@ $(document).ready(function(){
         }
     });
 
-    $('#popup-fee-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-startreview').dialog({
         closeOnEscape: false,
         dialogClass: 'white-theme',
@@ -733,13 +732,30 @@ $(document).ready(function(){
 
             // row has bid data attached so user is a bidder or a runner
             // - see table creation routine
-            if (feeData.id){
-                $('#popup-fee-info #info-fee-email').html('<a href="./user/' + feeData.user_id + '" >' + feeData.nickname + '</a>');
-                $('#popup-fee-info #info-fee-created').text(feeData.fee_created);
-                $('#popup-fee-info #info-fee-amount').text(feeData.amount);
-                $('#popup-fee-info #info-fee-notes').html(feeData.desc);
+            if (feeData.id) {
+                Utils.emptyModal({
+                    title: 'Fee information',
+                    content:
+                        '<table class="table table-striped">' +
+                        '  <thead>' +
+                        '    <tr>' +
+                        '      <th>User</th>' +
+                        '      <th>Amount</th>' +
+                        '      <th>Fee entered</th>' +
+                        '      <th>Notes</th>' +
+                        '    </tr>' +
+                        '  </thead>' +
+                        '  <tbody>' + 
+                        '    <tr>' +
+                        '      <td><a href="./user/' + feeData.user_id + '" >' + feeData.nickname + '</a></td>' +
+                        '      <td>' + feeData.amount + '</td>' +
+                        '      <td>' + feeData.fee_created + '</td>' +
+                        '      <td>' + feeData.desc + '</td>' +
+                        '    </tr>' +
+                        '  </tbody>' +
+                        '</table>'
+                });
             }
-            $('#popup-fee-info').dialog('open');
         });
 
     }
