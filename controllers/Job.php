@@ -667,7 +667,7 @@ class JobController extends Controller {
             foreach ($args as $arg) {
                 $$arg = mysql_real_escape_string($_REQUEST[$arg]);
             }
-            $bid_amount = (int) $bid_amount;
+            $bid_amount = (float) $bid_amount;
             $mechanic_id = (int) $mechanic_id;
 
             if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
@@ -760,7 +760,7 @@ class JobController extends Controller {
                     $$arg = mysql_real_escape_string($_REQUEST[$arg]);
                 }
 
-                $bid_amount = (int) $bid_amount;
+                $bid_amount = (float) $bid_amount;
                 $mechanic_id = (int) $mechanic_id;
 
                 if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
