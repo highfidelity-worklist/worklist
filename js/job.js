@@ -17,25 +17,58 @@ $(function() {
         openNotifyOverlay(status_error, false);    
     }
     applyPopupBehavior();
-
-    $('#invite-people').dialog({
-        autoOpen: false,
-        dialogClass: 'white-theme',
-        resizable: false,
-        modal: true,
-        show: 'fade',
-        hide: 'fade',
-        width: 'auto',
-        height: 'auto',
-        open: function() {  
-            var autoArgs = autocompleteMultiple('getuserslist');
-            $("#invite").bind("keydown", autoArgs.bind);
-            $("#invite").autocomplete(autoArgs, null);               
-        }
             
-    });
     $("#invite-link").click(function() {
-        $('#invite-people').dialog('open');
+        var msg = 
+            '<label for="invite">Write comma seperated list</label>' + 
+            '<input id="invite" name="invite" class="form-control" />'
+        Utils.emptyFormModal({
+            action: './' + workitem_id,
+            title: 'Invite Worklist Users',
+            content: msg,
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'invite-people',
+                    content: 'Invite',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                var autoArgs = autocompleteMultiple('getuserslist');
+                $('input[name="invite"]', modal).bind("keydown", autoArgs.bind);
+                $('input[name="invite"]', modal).autocomplete(autoArgs, null);
+                $('form', modal).on('submit', function(event) {
+                    var name = $('input[name="invite"]', modal).val();
+                    $.ajax({
+                        type: "POST",
+                        url: "./" + workitem_id,
+                        data: "invite=" + name + "&invite-people=Invite",
+                        dataType: "json",
+                        success: function(json) {
+                            var msg;
+                            if (!json.length) {
+                                msg = '<p>Invite sent to <a href="./user/' + name +'">' + name + '</a></p>';
+                            } else {
+                                msg = '<p>Some of the users you sent do not exist. Please correct those shown and try again.</p>';
+                                for (var i = 0; i < json.length; i++) {
+                                    if (i) {
+                                        $('input[name="invite"]', modal).val($('input[name="invite"]', modal).val() + json[i]);
+                                    } else {
+                                        $('input[name="invite"]', modal).val($('input[name="invite"]', modal).val() + ',' + json[i]);
+                                    }
+                                }
+                            }
+                            Utils.emptyModal({content: msg});
+                        }
+                    });
+                    $(modal).modal('hide');
+                    return false;
+                });
+            }
+        });
+        return false;
     });
 
     if (displayDialogAfterDone && mechanic_id > 0) {
@@ -95,12 +128,6 @@ $(function() {
                 }
             });
         }
-    });
-
-    $('#invite-form').on('submit', function(event) {
-        event.preventDefault();
-        sendInviteForm();
-        return false;
     });
 
     Entries.formatWorklistStatus();
@@ -896,7 +923,7 @@ function showWithdrawBidReason(bid_id) {
     var msg = 
         '<input type="hidden" name="bid_id" value="' + bid_id + '" />' +
         '<label for="withdraw_bid_reason">Why is this bid being withdrawn?</label>' + 
-        '<textarea id="withdraw_bid_reason" name="withdraw_bid_reason" class="form-control" /></textarea>'
+        '<textarea id="withdraw_bid_reason" name="withdraw_bid_reason" class="form-control"></textarea>'
     Utils.emptyFormModal({
         action: './' + workitem_id,
         content: msg,
@@ -917,7 +944,7 @@ function showDeclineBidReason(bid_id) {
     var msg = 
         '<input type="hidden" name="bid_id" value="' + bid_id + '" />' +
         '<label for="decline_bid_reason">Why is this bid being declined?</label>' + 
-        '<textarea id="decline_bid_reason" name="decline_bid_reason" class="form-control" /></textarea>'
+        '<textarea id="decline_bid_reason" name="decline_bid_reason" class="form-control"></textarea>'
     Utils.emptyFormModal({
         action: './' + workitem_id,
         content: msg,
@@ -1370,44 +1397,4 @@ function setFollowingText(isFollowing){
         $('#following').attr('title', 'Click to receive updates for this job');
         $('#following').html('Follow this job');
     }
-}
-
-function sendInviteForm(){
-  var name = $('input[name="invite"]', $("#invite-people")).val();
-  $.ajax({
-    type: "POST",
-    url: "./" + workitem_id,
-    data: "invite=" + name + "&invite-people=Invite",
-    dataType: "json",
-    success: function(json) {
- 
-        if (!json.length) {
-            $("#sent-notify").html("<span>invite sent to <strong>"+name+"</strong></span>");
-            $('input[name="invite"]').val('');
-            $('#invite-people').dialog('close');
-            $("#sent-notify").dialog("open");
-            setTimeout(function() {
-                $("#sent-notify").dialog("close"); 
-            }, 2000);
-            
-        } else {
-            alert("Some of the users you sent do not exist. Please correct those shown and try again.");
-            $('#invite').val('');
-            // we need to enter unsent items back into text field
-            for (var i = 0; i < json.length; i++) {
-                if(i != 0) {
-                    $('#invite').val($('#invite').val() + ',' + json[i]);
-                } else {
-                    $('#invite').val($('#invite').val() + json[i]);
-                }
-                
-            }
-        }
-        
-    },
-    error: function(xhdr, status, err) {
-      $("#sent-notify").html("<span>Error sending invitation</span>");
-    }
-  });
-  return false;
 }
