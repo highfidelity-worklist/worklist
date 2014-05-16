@@ -10,7 +10,7 @@ class DefaultLayout extends Layout {
         'css/jquery/jquery-ui.css',
         'css/font-awesome/css/font-awesome.min.css',
         'css/tooltip.css',
-        'css/common.css',
+        'css/default.css',
         'css/menu.css',
         'css/footer.css'
     );

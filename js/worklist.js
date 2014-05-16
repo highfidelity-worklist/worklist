@@ -207,7 +207,7 @@ $(function() {
     newHash = getPosFromHash();
     if (newHash['userid'] && newHash['userid'] != -1) {
         setTimeout(function(){
-            window.open('./user/' + newHash['userid'], '_blank');
+            window.location = './user/' + newHash['userid'];
         },2000);
     }
     

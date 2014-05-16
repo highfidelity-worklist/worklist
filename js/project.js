@@ -113,7 +113,7 @@ $(document).ready(function() {
                             html =
                                 '<tr class="runner">' +
                                     ((is_admin || is_owner) ? '<td class="runnerRemove">' + (runner.owner ? '' : '<input type="checkbox" name="runner' + runner.id + '" />') + '</td>' : '') +
-                                    '<td class="runnerName"><a href="./user/' + runner.id + '" target="_blank">' + runner.nickname + '</a></td>' +
+                                    '<td class="runnerName"><a href="./user/' + runner.id + '" >' + runner.nickname + '</a></td>' +
                                     '<td class="runnerJobCount">' + runner.totalJobCount + '</td>' +
                                     '<td class="runnerLastActivity">' + (runner.lastActivity ? runner.lastActivity : '') + '</td>' +
                                 '</tr>'
@@ -208,7 +208,7 @@ $(document).ready(function() {
                             html =
                                 '<tr class="codeReviewer">' +
                                     ((is_admin || is_owner) ? '<td class="codeReviewerRemove">' + (codeReviewer.owner ? '' : '<input type="checkbox" name="codereviewer' + codeReviewer.id + '" />') + '</td>' : '') +
-                                    '<td class="codeReviewerName"><a href="./user/' + codeReviewer.id + '" target="_blank">' + codeReviewer.nickname + '</a></td>' +
+                                    '<td class="codeReviewerName"><a href="./user/' + codeReviewer.id + '" >' + codeReviewer.nickname + '</a></td>' +
                                     '<td class="codeReviewerJobCount">' + codeReviewer.totalJobCount + '</td>' +
                                     '<td class="codeReviewerLastActivity">' + (codeReviewer.lastActivity ? codeReviewer.lastActivity : '') + '</td>' +
                                 '</tr>'

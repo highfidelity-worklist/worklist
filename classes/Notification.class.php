@@ -358,7 +358,7 @@ class Notification {
                 $body = "<p>Hello " . $data['who'] . ",</p>";
                 $body .= "<p>Thanks for adding your bid to <a href='".WORKLIST_URL.$itemId."'>#".$itemId."</a> '" . $workitem -> getSummary() . "'. This job has just been filled by another developer.</br></p>";
                 $body .= "There is lots of work to be done so please keep checking the <a href='".SERVER_URL."'>worklist</a> and bid on another job soon!</p>";
-                $body .= "<p>Hope to see you in the Workroom soon. :)</p>";
+                $body .= "<p>Hope to see you in the Worklist soon. :)</p>";
             break;
 
             case 'modified-functional':
@@ -776,9 +776,9 @@ class Notification {
         }
         
         $itemId = $workitem->getId();
-        $itemLinkShort = '<a href="' . WORKLIST_URL . $itemId . "'>#{$itemId}</a>";
-        $itemLink = "{$itemLinkShort}{$bugJournalMessage}";
-        
+        $itemLinkShort = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
+        $itemLink = $itemLinkShort . $bugJournalMessage . ' - ' . $workitem->getSummary();
+
         $message = null;
         $message_format = 'html';
         $notify = 0;

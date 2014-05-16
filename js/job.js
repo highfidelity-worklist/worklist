@@ -63,7 +63,7 @@ $(function() {
 
     //if the page was loaded with request to display userinfo automatically then do it.
     if (userinfotoshow){
-        window.open('userinfo.php?id=' + userinfotoshow, '_blank');
+        window.location.href='userinfo.php?id=' + userinfotoshow;
     }
 
     //lookup and show job summary on bug_job_id change
@@ -263,12 +263,12 @@ function postComment() {
                 var newcomment =
                     '<li id="comment-' + data.id + '" class="depth-' + depth + ' ' + color + '">' +
                         '<div class="comment">' +
-                            '<a href="./user/' + data.userid + '" target="_blank">' +
+                            '<a href="./user/' + data.userid + '" >' +
                                 '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
                             '</a>' +
                             '<div class="comment-container">' +
                                 '<div class="comment-info">' +
-                                    '<a class="author profile-link" href="./user/' + data.userid +'" target="_blank">' +
+                                    '<a class="author profile-link" href="./user/' + data.userid +'" >' +
                                         data.nickname +
                                     '</a> ' +
                                     '<span class="date">' +
@@ -774,7 +774,7 @@ $(document).ready(function(){
                 $('#popup-bid-info form input[type="button"]').remove();
 
                 $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
-                $('#popup-bid-info #info-email').html('<a href="./user/' + bidData.bidder_id +'" target="_blank">' + bidData.nickname + '</a>');
+                $('#popup-bid-info #info-email').html('<a href="./user/' + bidData.bidder_id +'" >' + bidData.nickname + '</a>');
                 $('#popup-bid-info #info-bid-created').text(bidData.bid_created);
                 if (bidData.bid_accepted.length > 0) {
                     $('#popup-bid-info #info-bid-accepted').text(bidData.bid_accepted);
@@ -827,7 +827,7 @@ $(document).ready(function(){
 
                             html += '<div class="info-label block bidderStats">';
                             html += 'Last ' + jobCount + ' job(s) for ' + project_name + '</div><br />';
-                            var urlBase = '<a target="_blank" class="worklist-item font-14" href="./';
+                            var urlBase = '<a  class="worklist-item font-14" href="./';
                             for (var i = 0; i < jobCount; i++) {
                                 job = json.joblist[i];
                                 html += urlBase;
@@ -872,7 +872,7 @@ $(document).ready(function(){
             // row has bid data attached so user is a bidder or a runner
             // - see table creation routine
             if (feeData.id){
-                $('#popup-fee-info #info-fee-email').html('<a href="./user/' + feeData.user_id + '" target="_blank">' + feeData.nickname + '</a>');
+                $('#popup-fee-info #info-fee-email').html('<a href="./user/' + feeData.user_id + '" >' + feeData.nickname + '</a>');
                 $('#popup-fee-info #info-fee-created').text(feeData.fee_created);
                 $('#popup-fee-info #info-fee-amount').text(feeData.amount);
                 $('#popup-fee-info #info-fee-notes').html(feeData.desc);
