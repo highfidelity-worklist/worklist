@@ -11,6 +11,7 @@ class UserController extends Controller {
         switch($action) {
             case 'exists':
             case 'index':
+            case 'budget':
             case 'countries':
                 $method = $action;
                 break;
@@ -47,6 +48,14 @@ class UserController extends Controller {
             );
         }
         echo json_encode(array('users' => $ret));
+        return;
+    }
+
+    public function budget($id) {
+        $this->view = null;
+        $user = User::find($id);
+        $ret = $user->getActiveBudgets();
+        echo json_encode(array('budgets' => $ret));
         return;
     }
 

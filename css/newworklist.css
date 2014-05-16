@@ -1,6 +1,6 @@
 body {
   font-family: proxima-nova, sans-serif;
-  position: relative; // Fix bootstrap flicker bug
+  position: relative; /* Fix bootstrap flicker bug */
 }
 
 /* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
@@ -165,6 +165,7 @@ input[type="submit"],
 input.btn-primary,
 button.btn-primary {
     background-color: #608e96;
+    border-color: #608e96;
 }
 
 input[type="button"]:focus,
@@ -174,6 +175,7 @@ input[type="submit"]:hover,
 input.btn-primary:hover,
 button.btn-primary:hover {
     background-color: #007F7c;
+    border-color: #007F7c;
 }
 
 label[for] {
@@ -438,29 +440,29 @@ button:focus, a:focus {
 }
 
 /* Navbar styles for responsiveness */
-.dropdown-menu {
+.navbar .dropdown-menu {
     box-shadow: -1px 3px 10px rgba(0,0,0,.75);
     border-color: black;
     background-clip: border-box;
 }
 
-.dropdown-menu > li > a {
+.navbar .dropdown-menu > li > a {
     padding: 3px 20px 3px 0px;
     color: #999;
 }
 
-.dropdown-menu-icon {
+.navbar .dropdown-menu-icon {
     width: 32px;
     font-size: 14px;
     display: inline-block;
     text-align: center;
 }
 
-.navbar-nav > li > .dropdown-menu{
+.navbar .navbar-nav > li > .dropdown-menu{
     background-color: #333;
 }
 
-.dropdown-menu .divider {
+.navbar .dropdown-menu .divider {
     background-color: #000;
 }
 
@@ -1118,4 +1120,28 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
         background-size: 52px 37px!important;
         background-repeat: no-repeat!important;
     }
+}
+
+.modal-footer .btn-group button > span:first-child:not(.caret) {
+    display: inline-block;    
+    vertical-align: middle;
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.modal-footer .btn-group button > span:first-child:not(.caret):after {
+    content: '\00a0';
+    width: 30px;
+    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,0)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 30px;
 }

@@ -1,0 +1,110 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="./{{job_id}}" method="post" id="addbid">
+        <input type="hidden" name="bid_id" value="{{bid.id}}" />
+        <input type="hidden" id="budget_id" name="budget_id" value="" />
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Bid information</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Entered</th>
+                <th>Completed</th>
+                {{#bid.bid_accepted}}
+                  <th>Accepted</th>
+                {{/bid.bid_accepted}}
+                {{^bid.bid_accepted}}
+                  <th>Expires</th>
+                {{/bid.bid_accepted}}
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="./user/{{bid.bidder_id}}">{{bid.nickname}}</a>
+               </td>
+                <td>${{bid.amount}}</td>
+                <td>{{bid.bid_created}}</td>
+                <td>in {{bid.done_in}}</td>
+                {{#bid.bid_accepted}}
+                  <td>{{bid.bid_accepted}}</td>
+                {{/bid.bid_accepted}}
+                {{^bid.bid_accepted}}
+                  <td>{{bid.bid_expires}}</td>
+                {{/bid.bid_accepted}}
+                <td>{{& bid.notes}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {{#showStatistics}}
+            <div class="row">
+              <div class="col-md-5">
+                <h4>Last jobs in project</h4>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Job</th>
+                      <th>Summary</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-7">
+                <h4>Bidder jobs &amp; earnings statistics</h4>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Total/Active</th>
+                      <th>Total/30 days $</th>
+                      <th>Bonus $/%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {{/showStatistics}}
+        </div>
+        <div class="modal-footer">
+          {{#canEdit}}
+            <button class="btn btn-primary" data-dismiss="modal" name="edit">Edit</button>
+          {{/canEdit}}
+          {{#canPing}}
+            <button class="btn btn-primary" data-dismiss="modal" name="ping_bidder">Reply</button>
+          {{/canPing}}
+          {{#canWithdraw}}
+            <button class="btn btn-primary" data-dismiss="modal" name="withdraw_bid_accept">Withdraw</button>
+          {{/canWithdraw}}
+          {{#canDecline}}
+            <button class="btn btn-primary" data-dismiss="modal" name="decline_bid_accept">Decline</button>
+          {{/canDecline}}
+          {{#canAccept}}
+            <div class="btn-group dropup">
+              <button type="button" name="accept" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Accept <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation" class="dropdown-header">Select a budget</li>
+              </ul>
+            </div>
+          {{/canAccept}}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

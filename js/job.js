@@ -490,10 +490,6 @@ $(document).ready(function(){
     $('#popup-bid').dialog(dialog_options);
     $('#popup-review-started').dialog(dialog_options);
 
-    $('#popup-edit-bid-info').dialog(
-        { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false }
-    );
-
     $('#popup-ineligible').dialog({
         dialogClass: 'white-theme',
         modal: true,
@@ -508,19 +504,6 @@ $(document).ready(function(){
         }
     });
 
-    // If the bid info popup is set to modal clipboard won't work!
-    $('#popup-bid-info').dialog({
-        dialogClass: 'white-theme',
-        autoOpen: false,
-        modal: false,
-        resizable: false,
-        width: 510,
-        maxHeight: 600,
-        show: 'fade',
-        hide: 'fade',
-        open: function() {
-        }
-    });
     $('#popup-fee-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade', resizable: false });
     $('#popup-multiple-bid-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({
@@ -563,8 +546,6 @@ $(document).ready(function(){
             $('select[name=quick-status]').val(origStatus);
         }
     });
-    $('#popup-withdraw-bid').dialog({ dialogClass: 'white-theme', autoOpen: false, width: 450, show: 'fade', hide: 'fade' });
-    $('#popup-decline-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
     if (mechanic_id == user_id) {
         $('#popup-addtip').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 365, height: 385, show: 'fade', hide: 'fade' });
         $('.addTip').click(function() {
@@ -763,106 +744,136 @@ $(document).ready(function(){
         });
 
         $('tr.row-bidlist-live').click(function() {
-
-            $.metadata.setType("elem", "script")
+            $.metadata.setType("elem", "script");
             var bidData = $(this).metadata();
-
-            // row has bid data attached so user is a bidder or a runner
-            // - see table creation routine
-            if(bidData.id){
-                $('#popup-bid-info form input[type="submit"]').remove();
-                $('#popup-bid-info form input[type="button"]').remove();
-
-                $('#popup-bid-info input[name="bid_id"]').val(bidData.id);
-                $('#popup-bid-info #info-email').html('<a href="./user/' + bidData.bidder_id +'" >' + bidData.nickname + '</a>');
-                $('#popup-bid-info #info-bid-created').text(bidData.bid_created);
-                if (bidData.bid_accepted.length > 0) {
-                    $('#popup-bid-info #info-bid-accepted').text(bidData.bid_accepted);
-                } else {
-                    $('#bidAcceptedRow').hide();
-                }
-                $('#popup-bid-info #info-bid-expires').text(bidData.bid_expires);
-                $('#popup-bid-info #info-bid-amount').text(bidData.amount);
-                $('#popup-bid-info #info-bid-done-in').text(bidData.done_in);
-                $('#popup-bid-info #info-notes').html(bidData.notes);
-
-                if (showAcceptBidButton && $('#accept_bid').length == 0) {
-                    $('#popup-bid-info-buttons').append('<input type="button" class="disableable" id="accept_bid_select_budget" ' +
-                                '  onClick="return selectBudget(\'accept_bid\');" name="accept_bid_select_budget" value="Accept">');
-                    $('#popup-bid-info-buttons').append('<input type="submit" class="disableable" style="display:none;" id="accept_bid" name="accept_bid" value="Confirm Accept">');
-                    runDisableable();
-                }
-
-                if((bidData.bidder_id == user_id) && !hasAcceptedBids) {
-                    $('#popup-bid-info-buttons').append('<input type="button" name="edit" id="edit" value="Edit" onClick="return ConfirmEditBid()" style="padding-left:20px;padding-right:20px;">');
-                }
-
-                if (showPingBidderButton) {
-                    $('#popup-bid-info-buttons').append('<input id="ping_bidder" type="button" name="ping_bidder" value="Reply"  onClick="return pingBidder(' + bidData.id + ')" >');
-                }
-
-                if (showWithdrawOrDeclineButtons && (bidData.bidder_id == user_id) && $('#withdraw_bid_accept').length == 0) {
-                    $('#popup-bid-info-buttons').append('<input id="withdraw_bid_accept" type="button" name="withdraw_bid_accept" value="Withdraw" onClick="return showWithdrawBidReason()" >');
-                } else if ((is_project_runner || (is_admin && is_runner)) && bidData.bidder_id != user_id) {
-                    $('#popup-bid-info-buttons').append
-                     ('<input id="decline_bid_accept" type="button" name="decline_bid_accept" value="Decline" onClick="return showDeclineBidReason()" >');
-                }
-                // change user id to current bidder id
-                stats.setUserId(bidData.bidder_id);
-                
-                // filling and appending user stats table
-                $('.loader').show();
-
-                // get data for recent jobs completed
-                $.getJSON('api.php?action=getUserStats', {
-                    id: bidData.bidder_id,
-                    project_id: project_id,
-                    statstype: 'project_history'
-                }, function(json) {
-                    if (json.joblist) {
-                        var html = '';
-
-                        if (json.joblist.length > 0) {
-                            var jobCount = json.joblist.length > 3 ? 3 : json.joblist.length;
-
-                            html += '<div class="info-label block bidderStats">';
-                            html += 'Last ' + jobCount + ' job(s) for ' + project_name + '</div><br />';
-                            var urlBase = '<a  class="worklist-item font-14" href="./';
-                            for (var i = 0; i < jobCount; i++) {
-                                job = json.joblist[i];
-                                html += urlBase;
-                                html += job.id + '" id="worklist-' + job.id + '">#' +job.id + 
-                                    '</a> - ' + job.summary + '<br />';
-                            }
-
-                        } else {
-                            html += 'No prior jobs for '  + project_name;
-                        }
-
-                        $('#project_history').html(html);
-                        // activate tooltips
-                        makeWorkitemTooltip("#project_history .worklist-item");
-                    }
-                });
-
-                $.getJSON('api.php?action=getUserStats', {id: bidData.bidder_id, statstype: 'counts'}, function(json) {
-
-                    // filling the table from json stats
-                    $('#total-jobs').html(json.total_jobs );
-                    $('#active-jobs').html(json.active_jobs);
-                    $('#total-earnings').html(json.total_earnings);
-                    $('#latest_earnings').html(json.latest_earnings);
-                    $('#total-bonus').html(json.bonus_total);
-                    $('#percent_bonus').html(json.bonus_percent);
-                    $('.loader').hide();
-                });
-
-                // calculate the maximum height of the modal based on the window height
-                var maxHeight = $(window).height() - 250;
-                $('#popup-bid-info').css('max-height', maxHeight + 'px');
-                $('#popup-bid-info').dialog('open');
-
+            if (!bidData.id) {
+                return; // row hasn't bid data attached so user isn't either bidder or runner
             }
+            var showEditButton = (bidData.bidder_id == user_id) && !hasAcceptedBids,
+                showWithdrawButton = showWithdrawOrDeclineButtons && (bidData.bidder_id == user_id),
+                showDeclineButton = (is_project_runner || (is_admin && is_runner)) && bidData.bidder_id != user_id;
+            
+            Utils.modal('bidinfo', {
+                job_id: workitem_id,
+                current_id: userId,
+                bid: bidData,
+                showStatistics: showBidderStatistics,
+                canAccept: showAcceptBidButton,
+                canEdit: showEditButton,
+                canPing: (showPingBidderButton && bidData.bidder_id != user_id),
+                canWithdraw: showWithdrawButton,
+                canDecline: showDeclineButton,
+                open: function(modal) {
+                    if (showAcceptBidButton) {
+                        $.ajax({
+                            url: './user/budget/' + userId,
+                            dataType: 'json',
+                            success: function(json) {
+                                if (!json.budgets) {
+                                    return;
+                                }
+                                for(var i = 0; i < json.budgets.length; i++) {
+                                    var budget = json.budgets[i],
+                                        link = $('<a>').attr({
+                                            budget: budget.id,
+                                            reason: budget.reason,
+                                            remaining: budget.remaining
+                                        });
+                                    link.text(budget.reason + ' ($' + budget.remaining + ')');
+                                    var item = $('<li>').append(link);
+                                    $('.modal-footer .dropup ul', modal).append(item);
+                                }
+                                $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                    var budget = $(this).attr('budget');
+                                    $('input[name="budget_id"]', modal).val(budget);
+                                    $('button[name="accept"]', modal).html(
+                                        '<span>' + $(this).attr('reason') + '</span> ' +
+                                        '($' + $(this).attr('remaining') + ') ' +
+                                        '<span class="caret"></span>'
+                                    );
+                                    if (!$('button[name="accept_bid"]', modal).length) {
+                                        var confirm = $('<button>')
+                                            .attr({
+                                                type: 'submit',
+                                                name: 'accept_bid'
+                                            })
+                                            .addClass('btn btn-primary')
+                                            .text('Confirm Accept');
+                                        $('.modal-footer', modal).append(confirm);
+                                    }
+                                })
+                            }
+                        });
+                        $('button[name="accept_bid"]', modal).click(function(event) {
+                            if (!$('input[name="budget_id"]', modal).val()) {
+                                $('button[name="accept_bid"] + button', modal).click();
+                                return false;
+                            }
+                        });
+                    }
+                    $('button[name="edit"]', modal).click(function() {
+                        showBidForm(bidData)
+                    });
+                    $('button[name="ping_bidder"]', modal).click(function() {
+                        pingBidder(bidData.id);
+                    });
+                    $('button[name="withdraw_bid_accept"]', modal).click(function() {
+                        showWithdrawBidReason(bidData.id);
+                    });
+                    $('button[name="decline_bid_accept"]', modal).click(function() {
+                        showDeclineBidReason(bidData.id);
+                    });
+                    $.ajax({
+                        url: 'api.php?action=getUserStats', 
+                        data: {
+                            id: bidData.bidder_id,
+                            project_id: project_id,
+                            statstype: 'project_history'
+                        },
+                        dataType: 'json',
+                        success: function(json) {
+                            if (!json.joblist) {
+                                return;
+                            }
+                            var html = '';
+                            var project_link = '<a href="./' + project_name + '">' + project_name + '</a>';
+                            if (!json.joblist.length) {
+                                html = '<tr><td colspan="2">No prior jobs for '  + project_link + '</td></tr>';
+                                $('.modal-body > table + .row > div:first-child tbody', modal).html(html);
+                            } else {
+                                for (var i = 0; i < (json.joblist.length > 3 ? 3 : json.joblist.length); i++) {
+                                    job = json.joblist[i];
+                                    html += 
+                                        '<tr>' +
+                                        '  <td><a href="./' + job.id + '">#' + job.id + '</a></td>' + 
+                                        '  <td>' + job.summary + '</td>' + 
+                                        '</tr>';
+                                    $('.modal-body > table + .row > div:first-child tbody', modal).html(html);
+                                }
+                            }
+                        }
+                    });
+                    $.ajax({
+                        url: 'api.php?action=getUserStats',
+                        data: {
+                            id: bidData.bidder_id, 
+                            statstype: 'counts'
+                        },
+                        dataType: 'json',
+                        success: function(json) {
+                            $('.modal-body > table + .row > div:last-child td:nth-child(1)', modal).html(
+                                json.total_jobs + ' / ' + json.active_jobs
+                            );
+                            $('.modal-body > table + .row > div:last-child td:nth-child(2)', modal).html(
+                                '$' + json.total_earnings + ' / $' + json.latest_earnings
+                            );
+                            $('.modal-body > table + .row > div:last-child td:nth-child(3)', modal).html(
+                                '$' + json.bonus_total + ' / ' + json.bonus_percent
+                            );
+                        }
+                    });
+                }
+            });
         });
 
         $('tr.row-feelist-live').click(function() {
@@ -946,59 +957,6 @@ function selectBudget(id) {
     $('#popupSelectBudget').data("clickon", id).dialog('open');
 }
 
-function ConfirmEditBid(){
-    var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
-
-    $('#popup-bid-info').dialog('close');
-    AjaxPopup('#popup-edit-bid-info',
-        'Edit Bid',
-        'api.php?action=getBidItem',
-        bid_id,
-        [
-            ['input', 'bid_id', 'keyId', 'eval'],
-            ['input', 'bid_amount', 'json.bid_amount', 'eval'],
-            ['input', 'bid_expires_edit', 'json.bid_expires', 'eval'],
-            ['input', 'done_in_edit', 'json.bid_done_in', 'eval'],
-            ['textarea', 'notes', 'json.notes', 'eval']
-        ],
-
-        function(json) {
-            // figure out expires
-            var expireSeconds = json.unix_expires - json.now;
-            var expireHours = Math.round(expireSeconds / 3600);
-            var expireText = '';
-            if (expireHours > 24 || expireHours > 12) {
-                expireText = Math.round(expireHours / 24) + ' days';
-            } else if (expireHours > 6) {
-                expireText = '8 hours';
-            } else if (expireHours >= 4) {
-                expireText = '4 hours';
-            } else if (expireHours > 1) {
-                expireText = expireHours + ' hours';
-            } else {
-                expireText = '1 hour';
-            }
-
-            if(expireHours <= 0) {
-                $('#bid_expires_edit').val('1 hour');
-            }
-
-            var expireValue = getSliderValueFromText(expireText);
-            var doneInValue = getSliderValueFromText(json.bid_done_in);
-
-            $('.sliderStepValue', '#bidExpireEditSlider').remove();
-            $('.sliderStep', '#bidExpireEditSlider').eq(expireValue).html('<div class="sliderStepValue">' + expireText + '</div>');
-            $('.sliderStepValue', '#bidDoneEditSlider').remove();
-            $('.sliderStep', '#bidDoneEditSlider').eq(doneInValue).html('<div class="sliderStepValue">' + json.bid_done_in + '</div>');
-
-            $('#bidExpireEditSlider').slider('value', expireValue);
-            $('#bidDoneEditSlider').slider('value', doneInValue);
-
-        }
-    );
-    $('#popup-edit-bid-info').dialog('open');
-}
-
 function showConfirmForm(i) {
     if (GitHub.validate()) {
         Utils.emptyModal({
@@ -1028,7 +986,7 @@ function showConfirmForm(i) {
             open: function(modal) {
                 $('.btn-primary', modal).on('click', function() {
                     if (i == 'bid') {
-                        showPlaceBidForm();
+                        showBidForm();
                     } else if (i == 'fee') {
                         showFeeForm();
                     }                
@@ -1067,40 +1025,95 @@ function showIneligible(problem) {
     });
 }
 
-function showPlaceBidForm() {
-  $('#popup-bid').dialog("option", "width", 695);
-  $('#popup-bid').dialog('open');
-  return false;
+function showBidForm(bid) {
+    var minDoneIn = 7200, // in segs = 2 hours,
+        maxDoneIn = 604800; // in segs = 7 days
+    bid = typeof(bid) != "undefined" ? bid : {id: '', amount: '', notes: '', time_to_complete: minDoneIn, done_in: '2 hrs'};
+    Utils.modal('bidform', {
+        editBid: bid.id ? true : false,
+        bid: bid,
+        jobId: workitem_id,
+        currentUserId: userId,
+        open: function(modal) {
+            $('input[name="done_in"]', modal).after($('<div>').addClass('dragdealer'));
+            $('<div>').addClass('handle').text('drag').appendTo('.dragdealer', modal);
+            var a = new Dragdealer($('.dragdealer', modal)[0], {
+                speed: 1,
+                animationCallback: function(x, y) {
+                    var text = Utils.relativeTime(Math.round(x * (maxDoneIn - minDoneIn)) + minDoneIn, false, false, false, false);
+                    $('.dragdealer > .handle').text(text);
+                    $('input[name="done_in"]').val(text);
+                }
+            });
+            $('form', modal).submit(function() {
+                // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                // but without dollar sign 22-NOV-2010 <krumch>
+                var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                var regex_date = /^\d{1,2}\/\d{1,2}\/\d{4}$|^\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2} (am|pm)$/;
+
+                var bid_amount = new LiveValidation('bid_amount',{
+                    insertAfterWhatNode: $('label[for="bid_amount"] + .input-group', modal)[0],
+                    onlyOnSubmit: true
+                });
+                bid_amount.add(Validate.Presence, {
+                    failureMessage: "Can't be empty!"
+                });
+                bid_amount.add(Validate.Format, {
+                    pattern: regex_bid, 
+                    failureMessage: "Invalid Input!"
+                });
+
+                var notes = new LiveValidation('notes', {onlyOnSubmit: true});
+                notes.add( Validate.Presence, {failureMessage: "Can't be empty!" });
+                var massValidationBid = LiveValidation.massValidate([bid_amount, notes]);
+                if (!massValidationBid) {
+                    return false;
+                }
+                return true;
+            });            
+        }
+    });
+
 }
 
-function showWithdrawBidReason() {
-  var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
-  $('#popup-bid-info').dialog('close');
-
-  SimplePopup('#popup-withdraw-bid',
-            'Withdraw Bid',
-             bid_id,
-             [['input', 'bid_id', 'keyId', 'eval']]);
-
-
-    $('#popup-withdraw-bid').dialog('open');
+function showWithdrawBidReason(bid_id) {
+    var msg = 
+        '<input type="hidden" name="bid_id" value="' + bid_id + '" />' +
+        '<label for="withdraw_bid_reason">Why is this bid being withdrawn?</label>' + 
+        '<textarea id="withdraw_bid_reason" name="withdraw_bid_reason" class="form-control" /></textarea>'
+    Utils.emptyFormModal({
+        action: './' + workitem_id,
+        content: msg,
+        buttons: [
+            {
+                type: 'submit',
+                name: 'withdraw_bid',
+                content: 'Withdraw Bid',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ]
+    });
     return false;
 }
 
-function showDeclineBidReason() {
-  var bid_id = $('#popup-bid-info input[name="bid_id"]').val();
-  $('#popup-bid-info').dialog('close');
-
-  SimplePopup('#popup-decline-bid',
-            'Decline Bid',
-             bid_id,
-             [['input', 'bid_id', 'keyId', 'eval']]);
-
-
-    $('#popup-decline-bid').dialog({
-        dialogClass: 'white-theme',
-        autoOpen: true,
-        width: 450
+function showDeclineBidReason(bid_id) {
+    var msg = 
+        '<input type="hidden" name="bid_id" value="' + bid_id + '" />' +
+        '<label for="decline_bid_reason">Why is this bid being declined?</label>' + 
+        '<textarea id="decline_bid_reason" name="decline_bid_reason" class="form-control" /></textarea>'
+    Utils.emptyFormModal({
+        action: './' + workitem_id,
+        content: msg,
+        buttons: [
+            {
+                type: 'submit',
+                name: 'decline_bid',
+                content: 'Decline Bid',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ]
     });
     return false;
 }
@@ -1140,18 +1153,18 @@ function showFeeForm() {
 
                     var fee_desc = new LiveValidation('fee_desc', {onlyOnSubmit: true});
                         fee_desc.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-                    $('form#addfee').submit(function() {
+                    $('form').submit(function() {
                         var massValidationFee = LiveValidation.massValidate([fee_amount, fee_desc]);
                         if (!massValidationFee) {
                             return false;
                         }
                         return true;
                     });
-               }
+                }
             });
         },
         'json'
-    )
+    );
 }
 
 function CheckCodeReviewStatus() {
