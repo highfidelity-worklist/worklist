@@ -548,7 +548,6 @@ class JobView extends View {
             $notes = addcslashes(preg_replace("/\r?\n/", "<br />", $bid['notes']),"\\\'\"&\n\r<>");
 
             if ($canSeeBid) {
-
                 $ret .= 
                     "<script type='data'>".
                         "{id: {$bid['id']}, " .
@@ -559,7 +558,7 @@ class JobView extends View {
                         "bid_created: '" . $created . "', " .
                         "bid_expires: '" . $expires . "', " .
                         "time_to_complete: '{$bid['time_to_complete']}', " .
-                        "done_in: 'in {$bid['done_in']}', " .
+                        "done_in: '{$bid['done_in']}', " .
                         "bidder_id: {$bid['bidder_id']}, " .
                         "notes: '" .  replaceEncodedNewLinesWithBr($notes) . "'}" .
                     "</script>";

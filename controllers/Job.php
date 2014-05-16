@@ -755,7 +755,7 @@ class JobController extends Controller {
                 //a new variable is used to send the unenscaped notes in email alert.
                 //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
 
-                $args = array('bid_id', 'bid_amount', 'done_in_edit', 'bid_expires_edit', 'notes');
+                $args = array('bid_id', 'bid_amount', 'done_in', 'bid_expires', 'notes');
                 foreach ($args as $arg) {
                     $$arg = mysql_real_escape_string($_REQUEST[$arg]);
                 }
@@ -765,7 +765,7 @@ class JobController extends Controller {
 
                 if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
                 $summary = getWorkItemSummary($worklist_id);
-                $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in_edit, $bid_expires_edit, $_SESSION['timezone'], $notes);
+                $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in, $bid_expires, $_SESSION['timezone'], $notes);
 
                 // Journal notification
                 $journal_message = 'Bid updated on #' . $worklist_id;
@@ -784,8 +784,8 @@ class JobController extends Controller {
                     'recipients' => array('runner')
                 );
                 $data = array(
-                    'done_in' => $done_in_edit,
-                    'bid_expires' => $bid_expires_edit,
+                    'done_in' => $done_in,
+                    'bid_expires' => $bid_expires,
                     'bid_amount' => $bid_amount,
                     'notes' => replaceEncodedNewLinesWithBr($notes),
                     'bid_id' => $bid_id

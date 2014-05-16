@@ -87,6 +87,7 @@ var Utils = {
         // if no buttons arep provided, let's use an 'Ok' one by default
         if (settings.buttons.length == 0) {
             settings.buttons = [{
+                type: 'button',
                 content: 'Ok',
                 className: 'btn-primary',
                 dismiss: true
@@ -252,7 +253,7 @@ var Utils = {
         for (unit in segments) {
             var cnt = segments[unit];
             if (cnt) {
-                if (relTime.legth) {
+                if (relTime.length) {
                     relTime += ', ';
                 }
                 relTime += cnt + ' ' + unit;

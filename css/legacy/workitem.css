@@ -774,23 +774,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     font-weight: normal;
 }
 
-#popup-bid .notes,
-#popup-edit-bid-info .notes {
-    height: 120px;
-    width: 380px;
-}
-
-#popup-bid #mechanic_id {
-    width: 420px;
-}
-
-#popup-bid #bid,
-#popup-edit-bid-info #edit_bid {
-    float: right;
-    position: relative;
-    margin-top: 10px !important;
-}
-
 .popup-body input.date {
     width: 130px;
 }
@@ -1424,7 +1407,6 @@ h1.newProject {
         background-color: #F0F6F8;
     }
 
-    #popup-edit-bid-info .notes,
     .white-theme table,
     #ping-msg,
     .popup-body textarea {

@@ -1,10 +1,11 @@
 <div class="modal fade" id="{{modal_id}}">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="./{{job_id}}" method="post" id="addbid">
-        <input type="hidden" name="job_id" value="{{job_id}}" />
-        <input type='hidden' name='mechanic_id' id='mechanic_id' value='{{current_id}}' />
+      <form action="./{{jobId}}" method="post">
+        <input type="hidden" name="job_id" value="{{jobId}}" />
+        <input type="hidden" name="mechanic_id" id="mechanic_id" value="{{currentUserId}}" />
         <input type="hidden" name="bid_expires" id="bid_expires" value="7 days" />
+        <input type="hidden" name="bid_id" value="{{bid.id}}" />
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">Your bid parameters</h4>
@@ -14,7 +15,7 @@
             <div class="col-md-3">
               <label for="bid_amount">Bid amount</label>
               <div class="input-group">
-                <input type="text" name="bid_amount" id="bid_amount" class="form-control" />
+                <input type="text" name="bid_amount" id="bid_amount" class="form-control" value="{{bid.amount}}" />
                 <span class="input-group-addon">USD</span>
               </div>
             </div>
@@ -29,7 +30,7 @@
           <div class="row">
             <div class="col-md-8">
               <label for="notes">Notes</label>
-              <textarea class="form-control" name="notes" id="notes" /></textarea>
+              <textarea class="form-control" name="notes" id="notes">{{bid.notes}}</textarea>
               <p>
                 Your bid will expire in 7 days. If you would like to 
                 indicate a shorter expiration, please mention it in your notes.
@@ -49,12 +50,17 @@
               <p>It will take me this amount of time to achieve the expected functionality</p>
             </div>
             <div class="col-md-8">
-              <input type="hidden" name="done_in" id="done_in" value="2 hours" />
+              <input type="hidden" name="done_in" id="done_in" value="{{bid.time_to_complete}}" />
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" name="place_bid">Place bid</button>
+          {{^editBid}}
+            <button type="submit" class="btn btn-primary" name="place_bid">Place bid</button>
+          {{/editBid}}
+          {{#editBid}}
+            <button type="submit" class="btn btn-primary" name="edit_bid">Edit bid</button>
+          {{/editBid}}
         </div>
       </form>
     </div>

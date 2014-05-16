@@ -490,10 +490,6 @@ $(document).ready(function(){
     $('#popup-bid').dialog(dialog_options);
     $('#popup-review-started').dialog(dialog_options);
 
-    $('#popup-edit-bid-info').dialog(
-        { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false }
-    );
-
     $('#popup-ineligible').dialog({
         dialogClass: 'white-theme',
         modal: true,
@@ -550,8 +546,6 @@ $(document).ready(function(){
             $('select[name=quick-status]').val(origStatus);
         }
     });
-    $('#popup-withdraw-bid').dialog({ dialogClass: 'white-theme', autoOpen: false, width: 450, show: 'fade', hide: 'fade' });
-    $('#popup-decline-bid').dialog({ autoOpen: false, width: 420, show: 'fade', hide: 'fade' });
     if (mechanic_id == user_id) {
         $('#popup-addtip').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 365, height: 385, show: 'fade', hide: 'fade' });
         $('.addTip').click(function() {
@@ -766,7 +760,7 @@ $(document).ready(function(){
                 showStatistics: showBidderStatistics,
                 canAccept: showAcceptBidButton,
                 canEdit: showEditButton,
-                canPing: showPingBidderButton,
+                canPing: (showPingBidderButton && bidData.bidder_id != user_id),
                 canWithdraw: showWithdrawButton,
                 canDecline: showDeclineButton,
                 open: function(modal) {
@@ -818,7 +812,7 @@ $(document).ready(function(){
                         });
                     }
                     $('button[name="edit"]', modal).click(function() {
-                        ConfirmEditBid(bidData.id);
+                        showBidForm(bidData)
                     });
                     $('button[name="ping_bidder"]', modal).click(function() {
                         pingBidder(bidData.id);
@@ -963,56 +957,6 @@ function selectBudget(id) {
     $('#popupSelectBudget').data("clickon", id).dialog('open');
 }
 
-function ConfirmEditBid(bid_id){
-    AjaxPopup('#popup-edit-bid-info',
-        'Edit Bid',
-        'api.php?action=getBidItem',
-        bid_id,
-        [
-            ['input', 'bid_id', 'keyId', 'eval'],
-            ['input', 'bid_amount', 'json.bid_amount', 'eval'],
-            ['input', 'bid_expires_edit', 'json.bid_expires', 'eval'],
-            ['input', 'done_in_edit', 'json.bid_done_in', 'eval'],
-            ['textarea', 'notes', 'json.notes', 'eval']
-        ],
-
-        function(json) {
-            // figure out expires
-            var expireSeconds = json.unix_expires - json.now;
-            var expireHours = Math.round(expireSeconds / 3600);
-            var expireText = '';
-            if (expireHours > 24 || expireHours > 12) {
-                expireText = Math.round(expireHours / 24) + ' days';
-            } else if (expireHours > 6) {
-                expireText = '8 hours';
-            } else if (expireHours >= 4) {
-                expireText = '4 hours';
-            } else if (expireHours > 1) {
-                expireText = expireHours + ' hours';
-            } else {
-                expireText = '1 hour';
-            }
-
-            if(expireHours <= 0) {
-                $('#bid_expires_edit').val('1 hour');
-            }
-
-            var expireValue = getSliderValueFromText(expireText);
-            var doneInValue = getSliderValueFromText(json.bid_done_in);
-
-            $('.sliderStepValue', '#bidExpireEditSlider').remove();
-            $('.sliderStep', '#bidExpireEditSlider').eq(expireValue).html('<div class="sliderStepValue">' + expireText + '</div>');
-            $('.sliderStepValue', '#bidDoneEditSlider').remove();
-            $('.sliderStep', '#bidDoneEditSlider').eq(doneInValue).html('<div class="sliderStepValue">' + json.bid_done_in + '</div>');
-
-            $('#bidExpireEditSlider').slider('value', expireValue);
-            $('#bidDoneEditSlider').slider('value', doneInValue);
-
-        }
-    );
-    $('#popup-edit-bid-info').dialog('open');
-}
-
 function showConfirmForm(i) {
     if (GitHub.validate()) {
         Utils.emptyModal({
@@ -1042,7 +986,7 @@ function showConfirmForm(i) {
             open: function(modal) {
                 $('.btn-primary', modal).on('click', function() {
                     if (i == 'bid') {
-                        showPlaceBidForm();
+                        showBidForm();
                     } else if (i == 'fee') {
                         showFeeForm();
                     }                
@@ -1081,12 +1025,15 @@ function showIneligible(problem) {
     });
 }
 
-function showPlaceBidForm() {
+function showBidForm(bid) {
     var minDoneIn = 7200, // in segs = 2 hours,
         maxDoneIn = 604800; // in segs = 7 days
-    Utils.modal('addbid', {
-        job_id: workitem_id,
-        current_id: userId,
+    bid = typeof(bid) != "undefined" ? bid : {id: '', amount: '', notes: '', time_to_complete: minDoneIn, done_in: '2 hrs'};
+    Utils.modal('bidform', {
+        editBid: bid.id ? true : false,
+        bid: bid,
+        jobId: workitem_id,
+        currentUserId: userId,
         open: function(modal) {
             $('input[name="done_in"]', modal).after($('<div>').addClass('dragdealer'));
             $('<div>').addClass('handle').text('drag').appendTo('.dragdealer', modal);
@@ -1098,7 +1045,7 @@ function showPlaceBidForm() {
                     $('input[name="done_in"]').val(text);
                 }
             });
-            $('form#addbid').submit(function() {
+            $('form', modal).submit(function() {
                 // see http://regexlib.com/REDetails.aspx?regexp_id=318
                 // but without dollar sign 22-NOV-2010 <krumch>
                 var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
@@ -1130,27 +1077,43 @@ function showPlaceBidForm() {
 }
 
 function showWithdrawBidReason(bid_id) {
-  SimplePopup('#popup-withdraw-bid',
-            'Withdraw Bid',
-             bid_id,
-             [['input', 'bid_id', 'keyId', 'eval']]);
-
-
-    $('#popup-withdraw-bid').dialog('open');
+    var msg = 
+        '<input type="hidden" name="bid_id" value="' + bid_id + '" />' +
+        '<label for="withdraw_bid_reason">Why is this bid being withdrawn?</label>' + 
+        '<textarea id="withdraw_bid_reason" name="withdraw_bid_reason" class="form-control" /></textarea>'
+    Utils.emptyFormModal({
+        action: './' + workitem_id,
+        content: msg,
+        buttons: [
+            {
+                type: 'submit',
+                name: 'withdraw_bid',
+                content: 'Withdraw Bid',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ]
+    });
     return false;
 }
 
 function showDeclineBidReason(bid_id) {
-  SimplePopup('#popup-decline-bid',
-            'Decline Bid',
-             bid_id,
-             [['input', 'bid_id', 'keyId', 'eval']]);
-
-
-    $('#popup-decline-bid').dialog({
-        dialogClass: 'white-theme',
-        autoOpen: true,
-        width: 450
+    var msg = 
+        '<input type="hidden" name="bid_id" value="' + bid_id + '" />' +
+        '<label for="decline_bid_reason">Why is this bid being declined?</label>' + 
+        '<textarea id="decline_bid_reason" name="decline_bid_reason" class="form-control" /></textarea>'
+    Utils.emptyFormModal({
+        action: './' + workitem_id,
+        content: msg,
+        buttons: [
+            {
+                type: 'submit',
+                name: 'decline_bid',
+                content: 'Decline Bid',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ]
     });
     return false;
 }
