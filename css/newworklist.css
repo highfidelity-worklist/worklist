@@ -182,25 +182,26 @@ label[for] {
     cursor: pointer;
 }
 
-input.wlcheckbox[type="checkbox"] {
+input.wlcheckbox[type="checkbox"],
+input.wlradio[type="radio"] {
     opacity: 0;
     position: absolute;
 }
-input.wlcheckbox[type="checkbox"] + label {
+input.wlcheckbox[type="checkbox"] + label,
+input.wlradio[type="radio"] + label {
     line-height: 2.2em;
     padding-left: 40px;
     font-weight: normal;
 }
 @media (max-width: 768px) {
-    input.wlcheckbox[type="checkbox"] + label {
+    input.wlcheckbox[type="checkbox"] + label,
+    input.wlradio[type="radio"] + label {
         line-height: 3em
     }
 }
-input.wlcheckbox[type="checkbox"] + label:before {
+input.wlcheckbox[type="checkbox"] + label:before,
+input.wlradio[type="radio"] + label:before {
     content: '\00a0';
-    width: 23px;
-    line-height: 1em;
-    border-radius: 5px;    
     font-family: FontAwesome;
     display: inline-block;
     border: 1px solid #ccc;
@@ -210,11 +211,30 @@ input.wlcheckbox[type="checkbox"] + label:before {
     padding: 2px;
     background-color: #fff;
 }
-input.wlcheckbox[type="checkbox"]:focus + label:before {
+
+input.wlcheckbox[type="checkbox"] + label:before {
+    border-radius: 5px;
+    width: 23px;
+    line-height: 1em;
+}
+
+input.wlradio[type="radio"] + label:before {
+    border-radius: 12px;
+    width: 22px;
+    line-height: .93em;
+}
+
+input.wlcheckbox[type="checkbox"]:focus + label:before,
+input.wlradio[type="radio"]:focus + label:before {
     border-color: #007F7c;
 }
+
 input.wlcheckbox[type="checkbox"]:checked + label:before {
     content: '\f00c';
+}
+
+input.wlradio[type="radio"]:checked + label:before {
+    content: "\f111";
 }
 
 form .row {

@@ -308,182 +308,7 @@ function postComment() {
     });
 }
 
-var getSliderValueFromText = function(val) {
-    switch (val) {
-        case '1 hour':
-            return 0;
-            break;
-        case '2 hours':
-            return 1;
-            break;
-        case '4 hours':
-            return 2;
-            break;
-        case '8 hours':
-            return 3;
-            break;
-        case '1 day':
-            return 4;
-            break;
-        case '2 days':
-            return 5;
-            break;
-        case '3 days':
-            return 6;
-            break;
-        case '4 days':
-            return 7;
-            break;
-        case '5 days':
-            return 8;
-            break;
-        case '6 days':
-            return 9;
-            break;
-        case '7 days':
-            return 10;
-            break;
-        default:
-            return 11;
-    }
-    return false;
-}
-
 $(document).ready(function(){
-    $('#popupSelectBudget').dialog({
-        autoOpen: false,
-        dialogClass: 'white-theme',
-        modal: true,
-        width: 470,
-        resizable: false,
-        height: 350,
-        open: function(event, ui) {
-
-        }
-    });
-    //Budget.initCombo();
-    $('#budget-source-combo').chosen({
-        width: '300px',
-        disable_search: true
-    });
-    $("#popupSelectBudget #confirm_budget").click(function(event) {
-        event.preventDefault();
-        var budget = new LiveValidation('budget-source-combo', {
-            onlyOnSubmit: true ,
-            onInvalid : function() {
-                this.insertMessage( this.createMessageSpan() ); this.addFieldClass();
-            }
-        });
-        budget.add( Validate.Exclusion, { within: [ 0 ], failureMessage: "You must select a budget!" });
-        massValidation = LiveValidation.massValidate( [ budget ]);
-        if (!massValidation) {
-          return false;
-        }
-        $("#budget_id, #budget_id_multiple_bid").val($('#budget-source-combo').val());
-        $('#popupSelectBudget').dialog("close");
-        openNotifyOverlay("Accepting bids", false, false);
-        $('#' + $('#popupSelectBudget').data("clickon")).click();
-    });
-    $("#popupSelectBudget #cancel_budget").click(function() {
-        $("#budget_id, #budget_id_multiple_bid").val("");
-        //var val1 = $($('#budget-source-combo option').get(0)).attr("value");
-        //$('#budget-source-combo').comboBox({action:"val", param: [val1]});
-        $('#budget-source-combo').chosen();
-        $('#popupSelectBudget').dialog("close");
-    });
-
-    $('#bidDoneSlider').slider({
-        value: 1,
-        min: 0,
-        max: 10,
-        step: 1,
-        slide: function(event, ui) {
-            $('.sliderStepValue', $(this)).remove();
-            $('.sliderStep', $(this)).eq(ui.value).html('<div class="sliderStepValue">' + getTextFromSliderValue(ui.value) + '</div>');
-            $('#done_in').val(getTextFromSliderValue(ui.value));
-        }
-    });
-
-    $('#bidExpireSlider').slider({
-        value: 10,
-        min: 0,
-        max: 10,
-        step: 1,
-        slide: function(event, ui) {
-            $('.sliderStepValue', $(this)).remove();
-            $('.sliderStep', $(this)).eq(ui.value).html('<div class="sliderStepValue">' + getTextFromSliderValue(ui.value) + '</div>');
-            $('#bid_expires').val(getTextFromSliderValue(ui.value));
-        }
-    });
-
-    $('.sliderStepValue', '#bidDoneSlider').remove();
-    $('.sliderStep', '#bidDoneSlider').eq(1).html('<div class="sliderStepValue">' + '2 hours' + '</div>');
-    $('.sliderStepValue', '#bidExpireSlider').remove();
-    $('.sliderStep', '#bidExpireSlider').eq(10).html('<div class="sliderStepValue">' + '7 days' + '</div>');
-
-    $('#bidExpireEditSlider').slider({
-        value: getSliderValueFromText($('#bid_expires_edit').val()),
-        min: 0,
-        max: 10,
-        step: 1,
-        slide: function(event, ui) {
-            $('.sliderStepValue', $(this)).remove();
-            $('.sliderStep', $(this)).eq(ui.value).html('<div class="sliderStepValue">' + getTextFromSliderValue(ui.value) + '</div>');
-            $('#bid_expires_edit').val(getTextFromSliderValue(ui.value));
-        }
-    });
-
-    $('#bidDoneEditSlider').slider({
-        value: 1,
-        min: 0,
-        max: 10,
-        step: 1,
-        slide: function(event, ui) {
-            $('.sliderStepValue', $(this)).remove();
-            $('.sliderStep', $(this)).eq(ui.value).html('<div class="sliderStepValue">' + getTextFromSliderValue(ui.value) + '</div>');
-            $('#done_in_edit').val(getTextFromSliderValue(ui.value));
-        }
-    });
-
-    var getTextFromSliderValue = function(val) {
-        var sRet="2 hours";
-        switch (val) {
-            case 0:
-                sRet  = "1 hour";
-                break;
-            case 1:
-                sRet = "2 hours";
-                break;
-            case 2:
-                sRet = "4 hours";
-                break;
-            case 3:
-                sRet = "8 hours";
-                break;
-            case 4:
-                sRet = "1 day";
-                break;
-            case 5:
-                sRet = "2 days";
-                break;
-            case 6:
-                sRet = "3 days";
-                break;
-            case 7:
-                sRet = "4 days";
-                break;
-            case 8:
-                sRet = "5 days";
-                break;
-            case 9:
-                sRet = "6 days";
-                break;
-            case 10:
-                sRet = "7 days";
-                break;
-        }
-        return sRet;
-    };
 
     // default dialog options
     var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false };
@@ -505,7 +330,6 @@ $(document).ready(function(){
     });
 
     $('#popup-fee-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: false, width: 400, show: 'fade', hide: 'fade', resizable: false });
-    $('#popup-multiple-bid-info').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 750, position: ['center', 160], show: 'fade', hide: 'fade' });
     $('#popup-startreview').dialog({
         closeOnEscape: false,
         dialogClass: 'white-theme',
@@ -949,14 +773,6 @@ function ResetPopup() {
     $('.popup-body form textarea').val('');
 }
 
-function selectBudget(id) {
-    $("#budget_id, #budget_id_multiple_bid").val("");
-    //var val1 = $($('#budget-source-combo option').get(0)).attr("value");
-    //$('#budget-source-combo').comboBox({action:"val", param: [val1]});
-    $('#budget-source-combo').chosen();
-    $('#popupSelectBudget').data("clickon", id).dialog('open');
-}
-
 function showConfirmForm(i) {
     if (GitHub.validate()) {
         Utils.emptyModal({
@@ -1287,57 +1103,85 @@ function AcceptMultipleBidOpen(){
             "action": "getMultipleBidList",
             "job_id": job_id
         },
-        success:function(response) {
-            $('#popup-multiple-bid-info').html(response);
-            $("#popup-multiple-bid-info .chkMechanic").change(function() {
-                if (this.checked) {
-                    // remove ticks
-                    $('#popup-multiple-bid-info .chkMechanic').removeAttr('checked');
-                    // and add it back
-                    $(this).prop('checked', true);
-                    // and auto accept
-                    $(this).parent().parent().find('.acceptMechanic').prop('checked', true);
-                }
-            });
-
-            $('#popup-multiple-bid-info .acceptMechanic').change(function() {
-                if (this.checked) {
-                } else {
-                    if ($(this).parent().parent().find('.chkMechanic').is(':checked')) {
-                        $(this).parent().parent().find('.chkMechanic').removeAttr('checked');
-                    }
-                }
-            });
-
-            $("#accept_bid_select_budget").click(function(){
-                selectBudget('accept_multiple_bid');
-            });
-
-            $('#popup-multiple-bid-form').submit(function() {
-                if ($(this).find('input.chkMechanic:checked').length > 0) {
-                    return true;
-                } else {
-                    $('<div id="popup-mechanic-required"><div class="content"></div></div>').appendTo('body');
-                    $('#popup-mechanic-required').dialog({
-                        modal: true,
-                        title: 'Failed to specify developer',
-                        autoOpen: true,
-                        width: 300,
-                        position: ['top'],
-                        open: function() {
-                            $('#popup-mechanic-required .content').html('<p>You must pick which user will be the main developer for this task.</p><input class="closeButton" type="button" value="Close" />');
-                            $('#popup-mechanic-required .closeButton').click(function() {
-                                $('#popup-mechanic-required').dialog('close');
-                            });
+        dataType: 'json',
+        success: function(json) {
+            if (!json.bids) {
+                return;
+            }
+            Utils.modal('multiplebidinfo', {
+                job_id: workitem_id,
+                bids: json.bids,
+                open: function(modal) {
+                    $.ajax({
+                        url: './user/budget/' + userId,
+                        dataType: 'json',
+                        success: function(json) {
+                            if (!json.budgets) {
+                                return;
+                            }
+                            for(var i = 0; i < json.budgets.length; i++) {
+                                var budget = json.budgets[i],
+                                    link = $('<a>').attr({
+                                        budget: budget.id,
+                                        reason: budget.reason,
+                                        remaining: budget.remaining
+                                    });
+                                link.text(budget.reason + ' ($' + budget.remaining + ')');
+                                var item = $('<li>').append(link);
+                                $('.modal-footer .dropup ul', modal).append(item);
+                            }
+                            $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                var budget = $(this).attr('budget');
+                                $('input[name="budget_id"]', modal).val(budget);
+                                $('button[name="accept"]', modal).html(
+                                    '<span>' + $(this).attr('reason') + '</span> ' +
+                                    '($' + $(this).attr('remaining') + ') ' +
+                                    '<span class="caret"></span>'
+                                );
+                                if (!$('button[name="accept_bid"]', modal).length) {
+                                    var confirm = $('<button>')
+                                        .attr({
+                                            type: 'submit',
+                                            name: 'accept_multiple_bid'
+                                        })
+                                        .addClass('btn btn-primary')
+                                        .text('Confirm Accept');
+                                    $('.modal-footer', modal).append(confirm);
+                                }
+                            })
                         }
                     });
-
-                    return false;
+                    $('button[name="accept_bid"]', modal).click(function(event) {
+                        if (!$('input[name="budget_id"]', modal).val()) {
+                            $('button[name="accept_bid"] + button', modal).click();
+                            return false;
+                        }
+                    });
+                    $('input[type="checkbox"]', modal).on('change', function() {
+                        if ($(this).is(':checked')) {
+                            if (!$('input[type="radio"]:checked', modal).length) {
+                                $('input[type="radio"]', $(this).parent()).prop('checked', true);
+                            }
+                        } else {
+                            $('input[type="radio"]:checked', $(this).parent()).prop('checked', false);
+                        }
+                    });
+                    $('input[type="radio"]', modal).on('change', function() {
+                        if ($(this).is(':checked')) {
+                            $('input[type="checkbox"]', $(this).parent()).prop('checked', true);
+                        }
+                    });
+                    $('form', modal).on('submit', function(event) {
+                        if ($(this).find('input[type="checkbox"]:checked').length && $(this).find('input[type="radio"]:checked').length == 1) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
                 }
             });
         }
     });
-    $('#popup-multiple-bid-info').dialog('open');
 }
 
 $(function() {
