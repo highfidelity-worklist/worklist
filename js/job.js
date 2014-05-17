@@ -20,7 +20,7 @@ $(function() {
             
     $("#invite-link").click(function() {
         var msg = 
-            '<label for="invite">Write comma seperated list</label>' + 
+            '<label for="invite">Write comma separated list</label>' + 
             '<input id="invite" name="invite" class="form-control" />'
         Utils.emptyFormModal({
             action: './' + workitem_id,
