@@ -2714,7 +2714,24 @@ function getWorklist() {
             WHEN status = 'Review' AND code_review_started = 1 AND code_review_completed = 0 THEN 'In Review'
             WHEN status = 'Review' AND code_review_completed = 1 THEN 'Reviewed'
             WHEN status != 'Review' THEN status
-        END) `status`,
+        END) `status`,";
+    
+    if ($ofilter == 'status') {
+        $ofilter='status_order';
+        $qsel .= "(CASE
+            WHEN status = 'Suggested' THEN 1
+            WHEN status = 'SuggestedWithBid' THEN 2
+            WHEN status = 'Bidding' THEN 3
+            WHEN status = 'Working' THEN 4
+            WHEN status = 'Functional' THEN 5
+            WHEN status = 'SvnHold' THEN 6
+            WHEN status = 'Review' THEN 7
+            WHEN status = 'Completed' THEN 8
+            WHEN status = 'Done' THEN 9
+            WHEN status = 'Pass' THEN 10
+        END) `status_order`,";
+    }
+    $qsel .= "
         `bug_job_id` AS `bug_job_id`,
         `cu`.`nickname` AS `creator_nickname`,
         `ru`.`nickname` AS `runner_nickname`,
@@ -2762,7 +2779,7 @@ function getWorklist() {
         $idsort = $dfilter == 'DESC' ? 'ASC' : 'DESC';
         $qorder = "GROUP BY `".WORKLIST."`.`id` ORDER BY `".WORKLIST."`.`id` {$idsort} LIMIT "
             . ($page-1)*$limit . ",{$limit}";
-    }else{
+    } else {
         $qorder = "GROUP BY `".WORKLIST."`.`id` ORDER BY {$ofilter} {$dfilter},{$subofilter} {$dfilter}  LIMIT "
             . ($page-1)*$limit . ",{$limit}";
     }
