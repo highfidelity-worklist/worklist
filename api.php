@@ -1731,61 +1731,16 @@ function getMultipleBidList() {
     }
     $workItem = new WorkItem();
     $bids = $workItem->getBids($job_id);
-    $data = '';
 
-    if (sizeof($bids) > 0 ) {
-        ?>
-            <form name="popup-multiple-bid-form" id="popup-multiple-bid-form" action="" method="post">
-                 <table width="100%" class="table-bids">
-                    <caption class="table-caption" >
-                        <b>Bids</b>
-                    </caption>
-                    <thead>
-                        <tr class="table-hdng">
-                            <th><span>User</span></th>
-                            <th><span>Amount</span></th>
-                            <th><span>Done in</span></th>
-                            <th><span>Expires</span></th>
-                            <th><span>Notes</span></th>
-                            <th><span>Accept</span></th>
-                            <th><span>Mechanic</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                            foreach($bids as $bid) {
-                                $expire_class = '';
-                                if ($bid['expires'] <= BID_EXPIRE_WARNING) {
-                                    $expire_class = 'class="warn"';
-                                }
-                                $data .= '
-                                        <tr>
-                                            <td>
-                                                <a href="./user/' . $bid['bidder_id'] . '" >
-                                                   ' . $bid['nickname'] . '
-                                                </a>
-                                            </td>
-                                            <td>'.$bid['bid_amount'].'</td>
-                                            <td>'.$bid['done_in'].'</td>
-                                            <td ' . $expire_class . '>'. relativeTime($bid['expires']) .'</td>
-                                            <td>'.$bid['notes'].'</td>
-                                            <td><input type="checkbox" class="acceptMechanic" name="chkMultipleBid[]" value="'.$bid['id'].'" /></td>
-                                            <td><input type="checkbox" name="mechanic" class="chkMechanic" value="'.$bid['bidder_id'].'" /></td>
-                                        </tr>';
-                            }
-                            echo $data; 
-                        ?>
-                    </tbody>
-                </table>
-                <input type="submit" style="display:none;" name="accept_multiple_bid" id="accept_multiple_bid" value="Confirm Accept Selected">
-                <input type="hidden" id="budget_id_multiple_bid" name="budget_id" value="" />
-                <input type="button" id="accept_bid_select_budget"
-                       name="accept_bid_select_budget" value="Accept Selected">
-            </form>
-        <?php
-    } else {
-        echo 'No Bid Present';
+    $ret = array();
+    foreach($bids as $bid) {
+        $bid['expired'] = $bid['expires'] <= BID_EXPIRE_WARNING;
+        $bid['expires_text'] = relativeTime($bid['expires'] , false, false, false, false);
+        $ret[] = $bid;
     }
+
+    echo json_encode(array('bids' => $ret));
+    return;
 }
 
 function getProjects() {
