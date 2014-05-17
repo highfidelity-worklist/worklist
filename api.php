@@ -2717,7 +2717,7 @@ function getWorklist() {
         END) `status`,";
     
     if ($ofilter == 'status') {
-        $ofilter='status_order';
+        $ofilter = 'status_order';
         $qsel .= "(CASE
             WHEN status = 'Suggested' THEN 1
             WHEN status = 'SuggestedWithBid' THEN 2
