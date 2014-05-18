@@ -967,16 +967,10 @@ input {
     border-color: #007F7c;
 }
 
-#search .chosen-container:before {
-    color: #666;
-}
-
 #projectCombo + div:before {
     content: 'Which project?';
 }
-#projectCombo_chosen {
-    width: 100% !important;
-}
+
 @media (max-width: 1024px) {
     #projectCombo + div:before {
         content: '';
@@ -986,11 +980,9 @@ input {
 #userCombo + div:before {
     content: 'Users involved';
 }
-#userCombo_chosen {
-    width: 100% !important;
-}
+
 @media (max-width: 1024px) {
-    #userCombo_chosen:before {
+    #userCombo + div:before {
         display: none;
     }
 }
@@ -1006,22 +998,10 @@ input {
 #statusCombo + div:before {
     content: 'Job status';
 }
-#statusCombo_chosen {
-    width: 100% !important;
-}
-
-#statusCombo_chosen.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
-    height: 20px;
-    line-height: 20px;
-    padding: 0;
-}
 
 @media (max-width: 1024px) {
-    #statusCombo_chosen:before {
+    #statusCombo + div:before {
         display: none;
-    }
-    #statusCombo_chosen {
-        width: 100% !important;
     }
 }
 
@@ -1234,7 +1214,44 @@ td.statusDone > i {
  * Overrides for bootstrap-select
  */
 #search .filter .bootstrap-select {
-    width: auto;
+    width: 100%;
+}
+
+#search .bootstrap-select.btn-group {
+    max-width: 300px;
+}
+
+.bootstrap-select .btn:focus {
+    outline: none !important;
+}
+
+.bootstrap-select .btn {
+    padding: 3px 30px 3px 12px;
+}
+
+.bootstrap-select.btn-group .btn .caret {
+    margin-top: -10px;
+    border: none;
+    right: 22px;
+}
+
+.bootstrap-select .btn .caret:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #666;
+}
+
+.bootstrap-select.open .btn .caret:before {
+    content: "\f077";
+}
+
+.bootstrap-select.btn-group .btn .filter-option {
+    border-right: 1px solid #CCCCCC;
+    line-height: 28px;
+    text-overflow: ellipsis;
 }
 
 .bootstrap-select .btn-default {
