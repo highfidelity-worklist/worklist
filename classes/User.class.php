@@ -621,7 +621,25 @@ class User {
         $this->paid = $value;
         return $this;
     }
-    
+
+    public function getActiveBudgets()
+    {
+        // Query to get User's Budget entries
+        $query =  ' SELECT amount, remaining, reason, id '
+                . ' FROM ' . BUDGETS 
+                . ' WHERE receiver_id = ' . $this->getId()
+                . ' AND active = 1 '
+                . ' ORDER BY id DESC ';
+        $result = mysql_query($query);
+        $ret = "";
+        if ($result) {
+            while ($row = mysql_fetch_assoc($result)) {
+                $ret[] = $row;
+            }
+        }
+        return $ret;
+    }
+
     public function getBudgetCombo($budget_id = 0)
     {
         $userid = isset($_SESSION['userid']) ?  $_SESSION['userid'] : 0;

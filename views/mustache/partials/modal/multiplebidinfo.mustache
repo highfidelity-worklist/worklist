@@ -1,0 +1,57 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="./{{job_id}}" method="post">
+        <input type="hidden" id="budget_id" name="budget_id" value="" />
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Bids</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Completed</th>
+                <th>Expires</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#bids}}
+                <tr>
+                  <td>
+                    <a href="./user/{{bidder_id}}">{{nickname}}</a>
+                 </td>
+                  <td>${{bid_amount}}</td>
+                  <td>in {{done_in}}</td>
+                  <td>{{expires_text}}</td>
+                  <td>
+                    {{& notes}}
+                    <fieldset>
+                      <input type="checkbox" id="multiple_accept_{{id}}" class="wlcheckbox" name="chkMultipleBid[]" value="{{id}}" />
+                      <label for="multiple_accept_{{id}}">Accept</label>
+                      <input type="radio" id="multiple_mechanic_{{id}}" class="wlradio" name="mechanic" value="{{bidder_id}}" />
+                      <label for="multiple_mechanic_{{id}}">Mechanic</label>
+                    </fieldset>
+                  </td>
+                </tr>
+              {{/bids}}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <div class="btn-group dropup">
+            <button type="button" name="accept" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              Accept <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation" class="dropdown-header">Select a budget</li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
