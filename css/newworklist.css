@@ -494,9 +494,12 @@ button:focus, a:focus {
 }
 
 .navbar > .container-fluid,
-.navbar-collapse > ul.navbar-nav,
-.navbar-collapse > ul.navbar-nav > li.dropdown {
+.navbar-collapse > ul.navbar-nav {
     padding: 0;
+}
+
+.navbar-collapse > ul.navbar-nav > li.dropdown {
+    padding: 0 15px 0 0;
 }
 
 .navbar-nav.navbar-right {
