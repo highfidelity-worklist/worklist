@@ -556,18 +556,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     }
 }
 
-.navbar.affix-top {
-    z-index:10;
-}
-
-.navbar.affix, 
-.navbar.affix-bottom {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index:10;
-}
-
 /* Worklist Icons Classes */
 .wl-icon-arrow-down,
 .wl-icon-arrow-down\:regular {
