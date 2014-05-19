@@ -1227,13 +1227,6 @@ td.statusDone > i {
     }
 }
 
-.comment-col:before {
-    background: none !important;
-}
-
-tr.worklist-pagination-row:after {
-    background: none !important;
-}
 /**
  * Overrides for bootstrap-select
  */
