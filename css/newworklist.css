@@ -551,6 +551,10 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     }
 }
 
+.navbar.affix-top {
+    z-index:10;
+}
+
 .navbar.affix, 
 .navbar.affix-bottom {
     position: fixed;

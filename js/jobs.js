@@ -184,7 +184,7 @@ function AppendRow (json, prepend, moreJson, idx) {
         bidCount = ' (' + json[10] + ')';
     }
     colStatus = json[2].replace(/\s/g, '');
-    row += '<td class="status-col status' + colStatus + '"><i></i><span>' + json[2] + '</span>' + bidCount + '</td>';
+    row += '<td class="status-col status' + colStatus + '"><i></i><span>' + json[2] + bidCount + '</span>' + '</td>';
 
     var who = '',
         createTagWho = function (id, nickname) {
@@ -234,7 +234,7 @@ function AppendRow (json, prepend, moreJson, idx) {
 
     // Comments
     comments = (json[12] == 0) ? "" : json[12];
-    row += '<td class="age-col">' + 
+    row += '<td class="comment-col">' + 
              comments +
            '</td>';
 

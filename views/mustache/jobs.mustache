@@ -11,16 +11,21 @@
     <div class="col-sm-2 col-md-2 filter">
       {{& userSelect}}
     </div>
-    <div class="col-sm-3 col-md-4 filter">
+    {{#currentUser.id}}
+    <div class="col-sm-3 col-md-3 filter">
       {{& statusSelect}}
     </div>
-    {{#currentUser.id}}
-    <div id="buttons" class="colsm-2 col-md-1">
+    <div id="buttons" class="col-xs-12 col-sm-2 col-md-2">
         <p>
             <a href="./addjob" id="addJobButton" title="Suggest a Feature or Report a Bug">
                 Add job
             </a>
         </p>
+    </div>
+    {{/currentUser.id}}
+    {{^currentUser.id}}
+    <div class="col-sm-5 col-md-5 filter">
+      {{& statusSelect}}
     </div>
     {{/currentUser.id}}
 </form>
