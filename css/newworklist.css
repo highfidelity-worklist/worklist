@@ -1,6 +1,7 @@
 body {
-  font-family: proxima-nova, sans-serif;
-  position: relative; /* Fix bootstrap flicker bug */
+    font-family: proxima-nova, sans-serif;
+    /* lets avoid top content to be overlaped with the fixed navigation bar. 19-MAY-2014 <kordero> */
+    padding-top: 61px;
 }
 
 /* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
@@ -486,14 +487,20 @@ button:focus, a:focus {
     background-color: #000;
 }
 
+.navbar .dropdown > .dropdown-toggle {
+    text-align: right;
+}
+
 .navbar > .container-fluid,
-.navbar-collapse > ul.navbar-nav,
-.navbar-collapse > ul.navbar-nav > li.dropdown
-{
+.navbar-collapse > ul.navbar-nav {
     padding: 0;
 }
 
-.navbar-nav.navbar-right{
+.navbar-collapse > ul.navbar-nav > li.dropdown {
+    padding: 0 15px 0 0;
+}
+
+.navbar-nav.navbar-right {
     max-width: 170px;
 }
 
@@ -523,12 +530,8 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     width: 80px
 }
 
-.dropdown > .dropdown-toggle {
-    text-align: right;
-}
-
 @media only screen and (max-width: 767px) {
-    .dropdown > .dropdown-toggle {
+    .navbar .dropdown > .dropdown-toggle {
         text-align: left;
     }
     
@@ -549,18 +552,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     .nav.navbar-nav a {
         background: none;
     }
-}
-
-.navbar.affix-top {
-    z-index:10;
-}
-
-.navbar.affix, 
-.navbar.affix-bottom {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index:10;
 }
 
 /* Worklist Icons Classes */

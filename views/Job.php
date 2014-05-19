@@ -3,7 +3,6 @@
 use \Michelf\Markdown;
 
 class JobView extends View {
-    public $layout = 'NewWorklist';
     public $title = '%d: %s - Worklist';
 
     public $stylesheets = array(
