@@ -1005,13 +1005,10 @@ input {
 
 .filter > div {
     width: 100%;
-    margin-top: 25px;
+    margin-top: 15px;
 }
-<<<<<<< HEAD
+
 @media (max-width: 767px) {
-
-
-
     .filter > div {
 
         margin-top: 5px;
@@ -1242,10 +1239,6 @@ tr.worklist-pagination-row:after {
  */
 #search .filter .bootstrap-select {
     width: 100%;
-}
-
-#search .bootstrap-select.btn-group {
-    max-width: 300px;
 }
 
 .bootstrap-select .btn:focus {
