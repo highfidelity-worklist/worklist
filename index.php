@@ -32,7 +32,6 @@ class Dispatcher {
         $dispatcher->get('/payments', array('Payments'));
         $dispatcher->post('/payments', array('Payments'));
         $dispatcher->get('/privacy', array('Privacy'));
-        $dispatcher->get('/projectstatus', array('ProjectStatus'));
         $dispatcher->get('/projects', array('Projects'));
         $dispatcher->get('/reports', array('Reports'));
         $dispatcher->post('/reports', array('Reports'));
