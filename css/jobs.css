@@ -1023,7 +1023,7 @@ input {
 @media (max-width: 1024px) {
     #query > fieldset,
     #addJobButton {
-        margin-top: 25px;
+        margin-top: 15px;
     }   
 
 }
