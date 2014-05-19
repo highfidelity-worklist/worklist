@@ -407,26 +407,18 @@
         <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong>{{message}}</p>
     </div>
 {{/message}}
-{{> popup-edit-bid-info}}
-{{> popup-place-bid}}
 {{> popup-startreview}}
 {{> popup-endreview}}
 {{> code-review-already-started}}
 {{> popup-pingtask}}
-{{> popup-bid-info}}
-{{> popup-multiple-bid-info}}
 {{> popup-fees}}
 {{> popup-fee-info}}
-{{> popup-withdraw-bid}}
-{{> popup-decline-bid}}
 {{> review-url-dialog}}
 {{> popup-paid}}
-{{> popup-invite-people}}
 {{> popup-runner-job-edit}}
 {{#userIsMechanic}}
     {{> popup-addtip}}
 {{/userIsMechanic}}
-
 <script type="text/javascript">
     var repo_type = '{{workitem_project.getRepo_type}}';
     GitHub.isConnected = {{#isGitHubConnected}}1{{/isGitHubConnected}}{{^isGitHubConnected}}0{{/isGitHubConnected}};
@@ -466,6 +458,7 @@
     var displayDialogAfterDone = {{displayDialogAfterDone}};
     var userinfotoshow = {{userinfotoshow}};
     var origStatus = '{{worklist.status}}';
+    var showBidderStatistics = {{#showBidderStatistics}}true{{/showBidderStatistics}}{{^showBidderStatistics}}false{{/showBidderStatistics}};
 </script>
 <script type="text/html" id="uploadedFiles">
     <div id="accordion">
