@@ -802,128 +802,6 @@ table.table-worklist > tbody > tr.worklist-pagination-row > td {
 .table-worklist .worklist-pagination-row .inactive {
     color: #888888;
 }
-#bid_amount_conatiner {
-    width: 100%; 
-    margin-bottom: 4px; 
-    margin-top: 23px;
-}
-.bid_amount_p {
-    padding-right: 28px;
-}
-#bid_notes .bid_amount_heading, .bid_amount_heading {
-    font-weight: bold; 
-    font-size:18px !important; 
-    color: #666666 !important;
-    font-family: proxima-nova,sans-serif; 
-}
-.bid_amount_textfield {
-    width: 73px !important; 
-    margin-top: 6px; 
-}
-#place_bid_usd {
-    float: left; 
-    margin-top: 26px;
-    position: relative;
-}
-#bid_amount_description {
-    padding-top: 6px; 
-    width: 401px; 
-    float: left; 
-    font-family: proxima-nova;
-    padding-left: 25px;
-    color: #666666;
-}
-.place_bid_divider {
-    width: 109%; 
-    height: 5px; 
-    background-color: #E8EFF0; 
-    position: relative; 
-    left: -22px;
-}
-#bid_notes {
-    width: 100%; 
-    padding-top: 17px; 
-    margin-bottom: 19px; 
-}
-.bid_notes_required {
-    color: #999999;
-}
-.bid_notes_textarea {
-    font-family: proxima-nova !important; 
-    width: 415px !important; 
-    float: left; 
-    margin-right: 19px; 
-    height: 180px !important; 
-    margin-top: 0;
-}
-#bid_notes_decsription {
-    font-family: proxima-nova; 
-    color: #666666;
-}
-#bid_done_container {
-    width: 100%; 
-    margin-bottom: 22px;
-}
-#bidDone {
-    width: 100%;
-}
-#bid_done_description {
-    width: 247px; 
-    float: left; 
-    margin-right: 44px;
-}
-#bid_done_explanation {
-    margin-top: 3px; 
-    font-family: proxima-nova;
-    width: 247px;
-    color: #666666;
-}
-#time_slider_container {
-    float: left; 
-    padding-top: 12px;
-}
-#right_border {
-    width: 281px; 
-    height: 12px; 
-    position: relative; 
-    top: 12px; 
-    border-left: 1px solid grey; 
-    border-right: 1px solid grey
-}
-#submit_bid_button {
-    padding-top: 9px; 
-    padding-bottom: 19px; 
-    width: 109%; 
-    background-color: #E8EFF0; 
-    position: relative; 
-    left: -22px
-}
-#submit_bid_btn_holder {
-    padding-left: 22px; 
-    padding-right: 14px; 
-    float: left; 
-}
-.place_bid_button {
-    height: 44px !important; 
-    font-size: 18px !important;
-}
-
-#submit_bid_description {
-    padding-top: 17px; 
-    width: 435px; 
-    float: left; 
-    font-family: proxima-nova;
-    color: #666666;
-}
-
-.sandboxlink {
-    max-width: 340px;
-    overflow: hidden;
-}
-
-.relative {
-    position: relative;
-}
 
 select + div, 
 select, 
@@ -1087,61 +965,55 @@ input {
     border-color: #007F7c;
 }
 
-#search .chosen-container:before {
-    color: #666;
-}
-
-#projectCombo_chosen:before {
+#projectCombo + div:before {
     content: 'Which project?';
 }
-#projectCombo_chosen {
-    width: 100% !important;
-}
+
 @media (max-width: 1024px) {
-    #projectCombo_chosen:before {
+    #projectCombo + div:before {
         content: '';
     }
 }
 
-#userCombo_chosen:before {
+#userCombo + div:before {
     content: 'Users involved';
 }
-#userCombo_chosen {
-    width: 100% !important;
-}
+
 @media (max-width: 1024px) {
-    #userCombo_chosen:before {
+    #userCombo + div:before {
         display: none;
     }
 }
 
-#statusCombo_chosen:before {
+.bootstrap-select .btn {
+    border-radius: 0;
+}
+
+#statusCombo + div .btn:hover {
+    background-color: #FFF;
+}
+
+#statusCombo + div:before {
     content: 'Job status';
 }
-#statusCombo_chosen {
-    width: 100% !important;
-}
-
-#statusCombo_chosen.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
-    height: 20px;
-    line-height: 20px;
-    padding: 0;
-}
 
 @media (max-width: 1024px) {
-    #statusCombo_chosen:before {
+    #statusCombo + div:before {
         display: none;
-    }
-    #statusCombo_chosen {
-        width: 100% !important;
     }
 }
 
-.filter > .chosen-container {
+.filter > div {
+    width: 100%;
     margin-top: 25px;
 }
+<<<<<<< HEAD
 @media (max-width: 767px) {
-    .filter > .chosen-container {
+
+
+
+    .filter > div {
+
         margin-top: 5px;
     }
 }
@@ -1351,6 +1223,7 @@ td.statusDone > i {
     background-color: #000000;
 }
 
+
 @media (min-width: 768px){
     .container-fluid .row .filter {
         padding-left: 0;
@@ -1363,4 +1236,87 @@ td.statusDone > i {
 
 tr.worklist-pagination-row:after {
     background: none !important;
+}
+/**
+ * Overrides for bootstrap-select
+ */
+#search .filter .bootstrap-select {
+    width: 100%;
+}
+
+#search .bootstrap-select.btn-group {
+    max-width: 300px;
+}
+
+.bootstrap-select .btn:focus {
+    outline: none !important;
+}
+
+.bootstrap-select .btn {
+    padding: 3px 30px 3px 12px;
+}
+
+.bootstrap-select.btn-group .btn .caret {
+    margin-top: -10px;
+    border: none;
+    right: 22px;
+}
+
+.bootstrap-select .btn .caret:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #666;
+}
+
+.bootstrap-select.open .btn .caret:before {
+    content: "\f077";
+}
+
+.bootstrap-select.btn-group .btn .filter-option {
+    border-right: 1px solid #CCCCCC;
+    line-height: 28px;
+    text-overflow: ellipsis;
+}
+
+.bootstrap-select .btn-default {
+    color: #007F7C;
+    font-weight: bold;
+}
+
+.bootstrap-select .check-mark {
+    color: #007F7C;
+}
+
+.bootstrap-select .dropdown-menu {
+    border-color: #AAAAAA;
+    border-radius: 0;
+    color: #000000;
+    margin: 0;
+    padding: 5px;
+}
+
+.bootstrap-select .dropdown-menu > .active > a {
+    background-color: #007F7C;
+    color: #FFFFFF;
+}
+
+.bootstrap-select .dropdown-menu li a {
+    color: #333333;
+}
+
+.bootstrap-select .dropdown-menu li a:hover {
+    background-color: #007F7C;
+    color: #FFFFFF;
+}
+
+.bootstrap-select .dropdown-menu li a:hover .check-mark {
+    color: #FFFFFF;
+}
+
+.bootstrap-select.open .dropdown-toggle.btn-default {
+    color: #007F7C;
+
 }

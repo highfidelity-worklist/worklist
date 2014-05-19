@@ -209,22 +209,6 @@ input[type=submit].wide {
 
 .white-theme #withdraw_bid input[type=submit] { width: 130px; }
 
-.white-theme #popup-bid-info-buttons input[type=button] {
-    font-size: 1em;
-}
-.white-theme #popup-bid-info-buttons input[type=button]#edit {
-    width: 70px;
-}
-.white-theme #popup-bid-info-buttons input[type=button]#withdraw_bid_accept {
-    width: 95px;
-}
-.white-theme #popup-bid-info-buttons input[type=button]#confirm_budget {
-    width: 80px;
-}
-.white-theme #popup-bid-info-buttons input[type=button]#cancel_budget {
-    width: 80px;
-}
-
 .white-theme .field {
     clear: both;
     padding-bottom: 15px;;
