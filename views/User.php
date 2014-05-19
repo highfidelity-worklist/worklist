@@ -1,7 +1,6 @@
 <?php
 
 class UserView extends View {
-    public $layout = 'NewWorklist';
     public $title = "%s's profile - Worklist";
 
     public $stylesheets = array(

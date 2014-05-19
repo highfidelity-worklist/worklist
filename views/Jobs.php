@@ -1,7 +1,6 @@
 <?php
 
 class JobsView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'Jobs - Worklist';
     public $stylesheets = array(
         'css/jobs.css'

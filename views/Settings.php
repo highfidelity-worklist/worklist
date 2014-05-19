@@ -1,7 +1,6 @@
 <?php
 
 class SettingsView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'Account Settings - Worklist';
     public $stylesheets = array(
         'css/settings.css'

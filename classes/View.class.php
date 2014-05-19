@@ -183,8 +183,8 @@ class View extends AppObject {
         if (is_string($layout) && class_exists($layout . 'Layout')) {
             $layoutClass = $layout . 'Layout';
             $layout = $this->layout = new $layoutClass();
-        } elseif (is_null($layout) && class_exists('DefaultLayout')) {
-            $layout = $this->layout = new DefaultLayout();
+        } elseif (is_null($layout) && class_exists('NewWorklistLayout')) {
+            $layout = $this->layout = new NewWorklistLayout();
         }
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache';
         $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
