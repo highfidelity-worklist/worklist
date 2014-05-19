@@ -1,15 +1,17 @@
-@media (min-width: 1024px) {
-    body > .container-fluid {
-        max-width: 1024px;
-    }
-}
-
 body {
     font-size: 14px;
 }
-@media (max-width: 1024px) {
-    body {
-        font-size: 11px;
+
+@media (max-width: 960px){
+    body > .container-fluid {
+        margin: 0 8.33%;
+        max-width: 850px;
+    }
+}
+
+@media (max-width: 480px){
+    body > .container-fluid {
+        margin: 0;
     }
 }
 
@@ -490,7 +492,7 @@ td.textAlignReport {
     max-width: 60px;
 }
 .table-worklist tr > td:nth-child(2) {
-    max-width: 350px; 
+    max-width: 250px; 
 }
 .table-worklist tr > td:nth-child(3) {
     max-width: 60px;
@@ -539,6 +541,7 @@ td.textAlignReport {
 
     .table-worklist tr > td:nth-child(2) {
         max-width: 200px;
+        white-space: nowrap;
     }
 }
 
@@ -827,7 +830,7 @@ input {
     line-height: 1.45em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #search select + div,
     #search select,
     #query > fieldset > input {
@@ -850,7 +853,7 @@ input {
 
 @media (max-width: 1024px) {
     #query > fieldset > input[type="text"] {
-        padding: 8px 23px 8px;
+        padding: 7px 24px 6px;
     }
 }
 
@@ -861,11 +864,6 @@ input {
     color: #000;
     margin: 7px;
     color: #007F7c;
-}
-@media (max-width: 1024px) {
-    #query > fieldset:before {
-        margin: 9px 8px;
-    }
 }
 
 #query > fieldset > * {
@@ -882,7 +880,7 @@ input {
     border: 0 none;
     background: transparent none;
     color: #666;
-    top: 10px;
+    top: 8px;
     right: 2px;
 }
 
@@ -1007,29 +1005,37 @@ input {
 
 .filter > div {
     width: 100%;
-    margin-top: 25px;
+    margin-top: 15px;
 }
-@media (max-width: 768px) {
+
+@media (max-width: 767px) {
     .filter > div {
+
         margin-top: 5px;
     }
 }
 
 #query > fieldset,
 #addJobButton {
-    margin-top: 45px;
+    margin-top: 35px;
 }
 
 @media (max-width: 1024px) {
     #query > fieldset,
     #addJobButton {
-        margin-top: 25px;
-    }
+        margin-top: 15px;
+    }   
+
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #query > fieldset,
     #addJobButton {
         margin-top: 5px;
+        width: 100%;
+    }
+    
+    #query > fieldset {
+        margin-top: 15px;
     }
 }
 
@@ -1096,6 +1102,8 @@ input {
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;
+    text-align: center;
+    width: 100%;
 }
 
 #addJobButton:hover {
@@ -1103,13 +1111,15 @@ input {
 }
 
 #buttons {
-    padding: 0;
+    padding-left: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #buttons {
-        float: right;
         padding-right: 15px;
+        padding-left: 15px;
+        text-align: center;
+        width: 100%;
     } 
 }
 
@@ -1210,15 +1220,25 @@ td.statusDone > i {
     background-color: #000000;
 }
 
+
+@media (min-width: 768px){
+    .container-fluid .row .filter {
+        padding-left: 0;
+    }
+}
+
+.comment-col:before {
+    background: none !important;
+}
+
+tr.worklist-pagination-row:after {
+    background: none !important;
+}
 /**
  * Overrides for bootstrap-select
  */
 #search .filter .bootstrap-select {
     width: 100%;
-}
-
-#search .bootstrap-select.btn-group {
-    max-width: 300px;
 }
 
 .bootstrap-select .btn:focus {
@@ -1291,4 +1311,5 @@ td.statusDone > i {
 
 .bootstrap-select.open .dropdown-toggle.btn-default {
     color: #007F7C;
+
 }
