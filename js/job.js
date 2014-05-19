@@ -305,9 +305,6 @@ function postComment() {
                                 '<div class="comment-text">' +
                                      data.comment +
                                 '</div>' +
-                                '<div class="reply-lnk">' +
-                                    replyLink +
-                                '</div>' +
                             '</div>' +
                         '</div>'
                      '</li>';
@@ -1293,48 +1290,6 @@ $(function() {
         $("#echo-journal-span").css("display", "block");
         $("#send-ping-btn").val('Send ping');
         $('#echo-journal').prop('checked', true);
-    });
-    
-    $('#pingMechanic').click(function() {
-        if (!$.loggedin) {
-            sendToLogin();
-            return;
-        }
-
-        ping_who = 'mechanic';
-        ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Developer about the task');
-        $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Developer about the task');
-        return false;
-    });
-
-    $('#pingRunner').click(function() {
-        if (!$.loggedin) {
-            sendToLogin();
-            return;
-        }
-
-        ping_who = 'runner';
-        ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Designer about the task');
-        $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Designer about the task');
-        return false;
-    });
-
-    $('#pingCreator').click(function() {
-        if (!$.loggedin) {
-            sendToLogin();
-            return;
-        }
-
-        ping_who = 'creator';
-        ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Creator about the task');
-        $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Creator about the task');
-        return false;
     });
 
     $('.table-bids tbody td > a[href^="./user/"]').click(function(event) {
