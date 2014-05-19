@@ -1,5 +1,8 @@
 body {
+
     font-family: proxima-nova, sans-serif;
+
+    /* lets avoid top content to be overlaped with the fixed navigation bar. 19-MAY-2014 <kordero> */
     padding-top: 61px;
 }
 
