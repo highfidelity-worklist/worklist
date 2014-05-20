@@ -1145,14 +1145,12 @@ a.profile-link {
 }
 
 #following,
-#invite-link,
 .switchmode,
 .switchmode-done {
     float: left;
 }
 
 #following:hover,
-#invite-link:hover,
 .switchmode:hover {
     cursor: pointer;
     text-decoration: underline !important;
@@ -1165,14 +1163,7 @@ a.profile-link {
     background-repeat: no-repeat;
 }
 
-#invite-link {
-    padding: 10px 17px 7px 37px;
-    background-position: 10px 10px;
-    background-repeat: no-repeat;
-}
-
-#following,
-#invite-link{
+#following {
     border-right: 2px solid #e1e8ea;
 }
 
@@ -1430,7 +1421,6 @@ h1.newProject {
     }
 
     #following,
-    #invite-link,
     #switchmode_edit {
         padding: 10px 5px 7px 25px;
     }

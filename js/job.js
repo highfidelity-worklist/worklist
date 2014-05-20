@@ -18,59 +18,6 @@ $(function() {
     }
     applyPopupBehavior();
             
-    $("#invite-link").click(function() {
-        var msg = 
-            '<label for="invite">Write comma separated list</label>' + 
-            '<input id="invite" name="invite" class="form-control" />'
-        Utils.emptyFormModal({
-            action: './' + workitem_id,
-            title: 'Invite Worklist Users',
-            content: msg,
-            buttons: [
-                {
-                    type: 'submit',
-                    name: 'invite-people',
-                    content: 'Invite',
-                    className: 'btn-primary',
-                    dismiss: false
-                }
-            ],
-            open: function(modal) {
-                var autoArgs = autocompleteMultiple('getuserslist');
-                $('input[name="invite"]', modal).bind("keydown", autoArgs.bind);
-                $('input[name="invite"]', modal).autocomplete(autoArgs, null);
-                $('form', modal).on('submit', function(event) {
-                    var name = $('input[name="invite"]', modal).val();
-                    $.ajax({
-                        type: "POST",
-                        url: "./" + workitem_id,
-                        data: "invite=" + name + "&invite-people=Invite",
-                        dataType: "json",
-                        success: function(json) {
-                            var msg;
-                            if (!json.length) {
-                                msg = '<p>Invite sent to <a href="./user/' + name +'">' + name + '</a></p>';
-                            } else {
-                                msg = '<p>Some of the users you sent do not exist. Please correct those shown and try again.</p>';
-                                for (var i = 0; i < json.length; i++) {
-                                    if (i) {
-                                        $('input[name="invite"]', modal).val($('input[name="invite"]', modal).val() + json[i]);
-                                    } else {
-                                        $('input[name="invite"]', modal).val($('input[name="invite"]', modal).val() + ',' + json[i]);
-                                    }
-                                }
-                            }
-                            Utils.emptyModal({content: msg});
-                        }
-                    });
-                    $(modal).modal('hide');
-                    return false;
-                });
-            }
-        });
-        return false;
-    });
-
     if (displayDialogAfterDone && mechanic_id > 0) {
         WReview.displayInPopup({
             'user_id': mechanic_id,
