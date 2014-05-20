@@ -60,7 +60,7 @@
     </div>
     {{/editing}}
     {{& jobBudget}}
-    <div class="project {{#isGitProject}} github{{/isGitProject}} wl-icon-github">
+    <div class="project {{#isGitProject}} github{{/isGitProject}}">
     {{#editing}}
         <input type="hidden" name="save_workitem" value="save_workitem" />
         <input type="hidden" name="action" value="save_workitem" />
@@ -89,11 +89,6 @@
             <span>Not assigned</span>
         {{/worklist.project_id}}
     {{/editing}}
-        {{#isGitProject}}
-        <div class="project-github">
-            <h1>Requires GitHub</h1>
-        </div>
-        {{/isGitProject}}
     </div>
     <div style="clear:both; float:none">&nbsp;</div>
 </div>
