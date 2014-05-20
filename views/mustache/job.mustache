@@ -6,7 +6,7 @@
         <span class="wl-icon-invite" id="invite-link" title="Invite people" href="javascript">Invite someone</span>
         {{#canEditAndNotEditing}}
             {{#statusDone}}
-                <span class="switchmode-done wl-icon-star" title="Jobs set to Done status may not be edited">Edit</span>
+                <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
             {{/statusDone}}
             {{^statusDone}}
                 <span class="switchmode wl-icon-edit" id="switchmode_edit">
@@ -82,7 +82,7 @@
         {{#worklist.project_id}}
             <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
             {{#worklist.p_website}}
-                <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>
+                <a class="project_website" href="{{& projectWebsiteUrl}}" >website</a>
             {{/worklist.p_website}}
         {{/worklist.project_id}}
         {{^worklist.project_id}}
@@ -184,7 +184,7 @@
                             {{/canEditSandboxUrlOnEdit}}
                             {{^canEditSandboxUrlOnEdit}}
                                 {{#worklist.sandbox}}
-                                <a href="{{& worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                                <a href="{{& worklist.sandbox}}" >{{worklist.sandbox}}</a>
                                 {{/worklist.sandbox}}
                                 {{^worklist.sandbox}}
                                 <span>Not assigned</span>
@@ -402,26 +402,18 @@
         <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong>{{message}}</p>
     </div>
 {{/message}}
-{{> popup-edit-bid-info}}
-{{> popup-place-bid}}
 {{> popup-startreview}}
 {{> popup-endreview}}
 {{> code-review-already-started}}
 {{> popup-pingtask}}
-{{> popup-bid-info}}
-{{> popup-multiple-bid-info}}
 {{> popup-fees}}
 {{> popup-fee-info}}
-{{> popup-withdraw-bid}}
-{{> popup-decline-bid}}
 {{> review-url-dialog}}
 {{> popup-paid}}
-{{> popup-invite-people}}
 {{> popup-runner-job-edit}}
 {{#userIsMechanic}}
     {{> popup-addtip}}
 {{/userIsMechanic}}
-
 <script type="text/javascript">
     var repo_type = '{{workitem_project.getRepo_type}}';
     GitHub.isConnected = {{#isGitHubConnected}}1{{/isGitHubConnected}}{{^isGitHubConnected}}0{{/isGitHubConnected}};
@@ -461,6 +453,7 @@
     var displayDialogAfterDone = {{displayDialogAfterDone}};
     var userinfotoshow = {{userinfotoshow}};
     var origStatus = '{{worklist.status}}';
+    var showBidderStatistics = {{#showBidderStatistics}}true{{/showBidderStatistics}}{{^showBidderStatistics}}false{{/showBidderStatistics}};
 </script>
 <script type="text/html" id="uploadedFiles">
     <div id="accordion">
@@ -515,7 +508,7 @@
     <div class="attachment">
         <span><#= title #></span>
         <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-            <i class="icon-remove"></i>
+            <i class="fa fa-times"></i>
         </span>
     </div>
 </script>
