@@ -1,7 +1,6 @@
 <?php
 
 class PaymentsView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'PayPal MassPay Run';
 
     public $stylesheets = array(

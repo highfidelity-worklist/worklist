@@ -1,7 +1,6 @@
 <?php
 
 class TeamView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'Team Members - Worklist';
     public $stylesheets = array(
         'css/team.css'
