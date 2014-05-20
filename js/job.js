@@ -314,20 +314,6 @@ $(document).ready(function(){
     });
     $('#popup-paid').dialog({ dialogClass: 'white-theme', autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ dialogClass: 'white-theme', autoOpen: true, show: 'fade', hide: 'fade' });
-    $('#popup-pingtask').dialog({
-        autoOpen: false,
-        dialogClass: 'white-theme',
-        width: 400,
-        height: "auto",
-        resizable: false,
-        position: [ 'top' ],
-        show: 'fade',
-        hide: 'fade',
-        close: function() {
-            $('#ping-msg').val('').css("height", "100px");
-        }
-    });
-    $('#ping-msg').autogrow();
     $('#popup-reviewurl').dialog({
         autoOpen: false,
         dialogClass: 'white-theme',
@@ -554,7 +540,6 @@ $(document).ready(function(){
                 showStatistics: showBidderStatistics,
                 canAccept: showAcceptBidButton,
                 canEdit: showEditButton,
-                canPing: (showPingBidderButton && bidData.bidder_id != user_id),
                 canWithdraw: showWithdrawButton,
                 canDecline: showDeclineButton,
                 open: function(modal) {
@@ -1162,67 +1147,6 @@ $(function() {
         window.location.href = "./" + workitem_id + "?action=edit";
     });
 
-    // Call via Ajax to ping the user in the journal
-    // and in email.
-    $('#send-ping-btn').click(function()    {
-        $('#send-ping-btn').attr("disabled", "disabled");
-        var msg = $('#ping-msg').val();
-        // if( $('#send-mail:checked').val() ) mail = 1;
-        // always send email
-        var mail = 1;
-        var journal = $('#echo-journal').is(':checked') ? 1 : 0;
-        var cc = $('#copy-me').is(':checked') ? 1 : 0;
-        var data = {
-            'action': 'pingTask',
-            'id' : workitem_id, 
-            'who' : ping_who, 
-            'bid_id': ping_bid_id, 
-            'msg' : msg, 
-            'mail' : mail, 
-            'journal' : journal, 
-            'cc' : cc
-        };
-        $.ajax({
-            type: "POST",
-            url: 'api.php',
-            data: data,
-            dataType: 'json',
-            success: function(json) {
-                if (json && json.error) {
-                    alert("Ping failed:" + json.error);
-                } else {
-                    var msg = "<span>Your message has been sent.</span>";
-                    if ($('#send-ping-btn').val() == 'Send Reply') {
-                        msg = "<span>Your reply has been sent.</span>";
-                    }
-                    Utils.emptyModal({
-                        content: msg,
-                        buttons: [
-                            {
-                                content: 'Ok',
-                                className: 'btn-primary',
-                                dismiss: true
-                            }
-                        ]
-                    });
-                }
-                $('#popup-pingtask').dialog('close');
-                $('#send-ping-btn').removeAttr("disabled");
-            },
-            error: function() {
-                $('#send-ping-btn').removeAttr("disabled");
-            }
-        });
-        return false;
-
-    });
-    
-    $('#popup-pingtask').bind('dialogclose', function(event) {
-        $("#echo-journal-span").css("display", "block");
-        $("#send-ping-btn").val('Send ping');
-        $('#echo-journal').prop('checked', true);
-    });
-
     $('.table-bids tbody td > a[href^="./user/"]').click(function(event) {
         event.stopPropagation();
         return true;
@@ -1240,7 +1164,6 @@ $(function() {
                         if (shown != true) {
                             shown = true;
                             $('#runnerBox').css('width', '400px');
-                            $('#runnerBox #ping-r-btn').css('display', 'none');
                             $('#runnerBox span.changeRunner').fadeIn(1000, function() {
                                 $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
                                     $(this).unbind('click');
@@ -1258,8 +1181,6 @@ $(function() {
                                         dataType: 'json',
                                         success: function(j) {
                                             if (j.success == true) {
-                                                $('#runnerBox #ping-r-btn').text(j.nickname);
-                                                $('#runnerBox #ping-r-btn').attr('data-user-id', runner_id);
                                                 $('#runnerBox input[name=cancel]').click();
                                             }
                                         }
@@ -1269,7 +1190,6 @@ $(function() {
                                     $('#runnerBox span.changeRunner').fadeOut(1000, function() {
                                         $('#runnerBox span.changeRunner').css('display', 'none');
                                         $('#runnerBox').css('width', '130px');
-                                        $('#runnerBox #ping-r-btn').css('display', 'block');
                                         $('#runnerBox span.runnerName').parent().siblings().fadeIn(1000);
                                     });
                                 });
