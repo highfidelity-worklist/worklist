@@ -656,9 +656,7 @@ table.tablesorter thead tr .headerSortUp {
 .comment a {
     color: rgb(0, 118, 252);
 }
-.reply-lnk a {
-    color: rgb(152, 170, 178);
-}
+
 #for_view li .notestext a:hover,
 .comment a:hover {
     text-decoration:none;

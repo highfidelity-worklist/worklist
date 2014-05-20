@@ -868,15 +868,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 50px;
 }
 
-.reply-lnk {
-    font-size: .9em;
-    width:100%;
-    margin-top:0;
-    text-align: left;
-    float: left;
-    text-decoration: underline;
-}
-
 #entries li[id^="comment-"] .comment > a > img {
     border-radius: 30px
 }
@@ -988,10 +979,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 #for_view .notestext a, .comment a {
     color: #336666;
     text-decoration: underline;
-}
-
-.reply-lnk a {
-    color: #8e8e8e;
 }
 
 #for_view .notestext a:hover, .comment a:hover {
