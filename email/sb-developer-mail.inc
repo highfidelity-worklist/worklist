@@ -15,5 +15,5 @@ This account can be used for accessing the server using SFTP or SSH.
 
 -- For any questions, ask in the Live Workroom chat or by email.  We value transparency and open discussion, so don't hesitate to ask questions or make suggestions.  Have fun!
 
-See you in the Workroom!
+See you in the Worklist!
 

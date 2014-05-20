@@ -78,7 +78,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $('.filter > select').chosen();
+    $('.filter > select').selectpicker();
 
     if(getQueryVariable('status') != null) {
         if (timeoutId) clearTimeout(timeoutId);

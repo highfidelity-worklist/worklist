@@ -3,7 +3,6 @@
 use \Michelf\Markdown;
 
 class StatusView extends View {
-    public $layout = 'NewWorklist';
     public $title = "Status - Worklist";
     public $stylesheets = array(
         'css/entries.css',

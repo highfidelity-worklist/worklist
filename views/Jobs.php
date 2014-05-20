@@ -1,7 +1,6 @@
 <?php
 
 class JobsView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'Jobs - Worklist';
     public $stylesheets = array(
         'css/jobs.css'
@@ -58,7 +57,7 @@ class JobsView extends View {
             );
         }
 
-        $box = '<select id="statusCombo" name="status" multiple="multiple" data-placeholder="All status">';
+        $box = '<select id="statusCombo" name="status" multiple="multiple" data-placeholder="All status" title="All status">';
         //$box .= '<option value="ALL"' . (($filter->inStatus("ALL") || ($filter->inStatus(""))) ? ' selected="selected"' : '') .' > ' . $allDisplay . '</option>';
         
         foreach ($status_array as $status) {

@@ -1,7 +1,6 @@
 <?php
 
 class ForgotView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'Recover Password - Worklist';
 
     public function render() {

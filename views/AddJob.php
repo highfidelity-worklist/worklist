@@ -1,7 +1,6 @@
 <?php
 
 class AddJobView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'Add task / Report bug - Worklist';
     public $stylesheets = array(
         'css/addjob.css'
@@ -9,7 +8,6 @@ class AddJobView extends View {
     public $scripts = array(
         'js/jquery/jquery.template.js',
         'js/ajaxupload/ajaxupload.js',
-        'js/uploadFiles.js',
         'js/skills.js',
         'js/addjob.js'
     );

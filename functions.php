@@ -603,7 +603,7 @@ function formatableRelativeTime($timestamp, $detailLevel = 1) {
 	return $string . $tense;
 }
 
-function relativeTime($time, $withIn = true, $justNow = true, $withAgo = true) {
+function relativeTime($time, $withIn = true, $justNow = true, $withAgo = true, $specific = true) {
     $secs = abs($time);
     $mins = 60;
     $hour = $mins * 60;
@@ -638,14 +638,18 @@ function relativeTime($time, $withIn = true, $justNow = true, $withAgo = true) {
     $relTime = '';
     foreach ($segments as $unit=>$cnt) {
         if ($segments[$unit]) {
+            if (strlen($relTime)) {
+                $relTime .= ', ';
+            }
             $relTime .= "$cnt $unit";
             if ($cnt > 1) {
                 $relTime .= 's';
             }
-            $relTime .= ', ';
+            if (!$specific) {
+                break;
+            }
         }
     }
-    $relTime = substr($relTime, 0, -2);
     if (!empty($relTime)) {
         return ($time < 0) ? ($withAgo ? '' : '-') . ("$relTime " . ($withAgo ? 'ago' : '')) : ($withIn ? "in $relTime" : $relTime);
     } else {

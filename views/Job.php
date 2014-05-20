@@ -3,11 +3,10 @@
 use \Michelf\Markdown;
 
 class JobView extends View {
-    public $layout = 'NewWorklist';
     public $title = '%d: %s - Worklist';
 
     public $stylesheets = array(
-        'css/workitem.css',
+        'css/legacy/workitem.css',
         'css/review.css',
         'css/favorites.css',
         'css/budget.css',
@@ -22,6 +21,7 @@ class JobView extends View {
         'js/jquery/jquery.metadata.js',
         'js/jquery/jquery.blockUI.js',
         'js/ajaxupload/ajaxupload.js',
+        'js/dragdealer/dragdealer.js',
         'js/datepicker.js',
         'js/timepicker.js',
         'js/review.js',
@@ -38,11 +38,6 @@ class JobView extends View {
         $this->user = $this->read('user');
         $this->workitem_project = $this->read('workitem_project');
         $this->title = sprintf($this->title, $worklist['id'], $worklist['summary']);
-
-        if ($this->currentUser['id']) {
-            $this->scripts[] = 'js/uploadFiles.js';
-        }
-
 
         $this->bids = $this->read('bids');
         $this->fees = $this->read('fees');
@@ -200,7 +195,7 @@ class JobView extends View {
         $ret = ' ';
         if ($worklist['runner_nickname'] != 'Not funded') {
             $ret .= 
-                '<a href="./user/' . $worklist['runner_id'] . '" target="_blank" id="ping-r-btn"' .
+                '<a href="./user/' . $worklist['runner_id'] . '"  id="ping-r-btn"' .
                 ' title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") . '"' .
                 ' data-user-id="' . $worklist['runner_id'] . '">' .
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
@@ -230,7 +225,7 @@ class JobView extends View {
             $ret .= 
                 '<span id="pingRunner" class="runnerName" title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") .'">' .
                 '<a href="#">Designer:</a></span>' .
-                '<a href="./user/' . $worklist['runner_id'] . '" target="_blank">' . 
+                '<a href="./user/' . $worklist['runner_id'] . '" >' . 
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
                 '</a>';
         } else {
@@ -259,7 +254,7 @@ class JobView extends View {
                 '<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" >' . 
                   '<a href="#">Developer:</a>' . 
                 '</span>' . 
-                '<a id="ping-btn" href="./user/' . $worklist['mechanic_id'] . '" target="_blank">' . $mech . '</a>';
+                '<a id="ping-btn" href="./user/' . $worklist['mechanic_id'] . '" >' . $mech . '</a>';
         }
         return $mech;
     }
@@ -514,8 +509,17 @@ class JobView extends View {
         $is_project_runner = $this->read('is_project_runner');
 
         $ret = '';
+        $now = 0;
         foreach($bids as $bid) {
             $biddings = array();
+
+            if (!$now) {
+                $now = strtotime(Model::now());
+            }
+
+            $created = relativeTime(strtotime($bid['bid_created']) - $now, true, true, true, false);
+            $accepted = $bid['bid_accepted'] ? relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, ture, false) : '';
+            $expires = $bid['expires'] ? relativeTime($bid['expires'], true, true, true, false) : 'Never';
 
             if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
                 continue;
@@ -549,9 +553,9 @@ class JobView extends View {
                         "nickname: '{$bid['nickname']}', " .
                         "email: '{$bid['email']}', " .
                         "amount: '{$bid['bid_amount']}', " .
-                        "bid_accepted: '{$bid['bid_accepted']}', " .
-                        "bid_created: '{$bid['bid_created']}', " .
-                        "bid_expires: '" . ($bid['expires'] ? relativeTime($bid['expires']) : "Never") . "', " .
+                        "bid_accepted: '" . $accepted . "', " .
+                        "bid_created: '" . $created . "', " .
+                        "bid_expires: '" . $expires . "', " .
                         "time_to_complete: '{$bid['time_to_complete']}', " .
                         "done_in: '{$bid['done_in']}', " .
                         "bidder_id: {$bid['bidder_id']}, " .
@@ -589,7 +593,9 @@ class JobView extends View {
  
         $feeTotal = 0;
         $ret = '';
+        
         foreach($fees as $fee) {
+            $paid = (bool) $fee['paid'];
             $feeTotal += (float) $fee['amount'];
             $date = explode("/", $fee['date']);
             $ret .= 
@@ -603,7 +609,7 @@ class JobView extends View {
                         "desc:\"" .  $fee['desc'] . "\"}" .
                     '</script>' .
                     '<td class="nickname who">' .
-                        '<a href="./user/' . $fee['user_id'] . '" target="_blank" title="' . $fee['nickname'] . '">' .
+                        '<a href="./user/' . $fee['user_id'] . '"  title="' . $fee['nickname'] . '">' .
                             getSubNickname($fee['nickname'], 8) .
                         '</a>' .
                     '</td>' .
@@ -619,10 +625,10 @@ class JobView extends View {
                             $this->currentUser['is_payer']
                                 ?
                                     '<a href="#" class = "paid-link" id="feeitem-' . $fee['id'] . '">' .
-                                        ($fee['paid'] == 0 ? "No" : "Yes") .
+                                        ($paid ? "Yes" : "No") .
                                     '</a>'
                                 :
-                                    $fee['paid'] == 0 ? "No" : "Yes"
+                                    ($paid ? "Yes" : "No")
                         ) . ' ' .
                         (
                             (
@@ -634,7 +640,7 @@ class JobView extends View {
                                       || $this->currentUser['id'] == $workitem->getRunnerId() 
                                       || $this->currentUser['id'] == $fee['user_id']
                                     ) 
-                                  && ($this->currentUser['id'] && empty($fee['paid']))
+                                  && ($this->currentUser['id'] && !$paid)
                                 )
                             )
                                 ? '<a href="#" id="wd-' . $fee['id'] . '" class="wd-link" title="Delete Entry">delete</a>' : ''

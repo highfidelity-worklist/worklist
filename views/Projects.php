@@ -1,7 +1,6 @@
 <?php
 
 class ProjectsView extends View {
-    public $layout = 'NewWorklist';
     public $title = 'Projects - Worklist';
 
     public $stylesheets = array(

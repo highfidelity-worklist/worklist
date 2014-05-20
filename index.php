@@ -1,9 +1,9 @@
 <?php
-#
-# Copyright 2014 - High Fidelity, Inc.
-
+/**
+ * Copyright 2014 - High Fidelity, Inc.
+ */
 require_once("config.php");
-
+ 
 class Dispatcher {
     public function run() {
         $url = isset($_GET['url']) ? $_GET['url'] : '';
@@ -32,7 +32,6 @@ class Dispatcher {
         $dispatcher->get('/payments', array('Payments'));
         $dispatcher->post('/payments', array('Payments'));
         $dispatcher->get('/privacy', array('Privacy'));
-        $dispatcher->get('/projectstatus', array('ProjectStatus'));
         $dispatcher->get('/projects', array('Projects'));
         $dispatcher->get('/reports', array('Reports'));
         $dispatcher->post('/reports', array('Reports'));

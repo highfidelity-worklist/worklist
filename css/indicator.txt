@@ -1,3 +1,0 @@
-indicator.white.gif     pascal@germroth.name
-used as css/indicator.gif
-http://mentalized.net/activity-indicators/

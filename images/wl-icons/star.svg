@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-0.553 -0.504 22 22" height="22px" xml:space="preserve" x="0px" y="0px" id="Capa_1" width="22px" version="1.1" enable-background="new -0.553 -0.504 22 22">
-  <polygon points="10.447,0.528 13.615,7.09 20.703,8.141 15.575,13.253 16.786,20.465 10.447,17.064 4.107,20.465   5.317,13.253 0.19,8.141 7.277,7.09 " fill="#666666" />
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 22 22" enable-background="new 0 0 22 22" xml:space="preserve">
+    <polygon fill="#999999" points="10.926,0.528 14.243,7.396 21.662,8.497 16.293,13.848 17.561,21.396 10.926,17.838 4.289,21.396   5.556,13.848 0.189,8.497 7.608,7.396 " />
 </svg>
