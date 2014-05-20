@@ -595,15 +595,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-top: 7px;
 }
 
-#ping-btn{
-    text-decoration:underline;
-    cursor:pointer;
-}
-
-#send-ping-btn {
-    margin-top: 8px;
-}
-
 .table-bids thead{
     border: none !important;
 }
@@ -1129,11 +1120,6 @@ a.profile-link {
     color: #FF0000;
 }
 
-#ping-msg {
-    width: 322px;
-    height: 100px;
-}
-
 #cancelstartcodereview,
 #cancelendreview,
 #startcodereview {
@@ -1235,11 +1221,6 @@ div.mechanic_id ul {
 #popup-fee-info table th,
 #popup-fee-info table td {
     border: 0;
-}
-
-#ping_bidder {
-    margin-left: 4px;
-    cursor: pointer;
 }
 
 #info-fee-notes {
@@ -1386,7 +1367,6 @@ h1.newProject {
     }
 
     .white-theme table,
-    #ping-msg,
     .popup-body textarea {
         width: 100%;
     }

@@ -608,9 +608,6 @@ $(document).ready(function(){
                     $('button[name="edit"]', modal).click(function() {
                         showBidForm(bidData)
                     });
-                    $('button[name="ping_bidder"]', modal).click(function() {
-                        pingBidder(bidData.id);
-                    });
                     $('button[name="withdraw_bid_accept"]', modal).click(function() {
                         showWithdrawBidReason(bidData.id);
                     });
@@ -918,19 +915,6 @@ function showDeclineBidReason(bid_id) {
             }
         ]
     });
-    return false;
-}
-
-function pingBidder(id) {
-    ping_who = 'bidder';
-    ping_bid_id = id;
-    $('#echo-journal').prop('checked', false);
-    $('#echo-journal-span').css('display', 'none');
-    $('#send-ping-btn').val('Send Reply');
-    $('#popup-pingtask form h5').html('Ping about Bid');
-    $('#popup-pingtask form input[name="bidder"]').val(id);
-    $('#popup-pingtask').dialog('open');
-    $('#popup-pingtask').dialog('option', 'title', 'Ping about Bid');
     return false;
 }
 
