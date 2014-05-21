@@ -5,4 +5,3 @@ clean = expand --tabs=4 --initial
   
 [merge]
     renormalize = true
-filter.stripWhitespace.clean strip_whitespace
