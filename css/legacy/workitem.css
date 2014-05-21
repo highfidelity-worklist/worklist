@@ -595,15 +595,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-top: 7px;
 }
 
-#ping-btn{
-    text-decoration:underline;
-    cursor:pointer;
-}
-
-#send-ping-btn {
-    margin-top: 8px;
-}
-
 .table-bids thead{
     border: none !important;
 }
@@ -868,15 +859,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 50px;
 }
 
-.reply-lnk {
-    font-size: .9em;
-    width:100%;
-    margin-top:0;
-    text-align: left;
-    float: left;
-    text-decoration: underline;
-}
-
 #entries li[id^="comment-"] .comment > a > img {
     border-radius: 30px
 }
@@ -988,10 +970,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 #for_view .notestext a, .comment a {
     color: #336666;
     text-decoration: underline;
-}
-
-.reply-lnk a {
-    color: #8e8e8e;
 }
 
 #for_view .notestext a:hover, .comment a:hover {
@@ -1142,11 +1120,6 @@ a.profile-link {
     color: #FF0000;
 }
 
-#ping-msg {
-    width: 322px;
-    height: 100px;
-}
-
 #cancelstartcodereview,
 #cancelendreview,
 #startcodereview {
@@ -1158,14 +1131,12 @@ a.profile-link {
 }
 
 #following,
-#invite-link,
 .switchmode,
 .switchmode-done {
     float: left;
 }
 
 #following:hover,
-#invite-link:hover,
 .switchmode:hover {
     cursor: pointer;
     text-decoration: underline !important;
@@ -1178,14 +1149,7 @@ a.profile-link {
     background-repeat: no-repeat;
 }
 
-#invite-link {
-    padding: 10px 17px 7px 37px;
-    background-position: 10px 10px;
-    background-repeat: no-repeat;
-}
-
-#following,
-#invite-link{
+#following {
     border-right: 2px solid #e1e8ea;
 }
 
@@ -1257,11 +1221,6 @@ div.mechanic_id ul {
 #popup-fee-info table th,
 #popup-fee-info table td {
     border: 0;
-}
-
-#ping_bidder {
-    margin-left: 4px;
-    cursor: pointer;
 }
 
 #info-fee-notes {
@@ -1408,7 +1367,6 @@ h1.newProject {
     }
 
     .white-theme table,
-    #ping-msg,
     .popup-body textarea {
         width: 100%;
     }
@@ -1443,7 +1401,6 @@ h1.newProject {
     }
 
     #following,
-    #invite-link,
     #switchmode_edit {
         padding: 10px 5px 7px 25px;
     }

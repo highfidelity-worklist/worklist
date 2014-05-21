@@ -659,9 +659,7 @@ table.tablesorter thead tr .headerSortUp {
 .comment a {
     color: rgb(0, 118, 252);
 }
-.reply-lnk a {
-    color: rgb(152, 170, 178);
-}
+
 #for_view li .notestext a:hover,
 .comment a:hover {
     text-decoration:none;
@@ -1220,7 +1218,6 @@ td.statusDone > i {
     background-color: #000000;
 }
 
-
 @media (min-width: 768px){
     .container-fluid .row .filter {
         padding-left: 0;
@@ -1304,5 +1301,4 @@ td.statusDone > i {
 
 .bootstrap-select.open .dropdown-toggle.btn-default {
     color: #007F7C;
-
 }
