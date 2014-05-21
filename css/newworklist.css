@@ -888,48 +888,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     display: none;
 }
 
-.wl-icon-hifi-dims {
-    width: 29px;
-    height: 29px;
-}
-
-.wl-icon-hifi-dims:hover,
-.wl-icon-hifi\:hover-dims {
-    width: 29px;
-    height: 29px;
-}
-
-.wl-icon-invite,
-.wl-icon-invite\:regular {
-    background-image: url('../images/wl-icons/invite.png');
-    background-image: url('../images/wl-icons/invite.svg');
-    background-repeat: no-repeat;
-}
-
-.wl-icon-invite:hover,
-.wl-icon-invite\:hover {
-    background-image: url('../images/wl-icons/invite~hover.png');
-    background-image: url('../images/wl-icons/invite~hover.svg');
-    background-repeat: no-repeat;
-}
-
-.wl-icon-invite:after {
-    background-image: url('../images/wl-icons/invite~hover.png');
-    background-image: url('../images/wl-icons/invite~hover.svg');
-    display: none;
-}
-
-.wl-icon-invite-dims {
-    width: 17px;
-    height: 14px;
-}
-
-.wl-icon-invite-dims:hover,
-.wl-icon-invite\:hover-dims {
-    width: 17px;
-    height: 14px;
-}
-
 .wl-icon-jobs,
 .wl-icon-jobs\:regular {
     background-image: url('../images/wl-icons/jobs.png');

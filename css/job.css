@@ -47,6 +47,10 @@
     margin-left: 10px;
 }
 
+#commentform .tip {
+    color: #777;
+}
+
 
 table.table-bids thead tr td,
 table.table-fees thead tr td {
