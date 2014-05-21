@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# setup.sh
+#
+# Worklist development environment & sandbox setup script
+#
 
 CURRENT_PATH=`pwd`
 CURRENT_USER=`whoami`
@@ -9,6 +14,13 @@ CUSTOM_CONFIG=${WORKLIST_CUSTOM_CONFIG:=""}
 TMP_PATH=${WORKLIST_TMP_PATH:=$CURRENT_PATH/tmp}
 UPLOADS_PATH=${WORKLIST_UPLOADS_PATH:=$CURRENT_PATH/uploads}
 DEBUG_FILE=${WORKLIST_DEBUG_FILE:=$CURRENT_PATH/php.errors}
+
+# We assume that developers works on their own forked repos 
+# so lets keep in sync with the upstream repo
+git remote add upstream https://github.com/highfidelity/worklist 2> /dev/null
+
+# pre-commit hook setup to enable trailing whitespaces restrictions on commits
+cp $CURRENT_PATH/tools/hooks/pre-commit $CURRENT_PATH/.git/hooks/pre-commit
 
 # Make sure tmp exists and everyone has write permisions there
 if [ ! -d  $TMP_PATH ]

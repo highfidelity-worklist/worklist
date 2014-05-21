@@ -1,0 +1,7 @@
+#convert tabs on checkout and merge
+[filter "tabspace"]
+smudge = expand --tabs=4 --first-only
+clean = expand --tabs=4 --initial
+  
+[merge]
+    renormalize = true
