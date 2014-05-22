@@ -21,9 +21,6 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
     include_once(dirname(__FILE__).'/server.local.php');
 } else {
     header("HTTP/1.0 404 Not Found");
-    define('WORKLIST_NUMBER', substr(dirname(__FILE__), 1 + strrpos(dirname(__FILE__), '/')));
-    $tmp_username =  substr(dirname(__FILE__), 0 , strrpos(dirname(__FILE__), '/public_html/'));
-    define('USERNAME2', substr($tmp_username, strrpos($tmp_username, '/users/') + 7));
     die(
         '<h1>Application configuration not found</h1>' .
         '<p>Please follow the worklist wiki <a target="_blank" href="' .
