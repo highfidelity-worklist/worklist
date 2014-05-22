@@ -81,10 +81,7 @@
         <div class="project-label">Project:</div>
         {{#worklist.project_id}}
             <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
-            {{#worklist.p_website}}
-                <a class="project_website" href="{{& projectWebsiteUrl}}" >website</a>
-            {{/worklist.p_website}}
-        {{/worklist.project_id}}
+            {{/worklist.project_id}}
         {{^worklist.project_id}}
             <span>Not assigned</span>
         {{/worklist.project_id}}
