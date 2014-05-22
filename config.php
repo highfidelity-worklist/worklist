@@ -24,17 +24,12 @@ if (file_exists(dirname(__FILE__).'/server.local.php')) {
     define('WORKLIST_NUMBER', substr(dirname(__FILE__), 1 + strrpos(dirname(__FILE__), '/')));
     $tmp_username =  substr(dirname(__FILE__), 0 , strrpos(dirname(__FILE__), '/public_html/'));
     define('USERNAME2', substr($tmp_username, strrpos($tmp_username, '/users/') + 7));
-    die('Application configuration not found.<br/>'.
-        'Run the following commands to set up your sandbox:<br/>'.
-        'cp ' . dirname(__FILE__). '/server.local.php.default ' . dirname(__FILE__). '/server.local.php<br/> ' .
-        'chmod 777 ' . dirname(__FILE__). '/uploads<br/>' .
-        'sed -ie "s/ini_set(\'html_errors\',FALSE);/ini_set(\'html_errors\',TRUE);/" ' . dirname(__FILE__) . '/server.local.php <br/>' .
-        'sed -ie "s/define(\'SANDBOX_NAME\', \'worklist\/\');/define(\'SANDBOX_NAME\', \'' .
-            WORKLIST_NUMBER . '\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
-        'sed -ie "s/define(\'SANDBOX_USER\', \'\');/define(\'SANDBOX_USER\', \'~'.
-            USERNAME2 . '\\/\');/" ' . dirname(__FILE__) . '/server.local.php <br/> ' .
-        'rm ' . dirname(__FILE__) . '/server.local.phpe <br/><br/> '
-        );
+    die(
+        '<h1>Application configuration not found</h1>' .
+        '<p>Please follow the worklist wiki <a target="_blank" href="' .
+        'https://github.com/highfidelity/worklist/wiki/Using-GitHub-with-the-Worklist-Project#ii--setting-up-your-sandbox-environment' .
+        '">steps to set up your sandbox</a> properly.</p>'
+    );
 }
 
 require_once('Zend/Config.php');
