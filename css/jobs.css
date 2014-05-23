@@ -495,7 +495,7 @@ td.textAlignReport {
     max-width: 350px; 
 }
 .table-worklist tr:not(:last-child) > td:nth-child(3) {
-    max-width: 60px;
+    max-width: 100px;
 }
 .table-worklist tr:not(:last-child) > td:nth-child(4) {
     max-width: 90px;
@@ -1119,6 +1119,10 @@ input {
         text-align: center;
         width: 100%;
     } 
+}
+
+td.status-col {
+    min-width: 60px;
 }
 
 @media (max-width: 480px) {
