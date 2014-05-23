@@ -331,11 +331,10 @@ class Notification {
                     if($workitem->getMechanic() != '') {
                         $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
-                $body .= ''. $workitem->getNotes() . '<br /><br />'
-                    .'----<br />';
-                      $urlAcceptBidB  = $workItemUrl;
-                      $urlAcceptBidB .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . ' \'s bid </a>';
-                      $body .=  $urlAcceptBidB . 'for $' . number_format($data['bid_amount'], 2)
+                $body .= ''. $workitem->getNotes() . '<br /><br />' . '----<br />';
+                $urlAcceptBidB  = $workItemUrl;
+                $urlAcceptBidB .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . ' \'s bid </a>';
+                $body .=  $urlAcceptBidB . 'for $' . number_format($data['bid_amount'], 2)
                       .'<br />'
                       .'----';
 
