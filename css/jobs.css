@@ -1126,12 +1126,13 @@ input {
 
     td.status-col {
         width: 15px;
-        text-align: center;
+        /* text-align: center; */
     }
 
-    td.status-col > span {
+    td.status-col > span, .who-col, .age-col {
         display: none;
     }
+    
 }
 
 td.statusDraft > i,
