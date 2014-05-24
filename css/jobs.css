@@ -147,7 +147,7 @@ color:#98AAB2;
 #ui-datepicker-div,
 #ui-timepicker-div
 {
-    z-index: 1100; 
+    z-index: 1100;
 }
 
 #sharethis_0    {
@@ -303,7 +303,7 @@ td.textAlignReport {
 }
 
 .table-worklist td:nth-child(n+2):not(:last-child):before {
-    float: left;    
+    float: left;
 }
 
 .table-worklist tbody tr:not(:last-child):after {
@@ -492,7 +492,7 @@ td.textAlignReport {
     max-width: 60px;
 }
 .table-worklist tr:not(:last-child) > td:nth-child(2) {
-    max-width: 350px; 
+    max-width: 350px;
 }
 .table-worklist tr:not(:last-child) > td:nth-child(3) {
     max-width: 100px;
@@ -508,14 +508,14 @@ td.textAlignReport {
     .table-worklist tr:not(:last-child) > td:nth-child(1),
     .table-worklist tr:not(:last-child) > td:nth-child(2),
     .table-worklist tr:not(:last-child) > td:nth-child(3) {
-        max-width: auto; 
+        max-width: auto;
     }
     .table-worklist tr:not(:last-child) > td:nth-child(1),
     .table-worklist tr:not(:last-child) > td:nth-child(3) {
-        min-width: 50px; 
+        min-width: 50px;
     }
     .table-worklist tr:not(:last-child) > td:nth-child(2) {
-        min-width: 100px; 
+        min-width: 100px;
     }
     .table-worklist tr:not(:last-child) > th:nth-child(4),
     .table-worklist tr:not(:last-child) > td:nth-child(4) {
@@ -697,7 +697,7 @@ input.button-disabled ,
     width: 420px;
     height: 180px;
 }
-#login-form .LV_validation_message, 
+#login-form .LV_validation_message,
 #phone-confirm-form .LV_validation_message {
     text-align: left;
 }
@@ -802,8 +802,8 @@ table.table-worklist > tbody > tr.worklist-pagination-row > td {
     color: #888888;
 }
 
-select + div, 
-select, 
+select + div,
+select,
 input {
     font-size: 1em;
 }
@@ -817,7 +817,7 @@ input {
     #search {
         position: relative;
         padding-bottom: 5px;
-    } 
+    }
 }
 
 #search select + div,
@@ -918,7 +918,7 @@ input {
 #query fieldset > input[type="checkbox"] + label {
     display: inline-block;
     background: url('../images/primaryIcons-WL.png') no-repeat scroll 3px -359px transparent;
-    border-width: 1px 1px 1px 0; 
+    border-width: 1px 1px 1px 0;
     border-style: solid;
     border-color: #ccc;
     width: 62px;
@@ -945,7 +945,7 @@ input {
 #query fieldset > input[type="checkbox"] + label:after {
     content: '\00a0';
     width: 22px;
-    border-radius: 5px;    
+    border-radius: 5px;
     font-family: FontAwesome;
     display: inline-block;
     float: right;
@@ -1031,7 +1031,7 @@ input {
         margin-top: 5px;
         width: 100%;
     }
-    
+
     #query > fieldset {
         margin-top: 15px;
     }
@@ -1089,7 +1089,7 @@ input {
 }
 
 
-#addJobButton { 
+#addJobButton {
     background-color: #608e96;
     padding: 8px 10px 7px;
     color: #fff;
@@ -1119,20 +1119,21 @@ input {
         padding-left: 15px;
         text-align: center;
         width: 100%;
-    } 
+    }
 }
 
 @media (max-width: 480px) {
 
     td.status-col {
         width: 15px;
-        /* text-align: center; */
     }
 
-    td.status-col > span, .who-col, .age-col {
+    td.status-col > span,
+    .who-col,
+    .age-col {
         display: none;
     }
-    
+
 }
 
 td.statusDraft > i,
