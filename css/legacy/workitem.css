@@ -590,11 +590,16 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 366px;
 }
 
+#workitem-form select {
+    display: none;
+}
+
+#statusCombo,
 .project-dropdown {
+    display: none;
     width: 200px;
     margin-top: 7px;
 }
-
 .table-bids thead{
     border: none !important;
 }

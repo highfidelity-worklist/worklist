@@ -51,7 +51,7 @@
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
-            <select id="statusCombo" name="quick-status" class="project-dropdown">
+            <select id="statusCombo" name="quick-status">
                 <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
                 {{& editableStatusSelect}}
             </select>
