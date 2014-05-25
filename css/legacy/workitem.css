@@ -509,8 +509,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     font-weight: normal;
 }
 
-.skills, .people-info{
-    height: 56px;
+.skills,
+.people-info {
+    height: 64px;
     border-bottom: 2px solid #e1e8ea;
     font-weight: bold;
     font-size: 14px;
@@ -575,6 +576,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-decoration: underline;
 }
 
+.inline-label,
 .budget-label {
     font-weight: bold;
     display: inline-block;
@@ -904,7 +906,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     -webkit-border-radius: 6px;
     border-radius: 6px;
     border:2px #DCD998 solid;
-    padding:0px 8px 19px 8px;
+    padding: 5px 8px 19px 8px;
 }
 
 #left-panel ul #no_comments{

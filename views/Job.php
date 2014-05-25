@@ -196,7 +196,6 @@ class JobView extends View {
         if ($worklist['runner_nickname'] != 'Not funded') {
             $ret .= 
                 '<a href="./user/' . $worklist['runner_id'] . '"  id="ping-r-btn"' .
-                ' title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") . '"' .
                 ' data-user-id="' . $worklist['runner_id'] . '">' .
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
                 '</a>';
@@ -229,7 +228,7 @@ class JobView extends View {
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
                 '</a>';
         } else {
-            $ret .= '<span class="runnerName" title="Ping Designer">Designer:</span> Not funded';
+            $ret .= '<span class="runnerName">Designer:</span> Not funded';
         }
         return $ret;
     }
