@@ -1046,6 +1046,7 @@ input {
 #search select {
     height: 35px;
     font-size: 13px;
+    display: none;
 }
 
 #search select,
