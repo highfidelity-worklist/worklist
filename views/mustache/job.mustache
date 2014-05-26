@@ -51,7 +51,7 @@
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
-            <select id="statusCombo" name="quick-status">
+            <select id="statusCombo" name="quick-status" class="project-dropdown">
                 <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
                 {{& editableStatusSelect}}
             </select>
@@ -98,8 +98,8 @@
     {{/action_error}}
     <div style="clear:both; float:none;"> </div>
 </div>
-<div id="page-content">
-    <div id="left-panel">
+<div id="page-content" class="row">
+    <div class="col-md-7">
         <div class="people-info">
             <div id="creatorBox">
                 <span id="pingCreator" class="creatorName">
@@ -248,8 +248,8 @@
                 </div>
             {{/editing}}
         </div>  <!-- End of div for_view -->
-    </div> <!-- End of div left-panel -->
-    <div id="right-panel">
+    </div>
+    <div class="col-md-5">
         {{#editing}}
             <div class="skills">
                 <span class="skills-label">Skills this job requires:</span><br/>
@@ -385,7 +385,7 @@
             </div> <!-- End of div moneyZone -->
             <div id="uploadPanel"> </div>
         </div> <!-- End of for_view -->
-    </div> <!-- End of div right-panel-->
+    </div>
 </div> <!-- End of div pageContent -->
 {{#editing}}
     </form>
