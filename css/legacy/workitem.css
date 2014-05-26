@@ -463,13 +463,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     color: #007F7C !important;
 }
 
-.github {
-    margin-top: -7px;
-    padding-left: 42px;
-    background-position: -3px 0px;
-    background-repeat: no-repeat;
-}
-
 #workitem-form {
     width: auto;
     margin-top: -7px !important;
