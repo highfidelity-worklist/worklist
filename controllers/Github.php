@@ -97,7 +97,7 @@ class GithubController extends Controller {
                         if ($user->findUserByAuthToken($access_token)) {
                             // already linked account, let's log him in
                             if ($user->isActive()) {
-                                User::login($user);
+                                User::login($user, $redir);
                             }
                             return;
                         } else {
