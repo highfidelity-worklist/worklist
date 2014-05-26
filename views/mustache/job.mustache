@@ -3,7 +3,7 @@
         <div class="info-ID">
             <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
         </div>
-        <span class="wl-icon-invite" id="invite-link" title="Invite people" href="javascript">Invite someone</span>
+        
         {{#canEditAndNotEditing}}
             {{#statusDone}}
                 <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
@@ -51,7 +51,7 @@
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
-            <select id="statusCombo" name="quick-status" class="project-dropdown">
+            <select id="statusCombo" name="quick-status">
                 <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
                 {{& editableStatusSelect}}
             </select>
@@ -60,7 +60,7 @@
     </div>
     {{/editing}}
     {{& jobBudget}}
-    <div class="project {{#isGitProject}} github{{/isGitProject}} wl-icon-github">
+    <div class="project">
     {{#editing}}
         <input type="hidden" name="save_workitem" value="save_workitem" />
         <input type="hidden" name="action" value="save_workitem" />
@@ -81,19 +81,11 @@
         <div class="project-label">Project:</div>
         {{#worklist.project_id}}
             <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
-            {{#worklist.p_website}}
-                <a class="project_website" href="{{& projectWebsiteUrl}}" >website</a>
-            {{/worklist.p_website}}
         {{/worklist.project_id}}
         {{^worklist.project_id}}
             <span>Not assigned</span>
         {{/worklist.project_id}}
     {{/editing}}
-        {{#isGitProject}}
-        <div class="project-github">
-            <h1>Requires GitHub</h1>
-        </div>
-        {{/isGitProject}}
     </div>
     <div style="clear:both; float:none">&nbsp;</div>
 </div>
@@ -110,9 +102,8 @@
     <div id="left-panel">
         <div class="people-info">
             <div id="creatorBox">
-                <span id="pingCreator" class="creatorName" 
-                  title="{{#currentUser.id}}Ping Creator{{/currentUser.id}}{{^currentUser.id}}Log in to Ping Creator{{/currentUser.id}}">
-                    <a href="#">Job creator:</a>
+                <span id="pingCreator" class="creatorName">
+                    Job creator:
                 </span>
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </div>
@@ -233,11 +224,8 @@
                 {{/worklist.mechanic_id}}
                 <div id="commentZone">
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-12">
                             <h3 class="info-comments">Comments &amp; Activity</h3>
-                        </div>
-                        <div class="col-md-3">
-                            <a href="./{{worklist.id}}#recent">See most recent</a>
                         </div>
                     </div>
                     <ul id="entries">
@@ -252,11 +240,11 @@
                         <div class="form-group">
                             <textarea name="comment" class="form-control autogrow"></textarea>
                         </div>
-                        <input type="submit" name="newcomment" value="Comment" />
+                        <input type="submit" name="newcomment" value="Comment" /> 
+                        <span class="tip">You can mention users with <strong>@username</strong></span>
                         <input type="button" name="cancel" value="Cancel" />
                     </form>
                     {{/canComment}}
-                    <a name="recent"></a>        
                 </div>
             {{/editing}}
         </div>  <!-- End of div for_view -->

@@ -223,8 +223,8 @@ class JobView extends View {
         $ret = '';
         if ($worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] != '') {
             $ret .= 
-                '<span id="pingRunner" class="runnerName" title="' . (isset($_SESSION['userid']) ? "Ping Designer" : "Log in to Ping Designer") .'">' .
-                '<a href="#">Designer:</a></span>' .
+                '<span id="pingRunner" class="runnerName">' .
+                'Designer:</span>' .
                 '<a href="./user/' . $worklist['runner_id'] . '" >' . 
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
                 '</a>';
@@ -837,11 +837,6 @@ class JobView extends View {
                         '            </div>' .
                         '            <div class="comment-text">' .
                         '              ' . $commentObj->getCommentWithLinks() .
-                        (
-                            ($this->currentUser['id'] && !$this->statusDone())
-                                ? '<div class="reply-lnk"><a href="#commentform" onClick="return reply(' . $comment['id'] . ');">Reply</a></div>' 
-                                : ''
-                        ) . 
                         '            </div>' .
                         '        </div>' .
                         '    </div>' .

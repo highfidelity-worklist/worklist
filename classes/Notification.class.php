@@ -290,8 +290,8 @@ class Notification {
             	//create the last three jobs and link them to those Jobs.
             	foreach ($lastThreeJobs as $row){
             		$jobs .= $workItemUrl;
-            		$jobs .= $row['id'] . '">#' . $row['id'] . '</a>' . ' - ' . $row['summary'] . '<br />';
-            	}
+                    $jobs .= $row['id'] . '">#' . $row['id'] . '</a>' . ' - ' . $row['summary'] . '<br /><br />';
+                }
             	//if no Jobs then display 'None'
             	if (!$jobs){
             		$jobs = 'None <br />';
@@ -299,42 +299,52 @@ class Notification {
       
             	//now get total jobs and total jobs and create links
             	$totalJobs = $workItemUrl;
-            	$totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getTotalJobsCount() . '</a><br />';
-            	$totalActiveJobs = $workItemUrl;
-            	$totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getActiveJobsCount() . '</a><br />';
-                
+                $totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getTotalJobsCount() . ' Jobs Total</a><br />';
+                $totalActiveJobs = $workItemUrl;
+                $totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getActiveJobsCount() . ' Jobs Active</a><br />';
+                $urlAcceptBid  = '<br />' . $workItemUrl;
+                $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept this bid </a>';
+                $body .=  $urlAcceptBid;
+
             	$headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
-                $body =  'New bid was placed for ' . $itemLink . '<br /><br />'
+                $body =  ' <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> placed a bid on
+                         ' . $itemLink . '<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
-                    . 'Done In: ' . $data['done_in'] . '<br />'
-                    . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
-                    . 'Bidder Name: <a href="mailto:' . $_SESSION['nickname'] . '">' . $_SESSION['nickname'] . '</a><br /><br />'
-                    . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
-                    . 'Notes: ' . $data['notes'] . '<br /><br />'
-                    . 'Total Jobs: ' . $totalJobs
-                    . 'Active Jobs: ' . $totalActiveJobs
-                    . 'Last 3 Jobs for ' . $project_name . ':<br />'
+                    . 'Functioning In: ' . $data['done_in'] . '<br /><br />'
+                    . ' ' . $data['notes'] . '<br /><br />'
+                    . $urlAcceptBid . 'or email ' . $_SESSION['nickname'] . ' via <a href="mailto:' . $_SESSION['username']. '">' . $_SESSION['username']. '</a><br /><br />'
+                    .'----<br />'
+                    .'Stats for ' . $_SESSION['nickname'] . ': <br />'
+                    .'----<br />'
+                    . $totalJobs .  '<br /><br />'
+                    . $totalActiveJobs . '<br /><br />'
+                    . '3 most recent jobs for ' . $project_name . ':<br /><br />'
                     . $jobs . '<br />'
+                    .'----<br />'
+                    .'Job Details:<br />'
+                    .'----<br />'
                     . 'Project: ' . $project_name . '<br />'
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
-                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br /><br />';
                     }
                     if($workitem->getMechanic() != '') {
                         $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
-                $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />';
+                $body .= ''. $workitem->getNotes() . '<br /><br />' . '----<br />';
+                $urlAcceptBidB  = $workItemUrl;
+                $urlAcceptBidB .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . ' \'s bid </a>';
+                $body .=  $urlAcceptBidB . 'for $' . number_format($data['bid_amount'], 2)
+                      .'<br />'
+                      .'----';
 
-                $urlAcceptBid  = '<br />' . $workItemUrl;
-                $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Click here to accept bid.</a>';
-                $body .=  $urlAcceptBid;
-            break;
+           break;
 
             case 'bid_updated':
                 $headers['From'] = '"' . $project_name . '-bid updated" ' . $from_address;
                 $body = 'Bid updated for ' . $itemLink . '<br /><br/>'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
-                    . 'Done In: ' . $data['done_in'] . '<br />'
+                    . 'Functioning In: ' . $data['done_in'] . '<br />'
                     . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
                     . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
                     . 'Notes: ' . $data['notes'] . '<br /><br />'
@@ -787,7 +797,7 @@ class Notification {
             case 'comment':
                 $nick = $data['who'];
                 $related = $data['related'];
-                $message = "{$nick} posted a comment on issue {$itemLink}{$related}";
+                $message = "{$nick} posted a comment on job {$itemLink}{$related}";
             break;
             
             case 'fee_added':

@@ -1,13 +1,23 @@
 
 $(function() {
 
-     Workitem.init();
+    Workitem.init();
 
-    $('#statusCombo').chosen();
-    $('#project_id').chosen();
+    $('#statusCombo').chosen({
+        width: '200px'
+    });
+
+    $('#project_id').chosen({
+        width: '200px'
+    });
+
     if (action == 'edit') {
-        $('select[name="runner"]').chosen({width: 'auto'});
-        $('select[name="status"]').chosen({width: 'auto'});
+        $('select[name="runner"]').chosen({
+            width: '140px'
+        });
+        $('select[name="status"]').chosen({
+            width: '140px'
+        });
     }
     if($("#is_bug").is ( ":checked" )) {
         $("#bug_job_id").keyup();
@@ -18,59 +28,6 @@ $(function() {
     }
     applyPopupBehavior();
             
-    $("#invite-link").click(function() {
-        var msg = 
-            '<label for="invite">Write comma separated list</label>' + 
-            '<input id="invite" name="invite" class="form-control" />'
-        Utils.emptyFormModal({
-            action: './' + workitem_id,
-            title: 'Invite Worklist Users',
-            content: msg,
-            buttons: [
-                {
-                    type: 'submit',
-                    name: 'invite-people',
-                    content: 'Invite',
-                    className: 'btn-primary',
-                    dismiss: false
-                }
-            ],
-            open: function(modal) {
-                var autoArgs = autocompleteMultiple('getuserslist');
-                $('input[name="invite"]', modal).bind("keydown", autoArgs.bind);
-                $('input[name="invite"]', modal).autocomplete(autoArgs, null);
-                $('form', modal).on('submit', function(event) {
-                    var name = $('input[name="invite"]', modal).val();
-                    $.ajax({
-                        type: "POST",
-                        url: "./" + workitem_id,
-                        data: "invite=" + name + "&invite-people=Invite",
-                        dataType: "json",
-                        success: function(json) {
-                            var msg;
-                            if (!json.length) {
-                                msg = '<p>Invite sent to <a href="./user/' + name +'">' + name + '</a></p>';
-                            } else {
-                                msg = '<p>Some of the users you sent do not exist. Please correct those shown and try again.</p>';
-                                for (var i = 0; i < json.length; i++) {
-                                    if (i) {
-                                        $('input[name="invite"]', modal).val($('input[name="invite"]', modal).val() + json[i]);
-                                    } else {
-                                        $('input[name="invite"]', modal).val($('input[name="invite"]', modal).val() + ',' + json[i]);
-                                    }
-                                }
-                            }
-                            Utils.emptyModal({content: msg});
-                        }
-                    });
-                    $(modal).modal('hide');
-                    return false;
-                });
-            }
-        });
-        return false;
-    });
-
     if (displayDialogAfterDone && mechanic_id > 0) {
         WReview.displayInPopup({
             'user_id': mechanic_id,
@@ -305,9 +262,6 @@ function postComment() {
                                 '<div class="comment-text">' +
                                      data.comment +
                                 '</div>' +
-                                '<div class="reply-lnk">' +
-                                    replyLink +
-                                '</div>' +
                             '</div>' +
                         '</div>'
                      '</li>';
@@ -370,20 +324,6 @@ $(document).ready(function(){
     });
     $('#popup-paid').dialog({ dialogClass: 'white-theme', autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
     $('#message').dialog({ dialogClass: 'white-theme', autoOpen: true, show: 'fade', hide: 'fade' });
-    $('#popup-pingtask').dialog({
-        autoOpen: false,
-        dialogClass: 'white-theme',
-        width: 400,
-        height: "auto",
-        resizable: false,
-        position: [ 'top' ],
-        show: 'fade',
-        hide: 'fade',
-        close: function() {
-            $('#ping-msg').val('').css("height", "100px");
-        }
-    });
-    $('#ping-msg').autogrow();
     $('#popup-reviewurl').dialog({
         autoOpen: false,
         dialogClass: 'white-theme',
@@ -610,7 +550,6 @@ $(document).ready(function(){
                 showStatistics: showBidderStatistics,
                 canAccept: showAcceptBidButton,
                 canEdit: showEditButton,
-                canPing: (showPingBidderButton && bidData.bidder_id != user_id),
                 canWithdraw: showWithdrawButton,
                 canDecline: showDeclineButton,
                 open: function(modal) {
@@ -663,9 +602,6 @@ $(document).ready(function(){
                     }
                     $('button[name="edit"]', modal).click(function() {
                         showBidForm(bidData)
-                    });
-                    $('button[name="ping_bidder"]', modal).click(function() {
-                        pingBidder(bidData.id);
                     });
                     $('button[name="withdraw_bid_accept"]', modal).click(function() {
                         showWithdrawBidReason(bidData.id);
@@ -977,19 +913,6 @@ function showDeclineBidReason(bid_id) {
     return false;
 }
 
-function pingBidder(id) {
-    ping_who = 'bidder';
-    ping_bid_id = id;
-    $('#echo-journal').prop('checked', false);
-    $('#echo-journal-span').css('display', 'none');
-    $('#send-ping-btn').val('Send Reply');
-    $('#popup-pingtask form h5').html('Ping about Bid');
-    $('#popup-pingtask form input[name="bidder"]').val(id);
-    $('#popup-pingtask').dialog('open');
-    $('#popup-pingtask').dialog('option', 'title', 'Ping about Bid');
-    return false;
-}
-
 function showFeeForm() {
     $.get(
         './user/index/all',
@@ -1234,109 +1157,6 @@ $(function() {
         window.location.href = "./" + workitem_id + "?action=edit";
     });
 
-    // Call via Ajax to ping the user in the journal
-    // and in email.
-    $('#send-ping-btn').click(function()    {
-        $('#send-ping-btn').attr("disabled", "disabled");
-        var msg = $('#ping-msg').val();
-        // if( $('#send-mail:checked').val() ) mail = 1;
-        // always send email
-        var mail = 1;
-        var journal = $('#echo-journal').is(':checked') ? 1 : 0;
-        var cc = $('#copy-me').is(':checked') ? 1 : 0;
-        var data = {
-            'action': 'pingTask',
-            'id' : workitem_id, 
-            'who' : ping_who, 
-            'bid_id': ping_bid_id, 
-            'msg' : msg, 
-            'mail' : mail, 
-            'journal' : journal, 
-            'cc' : cc
-        };
-        $.ajax({
-            type: "POST",
-            url: 'api.php',
-            data: data,
-            dataType: 'json',
-            success: function(json) {
-                if (json && json.error) {
-                    alert("Ping failed:" + json.error);
-                } else {
-                    var msg = "<span>Your message has been sent.</span>";
-                    if ($('#send-ping-btn').val() == 'Send Reply') {
-                        msg = "<span>Your reply has been sent.</span>";
-                    }
-                    Utils.emptyModal({
-                        content: msg,
-                        buttons: [
-                            {
-                                content: 'Ok',
-                                className: 'btn-primary',
-                                dismiss: true
-                            }
-                        ]
-                    });
-                }
-                $('#popup-pingtask').dialog('close');
-                $('#send-ping-btn').removeAttr("disabled");
-            },
-            error: function() {
-                $('#send-ping-btn').removeAttr("disabled");
-            }
-        });
-        return false;
-
-    });
-    
-    $('#popup-pingtask').bind('dialogclose', function(event) {
-        $("#echo-journal-span").css("display", "block");
-        $("#send-ping-btn").val('Send ping');
-        $('#echo-journal').prop('checked', true);
-    });
-    
-    $('#pingMechanic').click(function() {
-        if (!$.loggedin) {
-            sendToLogin();
-            return;
-        }
-
-        ping_who = 'mechanic';
-        ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Developer about the task');
-        $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Developer about the task');
-        return false;
-    });
-
-    $('#pingRunner').click(function() {
-        if (!$.loggedin) {
-            sendToLogin();
-            return;
-        }
-
-        ping_who = 'runner';
-        ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Designer about the task');
-        $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Designer about the task');
-        return false;
-    });
-
-    $('#pingCreator').click(function() {
-        if (!$.loggedin) {
-            sendToLogin();
-            return;
-        }
-
-        ping_who = 'creator';
-        ping_bid_id = 0;
-        $('#popup-pingtask form h5').html('Ping the Creator about the task');
-        $('#popup-pingtask').dialog('open');
-        $('#popup-pingtask').dialog('option', 'title', 'Ping the Creator about the task');
-        return false;
-    });
-
     $('.table-bids tbody td > a[href^="./user/"]').click(function(event) {
         event.stopPropagation();
         return true;
@@ -1354,7 +1174,6 @@ $(function() {
                         if (shown != true) {
                             shown = true;
                             $('#runnerBox').css('width', '400px');
-                            $('#runnerBox #ping-r-btn').css('display', 'none');
                             $('#runnerBox span.changeRunner').fadeIn(1000, function() {
                                 $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
                                     $(this).unbind('click');
@@ -1372,8 +1191,6 @@ $(function() {
                                         dataType: 'json',
                                         success: function(j) {
                                             if (j.success == true) {
-                                                $('#runnerBox #ping-r-btn').text(j.nickname);
-                                                $('#runnerBox #ping-r-btn').attr('data-user-id', runner_id);
                                                 $('#runnerBox input[name=cancel]').click();
                                             }
                                         }
@@ -1383,7 +1200,6 @@ $(function() {
                                     $('#runnerBox span.changeRunner').fadeOut(1000, function() {
                                         $('#runnerBox span.changeRunner').css('display', 'none');
                                         $('#runnerBox').css('width', '130px');
-                                        $('#runnerBox #ping-r-btn').css('display', 'block');
                                         $('#runnerBox span.runnerName').parent().siblings().fadeIn(1000);
                                     });
                                 });
