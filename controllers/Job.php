@@ -371,22 +371,30 @@ class JobController extends Controller {
                         $matches,
                         PREG_SET_ORDER
                     )) {
-
                         $user = new User();
 
                         foreach ($matches as $mention) {
                             // validate the username actually exists
                             if ($recipient = $user->findUserByNickname($mention[1])) {
-                                $emailTemplate = 'workitem-mention';
-                                $data = array(
-                                    'job_id' => $workitem->getId(),
-                                    'author' => $_SESSION['nickname'],
-                                    'text' => $comment,
-                                    'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
-                                );
 
-                                $senderEmail = 'Worklist <contact@worklist.net>';
-                                sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                                // exclude designer, developer and followers
+                                if (
+                                    $recipient->getId() != $workitem->getRunnerId() &&
+                                    $recipient->getId() != $workitem->getMechanicId() &&
+                                    ! $workitem->isUserFollowing($recipient->getId())
+                                ) {
+
+                                    $emailTemplate = 'workitem-mention';
+                                    $data = array(
+                                        'job_id' => $workitem->getId(),
+                                        'author' => $_SESSION['nickname'],
+                                        'text' => $comment,
+                                        'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
+                                    );
+
+                                    $senderEmail = 'Worklist <contact@worklist.net>';
+                                    sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                                }
                             }
                         }
                     }

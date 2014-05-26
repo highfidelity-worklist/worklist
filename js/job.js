@@ -1,13 +1,23 @@
 
 $(function() {
 
-     Workitem.init();
+    Workitem.init();
 
-    $('#statusCombo').chosen();
-    $('#project_id').chosen();
+    $('#statusCombo').chosen({
+        width: '200px'
+    });
+
+    $('#project_id').chosen({
+        width: '200px'
+    });
+
     if (action == 'edit') {
-        $('select[name="runner"]').chosen({width: 'auto'});
-        $('select[name="status"]').chosen({width: 'auto'});
+        $('select[name="runner"]').chosen({
+            width: '140px'
+        });
+        $('select[name="status"]').chosen({
+            width: '140px'
+        });
     }
     if($("#is_bug").is ( ":checked" )) {
         $("#bug_job_id").keyup();
@@ -1206,10 +1216,6 @@ $(function() {
 
     return false;
 });
-
-function sendToLogin(){
-    window.location = './github/login?redir=./' + workitem_id;
-}
 
 function setFollowingText(isFollowing){
     if(isFollowing == true) {

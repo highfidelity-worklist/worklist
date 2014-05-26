@@ -463,13 +463,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     color: #007F7C !important;
 }
 
-.github {
-    margin-top: -7px;
-    padding-left: 42px;
-    background-position: -3px 0px;
-    background-repeat: no-repeat;
-}
-
 #workitem-form {
     width: auto;
     margin-top: -7px !important;
@@ -590,11 +583,16 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 366px;
 }
 
+#workitem-form select {
+    display: none;
+}
+
+#statusCombo,
 .project-dropdown {
+    display: none;
     width: 200px;
     margin-top: 7px;
 }
-
 .table-bids thead{
     border: none !important;
 }
