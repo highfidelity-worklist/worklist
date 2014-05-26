@@ -1,0 +1,68 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="./{{jobId}}" method="post">
+        <input type="hidden" name="job_id" value="{{jobId}}" />
+        <input type="hidden" name="mechanic_id" id="mechanic_id" value="{{currentUserId}}" />
+        <input type="hidden" name="bid_expires" id="bid_expires" value="7 days" />
+        <input type="hidden" name="bid_id" value="{{bid.id}}" />
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Your bid parameters</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-3">
+              <label for="bid_amount">Bid amount</label>
+              <div class="input-group">
+                <input type="text" name="bid_amount" id="bid_amount" class="form-control" value="{{bid.amount}}" />
+                <span class="input-group-addon">USD</span>
+              </div>
+            </div>
+            <div class="col-md-offset-1 col-md-8">
+              <p>
+                Often, the manager of a job (called a designer) is more concerned 
+                with the expected quality of your work (based on your notes below) 
+                than the amount you bid.
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <label for="notes">Notes</label>
+              <textarea class="form-control" name="notes" id="notes">{{bid.notes}}</textarea>
+              <p>
+                Your bid will expire in 7 days. If you would like to 
+                indicate a shorter expiration, please mention it in your notes.
+              </p>              
+            </div>
+            <div class="col-md-4">
+              <p>
+                This is where you describe your approach on how to get 
+                this job done. These notes are one tool Designers (job managers) use to 
+                compare bidders and decide who is right for the job.
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="done_in">Done in</label>
+              <p>It will take me this amount of time to achieve the expected functionality</p>
+            </div>
+            <div class="col-md-8">
+              <input type="hidden" name="done_in" id="done_in" value="{{bid.time_to_complete}}" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          {{^editBid}}
+            <button type="submit" class="btn btn-primary" name="place_bid">Place bid</button>
+          {{/editBid}}
+          {{#editBid}}
+            <button type="submit" class="btn btn-primary" name="edit_bid">Edit bid</button>
+          {{/editBid}}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

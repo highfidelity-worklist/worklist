@@ -1,15 +1,17 @@
-@media (min-width: 1024px) {
-    body > .container-fluid {
-        max-width: 1024px;
-    }
-}
-
 body {
     font-size: 14px;
 }
-@media (max-width: 1024px) {
-    body {
-        font-size: 11px;
+
+@media (max-width: 960px){
+    body > .container-fluid {
+        margin: 0 8.33%;
+        max-width: 850px;
+    }
+}
+
+@media (max-width: 480px){
+    body > .container-fluid {
+        margin: 0;
     }
 }
 
@@ -145,7 +147,7 @@ color:#98AAB2;
 #ui-datepicker-div,
 #ui-timepicker-div
 {
-    z-index: 1100; 
+    z-index: 1100;
 }
 
 #sharethis_0    {
@@ -291,8 +293,8 @@ td.textAlignReport {
     overflow: hidden;
 }
 
-.table-worklist td:nth-child(n+2):before,
-.table-worklist tbody tr:after {
+.table-worklist td:nth-child(n+2):not(:last-child):before,
+.table-worklist tbody tr:not(:last-child):after {
     content: ' ';
     width: 35px;
     height: 1.5em;
@@ -300,17 +302,17 @@ td.textAlignReport {
     margin-left: -35px;
 }
 
-.table-worklist td:nth-child(n+2):before {
-    float: left;    
+.table-worklist td:nth-child(n+2):not(:last-child):before {
+    float: left;
 }
 
-.table-worklist tbody tr:after {
+.table-worklist tbody tr:not(:last-child):after {
     margin-top: 8px;
 }
 
 /* normal even rows overflow fading */
-.table-striped > tbody > tr:nth-child(even) > td:nth-child(n+2):before,
-.table-striped > tbody > tr:nth-child(even):after {
+.table-striped > tbody > tr:not(:last-child):nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child):nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
     background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
@@ -320,8 +322,8 @@ td.textAlignReport {
 }
 
 /* normal odd rows overflow fading */
-.table-striped > tbody > tr:nth-child(odd) > td:nth-child(n+2):before,
-.table-striped > tbody > tr:nth-child(odd):after {
+.table-striped > tbody > tr:not(:last-child):nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child):nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(249,249,249,0) 0%, rgba(249,249,249,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(249,249,249,0)), color-stop(100%,rgba(249,249,249,1)));
     background: -webkit-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
@@ -331,12 +333,12 @@ td.textAlignReport {
 }
 
 /* owned jobs odd rows background */
-.table-striped > tbody > tr.rowown:nth-child(odd) > td {
+.table-striped > tbody > tr:not(:last-child).rowown:nth-child(odd) > td {
     background-color: #ffe6cc;
 }
 /* owned jobs odd rows overflow fading */
-.table-striped > tbody > tr.rowown:nth-child(odd) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowown:nth-child(odd):after {
+.table-striped > tbody > tr:not(:last-child).rowown:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowown:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(255,230,204,0) 0%, rgba(255,230,204,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,230,204,0)), color-stop(100%,rgba(255,230,204,1)));
     background: -webkit-linear-gradient(left, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
@@ -345,12 +347,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
 }
 /* owned jobs even rows background */
-.table-striped > tbody > tr.rowown:nth-child(even) > td {
+.table-striped > tbody > tr:not(:last-child).rowown:nth-child(even) > td {
     background-color: #f7dec6;
 }
 /* owned jobs even rows overflow fading */
-.table-striped > tbody > tr.rowown:nth-child(even) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowown:nth-child(even):after {
+.table-striped > tbody > tr:not(:last-child).rowown:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowown:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(247,222,198,0) 0%, rgba(247,222,198,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,222,198,0)), color-stop(100%,rgba(247,222,198,1)));
     background: -webkit-linear-gradient(left, rgba(247,222,198,0) 0%,rgba(247,222,198,1) 100%);
@@ -360,12 +362,12 @@ td.textAlignReport {
 }
 
 /* jobs with bid odd rows background */
-.table-striped > tbody > tr.rowbidon:nth-child(odd) > td {
+.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(odd) > td {
     background-color: #b5e595;
 }
 /* jobs with bid odd rows overflow fading */
-.table-striped > tbody > tr.rowbidon:nth-child(odd) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowbidon:nth-child(odd):after {
+.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(181,229,149,0) 0%, rgba(181,229,149,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(181,229,149,0)), color-stop(100%,rgba(181,229,149,1)));
     background: -webkit-linear-gradient(left, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
@@ -374,12 +376,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
 }
 /* jobs with bid even rows background */
-.table-striped > tbody > tr.rowbidon:nth-child(even) > td {
+.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(even) > td {
     background-color: #aedb8e;
 }
 /* jobs with bid even rows overflow fading */
-.table-striped > tbody > tr.rowbidon:nth-child(even) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowbidon:nth-child(even):after {
+.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(174,219,142,0) 0%, rgba(174,219,142,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(174,219,142,0)), color-stop(100%,rgba(174,219,142,1)));
     background: -webkit-linear-gradient(left, rgba(174,219,142,0) 0%,rgba(174,219,142,1) 100%);
@@ -389,12 +391,12 @@ td.textAlignReport {
 }
 
 /* jobs with bid expired odd rows background */
-.table-striped > tbody > tr.rowbidexpired:nth-child(odd) > td {
+.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd) > td {
     background-color: #ffb3b3;
 }
 /* jobs with bid expired odd rows overflow fading */
-.table-striped > tbody > tr.rowbidexpired:nth-child(odd) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowbidexpired:nth-child(odd):after {
+.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(255,179,179,0) 0%, rgba(255,179,179,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,179,179,0)), color-stop(100%,rgba(255,179,179,1)));
     background: -webkit-linear-gradient(left, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
@@ -403,12 +405,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
 }
 /* jobs with bid expired even rows background */
-.table-striped > tbody > tr.rowbidexpired:nth-child(even) > td {
+.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(even) > td {
     background-color: #f7afaf;
 }
 /* jobs with bid expired even rows overflow fading */
-.table-striped > tbody > tr.rowbidexpired:nth-child(even) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowbidexpired:nth-child(even):after {
+.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(247,175,175,0) 0%, rgba(247,175,175,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,175,175,0)), color-stop(100%,rgba(247,175,175,1)));
     background: -webkit-linear-gradient(left, rgba(247,175,175,0) 0%,rgba(247,175,175,1) 100%);
@@ -422,8 +424,8 @@ td.textAlignReport {
     background-color: #e2eef3;
 }
 /* jobs as runner odd rows overflow fading */
-.table-striped > tbody > tr.rowrunner:nth-child(odd) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowrunner:nth-child(odd):after {
+.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(226,238,243,0) 0%, rgba(226,238,243,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(226,238,243,0)), color-stop(100%,rgba(226,238,243,1)));
     background: -webkit-linear-gradient(left, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
@@ -432,12 +434,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
 }
 /* jobs as runner rows background */
-.table-striped > tbody > tr.rowrunner:nth-child(even) > td {
+.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(even) > td {
     background-color: #dae6ea;
 }
 /* jobs as runner even rows overflow fading */
-.table-striped > tbody > tr.rowrunner:nth-child(even) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowrunner:nth-child(even):after {
+.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(218,230,234,0) 0%, rgba(218,230,234,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(218,230,234,0)), color-stop(100%,rgba(218,230,234,1)));
     background: -webkit-linear-gradient(left, rgba(218,230,234,0) 0%,rgba(218,230,234,1) 100%);
@@ -447,12 +449,12 @@ td.textAlignReport {
 }
 
 /* jobs as mechanic odd rows background */
-.table-striped > tbody > tr.rowmechanic:nth-child(odd) > td {
+.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(odd) > td {
     background-color: #ffff9e;
 }
 /* jobs as mechanic odd rows overflow fading */
-.table-striped > tbody > tr.rowmechanic:nth-child(odd) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowmechanic:nth-child(odd):after {
+.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(255,255,158,0) 0%, rgba(255,255,158,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,158,0)), color-stop(100%,rgba(255,255,158,1)));
     background: -webkit-linear-gradient(left, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
@@ -461,12 +463,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
 }
 /* jobs as mechanic even rows background */
-.table-striped > tbody > tr.rowmechanic:nth-child(even) > td {
+.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(even) > td {
     background-color: #f7f79c;
 }
 /* jobs as mechanic even rows overflow fading */
-.table-striped > tbody > tr.rowmechanic:nth-child(even) > td:nth-child(n+2):before,
-.table-striped > tbody > tr.rowmechanic:nth-child(even):after {
+.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(247,247,156,0) 0%, rgba(247,247,156,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,247,156,0)), color-stop(100%,rgba(247,247,156,1)));
     background: -webkit-linear-gradient(left, rgba(247,247,156,0) 0%,rgba(247,247,156,1) 100%);
@@ -475,7 +477,7 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(247,247,156,0) 0%,rgba(247,247,156,1) 100%);
 }
 
-.table-worklist tbody tr.row-worklist-live {
+.table-worklist tbody tr:not(:last-child) {
     cursor: pointer;
     border: 0 none;
 }
@@ -486,44 +488,45 @@ td.textAlignReport {
 }
 
 /* worklist table column sizes */
-.table-worklist tr > td:nth-child(1) {
+.table-worklist tr:not(:last-child) > td:nth-child(1) {
     max-width: 60px;
 }
-.table-worklist tr > td:nth-child(2) {
-    max-width: 350px; 
+.table-worklist tr:not(:last-child) > td:nth-child(2) {
+    max-width: 350px;
 }
-.table-worklist tr > td:nth-child(3) {
-    max-width: 60px;
+.table-worklist tr:not(:last-child) > td:nth-child(3) {
+    max-width: 100px;
+    min-width: 60px;
 }
-.table-worklist tr > td:nth-child(4) {
+.table-worklist tr:not(:last-child) > td:nth-child(4) {
     max-width: 90px;
 }
-.table-worklist tr > td:nth-child(5) {
+.table-worklist tr:not(:last-child) > td:nth-child(5) {
     max-width: 60px;
 }
 @media (max-width: 768px) {
-    .table-worklist tr > td:nth-child(1),
-    .table-worklist tr > td:nth-child(2),
-    .table-worklist tr > td:nth-child(3) {
-        max-width: auto; 
+    .table-worklist tr:not(:last-child) > td:nth-child(1),
+    .table-worklist tr:not(:last-child) > td:nth-child(2),
+    .table-worklist tr:not(:last-child) > td:nth-child(3) {
+        max-width: auto;
     }
-    .table-worklist tr > td:nth-child(1),
-    .table-worklist tr > td:nth-child(3) {
-        min-width: 50px; 
+    .table-worklist tr:not(:last-child) > td:nth-child(1),
+    .table-worklist tr:not(:last-child) > td:nth-child(3) {
+        min-width: 50px;
     }
-    .table-worklist tr > td:nth-child(2) {
-        min-width: 100px; 
+    .table-worklist tr:not(:last-child) > td:nth-child(2) {
+        min-width: 100px;
     }
-    .table-worklist tr > th:nth-child(4),
-    .table-worklist tr > td:nth-child(4) {
+    .table-worklist tr:not(:last-child) > th:nth-child(4),
+    .table-worklist tr:not(:last-child) > td:nth-child(4) {
         display: none;
     }
-    .table-worklist tr > th:nth-child(5),
-    .table-worklist tr > td:nth-child(5) {
+    .table-worklist tr:not(:last-child) > th:nth-child(5),
+    .table-worklist tr:not(:last-child) > td:nth-child(5) {
         display: none;
     }
-    .table-worklist tr > th:nth-child(6),
-    .table-worklist tr > td:nth-child(6) {
+    .table-worklist tr:not(:last-child) > th:nth-child(6),
+    .table-worklist tr:not(:last-child) > td:nth-child(6) {
         display: none;
     }
 }
@@ -537,33 +540,34 @@ td.textAlignReport {
         white-space: nowrap;
     }
 
-    .table-worklist tr > td:nth-child(2) {
+    .table-worklist tr:not(:last-child) > td:nth-child(2) {
         max-width: 200px;
+       white-space: nowrap;
     }
 }
 
-.table-worklist tr > td a {
+.table-worklist tr:not(:last-child) > td a {
     color: #666;
 }
 
-.table-worklist tr > td:nth-child(2) > a {
+.table-worklist tr:not(:last-child) > td:nth-child(2) > a {
     font-weight: normal;
     color: #333;
 }
 
-.table-worklist tr > td:nth-child(2) > a + h4 {
+.table-worklist tr:not(:last-child) > td:nth-child(2) > a + h4 {
     display: inline-block;
     font-size: 1em;
     margin-right: 5px;
     font-weight: bold;
 }
-.table-worklist tr > td:nth-child(2) > a + h4:before {
+.table-worklist tr:not(:last-child) > td:nth-child(2) > a + h4:before {
     content: ' - ';
     font-weight: normal;
 }
 
-.table-worklist tr > td:nth-child(2) > h4,
-.table-worklist tr > td:nth-child(2) > h4 + p {
+.table-worklist tr:not(:last-child) > td:nth-child(2) > h4,
+.table-worklist tr:not(:last-child) > td:nth-child(2) > h4 + p {
     padding: 0;
     margin-bottom: 0;
     margin-top: 0;
@@ -656,9 +660,7 @@ table.tablesorter thead tr .headerSortUp {
 .comment a {
     color: rgb(0, 118, 252);
 }
-.reply-lnk a {
-    color: rgb(152, 170, 178);
-}
+
 #for_view li .notestext a:hover,
 .comment a:hover {
     text-decoration:none;
@@ -695,7 +697,7 @@ input.button-disabled ,
     width: 420px;
     height: 180px;
 }
-#login-form .LV_validation_message, 
+#login-form .LV_validation_message,
 #phone-confirm-form .LV_validation_message {
     text-align: left;
 }
@@ -799,131 +801,9 @@ table.table-worklist > tbody > tr.worklist-pagination-row > td {
 .table-worklist .worklist-pagination-row .inactive {
     color: #888888;
 }
-#bid_amount_conatiner {
-    width: 100%; 
-    margin-bottom: 4px; 
-    margin-top: 23px;
-}
-.bid_amount_p {
-    padding-right: 28px;
-}
-#bid_notes .bid_amount_heading, .bid_amount_heading {
-    font-weight: bold; 
-    font-size:18px !important; 
-    color: #666666 !important;
-    font-family: proxima-nova,sans-serif; 
-}
-.bid_amount_textfield {
-    width: 73px !important; 
-    margin-top: 6px; 
-}
-#place_bid_usd {
-    float: left; 
-    margin-top: 26px;
-    position: relative;
-}
-#bid_amount_description {
-    padding-top: 6px; 
-    width: 401px; 
-    float: left; 
-    font-family: proxima-nova;
-    padding-left: 25px;
-    color: #666666;
-}
-.place_bid_divider {
-    width: 109%; 
-    height: 5px; 
-    background-color: #E8EFF0; 
-    position: relative; 
-    left: -22px;
-}
-#bid_notes {
-    width: 100%; 
-    padding-top: 17px; 
-    margin-bottom: 19px; 
-}
-.bid_notes_required {
-    color: #999999;
-}
-.bid_notes_textarea {
-    font-family: proxima-nova !important; 
-    width: 415px !important; 
-    float: left; 
-    margin-right: 19px; 
-    height: 180px !important; 
-    margin-top: 0;
-}
-#bid_notes_decsription {
-    font-family: proxima-nova; 
-    color: #666666;
-}
-#bid_done_container {
-    width: 100%; 
-    margin-bottom: 22px;
-}
-#bidDone {
-    width: 100%;
-}
-#bid_done_description {
-    width: 247px; 
-    float: left; 
-    margin-right: 44px;
-}
-#bid_done_explanation {
-    margin-top: 3px; 
-    font-family: proxima-nova;
-    width: 247px;
-    color: #666666;
-}
-#time_slider_container {
-    float: left; 
-    padding-top: 12px;
-}
-#right_border {
-    width: 281px; 
-    height: 12px; 
-    position: relative; 
-    top: 12px; 
-    border-left: 1px solid grey; 
-    border-right: 1px solid grey
-}
-#submit_bid_button {
-    padding-top: 9px; 
-    padding-bottom: 19px; 
-    width: 109%; 
-    background-color: #E8EFF0; 
-    position: relative; 
-    left: -22px
-}
-#submit_bid_btn_holder {
-    padding-left: 22px; 
-    padding-right: 14px; 
-    float: left; 
-}
-.place_bid_button {
-    height: 44px !important; 
-    font-size: 18px !important;
-}
 
-#submit_bid_description {
-    padding-top: 17px; 
-    width: 435px; 
-    float: left; 
-    font-family: proxima-nova;
-    color: #666666;
-}
-
-.sandboxlink {
-    max-width: 340px;
-    overflow: hidden;
-}
-
-.relative {
-    position: relative;
-}
-
-select + div, 
-select, 
+select + div,
+select,
 input {
     font-size: 1em;
 }
@@ -937,7 +817,7 @@ input {
     #search {
         position: relative;
         padding-bottom: 5px;
-    } 
+    }
 }
 
 #search select + div,
@@ -949,7 +829,7 @@ input {
     line-height: 1.45em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #search select + div,
     #search select,
     #query > fieldset > input {
@@ -972,7 +852,7 @@ input {
 
 @media (max-width: 1024px) {
     #query > fieldset > input[type="text"] {
-        padding: 8px 23px 8px;
+        padding: 7px 24px 6px;
     }
 }
 
@@ -983,11 +863,6 @@ input {
     color: #000;
     margin: 7px;
     color: #007F7c;
-}
-@media (max-width: 1024px) {
-    #query > fieldset:before {
-        margin: 9px 8px;
-    }
 }
 
 #query > fieldset > * {
@@ -1004,7 +879,7 @@ input {
     border: 0 none;
     background: transparent none;
     color: #666;
-    top: 10px;
+    top: 8px;
     right: 2px;
 }
 
@@ -1043,7 +918,7 @@ input {
 #query fieldset > input[type="checkbox"] + label {
     display: inline-block;
     background: url('../images/primaryIcons-WL.png') no-repeat scroll 3px -359px transparent;
-    border-width: 1px 1px 1px 0; 
+    border-width: 1px 1px 1px 0;
     border-style: solid;
     border-color: #ccc;
     width: 62px;
@@ -1070,7 +945,7 @@ input {
 #query fieldset > input[type="checkbox"] + label:after {
     content: '\00a0';
     width: 22px;
-    border-radius: 5px;    
+    border-radius: 5px;
     font-family: FontAwesome;
     display: inline-block;
     float: right;
@@ -1089,80 +964,76 @@ input {
     border-color: #007F7c;
 }
 
-#search .chosen-container:before {
-    color: #666;
-}
-
-#projectCombo_chosen:before {
+#projectCombo + div:before {
     content: 'Which project?';
 }
-#projectCombo_chosen {
-    width: 100% !important;
-}
+
 @media (max-width: 1024px) {
-    #projectCombo_chosen:before {
+    #projectCombo + div:before {
         content: '';
     }
 }
 
-#userCombo_chosen:before {
+#userCombo + div:before {
     content: 'Users involved';
 }
-#userCombo_chosen {
-    width: 100% !important;
-}
+
 @media (max-width: 1024px) {
-    #userCombo_chosen:before {
+    #userCombo + div:before {
         display: none;
     }
 }
 
-#statusCombo_chosen:before {
+.bootstrap-select .btn {
+    border-radius: 0;
+}
+
+#statusCombo + div .btn:hover {
+    background-color: #FFF;
+}
+
+#statusCombo + div:before {
     content: 'Job status';
 }
-#statusCombo_chosen {
-    width: 100% !important;
-}
-
-#statusCombo_chosen.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
-    height: 20px;
-    line-height: 20px;
-    padding: 0;
-}
 
 @media (max-width: 1024px) {
-    #statusCombo_chosen:before {
+    #statusCombo + div:before {
         display: none;
-    }
-    #statusCombo_chosen {
-        width: 100% !important;
     }
 }
 
-.filter > .chosen-container {
-    margin-top: 25px;
+.filter > div {
+    width: 100%;
+    margin-top: 15px;
 }
-@media (max-width: 768px) {
-    .filter > .chosen-container {
+
+@media (max-width: 767px) {
+    .filter > div {
         margin-top: 5px;
     }
 }
 
 #query > fieldset,
 #addJobButton {
-    margin-top: 45px;
+    margin-top: 35px;
 }
 
 @media (max-width: 1024px) {
     #query > fieldset,
     #addJobButton {
-        margin-top: 25px;
+        margin-top: 15px;
     }
+
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #query > fieldset,
     #addJobButton {
         margin-top: 5px;
+        width: 100%;
+    }
+
+    #query > fieldset {
+        margin-top: 15px;
     }
 }
 
@@ -1175,6 +1046,7 @@ input {
 #search select {
     height: 35px;
     font-size: 13px;
+    display: none;
 }
 
 #search select,
@@ -1218,7 +1090,7 @@ input {
 }
 
 
-#addJobButton { 
+#addJobButton {
     background-color: #608e96;
     padding: 8px 10px 7px;
     color: #fff;
@@ -1229,6 +1101,8 @@ input {
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;
+    text-align: center;
+    width: 100%;
 }
 
 #addJobButton:hover {
@@ -1236,26 +1110,31 @@ input {
 }
 
 #buttons {
-    padding: 0;
+    padding-left: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     #buttons {
         float: right;
         padding-right: 15px;
-    } 
+        padding-left: 15px;
+        text-align: center;
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
 
     td.status-col {
         width: 15px;
-        text-align: center;
     }
 
-    td.status-col > span {
+    td.status-col > span,
+    .who-col,
+    .age-col {
         display: none;
     }
+
 }
 
 td.statusDraft > i,
@@ -1341,4 +1220,89 @@ td.statusDone {
 }
 td.statusDone > i {
     background-color: #000000;
+}
+
+@media (min-width: 768px){
+    .container-fluid .row .filter {
+        padding-left: 0;
+    }
+}
+
+/**
+ * Overrides for bootstrap-select
+ */
+#search .filter .bootstrap-select {
+    width: 100%;
+}
+
+.bootstrap-select .btn:focus {
+    outline: none !important;
+}
+
+.bootstrap-select .btn {
+    padding: 3px 30px 3px 12px;
+}
+
+.bootstrap-select.btn-group .btn .caret {
+    margin-top: -10px;
+    border: none;
+    right: 22px;
+}
+
+.bootstrap-select .btn .caret:before {
+    font-family: FontAwesome;
+    content: "\f078";
+    display: inline-block;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #666;
+}
+
+.bootstrap-select.open .btn .caret:before {
+    content: "\f077";
+}
+
+.bootstrap-select.btn-group .btn .filter-option {
+    border-right: 1px solid #CCCCCC;
+    line-height: 28px;
+    text-overflow: ellipsis;
+}
+
+.bootstrap-select .btn-default {
+    color: #007F7C;
+    font-weight: bold;
+}
+
+.bootstrap-select .check-mark {
+    color: #007F7C;
+}
+
+.bootstrap-select .dropdown-menu {
+    border-color: #AAAAAA;
+    border-radius: 0;
+    color: #000000;
+    margin: 0;
+    padding: 5px;
+}
+
+.bootstrap-select .dropdown-menu > .active > a {
+    background-color: #007F7C;
+    color: #FFFFFF;
+}
+
+.bootstrap-select .dropdown-menu li a {
+    color: #333333;
+}
+
+.bootstrap-select .dropdown-menu li a:hover {
+    background-color: #007F7C;
+    color: #FFFFFF;
+}
+
+.bootstrap-select .dropdown-menu li a:hover .check-mark {
+    color: #FFFFFF;
+}
+
+.bootstrap-select.open .dropdown-toggle.btn-default {
+    color: #007F7C;
 }

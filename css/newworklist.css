@@ -1,6 +1,7 @@
 body {
-  font-family: proxima-nova, sans-serif;
-  padding-top: 61px; /* Move down content because of the fixed top navbar */
+    font-family: proxima-nova, sans-serif;
+    /* lets avoid top content to be overlaped with the fixed navigation bar. 19-MAY-2014 <kordero> */
+    padding-top: 61px;
 }
 
 /* fluid container will only do its part on smaller sizes, desktop screens should see a single fixed-width column */
@@ -46,7 +47,7 @@ nav.navbar {
 }
 
 /* navigation log in link color */
-nav.navbar .navbar-right > li > a[href="./github/login"] {
+nav.navbar .navbar-right > li > a[href^="./github/login"] {
     color: #fff;
     font-size: 1.4em;
 }
@@ -162,43 +163,46 @@ input[type="submit"] {
 
 input[type="button"],
 input[type="submit"],
-input.btn-primary,
-button.btn-primary {
+body .btn-primary,
+body .btn-primary {
     background-color: #608e96;
+    border-color: #608e96;
 }
 
 input[type="button"]:focus,
 input[type="submit"]:focus,
 input[type="button"]:hover,
 input[type="submit"]:hover,
-input.btn-primary:hover,
-button.btn-primary:hover {
+body .btn-primary:hover,
+body .btn-primary:hover {
     background-color: #007F7c;
+    border-color: #007F7c;
 }
 
 label[for] {
     cursor: pointer;
 }
 
-input.wlcheckbox[type="checkbox"] {
+input.wlcheckbox[type="checkbox"],
+input.wlradio[type="radio"] {
     opacity: 0;
     position: absolute;
 }
-input.wlcheckbox[type="checkbox"] + label {
+input.wlcheckbox[type="checkbox"] + label,
+input.wlradio[type="radio"] + label {
     line-height: 2.2em;
     padding-left: 40px;
     font-weight: normal;
 }
 @media (max-width: 768px) {
-    input.wlcheckbox[type="checkbox"] + label {
+    input.wlcheckbox[type="checkbox"] + label,
+    input.wlradio[type="radio"] + label {
         line-height: 3em
     }
 }
-input.wlcheckbox[type="checkbox"] + label:before {
+input.wlcheckbox[type="checkbox"] + label:before,
+input.wlradio[type="radio"] + label:before {
     content: '\00a0';
-    width: 23px;
-    line-height: 1em;
-    border-radius: 5px;    
     font-family: FontAwesome;
     display: inline-block;
     border: 1px solid #ccc;
@@ -208,11 +212,30 @@ input.wlcheckbox[type="checkbox"] + label:before {
     padding: 2px;
     background-color: #fff;
 }
-input.wlcheckbox[type="checkbox"]:focus + label:before {
+
+input.wlcheckbox[type="checkbox"] + label:before {
+    border-radius: 5px;
+    width: 23px;
+    line-height: 1em;
+}
+
+input.wlradio[type="radio"] + label:before {
+    border-radius: 12px;
+    width: 22px;
+    line-height: .93em;
+}
+
+input.wlcheckbox[type="checkbox"]:focus + label:before,
+input.wlradio[type="radio"]:focus + label:before {
     border-color: #007F7c;
 }
+
 input.wlcheckbox[type="checkbox"]:checked + label:before {
     content: '\f00c';
+}
+
+input.wlradio[type="radio"]:checked + label:before {
+    content: "\f111";
 }
 
 form .row {
@@ -437,6 +460,99 @@ button:focus, a:focus {
     }
 }
 
+/* Navbar styles for responsiveness */
+.navbar .dropdown-menu {
+    box-shadow: -1px 3px 10px rgba(0,0,0,.75);
+    border-color: black;
+    background-clip: border-box;
+}
+
+.navbar .dropdown-menu > li > a {
+    padding: 3px 20px 3px 0px;
+    color: #999;
+}
+
+.navbar .dropdown-menu-icon {
+    width: 32px;
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+}
+
+.navbar .navbar-nav > li > .dropdown-menu{
+    background-color: #333;
+}
+
+.navbar .dropdown-menu .divider {
+    background-color: #000;
+}
+
+.navbar .dropdown > .dropdown-toggle {
+    text-align: right;
+}
+
+.navbar > .container-fluid,
+.navbar-collapse > ul.navbar-nav {
+    padding: 0;
+}
+
+.navbar-collapse > ul.navbar-nav > li.dropdown {
+    padding: 0 15px 0 0;
+}
+
+.navbar-nav.navbar-right {
+    max-width: 170px;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.container > .navbar-header, 
+.container-fluid > .navbar-header, 
+.container > .navbar-collapse, 
+.container-fluid > .navbar-collapse {
+    margin: 0;
+}
+
+.navbar-inverse .navbar-collapse {
+    overflow: auto;
+    max-height: 224px;
+}
+
+body > nav.navbar a.navbar-brand {
+    margin-left: 0;
+    margin-top: 14px;
+}
+
+body > nav.navbar a.navbar-brand.wl-icon-worklist {
+    margin-left: -15px;
+    width: 80px
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar .dropdown > .dropdown-toggle {
+        text-align: left;
+    }
+    
+    .navbar-nav.navbar-right {
+        max-width: none;
+    }
+    
+    body > nav.navbar a.navbar-brand {
+        margin-top: 9px;
+    }
+    
+    body > nav.navbar a.navbar-brand.wl-icon-worklist {
+        margin-left: auto;
+        margin-right: auto;
+        width: calc(100% - 125px);
+    }
+    
+    .nav.navbar-nav a {
+        background: none;
+    }
+}
 
 /* Worklist Icons Classes */
 .wl-icon-arrow-down,
@@ -772,48 +888,6 @@ button:focus, a:focus {
     display: none;
 }
 
-.wl-icon-hifi-dims {
-    width: 29px;
-    height: 29px;
-}
-
-.wl-icon-hifi-dims:hover,
-.wl-icon-hifi\:hover-dims {
-    width: 29px;
-    height: 29px;
-}
-
-.wl-icon-invite,
-.wl-icon-invite\:regular {
-    background-image: url('../images/wl-icons/invite.png');
-    background-image: url('../images/wl-icons/invite.svg');
-    background-repeat: no-repeat;
-}
-
-.wl-icon-invite:hover,
-.wl-icon-invite\:hover {
-    background-image: url('../images/wl-icons/invite~hover.png');
-    background-image: url('../images/wl-icons/invite~hover.svg');
-    background-repeat: no-repeat;
-}
-
-.wl-icon-invite:after {
-    background-image: url('../images/wl-icons/invite~hover.png');
-    background-image: url('../images/wl-icons/invite~hover.svg');
-    display: none;
-}
-
-.wl-icon-invite-dims {
-    width: 17px;
-    height: 14px;
-}
-
-.wl-icon-invite-dims:hover,
-.wl-icon-invite\:hover-dims {
-    width: 17px;
-    height: 14px;
-}
-
 .wl-icon-jobs,
 .wl-icon-jobs\:regular {
     background-image: url('../images/wl-icons/jobs.png');
@@ -1020,4 +1094,32 @@ button:focus, a:focus {
         background-size: 52px 37px!important;
         background-repeat: no-repeat!important;
     }
+}
+
+.modal-content label + select + .chosen-container {
+    display: block;
+}
+
+.modal-footer .btn-group button > span:first-child:not(.caret) {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.modal-footer .btn-group button > span:first-child:not(.caret):after {
+    content: '\00a0';
+    width: 30px;
+    background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,0) 100%) transparent;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,0)))  transparent;
+    background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,0) 100%) transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 30px;
 }

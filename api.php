@@ -1334,16 +1334,24 @@ function addWorkitem() {
             foreach ($matches as $mention) {
                 // validate the username actually exists
                 if ($recipient = $user->findUserByNickname($mention[1])) {
-                    $emailTemplate = 'workitem-mention';
-                    $data = array(
-                        'job_id' => $workitem->getId(),
-                        'author' => $_SESSION['nickname'],
-                        'text' => $workitem->getNotes(),
-                        'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
-                    );
 
-                    $senderEmail = 'Worklist <contact@worklist.net>';
-                    sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                    // exclude designer, developer and followers
+                    if (
+                        $recipient->getId() != $workitem->getRunnerId() &&
+                        $recipient->getId() != $workitem->getMechanicId() &&
+                        ! $workitem->isUserFollowing($recipient->getId())
+                    ) {
+                        $emailTemplate = 'workitem-mention';
+                        $data = array(
+                            'job_id' => $workitem->getId(),
+                            'author' => $_SESSION['nickname'],
+                            'text' => $workitem->getNotes(),
+                            'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
+                        );
+
+                        $senderEmail = 'Worklist <contact@worklist.net>';
+                        sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                    }
                 }
             }
         }
@@ -1731,61 +1739,16 @@ function getMultipleBidList() {
     }
     $workItem = new WorkItem();
     $bids = $workItem->getBids($job_id);
-    $data = '';
 
-    if (sizeof($bids) > 0 ) {
-        ?>
-            <form name="popup-multiple-bid-form" id="popup-multiple-bid-form" action="" method="post">
-                 <table width="100%" class="table-bids">
-                    <caption class="table-caption" >
-                        <b>Bids</b>
-                    </caption>
-                    <thead>
-                        <tr class="table-hdng">
-                            <th><span>User</span></th>
-                            <th><span>Amount</span></th>
-                            <th><span>Done in</span></th>
-                            <th><span>Expires</span></th>
-                            <th><span>Notes</span></th>
-                            <th><span>Accept</span></th>
-                            <th><span>Mechanic</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                            foreach($bids as $bid) {
-                                $expire_class = '';
-                                if ($bid['expires'] <= BID_EXPIRE_WARNING) {
-                                    $expire_class = 'class="warn"';
-                                }
-                                $data .= '
-                                        <tr>
-                                            <td>
-                                                <a href="./user/' . $bid['bidder_id'] . '" target="_blank">
-                                                   ' . $bid['nickname'] . '
-                                                </a>
-                                            </td>
-                                            <td>'.$bid['bid_amount'].'</td>
-                                            <td>'.$bid['done_in'].'</td>
-                                            <td ' . $expire_class . '>'. relativeTime($bid['expires']) .'</td>
-                                            <td>'.$bid['notes'].'</td>
-                                            <td><input type="checkbox" class="acceptMechanic" name="chkMultipleBid[]" value="'.$bid['id'].'" /></td>
-                                            <td><input type="checkbox" name="mechanic" class="chkMechanic" value="'.$bid['bidder_id'].'" /></td>
-                                        </tr>';
-                            }
-                            echo $data; 
-                        ?>
-                    </tbody>
-                </table>
-                <input type="submit" style="display:none;" name="accept_multiple_bid" id="accept_multiple_bid" value="Confirm Accept Selected">
-                <input type="hidden" id="budget_id_multiple_bid" name="budget_id" value="" />
-                <input type="button" id="accept_bid_select_budget"
-                       name="accept_bid_select_budget" value="Accept Selected">
-            </form>
-        <?php
-    } else {
-        echo 'No Bid Present';
+    $ret = array();
+    foreach($bids as $bid) {
+        $bid['expired'] = $bid['expires'] <= BID_EXPIRE_WARNING;
+        $bid['expires_text'] = relativeTime($bid['expires'] , false, false, false, false);
+        $ret[] = $bid;
     }
+
+    echo json_encode(array('bids' => $ret));
+    return;
 }
 
 function getProjects() {
@@ -2714,7 +2677,24 @@ function getWorklist() {
             WHEN status = 'Review' AND code_review_started = 1 AND code_review_completed = 0 THEN 'In Review'
             WHEN status = 'Review' AND code_review_completed = 1 THEN 'Reviewed'
             WHEN status != 'Review' THEN status
-        END) `status`,
+        END) `status`,";
+    
+    if ($ofilter == 'status') {
+        $ofilter = 'status_order';
+        $qsel .= "(CASE
+            WHEN status = 'Suggested' THEN 1
+            WHEN status = 'SuggestedWithBid' THEN 2
+            WHEN status = 'Bidding' THEN 3
+            WHEN status = 'Working' THEN 4
+            WHEN status = 'Functional' THEN 5
+            WHEN status = 'SvnHold' THEN 6
+            WHEN status = 'Review' THEN 7
+            WHEN status = 'Completed' THEN 8
+            WHEN status = 'Done' THEN 9
+            WHEN status = 'Pass' THEN 10
+        END) `status_order`,";
+    }
+    $qsel .= "
         `bug_job_id` AS `bug_job_id`,
         `cu`.`nickname` AS `creator_nickname`,
         `ru`.`nickname` AS `runner_nickname`,
@@ -2762,7 +2742,7 @@ function getWorklist() {
         $idsort = $dfilter == 'DESC' ? 'ASC' : 'DESC';
         $qorder = "GROUP BY `".WORKLIST."`.`id` ORDER BY `".WORKLIST."`.`id` {$idsort} LIMIT "
             . ($page-1)*$limit . ",{$limit}";
-    }else{
+    } else {
         $qorder = "GROUP BY `".WORKLIST."`.`id` ORDER BY {$ofilter} {$dfilter},{$subofilter} {$dfilter}  LIMIT "
             . ($page-1)*$limit . ",{$limit}";
     }

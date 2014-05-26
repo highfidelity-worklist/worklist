@@ -24,33 +24,49 @@
 }
 
 .favorite_user.favorited {
-    background-position: -20px 0;
+    background-image: url('../images/wl-icons/star-dark.png');
+    background-image: url('../images/wl-icons/star-dark.svg');
+    background-repeat: no-repeat;
 }
 
 .favorite_user.myfavorite {
-    background-position: -20px 0;
+    background-image: url('../images/wl-icons/star-dark.png');
+    background-image: url('../images/wl-icons/star-dark.svg');
+    background-repeat: no-repeat;
 }
 
 .favorite_user.favorited:hover {
-    background-position: 0 0;
+    background-image: url('../images/wl-icons/star-remove.png');
+    background-image: url('../images/wl-icons/star-remove.svg');
+    background-repeat: no-repeat;
 }
 
 .favorite_user.myfavorite:hover {
-    background-position: 0 0;
+    background-image: url('../images/wl-icons/star-remove.png');
+    background-image: url('../images/wl-icons/star-remove.svg');
+    background-repeat: no-repeat;
 }
 
 .favorite_user.notfavorited:hover {
-    background-position: -40px 0;
+    background-image: url('../images/wl-icons/star-add.png');
+    background-image: url('../images/wl-icons/star-add.svg');
+    background-repeat: no-repeat;
 }
 
 .favorite_user.notmyfavorite:hover {
-    background-position: -40px 0;
+    background-image: url('../images/wl-icons/star-add.png');
+    background-image: url('../images/wl-icons/star-add.svg');
+    background-repeat: no-repeat;
 }
 
 .favorite_user.notmyfavorite {
-    background-position: -60px 0;
+    background-image: url('../images/wl-icons/star.png');
+    background-image: url('../images/wl-icons/star.svg');
+    background-repeat: no-repeat;
 }
 
 .favorite_user.notfavorited {
-    background-position: -60px 0;
+    background-image: url('../images/wl-icons/star.png');
+    background-image: url('../images/wl-icons/star.svg');
+    background-repeat: no-repeat;
 }

@@ -23,6 +23,7 @@ class View extends AppObject {
         'self_url' => '',
         'feeds_url' => 'feedlist'
     );
+    public $redir_url = '';
 
     public $currentUser = array(
         'id' => 0,
@@ -99,6 +100,8 @@ class View extends AppObject {
         $this->currentUser['is_runner'] = empty($_SESSION['is_runner']) ? false : true;
         $this->currentUser['is_payer'] = empty($_SESSION['is_payer']) ? false : true;
         $this->currentUser['is_admin'] = empty($_SESSION['is_admin']) ? false : true;
+
+        $this->redir_url = Dispatcher::$url;
     }
     
     /**
@@ -175,7 +178,10 @@ class View extends AppObject {
         unset($this->scripts[$path]);
         return true;
     }
-        
+    
+    /**
+     * View rendering, called once Controller has done its work
+     */
     public function render() {
         $this->loadGlobals();
 
@@ -183,8 +189,9 @@ class View extends AppObject {
         if (is_string($layout) && class_exists($layout . 'Layout')) {
             $layoutClass = $layout . 'Layout';
             $layout = $this->layout = new $layoutClass();
-        } elseif (is_null($layout) && class_exists('DefaultLayout')) {
-            $layout = $this->layout = new DefaultLayout();
+        } elseif (is_null($layout) && class_exists('NewWorklistLayout')) {
+            /* In case no layout were specified, NewWorklist will be used. 19-MAY-2014 <kordero> */
+            $layout = $this->layout = new NewWorklistLayout();
         }
         $base = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache';
         $partials = VIEWS_DIR . DIRECTORY_SEPARATOR . 'mustache' . DIRECTORY_SEPARATOR . 'partials';
@@ -194,6 +201,13 @@ class View extends AppObject {
         ));
         $template = $mustache->loadTemplate($this->name);
         $content = $this->content = $template->render($this);
+
+        /**
+         * Layout could still not be present here because whether it's
+         * missing or an empty/false value were specified, so in that
+         * case, rendered content will not be wraped into any other
+         * markup or layout behavior. 19-MAY-2014 <kordero>
+         */
         return is_null($layout) ? $content : $layout->render($this);
     }
 }

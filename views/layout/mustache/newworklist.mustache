@@ -15,6 +15,7 @@
         var selfLink = '{{app.self_url}}';
         var sessionusername = '{{currentUser.username}}';
         var ajaxRefresh = {{config.ajaxRefresh}} * 1000;
+        var redir_url = '{{redir_url}}';
     </script>
     {{& scriptTags}}
     <script type="text/javascript">
@@ -27,7 +28,7 @@
     <title>{{title}}</title>
 </head>
 <body>
-    {{> navbar/fixed}}
+    {{> navbar}}
     {{#jumbotron}}
     <div class="jumbotron">
         {{& jumbotron}}

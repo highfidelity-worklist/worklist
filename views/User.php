@@ -1,7 +1,6 @@
 <?php
 
 class UserView extends View {
-    public $layout = 'NewWorklist';
     public $title = "%s's profile - Worklist";
 
     public $stylesheets = array(
@@ -224,7 +223,7 @@ class UserView extends View {
         return $this->profileUser->getIs_active() == 2;
     }
 
-    public function lastSeend() {
+    public function lastSeen() {
         return relativeTime($this->profileUser->getTimeLastSeen(), false);
     }
 

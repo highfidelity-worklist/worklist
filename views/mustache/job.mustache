@@ -4,10 +4,10 @@
             <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
         </div>
         <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript">Tweet</span>
-        <span class="wl-icon-invite" id="invite-link" title="Invite people" href="javascript">Invite someone</span>
+        
         {{#canEditAndNotEditing}}
             {{#statusDone}}
-                <span class="switchmode-done wl-icon-star" title="Jobs set to Done status may not be edited">Edit</span>
+                <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
             {{/statusDone}}
             {{^statusDone}}
                 <span class="switchmode wl-icon-edit" id="switchmode_edit">
@@ -52,7 +52,7 @@
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
-            <select id="statusCombo" name="quick-status" class="project-dropdown">
+            <select id="statusCombo" name="quick-status">
                 <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
                 {{& editableStatusSelect}}
             </select>
@@ -61,7 +61,7 @@
     </div>
     {{/editing}}
     {{& jobBudget}}
-    <div class="project {{#isGitProject}} github{{/isGitProject}} wl-icon-github">
+    <div class="project">
     {{#editing}}
         <input type="hidden" name="save_workitem" value="save_workitem" />
         <input type="hidden" name="action" value="save_workitem" />
@@ -82,19 +82,11 @@
         <div class="project-label">Project:</div>
         {{#worklist.project_id}}
             <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
-            {{#worklist.p_website}}
-                <a class="project_website" href="{{& projectWebsiteUrl}}" target="_blank">website</a>
-            {{/worklist.p_website}}
         {{/worklist.project_id}}
         {{^worklist.project_id}}
             <span>Not assigned</span>
         {{/worklist.project_id}}
     {{/editing}}
-        {{#isGitProject}}
-        <div class="project-github">
-            <h1>Requires GitHub</h1>
-        </div>
-        {{/isGitProject}}
     </div>
     <div style="clear:both; float:none">&nbsp;</div>
 </div>
@@ -111,9 +103,8 @@
     <div id="left-panel">
         <div class="people-info">
             <div id="creatorBox">
-                <span id="pingCreator" class="creatorName" 
-                  title="{{#currentUser.id}}Ping Creator{{/currentUser.id}}{{^currentUser.id}}Log in to Ping Creator{{/currentUser.id}}">
-                    <a href="#">Job creator:</a>
+                <span id="pingCreator" class="creatorName">
+                    Job creator:
                 </span>
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </div>
@@ -190,7 +181,7 @@
                             {{/canEditSandboxUrlOnEdit}}
                             {{^canEditSandboxUrlOnEdit}}
                                 {{#worklist.sandbox}}
-                                <a href="{{& worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                                <a href="{{& worklist.sandbox}}" >{{worklist.sandbox}}</a>
                                 {{/worklist.sandbox}}
                                 {{^worklist.sandbox}}
                                 <span>Not assigned</span>
@@ -234,11 +225,8 @@
                 {{/worklist.mechanic_id}}
                 <div id="commentZone">
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-12">
                             <h3 class="info-comments">Comments &amp; Activity</h3>
-                        </div>
-                        <div class="col-md-3">
-                            <a href="./{{worklist.id}}#recent">See most recent</a>
                         </div>
                     </div>
                     <ul id="entries">
@@ -253,11 +241,11 @@
                         <div class="form-group">
                             <textarea name="comment" class="form-control autogrow"></textarea>
                         </div>
-                        <input type="submit" name="newcomment" value="Comment" />
+                        <input type="submit" name="newcomment" value="Comment" /> 
+                        <span class="tip">You can mention users with <strong>@username</strong></span>
                         <input type="button" name="cancel" value="Cancel" />
                     </form>
                     {{/canComment}}
-                    <a name="recent"></a>        
                 </div>
             {{/editing}}
         </div>  <!-- End of div for_view -->
@@ -335,8 +323,7 @@
                                      {{/canBid}}
                                 {{/currentUser.id}}
                                 {{^currentUser.id}}
-                                    <input style="cursor:pointer;" type="button" value="Login to Bid" 
-                                      onClick="sendToLogin(); return false;" />
+                                    <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to bid</a>
                                 {{/currentUser.id}}
                             </span>
                         </caption>
@@ -392,7 +379,7 @@
                 {{/currentUser.id}}
                 {{^currentUser.id}}
                     {{#canBid}}
-                        <input type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
+                        <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to add fees</a>
                     {{/canBid}}
                 {{/currentUser.id}}
             </div> <!-- End of div moneyZone -->
@@ -408,26 +395,18 @@
         <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong>{{message}}</p>
     </div>
 {{/message}}
-{{> popup-edit-bid-info}}
-{{> popup-place-bid}}
 {{> popup-startreview}}
 {{> popup-endreview}}
 {{> code-review-already-started}}
 {{> popup-pingtask}}
-{{> popup-bid-info}}
-{{> popup-multiple-bid-info}}
 {{> popup-fees}}
 {{> popup-fee-info}}
-{{> popup-withdraw-bid}}
-{{> popup-decline-bid}}
 {{> review-url-dialog}}
 {{> popup-paid}}
-{{> popup-invite-people}}
 {{> popup-runner-job-edit}}
 {{#userIsMechanic}}
     {{> popup-addtip}}
 {{/userIsMechanic}}
-
 <script type="text/javascript">
     var repo_type = '{{workitem_project.getRepo_type}}';
     GitHub.isConnected = {{#isGitHubConnected}}1{{/isGitHubConnected}}{{^isGitHubConnected}}0{{/isGitHubConnected}};
@@ -461,12 +440,12 @@
     var promptForReviewUrl = {{promptForReviewUrl}};
     var showReviewUrlPopup = {{showReviewUrlPopup}};
     var action = '{{action}}';
-    var loginRedirectUrl = '{{loginRedirectUrl}}';
     var canReassignRunner = {{canReassignRunner}};
     var status_error = {{status_error}};
     var displayDialogAfterDone = {{displayDialogAfterDone}};
     var userinfotoshow = {{userinfotoshow}};
     var origStatus = '{{worklist.status}}';
+    var showBidderStatistics = {{#showBidderStatistics}}true{{/showBidderStatistics}}{{^showBidderStatistics}}false{{/showBidderStatistics}};
 </script>
 <script type="text/html" id="uploadedFiles">
     <div id="accordion">
@@ -521,7 +500,7 @@
     <div class="attachment">
         <span><#= title #></span>
         <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-            <i class="icon-remove"></i>
+            <i class="fa fa-times"></i>
         </span>
     </div>
 </script>

@@ -371,22 +371,30 @@ class JobController extends Controller {
                         $matches,
                         PREG_SET_ORDER
                     )) {
-
                         $user = new User();
 
                         foreach ($matches as $mention) {
                             // validate the username actually exists
                             if ($recipient = $user->findUserByNickname($mention[1])) {
-                                $emailTemplate = 'workitem-mention';
-                                $data = array(
-                                    'job_id' => $workitem->getId(),
-                                    'author' => $_SESSION['nickname'],
-                                    'text' => $comment,
-                                    'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
-                                );
 
-                                $senderEmail = 'Worklist <contact@worklist.net>';
-                                sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                                // exclude designer, developer and followers
+                                if (
+                                    $recipient->getId() != $workitem->getRunnerId() &&
+                                    $recipient->getId() != $workitem->getMechanicId() &&
+                                    ! $workitem->isUserFollowing($recipient->getId())
+                                ) {
+
+                                    $emailTemplate = 'workitem-mention';
+                                    $data = array(
+                                        'job_id' => $workitem->getId(),
+                                        'author' => $_SESSION['nickname'],
+                                        'text' => $comment,
+                                        'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
+                                    );
+
+                                    $senderEmail = 'Worklist <contact@worklist.net>';
+                                    sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                                }
                             }
                         }
                     }
@@ -667,7 +675,7 @@ class JobController extends Controller {
             foreach ($args as $arg) {
                 $$arg = mysql_real_escape_string($_REQUEST[$arg]);
             }
-            $bid_amount = (int) $bid_amount;
+            $bid_amount = (float) $bid_amount;
             $mechanic_id = (int) $mechanic_id;
 
             if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
@@ -755,17 +763,17 @@ class JobController extends Controller {
                 //a new variable is used to send the unenscaped notes in email alert.
                 //so it can parse the new line as <BR>   12-Mar-2011 <webdev>
 
-                $args = array('bid_id', 'bid_amount', 'done_in_edit', 'bid_expires_edit', 'notes');
+                $args = array('bid_id', 'bid_amount', 'done_in', 'bid_expires', 'notes');
                 foreach ($args as $arg) {
                     $$arg = mysql_real_escape_string($_REQUEST[$arg]);
                 }
 
-                $bid_amount = (int) $bid_amount;
+                $bid_amount = (float) $bid_amount;
                 $mechanic_id = (int) $mechanic_id;
 
                 if ($_SESSION['timezone'] == '0000') $_SESSION['timezone'] = '+0000';
                 $summary = getWorkItemSummary($worklist_id);
-                $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in_edit, $bid_expires_edit, $_SESSION['timezone'], $notes);
+                $bid_id = $workitem->updateBid($bid_id, $bid_amount, $done_in, $bid_expires, $_SESSION['timezone'], $notes);
 
                 // Journal notification
                 $journal_message = 'Bid updated on #' . $worklist_id;
@@ -784,8 +792,8 @@ class JobController extends Controller {
                     'recipients' => array('runner')
                 );
                 $data = array(
-                    'done_in' => $done_in_edit,
-                    'bid_expires' => $bid_expires_edit,
+                    'done_in' => $done_in,
+                    'bid_expires' => $bid_expires,
                     'bid_amount' => $bid_amount,
                     'notes' => replaceEncodedNewLinesWithBr($notes),
                     'bid_id' => $bid_id

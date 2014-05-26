@@ -78,7 +78,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $('.filter > select').chosen();
+    $('.filter > select').selectpicker();
 
     if(getQueryVariable('status') != null) {
         if (timeoutId) clearTimeout(timeoutId);
@@ -234,7 +234,7 @@ function AppendRow (json, prepend, moreJson, idx) {
 
     // Comments
     comments = (json[12] == 0) ? "" : json[12];
-    row += '<td class="age-col">' + 
+    row += '<td class="comments-col">' + 
              comments +
            '</td>';
 

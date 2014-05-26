@@ -1,8 +1,6 @@
 <?php
 
 class ReportsView extends View {
-    public $layout = 'NewWorklist';
-    
     public $title = 'Reports - Worklist';
 
     public $stylesheets = array(

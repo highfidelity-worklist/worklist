@@ -9,7 +9,8 @@
         <div class="modal-body">{{& content}}</div>
         <div class="modal-footer">
           {{#buttons}}
-            <button type="button" class="btn {{className}}" {{#dismiss}}data-dismiss="modal"{{/dismiss}}>
+            <button class="btn {{className}}"
+              {{#type}}type="{{type}}"{{/type}} {{#name}}name="{{name}}"{{/name}} {{#dismiss}}data-dismiss="modal"{{/dismiss}}>
               {{content}}
             </button>
           {{/buttons}}

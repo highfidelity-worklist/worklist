@@ -47,6 +47,10 @@
     margin-left: 10px;
 }
 
+#commentform .tip {
+    color: #777;
+}
+
 
 table.table-bids thead tr td,
 table.table-fees thead tr td {
@@ -107,6 +111,7 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
 .table-fees h4 + span,
 .table-fees h5 + span {
     float: right;
+    margin-top: 5px;
 }
 
 .table-bids > caption,
@@ -140,6 +145,37 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
     font-weight: bold;
     padding: 5px 9px;
 }
+
+/**
+ * Dragdealer styling
+ */
+.dragdealer {
+    position: relative;
+    height: 4px;
+    margin-top: 50px;
+    background: #EEE;
+}
+
+.dragdealer .handle {
+    position: absolute;
+    top: -28px;
+    left: 0;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    background: #009999;
+    color: #FFF;
+    font-size: 14px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 30px;
+    padding-top: 15px;
+}
+
+.dragdealer .disabled {
+    background: #898989;
+}
+
 
 /* inline footer */
 section#footer {
