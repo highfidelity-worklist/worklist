@@ -47,7 +47,7 @@ nav.navbar {
 }
 
 /* navigation log in link color */
-nav.navbar .navbar-right > li > a[href="./github/login"] {
+nav.navbar .navbar-right > li > a[href^="./github/login"] {
     color: #fff;
     font-size: 1.4em;
 }
@@ -163,8 +163,8 @@ input[type="submit"] {
 
 input[type="button"],
 input[type="submit"],
-input.btn-primary,
-button.btn-primary {
+body .btn-primary,
+body .btn-primary {
     background-color: #608e96;
     border-color: #608e96;
 }
@@ -173,8 +173,8 @@ input[type="button"]:focus,
 input[type="submit"]:focus,
 input[type="button"]:hover,
 input[type="submit"]:hover,
-input.btn-primary:hover,
-button.btn-primary:hover {
+body .btn-primary:hover,
+body .btn-primary:hover {
     background-color: #007F7c;
     border-color: #007F7c;
 }

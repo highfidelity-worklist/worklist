@@ -322,8 +322,7 @@
                                      {{/canBid}}
                                 {{/currentUser.id}}
                                 {{^currentUser.id}}
-                                    <input style="cursor:pointer;" type="button" value="Login to Bid" 
-                                      onClick="sendToLogin(); return false;" />
+                                    <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to bid</a>
                                 {{/currentUser.id}}
                             </span>
                         </caption>
@@ -379,7 +378,7 @@
                 {{/currentUser.id}}
                 {{^currentUser.id}}
                     {{#canBid}}
-                        <input type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
+                        <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to add fees</a>
                     {{/canBid}}
                 {{/currentUser.id}}
             </div> <!-- End of div moneyZone -->
