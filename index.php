@@ -5,9 +5,11 @@
 require_once("config.php");
  
 class Dispatcher {
+    static public $url = '';
+
     public function run() {
-        $url = isset($_GET['url']) ? $_GET['url'] : '';
-        $path = '/' . $url;
+        self::$url = isset($_GET['url']) ? $_GET['url'] : '';
+
         $dispatcher = new Pux\Mux;
 
         $dispatcher->get('/addjob', array('AddJob'));
@@ -23,10 +25,17 @@ class Dispatcher {
             'default' => array('method' => 'index')
         ));
 
+        $dispatcher->get('/github/:method(/:param)', array('Github'), array(
+            'require' => array(
+                'method' => '\w+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
+
         $dispatcher->get('/help', array('Help'));
         $dispatcher->get('/jobs', array('Jobs'));
         
-        $dispatcher->get('/logout', array('Logout'));
         $dispatcher->get('/password', array('Password'));
         $dispatcher->post('/password', array('Password'));
         $dispatcher->get('/payments', array('Payments'));
@@ -60,7 +69,7 @@ class Dispatcher {
         $dispatcher->any('/signup', array('Github', 'federated'));
 
         try {
-            $route = $dispatcher->dispatch($path);
+            $route = $dispatcher->dispatch('/' . self::$url);
             $controller = isset($route[2][0]) ? $route[2][0] : DEFAULT_CONTROLLER_NAME;
 
             if (strlen($controller) < 10 || substr($controller, -10) != 'Controller') {
@@ -69,7 +78,7 @@ class Dispatcher {
 
             $method = isset($route[2][1]) ? $route[2][1] : DEFAULT_CONTROLLER_METHOD;
 
-            $variables = isset($route[3]['variables']) ? $route[3]['variables'] : array();
+            $variables = isset($route[3]['variables']) ? $route[3]['variables'] :  array();
             $values = isset($route[3]['vars']) ? $route[3]['vars'] : array();
             $params = array();
             foreach($variables as $variable) {

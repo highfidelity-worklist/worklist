@@ -1217,10 +1217,6 @@ $(function() {
     return false;
 });
 
-function sendToLogin(){
-    window.location = './github/login?redir=./' + workitem_id;
-}
-
 function setFollowingText(isFollowing){
     if(isFollowing == true) {
         $('#following').attr('title', 'You are currently following this job');
