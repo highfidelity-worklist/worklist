@@ -111,6 +111,7 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
 .table-fees h4 + span,
 .table-fees h5 + span {
     float: right;
+    margin-top: 5px;
 }
 
 .table-bids > caption,
