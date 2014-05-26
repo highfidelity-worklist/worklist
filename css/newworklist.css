@@ -956,6 +956,7 @@ button:focus, a:focus {
 .wl-icon-tweet\:regular {
     background-image: url('../images/wl-icons/tweet.png');
     background-image: url('../images/wl-icons/tweet.svg');
+    background-size: 21px auto;
     background-repeat: no-repeat;
 }
 
