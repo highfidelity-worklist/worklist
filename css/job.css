@@ -189,7 +189,7 @@ section#footer li:nth-child(-n+3) {
 }
 
 /* MoneyZone */
-.moneyZone{
+.moneyZone {
     display:block;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
@@ -209,7 +209,7 @@ section#footer li:nth-child(-n+3) {
     table-layout: fixed;
 }
 
-.info-comments{
+.info-comments {
     font-weight:bold;
     margin: 0 10px 4px 0;
     font-size: 18px;

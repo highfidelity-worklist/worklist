@@ -407,13 +407,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     color: #007F7C !important;
 }
 
-.github {
-    margin-top: -7px;
-    padding-left: 42px;
-    background-position: -3px 0px;
-    background-repeat: no-repeat;
-}
-
 #workitem-form {
     width: auto;
     margin-top: -7px !important;
@@ -532,11 +525,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 #budgetInWorkitem {
     float: left;
     width: 366px;
-}
-
-.project-dropdown {
-    width: 200px;
-    margin-top: 7px;
 }
 
 .table-bids thead{
@@ -1236,16 +1224,7 @@ h1.newProject {
         content: ' ';
     }
 
-    #following,
-    #switchmode_edit {
+    #following {
         padding: 10px 5px 7px 25px;
-    }
-
-    #switchmode_edit {
-        background-position: 8px -950px;
-    }
-
-    #switchmode_edit:hover {
-        background-position: -194px -950px;
     }
 }
