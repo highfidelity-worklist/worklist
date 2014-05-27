@@ -1,77 +1,35 @@
-$(function() {    
-    var submitIsRunning;
+var AddJob = {
+    submitIsRunning: false,
+    init: function() {
+        $('select[name="itemProject"]').chosen();
 
-    $("#bug_job_id").blur(function() {
-        $("#bug_job_id").keyup();
-    });
+        var imageArray = new Array();
+        var documentsArray = new Array();
+        $('#addaccordion').fileUpload({images: imageArray, documents: documentsArray});
 
-    //lookup and show job summary on bug_job_id change
-    $("#bug_job_id").keyup(function() {
-        var id=$("#bug_job_id").val();
-        if(id.length) {
-            $.ajax({
-                url: 'api.php',
-                dataType: 'json',
-                data: {
-                    action: 'getJobInformation',
-                    itemid: id
-                },
-                type: 'POST',
-                success: function(json) {
-                    if (!json || json === null) {
-                        alert("json null in getjobinformation");
-                        return;
-                    }
-                    if (json.error) {
-                        alert(json.error);
-                    } else {
-                        if(json.returnString.length > 0) {
-                            $('#bug_job_id + p').html(json.returnString);
-                            $("#bug_job_id + p").attr("bug-job-id" , id);
-                            //Enable bug_job_id textbox
-                            if (!/^(\[?)BUG/i.test($('#summary').val())) {
-                                $('#summary').val('[BUG] ' + $('#summary').val().trim());
-                            }
-                        } else {
-                            $('#bug_job_id + p').html("Item doesn't exist");
-                            $("#bug_job_id + p").attr("bug-job-id" , 0);
-                            if (/^\[BUG\]/i.test($('#summary').val())) {
-                                $('#summary').val($('#summary').val().substring(5).trim());
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            if (/^\[BUG\]/i.test($('#summary').val())) {
-                $('#summary').val($('#summary').val().substring(5).trim());
-            }
-        }
-    });
-    
-    $('select[name="itemProject"]').chosen();
-    $('select[name="status"]').chosen();
-    
-    var imageArray = new Array();
-    var documentsArray = new Array();
-    $('#addaccordion').fileUpload({images: imageArray, documents: documentsArray});
+        var autoArgs = autocompleteMultiple('getuserslist', null);
+        $("#invite").bind("keydown", autoArgs.bind);
+        $("#invite").autocomplete(autoArgs);
 
-    var autoArgs = autocompleteMultiple('getuserslist', null);
-    $("#invite").bind("keydown", autoArgs.bind);
-    $("#invite").autocomplete(autoArgs);  
-    
-    var autoArgsSkills = autocompleteMultiple('getskills', skillsSet),
-        hasAutocompleter = false;
-    $("#skills").bind("keydown", autoArgsSkills.bind);
-    $("#skills").autocomplete(autoArgsSkills);  
-    hasAutocompleter = true;
+        var autoArgsSkills = autocompleteMultiple('getskills', skillsSet, function() {
+            AddJob.addLabel();
+        });
+        var hasAutocompleter = false;
+        $("#labels + input").bind("keydown", function(event) {
+            autoArgsSkills.bind(event);
+        });
+        $("#labels + input").autocomplete(autoArgsSkills);
+        hasAutocompleter = true;
 
-    $('form#addJob').submit(function(event){
+        $('form#addJob').submit(AddJob.formSubmit);
+    },
+
+    formSubmit: function(event){
         event.preventDefault();
-        if (submitIsRunning) {
+        if (AddJob.submitIsRunning) {
             return false;
         }
-        submitIsRunning = true;
+        AddJob.submitIsRunning = true;
 
         var summary = new LiveValidation('summary');
         summary.add(Validate.Presence, {failureMessage: "You must enter the job title!"});
@@ -86,29 +44,30 @@ $(function() {
         massValidation = LiveValidation.massValidate([itemProject, summary]);
 
         if (!massValidation) {
-            submitIsRunning = false;
+            AddJob.submitIsRunning = false;
             return false;
         }
-        
+        var skills = '';
+        $("#labels li").each(function() {
+            skills += (skills.length ? ', ' : '') + $(this).text();
+        });
+
         $.ajax({
-            url: 'api.php',
+            url: './job/add',
             dataType: 'json',
             data: {
-                action: 'addWorkitem',
                 summary: $("input[name='summary']").val(),
                 files: $("input[name='files']").val(),
                 invite: $("input[name='invite']").val(),
                 notes: $("textarea[name='notes']").val(),
                 page: $("input[name='page']").val(),
                 project_id: $("select[name='itemProject']").val(),
-                status: $("select[name='status']").val(),
-                skills: $("input[name='skills']").val(),
-                bug_job_id: $("input[name='bug_job_id']").val(),
+                skills: skills,
                 fileUpload: $('#addaccordion').data('fileUpload')
             },
             type: 'POST',
             success: function(json) {
-                submitIsRunning = false;
+                AddJob.submitIsRunning = false;
                 if (json.error) {
                     alert(json.error);
                 } else {
@@ -117,5 +76,19 @@ $(function() {
             }
         });
         return false;
-    });
-});
+    },
+
+    addLabel: function() {
+        var currentLabels = ($('#labels').attr('val') ? $('#labels').attr('val') : '').split(',');
+        var newLabels = $('#labels + input').val().split(',');
+        var labels = $.unique($.merge(newLabels, currentLabels));
+        var html = '', val = '';
+        for (var i = 0; i < labels.length; i++) {
+            if (!labels[i].trim().length) continue;
+            html += '<li> ' + labels[i] + '</li>';
+            val += (val.length ? ',' : '') + labels[i];
+        }
+        $('#labels').attr('val', val).html(html);
+        $('#labels + input').val('');
+    }
+}

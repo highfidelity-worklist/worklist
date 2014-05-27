@@ -1,6 +1,6 @@
 <form method="post" id="addJob">
     <div class="row">
-        <div class="col-xs-6 col-sm-8 col-md-9">
+        <div class="col-md-10">
             <select id="itemProjectCombo" name="itemProject" data-placeholder="Select project">
                 <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
                     Select project
@@ -12,64 +12,52 @@
                 {{/projects}}
             </select>
         </div>
-        <div class="col-xs-6 col-sm-4 col-md-3">
-            <label id="bug-id-label" for="bug_job_id">This is a bug</label>
-            <input type="text" class="form-control" id="bug_job_id" name="bug_job_id" value="{{bug_of}}" />
-            <p bug-job-id="0"></p>
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            <input type="text" id="summary" name="summary" class="form-control"
+              value="{{#bug_of}}[BUG] {{/bug_of}}" placeholder="Title" />
         </div>
     </div>
     <div class="row">
-        <label for="summary">Job title</label>
-        <input type="text" id="summary" name="summary" class="form-control" 
-          value="{{#bug_of}}[BUG] {{/bug_of}}" placeholder="enter summary" />
-    </div>
-    <div class="row">
-        <label for="notes">Full description</label>
-        <textarea class="form-control autogrow" name="notes" id="notes" 
-          placeholder="describe the work necessary to successfully complete this job"></textarea>
-    </div>
-    <div class="row">
-        <label for="skills">Skills necessary </label>
-        <input type="text" id="skills" name="skills" class="form-control"
-          placeholder="separate by commas, ex: C, Linux, Software Architecture" />
-    </div>
-    <div class="row">
-        <label for="invite">Invite Worklist users</label>
-        <input id="invite" type="text" name="invite" class="invite form-control"
-          placeholder="separate by commas" />
-    </div>
-    <div class="row">
-        <div id="addaccordion" class="clear"></div>
-        <input type="button" class="uploadbutton" value="Attach files" />
-        <div id="attachments"></div>
-        <input type="hidden" name="files" value="" />
-        <div class="uploadnotice"></div>
-        <script type="text/html" id="uploadDocument">
-            <div class="attachment">
-                <span><#= title #></span>
-                <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-                    <i class="fa fa-times"></i>
-                </span>
-            </div>
-        </script>
-    </div>
-    <div class="row">
-        <div class="col-xs-9 col-sm-8 col-md-10">
-            {{#currentUser.is_runner}}
-                <select name="status">
-                    <option value="Draft">Draft</option>
-                    <option value="Suggested">Suggested</option>
-                    <option value="Bidding" selected="selected">Bidding</option>
-                    <option value="Working">Working</option>
-                    <option value="Done">Done</option>
-                </select>
-            {{/currentUser.is_runner}}
-            {{^currentUser.is_runner}}
-                <input type="hidden" id="status" name="status" value="Suggested" />
-            {{/ currentUser.is_runner}}
+        <div class="col-md-9">
+            <label for="notes">Description</label>
+            <textarea class="form-control autogrow" name="notes" id="notes"
+              placeholder="describe the work necessary to successfully complete this job"></textarea>
         </div>
-        <div class="col-xs-3 col-sm-4 col-md-2">                
-            <input type="submit" name="save_item" value="Add job">
+        <div class="col-md-3">
+            <label>Labels</label>
+            <ul id="labels"></ul>
+            <input type="text" class="form-control" placeholder="add" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            <section>
+                <div id="addaccordion" class="clear"></div>
+                <a class="uploadbutton" />Select files</a> to attach.
+                <div id="attachments"></div>
+                <input type="hidden" name="files" value="" />
+                <div class="uploadnotice"></div>
+                <script type="text/html" id="uploadDocument">
+                    <div class="attachment">
+                        <span><#= title #></span>
+                        <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
+                            <i class="fa fa-times"></i>
+                        </span>
+                    </div>
+                </script>
+            </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-7 col-md-2">
+            <button class="btn btn-primary" type="submit" name="save_item">Add job</button>
         </div>
     </div>
 </form>
+<script type="text/javascript">
+    $(function() {
+        AddJob.init();
+    })
+</script>

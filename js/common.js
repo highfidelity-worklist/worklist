@@ -323,7 +323,7 @@ var autocompleteUserSource = function(request, response) {
  * @param datasource - pass null if unused.
  * @returns object autocomplete arguments
  */
-function autocompleteMultiple(status, datasource) {
+function autocompleteMultiple(status, datasource, fAfter) {
     var autocompleteArguments;
     autocompleteArguments = {
         bind: function( event ) {
@@ -348,6 +348,11 @@ function autocompleteMultiple(status, datasource) {
             // add placeholder to get the comma-and-space at the end
             terms.push( "" );
             this.value = terms.join( ", " );
+
+            if (typeof fAfter == 'function') {
+                fAfter();
+            }
+
             return false;
         }
         

@@ -60,8 +60,17 @@ class Dispatcher {
         $dispatcher->post('/user/:id', array('User'));
 
         $dispatcher->get('/welcome', array('Welcome'));
-        $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
-        $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));
+
+        $dispatcher->get('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
+        $dispatcher->post('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
+        $dispatcher->any('/job/:method(/:param)', array('Job'), array(
+            'require' => array(
+                'method' => '[a-zA-Z0-9]+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
+
         $dispatcher->get('/:project', array('Project'));
         $dispatcher->post('/:project', array('Project'));
 

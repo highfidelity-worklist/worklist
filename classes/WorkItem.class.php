@@ -442,7 +442,7 @@ class WorkItem {
             $result = mysql_query($query);
             foreach ($this->skills as $skill) {
                 $query = "INSERT INTO ".WORKITEM_SKILLS." (workitem_id, skill_id)
-                          SELECT ".$this->getId().", id FROM ".SKILLS." WHERE skill='".$skill."'";
+                          SELECT ".$this->getId().", id FROM ".SKILLS." WHERE skill='". trim($skill) ."'";
                 mysql_query($query) || die('There was an error ' . mysql_error() . ' QUERY: ' . $query);
             }
             

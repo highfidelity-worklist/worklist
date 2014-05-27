@@ -8,7 +8,26 @@ require_once('models/Budget.php');
 require_once('models/Users_Favorite.php');
 
 class JobController extends Controller {
-    public function run($job_id) {
+    public function run($action, $param) {
+        $method = '';
+        switch($action) {
+            case 'view':
+            case 'add':
+                $method = $action;
+                break;
+            default:
+                if (is_numeric($action)) {
+                    $method = 'view';
+                    $param = (int) $action;
+                } else {
+                    Utils::redirect('./');
+                }
+                break;
+        }
+        $this->$method($param);
+    }
+
+    public function view($job_id) {
         $this->write('statusListRunner', array("Draft", "Suggested", "SuggestedWithBid", "Bidding", "Working", "Functional", "Code Review", "Completed", "Done", "Pass"));
         $statusListMechanic = array("Working", "Functional", "Code Review", "Completed", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
@@ -1283,6 +1302,179 @@ class JobController extends Controller {
         $this->write('{{userinfotoshow}}', (isset($_REQUEST['userinfotoshow']) && isset($_SESSION['userid'])) ? $_REQUEST['userinfotoshow'] : 0);
 
         parent::run();
+    }
+
+    public function add() {
+        checkLogin();
+
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->view = new AddJobView();
+            parent::run();
+            return;
+        }
+        $this->view = null;
+
+        $journal_message = '';
+        $workitem_added = false;
+        $nick = '';
+
+        $workitem = new WorkItem();
+
+        $userId = getSessionUserId();
+        if (!$userId > 0 ) {
+            echo json_encode(array('error' => "Invalid parameters !"));
+            return;
+        }
+
+        initUserById($userId);
+        $user = new User();
+        $user->findUserById( $userId );
+        $nick = $user->getNickname();
+
+        $itemid = $_REQUEST['itemid'];
+        $summary = $_REQUEST['summary'];
+        $project_id = $_REQUEST['project_id'];
+        $skills = $_REQUEST['skills'];
+        $status = $user->getIs_runner() ? 'Bidding' : 'Suggested';
+        $notes = $_REQUEST['notes'];
+        $invite = $_REQUEST['invite'];
+        $is_expense = $_REQUEST['is_expense'];
+        $is_rewarder = $_REQUEST['is_rewarder'];
+        $fileUpload = $_REQUEST['fileUpload'];
+
+        if (! empty($_POST['itemid'])) {
+            $workitem->loadById($_POST['itemid']);
+        } else {
+            $workitem->setCreatorId($userId);
+            $workitem_added = true;
+        }
+        $workitem->setSummary($summary);
+        $skillsArr = explode(',', $skills);
+        $workitem->setRunnerId(0);
+        $workitem->setProjectId($project_id);
+        $workitem->setStatus($status);
+        $workitem->setNotes($notes);
+        $workitem->setWorkitemSkills($skillsArr);
+        $workitem->save();
+        $related = getRelated($notes);
+        Notification::massStatusNotify($workitem);
+
+        // if files were uploaded, update their workitem id
+        $file = new File();
+        // update images first
+        if (isset($fileUpload['images'])) {
+            foreach ($fileUpload['images'] as $image) {
+                $file->findFileById($image);
+                $file->setWorkitem($workitem->getId());
+                $file->save();
+            }
+        }
+        // update documents
+        if (isset($fileUpload['documents'])) {
+            foreach ($fileUpload['documents'] as $document) {
+                $file->findFileById($document);
+                $file->setWorkitem($workitem->getId());
+                $file->save();
+            }
+        }
+
+        if (empty($_POST['itemid'])) {
+            $bid_fee_itemid = $workitem->getId();
+            $journal_message .= "\\\\#"  . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick . ' Status set to ' . $status;
+            if (!empty($_POST['files'])) {
+                $files = explode(',', $_POST['files']);
+                foreach ($files as $file) {
+                    $sql = 'UPDATE `' . FILES . '` SET `workitem` = ' . $bid_fee_itemid . ' WHERE `id` = ' . (int)$file;
+                    mysql_query($sql);
+                }
+            }
+        } else {
+            $bid_fee_itemid = $itemid;
+            $journal_message .= '\\#' . $bid_fee_itemid . ' updated by ' . $nick . 'Status set to ' . $status;
+        }
+        $journal_message .=  "$related. ";
+        if (!empty($_POST['invite'])) {
+            $people = explode(',', $_POST['invite']);
+            invitePeople($people, $workitem);
+        }
+
+        // don't send any journal notifications for DRAFTS
+        if (!empty($journal_message) && $status != 'Draft') {
+
+            sendJournalNotification(stripslashes($journal_message));
+
+            if ($workitem_added) {
+                $options = array(
+                    'type' => 'workitem-add',
+                    'workitem' => $workitem,
+                );
+                $data = array(
+                    'notes' => $notes,
+                    'nick' => $nick,
+                    'status' => $status
+                );
+
+                Notification::workitemNotifyHipchat($options, $data);
+            }
+
+            // workitem mentions
+            $matches = array();
+            if (preg_match_all(
+                '/@(\w+)/',
+                $workitem->getNotes(),
+                $matches,
+                PREG_SET_ORDER
+            )) {
+
+                $user = new User();
+
+                foreach ($matches as $mention) {
+                    // validate the username actually exists
+                    if ($recipient = $user->findUserByNickname($mention[1])) {
+
+                        // exclude designer, developer and followers
+                        if (
+                            $recipient->getId() != $workitem->getRunnerId() &&
+                            $recipient->getId() != $workitem->getMechanicId() &&
+                            ! $workitem->isUserFollowing($recipient->getId())
+                        ) {
+                            $emailTemplate = 'workitem-mention';
+                            $data = array(
+                                'job_id' => $workitem->getId(),
+                                'author' => $_SESSION['nickname'],
+                                'text' => $workitem->getNotes(),
+                                'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
+                            );
+
+                            $senderEmail = 'Worklist <contact@worklist.net>';
+                            sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Notify Runners of new suggested task
+        if ($status == 'Suggested' && $project_id != '') {
+            $options = array(
+                'type' => 'suggested',
+                'workitem' => $workitem,
+                'recipients' => array('projectRunners')
+            );
+            $data = array(
+                'notes' => $notes,
+                'nick' => $nick,
+                'status' => $status
+            );
+
+            Notification::workitemNotify($options, $data);
+        }
+
+        echo json_encode(array(
+            'return' => "Done!",
+            'workitem' => $workitem->getId()
+        ));
+
     }
 
     function hasRights($userId, $workitem) {

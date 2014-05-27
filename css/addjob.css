@@ -12,117 +12,68 @@ body > .container-fluid {
     color: #333333;
 }
 
+body > .container-fluid {
+    width: 650px;
+}
+
 /* make some room at top of the form */
 #addJob > .row:first-child {
     padding-top: 30px;
 }
 
-#addJob > .row:first-child > div:first-child {
-    padding-left: 0;
-}
-#addJob > .row:first-child > div:last-child {
-    padding-right: 0;
-}
-
-#addJob > .row:first-child .chosen-container:before,
-#addJob > .row:last-child .chosen-container:before,
-#addJob > .row:first-child > div:last-child:after {
-    position: absolute;
-    margin-top: -20px;
-    font-size: 0.9em;
-    color: #666;
-    cursor: pointer;
-}
-#addJob > .row:first-child .chosen-container:before {
-    content: 'Job is for this project:';
-}
-
-#addJob > .row:first-child > div:last-child {
-    text-align: right;
-}
-
-label[for="bug_job_id"] {
-    color: #666;
-}
-
-#bug_job_id {
-    font-size: 1.2em;
-    font-weight: bold;
-    display: inline-block;
-    width: 90px;
-    margin-left: 5px;
-}
-
-#addJob > .row:first-child > div:last-child:after {
-    content: 'Bug of job #';
-    right: 0;
-    margin-right: 20px;
-}
-
-#bug_job_id + span,
-#bug_job_id + p {
-    margin-top: 20px;
-    text-align: right;
-    width: 350px;
-    font-size: 0.8em;
-    height: 20px;
-    margin-top: 10px;
-    right: 0;
-}
-
-#bug_job_id + p {
-    color: #007F7c;
-}
-
-#bug_job_id + span,
-#bug_job_id + p,
-#bug_job_id + p:after {
-    position: absolute;
-}
-
-#bug_job_id + p:after {
-    content: ' ';
-    margin: -3px 0 0 -80px;
-    height: 25px;
-    display: inline-block;
-    width: 80px;
-    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-}
-
 #addJob > .row {
-    padding: 15px 0 10px;
+    padding: 2px 0 0;
 }
 
-#addJob > .row > label {
+#addJob > .row label {
     color: #608a92;
     font-weight: normal;
     margin: 0;
-    font-size: 1.3em;
+    font-size: 1.1em;
 }
 
-#addJob > .row:last-child {
-    background-color: #E8EFF0;
-    padding: 30px 20px;
+#labels {
+    list-style-type: none;
+    padding: 3px;
 }
 
-#addJob > .row:last-child .chosen-container {
-    width: 250px !important;
-}
-#addJob > .row:last-child .chosen-container:before {
-    content: 'Set the status of this job to:';
-}
-@media (max-width: 768px) {
-    #addJob > .row:last-child .chosen-container {
-        width: 180px !important;
-    }
+#labels li {
+    border-radius: 5px;
+    margin: 2px 0;
+    font-size: 0.8em;
+    padding: 0 5px;
+    white-space: nowrap;
 }
 
-#addJob input[type=submit] {
+#labels li,
+#labels + input {
+    float: left;
+    clear: left;
+}
+
+#labels li:nth-child(odd) {
+    background-color: #007F7c;
+    color: #fff;
+}
+
+#labels li:nth-child(even) {
+    background-color: #E9EEEF;
+}
+
+#addJob > .row:nth-child(4) > div > section {
+    background-color: #E9EEEF;
+    border: 1px dashed #cbcbcb;
+    padding: 10px;
+    color: #007F7c;
+    min-height: 80px;
+}
+
+#addJob > .row:nth-child(4) > div > section > a {
+    text-decoration: underline;
+    color: #666;
+}
+
+#addJob button[type=submit] {
     background: none #007F7c;
     font-weight: bold;
     border-radius: 5px;
@@ -135,18 +86,13 @@ label[for="bug_job_id"] {
 /**
  * Attachments styling
  */
-.uploadbutton,
-#attachments {
-    display: inline-block;
-    vertical-align: middle;
-}
-
 #attachments {
     margin: 5px;
 }
 
 #addJob .attachment {
     margin: 6px 3px;
+    display: inline-block;
 }
 
 #addJob .attachment span:first-child {
