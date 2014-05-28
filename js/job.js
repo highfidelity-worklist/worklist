@@ -28,6 +28,36 @@ $(function() {
     }
     applyPopupBehavior();
             
+    $("#tweet-link").click(function() {
+        var jobid = $(this).data('jobid');
+        var jobsummary = $(this).data('jobsummary');
+        var message = 'Contract job: "' + jobsummary + '" http://worklist.net/' + jobid;
+
+        // Proper centering with dualscreen implemented with help from http://www.xtf.dk/2011/08/center-new-popup-window-even-on.html
+        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+        var windowWidth = window.innerWidth ? window.innerWidth :
+                          (document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width);
+        var windowHeight = window.innerHeight ? window.innerHeight :
+                           (document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height);
+        var popupWidth = 550;
+        var popupHeight = 260;
+        var left = ((windowWidth / 2) - (popupWidth / 2)) + dualScreenLeft;
+        var top = ((windowHeight / 2) - (popupHeight / 2)) + dualScreenTop;
+
+        var opts   = 'status=1' +
+            ',width=' + popupWidth +
+            ',height=' + popupHeight +
+            ',top=' + top +
+            ',left=' + left;
+
+        var url = "http://twitter.com/share?text=" + encodeURIComponent(message);
+        window.open(url, 'tweetWindow', opts);
+
+        return false;
+    });
+
     if (displayDialogAfterDone && mechanic_id > 0) {
         WReview.displayInPopup({
             'user_id': mechanic_id,
