@@ -12,7 +12,6 @@ class Dispatcher {
 
         $dispatcher = new Pux\Mux;
 
-        $dispatcher->get('/addjob', array('AddJob'));
         $dispatcher->get('/confirmation', array('Confirmation'));
         $dispatcher->post('/confirmation', array('Confirmation'));
         $dispatcher->get('/feedlist', array('FeedList'));
