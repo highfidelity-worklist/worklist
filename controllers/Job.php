@@ -617,7 +617,6 @@ class JobController extends Controller {
                         if($status == 'Code Review') {
                             Notification::massStatusNotify($workitem);
                         }
-
                         if (($status != 'Draft') && ($status != 'Code Review')){
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
@@ -1450,9 +1449,8 @@ class JobController extends Controller {
             );
             Notification::workitemNotifyHipchat($options, $data);
         }
-
         // notifications for subscribed users
-           Notification::massStatusNotify($workitem);
+        Notification::massStatusNotify($workitem);
 
         if ($newStatus == 'Bidding') {
             $options = array(
@@ -1461,14 +1459,12 @@ class JobController extends Controller {
             );
             Notification::massStatusNotify($workitem);
         }
-
         if ($newStatus == 'Code Review') {
             $options = array(
                 'type' => 'new_review',
                 'workitem' => $workitem,
             );
         }
-
         if ($newStatus != 'SuggestedWithBid') {
             $options = array(
                 'type' => 'status-notify',
@@ -1480,9 +1476,7 @@ class JobController extends Controller {
             );
             Notification::workitemNotifyHipchat($options, $data);
         }
-        
         return true;
-
     }
 
     function addComment($worklist_id, $user_id, $comment_text, $parent_comment_id) {
