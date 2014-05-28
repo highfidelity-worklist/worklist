@@ -152,3 +152,8 @@ body > .container-fluid {
 #addJob > .row:first-child select + .LV_validation_message {
     margin-top: 35px;
 }
+
+/* won't display the footer on addjob */
+section#footer {
+    display: none;
+}
