@@ -53,8 +53,8 @@ class Notification {
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
                 WHERE ((u.notifications & " . self::REVIEW_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") 
-                OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ")
-                AND (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
+                OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . ")
+                OR (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
                 AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
