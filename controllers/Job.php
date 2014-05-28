@@ -556,7 +556,7 @@ class JobController extends Controller {
                     if ($status_review == 'FUNCTIONAL') {
                         $status_change = '-functional';
                         Notification::workitemNotify(array(
-                            'type' => 'modified-functional',
+                            'type' => 'modified',
                             'workitem' => $workitem,
                             'status_change' => $status_change,
                             'job_changes' => $job_changes,
@@ -593,13 +593,12 @@ class JobController extends Controller {
                         if($status == 'Code Review') {
                             Notification::massStatusNotify($workitem);
                         }
-
-                        if ($status != 'Draft') {
+                        if (($status != 'Draft') && ($status != 'Code Review')){
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
                             if ($status == 'Functional') {
-                                Notification::workitemNotify(array('type' => 'modified-functional',
+                                Notification::workitemNotify(array('type' => 'modified',
                                 'workitem' => $workitem,
                                 'status_change' => $status_change,
                                 'job_changes' => $job_changes,
@@ -1574,7 +1573,6 @@ class JobController extends Controller {
             $gitHubUsername = $githubDetails['data']['login'];
             $repoDetails = $thisProject->extractOwnerAndNameFromRepoURL();
             $usersFork = 'https://github.com/' . $gitHubUsername . "/" . $repoDetails['name'] . ".git";
-            $emailTemplate = 'functional-howto';
             $data = array(
                 'branch_name' => $workitem->getId(),
                 'runner' => $GitHubUser->getNickname(),
@@ -1590,11 +1588,32 @@ class JobController extends Controller {
         if ($newStatus == 'Working') {
             $thisProject->setActive(1);
             $thisProject->save();
+            $options = array(
+                'type' => 'status-notify',
+                'workitem' => $workitem,
+            );
+            $data = array(
+                'nick' => $user->getNickname(),
+                'status' => $newStatus,
+            );
+            Notification::workitemNotifyHipchat($options, $data);
         }
-
         // notifications for subscribed users
         Notification::massStatusNotify($workitem);
-        
+
+        if ($newStatus == 'Bidding') {
+            $options = array(
+                'type' => 'new_bidding',
+                'workitem' => $workitem,
+            );
+            Notification::massStatusNotify($workitem);
+        }
+        if ($newStatus == 'Code Review') {
+            $options = array(
+                'type' => 'new_review',
+                'workitem' => $workitem,
+            );
+        }
         if ($newStatus != 'SuggestedWithBid') {
             $options = array(
                 'type' => 'status-notify',
@@ -1606,7 +1625,6 @@ class JobController extends Controller {
             );
             Notification::workitemNotifyHipchat($options, $data);
         }
-        
         return true;
     }
 
