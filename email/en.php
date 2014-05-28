@@ -272,7 +272,7 @@ replacement data:
 ),
 
 'commit-howto' => array(
-    
+
 ),
 'project-codereviewer-added' => array(
    'subject' => 'Worklist: Added as a Code Reviewer to Project',
