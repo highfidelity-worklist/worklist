@@ -1030,6 +1030,7 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .wl-icon-tweet\:regular {
     background-image: url('../images/wl-icons/tweet.png');
     background-image: url('../images/wl-icons/tweet.svg');
+    background-size: 21px auto;
     background-repeat: no-repeat;
 }
 
