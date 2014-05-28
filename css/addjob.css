@@ -13,7 +13,7 @@ body > .container-fluid {
 }
 
 body > .container-fluid {
-    width: 650px;
+    max-width: 650px;
 }
 
 /* make some room at top of the form */
@@ -32,9 +32,14 @@ body > .container-fluid {
     font-size: 1.1em;
 }
 
+#itemProjectCombo + .chosen-container:before {
+    content: 'Job is for this project...';
+}
+
 #labels {
     list-style-type: none;
-    padding: 3px;
+    padding: 0 3px;
+    margin: 0;
 }
 
 #labels li {
@@ -49,6 +54,14 @@ body > .container-fluid {
 #labels + input {
     float: left;
     clear: left;
+}
+
+#labels li:first-child {
+    margin-top: 5px;
+}
+
+#labels li:last-child {
+    margin-bottom: 5px;
 }
 
 #labels li:nth-child(odd) {
@@ -125,14 +138,4 @@ body > .container-fluid {
 }
 #addJob > .row:first-child select + .LV_validation_message {
     margin-top: 35px;
-}
-
-@media (max-width: 480px) {
-    #bug-id-label {
-        display: none;
-    }
-
-    #addJob > .row:first-child select + .LV_validation_message {
-        margin-top: 0;
-    }
 }
