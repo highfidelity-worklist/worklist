@@ -53,8 +53,9 @@ class Notification {
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
                 WHERE ((u.notifications & " . self::REVIEW_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") 
-                      OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") AND (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
-                  AND u.is_active = 1";
+                OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ")
+                AND (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
+                AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
                 while($row = mysql_fetch_row($res)) {
@@ -88,11 +89,13 @@ class Notification {
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
             case 'Review':
+            if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
                 $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
                 $options = array('type' => 'new_review',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
+            }
             break;
             case 'Bidding':
                 $emails = self::getNotificationEmails(self::BIDDING_EMAIL_NOTIFICATIONS);
@@ -101,11 +104,12 @@ class Notification {
                     'emails' => $emails);
                 self::workitemNotify($options);
                 break;
+
         }
     }
 
     /**
-     * Async wrapper to Notification::statusNotify to avoid big delays 
+     * Async wrapper to Notification::statusNotify to avoid big delays
      * on massive notifications.
      * 
      * @param object $workitem instance of a Workitem class
@@ -377,7 +381,7 @@ class Notification {
                     if (!empty($options['status_change']) &&($workitem->getStatus() == 'Functional')) {
                         $status_change = '-' . strtolower($workitem->getStatus());
                         $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
-                        $body = $workitem->getMechanic()->getNickname() . ' set ' . $itemLink . ' to Functional.<br /><br />'
+                        $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to Functional.<br /><br />'
                         . 'Check out the work: ' .  $workitem->getSandbox() . '<br /><br />'
                         . 'Checkout the branch created for this job: git checkout ' .  $workitem->getSandbox() . ' .<br /><br />'
                         . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
