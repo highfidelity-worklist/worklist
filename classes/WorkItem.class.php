@@ -181,23 +181,6 @@ class WorkItem {
 
     /**
      *
-     * Get users with fees
-     * in original bug job
-     *
-     * @return ARRAY list of users id
-     */
-    public function getUsersWithFeesBugId() {
-    
-        //Read Bug Job workitem
-        $bugItem = new WorkItem();
-        $bugItem->loadById($this->getBugJobId());
-        
-        //return users with fees in original job
-        return ($bugItem->getUsersWithFeesId());
-    }
-    
-    /**
-     *
      * Get users with fees in work item
      *
      * @return ARRAY list of users id
@@ -398,24 +381,7 @@ class WorkItem {
     public function getCRcompleted() {
         return $this->code_review_completed;
     }
-    
-    /**
-     *
-     * Lookup original item summary for bug job
-     *
-     * @param
-     * @return STRING	original job summary
-     */
-    public function getBugJobSummary() {
-    
-        $query=sprintf("SELECT w.summary FROM ". WORKLIST .
-                        " w WHERE w.id =%d",$this->getBugJobId());
-        $result = mysql_query($query);
-        $row = mysql_fetch_assoc($result);
         
-        return $row['summary'];
-    }
-    
     public function setWorkitemSkills($skills = false) {
         // if no array provided, get skill from db
         if (! $skills) {

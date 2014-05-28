@@ -1,7 +1,7 @@
 <?php
 
 class AddJobView extends View {
-    public $title = 'Add task / Report bug - Worklist';
+    public $title = 'Add job - Worklist';
     public $stylesheets = array(
         'css/addjob.css'
     );
@@ -31,5 +31,10 @@ class AddJobView extends View {
             );
         }
         return $ret;
+    }
+
+    public function skills() {
+        $skill = new SkillModel();
+        return $skill->loadAll();
     }
 }

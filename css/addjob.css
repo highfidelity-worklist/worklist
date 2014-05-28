@@ -48,12 +48,21 @@ body > .container-fluid {
     font-size: 0.8em;
     padding: 0 5px;
     white-space: nowrap;
-}
-
-#labels li,
-#labels + input {
+    opacity: .2;
+    cursor: pointer;
     float: left;
     clear: left;
+}
+
+@media (max-width: 960px) {
+    #labels li {
+        display: inline-block;
+        float: none;
+    }
+}
+
+#labels li.selected {
+    opacity: 1;
 }
 
 #labels li:first-child {
@@ -71,6 +80,10 @@ body > .container-fluid {
 
 #labels li:nth-child(even) {
     background-color: #E9EEEF;
+}
+
+#addJob textarea[name="notes"] {
+    min-height: 180px;
 }
 
 #addJob > .row:nth-child(4) > div > section {

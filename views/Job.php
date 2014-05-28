@@ -438,10 +438,6 @@ class JobView extends View {
         return implode(', ', $this->workitem->getSkills());
     }
 
-    public function isBug() {
-        return $this->workitem->getBugJobId() > 0 || $this->workitem->getIs_bug() == 1;
-    }
-
     public function canReview() {
         $workitem = $this->workitem;
         $worklist = $this->worklist;

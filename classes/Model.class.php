@@ -204,6 +204,10 @@ class Model extends AppObject {
         return mysql_query($sql);
     }
 
+    public function loadAll() {
+        return $this->loadMany(0);
+    }
+
     public function now() {
         $sql = 'SELECT NOW() AS ret';
         $result = mysql_query($sql);

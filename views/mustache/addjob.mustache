@@ -15,8 +15,7 @@
     </div>
     <div class="row">
         <div class="col-md-9">
-            <input type="text" id="summary" name="summary" class="form-control"
-              value="{{#bug_of}}[BUG] {{/bug_of}}" placeholder="Title" />
+            <input type="text" id="summary" name="summary" class="form-control" placeholder="Title" />
         </div>
     </div>
     <div class="row">
@@ -27,8 +26,11 @@
         </div>
         <div class="col-md-3">
             <label>Labels</label>
-            <ul id="labels"></ul>
-            <input type="text" class="form-control" placeholder="add" />
+            <ul id="labels">
+                {{#skills}}
+                    <li>{{skill}}</li>
+                {{/skills}}
+            </ul>
         </div>
     </div>
     <div class="row">

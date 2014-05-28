@@ -11,17 +11,13 @@ var AddJob = {
         $("#invite").bind("keydown", autoArgs.bind);
         $("#invite").autocomplete(autoArgs);
 
-        var autoArgsSkills = autocompleteMultiple('getskills', skillsSet, function() {
-            AddJob.addLabel();
-        });
-        var hasAutocompleter = false;
-        $("#labels + input").bind("keydown", function(event) {
-            autoArgsSkills.bind(event);
-        });
-        $("#labels + input").autocomplete(autoArgsSkills);
-        hasAutocompleter = true;
-
         $('form#addJob').submit(AddJob.formSubmit);
+        $("#labels li").click(AddJob.toggleLabel);
+
+    },
+
+    toggleLabel: function(event) {
+        $(this).toggleClass('selected');
     },
 
     formSubmit: function(event){
@@ -48,7 +44,7 @@ var AddJob = {
             return false;
         }
         var skills = '';
-        $("#labels li").each(function() {
+        $("#labels li.selected").each(function() {
             skills += (skills.length ? ', ' : '') + $(this).text();
         });
 

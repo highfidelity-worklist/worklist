@@ -160,8 +160,6 @@ class JobController extends Controller {
                 'status',
                 'project_id',
                 'sandbox',
-                'is_bug',
-                'bug_job_id',
                 'budget-source-combo'
             );
 
@@ -175,19 +173,7 @@ class JobController extends Controller {
 
             // code to add specifics to journal update messages
             $new_update_message='';
-            $is_bug = empty($_REQUEST['is_bug'])? 0 : 1;
             $budget_id = !empty($_REQUEST['budget-source-combo'])? (int) $_REQUEST['budget-source-combo'] : 0;
-            // First check to see if this is marked as a bug
-            if ($workitem->getIs_bug() != $is_bug) {
-                error_log("bug changed it");
-                if($is_bug) {
-                    $new_update_message .= 'Marked as a bug. ';
-                } else {
-                    $new_update_message .= 'Marked as not being a bug. ';
-                }
-                $job_changes[] = '-bug';
-            }
-            $workitem->setIs_bug($is_bug);
             $old_budget_id = -1;
             if ($workitem->getBudget_id() != $budget_id) {
                 $new_update_message .= 'Budget changed. ';
@@ -275,33 +261,6 @@ class JobController extends Controller {
                 $new_update_message .= "Invitations sent. ";
                 $job_changes[] = '-invitation';
             }
-            //Check if bug_job_id has changed and send notifications if it has
-            if($workitem->getBugJobId() != $bug_job_id) {
-                //Bug job Id changed
-                $workitem->setBugJobId($bug_job_id);
-                $new_update_message .= "Bug job Id changed. ";
-                $job_changes[] = '-bug job id';
-                if($bug_job_id > 0) {
-                    //Load information about original job and notify
-                    //users with fees and runner
-                    Notification::workitemNotify(array('type' => 'bug_found',
-                                                    'workitem' => $workitem,
-                                                    'recipients' => array('runner', 'usersWithFeesBug')));
-                }
-            }
-            
-            //if job is a bug, notify to journal
-            if($bug_job_id > 0) {
-                $workitem->setIs_bug(1);
-                $bugJournalMessage= " (bug of #" . $workitem->getBugJobId() . ")";
-            } elseif (isset($_REQUEST['is_bug']) && $_REQUEST['is_bug'] == 'on') {
-                $bugJournalMessage = " (which is a bug)";
-            } elseif (isset($is_bug) && $is_bug == 1) {
-                $bugJournalMessage = " (which is a bug)";
-            } else {
-                $bugJournalMessage= "";
-            }
-            
             if (empty($new_update_message)) {
                 $new_update_message = " No changes.";
             } else {
@@ -326,7 +285,6 @@ class JobController extends Controller {
             $redirectToDefaultView = true;
             if ($workitem->getStatus() != 'Draft') {
                 $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
-                                    $bugJournalMessage .
                                     $new_update_message . $related;
                 
                 $options = array(
@@ -335,7 +293,6 @@ class JobController extends Controller {
                 );
                 $data = array(
                     'nick' => $_SESSION['nickname'],
-                    'bug_journal_message' => $bugJournalMessage,
                     'new_update_message' => $new_update_message,
                     'related' => $related
                 );
@@ -1380,7 +1337,7 @@ class JobController extends Controller {
 
         if (empty($_POST['itemid'])) {
             $bid_fee_itemid = $workitem->getId();
-            $journal_message .= "\\\\#"  . $bid_fee_itemid . ' ' .$bugJournalMessage.' created by @' . $nick . ' Status set to ' . $status;
+            $journal_message .= "\\\\#"  . $bid_fee_itemid . ' created by @' . $nick . ' Status set to ' . $status;
             if (!empty($_POST['files'])) {
                 $files = explode(',', $_POST['files']);
                 foreach ($files as $file) {

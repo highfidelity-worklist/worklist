@@ -491,26 +491,6 @@ class Notification {
                 $body.= '<br><br><a href="' . SERVER_URL . '">www.worklist.net</a>';
                 
             break;
-            case 'bug_found':
-                $headers['From'] = '"' . $project_name . '-bug" ' . $from_address;
-                
-                $body = "<p>A bug has been reported related to item #".
-                $workitem->getBugJobId().
-                            " : ".$workitem->getBugJobSummary()."</p>";
-
-                $body .= "<br/><p>New item #" . $itemId . " summary: " .
-                            $workitem -> getSummary() . ".</p>";
-                $body .= "<br/><p>Notes:" . $workitem->getNotes(). "</p><br/><br/>";
-                $body .= '<br/><p>Project: ' . $project_name . "";
-                $body .= 'Creator: ' . $workitem->getCreator()->getNickname(). "";
-                if($workitem->getRunner() != '') {
-                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . "";
-                }
-                if($workitem->getMechanic() != '') {
-                   $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . "</p><br/>";
-                }
-                $body .= '<br><br><a href="' . WORKLIST_URL . $itemId . '">View new item</a>.';
-            break;
             case 'suggested':
                 $body =  'Summary: ' . $itemLink . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
@@ -780,14 +760,9 @@ class Notification {
             return;
         }
         
-        $bugJournalMessage = '';
-        if (array_key_exists('bug_journal_message', $data)) {
-            $bugJournalMessage = $data['bug_journal_message'];
-        }
-        
         $itemId = $workitem->getId();
         $itemLinkShort = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
-        $itemLink = $itemLinkShort . $bugJournalMessage . ' - ' . $workitem->getSummary();
+        $itemLink = $itemLinkShort . ' - ' . $workitem->getSummary();
 
         $message = null;
         $message_format = 'html';
