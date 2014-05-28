@@ -43,12 +43,12 @@ body > .container-fluid {
 }
 
 #labels li {
+    background-color: #E9EEEF;
     border-radius: 5px;
     margin: 2px 0;
     font-size: 0.8em;
     padding: 0 5px;
     white-space: nowrap;
-    opacity: .2;
     cursor: pointer;
     float: left;
     clear: left;
@@ -62,7 +62,8 @@ body > .container-fluid {
 }
 
 #labels li.selected {
-    opacity: 1;
+    background-color: #007F7c;
+    color: #fff;
 }
 
 #labels li:first-child {
@@ -71,15 +72,6 @@ body > .container-fluid {
 
 #labels li:last-child {
     margin-bottom: 5px;
-}
-
-#labels li:nth-child(odd) {
-    background-color: #007F7c;
-    color: #fff;
-}
-
-#labels li:nth-child(even) {
-    background-color: #E9EEEF;
 }
 
 #addJob textarea[name="notes"] {
