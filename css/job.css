@@ -11,6 +11,21 @@
     color: #333;
 }
 
+#tweet-link {
+    float: left;
+    padding: 10px 17px 7px 28px;
+    background-position: 4px 8px;
+    background-repeat: no-repeat;
+    border-right: 2px solid #e1e8ea;
+    padding: 10px 5px 7px 25px;
+}
+
+#tweet-link:hover {
+    cursor: pointer;
+    text-decoration: underline !important;
+    color: #608e96 !important;
+}
+
 #commentZone > .row:first-child {
     border-bottom: 1px solid #ddd;
     padding-bottom: 3px;

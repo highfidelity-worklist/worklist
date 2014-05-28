@@ -1129,14 +1129,12 @@ a.profile-link {
 }
 
 #following,
-#tweet-link,
 .switchmode,
 .switchmode-done {
     float: left;
 }
 
 #following:hover,
-#tweet-link:hover,
 .switchmode:hover {
     cursor: pointer;
     text-decoration: underline !important;
@@ -1149,14 +1147,7 @@ a.profile-link {
     background-repeat: no-repeat;
 }
 
-#tweet-link {
-    padding: 10px 17px 7px 28px;
-    background-position: 4px 8px;
-    background-repeat: no-repeat;
-}
-
 #following,
-#tweet-link,
 #following {
     border-right: 2px solid #e1e8ea;
 }
@@ -1409,7 +1400,6 @@ h1.newProject {
     }
 
     #following,
-    #tweet-link,
     #switchmode_edit {
         padding: 10px 5px 7px 25px;
     }
