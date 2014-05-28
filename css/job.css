@@ -13,11 +13,10 @@
 
 #tweet-link {
     float: left;
-    padding: 10px 17px 7px 28px;
+    padding: 10px 5px 7px 25px;
     background-position: 4px 8px;
     background-repeat: no-repeat;
     border-right: 2px solid #e1e8ea;
-    padding: 10px 5px 7px 25px;
 }
 
 #tweet-link:hover {
