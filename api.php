@@ -1345,7 +1345,7 @@ function addWorkitem() {
                         $data = array(
                             'job_id' => $workitem->getId(),
                             'author' => $_SESSION['nickname'],
-                            'text' => $workitem->getNotes(),
+                            'text' => nl2br($workitem->getNotes()),
                             'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
                         );
 
