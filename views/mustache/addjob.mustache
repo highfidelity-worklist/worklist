@@ -1,6 +1,6 @@
 <form method="post" id="addJob">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-sm-3">
             <select id="itemProjectCombo" name="itemProject" data-placeholder="Select project">
                 <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
                     Select project
@@ -14,27 +14,30 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-sm-9">
             <input type="text" id="summary" name="summary" class="form-control" placeholder="Title" />
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-9 col-sm-9">
             <label for="notes">Description</label>
             <textarea class="form-control autogrow" name="notes" id="notes"
               placeholder="describe the work necessary to successfully complete this job"></textarea>
         </div>
-        <div class="col-md-3">
+        <div class="col-sm-3">
             <label>Labels</label>
             <ul id="labels">
                 {{#skills}}
-                    <li>{{skill}}</li>
+                    <li>
+                        <input id="label{{id}}" type="checkbox" name="label[{{id}}]" value="{{skill}}" />
+                        <label for="label{{id}}">{{skill}}</label>
+                    </li>
                 {{/skills}}
             </ul>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-sm-9">
             <section>
                 <div id="addaccordion" class="clear"></div>
                 <a class="uploadbutton" />Select files</a> to attach.
@@ -53,7 +56,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-offset-7 col-md-2">
+        <div class="col-sm-offset-7 col-sm-2">
             <button class="btn btn-primary" type="submit" name="save_item">Add job</button>
         </div>
     </div>

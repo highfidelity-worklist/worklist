@@ -1,7 +1,7 @@
 var AddJob = {
     submitIsRunning: false,
     init: function() {
-        $('select[name="itemProject"]').chosen();
+        $('select[name="itemProject"]').chosen({width: '100%'});
 
         var imageArray = new Array();
         var documentsArray = new Array();
@@ -12,12 +12,6 @@ var AddJob = {
         $("#invite").autocomplete(autoArgs);
 
         $('form#addJob').submit(AddJob.formSubmit);
-        $("#labels li").click(AddJob.toggleLabel);
-
-    },
-
-    toggleLabel: function(event) {
-        $(this).toggleClass('selected');
     },
 
     formSubmit: function(event){
@@ -44,8 +38,10 @@ var AddJob = {
             return false;
         }
         var skills = '';
-        $("#labels li.selected").each(function() {
-            skills += (skills.length ? ', ' : '') + $(this).text();
+        $('#labels li input[name^="label"]').each(function() {
+            if ($(this).is(':checked')) {
+                skills += (skills.length ? ', ' : '') + $(this).val();
+            }
         });
 
         $.ajax({
