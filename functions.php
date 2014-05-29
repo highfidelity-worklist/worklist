@@ -1533,7 +1533,7 @@ function sendTemplateEmail($to, $template, $data = array(), $from = false){
                         $emailTemplates[$template];
 
     $subject = $replacedTemplate['subject'];
-    $html = replaceEncodedNewLinesWithBr($replacedTemplate['body']);
+    $html = $replacedTemplate['body'];
     $plain = !empty($replacedTemplate['plain']) ?
                 $replacedTemplate['plain'] :
                 null;
@@ -1574,7 +1574,7 @@ function templateReplace($templateData, $replacements){
                         '/\{' . preg_quote($find) . '\}/',
                         '/\{' . preg_quote(strtoupper($find)) . '\}/',
                             );
-            $templateIndice = preg_replace($pattern, $replacement, $templateIndice);
+            $templateIndice = preg_replace($pattern, nl2br($replacement), $templateIndice);
         }
     }
 
