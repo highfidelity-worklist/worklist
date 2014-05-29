@@ -177,7 +177,7 @@ class Notification {
                 $headers['Reply-To'] = '"' . $_SESSION['nickname'] . '" <' . $_SESSION['username'] . '>';
                 $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
                 $body .= $data['who'] . ' says:<br />'
-                      . $data['comment'] . '<br /><br />'
+                      . nl2br($data['comment']) . '<br /><br />'
                       . 'Project: ' . $project_name . '<br />'
                       . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                       if($workitem->getRunner() != '') {
