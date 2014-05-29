@@ -6,8 +6,8 @@ class AddJobView extends View {
         'css/addjob.css'
     );
     public $scripts = array(
-        'https://raw.github.com/ProgerXP/FileDrop/master/filedrop.js',
-        'https://fgnass.github.io/spin.js/spin.min.js',
+        'js/filedrop/filedrop-min.js',
+        'js/spin.js/spin.min.js',
         'js/addjob.js'
     );
 
