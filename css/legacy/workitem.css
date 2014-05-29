@@ -369,21 +369,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width:18em;
 }
 
-.bug_job_id {
-    width: 50px;
-}
-
-.bugJobSummary {
-    display: block;
-    margin: 0;
-    padding: 5px;
-    border-style: none;
-    background-color: white;
-    z-index: 3000;
-    float: right;
-    width: 200px
-}
-
 .info-notes {
     font-size: 14px;
 }

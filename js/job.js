@@ -19,9 +19,6 @@ $(function() {
             width: '140px'
         });
     }
-    if($("#is_bug").is ( ":checked" )) {
-        $("#bug_job_id").keyup();
-    }
 
     if (status_error) {
         openNotifyOverlay(status_error, false);    
@@ -85,37 +82,6 @@ $(function() {
     if (userinfotoshow){
         window.location.href='userinfo.php?id=' + userinfotoshow;
     }
-
-    //lookup and show job summary on bug_job_id change
-    $("#bug_job_id").keyup(function() {
-        var id=$("#bug_job_id").val();
-        if(id.length) {
-            $.ajax({
-                url: 'api.php',
-                dataType: 'json',
-                data: {
-                    action: 'getJobInformation',
-                    itemid: id
-                },
-                type: 'POST',
-                success: function(json) {
-                    if (!json || json === null) {
-                        alert("json null in getjobinformation");
-                        return;
-                    }
-                    if (json.error) {
-                        alert(json.error);
-                    } else {
-                        if(json.returnString.length > 0) {
-                            $('#bugJobSummary').attr('title', id);
-                        } else {
-                            $('#bugJobSummary').attr('title', 0);
-                        }
-                    }
-                }
-            });
-        }
-    });
 
     Entries.formatWorklistStatus();
 });
@@ -1051,17 +1017,6 @@ function showEndReviewForm() {
 
 function saveWorkitem() {
     var massValidation;
-    var bugJobId;
-    if($('#is_bug').is(':checked')) {
-        bugJobId = new LiveValidation('bug_job_id');
-        bugJobId.add( Validate.Custom, {
-            against: function(value,args){
-                id = $('#bugJobSummary').attr('title');
-                return (id!=0)
-            },
-            failureMessage: "Invalid item Id"
-        });
-    }
     
     var summary = new LiveValidation('summary');
     summary.add( Validate.Presence, {
@@ -1075,11 +1030,7 @@ function saveWorkitem() {
         failureMessage: "You have to choose a project!"
     });
 
-    if($('#is_bug').is(':checked')) { 
-        massValidation = LiveValidation.massValidate([editProject, summary, bugJobId],true);
-    } else {
-        massValidation = LiveValidation.massValidate([editProject,summary],true);
-    }
+    massValidation = LiveValidation.massValidate([editProject,summary],true);
                 
     if (!massValidation) {
         // Validation failed. We use openNotifyOverlay to display messages

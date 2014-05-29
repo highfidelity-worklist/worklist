@@ -28,13 +28,6 @@
 </div>
 <div id="info-top" class="info-summ-big-text">
     #{{worklist.id}}
-    {{#workitem.getBugJobId}}
-        bug of 
-        <a href="./{{workitem.getBugJobId}}?action=view" 
-          class="worklist-item" id="workitem-{{workitem.getBugJobId}}">
-          {{workitem.getBugJobId}}
-        </a>
-    {{/workitem.getBugJobId}}
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
 {{#editing}}
@@ -253,28 +246,18 @@
     <div id="right-panel">
         {{#editing}}
             <div class="skills">
-                <span class="skills-label">Skills this job requires:</span><br/>
+                <span class="skills-label">Labels:</span><br/>
                 {{#skillsCount}}
                 <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="{{commaSeparatedSkills}}," /></span>
                 {{/skillsCount}}
                 {{^skillsCount}}
                 <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
                 {{/skillsCount}}
-                <div class="floatLeft">
-                    <input type="checkbox" name="is_bug" id="is_bug" {{#isBug}}checked="checked"{{/isBug}}
-                      class="wlcheckbox" /> 
-                    <label for="is_bug" id="bugLabel">Bug</label> (If known, linked to Job #)
-                    <input type="text" id="bug_job_id" name="bug_job_id" class="bug_job_id"
-                      value="{{#workitem.getBugJobId}}{{workitem.getBugJobId}}{{/workitem.getBugJobId}}" />
-                </div>
-                <div class="bugJobSummary" id="bugJobSummary" title="{{workitem.getBugJobId}}">
-                </div>
-                <div class="clear"></div>
             </div>
         {{/editing}}
         {{^editing}}
             <div class="skills">
-                <div class="skills-label">Skills this job requires:</div>
+                <div class="skills-label">Labels:</div>
                 {{#skillsCount}}{{commaSeparatedSkills}}{{/skillsCount}}{{^skillsCount}}Thou shalt find out in the missive ...{{/skillsCount}}
             </div>
             {{#canReview}}

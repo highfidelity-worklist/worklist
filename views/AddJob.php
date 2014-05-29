@@ -1,14 +1,13 @@
 <?php
 
 class AddJobView extends View {
-    public $title = 'Add task / Report bug - Worklist';
+    public $title = 'Add job - Worklist';
     public $stylesheets = array(
         'css/addjob.css'
     );
     public $scripts = array(
-        'js/jquery/jquery.template.js',
-        'js/ajaxupload/ajaxupload.js',
-        'js/skills.js',
+        'js/filedrop/filedrop-min.js',
+        'js/spin.js/spin.min.js',
         'js/addjob.js'
     );
 
@@ -31,5 +30,10 @@ class AddJobView extends View {
             );
         }
         return $ret;
+    }
+
+    public function skills() {
+        $skill = new SkillModel();
+        return $skill->loadAll();
     }
 }

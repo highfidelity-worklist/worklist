@@ -17,112 +17,84 @@ body > .container-fluid {
     padding-top: 30px;
 }
 
-#addJob > .row:first-child > div:first-child {
-    padding-left: 0;
-}
-#addJob > .row:first-child > div:last-child {
-    padding-right: 0;
-}
-
-#addJob > .row:first-child .chosen-container:before,
-#addJob > .row:last-child .chosen-container:before,
-#addJob > .row:first-child > div:last-child:after {
-    position: absolute;
-    margin-top: -20px;
-    font-size: 0.9em;
-    color: #666;
-    cursor: pointer;
-}
-#addJob > .row:first-child .chosen-container:before {
-    content: 'Job is for this project:';
-}
-
-#addJob > .row:first-child > div:last-child {
-    text-align: right;
-}
-
-label[for="bug_job_id"] {
-    color: #666;
-}
-
-#bug_job_id {
-    font-size: 1.2em;
-    font-weight: bold;
-    display: inline-block;
-    width: 90px;
-    margin-left: 5px;
-}
-
-#addJob > .row:first-child > div:last-child:after {
-    content: 'Bug of job #';
-    right: 0;
-    margin-right: 20px;
-}
-
-#bug_job_id + span,
-#bug_job_id + p {
-    margin-top: 20px;
-    text-align: right;
-    width: 350px;
-    font-size: 0.8em;
-    height: 20px;
-    margin-top: 10px;
-    right: 0;
-}
-
-#bug_job_id + p {
-    color: #007F7c;
-}
-
-#bug_job_id + span,
-#bug_job_id + p,
-#bug_job_id + p:after {
-    position: absolute;
-}
-
-#bug_job_id + p:after {
-    content: ' ';
-    margin: -3px 0 0 -80px;
-    height: 25px;
-    display: inline-block;
-    width: 80px;
-    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
-}
-
 #addJob > .row {
-    padding: 15px 0 10px;
+    padding: 2px 0 0;
 }
 
-#addJob > .row > label {
+#addJob > .row label {
     color: #608a92;
     font-weight: normal;
     margin: 0;
-    font-size: 1.3em;
+    font-size: 1.1em;
 }
 
-#addJob > .row:last-child {
-    background-color: #E8EFF0;
-    padding: 30px 20px;
+#itemProjectCombo + .chosen-container:before {
+    content: 'Job is for this project...';
+    color: #666;
 }
 
-#addJob > .row:last-child .chosen-container {
-    width: 250px !important;
+#addJob .form-control {
+    font-size: 18px;
 }
-#addJob > .row:last-child .chosen-container:before {
-    content: 'Set the status of this job to:';
+
+#labels {
+    list-style-type: none;
+    padding: 0 3px;
+    margin: 0;
 }
+
+#labels li {
+    margin: 2px 0;
+}
+
+#labels li input[type="checkbox"] {
+    display: none;
+}
+
+#labels li input[type="checkbox"] + label {
+    background-color: #E9EEEF;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 0.9em;
+    padding: 0 5px;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #333;
+}
+
 @media (max-width: 768px) {
-    #addJob > .row:last-child .chosen-container {
-        width: 180px !important;
+    #labels li {
+        display: inline-block;
     }
 }
 
-#addJob input[type=submit] {
+#labels li input[type="checkbox"]:checked + label {
+    background-color: #007F7c;
+    color: #fff;
+}
+
+#addJob textarea[name="notes"] {
+    min-height: 180px;
+}
+
+#addJob > .row:nth-child(4) > div > div,
+#addJob > .row:nth-child(4) > div > div > div {
+    padding: 0;
+}
+
+#addJob > .row:nth-child(4) > div fieldset label em {
+    color: #333;
+    font-weight: none;
+    text-decoration: underline;
+    cursor: pointer;
+    font-style: normal;
+}
+
+#addJob > .row:last-child > div {
+    text-align: right;
+}
+
+#addJob button[type=submit] {
     background: none #007F7c;
     font-weight: bold;
     border-radius: 5px;
@@ -135,38 +107,88 @@ label[for="bug_job_id"] {
 /**
  * Attachments styling
  */
-.uploadbutton,
 #attachments {
-    display: inline-block;
-    vertical-align: middle;
+    background-color: #E9EEEF;
+    border: 1px dashed #cbcbcb;
+    padding: 10px;
+    color: #007F7c;
 }
 
-#attachments {
-    margin: 5px;
+#attachments > .loading {
+    float: right;
+    width: 12px;
+    height: 12px;
+    position: relative;
+    opacity: .4;
+    margin: 6px 10px;
 }
 
-#addJob .attachment {
+#attachments > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#attachments > ul > li {
     margin: 6px 3px;
+    display: inline-block;
+    z-index: 2;
 }
 
-#addJob .attachment span:first-child {
+#attachments > ul > li > i {
     margin-right: -5px;
 }
 
-#addJob .attachment span {
+#attachments > ul > li {
     padding: 2px 5px;
     background-color: #e9eeef;
     font-size: 12px;
     color: #608E96;
-    border-left: solid 1px #cbcbcb;
-    border-bottom: solid 1px #cbcbcb;
-    border-top: solid 1px #cbcbcb;
+    border-width: 1px;
 }
 
-#addJob .attachment .removeAttachment {
+#attachments > ul > li,
+#attachments > ul > li > i {
+    border-color: #cbcbcb;
+    border-style: solid;
+}
+
+#attachments > ul > li > i {
     cursor: pointer;
-    border-right: solid 1px #cbcbcb;
     color: #000000;
+    padding: 4px 0 4px 5px;
+    border-width: 0 0 0 1px;
+    margin: -2px 2px;
+    line-height: 1.3em;
+}
+
+
+/* Hides <input type="file"> while simulating "Browse" button: */
+#attachments .fd-file {
+  opacity: 0;
+  font-size: 118px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  filter: alpha(opacity=0);
+  font-family: sans-serif;
+}
+
+/* Provides visible feedback when use drags a file over the drop zone: */
+#attachments.fd-zone.over {
+    border-color: #007F7c;
+    background: #eee;
+}
+
+/* Essential FileDrop zone element configuration: */
+#attachments.fd-zone {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
 }
 
 /**
@@ -181,12 +203,7 @@ label[for="bug_job_id"] {
     margin-top: 35px;
 }
 
-@media (max-width: 480px) {
-    #bug-id-label {
-        display: none;
-    }
-
-    #addJob > .row:first-child select + .LV_validation_message {
-        margin-top: 0;
-    }
+/* won't display the footer on addjob */
+section#footer {
+    display: none;
 }
