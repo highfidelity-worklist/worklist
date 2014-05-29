@@ -38,21 +38,10 @@
     </div>
     <div class="row">
         <div class="col-sm-9">
-            <section>
-                <div id="addaccordion" class="clear"></div>
-                <a class="uploadbutton" />Select files</a> to attach.
-                <div id="attachments"></div>
-                <input type="hidden" name="files" value="" />
-                <div class="uploadnotice"></div>
-                <script type="text/html" id="uploadDocument">
-                    <div class="attachment">
-                        <span><#= title #></span>
-                        <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-                            <i class="fa fa-times"></i>
-                        </span>
-                    </div>
-                </script>
-            </section>
+            <fieldset id="attachments">
+              <p>Drop or <em>select files</em> files to attach</p>
+              <ul></ul>
+            </fieldset>
         </div>
     </div>
     <div class="row">

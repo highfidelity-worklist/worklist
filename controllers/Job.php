@@ -8,7 +8,7 @@ require_once('models/Budget.php');
 require_once('models/Users_Favorite.php');
 
 class JobController extends Controller {
-    public function run($action, $param) {
+    public function run($action, $param = '') {
         $method = '';
         switch($action) {
             case 'view':
@@ -1318,22 +1318,13 @@ class JobController extends Controller {
         // if files were uploaded, update their workitem id
         $file = new File();
         // update images first
-        if (isset($fileUpload['images'])) {
-            foreach ($fileUpload['images'] as $image) {
+        if (isset($fileUpload['uploads'])) {
+            foreach ($fileUpload['uploads'] as $image) {
                 $file->findFileById($image);
                 $file->setWorkitem($workitem->getId());
                 $file->save();
             }
         }
-        // update documents
-        if (isset($fileUpload['documents'])) {
-            foreach ($fileUpload['documents'] as $document) {
-                $file->findFileById($document);
-                $file->setWorkitem($workitem->getId());
-                $file->save();
-            }
-        }
-
         if (empty($_POST['itemid'])) {
             $bid_fee_itemid = $workitem->getId();
             $journal_message .= "\\\\#"  . $bid_fee_itemid . ' created by @' . $nick . ' Status set to ' . $status;

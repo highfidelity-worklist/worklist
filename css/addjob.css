@@ -77,17 +77,20 @@ body > .container-fluid {
     min-height: 180px;
 }
 
-#addJob > .row:nth-child(4) > div > section {
+#addJob > .row:nth-child(4) > div > div {
     background-color: #E9EEEF;
     border: 1px dashed #cbcbcb;
     padding: 10px;
     color: #007F7c;
-    min-height: 80px;
+    min-height: 120px;
 }
 
-#addJob > .row:nth-child(4) > div > section > a {
+#addJob > .row:nth-child(4) > div fieldset em {
     text-decoration: underline;
     color: #333;
+    font-style: normal;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 #addJob > .row:last-child > div {
@@ -111,29 +114,45 @@ body > .container-fluid {
     margin: 5px;
 }
 
-#addJob .attachment {
+#attachments > .loading {
+    float: right;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    opacity: .4;
+}
+
+#attachments > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#attachments > ul > li {
     margin: 6px 3px;
     display: inline-block;
 }
 
-#addJob .attachment span:first-child {
+#attachments > ul > li > i {
     margin-right: -5px;
 }
 
-#addJob .attachment span {
+#attachments > ul > li {
     padding: 2px 5px;
     background-color: #e9eeef;
     font-size: 12px;
     color: #608E96;
-    border-left: solid 1px #cbcbcb;
-    border-bottom: solid 1px #cbcbcb;
-    border-top: solid 1px #cbcbcb;
+    border: solid 1px #cbcbcb;
 }
 
-#addJob .attachment .removeAttachment {
+#attachments > ul > li > i {
     cursor: pointer;
-    border-right: solid 1px #cbcbcb;
     color: #000000;
+    padding: 3px;
+}
+
+#attachments form {
+    z-index: -1;
 }
 
 /**
@@ -152,3 +171,29 @@ body > .container-fluid {
 section#footer {
     display: none;
 }
+
+
+/* Essential FileDrop zone element configuration: */
+.fd-zone {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+}
+
+/* Hides <input type="file"> while simulating "Browse" button: */
+.fd-file {
+  opacity: 0;
+  font-size: 118px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  filter: alpha(opacity=0);
+  font-family: sans-serif;
+}
+
+/* Provides visible feedback when use drags a file over the drop zone: */
+.fd-zone.over { border-color: maroon; background: #eee; }

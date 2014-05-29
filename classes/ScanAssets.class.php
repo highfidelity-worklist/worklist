@@ -5,12 +5,6 @@ class ScanAssets {
     public function scanAll() {
         error_reporting(E_ALL | E_STRICT);
         set_time_limit(15*60);
-        $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
-        if (!$con) {
-            die('Could not connect: ' . mysql_error());
-        }
-        mysql_select_db(DB_NAME, $con);
-
         $scan_files = array(); 
         $sql_get_files = 'SELECT `id`, `userid`,(SELECT `username` FROM `' . USERS . '` where `id`=files.userid)
         AS `useremail`, files.workitem AS `worklist_id`, `url`, `title`, `description`  
@@ -100,13 +94,6 @@ class ScanAssets {
     public function scanFile($id) {
         set_time_limit(15*60);
         
-        $con = mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD);
-        if (!$con) {
-            error_log('Could not connect: ' . mysql_error());
-            die();
-        }
-        mysql_select_db(DB_NAME, $con);
-
         //scan_files = array(); 
         $sql_get_files = 'SELECT `id`, `userid`,(SELECT `username` FROM `' . USERS . '` where `id`=files.userid)
         AS `useremail`, files.workitem AS `worklist_id`, `url`, `title`, `description`  

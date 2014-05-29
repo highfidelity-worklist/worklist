@@ -2,6 +2,7 @@
 /**
  * Copyright 2014 - High Fidelity, Inc.
  */
+
 require_once("config.php");
  
 class Dispatcher {
@@ -23,8 +24,19 @@ class Dispatcher {
             'require' => array('method' => '\w+'),
             'default' => array('method' => 'index')
         ));
-
         $dispatcher->get('/github/:method(/:param)', array('Github'), array(
+            'require' => array(
+                'method' => '\w+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
+
+        $dispatcher->any('/file(/:method)', array('File'), array(
+            'require' => array('method' => '\w+'),
+            'default' => array('method' => 'index')
+        ));
+        $dispatcher->any('/file/:method(/:param)', array('File'), array(
             'require' => array(
                 'method' => '\w+',
                 'param' => '.*'
