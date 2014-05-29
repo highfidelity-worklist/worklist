@@ -377,36 +377,45 @@ class Notification {
             case 'modified':
                 if ($workitem->getStatus() != 'Draft') {
                     $from_changes = "";
-                    if (!empty($options['status_change'])) {
-                        $from_changes = $options['status_change'];
-                    }
-                    if (isset($options['job_changes'])) {
-                        if (count($options['job_changes']) > 0) {
-                            $from_changes .= $options['job_changes'][0];
-                            if (count($options['job_changes']) > 1) {
-                                $from_changes .= ' +other changes';
-                            }
-                        }
-                    }
-                    if (!empty($from_changes)) {
-                        $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
-                    } else {
+                    if (!empty($options['status_change']) &&($workitem->getStatus() == 'Functional')) {
                         $status_change = '-' . strtolower($workitem->getStatus());
                         $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
+                        $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to Functional.<br /><br />'
+                        . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
+                        . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
+                        . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
+                    } else {
+                        if (!empty($options['status_change'])) {
+                            $from_changes = $options['status_change'];
+                        }
+                        if (isset($options['job_changes'])) {
+                            if (count($options['job_changes']) > 0) {
+                                $from_changes .= $options['job_changes'][0];
+                                if (count($options['job_changes']) > 1) {
+                                    $from_changes .= ' +other changes';
+                                }
+                            }
+                        }
+                        if (!empty($from_changes)) {
+                            $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
+                        } else {
+                            $status_change = '-' . strtolower($workitem->getStatus());
+                            $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
+                        }
+                        $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
+                            . $data['changes'] . '<br /><br />'
+                            . 'Project: ' . $project_name . '<br />'
+                            . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                        if($workitem->getRunner() != '') {
+                            $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        }
+                        if($workitem->getMechanic() != '') {
+                            $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                        }
+                        $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
+                            . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
+                            . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                     }
-                    $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-                        . $data['changes'] . '<br /><br />'
-                        . 'Project: ' . $project_name . '<br />'
-                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                    if($workitem->getRunner() != '') {
-                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                    }
-                    if($workitem->getMechanic() != '') {
-                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                    }
-                    $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
-                        . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                        . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
 
