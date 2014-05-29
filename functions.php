@@ -1533,7 +1533,7 @@ function sendTemplateEmail($to, $template, $data = array(), $from = false){
                         $emailTemplates[$template];
 
     $subject = $replacedTemplate['subject'];
-    $html = $replacedTemplate['body'];
+    $html = replaceEncodedNewLinesWithBr($replacedTemplate['body']);
     $plain = !empty($replacedTemplate['plain']) ?
                 $replacedTemplate['plain'] :
                 null;
