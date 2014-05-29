@@ -500,7 +500,7 @@ class Notification {
 
                 $body .= "<br/><p>New item #" . $itemId . " summary: " .
                             $workitem -> getSummary() . ".</p>";
-                $body .= "<br/><p>Notes:" . nl2br($workitem->getNotes()). "</p><br/><br/>";
+                $body .= "<br/><p>Notes:<br/>" . nl2br($workitem->getNotes()). "</p><br/><br/>";
                 $body .= '<br/><p>Project: ' . $project_name . "";
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname(). "";
                 if($workitem->getRunner() != '') {
@@ -620,7 +620,7 @@ class Notification {
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . '</p>';
-                $body .= '<p>Notes: ' . nl2br($workitem->getNotes()) . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job <a href="'. WORKLIST_URL . $itemId . '">here</a>.' . '<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
@@ -636,7 +636,7 @@ class Notification {
                 if ($workitem->getRunnerId()) {
                     $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
-                $body .= '<p>Notes: ' . nl2br($workitem->getNotes()) . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
@@ -667,7 +667,7 @@ class Notification {
                 if ($workitem->getRunnerId()) {
                     $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
-                $body .= '<p>Notes: ' . nl2br($workitem->getNotes()) . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
@@ -683,7 +683,7 @@ class Notification {
                 if ($workitem->getRunnerId()) {
                     $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
-                $body .= '<p>Notes: ' . nl2br($workitem->getNotes()) . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
