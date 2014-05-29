@@ -8,9 +8,6 @@ class AddJobView extends View {
     public $scripts = array(
         'https://raw.github.com/ProgerXP/FileDrop/master/filedrop.js',
         'https://fgnass.github.io/spin.js/spin.min.js',
-        'js/jquery/jquery.template.js',
-        'js/ajaxupload/ajaxupload.js',
-        'js/skills.js',
         'js/addjob.js'
     );
 

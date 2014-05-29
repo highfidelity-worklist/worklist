@@ -1,6 +1,8 @@
 var AddJob = {
     submitIsRunning: false,
     uploadedFiles: [],
+    filesUploading: 0,
+
     init: function() {
         $('select[name="itemProject"]').chosen({width: '100%'});
 
@@ -20,18 +22,17 @@ var AddJob = {
         zone.event('send', function (files) {
             files.each(function (file) {
                 file.event('done', AddJob.fileUploadDone);
-                //file.event('error', function (e, xhr) {});
+                file.event('error', AddJob.fileUploadError);
                 file.sendTo('./file/add');
+                AddJob.filesUploading++;
                 AddJob.animateUploadSpin();
             });
         });
-
-        // <iframe> uploads are special - handle them.
-        zone.event('iframeDone', function (xhr) {
-          alert('Done uploading via <iframe>, response:\n\n' + xhr.responseText);
-        });
-
         zone.multiple(true);
+
+        $('#attachments > label > em').click(function() {
+            $('#attachments input.fd-file').click();
+        })
     },
 
     fileUploadDone: function(xhr) {
@@ -46,17 +47,28 @@ var AddJob = {
                 }
                 Utils.parseMustache('partials/upload-document', fileData, function(parsed) {
                     $('#attachments > ul').append(parsed);
-                    $('#attachments li[attachment=' + fileData.fileid + ']').click(AddJob.removeFile);
+                    $('#attachments li[attachment=' + fileData.fileid + '] > i').click(AddJob.removeFile);
                     AddJob.uploadedFiles.push(fileData.fileid);
                 });
-
-                AddJob.stopUploadSpin();
+                AddJob.fileUploadFinished();
             }
         });
+
+    },
+
+    fileUploadError: function(e, xhr) {
+        AddJob.fileUploadFinished();
+    },
+
+    fileUploadFinished: function() {
+        AddJob.filesUploading--;
+        if (AddJob.filesUploading == 0) {
+            AddJob.stopUploadSpin();
+        }
     },
 
     removeFile: function(event) {
-        var id = parseInt($(this).attr('attachment'));
+        var id = parseInt($(this).parent().attr('attachment'))
         $('#attachments li[attachment=' + id + ']').remove();
         for (var i = 0; i < AddJob.uploadedFiles.length; i++) {
             if (AddJob.uploadedFiles[i] == id) {
