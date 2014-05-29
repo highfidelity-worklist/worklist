@@ -83,7 +83,18 @@ var AddJob = {
         }
         $('<div>').addClass('loading').prependTo('#attachments');
         var target = $('#attachments > .loading')[0];
-        var spinner = new Spinner().spin(target);
+        var spinner = new Spinner({
+            lines: 9,
+            length: 3,
+            width: 4,
+            radius: 6,
+            corners: 1,
+            rotate: 12,
+            direction: 1,
+            color: '#000',
+            speed: 1.1,
+            trail: 68
+          }).spin(target);
     },
 
     stopUploadSpin: function() {

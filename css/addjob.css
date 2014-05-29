@@ -116,10 +116,11 @@ body > .container-fluid {
 
 #attachments > .loading {
     float: right;
-    width: 25px;
-    height: 25px;
+    width: 12px;
+    height: 12px;
     position: relative;
     opacity: .4;
+    margin: 6px 10px;
 }
 
 #attachments > ul {
