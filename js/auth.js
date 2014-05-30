@@ -1,5 +1,6 @@
 var Auth = {
     emailSubmit_running: false,
+    confirmSubmit_running: false,
     countries: [],
 
     init: function() {
@@ -41,10 +42,12 @@ var Auth = {
                         if (!data.exists) {
                             Auth.renderCountryList(dialog);
                         }
-                        $('form .btn-primary', dialog).click(function() {
-                            $('form', dialog).submit();
-                        });
                         $('form', dialog).submit(function(event) {
+                            if (Auth.confirmSubmit_running) {
+                                return false;
+                            }
+                            Auth.confirmSubmit_running = true;
+                            event.preventDefault();
                             return data.exists ? Auth.authorize(dialog) : Auth.signup(dialog);
                         });
                     },

@@ -1836,7 +1836,7 @@ class User {
     public static function signup($username, $nickname, $password, $access_token, $country) {
         $sql = "
             INSERT 
-            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country)
+            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country, is_active)
             VALUES(
                 '" . mysql_real_escape_string($username) . "', 
                 '" . mysql_real_escape_string($nickname) . "',
@@ -1844,7 +1844,8 @@ class User {
                 '" . uniqid() . "',
                 NOW(),
                 'not-applicable',
-                '" . mysql_real_escape_string($country) . "'
+                '" . mysql_real_escape_string($country) . "',
+                0
             )";
         $res = mysql_query($sql);
         $user_id = mysql_insert_id();

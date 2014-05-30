@@ -98,6 +98,18 @@ class GithubController extends Controller {
                             // already linked account, let's log him in
                             if ($user->isActive()) {
                                 User::login($user, $redir);
+                            } else {
+                                // users that didn't confirmed their email addresses
+                                $jobs = new JobsController();
+                                $jobs->view->jumbotron =
+                                    "<h2>E-mail confirmation required!</h2>
+                                    <p>
+                                      Please check your inbox and follow your e-mail confirmation message
+                                      from Worklist. Then try to login again.
+                                    </p>
+                                    ";
+                                $jobs->run();
+                                return;
                             }
                             return;
                         } else {
