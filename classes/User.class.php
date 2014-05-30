@@ -1848,7 +1848,11 @@ class User {
             )";
         $res = mysql_query($sql);
         $user_id = mysql_insert_id();
-        if ($user_id && $ret = new User($user_id) && !$ret->isGithub_connected()) {
+        if (!$user_id) {
+            return false;
+        }
+        $ret = new User($user_id);
+        if ($ret->getId() && !$ret->isGithub_connected()) {
             $ret->storeCredentials($access_token);
         }
         return $ret;
