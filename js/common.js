@@ -450,7 +450,6 @@ $(function () {
     $('#about').watermark('Tell us about yourself', {useNative: false});
     $('#contactway').watermark('Skype, email, phone, etc.', {useNative: false});
     $('#payway').watermark('Paypal, check, etc.', {useNative: false});
-    $('.skills-watermark').watermark('Your skills', {useNative: false});
     $('#findus').watermark('Google, Yahoo, others..', {useNative: false});
     $('#phoneconfirmstr').watermark('Phone confirm string', {useNative: false});
     // @TODO: This looks specific to masspay -- lithium
