@@ -2,6 +2,7 @@
 /**
  * Copyright 2014 - High Fidelity, Inc.
  */
+
 require_once("config.php");
  
 class Dispatcher {
@@ -12,7 +13,6 @@ class Dispatcher {
 
         $dispatcher = new Pux\Mux;
 
-        $dispatcher->get('/addjob', array('AddJob'));
         $dispatcher->get('/confirmation', array('Confirmation'));
         $dispatcher->post('/confirmation', array('Confirmation'));
         $dispatcher->get('/feedlist', array('FeedList'));
@@ -24,8 +24,19 @@ class Dispatcher {
             'require' => array('method' => '\w+'),
             'default' => array('method' => 'index')
         ));
-
         $dispatcher->get('/github/:method(/:param)', array('Github'), array(
+            'require' => array(
+                'method' => '\w+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
+
+        $dispatcher->any('/file(/:method)', array('File'), array(
+            'require' => array('method' => '\w+'),
+            'default' => array('method' => 'index')
+        ));
+        $dispatcher->any('/file/:method(/:param)', array('File'), array(
             'require' => array(
                 'method' => '\w+',
                 'param' => '.*'
@@ -60,8 +71,17 @@ class Dispatcher {
         $dispatcher->post('/user/:id', array('User'));
 
         $dispatcher->get('/welcome', array('Welcome'));
-        $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
-        $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));
+
+        $dispatcher->get('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
+        $dispatcher->post('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
+        $dispatcher->any('/job/:method(/:param)', array('Job'), array(
+            'require' => array(
+                'method' => '[a-zA-Z0-9]+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
+
         $dispatcher->get('/:project', array('Project'));
         $dispatcher->post('/:project', array('Project'));
 

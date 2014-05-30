@@ -27,7 +27,6 @@ class JobView extends View {
         'js/review.js',
         'js/favorites.js',
         'js/github.js',
-        'js/skills.js',
         'js/entries.js',
         'js/job.js'
     );
@@ -436,10 +435,6 @@ class JobView extends View {
 
     public function commaSeparatedSkills() {
         return implode(', ', $this->workitem->getSkills());
-    }
-
-    public function isBug() {
-        return $this->workitem->getBugJobId() > 0 || $this->workitem->getIs_bug() == 1;
     }
 
     public function canReview() {
