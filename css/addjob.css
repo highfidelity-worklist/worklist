@@ -41,7 +41,15 @@ body > .container-fluid {
     list-style-type: none;
     padding: 0 3px;
     margin: 0;
+    position: absolute;
 }
+
+@media (max-width: 768px) {
+    #labels {
+        position: inherit;
+    }
+}
+
 
 #labels li {
     margin: 2px 0;
