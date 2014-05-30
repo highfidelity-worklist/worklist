@@ -10,6 +10,7 @@ class GithubController extends Controller {
         $method = '';
         switch($action) {
             case 'login':
+            case 'safe':
             case 'logout':
             case 'connect':
             case 'authorize':
@@ -133,6 +134,25 @@ class GithubController extends Controller {
         }
         // let's generate the session state value an try to authorize
         self::generateStateAndLogin($redir);
+    }
+
+    public function safe() {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->view = new SafeLoginView();
+            parent::run();
+            return;
+        }
+        $this->view = null;
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $redir = $_POST['redir'];
+        $user = new User();
+        if ($user->findUserByUsername($username) && $user->authenticate($password)) {
+            User::login($user, $redir);
+        } else {
+            // safe login failed
+            Utils::redirect($redir);
+        }
     }
 
     public function logout($redir = './') {
