@@ -1165,8 +1165,8 @@ function getProjectList() {
 /* This function is used to add <br/> to encoded strings
  */
 function replaceEncodedNewLinesWithBr($string) {
-    $string =  str_replace('&#13;&#10;', '<br/>', $string);
-    return str_replace('&#10;', '<br/>', $string);
+    $new_liners = array('\n\r','\r\n','\n','\r');
+    return str_replace($new_liners, '<br/>', $string);
 }
 
 /* outputForJS
@@ -1574,7 +1574,7 @@ function templateReplace($templateData, $replacements){
                         '/\{' . preg_quote($find) . '\}/',
                         '/\{' . preg_quote(strtoupper($find)) . '\}/',
                             );
-            $templateIndice = preg_replace($pattern, $replacement, $templateIndice);
+            $templateIndice = preg_replace($pattern, nl2br($replacement), $templateIndice);
         }
     }
 
