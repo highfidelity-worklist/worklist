@@ -896,7 +896,7 @@ class User {
      * @param $gitHubId
      * @return bool if user has authorized the app with github, false otherwise
      */
-    public function isGithub_connected($gitHubId) {
+    public function isGithub_connected($gitHubId = GITHUB_OAUTH2_CLIENT_ID) {
         $userId = getSessionUserId();
         if ($userId == 0) {
             return false;
@@ -1848,7 +1848,7 @@ class User {
             )";
         $res = mysql_query($sql);
         $user_id = mysql_insert_id();
-        if ($ret = new User($user_id)) {
+        if ($user_id && $ret = new User($user_id) && !$ret->isGithub_connected()) {
             $ret->storeCredentials($access_token);
         }
         return $ret;
