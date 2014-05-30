@@ -92,6 +92,9 @@ function isJSON(json) {
 function saveSettings() {
     var values;
     var massValidation = LiveValidation.massValidate( [ nickname, username, paypal, w9_accepted ], true);
+    var arrayValueForTagWithName = function (tag, name) {
+      return $(tag + '[name="' + name + '[]"]').map(function(){ return $(this).val(); }).get();
+    }
     if (massValidation) {
         values = {
             save: 1,
@@ -110,6 +113,10 @@ function saveSettings() {
             w9_accepted: $('#w9_accepted').is(':checked'),
             first_name: $("#first_name").val(),
             last_name: $("#last_name").val(),
+            system_operating_systems: arrayValueForTagWithName('input', 'system_operating_systems'),
+            system_hardware: arrayValueForTagWithName('textarea', 'system_hardware'),
+            system_id: arrayValueForTagWithName('input', 'system_id'),
+            system_delete: arrayValueForTagWithName('input', 'system_delete'),
         };
     } else {
         // Validation failed. We use openNotifyOverlay to display messages
