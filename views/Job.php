@@ -27,7 +27,6 @@ class JobView extends View {
         'js/review.js',
         'js/favorites.js',
         'js/github.js',
-        'js/skills.js',
         'js/entries.js',
         'js/job.js'
     );

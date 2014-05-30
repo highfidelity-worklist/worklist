@@ -160,16 +160,11 @@ class SettingsController extends Controller {
             }
 
             $about = isset($_POST['about']) ? strip_tags(substr($_POST['about'], 0, 150)) : "";
-            $skills = isset($_POST['skills']) ? strip_tags($_POST['skills']) : "";
             $contactway = isset($_POST['contactway']) ? strip_tags($_POST['contactway']) : "";
 
             if ($about != $user->getAbout()) {
                 $saveArgs['about'] = 1;
                 $messages[] = "Your personal information (about) has been updated.";
-            }
-            if ($skills != $user->getSkills()) {
-                $saveArgs['skills'] = 1;
-                $messages[] = "Your skills has been updated.";
             }
             if ($contactway != $user->getContactway()) {
                 $saveArgs['contactway'] = 1;
