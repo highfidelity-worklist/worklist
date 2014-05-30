@@ -1174,7 +1174,6 @@ function addProject() {
     }
 }
 
-
 function setFavorite() {
     if ( !isset($_REQUEST['favorite_user_id']) ||
          !isset($_REQUEST['newVal']) ) {
@@ -1196,7 +1195,7 @@ function setFavorite() {
             $favorite_user->findUserById($favorite_user_id);
             if ($newVal == 1) {
                                     
-                $resetUrl = dSECURE_SERVER_URL . 'jobs#userid=' . $favorite_user_id ;
+                $resetUrl = SECURE_SERVER_URL . 'jobs#userid=' . $favorite_user_id ;
                 $resetUrl = '<a href="' . $resetUrl . '" title="Your profile">' . $resetUrl . '</a>';
                 $data = array();
                 $data['link'] = $resetUrl;
