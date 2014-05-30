@@ -110,6 +110,45 @@
 
 
 /**
+ * User's System settings
+ */
+#settings .system-wrapper {
+    margin: 15px 0 0;
+}
+#settings .system-wrapper h4 {
+    font-weight: bold;
+    margin: 15px 0 0;
+    display: inline-block;
+    color: #007f7c;
+}
+#settings .system-wrapper label {
+    color: #666;
+    margin: 15px 0 0;
+}
+#settings .system-wrapper label.system-label-operating-systems {
+    margin: 0;
+}
+#settings .system-remove {
+    display: block;
+    float: right;
+    margin: 15px 0 0;
+    color: #007f7c;
+    font-weight: bold;
+    text-decoration: underline;
+}
+#settings .system-add {
+    display: inline-block;
+    margin: 15px 0 0;
+    color: #007f7c;
+    font-weight: bold;
+    text-decoration: underline;
+}
+#settings .system-placeholder-wrapper {
+    display: none;
+}
+
+
+/**
  * validation messages 
  */
 .LV_validation_message {
