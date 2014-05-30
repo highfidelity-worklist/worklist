@@ -73,6 +73,10 @@ body > .container-fluid {
 @media (max-width: 768px) {
     #labels li {
         display: inline-block;
+        margin: 2px 0;
+    }
+    #labels li input[type="checkbox"] + label {
+        font-size: 1.2em;
     }
 }
 
