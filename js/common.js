@@ -372,7 +372,7 @@ function autocompleteMultiple(status, datasource, fAfter) {
         autocompleteArguments.source = function( request, response ) {
          // delegate back to autocomplete, but extract the last term
             response( $.ui.autocomplete.filter(
-                    skillsSet, autocompleteExtractLast( request.term ) ) );
+                    datasource, autocompleteExtractLast( request.term ) ) );
             };
     }
     return autocompleteArguments;
