@@ -52,7 +52,7 @@ body > .container-fluid {
 
 
 #labels li {
-    margin: 2px 0;
+    margin: 0;
 }
 
 #labels li input[type="checkbox"] {
@@ -63,7 +63,7 @@ body > .container-fluid {
     background-color: #E9EEEF;
     border-radius: 5px;
     display: inline-block;
-    font-size: 0.9em;
+    font-size: 0.8em;
     padding: 0 5px;
     white-space: nowrap;
     cursor: pointer;
