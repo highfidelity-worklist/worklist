@@ -1,6 +1,3 @@
-var imageArray = new Array();
-var documentsArray = new Array();
-
 function ToolTip() {
     xOffset = 10;
     yOffset = 20;
@@ -57,37 +54,6 @@ $(document).ready(function() {
     // have additional checkboxes in the future..   - lithium
     $('.code_review_chks, #cr_users_specified_field').change(function(){
         validateCodeReviews(this);
-    });
-
-    // get the project files
-    $.ajax({
-        type: 'post',
-        url: 'jsonserver.php',
-        data: {
-            projectid: projectid,
-            userid: user_id,
-            action: 'getFilesForProject'
-        },
-        dataType: 'json',
-        success: function(data) {
-            if (data.success) {
-                var images = data.data.images;
-                var documents = data.data.documents;
-                for (var i=0; i < images.length; i++) {
-                    imageArray.push(images[i].fileid);
-                }
-                for (var i=0; i < documents.length; i++) {
-                    documentsArray.push(documents[i].fileid);
-                }
-                var files = $('#uploadedFiles').parseTemplate(data.data);
-                $('#uploadPanel').append(files);
-                $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
-                $('#accordion').bind( "accordionchangestart", function(event, ui) {
-                    $('#uploadButtonDiv').appendTo(ui.newContent);
-                    $('#uploadButtonDiv').css('display', 'block');
-                });
-            }
-        }
     });
 
     // Get the project runners
