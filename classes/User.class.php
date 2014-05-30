@@ -896,7 +896,7 @@ class User {
      * @param $gitHubId
      * @return bool if user has authorized the app with github, false otherwise
      */
-    public function isGithub_connected($gitHubId) {
+    public function isGithub_connected($gitHubId = GITHUB_OAUTH2_CLIENT_ID) {
         $userId = getSessionUserId();
         if ($userId == 0) {
             return false;
@@ -1836,7 +1836,7 @@ class User {
     public static function signup($username, $nickname, $password, $access_token, $country) {
         $sql = "
             INSERT 
-            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country)
+            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country, is_active)
             VALUES(
                 '" . mysql_real_escape_string($username) . "', 
                 '" . mysql_real_escape_string($nickname) . "',
@@ -1844,11 +1844,16 @@ class User {
                 '" . uniqid() . "',
                 NOW(),
                 'not-applicable',
-                '" . mysql_real_escape_string($country) . "'
+                '" . mysql_real_escape_string($country) . "',
+                0
             )";
         $res = mysql_query($sql);
         $user_id = mysql_insert_id();
-        if ($ret = new User($user_id)) {
+        if (!$user_id) {
+            return false;
+        }
+        $ret = new User($user_id);
+        if ($ret->getId() && !$ret->isGithub_connected()) {
             $ret->storeCredentials($access_token);
         }
         return $ret;

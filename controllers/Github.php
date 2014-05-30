@@ -10,6 +10,7 @@ class GithubController extends Controller {
         $method = '';
         switch($action) {
             case 'login':
+            case 'safe':
             case 'logout':
             case 'connect':
             case 'authorize':
@@ -98,6 +99,18 @@ class GithubController extends Controller {
                             // already linked account, let's log him in
                             if ($user->isActive()) {
                                 User::login($user, $redir);
+                            } else {
+                                // users that didn't confirmed their email addresses
+                                $jobs = new JobsController();
+                                $jobs->view->jumbotron =
+                                    "<h2>E-mail confirmation required!</h2>
+                                    <p>
+                                      Please check your inbox and follow your e-mail confirmation message
+                                      from Worklist. Then try to login again.
+                                    </p>
+                                    ";
+                                $jobs->run();
+                                return;
                             }
                             return;
                         } else {
@@ -121,6 +134,25 @@ class GithubController extends Controller {
         }
         // let's generate the session state value an try to authorize
         self::generateStateAndLogin($redir);
+    }
+
+    public function safe() {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->view = new SafeLoginView();
+            parent::run();
+            return;
+        }
+        $this->view = null;
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $redir = $_POST['redir'];
+        $user = new User();
+        if ($user->findUserByUsername($username) && $user->authenticate($password)) {
+            User::login($user, $redir);
+        } else {
+            // safe login failed
+            Utils::redirect($redir);
+        }
     }
 
     public function logout($redir = './') {
