@@ -104,7 +104,6 @@ function saveSettings() {
             bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
             review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0,
             about: $("#about").val(),
-            skills: $("#skills").val(),
             contactway: $("#contactway").val(),
             paypal_email: $("#paypal_email").val(),
             payway: $("#payway").val(),

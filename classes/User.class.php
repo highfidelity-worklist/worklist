@@ -824,21 +824,6 @@ class User {
     }
 
     /**
-     * @return the $skills
-     */
-    public function getSkills() {
-        return $this->skills;
-    }
-
-    /**
-     * @param $skills the $skills to set
-     */
-    public function setSkills($skills) {
-        $this->skills = $skills;
-        return $this;
-    }
-
-    /**
      * @return the $timezone
      */
     public function getTimezone() {
