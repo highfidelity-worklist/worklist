@@ -7,10 +7,6 @@ $(function() {
         width: '200px'
     });
 
-    $('#project_id').chosen({
-        width: '200px'
-    });
-
     if (action == 'edit') {
         $('select[name="runner"]').chosen({
             width: '140px'
