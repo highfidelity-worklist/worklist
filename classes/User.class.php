@@ -19,7 +19,6 @@ class User {
     protected $about;
     protected $contactway;
     protected $payway;
-    protected $skills;
     protected $timezone;
     protected $w9_status;
     protected $w9_accepted;

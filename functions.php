@@ -868,48 +868,6 @@ function getWorklistById($id) {
     return false;
 }
 
-/* invite one peorson By nickname or by email*/
-function invitePerson($invite, $workitem) {
-    // trim the whitespaces
-    $invite = trim($invite);
-    if (!empty($invite)) {
-        // get the user by Nickname
-        $user = getUserByNickname($invite);
-        if ($user !== false) {
-            //sending email to the invited developer
-            Notification::workitemNotify(array(
-	        'type' => 'invite-user',
-	        'workitem' => $workitem,
-	        'emails' => array($user->username)
-                ));
-            return true;
-        } else if (validEmail($invite)) {
-            //sending email to the NEW invited developer
-            Notification::workitemNotify(array(
-	        'type' => 'invite-email',
-	        'workitem' => $workitem,
-	        'emails' => array($invite)
-                ));
-            return true;
-        }
-    }
-    return false;
-}
-/* invite people By nickname or by email*/
-function invitePeople(array $people, $workitem) {
-    $nonExistingInvites = array();
-    foreach ($people as $invite) {
-        $invite = trim($invite);
-        if(!empty($invite)){
-            // Call the invite person function
-            if(!invitePerson($invite, $workitem)) {
-                // means person was not invited cause they dont exist
-                $nonExistingInvites[] = $invite;
-            }
-        }
-    }
-    return $nonExistingInvites;
-}
 /**
  Validate an email address.
  Provide email address (raw input)
