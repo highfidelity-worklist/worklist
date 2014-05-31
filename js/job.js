@@ -1165,49 +1165,23 @@ $(function() {
     // Reassign runner
     if (canReassignRunner) {
         (function($) {
-            if ($('#runnerBox span.runnerName') !== null) {
-                $('#runnerBox span.runnerName').css({
-                    'cursor': 'pointer',
-                }).click(function() {
-                    var shown = false;
-                    $(this).parent().siblings().fadeOut(1000, function() {
-                        if (shown != true) {
-                            shown = true;
-                            $('#runnerBox').css('width', '400px');
-                            $('#runnerBox span.changeRunner').fadeIn(1000, function() {
-                                $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
-                                    $(this).unbind('click');
-                                    var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val();
-                                    $.ajax({
-                                        type: 'post',
-                                        url: 'jsonserver.php',
-                                        data: {
-                                            action: 'changeRunner',
-                                            // to avoid script loading error when not logged
-                                            userid: user_id,
-                                            runner: runner_id,
-                                            workitem: workitem_id
-                                        },
-                                        dataType: 'json',
-                                        success: function(j) {
-                                            if (j.success == true) {
-                                                $('#runnerBox input[name=cancel]').click();
-                                            }
-                                        }
-                                    });
-                                });
-                                $('#runnerBox span.changeRunner input[name=cancel]').click(function() {
-                                    $('#runnerBox span.changeRunner').fadeOut(1000, function() {
-                                        $('#runnerBox span.changeRunner').css('display', 'none');
-                                        $('#runnerBox').css('width', '130px');
-                                        $('#runnerBox span.runnerName').parent().siblings().fadeIn(1000);
-                                    });
-                                });
-                            });
-                        }
-                    });
+            $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
+                var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val();
+                $.ajax({
+                    type: 'post',
+                    url: 'jsonserver.php',
+                    data: {
+                        action: 'changeRunner',
+                        // to avoid script loading error when not logged
+                        userid: user_id,
+                        runner: runner_id,
+                        workitem: workitem_id
+                    },
+                    dataType: 'json',
+                    success: function(j) {
+                    }
                 });
-            }
+            });
         })(jQuery);
     }
 

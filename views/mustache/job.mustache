@@ -101,6 +101,7 @@
 <div id="page-content">
     <div id="left-panel">
         <div class="people-info">
+            {{^editing}}
             <div id="creatorBox">
                 <span id="pingCreator" class="creatorName">
                     Job creator:
@@ -108,17 +109,24 @@
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </div>
             <div id="runnerBox">
-                {{#editing}}
                     <span class="runnerName">Designer:</span>
-                    {{& editableRunnerBox}}
-                {{/editing}}
-                {{^editing}}
                     {{& nonEditableRunnerBox}}
-                {{/editing}}
             </div>
             <div id="mechanicBox">
                 {{& mechanicBox}}
             </div>
+            {{/editing}}
+            {{#editing}}
+                {{#canReassignRunner}}
+                    {{& editableRunnerBox}}
+                {{/canReassignRunner}}
+                {{^canReassignRunner}}
+                    <div id="runnerBox">
+                        <span class="runnerName">Designer:</span>
+                    </div>
+                     {{& nonEditableRunnerBox}}
+                {{/canReassignRunner}}
+            {{/editing}}
         </div>
         <div id="for_view">
             {{#editing}}
@@ -144,7 +152,7 @@
                         <span class="sections">Notes</span>
                             <span id="info-notes">
                             {{#canEditNotes}}
-                                <textarea name="notes" id="edit-notes" class="expandable" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
+                                <textarea name="notes" id="edit-notes" class="autogrow" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
                             {{/canEditNotes}}
                             {{^canEditNotes}}
                                 {{& notesHtml}}
@@ -190,10 +198,6 @@
                     </li>
                     {{/worklist.mechanic_id}}
                 </ul>
-                {{#canEditAndEditing}}
-                    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
-                </div>
-                {{/canEditAndEditing}}
             {{/editing}}
             {{^editing}}
                 <span class="sections">Notes</span>
@@ -259,15 +263,6 @@
                 {{^skillsCount}}
                 <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
                 {{/skillsCount}}
-                <div class="floatLeft">
-                    <input type="checkbox" name="is_bug" id="is_bug" {{#isBug}}checked="checked"{{/isBug}}
-                      class="wlcheckbox" /> 
-                    <label for="is_bug" id="bugLabel">Bug</label> (If known, linked to Job #)
-                    <input type="text" id="bug_job_id" name="bug_job_id" class="bug_job_id"
-                      value="{{#workitem.getBugJobId}}{{workitem.getBugJobId}}{{/workitem.getBugJobId}}" />
-                </div>
-                <div class="bugJobSummary" id="bugJobSummary" title="{{workitem.getBugJobId}}">
-                </div>
                 <div class="clear"></div>
             </div>
         {{/editing}}
@@ -303,6 +298,7 @@
                 </div>
             {{/canReview}}
         {{/editing}}
+        {{^editing}}
         <div id="for_view">
             <div class="moneyZone">
                 <div id="bid-panel">
@@ -385,7 +381,13 @@
             </div> <!-- End of div moneyZone -->
             <div id="uploadPanel"> </div>
         </div> <!-- End of for_view -->
+        {{/editing}}
     </div> <!-- End of div right-panel-->
+    {{#canEditAndEditing}}
+    <div class="clear">
+        <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
+    </div>
+    {{/canEditAndEditing}}
 </div> <!-- End of div pageContent -->
 {{#editing}}
     </form>
@@ -441,6 +443,7 @@
     var showReviewUrlPopup = {{showReviewUrlPopup}};
     var action = '{{action}}';
     var loginRedirectUrl = '{{loginRedirectUrl}}';
+    //
     var canReassignRunner = {{canReassignRunner}};
     var status_error = {{status_error}};
     var displayDialogAfterDone = {{displayDialogAfterDone}};

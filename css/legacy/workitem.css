@@ -437,10 +437,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     color: #007F7C !important;
 }
 
-.changeRunner {
-    display: none;
-}
-
 .changeRunner select {
     float: left;
 }
@@ -493,8 +489,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     position: relative;
 }
 
-.job-budget{
+.job-budget {
     width: 316px;
+    margin: 10px 0;
 }
 
 .project-github h1 {
@@ -1397,7 +1394,14 @@ h1.newProject {
 
     .project, .job-budget {
         clear: both;
-        margin: 10px 0;
+        width: 100%;
+    }
+
+    .project {
+        margin: 0 10px;
+    }
+
+    #edit-notes {
         width: 100%;
     }
 

@@ -195,10 +195,12 @@ class JobView extends View {
         $ret = ' ';
         if ($worklist['runner_nickname'] != 'Not funded') {
             $ret .= 
-                '<a href="./user/' . $worklist['runner_id'] . '"  id="ping-r-btn"' .
+                '<span class="inline-label"><a href="./user/' . $worklist['runner_id'] . '"' .
                 ' data-user-id="' . $worklist['runner_id'] . '">' .
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
-                '</a>';
+                '</a></span>
+                
+                ';
         } else {
             $ret .= $worklist['runner_nickname'];
         }
@@ -212,7 +214,6 @@ class JobView extends View {
         $ret .= 
             '</select>' .
             '<input type="button" class="smbutton" name="changerunner" value="Change Designer" />' .
-            '<input type="button" class="smbutton" name="cancel" value="Cancel" />' .
             '</span>';
         return $ret;
     }
@@ -222,7 +223,7 @@ class JobView extends View {
         $ret = '';
         if ($worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] != '') {
             $ret .= 
-                '<span id="pingRunner" class="runnerName">' .
+                '<span class="runnerName">' .
                 'Designer:</span>' .
                 '<a href="./user/' . $worklist['runner_id'] . '" >' . 
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
