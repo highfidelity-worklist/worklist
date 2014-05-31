@@ -6,10 +6,6 @@ var AddJob = {
     init: function() {
         $('select[name="itemProject"]').chosen({width: '100%'});
 
-        var autoArgs = autocompleteMultiple('getuserslist', null);
-        $("#invite").bind("keydown", autoArgs.bind);
-        $("#invite").autocomplete(autoArgs);
-
         $('form#addJob').submit(AddJob.formSubmit);
 
         AddJob.initFileUpload();
@@ -137,7 +133,6 @@ var AddJob = {
             data: {
                 summary: $("input[name='summary']").val(),
                 files: $("input[name='files']").val(),
-                invite: $("input[name='invite']").val(),
                 notes: $("textarea[name='notes']").val(),
                 page: $("input[name='page']").val(),
                 project_id: $("select[name='itemProject']").val(),

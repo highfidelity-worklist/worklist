@@ -1186,15 +1186,6 @@ class WorkItem {
                 return $action;
                 break;
                 
-            case 'invite-people':
-                if ($this->getStatus() == 'Done') {
-                    $action_error = 'Cannot invite people when status is Done';
-                    return false;
-                }
-                
-                return $action;
-                break;
-
             case 'new-comment':
                 if ($this->getStatus() == 'Done') {
                     $action_error = 'Cannot add comment when status is Done';

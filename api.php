@@ -543,17 +543,6 @@ function sendContactEmail(){
         exit(json_encode(array('error' => 'There was an error sending your message, please try again later.')));
     }
 }// end sendContactEmail
-function sendTestNotifications(){
-    $workItemId = isset($_REQUEST['workitem_id']) ? $_REQUEST['workitem_id'] : 0 ;
-    $results = isset($_REQUEST['results']) ? $_REQUEST['results'] : '';
-    $revision = isset($_REQUEST['revision']) ? $_REQUEST['revision'] : '';
-    require_once('./classes/Notification.class.php');
-    if($workItemId > 0) {
-        $notify = new Notification();
-        $notify->autoTestNofications($workItemId,$results,$revision);
-        exit(json_encode(array('success' => true)));
-    }
-}
 
 function autoPassSuggestedJobs() {
     $con = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);

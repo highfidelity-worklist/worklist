@@ -839,13 +839,6 @@ a#addJobButton:hover {
     right: -2px;
 }
 
-#lebel-for-invite span {
-    background: url('../images/primaryIcons-WL.png') -199px -923px;
-    display: inline-block;
-    width: 25px;
-    height: 20px;
-}
-
 #ajaxSpin {
     position: fixed;
     top: 48%;

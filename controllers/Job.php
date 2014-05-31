@@ -122,8 +122,6 @@ class JobController extends Controller {
             $action = "status-switch";
         } else if(isset($_REQUEST['save-review-url'])) {
             $action = "save-review-url";
-        } else if(isset($_REQUEST['invite-people'])) {
-            $action = "invite-people";
         } else if (isset($_REQUEST['newcomment'])) {
             $action = 'new-comment';
         } else if (isset($_REQUEST['start_codereview'])) {
@@ -134,15 +132,13 @@ class JobController extends Controller {
             $action = "cancel_codereview";
         }
 
-
-
         if ($action == 'view_bid') {
             $action = "view";
             $this->write('view_bid_id', isset($_REQUEST['bid_id']) ? $_REQUEST['bid_id'] : 0);
         }
 
         // for any other action user has to be logged in
-        if ($action != 'view' && $action != 'invite-people') {
+        if ($action != 'view') {
             checkLogin();
             $action_error = '';
             $action = $workitem->validateAction($action, $action_error);
@@ -254,13 +250,6 @@ class JobController extends Controller {
                 $new_update_message .= "Sandbox changed. ";
                 $job_changes[] = '-sandbox';
             }
-            // Send invites
-            if (!empty($_REQUEST['invite'])) {
-                $people = explode(',', $_REQUEST['invite']);
-                invitePeople($people, $workitem);
-                $new_update_message .= "Invitations sent. ";
-                $job_changes[] = '-invitation';
-            }
             if (empty($new_update_message)) {
                 $new_update_message = " No changes.";
             } else {
@@ -353,10 +342,11 @@ class JobController extends Controller {
                             // validate the username actually exists
                             if ($recipient = $user->findUserByNickname($mention[1])) {
 
-                                // exclude designer, developer and followers
+                                // exclude creator, designer, developer and followers
                                 if (
                                     $recipient->getId() != $workitem->getRunnerId() &&
                                     $recipient->getId() != $workitem->getMechanicId() &&
+                                    $recipient->getId() != $workitem->getCreatorId() &&
                                     ! $workitem->isUserFollowing($recipient->getId())
                                 ) {
 
@@ -397,17 +387,6 @@ class JobController extends Controller {
             exit;
         }
 
-        if($action =='invite-people') {
-           
-            // Send invitation
-            $people = explode(',', $_REQUEST['invite']);
-            $nonExistingPeople = invitePeople($people, $workitem);
-            $json = json_encode($nonExistingPeople);
-            $this->view = null;
-            echo $json;
-            exit;
-           
-        }
         if($action == 'start_codereview') {
             if(!($user->isEligible() && $userId == $workitem->getMechanicId())) {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
@@ -1293,7 +1272,6 @@ class JobController extends Controller {
         $skills = $_REQUEST['skills'];
         $status = $user->getIs_runner() ? 'Bidding' : 'Suggested';
         $notes = $_REQUEST['notes'];
-        $invite = $_REQUEST['invite'];
         $is_expense = $_REQUEST['is_expense'];
         $is_rewarder = $_REQUEST['is_rewarder'];
         $fileUpload = $_REQUEST['fileUpload'];
@@ -1340,10 +1318,6 @@ class JobController extends Controller {
             $journal_message .= '\\#' . $bid_fee_itemid . ' updated by ' . $nick . 'Status set to ' . $status;
         }
         $journal_message .=  "$related. ";
-        if (!empty($_POST['invite'])) {
-            $people = explode(',', $_POST['invite']);
-            invitePeople($people, $workitem);
-        }
 
         // don't send any journal notifications for DRAFTS
         if (!empty($journal_message) && $status != 'Draft') {
@@ -1379,10 +1353,11 @@ class JobController extends Controller {
                     // validate the username actually exists
                     if ($recipient = $user->findUserByNickname($mention[1])) {
 
-                        // exclude designer, developer and followers
+                        // exclude creator, designer, developer and followers
                         if (
                             $recipient->getId() != $workitem->getRunnerId() &&
                             $recipient->getId() != $workitem->getMechanicId() &&
+                            $recipient->getId() != $workitem->getCreatorId() &&
                             ! $workitem->isUserFollowing($recipient->getId())
                         ) {
                             $emailTemplate = 'workitem-mention';
