@@ -8,7 +8,6 @@ class Notification {
     const SELF_EMAIL_NOTIFICATIONS = 64;
     const BIDDING_EMAIL_NOTIFICATIONS = 256;
     const REVIEW_EMAIL_NOTIFICATIONS = 512;
-    const MY_AUTOTEST_NOTIFICATIONS = 1024;
  
     /**
      *  Sets flags using list of integers passed as arguments
@@ -53,8 +52,9 @@ class Notification {
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
                 WHERE ((u.notifications & " . self::REVIEW_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") 
-                      OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") AND (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
-                  AND u.is_active = 1";
+                OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . ")
+                OR (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
+                AND u.is_active = 1";
             $res = mysql_query($sql);
             if($res) {
                 while($row = mysql_fetch_row($res)) {
@@ -62,20 +62,6 @@ class Notification {
                 }
             }
             break;
-
-        case self::MY_AUTOTEST_NOTIFICATIONS:
-            $users=implode(",", array($workitem->getCreatorId(), $workitem->getRunnerId(), $workitem->getMechanicId()));
-            $sql = "SELECT u.username 
-                FROM `" . USERS . "` u 
-                WHERE u.id IN({$users}) 
-                  AND u.is_active = 1";
-            $res = mysql_query($sql);
-            if($res) {
-                while($row = mysql_fetch_row($res)) {
-                    $result[] = $row[0];
-                }
-            }
-            break;         
         }
         return $result;
     }
@@ -88,11 +74,13 @@ class Notification {
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
             case 'Review':
-                $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
-                $options = array('type' => 'new_review',
-                    'workitem' => $workitem,
-                    'emails' => $emails);
-                self::workitemNotify($options);
+                if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
+                    $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
+                    $options = array('type' => 'new_review',
+                        'workitem' => $workitem,
+                        'emails' => $emails);
+                    self::workitemNotify($options);
+                }
             break;
             case 'Bidding':
                 $emails = self::getNotificationEmails(self::BIDDING_EMAIL_NOTIFICATIONS);
@@ -105,7 +93,7 @@ class Notification {
     }
 
     /**
-     * Async wrapper to Notification::statusNotify to avoid big delays 
+     * Async wrapper to Notification::statusNotify to avoid big delays
      * on massive notifications.
      * 
      * @param object $workitem instance of a Workitem class
@@ -177,7 +165,7 @@ class Notification {
                 $headers['Reply-To'] = '"' . $_SESSION['nickname'] . '" <' . $_SESSION['username'] . '>';
                 $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
                 $body .= $data['who'] . ' says:<br />'
-                      . $data['comment'] . '<br /><br />'
+                      . nl2br($data['comment']) . '<br /><br />'
                       . 'Project: ' . $project_name . '<br />'
                       . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                       if($workitem->getRunner() != '') {
@@ -186,7 +174,7 @@ class Notification {
                       if($workitem->getMechanic() != '') {
                           $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                       }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
@@ -197,7 +185,7 @@ class Notification {
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br/>'
                         . 'Amount: ' . $data['fee_amount'] . '<br/>'
-                        . '<div>Fee Notes: ' . $data['fee_desc'] . '</div><br/><br/>'
+                        . '<div>Fee Notes:<br/> ' . nl2br($data['fee_desc']) . '</div><br/><br/>'
                         . 'Project: ' . $project_name . '<br/>'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                         if($workitem->getRunner() != '') {
@@ -206,7 +194,7 @@ class Notification {
                         if($workitem->getMechanic() != '') {
                             $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
@@ -225,7 +213,7 @@ class Notification {
                     if($workitem->getMechanic() != '') {
                         $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
-                    $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                    $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                     . 'You can view the job <a href="' .  WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                     . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
@@ -242,7 +230,7 @@ class Notification {
                        if($workitem->getMechanic() != '') {
                            $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                        }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 break;
@@ -262,7 +250,7 @@ class Notification {
                             $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
 
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'The job can be viewed <a href="' . WORKLIST_URL . $itemId . '">here</a><br /><br />';
 
                 // render the github branch-created-sub template if necessary
@@ -311,7 +299,7 @@ class Notification {
                          ' . $itemLink . '<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Functioning In: ' . $data['done_in'] . '<br /><br />'
-                    . ' ' . $data['notes'] . '<br /><br />'
+                    . ' ' . nl2br($data['notes']) . '<br /><br />'
                     . $urlAcceptBid . 'or email ' . $_SESSION['nickname'] . ' via <a href="mailto:' . $_SESSION['username']. '">' . $_SESSION['username']. '</a><br /><br />'
                     .'----<br />'
                     .'Stats for ' . $_SESSION['nickname'] . ': <br />'
@@ -331,7 +319,7 @@ class Notification {
                     if($workitem->getMechanic() != '') {
                         $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                     }
-                $body .= ''. $workitem->getNotes() . '<br /><br />' . '----<br />';
+                $body .= ''. nl2br($workitem->getNotes()) . '<br /><br />' . '----<br />';
                 $urlAcceptBidB  = $workItemUrl;
                 $urlAcceptBidB .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . ' \'s bid </a>';
                 $body .=  $urlAcceptBidB . 'for $' . number_format($data['bid_amount'], 2)
@@ -347,7 +335,7 @@ class Notification {
                     . 'Functioning In: ' . $data['done_in'] . '<br />'
                     . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
                     . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
-                    . 'Notes: ' . $data['notes'] . '<br /><br />'
+                    . 'Notes:<br/> ' . nl2br($data['notes']) . '<br /><br />'
                     . 'Project: ' . $project_name . '<br />'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
@@ -356,7 +344,7 @@ class Notification {
                     if($workitem->getMechanic() != '') {
                         $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                         }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />';
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />';
                 $urlacceptbid  = '<br /><a href="./';
                 $urlacceptbid .= $itemId . '?bid_id=' . $data['bid_id'] .
                                  '&action=view_bid">Click here to accept bid.</a>';
@@ -371,77 +359,48 @@ class Notification {
                 $body .= "<p>Hope to see you in the Worklist soon. :)</p>";
             break;
 
-            case 'modified-functional':
-                $from_changes = "";
-                if (!empty($options['status_change'])) {
-                    $from_changes = $options['status_change'];
-                }
-                if (isset($options['job_changes'])) {
-                    if (count($options['job_changes']) > 0) {
-                        $from_changes .= $options['job_changes'][0];
-                        if (count($options['job_changes']) > 1) {
-                            $from_changes .= ' +other changes';
-                        }
-                    }
-                }
-
-                if ($from_changes) {
-                    $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
-                } else {
-                    $status_change = '-' . strtolower($workitem->getStatus());
-                    $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
-                }
-                $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-                    . $data['changes'] . '<br /><br />'
-                    . 'Project: ' . $project_name . '<br />'
-                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
-
-                    . 'Designer: ';
-                if ($workitem->getRunnerId()) $body .= $workitem->getRunner()->getNickname();
-                $body.= '<br />'
-
-                    . 'Developer: ';
-                if ($workitem->getMechanicId()) $body .= $workitem->getMechanic()->getNickname();
-
-                $body.= '<br /><br />'
-                    . 'Notes: ' . $workitem->getNotes() . '<br /><br />'
-                    . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                    . '<a href="' . SERVER_URL . '">www.worklist.net</a>';
-            break;
-            
             case 'modified':
                 if ($workitem->getStatus() != 'Draft') {
                     $from_changes = "";
-                    if (!empty($options['status_change'])) {
-                        $from_changes = $options['status_change'];
-                    }
-                    if (isset($options['job_changes'])) {
-                        if (count($options['job_changes']) > 0) {
-                            $from_changes .= $options['job_changes'][0];
-                            if (count($options['job_changes']) > 1) {
-                                $from_changes .= ' +other changes';
-                            }
-                        }
-                    }
-                    if (!empty($from_changes)) {
-                        $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
-                    } else {
+                    if (!empty($options['status_change']) &&($workitem->getStatus() == 'Functional')) {
                         $status_change = '-' . strtolower($workitem->getStatus());
                         $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
+                        $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to Functional.<br /><br />'
+                        . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
+                        . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
+                        . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
+                    } else {
+                        if (!empty($options['status_change'])) {
+                            $from_changes = $options['status_change'];
+                        }
+                        if (isset($options['job_changes'])) {
+                            if (count($options['job_changes']) > 0) {
+                                $from_changes .= $options['job_changes'][0];
+                                if (count($options['job_changes']) > 1) {
+                                    $from_changes .= ' +other changes';
+                                }
+                            }
+                        }
+                        if (!empty($from_changes)) {
+                            $headers['From'] = '"' . $project_name . $from_changes . '" ' . $from_address;
+                        } else {
+                            $status_change = '-' . strtolower($workitem->getStatus());
+                            $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
+                        }
+                        $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
+                            . $data['changes'] . '<br /><br />'
+                            . 'Project: ' . $project_name . '<br />'
+                            . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                        if($workitem->getRunner() != '') {
+                            $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        }
+                        if($workitem->getMechanic() != '') {
+                            $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                        }
+                        $body .= 'Notes:<br/> '. nl2br($workitem->getNotes()) . '<br /><br />'
+                            . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
+                            . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                     }
-                    $body = $_SESSION['nickname'] . ' updated item ' . $itemLink . '<br>'
-                        . $data['changes'] . '<br /><br />'
-                        . 'Project: ' . $project_name . '<br />'
-                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                    if($workitem->getRunner() != '') {
-                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                    }
-                    if($workitem->getMechanic() != '') {
-                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                    }
-                    $body .= 'Notes: '. $workitem->getNotes() . '<br /><br />'
-                        . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                        . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 }
             break;
 
@@ -455,7 +414,7 @@ class Notification {
                 if($workitem->getMechanic() != '') {
                    $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You are welcome to bid the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
@@ -470,46 +429,10 @@ class Notification {
                 if($workitem->getMechanic() != '') {
                     $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                 
-            break;
-            case 'new_functional':
-                $body = "New item is available for functional: " . $itemLink ;
-                $body.= '<br/><br/>Project: ' . $project_name;
-                $body.= '<br/>Creator: ' . $workitem->getCreator()->getNickname();
-
-                $body.= '<br/>Designer: ';
-                if ($workitem->getRunnerId()) $body.= $workitem->getRunner()->getNickname();
-
-                $body.= '<br/>Developer: ';
-                if ($workitem->getMechanicId()) $body.= $workitem->getMechanic()->getNickname();
-
-                $body.= '<br><br>Notes:<br>' .$workitem->getNotes();
-                $body.= '<br><br>You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />';
-                $body.= '<br><br><a href="' . SERVER_URL . '">www.worklist.net</a>';
-                
-            break;
-            case 'bug_found':
-                $headers['From'] = '"' . $project_name . '-bug" ' . $from_address;
-                
-                $body = "<p>A bug has been reported related to item #".
-                $workitem->getBugJobId().
-                            " : ".$workitem->getBugJobSummary()."</p>";
-
-                $body .= "<br/><p>New item #" . $itemId . " summary: " .
-                            $workitem -> getSummary() . ".</p>";
-                $body .= "<br/><p>Notes:" . $workitem->getNotes(). "</p><br/><br/>";
-                $body .= '<br/><p>Project: ' . $project_name . "";
-                $body .= 'Creator: ' . $workitem->getCreator()->getNickname(). "";
-                if($workitem->getRunner() != '') {
-                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . "";
-                }
-                if($workitem->getMechanic() != '') {
-                   $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . "</p><br/>";
-                }
-                $body .= '<br><br><a href="' . WORKLIST_URL . $itemId . '">View new item</a>.';
             break;
             case 'suggested':
                 $body =  'Summary: ' . $itemLink . '<br /><br />'
@@ -521,7 +444,7 @@ class Notification {
                 if($workitem->getMechanic() != '') {
                     $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
@@ -535,82 +458,11 @@ class Notification {
                 if($workitem->getMechanic() != '') {
                 $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
                 }
-                $body .= 'Notes: ' . $workitem->getNotes() . '<br /><br />'
+                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You are welcome to bid the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;                       
             break;
-            case 'autotestsuccess':
-                $reusableString = $project_name . '(v' . $revision . ')';
-                $reusableString .= '#';
-                $reusableString .= $itemId;
-                $reusableString .= ':';
-                $reusableString .= $workitem -> getSummary();
-                $headers['From'] = '"' . $project_name . '-committed" ' . $from_address;
-                $body =  'Congrats!';
-                $body .= '<br/><br/>Your Commit - ' . $reusableString . ' was a success!';
-                $body .= '<br><br>Click <a href="';
-                $body .= 'http://svn.worklist.net/revision.php?repname=';
-                $body .= $project_name;
-                $body .= '&rev=';
-                $body .= $revision;
-                $body .= '">here</a>';
-                $body .= ' to see the webSVN commit notes.';
-                $body .= '<br/><br/><a href="http://www.worklist.net">www.worklist.net</a>';
-            break; 
-            case 'autotestfailure':
-                $reusableString = $project_name . '(v' . $revision . ')';
-                $reusableString .= '#';
-                $reusableString .= $itemId;
-                $reusableString .= ':';
-                $reusableString .= $workitem -> getSummary();
-                $headers['From'] = '"' . $project_name . '-commit fail" ' . $from_address;
-                $body =  'Otto says: No Commit for you!';
-                $body .= '<br/><br/>Your Commit - ';
-                $body .= $reusableString;
-                $body .=" failed the Autotester!";
-                $body .= '<br><br>See test results <a href="http://bit.ly/jGfIkj">here</a> ';
-                $body .= 'Please look at the test results and determine if you need to modify your commit.';
-                $body .= 'You can type "@faq CommitTests" in the Journal for more information.';
-                $body .= '<br/><br/><a href="http://www.worklist.net">www.worklist.net</a>';
-            break;
             
-            case 'invite-user':
-                $headers['From'] = '"' . $project_name . '-invited" ' . $from_address;
-                $body = "<p>Hello you!</p>";
-                if(getSessionUserId()) {
-                    $body .= "<p>You have been invited by " . $_SESSION['nickname'] . " at the Worklist to bid on ";
-                } else {
-                    $body .= "<p>You have been invited at the Worklist to bid on ";
-                }                
-                $body .= "<a href='" . WORKLIST_URL . $itemId . "'>#" . $itemId . ': ' . $workitem->getSummary() . "</a>.</p>\n";
-                $body .= "<p>Description:</p>";
-                $body .= "<p>------------------------------</p>\n";
-                $body .= "<p>" . $workitem -> getNotes() . "</p>\n";
-                $body .= "<p>------------------------------</p>\n";
-                $body .= "<p>To bid on that job Just follow <a href='" . WORKLIST_URL . $itemId . "'>this link</a>.</p>\n";
-                $body .= "<p>Hope to see you soon.</p>\n";
-            break;
-            case 'invite-email':
-                $headers['From'] = '"' . $project_name . '-invitation" ' . $from_address;
-                $body = "<p>Well, hello there!</p>\n";
-                $body .= "<p>" . $_SESSION['nickname'] . " from the Worklist thought you might be interested in bidding on this job:</p>\n";
-                $body .= "<p>Summary of the job: " . $workitem -> getSummary() . "</p>\n";
-                $body .= "<p>Description:</p>\n";
-                $body .= "<p>------------------------------</p>\n";
-                $body .= "<p>" . $workitem -> getNotes() . "</p>\n";
-                $body .= "<p>------------------------------</p>\n";
-                $body .= "<p>To bid on that job, follow the link, create an account (less than a minute) and set the price you want to be paid for completing it!</p>\n";
-                $body .= "<p>This item is part of a larger body of work being done at Worklist. You can join our Live Workroom to ask more questions by going ";
-                $body .= "<a href=\"" . SERVER_BASE . "\">here</a>. You will be our 'Guest' while there but can also create an account if you like so we can refer to you by name.</p>\n";
-                $body .= "<p>If you are the type that likes to look before jumping in, here are some helpful links to get you started.</p>\n";
-                $body .= "<p>[<a href=\"http://www.lovemachineinc.com/\">www.lovemachineinc.com</a> | Learn more about LoveMachine the company]<br />\n";
-                $body .= "[<a href=\"http://svn.worklist.net/\">svn.worklist.net</a> | Browse our SVN repositories]<br />\n";
-                $body .= "[<a href=\"https://dev.sendllove.us/\">dev.sendllove.us</a> | Play around with SendLove]<br />\n";
-                $body .= "[<a href=\"" . WORKLIST_URL . "/\">" . WORKLIST_URL . "</a> | Look over all our open work items]<br />\n";
-                $body .= "[<a href=\"" . JOURNAL_URL . "/\">" . JOURNAL_URL . "</a> | Talk with us in our Journal]<br />\n";
-                $body .= "<p>Hope to see you soon.</p>\n";
-            break;
-
             case 'code-review-completed':
                 $headers['From'] = '"' . $project_name . '-review complete" ' . $from_address;
                 $body = '<p>Hello,</p>';
@@ -620,7 +472,7 @@ class Notification {
                 $body .= 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                 $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 $body .= 'Developer: ' . $workitem->getMechanic()->getNickname() . '</p>';
-                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job <a href="'. WORKLIST_URL . $itemId . '">here</a>.' . '<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
@@ -636,7 +488,7 @@ class Notification {
                 if ($workitem->getRunnerId()) {
                     $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
-                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
@@ -652,7 +504,7 @@ class Notification {
                 $body .= "Summary: " . $itemLink . ": " . $workitem->getSummary() . '<br/>'
                     . 'Project: ' . $project_name . '<br />'
                     . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />'
-                    . 'Notes: '. $workitem->getNotes() . '<br /><br />'
+                    . 'Notes:<br/> '. nl2br($workitem->getNotes()) . '<br /><br />'
                     . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                     . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
@@ -667,7 +519,7 @@ class Notification {
                 if ($workitem->getRunnerId()) {
                     $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
-                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
@@ -683,23 +535,13 @@ class Notification {
                 if ($workitem->getRunnerId()) {
                     $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                 }
-                $body .= '<p>Notes: ' . $workitem->getNotes() . '<br /></p>';
+                $body .= '<p>Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /></p>';
                 $body .= '<p>You can view the job ';
                 $body .= '<a href="' . WORKLIST_URL . $itemId . '">here</a>.<br /></p>';
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
 
-            case 'deploy-failed':
-                $subject = '#' . $itemId . ' - Deploy Error - ' . html_entity_decode($workitem -> getSummary(), ENT_QUOTES);
-                $headers['From'] = '"' . $project_name . '-deploy error" ' . $from_address;
-                $body  = '<p>Dear ' . $workitem->getMechanic()->getNickname() . '</p>';
-                $body .= '<p>There was an error deploying ' . $project_name . ' ' . $options['commit_revision'] . ' for job ' .
-                    '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>.' .
-                    ' The following error came up while minifying your JavaScript code:</p>';
-                $body .= $options['error_msg'];
-                break;
         }
-
     
         $current_user = new User();
         $current_user->findUserById(getSessionUserId());
@@ -780,14 +622,9 @@ class Notification {
             return;
         }
         
-        $bugJournalMessage = '';
-        if (array_key_exists('bug_journal_message', $data)) {
-            $bugJournalMessage = $data['bug_journal_message'];
-        }
-        
         $itemId = $workitem->getId();
         $itemLinkShort = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
-        $itemLink = $itemLinkShort . $bugJournalMessage . ' - ' . $workitem->getSummary();
+        $itemLink = $itemLinkShort . ' - ' . $workitem->getSummary();
 
         $message = null;
         $message_format = 'html';
@@ -887,14 +724,6 @@ class Notification {
                 $nick = $data['nick'];
                 $message = "{$nick} has canceled their code review for {$itemLink}";
             break;
-            
-            case 'ping':
-                $nickname = $data['nick'];
-                $receiver_nick = $data['receiver_nick'];
-                $msg = $data['msg'];
-                
-                $message = "{$nickname} sent a ping to {$receiver_nick} about item {$itemLink}: {$msg}";
-            break;
         }
         
         if ($message) {
@@ -918,53 +747,6 @@ class Notification {
             return true;
         }
         return false;
-    }
-    
-    public static function autoTestNofications($workItemId,$result,$revision) {
-        $workItem = new WorkItem;
-        $workItem->loadById($workItemId);
-        $project = new Project();
-        $project->loadById($workItem->getProjectId());
-        $emails = self::getNotificationEmails(self::MY_AUTOTEST_NOTIFICATIONS,$workItem);
-        $typeOfNotification = ($result=='success') ? 'autotestsuccess' : 'autotestfailure';
-        $options = array('type' => $typeOfNotification,
-        'workitem' => $workItem,
-        'emails' => $emails,
-        'project_name' => $project->getName(),
-        'revision' => $revision);
-        self::workitemNotify($options);
-    }
-
-    public static function deployErrorNotification($work_item_id, $error_msg, $commit_revision) {
-        $error_msg = '<pre>' . $error_msg . '</pre>';
-        $journal_message = "Deploy failed for rev." . $commit_revision . " job ";
-        if ($work_item_id > 0) {
-            $workItem = new WorkItem();
-            $workItem->loadById($work_item_id);
-            $project = new Project();
-            $project->loadById($workItem->getProjectId());
-            $emails = self::getNotificationEmails(self::MY_AUTOTEST_NOTIFICATIONS, $workItem);
-            $options = array('type' => 'deploy-failed',
-                'workitem' => $workItem,
-                'emails' => $emails,
-                'project_name' => $project->getName(),
-                'error_msg' => $error_msg,
-                'commit_revision' => $commit_revision);
-            self::workitemNotify($options);
-            $journal_message .= "#" . $work_item_id;
-
-        } else {
-            $headers['From'] = DEFAULT_SENDER;
-            $subject = "Deploy failed for rev." . $commit_revision;
-            $body = '<p>Deploy for commit (rev.' . $commit_revision . ') without assigned commit number has failed:</p>';
-            $body .= '<p>' . $error_msg . '</p>';
-
-            if (!send_email(OPS_EMAIL, $subject, $body, null, $headers)) {
-                error_log("Notification:workitem: send_email failed " . json_encode(error_get_last()));
-            }
-            $journal_message .= "unknown";
-        }
-        sendJournalNotification($journal_message);
     }
 
     public function notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $add_funds_to_budget) {

@@ -51,11 +51,11 @@ span.info-whisper {
     padding: 0!important;
 }
 
-.info-summ,.info-data,.info-invite {
+.info-summ,.info-data {
     height:25px;
 }
 
-.info-summ-big{
+.info-summ-big {
     clear:both;
     height: 37px;
     margin-top: 12px;
@@ -72,7 +72,7 @@ span.info-whisper {
     }
 }
 
-.info-summ-big-text{
+.info-summ-big-text {
     font-size: 30px;
     margin-top: 12px !important;
     padding-left: 3px;
@@ -109,11 +109,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #container-status {
     margin-top: 10px;
-}
-
-.info-invite input[type=text]{
-    margin-top:8px!important;
-    width:256px;
 }
 
 .info-comments{
@@ -369,21 +364,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width:18em;
 }
 
-.bug_job_id {
-    width: 50px;
-}
-
-.bugJobSummary {
-    display: block;
-    margin: 0;
-    padding: 5px;
-    border-style: none;
-    background-color: white;
-    z-index: 3000;
-    float: right;
-    width: 200px
-}
-
 .info-notes {
     font-size: 14px;
 }
@@ -457,13 +437,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .title {
     color: #007F7C !important;
-}
-
-.github {
-    margin-top: -7px;
-    padding-left: 42px;
-    background-position: -3px 0px;
-    background-repeat: no-repeat;
 }
 
 #workitem-form {
@@ -924,11 +897,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .info-data input[type=text]{
     width:290px;
     margin-bottom:8px;
-}
-
-.info-invite input[type=text]{
-    margin-top:8px!important;
-    width:240px;
 }
 
 /* bid info popup (accepting, withdrawing bids)*/

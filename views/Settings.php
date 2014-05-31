@@ -8,8 +8,6 @@ class SettingsView extends View {
 
     public $scripts = array(
         'js/ajaxupload/ajaxupload.js',
-        'js/skills.js',
-        'js/userSkills.js',
         'js/sendlove.js',
         'js/utils.js',
         'js/settings.js'

@@ -185,8 +185,6 @@ if (!defined("USER_SVN"))           define("USER_SVN", "SVN");
 if (!defined('USER_SVN_ID'))	    define('USER_SVN_ID', 1339);
 if (!defined("USER_SCHEMAUPDATE"))      define("USER_SCHEMAUPDATE", "Schema Update");
 if (!defined('USER_SCHEMAUDPDATE_ID'))  define('USER_SCHEMAUPDATE_ID', 2267);
-if (!defined("USER_AUTOTESTER"))    define("USER_AUTOTESTER", "AutoTester");
-if (!defined('USER_AUTOTESTER_ID')) define('USER_AUTOTESTER_ID', 2470);
 if (!defined("USER_WORKLIST"))      define("USER_WORKLIST", "Work List");
 if (!defined('USER_JOURNAL'))	    define('USER_JOURNAL', 'Journal');
 if (!defined('USER_JOURNAL_ID'))    define('USER_JOURNAL_ID', 1430);

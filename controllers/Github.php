@@ -6,10 +6,12 @@ require_once('models/Budget.php');
 class GithubController extends Controller {
     public $view = null;
 
-    public function run($action) {
+    public function run($action, $param) {
         $method = '';
         switch($action) {
             case 'login':
+            case 'safe':
+            case 'logout':
             case 'connect':
             case 'authorize':
             case 'signup':
@@ -19,7 +21,7 @@ class GithubController extends Controller {
                 $method = 'index';
                 break;
         }
-        $this->$method();
+        $this->$method($param);
     }
 
     /**
@@ -55,8 +57,7 @@ class GithubController extends Controller {
         }
     }
 
-    public function login() {
-        $this->view = null;
+    public function login($redir = './') {
         $tokenURL = GITHUB_TOKEN_URL;
         $apiURLBase = GITHUB_API_URL;
 
@@ -68,7 +69,7 @@ class GithubController extends Controller {
                 $response = $this->apiRequest($tokenURL, array(
                     'client_id' => GITHUB_OAUTH2_CLIENT_ID,
                     'client_secret' => GITHUB_OAUTH2_CLIENT_SECRET,
-                    'redirect_uri' => WORKLIST_URL . 'github/login',
+                    'redirect_uri' => WORKLIST_URL . 'github/login/' . $redir,
                     'state' => $_SESSION['github_auth_state'],
                     'code' => $_GET['code']
                 ));
@@ -78,7 +79,6 @@ class GithubController extends Controller {
                     if (!$gh_user) {
                         // maybe a wrong access token
                         Utils::redirect('./');
-                        die;                
                     }
 
                     $userId = getSessionUserId();
@@ -91,14 +91,26 @@ class GithubController extends Controller {
                             // credentials not stored in db and not used by any other user
                             $user->storeCredentials($access_token);
                         }
-                        Utils::redirect('./');
+                        Utils::redirect($redir);
                     } else {
                         // user not logged in in worklist, let's check whether he already has a 
                         // github-linked account in worklist
                         if ($user->findUserByAuthToken($access_token)) {
                             // already linked account, let's log him in
                             if ($user->isActive()) {
-                                User::login($user);
+                                User::login($user, $redir);
+                            } else {
+                                // users that didn't confirmed their email addresses
+                                $jobs = new JobsController();
+                                $jobs->view->jumbotron =
+                                    "<h2>E-mail confirmation required!</h2>
+                                    <p>
+                                      Please check your inbox and follow your e-mail confirmation message
+                                      from Worklist. Then try to login again.
+                                    </p>
+                                    ";
+                                $jobs->run();
+                                return;
                             }
                             return;
                         } else {
@@ -107,6 +119,7 @@ class GithubController extends Controller {
                             $this->write('access_token', $access_token);
                             $this->write('default_username', isset($gh_user->email) ? $gh_user->email : '');
                             $this->write('default_location', isset($gh_user->location) ? $gh_user->location : '');
+                            $this->view->redir_url = $redir;
                             parent::run();
                             return;
                         }
@@ -120,7 +133,41 @@ class GithubController extends Controller {
             }
         }
         // let's generate the session state value an try to authorize
-        self::generateStateAndLogin();
+        self::generateStateAndLogin($redir);
+    }
+
+    public function safe() {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->view = new SafeLoginView();
+            parent::run();
+            return;
+        }
+        $this->view = null;
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $redir = $_POST['redir'];
+        $user = new User();
+        if ($user->findUserByUsername($username) && $user->authenticate($password)) {
+            User::login($user, $redir);
+        } else {
+            // safe login failed
+            Utils::redirect($redir);
+        }
+    }
+
+    public function logout($redir = './') {
+        $this->view = null;
+        unset($_SESSION['username']);
+        unset($_SESSION['userid']);
+        unset($_SESSION['confirm_string']);
+        unset($_SESSION['nickname']);
+        unset($_SESSION['running']);
+        unset($_SESSION['access_token']);
+        if (isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '', time() - 42000, '/');
+        }
+        session_destroy();
+        Utils::redirect($redir);
     }
 
     /**
@@ -280,12 +327,12 @@ class GithubController extends Controller {
     /**
      * Start the login process by sending the user to Github's authorization page 
      */
-    public static function generateStateAndLogin() {
+    public static function generateStateAndLogin($redir) {
         // Generate a random hash and store in the session for security
         $_SESSION['github_auth_state'] = hash('sha256', microtime(TRUE).rand().$_SERVER['REMOTE_ADDR']);     
         $params = array(
             'client_id' => GITHUB_OAUTH2_CLIENT_ID,
-            'redirect_uri' => WORKLIST_URL . 'github/login',
+            'redirect_uri' => WORKLIST_URL . 'github/login/' . $redir,
             'scope' => 'repo',
             'state' => $_SESSION['github_auth_state']
         );

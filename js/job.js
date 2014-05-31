@@ -19,15 +19,42 @@ $(function() {
             width: '140px'
         });
     }
-    if($("#is_bug").is ( ":checked" )) {
-        $("#bug_job_id").keyup();
-    }
 
     if (status_error) {
         openNotifyOverlay(status_error, false);    
     }
     applyPopupBehavior();
             
+    $("#tweet-link").click(function() {
+        var jobid = $(this).data('jobid');
+        var jobsummary = $(this).data('jobsummary');
+        var message = 'Contract job: "' + jobsummary + '" http://worklist.net/' + jobid;
+
+        // Proper centering with dualscreen implemented with help from http://www.xtf.dk/2011/08/center-new-popup-window-even-on.html
+        var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+        var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+        var windowWidth = window.innerWidth ? window.innerWidth :
+                          (document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width);
+        var windowHeight = window.innerHeight ? window.innerHeight :
+                           (document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height);
+        var popupWidth = 550;
+        var popupHeight = 260;
+        var left = ((windowWidth / 2) - (popupWidth / 2)) + dualScreenLeft;
+        var top = ((windowHeight / 2) - (popupHeight / 2)) + dualScreenTop;
+
+        var opts   = 'status=1' +
+            ',width=' + popupWidth +
+            ',height=' + popupHeight +
+            ',top=' + top +
+            ',left=' + left;
+
+        var url = "http://twitter.com/share?text=" + encodeURIComponent(message);
+        window.open(url, 'tweetWindow', opts);
+
+        return false;
+    });
+
     if (displayDialogAfterDone && mechanic_id > 0) {
         WReview.displayInPopup({
             'user_id': mechanic_id,
@@ -55,37 +82,6 @@ $(function() {
     if (userinfotoshow){
         window.location.href='userinfo.php?id=' + userinfotoshow;
     }
-
-    //lookup and show job summary on bug_job_id change
-    $("#bug_job_id").keyup(function() {
-        var id=$("#bug_job_id").val();
-        if(id.length) {
-            $.ajax({
-                url: 'api.php',
-                dataType: 'json',
-                data: {
-                    action: 'getJobInformation',
-                    itemid: id
-                },
-                type: 'POST',
-                success: function(json) {
-                    if (!json || json === null) {
-                        alert("json null in getjobinformation");
-                        return;
-                    }
-                    if (json.error) {
-                        alert(json.error);
-                    } else {
-                        if(json.returnString.length > 0) {
-                            $('#bugJobSummary').attr('title', id);
-                        } else {
-                            $('#bugJobSummary').attr('title', 0);
-                        }
-                    }
-                }
-            });
-        }
-    });
 
     Entries.formatWorklistStatus();
 });
@@ -1021,17 +1017,6 @@ function showEndReviewForm() {
 
 function saveWorkitem() {
     var massValidation;
-    var bugJobId;
-    if($('#is_bug').is(':checked')) {
-        bugJobId = new LiveValidation('bug_job_id');
-        bugJobId.add( Validate.Custom, {
-            against: function(value,args){
-                id = $('#bugJobSummary').attr('title');
-                return (id!=0)
-            },
-            failureMessage: "Invalid item Id"
-        });
-    }
     
     var summary = new LiveValidation('summary');
     summary.add( Validate.Presence, {
@@ -1045,11 +1030,7 @@ function saveWorkitem() {
         failureMessage: "You have to choose a project!"
     });
 
-    if($('#is_bug').is(':checked')) { 
-        massValidation = LiveValidation.massValidate([editProject, summary, bugJobId],true);
-    } else {
-        massValidation = LiveValidation.massValidate([editProject,summary],true);
-    }
+    massValidation = LiveValidation.massValidate([editProject,summary],true);
                 
     if (!massValidation) {
         // Validation failed. We use openNotifyOverlay to display messages
@@ -1190,10 +1171,6 @@ $(function() {
 
     return false;
 });
-
-function sendToLogin(){
-    window.location = './github/login?redir=./' + workitem_id;
-}
 
 function setFollowingText(isFollowing){
     if(isFollowing == true) {
