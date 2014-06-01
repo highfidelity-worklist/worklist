@@ -195,10 +195,7 @@ class JobView extends View {
         if ($worklist['runner_nickname'] != 'Not funded') {
             $ret .= 
                 '<span class="inline-label"><a href="./user/' . $worklist['runner_id'] . '"' .
-                ' data-user-id="' . $worklist['runner_id'] . '">' .
-                    substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') .
-                '</a></span>
-                
+                ' data-user-id="' . $worklist['runner_id'] . '">Designer</a></span>
                 ';
         } else {
             $ret .= $worklist['runner_nickname'];

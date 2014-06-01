@@ -94,8 +94,8 @@
 </div>
 <div id="page-content">
     <div id="left-panel">
+        {{^editing}}
         <div class="people-info">
-            {{^editing}}
             <div id="creatorBox">
                 <span id="pingCreator" class="creatorName">
                     Job creator:
@@ -103,25 +103,18 @@
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </div>
             <div id="runnerBox">
-                    <span class="runnerName">Designer:</span>
-                    {{& nonEditableRunnerBox}}
+                {{& nonEditableRunnerBox}}
             </div>
             <div id="mechanicBox">
                 {{& mechanicBox}}
             </div>
-            {{/editing}}
-            {{#editing}}
-                {{#canReassignRunner}}
-                    {{& editableRunnerBox}}
-                {{/canReassignRunner}}
-                {{^canReassignRunner}}
-                    <div id="runnerBox">
-                        <span class="runnerName">Designer:</span>
-                    </div>
-                     {{& nonEditableRunnerBox}}
-                {{/canReassignRunner}}
-            {{/editing}}
         </div>
+        {{/editing}}
+        {{#canReassignRunner}}
+        <div id="runnerBox" class="editable">
+            {{& editableRunnerBox}}
+        </div>
+        {{/canReassignRunner}}
         <div id="for_view">
             {{#editing}}
                 <ul style="margin:0; padding:0; border:none;">

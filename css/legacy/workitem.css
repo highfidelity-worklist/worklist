@@ -385,6 +385,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     padding-top: 1px;
 }
 
+#runnerBox.editable {
+    width: auto;
+}
+
 #creatorBox a, #runnerBox a, #mechanicBox a{
     text-decoration: none;
     color: #333;

@@ -1145,25 +1145,21 @@ $(function() {
 
     // Reassign runner
     if (canReassignRunner) {
-        (function($) {
-            $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
-                var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val();
-                $.ajax({
-                    type: 'post',
-                    url: 'jsonserver.php',
-                    data: {
-                        action: 'changeRunner',
-                        // to avoid script loading error when not logged
-                        userid: user_id,
-                        runner: runner_id,
-                        workitem: workitem_id
-                    },
-                    dataType: 'json',
-                    success: function(j) {
-                    }
-                });
+        $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
+            var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val();
+            $.ajax({
+                type: 'post',
+                url: 'jsonserver.php',
+                data: {
+                    action: 'changeRunner',
+                    // to avoid script loading error when not logged
+                    userid: user_id,
+                    runner: runner_id,
+                    workitem: workitem_id
+                },
+                dataType: 'json'
             });
-        })(jQuery);
+        });
     }
 
     //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
