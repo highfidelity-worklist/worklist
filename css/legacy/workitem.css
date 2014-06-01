@@ -386,6 +386,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 #runnerBox.editable {
+    margin-bottom: 25px;
     width: auto;
 }
 
@@ -931,7 +932,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #for_view {
     float: left;
-    margin-top: 26px;
+    /*margin-top: 26px;  */
     width: 100%;
 }
 
@@ -1373,6 +1374,11 @@ h1.newProject {
         margin: 0 10px;
     }
 
+    .info-data {
+        display: inline;
+    }
+
+    #summary,
     #edit-notes {
         width: 100%;
     }
