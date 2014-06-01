@@ -3,9 +3,10 @@
     <div class="row">
         <section class="col-md-6">
             <label for="nickname">Nickname</label>
-            <input name="nickname" type="text" id="nickname" class="form-control" value="{{currentUser.nickname}}" />
+            {{currentUser.nickname}}
             <label for="username">Email</label>
-            <input type="text" id="username" name="username" class="form-control" value="{{currentUser.username}}" />
+            {{currentUser.username}}
+            <div class="clear"></div>
             <label for="paypal_email">Paypal Email</label>
             <input type="text" id="paypal_email" name="paypal_email" class="form-control" value="{{userInfo.paypal_email}}" />
         </section>
@@ -15,6 +16,8 @@
                 <img id="profilepicture" src="{{& picture}}" />
                 <input id="profilebutton" type="button" class="upload-btn wl-icon-attach" value="Upload new photo" />
             </p>
+
+            <img id="profilepicture_github" src="{{userInfo.picture}}" />
         </section>
     </div>
     <div class="row">

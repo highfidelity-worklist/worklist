@@ -1510,7 +1510,11 @@ class User {
         if (empty($this->picture)) {
             return SERVER_URL ."thumb.php?src=no_picture.png&h=".$h."&w=".$w."&zc=0";
         } else {
-            return APP_IMAGE_URL . $this->picture;
+        
+            // we decide here whether it's a URL or a picture, all GitHub user's
+            // should be using the GitHub avatar_url, right?
+            return $this->picture;
+            // return APP_IMAGE_URL . $this->picture;
         }
     }
     

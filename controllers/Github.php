@@ -63,6 +63,7 @@ class GithubController extends Controller {
 
         // When Github redirects the user back here, there will be a "code" and "state" parameter in the query string
         if (isset($_GET['code']) && $_GET['code']) {
+        
             // Verify the state matches our stored state
             if (isset($_GET['state']) && $_SESSION['github_auth_state'] == $_GET['state']) {
                 // Exchange the auth code for a token
@@ -98,6 +99,18 @@ class GithubController extends Controller {
                         if ($user->findUserByAuthToken($access_token)) {
                             // already linked account, let's log him in
                             if ($user->isActive()) {
+
+                                // reset first and last name from GitHub data
+                                if (isset($gh_user->name)) {
+                                    $fullname = $gh_user->name;
+                                    $nameArray = explode(' ', $fullname);
+                                    $user->setFirst_name($nameArray[0]);
+                                    $user->setLast_name(end($nameArray));
+                                }
+
+                                $user->setPicture($gh_user->avatar_url);
+                                $user->save();
+
                                 User::login($user, $redir);
                             } else {
                                 // users that didn't confirmed their email addresses
@@ -271,6 +284,7 @@ class GithubController extends Controller {
 
             $this->access_token = $access_token;
             $gh_user = $this->apiRequest(GITHUB_API_URL . 'user');
+
             if (!$gh_user) {
                 throw new Exception("Unable to read user credentials from github.");
             }
@@ -290,6 +304,17 @@ class GithubController extends Controller {
 
             $user = User::signup($username, $nickname, $password, $access_token, $country);
             $success = true;
+
+            // save the name to the worklist database
+            if (isset($gh_user->name)) {
+                $fullname = $gh_user->name;
+                $nameArray = explode(' ', $fullname);
+                $user->setFirst_name($nameArray[0]);
+                $user->setLast_name(end($nameArray));
+
+                $user->save();
+            }
+
 
             // Email user
             $subject = "Registration";
