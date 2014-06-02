@@ -110,14 +110,15 @@
             </div>
         </div>
         {{/editing}}
-        {{#canReassignRunner}}
-        <div id="runnerBox" class="editable">
-            {{& editableRunnerBox}}
-        </div>
-        {{/canReassignRunner}}
         <div id="for_view">
             {{#editing}}
                 <ul style="margin:0; padding:0; border:none;">
+                    <li>
+                        {{#canReassignRunner}}
+                        <div id="runnerBox" class="editable">
+                            {{& editableRunnerBox}}
+                        </div>
+                        {{/canReassignRunner}}
                     <li>
                         <span class="info-label">Summary</span>
                         <span class="info-data">
@@ -370,9 +371,8 @@
         {{/editing}}
     </div> <!-- End of div right-panel-->
     {{#canEditAndEditing}}
-    <div class="clear">
-        <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
-    </div>
+    <div class="clear"></div>
+    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
     {{/canEditAndEditing}}
 </div> <!-- End of div pageContent -->
 {{#editing}}
