@@ -237,7 +237,7 @@ $(function () {
         dataType: 'json',
         success: function(data) {
             if ((data.success === true) && (data.isuscitizen === true)) {
-            $('#w9upload').show();
+                $('#w9upload').show();
             }
         }
     });
