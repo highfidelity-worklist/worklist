@@ -385,7 +385,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     padding-top: 1px;
 }
 
-#runnerBox.editable {
+#workitem-form #runnerBox {
     margin-bottom: 10px;
     width: auto;
 }
