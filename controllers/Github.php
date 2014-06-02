@@ -63,7 +63,7 @@ class GithubController extends Controller {
 
         // When Github redirects the user back here, there will be a "code" and "state" parameter in the query string
         if (isset($_GET['code']) && $_GET['code']) {
-        
+
             // Verify the state matches our stored state
             if (isset($_GET['state']) && $_SESSION['github_auth_state'] == $_GET['state']) {
                 // Exchange the auth code for a token
@@ -315,6 +315,8 @@ class GithubController extends Controller {
                 $user->save();
             }
 
+            $user->setPicture($gh_user->avatar_url);
+            $user->save();
 
             // Email user
             $subject = "Registration";
