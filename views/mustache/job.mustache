@@ -58,7 +58,7 @@
     {{#editing}}
         <input type="hidden" name="save_workitem" value="save_workitem" />
         <input type="hidden" name="action" value="save_workitem" />
-        <span class="info-label" id="edit-project-label">Project:</span>
+        <span class="inline-label" id="edit-project-label">Project</span>
         {{#canEditProject}}
             {{& editableProjectSelect}}
         {{/canEditProject}}
@@ -94,6 +94,7 @@
 </div>
 <div id="page-content">
     <div id="left-panel">
+        {{^editing}}
         <div class="people-info">
             <div id="creatorBox">
                 <span id="pingCreator" class="creatorName">
@@ -102,21 +103,23 @@
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </div>
             <div id="runnerBox">
-                {{#editing}}
-                    <span class="runnerName">Designer:</span>
-                    {{& editableRunnerBox}}
-                {{/editing}}
-                {{^editing}}
-                    {{& nonEditableRunnerBox}}
-                {{/editing}}
+                {{& nonEditableRunnerBox}}
             </div>
             <div id="mechanicBox">
                 {{& mechanicBox}}
             </div>
         </div>
+        {{/editing}}
         <div id="for_view">
             {{#editing}}
                 <ul style="margin:0; padding:0; border:none;">
+                    <li>
+                        {{#canReassignRunner}}
+                        <div id="runnerBox">
+                            {{& editableRunnerBox}}
+                        </div>
+                        {{/canReassignRunner}}
+                    </li>
                     <li>
                         <span class="info-label">Summary</span>
                         <span class="info-data">
@@ -138,7 +141,7 @@
                         <span class="sections">Notes</span>
                             <span id="info-notes">
                             {{#canEditNotes}}
-                                <textarea name="notes" id="edit-notes" class="expandable" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
+                                <textarea name="notes" id="edit-notes" class="autogrow" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
                             {{/canEditNotes}}
                             {{^canEditNotes}}
                                 {{& notesHtml}}
@@ -184,10 +187,6 @@
                     </li>
                     {{/worklist.mechanic_id}}
                 </ul>
-                {{#canEditAndEditing}}
-                    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
-                </div>
-                {{/canEditAndEditing}}
             {{/editing}}
             {{^editing}}
                 <span class="sections">Notes</span>
@@ -253,6 +252,7 @@
                 {{^skillsCount}}
                 <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
                 {{/skillsCount}}
+                <div class="clear"></div>
             </div>
         {{/editing}}
         {{^editing}}
@@ -287,6 +287,7 @@
                 </div>
             {{/canReview}}
         {{/editing}}
+        {{^editing}}
         <div id="for_view">
             <div class="moneyZone">
                 <div id="bid-panel">
@@ -368,7 +369,12 @@
             </div> <!-- End of div moneyZone -->
             <div id="uploadPanel"> </div>
         </div> <!-- End of for_view -->
+        {{/editing}}
     </div> <!-- End of div right-panel-->
+    {{#canEditAndEditing}}
+    <div class="clear"></div>
+    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
+    {{/canEditAndEditing}}
 </div> <!-- End of div pageContent -->
 {{#editing}}
     </form>

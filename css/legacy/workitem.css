@@ -385,6 +385,11 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     padding-top: 1px;
 }
 
+#workitem-form #runnerBox {
+    margin-bottom: 10px;
+    width: auto;
+}
+
 #creatorBox a, #runnerBox a, #mechanicBox a{
     text-decoration: none;
     color: #333;
@@ -415,10 +420,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .skills-label a {
     text-decoration: none;
     color: #007F7C !important;
-}
-
-.changeRunner {
-    display: none;
 }
 
 .changeRunner select {
@@ -466,8 +467,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     position: relative;
 }
 
-.job-budget{
+.job-budget {
     width: 316px;
+    /*margin: 10px 0; */
 }
 
 .project-github h1 {
@@ -482,8 +484,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     font-weight: normal;
 }
 
-.skills, .people-info{
-    height: 56px;
+.skills,
+.people-info {
+    height: 64px;
     border-bottom: 2px solid #e1e8ea;
     font-weight: bold;
     font-size: 14px;
@@ -548,6 +551,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-decoration: underline;
 }
 
+.inline-label,
 .budget-label {
     font-weight: bold;
     display: inline-block;
@@ -930,6 +934,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
     margin-top: 26px;
     width: 100%;
+}
+
+#workitem-form #for_view {
+    margin-top: 0;
 }
 
 .notestext {
@@ -1363,7 +1371,19 @@ h1.newProject {
 
     .project, .job-budget {
         clear: both;
-        margin: 10px 0;
+        width: 100%;
+    }
+
+    .project {
+        margin: 0 10px;
+    }
+
+    .info-data {
+        display: inline;
+    }
+
+    #summary,
+    #edit-notes {
         width: 100%;
     }
 
