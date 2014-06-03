@@ -65,6 +65,14 @@ class UserSystemModel extends DataObject {
                 $system->hardware = $system_hardware;
                 $system->index = ++$last_system_index;
                 $system->save("id");
+            } elseif (!empty($system_operating_systems) || !empty($system_hardware)) {
+                $system = new UserSystemModel();
+                $system->dbInsert(array(
+                    'user_id' => $user_id,
+                    'operating_systems' => $system_operating_systems,
+                    'hardware' => $system_hardware,
+                    'index' => ++$last_system_index
+                ));
             }
         }
     }
