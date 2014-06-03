@@ -71,22 +71,24 @@
     <div class="row">
       <section class="col-md-6">
         <h3>Your Systems</h3>
-        {{#userSystems}}
-            <div class="{{#placeholder}}system-placeholder-wrapper{{/placeholder}}{{^placeholder}}system-wrapper{{/placeholder}}">
-                <a class="system-remove" href="javascript:;">remove</a>
-                <h4>System {{index}}</h4>
-                <div>
-                    <label class="system-label-operating-systems">Operating system(s), comma separated</label>
-                    <input name="system_operating_systems[]" type="text" class="form-control" value="{{operating_systems}}" />
+        <div class="systems-forms-wrap">
+            {{#userSystems}}
+                <div class="{{#is_placeholder}}system-placeholder-wrapper{{/is_placeholder}}{{^is_placeholder}}system-wrapper{{/is_placeholder}}">
+                    <a class="system-remove" href="javascript:;">remove</a>
+                    <h4 class="system-title">System {{index}}</h4>
+                    <div>
+                        <label class="system-label-operating-systems">Operating system(s), comma separated</label>
+                        <input name="system_operating_systems[]" type="text" class="form-control" value="{{operating_systems}}" />
+                    </div>
+                    <div>
+                        <label>Hardware</label>
+                        <textarea name="system_hardware[]" class="form-control" rows="7">{{hardware}}</textarea>
+                    </div>
+                    <input type="hidden" name="system_id[]" value="{{id}}" />
+                    <input type="hidden" name="system_delete[]" value="" />
                 </div>
-                <div>
-                    <label>Hardware</label>
-                    <textarea name="system_hardware[]" class="form-control" rows="7">{{hardware}}</textarea>
-                </div>
-                <input type="hidden" name="system_id[]" value="{{id}}" />
-                <input type="hidden" name="system_delete[]" value="" />
-            </div>
-        {{/userSystems}}
+            {{/userSystems}}
+        </div>
         <a class="system-add" href="javascript:;">Add another system</a>
       </section>
     </div>

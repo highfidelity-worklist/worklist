@@ -39,6 +39,16 @@ class UserSystemModel extends DataObject {
         return $systemsDictionary;
     }
 
+    public function getUserSystemsWithPlaceholder($user_id) {
+        $systemsArray = $this->getUserSystems($user_id);
+
+        $placeholderSystem = new UserSystemModel();
+        $placeholderSystem->is_placeholder = true;
+        $systemsArray[] = $placeholderSystem;
+
+        return $systemsArray;
+    }
+
     public function storeUsersSystemsSettings($user_id, $system_id_array, $system_operating_systems_array, $system_hardware_array, $system_delete_array) {
         $userSystemsDictionary = $this->getUserSystemsDictionary($user_id);
 

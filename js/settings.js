@@ -156,6 +156,15 @@ function saveSettings() {
         }
     });
 }
+function addSystemForm() {
+    $forms_wrap = $('.systems-forms-wrap');
+    $placeholder_form = $('.system-placeholder-wrapper', $forms_wrap);
+
+    $new_form = $placeholder_form.clone();
+    $new_form.attr('class', 'system-wrapper');
+
+    $placeholder_form.before($new_form)
+}
 
 $(function () {
     $('#timezone, #country').chosen();
@@ -186,6 +195,8 @@ $(function () {
             }
         });
     }
+
+    $('.system-add').click(addSystemForm);
 
     var uploadOptions = {
         action: 'api.php',
