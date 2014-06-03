@@ -173,6 +173,14 @@ class SettingsController extends Controller {
                 $saveArgs['contactway'] = 1;
             }
 
+            $userSystem->storeUsersSystemsSettings(
+                $userId,
+                $_POST['system_id'],
+                $_POST['system_operating_systems'],
+                $_POST['system_hardware'],
+                $_POST['system_delete']
+            );
+
             $paypal = 0;
             $paypal_email = '';
             // defaulting to paypal at this stage
