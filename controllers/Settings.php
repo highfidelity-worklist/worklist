@@ -303,7 +303,7 @@ class SettingsController extends Controller {
                 $nickname = $user->getNickname();
                 Utils::setUserSession($user->getId(), $user->getUsername(), $user->getNickname(), $user->getIs_admin());
 
-                $returned_json['user_systems'] = $userSystem->getUserSystems($userId);
+                $returned_json['user_systems'] = $userSystem->getUserSystemsJSON($userId);
 
                 echo json_encode($returned_json);
                 // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions

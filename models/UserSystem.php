@@ -1,19 +1,8 @@
 <?php
 
-require_once('models/DataObject.php');
-
-class UserSystemModel extends DataObject {
-    public $id;
-    public $user_id;
-    public $operating_systems;
-    public $hardware;
-    public $index;
-
-    public function __construct() {
-        parent::__construct();
-
-        $this->table_name = USER_SYSTEMS;
-    }
+class UserSystemModel extends Model {
+    protected $table = USER_SYSTEMS;
+    public $is_placeholder = false;
 
     public function getClassName() {
         return 'UserSystemModel';
@@ -24,14 +13,23 @@ class UserSystemModel extends DataObject {
     }
 
     public function getUserSystems($user_id) {
-        $fetchedSystemsArray = $this->dbFetchArray(" " . USER_SYSTEMS . ".user_id={$user_id}");
-        $systemsArray = array();
-        foreach ($fetchedSystemsArray as $systemData) {
-            $system = new UserSystemModel();
-            $system->loadObject(array($systemData));
-            $systemsArray[] = $system;
+        $user_id = intval($user_id);
+        return $this->loadMany("user_id = {$user_id}");
+    }
+
+    public function getUserSystemsJSON($user_id) {
+        $json = array();
+        $userSystems = $this->getUserSystems($user_id);
+        foreach ($userSystems as $system) {
+            $json[] = array(
+                'id' => $system->id,
+                'user_id' => $system->user_id,
+                'operating_systems' => $system->operating_systems,
+                'hardware' => $system->hardware,
+                'index' => $system->index,
+            );
         }
-        return $systemsArray;
+        return $json;
     }
 
     public function getUserSystemsDictionary($user_id) {
@@ -65,7 +63,7 @@ class UserSystemModel extends DataObject {
             if ($system_delete) {
                 if (array_key_exists($system_id, $userSystemsDictionary)) {
                     $system = $userSystemsDictionary[$system_id];
-                    $system->removeRow(' id = '.$system->id.' ');
+                    $system->removeRows(' id = '.$system->id.' ');
                 }
             } elseif (array_key_exists($system_id, $userSystemsDictionary)) {
                 $system = $userSystemsDictionary[$system_id];
@@ -73,16 +71,20 @@ class UserSystemModel extends DataObject {
                 $system->operating_systems = $system_operating_systems;
                 $system->hardware = $system_hardware;
                 $system->index = ++$last_system_index;
-                $system->save("id");
+                $system->save();
             } elseif (!empty($system_operating_systems) || !empty($system_hardware)) {
                 $system = new UserSystemModel();
-                $system->dbInsert(array(
-                    'user_id' => $user_id,
-                    'operating_systems' => $system_operating_systems,
-                    'hardware' => $system_hardware,
-                    'index' => ++$last_system_index
-                ));
+                $system->user_id = $user_id;
+                $system->operating_systems = $system_operating_systems;
+                $system->hardware = $system_hardware;
+                $system->index = ++$last_system_index;
+                $system->insert();
             }
         }
+    }
+
+    public function removeRows($condition) {
+        $sql = "DELETE FROM `" . $this->table . "` WHERE {$condition}";
+        return mysql_query($sql);
     }
 }
