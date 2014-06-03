@@ -11,6 +11,9 @@ class SettingsController extends Controller {
         }
         $this->write('user', $user);
 
+        $userSystem = new UserSystemModel();
+        $this->write('userSystems', $userSystem->getUserSystems($userId));
+
         $msg = "";
         $company = "";
 
