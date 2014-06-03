@@ -2,11 +2,10 @@
     <h2>Settings</h2>
     <div class="row">
         <section class="col-md-6">
-            <label>Nickname</label>
-            {{currentUser.nickname}}
-            <label>Email</label>
-            {{currentUser.username}}
-
+            <p>
+                To streamline integration, Worklist depends on GitHub for your username, full name, email and photo.
+                Please change those settings on GitHub.
+            </p>
             <label for="paypal_email">Paypal Email</label>
             <input type="text" id="paypal_email" name="paypal_email" class="form-control" value="{{userInfo.paypal_email}}" />
             <label>Email notifications</label>
@@ -41,14 +40,6 @@
             <input type="text" id="contactway" name="contactway" class="form-control" value="{{userInfo.contactway}}" />
 
         </section>
-        <section class="col-md-6" style="float: right;">
-            <label for="profilepicture">Photo</label>
-            <p>
-                <!-- <img id="profilepicture_github" src="{{userInfo.picture}}?320" /> -->
-                <img src="https://avatars2.githubusercontent.com/u/7757504?320" />
-            </p>
-        </section>
-
     </div>
     <div class="row">
         <section class="col-md-6">

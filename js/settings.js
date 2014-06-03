@@ -1,14 +1,5 @@
 var nclass;
-var nickname, username, about, paypal, firstname, lastname, w9_accepted;
-
-function completeUploadImage(file, data) {
-    $('span.LV_validation_message.upload').css('display', 'none').empty();
-    if (!data.success) {
-        $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
-    } else {
-        window.location.reload();
-    }
-}
+var about, paypal, firstname, lastname, w9_accepted;
 
 function validateNames(file, extension) {
     if (LiveValidation.massValidate( [ firstname, lastname ] )) {
@@ -22,6 +13,7 @@ function validateW9Upload(file, extension) {
     nclass = '.uploadnotice-w9';
     return validateUpload(file, extension);
 }
+
 function validateUpload(file, extension) {
     if (! (extension && /^(pdf)$/i.test(extension))) {
         // extension is not allowed
@@ -91,15 +83,13 @@ function isJSON(json) {
 }
 function saveSettings() {
     var values;
-    var massValidation = LiveValidation.massValidate( [ nickname, username, paypal, w9_accepted ], true);
+    var massValidation = LiveValidation.massValidate( [  paypal, w9_accepted ], true);
     if (massValidation) {
         values = {
             save: 1,
             timezone: $('#timezone').val(),
             country: $('#country').val(),
             bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
-            nickname: $('#nickname').val(),
-            username: $('#username').val(),
             self_email_notify: $('input[name="self_email_notify"]').prop('checked') ? 1 : 0,
             bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
             review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0,
@@ -138,7 +128,7 @@ function saveSettings() {
             }
 
             if(settings_json.error == 1) {
-                openNotifyOverlay(message,false,false,true); // Display with a red border id its an error
+                openNotifyOverlay(message, false, false, true); // Display with a red border if its an error
             } else {
                 openNotifyOverlay(message);
             }
@@ -179,24 +169,6 @@ $(function () {
             }
         });
     }
-
-    var uploadOptions = {
-        action: 'api.php',
-        name: 'profile',
-        data: { 
-            action: 'uploadProfilePicture', 
-            api_key: uploadApiKey, 
-            userid: user_id
-        },
-        autoSubmit: true,
-        hoverClass: 'imageHover',
-        responseType: 'json',
-        onSubmit: validateUploadImage,
-        onComplete: completeUploadImage
-    };
-
-    new AjaxUpload('profilepicture', uploadOptions);
-    new AjaxUpload('profilebutton', uploadOptions);
 
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',
@@ -241,21 +213,12 @@ $(function () {
             }
         }
     });
+
     $("#settings").submit(function(event) {
         event.preventDefault();
         saveSettings();
         return false;
     });
-
-    nickname = new LiveValidation('nickname');
-    nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );
-    nickname.add(Validate.Format, { pattern: /^[a-zA-Z0-9][a-zA-Z0-9_\-]*$/, failureMessage: "Must consist only of alphanumerics, underscores, or dash characters!" });
-    nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
-    
-    username = new LiveValidation('username');
-    username.add( Validate.Email );
-    username.add(Validate.Length, { minimum: 4, maximum: 50 } );
-    username.add(Validate.Exclusion, { within: [ 'username' ], failureMessage: "You must set your Email!" });
 
     about = new LiveValidation('about');
     about.add(Validate.Length, { minimum: 0, maximum: 150 } );
