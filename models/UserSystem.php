@@ -12,6 +12,16 @@ class UserSystemModel extends Model {
         return nl2br(htmlspecialchars($this->hardware));
     }
 
+    public function numberOfUserSystems($user_id) {
+        $sql = "SELECT COUNT(*) FROM `" . $this->table . "` WHERE user_id = {$user_id}";
+        $result = mysql_query($sql);
+        if ($result) {
+            $row = mysql_fetch_row($result);
+            return intval($row[0]);
+        }
+        return 0;
+    }
+
     public function getUserSystems($user_id) {
         $user_id = intval($user_id);
         return $this->loadMany("user_id = {$user_id}");
