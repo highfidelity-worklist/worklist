@@ -18,6 +18,7 @@
 #commentform {
     background-color: #efefef;
     border-width: 1px;
+    text-align: center;
 }
 
 #commentform,
@@ -40,10 +41,13 @@
 
 #commentform input[type="submit"] {
     margin-left: 10px;
+    display: inline-block;
 }
 
 #commentform .tip {
     color: #777;
+    display: inline-block;
+	padding: 10px;
 }
 
 
@@ -77,15 +81,12 @@ table.table-fees td.what {
 
 /*  Fixing arrow position below 'what' in
     job status MAY-30-2014 <victorargote> */
-td.pre.fee-description.what {
-    position: relative;
-}
-
-td.pre.fee-description.what:after {
+table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
     content: '\00a0';
     width: 20px;
     height: 20px;
     position: absolute;
+    margin: -11px 0 0 -46%;
     background-color: #fff;
     transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -93,11 +94,29 @@ td.pre.fee-description.what:after {
     -o-transform: rotate(45deg);
     border-top: 1px solid #ddd;
     border-left: 1px solid #dddddd;
-    bottom: -10px;
-    display: block;
-    left: 50%;
-    margin-left: -10px;
 }
+
+td.pre.fee-description.what {
+    position: relative;
+}
+
+td.pre.fee-description.what:after {
+	content: '\00a0';
+	width: 20px;
+	height: 20px;
+	position: absolute;
+	background-color: #fff;
+	transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	border-top: 1px solid #ddd;
+	border-left: 1px solid #dddddd;
+	bottom: -10px;
+	display: block;
+	left: 50%;
+	margin-left: -10px;
+  }
 
 .table-bids h4,
 .table-bids h5,
@@ -240,4 +259,25 @@ section#footer li:nth-child(-n+3) {
         margin-top: 30px;
         display: inline-block;
     }
+}
+
+/*  .top-bar rules moved to live where it should
+	JUN-03-2014 <victorargote> */
+.top-bar {
+    background-color: #e1e8ea;
+    padding: 14px 0;
+    margin-top: 13px !important;
+    font-size: 14px;
+}
+
+.top-bar form{
+    float: left;
+    width: 173px;
+    margin-top: 6px;
+}
+
+#workitem-form .top-bar .project {
+    position: relative;
+    top: -7px;
+    right: -10px;
 }

@@ -140,20 +140,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 363px;
 }
 
-.top-bar {
-    background-color: #e1e8ea;
-    padding: 14px 0;
-    margin-top: 13px !important;
-    height: 50px;
-    font-size: 14px;
-}
-
-.top-bar form{
-    float: left;
-    width: 173px;
-    margin-top: 6px;
-}
-
 .first-line {
     position: absolute;
     height: 20px;
@@ -411,12 +397,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: auto;
     margin-top: -7px !important;
     margin-right: 1px;
-}
-
-#workitem-form .top-bar .project {
-    position: relative;
-    top: -7px;
-    right: -10px;
 }
 
 .project, .job-budget{
