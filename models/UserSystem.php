@@ -19,6 +19,10 @@ class UserSystemModel extends DataObject {
         return 'UserSystemModel';
     }
 
+    public function getHardwareSafeHTML() {
+        return nl2br(htmlspecialchars($this->hardware));
+    }
+
     public function getUserSystems($user_id) {
         $fetchedSystemsArray = $this->dbFetchArray(" " . USER_SYSTEMS . ".user_id={$user_id}");
         $systemsArray = array();

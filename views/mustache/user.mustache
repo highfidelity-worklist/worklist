@@ -90,7 +90,15 @@
                 <p class="info-label about title-label-big">
                     About
                 </p>
-                <span id="info-about">{{profileUser.getAbout}}</span>
+                <p id="info-about">{{profileUser.getAbout}}</p>
+                <p class="info-label about title-label-big">User Systems</p>
+                {{#profileUser.getSystems}}
+                <h4>System {{index}}</h4>
+                <p class="info-system">
+                    <div>{{operating_systems}}</div>
+                    <div>{{{getHardwareSafeHTML}}}</div>
+                </p>
+                {{/profileUser.getSystems}}
             </div><!-- end of left-column -->
             <div class="col-md-6">
                 <div class="button-row">
