@@ -9,7 +9,7 @@ class TimelineView extends View {
 
 	public $scripts = array(
         'https://maps.googleapis.com/maps/api/js?v=3&sensor=false',
-        'js/spin.js',
+        'js/spin.js/spin.js',
         'js/markerclusterer/markerclusterer.js',
         'js/timeline.js'
 	);

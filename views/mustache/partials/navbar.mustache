@@ -31,12 +31,12 @@
                             <li><a class="budget" href="#"><i class="dropdown-menu-icon fa fa-dollar"></i>My earnings</a></li>
                             <li><a href="./settings"><i class="dropdown-menu-icon fa fa-gear"></i>Settings</a></li>
                             <li class="divider"></li>
-                            <li><a href="./logout"><i class="dropdown-menu-icon fa fa-sign-out"></i>Logout</a></li>
+                            <li><a href="./github/logout/{{redir_url}}"><i class="dropdown-menu-icon fa fa-sign-out"></i>Logout</a></li>
                         </ul>
                     </li>
                 {{/currentUser.id}}
                 {{^currentUser.id}}
-                    <li><a href="./github/login"><i class="fa fa-github"></i> Log in</a></li>
+                    <li><a href="./github/login/{{redir_url}}"><i class="fa fa-github"></i> Log in</a></li>
                 {{/currentUser.id}}
             </ul>
         </div>

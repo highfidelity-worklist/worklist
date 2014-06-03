@@ -2,15 +2,17 @@
 /**
  * Copyright 2014 - High Fidelity, Inc.
  */
+
 require_once("config.php");
  
 class Dispatcher {
+    static public $url = '';
+
     public function run() {
-        $url = isset($_GET['url']) ? $_GET['url'] : '';
-        $path = '/' . $url;
+        self::$url = isset($_GET['url']) ? $_GET['url'] : '';
+
         $dispatcher = new Pux\Mux;
 
-        $dispatcher->get('/addjob', array('AddJob'));
         $dispatcher->get('/confirmation', array('Confirmation'));
         $dispatcher->post('/confirmation', array('Confirmation'));
         $dispatcher->get('/feedlist', array('FeedList'));
@@ -22,11 +24,29 @@ class Dispatcher {
             'require' => array('method' => '\w+'),
             'default' => array('method' => 'index')
         ));
+        $dispatcher->get('/github/:method(/:param)', array('Github'), array(
+            'require' => array(
+                'method' => '\w+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
+
+        $dispatcher->any('/file(/:method)', array('File'), array(
+            'require' => array('method' => '\w+'),
+            'default' => array('method' => 'index')
+        ));
+        $dispatcher->any('/file/:method(/:param)', array('File'), array(
+            'require' => array(
+                'method' => '\w+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
 
         $dispatcher->get('/help', array('Help'));
         $dispatcher->get('/jobs', array('Jobs'));
         
-        $dispatcher->get('/logout', array('Logout'));
         $dispatcher->get('/password', array('Password'));
         $dispatcher->post('/password', array('Password'));
         $dispatcher->get('/payments', array('Payments'));
@@ -51,8 +71,17 @@ class Dispatcher {
         $dispatcher->post('/user/:id', array('User'));
 
         $dispatcher->get('/welcome', array('Welcome'));
-        $dispatcher->get('/:id', array('Job'), array('require' => array('id' => '\d+')));
-        $dispatcher->post('/:id', array('Job'), array('require' => array('id' => '\d+')));
+
+        $dispatcher->get('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
+        $dispatcher->post('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
+        $dispatcher->any('/job/:method(/:param)', array('Job'), array(
+            'require' => array(
+                'method' => '[a-zA-Z0-9]+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'index')
+        ));
+
         $dispatcher->get('/:project', array('Project'));
         $dispatcher->post('/:project', array('Project'));
 
@@ -60,7 +89,7 @@ class Dispatcher {
         $dispatcher->any('/signup', array('Github', 'federated'));
 
         try {
-            $route = $dispatcher->dispatch($path);
+            $route = $dispatcher->dispatch('/' . self::$url);
             $controller = isset($route[2][0]) ? $route[2][0] : DEFAULT_CONTROLLER_NAME;
 
             if (strlen($controller) < 10 || substr($controller, -10) != 'Controller') {
@@ -69,7 +98,7 @@ class Dispatcher {
 
             $method = isset($route[2][1]) ? $route[2][1] : DEFAULT_CONTROLLER_METHOD;
 
-            $variables = isset($route[3]['variables']) ? $route[3]['variables'] : array();
+            $variables = isset($route[3]['variables']) ? $route[3]['variables'] :  array();
             $values = isset($route[3]['vars']) ? $route[3]['vars'] : array();
             $params = array();
             foreach($variables as $variable) {

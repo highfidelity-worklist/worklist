@@ -323,7 +323,7 @@ var autocompleteUserSource = function(request, response) {
  * @param datasource - pass null if unused.
  * @returns object autocomplete arguments
  */
-function autocompleteMultiple(status, datasource) {
+function autocompleteMultiple(status, datasource, fAfter) {
     var autocompleteArguments;
     autocompleteArguments = {
         bind: function( event ) {
@@ -348,6 +348,11 @@ function autocompleteMultiple(status, datasource) {
             // add placeholder to get the comma-and-space at the end
             terms.push( "" );
             this.value = terms.join( ", " );
+
+            if (typeof fAfter == 'function') {
+                fAfter();
+            }
+
             return false;
         }
         
@@ -367,7 +372,7 @@ function autocompleteMultiple(status, datasource) {
         autocompleteArguments.source = function( request, response ) {
          // delegate back to autocomplete, but extract the last term
             response( $.ui.autocomplete.filter(
-                    skillsSet, autocompleteExtractLast( request.term ) ) );
+                    datasource, autocompleteExtractLast( request.term ) ) );
             };
     }
     return autocompleteArguments;
@@ -445,7 +450,6 @@ $(function () {
     $('#about').watermark('Tell us about yourself', {useNative: false});
     $('#contactway').watermark('Skype, email, phone, etc.', {useNative: false});
     $('#payway').watermark('Paypal, check, etc.', {useNative: false});
-    $('.skills-watermark').watermark('Your skills', {useNative: false});
     $('#findus').watermark('Google, Yahoo, others..', {useNative: false});
     $('#phoneconfirmstr').watermark('Phone confirm string', {useNative: false});
     // @TODO: This looks specific to masspay -- lithium
