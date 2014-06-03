@@ -150,6 +150,7 @@ function saveSettings() {
                 openNotifyOverlay(message);
             }
             
+            refreshSystemFormsWithData(settings_json['user_systems']);
         },
         error: function(xhdr, status, err) {
             $('#msg-'+type).text('We were unable to save your settings. Please try again.');
@@ -163,7 +164,36 @@ function addSystemForm() {
     $new_form = $placeholder_form.clone();
     $new_form.attr('class', 'system-wrapper');
 
-    $placeholder_form.before($new_form)
+    $placeholder_form.before($new_form);
+}
+function removeSystemForm() {
+    $forms_wrap = $(this).parent('.system-wrapper');
+    $('[name="system_delete[]"]', $forms_wrap).val(1);
+    $forms_wrap.hide();
+}
+function refreshSystemFormsWithData(system_forms_data) {
+    $forms_wrap = $('.systems-forms-wrap');
+    $placeholder_form = $('.system-placeholder-wrapper', $forms_wrap);
+
+    $('.system-wrapper', $forms_wrap).remove();
+
+    var setValueForFieldName = function (value, name, scope) {
+      return $('[name="' + name + '[]"]', scope).val(value);
+    }
+
+    $(system_forms_data).each(function(_i, system_data) {
+        $new_form = $placeholder_form.clone();
+        $new_form.attr('class', 'system-wrapper');
+
+        $title_tag = $('.system-title', $new_form);
+        $title_tag.html($title_tag.html() + system_data.index);
+
+        setValueForFieldName(system_data.operating_systems, 'system_operating_systems', $new_form);
+        setValueForFieldName(system_data.hardware, 'system_hardware', $new_form);
+        setValueForFieldName(system_data.id, 'system_id', $new_form);
+
+        $placeholder_form.before($new_form);
+    });
 }
 
 $(function () {
@@ -197,6 +227,7 @@ $(function () {
     }
 
     $('.system-add').click(addSystemForm);
+    $('.systems-forms-wrap').on('click', '.system-remove', removeSystemForm);
 
     var uploadOptions = {
         action: 'api.php',

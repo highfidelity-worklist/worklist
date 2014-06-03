@@ -56,9 +56,14 @@ class UserSystemModel extends DataObject {
         foreach ($system_id_array as $i => $system_id) {
             $system_operating_systems = $system_operating_systems_array[$i];
             $system_hardware = $system_hardware_array[$i];
-            $system_delete = $system_delete_array[$i];
+            $system_delete = intval($system_delete_array[$i]);
 
-            if (array_key_exists($system_id, $userSystemsDictionary)) {
+            if ($system_delete) {
+                if (array_key_exists($system_id, $userSystemsDictionary)) {
+                    $system = $userSystemsDictionary[$system_id];
+                    $system->removeRow(' id = '.$system->id.' ');
+                }
+            } elseif (array_key_exists($system_id, $userSystemsDictionary)) {
                 $system = $userSystemsDictionary[$system_id];
                 $system->user_id = $user_id;
                 $system->operating_systems = $system_operating_systems;
