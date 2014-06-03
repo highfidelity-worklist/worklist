@@ -11,31 +11,6 @@
     color: #333;
 }
 
-#tweet-link {
-    float: left;
-    padding: 10px 17px 7px 28px;
-    background-position: 4px 8px;
-    background-repeat: no-repeat;
-    border-right: 2px solid #e1e8ea;
-}
-
-#tweet-link:hover {
-    cursor: pointer;
-    text-decoration: underline !important;
-    color: #608e96 !important;
-}
-
-@media (max-width: 480px) {
-    #tweet-link {
-        padding: 10px 5px 7px 25px;
-    }
-}
-
-#commentZone > .row:first-child {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 3px;
-}
-
 #commentZone > .row:first-child > h3 + a {
     text-align: right;
 }
@@ -106,21 +81,6 @@ table.table-fees td.what {
 
 /*  Fixing arrow position below 'what' in
     job status MAY-30-2014 <victorargote> */
-table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
-    content: '\00a0';
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    margin: -11px 0 0 -46%;
-    background-color: #fff;
-    transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    border-top: 1px solid #ddd;
-    border-left: 1px solid #dddddd;
-}
-
 td.pre.fee-description.what {
     position: relative;
 }
@@ -159,7 +119,6 @@ td.pre.fee-description.what:after {
 .table-fees h4 + span,
 .table-fees h5 + span {
     float: right;
-    margin-top: 5px;
 }
 
 .table-bids > caption,
