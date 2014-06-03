@@ -200,7 +200,7 @@ class Model extends AppObject {
         if ($id == 0) {
             return null;
         }
-        $sql .= $fields_sql . " WHERE `id` = `$id`;";
+        $sql .= $fields_sql . " WHERE `id` = $id;";
         return mysql_query($sql);
     }
 
