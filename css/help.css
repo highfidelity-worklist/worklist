@@ -25,11 +25,11 @@ body > nav.navbar + .container-fluid > p {
     padding: 15px 8% 0;
 }
 
-body > nav.navbar + .container-fluid > h4 + p {
+body > nav.navbar + .container-fluid h4 + p {
     padding-top: 0;
 }
 
-body > nav.navbar + .container-fluid > ul {
+body > nav.navbar + .container-fluid ul {
     padding: 3px 10% 0;
 }
 
@@ -44,10 +44,10 @@ h3 {
     color: #009999;
 }
 
-body > nav.navbar + .container-fluid > h3 + ul li > a,
-body > nav.navbar + .container-fluid > h4 a,
-body > nav.navbar + .container-fluid > h4 a[name]:hover,
-body > nav.navbar + .container-fluid > h4 a[name]:active {
+body > nav.navbar + .container-fluid h3 + ul li > a,
+body > nav.navbar + .container-fluid h4 a,
+body > nav.navbar + .container-fluid h4 a[name]:hover,
+body > nav.navbar + .container-fluid h4 a[name]:active {
     color: #000;
     text-decoration: none;
 }
@@ -58,22 +58,22 @@ h4 a[name]:active {
 }
 
 /* Q and A letters for questions and answers */
-body > nav.navbar + .container-fluid > h4:before {
+body > nav.navbar + .container-fluid h4:before {
     content: 'Q. ';
 }
 
-body > nav.navbar + .container-fluid > h4 + p:before {
+body > nav.navbar + .container-fluid h4 + p:before {
     content: 'A. ';
     font-weight: bold;
 }
 
-body > nav.navbar + .container-fluid > h4:before,
-body > nav.navbar + .container-fluid > h4 + p:before {
+body > nav.navbar + .container-fluid h4:before,
+body > nav.navbar + .container-fluid h4 + p:before {
     font-size: 15px;
     font-weight: bold;
 }
 
-body > nav.navbar + .container-fluid > p + p {
+body > nav.navbar + .container-fluid p + p {
     padding-top: 0;
 }
 
@@ -83,4 +83,49 @@ body > .container-fluid a:hover {
 
 body > .container-fluid a:active {
     text-decoration: underline;
+}
+
+#sidebar:not(.affix) {
+    margin-top: 20px;
+}
+
+#sidebar ul.nav {
+    text-align: right;
+    margin: 0;
+    padding: 0;
+}
+
+#sidebar ul.nav > li > a {
+    padding: 5px 15px 5px 5px;
+    position: relative;
+    margin-right: 15px
+}
+
+#sidebar li > a + ul.nav {
+    display: none;
+    font-size: .9em;
+    line-height: .9em;
+}
+
+#sidebar li.active > a + ul.nav {
+    display: block;
+}
+
+#sidebar > ul.nav > li > a:after,
+#sidebar li.active > a:after {
+    font-family: FontAwesome;
+    position: absolute;
+    right: 0;
+}
+
+#sidebar > ul.nav > li > a:after {
+    content: "";
+}
+
+#sidebar > ul.nav > li.active > a:after {
+    content: "";
+}
+
+#sidebar > ul.nav > li.active > ul.nav > li.active > a:after {
+    content: "";
 }
