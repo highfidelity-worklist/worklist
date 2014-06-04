@@ -2,28 +2,12 @@
     <h2>Settings</h2>
     <div class="row">
         <section class="col-md-6">
-            <label for="nickname">Nickname</label>
-            <input name="nickname" type="text" id="nickname" class="form-control" value="{{currentUser.nickname}}" />
-            <label for="username">Email</label>
-            <input type="text" id="username" name="username" class="form-control" value="{{currentUser.username}}" />
+            <p>
+                To streamline integration, Worklist depends on GitHub for your username, full name, email and photo.
+                Please change those settings on GitHub.
+            </p>
             <label for="paypal_email">Paypal Email</label>
             <input type="text" id="paypal_email" name="paypal_email" class="form-control" value="{{userInfo.paypal_email}}" />
-        </section>
-        <section class="col-md-6">
-            <label for="profilepicture">Photo</label>
-            <p>
-                <img id="profilepicture" src="{{& picture}}" />
-                <input id="profilebutton" type="button" class="upload-btn wl-icon-attach" value="Upload new photo" />
-            </p>
-        </section>
-    </div>
-    <div class="row">
-        <section class="col-md-6">
-            <p><a href="./password">Change password</a></p>
-        </section>
-    </div>
-    <div class="row">
-        <section class="col-md-6">
             <label>Email notifications</label>
             <ul>
                 <li>
@@ -42,33 +26,17 @@
                     <label for="self_email_notify">Receive email notifications from my actions</label>
                 </li>
             </ul>
-        </section>
-    </div>
-    <div class="row">
-        <section class="col-md-6">
+
             <label for="country">What country are you in?</label>
-            {{& countrySelectBox}}            
-        </section>
-    </div>
-    <div class="row">
-        <section class="col-md-6">
+            {{& countrySelectBox}}
+
             <label for="timezone">What timezone are you in?</label>
-            {{& timezoneSelectBox}}            
-        </section>
-    </div>
-    <div class="row">
-        <section class="col-md-6">
+            {{& timezoneSelectBox}}
+
             <label for="about">Short description of you and your skills</label>
-            <textarea id="about" name="about" class="form-control">{{userInfo.about}}</textarea>
+            <textarea id="about" name="about" class="form-control autogrow">{{userInfo.about}}</textarea>
+
         </section>
-    </div>
-    <div class="row">
-        <section class="col-md-6">
-            <label for="contactway">Skype name</label>
-            <input type="text" id="contactway" name="contactway" class="form-control" value="{{userInfo.contactway}}" />
-        </section>
-    </div>
-    <div class="row">
         <section class="col-md-6">
             <h3>For United States citizens</h3>
             <p>
@@ -89,7 +57,12 @@
         <section class="col-md-6">
             <h3>W-9</h3>
             <p>All US Citizens must submit a signed W-9 before we'll pay you.</p>
-            <input class="upload-btn wl-icon-attach" id="uploadw9" type="button" value="Upload W9" />
+
+            <div>
+                <input id="formupload" type="button" value="Upload W9" class="uploadbutton" />
+                <div class="w9_loader"></div>
+            </div>
+            <div class="uploadnotice-w9"></div>
         </section>
     </div>
     <div class="row">
@@ -97,11 +70,8 @@
     </div>
 </form>
 
-{{> popup-w9 }}
 <script type="text/javascript">
      var ppConfirmed = {{ppConfirmed}};
      var emConfirmed = {{emConfirmed}};
      var uploadApiKey = '{{uploadApiKey}}';
-     var firstName = '{{userInfo.first_name}}';
-     var lastName = '{{userInfo.last_name}}';
 </script>

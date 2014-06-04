@@ -1,33 +1,18 @@
 var nclass;
-var nickname, username, about, paypal, firstname, lastname, w9_accepted;
+var about, paypal, w9_accepted;
 
-function completeUploadImage(file, data) {
-    $('span.LV_validation_message.upload').css('display', 'none').empty();
-    if (!data.success) {
-        $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
-    } else {
-        window.location.reload();
-    }
-}
-
-function validateNames(file, extension) {
-    if (LiveValidation.massValidate( [ firstname, lastname ] )) {
-        return validateW9Upload(file, extension);
-    } else {
-        return false;
-    }
-}
 
 function validateW9Upload(file, extension) {
     nclass = '.uploadnotice-w9';
     return validateUpload(file, extension);
 }
+
 function validateUpload(file, extension) {
     if (! (extension && /^(pdf)$/i.test(extension))) {
         // extension is not allowed
 
         // Restore the styling of upload button
-        $('#formupload').attr('value', 'upload W9');
+        $('#formupload').attr('value', 'Upload W9');
         $('#formupload').removeClass('w9_upload_disabled');
         $('.w9_loader').css('visibility', 'hidden');
 
@@ -56,7 +41,7 @@ function completeUpload(file, data) {
         $('#formupload').removeClass('w9_upload_disabled');
         $('.w9_loader').css('visibility', 'hidden');
 
-        var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
+        var html = '<div class="ui-state-highlight ui-corner-all">' +
                         '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
                         '<strong>Info:</strong> ' + data.message + '</p>' +
                     '</div>';
@@ -91,25 +76,20 @@ function isJSON(json) {
 }
 function saveSettings() {
     var values;
-    var massValidation = LiveValidation.massValidate( [ nickname, username, paypal, w9_accepted ], true);
+    var massValidation = LiveValidation.massValidate( [  paypal, w9_accepted ], true);
     if (massValidation) {
         values = {
             save: 1,
             timezone: $('#timezone').val(),
             country: $('#country').val(),
             bid_alerts: $('#bid_alerts').prop('checked') ? 1 : 0,
-            nickname: $('#nickname').val(),
-            username: $('#username').val(),
             self_email_notify: $('input[name="self_email_notify"]').prop('checked') ? 1 : 0,
             bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
             review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0,
             about: $("#about").val(),
-            contactway: $("#contactway").val(),
             paypal_email: $("#paypal_email").val(),
             payway: $("#payway").val(),
-            w9_accepted: $('#w9_accepted').is(':checked'),
-            first_name: $("#first_name").val(),
-            last_name: $("#last_name").val(),
+            w9_accepted: $('#w9_accepted').is(':checked')
         };
     } else {
         // Validation failed. We use openNotifyOverlay to display messages
@@ -138,7 +118,7 @@ function saveSettings() {
             }
 
             if(settings_json.error == 1) {
-                openNotifyOverlay(message,false,false,true); // Display with a red border id its an error
+                openNotifyOverlay(message, false, false, true); // Display with a red border if its an error
             } else {
                 openNotifyOverlay(message);
             }
@@ -180,52 +160,15 @@ $(function () {
         });
     }
 
-    var uploadOptions = {
-        action: 'api.php',
-        name: 'profile',
-        data: { 
-            action: 'uploadProfilePicture', 
-            api_key: uploadApiKey, 
-            userid: user_id
-        },
-        autoSubmit: true,
-        hoverClass: 'imageHover',
-        responseType: 'json',
-        onSubmit: validateUploadImage,
-        onComplete: completeUploadImage
-    };
-
-    new AjaxUpload('profilepicture', uploadOptions);
-    new AjaxUpload('profilebutton', uploadOptions);
-
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',
         name: 'Filedata',
         data: { action: 'w9Upload', userid: user_id },
         autoSubmit: true,
         responseType: 'json',
-        onSubmit: validateNames,
+        onSubmit: validateW9Upload,
         onComplete: completeUpload
     });
-
-    $("#w9-dialog").dialog({
-        dialogClass: 'white-theme',
-        resizable: false,
-        width: 220,
-        title: 'W9 form upload',
-        autoOpen: false,
-        position: ['top'],
-        open: function() {
-            $("#last_name").val(lastName);
-            $("#first_name").val(firstName);
-            $(".uploadnotice-w9").html('');
-            $(".LV_validation_message").html('');
-        }
-    });
-
-    $("#uploadw9").click(function() {
-        $("#w9-dialog").dialog("open");
-     });
 
     $.ajax({
         type: "POST",
@@ -237,25 +180,16 @@ $(function () {
         dataType: 'json',
         success: function(data) {
             if ((data.success === true) && (data.isuscitizen === true)) {
-            $('#w9upload').show();
+                $('#w9upload').show();
             }
         }
     });
+
     $("#settings").submit(function(event) {
         event.preventDefault();
         saveSettings();
         return false;
     });
-
-    nickname = new LiveValidation('nickname');
-    nickname.add(Validate.Length, { minimum: 0, maximum: 25 } );
-    nickname.add(Validate.Format, { pattern: /^[a-zA-Z0-9][a-zA-Z0-9_\-]*$/, failureMessage: "Must consist only of alphanumerics, underscores, or dash characters!" });
-    nickname.add(Validate.Exclusion, { within: [ 'Nickname' ], failureMessage: "You must set your Nickname!" });
-    
-    username = new LiveValidation('username');
-    username.add( Validate.Email );
-    username.add(Validate.Length, { minimum: 4, maximum: 50 } );
-    username.add(Validate.Exclusion, { within: [ 'username' ], failureMessage: "You must set your Email!" });
 
     about = new LiveValidation('about');
     about.add(Validate.Length, { minimum: 0, maximum: 150 } );
@@ -266,16 +200,8 @@ $(function () {
     // email, which removes their paypal verification and prevents them from bidding
     // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
 
-    firstname = new LiveValidation('first_name', {onlyOnBlur: true});
-    firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
-    firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
-
-    lastname = new LiveValidation('last_name', {onlyOnBlur: true});
-    lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
-    lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
-
     w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
     w9_accepted.displayMessageWhenEmpty = true;
-    w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
+    w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Please let us know that you'll do your part in keeping your information up to date by checking the final checkbox." });
 
 });

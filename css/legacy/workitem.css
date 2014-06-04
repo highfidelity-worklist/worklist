@@ -469,7 +469,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 .job-budget {
     width: 316px;
-    margin: 10px 0;
+    /*margin: 10px 0; */
 }
 
 .project-github h1 {
