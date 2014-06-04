@@ -74,6 +74,16 @@
                 {{^edit_mode}}
                     <p>{{& projectDescription}}</p>
                 {{/edit_mode}}
+
+                <h3>Short Description</h3>
+                {{#edit_mode}}
+                    <textarea name="short_description" id="short_description" />{{& project.getShortDescription}}</textarea>
+                    <span style="float: right;">100 character limit - <span id="charCount">100</span> characters remaining</span>
+                {{/edit_mode}}
+                {{^edit_mode}}
+                    <p>{{& projectShortDescription}}</p>
+                {{/edit_mode}}
+
                 <p id="projectTotalFees">
                     In total, <strong>${{projectTotalFees}}</strong>
                     has been funded for the development of {{project.getName}} project.

@@ -44,7 +44,10 @@ class ProjectController extends Controller {
         $runners = $project->getRunners();
 
         if (isset($_REQUEST['save_project']) && ( $is_runner || $is_payer || $is_owner)) {
-            $project->setDescription($_REQUEST['description']);
+            $project
+                ->setDescription($_REQUEST['description'])
+                ->setShortDescription($_REQUEST['short_description']);
+
             $project->setWebsite($_REQUEST['website']);
             $project->setTestFlightEnabled(isset($_REQUEST['testflight_enabled']) ? 1 : 0);
             $project->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
