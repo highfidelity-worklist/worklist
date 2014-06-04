@@ -81,7 +81,6 @@
         {{/worklist.project_id}}
     {{/editing}}
     </div>
-    <div style="clear:both; float:none">&nbsp;</div>
 </div>
 {{#erroneous}}
 <div style='color: red; text-align: center;'>{{the_errors}}</div>
@@ -92,8 +91,8 @@
     {{/action_error}}
     <div style="clear:both; float:none;"> </div>
 </div>
-<div id="page-content">
-    <div id="left-panel">
+<div id="page-content" class="row">
+    <div class="col-sm-7">
         {{^editing}}
         <div class="people-info">
             <div id="creatorBox">
@@ -217,7 +216,7 @@
                 {{/worklist.mechanic_id}}
                 <div id="commentZone">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-sm-12">
                             <h3 class="info-comments">Comments &amp; Activity</h3>
                         </div>
                     </div>
@@ -241,8 +240,8 @@
                 </div>
             {{/editing}}
         </div>  <!-- End of div for_view -->
-    </div> <!-- End of div left-panel -->
-    <div id="right-panel">
+    </div>
+    <div class="col-sm-5">
         {{#editing}}
             <div class="skills">
                 <span class="skills-label">Labels:</span><br/>
