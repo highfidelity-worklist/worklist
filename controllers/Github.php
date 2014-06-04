@@ -244,9 +244,6 @@ class GithubController extends Controller {
      */
     public function sync($user, $gh_user) {
 
-        error_log('SYNC: ' . print_r($gh_user, true));
-        error_log('Nickname is ' . $user->getNickname());
-
         /**
          * Compare User nickname with GitHub login. If they differ,
          * verify the GitHub login does not already exist in Worklist.
