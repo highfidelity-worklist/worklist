@@ -139,7 +139,3 @@
     font-size: 1em;
     margin: 0;
 }
-
-#entries li[id^="comment-"] .comment > a > img {
-    border-radius: 30px
-}
