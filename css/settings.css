@@ -113,6 +113,10 @@
     margin-top: 35px;
 }
 
+#w9_accepted_label + .LV_validation_message {
+    display: none;
+}
+
 @media (max-width: 480px) {
 
     #settings input[type="checkbox"] + label {

@@ -209,7 +209,7 @@ $(function () {
         dataType: 'json',
         success: function(data) {
             if ((data.success === true) && (data.isuscitizen === true)) {
-            $('#w9upload').show();
+                $('#w9upload').show();
             }
         }
     });
@@ -239,6 +239,6 @@ $(function () {
 
     w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
     w9_accepted.displayMessageWhenEmpty = true;
-    w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Oops! You forgot to agree that you'd keep us posted if you move. Please check the box, it's required, thanks!" });
+    w9_accepted.add(Validate.Custom, { against: validateW9Agree, failureMessage: "Please let us know that you'll do your part in keeping your information up to date by checking the final checkbox." });
 
 });
