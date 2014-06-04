@@ -54,7 +54,7 @@ class SettingsView extends View {
 
     public function picture() {
         $userInfo = $this->read('userInfo');
-        return APP_IMAGE_URL . $userInfo['picture'];
+        return $userInfo['picture'];
 
     }
     

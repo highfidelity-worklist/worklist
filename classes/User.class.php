@@ -1510,7 +1510,7 @@ class User {
         if (empty($this->picture)) {
             return SERVER_URL ."thumb.php?src=no_picture.png&h=".$h."&w=".$w."&zc=0";
         } else {
-            return APP_IMAGE_URL . $this->picture;
+            return $this->picture;
         }
     }
     
@@ -1519,7 +1519,7 @@ class User {
      */
     public function setAvatar()
     {
-        $this->avatar = APP_IMAGE_URL . $this->picture;
+        $this->avatar = $this->picture;
         return $this;
     }
     /**

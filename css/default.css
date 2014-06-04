@@ -308,20 +308,6 @@ pre, .pre {
     margin-top: 2em;
 }
 
-#w9-dialog #sent-notify {
-    position: absolute;
-    top: 35%;
-    left: 30%;
-    padding: 10px;
-    vertical-align: middle;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
-    -moz-box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
-    box-shadow: -3px 3px 5px rgba(50, 50, 50, 1);
-}
-
 /* phone confirm page styling */
 #clean_phone {
     display: none;
