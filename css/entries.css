@@ -1,6 +1,6 @@
 #entries {
     list-style-type: none;
-    padding-left: 45px;
+    padding: 0;
 }
 
 #entries li:before {
@@ -138,4 +138,8 @@
     color: #828282;
     font-size: 1em;
     margin: 0;
+}
+
+#entries li[id^="comment-"] .comment > a > img {
+    border-radius: 30px
 }
