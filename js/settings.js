@@ -1,13 +1,6 @@
 var nclass;
-var about, paypal, firstname, lastname, w9_accepted;
+var about, paypal, w9_accepted;
 
-function validateNames(file, extension) {
-    if (LiveValidation.massValidate( [ firstname, lastname ] )) {
-        return validateW9Upload(file, extension);
-    } else {
-        return false;
-    }
-}
 
 function validateW9Upload(file, extension) {
     nclass = '.uploadnotice-w9';
@@ -19,7 +12,7 @@ function validateUpload(file, extension) {
         // extension is not allowed
 
         // Restore the styling of upload button
-        $('#formupload').attr('value', 'upload W9');
+        $('#formupload').attr('value', 'Upload W9');
         $('#formupload').removeClass('w9_upload_disabled');
         $('.w9_loader').css('visibility', 'hidden');
 
@@ -48,7 +41,7 @@ function completeUpload(file, data) {
         $('#formupload').removeClass('w9_upload_disabled');
         $('.w9_loader').css('visibility', 'hidden');
 
-        var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-highlight ui-corner-all">' +
+        var html = '<div class="ui-state-highlight ui-corner-all">' +
                         '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
                         '<strong>Info:</strong> ' + data.message + '</p>' +
                     '</div>';
@@ -176,28 +169,9 @@ $(function () {
         data: { action: 'w9Upload', userid: user_id },
         autoSubmit: true,
         responseType: 'json',
-        onSubmit: validateNames,
+        onSubmit: validateW9Upload,
         onComplete: completeUpload
     });
-
-    $("#w9-dialog").dialog({
-        dialogClass: 'white-theme',
-        resizable: false,
-        width: 220,
-        title: 'W9 form upload',
-        autoOpen: false,
-        position: ['top'],
-        open: function() {
-            $("#last_name").val(lastName);
-            $("#first_name").val(firstName);
-            $(".uploadnotice-w9").html('');
-            $(".LV_validation_message").html('');
-        }
-    });
-
-    $("#uploadw9").click(function() {
-        $("#w9-dialog").dialog("open");
-     });
 
     $.ajax({
         type: "POST",
@@ -228,14 +202,6 @@ $(function () {
     // TODO: Review requirements here. We let people signup without paypal, and we let them delete their paypal
     // email, which removes their paypal verification and prevents them from bidding
     // paypal.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-
-    firstname = new LiveValidation('first_name', {onlyOnBlur: true});
-    firstname.add(Validate.Presence, { failureMessage: "Sorry, we need your first name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
-    firstname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
-
-    lastname = new LiveValidation('last_name', {onlyOnBlur: true});
-    lastname.add(Validate.Presence, { failureMessage: "Sorry, we need your last name before you can upload your W9. It’s only for administrative purposes and won’t be displayed in your profile"});
-    lastname.add(Validate.Format, { pattern: /^[a-zA-Z]+$/, failureMessage: "Only characters through a-z and A-Z are allowed" });
 
     w9_accepted = new LiveValidation('w9_accepted', {insertAfterWhatNode: 'w9_accepted_label'});
     w9_accepted.displayMessageWhenEmpty = true;

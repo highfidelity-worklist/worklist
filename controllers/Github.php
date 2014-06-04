@@ -243,6 +243,34 @@ class GithubController extends Controller {
      * @param object $github_user GitHub User JSON object
      */
     public function sync($user, $github_user) {
+
+error_log("SYNC: " . print_r($github_user, true));
+    
+        /**
+         * Compare User nickname with GitHub login. If they differ,
+         * verify the GitHub login does not already exist in Worklist.
+         *
+         * If it exists, try the GitHub name with spaces removed
+         * If it sill exists, append a random number to the login, and
+         * to the name, until we get a unique Worklist nickname
+         */
+        if ($user->getNickname() != $github_user->login) {
+            $nicknameTestUser = new User();
+            $nickname = $github_user->login;
+            if ($nicknameTestUser->findUserByNickname($nickname)) {
+                $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $github_user->name);
+            }
+            while ($nicknameTestUser->findUserByNickname($nickname)) {
+                $rand = mt_rand(1, 99999);
+                $nickname = $gh_user->login . $rand;
+                if ($nicknameTestUser->findUserByNickname($nickname)) {
+                    $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $github_user->name) . $rand;
+                }
+            }
+
+            $user->setNickname($nickname);
+        }
+
         // save the name to the worklist database
         if (isset($github_user->name)) {
             $fullname = $github_user->name;
@@ -271,6 +299,8 @@ class GithubController extends Controller {
             $username = isset($_POST["username"]) ? trim($_POST["username"]) : "";
             $password = isset($_POST["password"]) ? $_POST["password"] : "";
             $pass2 = isset($_POST["password2"]) ? $_POST["password2"] : "";
+
+error_log('Signup POST: ' . print_r($_POST, true));
 
             $usernameTestUser = new User();
             $tokenTestUser = new User();
