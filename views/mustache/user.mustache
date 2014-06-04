@@ -92,16 +92,15 @@
                 </p>
                 <p id="info-about">{{profileUser.getAbout}}</p>
 
-                {{#profileUser.getSystemsCount}}
-                    <p class="info-label about title-label-big">User Systems</p>
-                    {{#profileUser.getSystems}}
-                        <h4>System {{index}}</h4>
-                        <p class="info-system">
-                            <div>{{operating_systems}}</div>
-                            <div>{{{getHardwareSafeHTML}}}</div>
-                        </p>
-                    {{/profileUser.getSystems}}
-                {{/profileUser.getSystemsCount}}
+                <p class="info-label user-systems title-label-big">User Systems</p>
+                {{#profileUser.getSystems}}
+                    <h4 class="user-system-name">System {{index}}</h4>
+                    <p class="user-system-operating-systems">{{operating_systems}}</p>
+                    <p class="user-system-hardware">{{{getHardwareSafeHTML}}}</p>
+                {{/profileUser.getSystems}}
+                {{#ownProfile}}
+                    <a href="./settings" class="user-system-add">Add/edit systems</a>
+                {{/ownProfile}}
             </div><!-- end of left-column -->
             <div class="col-md-6">
                 <div class="button-row">

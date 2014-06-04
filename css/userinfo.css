@@ -125,6 +125,24 @@ body > .container-fluid h3 {
 .about {
     margin-top: -3px;
 }
+.user-systems {
+    margin-top: 17px;
+}
+.user-system-name {
+    color: #007F7C;
+}
+.user-system-operating-systems {
+    font-weight: bold;
+}
+.user-system-hardware {
+    margin: 0;
+}
+.user-system-add {
+    color: #007F7C;
+    font-size: 12px;
+    display: inline-block;
+    margin: 10px 0 20px 0;
+}
 
 
 #globalinfo > div > .info-label:first-child {
