@@ -87,12 +87,9 @@ function saveSettings() {
             bidding_email_notify: $('input[name="bidding_email_notify"]').prop('checked') ? 1 : 0,
             review_email_notify: $('input[name="review_email_notify"]').prop('checked') ? 1 : 0,
             about: $("#about").val(),
-            contactway: $("#contactway").val(),
             paypal_email: $("#paypal_email").val(),
             payway: $("#payway").val(),
-            w9_accepted: $('#w9_accepted').is(':checked'),
-            first_name: $("#first_name").val(),
-            last_name: $("#last_name").val(),
+            w9_accepted: $('#w9_accepted').is(':checked')
         };
     } else {
         // Validation failed. We use openNotifyOverlay to display messages
