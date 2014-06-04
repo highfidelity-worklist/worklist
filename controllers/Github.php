@@ -240,9 +240,12 @@ class GithubController extends Controller {
      * Synchronise data between GitHub and Worklist User
      *
      * @param User $user Worklist User object
-     * @param object $github_user GitHub User JSON object
+     * @param object $gh_user GitHub User JSON object
      */
-    public function sync($user, $github_user) {
+    public function sync($user, $gh_user) {
+
+        error_log('SYNC: ' . print_r($gh_user, true));
+        error_log('Nickname is ' . $user->getNickname());
 
         /**
          * Compare User nickname with GitHub login. If they differ,
@@ -252,17 +255,18 @@ class GithubController extends Controller {
          * If it sill exists, append a random number to the login, and
          * to the name, until we get a unique Worklist nickname
          */
-        if ($user->getNickname() != $github_user->login) {
+        if ($user->getNickname() != $gh_user->login) {
             $nicknameTestUser = new User();
-            $nickname = $github_user->login;
+            $nickname = $gh_user->login;
             if ($nicknameTestUser->findUserByNickname($nickname)) {
-                $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $github_user->name);
+                $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $gh_user->name);
             }
+
             while ($nicknameTestUser->findUserByNickname($nickname)) {
                 $rand = mt_rand(1, 99999);
                 $nickname = $gh_user->login . $rand;
                 if ($nicknameTestUser->findUserByNickname($nickname)) {
-                    $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $github_user->name) . $rand;
+                    $nickname = preg_replace('/[^a-zA-Z0-9]/', '', $gh_user->name) . $rand;
                 }
             }
 
@@ -270,14 +274,14 @@ class GithubController extends Controller {
         }
 
         // save the name to the worklist database
-        if (isset($github_user->name)) {
-            $fullname = $github_user->name;
+        if (isset($gh_user->name)) {
+            $fullname = $gh_user->name;
             $nameArray = explode(' ', $fullname);
             $user->setFirst_name($nameArray[0]);
             $user->setLast_name(end($nameArray));
         }
 
-        $user->setPicture($github_user->avatar_url);
+        $user->setPicture($gh_user->avatar_url);
 
         $user->save();
     }
