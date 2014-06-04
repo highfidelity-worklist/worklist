@@ -244,8 +244,6 @@ class GithubController extends Controller {
      */
     public function sync($user, $github_user) {
 
-error_log("SYNC: " . print_r($github_user, true));
-    
         /**
          * Compare User nickname with GitHub login. If they differ,
          * verify the GitHub login does not already exist in Worklist.
@@ -299,8 +297,6 @@ error_log("SYNC: " . print_r($github_user, true));
             $username = isset($_POST["username"]) ? trim($_POST["username"]) : "";
             $password = isset($_POST["password"]) ? $_POST["password"] : "";
             $pass2 = isset($_POST["password2"]) ? $_POST["password2"] : "";
-
-error_log('Signup POST: ' . print_r($_POST, true));
 
             $usernameTestUser = new User();
             $tokenTestUser = new User();
