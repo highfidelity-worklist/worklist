@@ -195,9 +195,17 @@ td.noroles {
     font-size: 1.4em;
 }
 
-textarea#description {
+textarea#description,
+textarea#short_description {
     width: 400px;
+}
+
+textarea#description {
     min-height: 250px;
+}
+
+text#area#short_description {
+    min-height: 100px;
 }
 
 #projectDescription p {

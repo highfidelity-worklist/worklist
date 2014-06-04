@@ -9,6 +9,7 @@ class Project {
     protected $project_id;
     protected $name;
     protected $description;
+    protected $short_description;
     protected $website;
     protected $budget;
     protected $repository;
@@ -94,6 +95,8 @@ class Project {
                 p.project_id,
                 p.name,
                 p.description,
+                # @todo: fix me after schema change
+                # p.short_description,
                 p.website,
                 p.budget,
                 p.repository,
@@ -135,6 +138,7 @@ class Project {
         $this->setProjectId($row['project_id'])
              ->setName($row['name'])
              ->setDescription($row['description'])
+             ->setDescription($row['short_description'])
              ->setWebsite($row['website'])
              ->setBudget($row['budget'])
              ->setRepository($row['repository'])
@@ -221,6 +225,17 @@ class Project {
     public function getDescription() {
         return $this->description;
     }    
+
+    public function setShortDescription($description) {
+        // @todo: fix me after schema changed
+        $this->contact_info = $description;
+        return $this;
+    }
+
+    public function getShortDescription() {
+        // @todo: fix me after schema changed
+        return $this->contact_info;
+    }
 
     public function setWebsite($website) {
         $this->website = $website;
