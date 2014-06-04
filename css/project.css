@@ -197,6 +197,8 @@ td.noroles {
 
 textarea#description,
 textarea#short_description {
+    display: block;
+    margin: 10px auto 0;
     width: 400px;
 }
 
@@ -204,8 +206,9 @@ textarea#description {
     min-height: 250px;
 }
 
-text#area#short_description {
-    min-height: 100px;
+textarea#short_description {
+    min-height: 40px;
+    resize: none;
 }
 
 #projectDescription p {
@@ -218,6 +221,7 @@ text#area#short_description {
 p#projectTotalFees {
     color: #838383;
     margin-bottom: 5px;
+    margin-top: 20px;
 }
 
 #projectTotalFees, 
