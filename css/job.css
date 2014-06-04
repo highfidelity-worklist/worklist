@@ -11,31 +11,6 @@
     color: #333;
 }
 
-#tweet-link {
-    float: left;
-    padding: 10px 17px 7px 28px;
-    background-position: 4px 8px;
-    background-repeat: no-repeat;
-    border-right: 2px solid #e1e8ea;
-}
-
-#tweet-link:hover {
-    cursor: pointer;
-    text-decoration: underline !important;
-    color: #608e96 !important;
-}
-
-@media (max-width: 480px) {
-    #tweet-link {
-        padding: 10px 5px 7px 25px;
-    }
-}
-
-#commentZone > .row:first-child {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 3px;
-}
-
 #commentZone > .row:first-child > h3 + a {
     text-align: right;
 }
@@ -43,6 +18,7 @@
 #commentform {
     background-color: #efefef;
     border-width: 1px;
+    text-align: center;
 }
 
 #commentform,
@@ -65,10 +41,13 @@
 
 #commentform input[type="submit"] {
     margin-left: 10px;
+    display: inline-block;
 }
 
 #commentform .tip {
     color: #777;
+    display: inline-block;
+	padding: 10px;
 }
 
 
@@ -100,12 +79,15 @@ table.table-fees td.what {
     text-align: center;
 }
 
+/**
+ * Fees list "What" column arrow
+ */
 table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
     content: '\00a0';
     width: 20px;
     height: 20px;
     position: absolute;
-    margin: -11px 0 0 -190px;
+    margin: -11px 0 0;
     background-color: #fff;
     transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -113,6 +95,12 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
     -o-transform: rotate(45deg);
     border-top: 1px solid #ddd;
     border-left: 1px solid #dddddd;
+    right: 50%;
+}
+
+@media (max-width: 960px) {
+    table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
+    }
 }
 
 .table-bids h4,
@@ -131,7 +119,6 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
 .table-fees h4 + span,
 .table-fees h5 + span {
     float: right;
-    margin-top: 5px;
 }
 
 .table-bids > caption,
@@ -212,4 +199,65 @@ section#footer li:first-child:before {
 section#footer p,
 section#footer li:nth-child(-n+3) {
     display: inline-block;
+}
+
+.moneyZone {
+    display:block;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    border:2px #DCD998 solid;
+    padding:0px 8px 19px 8px;
+}
+
+#page-content {
+    margin-top: 15px;
+}
+
+#page-content table {
+    font-size: 13px;
+    border: none !important;
+    table-layout: fixed;
+}
+
+.info-comments {
+    font-weight:bold;
+    margin: 0 10px 4px 0;
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+}
+
+.comment-container {
+    float: left;
+    margin-left: 10px;
+    width: calc(100% - 60px);
+}
+
+/*  .top-bar rules moved to live where it should
+	JUN-03-2014 <victorargote> */
+.top-bar {
+    background-color: #e1e8ea;
+    padding: 14px 0;
+    margin-top: 13px !important;
+    font-size: 14px;
+}
+
+.top-bar form{
+    float: left;
+    width: 173px;
+    margin-top: 6px;
+}
+
+#workitem-form .top-bar .project {
+    position: relative;
+    top: -7px;
+    right: -10px;
+}
+
+/*
+ * User profile avatars rounded (in circle) for job comments
+ */
+#entries li[id^="comment-"] .comment > a > img {
+    border-radius: 30px
 }
