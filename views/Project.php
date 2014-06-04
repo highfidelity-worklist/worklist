@@ -49,6 +49,10 @@ class ProjectView extends View {
         return replaceEncodedNewLinesWithBr(linkify($this->project->getDescription()));
     }
 
+    public function projectShortDescription () {
+        return replaceEncodedNewLinesWithBr(linkify($this->project->getShortDescription()));
+    }
+
     public function projectTotalFees() {
         return $this->project->getTotalFees($this->project->getProjectId());
     }
