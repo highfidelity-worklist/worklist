@@ -137,6 +137,12 @@ function saveSettings() {
         }
     });
 }
+function updateSystemTitles() {
+    $forms_wrap = $('.systems-forms-wrap');
+    $('.system-wrapper:visible', $forms_wrap).each(function(index, system_wrapper) {
+        $('.system-title', system_wrapper).text('System ' + (index + 1));
+    });
+}
 function addSystemForm() {
     $forms_wrap = $('.systems-forms-wrap');
     $placeholder_form = $('.system-placeholder-wrapper', $forms_wrap);
@@ -145,11 +151,15 @@ function addSystemForm() {
     $new_form.attr('class', 'system-wrapper');
 
     $placeholder_form.before($new_form);
+
+    updateSystemTitles();
 }
 function removeSystemForm() {
     $forms_wrap = $(this).parent('.system-wrapper');
     $('[name="system_delete[]"]', $forms_wrap).val(1);
     $forms_wrap.hide();
+
+    updateSystemTitles();
 }
 function refreshSystemFormsWithData(system_forms_data) {
     $forms_wrap = $('.systems-forms-wrap');
