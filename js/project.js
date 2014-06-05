@@ -49,6 +49,14 @@ $(document).ready(function() {
         active: true
     });
 
+    $('#short_description').bind('keyup', 'keydown', function() {
+        if ($(this).val().length > 100) {
+            $(this).val($(this).val().substring(0, 100));
+        } else {
+            $('#charCount').text(100 - $(this).val().length);
+        }
+    }).trigger('keyup');
+
     // Validate review input
     // @TODO: The :checkbox selector is too broad, we might
     // have additional checkboxes in the future..   - lithium
