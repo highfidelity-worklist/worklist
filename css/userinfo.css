@@ -134,14 +134,10 @@ body > .container-fluid h3 {
 .user-system-operating-systems {
     font-weight: bold;
 }
-.user-system-hardware {
-    margin: 0;
-}
 .user-system-add {
     color: #007F7C;
     font-size: 12px;
-    display: inline-block;
-    margin: 10px 0 20px 0;
+    text-decoration: underline;
 }
 
 

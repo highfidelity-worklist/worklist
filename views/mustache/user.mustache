@@ -92,11 +92,10 @@
                 </p>
                 <p id="info-about">{{profileUser.getAbout}}</p>
 
-                <p class="info-label user-systems title-label-big">User Systems</p>
                 {{#profileUser.getSystems}}
                     <h4 class="user-system-name">System {{index}}</h4>
                     <p class="user-system-operating-systems">{{operating_systems}}</p>
-                    <p class="user-system-hardware">{{{getHardwareSafeHTML}}}</p>
+                    <p>{{{getHardwareSafeHTML}}}</p>
                 {{/profileUser.getSystems}}
                 {{#ownProfile}}
                     <a href="./settings" class="user-system-add">Add/edit systems</a>
