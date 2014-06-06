@@ -105,6 +105,45 @@
 }
 
 /**
+ * User's System settings
+ */
+#systems-forms > div {
+    margin: 15px 0 0;
+}
+#systems-forms > div > a + h4 {
+    font-weight: bold;
+    margin: 15px 0 0;
+    display: inline-block;
+    color: #007f7c;
+}
+#systems-forms > div label {
+    color: #666;
+    margin: 15px 0 0;
+}
+#systems-forms > div label:first-child {
+    margin: 0;
+}
+#systems-forms > div .system-remove {
+    display: block;
+    float: right;
+    margin: 15px 0 0;
+    color: #007f7c;
+    font-weight: bold;
+    text-decoration: underline;
+}
+#systems-forms .system-placeholder-wrapper {
+    display: none;
+}
+#settings .system-add {
+    display: inline-block;
+    margin: 15px 0 0;
+    color: #007f7c;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+
+/**
  * validation messages 
  */
 .LV_validation_message {

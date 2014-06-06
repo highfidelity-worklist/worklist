@@ -118,14 +118,23 @@ body > .container-fluid h3 {
 }
 
 #info-about {
-    margin: 10px 22px 0 0;
     font-size: 14px;
     line-height: 19px;
-    float: left;
 }
 
 .about {
     margin-top: -3px;
+}
+#user-systems > h4 {
+    color: #007F7C;
+}
+#user-systems > h4 + p {
+    font-weight: bold;
+}
+#user-systems > a {
+    color: #007F7C;
+    font-size: 12px;
+    text-decoration: underline;
 }
 
 

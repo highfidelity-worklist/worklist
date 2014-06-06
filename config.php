@@ -111,6 +111,7 @@ if (!defined('USERS_AUTH_TOKENS')) define('USERS_AUTH_TOKENS', 'users_auth_token
 if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
 if (!defined('REL_PROJECT_CODE_REVIEWERS'))  define('REL_PROJECT_CODE_REVIEWERS', 'rel_project_code_reviewers');
+if (!defined('USER_SYSTEMS'))  define('USER_SYSTEMS', 'user_systems');
 
 //journal tables
 if (!defined("RECENT_SPEAKERS")) define("RECENT_SPEAKERS","recent_speakers");

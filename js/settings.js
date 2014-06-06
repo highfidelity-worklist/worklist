@@ -77,6 +77,9 @@ function isJSON(json) {
 function saveSettings() {
     var values;
     var massValidation = LiveValidation.massValidate( [  paypal, w9_accepted ], true);
+    var arrayValueForTagWithName = function (tag, name) {
+      return $(tag + '[name="' + name + '[]"]').map(function(){ return $(this).val(); }).get();
+    }
     if (massValidation) {
         values = {
             save: 1,
@@ -89,6 +92,10 @@ function saveSettings() {
             about: $("#about").val(),
             paypal_email: $("#paypal_email").val(),
             payway: $("#payway").val(),
+            system_operating_systems: arrayValueForTagWithName('input', 'system_operating_systems'),
+            system_hardware: arrayValueForTagWithName('textarea', 'system_hardware'),
+            system_id: arrayValueForTagWithName('input', 'system_id'),
+            system_delete: arrayValueForTagWithName('input', 'system_delete'),
             w9_accepted: $('#w9_accepted').is(':checked')
         };
     } else {
@@ -123,10 +130,59 @@ function saveSettings() {
                 openNotifyOverlay(message);
             }
             
+            refreshSystemFormsWithData(settings_json['user_systems']);
         },
         error: function(xhdr, status, err) {
             $('#msg-'+type).text('We were unable to save your settings. Please try again.');
         }
+    });
+}
+function updateSystemTitles() {
+    $forms_wrap = $('#systems-forms');
+    $('.system-wrapper:visible', $forms_wrap).each(function(index, system_wrapper) {
+        $('.system-title', system_wrapper).text('System ' + (index + 1));
+    });
+}
+function addSystemForm() {
+    $forms_wrap = $('#systems-forms');
+    $placeholder_form = $('.system-placeholder-wrapper', $forms_wrap);
+
+    $new_form = $placeholder_form.clone();
+    $new_form.attr('class', 'system-wrapper');
+
+    $placeholder_form.before($new_form);
+
+    updateSystemTitles();
+}
+function removeSystemForm() {
+    $forms_wrap = $(this).parent('.system-wrapper');
+    $('[name="system_delete[]"]', $forms_wrap).val(1);
+    $forms_wrap.hide();
+
+    updateSystemTitles();
+}
+function refreshSystemFormsWithData(system_forms_data) {
+    $forms_wrap = $('#systems-forms');
+    $placeholder_form = $('.system-placeholder-wrapper', $forms_wrap);
+
+    $('.system-wrapper', $forms_wrap).remove();
+
+    var setValueForFieldName = function (value, name, scope) {
+      return $('[name="' + name + '[]"]', scope).val(value);
+    }
+
+    $(system_forms_data).each(function(_i, system_data) {
+        $new_form = $placeholder_form.clone();
+        $new_form.attr('class', 'system-wrapper');
+
+        $title_tag = $('.system-title', $new_form);
+        $title_tag.html($title_tag.html() + system_data.index);
+
+        setValueForFieldName(system_data.operating_systems, 'system_operating_systems', $new_form);
+        setValueForFieldName(system_data.hardware, 'system_hardware', $new_form);
+        setValueForFieldName(system_data.id, 'system_id', $new_form);
+
+        $placeholder_form.before($new_form);
     });
 }
 
@@ -159,6 +215,9 @@ $(function () {
             }
         });
     }
+
+    $('.system-add').click(addSystemForm);
+    $('#systems-forms').on('click', '.system-remove', removeSystemForm);
 
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',

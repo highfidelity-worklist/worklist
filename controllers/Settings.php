@@ -11,6 +11,9 @@ class SettingsController extends Controller {
         }
         $this->write('user', $user);
 
+        $userSystem = new UserSystemModel();
+        $this->write('userSystems', $userSystem->getUserSystemsWithPlaceholder($userId));
+
         $msg = "";
         $company = "";
 
@@ -61,6 +64,14 @@ class SettingsController extends Controller {
                 $saveArgs['about'] = 1;
                 $messages[] = "Your personal information (about) has been updated.";
             }
+
+            $userSystem->storeUsersSystemsSettings(
+                $userId,
+                $_POST['system_id'],
+                $_POST['system_operating_systems'],
+                $_POST['system_hardware'],
+                $_POST['system_delete']
+            );
 
             $paypal = 0;
             $paypal_email = '';
@@ -177,6 +188,8 @@ class SettingsController extends Controller {
                 $username = $user->getUsername();
                 $nickname = $user->getNickname();
                 Utils::setUserSession($user->getId(), $user->getUsername(), $user->getNickname(), $user->getIs_admin());
+
+                $returned_json['user_systems'] = $userSystem->getUserSystemsJSON($userId);
 
                 echo json_encode($returned_json);
                 // exit on ajax post - if we experience issues with a blank settings page, need to look at the ajax submit functions

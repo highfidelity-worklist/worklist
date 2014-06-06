@@ -761,7 +761,17 @@ class User {
         $this->about = $about;
         return $this;
     }
-    
+
+    public function getSystems() {
+        $system = new UserSystemModel();
+        return $system->getUserSystems($this->getId());
+    }
+
+    public function getSystemsCount() {
+        $system = new UserSystemModel();
+        return $system->numberOfUserSystems($this->getId());
+    }
+
     /**
      * @return the $findus
      */
