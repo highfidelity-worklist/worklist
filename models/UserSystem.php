@@ -4,10 +4,6 @@ class UserSystemModel extends Model {
     protected $table = USER_SYSTEMS;
     public $is_placeholder = false;
 
-    public function getClassName() {
-        return 'UserSystemModel';
-    }
-
     public function getHardwareSafeHTML() {
         return nl2br(htmlspecialchars($this->hardware));
     }
