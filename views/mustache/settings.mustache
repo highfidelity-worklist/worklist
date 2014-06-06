@@ -37,13 +37,13 @@
             <textarea id="about" name="about" class="form-control autogrow">{{userInfo.about}}</textarea>
 
             <h3>Your Systems</h3>
-            <div class="systems-forms-wrap">
+            <div id="systems-forms">
                 {{#userSystems}}
                     <div class="{{#is_placeholder}}system-placeholder-wrapper{{/is_placeholder}}{{^is_placeholder}}system-wrapper{{/is_placeholder}}">
                         <a class="system-remove" href="javascript:;">remove</a>
                         <h4 class="system-title">System {{index}}</h4>
                         <div>
-                            <label class="system-label-operating-systems">Operating system(s), comma separated</label>
+                            <label>Operating system(s), comma separated</label>
                             <input name="system_operating_systems[]" type="text" class="form-control" value="{{operating_systems}}" />
                         </div>
                         <div>

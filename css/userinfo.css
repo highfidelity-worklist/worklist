@@ -125,16 +125,13 @@ body > .container-fluid h3 {
 .about {
     margin-top: -3px;
 }
-.user-systems {
-    margin-top: 17px;
-}
-.user-system-name {
+#user-systems > h4 {
     color: #007F7C;
 }
-.user-system-operating-systems {
+#user-systems > h4 + p {
     font-weight: bold;
 }
-.user-system-add {
+#user-systems > a {
     color: #007F7C;
     font-size: 12px;
     text-decoration: underline;

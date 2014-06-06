@@ -107,23 +107,23 @@
 /**
  * User's System settings
  */
-#settings .system-wrapper {
+#systems-forms > div {
     margin: 15px 0 0;
 }
-#settings .system-wrapper h4 {
+#systems-forms > div > a + h4 {
     font-weight: bold;
     margin: 15px 0 0;
     display: inline-block;
     color: #007f7c;
 }
-#settings .system-wrapper label {
+#systems-forms > div label {
     color: #666;
     margin: 15px 0 0;
 }
-#settings .system-wrapper label.system-label-operating-systems {
+#systems-forms > div label:first-child {
     margin: 0;
 }
-#settings .system-remove {
+#systems-forms > div .system-remove {
     display: block;
     float: right;
     margin: 15px 0 0;
@@ -131,15 +131,15 @@
     font-weight: bold;
     text-decoration: underline;
 }
+#systems-forms .system-placeholder-wrapper {
+    display: none;
+}
 #settings .system-add {
     display: inline-block;
     margin: 15px 0 0;
     color: #007f7c;
     font-weight: bold;
     text-decoration: underline;
-}
-#settings .system-placeholder-wrapper {
-    display: none;
 }
 
 

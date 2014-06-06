@@ -138,13 +138,13 @@ function saveSettings() {
     });
 }
 function updateSystemTitles() {
-    $forms_wrap = $('.systems-forms-wrap');
+    $forms_wrap = $('#systems-forms');
     $('.system-wrapper:visible', $forms_wrap).each(function(index, system_wrapper) {
         $('.system-title', system_wrapper).text('System ' + (index + 1));
     });
 }
 function addSystemForm() {
-    $forms_wrap = $('.systems-forms-wrap');
+    $forms_wrap = $('#systems-forms');
     $placeholder_form = $('.system-placeholder-wrapper', $forms_wrap);
 
     $new_form = $placeholder_form.clone();
@@ -162,7 +162,7 @@ function removeSystemForm() {
     updateSystemTitles();
 }
 function refreshSystemFormsWithData(system_forms_data) {
-    $forms_wrap = $('.systems-forms-wrap');
+    $forms_wrap = $('#systems-forms');
     $placeholder_form = $('.system-placeholder-wrapper', $forms_wrap);
 
     $('.system-wrapper', $forms_wrap).remove();
@@ -217,7 +217,7 @@ $(function () {
     }
 
     $('.system-add').click(addSystemForm);
-    $('.systems-forms-wrap').on('click', '.system-remove', removeSystemForm);
+    $('#systems-forms').on('click', '.system-remove', removeSystemForm);
 
     new AjaxUpload('formupload', {
         action: 'jsonserver.php',
