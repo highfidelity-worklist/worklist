@@ -1,0 +1,28 @@
+body {
+    padding-top: 100px;
+}
+
+div.row {
+    background-color: #e7ecee;
+    border-radius: 10px;
+    margin: auto;
+    max-width: 380px;
+    padding: 25px 35px;
+    text-align: center;
+}
+
+a {
+    color: #336666;
+    font: bold 18px proxima-nova, sans-serif;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #009999;
+}
+
+p {
+    font: bold 36px proxima-nova, sans-serif;
+    margin: 20px auto;
+    width: auto;
+}

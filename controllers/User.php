@@ -211,6 +211,16 @@ class UserController extends Controller {
             $userId = getSessionUserId(); 
             $user->findUserById($userId);
         }
+
+        /**
+         * If we couldn't find a valid User, return an ErrorView
+         */
+        if (! $user->getId()) {
+            $this->write('msg', 'That user doesn\'t exist.');
+            $this->view = new ErrorView();
+            parent::run();
+        }
+
         $this->write('userId', $userId);
         $this->write('user', $user);
 

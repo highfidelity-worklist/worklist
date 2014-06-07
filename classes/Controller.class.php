@@ -34,6 +34,8 @@ class Controller extends AppObject {
         if ($this->internal) {
             $ret = array_key_exists($key, $this->internal_values) ? true : 1;
             try {
+                // @todo: I don't see why try/catch is necessary here, why
+                // would this code EVER throw an exception?
                 $this->internal_values[$key] = $value;
             } catch (Exception $e) {
                 $ret = false;
