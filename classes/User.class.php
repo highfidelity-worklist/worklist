@@ -1513,6 +1513,12 @@ class User {
     }
 
     /**
+     * Determine the avatar for the user from the `picture` field
+     *
+     *   - If no picture is set, return placeholder image
+     *   - If picture is URL, return it as is
+     *    - Otherwise, preprend the APP_IMAGE_URL
+     *
      * @return the $avatar
      */
     public function getAvatar($w = 50, $h = 50)
@@ -1520,7 +1526,11 @@ class User {
         if (empty($this->picture)) {
             return SERVER_URL ."thumb.php?src=no_picture.png&h=".$h."&w=".$w."&zc=0";
         } else {
-            return $this->picture;
+            if ((!(substr($this->picture, 0, 7) == 'http://')) && (!(substr($this->picture, 0, 8) == 'https://'))) {
+                return APP_IMAGE_URL . $this->picture;
+            } else {
+                return $this->picture;
+            }
         }
     }
     
