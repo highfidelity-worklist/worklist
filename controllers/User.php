@@ -217,6 +217,7 @@ class UserController extends Controller {
          */
         if (! $user->getId()) {
             $this->write('msg', 'That user doesn\'t exist.');
+            $this->write('link', WORKLIST_URL);
             $this->view = new ErrorView();
             parent::run();
         }

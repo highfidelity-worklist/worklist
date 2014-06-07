@@ -7,7 +7,7 @@ div.row {
     border-radius: 10px;
     margin: auto;
     max-width: 380px;
-    padding: 25px 35px;
+    padding: 20px 35px 25px 35px;
     text-align: center;
 }
 
@@ -23,6 +23,6 @@ a:hover {
 
 p {
     font: bold 36px proxima-nova, sans-serif;
-    margin: 20px auto;
+    margin: 10px auto 15px auto;
     width: auto;
 }

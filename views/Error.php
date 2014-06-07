@@ -2,6 +2,8 @@
 
 class ErrorView extends View {
     public $title = 'Error';
+    public $link = '';
+    public $msg = '';
 
     public $stylesheets = array(
         'css/newworklist.css',
@@ -16,6 +18,7 @@ class ErrorView extends View {
 
     public function render() {
         $this->msg = $this->read('msg');
+        $this->link = $this->read('link');
         $this->layout = 'EmptyBody';
         return parent::render();
     }
