@@ -16,6 +16,12 @@ class AddJobView extends View {
         return parent::render();
     }
 
+    public function userIsInternal() {
+        $user = new User($this->currentUser['id']);
+        error_log('here, user: ' . $user->isInternal() ? 'true' : 'false');
+        return $user->isInternal();
+    }
+
     public function projects() {
         $user = $this->currentUser;
         $current = $this->read('current');
