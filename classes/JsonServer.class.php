@@ -1235,4 +1235,16 @@ class JsonServer
             'message' => 'Following Toggled' . $resp
         ));
     }
+
+    protected function actionToggleInternal() {
+        $workitem_id = (int) $this->getRequest()->getParam('workitem');
+
+        $workitem = new WorkItem($workitem_id);
+        $resp = $workitem->toggleInternal($_SESSION['userid']);
+
+        return $this->setOutput(array(
+            'success' => true,
+            'message' => 'Internal toggled' . $resp
+        ));
+    }
 }

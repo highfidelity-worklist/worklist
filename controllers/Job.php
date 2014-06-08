@@ -28,6 +28,7 @@ class JobController extends Controller {
     }
 
     public function view($job_id) {
+    
         $this->write('statusListRunner', array("Draft", "Suggested", "SuggestedWithBid", "Bidding", "Working", "Functional", "Code Review", "Completed", "Done", "Pass"));
         $statusListMechanic = array("Working", "Functional", "Code Review", "Completed", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
@@ -38,7 +39,6 @@ class JobController extends Controller {
         $worklist_id = intval($job_id);
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
         $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
-
         //initialize user accessing the page
         $userId = getSessionUserId();
         $user = new User();
@@ -67,6 +67,13 @@ class JobController extends Controller {
             die($error);
         }
         $this->write('workitem', $workitem);
+
+        if ($workitem->isInternal() && ! $user->isInternal()) {
+            $this->write('msg', 'You don\'t have permissions to view this job.');
+            $this->write('link', WORKLIST_URL);
+            $this->view = new ErrorView();
+            parent::run();
+        }
 
         // we need to be able to grant runner rights to a project founder for all jobs for their project
         $workitem_project = Project::getById($workitem->getProjectId());
@@ -1274,6 +1281,7 @@ class JobController extends Controller {
         $notes = $_REQUEST['notes'];
         $is_expense = $_REQUEST['is_expense'];
         $is_rewarder = $_REQUEST['is_rewarder'];
+        $is_internal = $_REQUEST['is_internal'];
         $fileUpload = $_REQUEST['fileUpload'];
 
         if (! empty($_POST['itemid'])) {
@@ -1289,6 +1297,7 @@ class JobController extends Controller {
         $workitem->setStatus($status);
         $workitem->setNotes($notes);
         $workitem->setWorkitemSkills($skillsArr);
+        $workitem->setIs_internal($is_internal);
         $workitem->save();
         $related = getRelated($notes);
         Notification::massStatusNotify($workitem);

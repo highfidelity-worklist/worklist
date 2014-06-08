@@ -28,6 +28,7 @@ class User {
     protected $is_payer;
     protected $is_active;
     protected $is_admin;
+    protected $is_internal;
     protected $last_seen;
     protected $journal_nick;
     protected $is_guest;
@@ -252,6 +253,20 @@ class User {
         if ((int)$this->getIs_payer() === 1) {
             return true;
         }
+        return false;
+    }
+
+    /**
+     * A method to check if this user is an internal / hifi team member.
+     *
+     * @return (boolean)
+     */
+    public function isInternal()
+    {
+        if ((int) $this->getIs_internal() === 1) {
+            return true;
+        }
+
         return false;
     }
 
@@ -974,7 +989,6 @@ class User {
         return $this;
     }
 
-
     /**
      * @return the $is_admin
      */
@@ -987,6 +1001,22 @@ class User {
      */
     public function setIs_admin($is_admin) {
         $this->is_admin = $is_admin;
+        return $this;
+    }
+
+    /**
+     * @return bool $is_internal
+     */
+    public function getIs_internal() {
+        return $this->is_internal;
+    }
+
+    /**
+     * @param bool $is_internal the $is_internal to set
+     */
+    public function setIs_internal($is_internal) {
+        $this->is_internal = $is_internal;
+
         return $this;
     }
 

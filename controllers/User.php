@@ -108,6 +108,10 @@ class UserController extends Controller {
                         $updateUser->setIs_runner($value);
                         break;
 
+                    case 'isinternal':
+                        $updateUser->setIs_internal($value);
+                        break;
+
                     case 'w9status':
                         if ($value) {
                             switch ($value) {

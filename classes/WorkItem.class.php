@@ -25,6 +25,7 @@ class WorkItem {
     protected $code_review_started;
     protected $code_review_completed;
     protected $budget_id;
+    protected $is_internal;
 
     var $status_changed;
 
@@ -77,6 +78,7 @@ class WorkItem {
                         w.sandbox,
                         w.bug_job_id,
                         w.is_bug,
+                        w.is_internal,
                         w.code_reviewer_id,
                         w.code_review_started,
                         w.code_review_completed,
@@ -104,6 +106,7 @@ class WorkItem {
              ->setNotes($row['notes'])
              ->setSandbox($row['sandbox'])
              ->setBugJobId($row['bug_job_id'])
+             ->setIs_internal($row['is_internal'])
              ->setIs_bug($row['is_bug'])
              ->setBudget_id($row['budget_id'])
              ->setCReviewerId($row['code_reviewer_id'] == "" ? 0 : $row['code_reviewer_id'])
@@ -423,6 +426,56 @@ class WorkItem {
         return $this->skills;
     }
 
+    /**
+     * A method to check if this job is internal / for the hifi team.
+     *
+     * @return (boolean)
+     */
+    public function isInternal()
+    {
+        if ((int) $this->getIs_internal() === 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool $is_internal
+     */
+    public function getIs_internal() {
+        return $this->is_internal;
+    }
+
+    /**
+     * @param bool $is_internal the $is_internal to set
+     */
+    public function setIs_internal($is_internal) {
+        $this->is_internal = $is_internal;
+
+        return $this;
+    }
+
+    public function toggleInternal($user_id) {
+    
+        $user = new User();
+        $user->findUserById($user_id);
+        
+        if ($user->isInternal()){
+            if ($this->isInternal()) {
+            
+                error_log('setting false..');
+                $this->setIs_internal(false);
+            } else {
+                $this->setIs_internal(true);
+            }
+        }
+
+        $this->save();
+
+        return $this->isInternal();
+    }
+
     public static function getStates()
     {
         $states = array();
@@ -451,7 +504,7 @@ class WorkItem {
     protected function insert()
     {
         $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
-                 "project_id, notes, bug_job_id, created, is_bug, status_changed ) ".
+                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal) ".
             " VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
@@ -462,7 +515,8 @@ class WorkItem {
             "'".intval($this->getBugJobId())."', ".
             "NOW(), ".
             "'".$this->getIs_bug()."', ".
-            "NOW())";
+            "NOW(), ".
+            mysql_real_escape_string($this->getIs_internal()) . ")";
         $rt = mysql_query($query);
 
         $this->id = mysql_insert_id();
@@ -509,6 +563,7 @@ class WorkItem {
             status_changed=NOW(),
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
+            is_internal=' . (int) $this->getIs_internal() . ',
             is_bug='.($this->getIs_bug() ? 1 : 0).',
             budget_id='.$this->getBudget_id().',
             code_reviewer_id=' . $this->getCReviewerId() . ',
@@ -516,6 +571,7 @@ class WorkItem {
             code_review_completed='.$this->getCRCompleted().',
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
         $query .= ' WHERE id='.$this->getId();
+        error_log($query);
         $result_query = mysql_query($query);
         if($result_query) {
             return 1;

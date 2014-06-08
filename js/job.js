@@ -356,6 +356,28 @@ $(document).ready(function(){
             event.preventDefault();
         }
     });
+
+    if ($('#is_internal').length) {
+        $('#is_internal').on('click', function() {
+            $.ajax({
+                type: 'post',
+                url: 'jsonserver.php',
+                data: {
+                    workitem: workitem_id,
+                    action: 'toggleInternal'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success) {
+
+                    } else {
+                        // $(this).
+                    }
+                }
+            });
+        });
+    }
+
     $('#following').click(function() {
         $.ajax({
             type: 'post',
