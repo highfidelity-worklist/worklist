@@ -103,6 +103,7 @@ body > .container-fluid {
 }
 
 #addJob > .row:last-child > div {
+    line-height: 2.2em;
     text-align: right;
 }
 

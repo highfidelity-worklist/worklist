@@ -1050,9 +1050,8 @@ class WorkItem {
             $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Creator'");
 
             if (count($project_roles) != 0 && ! $creator_fee_added) {
-                $creatorUser = new User($this->getCreatorId());
                 // fees are not automatically created for internal users
-                if (! $creatorUser->isInternal()) {
+                if (! $this->getCreator()->isInternal()) {
 
                     $creator_role = $project_roles[0];
                     if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
@@ -1084,9 +1083,9 @@ class WorkItem {
                     
                 error_log("[FEES] we have a role for runner");
                 $runner_role = $project_roles[0];
-                $runnerUser = new User($this->getRunner());
+
                 // fees are not automatically created for internal users
-                if (! $runnerUser->isInternal()) {
+                if (! $this->getRunner()->isInternal()) {
                     if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
 
                         $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
