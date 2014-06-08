@@ -205,6 +205,8 @@ class SettingsController extends Controller {
             $userInfo = mysql_fetch_array($rs);
         }
 
+        $userInfo['avatar'] = $user->getAvatar();
+
         $this->write('userInfo', $userInfo);
         parent::run();
     }
