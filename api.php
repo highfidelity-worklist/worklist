@@ -2243,13 +2243,16 @@ function getWorklist() {
 
             // test for username
             $finder = new User();
-            if ($finder->findUserByNickname($query)) {
-                $ufilter = $finder->getId();
-                error_log('seraching by user: ' . $query . ' with id: ' . $ufilter);
+            if (! empty($query)) {
+                if ($finder->findUserByNickname($query)) {
+                    $ufilter = $finder->getId();
+                    error_log('seraching by user: ' . $query . ' with id: ' . $ufilter);
+                }
             }
         }
     } else {
         $query = false;
+        $ufilter = false;
     }
 
     $limit = 30;
@@ -2425,20 +2428,41 @@ function getWorklist() {
             $severalStatus = " OR ";
         }
 
-/*
         $statusCommentFilter = '';
-        if (! empty($sfilter)) {
-            $statusCommentFilter = "AND wl.status IN ('" . implode("','", $sfilter) . "') ";
+        if (! empty($sfilter) && $sfilter[0] != 'ALL') {
+            $statusCommentFilter = "AND w.status IN ('" . implode("','", $sfilter) . "') ";
         }
 
-        $where .= ") OR
-                        `".WORKLIST."`.`id` IN (
-                            SELECT worklist_id FROM `".COMMENTS."` com
-                            JOIN `".WORKLIST."` wl ON com.worklist_id = wl.id $statusCommentFilter
-                            WHERE user_id = $ufilter
-                            GROUP BY wl.id) ";
-*/
+        $rt = mysql_query("
+            SELECT worklist_id FROM `".COMMENTS."` c
+            JOIN `".WORKLIST."` w ON c.worklist_id = w.id $statusCommentFilter
+            WHERE user_id = $ufilter
+            GROUP BY w.id
+        ");
+        
+        error_log("
+                    SELECT worklist_id FROM `".COMMENTS."` c
+            JOIN `".WORKLIST."` w ON c.worklist_id = w.id $statusCommentFilter
+            WHERE user_id = $ufilter
+            GROUP BY w.id
+            ");
+        
+        error_log(print_r($rt, true));
+        error_log(mysql_error());
+        
+        $orUserHasCommented = '';
+        
+        $row = mysql_fetch_row($rt);
+        error_log(print_r($row, true));
+        
+        while ($row = mysql_fetch_assoc($rt)) {
+            error_log(print_r($row, true));
+            $orUserHasCommented .= $row['worklist_id'] . ',';
+        }
+        
+        $orUserHasCommented = rtrim($orUserHasCommented, ',');
 
+        $where .= ") OR `".WORKLIST."`.`id` IN ($orUserHasCommented) ";
     }
 
     // Project filter
@@ -2584,7 +2608,6 @@ function getWorklist() {
               $commentsjoin
               $where
               ";
-error_log($qbody);
 
     if ($ofilter == "delta") {
         $idsort = $dfilter == 'DESC' ? 'ASC' : 'DESC';
@@ -2606,10 +2629,9 @@ error_log($qbody);
     $worklist = array(array($items, $page, $cPages));
 
     // Construct json for history
-    $qry="$qsel $qbody $qorder";
+    $qry = "$qsel $qbody $qorder";
 
-
-// error_log($qry);
+    error_log($qry);
 
     //Don't export mysql errors to the browser by default
     $rtQuery = mysql_query($qry) or error_log('getworklist mysql error: '. mysql_error());
