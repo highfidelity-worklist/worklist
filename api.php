@@ -2244,6 +2244,7 @@ function getWorklist() {
 
     $is_runner = !empty( $_SESSION['is_runner'] ) ? 1 : 0;
     $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
+    $currentUser = new User($userId);
 
     $sfilter = explode('/', $filter->getStatus());
     $ufilter = $filter->getUser();
@@ -2260,6 +2261,9 @@ function getWorklist() {
     // Status filter
     if ($sfilter) {
         $where = "WHERE (";
+        
+        
+        
         foreach ($sfilter as $val) {
 
             $val = mysql_real_escape_string($val);
@@ -2448,6 +2452,11 @@ function getWorklist() {
                 $commentsjoin = "LEFT OUTER JOIN `" . COMMENTS . "` AS `com` ON `" . WORKLIST . "`.`id` = `com`.`worklist_id`";
             }
         }
+    }
+
+    // only internal users are allowed to view internal jobs
+    if (! $currentUser->isInternal()) {
+        $where .= " AND `".WORKLIST."`.is_internal = 0";
     }
 
     $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";

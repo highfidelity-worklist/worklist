@@ -1050,27 +1050,32 @@ class WorkItem {
             $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Creator'");
 
             if (count($project_roles) != 0 && ! $creator_fee_added) {
-                $creator_role = $project_roles[0];
-                if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
+                $creatorUser = new User($this->getCreatorId());
+                // fees are not automatically created for internal users
+                if (! $creatorUser->isInternal()) {
 
-                    $creator_fee = ($creator_role['percentage'] / 100) * $accepted_bid_amount;
-                    if ((float) $creator_fee < $creator_role['min_amount']) {
-                        $creator_fee = $creator_role['min_amount'];
-                    }
+                    $creator_role = $project_roles[0];
+                    if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
 
-                    // add the fee
+                        $creator_fee = ($creator_role['percentage'] / 100) * $accepted_bid_amount;
+                        if ((float) $creator_fee < $creator_role['min_amount']) {
+                            $creator_fee = $creator_role['min_amount'];
+                        }
+
+                        // add the fee
                         
-                    /**
-                     * @TODO - We call addfees and then deduct from budget
-                     * seems we should add the deduction process to the AddFee
-                     * function
-                     * 
-                     */
-                    AddFee($this->getId(), $creator_fee, $fee_category, $creator_fee_desc, $this->getCreatorId(), $is_expense, $is_rewarder);
-                    // and reduce the runners budget
-                    $myRunner = new User();
-                    $myRunner->findUserById($this->getRunnerId());
-                    $myRunner->updateBudget(-$creator_fee, $this->getBudget_id());
+                        /**
+                         * @TODO - We call addfees and then deduct from budget
+                         * seems we should add the deduction process to the AddFee
+                         * function
+                         * 
+                         */
+                        AddFee($this->getId(), $creator_fee, $fee_category, $creator_fee_desc, $this->getCreatorId(), $is_expense, $is_rewarder);
+                        // and reduce the runners budget
+                        $myRunner = new User();
+                        $myRunner->findUserById($this->getRunnerId());
+                        $myRunner->updateBudget(-$creator_fee, $this->getBudget_id());
+                    }
                 }
             }
 
@@ -1079,18 +1084,22 @@ class WorkItem {
                     
                 error_log("[FEES] we have a role for runner");
                 $runner_role = $project_roles[0];
-                if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
+                $runnerUser = new User($this->getRunner());
+                // fees are not automatically created for internal users
+                if (! $runnerUser->isInternal()) {
+                    if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
 
-                    $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
-                    if ((float) $runner_fee < $runner_role['min_amount']) {
-                        $runner_fee = $runner_role['min_amount'];
+                        $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
+                        if ((float) $runner_fee < $runner_role['min_amount']) {
+                            $runner_fee = $runner_role['min_amount'];
+                        }
+                        // add the fee 
+                        AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
+                        // and reduce the runners budget
+                        $myRunner = new User();
+                        $myRunner->findUserById($this->getRunnerId());
+                        $myRunner->updateBudget(-$runner_fee, $this->getBudget_id());
                     }
-                    // add the fee 
-                    AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
-                    // and reduce the runners budget
-                    $myRunner = new User();
-                    $myRunner->findUserById($this->getRunnerId());
-                    $myRunner->updateBudget(-$runner_fee, $this->getBudget_id());
                 }
             }
 

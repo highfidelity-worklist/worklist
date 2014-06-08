@@ -28,7 +28,6 @@ class JobController extends Controller {
     }
 
     public function view($job_id) {
-    
         $this->write('statusListRunner', array("Draft", "Suggested", "SuggestedWithBid", "Bidding", "Working", "Functional", "Code Review", "Completed", "Done", "Pass"));
         $statusListMechanic = array("Working", "Functional", "Code Review", "Completed", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
@@ -66,14 +65,18 @@ class JobController extends Controller {
             $this->view = null;
             die($error);
         }
-        $this->write('workitem', $workitem);
+
 
         if ($workitem->isInternal() && ! $user->isInternal()) {
+            error_log('job internal, user not');
             $this->write('msg', 'You don\'t have permissions to view this job.');
             $this->write('link', WORKLIST_URL);
             $this->view = new ErrorView();
             parent::run();
+            exit;
         }
+
+        $this->write('workitem', $workitem);
 
         // we need to be able to grant runner rights to a project founder for all jobs for their project
         $workitem_project = Project::getById($workitem->getProjectId());
