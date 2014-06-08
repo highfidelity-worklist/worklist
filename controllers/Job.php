@@ -66,7 +66,6 @@ class JobController extends Controller {
             die($error);
         }
 
-
         if ($workitem->isInternal() && ! $user->isInternal()) {
             error_log('job internal, user not');
             $this->write('msg', 'You don\'t have permissions to view this job.');
@@ -1160,21 +1159,6 @@ class JobController extends Controller {
             }
         }
 
-        //review fees
-        $project = new Project();
-        $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
-        $crFee = 0;
-        if (count($project_roles) != 0) {
-            $crRole = $project_roles[0];
-            if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
-                $crFee = ($crRole['percentage'] / 100) * $accepted_bid_amount;
-                if ((float) $crFee < $crRole['min_amount']) {
-                   $crFee = $crRole['min_amount']; 
-                }
-            }
-        }
-        $this->write('crFee', $crFee);
-
         $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
         $is_admin = isset($_SESSION['is_admin']) ? $_SESSION['is_admin'] : 0;
@@ -1189,6 +1173,28 @@ class JobController extends Controller {
             if ($user->getBudget() > 0) {
                 $has_budget = 1;
             }
+
+            if ($user->isInternal()) {
+                $crFee = 0;
+                $this->write('crFee', $crFee);
+            } else {
+
+                //review fees
+                $project = new Project();
+                $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
+                $crFee = 0;
+                if (count($project_roles) != 0) {
+                    $crRole = $project_roles[0];
+                    if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
+                        $crFee = ($crRole['percentage'] / 100) * $accepted_bid_amount;
+                        if ((float) $crFee < $crRole['min_amount']) {
+                           $crFee = $crRole['min_amount']; 
+                        }
+                    }
+                }
+            }
+
+            $this->write('crFee', $crFee);
         }
 
         $workitem = WorkItem::getById($worklist['id']);
