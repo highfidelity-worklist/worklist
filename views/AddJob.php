@@ -18,7 +18,7 @@ class AddJobView extends View {
 
     public function projects() {
         $user = $this->currentUser;
-        $current = $this->read('current');
+        $current = 'hifi';
         $activeOnly = !($user['is_runner'] || $user['is_admin'] || $user['is_payer']);
         $projects = Project::getProjects($activeOnly);
         $ret = array();
