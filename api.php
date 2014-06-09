@@ -2398,14 +2398,14 @@ function getWorklist() {
                  * and (BIDDING or SwB) status then fetch all workitems where selected
                  * user is mechanic, runner or creator.
                  */ 
-                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter'))";
+                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter') ";
             } else if ($val == 'Working' || $val =='Review' || $val =='Functional' || $val =='Completed') {
                 /**
                  * If current user is filtering for any user (himself or not) and 
                  * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
                  * all workitems where selected user is mechanic, creator or runner.
                  */ 
-                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter'))";
+                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter') ";
             } else  {
                 /**
                  * If current user is filtering for any user (himself or not) and 
@@ -2451,10 +2451,7 @@ function getWorklist() {
         error_log(mysql_error());
         
         $orUserHasCommented = '';
-        
-        $row = mysql_fetch_row($rt);
-        error_log(print_r($row, true));
-        
+
         while ($row = mysql_fetch_assoc($rt)) {
             error_log(print_r($row, true));
             $orUserHasCommented .= $row['worklist_id'] . ',';
@@ -2462,7 +2459,7 @@ function getWorklist() {
         
         $orUserHasCommented = rtrim($orUserHasCommented, ',');
 
-        $where .= ") OR `".WORKLIST."`.`id` IN ($orUserHasCommented) ";
+        $where .= " OR `".WORKLIST."`.`id` IN ($orUserHasCommented) ";
     }
 
     // Project filter
@@ -2527,7 +2524,8 @@ function getWorklist() {
                         MATCH (`cu`.`nickname`) AGAINST ('$item') OR
                         MATCH (`mu`.`nickname`) AGAINST ('$item')
                         $commentPart
-                    ) ";
+                    )
+                )) ";
             }
 
             if ($cfilter == 1) {
