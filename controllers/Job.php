@@ -13,6 +13,7 @@ class JobController extends Controller {
         switch($action) {
             case 'view':
             case 'add':
+            case 'toggleInternal':
                 $method = $action;
                 break;
             default:
@@ -1413,6 +1414,22 @@ class JobController extends Controller {
             'workitem' => $workitem->getId()
         ));
 
+    }
+
+    /**
+     * Toggle the is_internal field for a Workitem/Job
+     *
+     * The user must be internal in order to perform this action, therefore
+     * we pass the session user to the method
+     */
+    protected function toggleInternal($job_id) {
+        $workitem = new WorkItem($job_id);
+        $resp = $workitem->toggleInternal($_SESSION['userid']);
+
+        return json_encode(array(
+            'success' => true,
+            'message' => 'Internal toggled: ' . $resp
+        ));
     }
 
     function hasRights($userId, $workitem) {

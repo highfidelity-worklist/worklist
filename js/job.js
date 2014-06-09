@@ -361,11 +361,7 @@ $(document).ready(function(){
         $('#is_internal').on('click', function() {
             $.ajax({
                 type: 'post',
-                url: 'jsonserver.php',
-                data: {
-                    workitem: workitem_id,
-                    action: 'toggleInternal'
-                },
+                url: './job/toggleInternal/' + workitem_id,
                 dataType: 'json',
                 success: function(data) {
                     if (data.success) {
