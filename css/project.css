@@ -195,46 +195,21 @@ td.noroles {
     font-size: 1.4em;
 }
 
-textarea#description {
+textarea#description,
+textarea#short_description {
+    display: block;
+    margin: 10px auto 0;
     width: 400px;
+}
+
+textarea#description {
     min-height: 250px;
 }
 
-#uploadPanel h3 {
-    color: #6F6F6F;
-    font-size: 18px;
-    font-weight: bold;
+textarea#short_description {
+    min-height: 40px;
+    resize: none;
 }
-
-#uploadPanel .uploadbutton {
-    background-image: url('../images/primaryIcons-WL.png') !important;
-    background-position: 7px -1013px !important;
-    background-repeat: no-repeat !important;
-    padding-left: 28px !important;
-    line-height: 15px;
-    float: right;
-    height: 27px;
-}
-
-#uploadPanel .uploadbutton .smbutton {
-    padding: 7px 0px 6px 9px;
-    right: -5px !important;
-    top: 6px;
-    font-weight: normal;
-    background: none repeat scroll 0 0 transparent !important;
-    border-left: 1px solid #83A8A6 !important;
-    color: #FFFFFF !important;
-    font-size: 15px !important;
-    height: 28px !important;
-    letter-spacing: 1px !important;
-    margin: 0 !important;
-    padding: 1px 0 0 8px !important;
-    position: relative;
-    right: -2px;
-    top: 6px;
-    width: auto !important;    
-}
-
 
 #projectDescription p {
     font-size: 1.5em;
@@ -246,6 +221,7 @@ textarea#description {
 p#projectTotalFees {
     color: #838383;
     margin-bottom: 5px;
+    margin-top: 20px;
 }
 
 #projectTotalFees, 

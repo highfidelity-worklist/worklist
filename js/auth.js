@@ -1,5 +1,6 @@
 var Auth = {
     emailSubmit_running: false,
+    confirmSubmit_running: false,
     countries: [],
 
     init: function() {
@@ -41,10 +42,12 @@ var Auth = {
                         if (!data.exists) {
                             Auth.renderCountryList(dialog);
                         }
-                        $('form .btn-primary', dialog).click(function() {
-                            $('form', dialog).submit();
-                        });
                         $('form', dialog).submit(function(event) {
+                            if (Auth.confirmSubmit_running) {
+                                return false;
+                            }
+                            Auth.confirmSubmit_running = true;
+                            event.preventDefault();
                             return data.exists ? Auth.authorize(dialog) : Auth.signup(dialog);
                         });
                     },
@@ -120,7 +123,7 @@ var Auth = {
                 massValidation = LiveValidation.massValidate([password]);
                 if (massValidation) {
                     // success log in, let's take it to the worklist
-                    window.location.href = './';
+                    window.location.href = redir_url;
                 }
 
             }
@@ -159,7 +162,7 @@ var Auth = {
                         title: 'Email confirmation', 
                         content: data.msg, 
                         close: function() {
-                            window.location.href = './';
+                            window.location.href = redir_url;
                         }
                     });
                 }

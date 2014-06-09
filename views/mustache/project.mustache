@@ -1,61 +1,3 @@
-<script type="text/html" id="uploadedFiles">
-    <div id="accordion">
-        <h3>Images (<span class="imageCount"><#= images.length #></span>)</h3>
-        <div class="fileimagecontainer">
-        <# if (images.length > 0) { #>
-            <# for(var i=0; i < images.length; i++) {
-            var image = images[i];
-            #>
-            <div class="filesIcon">
-                <a class="attachment" href="<#= image.url #>" data-error_message="<#= image.error #>"><img width="75px" height="75px" src="<#= image.icon #>" /></a>
-            </div>
-            <div class="filesDescription">
-                <# if (image.can_delete == true) { #>
-                <a class="removeAttachment" id="fileRemoveAttachment_<#= image.fileid #>" href="javascript:;">Delete</a>
-                <# } #>
-                <h3 class="edittext" id="fileTitle_<#= image.fileid #>"><#= image.title #></h3>
-                <p class="edittextarea" id="fileDesc_<#= image.fileid #>"><#= image.description #></p>
-            </div>
-            <div class="clear"></div>
-            <# } #>
-        <# } #>
-        </div>
-        <h3>Documents (<span class="documentCount"><#= documents.length #></span>)</h3>
-        <div class="filedocumentcontainer">
-        <# if (documents.length > 0) { #>
-            <# for(var i=0; i < documents.length; i++) {
-            var doc = documents[i];
-            #>
-            <div class="filesIcon">
-                <a class="docs" href="<#= doc.url #>" data-error_message="<#= doc.error #>" data-fileid="<#= doc.fileid #>" >
-                    <img width="32px" height="32px" src="<#= doc.icon #>" />
-                </a>
-            </div>
-            <div class="documents filesDescription">
-                <# if (doc.can_delete == true) { #>
-                <a class="removeAttachment" id="fileRemoveAttachment_<#= doc.fileid #>" href="javascript:;">Delete</a>
-                <# } #>
-                <h3 class="edittext" id="fileTitle_<#= doc.fileid #>"><#= doc.title #></h3>
-                <p class="edittextarea" id="fileDesc_<#= doc.fileid #>"><#= doc.description #></p>
-            </div>
-            <div class="clear"></div>
-            <# } #>
-        <# } #>
-        </div>
-    </div>
-    {{#currentUser.id}}
-    <input type="button" class="uploadbutton" value="Attach files" />
-    <div class="uploadnotice"></div>
-    {{/currentUser.id}}
-</script>
-<script type="text/html" id="uploadDocument">
-    <div class="attachment">
-        <span><#= title #></span>
-        <span id="fileRemoveAttachment_<#= fileid #>" class="removeAttachment">
-            <i class="fa fa-times"></i>
-        </span>
-    </div>
-</script>
 <form name="project-form" id="project-form" action="./{{project.getName}}" method="post">
 <div id="projectHeader">
     <div class="leftCol">
@@ -132,6 +74,16 @@
                 {{^edit_mode}}
                     <p>{{& projectDescription}}</p>
                 {{/edit_mode}}
+
+                <h3>Short Description</h3>
+                {{#edit_mode}}
+                    <textarea name="short_description" id="short_description" />{{& project.getShortDescription}}</textarea>
+                    <span style="float: right;">100 character limit - <span id="charCount">100</span> characters remaining</span>
+                {{/edit_mode}}
+                {{^edit_mode}}
+                    <p>{{& projectShortDescription}}</p>
+                {{/edit_mode}}
+
                 <p id="projectTotalFees">
                     In total, <strong>${{projectTotalFees}}</strong>
                     has been funded for the development of {{project.getName}} project.
@@ -424,9 +376,6 @@
                     </div>
                 </li>
             {{/is_owner}}
-            <li>
-                <div id="uploadPanel"></div>
-            </li>
         </ul>
     </div>
 </div>

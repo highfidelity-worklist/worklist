@@ -1,4 +1,4 @@
 <?php
 
-class EmptyBodyLayout extends DefaultLayout {
+class EmptyBodyLayout extends Layout {
 }

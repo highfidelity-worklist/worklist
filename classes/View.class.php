@@ -23,6 +23,7 @@ class View extends AppObject {
         'self_url' => '',
         'feeds_url' => 'feedlist'
     );
+    public $redir_url = '';
 
     public $currentUser = array(
         'id' => 0,
@@ -99,6 +100,8 @@ class View extends AppObject {
         $this->currentUser['is_runner'] = empty($_SESSION['is_runner']) ? false : true;
         $this->currentUser['is_payer'] = empty($_SESSION['is_payer']) ? false : true;
         $this->currentUser['is_admin'] = empty($_SESSION['is_admin']) ? false : true;
+
+        $this->redir_url = Dispatcher::$url;
     }
     
     /**

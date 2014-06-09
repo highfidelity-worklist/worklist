@@ -19,7 +19,6 @@ class User {
     protected $about;
     protected $contactway;
     protected $payway;
-    protected $skills;
     protected $timezone;
     protected $w9_status;
     protected $w9_accepted;
@@ -762,7 +761,17 @@ class User {
         $this->about = $about;
         return $this;
     }
-    
+
+    public function getSystems() {
+        $system = new UserSystemModel();
+        return $system->getUserSystems($this->getId());
+    }
+
+    public function getSystemsCount() {
+        $system = new UserSystemModel();
+        return $system->numberOfUserSystems($this->getId());
+    }
+
     /**
      * @return the $findus
      */
@@ -820,21 +829,6 @@ class User {
      */
     public function setPayway($payway) {
         $this->payway = $payway;
-        return $this;
-    }
-
-    /**
-     * @return the $skills
-     */
-    public function getSkills() {
-        return $this->skills;
-    }
-
-    /**
-     * @param $skills the $skills to set
-     */
-    public function setSkills($skills) {
-        $this->skills = $skills;
         return $this;
     }
 
@@ -911,7 +905,7 @@ class User {
      * @param $gitHubId
      * @return bool if user has authorized the app with github, false otherwise
      */
-    public function isGithub_connected($gitHubId) {
+    public function isGithub_connected($gitHubId = GITHUB_OAUTH2_CLIENT_ID) {
         $userId = getSessionUserId();
         if ($userId == 0) {
             return false;
@@ -1519,6 +1513,12 @@ class User {
     }
 
     /**
+     * Determine the avatar for the user from the `picture` field
+     *
+     *   - If no picture is set, return placeholder image
+     *   - If picture is URL, return it as is
+     *    - Otherwise, preprend the APP_IMAGE_URL
+     *
      * @return the $avatar
      */
     public function getAvatar($w = 50, $h = 50)
@@ -1526,7 +1526,11 @@ class User {
         if (empty($this->picture)) {
             return SERVER_URL ."thumb.php?src=no_picture.png&h=".$h."&w=".$w."&zc=0";
         } else {
-            return APP_IMAGE_URL . $this->picture;
+            if ((!(substr($this->picture, 0, 7) == 'http://')) && (!(substr($this->picture, 0, 8) == 'https://'))) {
+                return APP_IMAGE_URL . $this->picture;
+            } else {
+                return $this->picture;
+            }
         }
     }
     
@@ -1535,7 +1539,7 @@ class User {
      */
     public function setAvatar()
     {
-        $this->avatar = APP_IMAGE_URL . $this->picture;
+        $this->avatar = $this->picture;
         return $this;
     }
     /**
@@ -1851,7 +1855,7 @@ class User {
     public static function signup($username, $nickname, $password, $access_token, $country) {
         $sql = "
             INSERT 
-            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country)
+            INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country, is_active)
             VALUES(
                 '" . mysql_real_escape_string($username) . "', 
                 '" . mysql_real_escape_string($nickname) . "',
@@ -1859,11 +1863,16 @@ class User {
                 '" . uniqid() . "',
                 NOW(),
                 'not-applicable',
-                '" . mysql_real_escape_string($country) . "'
+                '" . mysql_real_escape_string($country) . "',
+                0
             )";
         $res = mysql_query($sql);
         $user_id = mysql_insert_id();
-        if ($ret = new User($user_id)) {
+        if (!$user_id) {
+            return false;
+        }
+        $ret = new User($user_id);
+        if ($ret->getId() && !$ret->isGithub_connected()) {
             $ret->storeCredentials($access_token);
         }
         return $ret;

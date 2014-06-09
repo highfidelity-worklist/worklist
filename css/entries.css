@@ -1,6 +1,6 @@
 #entries {
     list-style-type: none;
-    padding-left: 45px;
+    padding: 0;
 }
 
 #entries li:before {

@@ -111,6 +111,7 @@ if (!defined('USERS_AUTH_TOKENS')) define('USERS_AUTH_TOKENS', 'users_auth_token
 if (!defined('WORKLIST'))       define('WORKLIST', 'worklist');
 if (!defined('WS_SESSIONS'))    define('WS_SESSIONS', 'ws_sessions');
 if (!defined('REL_PROJECT_CODE_REVIEWERS'))  define('REL_PROJECT_CODE_REVIEWERS', 'rel_project_code_reviewers');
+if (!defined('USER_SYSTEMS'))  define('USER_SYSTEMS', 'user_systems');
 
 //journal tables
 if (!defined("RECENT_SPEAKERS")) define("RECENT_SPEAKERS","recent_speakers");
@@ -185,8 +186,6 @@ if (!defined("USER_SVN"))           define("USER_SVN", "SVN");
 if (!defined('USER_SVN_ID'))	    define('USER_SVN_ID', 1339);
 if (!defined("USER_SCHEMAUPDATE"))      define("USER_SCHEMAUPDATE", "Schema Update");
 if (!defined('USER_SCHEMAUDPDATE_ID'))  define('USER_SCHEMAUPDATE_ID', 2267);
-if (!defined("USER_AUTOTESTER"))    define("USER_AUTOTESTER", "AutoTester");
-if (!defined('USER_AUTOTESTER_ID')) define('USER_AUTOTESTER_ID', 2470);
 if (!defined("USER_WORKLIST"))      define("USER_WORKLIST", "Work List");
 if (!defined('USER_JOURNAL'))	    define('USER_JOURNAL', 'Journal');
 if (!defined('USER_JOURNAL_ID'))    define('USER_JOURNAL_ID', 1430);

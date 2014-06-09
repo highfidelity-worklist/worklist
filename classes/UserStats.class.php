@@ -541,6 +541,7 @@ class UserStats{
             LEFT JOIN (
                 SELECT SUM(amount) cost, worklist_id
                 FROM " . FEES . "
+                WHERE withdrawn = 0
                 GROUP BY worklist_id
             ) f ON f.worklist_id = w.id
             WHERE

@@ -3,6 +3,7 @@
         <div class="info-ID">
             <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
         </div>
+        <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript">Tweet</span>
         
         {{#canEditAndNotEditing}}
             {{#statusDone}}
@@ -27,13 +28,6 @@
 </div>
 <div id="info-top" class="info-summ-big-text">
     #{{worklist.id}}
-    {{#workitem.getBugJobId}}
-        bug of 
-        <a href="./{{workitem.getBugJobId}}?action=view" 
-          class="worklist-item" id="workitem-{{workitem.getBugJobId}}">
-          {{workitem.getBugJobId}}
-        </a>
-    {{/workitem.getBugJobId}}
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
 {{#editing}}
@@ -51,7 +45,7 @@
         {{#canChangeStatus}}
         <form id="searchForm" method="post" action="">
             <input type="hidden" id="status-switch" name="status-switch" value="1" />
-            <select id="statusCombo" name="quick-status" class="project-dropdown">
+            <select id="statusCombo" name="quick-status">
                 <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
                 {{& editableStatusSelect}}
             </select>
@@ -64,7 +58,7 @@
     {{#editing}}
         <input type="hidden" name="save_workitem" value="save_workitem" />
         <input type="hidden" name="action" value="save_workitem" />
-        <span class="info-label" id="edit-project-label">Project:</span>
+        <span class="inline-label" id="edit-project-label">Project</span>
         {{#canEditProject}}
             {{& editableProjectSelect}}
         {{/canEditProject}}
@@ -87,7 +81,6 @@
         {{/worklist.project_id}}
     {{/editing}}
     </div>
-    <div style="clear:both; float:none">&nbsp;</div>
 </div>
 {{#erroneous}}
 <div style='color: red; text-align: center;'>{{the_errors}}</div>
@@ -98,8 +91,9 @@
     {{/action_error}}
     <div style="clear:both; float:none;"> </div>
 </div>
-<div id="page-content">
-    <div id="left-panel">
+<div id="page-content" class="row">
+    <div class="col-sm-7">
+        {{^editing}}
         <div class="people-info">
             <div id="creatorBox">
                 <span id="pingCreator" class="creatorName">
@@ -108,21 +102,23 @@
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </div>
             <div id="runnerBox">
-                {{#editing}}
-                    <span class="runnerName">Designer:</span>
-                    {{& editableRunnerBox}}
-                {{/editing}}
-                {{^editing}}
-                    {{& nonEditableRunnerBox}}
-                {{/editing}}
+                {{& nonEditableRunnerBox}}
             </div>
             <div id="mechanicBox">
                 {{& mechanicBox}}
             </div>
         </div>
+        {{/editing}}
         <div id="for_view">
             {{#editing}}
                 <ul style="margin:0; padding:0; border:none;">
+                    <li>
+                        {{#canReassignRunner}}
+                        <div id="runnerBox">
+                            {{& editableRunnerBox}}
+                        </div>
+                        {{/canReassignRunner}}
+                    </li>
                     <li>
                         <span class="info-label">Summary</span>
                         <span class="info-data">
@@ -144,7 +140,7 @@
                         <span class="sections">Notes</span>
                             <span id="info-notes">
                             {{#canEditNotes}}
-                                <textarea name="notes" id="edit-notes" class="expandable" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
+                                <textarea name="notes" id="edit-notes" class="autogrow" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
                             {{/canEditNotes}}
                             {{^canEditNotes}}
                                 {{& notesHtml}}
@@ -190,10 +186,6 @@
                     </li>
                     {{/worklist.mechanic_id}}
                 </ul>
-                {{#canEditAndEditing}}
-                    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
-                </div>
-                {{/canEditAndEditing}}
             {{/editing}}
             {{^editing}}
                 <span class="sections">Notes</span>
@@ -224,7 +216,7 @@
                 {{/worklist.mechanic_id}}
                 <div id="commentZone">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-sm-12">
                             <h3 class="info-comments">Comments &amp; Activity</h3>
                         </div>
                     </div>
@@ -248,33 +240,24 @@
                 </div>
             {{/editing}}
         </div>  <!-- End of div for_view -->
-    </div> <!-- End of div left-panel -->
-    <div id="right-panel">
+    </div>
+    <div class="col-sm-5">
         {{#editing}}
             <div class="skills">
-                <span class="skills-label">Skills this job requires:</span><br/>
+                <span class="skills-label">Labels:</span><br/>
                 {{#skillsCount}}
                 <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="{{commaSeparatedSkills}}," /></span>
                 {{/skillsCount}}
                 {{^skillsCount}}
                 <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
                 {{/skillsCount}}
-                <div class="floatLeft">
-                    <input type="checkbox" name="is_bug" id="is_bug" {{#isBug}}checked="checked"{{/isBug}}
-                      class="wlcheckbox" /> 
-                    <label for="is_bug" id="bugLabel">Bug</label> (If known, linked to Job #)
-                    <input type="text" id="bug_job_id" name="bug_job_id" class="bug_job_id"
-                      value="{{#workitem.getBugJobId}}{{workitem.getBugJobId}}{{/workitem.getBugJobId}}" />
-                </div>
-                <div class="bugJobSummary" id="bugJobSummary" title="{{workitem.getBugJobId}}">
-                </div>
                 <div class="clear"></div>
             </div>
         {{/editing}}
         {{^editing}}
             <div class="skills">
-                <div class="skills-label">Skills this job requires:</div>
-                {{#skillsCount}}{{commaSeparatedSkills}}{{/skillsCount}}{{^skillsCount}}Thou shalt find out in the missive ...{{/skillsCount}}
+                <div class="skills-label">Labels:</div>
+                {{#skillsCount}}{{commaSeparatedSkills}}{{/skillsCount}}{{^skillsCount}}<i>None</i>{{/skillsCount}}
             </div>
             {{#canReview}}
                 <div class="code-review">
@@ -303,6 +286,7 @@
                 </div>
             {{/canReview}}
         {{/editing}}
+        {{^editing}}
         <div id="for_view">
             <div class="moneyZone">
                 <div id="bid-panel">
@@ -322,8 +306,7 @@
                                      {{/canBid}}
                                 {{/currentUser.id}}
                                 {{^currentUser.id}}
-                                    <input style="cursor:pointer;" type="button" value="Login to Bid" 
-                                      onClick="sendToLogin(); return false;" />
+                                    <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to bid</a>
                                 {{/currentUser.id}}
                             </span>
                         </caption>
@@ -379,13 +362,18 @@
                 {{/currentUser.id}}
                 {{^currentUser.id}}
                     {{#canBid}}
-                        <input type="button" value="Login to Bid" onClick="sendToLogin(); return false;" />
+                        <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to add fees</a>
                     {{/canBid}}
                 {{/currentUser.id}}
             </div> <!-- End of div moneyZone -->
             <div id="uploadPanel"> </div>
         </div> <!-- End of for_view -->
+        {{/editing}}
     </div> <!-- End of div right-panel-->
+    {{#canEditAndEditing}}
+    <div class="clear"></div>
+    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
+    {{/canEditAndEditing}}
 </div> <!-- End of div pageContent -->
 {{#editing}}
     </form>
@@ -440,7 +428,6 @@
     var promptForReviewUrl = {{promptForReviewUrl}};
     var showReviewUrlPopup = {{showReviewUrlPopup}};
     var action = '{{action}}';
-    var loginRedirectUrl = '{{loginRedirectUrl}}';
     var canReassignRunner = {{canReassignRunner}};
     var status_error = {{status_error}};
     var displayDialogAfterDone = {{displayDialogAfterDone}};

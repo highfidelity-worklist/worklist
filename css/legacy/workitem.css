@@ -21,23 +21,6 @@
     display: block;
 }
 
-#page-content {
-    width: 100%;
-    clear:none;
-    margin-top: 15px;
-    background: #FFF;
-}
-
-#page-content table {
-    font-size: 13px;
-    border: none !important;
-    table-layout: fixed;
-}
-
-.moneyZone table tr td {
-    border: 0 none;
-}
-
 .wd-link {
     font-size: 10px;
     text-decoration: underline;
@@ -51,11 +34,11 @@ span.info-whisper {
     padding: 0!important;
 }
 
-.info-summ,.info-data,.info-invite {
+.info-summ,.info-data {
     height:25px;
 }
 
-.info-summ-big{
+.info-summ-big {
     clear:both;
     height: 37px;
     margin-top: 12px;
@@ -72,7 +55,7 @@ span.info-whisper {
     }
 }
 
-.info-summ-big-text{
+.info-summ-big-text {
     font-size: 30px;
     margin-top: 12px !important;
     padding-left: 3px;
@@ -109,11 +92,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 
 #container-status {
     margin-top: 10px;
-}
-
-.info-invite input[type=text]{
-    margin-top:8px!important;
-    width:256px;
 }
 
 .info-comments{
@@ -163,20 +141,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 363px;
 }
 
-.top-bar {
-    background-color: #e1e8ea;
-    padding: 14px 0;
-    margin-top: 13px !important;
-    height: 50px;
-    font-size: 14px;
-}
-
-.top-bar form{
-    float: left;
-    width: 173px;
-    margin-top: 6px;
-}
-
 .first-line {
     position: absolute;
     height: 20px;
@@ -206,34 +170,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .project_website {
     font-size: 11px;
 }
-
-#left-panel {
-    float:left;
-    width: 520px;
-    margin:0;
-    padding:0;
-}
-
-#left-panel .buttonContainer.view-sandbox {
-    top: -35px !important;
-    right: -2px !important;
-    padding-left: 7px !important;
-    float: right !important;
-    margin: 5px 0 !important;
-}
-
-#left-panel .buttonContainer{
-    padding-left: 0 !important;
-    float: left !important;
-    margin: 12px 5px !important;
-}
-
-#left-panel .buttonContainer .smbutton{
-    border: none !important;
-    left: 4px;
-    top: 0;
-}
-
 
 #for_view > ul {
     list-style:none!important;
@@ -272,11 +208,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 #for_view .info-label,
 #for_view .sections {
     margin-bottom: 5px;
-}
-
-#left-panel li.last {
-    border-bottom:none;
-    margin-top:10px;
 }
 
 #uploadPanel {
@@ -369,21 +300,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width:18em;
 }
 
-.bug_job_id {
-    width: 50px;
-}
-
-.bugJobSummary {
-    display: block;
-    margin: 0;
-    padding: 5px;
-    border-style: none;
-    background-color: white;
-    z-index: 3000;
-    float: right;
-    width: 200px
-}
-
 .info-notes {
     font-size: 14px;
 }
@@ -403,6 +319,11 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     font-weight: bold;
     line-height: 15px;
     padding-top: 1px;
+}
+
+#workitem-form #runnerBox {
+    margin-bottom: 10px;
+    width: auto;
 }
 
 #creatorBox a, #runnerBox a, #mechanicBox a{
@@ -437,10 +358,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     color: #007F7C !important;
 }
 
-.changeRunner {
-    display: none;
-}
-
 .changeRunner select {
     float: left;
 }
@@ -463,23 +380,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     color: #007F7C !important;
 }
 
-.github {
-    margin-top: -7px;
-    padding-left: 42px;
-    background-position: -3px 0px;
-    background-repeat: no-repeat;
-}
-
 #workitem-form {
     width: auto;
     margin-top: -7px !important;
     margin-right: 1px;
-}
-
-#workitem-form .top-bar .project {
-    position: relative;
-    top: -7px;
-    right: -10px;
 }
 
 .project, .job-budget{
@@ -493,8 +397,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     position: relative;
 }
 
-.job-budget{
+.job-budget {
     width: 316px;
+    /*margin: 10px 0; */
 }
 
 .project-github h1 {
@@ -509,8 +414,9 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     font-weight: normal;
 }
 
-.skills, .people-info{
-    height: 56px;
+.skills,
+.people-info {
+    height: 64px;
     border-bottom: 2px solid #e1e8ea;
     font-weight: bold;
     font-size: 14px;
@@ -575,6 +481,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-decoration: underline;
 }
 
+.inline-label,
 .budget-label {
     font-weight: bold;
     display: inline-block;
@@ -588,11 +495,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 #budgetInWorkitem {
     float: left;
     width: 366px;
-}
-
-.project-dropdown {
-    width: 200px;
-    margin-top: 7px;
 }
 
 .table-bids thead{
@@ -705,39 +607,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     background-color:#ddd;
 }
 
-.moneyZone .table-hdng{
-    background: none !important;
-}
-
-.moneyZone .table-hdng td{
-    padding-right: 1px;
-    margin: 0;
-}
-
-.moneyZone .table-hdng td .table-back {
-    font-size: 14px;
-    font-weight: normal;
-    border-top: 2px solid #CCC; border-bottom: 2px solid #999;
-    margin: 0;
-    width: 100%;
-    float: left;
-    padding: 3px 0;
-    height: 30px;
-}
-
-.moneyZone .table-hdng td .table-back span{
-    padding: 0 0 0 6px;
-}
-
-.moneyZone .table-hdng td.what .table-back span{
-    padding: 0 6px;
-}
-
-.moneyZone .table-hdng:hover{
-    background-image:none;
-    background-color:#ddd;
-}
-
 .roweven{
     background-image:none;
     background-color:#f5f5f5;
@@ -787,11 +656,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-bottom:10px;
     margin-right:5px;
     width:32px;
-}
-
-.comment-container {
-    float: left;
-    margin-left: 10px;
 }
 
 .comment-info {
@@ -859,72 +723,14 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 50px;
 }
 
-#entries li[id^="comment-"] .comment > a > img {
-    border-radius: 30px
-}
-
-.depth-0  {
-    margin-left: -55px;
-}
-
-.depth-1  {
-    margin-left: -15px;
-}
-
-.depth-2 {
-    margin-left: 25px;
-}
-
-.depth-3 {
-    margin-left: 65px;
-}
-
-.depth-4 {
-    margin-left: 105px;
-}
-
-.depth-5 {
-    margin-left: 145px;
-}
-
-.depth-6 {
-    margin-left: 185px;
-}
-
-
 .desc {
     margin-top:0px !important;
     margin-bottom:2px !important;
 }
 
-#right-panel .moneyZone{
-    display:block;
-    width: 390px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    border-radius: 6px;
-    border:2px #DCD998 solid;
-    padding:0px 8px 19px 8px;
-}
-
-#left-panel ul #no_comments{
-    margin: 20px !important;
-
-}
-
-#right-panel{
-    width: 352px;
-    float: right;
-}
-
 .info-data input[type=text]{
     width:290px;
     margin-bottom:8px;
-}
-
-.info-invite input[type=text]{
-    margin-top:8px!important;
-    width:240px;
 }
 
 /* bid info popup (accepting, withdrawing bids)*/
@@ -957,6 +763,10 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
     margin-top: 26px;
     width: 100%;
+}
+
+#workitem-form #for_view {
+    margin-top: 0;
 }
 
 .notestext {
@@ -1209,10 +1019,6 @@ div.mechanic_id ul {
     width: 170px;
 }
 
-#left-panel .project_idList li {
-    border: 0;
-}
-
 .clear {
     clear: both;
 }
@@ -1342,19 +1148,6 @@ h1.newProject {
     position: relative;
 }
 
-@media (max-width: 980px) {
-    #left-panel,
-    #right-panel {
-        width: 100%;
-        float: left;
-        margin-top: 30px;
-    }
-
-    #right-panel .moneyZone {
-        width: 100%;
-    }
-}
-
 @media (max-width: 480px) {
     .white-theme .ui-dialog-content {
         padding: 5px;
@@ -1390,7 +1183,19 @@ h1.newProject {
 
     .project, .job-budget {
         clear: both;
-        margin: 10px 0;
+        width: 100%;
+    }
+
+    .project {
+        margin: 0 10px;
+    }
+
+    .info-data {
+        display: inline;
+    }
+
+    #summary,
+    #edit-notes {
         width: 100%;
     }
 
@@ -1400,16 +1205,7 @@ h1.newProject {
         content: ' ';
     }
 
-    #following,
-    #switchmode_edit {
+    #following {
         padding: 10px 5px 7px 25px;
-    }
-
-    #switchmode_edit {
-        background-position: 8px -950px;
-    }
-
-    #switchmode_edit:hover {
-        background-position: -194px -950px;
     }
 }

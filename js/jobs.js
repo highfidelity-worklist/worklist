@@ -163,12 +163,6 @@ function AppendRow (json, prepend, moreJson, idx) {
         '<td class="clickable not-workitem project-col" onclick="location.href=\'' + project_link + '\'">' +
             '<a href="' + project_link + '">' + (json[17] == null ? '' : json[17]) + '</a>' +
         '</td>';
-    //If job is a bug, add reference to original job
-    if( json[18] > 0) {
-        extraStringBug = '<p> (bug of <a href="./' + json[18] + '">#' + json[18] + '</a>) </p>';
-    } else {
-        extraStringBug = '';
-    }
 
     // Displays the ID of the task in the first row
     // 26-APR-2010 <Yani>
@@ -176,7 +170,7 @@ function AppendRow (json, prepend, moreJson, idx) {
     row += 
         '<td>' + 
             '<a href="./' + json[0] + '">#' + json[0] + '</a> ' + 
-            '<h4>' + json[1] + '</h4>' + extraStringBug + 
+            '<h4>' + json[1] + '</h4>' +
         '</td>';
 
     var bidCount = '';
@@ -234,7 +228,7 @@ function AppendRow (json, prepend, moreJson, idx) {
 
     // Comments
     comments = (json[12] == 0) ? "" : json[12];
-    row += '<td class="age-col">' + 
+    row += '<td class="comments-col">' +
              comments +
            '</td>';
 

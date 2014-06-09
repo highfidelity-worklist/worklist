@@ -72,9 +72,6 @@
                         </div>
                     </div>
                 </div>
-                <p class="info-label title-label-medium">Strengths<br />
-                    <span id="info-skills">{{profileUser.getSkills}}</span>
-                </p>
 
                 <div class='reviewTitle title-label-big'>
                     Reviews
@@ -93,7 +90,18 @@
                 <p class="info-label about title-label-big">
                     About
                 </p>
-                <span id="info-about">{{profileUser.getAbout}}</span>
+                <p id="info-about">{{profileUser.getAbout}}</p>
+
+                <div id="user-systems">
+                    {{#profileUser.getSystems}}
+                        <h4>System {{index}}</h4>
+                        <p>{{operating_systems}}</p>
+                        <p>{{{getHardwareSafeHTML}}}</p>
+                    {{/profileUser.getSystems}}
+                    {{#ownProfile}}
+                        <a href="./settings">Add/edit systems</a>
+                    {{/ownProfile}}
+                </div>
             </div><!-- end of left-column -->
             <div class="col-md-6">
                 <div class="button-row">

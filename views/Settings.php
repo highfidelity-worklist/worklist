@@ -8,8 +8,6 @@ class SettingsView extends View {
 
     public $scripts = array(
         'js/ajaxupload/ajaxupload.js',
-        'js/skills.js',
-        'js/userSkills.js',
         'js/sendlove.js',
         'js/utils.js',
         'js/settings.js'
@@ -18,6 +16,7 @@ class SettingsView extends View {
     public function render() {
         $this->user = $this->read('user');
         $this->userInfo = $this->read('userInfo');
+        $this->userSystems = $this->read('userSystems');
 
         return parent::render();
     }
@@ -56,7 +55,7 @@ class SettingsView extends View {
 
     public function picture() {
         $userInfo = $this->read('userInfo');
-        return APP_IMAGE_URL . $userInfo['picture'];
+        return $userInfo['avatar'];
 
     }
     

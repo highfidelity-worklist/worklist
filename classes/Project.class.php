@@ -9,6 +9,7 @@ class Project {
     protected $project_id;
     protected $name;
     protected $description;
+    protected $short_description;
     protected $website;
     protected $budget;
     protected $repository;
@@ -94,6 +95,7 @@ class Project {
                 p.project_id,
                 p.name,
                 p.description,
+                p.short_description,
                 p.website,
                 p.budget,
                 p.repository,
@@ -135,6 +137,7 @@ class Project {
         $this->setProjectId($row['project_id'])
              ->setName($row['name'])
              ->setDescription($row['description'])
+             ->setShortDescription($row['short_description'])
              ->setWebsite($row['website'])
              ->setBudget($row['budget'])
              ->setRepository($row['repository'])
@@ -221,6 +224,15 @@ class Project {
     public function getDescription() {
         return $this->description;
     }    
+
+    public function setShortDescription($description) {
+        $this->short_description = $description;
+        return $this;
+    }
+
+    public function getShortDescription() {
+        return $this->short_description;
+    }
 
     public function setWebsite($website) {
         $this->website = $website;
@@ -526,7 +538,7 @@ class Project {
 
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
-            (name, description, website, budget, repository, contact_info, active,
+            (name, description, short_description, website, budget, repository, contact_info, active,
                 owner_id, testflight_enabled, testflight_team_token,
                 logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin,
                 cr_job_runner,cr_users_specified, internal, creation_date, hipchat_enabled,
@@ -534,6 +546,7 @@ class Project {
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
+            "'".mysql_real_escape_string($this->getShortDescription())."', ".
             "'".mysql_real_escape_string($this->getWebsite()) . "', " .
             "'".mysql_real_escape_string($this->getBudget())."', ".
             "'".mysql_real_escape_string($this->getRepository())."', ".
@@ -587,6 +600,7 @@ class Project {
             SET
                 name='".mysql_real_escape_string($this->getName())."',
                 description='".mysql_real_escape_string($this->getDescription())."',
+                short_description='".mysql_real_escape_string($this->getShortDescription())."',
                 website='" . mysql_real_escape_string($this->getWebsite()) . "',
                 budget='".mysql_real_escape_string($this->getBudget())."',
                 repository='" .mysql_real_escape_string($this->getRepository())."',
