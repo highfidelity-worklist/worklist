@@ -456,6 +456,9 @@ class WorkItem {
         return $this;
     }
 
+    /**
+     * @return bool Whether the operation was successful
+     */
     public function toggleInternal($user_id) {
     
         $user = new User();
@@ -463,17 +466,17 @@ class WorkItem {
         
         if ($user->isInternal()){
             if ($this->isInternal()) {
-            
-                error_log('setting false..');
                 $this->setIs_internal(false);
             } else {
                 $this->setIs_internal(true);
             }
+        } else {
+            return false;
         }
 
         $this->save();
 
-        return $this->isInternal();
+        return true;
     }
 
     public static function getStates()
@@ -571,7 +574,6 @@ class WorkItem {
             code_review_completed='.$this->getCRCompleted().',
             sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
         $query .= ' WHERE id='.$this->getId();
-        error_log($query);
         $result_query = mysql_query($query);
         if($result_query) {
             return 1;

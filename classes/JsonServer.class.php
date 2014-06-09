@@ -1236,6 +1236,12 @@ class JsonServer
         ));
     }
 
+    /**
+     * Toggle the is_internal field for a Workitem/Job
+     *
+     * The user must be internal in order to perform this action, therefore
+     * we pass the session user to the method
+     */
     protected function actionToggleInternal() {
         $workitem_id = (int) $this->getRequest()->getParam('workitem');
 
@@ -1244,7 +1250,7 @@ class JsonServer
 
         return $this->setOutput(array(
             'success' => true,
-            'message' => 'Internal toggled' . $resp
+            'message' => 'Internal toggled: ' . $resp
         ));
     }
 }

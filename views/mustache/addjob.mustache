@@ -49,14 +49,12 @@
         <div class="col-sm-offset-6 col-sm-3">
             <input type="checkbox" name="is_internal" id="is_internal" />
             <label for="is_internal">Internal</label>
-            <button class="btn btn-primary" type="submit" name="save_item">Add job</button>
-        </div>
         {{/userIsInternal}}
         {{^userIsInternal}}
         <div class="col-sm-offset-7 col-sm-2">
+        {{/userIsInternal}}
             <button class="btn btn-primary" type="submit" name="save_item">Add job</button>
         </div>
-        {{/userIsInternal}}
     </div>
 </form>
 <script type="text/javascript">

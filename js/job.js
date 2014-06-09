@@ -369,9 +369,7 @@ $(document).ready(function(){
                 dataType: 'json',
                 success: function(data) {
                     if (data.success) {
-
-                    } else {
-                        // $(this).
+                        // nothing to do here at this stage
                     }
                 }
             });

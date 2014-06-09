@@ -18,7 +18,7 @@ class AddJobView extends View {
 
     public function userIsInternal() {
         $user = new User($this->currentUser['id']);
-        error_log('here, user: ' . $user->isInternal() ? 'true' : 'false');
+
         return $user->isInternal();
     }
 

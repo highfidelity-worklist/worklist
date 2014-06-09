@@ -38,6 +38,7 @@ class JobController extends Controller {
         $worklist_id = intval($job_id);
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
         $currentUsername = isset($_SESSION['username']) ? $_SESSION['username'] : '';
+
         //initialize user accessing the page
         $userId = getSessionUserId();
         $user = new User();
@@ -67,7 +68,6 @@ class JobController extends Controller {
         }
 
         if ($workitem->isInternal() && ! $user->isInternal()) {
-            error_log('job internal, user not');
             $this->write('msg', 'You don\'t have permissions to view this job.');
             $this->write('link', WORKLIST_URL);
             $this->view = new ErrorView();
@@ -1174,15 +1174,13 @@ class JobController extends Controller {
                 $has_budget = 1;
             }
 
-            if ($user->isInternal()) {
-                $crFee = 0;
-                $this->write('crFee', $crFee);
-            } else {
+            // fee defaults to 0 for internal users
+            $crFee = 0;
 
-                //review fees
+            if (! $user->isInternal()) {
+                // otherwise, lookup reviewer fee on the Project
                 $project = new Project();
                 $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
-                $crFee = 0;
                 if (count($project_roles) != 0) {
                     $crRole = $project_roles[0];
                     if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {

@@ -2261,9 +2261,6 @@ function getWorklist() {
     // Status filter
     if ($sfilter) {
         $where = "WHERE (";
-        
-        
-        
         foreach ($sfilter as $val) {
 
             $val = mysql_real_escape_string($val);
