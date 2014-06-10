@@ -16,7 +16,7 @@ var Help = {
 
         $('body').scrollspy({
             target: '#sidebar',
-            offset: 100
+            offset: 250
         });
 
         $('#sidebar a[href]').click(function(e) {
