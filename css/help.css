@@ -42,7 +42,7 @@ body > nav.navbar + .container-fluid h2 {
 }
 
 body > nav.navbar + .container-fluid section {
-    padding: 40px 0 10px;
+    padding-bottom: 10px;
 }
 
 body > nav.navbar + .container-fluid h3 {
@@ -115,7 +115,7 @@ body > .container-fluid a:active {
 }
 
 #sidebar ul.nav > li > a {
-    padding: 2px 15px 3px 5px;
+    padding: 2px 15px 6px 5px;
     position: relative;
     margin-right: 15px;
     background-color: transparent;
