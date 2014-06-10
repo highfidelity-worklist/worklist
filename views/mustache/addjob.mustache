@@ -2,9 +2,6 @@
     <div class="row">
         <div class="col-sm-3">
             <select id="itemProjectCombo" name="itemProject" data-placeholder="Select project">
-                <option value="select" {{#first_selected}}selected="selected"{{/first_selected}}>
-                    Select project
-                </option>
                 {{#projects}}
                     <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
                         {{name}}
