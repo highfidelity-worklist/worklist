@@ -52,6 +52,10 @@
         </form>
         {{/canChangeStatus}}
     </div>
+    {{#userIsInternal}}
+        <input type="checkbox" name="is_internal" id="is_internal" {{internalChecked}} />
+        <label for="is_internal">Internal</label>
+    {{/userIsInternal}}
     {{/editing}}
     {{& jobBudget}}
     <div class="project">

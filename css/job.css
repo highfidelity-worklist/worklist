@@ -11,6 +11,26 @@
     color: #333;
 }
 
+#tweet-link {
+    float: left;
+    padding: 10px 17px 7px 28px;
+    background-position: 4px 8px;
+    background-repeat: no-repeat;
+    border-right: 2px solid #e1e8ea;
+}
+
+#tweet-link:hover {
+    cursor: pointer;
+    text-decoration: underline !important;
+    color: #608e96 !important;
+}
+
+@media (max-width: 480px) {
+    #tweet-link {
+        padding: 10px 5px 7px 25px;
+    }
+}
+
 #commentZone > .row:first-child > h3 + a {
     text-align: right;
 }
@@ -18,7 +38,6 @@
 #commentform {
     background-color: #efefef;
     border-width: 1px;
-    text-align: center;
 }
 
 #commentform,
