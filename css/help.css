@@ -18,62 +18,66 @@ body > nav.navbar + .container-fluid {
     padding: 10px 0 40px;
 }
 
-body > nav.navbar + .container-fluid > h2,
-body > nav.navbar + .container-fluid > h3,
-body > nav.navbar + .container-fluid > h4,
-body > nav.navbar + .container-fluid > p {
+body > nav.navbar + .container-fluid h2,
+body > nav.navbar + .container-fluid h3,
+body > nav.navbar + .container-fluid h4,
+body > nav.navbar + .container-fluid h5,
+body > nav.navbar + .container-fluid p {
     padding: 15px 8% 0;
 }
 
-body > nav.navbar + .container-fluid > h4 + p {
+body > nav.navbar + .container-fluid h4 + p {
     padding-top: 0;
 }
 
-body > nav.navbar + .container-fluid > ul {
+body > nav.navbar + .container-fluid ul {
     padding: 3px 10% 0;
 }
 
-h2 {
+body > nav.navbar + .container-fluid h2 {
     color: #007f7c;
     font-size: 4.5em;
     font-weight: bold;
     border-bottom: 1px solid #dde4e6;
 }
 
-h3 {
+body > nav.navbar + .container-fluid section {
+    padding: 40px 0 10px;
+}
+
+body > nav.navbar + .container-fluid h3 {
     color: #009999;
 }
 
-body > nav.navbar + .container-fluid > h3 + ul li > a,
-body > nav.navbar + .container-fluid > h4 a,
-body > nav.navbar + .container-fluid > h4 a[name]:hover,
-body > nav.navbar + .container-fluid > h4 a[name]:active {
+body > nav.navbar + .container-fluid h5 {
+    text-decoration: underline;
+}
+
+body > nav.navbar + .container-fluid h3 + ul li > a,
+body > nav.navbar + .container-fluid h4 a,
+body > nav.navbar + .container-fluid h4 a[name]:hover,
+body > nav.navbar + .container-fluid h4 a[name]:active {
     color: #000;
     text-decoration: none;
 }
 
-h4 a[name]:hover,
-h4 a[name]:active {
-    cursor: default;
-}
-
 /* Q and A letters for questions and answers */
-body > nav.navbar + .container-fluid > h4:before {
+body > nav.navbar + .container-fluid h4:before {
     content: 'Q. ';
 }
 
-body > nav.navbar + .container-fluid > h4 + p:before {
+body > nav.navbar + .container-fluid h4 + p:before {
     content: 'A. ';
     font-weight: bold;
 }
 
-body > nav.navbar + .container-fluid > h4:before,
-body > nav.navbar + .container-fluid > h4 + p:before {
+body > nav.navbar + .container-fluid h4:before,
+body > nav.navbar + .container-fluid h4 + p:before {
     font-size: 15px;
     font-weight: bold;
 }
 
-body > nav.navbar + .container-fluid > p + p {
+body > nav.navbar + .container-fluid p + p {
     padding-top: 0;
 }
 
@@ -83,4 +87,57 @@ body > .container-fluid a:hover {
 
 body > .container-fluid a:active {
     text-decoration: underline;
+}
+
+#sidebar.affix {
+    position: fixed;
+}
+
+#sidebar.affix-top {
+    margin-top: 150px;
+    position: static;
+}
+
+#sidebar.affix-bottom {
+    position: absolute;
+}
+
+#sidebar ul.nav {
+    text-align: right;
+    margin: 0;
+    padding: 0;
+}
+
+#sidebar ul.nav > li > a {
+    padding: 2px 15px 3px 5px;
+    position: relative;
+    margin-right: 15px;
+    background-color: transparent;
+}
+
+#sidebar li > a + ul.nav {
+    font-size: .9em;
+    line-height: .9em;
+}
+
+#sidebar > ul.nav > li > a:after,
+#sidebar li.active > a:after {
+    font-family: FontAwesome;
+    position: absolute;
+    right: 0;
+}
+
+
+#sidebar > ul.nav > li > a:after {
+    content: "";
+}
+
+
+#sidebar > ul.nav > li.active > a:after {
+    content: "";
+}
+
+
+#sidebar > ul.nav > li.active > ul.nav > li.active > a:after {
+    content: "";
 }

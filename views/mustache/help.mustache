@@ -1,210 +1,259 @@
-<h2>Help</h2>
-
-<h3>General FAQs</h3>
-<ul>
-    <li><a href="./help#gf1">What is Worklist?</a></li>
-    <li><a href="./help#gf2">I'm a web programmer, will I be able to find work here?</a></li>
-    <li><a href="./help#gf3">I'm a C++ programmer, will I be able to find work here?</a></li>
-    <li><a href="./help#gf4">Why do I need a GitHub account?</a></li>
-    <li><a href="./help#gf5">What is a Job?</a></li>
-    <li><a href="./help#gf6">What is the difference between a Developer and a Designer?</a></li>
-    <li><a href="./help#gf7">What is a Bid?</a></li>
-    <li><a href="./help#gf8">What is a Fee?</a></li>
-</ul>
-
-<h3>Developer FAQs</h3>
-<ul>
-    <li><a href="./help#df1">What's the best way to get started?</a></li>
-    <li><a href="./help#df2">What about Coding Standards?</a></li>
-    <li><a href="./help#df3">How can I locate Jobs to bid?</a></li>
-    <li><a href="./help#df4">What is the workflow of a Job?</a></li>
-    <li><a href="./help#df5">What is a reasonable bid amount?</a></li>
-    <li><a href="./help#df6">Can I view the source code and/or download it to my own server?</a></li>
-    <li><a href="./help#df7">I tried to bid on a Job and it said I am not eligible to bid, what's wrong?</a></li>
-    <li><a href="./help#df8">After I have completed my work, how do I get paid?</a></li>
-    <li><a href="./help#df9">Who is eligible to perform code reviews?  How do I become eligible?</a></li>
-    <li><a href="./help#df10">Where can I go for more information?</a></li>
-</ul>
-
-<h3>General FAQs<span class="heading-links" /></h3>
-<h4><a name="gf1">What is Worklist?</a></h4>
-<p>
-    Worklist is High Fidelity's job tracker and marketplace for software development. We use it to supplement our
-    <a href='http://highfidelity.io'> internal development team</a>.
-</p>
-<h4><a name="gf2">I'm a web programmer, will I be able to find work here?</a></h4>
-<p>
-    We have both PHP/MySQL (<a href='https://www.worklist.net/worklist'>Worklist</a>) and Ruby/Postgres/Redis
-    (<a href='https://www.highfidelity.io'>High Fidelity</a>) projects. We are often looking for good
-    front-end web developers with a keen eye for detail. More web-based projects will be coming as High Fidelity grows.
-    We also have a growing need for JavaScript developers who are open to learning
-    <a href='https://github.com/highfidelity/hifi/wiki/Javascript-API'>Hifi JavaScript</a>.
-</p>
-<h4><a name="gf3">I'm a C++ programmer, will I be able to find work here?</a></h4>
-<p>
-    Absolutely. High Fidelity is cross-platform and contains myriad components, most written in C++ with heavy utilization
-    of Qt. In particular, we have a growing need for developers on Windows.
-</p>
-<h4><a name="gf4">Why do I need a GitHub account?</a></h4>
-<p>
-    Worklist is completely federated with GitHub.  We require write access on repositories in order to create branches
-    and pull requests from Worklist; for example, when you receive a bid acceptance on a Job, a branch is created on
-    your GitHub account under the Job's ticket number. Later in the process, when you change the status of a Job
-    on Worklist to "Code Review," a pull request is automatically created from the Job's branch.
-
-Even private repo access is necessary as some of the code in the High Fidelity architecture is not public.
-</p>
-<h4><a name="gf5">What is a Job?</a></h4>
-<p>
-    A Job can be a feature, a bug, or any development (or otherwise) related task. Most Jobs will be software development
-    related, but some could be about sound design or content development or younameit - Worklist is intended to be malleable,
-    flexing/changing as High Fidelity's specific needs change.
-</p>
-
-<h4><a name="gf6">What is the difference between a Developer and a Designer?</a></h4>
-<p>
-    Developer refers to the person performing the actual work on a Job.  The Designer is the Job Manager.
-</p>
-<h4><a name="gf7">What is a Bid?</a></h4>
-<p>
-    A bid is a Developer's proposal to perform work on an Job.  Bids consist of 1) the amount you would like to be paid,
-    2) the approach you will take to complete the work needed to resolve the Job, 3) the amount of time that it will take
-    to complete the work, and 4) how long you want the bid to remain active - the maximum time and our default is 7 days.
-    <br/ > <br/ >
-    When you enter a bid, it is always better to give a brief, yet detailed, description of how you intend to address
-    the Job requirements. Designers are not just looking for the lowest bid; we are looking for a considered bid that has
-    some thought behind it while not being unrealistic in cost.
-</p>
-<h4><a name="gf8">What is a Fee?</a></h4>
-<p>
-    In addition to the initial bid, you will probably also see one or more fees attached to
-    a Job. During the course of a Job, fees are added for code reviews(automatically calculated
-    for most projects), testing or other help. We encourage Developers to use their best judgment
-    when fee'ing in.
-</p>
-
-<h3>Developer FAQs</h3>
-<h4><a name="df1">What's the best way to get started?</a></h4>
-<p>
-    Browse our <a href='./jobs'>Jobs</a> page to view the type of work we're doing and join us in our
-    <a href='http://gitter.im/highfidelity/worklist'>Gitter</a> chat where there are almost
-    always other people around to answer questions and help you get started.
-</p>
-<h4><a name="df2">What about Coding Standards?</a></h4>
-<p>
-    All merged code will be reviewed to make sure it follows our <a href='https://github.com/highfidelity/worklist/wiki/Coding-Standards'>
-    coding standards</a>.
-</p>
-<h4><a name="df3">How can I locate Jobs to Bid?</a></h4>
-<p>
-    Go to our <a href='./jobs'>Jobs</a> page and select "Bidding" from the status drop down. This will show
-    you a list of all currently open Jobs.</strong>
-</p>
-<h4><a name="df4">What is the workflow of an Job?</a></h4>
-<p>
-    Jobs on Worklist go through various statuses from preparation through release. Once your bid is accepted,
-    you might find this cheat sheet helpful until you get the knack of our workflow.
-</p>
-<p>
-    <strong>Stage One: Preparation > Job Setup</strong>
-</p>
-<ul>
-    <li><strong>Suggested -</strong> Worklist allows anyone to make suggestions for improvements to any active project. When
-    Suggested Jobs are added, Designers are notified via email and they decide whether or not to move them into Bidding.</li>
-    <li><strong>SuggestedWithBid -</strong> Sometimes when a Developer has a suggestion, they will also have a particular solution
-    in mind and be willing to do the work. Once a Developer adds a Suggested Job, they have the ability to add a bid which in
-    turn changes the status to SuggestedWithBid.  Designers are again notified and make the final decision on whether or not to go
-    ahead with the Job.</li>
-    <li><strong>Pass -</strong> If for some reason a Designer decides not to move an Job into Bidding, they will set the
-    Job to Pass.  Jobs in Suggested and SuggestedWithBid status are also auto-passed once they age 30 days.</li>
-    <li><strong>Bidding -</strong> Once a Job is set to Bidding by a Designer, any Developer can put in their offer.
-    Designers will review bids and accept based upon the best match to the Job requirements.</li>
-</ul>
-    <p><strong>Stage Two: In Progress > Getting Jobs Done</strong></p>
-<ul>
-    <li><strong>Working -</strong> Once a bid has been accepted, the Job will automatically set to Working status. It will remain
-    there until the Developer is done with the work.</li>
-    <li><strong>Functional -</strong> When the Developer is ready for their work to be functionally tested, they will commit the
-    changes to their branch (no Pull Request at this point)  and set the Job to Functional. At this step in the process, the
-    Designer will test the functionality in the Developer's sandbox and then either ask for modifications or indicate their approval
-    to move to Code Review.  Setting the Job to Code Review will automatically generate a Pull Request(PR) in GitHub.</li>
-    <li><strong>Code Review -</strong> Code Review means the new code is ready to be reviewed by another Developer. If the reviewer
-    finds any problems, they are either worked out in real-time in our <a href='http://gitter.im/highfidelity/worklist' target='_blank'>Gitter</a>
-    or via comments added to the Job ticket. Once all requirements have been fulfilled, the Developer commits the code and sets the
-    Job to Completed.</li>
-</ul>
-    <p><strong>Stage Three: Finished > Your Job is Done</strong></p>
-<ul>
-    <li><strong>Completed -</strong> Once your Job is merged into the GitHub Master Repository, the Developer sets the Job to
-    Completed. The Job Designer will again be notified via email. This stage allows Designers additional time once the Job is
-    live to verify the new functionality in production. If all is good, they will move the Job to the final status: Done!</li>
-    <li><strong>Done -</strong> The Developer will not be paid until the Job is moved into Done status. Done Jobs will be picked
-    up in our payment system during the next payment run via Paypal, currently twice a week.</li>
-    </p>
-</ul>
-<h4><a name="df5">What is a reasonable bid amount?</a></h4>
-<p>
-    A bid is simply defined as the amount of money you will ask for completing the task described by a Job write up. You can browse
-    through Done Jobs to get a good idea of what others have charged for similar Jobs. When considering a Job, be sure to carefully
-    think about any problem areas or potential extra work before placing your bid, as your bid is considered an agreement between you and
-    Worklist for any given Job.</strong>
-</p>
-<h4><a name="df6">Can I view the source code and/or download it to my own server?</a></h4>
-<p>
-    Yes! Our two main repositories, High Fidelity and Worklist are housed on <a href="https://github.com/highfidelity">GitHub</a>. The repositories are public and you can browse
-    the code there.  You can read more on the GitHub process in our
-    <a href="https://github.com/highfidelity/worklist/wiki/Using-GitHub-with-the-Worklist-Project">Worklist wiki</a>.
-</p>
-<h4><a name="df7">I tried to bid on a Job and it said I am not eligible to bid, what's wrong?</a></h4>
-<p>
-    Before you can place a bid, you need to set up your payment information in your <a href='./settings'> profile settings</a>. You need to both add your Paypal address and,
-    if you're in the US, you will need to upload your W9 for our verification. </strong>
-</p>
-<h4><a name="df8">After I have completed my work, how do I get paid?</a></h4>
-<p>
-    Once you've finished work and it has had a functional and code review completed, you should set the Job to Completed.
-    The project Designer will then need to verify it works in production and will then set the Job to Done. You will not get paid until this
-    happens. Please view the <a href ="ff6"> Project Status</a> flow for more information.  All payments are
-    currently handled through Paypal. When you create your worklist account, you'll be asked to supply your Paypal email address. We will pay as
-    quickly as possible after a Job is marked Done in the worklist (this is done by the person who created or is the Designer for the Job).</strong>
-</p>
-<h4><a name="df9">Who is eligible to perform code reviews?  How do I become eligible? </a></h4>
-<p>
-    Each project managed in the Worklist has it's own set of rules for Code Review eligibility.  The Project Admin
-    maintains these specifications. The Admin can select from the following options:</strong>
-</p>
-<ul>
-    <li><strong>Anyone</strong></li>
-    <li><strong>Anyone that is Trusted by more than 3 people</strong></li>
-    <li><strong>Anyone that is Trusted by the Project Admin</strong></li>
-    <li><strong>Anyone that is Trusted by the Job Manager</strong></li>
-    <li><strong>Use only code reviewers listed below</strong>(Only specific users that the Project Admin delegates)</li>
-</ul>
-
-<p>
-    If you meet the Code Review qualifications, you will be able to start a code review by clicking the Start Code Review
-    button within a task.  If not, a hover message will appear over the button stating that "You are not Authorized to Code Review
-    this Job".
-</p>
-<p>
-    To view the guidelines for a project, navigate to the specific project from the <a href ='./projects'>
-    Projects</a> page.
-</p>
-<p>
-    Trust generally follows completed Jobs.  Therefore, if you do really awesome work on Jobs, Trust will come and so will Code Review
-    Eligibility!
-</p>
-<h4><a name="df10">Where can I go for more information?</a></h4>
-<p>
-    We have a number of GitHub Wiki's containing a wealth of information:
-</p>
-<ul>
-    <li><strong><a href='https://github.com/highfidelity/worklist/wiki/Using-GitHub-with-the-Worklist-Project'>
-    Using GitHub with the Worklist Project</a></strong></li>
-    <li><strong><a href='https://github.com/highfidelity/worklist/wiki/Coding-Standards'>
-    Worklist Project Coding Standards</a></strong></li>
-    <li><strong><a href='https://github.com/highfidelity/hifi/wiki'>High Fidelity Project specific wiki's</a></strong></li>
-</ul>
-<p>
-    Or just visit the <a href='http://gitter.im/highfidelity/hifi'>Gitter</a> chat and ask!</strong>
-</p>
+<div class="row">
+  <div class="col-md-offset-1 col-md-7">
+    <h2 class="page-header">Help</h2>
+    <article id="gf">
+      <h3>General FAQs</h3>
+      <section id="gf1">
+        <h4>What is Worklist?</h4>
+        <p>
+          Worklist is High Fidelity's job tracker and marketplace for software development. We use it to supplement our
+          <a href='http://highfidelity.io'> internal development team</a>.
+        </p>
+      </section>
+      <section id="gf2">
+        <h4>I'm a web programmer, will I be able to find work here?</h4>
+        <p>
+          We have both PHP/MySQL (<a href='https://www.worklist.net/worklist'>Worklist</a>) and Ruby/Postgres/Redis
+          (<a href='https://www.highfidelity.io'>High Fidelity</a>) projects. We are often looking for good
+          front-end web developers with a keen eye for detail. More web-based projects will be coming as High Fidelity grows.
+          We also have a growing need for JavaScript developers who are open to learning
+          <a href='https://github.com/highfidelity/hifi/wiki/Javascript-API'>Hifi JavaScript</a>.
+        </p>
+      </section>
+      <section id="gf3">
+        <h4>I'm a C++ programmer, will I be able to find work here?</h4>
+        <p>
+          Absolutely. High Fidelity is cross-platform and contains myriad components, most written in C++ with heavy utilization
+          of Qt. In particular, we have a growing need for developers on Windows.
+        </p>
+      </section>
+      <section id="gf4">
+        <h4>Why do I need a GitHub account?</h4>
+        <p>
+          Worklist is completely federated with GitHub.  We require write access on repositories in order to create branches
+          and pull requests from Worklist; for example, when you receive a bid acceptance on a Job, a branch is created on
+          your GitHub account under the Job's ticket number. Later in the process, when you change the status of a Job
+          on Worklist to "Code Review," a pull request is automatically created from the Job's branch.
+          Even private repo access is necessary as some of the code in the High Fidelity architecture is not public.
+        </p>
+      </section>
+      <section id="gf5">
+        <h4>What is a Job?</h4>
+        <p>
+          A Job can be a feature, a bug, or any development (or otherwise) related task. Most Jobs will be software development
+          related, but some could be about sound design or content development or younameit - Worklist is intended to be malleable,
+          flexing/changing as High Fidelity's specific needs change.
+        </p>
+      </section>
+      <section id="gf6">
+        <h4>What is the difference between a Developer and a Designer?</h4>
+        <p>
+          Developer refers to the person performing the actual work on a Job.  The Designer is the Job Manager.
+        </p>
+      </section>
+      <section id="gf7">
+        <h4>What is a Bid?</h4>
+        <p>
+          A bid is a Developer's proposal to perform work on an Job.  Bids consist of 1) the amount you would like to be paid,
+          2) the approach you will take to complete the work needed to resolve the Job, 3) the amount of time that it will take
+          to complete the work, and 4) how long you want the bid to remain active - the maximum time and our default is 7 days.
+        </p>
+        <p>
+          When you enter a bid, it is always better to give a brief, yet detailed, description of how you intend to address
+          the Job requirements. Designers are not just looking for the lowest bid; we are looking for a considered bid that has
+          some thought behind it while not being unrealistic in cost.
+        </p>
+      </section>
+      <section id="gf8">
+        <h4>What is a Fee?</h4>
+        <p>
+          In addition to the initial bid, you will probably also see one or more fees attached to
+          a Job. During the course of a Job, fees are added for code reviews(automatically calculated
+          for most projects), testing or other help. We encourage Developers to use their best judgment
+          when fee'ing in.
+        </p>
+      </section>
+    </article>
+    <article id="df">
+      <h3>Developer FAQs</h3>
+      <section id="df1">
+        <h4>What's the best way to get started?</h4>
+        <p>
+          Browse our <a href='./jobs'>Jobs</a> page to view the type of work we're doing and join us in our
+          <a href='http://gitter.im/highfidelity/worklist'>Gitter</a> chat where there are almost
+          always other people around to answer questions and help you get started.
+        </p>
+      </section>
+      <section id="df2">
+        <h4>What about Coding Standards?</h4>
+        <p>
+          All merged code will be reviewed to make sure it follows our <a href='https://github.com/highfidelity/worklist/wiki/Coding-Standards'>
+          coding standards</a>.
+        </p>
+      </section>
+      <section id="df3">
+        <h4>How can I locate Jobs to Bid?</h4>
+        <p>
+          Go to our <a href='./jobs'>Jobs</a> page and select "Bidding" from the status drop down. This will show
+          you a list of all currently open Jobs.</strong>
+        </p>
+      </section>
+      <section id="df4">
+        <h4>What is the workflow of an Job?</h4>
+        <p>
+          Jobs on Worklist go through various statuses from preparation through release. Once your bid is accepted,
+          you might find this cheat sheet helpful until you get the knack of our workflow.
+        </p>
+        <h5>Stage One: Preparation &gt; Job Setup</h5>
+        <ul>
+          <li><strong>Suggested -</strong> Worklist allows anyone to make suggestions for improvements to any active project. When
+          Suggested Jobs are added, Designers are notified via email and they decide whether or not to move them into Bidding.</li>
+          <li><strong>SuggestedWithBid -</strong> Sometimes when a Developer has a suggestion, they will also have a particular solution
+          in mind and be willing to do the work. Once a Developer adds a Suggested Job, they have the ability to add a bid which in
+          turn changes the status to SuggestedWithBid.  Designers are again notified and make the final decision on whether or not to go
+          ahead with the Job.</li>
+          <li><strong>Pass -</strong> If for some reason a Designer decides not to move an Job into Bidding, they will set the
+          Job to Pass.  Jobs in Suggested and SuggestedWithBid status are also auto-passed once they age 30 days.</li>
+          <li><strong>Bidding -</strong> Once a Job is set to Bidding by a Designer, any Developer can put in their offer.
+          Designers will review bids and accept based upon the best match to the Job requirements.</li>
+        </ul>
+        <h5>Stage Two: In Progress &gt; Getting Jobs Done</h5>
+        <ul>
+          <li><strong>Working -</strong> Once a bid has been accepted, the Job will automatically set to Working status. It will remain
+          there until the Developer is done with the work.</li>
+          <li><strong>Functional -</strong> When the Developer is ready for their work to be functionally tested, they will commit the
+          changes to their branch (no Pull Request at this point)  and set the Job to Functional. At this step in the process, the
+          Designer will test the functionality in the Developer's sandbox and then either ask for modifications or indicate their approval
+          to move to Code Review.  Setting the Job to Code Review will automatically generate a Pull Request(PR) in GitHub.</li>
+          <li><strong>Code Review -</strong> Code Review means the new code is ready to be reviewed by another Developer. If the reviewer
+          finds any problems, they are either worked out in real-time in our <a href='http://gitter.im/highfidelity/worklist' target='_blank'>Gitter</a>
+          or via comments added to the Job ticket. Once all requirements have been fulfilled, the Developer commits the code and sets the
+          Job to Completed.</li>
+        </ul>
+        <h5>Stage Three: Finished &gt; Your Job is Done</h5>
+        <ul>
+          <li><strong>Completed -</strong> Once your Job is merged into the GitHub Master Repository, the Developer sets the Job to
+          Completed. The Job Designer will again be notified via email. This stage allows Designers additional time once the Job is
+          live to verify the new functionality in production. If all is good, they will move the Job to the final status: Done!</li>
+          <li><strong>Done -</strong> The Developer will not be paid until the Job is moved into Done status. Done Jobs will be picked
+          up in our payment system during the next payment run via Paypal, currently twice a week.</li>
+          </p>
+        </ul>
+      </section>
+      <section id="df5">
+        <h4>What is a reasonable bid amount?</h4>
+        <p>
+          A bid is simply defined as the amount of money you will ask for completing the task described by a Job write up. You can browse
+          through Done Jobs to get a good idea of what others have charged for similar Jobs. When considering a Job, be sure to carefully
+          think about any problem areas or potential extra work before placing your bid, as your bid is considered an agreement between you and
+          Worklist for any given Job.</strong>
+        </p>
+      </section>
+      <section id="df6">
+        <h4>Can I view the source code and/or download it to my own server?</h4>
+        <p>
+          Yes! Our two main repositories, High Fidelity and Worklist are housed on <a href="https://github.com/highfidelity">GitHub</a>. The repositories are public and you can browse
+          the code there.  You can read more on the GitHub process in our
+          <a href="https://github.com/highfidelity/worklist/wiki/Using-GitHub-with-the-Worklist-Project">Worklist wiki</a>.
+        </p>
+      </section>
+      <section id="df7">
+        <h4>I tried to bid on a Job and it said I am not eligible to bid, what's wrong?</h4>
+        <p>
+          Before you can place a bid, you need to set up your payment information in your <a href='./settings'> profile settings</a>. You need to both add your Paypal address and,
+          if you're in the US, you will need to upload your W9 for our verification. </strong>
+        </p>
+      </section>
+      <section id="df8">
+        <h4>After I have completed my work, how do I get paid?</h4>
+        <p>
+          Once you've finished work and it has had a functional and code review completed, you should set the Job to Completed.
+          The project Designer will then need to verify it works in production and will then set the Job to Done. You will not get paid until this
+          happens. Please view the <a href ="ff6"> Project Status</a> flow for more information.  All payments are
+          currently handled through Paypal. When you create your worklist account, you'll be asked to supply your Paypal email address. We will pay as
+          quickly as possible after a Job is marked Done in the worklist (this is done by the person who created or is the Designer for the Job).</strong>
+        </p>
+      </section>
+      <section id="df9">
+        <h4>Who is eligible to perform code reviews?  How do I become eligible? </h4>
+        <p>
+          Each project managed in the Worklist has it's own set of rules for Code Review eligibility.  The Project Admin
+          maintains these specifications. The Admin can select from the following options:</strong>
+        </p>
+        <ul>
+          <li><strong>Anyone</strong></li>
+          <li><strong>Anyone that is Trusted by more than 3 people</strong></li>
+          <li><strong>Anyone that is Trusted by the Project Admin</strong></li>
+          <li><strong>Anyone that is Trusted by the Job Manager</strong></li>
+          <li><strong>Use only code reviewers listed below</strong>(Only specific users that the Project Admin delegates)</li>
+        </ul>
+        <p>
+          If you meet the Code Review qualifications, you will be able to start a code review by clicking the Start Code Review
+          button within a task.  If not, a hover message will appear over the button stating that "You are not Authorized to Code Review
+          this Job".
+        </p>
+        <p>
+          To view the guidelines for a project, navigate to the specific project from the <a href ='./projects'>
+          Projects</a> page.
+        </p>
+        <p>
+          Trust generally follows completed Jobs.  Therefore, if you do really awesome work on Jobs, Trust will come and so will Code Review
+          Eligibility!
+        </p>
+      </section>
+      <section id="df10">
+        <h4>Where can I go for more information?</h4>
+        <p>
+          We have a number of GitHub Wiki's containing a wealth of information:
+        </p>
+        <ul>
+          <li><strong><a href='https://github.com/highfidelity/worklist/wiki/Using-GitHub-with-the-Worklist-Project'>
+          Using GitHub with the Worklist Project</a></strong></li>
+          <li><strong><a href='https://github.com/highfidelity/worklist/wiki/Coding-Standards'>
+          Worklist Project Coding Standards</a></strong></li>
+          <li><strong><a href='https://github.com/highfidelity/hifi/wiki'>High Fidelity Project specific wiki's</a></strong></li>
+        </ul>
+        <p>
+          Or just visit the <a href='http://gitter.im/highfidelity/hifi'>Gitter</a> chat and ask!</strong>
+        </p>
+      </section>
+    </article>
+  </div>
+  <nav class="col-md-4">
+    <div id="sidebar">
+      <ul class="nav">
+        <li>
+          <a href="#gf">General FAQs</a>
+          <ul class="nav">
+            <li><a href="#gf1">What is Worklist?</a></li>
+            <li><a href="#gf2">I'm a web programmer, will I be able to find work here?</a></li>
+            <li><a href="#gf3">I'm a C++ programmer, will I be able to find work here?</a></li>
+            <li><a href="#gf4">Why do I need a GitHub account?</a></li>
+            <li><a href="#gf5">What is a Job?</a></li>
+            <li><a href="#gf6">What is the difference between a Developer and a Designer?</a></li>
+            <li><a href="#gf7">What is a Bid?</a></li>
+            <li><a href="#gf8">What is a Fee?</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#df">Developer FAQs</a>
+          <ul class="nav">
+            <li><a href="#df1">What's the best way to get started?</a></li>
+            <li><a href="#df2">What about Coding Standards?</a></li>
+            <li><a href="#df3">How can I locate Jobs to bid?</a></li>
+            <li><a href="#df4">What is the workflow of a Job?</a></li>
+            <li><a href="#df5">What is a reasonable bid amount?</a></li>
+            <li><a href="#df6">Can I view the source code and/or download it to my own server?</a></li>
+            <li><a href="#df7">I tried to bid on a Job and it said I am not eligible to bid, what's wrong?</a></li>
+            <li><a href="#df8">After I have completed my work, how do I get paid?</a></li>
+            <li><a href="#df9">Who is eligible to perform code reviews?  How do I become eligible?</a></li>
+            <li><a href="#df10">Where can I go for more information?</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+<script type="text/javascript">
+  Help.init();
+</script>
