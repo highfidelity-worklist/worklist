@@ -510,7 +510,7 @@ class JobView extends View {
             }
 
             $created = relativeTime(strtotime($bid['bid_created']) - $now, true, true, true, false);
-            $accepted = $bid['bid_accepted'] ? relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, ture, false) : '';
+            $accepted = $bid['bid_accepted'] ? relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, true, false) : '';
             $expires = $bid['expires'] ? relativeTime($bid['expires'], true, true, true, false) : 'Never';
 
             if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
