@@ -24,6 +24,8 @@ var Help = {
             var scrollTo = $($(this).attr('href')).offset().top;
             $('body').scrollTo(scrollTo);
         });
+
+        window.addEventListener('resize', Help.setAffixedSidebarWidth, false);
     },
 
     setAffixedSidebarWidth: function() {
