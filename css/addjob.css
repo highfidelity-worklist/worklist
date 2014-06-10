@@ -103,17 +103,19 @@ body > .container-fluid {
 }
 
 #addJob > .row:last-child > div {
+    line-height: 2.2em;
     text-align: right;
 }
 
 #addJob button[type=submit] {
     background: none #007F7c;
-    font-weight: bold;
     border-radius: 5px;
+    border: 0;
     color: #ffffff;
     font-size: 1.1em;
+    font-weight: bold;
     height: 2.2em;
-    border: 0;
+    margin-left: 15px;
 }
 
 /**

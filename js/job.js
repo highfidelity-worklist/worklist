@@ -356,6 +356,22 @@ $(document).ready(function(){
             event.preventDefault();
         }
     });
+
+    if ($('#is_internal').length) {
+        $('#is_internal').on('click', function() {
+            $.ajax({
+                type: 'post',
+                url: './job/toggleInternal/' + workitem_id,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success) {
+                        // nothing to do here at this stage
+                    }
+                }
+            });
+        });
+    }
+
     $('#following').click(function() {
         $.ajax({
             type: 'post',
