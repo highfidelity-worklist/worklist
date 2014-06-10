@@ -102,6 +102,12 @@ body > .container-fluid a:active {
     position: absolute;
 }
 
+@media (max-width: 991px) {
+    #sidebar {
+        display: none;
+    }
+}
+
 #sidebar ul.nav {
     text-align: right;
     margin: 0;
