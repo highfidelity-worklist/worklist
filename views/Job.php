@@ -79,7 +79,6 @@ class JobView extends View {
     }
 
     public function userIsInternal() {
-    error_log('here, user: ' . $this->user->isInternal() ? 'true' : 'false');
         return $this->user->isInternal() ? true : false;
     }
 

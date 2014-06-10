@@ -263,7 +263,7 @@ class User {
      */
     public function isInternal()
     {
-        if ((int) $this->getIs_internal() === 1) {
+        if ((int) $this->getIs_internal() == 1) {
             return true;
         }
 
