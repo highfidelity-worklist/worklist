@@ -47,7 +47,7 @@ nav.navbar {
 }
 
 /* navigation log in link color */
-nav.navbar .navbar-right > li > a[href^="./github/login"] {
+nav.navbar .navbar-right > li > a.login-button {
     color: #fff;
     font-size: 1.4em;
 }
