@@ -13,6 +13,7 @@ class JobController extends Controller {
         switch($action) {
             case 'view':
             case 'add':
+            case 'toggleInternal':
                 $method = $action;
                 break;
             default:
@@ -66,6 +67,15 @@ class JobController extends Controller {
             $this->view = null;
             die($error);
         }
+
+        if ($workitem->isInternal() && ! $user->isInternal()) {
+            $this->write('msg', 'You don\'t have permissions to view this job.');
+            $this->write('link', WORKLIST_URL);
+            $this->view = new ErrorView();
+            parent::run();
+            exit;
+        }
+
         $this->write('workitem', $workitem);
 
         // we need to be able to grant runner rights to a project founder for all jobs for their project
@@ -1150,21 +1160,6 @@ class JobController extends Controller {
             }
         }
 
-        //review fees
-        $project = new Project();
-        $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
-        $crFee = 0;
-        if (count($project_roles) != 0) {
-            $crRole = $project_roles[0];
-            if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
-                $crFee = ($crRole['percentage'] / 100) * $accepted_bid_amount;
-                if ((float) $crFee < $crRole['min_amount']) {
-                   $crFee = $crRole['min_amount']; 
-                }
-            }
-        }
-        $this->write('crFee', $crFee);
-
         $user_id = (isset($_SESSION['userid'])) ? $_SESSION['userid'] : "";
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
         $is_admin = isset($_SESSION['is_admin']) ? $_SESSION['is_admin'] : 0;
@@ -1179,6 +1174,26 @@ class JobController extends Controller {
             if ($user->getBudget() > 0) {
                 $has_budget = 1;
             }
+
+            // fee defaults to 0 for internal users
+            $crFee = 0;
+
+            if (! $user->isInternal()) {
+                // otherwise, lookup reviewer fee on the Project
+                $project = new Project();
+                $project_roles = $project->getRoles($workitem->getProjectId(), "role_title = 'Reviewer'");
+                if (count($project_roles) != 0) {
+                    $crRole = $project_roles[0];
+                    if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
+                        $crFee = ($crRole['percentage'] / 100) * $accepted_bid_amount;
+                        if ((float) $crFee < $crRole['min_amount']) {
+                           $crFee = $crRole['min_amount']; 
+                        }
+                    }
+                }
+            }
+
+            $this->write('crFee', $crFee);
         }
 
         $workitem = WorkItem::getById($worklist['id']);
@@ -1274,6 +1289,7 @@ class JobController extends Controller {
         $notes = $_REQUEST['notes'];
         $is_expense = $_REQUEST['is_expense'];
         $is_rewarder = $_REQUEST['is_rewarder'];
+        $is_internal = $_REQUEST['is_internal'];
         $fileUpload = $_REQUEST['fileUpload'];
 
         if (! empty($_POST['itemid'])) {
@@ -1289,6 +1305,7 @@ class JobController extends Controller {
         $workitem->setStatus($status);
         $workitem->setNotes($notes);
         $workitem->setWorkitemSkills($skillsArr);
+        $workitem->setIs_internal($is_internal);
         $workitem->save();
         $related = getRelated($notes);
         Notification::massStatusNotify($workitem);
@@ -1397,6 +1414,23 @@ class JobController extends Controller {
             'workitem' => $workitem->getId()
         ));
 
+    }
+
+    /**
+     * Toggle the is_internal field for a Workitem/Job
+     *
+     * The user must be internal in order to perform this action, therefore
+     * we pass the session user to the method
+     */
+    protected function toggleInternal($job_id) {
+        $workitem = new WorkItem($job_id);
+        $resp = $workitem->toggleInternal($_SESSION['userid']);
+
+        $this->view = null;
+        echo json_encode(array(
+            'success' => true,
+            'message' => 'Internal toggled: ' . $resp
+        ));
     }
 
     function hasRights($userId, $workitem) {
