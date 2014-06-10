@@ -10,9 +10,6 @@ var Help = {
             $(this).css({'width': ''});
         });
         $('#sidebar').on('affixed.bs.affix', Help.refresh);
-        if ($('#sidebar').is('.affix')) {
-            Help.setAffixedSidebarWidth();
-        }
 
         $('body').scrollspy({
             target: '#sidebar',
@@ -28,17 +25,21 @@ var Help = {
         window.addEventListener('resize', Help.refresh, false);
 
         /**
-         * refreshing the affix two seconds since loaded seems to give better
+         * refreshing scrollspy a second since loaded seems to give better
          * results with positioning issues, I guess that it might be cause by
          * styling files not loaded already and thus scrollspy has outdated
          * calculation results
          * 10-JUN-2014 <kordero>
          */
-        Help.refreshTimeout = setTimeout(Help.refresh, 2000);
+        Help.refreshTimeout = setTimeout(function() {
+            Help.refresh();
+        }, 1000);
     },
 
     refresh: function() {
-        $('#sidebar').css({'width': $('#sidebar').parent().width() + 'px'});
+        if ($('#sidebar').is('.affix')) {
+            $('#sidebar').css({'width': $('#sidebar').parent().width() + 'px'});
+        }
         $('body').scrollspy('refresh');
     }
 };
