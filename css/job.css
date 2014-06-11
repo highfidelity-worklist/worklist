@@ -250,7 +250,14 @@ section#footer li:nth-child(-n+3) {
 .comment-container {
     float: left;
     margin-left: 10px;
-    width: calc(100% - 60px);
+}
+
+/**
+ * replacement for the old .depth-0 class margin
+ * (now all entries in Job view are depth 0)
+ */
+#entries > li[id^="comment-"] {
+    margin-left: -55px;
 }
 
 /*  .top-bar rules moved to live where it should
