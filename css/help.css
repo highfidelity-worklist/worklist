@@ -138,5 +138,5 @@ body > .container-fluid a:active {
     font-family: FontAwesome;
     position: absolute;
     left: 0;
-    content: "";
+    content: "\f054";
 }
