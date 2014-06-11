@@ -61,9 +61,9 @@ class Notification {
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
             case 'Review':
-            $emails = self::getReviewNotificationEmails();
                 if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
-                    $options = array('type' => 'new_review',
+                $emails = self::getReviewNotificationEmails();
+                $options = array('type' => 'new_review',
                         'workitem' => $workitem,
                         'emails' => $emails);
                     self::workitemNotify($options);
