@@ -3,7 +3,7 @@ $(function() {
 
     Workitem.init();
 
-    $('#statusCombo').chosen({
+    $('#statusCombo, #project_id').chosen({
         width: '200px'
     });
 
