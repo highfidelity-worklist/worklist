@@ -74,6 +74,14 @@ class JobView extends View {
     	return $this->worklist['status'] != 'Done' && (int) $this->currentUser['id'] > 0;
     }
 
+    public function internalChecked() {
+        return $this->workitem->isInternal() ? 'checked="checked"' : '';
+    }
+
+    public function userIsInternal() {
+        return $this->user->isInternal() ? true : false;
+    }
+
     public function editing() {
         return $this->action == 'edit';
     }
