@@ -347,7 +347,7 @@ class Notification {
             break;
 
             case 'modified':
-                if ($workitem->getStatus() != 'Draft' && $workitem->getStatus() != 'Code Review') {
+                if ($workitem->getStatus() != 'Draft') {
                     $from_changes = "";
                     if (!empty($options['status_change']) &&($workitem->getStatus() == 'Functional')) {
                         $status_change = '-' . strtolower($workitem->getStatus());

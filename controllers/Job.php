@@ -579,7 +579,7 @@ class JobController extends Controller {
                             $displayDialogAfterDone = true;
                         }
                         
-                        if ($status != 'Draft' && $status != 'Bidding' && $status != 'Review'){
+                        if (($status != 'Draft') && ($status != 'Bidding') && ($status != 'Review')){
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
@@ -1619,7 +1619,7 @@ class JobController extends Controller {
                 'type' => 'new_review',
                 'workitem' => $workitem,
             );
-            Notification::massStatusNotify($workitem);
+            Notification::massStatusNotify($options);
         }
         if ($newStatus != 'SuggestedWithBid') {
             $options = array(
