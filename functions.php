@@ -1407,7 +1407,7 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
 
     // If no 'From' address specified, use default
     if (empty($headers['From'])) {
-        $fromName = DEFAULT_SENDER;
+        $fromName = DEFAULT_SENDER_NAME;
         $fromAddress = DEFAULT_SENDER;
     } else {
         $fromIncludesNameAndAddress = preg_match($nameAndAddressRegex, $headers['From'], $fromDetails);
