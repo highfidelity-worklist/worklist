@@ -64,6 +64,8 @@ echo "define('SERVER_NAME', '$SERVER_NAME');" >> $SERVER_CONFIG
 echo "define('SERVER_URL', 'https://' . SERVER_NAME . '/' . APP_LOCATION);" >> $SERVER_CONFIG
 echo "define('SECURE_SERVER_URL', SERVER_URL);" >> $SERVER_CONFIG
 echo "define('WORKLIST_URL', SECURE_SERVER_URL);" >> $SERVER_CONFIG
+echo "define('DEFAULT_SENDER', 'worklist@$SERVER_NAME');" >> $SERVER_CONFIG
+echo "define('DEFAULT_SENDER_NAME', 'Worklist [DEV]');" >> $SERVER_CONFIG
 
 if [[ $CUSTOM_CONFIG && -s $CUSTOM_CONFIG ]]
 then
