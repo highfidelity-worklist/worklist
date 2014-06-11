@@ -17,7 +17,7 @@ var NewWorklist = {
 
         $('a[href^="./github/login"]').click(NewWorklist.loginClick);
     },
-    loginClick: function() {
+    loginClick: function(event) {
         event.preventDefault();
 
         var href = $(this).attr('href');
